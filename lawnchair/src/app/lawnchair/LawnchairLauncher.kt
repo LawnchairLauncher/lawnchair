@@ -78,10 +78,28 @@ import java.util.stream.Stream
 class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     SavedStateRegistryOwner, ActivityResultRegistryOwner, OnBackPressedDispatcherOwner {
 
-    private val lifecycleRegistry = LifecycleRegistry(this)
     private val savedStateRegistryController = SavedStateRegistryController.create(this)
-    override val savedStateRegistry: SavedStateRegistry
-        get() = savedStateRegistryController.savedStateRegistry
+    private val defaultOverlay by lazy { OverlayCallbackImpl(this) }
+    private val prefs by lazy { PreferenceManager.getInstance(this) }
+    private val preferenceManager2 by lazy { PreferenceManager2.getInstance(this) }
+    private val insetsController by lazy { WindowInsetsControllerCompat(launcher.window, rootView) }
+    private val themeProvider by lazy { ThemeProvider.INSTANCE.get(this) }
+    private lateinit var colorScheme: ColorScheme
+    private val noStatusBarStateListener = object : StateManager.StateListener<LauncherState> {
+        override fun onStateTransitionStart(toState: LauncherState) {
+            if (toState is OverviewState) {
+                insetsController.show(WindowInsetsCompat.Type.statusBars())
+            }
+        }
+        override fun onStateTransitionComplete(finalState: LauncherState) {
+            if (finalState !is OverviewState) {
+                insetsController.hide(WindowInsetsCompat.Type.statusBars())
+            }
+        }
+    }
+    private var hasBackGesture = false
+
+    override val savedStateRegistry: SavedStateRegistry = savedStateRegistryController.savedStateRegistry
     override val activityResultRegistry = object : ActivityResultRegistry() {
         override fun <I : Any?, O : Any?> onLaunch(
             requestCode: Int,
@@ -152,35 +170,14 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         }
     }
     override val onBackPressedDispatcher = OnBackPressedDispatcher()
+    override val lifecycle: LifecycleRegistry = LifecycleRegistry(this)
     val gestureController by lazy { GestureController(this) }
-    private val defaultOverlay by lazy { OverlayCallbackImpl(this) }
-    private val prefs by lazy { PreferenceManager.getInstance(this) }
-    private val preferenceManager2 by lazy { PreferenceManager2.getInstance(this) }
-    private val insetsController by lazy { WindowInsetsControllerCompat(launcher.window, rootView) }
-
-    private val themeProvider by lazy { ThemeProvider.INSTANCE.get(this) }
-    private lateinit var colorScheme: ColorScheme
-
-    private val noStatusBarStateListener = object : StateManager.StateListener<LauncherState> {
-        override fun onStateTransitionStart(toState: LauncherState) {
-            if (toState is OverviewState) {
-                insetsController.show(WindowInsetsCompat.Type.statusBars())
-            }
-        }
-        override fun onStateTransitionComplete(finalState: LauncherState) {
-            if (finalState !is OverviewState) {
-                insetsController.hide(WindowInsetsCompat.Type.statusBars())
-            }
-        }
-    }
-
-    private var hasBackGesture = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         layoutInflater.factory2 = LawnchairLayoutFactory(this)
         savedStateRegistryController.performRestore(savedInstanceState)
         super.onCreate(savedInstanceState)
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
 
         prefs.launcherTheme.subscribeChanges(this, ::updateTheme)
 
@@ -285,12 +282,12 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
     override fun onStart() {
         super.onStart()
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_START)
     }
 
     override fun onResume() {
         super.onResume()
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
         restartIfPending()
 
         dragLayer.viewTreeObserver.addOnDrawListener(object : ViewTreeObserver.OnDrawListener {
@@ -312,19 +309,20 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
     override fun onPause() {
         super.onPause()
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     }
 
     override fun onStop() {
         super.onStop()
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     }
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun onBackPressed() {
         onBackPressedDispatcher.onBackPressed()
     }
@@ -342,11 +340,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         }
     }
 
-    override val lifecycle: Lifecycle = lifecycleRegistry
-
-    override fun getDefaultOverlay(): LauncherOverlayManager {
-        return defaultOverlay
-    }
+    override fun getDefaultOverlay(): LauncherOverlayManager = defaultOverlay
 
     private fun restartIfPending() {
         when {
