@@ -224,6 +224,21 @@
         <attr name="alignOnIcon" format="boolean" />
     </declare-styleable>
 
+    <!--  Responsive grids attributes  -->
+    <declare-styleable name="WorkspaceSpec">
+        <attr name="specType" format="integer">
+            <enum name="height" value="0" />
+            <enum name="width" value="1" />
+        </attr>
+        <attr name="maxAvailableSize" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="SpecSize">
+        <attr name="fixedSize" format="dimension" />
+        <attr name="ofAvailableSpace" format="float" />
+        <attr name="ofRemainderSpace" format="float" />
+    </declare-styleable>
+
     <declare-styleable name="ProfileDisplayOption">
         <attr name="name" />
         <attr name="minWidthDps" format="float" />
