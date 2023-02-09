@@ -179,7 +179,7 @@
     <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
     <string name="home_screen_unlock">അൺലോക്ക് ഹോം സ്‌ക്രീൻ</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
     <string name="home_screen_locked">Home Screen is locked.</string>
     <string name="status_bar_label">സ്റ്റാറ്റസ് ബാർ</string>
     <string name="show_status_bar">സ്റ്റാറ്റസ് ബാർ കാണിക്കുക</string>

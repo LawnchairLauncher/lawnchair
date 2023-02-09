@@ -179,7 +179,7 @@
     <string name="home_screen_lock_description">Voorkomt wijzigingen in de weergave van het startscherm.</string>
     <string name="home_screen_unlock">Startscherm ontgrendelen</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Vergrendelingsknop in pop-up weergeven</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Vergrendelingsknop weergeven</string>
     <string name="home_screen_locked">Startscherm is vergrendeld.</string>
     <string name="status_bar_label">Statusbalk</string>
     <string name="show_status_bar">Statusbalk weergeven</string>

@@ -179,7 +179,7 @@
     <string name="home_screen_lock_description">Neleidžia keisti pagrindinio ekrano išdėstymo.</string>
     <string name="home_screen_unlock">Atrakinti Pagrindinį Ekraną</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
     <string name="home_screen_locked">Pagrindinis Ekranas yra užrakintas.</string>
     <string name="status_bar_label">Būsenos Juosta</string>
     <string name="show_status_bar">Rodyti statuso juosta</string>

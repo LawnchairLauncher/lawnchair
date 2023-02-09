@@ -179,7 +179,7 @@
     <string name="home_screen_lock_description">Previne modificarea aspectului ecranului de pornire.</string>
     <string name="home_screen_unlock">Deblochează ecranul de pornire</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Arată butonul „Blochează” în Pop-Up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Arată butonul „Blochează”</string>
     <string name="home_screen_locked">Ecranul de pornire este blocat.</string>
     <string name="status_bar_label">Bară de stare</string>
     <string name="show_status_bar">Arată bara de stare</string>
