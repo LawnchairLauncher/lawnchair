@@ -16,6 +16,7 @@
 package com.android.launcher3.statehandlers;
 
 import android.os.SystemProperties;
+import android.util.Log;
 import android.view.View;
 
 import com.android.launcher3.Launcher;
@@ -28,6 +29,9 @@ import com.android.launcher3.uioverrides.QuickstepLauncher;
  * is enabled.
  */
 public class DesktopVisibilityController {
+
+    private static final String TAG = "DesktopVisController";
+    private static final boolean DEBUG = false;
 
     private final Launcher mLauncher;
 
@@ -58,6 +62,9 @@ public class DesktopVisibilityController {
      * Sets whether freeform windows are visible and updates launcher visibility based on that.
      */
     public void setFreeformTasksVisible(boolean freeformTasksVisible) {
+        if (DEBUG) {
+            Log.d(TAG, "setFreeformTasksVisible: visible=" + freeformTasksVisible);
+        }
         if (!isDesktopModeSupported()) {
             return;
         }
@@ -83,6 +90,9 @@ public class DesktopVisibilityController {
      * Sets whether the overview is visible and updates launcher visibility based on that.
      */
     public void setOverviewStateEnabled(boolean overviewStateEnabled) {
+        if (DEBUG) {
+            Log.d(TAG, "setOverviewStateEnabled: enabled=" + overviewStateEnabled);
+        }
         if (!isDesktopModeSupported()) {
             return;
         }
@@ -109,6 +119,9 @@ public class DesktopVisibilityController {
      * Sets whether recents gesture is in progress.
      */
     public void setGestureInProgress(boolean gestureInProgress) {
+        if (DEBUG) {
+            Log.d(TAG, "setGestureInProgress: inProgress=" + gestureInProgress);
+        }
         if (!isDesktopModeSupported()) {
             return;
         }
@@ -118,6 +131,9 @@ public class DesktopVisibilityController {
     }
 
     private void setLauncherViewsVisibility(int visibility) {
+        if (DEBUG) {
+            Log.d(TAG, "setLauncherViewsVisibility: visibility=" + visibility);
+        }
         View workspaceView = mLauncher.getWorkspace();
         if (workspaceView != null) {
             workspaceView.setVisibility(visibility);
@@ -129,6 +145,9 @@ public class DesktopVisibilityController {
     }
 
     private void markLauncherPaused() {
+        if (DEBUG) {
+            Log.d(TAG, "markLauncherPaused");
+        }
         StatefulActivity<LauncherState> activity =
                 QuickstepLauncher.ACTIVITY_TRACKER.getCreatedActivity();
         if (activity != null) {
@@ -137,6 +156,9 @@ public class DesktopVisibilityController {
     }
 
     private void markLauncherResumed() {
+        if (DEBUG) {
+            Log.d(TAG, "markLauncherResumed");
+        }
         StatefulActivity<LauncherState> activity =
                 QuickstepLauncher.ACTIVITY_TRACKER.getCreatedActivity();
         // Check activity state before calling setResumed(). Launcher may have been actually
