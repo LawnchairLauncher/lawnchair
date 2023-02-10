@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"গৃহ স্ক্ৰীনলৈ যাবলৈ ছোৱাইপ কৰক"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"আপোনাৰ স্ক্ৰীনৰ তলৰ অংশৰ পৰা ওপৰলৈ ছোৱাইপ কৰক। এই নিৰ্দেশটোৱে আপোনাক সদায় গৃহ স্ক্ৰীনলৈ লৈ যায়।"</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"স্ক্ৰীনখনৰ একেবাৰে তলৰ পৰা ২ টা আঙুলিৰে ওপৰলৈ ছোৱাইপ কৰক। এই নিৰ্দেশটোৱে আপোনাক সদায় গৃহ স্ক্ৰীনলৈ লৈ যায়।"</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"গৃহ পৃষ্ঠালৈ যাওক"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"আপোনাৰ গৃহ স্ক্ৰীনলৈ যিকোনো সময়তে যাবলৈ, আপোনাৰ স্ক্ৰীনখনৰ একেবাৰে তলৰ পৰা ওপৰলৈ ছোৱাইপ কৰক"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"আপুনি স্ক্ৰীনৰ তলৰ প্ৰান্তৰ পৰা ওপৰলৈ ছোৱাইপ কৰাটো নিশ্চিত কৰক।"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"এৰি দিয়াৰ পূৰ্বে ৱিণ্ডখন দীৰ্ঘ সময়ৰ বাবে ধৰি ৰাখিবলৈ চেষ্টা কৰক।"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"আপুনি স্ক্ৰীনৰ ওপৰলৈ পোনকৈ ছোৱাইপ কৰি তাৰ পাছত ৰোৱাটো নিশ্চিত কৰক।"</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"সুন্দৰ!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"টিউট’ৰিয়েল <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"সকলো সাজু!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"গৃহ স্ক্ৰীনলৈ যাবলৈ ওপৰলৈ ছোৱাইপ কৰক"</string>
+    <string name="allset_hint" msgid="459504134589971527">"গৃহ স্ক্ৰীনলৈ যাবলৈ ওপৰলৈ ছোৱাইপ কৰক"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"আপোনাৰ গৃহ স্ক্ৰীনলৈ যাবলৈ গৃহপৃষ্ঠা বুটামটো টিপক"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"আপুনি আপোনাৰ <xliff:g id="DEVICE">%1$s</xliff:g>টো ব্যৱহাৰ কৰিবলৈ সাজু"</string>
     <string name="default_device_name" msgid="6660656727127422487">"ডিভাইচ"</string>
@@ -101,11 +99,9 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"টাস্কবাৰৰ শিক্ষাৰ পেনেলটো প্ৰদর্শিত হৈছে"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"টাস্কবাৰৰ শিক্ষাৰ পেনেলটো বন্ধ হৈছে"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"এবাৰতে ২ টা এপ্‌ ব্যৱহাৰ কৰিবলৈ কোনো এপ্‌ কাষলৈ টানি আনি এৰক"</string>
-    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"টাস্কবাৰ দেখুৱাবলৈ লাহেকৈ ওপৰলৈ ছোৱাইপ কৰক"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"আপোনাৰ ৰুটিনৰ ওপৰত আধাৰিত এপৰ পৰামৰ্শ পাওক"</string>
-    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
-    <skip />
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"টাস্কবাৰ স্বয়ংক্ৰিয়ভাৱে লুকুৱাবলৈ ছেটিঙত আঙুলিৰ স্পৰ্শৰ নিৰ্দেশেৰে কৰা নেভিগেশ্বন অন কৰক"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"টাস্কবাৰৰ জৰিয়তে অধিক কাৰ্য সম্পাদন কৰক"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"পৰৱৰ্তী"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"উভতি যাওক"</string>

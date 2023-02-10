@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Svep för att öppna startskärmen"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Svep uppåt från skärmens nederkant. Du kan alltid återgå till startskärmen med den här rörelsen."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Svep uppåt med två fingrar från skärmens nederkant. Så kommer du alltid tillbaka till startskärmen."</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Öppna startskärmen"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Öppna startskärmen när som helst genom att svepa uppåt från skärmens nederkant"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Se till att du sveper från nederkanten på skärmen."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Testa att trycka längre på fönstret innan du släpper."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Se till att du sveper rakt uppåt och sedan pausar."</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Bra!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Självstudie <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Klart!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Svep uppåt för att öppna startskärmen"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Svep uppåt för att öppna startskärmen"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Tryck på hemknappen för att öppna startskärmen"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Nu kan du börja använda din <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"enhet"</string>
@@ -101,11 +99,9 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Information om aktivitetsfältet visades"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Information om aktivitetsfältet stängdes"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Dra en app till sidan om du vill använda två appar samtidigt"</string>
-    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Svep långsamt uppåt för att visa aktivitetsfältet"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Få appförslag utifrån dina rutiner"</string>
-    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
-    <skip />
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Slå på navigering med rörelser i Inställningar för att dölja aktivitetsfältet automatiskt"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Gör mer med aktivitetsfältet"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Nästa"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Tillbaka"</string>

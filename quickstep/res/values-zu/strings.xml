@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Swayipha ukuze uye ekhaya"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Swayiphela phezulu kusuka phansi kwesikrini sakho.Lokhu kuthinta kuhlala kukusa esikrinini sasekhaya."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Swayiphela phezulu ngeminwe emi-2 kusukela phansi esikrinini. Lesi senzo sihlala sikuyisa esikrinini Sasekhaya."</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Iya ekhasini lokuqala"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Ukuze uye esikrinini sakho sasekhaya noma kunini, swayiphela phezulu ukusuka phansi esikrinini sakho"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Qiniseka ukuthi uswayiphela phezulu kusuka emngceleni ophansi wesikrini."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Zama ukubamba iwindi isikhashana ngaphambi kokulidedela."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Qiniseka ukuthi uswayiphela ngqo phezulu bese uyamisa."</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Kuhle!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Okokufundisa <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Konke kusethiwe!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Swayiphela phezulu ukuze uye Ekhaya"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Swayiphela phezulu ukuze uye ekhaya"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Thepha inkinobho yasekhaya ukuze uye kusikrini sasekhaya"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Usulungele ukuqala ukusebenzisa i-<xliff:g id="DEVICE">%1$s</xliff:g> yakho"</string>
     <string name="default_device_name" msgid="6660656727127422487">"idivayisi"</string>
@@ -88,8 +86,7 @@
     <string name="action_share" msgid="2648470652637092375">"Yabelana"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Isithombe-skrini"</string>
     <string name="action_split" msgid="2098009717623550676">"Hlukanisa"</string>
-    <!-- no translation found for toast_split_select_app (8464310533320556058) -->
-    <skip />
+    <string name="toast_split_select_app" msgid="8464310533320556058">"Thepha enye i-app ukuze usebenzise isikrini sokuhlukanisa"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Khetha enye i-app ukuze usebenzise ukuhlukanisa isikrini"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Lesi senzo asivunyelwanga uhlelo lokusebenza noma inhlangano yakho"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Yeqa isifundo sokuzulazula?"</string>
@@ -101,11 +98,9 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Imfuno yebha yomsebenzi ivelile"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Imfundo yebha yomsebenzi ivaliwe"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Hudula i-app ukusebenzisa ama-app ama-2 ngesikhathi esisodwa"</string>
-    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Swayiphela phezulu kancane ukuze ubonise i-Taskbar"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Thola iziphakamiso ze-app ngokusekelwe kumjikelezo wakho"</string>
-    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
-    <skip />
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Vula ukufuna kokuthinta Kumasethingi ukuze ufihle ngokuzenzakalela ibha yomsebenzi"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Yenza okwengeziwe nge-Taskbar"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Okulandelayo"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Emuva"</string>
