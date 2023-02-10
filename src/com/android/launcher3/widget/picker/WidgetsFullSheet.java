@@ -274,8 +274,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mSuggestedWidgetsHeader = (WidgetsListHeader) layoutInflater.inflate(
                     R.layout.widgets_list_row_header, mSuggestedWidgetsContainer, false);
             mSuggestedWidgetsHeader.setExpanded(true);
-            mSuggestedWidgetsHeader.setBackground(
-                    new WidgetsListDrawableFactory(getContext()).createHeaderBackgroundDrawable());
 
             PackageItemInfo packageItemInfo =  new PackageItemInfo(
                     /* packageName= */ SUGGESTIONS_PACKAGE_NAME,
@@ -311,9 +309,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 ? mContent.findViewById(R.id.title)
                 : mSearchScrollView.findViewById(R.id.title);
         mRightPane = mIsTwoPane ? mContent.findViewById(R.id.right_pane) : null;
-        mWidgetsListTableViewHolderBinder =  new WidgetsListTableViewHolderBinder(
-                layoutInflater, this, this,
-                new WidgetsListDrawableFactory(getContext()));
+        mWidgetsListTableViewHolderBinder =
+                new WidgetsListTableViewHolderBinder(layoutInflater, this, this);
         onRecommendedWidgetsBound();
         onWidgetsBound();
 
