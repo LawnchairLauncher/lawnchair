@@ -213,9 +213,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private static final int WIDGET_CROSSFADE_DURATION_MILLIS = 125;
 
     protected final QuickstepLauncher mLauncher;
-    private final DragLayer mDragLayer;
+    protected final DragLayer mDragLayer;
 
-    final Handler mHandler;
+    protected final Handler mHandler;
 
     private final float mClosingWindowTransY;
     private final float mMaxShadowRadius;
@@ -1097,28 +1097,34 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             return;
         }
         if (hasControlRemoteAppTransitionPermission()) {
-            mWallpaperOpenRunner = createWallpaperOpenRunner(false /* fromUnlock */);
-
             RemoteAnimationDefinition definition = new RemoteAnimationDefinition();
-            definition.addRemoteAnimation(WindowManager.TRANSIT_OLD_WALLPAPER_OPEN,
-                    WindowConfiguration.ACTIVITY_TYPE_STANDARD,
-                    new RemoteAnimationAdapter(
-                            new LauncherAnimationRunner(mHandler, mWallpaperOpenRunner,
-                                    false /* startAtFrontOfQueue */),
-                            CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
-
-            if (KEYGUARD_ANIMATION.get()) {
-                mKeyguardGoingAwayRunner = createWallpaperOpenRunner(true /* fromUnlock */);
-                definition.addRemoteAnimation(
-                        WindowManager.TRANSIT_OLD_KEYGUARD_GOING_AWAY_ON_WALLPAPER,
-                        new RemoteAnimationAdapter(
-                                new LauncherAnimationRunner(
-                                        mHandler, mKeyguardGoingAwayRunner,
-                                        true /* startAtFrontOfQueue */),
-                                CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
-            }
-
+            addRemoteAnimations(definition);
             mLauncher.registerRemoteAnimations(definition);
+        }
+    }
+
+    /**
+     * Adds remote animations to a {@link RemoteAnimationDefinition}. May be overridden to add
+     * additional animations.
+     */
+    protected void addRemoteAnimations(RemoteAnimationDefinition definition) {
+        mWallpaperOpenRunner = createWallpaperOpenRunner(false /* fromUnlock */);
+        definition.addRemoteAnimation(WindowManager.TRANSIT_OLD_WALLPAPER_OPEN,
+                WindowConfiguration.ACTIVITY_TYPE_STANDARD,
+                new RemoteAnimationAdapter(
+                        new LauncherAnimationRunner(mHandler, mWallpaperOpenRunner,
+                                false /* startAtFrontOfQueue */),
+                        CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
+
+        if (KEYGUARD_ANIMATION.get()) {
+            mKeyguardGoingAwayRunner = createWallpaperOpenRunner(true /* fromUnlock */);
+            definition.addRemoteAnimation(
+                    WindowManager.TRANSIT_OLD_KEYGUARD_GOING_AWAY_ON_WALLPAPER,
+                    new RemoteAnimationAdapter(
+                            new LauncherAnimationRunner(
+                                    mHandler, mKeyguardGoingAwayRunner,
+                                    true /* startAtFrontOfQueue */),
+                            CLOSING_TRANSITION_DURATION_MS, 0 /* statusBarTransitionDelay */));
         }
     }
 
@@ -1163,7 +1169,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         SystemUiProxy.INSTANCE.get(mLauncher).setStartingWindowListener(null);
     }
 
-    private void unregisterRemoteAnimations() {
+    protected void unregisterRemoteAnimations() {
         if (SEPARATE_RECENTS_ACTIVITY.get()) {
             return;
         }
