@@ -382,6 +382,10 @@ public final class FeatureFlags {
             "Enable the ability to generate monochromatic icons, if it is not provided by the app"
     );
 
+    public static final BooleanFlag ENABLE_DREAM_TRANSITION = getDebugFlag(
+            "ENABLE_DREAM_TRANSITION", true,
+            "Enable the launcher transition when the device enters a dream");
+
     public static final BooleanFlag ENABLE_TASKBAR_EDU_TOOLTIP = getDebugFlag(
             "ENABLE_TASKBAR_EDU_TOOLTIP", true,
             "Enable the tooltip version of the Taskbar education flow.");
