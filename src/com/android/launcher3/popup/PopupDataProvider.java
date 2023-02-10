@@ -238,6 +238,15 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                 .collect(Collectors.toList());
     }
 
+    /** Gets the WidgetsListContentEntry for the currently selected header. */
+    public WidgetsListContentEntry getSelectedAppWidgets(PackageUserKey packageUserKey) {
+        return (WidgetsListContentEntry) mAllWidgets.stream()
+                .filter(row -> row instanceof WidgetsListContentEntry
+                        && row.mPkgItem.packageName.equals(packageUserKey.mPackageName))
+                .findAny()
+                .orElse(null);
+    }
+
     /**
      * Returns a list of notifications that are relevant to given ItemInfo.
      */

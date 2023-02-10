@@ -88,6 +88,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     private final SparseArray<ViewHolderBinder> mViewHolderBinders = new SparseArray<>();
     private final WidgetListBaseRowEntryComparator mRowComparator =
             new WidgetListBaseRowEntryComparator();
+    @Nullable private final WidgetsFullSheet.HeaderChangeListener mHeaderChangeListener;
 
     private final List<WidgetsListBaseEntry> mAllEntries = new ArrayList<>();
     private ArrayList<WidgetsListBaseEntry> mVisibleEntries = new ArrayList<>();
@@ -105,7 +106,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
             IconCache iconCache, IntSupplier emptySpaceHeightProvider,
-            OnClickListener iconClickListener, OnLongClickListener iconLongClickListener) {
+            OnClickListener iconClickListener, OnLongClickListener iconLongClickListener,
+            WidgetsFullSheet.HeaderChangeListener headerChangeListener) {
+        mHeaderChangeListener = headerChangeListener;
         mContext = context;
         mDiffReporter = new WidgetsDiffReporter(iconCache, this);
         WidgetsListDrawableFactory listDrawableFactory = new WidgetsListDrawableFactory(context);
@@ -196,9 +199,11 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
                 getOffsetForPosition(previousPositionForPackageUserKey);
 
         List<WidgetsListBaseEntry> newVisibleEntries = mAllEntries.stream()
-                .filter(entry -> ((mFilter == null || mFilter.test(entry))
+                .filter(entry -> (((mFilter == null || mFilter.test(entry))
                         && mHeaderAndSelectedContentFilter.test(entry))
                         || entry instanceof WidgetListSpaceEntry)
+                        && (mHeaderChangeListener == null
+                        || !(entry instanceof WidgetsListContentEntry)))
                 .map(entry -> {
                     if (entry instanceof WidgetsListBaseEntry.Header<?>
                             && matchesKey(entry, mWidgetsContentVisiblePackageUserKey)) {
@@ -224,7 +229,6 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             mPendingClickHeader = null;
         }
     }
-
 
     /** Returns whether {@code entry} matches {@code key}. */
     private static boolean isHeaderForPackageUserKey(
@@ -258,7 +262,6 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     @Override
     public void onBindViewHolder(ViewHolder holder, int pos, List<Object> payloads) {
         ViewHolderBinder viewHolderBinder = mViewHolderBinders.get(getItemViewType(pos));
-        WidgetsListBaseEntry entry = mVisibleEntries.get(pos);
 
         // The first entry has an empty space, count from second entries.
         int listPos = (pos > 1) ? POSITION_DEFAULT : POSITION_FIRST;
@@ -266,6 +269,23 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             listPos |= POSITION_LAST;
         }
         viewHolderBinder.bindViewHolder(holder, mVisibleEntries.get(pos), listPos, payloads);
+    }
+
+    /**
+     * Selects the first visible header. This is used in search as we want to always select the
+     * first header in the new list that gets generated as we search.
+     */
+    void selectFirstHeaderEntry() {
+        WidgetsListSearchHeaderEntry firstEntry = null;
+        for (WidgetsListBaseEntry entry: mVisibleEntries) {
+            if (entry instanceof WidgetsListSearchHeaderEntry) {
+                firstEntry = (WidgetsListSearchHeaderEntry) entry;
+                break;
+            }
+        }
+        if (firstEntry != null) {
+            onHeaderClicked(true, PackageUserKey.fromPackageItemInfo(firstEntry.mPkgItem));
+        }
     }
 
     @Override
@@ -318,6 +338,9 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         // Ignore invalid clicks, such as collapsing a package that isn't currently expanded.
         if (!showWidgets && !packageUserKey.equals(mWidgetsContentVisiblePackageUserKey)) return;
 
+        if (mHeaderChangeListener != null
+                && packageUserKey.equals(mWidgetsContentVisiblePackageUserKey)) return;
+
         if (showWidgets) {
             mWidgetsContentVisiblePackageUserKey = packageUserKey;
             ActivityContext.lookupContext(mContext)
@@ -331,6 +354,10 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         mPendingClickHeader = packageUserKey;
 
         updateVisibleEntries();
+
+        if (mHeaderChangeListener != null && mWidgetsContentVisiblePackageUserKey != null) {
+            mHeaderChangeListener.onHeaderChanged(mWidgetsContentVisiblePackageUserKey);
+        }
     }
 
     /**
