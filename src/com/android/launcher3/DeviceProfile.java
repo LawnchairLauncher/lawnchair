@@ -578,15 +578,16 @@ public class DeviceProfile {
         dimensionOverrideProvider.accept(this);
 
         // This is done last, after iconSizePx is calculated above.
-        mDotRendererWorkSpace = createDotRenderer(iconSizePx, dotRendererCache);
-        mDotRendererAllApps = createDotRenderer(allAppsIconSizePx, dotRendererCache);
+        mDotRendererWorkSpace = createDotRenderer(context, iconSizePx, dotRendererCache);
+        mDotRendererAllApps = createDotRenderer(context, allAppsIconSizePx, dotRendererCache);
     }
 
     private static DotRenderer createDotRenderer(
-            int size, @NonNull SparseArray<DotRenderer> cache) {
+            @NonNull Context context, int size, @NonNull SparseArray<DotRenderer> cache) {
         DotRenderer renderer = cache.get(size);
         if (renderer == null) {
-            renderer = new DotRenderer(size, getShapePath(DEFAULT_DOT_SIZE), DEFAULT_DOT_SIZE);
+            renderer = new DotRenderer(size, getShapePath(context, DEFAULT_DOT_SIZE),
+                    DEFAULT_DOT_SIZE);
             cache.put(size, renderer);
         }
         return renderer;
