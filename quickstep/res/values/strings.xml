@@ -197,7 +197,7 @@
     <!-- Title of "All Set" page [CHAR LIMIT=NONE] -->
     <string name="allset_title">All set!</string>
     <!-- Hint string at the bottom of "All Set" page [CHAR LIMIT=NONE] -->
-    <string name="allset_hint">Swipe up to go Home</string>
+    <string name="allset_hint">Swipe up to go home</string>
     <!-- Hint string at the bottom of "All Set" page for button navigation [CHAR LIMIT=NONE] -->
     <string name="allset_button_hint">Tap the home button to go to your home screen</string>
     <!-- Description of "All Set" page on the user's device [CHAR LIMIT=NONE] -->
