@@ -355,6 +355,12 @@ public class GroupedTaskView extends TaskView {
         mSnapshotView2.setSplashAlpha(mTaskThumbnailSplashAlpha);
     }
 
+    @Override
+    protected void refreshTaskThumbnailSplash() {
+        super.refreshTaskThumbnailSplash();
+        mSnapshotView2.refreshSplashView();
+    }
+
     /**
      *     Sets visibility for thumbnails and associated elements (DWB banners).
      *     IconView is unaffected.

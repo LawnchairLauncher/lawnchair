@@ -41,8 +41,10 @@ import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.PendingSplitSelectInfo;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource;
+import com.android.quickstep.GestureState;
 import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.RotationTouchHelper;
+import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.SplitSelectStateController;
 import com.android.systemui.shared.recents.model.Task;
 
@@ -92,6 +94,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
 
     @Override
     public void onTaskIconChanged(int taskId) {
+        super.onTaskIconChanged(taskId);
         // If Launcher needs to return to split select state, do it now, after the icon has updated.
         if (mActivity.hasPendingSplitSelectInfo()) {
             PendingSplitSelectInfo recoveryData = mActivity.getPendingSplitSelectInfo();
@@ -222,11 +225,23 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
 
     @Override
     public void onGestureAnimationEnd() {
+        DesktopVisibilityController desktopVisibilityController = null;
+        boolean showDesktopApps = false;
+        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+            desktopVisibilityController = mActivity.getDesktopVisibilityController();
+            if (mCurrentGestureEndTarget == GestureState.GestureEndTarget.LAST_TASK
+                    && desktopVisibilityController.areFreeformTasksVisible()) {
+                // Recents gesture was cancelled and we are returning to the previous task.
+                // After super class has handled clean up, show desktop apps on top again
+                showDesktopApps = true;
+            }
+        }
         super.onGestureAnimationEnd();
-        DesktopVisibilityController desktopVisibilityController =
-                mActivity.getDesktopVisibilityController();
         if (desktopVisibilityController != null) {
             desktopVisibilityController.setGestureInProgress(false);
+        }
+        if (showDesktopApps) {
+            SystemUiProxy.INSTANCE.get(mActivity).showDesktopApps();
         }
     }
 }

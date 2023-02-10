@@ -316,8 +316,8 @@ public final class FeatureFlags {
             "SCROLL_TOP_TO_RESET", true, "Bring up IME and focus on "
             + "input when scroll to top if 'Always show keyboard' is enabled or in prefix state");
 
-    public static final BooleanFlag POPUP_MATERIAL_U = new DeviceFlag(
-            "POPUP_MATERIAL_U", false, "Switch popup UX to use material U");
+    public static final BooleanFlag ENABLE_MATERIAL_U_POPUP = getDebugFlag(
+            "ENABLE_MATERIAL_U_POPUP", false, "Switch popup UX to use material U");
 
     public static final BooleanFlag ENABLE_SEARCH_UNINSTALLED_APPS = new DeviceFlag(
             "ENABLE_SEARCH_UNINSTALLED_APPS", false, "Search uninstalled app results.");
@@ -371,6 +371,8 @@ public final class FeatureFlags {
             "ENABLE_LAUNCH_FROM_STAGED_APP", true,
             "Enable the ability to tap a staged app during split select to launch it in full screen"
     );
+    public static final BooleanFlag ENABLE_HAPTICS_ALL_APPS = getDebugFlag(
+            "ENABLE_HAPTICS_ALL_APPS", false, "Enables haptics opening/closing All apps");
 
     public static final BooleanFlag ENABLE_FORCED_MONO_ICON = getDebugFlag(
             "ENABLE_FORCED_MONO_ICON", false,

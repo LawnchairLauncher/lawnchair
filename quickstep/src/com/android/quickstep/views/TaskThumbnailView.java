@@ -342,10 +342,11 @@ public class TaskThumbnailView extends View {
 
         // Draw splash above thumbnail to hide inconsistencies in rotation and aspect ratios.
         if (shouldShowSplashView()) {
+            // Always draw background for hiding inconsistencies, even if splash view is not yet
+            // loaded (which can happen as task icons are loaded asynchronously in the background)
+            canvas.drawRoundRect(x, y, width + 1, height + 1, cornerRadius,
+                    cornerRadius, mSplashBackgroundPaint);
             if (mSplashView != null) {
-                canvas.drawRoundRect(x, y, width + 1, height + 1, cornerRadius,
-                        cornerRadius, mSplashBackgroundPaint);
-
                 mSplashView.layout((int) x, (int) (y + 1), (int) width, (int) height - 1);
                 mSplashView.draw(canvas);
             }
@@ -373,6 +374,13 @@ public class TaskThumbnailView extends View {
     public boolean shouldShowSplashView() {
         return isThumbnailAspectRatioDifferentFromThumbnailData()
                 || isThumbnailRotationDifferentFromTask();
+    }
+
+    protected void refreshSplashView() {
+        if (mTask != null) {
+            updateSplashView(mTask.icon);
+            invalidate();
+        }
     }
 
     private void updateSplashView(Drawable icon) {
