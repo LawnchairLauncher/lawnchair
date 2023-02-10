@@ -25,7 +25,6 @@ import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
-import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
 import com.android.launcher3.widget.picker.WidgetsListAdapter.WidgetListBaseRowEntryComparator;
 
 import java.util.ArrayList;
@@ -175,12 +174,8 @@ public class WidgetsDiffReporter {
      */
     private boolean hasHeaderUpdated(WidgetsListBaseEntry curRow, WidgetsListBaseEntry newRow) {
         if (newRow instanceof WidgetsListHeaderEntry && curRow instanceof WidgetsListHeaderEntry) {
-            return !curRow.equals(newRow);
-        }
-        if (newRow instanceof WidgetsListSearchHeaderEntry
-                && curRow instanceof WidgetsListSearchHeaderEntry) {
             // Always refresh search header entries to reset rounded corners in their view holder.
-            return true;
+            return !curRow.equals(newRow) || ((WidgetsListHeaderEntry) curRow).isSearchEntry();
         }
         return false;
     }

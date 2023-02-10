@@ -18,12 +18,12 @@ package com.android.launcher3.widget.picker;
 import static com.android.launcher3.config.FeatureFlags.LARGE_SCREEN_WIDGET_PICKER;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -45,13 +45,9 @@ import com.android.launcher3.icons.PlaceHolderIconDrawable;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.PackageItemInfo;
-import com.android.launcher3.util.PluralMessageFormat;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
-import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
-
-import java.util.stream.Collectors;
 
 /**
  * A UI represents a header of an app shown in the full widgets tray.
@@ -201,11 +197,6 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     /** Apply app icon, labels and tag using a generic {@link WidgetsListHeaderEntry}. */
     @UiThread
     public void applyFromItemInfoWithIcon(WidgetsListHeaderEntry entry) {
-        applyIconAndLabel(entry);
-    }
-
-    @UiThread
-    private void applyIconAndLabel(WidgetsListHeaderEntry entry) {
         PackageItemInfo info = entry.mPkgItem;
         setIcon(info.newIcon(getContext()));
         setTitles(entry);
@@ -247,55 +238,13 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     private void setTitles(WidgetsListHeaderEntry entry) {
         mTitle.setText(entry.mPkgItem.title);
 
-        Resources resources = getContext().getResources();
-        if (entry.widgetsCount == 0 && entry.shortcutsCount == 0) {
+        String subtitle = entry.getSubtitle(getContext());
+        if (TextUtils.isEmpty(subtitle)) {
             mSubtitle.setVisibility(GONE);
-            return;
-        }
-
-        String subtitle;
-        if (entry.widgetsCount > 0 && entry.shortcutsCount > 0) {
-            String widgetsCount = PluralMessageFormat.getIcuPluralString(getContext(),
-                    R.string.widgets_count, entry.widgetsCount);
-            String shortcutsCount = PluralMessageFormat.getIcuPluralString(getContext(),
-                    R.string.shortcuts_count, entry.shortcutsCount);
-            subtitle = resources.getString(R.string.widgets_and_shortcuts_count, widgetsCount,
-                    shortcutsCount);
-        } else if (entry.widgetsCount > 0) {
-            subtitle = PluralMessageFormat.getIcuPluralString(getContext(),
-                    R.string.widgets_count, entry.widgetsCount);
         } else {
-            subtitle = PluralMessageFormat.getIcuPluralString(getContext(),
-                    R.string.shortcuts_count, entry.shortcutsCount);
+            mSubtitle.setText(subtitle);
+            mSubtitle.setVisibility(VISIBLE);
         }
-        mSubtitle.setText(subtitle);
-        mSubtitle.setVisibility(VISIBLE);
-    }
-
-    /** Apply app icon, labels and tag using a generic {@link WidgetsListSearchHeaderEntry}. */
-    @UiThread
-    public void applyFromItemInfoWithIcon(WidgetsListSearchHeaderEntry entry) {
-        applyIconAndLabel(entry);
-    }
-
-    @UiThread
-    private void applyIconAndLabel(WidgetsListSearchHeaderEntry entry) {
-        PackageItemInfo info = entry.mPkgItem;
-        setIcon(info.newIcon(getContext()));
-        setTitles(entry);
-        setExpanded(entry.isWidgetListShown());
-
-        super.setTag(info);
-
-        verifyHighRes();
-    }
-
-    private void setTitles(WidgetsListSearchHeaderEntry entry) {
-        mTitle.setText(entry.mPkgItem.title);
-
-        mSubtitle.setText(entry.mWidgets.stream()
-                .map(item -> item.label).sorted().collect(Collectors.joining(", ")));
-        mSubtitle.setVisibility(VISIBLE);
     }
 
     @Override
