@@ -179,7 +179,7 @@
     <string name="home_screen_lock_description">防止主畫面版面更動。</string>
     <string name="home_screen_unlock">解鎖主螢幕</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">在彈出視窗中顯示鎖定按鈕</string>
+    <string name="home_screen_lock_toggle_from_home_popup">顯示鎖定按鈕</string>
     <string name="home_screen_locked">主畫面已鎖定。</string>
     <string name="status_bar_label">Status Bar</string>
     <string name="show_status_bar">顯示狀態列</string>

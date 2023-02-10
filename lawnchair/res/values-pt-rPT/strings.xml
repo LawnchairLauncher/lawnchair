@@ -179,7 +179,7 @@
     <string name="home_screen_lock_description">Impede modificações ao layout do ecrã inicial.</string>
     <string name="home_screen_unlock">Desbloquear Ecrã Inicial</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Mostrar Botão de Bloqueio no Pop-Up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Mostrar Botão de Bloqueio</string>
     <string name="home_screen_locked">O Ecrã Inicial está bloqueado.</string>
     <string name="status_bar_label">Barra de Estado</string>
     <string name="show_status_bar">Mostrar Barra de Estado</string>

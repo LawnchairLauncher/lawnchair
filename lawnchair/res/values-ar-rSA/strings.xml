@@ -179,7 +179,7 @@
     <string name="home_screen_lock_description">منع التغييرات في تخطيط الشاشة الرئيسية.</string>
     <string name="home_screen_unlock">فتح الشاشة الرئيسية</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
     <string name="home_screen_locked">الشاشة الرئيسية مقفلة.</string>
     <string name="status_bar_label">شريط الحالة</string>
     <string name="show_status_bar">إظهار شريط الحالة</string>

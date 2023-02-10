@@ -179,7 +179,7 @@
     <string name="home_screen_lock_description">Huwag hayaang mabago ang layout ng home screen.</string>
     <string name="home_screen_unlock">I-unlock ang Home Screen</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
     <string name="home_screen_locked">Naka-lock ang Home Screen.</string>
     <string name="status_bar_label">Status Bar</string>
     <string name="show_status_bar">Ipakita ang Search Bar</string>

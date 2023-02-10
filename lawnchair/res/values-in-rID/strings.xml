@@ -179,7 +179,7 @@
     <string name="home_screen_lock_description">Mencegah perubahan pada tata letak layar beranda.</string>
     <string name="home_screen_unlock">Buka Kunci Layar Beranda</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Tampilkan Tombol Kunci di Pop-Up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Tampilkan Tombol Kunci</string>
     <string name="home_screen_locked">Susunan Layar beranda dikunci.</string>
     <string name="status_bar_label">Bar Status</string>
     <string name="show_status_bar">Tampilkan bar status</string>
