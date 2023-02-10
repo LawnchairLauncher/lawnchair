@@ -31,7 +31,13 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when` as whenever
 
-abstract class DeviceProfileBaseTest {
+/**
+ * This is an abstract class for DeviceProfile tests that don't need the real Context and mock an
+ * InvariantDeviceProfile instead of creating one based on real values.
+ *
+ * For an implementation that creates InvariantDeviceProfile, use [AbstractDeviceProfileTest]
+ */
+abstract class FakeInvariantDeviceProfileTest {
 
     protected var context: Context? = null
     protected var inv: InvariantDeviceProfile? = null

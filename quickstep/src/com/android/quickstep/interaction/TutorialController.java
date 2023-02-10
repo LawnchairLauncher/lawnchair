@@ -154,7 +154,6 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
             mFeedbackTitleView.setText(getIntroductionTitle());
             mFeedbackSubtitleView.setText(getIntroductionSubtitle());
-            mSkipButton.setVisibility(GONE);
         }
 
         mTitleViewCallback = () -> mFeedbackTitleView.sendAccessibilityEvent(

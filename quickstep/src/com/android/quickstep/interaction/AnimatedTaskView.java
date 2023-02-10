@@ -30,7 +30,6 @@ import android.view.ViewOutlineProvider;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.android.launcher3.R;
@@ -46,8 +45,8 @@ import java.util.ArrayList;
 public class AnimatedTaskView extends ConstraintLayout {
 
     private View mFullTaskView;
-    private CardView mTopTaskView;
-    private CardView mBottomTaskView;
+    private View mTopTaskView;
+    private View mBottomTaskView;
 
     private ViewOutlineProvider mTaskViewOutlineProvider = null;
     private final Rect mTaskViewAnimatedRect = new Rect();
@@ -185,8 +184,6 @@ public class AnimatedTaskView extends ConstraintLayout {
 
     void setFakeTaskViewFillColor(@ColorInt int colorResId) {
         mFullTaskView.setBackgroundColor(colorResId);
-        mTopTaskView.setCardBackgroundColor(colorResId);
-        mBottomTaskView.setCardBackgroundColor(colorResId);
     }
 
     @Override

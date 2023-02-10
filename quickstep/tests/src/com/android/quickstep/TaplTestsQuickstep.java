@@ -193,7 +193,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         mLauncher.goHome().switchToOverview().getCurrentTask()
                 .tapMenu()
                 .tapSplitMenuItem()
-                .getTestActivityTask(2)
+                .getCurrentTask()
                 .open();
     }
 
