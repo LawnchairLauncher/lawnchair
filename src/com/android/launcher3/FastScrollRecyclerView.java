@@ -63,6 +63,9 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
 
     public void bindFastScrollbar() {
         ViewGroup parent = (ViewGroup) getParent().getParent();
+        if (parent.findViewById(R.id.fast_scroller) == null) {
+            parent = (ViewGroup) parent.getParent();
+        }
         mScrollbar = parent.findViewById(R.id.fast_scroller);
         mScrollbar.setRecyclerView(this, parent.findViewById(R.id.fast_scroller_popup));
         onUpdateScrollbar(0);
