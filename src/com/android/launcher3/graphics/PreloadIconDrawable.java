@@ -138,7 +138,8 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
                 IconPalette.getPreloadProgressColor(context, info.bitmap.color),
                 getPreloadColors(context),
                 Utilities.isDarkTheme(context),
-                getRefreshRateMillis(context));
+                getRefreshRateMillis(context),
+                GraphicsUtils.getShapePath(context, DEFAULT_PATH_SIZE));
     }
 
     public PreloadIconDrawable(
@@ -146,10 +147,11 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
             int indicatorColor,
             int[] preloadColors,
             boolean isDarkMode,
-            int refreshRateMillis) {
+            int refreshRateMillis,
+            Path shapePath) {
         super(info.bitmap);
         mItem = info;
-        mShapePath = GraphicsUtils.getShapePath(DEFAULT_PATH_SIZE);
+        mShapePath = shapePath;
         mScaledTrackPath = new Path();
         mScaledProgressPath = new Path();
 
@@ -386,7 +388,8 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
                 mIndicatorColor,
                 new int[] {mSystemAccentColor, mSystemBackgroundColor},
                 mIsDarkMode,
-                mRefreshRateMillis);
+                mRefreshRateMillis,
+                mShapePath);
     }
 
     @Override
@@ -442,6 +445,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         protected final boolean mIsDarkMode;
         protected final int mLevel;
         protected final int mRefreshRateMillis;
+        private final Path mShapePath;
 
         public PreloadIconConstantState(
                 Bitmap bitmap,
@@ -450,7 +454,8 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
                 int indicatorColor,
                 int[] preloadColors,
                 boolean isDarkMode,
-                int refreshRateMillis) {
+                int refreshRateMillis,
+                Path shapePath) {
             super(bitmap, iconColor);
             mInfo = info;
             mIndicatorColor = indicatorColor;
@@ -458,6 +463,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
             mIsDarkMode = isDarkMode;
             mLevel = info.getProgressLevel();
             mRefreshRateMillis = refreshRateMillis;
+            mShapePath = shapePath;
         }
 
         @Override
@@ -467,7 +473,8 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
                     mIndicatorColor,
                     mPreloadColors,
                     mIsDarkMode,
-                    mRefreshRateMillis);
+                    mRefreshRateMillis,
+                    mShapePath);
         }
     }
 }
