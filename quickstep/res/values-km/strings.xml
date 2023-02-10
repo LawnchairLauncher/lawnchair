@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"អូស​ដើម្បីចូល​ទៅកាន់​អេក្រង់ដើម"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"អូស​ឡើងលើ​ពីផ្នែកខាងក្រោម​នៃ​អេក្រង់របស់អ្នក។ ចលនា​នេះ​នាំ​អ្នក​ទៅ​អេក្រង់ដើម​ជានិច្ច។"</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"អូសឡើងលើដោយប្រើម្រាមដៃពីរពីផ្នែកខាងក្រោមនៃ​អេក្រង់។ ចលនានេះ​តែងតែ​នាំអ្នក​ទៅ​អេក្រង់​ដើម​ជា​និច្ច។"</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"ទៅទំព័រដើម"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"ដើម្បីទៅកាន់អេក្រង់ដើមរបស់អ្នកនៅពេលណាក៏បាន សូមអូសឡើងលើពីផ្នែកខាងក្រោមនៃអេក្រង់របស់អ្នក"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ត្រូវប្រាកដថា​អ្នកអូសឡើងលើ​ពីគែមខាងក្រោម​នៃអេក្រង់​។"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"សាកល្បង​សង្កត់វិនដូ​ឱ្យបានយូរ​ជាងនេះ មុនពេល​ដកដៃ​។"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"ត្រូវប្រាកដថា​អ្នកអូស​ត្រង់ឡើងលើ រួចផ្អាក។"</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"ល្អ!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"មេរៀនទី <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"រួចហើយ!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"អូសឡើងលើ ដើម្បី​ទៅកាន់​អេក្រង់ដើម"</string>
+    <string name="allset_hint" msgid="459504134589971527">"អូស​ឡើង​លើ ​ដើម្បី​ចូលទៅកាន់អេក្រង់ដើម"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"ចុចប៊ូតុងដើម ដើម្បីចូលទៅកាន់អេក្រង់ដើមរបស់អ្នក"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"អ្នកអាចចាប់ផ្ដើមប្រើ <xliff:g id="DEVICE">%1$s</xliff:g> របស់អ្នកបានហើយ"</string>
     <string name="default_device_name" msgid="6660656727127422487">"ឧបករណ៍"</string>
@@ -101,11 +99,9 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ការបង្រៀនអំពីរបារកិច្ចការបានបង្ហាញ"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ការបង្រៀនអំពីរបារកិច្ចការត្រូវបានបិទ"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"អូសកម្មវិធីទៅចំហៀង ដើម្បីប្រើកម្មវិធី 2 ក្នុងពេលតែមួយ"</string>
-    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"អូសឡើងលើយឺតៗ ដើម្បីបង្ហាញរបារកិច្ចការ"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ទទួលការណែនាំកម្មវិធីដោយផ្អែកលើទម្លាប់របស់អ្នក"</string>
-    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
-    <skip />
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"បើកការរុករក​ដោយប្រើចលនានៅក្នុងការកំណត់ ដើម្បីលាក់របារកិច្ចការដោយស្វ័យប្រវត្តិ"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ធ្វើបានកាន់តែច្រើនដោយប្រើរបារកិច្ចការ"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"បន្ទាប់"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ថយក្រោយ"</string>

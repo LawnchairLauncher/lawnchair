@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Нүүр лүү очихын тулд шудрах"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Дэлгэцийнхээ доороос дээш шударна уу. Энэ зангаа таныг тогтмол Үндсэн нүүрэнд аваачна."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2 хуруугаараа дэлгэцийн доороос дээш шударна уу. Энэ зангаа таныг тогтмол Үндсэн нүүрэнд аваачна."</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Үндсэн нүүр лүү очих"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Үндсэн нүүр лүүгээ хүссэн үедээ очихын тулд дэлгэцийн доороос дээш шударна уу"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Та дэлгэцийн доод булангаас дээш шударна уу."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Суллахаасаа өмнө цонхыг илүү удаан дарж үзнэ үү."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Та чигээрээ шударч, дараа нь түр зогсооно уу."</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Янзтай!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"<xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g> практик хичээл"</string>
     <string name="allset_title" msgid="5021126669778966707">"Тохируулж дууслаа!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Нүүр хуудас руу очихын тулд дээш шударна уу"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Нүүр хуудас руу очихын тулд дээш шударна уу"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Үндсэн нүүр лүүгээ очихын тулд нүүр хуудасны товчлуурыг товшино уу"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Та <xliff:g id="DEVICE">%1$s</xliff:g>-г ашиглаж эхлэхэд бэлэн боллоо"</string>
     <string name="default_device_name" msgid="6660656727127422487">"төхөөрөмж"</string>

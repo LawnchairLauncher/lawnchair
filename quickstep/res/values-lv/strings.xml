@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Vilkšana, lai pārietu uz sākumu"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Velciet augšup no ekrāna apakšdaļas. Ar šo žestu vienmēr varat atvērt sākuma ekrānu."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Ar 2 pirkstiem velciet augšup no ekrāna apakšdaļas. Ar šo žestu vienmēr varat atvērt sākuma ekrānu."</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Došanās uz sākuma ekrānu"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Jebkurā laikā varat doties uz sākuma ekrānu, no ekrāna apakšdaļas velkot augšup."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Jāvelk augšup no ekrāna apakšmalas."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Mēģiniet ilgāk turēt logu, pirms atlaižat."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Jāvelk tieši uz augšu un pēc tam jāaptur kustība."</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Lieliski!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"<xliff:g id="CURRENT">%1$d</xliff:g>. mācību darbība no <xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Gatavs!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Velciet augšup, lai pārietu uz sākuma ekrānu."</string>
+    <string name="allset_hint" msgid="459504134589971527">"Velciet augšup, lai pārietu uz sākuma ekrānu"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Pieskarieties pogai Sākums, lai dotos uz sākuma ekrānu"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Varat sākt izmantot savu ierīci (<xliff:g id="DEVICE">%1$s</xliff:g>)"</string>
     <string name="default_device_name" msgid="6660656727127422487">"ierīce"</string>
@@ -101,11 +99,9 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Tika atvērta uzdevumjoslas apmācība"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Tika aizvērta uzdevumjoslas apmācība"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Velciet lietotni sānis, lai izmantotu 2 lietotnes vienlaikus"</string>
-    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Lai skatītu Uzdevumu joslu, lēni velciet augšup."</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Skatiet ieteiktās lietotnes, balstoties uz jūsu ieradumiem"</string>
-    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
-    <skip />
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Lai Uzdevumu josla tiktu automātiski paslēpta, iestatījumos ieslēdziet žestu navigāciju."</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Plašākas iespējas, izmantojot uzdevumu joslu"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Tālāk"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Atpakaļ"</string>
