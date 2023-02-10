@@ -229,7 +229,7 @@ public final class WidgetsDiffReporterTest {
                 List.of(mHeaderA, mHeaderB, mContentE));
         // GIVEN the new list has one of the headers widgets list modified.
         List<WidgetsListBaseEntry> newList = List.of(
-                new WidgetsListHeaderEntry(
+                WidgetsListHeaderEntry.create(
                         mHeaderA.mPkgItem, mHeaderA.mTitleSectionName,
                         mHeaderA.mWidgets.subList(0, 1)),
                 mHeaderB, mContentE);
@@ -274,7 +274,7 @@ public final class WidgetsDiffReporterTest {
         PackageItemInfo pInfo = createPackageItemInfo(packageName, appName,
                 widgetItems.get(0).user);
 
-        return new WidgetsListHeaderEntry(pInfo, /* titleSectionName= */ "", widgetItems);
+        return WidgetsListHeaderEntry.create(pInfo, /* titleSectionName= */ "", widgetItems);
     }
 
     private WidgetsListContentEntry createWidgetsContentEntry(String packageName, String appName,

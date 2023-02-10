@@ -48,7 +48,6 @@ import com.android.launcher3.widget.model.WidgetListSpaceEntry;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
-import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,7 +80,6 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     public static final int VIEW_TYPE_WIDGETS_SPACE = R.id.view_type_widgets_space;
     public static final int VIEW_TYPE_WIDGETS_LIST = R.id.view_type_widgets_list;
     public static final int VIEW_TYPE_WIDGETS_HEADER = R.id.view_type_widgets_header;
-    public static final int VIEW_TYPE_WIDGETS_SEARCH_HEADER = R.id.view_type_widgets_search_header;
 
     private final Context mContext;
     private final WidgetsDiffReporter mDiffReporter;
@@ -96,7 +94,6 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
 
     private Predicate<WidgetsListBaseEntry> mHeaderAndSelectedContentFilter = entry ->
             entry instanceof WidgetsListHeaderEntry
-                    || entry instanceof WidgetsListSearchHeaderEntry
                     || PackageUserKey.fromPackageItemInfo(entry.mPkgItem)
                             .equals(mWidgetsContentVisiblePackageUserKey);
     @Nullable private Predicate<WidgetsListBaseEntry> mFilter = null;
@@ -121,12 +118,6 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_HEADER,
                 new WidgetsListHeaderViewHolderBinder(
-                        layoutInflater,
-                        /* onHeaderClickListener= */ this,
-                        listDrawableFactory));
-        mViewHolderBinders.put(
-                VIEW_TYPE_WIDGETS_SEARCH_HEADER,
-                new WidgetsListSearchHeaderViewHolderBinder(
                         layoutInflater,
                         /* onHeaderClickListener= */ this,
                         listDrawableFactory));
@@ -205,10 +196,10 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
                         && (mHeaderChangeListener == null
                         || !(entry instanceof WidgetsListContentEntry)))
                 .map(entry -> {
-                    if (entry instanceof WidgetsListBaseEntry.Header<?>
+                    if (entry instanceof WidgetsListHeaderEntry
                             && matchesKey(entry, mWidgetsContentVisiblePackageUserKey)) {
                         // Adjust the original entries to expand headers for the selected content.
-                        return ((WidgetsListBaseEntry.Header<?>) entry).withWidgetListShown();
+                        return ((WidgetsListHeaderEntry) entry).withWidgetListShown();
                     } else if (entry instanceof WidgetsListContentEntry) {
                         // Adjust the original content entries to accommodate for the current
                         // maxSpanSize.
@@ -233,7 +224,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     /** Returns whether {@code entry} matches {@code key}. */
     private static boolean isHeaderForPackageUserKey(
             @NonNull WidgetsListBaseEntry entry, @Nullable PackageUserKey key) {
-        return entry instanceof WidgetsListBaseEntry.Header && matchesKey(entry, key);
+        return entry instanceof WidgetsListHeaderEntry && matchesKey(entry, key);
     }
 
     private static boolean matchesKey(@NonNull WidgetsListBaseEntry entry,
@@ -276,16 +267,11 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
      * first header in the new list that gets generated as we search.
      */
     void selectFirstHeaderEntry() {
-        WidgetsListSearchHeaderEntry firstEntry = null;
-        for (WidgetsListBaseEntry entry: mVisibleEntries) {
-            if (entry instanceof WidgetsListSearchHeaderEntry) {
-                firstEntry = (WidgetsListSearchHeaderEntry) entry;
-                break;
-            }
-        }
-        if (firstEntry != null) {
-            onHeaderClicked(true, PackageUserKey.fromPackageItemInfo(firstEntry.mPkgItem));
-        }
+        mVisibleEntries.stream()
+                .filter(entry -> entry instanceof WidgetsListHeaderEntry)
+                .findFirst()
+                .ifPresent(entry ->
+                        onHeaderClicked(true, PackageUserKey.fromPackageItemInfo(entry.mPkgItem)));
     }
 
     @Override
@@ -325,8 +311,6 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
             return VIEW_TYPE_WIDGETS_LIST;
         } else if (entry instanceof WidgetsListHeaderEntry) {
             return VIEW_TYPE_WIDGETS_HEADER;
-        } else if (entry instanceof WidgetsListSearchHeaderEntry) {
-            return VIEW_TYPE_WIDGETS_SEARCH_HEADER;
         } else if (entry instanceof WidgetListSpaceEntry) {
             return VIEW_TYPE_WIDGETS_SPACE;
         }

@@ -286,7 +286,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 }
             };
             packageItemInfo.title = getContext().getString(R.string.suggested_widgets_header_title);
-            WidgetsListHeaderEntry widgetsListHeaderEntry = new WidgetsListHeaderEntry(
+            WidgetsListHeaderEntry widgetsListHeaderEntry = WidgetsListHeaderEntry.create(
                     packageItemInfo,
                     getContext().getString(R.string.suggested_widgets_header_title),
                     mActivityContext.getPopupDataProvider().getRecommendedWidgets())
