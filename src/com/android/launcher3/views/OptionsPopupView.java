@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.provider.Settings;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -186,6 +187,7 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(launcher);
         boolean lockHomeScreen = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getLockHomeScreen());
         boolean showLockToggle = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getLockHomeScreenButtonOnPopUp());
+        boolean showSystemSettings = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getShowSystemSettingsEntryOnPopUp());
 
         ArrayList<OptionItem> options = new ArrayList<>();
         if (showLockToggle) {
@@ -195,9 +197,16 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
                     IGNORE,
                     OptionsPopupView::toggleHomeScreenLock));
         }
+        if (showSystemSettings) {
+            options.add(new OptionItem(launcher,
+                R.string.system_settings,
+                R.drawable.ic_setting,
+                IGNORE,
+                OptionsPopupView::startSystemSettings));
+        }
         options.add(new OptionItem(launcher,
                 R.string.settings_button_text,
-                R.drawable.ic_setting,
+                R.drawable.ic_home_screen,
                 LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
                 OptionsPopupView::startSettings));
         if (!lockHomeScreen && !WidgetsModel.GO_DISABLE_WIDGETS) {
@@ -278,6 +287,13 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
         boolean oldValue = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getLockHomeScreen());
         PreferenceExtensionsKt.setBlocking(preferenceManager2.getLockHomeScreen(), !oldValue);
+        return true;
+    }
+
+    private static boolean startSystemSettings(View view) {
+        final Launcher launcher = Launcher.getLauncher(view.getContext());
+        final Intent intent = new Intent(Settings.ACTION_SETTINGS);
+        launcher.startActivity(intent);
         return true;
     }
 

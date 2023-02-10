@@ -179,7 +179,7 @@
     <string name="home_screen_lock_description">A kezdőlap elrendezés megváltoztatásának megakadályozása.</string>
     <string name="home_screen_unlock">Kezdőképernyő feloldása</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
     <string name="home_screen_locked">Kezdő képernyő lezárva.</string>
     <string name="status_bar_label">Állapotsor</string>
     <string name="show_status_bar">Állapotsor megjelenítése</string>

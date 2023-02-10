@@ -179,7 +179,7 @@
     <string name="home_screen_lock_description">Förhindrar ändringar av startskärmens utseende.</string>
     <string name="home_screen_unlock">Lås upp hemkärmen</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-Up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
     <string name="home_screen_locked">Startskärmen är låst.</string>
     <string name="status_bar_label">Statusrad</string>
     <string name="show_status_bar">Visa statusfältet</string>

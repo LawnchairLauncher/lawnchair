@@ -179,7 +179,7 @@
     <string name="home_screen_lock_description">Previene modifiche al layout della schermata home.</string>
     <string name="home_screen_unlock">Sblocca schermata home</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Mostra pulsante di blocco nel pop-up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Mostra pulsante di blocco</string>
     <string name="home_screen_locked">La schermata home è bloccata.</string>
     <string name="status_bar_label">Barra di stato</string>
     <string name="show_status_bar">Mostra barra di stato</string>

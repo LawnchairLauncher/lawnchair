@@ -19,6 +19,7 @@
     <string name="iconPackPackageDefault" translatable="false">""</string>
 
     <!-- PreferenceDashboard -->
+    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
     <string name="settings">Settings</string>
     <string name="general_label">General</string>
     <string name="general_description">Colors, Icon Pack, Notification Dots</string>
@@ -201,8 +202,11 @@
       <string name="home_screen_lock">Lock Home Screen</string>
       <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
       <string name="home_screen_unlock">Unlock Home Screen</string> <!-- used in popup menu-->
-      <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button in Pop-up Menu</string>
       <string name="home_screen_locked">Home Screen is locked.</string>
+
+    <string name="popup_menu">Pop-up Menu</string>
+      <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
+      <string name="show_system_settings_entry">Show System Settings Entry</string>
 
     <string name="status_bar_label">Status Bar</string>
     <string name="show_status_bar">Show Status Bar</string>
@@ -496,4 +500,6 @@
 
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
+
+    <string name="system_settings">System Settings</string>
 </resources>
