@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Prevucite da biste otišli na početnu stranicu"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Prevucite nagore od dna ekrana. Ovaj pokret vas uvek vodi na početni ekran."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Prevucite pomoću dva prsta nagore od dna ekrana. Ovim pokretom uvek otvarate početni ekran."</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Idite na početni ekran"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Da biste otišli na početni ekran u bilo kom trenutku, prevucite nagore od dna ekrana."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Obavezno prevucite nagore od donje ivice ekrana."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Probajte da držite prozor duže pre otpuštanja."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Obavezno prevucite pravo nagore, pa zastanite."</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Svaka čast!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Vodič <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Gotovo!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Prevucite nagore da biste otvorili početni ekran"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Prevucite nagore da biste otvorili početni ekran"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Dodirnite dugme Početak da bisti išli na početni ekran"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Spremni ste da počnete da koristite <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"uređaj"</string>

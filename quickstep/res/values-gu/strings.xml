@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"હોમ સ્ક્રીન પર જવા માટે સ્વાઇપ કરો"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"તમારી સ્ક્રીનના નીચેના ભાગથી ઉપરની તરફ સ્વાઇપ કરો. આ સંકેત તમને હંમેશાં હોમ સ્ક્રીન પર લઈ જાય છે."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2 આંગળી વડે સ્ક્રીનના સૌથી નીચેના ભાગથી ઉપરની તરફ સ્વાઇપ કરો. આ સંકેત તમને હંમેશાં હોમ સ્ક્રીન પર લઈ જાય છે."</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"હોમ પર જાઓ"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"કોઈપણ સમયે તમારી હોમ સ્ક્રીન પર જવા માટે, તમારી સ્ક્રીનની સૌથી નીચેની બાજુએથી ઉપરની તરફ સ્વાઇપ કરો"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ખાતરી કરો કે તમે સ્ક્રીનની નીચેની કિનારીએથી ઉપરની તરફ સ્વાઇપ કરો છો."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"તમારી આંગળી ઊંચકતા પહેલાં તેને વિન્ડો પર થોડી વધારે વાર માટે દબાવી રાખવાનો પ્રયાસ કરો."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"ખાતરી કરો કે તમે સીધું ઉપર સ્વાઇપ કરો છો, પછી થોભી જાઓ છો."</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"સરસ!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ટ્યૂટૉરિઅલ <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"બધું સેટ થઈ ગયું!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"હોમપેજ પર જવા માટે ઉપરની તરફ સ્વાઇપ કરો"</string>
+    <string name="allset_hint" msgid="459504134589971527">"હોમ પર જવા માટે ઉપરની તરફ સ્વાઇપ કરો"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"તમારી હોમ સ્ક્રીન પર જવા માટે હોમ બટન ટૅપ કરો"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"તમે તમારા <xliff:g id="DEVICE">%1$s</xliff:g>નો ઉપયોગ કરવાનું શરૂ કરવા માટે તૈયાર છો"</string>
     <string name="default_device_name" msgid="6660656727127422487">"ડિવાઇસ"</string>
@@ -101,11 +99,9 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ટાસ્કબારનું શિક્ષણ આપતી પૅનલ દેખાય છે"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ટાસ્કબારનું શિક્ષણ આપતી પૅનલ બંધ થઈ છે"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"એક સાથે 2 ઍપનો ઉપયોગ કરવા માટે, ઍપને ખેંચીને બાજુ પર લઈ જાઓ"</string>
-    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ટાસ્કબાર બતાવવા માટે ઉપરની તરફ ધીમેથી સ્વાઇપ કરો"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"તમારા રૂટિનના આધારે ઍપના સુઝાવો મેળવો"</string>
-    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
-    <skip />
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"ટાસ્કબારને ઑટોમૅટિક રીતે છુપાવવા માટે સેટિંગમાં સંકેતથી નૅવિગેશનની સુવિધા ચાલુ કરો"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ટાસ્કબાર વડે બીજું ઘણું કરો"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"આગળ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"પાછળ"</string>
