@@ -19,7 +19,6 @@
     <item type="id" name="view_type_widgets_space" />
     <item type="id" name="view_type_widgets_list" />
     <item type="id" name="view_type_widgets_header" />
-    <item type="id" name="view_type_widgets_search_header" />
     <!--  Used for A11y actions in staged split to identify each task uniquely  -->
     <item type="id" name="split_topLeft_appInfo" />
     <item type="id" name="split_bottomRight_appInfo" />

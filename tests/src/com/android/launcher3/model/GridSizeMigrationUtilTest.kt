@@ -33,6 +33,7 @@ import com.android.launcher3.pm.UserCache
 import com.android.launcher3.provider.LauncherDbUtils
 import com.android.launcher3.util.LauncherModelHelper
 import com.android.launcher3.util.LauncherModelHelper.*
+import com.android.launcher3.util.TestUtil
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Before
@@ -750,20 +751,14 @@ class GridSizeMigrationUtilTest {
     }
 
     private fun enableNewMigrationLogic(srcGridSize: String) {
-        context
-            .getSharedPreferences(FeatureFlags.FLAGS_PREF_NAME, Context.MODE_PRIVATE)
-            .edit()
-            .putBoolean(FeatureFlags.ENABLE_NEW_MIGRATION_LOGIC.key, true)
-            .commit()
         LauncherPrefs.get(context).putSync(WORKSPACE_SIZE.to(srcGridSize))
+        TestUtil.overrideBooleanFlagValue(context,
+                FeatureFlags.ENABLE_NEW_MIGRATION_LOGIC, true);
         FeatureFlags.initialize(context)
     }
 
     private fun disableNewMigrationLogic() {
-        context
-            .getSharedPreferences(FeatureFlags.FLAGS_PREF_NAME, Context.MODE_PRIVATE)
-            .edit()
-            .putBoolean(FeatureFlags.ENABLE_NEW_MIGRATION_LOGIC.key, false)
-            .commit()
+        TestUtil.overrideBooleanFlagValue(context,
+                FeatureFlags.ENABLE_NEW_MIGRATION_LOGIC, false);
     }
 }

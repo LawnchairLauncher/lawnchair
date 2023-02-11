@@ -86,7 +86,7 @@ public final class WidgetsListAdapterTest {
         mTestProfile.numColumns = 5;
         mUserHandle = Process.myUserHandle();
         mAdapter = new WidgetsListAdapter(mContext, mMockLayoutInflater,
-                mIconCache, () -> 0, null, null);
+                mIconCache, () -> 0, null, null, null);
         mAdapter.registerAdapterDataObserver(mListener);
 
         doAnswer(invocation -> ((ComponentWithLabel) invocation.getArgument(0))
@@ -270,7 +270,8 @@ public final class WidgetsListAdapterTest {
             pInfo.title = pInfo.packageName;
             pInfo.bitmap = BitmapInfo.of(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0);
 
-            result.add(new WidgetsListHeaderEntry(pInfo, /* titleSectionName= */ "", widgetItems));
+            result.add(WidgetsListHeaderEntry.create(
+                    pInfo, /* titleSectionName= */ "", widgetItems));
             result.add(new WidgetsListContentEntry(pInfo, /* titleSectionName= */ "", widgetItems));
         }
 
