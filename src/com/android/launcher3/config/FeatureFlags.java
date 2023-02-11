@@ -96,6 +96,9 @@ public final class FeatureFlags {
             "ENABLE_EXPANDING_PAUSE_WORK_BUTTON", true,
             "Expand and collapse pause work button while scrolling");
 
+    public static final BooleanFlag ENABLE_RECENT_BLOCK = getDebugFlag("ENABLE_RECENT_BLOCK",
+            false, "Show recently tapped search target block in zero state");
+
     public static final BooleanFlag COLLECT_SEARCH_HISTORY = new DeviceFlag(
             "COLLECT_SEARCH_HISTORY", false, "Allow launcher to collect search history for log");
 
