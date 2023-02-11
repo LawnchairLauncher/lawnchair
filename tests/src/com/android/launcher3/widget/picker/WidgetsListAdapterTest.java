@@ -270,7 +270,8 @@ public final class WidgetsListAdapterTest {
             pInfo.title = pInfo.packageName;
             pInfo.bitmap = BitmapInfo.of(Bitmap.createBitmap(10, 10, Bitmap.Config.ALPHA_8), 0);
 
-            result.add(new WidgetsListHeaderEntry(pInfo, /* titleSectionName= */ "", widgetItems));
+            result.add(WidgetsListHeaderEntry.create(
+                    pInfo, /* titleSectionName= */ "", widgetItems));
             result.add(new WidgetsListContentEntry(pInfo, /* titleSectionName= */ "", widgetItems));
         }
 
