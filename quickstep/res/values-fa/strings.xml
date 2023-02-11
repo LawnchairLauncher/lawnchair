@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"تند کشیدن برای رفتن به صفحه اصلی"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"از پایین صفحه، تند به‌سمت بالا بکشید. این اشاره همیشه شما را به صفحه اصلی می‌برد."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"با ۲ انگشت از پایین صفحه تند به‌بالا بکشید. این اشاره همیشه شما را به صفحه اصلی می‌برد."</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"رفتن به صفحه اصلی"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"برای رفتن به صفحه اصلی در هر زمانی، از پایین صفحه تند به‌بالا بکشید"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"دقت کنید که از لبه پایینی صفحه تند به بالا بکشید."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"سعی کنید قبل‌از رها کردن، پنجره را برای مدت طولانی‌تری نگه دارید."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"دقت کنید که مستقیماً تند به بالا بکشید و سپس توقف کنید."</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"عالی!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"آموزش گام‌به‌گام <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"همه چیز آماده است!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"برای رفتن به «صفحه اصلی»، تند به‌بالا بکشید"</string>
+    <string name="allset_hint" msgid="459504134589971527">"برای رفتن به صفحه اصلی، تند به‌بالا بکشید"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"برای رفتن به صفحه اصلی، روی دکمه صفحه اصلی ضربه بزنید"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"آماده‌اید از <xliff:g id="DEVICE">%1$s</xliff:g> خود استفاده کنید"</string>
     <string name="default_device_name" msgid="6660656727127422487">"دستگاه"</string>
@@ -101,11 +99,9 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"پانل آموزشی نوار وظیفه نمایان شد"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"پانل آموزشی نوار وظیفه بسته شد"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"برای استفاده هم‌زمان از ۲ برنامه، برنامه‌ای را به‌کنار بکشید"</string>
-    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"برای نمایش «نوار وظیفه»، انگشتتان را آهسته به‌بالا بکشید"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"دریافت «پیشنهادهای برنامه» براساس روال همیشگی"</string>
-    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
-    <skip />
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"برای پنهان‌سازی خودکار «نوار وظیفه»، پیمایش اشاره‌ای را در «تنظیمات» روشن کنید"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"کارهای بیشتر با «نوار وظیفه» انجام دهید"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"بعدی"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"برگشت"</string>

@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"முகப்புக்குச் செல்ல ஸ்வைப் செய்யுங்கள்"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"திரையின் கீழிருந்து மேலாக ஸ்வைப் செய்க. இந்தச் சைகை எப்போதும் முகப்புத் திரைக்கு அழைத்துச் செல்லும்."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2 விரலால் திரையின் கீழிருந்து மேலாக ஸ்வைப் செய்க. இந்தச் சைகை முகப்புத் திரைக்கு அழைத்துச் செல்லும்."</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"முகப்புக்குச் செல்லுதல்"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"எந்தத் திரையிலிருந்தும் முகப்புத் திரைக்குச் செல்ல திரையின் கீழிருந்து மேல்நோக்கி ஸ்வைப் செய்யுங்கள்"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"திரையின் கீழ் ஓரத்திலிருந்து மேல்நோக்கி ஸ்வைப் செய்வதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"விடுவிப்பதற்கு முன்பாக நீண்டநேரம் சாளரத்தை அழுத்திப் பிடித்திருங்கள்."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"மேல்நோக்கி நேராக ஸ்வைப் செய்தபிறகு இடைநிறுத்துவதை உறுதிசெய்துகொள்ளுங்கள்."</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"அருமை!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"பயிற்சி <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"அனைத்தையும் அமைத்துவிட்டீர்கள்!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"முகப்புத் திரைக்குச் செல்ல மேல்நோக்கி ஸ்வைப் செய்யுங்கள்"</string>
+    <string name="allset_hint" msgid="459504134589971527">"முகப்புக்குச் செல்ல மேல்நோக்கி ஸ்வைப் செய்யுங்கள்"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"முகப்புத் திரைக்குச் செல்வதற்கு முகப்பு பட்டனைத் தட்டவும்"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"உங்கள் <xliff:g id="DEVICE">%1$s</xliff:g> சாதனத்தைப் பயன்படுத்தத் தயாராகிவிட்டீர்கள்"</string>
     <string name="default_device_name" msgid="6660656727127422487">"சாதனம்"</string>
@@ -101,11 +99,9 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"பணிப்பட்டியை எவ்வாறு பயன்படுத்துவது என்பது பற்றிய பலகம் காட்டப்படுகிறது"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"பணிப்பட்டியை எவ்வாறு பயன்படுத்துவது என்பது பற்றிய பலகம் மூடப்பட்டது"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ஒரே நேரத்தில் 2 ஆப்ஸைப் பயன்படுத்தப் பக்கவாட்டில் இழுக்கவும்"</string>
-    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"செயல் பட்டியைக் காட்ட மேல்நோக்கி மெதுவாக ஸ்வைப் செய்யவும்"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"உங்கள் வழக்கத்திற்கேற்ப ஆப்ஸ் பரிந்துரைகளைப் பெறுவீர்கள்"</string>
-    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
-    <skip />
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"செயல் பட்டியைத் தானாக மறைக்க அமைப்புகளில் சைகை வழிசெலுத்தலை இயக்கவும்"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"செயல் பட்டி மூலம் மேலும் பலவற்றைச் செய்யுங்கள்"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"அடுத்து"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"பின்செல்"</string>

@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Негізгі экранға өту үшін сырғытыңыз"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Экранның төменгі жағынан жоғары қарай сырғытыңыз. Сонда негізгі экран ашылады."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Екі саусақпен экранның төменгі жағынан жоғары сырғытыңыз. Бұл қимыл үнемі негізгі экранды ашады."</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Негізгі бетке өту"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Кез келген уақытта негізгі экранға өту үшін экранның астыңғы жағынан жоғары қарай сырғытыңыз."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Экранның төменгі шетінен жоғары қарай сырғытыңыз."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Жіберер алдында терезені ұзағырақ ұстап тұруға тырысыңыз."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Тігінен жоғары қарай сырғытыңыз да, кідіріңіз."</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Жақсы!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Оқулық: <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Бәрі дайын!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Негізгі экранға өту үшін жоғары қарай сырғытыңыз."</string>
+    <string name="allset_hint" msgid="459504134589971527">"Негізгі экранға өту үшін жоғары қарай сырғытыңыз."</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Негізгі экранға өту үшін негізгі экран түймесін түртіңіз."</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g> пайдалануға дайын."</string>
     <string name="default_device_name" msgid="6660656727127422487">"құрылғы"</string>
@@ -101,11 +99,9 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Тапсырмалар тақтасы бойынша нұсқаулық ашылды."</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Тапсырмалар тақтасы бойынша нұсқаулық жабылды."</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"2 қолданбаны бір мезгілде пайдалану үшін қолданбаны шетке сүйреңіз."</string>
-    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Тапсырмалар жолағын көрсету үшін жоғары қарай ақырын сырғытыңыз."</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Іс-әрекеттеріңізге негізделген қолданба ұсыныстарын алыңыз."</string>
-    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
-    <skip />
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Тапсырмалар жолағын автоматты түрде жасыру үшін параметрлерден қимылмен басқаруды қосыңыз."</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Тапсырмалар жолағы арқылы көп әрекетті орындаңыз"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Келесі"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Артқа"</string>

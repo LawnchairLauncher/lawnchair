@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"হোম স্ক্রিনে যেতে সোয়াইপ করুন"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"স্ক্রিনের নিচের প্রান্ত থেকে উপরের দিকে সোয়াইপ করুন। এটি করলে, আপনি সবসময় হোম স্ক্রিনে যেতে পারবেন।"</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"স্ক্রিনের নিচ থেকে ২টি আঙুল দিয়ে উপরে সোয়াইপ করুন। এই জেসচার সবসময় আপনাকে হোম স্ক্রিনে নিয়ে যায়।"</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"হোমে যান"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"যেকোনও সময় আপনার হোম স্ক্রিনে যেতে, স্ক্রিনের নিচ থেকে উপরের দিকে সোয়াইপ করুন"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"স্ক্রিনের নিচের প্রান্ত থেকে আপনি সোয়াইপ করেছেন কিনা ভাল করে দেখে নিন।"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"চেষ্টা করুন যাতে আঙুল সরিয়ে নেওয়ার আগে উইন্ডো কিছুক্ষণ প্রেস করে রাখা যায়।"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"আপনি উপরের দিকে সোজাসুজি সোয়াইপ করেছেন কিনা ভাল করে দেখে নিয়ে তারপর পজ করুন।"</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"সাবাস!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"টিউটোরিয়াল <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"সব রেডি!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"হোম স্ক্রিনে যেতে উপরের দিকে সোয়াইপ করুন"</string>
+    <string name="allset_hint" msgid="459504134589971527">"হোম স্ক্রিনে যেতে উপরের দিকে সোয়াইপ করুন"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"আপনার হোম স্ক্রিনে যাওয়ার জন্য হোম বোতামে ট্যাপ করুন"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g> ব্যবহার শুরু করার জন্য আপনি রেডি"</string>
     <string name="default_device_name" msgid="6660656727127422487">"ডিভাইস"</string>

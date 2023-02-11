@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"ହୋମକୁ ଯିବା ପାଇଁ ସ୍ୱାଇପ କରନ୍ତୁ"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"ଆପଣଙ୍କ ସ୍କ୍ରିନର ତଳୁ ଉପରକୁ ସ୍ୱାଇପ କରନ୍ତୁ। ଏହି ଜେଶ୍ଚର ସର୍ବଦା ଆପଣଙ୍କୁ ହୋମ ସ୍କ୍ରିନକୁ ନେଇଥାଏ।"</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2ଟି ଆଙ୍ଗୁଠିରେ ସ୍କ୍ରିନର ତଳୁ ଉପରକୁ ସ୍ୱାଇପ କରନ୍ତୁ। ଏହି ଜେଶ୍ଚର ସର୍ବଦା ଆପଣଙ୍କୁ ହୋମ ସ୍କ୍ରିନକୁ ନେଇଥାଏ।"</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"ହୋମକୁ ଯାଆନ୍ତୁ"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"ଯେ କୌଣସି ସମୟରେ ଆପଣଙ୍କ ହୋମ ସ୍କ୍ରିନକୁ ଯିବା ପାଇଁ ଆପଣଙ୍କ ସ୍କିନର ତଳୁ ଉପରକୁ ସ୍ୱାଇପ କରନ୍ତୁ"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ଆପଣ ସ୍କ୍ରିନର ତଳ ଧାରରୁ ଉପରକୁ ସ୍ୱାଇପ୍ କରୁଥିବା ସୁନିଶ୍ଚିତ କରନ୍ତୁ।"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"ୱିଣ୍ଡୋକୁ ରିଲିଜ୍ କରିବା ପୂର୍ବରୁ ଅଧିକ ସମୟ ଧରି ରଖିବାକୁ ଚେଷ୍ଟା କରନ୍ତୁ।"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"ଆପଣ ସିଧା ଉପରକୁ ସ୍ୱାଇପ୍ କରି ତା\'ପରେ ବିରତ କରୁଥିବା ସୁନିଶ୍ଚିତ କରନ୍ତୁ।"</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"ବଢ଼ିଆ!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ଟ୍ୟୁଟୋରିଆଲ୍ <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"ସମ୍ପୂର୍ଣ୍ଣ ଭାବେ ପ୍ରସ୍ତୁତ!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"ହୋମକୁ ଯିବା ପାଇଁ ଉପରକୁ ସ୍ୱାଇପ କରନ୍ତୁ"</string>
+    <string name="allset_hint" msgid="459504134589971527">"ମୂଳପୃଷ୍ଠାକୁ ଯିବା ପାଇଁ ଉପରକୁ ସ୍ୱାଇପ୍ କରନ୍ତୁ"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"ଆପଣଙ୍କ ହୋମ ସ୍କ୍ରିନକୁ ଯିବା ପାଇଁ ହୋମ ବଟନରେ ଟାପ କରନ୍ତୁ"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"ଆପଣ ଆପଣଙ୍କ <xliff:g id="DEVICE">%1$s</xliff:g> ବ୍ୟବହାର କରିବା ଆରମ୍ଭ କରିବାକୁ ପ୍ରସ୍ତୁତ ଅଛନ୍ତି"</string>
     <string name="default_device_name" msgid="6660656727127422487">"ଡିଭାଇସ"</string>
@@ -101,11 +99,9 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ଟାସ୍କବାର୍ ଶିକ୍ଷା ଦେଖାଯାଇଛି"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ଟାସ୍କବାର୍ ଶିକ୍ଷା ବନ୍ଦ ହୋଇଯାଇଛି"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ଥରକେ 2ଟି ଆପ୍ସ ବ୍ୟବହାର କରିବା ପାଇଁ ଏକ ଆପକୁ ପାର୍ଶ୍ୱକୁ ଡ୍ରାଗ କର"</string>
-    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ଟାସ୍କବାର ଦେଖାଇବା ପାଇଁ ଉପରକୁ ଧୀରେ-ସ୍ୱାଇପ କରନ୍ତୁ"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ଆପଣଙ୍କ ରୁଟିନ ଆଧାରରେ ଆପ ପରାମର୍ଶଗୁଡ଼ିକୁ ପାଆନ୍ତୁ"</string>
-    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
-    <skip />
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"ଟାସ୍କବାରକୁ ସ୍ୱତଃ-ଲୁଚାଇବା ପାଇଁ ସେଟିଂସରେ ଜେଶ୍ଚର ନାଭିଗେସନକୁ ଚାଲୁ କରନ୍ତୁ"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ଟାସ୍କବାର ମାଧ୍ୟମରେ ଆହୁରି ଅନେକ କିଛି କରନ୍ତୁ"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ପରବର୍ତ୍ତୀ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ପଛକୁ ଫେରନ୍ତୁ"</string>
