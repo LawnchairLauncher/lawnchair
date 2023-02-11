@@ -20,6 +20,7 @@ import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.AbsSwipeUpHandler.RECENTS_ATTACH_DURATION;
+import static com.android.quickstep.GestureState.GestureEndTarget.LAST_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM;
 import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_TRANSLATE_X_ANIM;
@@ -62,6 +63,7 @@ import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
@@ -107,6 +109,20 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         if (endTarget != null) {
             // We were on our way to this state when we got canceled, end there instead.
             startState = stateFromGestureEndTarget(endTarget);
+            if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+                DesktopVisibilityController controller = getDesktopVisibilityController();
+                if (controller != null && controller.areFreeformTasksVisible()
+                        && endTarget == LAST_TASK) {
+                    // When we are cancelling the transition and going back to last task, move to
+                    // rest state instead when desktop tasks are visible.
+                    // If a fullscreen task is visible, launcher goes to normal state when the
+                    // activity is stopped. This does not happen when freeform tasks are visible
+                    // on top of launcher. Force the launcher state to rest state here.
+                    startState = activity.getStateManager().getRestState();
+                    // Do not animate the transition
+                    activityVisible = false;
+                }
+            }
         }
         activity.getStateManager().goToState(startState, activityVisible);
     }

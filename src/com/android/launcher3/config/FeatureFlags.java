@@ -86,7 +86,7 @@ public final class FeatureFlags {
             "ENABLE_DEVICE_SEARCH", true, "Allows on device search in all apps");
 
     public static final BooleanFlag ENABLE_FLOATING_SEARCH_BAR =
-            new DeviceFlag("ENABLE_FLOATING_SEARCH_BAR", true,
+            new DeviceFlag("ENABLE_FLOATING_SEARCH_BAR", false,
                     "Keep All Apps search bar at the bottom (but above keyboard if open)");
 
     public static final BooleanFlag ENABLE_HIDE_HEADER = new DeviceFlag("ENABLE_HIDE_HEADER",
@@ -320,8 +320,8 @@ public final class FeatureFlags {
             "SCROLL_TOP_TO_RESET", true, "Bring up IME and focus on "
             + "input when scroll to top if 'Always show keyboard' is enabled or in prefix state");
 
-    public static final BooleanFlag POPUP_MATERIAL_U = new DeviceFlag(
-            "POPUP_MATERIAL_U", false, "Switch popup UX to use material U");
+    public static final BooleanFlag ENABLE_MATERIAL_U_POPUP = getDebugFlag(
+            "ENABLE_MATERIAL_U_POPUP", false, "Switch popup UX to use material U");
 
     public static final BooleanFlag ENABLE_SEARCH_UNINSTALLED_APPS = new DeviceFlag(
             "ENABLE_SEARCH_UNINSTALLED_APPS", false, "Search uninstalled app results.");
