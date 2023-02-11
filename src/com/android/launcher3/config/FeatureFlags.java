@@ -403,6 +403,11 @@ public final class FeatureFlags {
             "ENABLE_GRID_ONLY_OVERVIEW", false,
             "Enable a grid-only overview without a focused task.");
 
+    public static final BooleanFlag RECEIVE_UNFOLD_EVENTS_FROM_SYSUI = getDebugFlag(
+            "RECEIVE_UNFOLD_EVENTS_FROM_SYSUI", true,
+            "Enables receiving unfold animation events from sysui instead of calculating "
+                    + "them in launcher process using hinge sensor values.");
+
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
