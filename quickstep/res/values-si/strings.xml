@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"මුල් පිටුවට යාමට ස්වයිප් කරන්න"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"ඔබගේ තිරයේ පහළින් උඩට ස්වයිප් කරන්න.මෙම ඉංගිතය සැම විටම ඔබව මුල් තිරයට ගෙන යයි."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"තිරයේ පහළම සිට ඇඟිලි 2කින් ඉහළට ස්වයිප් කරන්න. මෙම ඉංගිතය සැම විටම ඔබව මුල් තිරයට ගෙන යයි."</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"මුල් පිටුවට යන්න"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"ඕනෑම වේලාවක දී ඔබේ මුල් තිරයට යාම සඳහා, ඔබේ තිරයෙහි පහළ සිට ඉහළට ස්වයිප් කරන්න"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ඔබ තිරයේ පහළ දාරයේ සිට ඉහළට ස්වයිප් කරන බව සහතික කර ගන්න."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"මුදා හැරීමට පෙර කවුළුව වැඩි වේලාවක් රඳවා තබා ගැනීමට උත්සාහ කරන්න."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"ඔබ කෙලින්ම ඉහළට ස්වයිප් කර, අනතුරුව විරාම කරන බව සහතික කර ගන්න."</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"කදිමයි!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"නිබන්ධනය <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"සියල්ල සූදානම්!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"මුල් පිටුවට යාමට ඉහළට ස්වයිප් කරන්න"</string>
+    <string name="allset_hint" msgid="459504134589971527">"මුල් පිටුවට යාමට ඉහළට ස්වයිප් කරන්න"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"ඔබේ මුල් තිරය වෙත යාමට මුල් පිටුව බොත්තම තට්ටු කරන්න"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"ඔබ ඔබේ <xliff:g id="DEVICE">%1$s</xliff:g> භාවිත කිරීම පටන් ගැනීමට සූදානම්"</string>
     <string name="default_device_name" msgid="6660656727127422487">"උපාංගය"</string>
@@ -101,11 +99,9 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"කාර්ය තීරු අධ්‍යාපනය දිස් විය"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"කාර්ය තීරු අධ්‍යාපනය වසා ඇත"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"එකවර යෙදුම් 2ක් භාවිතා කිරීමට යෙදුමක් පැත්තට අදින්න"</string>
-    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"කාර්ය තීරුව පෙන්වීමට ඉහළට සෙමින් ස්වයිප් කරන්න"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ඔබේ දිනචරියාව මත පදනම්ව යෙදුම් යෝජනා ලබා ගන්න"</string>
-    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
-    <skip />
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"කාර්ය තීරුව ස්වයංක්‍රීයව සැඟවීමට සැකසීම් තුළ අභින සංචලනය සක්‍රීය කරන්න"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"කාර්ය තීරුව සමග තවත් කරන්න"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ඊළඟ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ආපසු"</string>

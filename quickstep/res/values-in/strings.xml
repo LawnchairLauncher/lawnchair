@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Geser untuk beralih ke layar utama"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Geser ke atas dari bagian bawah layar. Gestur ini akan selalu membawa Anda ke Layar utama."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Geser ke atas dengan 2 jari dari bawah layar. Gestur ini akan selalu membawa Anda ke Layar utama."</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Buka layar utama"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Untuk membuka layar utama kapan saja, geser ke atas dari bagian bawah layar"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Pastikan Anda menggeser ke atas dari tepi bawah layar."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Coba tahan jendela lebih lama sebelum melepaskan."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Pastikan Anda menggeser lurus ke atas, lalu menjedanya."</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Bagus!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutorial <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Semua siap."</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Geser ke atas untuk beralih ke Layar utama"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Geser ke atas untuk beralih ke layar utama"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Ketuk tombol layar utama untuk membuka layar utama"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Anda sudah siap untuk mulai menggunakan <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"perangkat"</string>
@@ -101,11 +99,9 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Edukasi taskbar ditampilkan"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Edukasi taskbar ditutup"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Tarik aplikasi ke samping untuk menggunakan 2 aplikasi sekaligus"</string>
-    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Geser perlahan ke atas untuk menampilkan Taskbar"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Dapatkan saran aplikasi berdasarkan rutinitas Anda"</string>
-    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
-    <skip />
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Aktifkan navigasi gestur di Setelan untuk menyembunyikan otomatis Taskbar"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Lakukan banyak hal dengan Taskbar"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Berikutnya"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Kembali"</string>

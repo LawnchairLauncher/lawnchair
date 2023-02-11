@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"ہوم پر جانے کے لیے سوائپ کریں"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"اپنی اسکرین کے نیچے سے اوپر کی طرف سوائپ کریں۔ یہ اشارہ آپ کو ہمیشہ ہوم اسکرین پر لے جاتا ہے۔"</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"اسکرین کے نیچے سے 2 انگلیوں سے اوپر سوائپ کریں۔ یہ اشارہ آپ کو ہمیشہ ہوم اسکرین پر لے جاتا ہے۔"</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"گھر جائیں"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"کسی بھی وقت اپنی ہوم اسکرین پر جانے کے لیے، اپنی اسکرین کے نیچے سے اوپر سوائپ کریں"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"اس بات کو یقینی بنائیں کہ آپ اسکرین کے نچلے کنارے سے اوپر کی طرف سوائپ کریں۔"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"انگلی اٹھانے سے پہلے ونڈو کو زیادہ دیر تک پکڑنے کی کوشش کریں۔"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"اس بات کو یقینی بنائیں کہ آپ سیدھا اوپر کی طرف سوائپ کریں، پھر موقوف کریں۔"</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"عمدہ!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ٹیوٹوریل <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"سب کچھ تیار ہے!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"ہوم پر جانے کے لیے اوپر سوائپ کریں"</string>
+    <string name="allset_hint" msgid="459504134589971527">"ہوم پر جانے کے لیے اوپر سوائپ کریں"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"اپنی ہوم اسکرین پر جانے کے لیے ہوم بٹن پر تھپتھپائیں"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"آپ اپنے <xliff:g id="DEVICE">%1$s</xliff:g> کا استعمال شروع کرنے کے لیے تیار ہیں"</string>
     <string name="default_device_name" msgid="6660656727127422487">"آلہ"</string>
