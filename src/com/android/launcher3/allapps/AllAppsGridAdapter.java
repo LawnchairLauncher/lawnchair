@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 
-import androidx.annotation.Px;
 import androidx.core.view.accessibility.AccessibilityEventCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityRecordCompat;
@@ -143,19 +142,6 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
                     cic.getColumnSpan(),
                     cic.isHeading(),
                     cic.isSelected()));
-        }
-
-        /**
-         * We need to extend all apps' RecyclerView's bottom by 5% of view height to ensure extra
-         * roll(s) of app icons is rendered at the bottom, so that they can fill the bottom gap
-         * created during predictive back's scale animation from all apps to home.
-         */
-        @Override
-        protected void calculateExtraLayoutSpace(RecyclerView.State state, int[] extraLayoutSpace) {
-            super.calculateExtraLayoutSpace(state, extraLayoutSpace);
-            @Px int extraSpacePx = (int) (getHeight()
-                    * (1 - AllAppsTransitionController.SWIPE_ALL_APPS_TO_HOME_MIN_SCALE) / 2);
-            extraLayoutSpace[1] = Math.max(extraLayoutSpace[1], extraSpacePx);
         }
 
         /**
