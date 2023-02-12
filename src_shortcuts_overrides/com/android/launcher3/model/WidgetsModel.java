@@ -87,7 +87,7 @@ public class WidgetsModel {
             List<WidgetItem> widgetItems = entry.getValue();
             String sectionName = (pkgItem.title == null) ? "" :
                     indexer.computeSectionName(pkgItem.title);
-            result.add(new WidgetsListHeaderEntry(pkgItem, sectionName, widgetItems));
+            result.add(WidgetsListHeaderEntry.create(pkgItem, sectionName, widgetItems));
             result.add(new WidgetsListContentEntry(pkgItem, sectionName, widgetItems));
         }
         return result;

@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Правядзіце пальцам для пераходу на галоўны экран"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Правядзіце пальцам па экране знізу ўверх. Гэты жэст дазваляе вярнуцца на Галоўны экран."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Правядзіце двума пальцамі па экране знізу ўверх. Гэты жэст дазваляе вярнуцца на Галоўны экран."</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Перайсці на галоўны экран"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Каб у любы час адкрыць галоўны экран, правядзіце пальцам па экране знізу ўверх"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Пераканайцеся, што праводзіце пальцам па экране знізу ўверх."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Перш чым адпусціць палец, паспрабуйце даўжэй утрымліваць акно націснутым."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Пераканайцеся, што праводзіце пальцам вертыкальна, а потым затрымліваеце яго."</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Выдатна!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Дапаможнік <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Гатова!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Каб перайсці на галоўны экран, правядзіце пальцам уверх"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Каб перайсці на галоўны экран, правядзіце пальцам уверх"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Каб перайсці на галоўны экран, націсніце кнопку галоўнага экрана"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Вы можаце пачаць карыстанне прыладай \"<xliff:g id="DEVICE">%1$s</xliff:g>\""</string>
     <string name="default_device_name" msgid="6660656727127422487">"прылада"</string>
@@ -101,11 +99,9 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"З\'явілася панэль навучання на панэлі задач"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Панэль навучання на панэлі задач закрыта"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Каб карыстацца 2 праграмамі, перацягніце адну з іх убок"</string>
-    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Каб паказаць панэль задач, павольна правядзіце пальцам уверх"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Атрымлівайце прапановы праграм з улікам вашых дзеянняў"</string>
-    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
-    <skip />
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Каб аўтаматычна схаваць панэль задач, уключыце ў Наладах навігацыю жэстамі"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Выкарыстоўвайце магчымасці панэлі задач"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Далей"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Назад"</string>

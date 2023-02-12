@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Strjúktu til að fara heim"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Strjúktu upp frá neðri hluta skjásins. Þetta flytur þig alltaf á heimaskjáinn."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Strjúktu frá neðri brún skjásins með 2 fingrum. Þessi bending opnar ávallt heimaskjáinn."</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Fara á heimaskjá"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Strjúktu upp frá neðsta hluta skjásins til að opna heimskjáinn hvenær sem er"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Passaðu að strjúka upp frá neðri brún skjásins."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Prófaðu að halda fingrinum lengur á glugganum áður en þú sleppir."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Passaðu að strjúka beint upp og stoppa svo."</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Flott!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Leiðsögn <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Allt tilbúið!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Strjúktu upp til að fara á heimaskjáinn"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Strjúktu upp til að fara á heimaskjáinn"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Ýttu á heimahnappinn til að fara á heimaskjáinn"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Þú getur byrjað að nota <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"tækið"</string>
@@ -101,11 +99,9 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Leiðsögn verkefnastiku sýnileg"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Leiðsögn verkefnastiku lokað"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Dragðu forrit til hliðar til að nota 2 forrit í einu"</string>
-    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Strjúktu hægt upp til að birta forritastikuna"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Fáðu forritatillögur sem byggjast á rútínunni þinni"</string>
-    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
-    <skip />
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Kveiktu á bendingastjórnun í stillingunum til að fela forritastikuna sjálfkrafa"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Nýttu forritastikuna betur"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Áfram"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Til baka"</string>

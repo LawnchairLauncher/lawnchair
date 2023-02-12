@@ -996,6 +996,11 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     public void setOrientationState(RecentsOrientedState orientationState) {
+        setIconOrientation(orientationState);
+        setThumbnailOrientation(orientationState);
+    }
+
+    protected void setIconOrientation(RecentsOrientedState orientationState) {
         PagedOrientationHandler orientationHandler = orientationState.getOrientationHandler();
         boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
@@ -1016,6 +1021,11 @@ public class TaskView extends FrameLayout implements Reusable {
         int iconDrawableSize = isGridTask ? deviceProfile.overviewTaskIconDrawableSizeGridPx
                 : deviceProfile.overviewTaskIconDrawableSizePx;
         mIconView.setDrawableSize(iconDrawableSize, iconDrawableSize);
+    }
+
+    protected void setThumbnailOrientation(RecentsOrientedState orientationState) {
+        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
+        int thumbnailTopMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
 
         LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
         snapshotParams.topMargin = thumbnailTopMargin;

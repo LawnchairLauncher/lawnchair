@@ -36,6 +36,7 @@ import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustom
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_WIDGET_PICKER_DEPTH;
+import static com.android.launcher3.config.FeatureFlags.RECEIVE_UNFOLD_EVENTS_FROM_SYSUI;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.popup.QuickstepSystemShortcut.getSplitSelectShortcutByPosition;
@@ -167,11 +168,13 @@ import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
+import com.android.systemui.unfold.RemoteUnfoldSharedComponent;
 import com.android.systemui.unfold.UnfoldSharedComponent;
 import com.android.systemui.unfold.UnfoldTransitionFactory;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.config.ResourceUnfoldTransitionConfig;
 import com.android.systemui.unfold.config.UnfoldTransitionConfig;
+import com.android.systemui.unfold.progress.RemoteUnfoldTransitionReceiver;
 import com.android.systemui.unfold.system.ActivityManagerActivityTypeProvider;
 import com.android.systemui.unfold.system.DeviceStateManagerFoldProvider;
 import com.android.systemui.unfold.updates.RotationChangeProvider;
@@ -205,7 +208,6 @@ public class QuickstepLauncher extends Launcher {
     // Will be updated when dragging from taskbar.
     private @Nullable DragOptions mNextWorkspaceDragOptions = null;
     private @Nullable UnfoldTransitionProgressProvider mUnfoldTransitionProgressProvider;
-    private @Nullable RotationChangeProvider mRotationChangeProvider;
     private @Nullable LauncherUnfoldAnimationController mLauncherUnfoldAnimationController;
 
     private SplitSelectStateController mSplitSelectStateController;
@@ -239,7 +241,7 @@ public class QuickstepLauncher extends Launcher {
         mActionsView.updateDimension(getDeviceProfile(), overviewPanel.getLastComputedTaskSize());
         mActionsView.updateVerticalMargin(DisplayController.getNavigationMode(this));
 
-        mAppTransitionManager = new QuickstepTransitionManager(this);
+        mAppTransitionManager = buildAppTransitionManager();
         mAppTransitionManager.registerRemoteAnimations();
         mAppTransitionManager.registerRemoteTransitions();
 
@@ -306,6 +308,13 @@ public class QuickstepLauncher extends Launcher {
      */
     public HotseatPredictionController getHotseatPredictionController() {
         return mHotseatPredictionController;
+    }
+
+    /**
+     * Builds the {@link QuickstepTransitionManager} instance to use for managing transitions.
+     */
+    protected QuickstepTransitionManager buildAppTransitionManager() {
+        return new QuickstepTransitionManager(this);
     }
 
     @Override
@@ -845,36 +854,77 @@ public class QuickstepLauncher extends Launcher {
     private void initUnfoldTransitionProgressProvider() {
         final UnfoldTransitionConfig config = new ResourceUnfoldTransitionConfig();
         if (config.isEnabled()) {
-            UnfoldSharedComponent unfoldComponent =
-                    UnfoldTransitionFactory.createUnfoldSharedComponent(
-                            /* context= */ this,
-                            config,
-                            ProxyScreenStatusProvider.INSTANCE,
-                            new DeviceStateManagerFoldProvider(
-                                    getSystemService(DeviceStateManager.class), /* context */this),
-                            new ActivityManagerActivityTypeProvider(
-                                    getSystemService(ActivityManager.class)),
-                            getSystemService(SensorManager.class),
-                            getMainThreadHandler(),
-                            getMainExecutor(),
-                            /* backgroundExecutor= */ UI_HELPER_EXECUTOR,
-                            /* tracingTagPrefix= */ "launcher",
-                            WindowManagerGlobal.getWindowManagerService()
-                    );
+            if (RECEIVE_UNFOLD_EVENTS_FROM_SYSUI.get()) {
+                initRemotelyCalculatedUnfoldAnimation(config);
+            } else {
+                initLocallyCalculatedUnfoldAnimation(config);
+            }
 
-            mUnfoldTransitionProgressProvider = unfoldComponent.getUnfoldTransitionProvider()
-                    .orElseThrow(() -> new IllegalStateException(
-                            "Trying to create UnfoldTransitionProgressProvider when the "
-                                    + "transition is disabled"));
-
-            mRotationChangeProvider = unfoldComponent.getRotationChangeProvider();
-            mLauncherUnfoldAnimationController = new LauncherUnfoldAnimationController(
-                    /* launcher= */ this,
-                    getWindowManager(),
-                    mUnfoldTransitionProgressProvider,
-                    mRotationChangeProvider
-            );
         }
+    }
+
+    /** Registers hinge angle listener and calculates the animation progress in this process. */
+    private void initLocallyCalculatedUnfoldAnimation(UnfoldTransitionConfig config) {
+        UnfoldSharedComponent unfoldComponent =
+                UnfoldTransitionFactory.createUnfoldSharedComponent(
+                        /* context= */ this,
+                        config,
+                        ProxyScreenStatusProvider.INSTANCE,
+                        new DeviceStateManagerFoldProvider(
+                                getSystemService(DeviceStateManager.class), /* context= */ this),
+                        new ActivityManagerActivityTypeProvider(
+                                getSystemService(ActivityManager.class)),
+                        getSystemService(SensorManager.class),
+                        getMainThreadHandler(),
+                        getMainExecutor(),
+                        /* backgroundExecutor= */ UI_HELPER_EXECUTOR,
+                        /* tracingTagPrefix= */ "launcher",
+                        WindowManagerGlobal.getWindowManagerService()
+                );
+
+        mUnfoldTransitionProgressProvider = unfoldComponent.getUnfoldTransitionProvider()
+                .orElseThrow(() -> new IllegalStateException(
+                        "Trying to create UnfoldTransitionProgressProvider when the "
+                                + "transition is disabled"));
+
+        initUnfoldAnimationController(mUnfoldTransitionProgressProvider,
+                unfoldComponent.getRotationChangeProvider());
+    }
+
+    /** Receives animation progress from sysui process. */
+    private void initRemotelyCalculatedUnfoldAnimation(UnfoldTransitionConfig config) {
+        RemoteUnfoldSharedComponent unfoldComponent =
+                UnfoldTransitionFactory.createRemoteUnfoldSharedComponent(
+                        /* context= */ this,
+                        config,
+                        getMainExecutor(),
+                        /* backgroundExecutor= */ UI_HELPER_EXECUTOR,
+                        /* tracingTagPrefix= */ "launcher",
+                        WindowManagerGlobal.getWindowManagerService()
+                );
+
+        final RemoteUnfoldTransitionReceiver remoteUnfoldTransitionProgressProvider =
+                unfoldComponent.getRemoteTransitionProgress().orElseThrow(
+                        () -> new IllegalStateException(
+                                "Trying to create getRemoteTransitionProgress when the transition "
+                                        + "is disabled"));
+        mUnfoldTransitionProgressProvider = remoteUnfoldTransitionProgressProvider;
+
+        SystemUiProxy.INSTANCE.get(this).setUnfoldAnimationListener(
+                remoteUnfoldTransitionProgressProvider);
+
+        initUnfoldAnimationController(mUnfoldTransitionProgressProvider,
+                unfoldComponent.getRotationChangeProvider());
+    }
+
+    private void initUnfoldAnimationController(UnfoldTransitionProgressProvider progressProvider,
+            RotationChangeProvider rotationChangeProvider) {
+        mLauncherUnfoldAnimationController = new LauncherUnfoldAnimationController(
+                /* launcher= */ this,
+                getWindowManager(),
+                progressProvider,
+                rotationChangeProvider
+        );
     }
 
     public void setTaskbarUIController(LauncherTaskbarUIController taskbarUIController) {

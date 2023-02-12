@@ -96,6 +96,9 @@ public final class FeatureFlags {
             "ENABLE_EXPANDING_PAUSE_WORK_BUTTON", true,
             "Expand and collapse pause work button while scrolling");
 
+    public static final BooleanFlag ENABLE_RECENT_BLOCK = getDebugFlag("ENABLE_RECENT_BLOCK",
+            false, "Show recently tapped search target block in zero state");
+
     public static final BooleanFlag COLLECT_SEARCH_HISTORY = new DeviceFlag(
             "COLLECT_SEARCH_HISTORY", false, "Allow launcher to collect search history for log");
 
@@ -382,6 +385,10 @@ public final class FeatureFlags {
             "Enable the ability to generate monochromatic icons, if it is not provided by the app"
     );
 
+    public static final BooleanFlag ENABLE_DREAM_TRANSITION = getDebugFlag(
+            "ENABLE_DREAM_TRANSITION", true,
+            "Enable the launcher transition when the device enters a dream");
+
     public static final BooleanFlag ENABLE_TASKBAR_EDU_TOOLTIP = getDebugFlag(
             "ENABLE_TASKBAR_EDU_TOOLTIP", true,
             "Enable the tooltip version of the Taskbar education flow.");
@@ -398,6 +405,11 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_GRID_ONLY_OVERVIEW = getDebugFlag(
             "ENABLE_GRID_ONLY_OVERVIEW", false,
             "Enable a grid-only overview without a focused task.");
+
+    public static final BooleanFlag RECEIVE_UNFOLD_EVENTS_FROM_SYSUI = getDebugFlag(
+            "RECEIVE_UNFOLD_EVENTS_FROM_SYSUI", true,
+            "Enables receiving unfold animation events from sysui instead of calculating "
+                    + "them in launcher process using hinge sensor values.");
 
     public static void initialize(Context context) {
         synchronized (sDebugFlags) {

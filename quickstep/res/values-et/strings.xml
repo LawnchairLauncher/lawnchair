@@ -61,10 +61,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Pühkige avakuvale minemiseks"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Pühkige ekraani alaosast üles. See liigutus viib teid alati tagasi avakuvale."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Pühkige ekraanikuva alumisest servast 2 sõrmega üles. See liigutus viib teid alati tagasi avakuvale."</string>
-    <!-- no translation found for home_gesture_tutorial_title (3126834347496917376) -->
-    <skip />
-    <!-- no translation found for home_gesture_tutorial_subtitle (8979014952569486971) -->
-    <skip />
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Avalehele"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Mis tahes ajal avakuvale liikumiseks pühkige ekraanikuva allosast üles"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Pühkige kindlasti ekraanikuva alumisest servast üles."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Hoidke sõrme aknal pisut kauem, enne kui vabastate."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Pühkige kindlasti otse üles, seejärel peatuge."</string>
@@ -80,7 +78,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Tubli töö!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Õpetus <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Valmis!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Avakuvale liikumiseks pühkige üles"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Avalehele liikumiseks pühkige üles"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Avakuvale liikumiseks puudutage avakuva nuppu"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Olete valmis oma seadet <xliff:g id="DEVICE">%1$s</xliff:g> kasutama"</string>
     <string name="default_device_name" msgid="6660656727127422487">"seade"</string>
@@ -101,11 +99,9 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Tegumiriba juhised kuvati"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Tegumiriba juhised on suletud"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"2 rakenduse korraga kasutamiseks lohistage rakendus kõrvale"</string>
-    <!-- no translation found for taskbar_edu_stashing (5645461372669217294) -->
-    <skip />
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Tegumiriba kuvamiseks pühkige aeglaselt üles"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Hankige oma rutiini põhjal rakenduste soovitusi"</string>
-    <!-- no translation found for taskbar_edu_settings_persistent (1387372982791296151) -->
-    <skip />
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Tegumiriba automaatseks peitmiseks lülitage seadetes sisse liigutustega navigeerimine"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Tehke tegumiriba abil enamat"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Järgmine"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Tagasi"</string>
