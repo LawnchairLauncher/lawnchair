@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
+    <string name="set_default_launcher_tip">Lawnchair\'ı varsayılan ana ekran uygulaması yapmak için dokunun.</string>
     <string name="settings">Ayarlar</string>
     <string name="general_label">Genel</string>
     <string name="general_description">Renkler, Simge Paketi, Bildirim Noktaları</string>
@@ -179,8 +180,10 @@
     <string name="home_screen_lock_description">Ana Ekran düzeninde değişiklik yapılmasını önler.</string>
     <string name="home_screen_unlock">Ana Ekranın Kilidini Aç</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Açılır Pencerede Kilit Düğmesini Göster</string>
     <string name="home_screen_locked">Ana Ekran kilitli.</string>
+    <string name="popup_menu">Açılır menü</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Kilit tuşunu göster</string>
+    <string name="show_system_settings_entry">Sistem ayarları girişini göster</string>
     <string name="status_bar_label">Durum Çubuğu</string>
     <string name="show_status_bar">Durum Çubuğunu Göster</string>
     <string name="dark_status_bar_label">Koyu Durum Çubuğu</string>
@@ -400,4 +403,5 @@
     <string name="invalid_backup_file">Geçersiz yedekleme dosyası.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
+    <string name="system_settings">Sistem ayarları</string>
 </resources>

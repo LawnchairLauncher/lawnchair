@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
+    <string name="set_default_launcher_tip">Додирните ову картицу да бисте подесили Lawnchair као подразумевани покретач.</string>
     <string name="settings">Подешавања</string>
     <string name="general_label">Опште</string>
     <string name="general_description">Боје, пакети икона и тачке за обавештења</string>
@@ -104,7 +105,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Пакет икона</string>
-    <string name="themed_icon_pack">Themed Icon Source</string>
+    <string name="themed_icon_pack">Извор тематских икона</string>
     <string name="system_icons">Системске иконе</string>
     <string name="themed_icon_title">Тематске иконе</string>
     <string name="themed_icons_off_label">Искључено</string>
@@ -179,8 +180,10 @@
     <string name="home_screen_lock_description">Спречава промену распореда почетног екрана.</string>
     <string name="home_screen_unlock">Откључај почетни екран</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Прикажи дугме за закључавање у искачућем прозору</string>
     <string name="home_screen_locked">Почетни екран је закључан.</string>
+    <string name="popup_menu">Искачући мени</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Прикажи дугме за закључавање</string>
+    <string name="show_system_settings_entry">Прикажи унос у подешавањима система</string>
     <string name="status_bar_label">Статусна трака</string>
     <string name="show_status_bar">Прикажи статусну траку</string>
     <string name="dark_status_bar_label">Тамна статусна трака</string>
@@ -266,7 +269,7 @@
     <string name="pref_search_auto_show_keyboard">Аутоматски приказуј тастатуру</string>
     <string name="fuzzy_search_title">Приближна претрага</string>
     <string name="fuzzy_search_desc">Приближни резултати претраге на основу упита.</string>
-    <string name="max_search_result_count_title">Max Search Result Count</string>
+    <string name="max_search_result_count_title">Максималан број резултата претраге</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Број колона на листи апликација</string>
     <string name="row_height_label">Висина реда</string>
@@ -401,4 +404,5 @@
     <string name="invalid_backup_file">Неважећи фајл резервне копије.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s и %s</string>
+    <string name="system_settings">Подешавања система</string>
 </resources>

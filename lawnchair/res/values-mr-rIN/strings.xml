@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
+    <string name="set_default_launcher_tip">या लॉंचरला तुमचा डीफॉल्ट लाँचर म्हणून अडगविण्यासाठी हे कार्ड दाबा.</string>
     <string name="settings">स्थापना</string>
     <string name="general_label">सर्वसाधारण</string>
     <string name="general_description">रंग, चिन्हांचा गाठोडा, सूचना टिंब</string>
@@ -34,7 +35,7 @@
     <string name="gestures_label">जेश्चर</string>
     <string name="gestures_description">टॅप आणि स्वाइप</string>
     <string name="quickstep_label">अलीकडील</string>
-    <string name="quickstep_description">Clear All Button, Corner Radius</string>
+    <string name="quickstep_description">सर्व बटण आणि कोपऱ्यातील त्रिज्या(Corner Radius) स्वच्छ करा</string>
     <string name="about_label">आउठ</string>
     <!-- <string name="version" /> (unknown source) -->
     <!-- PreferencesOverflowMenu() in PreferencesDashboard -->
@@ -44,25 +45,25 @@
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">अक्षर सानुकूलन</string>
-    <string name="font_picker_description">Some text remains unchanged.</string>
-    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
+    <string name="font_picker_description">काही मजकूर आपरिवर्तित आहे</string>
+    <string name="smartspace_calendar_label">एका दृष्टीक्षेपात, दिवसदर्शिका सानुकूलन</string>
+    <string name="smartspace_calendar_description">नॉन-ग्रेगोरियन(पाश्चात्य) दिवसदर्शिका पद्धतीत दिनांक दाखविण्याची अनुमती द्या.</string>
+    <string name="workspace_increase_max_grid_size_label">मुख्य पान ग्रिडचा कमाल आकार वाढविला</string>
+    <string name="workspace_increase_max_grid_size_description">१० x १० पासून २० x २० पर्यंत मुख्य पान ग्रिडचा कमाल आकार वाढविला.</string>
     <string name="always_reload_icons_label">नेहमी चिन्हांना पुन्हा लोड करा</string>
     <string name="always_reload_icons_description">साठवून ठेवलेल्या चिन्ह पॅक मधून चिन्ह वापरणे टाळा</string>
     <string name="transparent_background_icons">थीम वर आधारित पारदर्शक आयकॉन</string>
-    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
-    <string name="smartspace_mode_selection">At a Glance Provider selection</string>
+    <string name="transparent_background_icons_description">थीम असलेल्या चिन्हांवर पारदर्शक पार्श्वभूमी वापरा</string>
+    <string name="smartspace_mode_selection">एका दृष्टीक्षेपात, पुरवठादार निवडा</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">मुखपृष्ठाचे चक्रगति</string>
-    <string name="home_screen_rotaton_description">When device is rotated.</string>
-    <string name="font_label">Font (Experimental)</string>
+    <string name="home_screen_rotaton_description">जेव्हा उपकरण फिरवले जाते</string>
+    <string name="font_label">फॉन्ट (प्रायोगिक)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">चिन्ह_गाठोडा</string>
     <string name="icon_shape_label">चिन्हांचे आकार</string>
     <string name="auto_adaptive_icons_label">स्वयं अनुकूली चिन्ह</string>
-    <string name="auto_adaptive_icons_description">For all non-Adaptive icons.</string>
+    <string name="auto_adaptive_icons_description">सर्व गैर-अनुकूलक चिन्हांसाठी.</string>
     <string name="background_lightness_label">पार्श्वभूमी लघिमा(हलकेपणा)</string>
     <string name="adaptive_icon_background_description">भाषांतर करा.</string>
     <string name="notification_dots">सूचना टिंब</string>
@@ -70,44 +71,44 @@
     <string name="show_notification_count">सूचना टिंब दाखवा</string>
     <string name="notification_dots_color">सूचना टिंबाचे रंग</string>
     <string name="notification_dots_text_color">सूचना टिंबाचे रंग</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_always">पूर्वसूचना: सूचना टिंब &amp; विरुद्ध रंगांमध्ये एकमेकांशी पुरेसा कॉन्ट्रास्ट नाही</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">पूर्वसूचना: सूचना टिंब &amp; विरुद्ध रंगांमध्ये नेहमी एकमेकांशी पुरेसा कॉन्ट्रास्ट असू शकत नाही</string>
     <!-- Notification popup -->
-    <string name="missing_notification_access_label">Notification Access Needed</string>
-    <string name="missing_notification_access_description">Notification access needed.</string>
-    <string name="msg_missing_notification_access">To use Notification Dots, grant <xliff:g id="name" example="My App">%1$s</xliff:g> access to notifications.</string>
+    <string name="missing_notification_access_label">अधिसूचना प्रवेश हवे आहे</string>
+    <string name="missing_notification_access_description">अधिसूचना प्रवेश हवे आहे.</string>
+    <string name="msg_missing_notification_access">अधिसूचना टिंब वापरण्यासाठी, <xliff:g id="name" example="My App">%1$s</xliff:g> सूचनांमध्ये प्रवेश द्या.</string>
     <string name="title_change_settings">सेटिंग्ज बदला</string>
     <string name="colors">रंग</string>
     <string name="theme_label">थीम</string>
-    <string name="theme_light">Light</string>
+    <string name="theme_light">उजेळ</string>
     <string name="theme_dark">गडद</string>
     <string name="theme_system_default">निरूती</string>
-    <string name="theme_follow_wallpaper">Match Wallpaper</string>
-    <string name="accent_color">Accent Color</string>
+    <string name="theme_follow_wallpaper">पारश्वचित्र जुळवा</string>
+    <string name="accent_color">उच्चारण रंग</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
-    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
+    <string name="custom_icon_shape">सानुकूल चिन्ह आकार</string>
+    <string name="custom_icon_shape_create">सानुकूल चिन्ह आकार बनवा</string>
+    <string name="custom_icon_shape_edit">सानुकूल चिन्ह आकार संपादित करा</string>
     <string name="icon_shape_corner">चिन्हांच्या कोपऱ्यांचे आकार</string>
     <string name="icon_shape_corner_round">गोल</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
+    <string name="icon_shape_corner_squircle">गुळगुळीत</string>
+    <string name="icon_shape_corner_cut">कापा</string>
     <string name="icon_shape_top_left">वर डावीकडे</string>
     <string name="icon_shape_top_right">वर उजवीकडे</string>
     <string name="icon_shape_bottom_left">खाली डावीकडे</string>
     <string name="icon_shape_bottom_right">खाली उजवीकडे</string>
-    <string name="create">Create</string>
-    <string name="clipboard">Clipboard</string>
-    <string name="export_to_clipboard">Export to Clipboard</string>
-    <string name="import_from_clipboard">Import from Clipboard</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
+    <string name="create">निर्मित करा</string>
+    <string name="clipboard">पटफळक</string>
+    <string name="export_to_clipboard">पटफळकात निर्यात करा</string>
+    <string name="import_from_clipboard">पटफळकातून आवरदा करा</string>
+    <string name="icon_shape_clipboard_import_error">पटफळकाट योग्य चिन्ह आकार अस्तित्वात नाही</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">चिन्ह_गाठोडा</string>
-    <string name="themed_icon_pack">Themed Icon Source</string>
+    <string name="themed_icon_pack">थीम्ड चिन्ह स्रोत</string>
     <string name="system_icons">निरुतीची चिन्हे</string>
     <string name="themed_icon_title">Themed Icons</string>
-    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_off_label">बंद करा</string>
     <string name="themed_icons_home_label">मुख्यपृष्ठ</string>
     <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
     <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
@@ -115,11 +116,11 @@
     <!-- IconPickerPreference -->
     <!-- <string name="icon_shape_label" /> -->
     <string name="icon_shape_system">निरुती</string>
-    <string name="icon_shape_circle">Circle</string>
+    <string name="icon_shape_circle">वर्तुळ</string>
     <string name="icon_shape_cylinder">Cylinder</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
-    <string name="icon_shape_cupertino">iOS</string>
+    <string name="icon_shape_diamond">हिरक</string>
+    <string name="icon_shape_egg">अंड</string>
+    <string name="icon_shape_cupertino">आई. ओ. एस(अॅप्पल)</string>
     <string name="icon_shape_octagon">Octagon</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Rounded Square</string>
@@ -179,8 +180,10 @@
     <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
     <string name="home_screen_unlock">मुखपृष्ठ उघडा</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
     <string name="home_screen_locked">Home Screen is locked.</string>
+    <string name="popup_menu">Pop-up Menu</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
+    <string name="show_system_settings_entry">Show System Settings Entry</string>
     <string name="status_bar_label">Status Bar</string>
     <string name="show_status_bar">स्थिती गज दाखवा</string>
     <string name="dark_status_bar_label">Dark Status Bar</string>
@@ -400,4 +403,5 @@
     <string name="invalid_backup_file">Invalid backup file.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
+    <string name="system_settings">System Settings</string>
 </resources>

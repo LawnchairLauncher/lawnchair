@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
+    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
     <string name="settings">設定</string>
     <string name="general_label">一般設定</string>
     <string name="general_description">色、アイコンパック、通知ドット</string>
@@ -179,8 +180,10 @@
     <string name="home_screen_lock_description">ホーム画面のレイアウトを変更しない</string>
     <string name="home_screen_unlock">ホーム画面のロックを解除</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">ロックボタンをポップアップして表示</string>
     <string name="home_screen_locked">ホーム画面はロックされています</string>
+    <string name="popup_menu">Pop-up Menu</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
+    <string name="show_system_settings_entry">Show System Settings Entry</string>
     <string name="status_bar_label">ステータスバー</string>
     <string name="show_status_bar">ステータスバーを表示</string>
     <string name="dark_status_bar_label">暗いステータスバー</string>
@@ -399,4 +402,5 @@
     <string name="invalid_backup_file">バックアップファイルが無効です</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
+    <string name="system_settings">System Settings</string>
 </resources>

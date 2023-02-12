@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
+    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
     <string name="settings">Nastavenia</string>
     <string name="general_label">Všeobecné</string>
     <string name="general_description">Farby, Balíčky ikon, Bodky upozornení</string>
@@ -179,8 +180,10 @@
     <string name="home_screen_lock_description">Zabráni zmenám v rozložení domovskej obrazovky.</string>
     <string name="home_screen_unlock">Odomknúť domovskú obrazovku</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Ukázať tlačidlo zamknutia vo vyskakovacej ponuke</string>
     <string name="home_screen_locked">Domovská obrazovka je uzamknutá.</string>
+    <string name="popup_menu">Pop-up Menu</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
+    <string name="show_system_settings_entry">Show System Settings Entry</string>
     <string name="status_bar_label">Stavový riadok</string>
     <string name="show_status_bar">Zobraziť stavový riadok</string>
     <string name="dark_status_bar_label">Tmavý stavový riadok</string>
@@ -402,4 +405,5 @@
     <string name="invalid_backup_file">Neplatný záložný súbor.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s a %s</string>
+    <string name="system_settings">System Settings</string>
 </resources>

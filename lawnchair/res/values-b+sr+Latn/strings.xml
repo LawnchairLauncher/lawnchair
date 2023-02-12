@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
+    <string name="set_default_launcher_tip">Dodirnite ovu karticu da biste podesili Lawnchair kao podrazumevani pokretač.</string>
     <string name="settings">Podešavanja</string>
     <string name="general_label">Opšte</string>
     <string name="general_description">Boje, paketi ikona i tačke za obaveštenja</string>
@@ -104,7 +105,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Paket ikona</string>
-    <string name="themed_icon_pack">Themed Icon Source</string>
+    <string name="themed_icon_pack">Izvor tematskih ikona</string>
     <string name="system_icons">Sistemske ikone</string>
     <string name="themed_icon_title">Tematske ikone</string>
     <string name="themed_icons_off_label">Isključeno</string>
@@ -179,8 +180,10 @@
     <string name="home_screen_lock_description">Sprečava promenu rasporeda početnog ekrana.</string>
     <string name="home_screen_unlock">Otključaj početni ekran</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Prikaži dugme za zaključavanje u iskačućem prozoru</string>
     <string name="home_screen_locked">Početni ekran je zaključan.</string>
+    <string name="popup_menu">Iskačući meni</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Prikaži dugme za zaključavanje</string>
+    <string name="show_system_settings_entry">Prikaži unos u podešavanjima sistema</string>
     <string name="status_bar_label">Statusna traka</string>
     <string name="show_status_bar">Prikaži statusnu traku</string>
     <string name="dark_status_bar_label">Tamna statusna traka</string>
@@ -266,7 +269,7 @@
     <string name="pref_search_auto_show_keyboard">Automatski prikazuj tastaturu</string>
     <string name="fuzzy_search_title">Približna pretraga</string>
     <string name="fuzzy_search_desc">Približni rezultati pretrage na osnovu upita.</string>
-    <string name="max_search_result_count_title">Max Search Result Count</string>
+    <string name="max_search_result_count_title">Maksimalan broj rezultata pretrage</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Broj kolona na listi aplikacija</string>
     <string name="row_height_label">Visina reda</string>
@@ -401,4 +404,5 @@
     <string name="invalid_backup_file">Nevažeći fajl rezervne kopije.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s i %s</string>
+    <string name="system_settings">Podešavanja sistema</string>
 </resources>
