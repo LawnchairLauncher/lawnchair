@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
+    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
     <string name="settings">Ajustes</string>
     <string name="general_label">General</string>
     <string name="general_description">Colores, Paquete de Íconos, Puntos de Notificación</string>
@@ -179,8 +180,10 @@
     <string name="home_screen_lock_description">Evita cambios en la disposición de la pantalla de inicio.</string>
     <string name="home_screen_unlock">Desbloquear pantalla de inicio</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Mostrar botón de bloqueo en la ventana emergente</string>
     <string name="home_screen_locked">La pantalla de inicio está bloqueada.</string>
+    <string name="popup_menu">Pop-up Menu</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
+    <string name="show_system_settings_entry">Show System Settings Entry</string>
     <string name="status_bar_label">Barra de estado</string>
     <string name="show_status_bar">Mostrar Barra de estado</string>
     <string name="dark_status_bar_label">Barra de Estado Oscura</string>
@@ -400,4 +403,5 @@
     <string name="invalid_backup_file">Copia de seguridad no válida.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
+    <string name="system_settings">Ajustes del sistema</string>
 </resources>

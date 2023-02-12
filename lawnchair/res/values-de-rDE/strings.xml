@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
+    <string name="set_default_launcher_tip">Tippe auf diese Karte, um Lawnchair als Standard-Launcher festzulegen.</string>
     <string name="settings">Einstellungen</string>
     <string name="general_label">Allgemein</string>
     <string name="general_description">Farben, Symbolpaket, Benachrichtigungspunkte</string>
@@ -179,8 +180,10 @@
     <string name="home_screen_lock_description">Verhindert Änderungen am Startbildschirm-Layout.</string>
     <string name="home_screen_unlock">Startbildschirm entsperren</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Sperrbutton als Pop-up anzeigen</string>
     <string name="home_screen_locked">Startbildschirm ist gesperrt.</string>
+    <string name="popup_menu">Pop-up-Menü</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Sperrbutton anzeigen</string>
+    <string name="show_system_settings_entry">Systemeinstellungen anzeigen</string>
     <string name="status_bar_label">Statusleiste</string>
     <string name="show_status_bar">Suchleiste anzeigen</string>
     <string name="dark_status_bar_label">Dunkle Statusleiste</string>
@@ -400,4 +403,5 @@
     <string name="invalid_backup_file">Ungültige Sicherungsdatei.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
+    <string name="system_settings">Systemeinstellungen</string>
 </resources>

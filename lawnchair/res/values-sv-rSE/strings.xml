@@ -16,6 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
+    <string name="set_default_launcher_tip">Tryck på det här kortet för att ange Lawnchair som din förvalda startskärmsapp.</string>
     <string name="settings">Inställningar</string>
     <string name="general_label">Allmänt</string>
     <string name="general_description">Färger, ikonpaket, aviseringsprickar</string>
@@ -177,20 +178,22 @@
     <string name="home_screen_grid">Rutnät på startskärmen</string>
     <string name="home_screen_lock">Lås startskärm</string>
     <string name="home_screen_lock_description">Förhindrar ändringar av startskärmens utseende.</string>
-    <string name="home_screen_unlock">Lås upp hemkärmen</string>
+    <string name="home_screen_unlock">Lås upp startskärm</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
     <string name="home_screen_locked">Startskärmen är låst.</string>
-    <string name="status_bar_label">Statusrad</string>
-    <string name="show_status_bar">Visa statusfältet</string>
+    <string name="popup_menu">Snabbmeny</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Visa låsknapp</string>
+    <string name="show_system_settings_entry">Visa post för systeminställningar</string>
+    <string name="status_bar_label">Statusfält</string>
+    <string name="show_status_bar">Visa statusfält</string>
     <string name="dark_status_bar_label">Mörkt statusfält</string>
     <string name="icons">Ikoner</string>
-    <string name="icon_size">Storlek på ikon</string>
+    <string name="icon_size">Ikonstorlek</string>
     <string name="show_home_labels">Visa etiketter</string>
     <string name="label_size">Etikettstorlek</string>
     <string name="reset_custom_icons">Återställ anpassade ikoner</string>
     <string name="reset_custom_icons_confirmation">Alla anpassade ikoner kommer att återställas. Vill du fortsätta?</string>
-    <string name="home_screen_text_color">Text Färg</string>
+    <string name="home_screen_text_color">Textfärg</string>
     <string name="color_light">Ljust</string>
     <string name="color_dark">Mörkt</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
@@ -200,7 +203,7 @@
     <!-- <string name="home_screen_grid" /> -->
     <string name="columns">Kolumner</string>
     <string name="rows">Rader</string>
-    <string name="apply_grid">Tillämpa</string>
+    <string name="apply_grid">Verkställ</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Laddar</string>
@@ -210,7 +213,7 @@
     <string name="accessibility_smartspace_page">Sida %1$d av %2$d</string>
     <string name="smartspace_widget">Snabbkoll</string>
     <string name="smartspace_widget_description">Vad ska visas</string>
-    <string name="smartspace_widget_placeholder_date">Fredag 3:e mars</string>
+    <string name="smartspace_widget_placeholder_date">fre 3 mar.</string>
     <string name="preview_label">Förhandsgranskning</string>
     <string name="smartspace_calendar">Kalender</string>
     <string name="smartspace_date_and_time">Datum &amp; tid</string>
@@ -228,7 +231,7 @@
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Gregoriansk</string>
     <string name="smartspace_calendar_persian">Persisk</string>
-    <string name="smartspace_preferences">Inställningar</string>
+    <string name="smartspace_preferences">Alternativ</string>
     <string name="smartspace_widget_toggle_label">Visa på startskärmen</string>
     <string name="smartspace_widget_toggle_description">Snabbkoll kan läggas till manuellt genom att placera ut \"Lawnchair\"-widgeten.</string>
     <string name="smartspace_mode_label">Snabbkoll-leverantör</string>
@@ -243,7 +246,7 @@
     <string name="hotseat_mode_google_search">Google-sökfält</string>
     <string name="search_bar_label">Sökfält</string>
     <string name="corner_radius_label">Hörnradie</string>
-    <string name="apply_accent_color_label">Tillämpa Accent Färg</string>
+    <string name="apply_accent_color_label">Använd accentfärg</string>
     <string name="search_provider">Sökleverantör</string>
     <string name="grid">Rutnät</string>
     <string name="dock_icons">Favoritfältsikoner</string>
@@ -251,25 +254,25 @@
     <!-- search_provider -->
     <string name="search_provider_app_search">Appsök</string>
     <string name="app_label">App</string>
-    <string name="website_label">Webbsida</string>
+    <string name="website_label">Webbplats</string>
     <string name="qsb_search_provider_app_required">App krävs.</string>
     <!-- AppDrawerPrefences -->
     <!-- app_drawer_label -->
     <!-- general_label -->
-    <string name="background_opacity">Genomskinlighet för bakgrund</string>
+    <string name="background_opacity">Bakgrundens ogenomskinlighet</string>
     <!-- hiddenApps_label -->
     <string name="hidden_apps_label">Dolda appar</string>
-    <string name="show_enable_smart_hide">Visa när Fullständigt namn skrivs</string>
+    <string name="show_enable_smart_hide">Visa när fullständigt namn skrivs</string>
     <string name="hide_hidden_apps_search">Dölj i sökresultat</string>
     <string name="pref_category_search">Sök</string>
     <string name="show_app_search_bar">Visa sökfält</string>
     <string name="pref_search_auto_show_keyboard">Visa tangentbord automatiskt</string>
-    <string name="fuzzy_search_title">Luddig sökning</string>
+    <string name="fuzzy_search_title">Oskarp sökning</string>
     <string name="fuzzy_search_desc">Ungefärlig matchning för appsökningar.</string>
     <string name="max_search_result_count_title">Max antal sökresultat</string>
     <!-- <string name="grid" /> -->
-    <string name="app_drawer_columns">Kolumner för applådan</string>
-    <string name="row_height_label">Rad höjd</string>
+    <string name="app_drawer_columns">Kolumner i applådan</string>
+    <string name="row_height_label">Radhöjd</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -279,14 +282,14 @@
     <!-- HiddenAppsPreferences -->
     <string name="hidden_apps_label_with_count">Dolda appar (%1$d)</string>
     <plurals name="apps_count">
-        <item quantity="one">%1$d App</item>
-        <item quantity="other">%1$d Appar</item>
+        <item quantity="one">%1$d app</item>
+        <item quantity="other">%1$d appar</item>
     </plurals>
     <!-- FolderPreferences -->
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
-    <string name="folder_preview_bg_opacity_label">Genomskinlighet för ikonbakgrund</string>
-    <string name="folder_preview_bg_color_label">Bakgrundsfärg för ikon</string>
+    <string name="folder_preview_bg_opacity_label">Ikonbakgrundens ogenomskinlighet</string>
+    <string name="folder_preview_bg_color_label">Ikonbakgrundens färg</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Max antal mappkolumner</string>
     <string name="max_folder_rows">Max antal mapprader</string>
@@ -315,7 +318,7 @@
     <string name="action_share">Dela</string>
     <string name="action_lens">Lins</string>
     <string name="recents_clear_all">Rensa allt</string>
-    <string name="window_corner_radius_label">Skärm hörn rundning</string>
+    <string name="window_corner_radius_label">Skärmhörnradie</string>
     <string name="override_window_corner_radius_label">Anpassad skärmhörnradie</string>
     <string name="window_corner_radius_description">När du sveper upp för att öppna Historiken, den aktuella appen följer fingret och krymper i ett kort. Använd detta reglage för att justera hörnradien på kortet när det är nästan helskärm så att det matchar hörnen på skärmen.</string>
     <string name="taskbar_label">Aktivitetsfältet</string>
@@ -400,4 +403,5 @@
     <string name="invalid_backup_file">Ogiltig backupfil.</string>
     <string name="x_by_y">%1$d, %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
+    <string name="system_settings">Systeminställningar</string>
 </resources>
