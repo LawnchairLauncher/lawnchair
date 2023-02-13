@@ -46,8 +46,8 @@ import android.view.WindowInsets;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.FloatRange;
@@ -67,6 +67,7 @@ import com.android.launcher3.model.UserManagerState;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.views.ArrowTipView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
@@ -198,7 +199,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private View mSearchBarContainer;
     private WidgetsSearchBar mSearchBar;
     private TextView mHeaderTitle;
-    private ScrollView mRightPane;
+    private FrameLayout mRightPane;
     private WidgetsListTableViewHolderBinder mWidgetsListTableViewHolderBinder;
     private final boolean mIsTwoPane;
 
@@ -389,6 +390,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private void updateRecyclerViewVisibility(AdapterHolder adapterHolder) {
         // The first item is always an empty space entry. Look for any more items.
         boolean isWidgetAvailable = adapterHolder.mWidgetsListAdapter.hasVisibleEntries();
+
+        if (mIsTwoPane) {
+            mRightPane.setVisibility(isWidgetAvailable ? VISIBLE : GONE);
+        }
+
         adapterHolder.mWidgetsRecyclerView.setVisibility(isWidgetAvailable ? VISIBLE : GONE);
 
         if (adapterHolder.mAdapterType == AdapterHolder.SEARCH) {
@@ -979,11 +985,13 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                             mWidgetsListTableViewHolderBinder.newViewHolder(mRightPane);
                     mWidgetsListTableViewHolderBinder.bindViewHolder(widgetsRowViewHolder,
                             contentEntry,
-                            0, Collections.EMPTY_LIST);
+                            ViewHolderBinder.POSITION_FIRST | ViewHolderBinder.POSITION_LAST,
+                            Collections.EMPTY_LIST);
                     widgetsRowViewHolder.mDataCallback = data -> {
                         mWidgetsListTableViewHolderBinder.bindViewHolder(widgetsRowViewHolder,
                                 contentEntry,
-                                0, Collections.singletonList(data));
+                                ViewHolderBinder.POSITION_FIRST | ViewHolderBinder.POSITION_LAST,
+                                Collections.singletonList(data));
                     };
                     mRightPane.removeAllViews();
                     mRightPane.addView(widgetsRowViewHolder.itemView);

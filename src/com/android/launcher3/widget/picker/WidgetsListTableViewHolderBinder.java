@@ -15,9 +15,6 @@
  */
 package com.android.launcher3.widget.picker;
 
-import static com.android.launcher3.widget.picker.WidgetsListDrawableState.LAST;
-import static com.android.launcher3.widget.picker.WidgetsListDrawableState.MIDDLE;
-
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.util.Pair;
@@ -84,7 +81,11 @@ public final class WidgetsListTableViewHolderBinder
             Log.d(TAG, String.format("onBindViewHolder [widget#=%d, table.getChildCount=%d]",
                     entry.mWidgets.size(), table.getChildCount()));
         }
-        table.setListDrawableState(((position & POSITION_LAST) != 0) ? LAST : MIDDLE);
+        table.setListDrawableState(
+                WidgetsListDrawableState.obtain(
+                        (position & POSITION_FIRST) != 0,
+                        (position & POSITION_LAST) != 0));
+
         List<ArrayList<WidgetItem>> widgetItemsTable =
                 WidgetsTableUtils.groupWidgetItemsIntoTableWithReordering(
                         entry.mWidgets, entry.getMaxSpanSizeInCells());
