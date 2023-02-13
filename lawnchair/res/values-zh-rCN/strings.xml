@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">点此将 Lawnchair 设置为你的默认桌面</string>
+    <string name="set_default_launcher_tip">点击此处将Lawnchair设置为您的默认启动器。</string>
     <string name="settings">设置</string>
     <string name="general_label">通用</string>
     <string name="general_description">颜色、图标包与通知圆点</string>
@@ -180,8 +180,10 @@
     <string name="home_screen_lock_description">禁止更改主屏幕布局。</string>
     <string name="home_screen_unlock">解锁主屏幕布局</string>
     <!-- used in popup menu-->
-    <string name="home_screen_lock_toggle_from_home_popup">显示锁定按钮</string>
     <string name="home_screen_locked">主屏幕已锁定。</string>
+    <string name="popup_menu">弹出菜单</string>
+    <string name="home_screen_lock_toggle_from_home_popup">显示锁屏按钮</string>
+    <string name="show_system_settings_entry">显示系统设置项目</string>
     <string name="status_bar_label">状态栏</string>
     <string name="show_status_bar">显示状态栏</string>
     <string name="dark_status_bar_label">深色状态栏</string>
@@ -401,6 +403,4 @@
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">系统设置</string>
-    <string name="popup_menu">弹出菜单</string>
-    <string name="show_system_settings_entry">显示系统设置入口</string>
 </resources>
