@@ -200,6 +200,7 @@ public class AllAppsTransitionController
                 ? FLAG_DARK_NAV : FLAG_LIGHT_NAV;
 
         setShiftRange(dp.allAppsShiftRange);
+        mAllAppScale.value = 1;
         mLauncher.addOnDeviceProfileChangeListener(this);
         mVibratorWrapper = VibratorWrapper.INSTANCE.get(mLauncher.getApplicationContext());
     }
