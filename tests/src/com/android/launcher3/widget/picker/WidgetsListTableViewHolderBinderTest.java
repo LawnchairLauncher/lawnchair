@@ -96,8 +96,7 @@ public final class WidgetsListTableViewHolderBinderTest {
         mViewHolderBinder = new WidgetsListTableViewHolderBinder(
                 LayoutInflater.from(mContext),
                 mOnIconClickListener,
-                mOnLongClickListener,
-                new WidgetsListDrawableFactory(mContext));
+                mOnLongClickListener);
     }
 
     @Test
