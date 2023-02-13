@@ -359,6 +359,9 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_TRACKPAD_GESTURE = getDebugFlag(
             "ENABLE_TRACKPAD_GESTURE", false, "Enables trackpad gesture.");
 
+    public static final BooleanFlag ENABLE_ICON_IN_TEXT_HEADER = getDebugFlag(
+            "ENABLE_ICON_IN_TEXT_HEADER", false, "Show icon in textheader");
+
     public static final BooleanFlag SHOW_DOT_PAGINATION = getDebugFlag(
             "SHOW_DOT_PAGINATION", false, "Enable showing dot pagination in workspace");
 
