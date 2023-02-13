@@ -28,7 +28,6 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -67,7 +66,6 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     private TextView mTitle;
     private TextView mSubtitle;
     private GradientDrawable mBackground;
-    private CheckBox mExpandToggle;
     private boolean mEnableIconUpdateAnimation = false;
     private boolean mIsExpanded = false;
 
@@ -101,9 +99,8 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
         mAppIcon = findViewById(R.id.app_icon);
         mTitle = findViewById(R.id.app_title);
         mSubtitle = findViewById(R.id.app_subtitle);
-        mExpandToggle = findViewById(R.id.toggle);
         if (mIsTwoPane) {
-            mExpandToggle.setVisibility(GONE);
+            findViewById(R.id.toggle).setVisibility(GONE);
         }
         setAccessibilityDelegate(new AccessibilityDelegate() {
 
@@ -153,7 +150,6 @@ public final class WidgetsListHeader extends LinearLayout implements ItemInfoUpd
     @UiThread
     public void setExpanded(boolean isExpanded) {
         this.mIsExpanded = isExpanded;
-        mExpandToggle.setChecked(isExpanded);
         if (mIsTwoPane) {
             if (Utilities.isDarkTheme(getContext())) {
                 if (mIsExpanded) {

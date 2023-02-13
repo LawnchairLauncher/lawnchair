@@ -32,22 +32,17 @@ public final class WidgetsListHeaderViewHolderBinder implements
         ViewHolderBinder<WidgetsListHeaderEntry, WidgetsListHeaderHolder> {
     private final LayoutInflater mLayoutInflater;
     private final OnHeaderClickListener mOnHeaderClickListener;
-    private final WidgetsListDrawableFactory mListDrawableFactory;
 
     public WidgetsListHeaderViewHolderBinder(LayoutInflater layoutInflater,
-            OnHeaderClickListener onHeaderClickListener,
-            WidgetsListDrawableFactory listDrawableFactory) {
+            OnHeaderClickListener onHeaderClickListener) {
         mLayoutInflater = layoutInflater;
         mOnHeaderClickListener = onHeaderClickListener;
-        mListDrawableFactory = listDrawableFactory;
     }
 
     @Override
     public WidgetsListHeaderHolder newViewHolder(ViewGroup parent) {
-        WidgetsListHeader header = (WidgetsListHeader) mLayoutInflater.inflate(
-                R.layout.widgets_list_row_header, parent, false);
-        header.setBackground(mListDrawableFactory.createHeaderBackgroundDrawable());
-        return new WidgetsListHeaderHolder(header);
+        return new WidgetsListHeaderHolder((WidgetsListHeader) mLayoutInflater.inflate(
+                R.layout.widgets_list_row_header, parent, false));
     }
 
     @Override
