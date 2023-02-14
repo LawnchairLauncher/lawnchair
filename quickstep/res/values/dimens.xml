@@ -328,4 +328,7 @@
     <!-- Note: keep this value in sync with the WindowManager/Shell dimens.xml -->
     <!--     starting_surface_exit_animation_window_shift_length -->
     <dimen name="starting_surface_exit_animation_window_shift_length">20dp</dimen>
+
+    <!-- Keyboard Quick Switch -->
+    <dimen name="keyboard_quick_switch_border_width">4dp</dimen>
 </resources>

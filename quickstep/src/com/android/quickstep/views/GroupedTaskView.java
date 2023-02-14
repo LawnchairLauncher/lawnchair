@@ -5,6 +5,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITIO
 
 import android.content.Context;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -69,6 +70,23 @@ public class GroupedTaskView extends TaskView {
     public GroupedTaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mDigitalWellBeingToast2 = new DigitalWellBeingToast(mActivity, this);
+    }
+
+    @Override
+    protected void updateBorderBounds(Rect bounds) {
+        if (mSplitBoundsConfig == null) {
+            super.updateBorderBounds(bounds);
+            return;
+        }
+        bounds.set(
+                Math.min(mSnapshotView.getLeft() + Math.round(mSnapshotView.getTranslationX()),
+                        mSnapshotView2.getLeft() + Math.round(mSnapshotView2.getTranslationX())),
+                Math.min(mSnapshotView.getTop() + Math.round(mSnapshotView.getTranslationY()),
+                        mSnapshotView2.getTop() + Math.round(mSnapshotView2.getTranslationY())),
+                Math.max(mSnapshotView.getRight() + Math.round(mSnapshotView.getTranslationX()),
+                        mSnapshotView2.getRight() + Math.round(mSnapshotView2.getTranslationX())),
+                Math.max(mSnapshotView.getBottom() + Math.round(mSnapshotView.getTranslationY()),
+                        mSnapshotView2.getBottom() + Math.round(mSnapshotView2.getTranslationY())));
     }
 
     @Override

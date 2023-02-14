@@ -205,7 +205,7 @@ public class TouchInteractionService extends Service
         public void onOverviewShown(boolean triggeredFromAltTab) {
             if (triggeredFromAltTab) {
                 TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-                mOverviewCommandHelper.addCommand(OverviewCommandHelper.TYPE_SHOW_NEXT_FOCUS);
+                mOverviewCommandHelper.addCommand(OverviewCommandHelper.TYPE_KEYBOARD_INPUT);
             } else {
                 mOverviewCommandHelper.addCommand(OverviewCommandHelper.TYPE_SHOW);
             }
