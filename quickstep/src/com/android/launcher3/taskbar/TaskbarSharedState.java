@@ -20,7 +20,20 @@ package com.android.launcher3.taskbar;
  */
 public class TaskbarSharedState {
 
+    // TaskbarManager#onSystemUiFlagsChanged
     public int sysuiStateFlags;
+
+    // TaskbarManager#disableNavBarElements()
+    public int disableNavBarDisplayId;
+    public int disableNavBarState1;
+    public int disableNavBarState2;
+
+    // TaskbarManager#onSystemBarAttributesChanged()
+    public int systemBarAttrsDisplayId;
+    public int systemBarAttrsBehavior;
+
+    // TaskbarManager#onNavButtonsDarkIntensityChanged()
+    public float navButtonsDarkIntensity;
 
     public boolean setupUIVisible = false;
 
