@@ -17,12 +17,15 @@
 
 <com.android.quickstep.views.DesktopTaskView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="true"
     android:clipToOutline="true"
     android:defaultFocusHighlightEnabled="false"
-    android:focusable="true">
+    android:focusable="true"
+    launcher:borderColor="?androidprv:attr/colorAccentSecondaryVariant">
 
     <View
         android:id="@+id/background"
