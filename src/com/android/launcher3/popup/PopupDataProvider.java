@@ -242,7 +242,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     public WidgetsListContentEntry getSelectedAppWidgets(PackageUserKey packageUserKey) {
         return (WidgetsListContentEntry) mAllWidgets.stream()
                 .filter(row -> row instanceof WidgetsListContentEntry
-                        && row.mPkgItem.packageName.equals(packageUserKey.mPackageName))
+                        && PackageUserKey.fromPackageItemInfo(row.mPkgItem).equals(packageUserKey))
                 .findAny()
                 .orElse(null);
     }
