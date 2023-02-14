@@ -29,6 +29,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
@@ -228,4 +229,11 @@ public class TaskbarUIController {
                 }
         );
     }
+
+    /**
+     * Launches the focused task in splitscreen.
+     *
+     * No-op if the view is not yet open.
+     */
+    public void launchSplitTasks(View taskview, GroupTask groupTask) { }
 }

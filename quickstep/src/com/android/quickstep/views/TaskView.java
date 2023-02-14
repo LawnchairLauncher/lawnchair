@@ -31,6 +31,7 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 import static com.android.launcher3.util.SplitConfigurationOptions.getLogEventForPosition;
+import static com.android.quickstep.util.BorderAnimator.DEFAULT_BORDER_COLOR;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -42,6 +43,7 @@ import android.annotation.IdRes;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -94,6 +96,7 @@ import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TaskViewUtils;
+import com.android.quickstep.util.BorderAnimator;
 import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitSelectStateController;
@@ -405,6 +408,8 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private boolean mIsClickableAsLiveTile = true;
 
+    @Nullable private final BorderAnimator mBorderAnimator;
+
     public TaskView(Context context) {
         this(context, null);
     }
@@ -414,12 +419,46 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     public TaskView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        this(context, attrs, defStyleAttr, 0);
+    }
+
+    public TaskView(
+            Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
         mActivity = StatefulActivity.fromContext(context);
         setOnClickListener(this::onClick);
 
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mDigitalWellBeingToast = new DigitalWellBeingToast(mActivity, this);
+
+        setWillNotDraw(!FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH.get());
+
+        mBorderAnimator = !FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH.get()
+                ? null
+                : new BorderAnimator(
+                        /* borderBoundsBuilder= */ this::updateBorderBounds,
+                        /* borderWidthPx= */ context.getResources().getDimensionPixelSize(
+                                R.dimen.keyboard_quick_switch_border_width),
+                        /* borderRadiusPx= */ (int) mCurrentFullscreenParams.mCornerRadius,
+                        /* borderColor= */ attrs == null
+                        ? DEFAULT_BORDER_COLOR
+                        : context.getTheme()
+                                .obtainStyledAttributes(
+                                        attrs,
+                                        R.styleable.TaskView,
+                                        defStyleAttr,
+                                        defStyleRes)
+                                .getColor(
+                                        R.styleable.TaskView_borderColor,
+                                        DEFAULT_BORDER_COLOR),
+                        /* invalidateViewCallback= */ TaskView.this::invalidate);
+    }
+
+    protected void updateBorderBounds(Rect bounds) {
+        bounds.set(mSnapshotView.getLeft() + Math.round(mSnapshotView.getTranslationX()),
+                mSnapshotView.getTop() + Math.round(mSnapshotView.getTranslationY()),
+                mSnapshotView.getRight() + Math.round(mSnapshotView.getTranslationX()),
+                mSnapshotView.getBottom() + Math.round(mSnapshotView.getTranslationY()));
     }
 
     public void setTaskViewId(int id) {
@@ -461,6 +500,22 @@ public class TaskView extends FrameLayout implements Reusable {
         mSnapshotView = findViewById(R.id.snapshot);
         mIconView = findViewById(R.id.icon);
         mIconTouchDelegate = new TransformingTouchDelegate(mIconView);
+    }
+
+    @Override
+    protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
+        super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
+        if (mBorderAnimator != null) {
+            mBorderAnimator.buildAnimator(gainFocus).start();
+        }
+    }
+
+    @Override
+    public void draw(Canvas canvas) {
+        super.draw(canvas);
+        if (mBorderAnimator != null) {
+            mBorderAnimator.drawBorder(canvas);
+        }
     }
 
     /**
