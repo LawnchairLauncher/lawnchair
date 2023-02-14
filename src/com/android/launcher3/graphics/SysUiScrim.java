@@ -32,11 +32,10 @@ import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.util.FloatProperty;
 import android.view.View;
-import android.view.WindowInsets;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.DynamicResource;
@@ -185,21 +184,18 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
 
     /**
      * Determines whether to draw the top and/or bottom scrim based on new insets.
+     *
+     * In order for the bottom scrim to be drawn this 3 condition should be meet at the same time:
+     * the device is in 3 button navigation, the taskbar is not present and the Hotseat is
+     * horizontal
      */
     public void onInsetsChanged(Rect insets) {
+        DeviceProfile dp = mActivity.getDeviceProfile();
         mDrawTopScrim = mTopScrim != null && insets.top > 0;
         mDrawBottomScrim = mBottomMask != null
-                && !mActivity.getDeviceProfile().isVerticalBarLayout()
-                && hasBottomNavButtons();
-    }
-
-    private boolean hasBottomNavButtons() {
-        if (Utilities.ATLEAST_Q && mActivity.getRootView() != null
-                && mActivity.getRootView().getRootWindowInsets() != null) {
-            WindowInsets windowInsets = mActivity.getRootView().getRootWindowInsets();
-            return windowInsets.getTappableElementInsets().bottom > 0;
-        }
-        return true;
+                && !dp.isVerticalBarLayout()
+                && !dp.isGestureMode
+                && !dp.isTaskbarPresent;
     }
 
     @Override
