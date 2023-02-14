@@ -18,16 +18,21 @@ package com.android.launcher3.taskbar
 import android.graphics.Insets
 import android.graphics.Region
 import android.view.InsetsFrameProvider
+import android.view.InsetsFrameProvider.SOURCE_DISPLAY
+import android.view.InsetsFrameProvider.SOURCE_FRAME
 import android.view.InsetsState
 import android.view.InsetsState.ITYPE_BOTTOM_MANDATORY_GESTURES
 import android.view.InsetsState.ITYPE_BOTTOM_TAPPABLE_ELEMENT
 import android.view.InsetsState.ITYPE_EXTRA_NAVIGATION_BAR
+import android.view.InsetsState.ITYPE_LEFT_GESTURES
+import android.view.InsetsState.ITYPE_RIGHT_GESTURES
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_FRAME
 import android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_REGION
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.TYPE_INPUT_METHOD
 import android.view.WindowManager.LayoutParams.TYPE_VOICE_INTERACTION
+import com.android.internal.policy.GestureNavigationSettingsObserver
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_OVERLAY_PROXY
 import com.android.launcher3.DeviceProfile
@@ -45,6 +50,9 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
     private val deviceProfileChangeListener = { _: DeviceProfile ->
         onTaskbarWindowHeightOrInsetsChanged()
     }
+    private val gestureNavSettingsObserver =
+        GestureNavigationSettingsObserver(context.mainThreadHandler, context,
+            this::onTaskbarWindowHeightOrInsetsChanged)
 
     // Initialized in init.
     private lateinit var controllers: TaskbarControllers
@@ -59,7 +67,16 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             intArrayOf(
                 ITYPE_EXTRA_NAVIGATION_BAR,
                 ITYPE_BOTTOM_TAPPABLE_ELEMENT,
-                ITYPE_BOTTOM_MANDATORY_GESTURES
+                ITYPE_BOTTOM_MANDATORY_GESTURES,
+                ITYPE_LEFT_GESTURES,
+                ITYPE_RIGHT_GESTURES,
+            ),
+            intArrayOf(
+                SOURCE_FRAME,
+                SOURCE_FRAME,
+                SOURCE_FRAME,
+                SOURCE_DISPLAY,
+                SOURCE_DISPLAY
             )
         )
 
@@ -67,10 +84,12 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
 
         windowLayoutParams.insetsRoundedCornerFrame = true
         context.addOnDeviceProfileChangeListener(deviceProfileChangeListener)
+        gestureNavSettingsObserver.registerForCurrentUser()
     }
 
     fun onDestroy() {
         context.removeOnDeviceProfileChangeListener(deviceProfileChangeListener)
+        gestureNavSettingsObserver.unregister()
     }
 
     fun onTaskbarWindowHeightOrInsetsChanged() {
@@ -91,6 +110,22 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                 provider.insetsSize = getInsetsByNavMode(contentHeight)
             } else if (provider.type == ITYPE_BOTTOM_TAPPABLE_ELEMENT) {
                 provider.insetsSize = getInsetsByNavMode(tappableHeight)
+            } else if (provider.type == ITYPE_LEFT_GESTURES) {
+                provider.insetsSize =
+                    Insets.of(
+                        gestureNavSettingsObserver.getLeftSensitivity(context.resources),
+                        0,
+                        0,
+                        0
+                    )
+            } else if (provider.type == ITYPE_RIGHT_GESTURES) {
+                provider.insetsSize =
+                    Insets.of(
+                        0,
+                        0,
+                        gestureNavSettingsObserver.getRightSensitivity(context.resources),
+                        0
+                    )
             }
         }
 
@@ -116,6 +151,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                 provider.insetsSizeOverrides = insetsSizeOverride
             }
         }
+        context.notifyUpdateLayoutParams()
     }
 
     /**
@@ -140,10 +176,12 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
      * @param params The window layout params.
      * @param providesInsetsTypes The inset types we would like this layout params to provide.
      */
-    fun setProvidesInsetsTypes(params: WindowManager.LayoutParams, providesInsetsTypes: IntArray) {
+    fun setProvidesInsetsTypes(params: WindowManager.LayoutParams, providesInsetsTypes: IntArray,
+            providesInsetsSources: IntArray) {
         params.providedInsets = arrayOfNulls<InsetsFrameProvider>(providesInsetsTypes.size)
         for (i in providesInsetsTypes.indices) {
-            params.providedInsets[i] = InsetsFrameProvider(providesInsetsTypes[i])
+            params.providedInsets[i] = InsetsFrameProvider(providesInsetsTypes[i],
+                    providesInsetsSources[i], null, null)
         }
     }
 
