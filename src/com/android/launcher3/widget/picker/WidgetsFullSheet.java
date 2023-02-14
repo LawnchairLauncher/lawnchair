@@ -291,7 +291,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
             // Inflate the suggestions header.
             mSuggestedWidgetsHeader = (WidgetsListHeader) layoutInflater.inflate(
-                    R.layout.widgets_list_row_header, mSuggestedWidgetsContainer, false);
+                    R.layout.widgets_list_row_header_two_pane,
+                    mSuggestedWidgetsContainer,
+                    false);
             mSuggestedWidgetsHeader.setExpanded(true);
 
             PackageItemInfo packageItemInfo =  new PackageItemInfo(
@@ -312,8 +314,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mSuggestedWidgetsHeader.applyFromItemInfoWithIcon(widgetsListHeaderEntry);
             mSuggestedWidgetsHeader.setIcon(
                     getContext().getDrawable(R.drawable.widget_suggestions_icon));
-            mSuggestedWidgetsHeader.setOnExpandChangeListener(isExpanded -> {
-                mSuggestedWidgetsHeader.setExpanded(isExpanded);
+            mSuggestedWidgetsHeader.setOnClickListener(view -> {
+                mSuggestedWidgetsHeader.setExpanded(true);
                 resetExpandedHeaders();
                 mRightPane.removeAllViews();
                 mRightPane.addView(mRecommendedWidgetsTable);
