@@ -1067,6 +1067,12 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
     }
 
+    void notifyUpdateLayoutParams() {
+        if (mDragLayer.isAttachedToWindow()) {
+            mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
+        }
+    }
+
     public void showPopupMenuForIcon(BubbleTextView btv) {
         setTaskbarWindowFullscreen(true);
         btv.post(() -> mControllers.taskbarPopupController.showForIcon(btv));
