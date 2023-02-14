@@ -362,18 +362,24 @@ public class TaskbarManager {
     }
 
     public void disableNavBarElements(int displayId, int state1, int state2, boolean animate) {
+        mSharedState.disableNavBarDisplayId = displayId;
+        mSharedState.disableNavBarState1 = state1;
+        mSharedState.disableNavBarState2 = state2;
         if (mTaskbarActivityContext != null) {
             mTaskbarActivityContext.disableNavBarElements(displayId, state1, state2, animate);
         }
     }
 
     public void onSystemBarAttributesChanged(int displayId, int behavior) {
+        mSharedState.systemBarAttrsDisplayId = displayId;
+        mSharedState.systemBarAttrsBehavior = behavior;
         if (mTaskbarActivityContext != null) {
             mTaskbarActivityContext.onSystemBarAttributesChanged(displayId, behavior);
         }
     }
 
     public void onNavButtonsDarkIntensityChanged(float darkIntensity) {
+        mSharedState.navButtonsDarkIntensity = darkIntensity;
         if (mTaskbarActivityContext != null) {
             mTaskbarActivityContext.onNavButtonsDarkIntensityChanged(darkIntensity);
         }

@@ -248,6 +248,12 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         // Initialize controllers after all are constructed.
         mControllers.init(sharedState);
         updateSysuiStateFlags(sharedState.sysuiStateFlags, true /* fromInit */);
+        disableNavBarElements(sharedState.disableNavBarDisplayId, sharedState.disableNavBarState1,
+                sharedState.disableNavBarState2, false /* animate */);
+        onSystemBarAttributesChanged(sharedState.systemBarAttrsDisplayId,
+                sharedState.systemBarAttrsBehavior);
+        onNavButtonsDarkIntensityChanged(sharedState.navButtonsDarkIntensity);
+
 
         if (!mAddedWindow) {
             mWindowManager.addView(mDragLayer, mWindowLayoutParams);
