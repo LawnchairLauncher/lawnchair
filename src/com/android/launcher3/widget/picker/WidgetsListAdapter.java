@@ -108,19 +108,15 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         mHeaderChangeListener = headerChangeListener;
         mContext = context;
         mDiffReporter = new WidgetsDiffReporter(iconCache, this);
-        WidgetsListDrawableFactory listDrawableFactory = new WidgetsListDrawableFactory(context);
 
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_LIST,
                 new WidgetsListTableViewHolderBinder(
-                        layoutInflater, iconClickListener, iconLongClickListener,
-                        listDrawableFactory));
+                        layoutInflater, iconClickListener, iconLongClickListener));
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_HEADER,
                 new WidgetsListHeaderViewHolderBinder(
-                        layoutInflater,
-                        /* onHeaderClickListener= */ this,
-                        listDrawableFactory));
+                        layoutInflater, /* onHeaderClickListener= */ this));
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_SPACE,
                 new WidgetsSpaceViewHolderBinder(emptySpaceHeightProvider));
