@@ -114,6 +114,10 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
                 new FavoriteItemsTransaction(mTargetContext, this);
         transaction = buildWorkspaceFromBoards(testCase.mStart, transaction);
         transaction.commit();
+        // resetLoaderState triggers the launcher to start loading the workspace which allows
+        // waitForLauncherCondition to wait for that condition, otherwise the condition would
+        // always be true and it wouldn't wait for the changes to be applied.
+        resetLoaderState();
         waitForLauncherCondition("Workspace didn't finish loading", l -> !l.isWorkspaceLoading());
         Widget widget = mLauncher.getWorkspace().getWidgetAtCell(mainWidgetCellPos.getCellX(),
                 mainWidgetCellPos.getCellY());
