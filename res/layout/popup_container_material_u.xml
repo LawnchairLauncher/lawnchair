@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2017 The Android Open Source Project
+<!-- Copyright (C) 2023 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,17 +13,9 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<com.android.launcher3.shortcuts.DeepShortcutView
+<com.android.launcher3.popup.PopupContainerWithArrow
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/bg_popup_item_width"
+    android:id="@+id/popup_container"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/system_shortcut"
-    android:minHeight="@dimen/bg_popup_item_height"
-    android:elevation="@dimen/deep_shortcuts_elevation"
-    android:background="@drawable/middle_item_primary"
-    android:theme="@style/PopupItem" >
-
-    <include layout="@layout/system_shortcut_content" />
-
-</com.android.launcher3.shortcuts.DeepShortcutView>
+    android:orientation="vertical"/>

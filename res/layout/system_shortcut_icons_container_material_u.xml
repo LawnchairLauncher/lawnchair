@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2017 The Android Open Source Project
+<!-- Copyright (C) 2023 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,16 +14,19 @@
      limitations under the License.
 -->
 
-<com.android.launcher3.shortcuts.DeepShortcutView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/bg_popup_item_width"
-    android:layout_height="wrap_content"
-    android:id="@+id/system_shortcut"
-    android:minHeight="@dimen/bg_popup_item_height"
-    android:elevation="@dimen/deep_shortcuts_elevation"
-    android:background="@drawable/middle_item_primary"
-    android:theme="@style/PopupItem" >
+    android:id="@+id/system_shortcut_icons"
+    android:tag="@string/popup_container_iterate_children"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/system_shortcut_header_height"
+    android:orientation="horizontal"
+    android:gravity="end|center_vertical"
+    android:background="@drawable/popup_background_material_u"
+    android:elevation="@dimen/deep_shortcuts_elevation">
 
-    <include layout="@layout/system_shortcut_content" />
-
-</com.android.launcher3.shortcuts.DeepShortcutView>
+    <Space android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:id="@+id/separator"/>
+</LinearLayout>
