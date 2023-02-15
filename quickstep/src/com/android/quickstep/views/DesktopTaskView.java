@@ -133,6 +133,12 @@ public class DesktopTaskView extends TaskView {
     }
 
     @Override
+    protected void updateBorderBounds(Rect bounds) {
+        bounds.set(mBackgroundView.getLeft(), mBackgroundView.getTop(), mBackgroundView.getRight(),
+                mBackgroundView.getBottom());
+    }
+
+    @Override
     public void bind(Task task, RecentsOrientedState orientedState) {
         bind(Collections.singletonList(task), orientedState);
     }
