@@ -82,4 +82,6 @@
     <dimen name="taskbar_suw_frame">96dp</dimen>
     <dimen name="taskbar_suw_insets">24dp</dimen>
 
+    <dimen name="keyboard_quick_switch_taskview_width">205dp</dimen>
+    <dimen name="keyboard_quick_switch_taskview_height">119dp</dimen>
 </resources>

@@ -231,6 +231,38 @@ public class TaskbarUIController {
     }
 
     /**
+     * Opens the Keyboard Quick Switch View.
+     *
+     * This will set the focus to the first task from the right (from the left in RTL)
+     */
+    public void openQuickSwitchView() {
+        mControllers.keyboardQuickSwitchController.openQuickSwitchView();
+    }
+
+    /**
+     * Closes the Keyboard Quick Switch View.
+     *
+     * No-op if the view is already closed
+     */
+    public void closeQuickSwitchView() {
+        mControllers.keyboardQuickSwitchController.closeQuickSwitchView();
+    }
+
+    /**
+     * Launches the focused task and closes the Keyboard Quick Switch View.
+     *
+     * If the overlay or view are closed, or the overview task is focused, then Overview is
+     * launched. If the overview task is launched, then the first hidden task is focused.
+     *
+     * @return the index of what task should be focused in ; -1 iff Overview shouldn't be launched
+     */
+    public int launchFocusedTask() {
+        int focusedTaskIndex = mControllers.keyboardQuickSwitchController.launchFocusedTask();
+        mControllers.keyboardQuickSwitchController.closeQuickSwitchView();
+        return focusedTaskIndex;
+    }
+
+    /**
      * Launches the focused task in splitscreen.
      *
      * No-op if the view is not yet open.
