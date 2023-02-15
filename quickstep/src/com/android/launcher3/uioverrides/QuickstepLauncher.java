@@ -50,6 +50,7 @@ import static com.android.launcher3.testing.shared.TestProtocol.QUICK_SWITCH_STA
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.SplitConfigurationOptions.DEFAULT_SPLIT_RATIO;
 import static com.android.quickstep.util.SplitAnimationTimings.TABLET_HOME_TO_SPLIT;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 
@@ -143,6 +144,7 @@ import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.PendingSplitSelectInfo;
 import com.android.launcher3.util.RunnableList;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource;
 import com.android.launcher3.util.TouchController;
@@ -152,6 +154,7 @@ import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TouchInteractionService.TISBinder;
+import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.LauncherUnfoldAnimationController;
 import com.android.quickstep.util.ProxyScreenStatusProvider;
 import com.android.quickstep.util.QuickstepOnboardingPrefs;
@@ -1204,6 +1207,32 @@ public class QuickstepLauncher extends Launcher {
         super.dispatchDeviceProfileChanged();
         Trace.instantForTrack(TRACE_TAG_APP, "QuickstepLauncher#DeviceProfileChanged",
                 getDeviceProfile().toSmallString());
+    }
+
+    /**
+     * Launches the given {@link GroupTask} in splitscreen.
+     *
+     * If the second split task is missing, launches the first task normally.
+     */
+    public void launchSplitTasks(View taskView, GroupTask groupTask) {
+        if (groupTask.task2 == null) {
+            UI_HELPER_EXECUTOR.execute(() ->
+                    ActivityManagerWrapper.getInstance().startActivityFromRecents(
+                            groupTask.task1.key,
+                            getActivityLaunchOptions(taskView, null).options));
+            return;
+        }
+        mSplitSelectStateController.launchTasks(
+                groupTask.task1.key.id,
+                groupTask.task2.key.id,
+                SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT,
+                /* callback= */ success -> {},
+                /* freezeTaskList= */ true,
+                groupTask.mSplitBounds == null
+                        ? DEFAULT_SPLIT_RATIO
+                        : groupTask.mSplitBounds.appsStackedVertically
+                                ? groupTask.mSplitBounds.topTaskPercent
+                                : groupTask.mSplitBounds.leftTaskPercent);
     }
 
     private static final class LauncherTaskViewController extends
