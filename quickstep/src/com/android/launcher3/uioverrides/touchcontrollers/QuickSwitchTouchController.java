@@ -48,6 +48,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
@@ -76,6 +77,10 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
             return false;
         }
         if ((ev.getEdgeFlags() & Utilities.EDGE_NAV_BAR) == 0) {
+            return false;
+        }
+        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+            // TODO(b/268075592): add support for quickswitch to/from desktop
             return false;
         }
         return true;
