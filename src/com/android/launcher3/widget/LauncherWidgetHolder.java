@@ -55,10 +55,10 @@ import java.util.function.IntConsumer;
 public class LauncherWidgetHolder {
     public static final int APPWIDGET_HOST_ID = 1024;
 
-    private static final int FLAG_LISTENING = 1;
-    private static final int FLAG_STATE_IS_NORMAL = 1 << 1;
-    private static final int FLAG_ACTIVITY_STARTED = 1 << 2;
-    private static final int FLAG_ACTIVITY_RESUMED = 1 << 3;
+    protected static final int FLAG_LISTENING = 1;
+    protected static final int FLAG_STATE_IS_NORMAL = 1 << 1;
+    protected static final int FLAG_ACTIVITY_STARTED = 1 << 2;
+    protected static final int FLAG_ACTIVITY_RESUMED = 1 << 3;
     private static final int FLAGS_SHOULD_LISTEN =
             FLAG_STATE_IS_NORMAL | FLAG_ACTIVITY_STARTED | FLAG_ACTIVITY_RESUMED;
 
@@ -77,7 +77,7 @@ public class LauncherWidgetHolder {
     @NonNull
     private final SparseArray<RemoteViews> mCachedRemoteViews = new SparseArray<>();
 
-    private int mFlags = FLAG_STATE_IS_NORMAL;
+    protected int mFlags = FLAG_STATE_IS_NORMAL;
 
     // TODO(b/191735836): Replace with ActivityOptions.KEY_SPLASH_SCREEN_STYLE when un-hidden
     private static final String KEY_SPLASH_SCREEN_STYLE = "android.activity.splashScreenStyle";
@@ -115,6 +115,13 @@ public class LauncherWidgetHolder {
             // widgets upon bind anyway. See issue 14255011 for more context.
         }
 
+        updateDeferredView();
+    }
+
+    /**
+     * Update any views which have been deferred because the host was not listening.
+     */
+    protected void updateDeferredView() {
         // We go in reverse order and inflate any deferred or cached widget
         for (int i = mViews.size() - 1; i >= 0; i--) {
             LauncherAppWidgetHostView view = mViews.valueAt(i);
@@ -464,13 +471,21 @@ public class LauncherWidgetHolder {
         }
 
         final boolean listening = isListening();
-        if (!listening && (mFlags & FLAGS_SHOULD_LISTEN) == FLAGS_SHOULD_LISTEN) {
+        if (!listening && shouldListen(mFlags)) {
             // Postpone starting listening until all flags are on.
             startListening();
         } else if (listening && (mFlags & FLAG_ACTIVITY_STARTED) == 0) {
             // Postpone stopping listening until the activity is stopped.
             stopListening();
         }
+    }
+
+    /**
+     * Returns true if the holder should be listening for widget updates based
+     * on the provided state flags.
+     */
+    protected boolean shouldListen(int flags) {
+        return (flags & FLAGS_SHOULD_LISTEN) == FLAGS_SHOULD_LISTEN;
     }
 
     /**
