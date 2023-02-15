@@ -1164,6 +1164,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             return LAST_TASK;
         }
 
+        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED && endTarget == NEW_TASK) {
+            // TODO(b/268075592): add support for quickswitch to/from desktop
+            return LAST_TASK;
+        }
+
         return endTarget;
     }
 
