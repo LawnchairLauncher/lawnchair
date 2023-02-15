@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.os.Trace.TRACE_TAG_APP;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -236,7 +235,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 isDesktopMode
                         ? new DesktopTaskbarRecentAppsController(this)
                         : TaskbarRecentAppsController.DEFAULT,
-                new TaskbarEduTooltipController(this));
+                new TaskbarEduTooltipController(this),
+                new KeyboardQuickSwitchController());
     }
 
     public void init(@NonNull TaskbarSharedState sharedState) {
