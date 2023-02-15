@@ -394,6 +394,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
+    protected void onIconLayoutBoundsChanged() {
+        mTaskbarLauncherStateController.resetIconAlignment();
+    }
+
+    @Override
     public void dumpLogs(String prefix, PrintWriter pw) {
         super.dumpLogs(prefix, pw);
 
