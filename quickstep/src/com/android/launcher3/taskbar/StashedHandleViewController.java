@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NAV_BAR_HIDDEN;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -36,6 +38,7 @@ import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.systemui.shared.navigationbar.RegionSamplingHelper;
+import com.android.systemui.shared.system.QuickStepContract;
 
 import java.io.PrintWriter;
 
@@ -77,6 +80,10 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
     // which should start off at the same point the cancelled one left off.
     private float mStartProgressForNextRevealAnim;
     private boolean mWasLastRevealAnimReversed;
+
+    // States that affect whether region sampling is enabled or not
+    private boolean mIsStashed;
+    private boolean mTaskbarHidden;
 
     public StashedHandleViewController(TaskbarActivityContext activity,
             StashedHandleView stashedHandleView) {
@@ -218,7 +225,8 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
 
     /** Called when taskbar is stashed or unstashed. */
     public void onIsStashedChanged(boolean isStashed) {
-        mRegionSamplingHelper.setWindowVisible(isStashed);
+        mIsStashed = isStashed;
+        updateRegionSamplingWindowVisibility();
         if (isStashed) {
             mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
             mRegionSamplingHelper.start(mStashedHandleView.getSampledRegion());
@@ -245,6 +253,15 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
     public void setIsHomeButtonDisabled(boolean homeDisabled) {
         mTaskbarStashedHandleAlpha.get(ALPHA_INDEX_HOME_DISABLED).setValue(
                 homeDisabled ? 0 : 1);
+    }
+
+    public void updateStateForSysuiFlags(int systemUiStateFlags) {
+        mTaskbarHidden = (systemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) != 0;
+        updateRegionSamplingWindowVisibility();
+    }
+
+    private void updateRegionSamplingWindowVisibility() {
+        mRegionSamplingHelper.setWindowVisible(mIsStashed && !mTaskbarHidden);
     }
 
     public boolean isStashedHandleVisible() {
