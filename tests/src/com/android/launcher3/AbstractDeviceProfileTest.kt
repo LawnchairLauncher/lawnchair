@@ -93,6 +93,24 @@ abstract class AbstractDeviceProfileTest {
                     gesturePx = 0,
                     cutoutPx = 0
                 ),
+            "twopanel-phone" to
+                DeviceSpec(
+                    Pair(1080, 2092),
+                    densityDpi = 420,
+                    statusBarNaturalPx = 133,
+                    statusBarRotatedPx = 110,
+                    gesturePx = 63,
+                    cutoutPx = 133
+                ),
+            "twopanel-tablet" to
+                DeviceSpec(
+                    Pair(2208, 1840),
+                    densityDpi = 420,
+                    statusBarNaturalPx = 110,
+                    statusBarRotatedPx = 133,
+                    gesturePx = 0,
+                    cutoutPx = 0
+                )
         )
 
     protected fun initializeVarsForPhone(
