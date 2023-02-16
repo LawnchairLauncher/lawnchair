@@ -20,6 +20,7 @@ import android.util.SparseIntArray;
 import android.view.View;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Px;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
@@ -30,6 +31,10 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
  * Extension of {@link GridLayoutManager} with support for smooth scrolling
  */
 public class ScrollableLayoutManager extends GridLayoutManager {
+
+    public static final float PREDICTIVE_BACK_MIN_SCALE = 0.9f;
+    private static final float EXTRA_BOTTOM_SPACE_BY_HEIGHT_PERCENT =
+            (1 - PREDICTIVE_BACK_MIN_SCALE) / 2;
 
     // keyed on item type
     protected final SparseIntArray mCachedSizes = new SparseIntArray();
@@ -109,6 +114,13 @@ public class ScrollableLayoutManager extends GridLayoutManager {
     public int computeVerticalScrollRange(State state) {
         Adapter adapter = mRv == null ? null : mRv.getAdapter();
         return adapter == null ? 0 : getItemsHeight(adapter, adapter.getItemCount());
+    }
+
+    @Override
+    protected void calculateExtraLayoutSpace(RecyclerView.State state, int[] extraLayoutSpace) {
+        super.calculateExtraLayoutSpace(state, extraLayoutSpace);
+        @Px int extraSpacePx = (int) (getHeight() * EXTRA_BOTTOM_SPACE_BY_HEIGHT_PERCENT);
+        extraLayoutSpace[1] = Math.max(extraLayoutSpace[1], extraSpacePx);
     }
 
     /**

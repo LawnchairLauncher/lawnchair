@@ -38,6 +38,7 @@
             android:id="@+id/search_and_recommendations_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipToOutline="true"
             android:orientation="vertical">
 
             <FrameLayout
