@@ -20,7 +20,6 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.R;
 import com.android.launcher3.appprediction.PredictionRowView;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.taskbar.TaskbarControllers;
@@ -54,9 +53,6 @@ public final class TaskbarAllAppsController {
 
     /** Initialize the controller. */
     public void init(TaskbarControllers controllers, boolean allAppsVisible) {
-        if (!FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()) {
-            return;
-        }
         mControllers = controllers;
 
         /*
@@ -70,10 +66,6 @@ public final class TaskbarAllAppsController {
 
     /** Updates the current {@link AppInfo} instances. */
     public void setApps(AppInfo[] apps, int flags) {
-        if (!FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()) {
-            return;
-        }
-
         mApps = apps;
         mAppsModelFlags = flags;
         if (mAppsView != null) {
@@ -91,10 +83,6 @@ public final class TaskbarAllAppsController {
 
     /** Updates the current predictions. */
     public void setPredictedApps(List<ItemInfo> predictedApps) {
-        if (!FeatureFlags.ENABLE_ALL_APPS_IN_TASKBAR.get()) {
-            return;
-        }
-
         mPredictedApps = predictedApps;
         if (mAppsView != null) {
             mAppsView.getFloatingHeaderView()

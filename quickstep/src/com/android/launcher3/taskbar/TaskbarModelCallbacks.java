@@ -199,13 +199,6 @@ public class TaskbarModelCallbacks implements
         hotseatItemInfos = mControllers.taskbarRecentAppsController
                 .updateHotseatItemInfos(hotseatItemInfos);
         mContainer.updateHotseatItems(hotseatItemInfos);
-
-        final boolean finalIsHotseatEmpty = isHotseatEmpty;
-        mControllers.runAfterInit(() -> {
-            mControllers.taskbarStashController.updateStateForFlag(
-                    TaskbarStashController.FLAG_STASHED_IN_APP_EMPTY, finalIsHotseatEmpty);
-            mControllers.taskbarStashController.applyState();
-        });
     }
 
     @Override
