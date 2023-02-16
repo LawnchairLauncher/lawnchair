@@ -315,6 +315,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
     @Override
     public void onTaskbarIconLaunched(ItemInfo item) {
+        super.onTaskbarIconLaunched(item);
         InstanceId instanceId = new InstanceIdSequence().newInstanceId();
         mLauncher.logAppLaunch(mControllers.taskbarActivityContext.getStatsLogManager(), item,
                 instanceId);

@@ -837,15 +837,17 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                             launchFromTaskbarPreservingSplitIfVisible(recents, info);
                         }
 
-                        mControllers.uiController.onTaskbarIconLaunched(info);
                     } catch (NullPointerException
                             | ActivityNotFoundException
                             | SecurityException e) {
                         Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT)
                                 .show();
                         Log.e(TAG, "Unable to launch. tag=" + info + " intent=" + intent, e);
+                        return;
                     }
+
                 }
+                mControllers.uiController.onTaskbarIconLaunched(info);
                 mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
             }
         } else if (tag instanceof AppInfo) {
@@ -859,8 +861,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 taskbarUIController.triggerSecondAppForSplit(info, info.intent, view);
             } else {
                 launchFromTaskbarPreservingSplitIfVisible(recents, info);
-                mControllers.uiController.onTaskbarIconLaunched(info);
             }
+            mControllers.uiController.onTaskbarIconLaunched(info);
             mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
         } else if (tag instanceof ItemClickProxy) {
             ((ItemClickProxy) tag).onItemClicked(view);
