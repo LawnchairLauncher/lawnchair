@@ -289,6 +289,7 @@
 
     <!-- Transient taskbar -->
     <dimen name="transient_taskbar_size">72dp</dimen>
+    <dimen name="transient_taskbar_min_width">150dp</dimen>
     <dimen name="transient_taskbar_icon_size">48dp</dimen>
     <dimen name="transient_taskbar_margin">24dp</dimen>
     <dimen name="transient_taskbar_shadow_blur">40dp</dimen>
