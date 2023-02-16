@@ -59,6 +59,7 @@ public class TaskbarControllers {
     public final TaskbarTranslationController taskbarTranslationController;
     public final TaskbarOverlayController taskbarOverlayController;
     public final TaskbarEduTooltipController taskbarEduTooltipController;
+    public final KeyboardQuickSwitchController keyboardQuickSwitchController;
 
     @Nullable private LoggableTaskbarController[] mControllersToLog = null;
     @Nullable private BackgroundRendererController[] mBackgroundRendererControllers = null;
@@ -103,7 +104,8 @@ public class TaskbarControllers {
             VoiceInteractionWindowController voiceInteractionWindowController,
             TaskbarTranslationController taskbarTranslationController,
             TaskbarRecentAppsController taskbarRecentAppsController,
-            TaskbarEduTooltipController taskbarEduTooltipController) {
+            TaskbarEduTooltipController taskbarEduTooltipController,
+            KeyboardQuickSwitchController keyboardQuickSwitchController) {
         this.taskbarActivityContext = taskbarActivityContext;
         this.taskbarDragController = taskbarDragController;
         this.navButtonController = navButtonController;
@@ -127,6 +129,7 @@ public class TaskbarControllers {
         this.taskbarTranslationController = taskbarTranslationController;
         this.taskbarRecentAppsController = taskbarRecentAppsController;
         this.taskbarEduTooltipController = taskbarEduTooltipController;
+        this.keyboardQuickSwitchController = keyboardQuickSwitchController;
     }
 
     /**
@@ -159,6 +162,7 @@ public class TaskbarControllers {
         taskbarRecentAppsController.init(this);
         taskbarTranslationController.init(this);
         taskbarEduTooltipController.init(this);
+        keyboardQuickSwitchController.init(this);
 
         mControllersToLog = new LoggableTaskbarController[] {
                 taskbarDragController, navButtonController, navbarButtonsViewController,
@@ -167,7 +171,7 @@ public class TaskbarControllers {
                 stashedHandleViewController, taskbarStashController, taskbarEduController,
                 taskbarAutohideSuspendController, taskbarPopupController, taskbarInsetsController,
                 voiceInteractionWindowController, taskbarTranslationController,
-                taskbarEduTooltipController
+                taskbarEduTooltipController, keyboardQuickSwitchController
         };
         mBackgroundRendererControllers = new BackgroundRendererController[] {
                 taskbarDragLayerController, taskbarScrimViewController,
@@ -191,6 +195,7 @@ public class TaskbarControllers {
     public void onConfigurationChanged(@Config int configChanges) {
         navbarButtonsViewController.onConfigurationChanged(configChanges);
         taskbarDragLayerController.onConfigurationChanged();
+        keyboardQuickSwitchController.onConfigurationChanged(configChanges);
     }
 
     /**
@@ -216,6 +221,7 @@ public class TaskbarControllers {
         taskbarInsetsController.onDestroy();
         voiceInteractionWindowController.onDestroy();
         taskbarRecentAppsController.onDestroy();
+        keyboardQuickSwitchController.onDestroy();
 
         mControllersToLog = null;
         mBackgroundRendererControllers = null;

@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 import static com.android.launcher3.util.SplitConfigurationOptions.getLogEventForPosition;
 
 import android.content.Intent;
@@ -56,6 +57,7 @@ import com.android.quickstep.util.LogUtils;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -152,9 +154,28 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
             return null;
         }
 
-        final PopupContainerWithArrow<BaseTaskbarContext> container =
-                (PopupContainerWithArrow<BaseTaskbarContext>) context.getLayoutInflater().inflate(
-                        R.layout.popup_container, context.getDragLayer(), false);
+        PopupContainerWithArrow<BaseTaskbarContext> container;
+        int deepShortcutCount = mPopupDataProvider.getShortcutCountForItem(item);
+        // TODO(b/198438631): add support for INSTALL shortcut factory
+        List<SystemShortcut> systemShortcuts = getSystemShortcuts()
+                .map(s -> s.getShortcut(context, item, icon))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+
+        if (ENABLE_MATERIAL_U_POPUP.get()) {
+            container = (PopupContainerWithArrow) context.getLayoutInflater().inflate(
+                    R.layout.popup_container_material_u, context.getDragLayer(), false);
+            container.populateAndShowRowsMaterialU(icon, deepShortcutCount, systemShortcuts);
+        } else {
+            container = (PopupContainerWithArrow) context.getLayoutInflater().inflate(
+                    R.layout.popup_container, context.getDragLayer(), false);
+            container.populateAndShow(
+                    icon,
+                    deepShortcutCount,
+                    mPopupDataProvider.getNotificationKeysForItem(item),
+                    systemShortcuts);
+        }
+
         container.addOnAttachStateChangeListener(
                 new PopupLiveUpdateHandler<BaseTaskbarContext>(context, container) {
                     @Override
@@ -165,15 +186,6 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
         // TODO (b/198438631): configure for taskbar/context
         container.setPopupItemDragHandler(new TaskbarPopupItemDragHandler());
         mControllers.taskbarDragController.addDragListener(container);
-
-        container.populateAndShow(icon,
-                mPopupDataProvider.getShortcutCountForItem(item),
-                mPopupDataProvider.getNotificationKeysForItem(item),
-                // TODO (b/198438631): add support for INSTALL shortcut factory
-                getSystemShortcuts()
-                        .map(s -> s.getShortcut(context, item, icon))
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList()));
         container.requestFocus();
 
         // Make focusable to receive back events
