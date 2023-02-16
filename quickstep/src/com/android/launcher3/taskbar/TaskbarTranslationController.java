@@ -113,7 +113,8 @@ public class TaskbarTranslationController implements TaskbarControllers.Loggable
                 return;
             }
             reset();
-            if (mControllers.taskbarStashController.isTaskbarVisibleAndNotStashing()) {
+            if (mControllers.taskbarStashController.isInApp()
+                    && mControllers.taskbarStashController.isTaskbarVisibleAndNotStashing()) {
                 mControllers.taskbarEduTooltipController.maybeShowFeaturesEdu();
             }
         }));
