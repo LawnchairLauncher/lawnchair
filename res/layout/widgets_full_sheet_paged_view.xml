@@ -47,6 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/collapse_handle"
         android:paddingBottom="0dp"
+        android:clipToOutline="true"
         android:orientation="vertical">
 
         <TextView
