@@ -4837,6 +4837,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 passedOverviewThreshold[0] = passed;
                 performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
                         HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                // Also update recents animation controller state if it is ongoing.
+                if (mRecentsAnimationController != null) {
+                    mRecentsAnimationController.setWillFinishToHome(!passed);
+                }
             }
         });
 

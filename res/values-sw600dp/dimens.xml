@@ -35,7 +35,6 @@
 
 <!-- Dynamic grid -->
     <dimen name="dynamic_grid_edge_margin">9dp</dimen>
-    <dimen name="dynamic_grid_icon_drawable_padding">7dp</dimen>
     <dimen name="cell_layout_padding">9dp</dimen>
 
 <!-- Hotseat -->

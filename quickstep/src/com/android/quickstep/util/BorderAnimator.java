@@ -38,7 +38,8 @@ import com.android.launcher3.anim.Interpolators;
  * 1. Create an instance in the target view.
  * 2. Override the target view's {@link android.view.View#draw(Canvas)} method and call
  *      {@link BorderAnimator#drawBorder(Canvas)} after {@code super.draw(canvas)}.
- * 3. Call {@link BorderAnimator#buildAnimator(boolean)} and start the animation where appropriate.
+ * 3. Call {@link BorderAnimator#buildAnimator(boolean)} and start the animation or call
+ *      {@link BorderAnimator#setBorderVisible(boolean)} where appropriate.
  */
 public final class BorderAnimator {
 
@@ -138,6 +139,7 @@ public final class BorderAnimator {
     /**
      * Builds the border appearance/disappearance animation.
      */
+    @NonNull
     public Animator buildAnimator(boolean isAppearing) {
         mBorderBoundsBuilder.updateBorderBounds(mBorderBounds);
         mRunningBorderAnimation = mBorderAnimationProgress.animateToValue(isAppearing ? 1f : 0f);
@@ -148,6 +150,18 @@ public final class BorderAnimator {
                 AnimatorListeners.forEndCallback(() -> mRunningBorderAnimation = null));
 
         return mRunningBorderAnimation;
+    }
+
+    /**
+     * Immediately shows/hides the border without an animation.
+     *
+     * To animate the appearance/disappearance, see {@link BorderAnimator#buildAnimator(boolean)}
+     */
+    public void setBorderVisible(boolean visible) {
+        if (mRunningBorderAnimation != null) {
+            mRunningBorderAnimation.end();
+        }
+        mBorderAnimationProgress.updateValue(visible ? 1f : 0f);
     }
 
     /**

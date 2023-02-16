@@ -76,6 +76,7 @@ import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.WorkspaceRevealAnim;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
 
@@ -162,6 +163,10 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         }
         int stateFlags = SystemUiProxy.INSTANCE.get(mLauncher).getLastSystemUiStateFlags();
         if ((stateFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0) {
+            return false;
+        }
+        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+            // TODO(b/268075592): add support for quickswitch to/from desktop
             return false;
         }
         return true;

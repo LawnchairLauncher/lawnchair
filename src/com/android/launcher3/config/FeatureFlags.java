@@ -415,7 +415,7 @@ public final class FeatureFlags {
                     + "them in launcher process using hinge sensor values.");
 
     public static final BooleanFlag ENABLE_KEYBOARD_QUICK_SWITCH = getDebugFlag(
-            "ENABLE_KEYBOARD_QUICK_SWITCH", false,
+            "ENABLE_KEYBOARD_QUICK_SWITCH", true,
             "Enables keyboard quick switching");
 
     public static void initialize(Context context) {

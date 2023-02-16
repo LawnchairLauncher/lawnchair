@@ -18,6 +18,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/bg_popup_item_width"
     android:layout_height="wrap_content"
+    android:id="@+id/system_shortcut"
     android:minHeight="@dimen/bg_popup_item_height"
     android:elevation="@dimen/deep_shortcuts_elevation"
     android:background="@drawable/middle_item_primary"

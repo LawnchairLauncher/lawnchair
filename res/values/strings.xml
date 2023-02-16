@@ -419,10 +419,12 @@
 
     <!--- heading shown when user opens work apps tab while work apps are paused -->
     <string name="work_apps_paused_title">Work apps are paused</string>
-    <!--- body shown when user opens work apps tab while work apps are paused -->
+    <!--- body shown when user opens work apps tab while work apps are paused.-->
+    <string name="work_apps_paused_info_body">You won’t receive notifications from your work apps</string>
+    <!--- body shown when user opens work apps tab while work apps are paused. -->
     <string name="work_apps_paused_body">Your work apps can’t send you notifications, use your battery, or access your location</string>
-    <!-- content description for paused work apps list -->
-    <string name="work_apps_paused_content_description">Work apps are off. Your work apps can’t send you notifications, use your battery, or access your location</string>
+    <!--- body shown when user opens work apps tab while work apps are paused and calls and texts are unavailable-->
+    <string name="work_apps_paused_telephony_unavailable_body">You won’t receive phone calls, text messages, or notifications from your work apps</string>
     <!-- string shown in educational banner about work profile -->
     <string name="work_apps_paused_edu_banner">Work apps are badged and visible to your IT admin</string>
     <!-- button string shown to dismiss work tab education -->
@@ -431,7 +433,7 @@
     <!-- button string shown pause work profile -->
     <string name="work_apps_pause_btn_text">Pause work apps</string>
     <!-- button string shown enable work profile -->
-    <string name="work_apps_enable_btn_text">Turn on work apps</string>
+    <string name="work_apps_enable_btn_text">Unpause</string>
 
     <!-- A hint shown in launcher settings develop options filter box -->
     <string name="developer_options_filter_hint">Filter</string>

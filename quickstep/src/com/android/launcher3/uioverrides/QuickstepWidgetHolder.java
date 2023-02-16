@@ -32,6 +32,7 @@ import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.WidgetsModel;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
@@ -41,13 +42,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.IntConsumer;
 
 /**
  * {@link LauncherWidgetHolder} that puts the app widget host in the background
  */
 public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
+
+    private static final UpdateKey<AppWidgetProviderInfo> KEY_PROVIDER_UPDATE =
+            AppWidgetHostView::onUpdateProviderInfo;
+    private static final UpdateKey<RemoteViews> KEY_VIEWS_UPDATE =
+            AppWidgetHostView::updateAppWidget;
+    private static final UpdateKey<Integer> KEY_VIEW_DATA_CHANGED =
+            AppWidgetHostView::onViewDataChanged;
+
     private static final List<QuickstepWidgetHolder> sHolders = new ArrayList<>();
     private static final SparseArray<QuickstepWidgetHolderListener> sListeners =
             new SparseArray<>();
@@ -59,6 +68,8 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
     private final @NonNull IntConsumer mAppWidgetRemovedCallback;
 
     private final ArrayList<ProviderChangedListener> mProviderChangedListeners = new ArrayList<>();
+    // Map to all pending updated keyed with appWidgetId;
+    private final SparseArray<PendingUpdate> mPendingUpdateMap = new SparseArray<>();
 
     @Thunk
     QuickstepWidgetHolder(@NonNull Context context,
@@ -90,6 +101,57 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
         return sWidgetHost;
     }
 
+    @Override
+    protected void updateDeferredView() {
+        super.updateDeferredView();
+        int count = mPendingUpdateMap.size();
+        for (int i = 0; i < count; i++) {
+            int widgetId = mPendingUpdateMap.keyAt(i);
+            QuickstepWidgetHolderListener listener = sListeners.get(widgetId);
+            if (listener == null) {
+                continue;
+            }
+            AppWidgetHostView view = listener.mView.get(this);
+            if (view == null) {
+                continue;
+            }
+            PendingUpdate pendingUpdate = mPendingUpdateMap.valueAt(i);
+            if (pendingUpdate == null) {
+                continue;
+            }
+            if (pendingUpdate.providerInfo != null) {
+                KEY_PROVIDER_UPDATE.accept(view, pendingUpdate.providerInfo);
+            }
+            if (pendingUpdate.remoteViews != null) {
+                KEY_VIEWS_UPDATE.accept(view, pendingUpdate.remoteViews);
+            }
+            pendingUpdate.changedViews.forEach(
+                    viewId -> KEY_VIEW_DATA_CHANGED.accept(view, viewId));
+        }
+        mPendingUpdateMap.clear();
+    }
+
+    private <T> void addPendingAction(int widgetId, UpdateKey<T> key, T data) {
+        PendingUpdate pendingUpdate = mPendingUpdateMap.get(widgetId);
+        if (pendingUpdate == null) {
+            pendingUpdate = new PendingUpdate();
+            mPendingUpdateMap.put(widgetId, pendingUpdate);
+        }
+
+        if (KEY_PROVIDER_UPDATE.equals(key)) {
+            // For provider change, remove all updates
+            pendingUpdate.providerInfo = (AppWidgetProviderInfo) data;
+            pendingUpdate.remoteViews = null;
+            pendingUpdate.changedViews.clear();
+        } else if (KEY_VIEWS_UPDATE.equals(key)) {
+            // For views update, remove all previous updates, except the provider
+            pendingUpdate.remoteViews = (RemoteViews) data;
+            pendingUpdate.changedViews.clear();
+        } else if (KEY_VIEW_DATA_CHANGED.equals(key)) {
+            pendingUpdate.changedViews.add((Integer) data);
+        }
+    }
+
     /**
      * Delete the specified app widget from the host
      * @param appWidgetId The ID of the app widget to be deleted
@@ -106,6 +168,12 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
     @Override
     public void destroy() {
         sHolders.remove(this);
+    }
+
+    @Override
+    protected boolean shouldListen(int flags) {
+        return (flags & (FLAG_STATE_IS_NORMAL | FLAG_ACTIVITY_STARTED))
+                == (FLAG_STATE_IS_NORMAL | FLAG_ACTIVITY_STARTED);
     }
 
     /**
@@ -163,7 +231,7 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
 
         QuickstepWidgetHolderListener listener = sListeners.get(appWidgetId);
         if (listener == null) {
-            listener = new QuickstepWidgetHolderListener(this, widgetView);
+            listener = new QuickstepWidgetHolderListener(appWidgetId, this, widgetView);
             sWidgetHost.setListener(appWidgetId, listener);
             sListeners.put(appWidgetId, listener);
         } else {
@@ -185,14 +253,17 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
 
     private static class QuickstepWidgetHolderListener
             implements AppWidgetHost.AppWidgetHostListener {
+
         @NonNull
         private final Map<QuickstepWidgetHolder, AppWidgetHostView> mView = new WeakHashMap<>();
 
-        @Nullable
-        private RemoteViews mRemoteViews = null;
+        private final int mWidgetId;
 
-        QuickstepWidgetHolderListener(@NonNull QuickstepWidgetHolder holder,
+        @Nullable private RemoteViews mRemoteViews = null;
+
+        QuickstepWidgetHolderListener(int widgetId, @NonNull QuickstepWidgetHolder holder,
                 @NonNull LauncherAppWidgetHostView view) {
+            mWidgetId = widgetId;
             mView.put(holder, view);
         }
 
@@ -207,24 +278,30 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
         @WorkerThread
         public void onUpdateProviderInfo(@Nullable AppWidgetProviderInfo info) {
             mRemoteViews = null;
-            executeOnMainExecutor(v -> v.onUpdateProviderInfo(info));
+            executeOnMainExecutor(KEY_PROVIDER_UPDATE, info);
         }
 
         @Override
         @WorkerThread
         public void updateAppWidget(@Nullable RemoteViews views) {
             mRemoteViews = views;
-            executeOnMainExecutor(v -> v.updateAppWidget(mRemoteViews));
+            executeOnMainExecutor(KEY_VIEWS_UPDATE, mRemoteViews);
         }
 
         @Override
         @WorkerThread
         public void onViewDataChanged(int viewId) {
-            executeOnMainExecutor(v -> v.onViewDataChanged(viewId));
+            executeOnMainExecutor(KEY_VIEW_DATA_CHANGED, viewId);
         }
 
-        private void executeOnMainExecutor(Consumer<AppWidgetHostView> consumer) {
-            MAIN_EXECUTOR.execute(() -> mView.values().forEach(consumer));
+        private <T> void executeOnMainExecutor(UpdateKey<T> key, T data) {
+            MAIN_EXECUTOR.execute(() -> mView.forEach((holder, view) -> {
+                if (holder.isListening()) {
+                    key.accept(view, data);
+                } else {
+                    holder.addPendingAction(mWidgetId, key, data);
+                }
+            }));
         }
     }
 
@@ -267,4 +344,12 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
             return new QuickstepWidgetHolder(context, appWidgetRemovedCallback, interactionHandler);
         }
     }
+
+    private static class PendingUpdate {
+        public final IntSet changedViews = new IntSet();
+        public AppWidgetProviderInfo providerInfo;
+        public RemoteViews remoteViews;
+    }
+
+    private interface UpdateKey<T> extends BiConsumer<AppWidgetHostView, T> { }
 }
