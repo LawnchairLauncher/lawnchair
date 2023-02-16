@@ -59,7 +59,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
@@ -961,8 +960,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         AdapterHolder(int adapterType) {
             mAdapterType = adapterType;
             Context context = getContext();
-            LauncherAppState apps = LauncherAppState.getInstance(context);
-
             HeaderChangeListener headerChangeListener = new HeaderChangeListener() {
                 @Override
                 public void onHeaderChanged(@NonNull PackageUserKey selectedHeader) {
@@ -993,7 +990,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mWidgetsListAdapter = new WidgetsListAdapter(
                     context,
                     LayoutInflater.from(context),
-                    apps.getIconCache(),
                     this::getEmptySpaceHeight,
                     /* iconClickListener= */ WidgetsFullSheet.this,
                     /* iconLongClickListener= */ WidgetsFullSheet.this,
