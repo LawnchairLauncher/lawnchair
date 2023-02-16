@@ -16,10 +16,10 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.SEARCH;
-import static com.android.launcher3.allapps.AllAppsTransitionController.SWIPE_ALL_APPS_TO_HOME_MIN_SCALE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_COUNT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB;
+import static com.android.launcher3.util.ScrollableLayoutManager.PREDICTIVE_BACK_MIN_SCALE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -526,7 +526,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 public void getOutline(View view, Outline outline) {
                     @Px final int bottomOffsetPx =
                             (int) (ActivityAllAppsContainerView.this.getMeasuredHeight()
-                                    * SWIPE_ALL_APPS_TO_HOME_MIN_SCALE);
+                                    * PREDICTIVE_BACK_MIN_SCALE);
                     outline.setRect(
                             0,
                             0,
