@@ -870,9 +870,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * (potentially breaking a split pair).
      */
     private void launchFromTaskbarPreservingSplitIfVisible(RecentsView recents, ItemInfo info) {
-        recents.findLastActiveTaskAndRunCallback(
+        recents.getSplitSelectController().findLastActiveTaskAndRunCallback(
                 info.getTargetComponent(),
-                (Consumer<Task>) foundTask -> {
+                foundTask -> {
                     if (foundTask != null) {
                         TaskView foundTaskView =
                                 recents.getTaskViewByTaskId(foundTask.key.id);

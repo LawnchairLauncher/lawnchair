@@ -1285,53 +1285,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return null;
     }
 
-    /**
-     * Pulls the list of active Tasks from RecentsModel, and finds the most recently active Task
-     * matching a given ComponentName. Then uses that Task (which could be null) with the given
-     * callback.
-     *
-     * Used in various task-switching or splitscreen operations when we need to check if there is a
-     * currently running Task of a certain type and use the most recent one.
-     */
-    public void findLastActiveTaskAndRunCallback(ComponentName componentName,
-            Consumer<Task> callback) {
-        mModel.getTasks(taskGroups -> {
-            Task lastActiveTask = null;
-            // Loop through tasks in reverse, since they are ordered with most-recent tasks last.
-            for (int i = taskGroups.size() - 1; i >= 0; i--) {
-                GroupTask groupTask = taskGroups.get(i);
-                Task task1 = groupTask.task1;
-                if (isInstanceOfComponent(task1, componentName)) {
-                    lastActiveTask = task1;
-                    break;
-                }
-                Task task2 = groupTask.task2;
-                if (isInstanceOfComponent(task2, componentName)) {
-                    lastActiveTask = task2;
-                    break;
-                }
-            }
-
-            callback.accept(lastActiveTask);
-        });
-    }
-
-    /**
-     * Checks if a given Task is the most recently-active Task of type componentName. Used for
-     * selecting already-running Tasks for splitscreen.
-     */
-    public boolean isInstanceOfComponent(@Nullable Task task, ComponentName componentName) {
-        if (task == null) {
-            return false;
-        }
-        // Exclude the task that is already staged
-        if (mSplitHiddenTaskView != null && mSplitHiddenTaskView.getTask().equals(task)) {
-            return false;
-        }
-
-        return task.key.baseIntent.getComponent().equals(componentName);
-    }
-
     public void setOverviewStateEnabled(boolean enabled) {
         mOverviewStateEnabled = enabled;
         updateTaskStackListenerState();
