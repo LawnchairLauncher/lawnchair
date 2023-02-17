@@ -310,7 +310,7 @@ public class LoaderCursor extends CursorWrapper {
             throw new InvalidParameterException("Invalid restoreType " + restoreFlag);
         }
 
-        info.contentDescription = mPM.getUserBadgedLabel(info.title, info.user);
+        info.contentDescription = mIconCache.getUserBadgedLabel(info.title, info.user);
         info.itemType = itemType;
         info.status = restoreFlag;
         return info;
@@ -381,7 +381,7 @@ public class LoaderCursor extends CursorWrapper {
             }
         }
 
-        info.contentDescription = mPM.getUserBadgedLabel(info.title, info.user);
+        info.contentDescription = mIconCache.getUserBadgedLabel(info.title, info.user);
         return info;
     }
 
