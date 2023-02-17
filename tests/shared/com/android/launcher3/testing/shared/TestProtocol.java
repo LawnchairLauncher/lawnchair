@@ -126,6 +126,9 @@ public final class TestProtocol {
     public static final String REQUEST_WORKSPACE_CELL_CENTER = "workspace-cell-center";
     public static final String REQUEST_WORKSPACE_COLUMNS_ROWS = "workspace-columns-rows";
 
+    public static final String REQUEST_WORKSPACE_CURRENT_PAGE_INDEX =
+            "workspace-current-page-index";
+
     public static final String REQUEST_HOTSEAT_CELL_CENTER = "hotseat-cell-center";
 
     public static final String REQUEST_GET_FOCUSED_TASK_HEIGHT_FOR_TABLET =

@@ -72,21 +72,20 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     public static final int FLAG_IN_APP = 1 << 0;
     public static final int FLAG_STASHED_IN_APP_MANUAL = 1 << 1; // long press, persisted
     public static final int FLAG_STASHED_IN_SYSUI_STATE = 1 << 2; // app pinning, keyguard, etc.
-    public static final int FLAG_STASHED_IN_APP_EMPTY = 1 << 3; // no hotseat icons
-    public static final int FLAG_STASHED_IN_APP_SETUP = 1 << 4; // setup wizard and AllSetActivity
-    public static final int FLAG_STASHED_IN_APP_IME = 1 << 5; // IME is visible
-    public static final int FLAG_IN_STASHED_LAUNCHER_STATE = 1 << 6;
-    public static final int FLAG_STASHED_IN_TASKBAR_ALL_APPS = 1 << 7; // All apps is visible.
-    public static final int FLAG_IN_SETUP = 1 << 8; // In the Setup Wizard
-    public static final int FLAG_STASHED_SMALL_SCREEN = 1 << 9; // phone screen gesture nav, stashed
-    public static final int FLAG_STASHED_IN_APP_AUTO = 1 << 10; // Autohide (transient taskbar).
+    public static final int FLAG_STASHED_IN_APP_SETUP = 1 << 3; // setup wizard and AllSetActivity
+    public static final int FLAG_STASHED_IN_APP_IME = 1 << 4; // IME is visible
+    public static final int FLAG_IN_STASHED_LAUNCHER_STATE = 1 << 5;
+    public static final int FLAG_STASHED_IN_TASKBAR_ALL_APPS = 1 << 6; // All apps is visible.
+    public static final int FLAG_IN_SETUP = 1 << 7; // In the Setup Wizard
+    public static final int FLAG_STASHED_SMALL_SCREEN = 1 << 8; // phone screen gesture nav, stashed
+    public static final int FLAG_STASHED_IN_APP_AUTO = 1 << 9; // Autohide (transient taskbar).
 
     // If any of these flags are enabled, isInApp should return true.
     private static final int FLAGS_IN_APP = FLAG_IN_APP | FLAG_IN_SETUP;
 
     // If we're in an app and any of these flags are enabled, taskbar should be stashed.
     private static final int FLAGS_STASHED_IN_APP = FLAG_STASHED_IN_APP_MANUAL
-            | FLAG_STASHED_IN_SYSUI_STATE | FLAG_STASHED_IN_APP_EMPTY | FLAG_STASHED_IN_APP_SETUP
+            | FLAG_STASHED_IN_SYSUI_STATE | FLAG_STASHED_IN_APP_SETUP
             | FLAG_STASHED_IN_APP_IME | FLAG_STASHED_IN_TASKBAR_ALL_APPS
             | FLAG_STASHED_SMALL_SCREEN | FLAG_STASHED_IN_APP_AUTO;
 
@@ -932,7 +931,6 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         appendFlag(sj, flags, FLAGS_IN_APP, "FLAG_IN_APP");
         appendFlag(sj, flags, FLAG_STASHED_IN_APP_MANUAL, "FLAG_STASHED_IN_APP_MANUAL");
         appendFlag(sj, flags, FLAG_STASHED_IN_SYSUI_STATE, "FLAG_STASHED_IN_SYSUI_STATE");
-        appendFlag(sj, flags, FLAG_STASHED_IN_APP_EMPTY, "FLAG_STASHED_IN_APP_EMPTY");
         appendFlag(sj, flags, FLAG_STASHED_IN_APP_SETUP, "FLAG_STASHED_IN_APP_SETUP");
         appendFlag(sj, flags, FLAG_STASHED_IN_APP_IME, "FLAG_STASHED_IN_APP_IME");
         appendFlag(sj, flags, FLAG_IN_STASHED_LAUNCHER_STATE, "FLAG_IN_STASHED_LAUNCHER_STATE");
