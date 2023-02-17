@@ -2690,7 +2690,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     private void onDropExternal(final int[] touchXY, final CellLayout cellLayout, DragObject d) {
         if (d.dragInfo instanceof PendingAddShortcutInfo) {
             WorkspaceItemInfo si = ((PendingAddShortcutInfo) d.dragInfo)
-                    .activityInfo.createWorkspaceItemInfo();
+                    .getActivityInfo(mLauncher).createWorkspaceItemInfo();
             if (si != null) {
                 d.dragInfo = si;
             }
