@@ -88,7 +88,6 @@ import com.android.launcher3.tracing.LauncherTraceProto;
 import com.android.launcher3.tracing.TouchInteractionServiceProto;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.DisplayController;
-import com.android.launcher3.util.LockedUserState;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
@@ -412,8 +411,8 @@ public class TouchInteractionService extends Service
         mRotationTouchHelper = mDeviceState.getRotationTouchHelper();
 
         // Call runOnUserUnlocked() before any other callbacks to ensure everything is initialized.
-        LockedUserState.get(this).runOnUserUnlocked(this::onUserUnlocked);
-        LockedUserState.get(this).runOnUserUnlocked(mTaskbarManager::onUserUnlocked);
+        mDeviceState.runOnUserUnlocked(this::onUserUnlocked);
+        mDeviceState.runOnUserUnlocked(mTaskbarManager::onUserUnlocked);
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
 
         ProtoTracer.INSTANCE.get(this).add(this);
@@ -483,7 +482,7 @@ public class TouchInteractionService extends Service
     }
 
     private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
-        if (!LockedUserState.get(this).isUserUnlocked() || mDeviceState.isButtonNavMode()) {
+        if (!mDeviceState.isUserUnlocked() || mDeviceState.isButtonNavMode()) {
             // Skip if not yet unlocked (can't read user shared prefs) or if the current navigation
             // mode doesn't have gestures
             return;
@@ -526,7 +525,7 @@ public class TouchInteractionService extends Service
 
     @UiThread
     private void onSystemUiFlagsChanged(int lastSysUIFlags) {
-        if (LockedUserState.get(this).isUserUnlocked()) {
+        if (mDeviceState.isUserUnlocked()) {
             int systemUiStateFlags = mDeviceState.getSystemUiStateFlags();
             SystemUiProxy.INSTANCE.get(this).setLastSystemUiStateFlags(systemUiStateFlags);
             mOverviewComponentObserver.onSystemUiStateChanged();
@@ -571,7 +570,7 @@ public class TouchInteractionService extends Service
 
     @UiThread
     private void onAssistantVisibilityChanged() {
-        if (LockedUserState.get(this).isUserUnlocked()) {
+        if (mDeviceState.isUserUnlocked()) {
             mOverviewComponentObserver.getActivityInterface().onAssistantVisibilityChanged(
                     mDeviceState.getAssistantVisibility());
         }
@@ -581,7 +580,7 @@ public class TouchInteractionService extends Service
     public void onDestroy() {
         Log.d(TAG, "Touch service destroyed: user=" + getUserId());
         sIsInitialized = false;
-        if (LockedUserState.get(this).isUserUnlocked()) {
+        if (mDeviceState.isUserUnlocked()) {
             mInputConsumer.unregisterInputConsumer();
             mOverviewComponentObserver.onDestroy();
         }
@@ -615,7 +614,7 @@ public class TouchInteractionService extends Service
         TestLogging.recordMotionEvent(
                 TestProtocol.SEQUENCE_TIS, "TouchInteractionService.onInputEvent", event);
 
-        if (!LockedUserState.get(this).isUserUnlocked()) {
+        if (!mDeviceState.isUserUnlocked()) {
             return;
         }
 
@@ -637,8 +636,7 @@ public class TouchInteractionService extends Service
                 mGestureState = newGestureState;
                 mConsumer = newConsumer(prevGestureState, mGestureState, event);
                 mUncheckedConsumer = mConsumer;
-            } else if (LockedUserState.get(this).isUserUnlocked()
-                    && mDeviceState.isFullyGesturalNavMode()
+            } else if (mDeviceState.isUserUnlocked() && mDeviceState.isFullyGesturalNavMode()
                     && mDeviceState.canTriggerAssistantAction(event)) {
                 mGestureState = createGestureState(mGestureState);
                 // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we
@@ -758,7 +756,7 @@ public class TouchInteractionService extends Service
 
         boolean canStartSystemGesture = mDeviceState.canStartSystemGesture();
 
-        if (!LockedUserState.get(this).isUserUnlocked()) {
+        if (!mDeviceState.isUserUnlocked()) {
             CompoundString reasonString = newCompoundString("device locked");
             InputConsumer consumer;
             if (canStartSystemGesture) {
@@ -1105,7 +1103,7 @@ public class TouchInteractionService extends Service
     }
 
     private void preloadOverview(boolean fromInit, boolean forSUWAllSet) {
-        if (!LockedUserState.get(this).isUserUnlocked()) {
+        if (!mDeviceState.isUserUnlocked()) {
             return;
         }
 
@@ -1137,7 +1135,7 @@ public class TouchInteractionService extends Service
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        if (!LockedUserState.get(this).isUserUnlocked()) {
+        if (!mDeviceState.isUserUnlocked()) {
             return;
         }
         final BaseActivityInterface activityInterface =
@@ -1178,7 +1176,7 @@ public class TouchInteractionService extends Service
         } else {
             // Dump everything
             FeatureFlags.dump(pw);
-            if (LockedUserState.get(this).isUserUnlocked()) {
+            if (mDeviceState.isUserUnlocked()) {
                 PluginManagerWrapper.INSTANCE.get(getBaseContext()).dump(pw);
             }
             mDeviceState.dump(pw);
