@@ -208,6 +208,11 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 );
             }
 
+            case TestProtocol.REQUEST_WORKSPACE_CURRENT_PAGE_INDEX: {
+                return getLauncherUIProperty(Bundle::putInt,
+                        launcher -> launcher.getWorkspace().getCurrentPage());
+            }
+
             case TestProtocol.REQUEST_HOTSEAT_CELL_CENTER: {
                 final HotseatCellCenterRequest request = extra.getParcelable(
                         TestProtocol.TEST_INFO_REQUEST_FIELD);
