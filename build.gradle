@@ -11,7 +11,7 @@ plugins {
     id "com.google.devtools.ksp" version "1.8.10-1.0.9"
     id 'com.google.protobuf' version "0.9.1"
     id 'com.google.android.gms.oss-licenses-plugin' version "0.10.6"
-    id 'dev.rikka.tools.refine' version "4.2.0"
+    id 'dev.rikka.tools.refine' version "4.2.1"
 }
 
 allprojects {
