@@ -16,16 +16,11 @@
 
 package com.android.launcher3.widget.model;
 
-import static java.lang.annotation.RetentionPolicy.SOURCE;
-
-import androidx.annotation.IntDef;
-
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.widget.WidgetItemComparator;
 
-import java.lang.annotation.Retention;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -48,23 +43,4 @@ public abstract class WidgetsListBaseEntry {
         this.mWidgets =
                 items.stream().sorted(new WidgetItemComparator()).collect(Collectors.toList());
     }
-
-    /**
-     * Returns the ranking of this entry in the
-     * {@link com.android.launcher3.widget.picker.WidgetsListAdapter}.
-     *
-     * <p>Entries with smaller value should be shown first. See
-     * {@link com.android.launcher3.widget.picker.WidgetsDiffReporter} for more details.
-     */
-    @Rank
-    public abstract int getRank();
-
-    @Retention(SOURCE)
-    @IntDef({RANK_WIDGETS_TOP_SPACE, RANK_WIDGETS_LIST_HEADER, RANK_WIDGETS_LIST_CONTENT})
-    public @interface Rank {
-    }
-
-    public static final int RANK_WIDGETS_TOP_SPACE = 1;
-    public static final int RANK_WIDGETS_LIST_HEADER = 2;
-    public static final int RANK_WIDGETS_LIST_CONTENT = 3;
 }
