@@ -85,12 +85,6 @@ public final class WidgetsListHeaderEntry extends WidgetsListBaseEntry {
         return "Header:" + mPkgItem.packageName + ":" + mWidgets.size();
     }
 
-    @Override
-    @Rank
-    public int getRank() {
-        return RANK_WIDGETS_LIST_HEADER;
-    }
-
     public boolean isSearchEntry() {
         return mIsSearchEntry;
     }
