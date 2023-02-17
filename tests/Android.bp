@@ -87,6 +87,7 @@ android_library {
         "launcher_log_protos_lite",
         "truth-prebuilt",
         "platform-test-rules",
+        "testables",
     ],
     manifest: "AndroidManifest-common.xml",
     platform_apis: true,

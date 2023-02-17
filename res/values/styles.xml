@@ -425,5 +425,6 @@
 
     <style name="ArrowTipStyle">
         <item name="arrowTipBackground">@color/arrow_tip_view_bg</item>
+        <item name="arrowTipTextColor">@color/arrow_tip_view_content</item>
     </style>
 </resources>

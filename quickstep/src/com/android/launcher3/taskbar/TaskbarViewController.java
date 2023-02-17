@@ -690,6 +690,11 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                     .updateAndAnimateIsManuallyStashedInApp(true);
         }
 
+        /** Gets the hover listener for the provided icon view. */
+        public View.OnHoverListener getIconOnHoverListener(View icon) {
+            return new TaskbarHoverToolTipController(mActivity, mTaskbarView, icon);
+        }
+
         /**
          * Get the first chance to handle TaskbarView#onTouchEvent, and return whether we want to
          * consume the touch so TaskbarView treats it as an ACTION_CANCEL.
