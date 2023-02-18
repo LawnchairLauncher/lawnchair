@@ -40,7 +40,6 @@ import com.android.launcher3.widget.WidgetSections;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
-import com.android.launcher3.widget.picker.WidgetsDiffReporter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,8 +72,7 @@ public class WidgetsModel {
     /**
      * Returns a list of {@link WidgetsListBaseEntry}. All {@link WidgetItem} in a single row
      * are sorted (based on label and user), but the overall list of
-     * {@link WidgetsListBaseEntry}s is not sorted. This list is sorted at the UI when using
-     * {@link WidgetsDiffReporter}
+     * {@link WidgetsListBaseEntry}s is not sorted.
      *
      * @see com.android.launcher3.widget.picker.WidgetsListAdapter#setWidgets(List)
      */

@@ -113,6 +113,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
         }
         mWidgetCellHorizontalPadding = getResources().getDimensionPixelSize(
                 R.dimen.widget_cell_horizontal_padding);
+        setContentBackground(getContext().getDrawable(R.drawable.bg_rounded_corner_bottom_sheet));
     }
 
     @Override

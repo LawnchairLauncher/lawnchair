@@ -32,13 +32,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.DiffUtil.DiffResult;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.android.launcher3.R;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.util.LabelComparator;
@@ -82,7 +83,6 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     public static final int VIEW_TYPE_WIDGETS_HEADER = R.id.view_type_widgets_header;
 
     private final Context mContext;
-    private final WidgetsDiffReporter mDiffReporter;
     private final SparseArray<ViewHolderBinder> mViewHolderBinders = new SparseArray<>();
     private final WidgetListBaseRowEntryComparator mRowComparator =
             new WidgetListBaseRowEntryComparator();
@@ -102,12 +102,11 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     private int mMaxSpanSize = 4;
 
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
-            IconCache iconCache, IntSupplier emptySpaceHeightProvider,
-            OnClickListener iconClickListener, OnLongClickListener iconLongClickListener,
+            IntSupplier emptySpaceHeightProvider, OnClickListener iconClickListener,
+            OnLongClickListener iconLongClickListener,
             WidgetsFullSheet.HeaderChangeListener headerChangeListener) {
         mHeaderChangeListener = headerChangeListener;
         mContext = context;
-        mDiffReporter = new WidgetsDiffReporter(iconCache, this);
 
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_LIST,
@@ -205,7 +204,11 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
                 })
                 .collect(Collectors.toList());
 
-        mDiffReporter.process(mVisibleEntries, newVisibleEntries, mRowComparator);
+        DiffResult diffResult = DiffUtil.calculateDiff(
+                new WidgetsDiffCallback(mVisibleEntries, newVisibleEntries), false);
+        mVisibleEntries.clear();
+        mVisibleEntries.addAll(newVisibleEntries);
+        diffResult.dispatchUpdatesTo(this);
 
         if (mPendingClickHeader != null) {
             // Get the position for the clicked header after adjusting the visible entries. The

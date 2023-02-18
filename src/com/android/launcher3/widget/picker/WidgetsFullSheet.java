@@ -17,9 +17,7 @@ package com.android.launcher3.widget.picker;
 
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
-import static com.android.launcher3.allapps.AllAppsTransitionController.SWIPE_ALL_APPS_TO_HOME_MIN_SCALE;
 import static com.android.launcher3.config.FeatureFlags.LARGE_SCREEN_WIDGET_PICKER;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_SEARCHED;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
@@ -31,6 +29,7 @@ import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Outline;
 import android.graphics.Rect;
 import android.os.Process;
 import android.os.UserHandle;
@@ -42,6 +41,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.view.WindowInsets;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
@@ -59,10 +59,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.model.UserManagerState;
@@ -170,6 +168,18 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 }
             };
 
+    private final ViewOutlineProvider mViewOutlineProvider = new ViewOutlineProvider() {
+        @Override
+        public void getOutline(View view, Outline outline) {
+            outline.setRect(
+                    0,
+                    0,
+                    view.getMeasuredWidth(),
+                    view.getMeasuredHeight() + getBottomOffsetPx()
+            );
+        }
+    };
+
     private final int mTabsHeight;
     private final int mWidgetSheetContentHorizontalPadding;
 
@@ -195,6 +205,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private int mOrientation;
     private @Nullable WidgetsRecyclerView mCurrentTouchEventRecyclerView;
 
+    private RecyclerViewFastScroller mFastScroller;
+
     public WidgetsFullSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         DeviceProfile dp = Launcher.getLauncher(context).getDeviceProfile();
@@ -213,6 +225,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         mUserManagerState.init(UserCache.INSTANCE.get(context),
                 context.getSystemService(UserManager.class));
+        setContentBackground(getContext().getDrawable(R.drawable.bg_widgets_full_sheet));
     }
 
     public WidgetsFullSheet(Context context, AttributeSet attrs) {
@@ -224,6 +237,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         super.onFinishInflate();
         mContent = findViewById(R.id.container);
 
+        mContent.setOutlineProvider(mViewOutlineProvider);
+        mContent.setClipToOutline(true);
+
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         int contentLayoutRes = mHasWorkProfile ? R.layout.widgets_full_sheet_paged_view
                 : R.layout.widgets_full_sheet_recyclerview;
@@ -233,14 +249,17 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
         layoutInflater.inflate(contentLayoutRes, mContent, true);
 
-        RecyclerViewFastScroller fastScroller = findViewById(R.id.fast_scroller);
+        mFastScroller = findViewById(R.id.fast_scroller);
         if (mIsTwoPane) {
-            fastScroller.setVisibility(GONE);
+            mFastScroller.setVisibility(GONE);
         }
         mAdapters.get(AdapterHolder.PRIMARY).setup(findViewById(R.id.primary_widgets_list_view));
         mAdapters.get(AdapterHolder.SEARCH).setup(findViewById(R.id.search_widgets_list_view));
         if (mHasWorkProfile) {
             mViewPager = findViewById(R.id.widgets_view_pager);
+            mViewPager.setOutlineProvider(mViewOutlineProvider);
+            mViewPager.setClipToOutline(true);
+            mViewPager.setClipChildren(false);
             mViewPager.initParentViews(this);
             mViewPager.getPageIndicator().setOnActivePageChangedListener(this);
             mViewPager.getPageIndicator().setActiveMarker(AdapterHolder.PRIMARY);
@@ -349,11 +368,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     @Override
     public void onBackProgressed(@FloatRange(from = 0.0, to = 1.0) float progress) {
-        float deceleratedProgress =
-                Interpolators.PREDICTIVE_BACK_DECELERATED_EASE.getInterpolation(progress);
-        float scaleProgress = SWIPE_ALL_APPS_TO_HOME_MIN_SCALE
-                + (1 - SWIPE_ALL_APPS_TO_HOME_MIN_SCALE) * (1 - deceleratedProgress);
-        SCALE_PROPERTY.set(this, scaleProgress);
+        super.onBackProgressed(progress);
+        mFastScroller.setVisibility(progress > 0 ? View.INVISIBLE : View.VISIBLE);
     }
 
     private void attachScrollbarToRecyclerView(WidgetsRecyclerView recyclerView) {
@@ -859,6 +875,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public void onBackInvoked() {
         if (mIsInSearchMode) {
             mSearchBar.reset();
+            animateSlideInViewToNoScale();
         } else {
             super.onBackInvoked();
         }
@@ -943,8 +960,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         AdapterHolder(int adapterType) {
             mAdapterType = adapterType;
             Context context = getContext();
-            LauncherAppState apps = LauncherAppState.getInstance(context);
-
             HeaderChangeListener headerChangeListener = new HeaderChangeListener() {
                 @Override
                 public void onHeaderChanged(@NonNull PackageUserKey selectedHeader) {
@@ -975,7 +990,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mWidgetsListAdapter = new WidgetsListAdapter(
                     context,
                     LayoutInflater.from(context),
-                    apps.getIconCache(),
                     this::getEmptySpaceHeight,
                     /* iconClickListener= */ WidgetsFullSheet.this,
                     /* iconLongClickListener= */ WidgetsFullSheet.this,
@@ -1003,6 +1017,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         void setup(WidgetsRecyclerView recyclerView) {
             mWidgetsRecyclerView = recyclerView;
+            mWidgetsRecyclerView.setOutlineProvider(mViewOutlineProvider);
+            mWidgetsRecyclerView.setClipToOutline(true);
+            mWidgetsRecyclerView.setClipChildren(false);
             mWidgetsRecyclerView.setAdapter(mWidgetsListAdapter);
             mWidgetsRecyclerView.setItemAnimator(mWidgetsListItemAnimator);
             mWidgetsRecyclerView.setHeaderViewDimensionsProvider(WidgetsFullSheet.this);

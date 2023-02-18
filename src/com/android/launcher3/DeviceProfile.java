@@ -1315,23 +1315,29 @@ public class DeviceProfile {
                     hotseatBarSizePx - hotseatBarBottomPadding - hotseatCellHeightPx;
 
             int hotseatWidth = getHotseatRequiredWidth();
-            int leftSpacing = (availableWidthPx - hotseatWidth) / 2;
-            int rightSpacing = leftSpacing;
+            int startSpacing;
+            int endSpacing;
             // Hotseat aligns to the left with nav buttons
             if (hotseatBarEndOffset > 0) {
-                leftSpacing = inlineNavButtonsEndSpacing;
-                rightSpacing = availableWidthPx - hotseatWidth - leftSpacing + hotseatBorderSpace;
+                startSpacing = inlineNavButtonsEndSpacing;
+                endSpacing = availableWidthPx - hotseatWidth - startSpacing + hotseatBorderSpace;
+            } else {
+                startSpacing = (availableWidthPx - hotseatWidth) / 2;
+                endSpacing = startSpacing;
             }
+            startSpacing += getAdditionalQsbSpace();
 
-            hotseatBarPadding.set(leftSpacing, hotseatBarTopPadding, rightSpacing,
-                    hotseatBarBottomPadding);
-
+            hotseatBarPadding.top = hotseatBarTopPadding;
+            hotseatBarPadding.bottom = hotseatBarBottomPadding;
             boolean isRtl = Utilities.isRtl(context.getResources());
             if (isRtl) {
-                hotseatBarPadding.right += getAdditionalQsbSpace();
+                hotseatBarPadding.left = endSpacing;
+                hotseatBarPadding.right = startSpacing;
             } else {
-                hotseatBarPadding.left += getAdditionalQsbSpace();
+                hotseatBarPadding.left = startSpacing;
+                hotseatBarPadding.right = endSpacing;
             }
+
         } else if (isScalableGrid) {
             int sideSpacing = (availableWidthPx - hotseatQsbWidth) / 2;
             hotseatBarPadding.set(sideSpacing,

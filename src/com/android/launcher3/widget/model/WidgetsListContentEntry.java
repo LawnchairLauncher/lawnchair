@@ -61,12 +61,6 @@ public final class WidgetsListContentEntry extends WidgetsListBaseEntry {
                 + mMaxSpanSizeInCells;
     }
 
-    @Override
-    @Rank
-    public int getRank() {
-        return RANK_WIDGETS_LIST_CONTENT;
-    }
-
     /**
      * Returns a copy of this {@link WidgetsListContentEntry} with updated
      * {@param maxSpanSizeInCells}.

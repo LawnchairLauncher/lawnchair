@@ -454,6 +454,10 @@ import java.util.StringJoiner;
     }
 
     private void updateIconAlphaForHome(float alpha) {
+        if (mControllers.taskbarActivityContext.isDestroyed()) {
+            Log.e("b/260135164", "updateIconAlphaForHome is called after Taskbar is destroyed",
+                    new Exception());
+        }
         mIconAlphaForHome.setValue(alpha);
         boolean hotseatVisible = alpha == 0
                 || (!mControllers.uiController.isHotseatIconOnTopWhenAligned()

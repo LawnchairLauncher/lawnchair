@@ -61,6 +61,7 @@ import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.MultiValueAlpha;
+import com.android.launcher3.util.ScrollableLayoutManager;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.views.ScrimView;
@@ -79,8 +80,7 @@ public class AllAppsTransitionController
         implements StateHandler<LauncherState>, OnDeviceProfileChangeListener {
     // This constant should match the second derivative of the animator interpolator.
     public static final float INTERP_COEFF = 1.7f;
-    public static final float SWIPE_ALL_APPS_TO_HOME_MIN_SCALE = 0.9f;
-    private static final int REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS = 200;
+    public static final int REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS = 200;
 
     private static final float NAV_BAR_COLOR_FORCE_UPDATE_THRESHOLD = 0.1f;
     private static final float SWIPE_DRAG_COMMIT_THRESHOLD =
@@ -280,8 +280,9 @@ public class AllAppsTransitionController
 
         float deceleratedProgress =
                 Interpolators.PREDICTIVE_BACK_DECELERATED_EASE.getInterpolation(backProgress);
-        float scaleProgress = SWIPE_ALL_APPS_TO_HOME_MIN_SCALE
-                + (1 - SWIPE_ALL_APPS_TO_HOME_MIN_SCALE) * (1 - deceleratedProgress);
+        float scaleProgress = ScrollableLayoutManager.PREDICTIVE_BACK_MIN_SCALE
+                + (1 - ScrollableLayoutManager.PREDICTIVE_BACK_MIN_SCALE)
+                * (1 - deceleratedProgress);
 
         mAllAppScale.updateValue(scaleProgress);
     }
