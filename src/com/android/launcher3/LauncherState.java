@@ -226,6 +226,20 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     }
 
     /**
+     * Returns whether taskbar global drag is disallowed in this state.
+     */
+    public boolean disallowTaskbarGlobalDrag() {
+        return false;
+    }
+
+    /**
+     * Returns whether the taskbar shortcut should trigger split selection mode.
+     */
+    public boolean allowTaskbarInitialSplitSelection() {
+        return false;
+    }
+
+    /**
      * Fraction shift in the vertical translation UI and related properties
      *
      * @see com.android.launcher3.allapps.AllAppsTransitionController
