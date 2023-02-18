@@ -366,7 +366,7 @@ dependencies {
     implementation 'com.github.LawnchairLauncher:oss-notices:1.0.2'
 
     // Persian Date
-    implementation 'com.github.samanzamani:PersianDate:1.5.4'
+    implementation 'com.github.samanzamani:PersianDate:1.6.1'
 
     implementation 'com.airbnb.android:lottie:6.0.0'
 }
