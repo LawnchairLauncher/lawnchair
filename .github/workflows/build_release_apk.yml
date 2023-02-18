@@ -47,11 +47,6 @@ jobs:
     if: github.repository == 'LawnchairLauncher/lawnchair'
     needs: build-release-apk
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-        with:
-          submodules: true
-          fetch-depth: 0
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
