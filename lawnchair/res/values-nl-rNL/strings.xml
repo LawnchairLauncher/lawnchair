@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">Tik op deze kaart om Lawnchair in te stellen als je standaard launcher.</string>
     <string name="settings">Instellingen</string>
     <string name="general_label">Algemeen</string>
     <string name="general_description">Kleuren, Icoon Pakket, Notificatie stippen</string>
@@ -182,8 +182,8 @@
     <!-- used in popup menu-->
     <string name="home_screen_locked">Startscherm is vergrendeld.</string>
     <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Vergrendelingsknop Tonen</string>
+    <string name="show_system_settings_entry">Toon Systeeminstellingeninvoer</string>
     <string name="status_bar_label">Statusbalk</string>
     <string name="show_status_bar">Statusbalk weergeven</string>
     <string name="dark_status_bar_label">Donkere Status Balk</string>
@@ -403,5 +403,5 @@
     <string name="invalid_backup_file">Ongeldig back-upbestand.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="system_settings">System Settings</string>
+    <string name="system_settings">Systeeminstellingen</string>
 </resources>
