@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">Lawnchair를 기본 홈 앱으로 설정하려면 이 카드를 탭하세요.</string>
     <string name="settings">설정</string>
     <string name="general_label">일반</string>
     <string name="general_description">색상, 아이콘 팩, 알림 딱지</string>
@@ -105,7 +105,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">아이콘 팩</string>
-    <string name="themed_icon_pack">Themed Icon Source</string>
+    <string name="themed_icon_pack">테마 아이콘 소스</string>
     <string name="system_icons">시스템 아이콘</string>
     <string name="themed_icon_title">테마가 적용된 아이콘</string>
     <string name="themed_icons_off_label">사용 않함</string>
@@ -181,9 +181,9 @@
     <string name="home_screen_unlock">홈 화면 잠금해제</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">홈 화면이 잠겼습니다</string>
-    <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="popup_menu">팝업 메뉴</string>
+    <string name="home_screen_lock_toggle_from_home_popup">잠금 버튼 표시</string>
+    <string name="show_system_settings_entry">시스템 설정 항목 표시</string>
     <string name="status_bar_label">상태표시줄</string>
     <string name="show_status_bar">상태 표시줄 표시</string>
     <string name="dark_status_bar_label">어두운 상태표시줄</string>
@@ -201,8 +201,8 @@
     <string name="allow_widget_overlap">겹침 허용</string>
     <!-- HomeScreenGridPreferences -->
     <!-- <string name="home_screen_grid" /> -->
-    <string name="columns">세로</string>
-    <string name="rows">가로</string>
+    <string name="columns">가로</string>
+    <string name="rows">세로</string>
     <string name="apply_grid">적용</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
@@ -402,5 +402,5 @@
     <string name="invalid_backup_file">잘못된 백업 파일입니다.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="system_settings">System Settings</string>
+    <string name="system_settings">시스템 설정</string>
 </resources>

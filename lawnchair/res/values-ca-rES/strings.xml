@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">Fes-li clic a la \"card\" per definir Lawnchair com el teu llançador.</string>
     <string name="settings">Configuració</string>
     <string name="general_label">General</string>
     <string name="general_description">Colors, Paquet d\'icones, Punts de notificació</string>
@@ -181,9 +181,9 @@
     <string name="home_screen_unlock">Desbloquejar Pantalla Inicial</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">La pantalla principal està bloquejada.</string>
-    <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="popup_menu">Menú emergent</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Mostrar botó de bloqueig</string>
+    <string name="show_system_settings_entry">Mostrar entrada de la configuració del sistema</string>
     <string name="status_bar_label">Barra de estat</string>
     <string name="show_status_bar">Mostrar la barra d\'estat</string>
     <string name="dark_status_bar_label">Barra d\'estat fosca</string>
@@ -403,5 +403,5 @@
     <string name="invalid_backup_file">El fitxer de la còpia és invàlid.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="system_settings">System Settings</string>
+    <string name="system_settings">Configuració del sistema</string>
 </resources>

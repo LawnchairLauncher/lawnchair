@@ -182,8 +182,8 @@
     <!-- used in popup menu-->
     <string name="home_screen_locked">Ekran główny jest zablokowany.</string>
     <string name="popup_menu">Wyskakujące menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Pokaż przycisk blokady</string>
-    <string name="show_system_settings_entry">Pokaż w ustawieniach systemowych</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Pokaż Przycisk Blokady</string>
+    <string name="show_system_settings_entry">Pokaż Wpis Ustawień Systemu</string>
     <string name="status_bar_label">Pasek stanu</string>
     <string name="show_status_bar">Pokaż pasek stanu</string>
     <string name="dark_status_bar_label">Ciemny pasek statusu</string>

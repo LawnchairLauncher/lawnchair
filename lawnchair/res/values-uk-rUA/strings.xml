@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">Натисніть цю картку, щоб встановити Lawnchair як лаунчер за замовчуванням.</string>
     <string name="settings">Налаштування</string>
     <string name="general_label">Загальні</string>
     <string name="general_description">Значки сповіщень, Набір значків</string>
@@ -48,13 +48,13 @@
     <string name="font_picker_description">Деякий текст залишається незмінним.</string>
     <string name="smartspace_calendar_label">Налаштування календаря у віджеті \"Найголовніше\"</string>
     <string name="smartspace_calendar_description">Дозволити показувати дату у негригоріанських календарних системах.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
-    <string name="always_reload_icons_label">Always Reload Icons</string>
-    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
-    <string name="transparent_background_icons">Transparent Themed Icons</string>
-    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
-    <string name="smartspace_mode_selection">At a Glance Provider selection</string>
+    <string name="workspace_increase_max_grid_size_label">Збільшений максимальний розмір сітки домашнього екрана</string>
+    <string name="workspace_increase_max_grid_size_description">Збільшити максимальний дозволений розмір сітки домашнього екрана з 10 x 10 до 20 x 20.</string>
+    <string name="always_reload_icons_label">Завжди перезавантажувати іконки</string>
+    <string name="always_reload_icons_description">Уникати використання кешованих іконок з наборів іконок</string>
+    <string name="transparent_background_icons">Прозорі теми іконок</string>
+    <string name="transparent_background_icons_description">Використовувати прозорий фон на тематичних іконках</string>
+    <string name="smartspace_mode_selection">Вибрати постачальника At a Glance</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Обертання Головного Екрану</string>
     <string name="home_screen_rotaton_description">При обертанні пристрою.</string>
@@ -70,9 +70,9 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Показувати кількість сповіщень</string>
     <string name="notification_dots_color">Значки сповіщень</string>
-    <string name="notification_dots_text_color">Notification Count Color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_text_color">Колір панелі повідомлень</string>
+    <string name="notification_dots_color_contrast_warning_always">Попередження: Точок сповіщень &amp; Колір прогалин не достатньо контрастності між собою</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Попередження: Точку повідомлень &amp; Колір прогалин не завжди може бути достатньо контрастності між собою</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Необхідний доступ до сповіщень</string>
     <string name="missing_notification_access_description">Потрібний доступ до сповіщень.</string>
@@ -86,26 +86,26 @@
     <string name="theme_follow_wallpaper">Відповідно до шпалер</string>
     <string name="accent_color">Колір акценту</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
-    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
-    <string name="icon_shape_top_left">Top Left</string>
-    <string name="icon_shape_top_right">Top Right</string>
-    <string name="icon_shape_bottom_left">Bottom Left</string>
-    <string name="icon_shape_bottom_right">Bottom Right</string>
+    <string name="custom_icon_shape">Користувацька форма іконок</string>
+    <string name="custom_icon_shape_create">Створити користувацьку форму іконок</string>
+    <string name="custom_icon_shape_edit">Редагувати користувацьку форму іконок</string>
+    <string name="icon_shape_corner">Кутова форма</string>
+    <string name="icon_shape_corner_round">Кругла</string>
+    <string name="icon_shape_corner_squircle">Згладжений</string>
+    <string name="icon_shape_corner_cut">Обрізати</string>
+    <string name="icon_shape_top_left">Зверху ліворуч</string>
+    <string name="icon_shape_top_right">Зверху праворуч</string>
+    <string name="icon_shape_bottom_left">Знизу ліворуч</string>
+    <string name="icon_shape_bottom_right">Знизу праворуч</string>
     <string name="create">Створити</string>
-    <string name="clipboard">Clipboard</string>
-    <string name="export_to_clipboard">Export to Clipboard</string>
-    <string name="import_from_clipboard">Import from Clipboard</string>
-    <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
+    <string name="clipboard">Буфер обміну</string>
+    <string name="export_to_clipboard">Експорт до буферу обміну</string>
+    <string name="import_from_clipboard">Імпортувати з буфера обміну</string>
+    <string name="icon_shape_clipboard_import_error">Буфер обміну не містить допустиму форму іконок</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Набір Значків</string>
-    <string name="themed_icon_pack">Themed Icon Source</string>
+    <string name="themed_icon_pack">Джерело іконок з темою</string>
     <string name="system_icons">Системні іконки</string>
     <string name="themed_icon_title">Тематичні іконки</string>
     <string name="themed_icons_off_label">Вимкнено</string>
@@ -118,13 +118,13 @@
     <string name="icon_shape_system">Системний</string>
     <string name="icon_shape_circle">Коло</string>
     <string name="icon_shape_cylinder">Циліндричні</string>
-    <string name="icon_shape_diamond">Diamond</string>
-    <string name="icon_shape_egg">Egg</string>
+    <string name="icon_shape_diamond">Алмаз</string>
+    <string name="icon_shape_egg">Яйце</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">Восьмикутник</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Закруглений квадрат</string>
-    <string name="icon_shape_sharp_square">Sharp Square</string>
+    <string name="icon_shape_sharp_square">Гострий квадрат</string>
     <string name="icon_shape_square">Квадратна</string>
     <string name="icon_shape_squircle">Квадрокруг</string>
     <string name="icon_shape_teardrop">Краплеподібні</string>
@@ -145,7 +145,7 @@
     <string name="reset_font">Скинути</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Динамічнi</string>
-    <string name="swatches">Swatches</string>
+    <string name="swatches">Свярки</string>
     <string name="presets">Шаблони</string>
     <string name="custom">Користувацькі налаштування</string>
     <string name="rgb">RGB</string>
@@ -159,10 +159,10 @@
     <string name="hex">Шістнадцятковий</string>
     <string name="color_sliders">Регулятори</string>
     <string name="action_copy">Копіювати</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_paste">Вставити</string>
     <string name="copied_toast">Скопійовано до буфера обміну.</string>
     <string name="invalid_color">Невірний колір</string>
-    <string name="launcher_default_color">Managed by Lawnchair</string>
+    <string name="launcher_default_color">Керується Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Додавання Нових Програм на Головний Екран</string>
@@ -177,13 +177,13 @@
     <string name="layout">Макет</string>
     <string name="home_screen_grid">Сітка головного екрану</string>
     <string name="home_screen_lock">Заблокувати домашній екран</string>
-    <string name="home_screen_lock_description">Prevents changes to the home screen layout.</string>
+    <string name="home_screen_lock_description">Запобігає змінам на домашній екран.</string>
     <string name="home_screen_unlock">Розблокувати домашній екран</string>
     <!-- used in popup menu-->
-    <string name="home_screen_locked">Home Screen is locked.</string>
-    <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="home_screen_locked">Домашній екран заблоковано.</string>
+    <string name="popup_menu">Спливаюче меню</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Показувати кнопку блокування</string>
+    <string name="show_system_settings_entry">Показувати запис про системні налаштування</string>
     <string name="status_bar_label">Рядок стану</string>
     <string name="show_status_bar">Показати рядок стану</string>
     <string name="dark_status_bar_label">Темний рядок стану</string>
@@ -193,7 +193,7 @@
     <string name="label_size">Розмір мітки</string>
     <string name="reset_custom_icons">Скинути користувацькі іконки</string>
     <string name="reset_custom_icons_confirmation">Усі користувацькі іконки будуть скинуті. Продовжити?</string>
-    <string name="home_screen_text_color">Text Color</string>
+    <string name="home_screen_text_color">Колір тексту</string>
     <string name="color_light">Світла</string>
     <string name="color_dark">Темна</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
@@ -219,9 +219,9 @@
     <string name="smartspace_date_and_time">Дата &amp; Час</string>
     <string name="smartspace_date">Дата</string>
     <string name="smartspace_time">Час</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">Формат часу</string>
     <string name="smartspace_time_follow_system">Налаштування системи</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">12-годинний формат</string>
     <string name="smartspace_time_24_hour_format">24-годинний формат</string>
     <string name="smartspace_weather">Погода</string>
     <string name="smartspace_battery_status">Стан батареї</string>
@@ -232,18 +232,18 @@
     <string name="smartspace_calendar_gregorian">Григоріанський</string>
     <string name="smartspace_calendar_persian">Перська</string>
     <string name="smartspace_preferences">Налаштування</string>
-    <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
-    <string name="smartspace_mode_label">At a Glance Provider</string>
+    <string name="smartspace_widget_toggle_label">Показувати на головному екрані</string>
+    <string name="smartspace_widget_toggle_description">At a Glance можна додати вручну, помістивши віджет \"Lawnchair\".</string>
+    <string name="smartspace_mode_label">Постачальник \"At a Glance\"</string>
     <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">Google</string>
-    <string name="smartspace_mode_google_search">Google Search</string>
+    <string name="smartspace_mode_google_search">Пошук Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="hotseat_mode_label">Search Bar Widget</string>
-    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_label">Віджет панелі пошуку</string>
+    <string name="hotseat_mode_disabled">Вимкнено</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
-    <string name="hotseat_mode_google_search">Google Search Bar</string>
+    <string name="hotseat_mode_google_search">Панель пошуку Google</string>
     <string name="search_bar_label">Панель пошуку</string>
     <string name="corner_radius_label">Закруглення кутів</string>
     <string name="apply_accent_color_label">Застосувати колір акценту</string>
@@ -262,14 +262,14 @@
     <string name="background_opacity">Прозорість фону</string>
     <!-- hiddenApps_label -->
     <string name="hidden_apps_label">Приховані Додатки</string>
-    <string name="show_enable_smart_hide">Show when Full Name is Typed</string>
-    <string name="hide_hidden_apps_search">Hide in Search Results</string>
+    <string name="show_enable_smart_hide">Показувати, коли Повне Ім\'я введено</string>
+    <string name="hide_hidden_apps_search">Приховати в результатах пошуку</string>
     <string name="pref_category_search">Пошук</string>
     <string name="show_app_search_bar">Показувати Рядок Пошуку</string>
     <string name="pref_search_auto_show_keyboard">Автоматично показувати клавіатуру</string>
     <string name="fuzzy_search_title">Приблизний Пошук</string>
     <string name="fuzzy_search_desc">Приблизна відповідність для пошуку додатків.</string>
-    <string name="max_search_result_count_title">Max Search Result Count</string>
+    <string name="max_search_result_count_title">Максимальна кількість результатів пошуку</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Кількість стовпців меню додатків</string>
     <string name="row_height_label">Висота рядка</string>
@@ -291,7 +291,7 @@
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="folder_preview_bg_opacity_label">Прозорість фону значка</string>
-    <string name="folder_preview_bg_color_label">Icon Background Color</string>
+    <string name="folder_preview_bg_color_label">Колір фону іконок</string>
     <!-- <string name="grid" /> -->
     <string name="max_folder_columns">Макс. колонок тек</string>
     <string name="max_folder_rows">Макс. рядків тек</string>
@@ -405,5 +405,5 @@
     <string name="invalid_backup_file">Недійсний файл резервної копії.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="system_settings">System Settings</string>
+    <string name="system_settings">Системні налаштування</string>
 </resources>
