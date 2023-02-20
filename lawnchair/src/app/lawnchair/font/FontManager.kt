@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.util.AttributeSet
 import android.widget.TextView
 import androidx.annotation.IdRes
+import androidx.core.content.res.use
 import androidx.lifecycle.lifecycleScope
 import app.lawnchair.preferences.BasePreferenceManager
 import app.lawnchair.preferences.PreferenceManager
@@ -38,21 +39,26 @@ class FontManager private constructor(private val context: Context) {
     fun overrideFont(textView: TextView, attrs: AttributeSet?) {
         try {
             val context = textView.context
-            var a = context.obtainStyledAttributes(attrs, R.styleable.CustomFont)
-            var fontType = a.getResourceId(R.styleable.CustomFont_customFontType, -1)
-            var fontWeight = a.getInt(R.styleable.CustomFont_customFontWeight, -1)
-            val ap = a.getResourceId(R.styleable.CustomFont_android_textAppearance, -1)
-            a.recycle()
+            var (fontType, fontWeight, ap) = context.obtainStyledAttributes(
+                attrs,
+                R.styleable.CustomFont
+            ).use { a ->
+                Triple(
+                    a.getResourceId(R.styleable.CustomFont_customFontType, -1),
+                    a.getInt(R.styleable.CustomFont_customFontWeight, -1),
+                    a.getResourceId(R.styleable.CustomFont_android_textAppearance, -1),
+                )
+            }
 
             if (ap != -1) {
-                a = context.obtainStyledAttributes(ap, R.styleable.CustomFont)
-                if (fontType == -1) {
-                    fontType = a.getResourceId(R.styleable.CustomFont_customFontType, -1)
+                context.obtainStyledAttributes(ap, R.styleable.CustomFont).use { a ->
+                    if (fontType == -1) {
+                        fontType = a.getResourceId(R.styleable.CustomFont_customFontType, -1)
+                    }
+                    if (fontWeight == -1) {
+                        fontWeight = a.getInt(R.styleable.CustomFont_customFontWeight, -1)
+                    }
                 }
-                if (fontWeight == -1) {
-                    fontWeight = a.getInt(R.styleable.CustomFont_customFontWeight, -1)
-                }
-                a.recycle()
             }
 
             if (fontType != -1) {
