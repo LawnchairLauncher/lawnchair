@@ -56,7 +56,6 @@ import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
@@ -218,12 +217,6 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
      */
     @TargetApi(Build.VERSION_CODES.O)
     public void setItemInfo(final ItemInfo info) {
-        if (info.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
-                && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_SEARCH_ACTION
-                && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
-                && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-            return;
-        }
         // Load the adaptive icon on a background thread and add the view in ui thread.
         MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(() -> {
             Object[] outObj = new Object[1];
