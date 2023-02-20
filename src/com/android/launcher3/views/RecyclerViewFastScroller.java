@@ -283,15 +283,7 @@ public class RecyclerViewFastScroller extends View {
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                mRv.onFastScrollCompleted();
-                mTouchOffsetY = 0;
-                mLastTouchY = 0;
-                mIgnoreDragGesture = false;
-                if (mIsDragging) {
-                    mIsDragging = false;
-                    animatePopupVisibility(false);
-                    showActiveScrollbar(false);
-                }
+                endFastScrolling();
                 break;
         }
         if (DEBUG) {
@@ -328,6 +320,19 @@ public class RecyclerViewFastScroller extends View {
         animatePopupVisibility(!sectionName.isEmpty());
         mLastTouchY = boundedY;
         setThumbOffsetY((int) mLastTouchY);
+    }
+
+    /** End any active fast scrolling touch handling, if applicable. */
+    public void endFastScrolling() {
+        mRv.onFastScrollCompleted();
+        mTouchOffsetY = 0;
+        mLastTouchY = 0;
+        mIgnoreDragGesture = false;
+        if (mIsDragging) {
+            mIsDragging = false;
+            animatePopupVisibility(false);
+            showActiveScrollbar(false);
+        }
     }
 
     public void onDraw(Canvas canvas) {
