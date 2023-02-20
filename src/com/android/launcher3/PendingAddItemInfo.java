@@ -21,7 +21,7 @@ import android.content.ComponentName;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.ItemInfoWithIcon;
 
 import java.util.Optional;
 
@@ -29,12 +29,19 @@ import java.util.Optional;
  * Meta data that is used for deferred binding. e.g., this object is used to pass information on
  * draggable targets when they are dropped onto the workspace from another container.
  */
-public class PendingAddItemInfo extends ItemInfo {
+public class PendingAddItemInfo extends ItemInfoWithIcon {
 
     /**
      * The component that will be created.
      */
     public ComponentName componentName;
+
+    public PendingAddItemInfo() { }
+
+    public PendingAddItemInfo(PendingAddItemInfo info) {
+        super(info);
+        componentName = info.componentName;
+    }
 
     @Override
     protected String dumpProperties() {
@@ -46,11 +53,16 @@ public class PendingAddItemInfo extends ItemInfo {
      */
     @NonNull
     @Override
-    public ItemInfo makeShallowCopy() {
+    public PendingAddItemInfo makeShallowCopy() {
         PendingAddItemInfo itemInfo = new PendingAddItemInfo();
         itemInfo.copyFrom(this);
         itemInfo.componentName = this.componentName;
         return itemInfo;
+    }
+
+    @Override
+    public PendingAddItemInfo clone() {
+        return makeShallowCopy();
     }
 
     @Nullable
