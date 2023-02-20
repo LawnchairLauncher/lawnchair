@@ -431,9 +431,12 @@ public class TaskView extends FrameLayout implements Reusable {
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mDigitalWellBeingToast = new DigitalWellBeingToast(mActivity, this);
 
-        setWillNotDraw(!FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH.get());
+        boolean keyboardFocusHighlightEnabled = FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH.get()
+                || DesktopTaskView.DESKTOP_MODE_SUPPORTED;
 
-        mBorderAnimator = !FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH.get()
+        setWillNotDraw(!keyboardFocusHighlightEnabled);
+
+        mBorderAnimator = !keyboardFocusHighlightEnabled
                 ? null
                 : new BorderAnimator(
                         /* borderBoundsBuilder= */ this::updateBorderBounds,
