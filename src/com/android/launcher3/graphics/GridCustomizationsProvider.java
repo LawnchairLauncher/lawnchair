@@ -138,12 +138,14 @@ public class GridCustomizationsProvider extends ContentProvider {
                 }
 
                 idp.setCurrentGrid(getContext(), gridName);
+                getContext().getContentResolver().notifyChange(uri, null);
                 return 1;
             }
             case ICON_THEMED:
             case SET_ICON_THEMED: {
                 LauncherPrefs.get(getContext())
                         .put(THEMED_ICONS, values.getAsBoolean(BOOLEAN_VALUE));
+                getContext().getContentResolver().notifyChange(uri, null);
                 return 1;
             }
             default:
