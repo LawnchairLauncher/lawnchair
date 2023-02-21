@@ -161,12 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Poslovne aplikacije su označene i vaš IT administrator ih može vidjeti"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Razumijem"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Poslovne aplikacije su pauzirane"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Nećete primati obavijesti poslovnih aplikacija"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Poslovne aplikacije vam ne mogu slati obavještenja, koristiti bateriju niti pristupiti vašoj lokaciji"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Poslovne aplikacije su isključene. Poslovne aplikacije vam ne mogu slati obavještenja, koristiti bateriju ili pristupiti vašoj lokaciji"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Nećete primati telefonske pozive, tekstne poruke niti obavijesti poslovnih aplikacija"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Poslovne aplikacije su označene i vaš IT administrator ih može vidjeti"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Razumijem"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pauziraj poslovne aplikacije"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Uključi poslovne aplikacije"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Ponovno pokreni"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtrirajte"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Pretražite telefon"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Pretražite tablet"</string>

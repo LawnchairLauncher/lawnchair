@@ -37,8 +37,7 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Raak en hou die legstuk om dit op die tuisskerm rond te beweeg"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Voeg by tuisskerm"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g>-legstuk by tuisskerm gevoeg"</string>
-    <!-- no translation found for suggested_widgets_header_title (1844314680798145222) -->
-    <skip />
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Voorstelle"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# legstuk}other{# legstukke}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# kortpad}other{# kortpaaie}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -162,12 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Werkprogramme het \'n kenteken en is sigbaar vir jou IT-administrateur"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Het dit"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Werkprogramme is onderbreek"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Jy sal nie kennisgewings van jou werkapps af ontvang nie"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Jou werkprogramme kan nie vir jou kennisgewings stuur, jou battery gebruik of toegang tot jou ligging kry nie"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Werkprogramme is af. Jou werkprogramme kan nie vir jou kennisgewings stuur, jou battery gebruik of toegang tot jou ligging kry nie"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Jy sal nie foonoproepe, SMS’e of kennisgewings van jou werkapps af ontvang nie"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Werkprogramme het \'n kenteken en is sigbaar vir jou IT-administrateur"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Het dit"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Onderbreek werkprogramme"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Skakel werkprogramme aan"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Hervat"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filter"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Deursoek jou foon"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Deursoek jou tablet"</string>
