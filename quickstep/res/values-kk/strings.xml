@@ -117,4 +117,8 @@
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Навигация жолағы"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Жоғары/солға жылжыту"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Төмен/оңға жылжыту"</string>
+    <!-- no translation found for quick_switch_overflow (6935266023013283353) -->
+    <skip />
+    <!-- no translation found for quick_switch_split_task (5598194724255333896) -->
+    <skip />
 </resources>
