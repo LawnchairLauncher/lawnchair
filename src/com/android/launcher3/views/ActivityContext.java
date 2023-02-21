@@ -313,7 +313,7 @@ public interface ActivityContext {
      */
     default boolean startActivitySafely(
             View v, Intent intent, @Nullable ItemInfo item) {
-
+        Preconditions.assertUIThread();
         Context context = (Context) this;
         if (isAppBlockedForSafeMode() && !PackageManagerHelper.isSystemApp(context, intent)) {
             Toast.makeText(context, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
