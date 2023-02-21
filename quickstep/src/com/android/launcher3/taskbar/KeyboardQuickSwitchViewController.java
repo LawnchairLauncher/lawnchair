@@ -19,6 +19,7 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.animation.Animator;
 import android.view.KeyEvent;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -125,18 +126,26 @@ public class KeyboardQuickSwitchViewController {
     }
 
     private int launchTaskAt(int index) {
-        KeyboardQuickSwitchTaskView taskView = mKeyboardQuickSwitchView.getTaskAt(index);
+        if (mCloseAnimation != null) {
+            // Ignore taps on task views and alt key unpresses while the close animation is running.
+            return -1;
+        }
+        // Even with a valid index, this can be null if the user tries to quick switch before the
+        // views have been added in the KeyboardQuickSwitchView.
+        View taskView = mKeyboardQuickSwitchView.getTaskAt(index);
         GroupTask task = mControllerCallbacks.getTaskAt(index);
-        if (taskView == null || task == null) {
+        if (task == null) {
             return Math.max(0, index);
         } else if (task.task2 == null) {
             UI_HELPER_EXECUTOR.execute(() ->
                     ActivityManagerWrapper.getInstance().startActivityFromRecents(
                             task.task1.key,
                             mControllers.taskbarActivityContext.getActivityLaunchOptions(
-                                    taskView, null).options));
+                                    taskView == null ? mKeyboardQuickSwitchView : taskView, null)
+                                    .options));
         } else {
-            mControllers.uiController.launchSplitTasks(taskView, task);
+            mControllers.uiController.launchSplitTasks(
+                    taskView == null ? mKeyboardQuickSwitchView : taskView, task);
         }
         return -1;
     }
@@ -160,15 +169,26 @@ public class KeyboardQuickSwitchViewController {
 
     class ViewCallbacks {
 
-        boolean onKeyUp(int keyCode, KeyEvent event) {
-            if (keyCode != KeyEvent.KEYCODE_TAB) {
+        boolean onKeyUp(int keyCode, KeyEvent event, boolean isRTL) {
+            if (keyCode != KeyEvent.KEYCODE_TAB
+                    && keyCode != KeyEvent.KEYCODE_DPAD_RIGHT
+                    && keyCode != KeyEvent.KEYCODE_DPAD_LEFT
+                    && keyCode != KeyEvent.KEYCODE_GRAVE
+                    && keyCode != KeyEvent.KEYCODE_ESCAPE) {
                 return false;
             }
+            if (keyCode == KeyEvent.KEYCODE_GRAVE || keyCode == KeyEvent.KEYCODE_ESCAPE) {
+                closeQuickSwitchView(true);
+                return true;
+            }
+            boolean traverseBackwards = (keyCode == KeyEvent.KEYCODE_TAB && event.isShiftPressed())
+                    || (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && !isRTL)
+                    || (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && isRTL);
             int taskCount = mControllerCallbacks.getTaskCount();
             int toIndex = mCurrentFocusIndex == -1
                     // Focus the second-most recent app if possible
                     ? (taskCount > 1 ? 1 : 0)
-                    : (event.isShiftPressed()
+                    : (traverseBackwards
                             // focus a more recent task or loop back to the opposite end
                             ? Math.max(0, mCurrentFocusIndex == 0
                                     ? taskCount - 1 : mCurrentFocusIndex - 1)
