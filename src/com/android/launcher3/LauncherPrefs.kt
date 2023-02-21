@@ -274,7 +274,8 @@ abstract class Item {
     abstract val sharedPrefKey: String
     abstract val isBackedUp: Boolean
     abstract val type: Class<*>
-    val sharedPrefFile: String = if (isBackedUp) SHARED_PREFERENCES_KEY else DEVICE_PREFERENCES_KEY
+    val sharedPrefFile: String
+        get() = if (isBackedUp) SHARED_PREFERENCES_KEY else DEVICE_PREFERENCES_KEY
 
     fun <T> to(value: T): Pair<Item, T> = Pair(this, value)
 }
