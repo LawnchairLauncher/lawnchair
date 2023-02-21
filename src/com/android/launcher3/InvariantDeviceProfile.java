@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.LauncherPrefs.GRID_NAME;
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_DEVICE_PROFILE_LOGGING;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TWO_PANEL_HOME;
@@ -93,6 +92,8 @@ public class InvariantDeviceProfile {
     public static final int TYPE_PHONE = 0;
     public static final int TYPE_MULTI_DISPLAY = 1;
     public static final int TYPE_TABLET = 2;
+
+    private static final String KEY_IDP_GRID_NAME = "idp_grid_name";
 
     private static final float ICON_SIZE_DEFINED_IN_APP_DP = 48;
 
@@ -206,7 +207,8 @@ public class InvariantDeviceProfile {
         String gridName = getCurrentGridName(context);
         String newGridName = initGrid(context, gridName);
         if (!newGridName.equals(gridName)) {
-            LauncherPrefs.get(context).put(GRID_NAME, newGridName);
+            LauncherPrefs.getPrefs(context).edit().putString(KEY_IDP_GRID_NAME, newGridName)
+                    .apply();
         }
         new DeviceGridState(this).writeToPrefs(context);
 
@@ -314,7 +316,7 @@ public class InvariantDeviceProfile {
     }
 
     public static String getCurrentGridName(Context context) {
-        return LauncherPrefs.get(context).get(GRID_NAME);
+        return LauncherPrefs.getPrefs(context).getString(KEY_IDP_GRID_NAME, null);
     }
 
     private String initGrid(Context context, String gridName) {
@@ -456,8 +458,9 @@ public class InvariantDeviceProfile {
 
 
     public void setCurrentGrid(Context context, String gridName) {
-        LauncherPrefs.get(context).put(GRID_NAME, gridName);
-        MAIN_EXECUTOR.execute(() -> onConfigChanged(context.getApplicationContext()));
+        Context appContext = context.getApplicationContext();
+        LauncherPrefs.getPrefs(appContext).edit().putString(KEY_IDP_GRID_NAME, gridName).apply();
+        MAIN_EXECUTOR.execute(() -> onConfigChanged(appContext));
     }
 
     private Object[] toModelState() {
