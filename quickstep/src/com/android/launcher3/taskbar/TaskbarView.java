@@ -58,6 +58,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     private static final String TAG = TaskbarView.class.getSimpleName();
 
     private static final float TASKBAR_BACKGROUND_LUMINANCE = 0.30f;
+    private static final Rect sTmpRect = new Rect();
+
     public int mThemeIconsBackground;
 
     private final int[] mTempOutLocation = new int[2];
@@ -339,6 +341,9 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                     (right - navSpaceNeeded) - iconEnd;
             iconEnd += offset;
         }
+
+        sTmpRect.set(mIconLayoutBounds);
+
         // Layout the children
         mIconLayoutBounds.right = iconEnd;
         mIconLayoutBounds.top = (bottom - top - mIconTouchSize) / 2;
@@ -378,6 +383,10 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             int distanceFromCenter = (int) mTransientTaskbarMinWidth / 2;
             mIconLayoutBounds.right = center + distanceFromCenter;
             mIconLayoutBounds.left = center - distanceFromCenter;
+        }
+
+        if (!sTmpRect.equals(mIconLayoutBounds)) {
+            mControllerCallbacks.notifyIconLayoutBoundsChanged();
         }
     }
 
