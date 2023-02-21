@@ -37,8 +37,7 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"முகப்புத் திரையைச் சுற்றி விட்ஜெட்டை நகர்த்த அதைத் தொட்டுப் பிடியுங்கள்"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"முகப்புத் திரையில் சேர்"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> விட்ஜெட் முகப்புத் திரையில் சேர்க்கப்பட்டது"</string>
-    <!-- no translation found for suggested_widgets_header_title (1844314680798145222) -->
-    <skip />
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"பரிந்துரைகள்"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# விட்ஜெட்}other{# விட்ஜெட்டுகள்}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# ஷார்ட்கட்}other{# ஷார்ட்கட்கள்}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -162,12 +161,16 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"பணி ஆப்ஸில் பேட்ஜ் இடப்பட்டுள்ளன. உங்கள் IT நிர்வாகியால் அவற்றைப் பார்க்க முடியும்"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"முடிந்தது"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"பணி ஆப்ஸ் இடைநிறுத்தப்பட்டுள்ளன"</string>
+    <!-- no translation found for work_apps_paused_info_body (1687828929959237477) -->
+    <skip />
     <string name="work_apps_paused_body" msgid="261634750995824906">"பணி ஆப்ஸால் உங்களுக்கு அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ உங்கள் இருப்பிடத்தை அணுகவோ முடியாது"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"பணி ஆப்ஸ் முடக்கப்பட்டுள்ளன. அவற்றால் உங்களுக்கு அறிவிப்புகளை அனுப்பவோ பேட்டரியைப் பயன்படுத்தவோ உங்கள் இருப்பிடத்தை அணுகவோ முடியாது"</string>
+    <!-- no translation found for work_apps_paused_telephony_unavailable_body (8358872357502756790) -->
+    <skip />
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"பணி ஆப்ஸ் பேட்ஜ் குறியிடப்பட்டுள்ளன. மேலும் உங்கள் IT நிர்வாகியால் அவற்றைப் பார்க்க முடியும்"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"சரி"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"பணி ஆப்ஸை இடைநிறுத்து"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"பணி ஆப்ஸை இயக்கு"</string>
+    <!-- no translation found for work_apps_enable_btn_text (1736198302467317371) -->
+    <skip />
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"வடிப்பான்"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"உங்கள் மொபைலில் தேடுதல்"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"உங்கள் டேப்லெட்டில் தேடுதல்"</string>
