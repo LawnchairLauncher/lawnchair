@@ -388,8 +388,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
-    public void launchSplitTasks(View taskView, GroupTask groupTask) {
-        super.launchSplitTasks(taskView, groupTask);
+    public void launchSplitTasks(@NonNull View taskView, @NonNull GroupTask groupTask) {
         mLauncher.launchSplitTasks(taskView, groupTask);
     }
 
