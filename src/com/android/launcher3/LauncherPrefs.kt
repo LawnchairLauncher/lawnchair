@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import androidx.annotation.VisibleForTesting
-import com.android.launcher3.LauncherFiles.DEVICE_PREFERENCES_KEY
-import com.android.launcher3.LauncherFiles.SHARED_PREFERENCES_KEY
 import com.android.launcher3.allapps.WorkProfileManager
 import com.android.launcher3.model.DeviceGridState
 import com.android.launcher3.pm.InstallSessionHelper
@@ -22,10 +20,11 @@ import com.android.launcher3.util.Themes
 class LauncherPrefs(private val context: Context) {
 
     /** Wrapper around `getInner` for a `ContextualItem` */
-    fun <T> get(item: ContextualItem<T>): T = getInner(item, item.defaultValueFromContext(context))
+    fun <T : Any> get(item: ContextualItem<T>): T =
+        getInner(item, item.defaultValueFromContext(context))
 
     /** Wrapper around `getInner` for an `Item` */
-    fun <T> get(item: ConstantItem<T>): T = getInner(item, item.defaultValue)
+    fun <T : Any> get(item: ConstantItem<T>): T = getInner(item, item.defaultValue)
 
     /**
      * Retrieves the value for an [Item] from [SharedPreferences]. It handles method typing via the
@@ -33,11 +32,11 @@ class LauncherPrefs(private val context: Context) {
      * `String`, `Boolean`, `Float`, `Int`, `Long`, or `Set<String>`.
      */
     @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
-    private fun <T> getInner(item: Item, default: T): T {
+    private fun <T : Any> getInner(item: Item, default: T): T {
         val sp = context.getSharedPreferences(item.sharedPrefFile, Context.MODE_PRIVATE)
 
-        return when (item.type) {
-            String::class.java -> sp.getString(item.sharedPrefKey, default as? String)
+        return when (default::class.java) {
+            String::class.java -> sp.getString(item.sharedPrefKey, default as String)
             Boolean::class.java,
             java.lang.Boolean::class.java -> sp.getBoolean(item.sharedPrefKey, default as Boolean)
             Int::class.java,
@@ -46,10 +45,11 @@ class LauncherPrefs(private val context: Context) {
             java.lang.Float::class.java -> sp.getFloat(item.sharedPrefKey, default as Float)
             Long::class.java,
             java.lang.Long::class.java -> sp.getLong(item.sharedPrefKey, default as Long)
-            Set::class.java -> sp.getStringSet(item.sharedPrefKey, default as? Set<String>)
+            Set::class.java -> sp.getStringSet(item.sharedPrefKey, default as Set<String>)
             else ->
                 throw IllegalArgumentException(
-                    "item type: ${item.type}" + " is not compatible with sharedPref methods"
+                    "item type: ${default::class.java}" +
+                        " is not compatible with sharedPref methods"
                 )
         }
             as T
@@ -224,36 +224,39 @@ class LauncherPrefs(private val context: Context) {
             backedUpItem(RestoreDbTask.RESTORED_DEVICE_TYPE, InvariantDeviceProfile.TYPE_PHONE)
         @JvmField val APP_WIDGET_IDS = backedUpItem(RestoreDbTask.APPWIDGET_IDS, "")
         @JvmField val OLD_APP_WIDGET_IDS = backedUpItem(RestoreDbTask.APPWIDGET_OLD_IDS, "")
-        @JvmField val GRID_NAME = ConstantItem("idp_grid_name", true, null, String::class.java)
         @JvmField
         val ALLOW_ROTATION =
-            backedUpItem(RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY, Boolean::class.java) {
+            backedUpItem(RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY) {
                 RotationHelper.getAllowRotationDefaultValue(DisplayController.INSTANCE.get(it).info)
             }
 
         @VisibleForTesting
         @JvmStatic
         fun <T> backedUpItem(sharedPrefKey: String, defaultValue: T): ConstantItem<T> =
-            ConstantItem(sharedPrefKey, true, defaultValue)
+            ConstantItem(sharedPrefKey, LauncherFiles.SHARED_PREFERENCES_KEY, defaultValue)
 
         @JvmStatic
         fun <T> backedUpItem(
             sharedPrefKey: String,
-            type: Class<out T>,
             defaultValueFromContext: (c: Context) -> T
-        ): ContextualItem<T> = ContextualItem(sharedPrefKey, true, defaultValueFromContext, type)
+        ): ContextualItem<T> =
+            ContextualItem(
+                sharedPrefKey,
+                LauncherFiles.SHARED_PREFERENCES_KEY,
+                defaultValueFromContext
+            )
 
         @VisibleForTesting
         @JvmStatic
         fun <T> nonRestorableItem(sharedPrefKey: String, defaultValue: T): ConstantItem<T> =
-            ConstantItem(sharedPrefKey, false, defaultValue)
+            ConstantItem(sharedPrefKey, LauncherFiles.DEVICE_PREFERENCES_KEY, defaultValue)
 
         @Deprecated("Don't use shared preferences directly. Use other LauncherPref methods.")
         @JvmStatic
         fun getPrefs(context: Context): SharedPreferences {
             // Use application context for shared preferences, so we use single cached instance
             return context.applicationContext.getSharedPreferences(
-                SHARED_PREFERENCES_KEY,
+                LauncherFiles.SHARED_PREFERENCES_KEY,
                 Context.MODE_PRIVATE
             )
         }
@@ -263,7 +266,7 @@ class LauncherPrefs(private val context: Context) {
         fun getDevicePrefs(context: Context): SharedPreferences {
             // Use application context for shared preferences, so we use a single cached instance
             return context.applicationContext.getSharedPreferences(
-                DEVICE_PREFERENCES_KEY,
+                LauncherFiles.DEVICE_PREFERENCES_KEY,
                 Context.MODE_PRIVATE
             )
         }
@@ -272,26 +275,21 @@ class LauncherPrefs(private val context: Context) {
 
 abstract class Item {
     abstract val sharedPrefKey: String
-    abstract val isBackedUp: Boolean
-    abstract val type: Class<*>
-    val sharedPrefFile: String = if (isBackedUp) SHARED_PREFERENCES_KEY else DEVICE_PREFERENCES_KEY
+    abstract val sharedPrefFile: String
 
     fun <T> to(value: T): Pair<Item, T> = Pair(this, value)
 }
 
 data class ConstantItem<T>(
     override val sharedPrefKey: String,
-    override val isBackedUp: Boolean,
-    val defaultValue: T,
-    // The default value can be null. If so, the type needs to be explicitly stated, or else NPE
-    override val type: Class<out T> = defaultValue!!::class.java
+    override val sharedPrefFile: String,
+    val defaultValue: T
 ) : Item()
 
 data class ContextualItem<T>(
     override val sharedPrefKey: String,
-    override val isBackedUp: Boolean,
-    private val defaultSupplier: (c: Context) -> T,
-    override val type: Class<out T>
+    override val sharedPrefFile: String,
+    private val defaultSupplier: (c: Context) -> T
 ) : Item() {
     private var default: T? = null
 
