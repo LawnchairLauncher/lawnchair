@@ -38,7 +38,6 @@ import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.systemui.shared.navigationbar.RegionSamplingHelper;
-import com.android.systemui.shared.system.QuickStepContract;
 
 import java.io.PrintWriter;
 
@@ -152,6 +151,14 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
         }
     }
 
+    /**
+     * Returns the stashed handle bounds.
+     * @param out The destination rect.
+     */
+    public void getStashedHandleBounds(Rect out) {
+        out.set(mStashedHandleBounds);
+    }
+
     private void initRegionSampler() {
         mRegionSamplingHelper = new RegionSamplingHelper(mStashedHandleView,
                 new RegionSamplingHelper.SamplingCallback() {
@@ -194,16 +201,19 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
      */
     public Animator createRevealAnimToIsStashed(boolean isStashed) {
         Rect visualBounds = new Rect(mControllers.taskbarViewController.getIconLayoutBounds());
+        float startRadius = mStashedHandleRadius;
 
         if (DisplayController.isTransientTaskbar(mActivity)) {
             // Account for the full visual height of the transient taskbar.
             int heightDiff = (mTaskbarSize - visualBounds.height()) / 2;
             visualBounds.top -= heightDiff;
             visualBounds.bottom += heightDiff;
+
+            startRadius = visualBounds.height() / 2f;
         }
 
         final RevealOutlineAnimation handleRevealProvider = new RoundedRectRevealOutlineProvider(
-                mStashedHandleRadius, mStashedHandleRadius, visualBounds, mStashedHandleBounds);
+                startRadius, mStashedHandleRadius, visualBounds, mStashedHandleBounds);
 
         boolean isReversed = !isStashed;
         boolean changingDirection = mWasLastRevealAnimReversed != isReversed;

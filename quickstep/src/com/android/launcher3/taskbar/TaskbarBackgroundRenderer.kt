@@ -21,6 +21,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import com.android.launcher3.R
+import com.android.launcher3.Utilities.mapRange
 import com.android.launcher3.Utilities.mapToRange
 import com.android.launcher3.anim.Interpolators
 import com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound
@@ -50,6 +51,9 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
     private val circle: Path = Path()
     private val invertedLeftCornerPath: Path = Path()
     private val invertedRightCornerPath: Path = Path()
+
+    private val stashedHandleWidth =
+        context.resources.getDimensionPixelSize(R.dimen.taskbar_stashed_handle_width)
 
     init {
         paint.color = context.getColor(R.color.taskbar_background)
@@ -111,12 +115,11 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
             canvas.drawPath(invertedRightCornerPath, paint)
         } else {
             // Approximates the stash/unstash animation to transform the background.
-            val scaleFactor = backgroundHeight / maxBackgroundHeight
-            val width = transientBackgroundBounds.width()
-            val widthScale = mapToRange(scaleFactor, 0f, 1f, 0.2f, 1f, Interpolators.LINEAR)
-            val newWidth = widthScale * width
-            val delta = width - newWidth
-            canvas.translate(0f, bottomMargin * ((1f - scaleFactor) / 2f))
+            val progress = backgroundHeight / maxBackgroundHeight
+            val fullWidth = transientBackgroundBounds.width()
+            val newWidth = mapRange(progress, stashedHandleWidth.toFloat(), fullWidth.toFloat())
+            val delta = fullWidth - newWidth
+            canvas.translate(0f, bottomMargin * ((1f - progress) / 2f))
 
             // Draw shadow.
             val shadowAlpha =
