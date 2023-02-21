@@ -561,8 +561,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     public void updateSysuiStateFlags(int systemUiStateFlags, boolean fromInit) {
         mControllers.navbarButtonsViewController.updateStateForSysuiFlags(systemUiStateFlags,
                 fromInit);
-        mControllers.taskbarViewController.setImeIsVisible(
-                mControllers.navbarButtonsViewController.isImeVisible());
         int shadeExpandedFlags = SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED
                 | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
         onNotificationShadeExpandChanged((systemUiStateFlags & shadeExpandedFlags) != 0, fromInit);
