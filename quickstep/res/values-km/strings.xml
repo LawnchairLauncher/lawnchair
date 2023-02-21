@@ -117,4 +117,6 @@
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"របាររុករក"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ផ្លាស់ទីទៅខាងលើ/ឆ្វេង"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ផ្លាស់ទីទៅខាងក្រោម/ស្ដាំ"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{បង្ហាញកម្មវិធី # ទៀត។}other{បង្ហាញ​កម្មវិធី # ទៀត។}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> និង <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>
