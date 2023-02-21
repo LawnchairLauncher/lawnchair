@@ -1214,7 +1214,7 @@ public class QuickstepLauncher extends Launcher {
      *
      * If the second split task is missing, launches the first task normally.
      */
-    public void launchSplitTasks(View taskView, GroupTask groupTask) {
+    public void launchSplitTasks(@NonNull View taskView, @NonNull GroupTask groupTask) {
         if (groupTask.task2 == null) {
             UI_HELPER_EXECUTOR.execute(() ->
                     ActivityManagerWrapper.getInstance().startActivityFromRecents(

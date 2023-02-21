@@ -425,7 +425,7 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        return (mViewCallbacks != null && mViewCallbacks.onKeyUp(keyCode, event))
+        return (mViewCallbacks != null && mViewCallbacks.onKeyUp(keyCode, event, mIsRtl))
                 || super.onKeyUp(keyCode, event);
     }
 
