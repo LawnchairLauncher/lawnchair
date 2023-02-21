@@ -17,7 +17,6 @@ package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
-import static com.android.launcher3.taskbar.TaskbarStashController.TASKBAR_STASH_DURATION;
 
 import android.animation.Animator;
 
@@ -93,7 +92,8 @@ public class FallbackTaskbarUIController extends TaskbarUIController {
     }
 
     private void animateToRecentsState(RecentsState toState) {
-        Animator anim = createAnimToRecentsState(toState, TASKBAR_STASH_DURATION);
+        Animator anim = createAnimToRecentsState(toState,
+                mControllers.taskbarStashController.getStashDuration());
         if (anim != null) {
             anim.start();
         }
