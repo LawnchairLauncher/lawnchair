@@ -75,6 +75,11 @@ public class TaskbarUIController {
 
     protected void onStashedInAppChanged() { }
 
+    /**
+     * Called when taskbar icon layout bounds change.
+     */
+    protected void onIconLayoutBoundsChanged() { }
+
     /** Called when an icon is launched. */
     @CallSuper
     public void onTaskbarIconLaunched(ItemInfo item) {
