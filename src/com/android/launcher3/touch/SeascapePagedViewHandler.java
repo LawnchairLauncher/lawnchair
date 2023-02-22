@@ -184,7 +184,7 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
 
     @Override
     public void setSplitInstructionsParams(View out, DeviceProfile dp, int splitInstructionsHeight,
-            int splitInstructionsWidth, int threeButtonNavShift) {
+            int splitInstructionsWidth) {
         out.setPivotX(0);
         out.setPivotY(splitInstructionsHeight);
         out.setRotation(getDegreesRotated());

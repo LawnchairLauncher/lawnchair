@@ -1417,14 +1417,7 @@ public class DeviceProfile {
      */
     public int getOverviewActionsClaimedSpaceBelow() {
         if (isTaskbarPresent) {
-            if (FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
-                return transientTaskbarSize + transientTaskbarMargin * 2;
-            }
-
-            return isGestureMode
-                    ? stashedTaskbarSize
-                    // Align vertically to where nav buttons are.
-                    : ((taskbarSize - overviewActionsHeight) / 2) + getTaskbarOffsetY();
+            return transientTaskbarSize + transientTaskbarMargin * 2;
         }
         return mInsets.bottom;
     }
