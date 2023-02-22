@@ -43,7 +43,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.views.ActivityContext;
-import com.android.launcher3.views.RecyclerViewFastScroller;
 
 import java.util.List;
 
@@ -272,10 +271,6 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
     public int getScrollBarMarginBottom() {
         return getRootWindowInsets() == null ? 0
                 : getRootWindowInsets().getSystemWindowInsetBottom();
-    }
-
-    public RecyclerViewFastScroller getScrollbar() {
-        return mScrollbar;
     }
 
     @Override

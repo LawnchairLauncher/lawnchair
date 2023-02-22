@@ -171,12 +171,14 @@ public class RecyclerViewFastScroller extends View {
         ta.recycle();
     }
 
-    /** @return whether there is a RecyclerView bound to this scroller. */
-    public boolean hasRecyclerView() {
-        return mRv != null;
+    /** Sets the popup view to show while the scroller is being dragged */
+    public void setPopupView(TextView popupView) {
+        mPopupView = popupView;
+        mPopupView.setBackground(
+                new FastScrollThumbDrawable(mThumbPaint, Utilities.isRtl(getResources())));
     }
 
-    public void setRecyclerView(FastScrollRecyclerView rv, TextView popupView) {
+    public void setRecyclerView(FastScrollRecyclerView rv) {
         if (mRv != null && mOnScrollListener != null) {
             mRv.removeOnScrollListener(mOnScrollListener);
         }
@@ -194,10 +196,6 @@ public class RecyclerViewFastScroller extends View {
                 mRv.onUpdateScrollbar(dy);
             }
         });
-
-        mPopupView = popupView;
-        mPopupView.setBackground(
-                new FastScrollThumbDrawable(mThumbPaint, Utilities.isRtl(getResources())));
     }
 
     public void reattachThumbToScroll() {
@@ -336,7 +334,7 @@ public class RecyclerViewFastScroller extends View {
     }
 
     public void onDraw(Canvas canvas) {
-        if (mThumbOffsetY < 0) {
+        if (mThumbOffsetY < 0 || mRv == null) {
             return;
         }
         int saveCount = canvas.save();
