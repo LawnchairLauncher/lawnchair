@@ -189,9 +189,9 @@ public class TaskbarUIController {
         if (recentsView == null) {
             return;
         }
-        recentsView.findLastActiveTaskAndRunCallback(
+        recentsView.getSplitSelectController().findLastActiveTaskAndRunCallback(
                 splitSelectSource.intent.getComponent(),
-                (Consumer<Task>) foundTask -> {
+                foundTask -> {
                     splitSelectSource.alreadyRunningTaskId = foundTask == null
                             ? INVALID_TASK_ID
                             : foundTask.key.id;
@@ -206,9 +206,9 @@ public class TaskbarUIController {
      */
     public void triggerSecondAppForSplit(ItemInfoWithIcon info, Intent intent, View startingView) {
         RecentsView recents = getRecentsView();
-        recents.findLastActiveTaskAndRunCallback(
+        recents.getSplitSelectController().findLastActiveTaskAndRunCallback(
                 info.getTargetComponent(),
-                (Consumer<Task>) foundTask -> {
+                foundTask -> {
                     if (foundTask != null) {
                         TaskView foundTaskView = recents.getTaskViewByTaskId(foundTask.key.id);
                         // TODO (b/266482558): This additional null check is needed because there
