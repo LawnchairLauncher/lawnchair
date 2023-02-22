@@ -69,17 +69,14 @@ public class MultipageCellLayout extends CellLayout {
     @Override
     boolean createAreaForResize(int cellX, int cellY, int spanX, int spanY, View dragView,
             int[] direction, boolean commit) {
+        // Add seam to x position
+        if (cellX > mCountX / 2) {
+            cellX++;
+        }
+        int finalCellX = cellX;
         return simulateSeam(
-                () -> super.createAreaForResize(cellX, cellY, spanX, spanY, dragView, direction,
-                        commit));
-    }
-
-    @Override
-    void regionToCenterPoint(int cellX, int cellY, int spanX, int spanY, int[] result) {
-        simulateSeam(() -> {
-            super.regionToCenterPoint(cellX, cellY, spanX, spanY, result);
-            return 0;
-        });
+                () -> super.createAreaForResize(finalCellX, cellY, spanX, spanY, dragView,
+                        direction, commit));
     }
 
     @Override
