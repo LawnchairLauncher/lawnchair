@@ -190,6 +190,12 @@ public class TouchInteractionService extends Service
         }
 
         @BinderThread
+        @Override
+        public void onTaskbarToggled() {
+            // To be implemented.
+        }
+
+        @BinderThread
         public void onOverviewToggle() {
             TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onOverviewToggle");
             // If currently screen pinning, do not enter overview
