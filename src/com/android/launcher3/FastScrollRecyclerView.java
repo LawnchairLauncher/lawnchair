@@ -20,7 +20,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import androidx.annotation.Nullable;
@@ -53,21 +52,9 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
         super(context, attrs, defStyleAttr);
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (mScrollbar == null || !mScrollbar.hasRecyclerView()) {
-            bindFastScrollbar();
-        }
-    }
-
-    public void bindFastScrollbar() {
-        ViewGroup parent = (ViewGroup) getParent().getParent();
-        if (parent.findViewById(R.id.fast_scroller) == null) {
-            parent = (ViewGroup) parent.getParent();
-        }
-        mScrollbar = parent.findViewById(R.id.fast_scroller);
-        mScrollbar.setRecyclerView(this, parent.findViewById(R.id.fast_scroller_popup));
+    public void bindFastScrollbar(RecyclerViewFastScroller scrollbar) {
+        mScrollbar = scrollbar;
+        mScrollbar.setRecyclerView(this);
         onUpdateScrollbar(0);
     }
 
