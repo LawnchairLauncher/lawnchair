@@ -124,6 +124,18 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
+    public boolean disallowTaskbarGlobalDrag() {
+        // Disable global drag in overview
+        return true;
+    }
+
+    @Override
+    public boolean allowTaskbarInitialSplitSelection() {
+        // Allow split select from taskbar items in overview
+        return true;
+    }
+
+    @Override
     public String getDescription(Launcher launcher) {
         return launcher.getString(R.string.accessibility_recent_apps);
     }
