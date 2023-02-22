@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.views;
 
+import static android.app.ActivityTaskManager.INVALID_TASK_ID;
+
 import static com.android.launcher3.LauncherState.CLEAR_ALL_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -171,8 +173,9 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     }
 
     @Override
-    public void setModalStateEnabled(boolean isModalState, boolean animate) {
-        if (isModalState) {
+    public void setModalStateEnabled(int taskId, boolean animate) {
+        if (taskId != INVALID_TASK_ID) {
+            setSelectedTask(taskId);
             mActivity.getStateManager().goToState(LauncherState.OVERVIEW_MODAL_TASK, animate);
         } else {
             if (mActivity.isInState(LauncherState.OVERVIEW_MODAL_TASK)) {
