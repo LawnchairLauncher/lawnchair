@@ -37,8 +37,7 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"విడ్జెట్‌ను మొదటి స్క్రీన్ చుట్టూ తిప్పడానికి దాన్ని తాకి, &amp; నొక్కి ఉంచండి"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"మొదటి స్క్రీన్‌కు జోడించండి"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"మొదటి స్క్రీన్‌కు <xliff:g id="WIDGET_NAME">%1$s</xliff:g> విడ్జెట్ జోడించబడింది"</string>
-    <!-- no translation found for suggested_widgets_header_title (1844314680798145222) -->
-    <skip />
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"సూచనలు"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# విడ్జెట్}other{# విడ్జెట్‌లు}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# షార్ట్‌కట్}other{# షార్ట్‌కట్‌లు}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -162,12 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"వర్క్ యాప్‌లకు బ్యాడ్జ్ ఉంటుంది, అవి మీ IT అడ్మిన్‌కు కనిపిస్తాయి"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"అర్థమైంది"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"వర్క్ యాప్‌లు పాజ్ చేయబడ్డాయి"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"మీ వర్క్ యాప్‌ల నుండి మీకు నోటిఫికేషన్‌లు అందవు"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"మీకు నోటిఫికేషన్‌లు పంపడం, మీ బ్యాటరీని ఉపయోగించడం, లేదా మీ లొకేషన్‌ను యాక్సెస్ చేయడం మీ వర్క్ యాప్‌లకు సాధ్యపడదు"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"వర్క్ యాప్‌లు ఆఫ్‌లో ఉన్నాయి. మీకు నోటిఫికేషన్‌లు పంపడం, మీ బ్యాటరీని ఉపయోగించడం, లేదా మీ లొకేషన్‌ను యాక్సెస్ చేయడం మీ వర్క్ యాప్‌లకు సాధ్యపడదు"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"మీ వర్క్ యాప్‌ల నుండి మీకు ఫోన్ కాల్స్, టెక్స్ట్ మెసేజ్‌లు, లేదా నోటిఫికేషన్‌లు అందవు"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"వర్క్ యాప్‌లకు బ్యాడ్జ్ ఉంటుంది, అవి మీ IT అడ్మిన్‌కు కనిపిస్తాయి"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"అర్థమైంది"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"వర్క్ యాప్‌లను పాజ్ చేయి"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"వర్క్ యాప్‌లను ఆన్ చేయి"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"పాజ్ నుండి తీసివేయండి"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ఫిల్టర్ చేయి"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"మీ ఫోన్‌లో సెర్చ్ చేయండి"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"మీ టాబ్లెట్‌లో సెర్చ్ చేయండి"</string>
