@@ -52,6 +52,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.BaseState;
@@ -339,12 +340,21 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
      */
     public final void calculateModalTaskSize(Context context, DeviceProfile dp, Rect outRect) {
         calculateTaskSize(context, dp, outRect);
-        float maxScale = context.getResources().getFloat(R.dimen.overview_modal_max_scale);
+        boolean isGridOnlyOverview = dp.isTablet && FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get();
+        int claimedSpaceBelow = isGridOnlyOverview
+                ? dp.overviewActionsTopMarginPx + dp.overviewActionsHeight + dp.stashedTaskbarSize
+                : (dp.heightPx - outRect.bottom - dp.getInsets().bottom);
+        int minimumHorizontalPadding = 0;
+        if (!isGridOnlyOverview) {
+            float maxScale = context.getResources().getFloat(R.dimen.overview_modal_max_scale);
+            minimumHorizontalPadding =
+                    Math.round((dp.availableWidthPx - outRect.width() * maxScale) / 2);
+        }
         calculateTaskSizeInternal(
                 context, dp,
                 dp.overviewTaskMarginPx,
-                dp.heightPx - outRect.bottom - dp.getInsets().bottom,
-                Math.round((dp.availableWidthPx - outRect.width() * maxScale) / 2),
+                claimedSpaceBelow,
+                minimumHorizontalPadding,
                 1f /*maxScale*/,
                 Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM,
                 outRect);
