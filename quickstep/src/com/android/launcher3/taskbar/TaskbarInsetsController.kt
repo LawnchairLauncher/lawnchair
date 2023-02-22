@@ -84,7 +84,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
 
         windowLayoutParams.insetsRoundedCornerFrame = true
         context.addOnDeviceProfileChangeListener(deviceProfileChangeListener)
-        gestureNavSettingsObserver.registerForCurrentUser()
+        gestureNavSettingsObserver.registerForCallingUser()
     }
 
     fun onDestroy() {
@@ -102,6 +102,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         )
         val contentHeight = controllers.taskbarStashController.contentHeightToReportToApps
         val tappableHeight = controllers.taskbarStashController.tappableHeightToReportToApps
+        val res = context.resources;
         for (provider in windowLayoutParams.providedInsets) {
             if (
                 provider.type == ITYPE_EXTRA_NAVIGATION_BAR ||
@@ -113,7 +114,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             } else if (provider.type == ITYPE_LEFT_GESTURES) {
                 provider.insetsSize =
                     Insets.of(
-                        gestureNavSettingsObserver.getLeftSensitivity(context.resources),
+                        gestureNavSettingsObserver.getLeftSensitivityForCallingUser(res),
                         0,
                         0,
                         0
@@ -123,7 +124,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                     Insets.of(
                         0,
                         0,
-                        gestureNavSettingsObserver.getRightSensitivity(context.resources),
+                        gestureNavSettingsObserver.getRightSensitivityForCallingUser(res),
                         0
                     )
             }

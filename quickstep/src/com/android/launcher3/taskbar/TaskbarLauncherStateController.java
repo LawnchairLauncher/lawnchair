@@ -17,7 +17,6 @@ package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
-import static com.android.launcher3.taskbar.TaskbarStashController.TASKBAR_STASH_DURATION;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_HOME;
 import static com.android.systemui.animation.Interpolators.EMPHASIZED;
 
@@ -41,6 +40,7 @@ import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
+import com.android.launcher3.util.window.RefreshRateTracker;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.views.RecentsView;
@@ -139,8 +139,7 @@ import java.util.StringJoiner;
         mIconAlphaForHome = mControllers.taskbarViewController
                 .getTaskbarIconAlpha().get(ALPHA_INDEX_HOME);
 
-        mIconAlignment.finishAnimation();
-        onIconAlignmentRatioChanged();
+        resetIconAlignment();
 
         mLauncher.getStateManager().addStateListener(mStateListener);
 
@@ -234,7 +233,7 @@ import java.util.StringJoiner;
     }
 
     public void applyState() {
-        applyState(TASKBAR_STASH_DURATION);
+        applyState(mControllers.taskbarStashController.getStashDuration());
     }
 
     public void applyState(long duration) {
@@ -242,7 +241,7 @@ import java.util.StringJoiner;
     }
 
     public Animator applyState(boolean start) {
-        return applyState(TASKBAR_STASH_DURATION, start);
+        return applyState(mControllers.taskbarStashController.getStashDuration(), start);
     }
 
     public Animator applyState(long duration, boolean start) {
@@ -329,8 +328,17 @@ import java.util.StringJoiner;
                         + mTaskbarBackgroundAlpha.value
                         + " -> " + backgroundAlpha + ": " + duration);
             }
-            animatorSet.play(mTaskbarBackgroundAlpha.animateToValue(backgroundAlpha)
-                    .setDuration(duration));
+
+            Animator taskbarBackgroundAlpha = mTaskbarBackgroundAlpha
+                    .animateToValue(backgroundAlpha)
+                    .setDuration(duration);
+            // Add a single frame delay to the taskbar bg to avoid too many moving parts during the
+            // app launch animation.
+            taskbarBackgroundAlpha.setStartDelay(
+                    (hasAnyFlag(changedFlags, FLAG_RESUMED) && !goingToLauncher)
+                            ? RefreshRateTracker.getSingleFrameMs(mLauncher)
+                            : 0);
+            animatorSet.play(taskbarBackgroundAlpha);
         }
 
         float cornerRoundness = goingToLauncher ? 0 : 1;
@@ -431,6 +439,14 @@ import java.util.StringJoiner;
 
     private boolean isInLauncher() {
         return (mState & FLAGS_LAUNCHER) != 0;
+    }
+
+    /**
+     * Resets and updates the icon alignment.
+     */
+    protected void resetIconAlignment() {
+        mIconAlignment.finishAnimation();
+        onIconAlignmentRatioChanged();
     }
 
     private void onIconAlignmentRatioChanged() {
