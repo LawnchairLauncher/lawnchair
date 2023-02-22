@@ -37,8 +37,7 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Dotaknite se pripomočka in ga pridržite, če ga želite premikati po začetnem zaslonu."</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Dodaj na začetni zaslon"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Pripomoček »<xliff:g id="WIDGET_NAME">%1$s</xliff:g>« je dodan na začetni zaslon."</string>
-    <!-- no translation found for suggested_widgets_header_title (1844314680798145222) -->
-    <skip />
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Predlogi"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# pripomoček}one{# pripomoček}two{# pripomočka}few{# pripomočki}other{# pripomočkov}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# bližnjica}one{# bližnjica}two{# bližnjici}few{# bližnjice}other{# bližnjic}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -162,12 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Delovne aplikacije so označene z značko in vidne skrbniku za IT."</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Razumem"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Delovne aplikacije so začasno zaustavljene"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Obvestil iz delovnih aplikacij ne boste prejemali."</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Delovne aplikacije ne smejo pošiljati obvestil, porabljati energije baterije ali dostopati do lokacije."</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Delovne aplikacije so izklopljene in ne smejo pošiljati obvestil, porabljati energije baterije ali dostopati do lokacije."</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Telefonskih klicev, sporočil SMS in obvestil iz delovnih aplikacij ne boste prejemali."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Delovne aplikacije so označene z značko in vidne skrbniku za IT."</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"V redu"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Začasno zaustavi delovne aplikacije"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Vklopi delovne aplikacije"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Znova aktiviraj"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtriranje"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Iskanje po telefonu"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Iskanje po tabličnem računalniku"</string>

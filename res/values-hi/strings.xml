@@ -37,8 +37,7 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"होम स्क्रीन पर इधर-उधर ले जाने के लिए, विजेट को दबाकर रखें"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"होम स्क्रीन पर जोड़ें"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट को होम स्क्रीन पर जोड़ा गया"</string>
-    <!-- no translation found for suggested_widgets_header_title (1844314680798145222) -->
-    <skip />
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"सुझाव"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# विजेट}one{# विजेट}other{# विजेट}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# शॉर्टकट}one{# शॉर्टकट}other{# शॉर्टकट}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -162,12 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"वर्क ऐप्लिकेशन बैज किए गए हैं और आईटी एडमिन को दिख रहे हैं"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ठीक है"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"वर्क ऐप्लिकेशन रोके गए"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"आपको वर्क ऐप्लिकेशन से सूचनाएं नहीं मिलेंगी"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"आपके वर्क ऐप्लिकेशन, आपको सूचनाएं नहीं भेज सकते. साथ ही, आपकी बैटरी का इस्तेमाल या आपकी जगह की जानकारी को ऐक्सेस भी नहीं कर सकते"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन बंद हैं. ये ऐप्लिकेशन, आपको सूचनाएं नहीं भेज सकते. साथ ही, आपकी बैटरी का इस्तेमाल या आपकी जगह की जानकारी को ऐक्सेस भी नहीं कर सकते"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"आपको वर्क ऐप्लिकेशन से फ़ोन कॉल, टेक्स्ट मैसेज या सूचनाएं नहीं मिलेंगी"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन बैज किए गए हैं और आईटी एडमिन को दिख रहे हैं"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ठीक है"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"वर्क ऐप्लिकेशन रोकें"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन चालू करें"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"चालू करें"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फ़िल्टर"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"अपने फ़ोन में खोजें"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"अपने टैबलेट में खोजें"</string>
