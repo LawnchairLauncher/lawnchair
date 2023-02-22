@@ -79,7 +79,6 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.WindowConfiguration;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.LocusId;
@@ -4624,7 +4623,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return true;
     }
 
-    /** TODO(b/181707736) More gracefully handle exiting split selection state */
     @SuppressLint("WrongCall")
     protected void resetFromSplitSelectionState() {
         if (mSplitSelectSource != null || mSplitHiddenTaskViewIndex != -1) {
