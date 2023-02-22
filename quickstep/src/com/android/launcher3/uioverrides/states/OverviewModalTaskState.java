@@ -18,12 +18,12 @@ package com.android.launcher3.uioverrides.states;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 
 import android.content.Context;
-import android.graphics.Point;
 import android.graphics.Rect;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -70,13 +70,22 @@ public class OverviewModalTaskState extends OverviewState {
         }
     }
 
-    public static float[] getOverviewScaleAndOffsetForModalState(BaseDraggingActivity activity) {
-        Point taskSize = activity.<RecentsView>getOverviewPanel().getSelectedTaskSize();
-        Rect modalTaskSize = new Rect();
-        activity.<RecentsView>getOverviewPanel().getModalTaskSize(modalTaskSize);
+    @Override
+    public boolean isTaskbarStashed(Launcher launcher) {
+        if (FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get()) {
+            return true;
+        }
+        return super.isTaskbarStashed(launcher);
+    }
 
-        float scale = Math.min((float) modalTaskSize.height() / taskSize.y,
-                (float) modalTaskSize.width() / taskSize.x);
+    public static float[] getOverviewScaleAndOffsetForModalState(BaseDraggingActivity activity) {
+        RecentsView recentsView = activity.<RecentsView>getOverviewPanel();
+        Rect taskSize = recentsView.getSelectedTaskBounds();
+        Rect modalTaskSize = new Rect();
+        recentsView.getModalTaskSize(modalTaskSize);
+
+        float scale = Math.min((float) modalTaskSize.height() / taskSize.height(),
+                (float) modalTaskSize.width() / taskSize.width());
 
         return new float[] {scale, NO_OFFSET};
     }
