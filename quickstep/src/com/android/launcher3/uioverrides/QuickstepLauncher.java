@@ -579,9 +579,9 @@ public class QuickstepLauncher extends Launcher {
         RecentsView recentsView = getOverviewPanel();
         // Check if there is already an instance of this app running, if so, initiate the split
         // using that.
-        recentsView.findLastActiveTaskAndRunCallback(
+        mSplitSelectStateController.findLastActiveTaskAndRunCallback(
                 splitSelectSource.intent.getComponent(),
-                (Consumer<Task>) foundTask -> {
+                foundTask -> {
                     splitSelectSource.alreadyRunningTaskId = foundTask == null
                             ? INVALID_TASK_ID
                             : foundTask.key.id;
@@ -595,8 +595,7 @@ public class QuickstepLauncher extends Launcher {
     }
 
     /** TODO(b/266482558) Migrate into SplitSelectStateController or someplace split specific. */
-    private void startSplitToHome(
-            SplitSelectSource source) {
+    private void startSplitToHome(SplitSelectSource source) {
         AbstractFloatingView.closeAllOpenViews(this);
         int splitPlaceholderSize = getResources().getDimensionPixelSize(
                 R.dimen.split_placeholder_size);
@@ -604,14 +603,14 @@ public class QuickstepLauncher extends Launcher {
                 R.dimen.split_placeholder_inset);
         Rect tempRect = new Rect();
 
-        SplitSelectStateController controller = getSplitSelectStateController();
-        controller.setInitialTaskSelect(source.intent, source.position.stagePosition,
-                source.itemInfo, source.splitEvent, source.alreadyRunningTaskId);
+        mSplitSelectStateController.setInitialTaskSelect(source.intent,
+                source.position.stagePosition, source.itemInfo, source.splitEvent,
+                source.alreadyRunningTaskId);
 
         RecentsView recentsView = getOverviewPanel();
         recentsView.getPagedOrientationHandler().getInitialSplitPlaceholderBounds(
                 splitPlaceholderSize, splitPlaceholderInset, getDeviceProfile(),
-                controller.getActiveSplitStagePosition(), tempRect);
+                mSplitSelectStateController.getActiveSplitStagePosition(), tempRect);
 
         PendingAnimation anim = new PendingAnimation(TABLET_HOME_TO_SPLIT.getDuration());
         RectF startingTaskRect = new RectF();
@@ -620,12 +619,12 @@ public class QuickstepLauncher extends Launcher {
         floatingTaskView.setAlpha(1);
         floatingTaskView.addStagingAnimation(anim, startingTaskRect, tempRect,
                 false /* fadeWithThumbnail */, true /* isStagedTask */);
-        controller.setFirstFloatingTaskView(floatingTaskView);
+        mSplitSelectStateController.setFirstFloatingTaskView(floatingTaskView);
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationCancel(Animator animation) {
                 getDragLayer().removeView(floatingTaskView);
-                controller.resetState();
+                mSplitSelectStateController.resetState();
             }
         });
         anim.buildAnim().start();
@@ -1156,14 +1155,12 @@ public class QuickstepLauncher extends Launcher {
         // Launcher to first restore into Overview state, wait for the relevant tasks and icons to
         // load in, and then proceed to OverviewSplitSelect.
         if (isInState(OVERVIEW_SPLIT_SELECT)) {
-            SplitSelectStateController splitSelectStateController =
-                    ((RecentsView) getOverviewPanel()).getSplitSelectController();
             // Launcher will restart in Overview and then transition to OverviewSplitSelect.
             outState.putIBinder(PENDING_SPLIT_SELECT_INFO, ObjectWrapper.wrap(
                     new PendingSplitSelectInfo(
-                            splitSelectStateController.getInitialTaskId(),
-                            splitSelectStateController.getActiveSplitStagePosition(),
-                            splitSelectStateController.getSplitEvent())
+                            mSplitSelectStateController.getInitialTaskId(),
+                            mSplitSelectStateController.getActiveSplitStagePosition(),
+                            mSplitSelectStateController.getSplitEvent())
             ));
             outState.putInt(RUNTIME_STATE, OVERVIEW.ordinal);
         }

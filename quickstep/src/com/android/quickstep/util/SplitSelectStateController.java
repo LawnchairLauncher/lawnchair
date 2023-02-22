@@ -30,6 +30,7 @@ import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.app.ActivityThread;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -60,6 +61,7 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
+import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.TaskViewUtils;
@@ -80,10 +82,12 @@ public class SplitSelectStateController {
 
     private final Context mContext;
     private final Handler mHandler;
+    private final RecentsModel mRecentTasksModel;
     private StatsLogManager mStatsLogManager;
     private final SystemUiProxy mSystemUiProxy;
     private final StateManager mStateManager;
-    private final DepthController mDepthController;
+    @Nullable
+    private DepthController mDepthController;
     private @StagePosition int mStagePosition;
     private ItemInfo mItemInfo;
     private Intent mInitialTaskIntent;
@@ -111,6 +115,7 @@ public class SplitSelectStateController {
         mSystemUiProxy = SystemUiProxy.INSTANCE.get(mContext);
         mStateManager = stateManager;
         mDepthController = depthController;
+        mRecentTasksModel = RecentsModel.INSTANCE.get(context);
     }
 
     /**
@@ -147,6 +152,50 @@ public class SplitSelectStateController {
         mItemInfo = itemInfo;
         mStagePosition = stagePosition;
         mSplitEvent = splitEvent;
+    }
+
+    /**
+     * Pulls the list of active Tasks from RecentsModel, and finds the most recently active Task
+     * matching a given ComponentName. Then uses that Task (which could be null) with the given
+     * callback.
+     *
+     * Used in various task-switching or splitscreen operations when we need to check if there is a
+     * currently running Task of a certain type and use the most recent one.
+     */
+    public void findLastActiveTaskAndRunCallback(ComponentName componentName,
+            Consumer<Task> callback) {
+        mRecentTasksModel.getTasks(taskGroups -> {
+            Task lastActiveTask = null;
+            // Loop through tasks in reverse, since they are ordered with most-recent tasks last.
+            for (int i = taskGroups.size() - 1; i >= 0; i--) {
+                GroupTask groupTask = taskGroups.get(i);
+                Task task1 = groupTask.task1;
+                if (isInstanceOfComponent(task1, componentName)) {
+                    lastActiveTask = task1;
+                    break;
+                }
+                Task task2 = groupTask.task2;
+                if (isInstanceOfComponent(task2, componentName)) {
+                    lastActiveTask = task2;
+                    break;
+                }
+            }
+
+            callback.accept(lastActiveTask);
+        });
+    }
+
+    /**
+     * Checks if a given Task is the most recently-active Task of type componentName. Used for
+     * selecting already-running Tasks for splitscreen.
+     */
+    public boolean isInstanceOfComponent(@Nullable Task task, ComponentName componentName) {
+        // Exclude the task that is already staged
+        if (task == null || task.key.id == mInitialTaskId) {
+            return false;
+        }
+
+        return task.key.baseIntent.getComponent().equals(componentName);
     }
 
     /**
