@@ -116,6 +116,18 @@ public class BackgroundAppState extends OverviewState {
         return super.isTaskbarAlignedWithHotseat(launcher);
     }
 
+    @Override
+    public boolean disallowTaskbarGlobalDrag() {
+        // Enable global drag in overview
+        return false;
+    }
+
+    @Override
+    public boolean allowTaskbarInitialSplitSelection() {
+        // Disallow split select from taskbar items in overview
+        return false;
+    }
+
     public static float[] getOverviewScaleAndOffsetForBackgroundState(
             BaseDraggingActivity activity) {
         return new float[] {
