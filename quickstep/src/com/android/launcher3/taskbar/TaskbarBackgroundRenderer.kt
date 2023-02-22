@@ -21,6 +21,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import com.android.launcher3.R
+import com.android.launcher3.Utilities.mapRange
 import com.android.launcher3.Utilities.mapToRange
 import com.android.launcher3.anim.Interpolators
 import com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound
@@ -50,6 +51,12 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
     private val circle: Path = Path()
     private val invertedLeftCornerPath: Path = Path()
     private val invertedRightCornerPath: Path = Path()
+
+    private val stashedHandleWidth =
+        context.resources.getDimensionPixelSize(R.dimen.taskbar_stashed_handle_width)
+
+    private val stashedHandleHeight =
+        context.resources.getDimensionPixelSize(R.dimen.taskbar_stashed_handle_height)
 
     init {
         paint.color = context.getColor(R.color.taskbar_background)
@@ -98,8 +105,8 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
     /** Draws the background with the given paint and height, on the provided canvas. */
     fun draw(canvas: Canvas) {
         canvas.save()
-        canvas.translate(0f, canvas.height - backgroundHeight - bottomMargin)
         if (!isTransientTaskbar || transientBackgroundBounds.isEmpty) {
+            canvas.translate(0f, canvas.height - backgroundHeight - bottomMargin)
             // Draw the background behind taskbar content.
             canvas.drawRect(0f, 0f, canvas.width.toFloat(), backgroundHeight, paint)
 
@@ -110,13 +117,21 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
             canvas.translate(canvas.width - rightCornerRadius, -rightCornerRadius)
             canvas.drawPath(invertedRightCornerPath, paint)
         } else {
-            // Approximates the stash/unstash animation to transform the background.
-            val scaleFactor = backgroundHeight / maxBackgroundHeight
-            val width = transientBackgroundBounds.width()
-            val widthScale = mapToRange(scaleFactor, 0f, 1f, 0.2f, 1f, Interpolators.LINEAR)
-            val newWidth = widthScale * width
-            val delta = width - newWidth
-            canvas.translate(0f, bottomMargin * ((1f - scaleFactor) / 2f))
+            // backgroundHeight is a value from [0...maxBackgroundHeight], so we can use it as a
+            // proxy to figure out the animation progress of the stash/unstash animation.
+            val progress = backgroundHeight / maxBackgroundHeight
+
+            // At progress 0, we draw the background as the stashed handle.
+            // At progress 1, we draw the background as the full taskbar.
+            val newBackgroundHeight =
+                mapRange(progress, stashedHandleHeight.toFloat(), maxBackgroundHeight)
+            val fullWidth = transientBackgroundBounds.width()
+            val newWidth = mapRange(progress, stashedHandleWidth.toFloat(), fullWidth.toFloat())
+            val halfWidthDelta = (fullWidth - newWidth) / 2f
+            val radius = newBackgroundHeight / 2f
+            val bottomMarginProgress = bottomMargin * ((1f - progress) / 2f)
+
+            canvas.translate(0f, canvas.height - bottomMargin + bottomMarginProgress)
 
             // Draw shadow.
             val shadowAlpha =
@@ -128,20 +143,20 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
                 setColorAlphaBound(Color.BLACK, Math.round(shadowAlpha))
             )
 
-            // Draw background.
-            val radius = backgroundHeight / 2f
+            // Aligns the bottom with the bottom of the stashed handle.
+            val bottom =
+                (-mapRange(1f - progress, 0f, stashedHandleHeight / 2f) + translationYForSwipe)
 
             canvas.drawRoundRect(
-                transientBackgroundBounds.left + (delta / 2f),
-                translationYForSwipe,
-                transientBackgroundBounds.right - (delta / 2f),
-                backgroundHeight + translationYForSwipe,
+                transientBackgroundBounds.left + halfWidthDelta,
+                bottom - newBackgroundHeight,
+                transientBackgroundBounds.right - halfWidthDelta,
+                bottom,
                 radius,
                 radius,
                 paint
             )
         }
-
         canvas.restore()
     }
 

@@ -17,9 +17,9 @@ package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.anim.AnimatedFloat.VALUE;
+import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP;
@@ -28,6 +28,7 @@ import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_NEGA
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.VERTICAL;
 
 import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.NonNull;
 import android.graphics.Rect;
@@ -199,14 +200,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     }
 
     /**
-     * Should be called when the IME visibility changes, so we can make Taskbar not steal touches.
-     */
-    public void setImeIsVisible(boolean isImeVisible) {
-        mTaskbarView.setTouchesEnabled(!isImeVisible
-                || DisplayController.isTransientTaskbar(mActivity));
-    }
-
-    /**
      * Should be called when the recents button is disabled, so we can hide taskbar icons as well.
      */
     public void setRecentsButtonDisabled(boolean isDisabled) {
@@ -310,13 +303,48 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      * @param isStashed When true, the icon crops vertically to the size of the stashed handle.
      *                  When false, the reverse happens.
      */
-    public AnimatorSet createRevealAnimToIsStashed(boolean isStashed) {
+    public AnimatorSet createRevealAnimToIsStashed(boolean isStashed, boolean isInApp) {
         AnimatorSet as = new AnimatorSet();
-        for (int i = mTaskbarView.getChildCount() - 1; i >= 0; i--) {
+
+        Rect stashedBounds = new Rect();
+        mControllers.stashedHandleViewController.getStashedHandleBounds(stashedBounds);
+
+        int numChildren = mTaskbarView.getChildCount();
+        // We do not actually modify the width of the icons, but we will use this width to position
+        // the children to overlay the nav handle.
+        float virtualChildWidth = stashedBounds.width() / (float) numChildren;
+
+        for (int i = numChildren - 1; i >= 0; i--) {
             View child = mTaskbarView.getChildAt(i);
-            if (child instanceof BubbleTextView) {
-                as.play(createRevealAnimForView(child, isStashed));
+
+            // Crop the icons to/from the nav handle shape.
+            as.play(createRevealAnimForView(child, isStashed));
+
+            // Translate the icons to/from their locations as the "nav handle."
+            // We look at 'left' and 'right' values to ensure that the children stay within the
+            // bounds of the stashed handle.
+            float iconLeft = child.getLeft();
+            float newLeft = stashedBounds.left + (virtualChildWidth * i);
+            final float croppedTransX;
+            if (iconLeft > newLeft) {
+                float newRight = stashedBounds.right - (virtualChildWidth * (numChildren - 1 - i));
+                croppedTransX = -(child.getLeft() + child.getWidth() - newRight);
+            } else {
+                croppedTransX = newLeft - iconLeft;
             }
+
+            as.play(ObjectAnimator.ofFloat(child, ICON_REVEAL_TRANSLATE_X, isStashed
+                    ? new float[] {croppedTransX}
+                    : new float[] {croppedTransX, 0}));
+
+            float croppedTransY = child.getHeight() - stashedBounds.height();
+            as.play(ObjectAnimator.ofFloat(child, ICON_REVEAL_TRANSLATE_Y, isStashed
+                    ? new float[] {croppedTransY}
+                    : new float[] {croppedTransY, 0}));
+            as.addListener(forEndCallback(() -> {
+                ICON_REVEAL_TRANSLATE_X.set(child, 0f);
+                ICON_REVEAL_TRANSLATE_Y.set(child, 0f);
+            }));
         }
         return as;
     }
@@ -409,7 +437,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 float scale = ((float) taskbarDp.iconSizePx) / launcherDp.hotseatQsbVisualHeight;
                 setter.addFloat(child, SCALE_PROPERTY, scale, 1f, interpolator);
 
-                setter.setFloat(child, VIEW_TRANSLATE_Y, mTaskbarBottomMargin, interpolator);
+                setter.setFloat(child, ICON_TRANSLATE_Y, mTaskbarBottomMargin, interpolator);
 
                 if (mIsHotseatIconOnTopWhenAligned) {
                     setter.addFloat(child, VIEW_ALPHA, 0f, 1f,
@@ -448,7 +476,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             float childCenter = (child.getLeft() + child.getRight()) / 2f;
             setter.setFloat(child, ICON_TRANSLATE_X, hotseatIconCenter - childCenter, interpolator);
 
-            setter.setFloat(child, VIEW_TRANSLATE_Y, mTaskbarBottomMargin, interpolator);
+            setter.setFloat(child, ICON_TRANSLATE_Y, mTaskbarBottomMargin, interpolator);
 
             setter.setFloat(child, SCALE_PROPERTY, scaleUp, interpolator);
         }
@@ -626,6 +654,13 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         public void clearTouchInProgress() {
             mTouchInProgress = false;
         }
+
+        /**
+         * Notifies launcher to update icon alignment.
+         */
+        public void notifyIconLayoutBoundsChanged() {
+            mControllers.uiController.onIconLayoutBoundsChanged();
+        }
     }
 
     public static final FloatProperty<View> ICON_TRANSLATE_X =
@@ -636,7 +671,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                     if (view instanceof BubbleTextView) {
                         ((BubbleTextView) view).setTranslationXForTaskbarAlignmentAnimation(v);
                     } else if (view instanceof FolderIcon) {
-                        ((FolderIcon) view).setTranslationForTaskbarAlignmentAnimation(v);
+                        ((FolderIcon) view).setTranslationXForTaskbarAlignmentAnimation(v);
                     } else {
                         view.setTranslationX(v);
                     }
@@ -653,4 +688,81 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                     return view.getTranslationX();
                 }
             };
+
+    public static final FloatProperty<View> ICON_TRANSLATE_Y =
+            new FloatProperty<View>("taskbarAlignmentTranslateY") {
+
+                @Override
+                public void setValue(View view, float v) {
+                    if (view instanceof BubbleTextView) {
+                        ((BubbleTextView) view).setTranslationYForTaskbarAlignmentAnimation(v);
+                    } else if (view instanceof FolderIcon) {
+                        ((FolderIcon) view).setTranslationYForTaskbarAlignmentAnimation(v);
+                    } else {
+                        view.setTranslationY(v);
+                    }
+                }
+
+                @Override
+                public Float get(View view) {
+                    if (view instanceof BubbleTextView) {
+                        return ((BubbleTextView) view)
+                                .getTranslationYForTaskbarAlignmentAnimation();
+                    } else if (view instanceof FolderIcon) {
+                        return ((FolderIcon) view).getTranslationYForTaskbarAlignmentAnimation();
+                    }
+                    return view.getTranslationY();
+                }
+            };
+
+    public static final FloatProperty<View> ICON_REVEAL_TRANSLATE_X =
+            new FloatProperty<View>("taskbarRevealTranslateX") {
+
+                @Override
+                public void setValue(View view, float v) {
+                    if (view instanceof BubbleTextView) {
+                        ((BubbleTextView) view).setTranslationXForTaskbarRevealAnimation(v);
+                    } else if (view instanceof FolderIcon) {
+                        ((FolderIcon) view).setTranslationXForTaskbarRevealAnimation(v);
+                    } else {
+                        view.setTranslationX(v);
+                    }
+                }
+
+                @Override
+                public Float get(View view) {
+                    if (view instanceof BubbleTextView) {
+                        return ((BubbleTextView) view).getTranslationXForTaskbarRevealAnimation();
+                    } else if (view instanceof FolderIcon) {
+                        return ((FolderIcon) view).getTranslationXForTaskbarRevealAnimation();
+                    }
+                    return view.getTranslationX();
+                }
+            };
+
+    public static final FloatProperty<View> ICON_REVEAL_TRANSLATE_Y =
+            new FloatProperty<View>("taskbarRevealTranslateY") {
+
+                @Override
+                public void setValue(View view, float v) {
+                    if (view instanceof BubbleTextView) {
+                        ((BubbleTextView) view).setTranslationYForTaskbarRevealAnimation(v);
+                    } else if (view instanceof FolderIcon) {
+                        ((FolderIcon) view).setTranslationYForTaskbarRevealAnimation(v);
+                    } else {
+                        view.setTranslationY(v);
+                    }
+                }
+
+                @Override
+                public Float get(View view) {
+                    if (view instanceof BubbleTextView) {
+                        return ((BubbleTextView) view).getTranslationYForTaskbarRevealAnimation();
+                    } else if (view instanceof FolderIcon) {
+                        return ((FolderIcon) view).getTranslationYForTaskbarRevealAnimation();
+                    }
+                    return view.getTranslationY();
+                }
+            };
+
 }

@@ -135,6 +135,9 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
     private final PointF mTranslationForMoveFromCenterAnimation = new PointF(0, 0);
     private float mTranslationXForTaskbarAlignmentAnimation = 0f;
+    private float mTranslationYForTaskbarAlignmentAnimation = 0f;
+    private float mTranslationXForTaskbarRevealAnimation = 0f;
+    private float mTranslationYForTaskbarRevealAnimation = 0f;
 
     private final PointF mTranslationForReorderBounce = new PointF(0, 0);
     private final PointF mTranslationForReorderPreview = new PointF(0, 0);
@@ -416,7 +419,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
                     () -> {
                         mPreviewItemManager.hidePreviewItem(finalIndex, false);
                         mFolder.showItem(item);
-                    }, 
+                    },
                     DragLayer.ANIMATION_END_DISAPPEAR, null);
 
             mFolder.hideItem(item);
@@ -768,11 +771,15 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     }
 
     private void updateTranslation() {
-        super.setTranslationX(mTranslationForReorderBounce.x + mTranslationForReorderPreview.x
+        super.setTranslationX(mTranslationForReorderBounce.x
+                + mTranslationForReorderPreview.x
                 + mTranslationForMoveFromCenterAnimation.x
-                + mTranslationXForTaskbarAlignmentAnimation);
+                + mTranslationXForTaskbarAlignmentAnimation
+                + mTranslationXForTaskbarRevealAnimation);
         super.setTranslationY(mTranslationForReorderBounce.y + mTranslationForReorderPreview.y
-                + mTranslationForMoveFromCenterAnimation.y);
+                + mTranslationForMoveFromCenterAnimation.y
+                + mTranslationYForTaskbarAlignmentAnimation
+                + mTranslationYForTaskbarRevealAnimation);
     }
 
     public void setReorderBounceOffset(float x, float y) {
@@ -787,7 +794,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     /**
      * Sets translationX value for taskbar to launcher alignment animation
      */
-    public void setTranslationForTaskbarAlignmentAnimation(float translationX) {
+    public void setTranslationXForTaskbarAlignmentAnimation(float translationX) {
         mTranslationXForTaskbarAlignmentAnimation = translationX;
         updateTranslation();
     }
@@ -797,6 +804,51 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
      */
     public float getTranslationXForTaskbarAlignmentAnimation() {
         return mTranslationXForTaskbarAlignmentAnimation;
+    }
+
+    /**
+     * Sets translationY value for taskbar to launcher alignment animation
+     */
+    public void setTranslationYForTaskbarAlignmentAnimation(float translationY) {
+        mTranslationYForTaskbarAlignmentAnimation = translationY;
+        updateTranslation();
+    }
+
+    /**
+     * Returns translation values for taskbar to launcher alignment animation
+     */
+    public float getTranslationYForTaskbarAlignmentAnimation() {
+        return mTranslationYForTaskbarAlignmentAnimation;
+    }
+
+    /**
+     * Sets translationX value for taskbar reveal animation
+     */
+    public void setTranslationXForTaskbarRevealAnimation(float translationX) {
+        mTranslationXForTaskbarRevealAnimation = translationX;
+        updateTranslation();
+    }
+
+    /**
+     * Returns translation values for taskbar reveal animation
+     */
+    public float getTranslationXForTaskbarRevealAnimation() {
+        return mTranslationXForTaskbarRevealAnimation;
+    }
+
+    /**
+     * Sets translationY value for taskbar reveal animation
+     */
+    public void setTranslationYForTaskbarRevealAnimation(float translationY) {
+        mTranslationYForTaskbarRevealAnimation = translationY;
+        updateTranslation();
+    }
+
+    /**
+     * Returns translationY values for taskbar reveal animation
+     */
+    public float getTranslationYForTaskbarRevealAnimation() {
+        return mTranslationYForTaskbarRevealAnimation;
     }
 
     /**

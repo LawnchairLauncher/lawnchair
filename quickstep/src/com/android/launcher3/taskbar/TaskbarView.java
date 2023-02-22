@@ -58,6 +58,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     private static final String TAG = TaskbarView.class.getSimpleName();
 
     private static final float TASKBAR_BACKGROUND_LUMINANCE = 0.30f;
+    private static final Rect sTmpRect = new Rect();
+
     public int mThemeIconsBackground;
 
     private final int[] mTempOutLocation = new int[2];
@@ -73,9 +75,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     private TaskbarViewController.TaskbarViewCallbacks mControllerCallbacks;
     private View.OnClickListener mIconClickListener;
     private View.OnLongClickListener mIconLongClickListener;
-
-    // Prevents dispatching touches to children if true
-    private boolean mTouchEnabled = true;
 
     // Only non-null when the corresponding Folder is open.
     private @Nullable FolderIcon mLeaveBehindFolderIcon;
@@ -339,6 +338,9 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                     (right - navSpaceNeeded) - iconEnd;
             iconEnd += offset;
         }
+
+        sTmpRect.set(mIconLayoutBounds);
+
         // Layout the children
         mIconLayoutBounds.right = iconEnd;
         mIconLayoutBounds.top = (bottom - top - mIconTouchSize) / 2;
@@ -379,14 +381,10 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             mIconLayoutBounds.right = center + distanceFromCenter;
             mIconLayoutBounds.left = center - distanceFromCenter;
         }
-    }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (!mTouchEnabled) {
-            return true;
+        if (!sTmpRect.equals(mIconLayoutBounds)) {
+            mControllerCallbacks.notifyIconLayoutBoundsChanged();
         }
-        return super.dispatchTouchEvent(ev);
     }
 
     @Override
@@ -397,9 +395,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (!mTouchEnabled) {
-            return true;
-        }
         if (mIconLayoutBounds.left <= event.getX()
                 && event.getX() <= mIconLayoutBounds.right
                 && !DisplayController.isTransientTaskbar(mActivityContext)) {
@@ -418,11 +413,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             }
         }
         return super.onTouchEvent(event);
-    }
-
-    public void setTouchesEnabled(boolean touchEnabled) {
-        this.mTouchEnabled = touchEnabled;
-        mControllerCallbacks.clearTouchInProgress();
     }
 
     /**
