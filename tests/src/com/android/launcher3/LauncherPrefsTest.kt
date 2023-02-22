@@ -13,7 +13,10 @@ import org.junit.runner.RunWith
 private val TEST_BOOLEAN_ITEM = LauncherPrefs.nonRestorableItem("1", false)
 private val TEST_STRING_ITEM = LauncherPrefs.nonRestorableItem("2", "( ͡❛ ͜ʖ ͡❛)")
 private val TEST_INT_ITEM = LauncherPrefs.nonRestorableItem("3", -1)
-private val TEST_CONTEXTUAL_ITEM = LauncherPrefs.backedUpItem("4") { true }
+private val TEST_CONTEXTUAL_ITEM = ContextualItem("4", true, { true }, Boolean::class.java)
+
+private const val TEST_DEFAULT_VALUE = "default"
+private const val TEST_PREF_KEY = "test_pref_key"
 
 @SmallTest
 @RunWith(AndroidJUnit4::class)
@@ -150,5 +153,17 @@ class LauncherPrefsTest {
     @Test
     fun get_contextualItem_returnsCorrectDefault() {
         assertThat(launcherPrefs.get(TEST_CONTEXTUAL_ITEM)).isTrue()
+    }
+
+    @Test
+    fun getItemSharedPrefFile_forNonRestorableItem_isCorrect() {
+        val nonRestorableItem = LauncherPrefs.nonRestorableItem(TEST_PREF_KEY, TEST_DEFAULT_VALUE)
+        assertThat(nonRestorableItem.sharedPrefFile).isEqualTo(LauncherFiles.DEVICE_PREFERENCES_KEY)
+    }
+
+    @Test
+    fun getItemSharedPrefFile_forBackedUpItem_isCorrect() {
+        val backedUpItem = LauncherPrefs.backedUpItem(TEST_PREF_KEY, TEST_DEFAULT_VALUE)
+        assertThat(backedUpItem.sharedPrefFile).isEqualTo(LauncherFiles.SHARED_PREFERENCES_KEY)
     }
 }
