@@ -20,6 +20,7 @@ import static android.view.KeyEvent.KEYCODE_BACK;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -181,6 +182,11 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     protected void setBackgroundTranslationYForSwipe(float translationY) {
         mBackgroundRenderer.setTranslationYForSwipe(translationY);
         invalidate();
+    }
+
+    /** Returns the bounds in DragLayer coordinates of where the transient background was drawn. */
+    protected RectF getLastDrawnTransientRect() {
+        return mBackgroundRenderer.getLastDrawnTransientRect();
     }
 
     @Override
