@@ -37,8 +37,7 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Chạm và giữ tiện ích để di chuyển tiện ích đó xung quanh màn hình chính"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Thêm vào màn hình chính"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Đã thêm tiện ích <xliff:g id="WIDGET_NAME">%1$s</xliff:g> vào màn hình chính"</string>
-    <!-- no translation found for suggested_widgets_header_title (1844314680798145222) -->
-    <skip />
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Nội dung đề xuất"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# tiện ích}other{# tiện ích}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# lối tắt}other{# lối tắt}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
