@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
+<!--
 /*
 * Copyright (C) 2017 The Android Open Source Project
 *
@@ -23,7 +23,7 @@
     <string name="recent_task_option_freeform" msgid="48863056265284071">"شكل مجاني"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"ليست هناك عناصر تم استخدامها مؤخرًا"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"إعدادات استخدام التطبيق"</string>
-    <string name="recents_clear_all" msgid="5328176793634888831">"محو الكل"</string>
+    <string name="recents_clear_all" msgid="5328176793634888831">"زر محو الكل"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"التطبيقات المستخدمة مؤخرًا"</string>
     <string name="task_view_closed" msgid="9170038230110856166">"تم إغلاق المهمة."</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>، <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
@@ -74,8 +74,8 @@
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"إعادة المحاولة"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"أحسنت"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"الدليل التوجيهي <xliff:g id="CURRENT">%1$d</xliff:g> من إجمالي <xliff:g id="TOTAL">%2$d</xliff:g>"</string>
-    <string name="action_share" msgid="2648470652637092375">"مشاركة"</string>
-    <string name="action_screenshot" msgid="8171125848358142917">"لقطة شاشة"</string>
+    <string name="action_share" msgid="2648470652637092375">"زر المشاركة"</string>
+    <string name="action_screenshot" msgid="8171125848358142917">"زر التقاط الشاشة"</string>
     <string name="action_split" msgid="2098009717623550676">"تقسيم"</string>
     <string name="toast_split_select_app" msgid="5453865907322018352">"انقر على تطبيق آخر لاستخدام وضع تقسيم الشاشة."</string>
     <string name="toast_split_app_unsupported" msgid="3271526028981899666">"التطبيق لا يتيح تقسيم الشاشة."</string>
