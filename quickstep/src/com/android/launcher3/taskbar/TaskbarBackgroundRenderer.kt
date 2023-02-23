@@ -20,6 +20,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.RectF
 import com.android.launcher3.R
 import com.android.launcher3.Utilities.mapRange
 import com.android.launcher3.Utilities.mapToRange
@@ -30,7 +31,8 @@ import com.android.launcher3.util.DisplayController
 /** Helps draw the taskbar background, made up of a rectangle plus two inverted rounded corners. */
 class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
 
-    val paint: Paint = Paint()
+    val paint = Paint()
+    val lastDrawnTransientRect = RectF()
     var backgroundHeight = context.deviceProfile.taskbarSize.toFloat()
     var translationYForSwipe = 0f
 
@@ -131,7 +133,11 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
             val radius = newBackgroundHeight / 2f
             val bottomMarginProgress = bottomMargin * ((1f - progress) / 2f)
 
-            canvas.translate(0f, canvas.height - bottomMargin + bottomMarginProgress)
+            // Aligns the bottom with the bottom of the stashed handle.
+            val bottom =
+                canvas.height - bottomMargin +
+                    bottomMarginProgress +
+                    (-mapRange(1f - progress, 0f, stashedHandleHeight / 2f) + translationYForSwipe)
 
             // Draw shadow.
             val shadowAlpha =
@@ -143,19 +149,14 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
                 setColorAlphaBound(Color.BLACK, Math.round(shadowAlpha))
             )
 
-            // Aligns the bottom with the bottom of the stashed handle.
-            val bottom =
-                (-mapRange(1f - progress, 0f, stashedHandleHeight / 2f) + translationYForSwipe)
-
-            canvas.drawRoundRect(
+            lastDrawnTransientRect.set(
                 transientBackgroundBounds.left + halfWidthDelta,
                 bottom - newBackgroundHeight,
                 transientBackgroundBounds.right - halfWidthDelta,
-                bottom,
-                radius,
-                radius,
-                paint
+                bottom
             )
+
+            canvas.drawRoundRect(lastDrawnTransientRect, radius, radius, paint)
         }
         canvas.restore()
     }
