@@ -47,7 +47,8 @@ public class UnfoldMoveFromCenterWorkspaceAnimator extends BaseUnfoldMoveFromCen
                     final CellLayout cellLayout = (CellLayout) page;
                     ShortcutAndWidgetContainer itemsContainer = cellLayout
                             .getShortcutsAndWidgets();
-                    disableClipping(cellLayout);
+                    setClipChildren(cellLayout, false);
+                    setClipToPadding(cellLayout, false);
 
                     for (int i = 0; i < itemsContainer.getChildCount(); i++) {
                         View child = itemsContainer.getChildAt(i);
@@ -55,13 +56,13 @@ public class UnfoldMoveFromCenterWorkspaceAnimator extends BaseUnfoldMoveFromCen
                     }
                 });
 
-        disableClipping(workspace);
+        setClipChildren(workspace, false);
+        setClipToPadding(workspace, true);
     }
 
     @Override
     public void onTransitionFinished() {
-        restoreClipping(mLauncher.getWorkspace());
-        mLauncher.getWorkspace().forEachVisiblePage(page -> restoreClipping((CellLayout) page));
+        restoreClippings();
         super.onTransitionFinished();
     }
 }
