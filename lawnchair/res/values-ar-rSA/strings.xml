@@ -18,23 +18,23 @@
     <!-- PreferenceDashboard -->
     <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
     <string name="settings">الإعدادات</string>
-    <string name="general_label">عام</string>
+    <string name="general_label">إعدادات عامة</string>
     <string name="general_description">الألوان، حزمة الأيقونة، نقاط الإشعار</string>
     <string name="home_screen_label">الشاشة الرئيسة</string>
-    <string name="home_screen_description">تغذية، شبكة، أيقونات</string>
+    <string name="home_screen_description">الموجز، شبكة التطبيقات، الأيقونات</string>
     <!--
     <string name="smartspace" />
     -->
-    <string name="what_to_show">ماذا تريد أن تُظهر</string>
-    <string name="dock_label">المرسى</string>
+    <string name="what_to_show">ماذا تريد أن يظهر ؟</string>
+    <string name="dock_label">الشريط المُثبت</string>
     <string name="dock_description">شريط البحث، عدد الأيقونات</string>
     <string name="app_drawer_label">قائمة التطبيقات</string>
     <string name="app_drawer_description">التطبيقات المخفية، عدد الأعمدة، الأيقونات</string>
     <string name="folders_label">المجلدات</string>
     <string name="folders_description">عدد الصفوف والأعمدة</string>
-    <string name="gestures_label">الإيماءات</string>
-    <string name="gestures_description">الإيماءات</string>
-    <string name="quickstep_label">مؤخَرًا</string>
+    <string name="gestures_label">الإيماءات و الحركات</string>
+    <string name="gestures_description">اختصارات اللمس و التمرير</string>
+    <string name="quickstep_label">مبدل التطبيقات</string>
     <string name="quickstep_description">نصف قطر زاوية زر \"مسح الكل\"</string>
     <string name="about_label">حول التطبيق</string>
     <!-- <string name="version" /> (unknown source) -->
@@ -46,45 +46,45 @@
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">تخصيص الخط</string>
     <string name="font_picker_description">لا يزال بعض النص دون تغيير.</string>
-    <string name="smartspace_calendar_label">تخصيص التقويم في اللمحة السريعة</string>
-    <string name="smartspace_calendar_description">\"السماح بعرض التاريخ في أنظمة التقويم غير الميلادي\".</string>
+    <string name="smartspace_calendar_label">تعديل تقويم "في لمحة"</string>
+    <string name="smartspace_calendar_description">\"السماح بعرض التاريخ في أنظمة التقويم الغير ميلادي\".</string>
     <string name="workspace_increase_max_grid_size_label">الحد الأقصى لحجم شبكه الشاشة الرئيسية</string>
     <string name="workspace_increase_max_grid_size_description">زيادة الحد الأقصى المسموح به لحجم شبكة الشاشة الرئيسية من 10 × 10 إلى 20 × 20.</string>
     <string name="always_reload_icons_label">قم دائمًا بإعادة تحميل الأيقونات</string>
     <string name="always_reload_icons_description">تجنب استخدام الأيقونات المخزنة مؤقتًا من حزم الأيقونات</string>
     <string name="transparent_background_icons">شفافيه مظهر الأيقونات</string>
     <string name="transparent_background_icons_description">استخدم خلفيه شفافه مع تغير مظهر الأيقونات</string>
-    <string name="smartspace_mode_selection">اختيار المزود في اللمحة السريعة</string>
+    <string name="smartspace_mode_selection">اختيار مزود "في لمحة"</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">تدوير الشاشة الرئيسة</string>
-    <string name="home_screen_rotaton_description">عندما يُدَوَّر الجهاز.</string>
-    <string name="font_label">الخط (تجريبي)</string>
+    <string name="home_screen_rotaton_description">تدوير الشاشة الرئيسية مع دوران الجهاز.</string>
+    <string name="font_label">نوع الخط (ميزة تجريبية)</string>
     <!-- <string name="icons" /> -->
-    <string name="icon_style">نمط الأيقونة</string>
-    <string name="icon_shape_label">شكل الأيقونة</string>
-    <string name="auto_adaptive_icons_label">أيقونات متكيفة تلقائيا</string>
+    <string name="icon_style">شكل وسمات الأيقونات</string>
+    <string name="icon_shape_label">محيط الأيقونة</string>
+    <string name="auto_adaptive_icons_label">أيقونات متكيفة الشكل</string>
     <string name="auto_adaptive_icons_description">لجميع الأيقونات غير المتكيفة.</string>
-    <string name="background_lightness_label">إضاءة الخلفية</string>
-    <string name="adaptive_icon_background_description">جعل ضوء الخلفية ۱۰۰% للأبيض.</string>
-    <string name="notification_dots">نقط الإشعارات</string>
+    <string name="background_lightness_label">إضاءة خلفية الأيقونة</string>
+    <string name="adaptive_icon_background_description">ضع ضوء الخلفية علي ۱۰۰% للون الأبيض.</string>
+    <string name="notification_dots">دوائر الإشعارات علي الأيقونات</string>
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">عرض عدد الإشعارات</string>
-    <string name="notification_dots_color">لون نقطة الإشعار</string>
+    <string name="notification_dots_color">لون دائرة الإشعار</string>
     <string name="notification_dots_text_color">لون عدد الإشعارات</string>
-    <string name="notification_dots_color_contrast_warning_always">تحذير: لا تحتوي عداد نقطه تنبيه الإشعارات ألوان الإخطار &amp; على تباين كافٍ مع بعضها البعض</string>
+    <string name="notification_dots_color_contrast_warning_always">تحذير: لون عدد الإشعارات و خلفية الدائرة لا يوجد بينهما &amp;تباين ألوان كافٍ </string>
     <string name="notification_dots_color_contrast_warning_sometimes">تحذير: لا تحتوي عداد نقطه تنبيه الإشعارات ألوان الإخطار &amp; على تباين كافٍ مع بعضها البعض</string>
     <!-- Notification popup -->
-    <string name="missing_notification_access_label">الوصول إلى الإشعارات مطلوب</string>
-    <string name="missing_notification_access_description">الوصول إلى الإشعارات مطلوب.</string>
-    <string name="msg_missing_notification_access">لاستخدام نقاط الإشعارات، امنح <xliff:g id="name" example="My App">%1$s</xliff:g> حق الوصول إلى الإشعارات.</string>
+    <string name="missing_notification_access_label">بحاجة لإذن الاطلاع علي الإشعارات</string>
+    <string name="missing_notification_access_description">بحاجة لإذن الاطلاع علي الإشعارات.</string>
+    <string name="msg_missing_notification_access">لاستخدام دوائر الإشعارات، امنح <xliff:g id="name" example="My App">%1$s</xliff:g> اذن الاطلاع علي الإشعارات.</string>
     <string name="title_change_settings">تعديل الإعدادات</string>
     <string name="colors">الألوان</string>
-    <string name="theme_label">Theme</string>
+    <string name="theme_label">الألوان والسمات (الثيم)</string>
     <string name="theme_light">الوضع الفاتح</string>
     <string name="theme_dark">الوضع الداكن</string>
     <string name="theme_system_default">نظام</string>
     <string name="theme_follow_wallpaper">طابِق الخلفية</string>
-    <string name="accent_color">لون اللمحة</string>
+    <string name="accent_color">لون \"في لمحة\"</string>
     <!-- CustomIconShapePreference -->
     <string name="custom_icon_shape">تخصيص شكل الأيقونات</string>
     <string name="custom_icon_shape_create">إنشاء تخصيص شكل الأيقونات</string>
@@ -115,7 +115,7 @@
     <!-- <string name="cancel" /> (unknown source)-->
     <!-- IconPickerPreference -->
     <!-- <string name="icon_shape_label" /> -->
-    <string name="icon_shape_system">نظام</string>
+    <string name="icon_shape_system">مطابقة لإعدادات النظام</string>
     <string name="icon_shape_circle">دائرة</string>
     <string name="icon_shape_cylinder">أسطوانة</string>
     <string name="icon_shape_diamond">ماسي</string>
@@ -130,7 +130,7 @@
     <string name="icon_shape_teardrop">دمعة</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">إضافة خطوط</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; مرفق تحويل العنوان غير مدعوم.</string>
+    <string name="pref_fonts_add_fonts_summary"> OTF &amp; TTF كلاهما مدعومان.</string>
     <string name="pref_fonts_missing_font">لم يتم العثور على الخط.</string>
     <string name="font_variant_italic">مائل</string>
     <string name="font_weight_thin">رفيع</string>
@@ -145,52 +145,52 @@
     <string name="reset_font">إعادة ضبط</string>
     <!-- colorpreference/* -->
     <string name="dynamic">ديناميكية</string>
-    <string name="swatches">الحوامل</string>
+    <string name="swatches">لوحة الألوان</string>
     <string name="presets">الإعدادات المسبقة</string>
-    <string name="custom">تخصيص</string>
+    <string name="custom">مخصص</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">الأحمر</string>
     <string name="rgb_green">الأخضر</string>
     <string name="rgb_blue">الأزرق</string>
-    <string name="hsb">نشاط جنسي ضار</string>
+    <string name="hsb">HSB</string>
     <string name="hsb_hue">مسحة</string>
     <string name="hsb_saturation">التشبع</string>
     <string name="hsb_brightness">السطوع</string>
-    <string name="hex">عرافة</string>
+    <string name="hex">HEX</string>
     <string name="color_sliders">الشرائح</string>
     <string name="action_copy">نسخ</string>
     <string name="action_paste">لصق</string>
     <string name="copied_toast">تم نسخه إلى الحافظة.</string>
     <string name="invalid_color">لون غير صالح</string>
-    <string name="launcher_default_color">يدار بواسطة Lawnchair</string>
+    <string name="launcher_default_color">حسب اختيار تطبيق Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">إضافة التطبيقات الجديدة إلى الشاشة الرئيسة</string>
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">الموجز</string>
     <string name="minus_one_unavailable">لا يوجد \"Feed\" مثبّت.</string>
-    <string name="wallpaper">خلفية الخلفية</string>
+    <string name="wallpaper">الخلفية</string>
     <string name="wallpaper_scrolling_label">تحريك الخلفية</string>
     <string name="wallpaper_depth_effect_label">تأثير عمق الخلفية</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">إضافة تأثير زووم للخلفية مع الإنتقال ما بين الشاشات.</string>
     <string name="show_sys_ui_scrim">الظل العلوي</string>
     <string name="layout">التصميم أو التخطيط</string>
     <string name="home_screen_grid">صفوف الشاشة الرئيسية</string>
-    <string name="home_screen_lock">قفل الشاشة الرئيسية</string>
+    <string name="home_screen_lock">منع تعديل الشاشة الرئيسية</string>
     <string name="home_screen_lock_description">منع التغييرات في تخطيط الشاشة الرئيسية.</string>
     <string name="home_screen_unlock">فتح الشاشة الرئيسية</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">الشاشة الرئيسية مقفلة.</string>
-    <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="popup_menu">القائمة المختصرة</string>
+    <string name="home_screen_lock_toggle_from_home_popup">اضافة زر لمنع تعديل الشاشة</string>
+    <string name="show_system_settings_entry">اضافة زر لفتح أعدادات النظام</string>
     <string name="status_bar_label">شريط الحالة</string>
     <string name="show_status_bar">إظهار شريط الحالة</string>
     <string name="dark_status_bar_label">شريط الحالة المظلم</string>
     <string name="icons">الأيقونات</string>
     <string name="icon_size">حجم الأيقونات</string>
-    <string name="show_home_labels">عرض التسميات</string>
-    <string name="label_size">حجم التسمية</string>
+    <string name="show_home_labels">عرض اسماء التطبيقات</string>
+    <string name="label_size">حجم الاسم</string>
     <string name="reset_custom_icons">إعادة تعيين الأيقونات المخصصة</string>
     <string name="reset_custom_icons_confirmation">سيتم إعادة تعيين جميع الأيقونات المخصصة. هل تريد المتابعة؟</string>
     <string name="home_screen_text_color">لون النص</string>
@@ -211,12 +211,12 @@
     <string name="smartspace_battery_low">البطارية منخفضة</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — ممتلئ في %2$s"</string>
     <string name="accessibility_smartspace_page">الصفحة %1$d من %2$d</string>
-    <string name="smartspace_widget">اللمحة</string>
-    <string name="smartspace_widget_description">ماذا تريد أن تُظهر</string>
+    <string name="smartspace_widget">في لمحة</string>
+    <string name="smartspace_widget_description">ماذا تريد أن يظهر</string>
     <string name="smartspace_widget_placeholder_date">الجمعة، 3 مارس</string>
     <string name="preview_label">معاينة</string>
-    <string name="smartspace_calendar">التقويم</string>
-    <string name="smartspace_date_and_time">التاريخ &amp; الوقت</string>
+    <string name="smartspace_calendar"> نوع التقويم</string>
+    <string name="smartspace_date_and_time">التاريخ و الوقت</string>
     <string name="smartspace_date">التاريخ</string>
     <string name="smartspace_time">الوقت</string>
     <string name="smartspace_time_format">صيغة الوقت</string>
@@ -225,31 +225,31 @@
     <string name="smartspace_time_24_hour_format">تنسيق 24 ساعة</string>
     <string name="smartspace_weather">الطقس</string>
     <string name="smartspace_battery_status">حالة البطارية</string>
-    <string name="smartspace_now_playing">مشغل الموسيقي اللحظي</string>
+    <string name="smartspace_now_playing">الوسائط و الموسيقي المشغلة حالياً</string>
     <string name="smartspace_requires_setup">انقر للإعداد</string>
     <string name="event_provider_missing_notification_dots">لاستخدام &lt;xliff:g مثال="مزودى" الهويه الشخصيه="اسم المزود"&gt;%1$s&lt;/xliff:g&gt;، تمكين نِقَاط الإشعار.</string>
     <string name="smartspace_media_info_separator">" _ "</string>
-    <string name="smartspace_calendar_gregorian">التقويم الميلادي</string>
-    <string name="smartspace_calendar_persian">التقويم الفارسي</string>
+    <string name="smartspace_calendar_gregorian">تقويم ميلادي</string>
+    <string name="smartspace_calendar_persian">تقويم فارسي</string>
     <string name="smartspace_preferences">التفضيلات</string>
     <string name="smartspace_widget_toggle_label">إظهار على الشاشة الرئيسية</string>
-    <string name="smartspace_widget_toggle_description">يمكن إضافة اللمحة السريعة يدويًا عن طريق وضع أداة \"Lawnchair\".</string>
-    <string name="smartspace_mode_label">مزود اللمحة السريعة</string>
-    <string name="smartspace_mode_lawnchair">كرسي حديقة</string>
+    <string name="smartspace_widget_toggle_description">يمكن إضافة \"في لمحة\" يدويًا عن طريق وضع تطبيق \"Lawnchair\" المصغر.</string>
+    <string name="smartspace_mode_label">مزود \"في لمحة\" </string>
+    <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">جوجل</string>
     <string name="smartspace_mode_google_search">بحث جوجل</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="hotseat_mode_label">واجهة شريط البحث</string>
+    <string name="hotseat_mode_label">شكل شريط البحث</string>
     <string name="hotseat_mode_disabled">معطلة</string>
-    <string name="hotseat_mode_lawnchair">كرسي حديقة</string>
+    <string name="hotseat_mode_lawnchair">Lawnchair</string>
     <string name="hotseat_mode_google_search">شريط بحث جوجل</string>
     <string name="search_bar_label">شريط البحث</string>
     <string name="corner_radius_label">نصف قطر الزاوية</string>
-    <string name="apply_accent_color_label">تطبيق الون المحدد</string>
+    <string name="apply_accent_color_label">تطبيق اللون المختار</string>
     <string name="search_provider">مزود البحث</string>
-    <string name="grid">شبكة</string>
-    <string name="dock_icons">أيقونات المرسى</string>
+    <string name="grid">شبكة التطبيقات</string>
+    <string name="dock_icons">أيقونات الشريط المُثبت</string>
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">بحث التطبيقات</string>
@@ -268,8 +268,8 @@
     <string name="show_app_search_bar">إظهار شريط البحث</string>
     <string name="pref_search_auto_show_keyboard">إظهار لوحة المفاتيح تلقائياً</string>
     <string name="fuzzy_search_title">بحث غامض</string>
-    <string name="fuzzy_search_desc">قارب التطابقات لعمليات البحث عن التطبيقات.</string>
-    <string name="max_search_result_count_title">Max Search Result Count</string>
+    <string name="fuzzy_search_desc">نتائج بحث تقريبية عن التطبيقات.</string>
+    <string name="max_search_result_count_title">أقصى عدد لنتائج البحث</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">أعمدة قائمة التطبيقات</string>
     <string name="row_height_label">ارتفاع الصف</string>
@@ -304,29 +304,29 @@
     <string name="gesture_swipe_down">التمرير لأسفل</string>
     <string name="gesture_home_tap">الضغط على زر الصفحة الرئيسية</string>
     <string name="gesture_back_tap">الضغط على زر الرجوع</string>
-    <string name="gesture_handler_no_op">لا تفعل شيئا</string>
-    <string name="gesture_handler_sleep">السكون</string>
+    <string name="gesture_handler_no_op">لا شيء</string>
+    <string name="gesture_handler_sleep">اطفاء الشاشة</string>
     <string name="gesture_handler_open_notifications">فتح قائمة الإشعارات</string>
-    <string name="gesture_handler_open_app_option">فتح التطبيق</string>
+    <string name="gesture_handler_open_app_option">فتح تطبيق</string>
     <string name="gesture_handler_open_app_config">فتح %1$s</string>
     <string name="gesture_handler_open_app_drawer">فتح قائمة التطبيقات</string>
-    <string name="gesture_handler_open_app_search">فتح البحث عن التطبيق</string>
+    <string name="gesture_handler_open_app_search">فتح البحث عن تطبيق</string>
     <string name="gesture_handler_open_search">فتح البحث</string>
     <string name="pick_app_for_gesture">اختر التطبيق</string>
     <!-- QuickstepPreferences -->
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="translucent_background">خلفية شفافة</string>
-    <string name="recents_actions_label">إجراءات سريعة</string>
+    <string name="recents_actions_label">إختصارات سريعة</string>
     <!-- <string name="screenshot" /> (unknown source) -->
-    <string name="action_share">مشاركة</string>
-    <string name="action_lens">عدسة</string>
-    <string name="recents_clear_all">محو الكل</string>
-    <string name="window_corner_radius_label">نصف قطر زاوية الشاشة</string>
-    <string name="override_window_corner_radius_label">نصف قطر مخصص لزاوية الشاشة</string>
+    <string name="action_share">زر المشاركة</string>
+    <string name="action_lens">زر العدسة</string>
+    <string name="recents_clear_all">زر محو الكل</string>
+    <string name="window_corner_radius_label">زوايا الشاشة الدائرية</string>
+    <string name="override_window_corner_radius_label">نصف قطر مخصص لزوايا الشاشة</string>
     <string name="window_corner_radius_description">عند السحب لأعلى لفتح التطبيقات الحديثة، يتبع التطبيق الحالي إصبعك، ويتقلص إلى بطاقة. استخدم شريط التمرير هذا لضبط تحدب الزاوية في البطاقة عندما تكون ملء الشاشة تقريباً بحيث تطابق تحدب زوايا الشاشة.</string>
     <string name="taskbar_label">شريط المهام</string>
-    <string name="enable_taskbar_experimental">تمكين شريط المهام (تجريبي)</string>
+    <string name="enable_taskbar_experimental">تشغيل شريط المهام (تجريبي)</string>
     <!-- about/About.kt -->
     <string name="news">الأخبار</string>
     <string name="support">الدعم</string>
@@ -344,19 +344,19 @@
     <string name="translate">ترجمة</string>
     <!-- IconPickerPreference -->
     <string name="icon_picker_default_category">الأيقونات</string>
-    <string name="icon_picker_reset_to_default">إعادة تعيين منتقي الرموز إلى الأصل</string>
+    <string name="icon_picker_reset_to_default">إعادة ضبط للحالة الأصلية</string>
     <string name="icon_pack_external_picker">فتح المنتقي الخارجي</string>
     <string name="pick_icon_from_label">اختيار أيقونة من</string>
     <string name="icon_picker_load_failed">تعذر تحميل المزيد من الأيقونات.</string>
     <!-- Misc -->
     <string name="all_apps_search_bar_hint">البحث عن التطبيقات</string>
-    <string name="settings_button_text">إعدادات الصفحة الرئيسة</string>
+    <string name="settings_button_text">إعدادات الشاشة الرئيسة</string>
     <string name="item_removed">أُزيلَ العنصر.</string>
     <string name="all_apps_no_search_results">لم يُعثَر على تطبيقات مطابقة لـ \"<xliff:g example="Android" id="query">%1$s</xliff:g>\".</string>
     <string name="dt2s_admin_hint_title">تحتاج إلى إذونات مشرف</string>
     <string name="dt2s_admin_hint">لاستخدام النقرة المزدوجة لإطفاء الشاشة، عيّن Lawnchair كتطبيق مشرف للجهاز. انقر على فتح الإعدادات، ثم انقر على \"فعِّل التطبيق كمشرف على الجهاز.\"</string>
-    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
-    <string name="dt2s_a11y_hint_title">Accessibility service required</string>
+    <string name="dt2s_admin_warning">سيتم إيقاف خاصية النقر المزدوج لإغلاق الشاشة</string>
+    <string name="dt2s_a11y_hint_title">مطلوب تفعيل إمكانية الوصول</string>
     <string name="dt2s_a11y_hint">لاستخدام الضغط المزدوج لإغلاق الشاشة، قم بتشغيل خدمة الوصول إلى Lawnchair. اضغط على \"فتح الإعدادات\" ثم قم باختيار \"Lawnchair\" وفعِّل \"استخدم Lawnchair\".</string>
     <string name="dt2s_warning_open_settings">افتح الإعدادات</string>
     <string name="loading">يتم التحميل…</string>
@@ -396,10 +396,10 @@
     <string name="create_backup_action">إنشاء</string>
     <string name="what_to_backup">ما سيتم نسخه احتياطيًا</string>
     <string name="backup_content_layout_and_settings">التخطيط والإعدادات</string>
-    <string name="backup_content_wallpaper">خلفية الخلفية</string>
+    <string name="backup_content_wallpaper">الخلفية</string>
     <string name="backup_create_success">تم إنشاء النسخة الاحتياطية.</string>
     <string name="backup_create_error">أخفق إنشاء النسخة الاحتياطية.</string>
-    <string name="restore_backup">استعادة النسخ الاحتياطي</string>
+    <string name="restore_backup">استعادة النسخة الاحتياطية</string>
     <string name="restore_backup_action">استعادة</string>
     <string name="what_to_restore">ماذا يمكن استعادته</string>
     <string name="backup_restore_success">تم استعادة النسخة الاحتياطية.</string>
@@ -407,5 +407,5 @@
     <string name="invalid_backup_file">ملف النسخ الاحتياطي غير صحيح.</string>
     <string name="x_by_y">%١$d × %٢$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="system_settings">System Settings</string>
+    <string name="system_settings">إعدادات النظام</string>
 </resources>
