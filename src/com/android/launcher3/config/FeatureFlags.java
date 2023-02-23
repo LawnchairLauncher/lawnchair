@@ -283,9 +283,6 @@ public final class FeatureFlags {
             "FOLDABLE_WORKSPACE_REORDER", true,
             "In foldables, when reordering the icons and widgets, is now going to use both sides");
 
-    public static final BooleanFlag ENABLE_WIDGET_PICKER_DEPTH = new DeviceFlag(
-            "ENABLE_WIDGET_PICKER_DEPTH", true, "Enable changing depth in widget picker.");
-
     public static final BooleanFlag ENABLE_MULTI_DISPLAY_PARTIAL_DEPTH = getDebugFlag(
             "ENABLE_MULTI_DISPLAY_PARTIAL_DEPTH", false,
             "Allow bottom sheet depth to be smaller than 1 for multi-display devices.");
