@@ -90,7 +90,8 @@ public final class WidgetsListHeaderViewHolderBinderTest {
         }).when(mIconCache).getTitleNoCache(any());
         mViewHolderBinder = new WidgetsListHeaderViewHolderBinder(
                 LayoutInflater.from(mContext),
-                mOnHeaderClickListener);
+                mOnHeaderClickListener,
+                false);
     }
 
     @Test
