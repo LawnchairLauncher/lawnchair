@@ -83,6 +83,7 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
     protected final int mRegistrationX;
     protected final int mRegistrationY;
     private final float mInitialScale;
+    private final float mEndScale;
     protected final float mScaleOnDrop;
     protected final int[] mTempLoc = new int[2];
 
@@ -158,7 +159,7 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
             setClipToPadding(false);
         }
 
-        final float scale = (width + finalScaleDps) / width;
+        mEndScale = (width + finalScaleDps) / width;
 
         // Set the initial scale to avoid any jumps
         setScaleX(initialScale);
@@ -169,8 +170,8 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         mAnim.setDuration(VIEW_ZOOM_DURATION);
         mAnim.addUpdateListener(animation -> {
             final float value = (Float) animation.getAnimatedValue();
-            setScaleX(initialScale + (value * (scale - initialScale)));
-            setScaleY(initialScale + (value * (scale - initialScale)));
+            setScaleX(Utilities.mapRange(value, initialScale, mEndScale));
+            setScaleY(Utilities.mapRange(value, initialScale, mEndScale));
             if (!isAttachedToWindow()) {
                 animation.cancel();
             }
@@ -506,6 +507,10 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
 
     public float getInitialScale() {
         return mInitialScale;
+    }
+
+    public float getEndScale() {
+        return mEndScale;
     }
 
     @Override

@@ -340,7 +340,7 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 if (DEBUG_DRAG_SHADOW_SURFACE) {
                     canvas.drawColor(0xffff0000);
                 }
-                float scale = mDragObject.dragView.getScaleX();
+                float scale = mDragObject.dragView.getEndScale();
                 canvas.scale(scale, scale);
                 mDragObject.dragView.draw(canvas);
                 canvas.restore();
@@ -601,7 +601,15 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         View target = findTaskbarTargetForIconView(originalView);
 
         int[] toPosition = target.getLocationOnScreen();
-        float toScale = (float) target.getWidth() / mDragIconSize;
+        float iconSize = target.getWidth();
+        if (target instanceof BubbleTextView) {
+            Rect bounds = new Rect();
+            ((BubbleTextView) target).getSourceVisualDragBounds(bounds);
+            toPosition[0] += bounds.left;
+            toPosition[1] += bounds.top;
+            iconSize = bounds.width();
+        }
+        float toScale = iconSize / mDragIconSize;
         float toAlpha = (target == originalView) ? 1f : 0f;
         MultiValueUpdateListener listener = new MultiValueUpdateListener() {
             final FloatProp mDx = new FloatProp(fromX, toPosition[0], 0,
