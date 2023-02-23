@@ -41,6 +41,7 @@ import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
@@ -346,6 +347,21 @@ public final class Utilities {
             r.bottom -= deltaY;
         }
         return scale;
+    }
+
+    /**
+     * Sets the x and y pivots for scaling from one Rect to another.
+     *
+     * @param src the source rectangle to scale from.
+     * @param dst the destination rectangle to scale to.
+     * @param outPivot the pivots set for scaling from src to dst.
+     */
+    public static void getPivotsForScalingRectToRect(Rect src, Rect dst, PointF outPivot) {
+        float pivotXPct = ((float) src.left - dst.left) / ((float) dst.width() - src.width());
+        outPivot.x = dst.left + dst.width() * pivotXPct;
+
+        float pivotYPct = ((float) src.top - dst.top) / ((float) dst.height() - src.height());
+        outPivot.y = dst.top + dst.height() * pivotYPct;
     }
 
     /**
