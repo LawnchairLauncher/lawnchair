@@ -159,7 +159,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     WidgetsRecyclerView searchRecyclerView =
                             mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView;
                     if (mIsInSearchMode && searchRecyclerView != null) {
-                        searchRecyclerView.bindFastScrollbar();
+                        searchRecyclerView.bindFastScrollbar(mFastScroller);
                     }
                 }
 
@@ -253,6 +253,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (mIsTwoPane) {
             mFastScroller.setVisibility(GONE);
         }
+        mFastScroller.setPopupView(findViewById(R.id.fast_scroller_popup));
+
         mAdapters.get(AdapterHolder.PRIMARY).setup(findViewById(R.id.primary_widgets_list_view));
         mAdapters.get(AdapterHolder.SEARCH).setup(findViewById(R.id.search_widgets_list_view));
         if (mHasWorkProfile) {
@@ -373,7 +375,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     private void attachScrollbarToRecyclerView(WidgetsRecyclerView recyclerView) {
-        recyclerView.bindFastScrollbar();
+        recyclerView.bindFastScrollbar(mFastScroller);
         if (mCurrentWidgetsRecyclerView != recyclerView) {
             // Only reset the scroll position & expanded apps if the currently shown recycler view
             // has been updated.
@@ -583,7 +585,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             workUserAdapterHolder.mWidgetsListAdapter.setWidgets(allWidgets);
             onActivePageChanged(mViewPager.getCurrentPage());
         } else {
-            updateRecyclerViewVisibility(primaryUserAdapterHolder);
+            onActivePageChanged(0);
         }
         // Update recommended widgets section so that it occupies appropriate space on screen to
         // leave enough space for presence/absence of mNoWidgetsView.
@@ -1021,6 +1023,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mWidgetsRecyclerView.setClipToOutline(true);
             mWidgetsRecyclerView.setClipChildren(false);
             mWidgetsRecyclerView.setAdapter(mWidgetsListAdapter);
+            mWidgetsRecyclerView.bindFastScrollbar(mFastScroller);
             mWidgetsRecyclerView.setItemAnimator(mWidgetsListItemAnimator);
             mWidgetsRecyclerView.setHeaderViewDimensionsProvider(WidgetsFullSheet.this);
             if (!mIsTwoPane) {
