@@ -108,14 +108,15 @@ public class SplitSelectStateController {
     private FloatingTaskView mFirstFloatingTaskView;
 
     public SplitSelectStateController(Context context, Handler handler, StateManager stateManager,
-            DepthController depthController, StatsLogManager statsLogManager) {
+            DepthController depthController, StatsLogManager statsLogManager,
+            SystemUiProxy systemUiProxy, RecentsModel recentsModel) {
         mContext = context;
         mHandler = handler;
         mStatsLogManager = statsLogManager;
-        mSystemUiProxy = SystemUiProxy.INSTANCE.get(mContext);
+        mSystemUiProxy = systemUiProxy;
         mStateManager = stateManager;
         mDepthController = depthController;
-        mRecentTasksModel = RecentsModel.INSTANCE.get(context);
+        mRecentTasksModel = recentsModel;
     }
 
     /**

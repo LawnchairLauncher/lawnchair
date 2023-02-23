@@ -235,7 +235,8 @@ public class QuickstepLauncher extends Launcher {
         RecentsView overviewPanel = getOverviewPanel();
         mSplitSelectStateController =
                 new SplitSelectStateController(this, mHandler, getStateManager(),
-                        getDepthController(), getStatsLogManager());
+                        getDepthController(), getStatsLogManager(),
+                        SystemUiProxy.INSTANCE.get(this), RecentsModel.INSTANCE.get(this));
         overviewPanel.init(mActionsView, mSplitSelectStateController);
         mSplitWithKeyboardShortcutController = new SplitWithKeyboardShortcutController(this,
                 mSplitSelectStateController);
