@@ -115,7 +115,8 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_HEADER,
                 new WidgetsListHeaderViewHolderBinder(
-                        layoutInflater, /* onHeaderClickListener= */ this));
+                        layoutInflater, /* onHeaderClickListener= */ this,
+                        headerChangeListener != null));
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_SPACE,
                 new WidgetsSpaceViewHolderBinder(emptySpaceHeightProvider));
