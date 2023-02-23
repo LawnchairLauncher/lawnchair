@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import static android.view.InsetsState.ITYPE_EXTRA_NAVIGATION_BAR;
-
 import static com.android.launcher3.QuickstepTransitionManager.TRANSIENT_TASKBAR_TRANSITION_DURATION;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_EDU_TOOLTIP;
 import static com.android.launcher3.statemanager.BaseState.FLAG_NON_INTERACTIVE;
@@ -55,7 +53,6 @@ import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.views.RecentsView;
 
 import java.io.PrintWriter;
-import java.util.Set;
 
 /**
  * A data source which integrates with a Launcher instance
@@ -244,8 +241,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                                 : mLauncher.getColor(R.color.taskbar_background);
 
                 TaskTransitionSpec customTaskAnimationSpec = new TaskTransitionSpec(
-                        taskAnimationBackgroundColor,
-                        Set.of(ITYPE_EXTRA_NAVIGATION_BAR)
+                        taskAnimationBackgroundColor
                 );
                 WindowManagerGlobal.getWindowManagerService()
                         .setTaskTransitionSpec(customTaskAnimationSpec);
