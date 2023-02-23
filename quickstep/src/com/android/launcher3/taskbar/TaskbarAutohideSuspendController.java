@@ -41,12 +41,15 @@ public class TaskbarAutohideSuspendController implements
     public static final int FLAG_AUTOHIDE_SUSPEND_TOUCHING = 1 << 2;
     // Taskbar EDU overlay is open above the Taskbar. */
     public static final int FLAG_AUTOHIDE_SUSPEND_EDU_OPEN = 1 << 3;
+    // Taskbar in immersive mode in overview
+    public static final int FLAG_AUTOHIDE_SUSPEND_IN_LAUNCHER = 1 << 4;
 
     @IntDef(flag = true, value = {
             FLAG_AUTOHIDE_SUSPEND_FULLSCREEN,
             FLAG_AUTOHIDE_SUSPEND_DRAGGING,
             FLAG_AUTOHIDE_SUSPEND_TOUCHING,
             FLAG_AUTOHIDE_SUSPEND_EDU_OPEN,
+            FLAG_AUTOHIDE_SUSPEND_IN_LAUNCHER,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface AutohideSuspendFlag {}
@@ -92,6 +95,10 @@ public class TaskbarAutohideSuspendController implements
         return mAutohideSuspendFlags != 0;
     }
 
+    public boolean isSuspendedForTransientTaskbarInOverview() {
+        return (mAutohideSuspendFlags & FLAG_AUTOHIDE_SUSPEND_IN_LAUNCHER) != 0;
+    }
+
     @Override
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarAutohideSuspendController:");
@@ -106,6 +113,8 @@ public class TaskbarAutohideSuspendController implements
         appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_DRAGGING, "FLAG_AUTOHIDE_SUSPEND_DRAGGING");
         appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_TOUCHING, "FLAG_AUTOHIDE_SUSPEND_TOUCHING");
         appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_EDU_OPEN, "FLAG_AUTOHIDE_SUSPEND_EDU_OPEN");
+        appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_IN_LAUNCHER,
+                "FLAG_AUTOHIDE_SUSPEND_IN_LAUNCHER");
         return str.toString();
     }
 }
