@@ -38,6 +38,8 @@ public class MultipageCellLayout extends CellLayout {
 
     private View mSeam;
 
+    private boolean mSeamWasAdded = false;
+
     public MultipageCellLayout(Context context) {
         this(context, null);
     }
@@ -65,44 +67,71 @@ public class MultipageCellLayout extends CellLayout {
     }
 
     @Override
+    boolean createAreaForResize(int cellX, int cellY, int spanX, int spanY, View dragView,
+            int[] direction, boolean commit) {
+        return simulateSeam(
+                () -> super.createAreaForResize(cellX, cellY, spanX, spanY, dragView, direction,
+                        commit));
+    }
+
+    @Override
+    void regionToCenterPoint(int cellX, int cellY, int spanX, int spanY, int[] result) {
+        simulateSeam(() -> {
+            super.regionToCenterPoint(cellX, cellY, spanX, spanY, result);
+            return 0;
+        });
+    }
+
+    @Override
     ItemConfiguration closestEmptySpaceReorder(int pixelX, int pixelY, int minSpanX, int minSpanY,
             int spanX, int spanY) {
-        return simulateSeam(
+        return removeSeamFromSolution(simulateSeam(
                 () -> super.closestEmptySpaceReorder(pixelX, pixelY, minSpanX, minSpanY, spanX,
-                        spanY));
+                        spanY)));
     }
 
     @Override
     protected ItemConfiguration findReorderSolution(int pixelX, int pixelY, int minSpanX,
             int minSpanY, int spanX, int spanY, int[] direction, View dragView, boolean decX,
             ItemConfiguration solution) {
-        return simulateSeam(
+        return removeSeamFromSolution(simulateSeam(
                 () -> super.findReorderSolution(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY,
-                        direction, dragView, decX, solution));
+                        direction, dragView, decX, solution)));
     }
 
     @Override
     public ItemConfiguration dropInPlaceSolution(int pixelX, int pixelY, int spanX, int spanY,
             View dragView) {
-        return simulateSeam(
-                () -> super.dropInPlaceSolution(pixelX, pixelY, spanX, spanY, dragView));
+        return removeSeamFromSolution(simulateSeam(
+                () -> super.dropInPlaceSolution(pixelX, pixelY, spanX, spanY, dragView)));
     }
 
-    protected ItemConfiguration simulateSeam(Supplier<ItemConfiguration> f) {
+    void addSeam() {
         CellLayoutLayoutParams lp = new CellLayoutLayoutParams(mCountX / 2, 0, 1, mCountY);
+        mSeamWasAdded = true;
         lp.canReorder = false;
         mCountX++;
         mShortcutsAndWidgets.addViewInLayout(mSeam, lp);
-        GridOccupancy auxGrid = mOccupied;
         mOccupied = createGridOccupancy();
         mTmpOccupied = new GridOccupancy(mCountX, mCountY);
+    }
 
-        ItemConfiguration res = removeSeamFromSolution(f.get());
-
+    void removeSeam() {
         mCountX--;
         mShortcutsAndWidgets.removeViewInLayout(mSeam);
-        mOccupied = auxGrid;
         mTmpOccupied = new GridOccupancy(mCountX, mCountY);
+        mSeamWasAdded = false;
+    }
+
+    protected <T> T simulateSeam(Supplier<T> f) {
+        if (mSeamWasAdded) {
+            return f.get();
+        }
+        GridOccupancy auxGrid = mOccupied;
+        addSeam();
+        T res = f.get();
+        removeSeam();
+        mOccupied = auxGrid;
         return res;
     }
 
