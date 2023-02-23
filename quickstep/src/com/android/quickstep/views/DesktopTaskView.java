@@ -92,6 +92,7 @@ public class DesktopTaskView extends TaskView {
     private final ArrayList<CancellableTask<?>> mPendingThumbnailRequests = new ArrayList<>();
 
     private View mBackgroundView;
+    private View mEmptyView;
 
     public DesktopTaskView(Context context) {
         this(context, null);
@@ -110,6 +111,7 @@ public class DesktopTaskView extends TaskView {
         super.onFinishInflate();
 
         mBackgroundView = findViewById(R.id.background);
+        mEmptyView = findViewById(R.id.empty_view);
 
         int topMarginPx =
                 mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
@@ -184,6 +186,8 @@ public class DesktopTaskView extends TaskView {
             snapshotView.bind(task);
             mSnapshotViewMap.put(task.key.id, snapshotView);
         }
+
+        mEmptyView.setVisibility(mTasks.isEmpty() ? View.VISIBLE : View.GONE);
 
         updateTaskIdContainer();
         updateTaskIdAttributeContainer();

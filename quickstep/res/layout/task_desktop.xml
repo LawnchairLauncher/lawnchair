@@ -32,6 +32,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/overview_task_margin"
+        android:drawablePadding="@dimen/recents_empty_message_text_padding"
+        android:text="@string/recents_empty_desktop_message"
+        android:textColor="?android:textColorPrimary"
+        android:textSize="@dimen/recents_empty_message_text_size"
+        android:drawableTop="@drawable/ic_empty_desktop"
+        android:drawableTint="?android:attr/textColorPrimary" />
+
     <!--
          TODO(b249371338): DesktopTaskView extends from TaskView. TaskView expects TaskThumbnailView
          and IconView with these ids to be present. Need to refactor RecentsView to accept child

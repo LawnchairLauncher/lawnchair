@@ -30,6 +30,9 @@
     <!-- Recents: The empty recents string. [CHAR LIMIT=NONE] -->
     <string name="recents_empty_message">No recent items</string>
 
+    <!-- Recents: The empty recents desktop tile string. [CHAR LIMIT=NONE] -->
+    <string name="recents_empty_desktop_message">No desktop items</string>
+
     <!-- Content description for the recent apps's accessibility option that opens its usage settings. [CHAR LIMIT=NONE] -->
     <string name="accessibility_app_usage_settings">App usage settings</string>
 
