@@ -115,7 +115,7 @@
     <!-- <string name="cancel" /> (unknown source)-->
     <!-- IconPickerPreference -->
     <!-- <string name="icon_shape_label" /> -->
-    <string name="icon_shape_system">نظام</string>
+    <string name="icon_shape_system">مطابقة لإعدادات النظام</string>
     <string name="icon_shape_circle">دائرة</string>
     <string name="icon_shape_cylinder">أسطوانة</string>
     <string name="icon_shape_diamond">ماسي</string>
@@ -130,7 +130,7 @@
     <string name="icon_shape_teardrop">دمعة</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">إضافة خطوط</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; مرفق تحويل العنوان غير مدعوم.</string>
+    <string name="pref_fonts_add_fonts_summary"> OTF &amp; TTF كلاهما مدعومان.</string>
     <string name="pref_fonts_missing_font">لم يتم العثور على الخط.</string>
     <string name="font_variant_italic">مائل</string>
     <string name="font_weight_thin">رفيع</string>
