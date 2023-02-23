@@ -37,8 +37,7 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"ウィジェットを押し続けると、ホーム画面上に移動できます"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"ホーム画面に追加"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"「<xliff:g id="WIDGET_NAME">%1$s</xliff:g>」ウィジェットをホーム画面に追加しました"</string>
-    <!-- no translation found for suggested_widgets_header_title (1844314680798145222) -->
-    <skip />
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"候補"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# 件のウィジェット}other{# 件のウィジェット}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# 件のショートカット}other{# 件のショートカット}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>、<xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -162,12 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"仕事用アプリはバッジ付きで表示され、IT 管理者に公開されます"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"仕事用アプリの一時停止"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"仕事用アプリからの通知は届きません"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"仕事用アプリでは、通知の送信、バッテリーの使用、位置情報の取得が無効になっています"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"仕事用アプリは OFF になっています。仕事用アプリでは、通知の送信、バッテリーの使用、位置情報の取得が無効になっています"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"電話やテキスト メッセージを受信できなくなり、仕事用アプリからの通知も届きません"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"仕事用アプリはバッジが付き、IT 管理者に公開されます"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"仕事用アプリを一時停止"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"仕事用アプリを ON にする"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"停止解除"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"フィルタ"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"スマートフォンを検索"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"タブレットを探す"</string>

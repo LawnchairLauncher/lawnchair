@@ -25,6 +25,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.model.data.ItemInfo;
@@ -188,9 +189,9 @@ public class TaskbarUIController {
         if (recentsView == null) {
             return;
         }
-        recentsView.findLastActiveTaskAndRunCallback(
+        recentsView.getSplitSelectController().findLastActiveTaskAndRunCallback(
                 splitSelectSource.intent.getComponent(),
-                (Consumer<Task>) foundTask -> {
+                foundTask -> {
                     splitSelectSource.alreadyRunningTaskId = foundTask == null
                             ? INVALID_TASK_ID
                             : foundTask.key.id;
@@ -205,9 +206,9 @@ public class TaskbarUIController {
      */
     public void triggerSecondAppForSplit(ItemInfoWithIcon info, Intent intent, View startingView) {
         RecentsView recents = getRecentsView();
-        recents.findLastActiveTaskAndRunCallback(
+        recents.getSplitSelectController().findLastActiveTaskAndRunCallback(
                 info.getTargetComponent(),
-                (Consumer<Task>) foundTask -> {
+                foundTask -> {
                     if (foundTask != null) {
                         TaskView foundTaskView = recents.getTaskViewByTaskId(foundTask.key.id);
                         // TODO (b/266482558): This additional null check is needed because there
@@ -253,15 +254,6 @@ public class TaskbarUIController {
     }
 
     /**
-     * Closes the Keyboard Quick Switch View.
-     *
-     * No-op if the view is already closed
-     */
-    public void closeQuickSwitchView() {
-        mControllers.keyboardQuickSwitchController.closeQuickSwitchView();
-    }
-
-    /**
      * Launches the focused task and closes the Keyboard Quick Switch View.
      *
      * If the overlay or view are closed, or the overview task is focused, then Overview is
@@ -280,5 +272,5 @@ public class TaskbarUIController {
      *
      * No-op if the view is not yet open.
      */
-    public void launchSplitTasks(View taskview, GroupTask groupTask) { }
+    public void launchSplitTasks(@NonNull View taskview, @NonNull GroupTask groupTask) { }
 }

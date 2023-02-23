@@ -55,6 +55,8 @@
     <attr name="dropTargetHoverTextColor" format="color" />
     <attr name="preloadIconAccentColor" format="color" />
     <attr name="preloadIconBackgroundColor" format="color" />
+    <attr name="widgetPickerHeaderAppTitleColor" format="color"/>
+    <attr name="widgetPickerHeaderAppSubtitleColor" format="color"/>
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">

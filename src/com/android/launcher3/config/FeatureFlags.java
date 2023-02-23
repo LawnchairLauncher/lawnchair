@@ -358,6 +358,9 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ICON_IN_TEXT_HEADER = getDebugFlag(
             "ENABLE_ICON_IN_TEXT_HEADER", false, "Show icon in textheader");
 
+    public static final BooleanFlag ENABLE_APP_ICON_FOR_INLINE_SHORTCUTS = getDebugFlag(
+            "ENABLE_APP_ICON_IN_INLINE_SHORTCUTS", false, "Show app icon for inline shortcut");
+
     public static final BooleanFlag SHOW_DOT_PAGINATION = getDebugFlag(
             "SHOW_DOT_PAGINATION", false, "Enable showing dot pagination in workspace");
 

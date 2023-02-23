@@ -37,8 +37,7 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"විජට් එක මුල් පිටු තිරය වටා ගෙන යාමට විජට් එක ස්පර්ශ කර අල්ලාගෙන සිටින්න"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"මුල් තිරය වෙත එක් කරන්න"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> විජට්ටුව මුල් පිටු තිරය වෙත එක් කරන ලදි"</string>
-    <!-- no translation found for suggested_widgets_header_title (1844314680798145222) -->
-    <skip />
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"යෝජනා"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{විජට් #}one{විජට් #}other{විජට් #}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{කෙටි මං #}one{කෙටි මං #}other{කෙටි මං #}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -162,12 +161,16 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"කාර්යාල යෙදුම්වලට ලාංඡන යොදා ඇති අතර ඔබගේ IT පරිපාලකට දෘශ්‍යමාන වේ"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"තේරුණා"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"කාර්යාල යෙදුම් විරාම කර ඇත"</string>
+    <!-- no translation found for work_apps_paused_info_body (1687828929959237477) -->
+    <skip />
     <string name="work_apps_paused_body" msgid="261634750995824906">"ඔබගේ කාර්යාල යෙදුම්වලට ඔබට දැනුම්දීම් එවීමට, ඔබගේ බැටරිය භාවිත කිරීමට හෝ ඔබගේ ස්ථානයට ප්‍රවේශ වීමට නොහැකිය"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"කාර්යාල යෙදුම් ක්‍රියාවිරහිතයි. ඔබගේ කාර්යාල යෙදුම්වලට ඔබට දැනුම්දීම් එවීමට, ඔබගේ බැටරිය භාවිත කිරීමට හෝ ඔබගේ ස්ථානයට ප්‍රවේශ වීමට නොහැකිය"</string>
+    <!-- no translation found for work_apps_paused_telephony_unavailable_body (8358872357502756790) -->
+    <skip />
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"කාර්යාල යෙදුම්වලට ලාංඡන යොදා ඇති අතර ඔබගේ IT පරිපාලකට දෘශ්‍යමාන වේ"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"තේරුණා"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"කාර්යාල යෙදුම් විරාම කරන්න"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"කාර්යාල යෙදුම් ක්‍රියාත්මක කරන්න"</string>
+    <!-- no translation found for work_apps_enable_btn_text (1736198302467317371) -->
+    <skip />
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"පෙරහන"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"ඔබගේ දුරකථනය සොයන්න"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"ඔබගේ ටැබ්ලටය සොයන්න"</string>
