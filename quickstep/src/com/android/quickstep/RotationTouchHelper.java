@@ -18,7 +18,6 @@ package com.android.quickstep;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.Surface.ROTATION_0;
 
-import static com.android.launcher3.Utilities.isTrackpadMotionEvent;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
@@ -26,6 +25,8 @@ import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
 import static com.android.launcher3.util.DisplayController.CHANGE_SUPPORTED_BOUNDS;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
+import static com.android.quickstep.MotionEventsUtils.isTrackpadMotionEvent;
+import static com.android.quickstep.MotionEventsUtils.isTrackpadMultiFingerSwipe;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -233,10 +234,7 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
      * @return whether the coordinates of the {@param event} is in the swipe up gesture region.
      */
     public boolean isInSwipeUpTouchRegion(MotionEvent event, BaseActivityInterface activity) {
-        if (isTrackpadMotionEvent(event)) {
-            return !activity.isResumed();
-        }
-        return mOrientationTouchTransformer.touchInValidSwipeRegions(event.getX(), event.getY());
+        return isInSwipeUpTouchRegion(event, 0, activity);
     }
 
     /**
@@ -246,7 +244,7 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
     public boolean isInSwipeUpTouchRegion(MotionEvent event, int pointerIndex,
             BaseActivityInterface activity) {
         if (isTrackpadMotionEvent(event)) {
-            return !activity.isResumed();
+            return isTrackpadMultiFingerSwipe(event) && !activity.isResumed();
         }
         return mOrientationTouchTransformer.touchInValidSwipeRegions(event.getX(pointerIndex),
                 event.getY(pointerIndex));
