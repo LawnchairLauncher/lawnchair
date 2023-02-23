@@ -369,7 +369,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mIsTaskbarAllAppsOpen = controller != null && controller.isTaskbarAllAppsOpen();
         mTaskbarAppWindowThreshold =
                 res.getDimensionPixelSize(R.dimen.taskbar_app_window_threshold);
-        boolean swipeWillNotShowTaskbar = mTaskbarAlreadyOpen;
+        boolean swipeWillNotShowTaskbar = mTaskbarAlreadyOpen || mGestureState.isTrackpadGesture();
         mTaskbarHomeOverviewThreshold = swipeWillNotShowTaskbar
                 ? 0
                 : res.getDimensionPixelSize(R.dimen.taskbar_home_overview_threshold);
@@ -2317,7 +2317,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             return displacement;
         }
 
-        if (mTaskbarAlreadyOpen || mIsTaskbarAllAppsOpen) {
+        if (mTaskbarAlreadyOpen || mIsTaskbarAllAppsOpen || mGestureState.isTrackpadGesture()) {
             return displacement;
         }
 
