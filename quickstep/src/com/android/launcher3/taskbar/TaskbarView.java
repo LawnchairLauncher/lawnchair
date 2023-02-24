@@ -142,9 +142,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                     : R.drawable.ic_taskbar_all_apps_button));
             mAllAppsButton.setScaleX(mIsRtl ? -1 : 1);
             mAllAppsButton.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
-            mAllAppsButton.setForegroundTint(mActivityContext.getColor(isTransientTaskbar
-                            ? R.color.all_apps_button_color
-                            : R.color.all_apps_button_color_dark));
+            mAllAppsButton.setForegroundTint(
+                    mActivityContext.getColor(R.color.all_apps_button_color));
 
             if (FeatureFlags.ENABLE_TASKBAR_PINNING.get()) {
                 mTaskbarDivider = LayoutInflater.from(context).inflate(R.layout.taskbar_divider,
