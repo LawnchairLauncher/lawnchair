@@ -16,8 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherPrefs.GRID_NAME;
 import static com.android.launcher3.Utilities.dpiFromPx;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_DEVICE_PROFILE_LOGGING;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TWO_PANEL_HOME;
 import static com.android.launcher3.testing.shared.ResourceUtils.INVALID_RESOURCE_HANDLE;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
@@ -69,8 +69,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -92,8 +90,6 @@ public class InvariantDeviceProfile {
     public static final int TYPE_PHONE = 0;
     public static final int TYPE_MULTI_DISPLAY = 1;
     public static final int TYPE_TABLET = 2;
-
-    private static final String KEY_IDP_GRID_NAME = "idp_grid_name";
 
     private static final float ICON_SIZE_DEFINED_IN_APP_DP = 48;
 
@@ -207,8 +203,7 @@ public class InvariantDeviceProfile {
         String gridName = getCurrentGridName(context);
         String newGridName = initGrid(context, gridName);
         if (!newGridName.equals(gridName)) {
-            LauncherPrefs.getPrefs(context).edit().putString(KEY_IDP_GRID_NAME, newGridName)
-                    .apply();
+            LauncherPrefs.get(context).put(GRID_NAME, newGridName);
         }
         new DeviceGridState(this).writeToPrefs(context);
 
@@ -316,7 +311,7 @@ public class InvariantDeviceProfile {
     }
 
     public static String getCurrentGridName(Context context) {
-        return LauncherPrefs.getPrefs(context).getString(KEY_IDP_GRID_NAME, null);
+        return LauncherPrefs.get(context).get(GRID_NAME);
     }
 
     private String initGrid(Context context, String gridName) {
@@ -458,9 +453,8 @@ public class InvariantDeviceProfile {
 
 
     public void setCurrentGrid(Context context, String gridName) {
-        Context appContext = context.getApplicationContext();
-        LauncherPrefs.getPrefs(appContext).edit().putString(KEY_IDP_GRID_NAME, gridName).apply();
-        MAIN_EXECUTOR.execute(() -> onConfigChanged(appContext));
+        LauncherPrefs.get(context).put(GRID_NAME, gridName);
+        MAIN_EXECUTOR.execute(() -> onConfigChanged(context.getApplicationContext()));
     }
 
     private Object[] toModelState() {
@@ -683,18 +677,6 @@ public class InvariantDeviceProfile {
         float screenHeight = config.screenHeightDp * res.getDisplayMetrics().density;
         int rotation = WindowManagerProxy.INSTANCE.get(context).getRotation(context);
 
-        if (Utilities.IS_DEBUG_DEVICE && ENABLE_DEVICE_PROFILE_LOGGING.get()) {
-            StringWriter stringWriter = new StringWriter();
-            PrintWriter printWriter = new PrintWriter(stringWriter);
-            DisplayController.INSTANCE.get(context).dump(printWriter);
-            printWriter.flush();
-            Log.d("b/253338238", "getDeviceProfile -"
-                            + "\nconfig: " + config
-                            + "\ndisplayMetrics: " + res.getDisplayMetrics()
-                            + "\nrotation: " + rotation
-                            + "\n" + stringWriter,
-                    new Exception());
-        }
         return getBestMatch(screenWidth, screenHeight, rotation);
     }
 

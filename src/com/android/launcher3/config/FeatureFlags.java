@@ -138,17 +138,6 @@ public final class FeatureFlags {
             true,
             "Enable loading all apps icons in bulk.");
 
-    // Keep as DeviceFlag for remote disable in emergency.
-    public static final BooleanFlag ENABLE_OVERVIEW_SELECTIONS = new DeviceFlag(
-            "ENABLE_OVERVIEW_SELECTIONS", true, "Show Select Mode button in Overview Actions");
-
-    public static final BooleanFlag ENABLE_WIDGETS_PICKER_AIAI_SEARCH = new DeviceFlag(
-            "ENABLE_WIDGETS_PICKER_AIAI_SEARCH", true, "Enable AiAi search in the widgets picker");
-
-    public static final BooleanFlag ENABLE_OVERVIEW_SHARING_TO_PEOPLE = getDebugFlag(
-            "ENABLE_OVERVIEW_SHARING_TO_PEOPLE", true,
-            "Show indicators for content on Overview to share with top people. ");
-
     public static final BooleanFlag ENABLE_DATABASE_RESTORE = getDebugFlag(
             "ENABLE_DATABASE_RESTORE", false,
             "Enable database restore when new restore session is created");
@@ -181,16 +170,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_MINIMAL_DEVICE = getDebugFlag(
             "ENABLE_MINIMAL_DEVICE", false,
             "Allow user to toggle minimal device mode in launcher.");
-
-    // TODO: b/172467144 Remove ENABLE_LAUNCHER_ACTIVITY_THEME_CROSSFADE feature flag.
-    public static final BooleanFlag ENABLE_LAUNCHER_ACTIVITY_THEME_CROSSFADE = new DeviceFlag(
-            "ENABLE_LAUNCHER_ACTIVITY_THEME_CROSSFADE", false, "Enables a "
-            + "crossfade animation when the system these changes.");
-
-    // TODO: b/174174514 Remove ENABLE_APP_PREDICTIONS_WHILE_VISIBLE feature flag.
-    public static final BooleanFlag ENABLE_APP_PREDICTIONS_WHILE_VISIBLE = new DeviceFlag(
-            "ENABLE_APP_PREDICTIONS_WHILE_VISIBLE", true, "Allows app "
-            + "predictions to be updated while they are visible to the user.");
 
     public static final BooleanFlag ENABLE_TASKBAR_POPUP_MENU = getDebugFlag(
             "ENABLE_TASKBAR_POPUP_MENU", true, "Enables long pressing taskbar icons to show the"
@@ -304,9 +283,6 @@ public final class FeatureFlags {
             "FOLDABLE_WORKSPACE_REORDER", true,
             "In foldables, when reordering the icons and widgets, is now going to use both sides");
 
-    public static final BooleanFlag ENABLE_WIDGET_PICKER_DEPTH = new DeviceFlag(
-            "ENABLE_WIDGET_PICKER_DEPTH", true, "Enable changing depth in widget picker.");
-
     public static final BooleanFlag ENABLE_MULTI_DISPLAY_PARTIAL_DEPTH = getDebugFlag(
             "ENABLE_MULTI_DISPLAY_PARTIAL_DEPTH", false,
             "Allow bottom sheet depth to be smaller than 1 for multi-display devices.");
@@ -368,9 +344,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_NEW_GESTURE_NAV_TUTORIAL = getDebugFlag(
             "ENABLE_NEW_GESTURE_NAV_TUTORIAL", false,
             "Enable the redesigned gesture navigation tutorial");
-
-    public static final BooleanFlag ENABLE_DEVICE_PROFILE_LOGGING = new DeviceFlag(
-            "ENABLE_DEVICE_PROFILE_LOGGING", false, "Allows DeviceProfile logging");
 
     public static final BooleanFlag ENABLE_LAUNCH_FROM_STAGED_APP = getDebugFlag(
             "ENABLE_LAUNCH_FROM_STAGED_APP", true,

@@ -41,7 +41,6 @@ import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.graphics.DragPreviewProvider;
@@ -279,32 +278,6 @@ public class HotseatPredictionController implements DragController.DragListener,
      * Sets or updates the predicted items
      */
     public void setPredictedItems(FixedContainerItems items) {
-        boolean shouldIgnoreVisibility = FeatureFlags.ENABLE_APP_PREDICTIONS_WHILE_VISIBLE.get()
-                || mLauncher.isWorkspaceLoading()
-                || mPredictedItems.equals(items.items)
-                || mHotseat.getShortcutsAndWidgets().getChildCount() < mHotSeatItemsCount;
-        if (!shouldIgnoreVisibility
-                && mHotseat.isShown()
-                && mHotseat.getWindowVisibility() == View.VISIBLE) {
-            mHotseat.setOnVisibilityAggregatedCallback((isVisible) -> {
-                if (isVisible) {
-                    return;
-                }
-                mHotseat.setOnVisibilityAggregatedCallback(null);
-
-                applyPredictedItems(items);
-            });
-        } else {
-            mHotseat.setOnVisibilityAggregatedCallback(null);
-
-            applyPredictedItems(items);
-        }
-    }
-
-    /**
-     * Sets or updates the predicted items only once the hotseat becomes hidden to the user
-     */
-    private void applyPredictedItems(FixedContainerItems items) {
         mPredictedItems = new ArrayList(items.items);
         if (mPredictedItems.isEmpty()) {
             HotseatRestoreHelper.restoreBackup(mLauncher);
