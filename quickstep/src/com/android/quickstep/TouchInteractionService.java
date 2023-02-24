@@ -89,6 +89,7 @@ import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.tracing.LauncherTraceProto;
 import com.android.launcher3.tracing.TouchInteractionServiceProto;
+import com.android.launcher3.uioverrides.flags.FlagsFactory;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.OnboardingPrefs;
@@ -1195,7 +1196,7 @@ public class TouchInteractionService extends Service
             }
         } else {
             // Dump everything
-            FeatureFlags.dump(pw);
+            FlagsFactory.dump(pw);
             if (mDeviceState.isUserUnlocked()) {
                 PluginManagerWrapper.INSTANCE.get(getBaseContext()).dump(pw);
             }

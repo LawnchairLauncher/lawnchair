@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import android.content.Context;
 
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.BitmapCreationCheck;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.logging.FileLog;
@@ -37,7 +36,6 @@ public class MainProcessInitializer implements ResourceBasedOverride {
 
     protected void init(Context context) {
         FileLog.setDir(context.getApplicationContext().getFilesDir());
-        FeatureFlags.initialize(context);
         IconShape.init(context);
 
         if (BitmapCreationCheck.ENABLED) {
