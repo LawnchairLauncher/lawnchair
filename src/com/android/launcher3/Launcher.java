@@ -1860,6 +1860,9 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     private void setWorkspaceLoading(boolean value) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.FLAKY_BINDING, "running: setWorkspaceLoading=" + value);
+        }
         mWorkspaceLoading = value;
     }
 
@@ -2306,6 +2309,9 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     public void startBinding() {
         Object traceToken = TraceHelper.INSTANCE.beginSection("startBinding");
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.FLAKY_BINDING, "running: startBinding");
+        }
         // Floating panels (except the full widget sheet) are associated with individual icons. If
         // we are starting a fresh bind, close all such panels as all the icons are about
         // to go away.
@@ -2778,6 +2784,9 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     public void finishBindingItems(IntSet pagesBoundFirst) {
         Object traceToken = TraceHelper.INSTANCE.beginSection("finishBindingItems");
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.FLAKY_BINDING, "running: finishBindingItems");
+        }
         mWorkspace.restoreInstanceStateForRemainingPages();
 
         setWorkspaceLoading(false);
