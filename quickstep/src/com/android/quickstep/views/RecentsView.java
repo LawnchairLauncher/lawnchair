@@ -62,6 +62,7 @@ import static com.android.quickstep.views.DesktopTaskView.DESKTOP_MODE_SUPPORTED
 import static com.android.quickstep.views.OverviewActionsView.FLAG_IS_NOT_TABLET;
 import static com.android.quickstep.views.OverviewActionsView.FLAG_SINGLE_TASK;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_ACTIONS_IN_MENU;
+import static com.android.quickstep.views.OverviewActionsView.HIDDEN_DESKTOP;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NON_ZERO_ROTATION;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_RECENTS;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NO_TASKS;
@@ -3767,6 +3768,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 !mActivity.getDeviceProfile().isTablet);
         mActionsView.updateSplitButtonDisabledFlags(FLAG_SINGLE_TASK,
                 !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get() && getTaskViewCount() <= 1);
+        if (DESKTOP_MODE_SUPPORTED) {
+            boolean isCurrentDesktop = getCurrentPageTaskView() instanceof DesktopTaskView;
+            mActionsView.updateHiddenFlags(HIDDEN_DESKTOP, isCurrentDesktop);
+        }
     }
 
     /**
