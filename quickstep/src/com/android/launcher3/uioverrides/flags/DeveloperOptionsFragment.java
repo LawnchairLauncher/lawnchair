@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.settings;
+package com.android.launcher3.uioverrides.flags;
 
 import static android.content.Intent.ACTION_PACKAGE_ADDED;
 import static android.content.Intent.ACTION_PACKAGE_CHANGED;
@@ -63,7 +63,6 @@ import androidx.preference.SwitchPreference;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.config.FlagTogglerPrefUi;
 import com.android.launcher3.secondarydisplay.SecondaryDisplayLauncher;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.OnboardingPrefs;
