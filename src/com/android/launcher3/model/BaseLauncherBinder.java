@@ -246,6 +246,9 @@ public abstract class BaseLauncherBinder {
             sortWorkspaceItemsSpatially(idp, otherWorkspaceItems);
 
             // Tell the workspace that we're about to start binding items
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.FLAKY_BINDING, "scheduling: startBinding");
+            }
             executeCallbacksTask(c -> {
                 c.clearPendingBinds();
                 c.startBinding();
@@ -264,6 +267,9 @@ public abstract class BaseLauncherBinder {
             Executor pendingExecutor = pendingTasks::add;
             bindWorkspaceItems(otherWorkspaceItems, pendingExecutor);
             bindAppWidgets(otherAppWidgets, pendingExecutor);
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.FLAKY_BINDING, "scheduling: finishBindingItems");
+            }
             executeCallbacksTask(c -> c.finishBindingItems(currentScreenIds), pendingExecutor);
             pendingExecutor.execute(
                     () -> {
