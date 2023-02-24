@@ -109,4 +109,13 @@ public class HomeAllApps extends AllApps {
             }
         }
     }
+
+    /**
+     * Return the QSB UI object on the AllApps screen.
+     * @return the QSB UI object.
+     */
+    @NonNull
+    public Qsb getQsb() {
+        return new AllAppsQsb(mLauncher, verifyActiveContainer());
+    }
 }
