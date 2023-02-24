@@ -75,6 +75,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
         clipToOutline = true
 
         shouldScaleArrow = true
+        mIsArrowRotated = true
         // This synchronizes the arrow and menu to open at the same time
         OPEN_CHILD_FADE_START_DELAY = OPEN_FADE_START_DELAY
         OPEN_CHILD_FADE_DURATION = OPEN_FADE_DURATION
