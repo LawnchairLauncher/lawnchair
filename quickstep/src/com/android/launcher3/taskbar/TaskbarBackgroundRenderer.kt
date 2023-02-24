@@ -66,8 +66,6 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
         paint.style = Paint.Style.FILL
 
         if (isTransientTaskbar) {
-            paint.color = context.getColor(R.color.transient_taskbar_background)
-
             val res = context.resources
             bottomMargin = res.getDimensionPixelSize(R.dimen.transient_taskbar_margin)
             shadowBlur = res.getDimension(R.dimen.transient_taskbar_shadow_blur)
