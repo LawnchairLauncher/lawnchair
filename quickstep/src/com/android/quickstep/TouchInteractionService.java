@@ -18,12 +18,14 @@ package com.android.quickstep;
 import static android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_POINTER_DOWN;
+import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
-import static com.android.launcher3.Utilities.isTrackpadMotionEvent;
 import static com.android.launcher3.config.FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
+import static com.android.quickstep.MotionEventsUtils.isTrackpadMultiFingerSwipe;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_DOWN;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_UP;
@@ -187,6 +189,12 @@ public class TouchInteractionService extends Service
                 preloadOverview(true /* fromInit */);
             });
             sIsInitialized = true;
+        }
+
+        @BinderThread
+        @Override
+        public void onTaskbarToggled() {
+            // To be implemented.
         }
 
         @BinderThread
@@ -622,7 +630,7 @@ public class TouchInteractionService extends Service
         Object traceToken = TraceHelper.INSTANCE.beginFlagsOverride(
                 TraceHelper.FLAG_ALLOW_BINDER_TRACKING);
 
-        final int action = event.getAction();
+        final int action = event.getActionMasked();
         if (action == ACTION_DOWN) {
             mRotationTouchHelper.setOrientationTransformIfNeeded(event);
 
@@ -633,7 +641,7 @@ public class TouchInteractionService extends Service
                 // onConsumerInactive and wipe the previous gesture state
                 GestureState prevGestureState = new GestureState(mGestureState);
                 GestureState newGestureState = createGestureState(mGestureState,
-                        isTrackpadMotionEvent(event));
+                        isTrackpadMultiFingerSwipe(event));
                 newGestureState.setSwipeUpStartTimeMs(SystemClock.uptimeMillis());
                 mConsumer.onConsumerAboutToBeSwitched();
                 mGestureState = newGestureState;
@@ -641,7 +649,8 @@ public class TouchInteractionService extends Service
                 mUncheckedConsumer = mConsumer;
             } else if (mDeviceState.isUserUnlocked() && mDeviceState.isFullyGesturalNavMode()
                     && mDeviceState.canTriggerAssistantAction(event)) {
-                mGestureState = createGestureState(mGestureState, isTrackpadMotionEvent(event));
+                mGestureState = createGestureState(mGestureState,
+                        isTrackpadMultiFingerSwipe(event));
                 // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we
                 // should not interrupt it. QuickSwitch assumes that interruption can only
                 // happen if the next gesture is also quick switch.
@@ -688,7 +697,12 @@ public class TouchInteractionService extends Service
         if (cancelGesture) {
             event.setAction(ACTION_CANCEL);
         }
-        mUncheckedConsumer.onMotionEvent(event);
+
+        // Skip ACTION_POINTER_DOWN and ACTION_POINTER_UP events from trackpad.
+        if (!mGestureState.isTrackpadGesture() || (action != ACTION_POINTER_DOWN
+                && action != ACTION_POINTER_UP)) {
+            mUncheckedConsumer.onMotionEvent(event);
+        }
 
         if (cleanUpConsumer) {
             reset();

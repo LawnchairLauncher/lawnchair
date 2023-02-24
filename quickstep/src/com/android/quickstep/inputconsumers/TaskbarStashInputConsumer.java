@@ -17,9 +17,9 @@ package com.android.quickstep.inputconsumers;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
-import static com.android.launcher3.Utilities.isTrackpadMotionEvent;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_TOUCHING;
+import static com.android.quickstep.MotionEventsUtils.isTrackpadMotionEvent;
 
 import android.content.Context;
 import android.content.res.Resources;
