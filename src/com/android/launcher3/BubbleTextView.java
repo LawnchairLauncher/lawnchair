@@ -113,6 +113,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     private float mScaleForReorderBounce = 1f;
 
+    private float mTranslationXForTaskbarAllAppsIcon = 0f;
+
     private static final Property<BubbleTextView, Float> DOT_SCALE_PROPERTY
             = new Property<BubbleTextView, Float>(Float.TYPE, "dotScale") {
         @Override
@@ -961,6 +963,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private void updateTranslation() {
         super.setTranslationX(mTranslationForReorderBounce.x
                 + mTranslationForReorderPreview.x
+                + mTranslationXForTaskbarAllAppsIcon
                 + mTranslationForMoveFromCenterAnimation.x
                 + mTranslationXForTaskbarAlignmentAnimation
                 + mTranslationXForTaskbarRevealAnimation
@@ -970,6 +973,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
                 + mTranslationForMoveFromCenterAnimation.y
                 + mTranslationYForTaskbarAlignmentAnimation
                 + mTranslationYForTaskbarRevealAnimation);
+    }
+
+    /**
+     * Sets translationX for taskbar all apps icon
+     */
+    public void setTranslationXForTaskbarAllAppsIcon(float translationX) {
+        mTranslationXForTaskbarAllAppsIcon = translationX;
+        updateTranslation();
     }
 
     public void setReorderBounceOffset(float x, float y) {
