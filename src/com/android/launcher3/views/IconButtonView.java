@@ -37,6 +37,7 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.util.MultiTranslateDelegate;
 
 /**
  * Button in Taskbar that shows a tinted background and foreground.
@@ -44,6 +45,12 @@ import com.android.launcher3.icons.LauncherIcons;
 public class IconButtonView extends BubbleTextView {
 
     private static final int[] ATTRS = {android.R.attr.icon};
+
+    private static final int INDEX_TASKBAR_ALL_APPS_ICON = MultiTranslateDelegate.COUNT;
+    private static final int MY_COUNT = MultiTranslateDelegate.COUNT + 1;
+
+    private final MultiTranslateDelegate mTranslateDelegate =
+            new MultiTranslateDelegate(this, MY_COUNT, MultiTranslateDelegate.COUNT);
 
     public IconButtonView(Context context) {
         this(context, null);
@@ -86,6 +93,18 @@ public class IconButtonView extends BubbleTextView {
         if (icon instanceof IconDrawable) {
             ((IconDrawable) icon).mFg.setTint(tintColor);
         }
+    }
+
+    @Override
+    public MultiTranslateDelegate getTranslateDelegate() {
+        return mTranslateDelegate;
+    }
+
+    /**
+     * Sets translationX for taskbar all apps icon
+     */
+    public void setTranslationXForTaskbarAllAppsIcon(float translationX) {
+        getTranslateDelegate().getTranslationX(INDEX_TASKBAR_ALL_APPS_ICON).setValue(translationX);
     }
 
     private static class IconDrawable extends FastBitmapDrawable {
