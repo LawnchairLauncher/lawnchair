@@ -375,7 +375,6 @@ public class TaskView extends FrameLayout implements Reusable {
     // Used when in SplitScreenSelectState
     private float mSplitSelectTranslationY;
     private float mSplitSelectTranslationX;
-    private float mSplitSelectScrollOffsetPrimary;
 
     @Nullable
     private ObjectAnimator mIconAndDimAnimator;
@@ -1297,10 +1296,6 @@ public class TaskView extends FrameLayout implements Reusable {
         applyTranslationY();
     }
 
-    public void setSplitScrollOffsetPrimary(float splitSelectScrollOffsetPrimary) {
-        mSplitSelectScrollOffsetPrimary = splitSelectScrollOffsetPrimary;
-    }
-
     private void setDismissTranslationX(float x) {
         mDismissTranslationX = x;
         applyTranslationX();
@@ -1364,19 +1359,18 @@ public class TaskView extends FrameLayout implements Reusable {
         applyTranslationX();
     }
 
-    public float getScrollAdjustment(boolean fullscreenEnabled, boolean gridEnabled) {
+    public float getScrollAdjustment(boolean gridEnabled) {
         float scrollAdjustment = 0;
         if (gridEnabled) {
             scrollAdjustment += mGridTranslationX;
         } else {
             scrollAdjustment += getPrimaryNonGridTranslationProperty().get(this);
         }
-        scrollAdjustment += mSplitSelectScrollOffsetPrimary;
         return scrollAdjustment;
     }
 
-    public float getOffsetAdjustment(boolean fullscreenEnabled, boolean gridEnabled) {
-        return getScrollAdjustment(fullscreenEnabled, gridEnabled);
+    public float getOffsetAdjustment(boolean gridEnabled) {
+        return getScrollAdjustment(gridEnabled);
     }
 
     public float getSizeAdjustment(boolean fullscreenEnabled) {
