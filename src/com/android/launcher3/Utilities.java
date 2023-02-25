@@ -134,10 +134,10 @@ public final class Utilities {
     /**
      * Indicates if the device has a debug build. Should only be used to store additional info or
      * add extra logging and not for changing the app behavior.
+     * @deprecated Use {@link BuildConfig#IS_DEBUG_DEVICE} directly
      */
-    public static final boolean IS_DEBUG_DEVICE =
-            Build.TYPE.toLowerCase(Locale.ROOT).contains("debug") ||
-            Build.TYPE.toLowerCase(Locale.ROOT).equals("eng");
+    @Deprecated
+    public static final boolean IS_DEBUG_DEVICE = BuildConfig.IS_DEBUG_DEVICE;
 
     /**
      * Returns true if theme is dark.
