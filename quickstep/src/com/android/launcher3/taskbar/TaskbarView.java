@@ -89,6 +89,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
     private float mTransientTaskbarMinWidth;
 
+    private float mTransientTaskbarAllAppsButtonTranslationXOffset;
+
     public TaskbarView(@NonNull Context context) {
         this(context, null);
     }
@@ -108,9 +110,14 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         mActivityContext = ActivityContext.lookupContext(context);
         mIconLayoutBounds = mActivityContext.getTransientTaskbarBounds();
         Resources resources = getResources();
+        boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivityContext);
         mIsRtl = Utilities.isRtl(resources);
         mTransientTaskbarMinWidth = mContext.getResources().getDimension(
                 R.dimen.transient_taskbar_min_width);
+        mTransientTaskbarAllAppsButtonTranslationXOffset =
+                resources.getDimension(isTransientTaskbar
+                        ? R.dimen.transient_taskbar_all_apps_button_translation_x_offset
+                        : R.dimen.taskbar_all_apps_button_translation_x_offset);
 
         int actualMargin = resources.getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
         int actualIconSize = mActivityContext.getDeviceProfile().iconSizePx;
@@ -130,9 +137,12 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         if (!mActivityContext.getPackageManager().hasSystemFeature(FEATURE_PC)) {
             mAllAppsButton = (IconButtonView) LayoutInflater.from(context)
                     .inflate(R.layout.taskbar_all_apps_button, this, false);
+            mAllAppsButton.setIconDrawable(resources.getDrawable(isTransientTaskbar
+                    ? R.drawable.ic_transient_taskbar_all_apps_button
+                    : R.drawable.ic_taskbar_all_apps_button));
             mAllAppsButton.setScaleX(mIsRtl ? -1 : 1);
-            mAllAppsButton.setForegroundTint(mActivityContext.getColor(
-                    DisplayController.isTransientTaskbar(mActivityContext)
+            mAllAppsButton.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
+            mAllAppsButton.setForegroundTint(mActivityContext.getColor(isTransientTaskbar
                             ? R.color.all_apps_button_color
                             : R.color.all_apps_button_color_dark));
 
@@ -276,6 +286,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         }
 
         if (mAllAppsButton != null) {
+            mAllAppsButton.setTranslationXForTaskbarAllAppsIcon(getChildCount() > 0
+                    ? mTransientTaskbarAllAppsButtonTranslationXOffset : 0f);
             addView(mAllAppsButton, mIsRtl ? getChildCount() : 0);
 
             // if only all apps button present, don't include divider view.

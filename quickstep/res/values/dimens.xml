@@ -286,6 +286,8 @@
     <dimen name="taskbar_back_button_left_margin_kids">48dp</dimen>
     <dimen name="taskbar_home_button_left_margin_kids">48dp</dimen>
     <dimen name="taskbar_icon_size_kids">32dp</dimen>
+    <dimen name="taskbar_all_apps_button_translation_x_offset">6dp</dimen>
+
 
     <!-- Transient taskbar -->
     <dimen name="transient_taskbar_size">72dp</dimen>
@@ -295,6 +297,7 @@
     <dimen name="transient_taskbar_shadow_blur">40dp</dimen>
     <dimen name="transient_taskbar_key_shadow_distance">10dp</dimen>
     <dimen name="transient_taskbar_stashed_size">32dp</dimen>
+    <dimen name="transient_taskbar_all_apps_button_translation_x_offset">4dp</dimen>
     <!-- An additional touch slop to prevent x-axis movement during the swipe up to show taskbar -->
     <dimen name="transient_taskbar_clamped_offset_bound">16dp</dimen>
     <!-- Taskbar swipe up thresholds -->
