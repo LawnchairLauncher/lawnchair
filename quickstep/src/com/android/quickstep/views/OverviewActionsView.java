@@ -56,7 +56,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             HIDDEN_NO_RECENTS,
             HIDDEN_SPLIT_SCREEN,
             HIDDEN_SPLIT_SELECT_ACTIVE,
-            HIDDEN_ACTIONS_IN_MENU
+            HIDDEN_ACTIONS_IN_MENU,
+            HIDDEN_DESKTOP
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface ActionsHiddenFlags { }
@@ -67,6 +68,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public static final int HIDDEN_SPLIT_SCREEN = 1 << 3;
     public static final int HIDDEN_SPLIT_SELECT_ACTIVE = 1 << 4;
     public static final int HIDDEN_ACTIONS_IN_MENU = 1 << 5;
+    public static final int HIDDEN_DESKTOP = 1 << 6;
 
     @IntDef(flag = true, value = {
             DISABLED_SCROLLING,
@@ -322,7 +324,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
         requestLayout();
 
-        mSplitButton.setCompoundDrawablesWithIntrinsicBounds(
+        mSplitButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 (dp.isLandscape ? R.drawable.ic_split_horizontal : R.drawable.ic_split_vertical),
                 0, 0, 0);
     }

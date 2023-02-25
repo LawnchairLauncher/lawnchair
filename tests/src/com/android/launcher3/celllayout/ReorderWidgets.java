@@ -33,6 +33,7 @@ import com.android.launcher3.celllayout.testcases.ReorderTestCase;
 import com.android.launcher3.celllayout.testcases.SimpleReorderCase;
 import com.android.launcher3.tapl.Widget;
 import com.android.launcher3.tapl.WidgetResizeFrame;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.rule.ShellCommandRule;
@@ -118,7 +119,14 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
         // waitForLauncherCondition to wait for that condition, otherwise the condition would
         // always be true and it wouldn't wait for the changes to be applied.
         resetLoaderState();
-        waitForLauncherCondition("Workspace didn't finish loading", l -> !l.isWorkspaceLoading());
+        Log.d(TestProtocol.FLAKY_BINDING, "waiting for: isWorkspaceLoading=false");
+        waitForLauncherCondition("Workspace didn't finish loading", l -> {
+            boolean isWorkspaceLoading = l.isWorkspaceLoading();
+
+            Log.d(TestProtocol.FLAKY_BINDING, "checking: isWorkspaceLoading=" + isWorkspaceLoading);
+
+            return !isWorkspaceLoading;
+        });
         Widget widget = mLauncher.getWorkspace().getWidgetAtCell(mainWidgetCellPos.getCellX(),
                 mainWidgetCellPos.getCellY());
         assertNotNull(widget);

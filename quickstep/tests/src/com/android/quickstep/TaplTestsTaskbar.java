@@ -92,6 +92,7 @@ public class TaplTestsTaskbar extends AbstractQuickStepTest {
     @TaskbarModeSwitch(mode = TRANSIENT)
     public void testTransientLaunchApp() throws Exception {
         getTaskbar().getAppIcon(TEST_APP_NAME).launch(TEST_APP_PACKAGE);
+        mLauncher.getLaunchedAppState().assertTaskbarHidden();
     }
 
     @Test
@@ -140,6 +141,7 @@ public class TaplTestsTaskbar extends AbstractQuickStepTest {
     public void testTransientLaunchAppInSplitscreen() throws Exception {
         getTaskbar().getAppIcon(TEST_APP_NAME).dragToSplitscreen(
                 TEST_APP_PACKAGE, CALCULATOR_APP_PACKAGE);
+        mLauncher.getLaunchedAppState().assertTaskbarHidden();
     }
 
     @Test
