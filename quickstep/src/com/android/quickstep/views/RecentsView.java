@@ -1480,20 +1480,20 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     /**
-     * Moves the focused task to the front of the carousel in tablets, to minimize animation
-     * required to focus the task in grid.
+     * Moves the running task to the front of the carousel in tablets, to minimize animation
+     * required to move the running task in grid.
      */
-    public void moveFocusedTaskToFront() {
+    public void moveRunningTaskToFront() {
         if (!mActivity.getDeviceProfile().isTablet) {
             return;
         }
 
-        TaskView focusedTaskView = getFocusedTaskView();
-        if (focusedTaskView == null) {
+        TaskView runningTaskView = getRunningTaskView();
+        if (runningTaskView == null) {
             return;
         }
 
-        if (indexOfChild(focusedTaskView) != mCurrentPage) {
+        if (indexOfChild(runningTaskView) != mCurrentPage) {
             return;
         }
 
@@ -1505,20 +1505,20 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         int currentPageScroll = getScrollForPage(mCurrentPage);
         mCurrentPageScrollDiff = primaryScroll - currentPageScroll;
 
-        mMovingTaskView = focusedTaskView;
-        removeView(focusedTaskView);
+        mMovingTaskView = runningTaskView;
+        removeView(runningTaskView);
         mMovingTaskView = null;
-        focusedTaskView.resetPersistentViewTransforms();
+        runningTaskView.resetPersistentViewTransforms();
         int frontTaskIndex = 0;
-        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED && !focusedTaskView.isDesktopTask()) {
+        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED && !runningTaskView.isDesktopTask()) {
             // If desktop mode is enabled, desktop task view is pinned at first position.
-            // Move focused task to position 1
+            // Move running task to position 1
             frontTaskIndex = 1;
         }
-        addView(focusedTaskView, frontTaskIndex);
+        addView(runningTaskView, frontTaskIndex);
         setCurrentPage(frontTaskIndex);
 
-        updateGridProperties();
+        updateTaskSize();
     }
 
     @Override
@@ -1665,8 +1665,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 newFocusedTaskView = getTaskViewAt(1);
             }
         }
-        mFocusedTaskViewId =
-                newFocusedTaskView != null ? newFocusedTaskView.getTaskViewId() : INVALID_TASK_ID;
+        mFocusedTaskViewId = newFocusedTaskView != null && !ENABLE_GRID_ONLY_OVERVIEW.get()
+                ? newFocusedTaskView.getTaskViewId() : INVALID_TASK_ID;
         updateTaskSize();
         updateChildTaskOrientations();
 
@@ -1781,7 +1781,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Returns the number of tasks in the bottom row of the overview grid.
      */
     public int getBottomRowTaskCountForTablet() {
-        return getTaskViewCount() - mTopRowIdSet.size() - 1;
+        return getTaskViewCount() - mTopRowIdSet.size() - (ENABLE_GRID_ONLY_OVERVIEW.get() ? 0 : 1);
     }
 
     protected void onTaskStackUpdated() {
@@ -1987,7 +1987,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public void getTaskSize(Rect outRect) {
-        mSizeStrategy.calculateTaskSize(mActivity, mActivity.getDeviceProfile(), outRect);
+        mSizeStrategy.calculateTaskSize(mActivity, mActivity.getDeviceProfile(), outRect,
+                mOrientationHandler);
         mLastComputedTaskSize.set(outRect);
     }
 
@@ -2032,7 +2033,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     /** Gets the task size for modal state. */
     public void getModalTaskSize(Rect outRect) {
-        mSizeStrategy.calculateModalTaskSize(mActivity, mActivity.getDeviceProfile(), outRect);
+        mSizeStrategy.calculateModalTaskSize(mActivity, mActivity.getDeviceProfile(), outRect,
+                mOrientationHandler);
     }
 
     @Override
@@ -2574,7 +2576,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         boolean runningTaskTileHidden = mRunningTaskTileHidden;
         setCurrentTask(runningTaskViewId);
-        mFocusedTaskViewId = runningTaskViewId;
+        mFocusedTaskViewId = ENABLE_GRID_ONLY_OVERVIEW.get() ? INVALID_TASK_ID : runningTaskViewId;
         runOnPageScrollsInitialized(() -> setCurrentPage(getRunningTaskIndex()));
         setRunningTaskViewShowScreenshot(false);
         setRunningTaskHidden(runningTaskTileHidden);
@@ -3263,7 +3265,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             float longGridRowWidthDiff = 0;
 
             int topGridRowSize = mTopRowIdSet.size();
-            int bottomGridRowSize = taskCount - mTopRowIdSet.size() - 1;
+            int bottomGridRowSize = taskCount - mTopRowIdSet.size()
+                    - (ENABLE_GRID_ONLY_OVERVIEW.get() ? 0 : 1);
             boolean topRowLonger = topGridRowSize > bottomGridRowSize;
             boolean bottomRowLonger = bottomGridRowSize > topGridRowSize;
             boolean dismissedTaskFromTop = mTopRowIdSet.contains(dismissedTaskViewId);
@@ -3275,8 +3278,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 bottomGridRowSize--;
             }
             int longRowWidth = Math.max(topGridRowSize, bottomGridRowSize)
-                    * (mLastComputedGridTaskSize.width() + mPageSpacing)
-                    + (isStagingFocusedTask ? 0 : mLastComputedTaskSize.width() + mPageSpacing);
+                    * (mLastComputedGridTaskSize.width() + mPageSpacing);
+            if (!ENABLE_GRID_ONLY_OVERVIEW.get() && !isStagingFocusedTask) {
+                longRowWidth += mLastComputedTaskSize.width() + mPageSpacing;
+            }
 
             float gapWidth = 0;
             if ((topRowLonger && dismissedTaskFromTop)
@@ -3683,7 +3688,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     } else {
                         // Update focus task and its size.
                         if (finalIsFocusedTaskDismissed && finalNextFocusedTaskView != null) {
-                            mFocusedTaskViewId = finalNextFocusedTaskView.getTaskViewId();
+                            mFocusedTaskViewId = ENABLE_GRID_ONLY_OVERVIEW.get()
+                                    ? INVALID_TASK_ID
+                                    : finalNextFocusedTaskView.getTaskViewId();
                             mTopRowIdSet.remove(mFocusedTaskViewId);
                             finalNextFocusedTaskView.animateIconScaleAndDimIntoView();
                         }
