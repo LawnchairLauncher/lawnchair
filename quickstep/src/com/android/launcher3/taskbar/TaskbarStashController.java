@@ -460,7 +460,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             return;
         }
 
-        if (stash && mControllers.taskbarAutohideSuspendController.isSuspended()) {
+        if (stash && mControllers.taskbarAutohideSuspendController.isSuspended()
+                && !mControllers.taskbarAutohideSuspendController
+                .isSuspendedForTransientTaskbarInOverview()) {
             // Avoid stashing if autohide is currently suspended.
             return;
         }
@@ -955,6 +957,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         if (hasAnyFlag(changedFlags, FLAGS_STASHED_IN_APP | FLAGS_IN_APP)) {
             notifyStashChange(/* visible */ hasAnyFlag(FLAGS_IN_APP),
                             /* stashed */ isStashedInApp());
+            mControllers.taskbarAutohideSuspendController.updateFlag(
+                    TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_IN_LAUNCHER, !isInApp());
         }
         if (hasAnyFlag(changedFlags, FLAG_STASHED_IN_APP_MANUAL)) {
             if (hasAnyFlag(FLAG_STASHED_IN_APP_MANUAL)) {
