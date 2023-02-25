@@ -31,6 +31,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.icons.BaseIconFactory;
@@ -67,6 +68,15 @@ public class IconButtonView extends BubbleTextView {
         }
         try (BaseIconFactory factory = LauncherIcons.obtain(context)) {
             setIcon(new IconDrawable(factory.getWhiteShadowLayer(), tint, fg));
+        }
+    }
+
+    /** Sets given Drawable as icon */
+    public void setIconDrawable(@NonNull Drawable drawable) {
+        ColorStateList tintList = getBackgroundTintList();
+        int tint = tintList == null ? Color.WHITE : tintList.getDefaultColor();
+        try (BaseIconFactory factory = LauncherIcons.obtain(getContext())) {
+            setIcon(new IconDrawable(factory.getWhiteShadowLayer(), tint, drawable));
         }
     }
 
