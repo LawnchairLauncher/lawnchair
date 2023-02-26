@@ -18,7 +18,6 @@ package com.android.quickstep;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.LauncherState.QUICK_SWITCH_FROM_HOME;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -73,7 +72,7 @@ public final class LauncherActivityInterface extends
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect,
             PagedOrientationHandler orientationHandler) {
-        calculateTaskSize(context, dp, outRect);
+        calculateTaskSize(context, dp, outRect, orientationHandler);
         if (dp.isVerticalBarLayout()
                 && DisplayController.getNavigationMode(context) != NavigationMode.NO_BUTTON) {
             return dp.isSeascape() ? outRect.left : (dp.widthPx - outRect.right);
