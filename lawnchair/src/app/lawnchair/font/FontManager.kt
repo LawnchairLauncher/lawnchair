@@ -39,15 +39,16 @@ class FontManager private constructor(private val context: Context) {
     fun overrideFont(textView: TextView, attrs: AttributeSet?) {
         try {
             val context = textView.context
-            var (fontType, fontWeight, ap) = context.obtainStyledAttributes(
+            var fontType = -1
+            var fontWeight = -1
+            var ap = -1
+            context.obtainStyledAttributes(
                 attrs,
                 R.styleable.CustomFont
             ).use { a ->
-                Triple(
-                    a.getResourceId(R.styleable.CustomFont_customFontType, -1),
-                    a.getInt(R.styleable.CustomFont_customFontWeight, -1),
-                    a.getResourceId(R.styleable.CustomFont_android_textAppearance, -1),
-                )
+                fontType = a.getResourceId(R.styleable.CustomFont_customFontType, -1)
+                fontWeight = a.getInt(R.styleable.CustomFont_customFontWeight, -1)
+                ap = a.getResourceId(R.styleable.CustomFont_android_textAppearance, -1)
             }
 
             if (ap != -1) {
