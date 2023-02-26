@@ -42,18 +42,22 @@ public final class FeatureFlags {
     }
 
     public static boolean showFlagTogglerUi(Context context) {
-        return Utilities.IS_DEBUG_DEVICE && Utilities.isDevelopersOptionsEnabled(context);
+        return BuildConfig.IS_DEBUG_DEVICE && Utilities.isDevelopersOptionsEnabled(context);
     }
 
     /**
      * True when the build has come from Android Studio and is being used for local debugging.
+     * @deprecated Use {@link BuildConfig#IS_STUDIO_BUILD} directly
      */
-    public static final boolean IS_STUDIO_BUILD = BuildConfig.DEBUG;
+    @Deprecated
+    public static final boolean IS_STUDIO_BUILD = BuildConfig.IS_STUDIO_BUILD;
 
     /**
      * Enable moving the QSB on the 0th screen of the workspace. This is not a configuration feature
      * and should be modified at a project level.
+     * @deprecated Use {@link BuildConfig#QSB_ON_FIRST_SCREEN} directly
      */
+    @Deprecated
     public static final boolean QSB_ON_FIRST_SCREEN = BuildConfig.QSB_ON_FIRST_SCREEN;
 
     /**
