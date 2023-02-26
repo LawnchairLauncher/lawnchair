@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Toque esta tarjeta para establecer Lawnchair como su lanzador predeterminado.</string>
+    <string name="set_default_launcher_tip">Toca esta tarjeta para establecer Lawnchair como tu lanzador predeterminado.</string>
     <string name="settings">Ajustes</string>
     <string name="general_label">General</string>
     <string name="general_description">Colores, Paquete de Íconos, Puntos de Notificación</string>
@@ -48,8 +48,8 @@
     <string name="font_picker_description">Algunos textos permanecen sin cambios.</string>
     <string name="smartspace_calendar_label">Personalización del calendario de un vistazo</string>
     <string name="smartspace_calendar_description">Permitir mostrar fechas en sistemas de calendario no gregorianos.</string>
-    <string name="workspace_increase_max_grid_size_label">Aumento del tamaño máximo de la cuadrícula de la pantalla de inicio</string>
-    <string name="workspace_increase_max_grid_size_description">Aumenta el tamaño máximo permitido de la cuadrícula de pantalla de inicio de 10 x 10 a 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">Aumento del tamaño máximo de la cuadrícula de pantalla de inicio</string>
+    <string name="workspace_increase_max_grid_size_description">Aumenta el tamaño máximo permitido de la cuadrícula de pantalla de inicio de 10 x 10 a 20 x 20. https://lawnchair. crowdin. com/translate/c26ac9577fbf791d8e74aae2a00d05d4/49/en-es/8? filter=basic&amp;value=0.</string>
     <string name="always_reload_icons_label">Siempre recargar los iconos</string>
     <string name="always_reload_icons_description">Evitar el uso de iconos en caché de paquetes de iconos</string>
     <string name="transparent_background_icons">Iconos temáticos transparentes</string>
