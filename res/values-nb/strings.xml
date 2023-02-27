@@ -161,16 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Jobbapper er merket og synlige for IT-administratoren"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Greit"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Jobbapper er satt på pause"</string>
-    <!-- no translation found for work_apps_paused_info_body (1687828929959237477) -->
-    <skip />
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Du får ikke varsler fra jobbappene dine"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Jobbapper kan ikke sende deg varsler, bruke batteriet eller få tilgang til posisjonen din"</string>
-    <!-- no translation found for work_apps_paused_telephony_unavailable_body (8358872357502756790) -->
-    <skip />
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Du får ikke telefonanrop, tekstmeldinger eller varsler fra jobbappene dine"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Jobbapper er merket og synlige for IT-administratoren din"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Greit"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Sett jobbapper på pause"</string>
-    <!-- no translation found for work_apps_enable_btn_text (1736198302467317371) -->
-    <skip />
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Gjenoppta"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filter"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Søk på telefonen"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Søk på nettbrettet"</string>
