@@ -161,16 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"कार्य ॲप्स ही बॅज केलेली असून तुमच्या आयटी ॲडमिनला दृश्यमान आहेत"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"समजले"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"कार्य ॲप्स थांबवली आहेत"</string>
-    <!-- no translation found for work_apps_paused_info_body (1687828929959237477) -->
-    <skip />
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"तुम्हाला तुमच्या कार्य अ‍ॅप्सवरून सूचना मिळणार नाहीत"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"तुमची कार्य ॲप्स तुम्हाला सूचना पाठवू शकत नाहीत, तुमची बॅटरी वापरू शकत नाहीत किंवा तुमचे स्थान अ‍ॅक्सेस करू शकत नाहीत"</string>
-    <!-- no translation found for work_apps_paused_telephony_unavailable_body (8358872357502756790) -->
-    <skip />
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"तुम्हाला तुमच्या कार्य अ‍ॅप्सवरून फोन कॉल, एसएमएस किंवा सूचना मिळणार नाहीत"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"कार्य ॲप्स ही बॅज केलेली असून तुमच्या आयटी ॲडमिनला दृश्यमान आहेत"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"समजले"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"कार्य ॲप्स थांबवा"</string>
-    <!-- no translation found for work_apps_enable_btn_text (1736198302467317371) -->
-    <skip />
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"अनपॉझ करा"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फिल्टर"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"तुमच्या फोनमध्ये शोधा"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"तुमच्या टॅबलेटमध्ये शोधा"</string>

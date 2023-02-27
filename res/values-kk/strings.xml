@@ -161,16 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Жұмыс қолданбаларының танымбелгілері бар және олар әкімшіңізге көрінеді."</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Түсінікті"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Жұмыс қолданбалары кідіртілді"</string>
-    <!-- no translation found for work_apps_paused_info_body (1687828929959237477) -->
-    <skip />
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Жұмыс қолданбаларынан хабарландырулар алмайсыз."</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Жұмыс қолданбалары сізге хабарландырулар жібере, батареяңызды немесе локацияңызды пайдалана алмайды."</string>
-    <!-- no translation found for work_apps_paused_telephony_unavailable_body (8358872357502756790) -->
-    <skip />
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Жұмыс қолданбаларынан телефон қоңырауларын, мәтіндік хабарлар немесе хабарландырулар алмайсыз."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Жұмыс қолданбаларының танымбелгілері бар және олар әкімшіңізге көрінеді."</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Түсінікті"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Жұмыс қолданбаларын тоқтата тұру"</string>
-    <!-- no translation found for work_apps_enable_btn_text (1736198302467317371) -->
-    <skip />
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Қайта қосу"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Сүзгі"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Телефоннан іздеу"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Планшеттен іздеу"</string>

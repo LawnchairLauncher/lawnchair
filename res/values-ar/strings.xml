@@ -161,16 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"تحمل تطبيقات العمل شارة وتكون مرئية لمشرف تكنولوجيا المعلومات."</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"حسنًا"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"تطبيقات العمل متوقفة مؤقتًا"</string>
-    <!-- no translation found for work_apps_paused_info_body (1687828929959237477) -->
-    <skip />
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"لن تتلقّى إشعارات من تطبيقات العمل."</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"لا يمكن لتطبيقات العمل إرسال إشعارات إليك أو استخدام بطاريتك أو الوصول إلى موقعك الجغرافي."</string>
-    <!-- no translation found for work_apps_paused_telephony_unavailable_body (8358872357502756790) -->
-    <skip />
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"لن تتلقّى مكالمات هاتفية أو رسائل نصية أو إشعارات من تطبيقات العمل."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"تحمل تطبيقات العمل شارة وتكون مرئية لمشرف تكنولوجيا المعلومات."</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"حسنًا"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"إيقاف تطبيقات العمل مؤقتًا"</string>
-    <!-- no translation found for work_apps_enable_btn_text (1736198302467317371) -->
-    <skip />
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"إلغاء الإيقاف المؤقت"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"فلتر"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"البحث في هاتفك"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"البحث في جهازك اللوحي"</string>
