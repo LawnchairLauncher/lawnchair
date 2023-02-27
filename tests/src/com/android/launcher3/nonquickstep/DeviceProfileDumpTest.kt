@@ -76,6 +76,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\ticonSizePx: 147.0px (56.0dp)\n" +
                     "\ticonTextSizePx: 38.0px (14.476191dp)\n" +
                     "\ticonDrawablePaddingPx: 18.0px (6.857143dp)\n" +
+                    "\tinv.numFolderRows: 4\n" +
+                    "\tinv.numFolderColumns: 4\n" +
                     "\tfolderCellWidthPx: 195.0px (74.28571dp)\n" +
                     "\tfolderCellHeightPx: 230.0px (87.61905dp)\n" +
                     "\tfolderChildIconSizePx: 147.0px (56.0dp)\n" +
@@ -206,6 +208,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\ticonSizePx: 147.0px (56.0dp)\n" +
                     "\ticonTextSizePx: 38.0px (14.476191dp)\n" +
                     "\ticonDrawablePaddingPx: 18.0px (6.857143dp)\n" +
+                    "\tinv.numFolderRows: 4\n" +
+                    "\tinv.numFolderColumns: 4\n" +
                     "\tfolderCellWidthPx: 195.0px (74.28571dp)\n" +
                     "\tfolderCellHeightPx: 230.0px (87.61905dp)\n" +
                     "\tfolderChildIconSizePx: 147.0px (56.0dp)\n" +
@@ -336,6 +340,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\ticonSizePx: 147.0px (56.0dp)\n" +
                     "\ticonTextSizePx: 0.0px (0.0dp)\n" +
                     "\ticonDrawablePaddingPx: 0.0px (0.0dp)\n" +
+                    "\tinv.numFolderRows: 4\n" +
+                    "\tinv.numFolderColumns: 4\n" +
                     "\tfolderCellWidthPx: 142.0px (54.095238dp)\n" +
                     "\tfolderCellHeightPx: 168.0px (64.0dp)\n" +
                     "\tfolderChildIconSizePx: 108.0px (41.142857dp)\n" +
@@ -466,6 +472,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\ticonSizePx: 147.0px (56.0dp)\n" +
                     "\ticonTextSizePx: 0.0px (0.0dp)\n" +
                     "\ticonDrawablePaddingPx: 0.0px (0.0dp)\n" +
+                    "\tinv.numFolderRows: 4\n" +
+                    "\tinv.numFolderColumns: 4\n" +
                     "\tfolderCellWidthPx: 128.0px (48.761906dp)\n" +
                     "\tfolderCellHeightPx: 152.0px (57.904762dp)\n" +
                     "\tfolderChildIconSizePx: 98.0px (37.333332dp)\n" +
@@ -597,6 +605,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\ticonSizePx: 120.0px (60.0dp)\n" +
                     "\ticonTextSizePx: 28.0px (14.0dp)\n" +
                     "\ticonDrawablePaddingPx: 14.0px (7.0dp)\n" +
+                    "\tinv.numFolderRows: 3\n" +
+                    "\tinv.numFolderColumns: 3\n" +
                     "\tfolderCellWidthPx: 397.0px (198.5dp)\n" +
                     "\tfolderCellHeightPx: 371.0px (185.5dp)\n" +
                     "\tfolderChildIconSizePx: 99.0px (49.5dp)\n" +
@@ -728,6 +738,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\ticonSizePx: 120.0px (60.0dp)\n" +
                     "\ticonTextSizePx: 28.0px (14.0dp)\n" +
                     "\ticonDrawablePaddingPx: 14.0px (7.0dp)\n" +
+                    "\tinv.numFolderRows: 3\n" +
+                    "\tinv.numFolderColumns: 3\n" +
                     "\tfolderCellWidthPx: 397.0px (198.5dp)\n" +
                     "\tfolderCellHeightPx: 371.0px (185.5dp)\n" +
                     "\tfolderChildIconSizePx: 99.0px (49.5dp)\n" +
@@ -859,6 +871,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\ticonSizePx: 120.0px (60.0dp)\n" +
                     "\ticonTextSizePx: 28.0px (14.0dp)\n" +
                     "\ticonDrawablePaddingPx: 14.0px (7.0dp)\n" +
+                    "\tinv.numFolderRows: 3\n" +
+                    "\tinv.numFolderColumns: 3\n" +
                     "\tfolderCellWidthPx: 408.0px (204.0dp)\n" +
                     "\tfolderCellHeightPx: 648.0px (324.0dp)\n" +
                     "\tfolderChildIconSizePx: 120.0px (60.0dp)\n" +
@@ -990,6 +1004,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\ticonSizePx: 120.0px (60.0dp)\n" +
                     "\ticonTextSizePx: 28.0px (14.0dp)\n" +
                     "\ticonDrawablePaddingPx: 14.0px (7.0dp)\n" +
+                    "\tinv.numFolderRows: 3\n" +
+                    "\tinv.numFolderColumns: 3\n" +
                     "\tfolderCellWidthPx: 408.0px (204.0dp)\n" +
                     "\tfolderCellHeightPx: 648.0px (324.0dp)\n" +
                     "\tfolderChildIconSizePx: 120.0px (60.0dp)\n" +
@@ -1126,6 +1142,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\ticonSizePx: 141.0px (53.714287dp)\n" +
                     "\ticonTextSizePx: 34.0px (12.952381dp)\n" +
                     "\ticonDrawablePaddingPx: 18.0px (6.857143dp)\n" +
+                    "\tinv.numFolderRows: 3\n" +
+                    "\tinv.numFolderColumns: 4\n" +
                     "\tfolderCellWidthPx: 189.0px (72.0dp)\n" +
                     "\tfolderCellHeightPx: 219.0px (83.42857dp)\n" +
                     "\tfolderChildIconSizePx: 141.0px (53.714287dp)\n" +
@@ -1261,6 +1279,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\ticonSizePx: 141.0px (53.714287dp)\n" +
                     "\ticonTextSizePx: 34.0px (12.952381dp)\n" +
                     "\ticonDrawablePaddingPx: 18.0px (6.857143dp)\n" +
+                    "\tinv.numFolderRows: 3\n" +
+                    "\tinv.numFolderColumns: 4\n" +
                     "\tfolderCellWidthPx: 189.0px (72.0dp)\n" +
                     "\tfolderCellHeightPx: 219.0px (83.42857dp)\n" +
                     "\tfolderChildIconSizePx: 141.0px (53.714287dp)\n" +
@@ -1396,6 +1416,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\ticonSizePx: 141.0px (53.714287dp)\n" +
                     "\ticonTextSizePx: 34.0px (12.952381dp)\n" +
                     "\ticonDrawablePaddingPx: 18.0px (6.857143dp)\n" +
+                    "\tinv.numFolderRows: 3\n" +
+                    "\tinv.numFolderColumns: 4\n" +
                     "\tfolderCellWidthPx: 189.0px (72.0dp)\n" +
                     "\tfolderCellHeightPx: 219.0px (83.42857dp)\n" +
                     "\tfolderChildIconSizePx: 141.0px (53.714287dp)\n" +
@@ -1527,6 +1549,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\ticonSizePx: 141.0px (53.714287dp)\n" +
                     "\ticonTextSizePx: 34.0px (12.952381dp)\n" +
                     "\ticonDrawablePaddingPx: 18.0px (6.857143dp)\n" +
+                    "\tinv.numFolderRows: 3\n" +
+                    "\tinv.numFolderColumns: 4\n" +
                     "\tfolderCellWidthPx: 189.0px (72.0dp)\n" +
                     "\tfolderCellHeightPx: 219.0px (83.42857dp)\n" +
                     "\tfolderChildIconSizePx: 141.0px (53.714287dp)\n" +
