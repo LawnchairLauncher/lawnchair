@@ -22,6 +22,8 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Замацаваць"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Адвольная форма"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Няма новых элементаў"</string>
+    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
+    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Налады выкарыстання праграмы"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Ачысціць усё"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Нядаўнія праграмы"</string>
@@ -117,8 +119,6 @@
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Панэль навігацыі"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Перамясціць уверх/улева"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Перамясціць уніз/управа"</string>
-    <!-- no translation found for quick_switch_overflow (6935266023013283353) -->
-    <skip />
-    <!-- no translation found for quick_switch_split_task (5598194724255333896) -->
-    <skip />
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Паказаць ячшэ # праграму.}one{Паказаць ячшэ # праграму.}few{Паказаць ячшэ # праграмы.}many{Паказаць ячшэ # праграм.}other{Паказаць ячшэ # праграмы.}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> і <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

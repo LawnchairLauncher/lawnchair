@@ -22,6 +22,7 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Mahkamlash"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Erkin shakl"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Yaqinda ishlatilgan ilovalar yo‘q"</string>
+    <string name="recents_empty_desktop_message" msgid="1358240150311509733">"Ish stoli elementlari topilmadi"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Ilovadan foydalanish sozlamalari"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Hammasini tozalash"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Yaqinda ishlatilgan ilovalar"</string>
