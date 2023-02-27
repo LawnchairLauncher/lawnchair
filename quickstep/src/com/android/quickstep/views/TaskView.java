@@ -16,6 +16,7 @@
 
 package com.android.quickstep.views;
 
+import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -41,6 +42,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.IdRes;
 import android.app.ActivityOptions;
+import android.app.ActivityTaskManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -706,9 +708,12 @@ public class TaskView extends FrameLayout implements Reusable {
         }
         SplitSelectStateController splitSelectStateController =
                 recentsView.getSplitSelectController();
-        if (splitSelectStateController.isSplitSelectActive() &&
-                splitSelectStateController.getInitialTaskId() == getTask().key.id) {
-            // Prevent taps on the this taskview if it's being animated into split select state
+        // Disable taps for split selection animation unless we have multiple tasks
+        boolean disableTapsForSplitSelect =
+                splitSelectStateController.isSplitSelectActive()
+                        && splitSelectStateController.getInitialTaskId() == getTask().key.id
+                        && !containsMultipleTasks();
+        if (disableTapsForSplitSelect) {
             return false;
         }
 
@@ -716,6 +721,25 @@ public class TaskView extends FrameLayout implements Reusable {
             mLastTouchDownPosition.set(ev.getX(), ev.getY());
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * @return taskId that split selection was initiated with,
+     *         {@link ActivityTaskManager#INVALID_TASK_ID} if no tasks in this TaskView are part of
+     *         split selection
+     */
+    protected int getThisTaskCurrentlyInSplitSelection() {
+        SplitSelectStateController splitSelectController =
+                getRecentsView().getSplitSelectController();
+        int initSplitTaskId = INVALID_TASK_ID;
+        for (TaskIdAttributeContainer container : getTaskIdAttributeContainers()) {
+            int taskId = container.getTask().key.id;
+            if (taskId == splitSelectController.getInitialTaskId()) {
+                initSplitTaskId = taskId;
+                break;
+            }
+        }
+        return initSplitTaskId;
     }
 
     private void onClick(View view) {
@@ -747,6 +771,8 @@ public class TaskView extends FrameLayout implements Reusable {
 
     /**
      * Returns the task index of the last selected child task (0 or 1).
+     * If we contain multiple tasks and this TaskView is used as part of split selection, the
+     * selected child task index will be that of the remaining task.
      */
     protected int getLastSelectedChildTaskIndex() {
         return 0;
@@ -1084,6 +1110,8 @@ public class TaskView extends FrameLayout implements Reusable {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         int thumbnailTopMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
 
+        // TODO(b/271468547), we should default to setting trasnlations only on the snapshot instead
+        //  of a hybrid of both margins and translations
         LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
         snapshotParams.topMargin = thumbnailTopMargin;
         mSnapshotView.setLayoutParams(snapshotParams);
@@ -1179,6 +1207,7 @@ public class TaskView extends FrameLayout implements Reusable {
         setAlpha(mStableAlpha);
         setIconScaleAndDim(1);
         setColorTint(0, 0);
+        mSnapshotView.resetViewTransforms();
     }
 
     public void setStableAlpha(float parentAlpha) {
@@ -1720,10 +1749,12 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     /**
-     *     Sets visibility for the thumbnail and associated elements (DWB banners and action chips).
-     *     IconView is unaffected.
+     *  Sets visibility for the thumbnail and associated elements (DWB banners and action chips).
+     *  IconView is unaffected.
+     *
+     * @param taskId is only used when setting visibility to a non-{@link View#VISIBLE} value
      */
-    void setThumbnailVisibility(int visibility) {
+    void setThumbnailVisibility(int visibility, int taskId) {
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             if (child != mIconView) {
