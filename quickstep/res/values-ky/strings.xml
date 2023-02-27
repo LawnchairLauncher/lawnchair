@@ -22,7 +22,7 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Кадап коюу"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Эркин форма режими"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Акыркы колдонмолор жок"</string>
-    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Колдонмону пайдалануу жөндөөлөрү"</string>
+    <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Колдонмону пайдалануу параметрлери"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Баарын тазалоо"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Акыркы колдонмолор"</string>
     <string name="task_view_closed" msgid="9170038230110856166">"Тапшырма жабылды"</string>
@@ -37,7 +37,7 @@
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Көп иштетилген колдонмолорго Башкы экрандан оңой кириңиз. Сунуштар тартиптин негизинде өзгөрөт. Тандалмалардын катарындагы колдонмолор башкы экраныңызга жылдырылат."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Сунушталган колдонолорду алуу"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Жок, рахмат"</string>
-    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Жөндөөлөр"</string>
+    <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Параметрлер"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Көп иштетилген колдонмолор ушул жерде көрүнүп, тартиптин негизинде өзгөрөт"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Сунуштарды алып туруу үчүн ылдый жактагы тилкедеги колдонмолорду сүйрөп келиңиз"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Сунушталган колдонмолор бош жерге кошулат"</string>
@@ -71,7 +71,7 @@
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Бир колдонмодон экинчисине өтүү үчүн экранды 2 манжа менен ылдыйдан өйдө сүрүп, коё бербей туруңуз."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Дапдаяр!"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Бүттү"</string>
-    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Жөндөөлөр"</string>
+    <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Параметрлер"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Кайталап көрүңүз"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Сонун!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Үйрөткүч: <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
