@@ -161,16 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"कामसम्बन्धी एपहरूमा ब्याज अङ्कित हुन्छ र तपाईंका IT एड्मिन ती एप हेर्न सक्छन्"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"बुझेँ"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"कार्यसम्बन्धी एपहरू पज गरिएका छन्"</string>
-    <!-- no translation found for work_apps_paused_info_body (1687828929959237477) -->
-    <skip />
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"तपाईं कामसम्बन्धी एपबाट सूचनाहरू प्राप्त गर्नु हुने छैन"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"तपाईंका कामसम्बन्धी एपहरूले तपाईंलाई सूचना पठाउन, तपाईंको डिभाइसको ब्याट्री प्रयोग गर्न वा तपाईंको लोकेसन हेर्न सक्दैनन्"</string>
-    <!-- no translation found for work_apps_paused_telephony_unavailable_body (8358872357502756790) -->
-    <skip />
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"तपाईं कामसम्बन्धी एपबाट फोन कल, टेक्स्ट म्यासेज वा सूचनाहरू प्राप्त गर्नु हुने छैन"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"कामसम्बन्धी एपमा ब्याज अङ्कित हुन्छ र तपाईंका IT एड्मिन ती एप हेर्न सक्नुहुन्छ"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"बुझेँ"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"कामसम्बन्धी एपहरू अस्थायी रूपमा रोक्का गर्नुहोस्"</string>
-    <!-- no translation found for work_apps_enable_btn_text (1736198302467317371) -->
-    <skip />
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"सुचारु गर्नुहोस्"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फिल्टर"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"आफ्नो फोन खोज्नुहोस्"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"आफ्नो ट्याब्लेट खोज्नुहोस्"</string>
