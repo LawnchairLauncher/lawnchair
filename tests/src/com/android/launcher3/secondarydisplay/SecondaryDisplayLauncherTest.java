@@ -21,7 +21,6 @@ import static android.view.MotionEvent.ACTION_DOWN;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.SystemClock;
@@ -34,11 +33,8 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
-import com.android.launcher3.util.LauncherModelHelper;
-import com.android.launcher3.util.TestUtil;
 
 import org.junit.After;
 import org.junit.Ignore;
@@ -278,9 +274,6 @@ public final class SecondaryDisplayLauncherTest extends AbstractLauncherUiTest {
     }
 
     private void setDragNDropFlag(Boolean status) {
-        Context context = new LauncherModelHelper().sandboxContext;
-        TestUtil.overrideBooleanFlagValue(
-                context, FeatureFlags.SECONDARY_DRAG_N_DROP_TO_PIN, status);
         startSecondaryDisplayActivity();
     }
 }
