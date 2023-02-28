@@ -17,6 +17,7 @@
 package com.android.launcher3.uioverrides.flags;
 
 import com.android.launcher3.config.FeatureFlags.BooleanFlag;
+import com.android.launcher3.config.FeatureFlags.IntFlag;
 
 import java.io.PrintWriter;
 
@@ -40,6 +41,14 @@ public class FlagsFactory {
     public static BooleanFlag getReleaseFlag(
             int bugId, String key, boolean defaultValueInCode, String description) {
         return new BooleanFlag(defaultValueInCode);
+    }
+
+    /**
+     * Creates a new integer flag. Integer flags are always release flags
+     */
+    public static IntFlag getIntFlag(
+            int bugId, String key, int defaultValueInCode, String description) {
+        return new IntFlag(defaultValueInCode);
     }
 
     /**
