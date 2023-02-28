@@ -50,6 +50,7 @@ import androidx.test.espresso.intent.Intents;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.android.launcher3.R;
+import com.android.launcher3.uioverrides.flags.DeveloperOptionsFragment;
 import com.android.systemui.shared.plugins.PluginPrefs;
 
 import org.junit.After;

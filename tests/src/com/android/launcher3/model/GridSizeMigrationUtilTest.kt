@@ -33,7 +33,6 @@ import com.android.launcher3.pm.UserCache
 import com.android.launcher3.provider.LauncherDbUtils
 import com.android.launcher3.util.LauncherModelHelper
 import com.android.launcher3.util.LauncherModelHelper.*
-import com.android.launcher3.util.TestUtil
 import com.google.common.truth.Truth.assertThat
 import org.junit.After
 import org.junit.Before
@@ -619,8 +618,6 @@ class GridSizeMigrationUtilTest {
         assertThat(locMap[testPackage3]).isEqualTo(1)
         assertThat(locMap[testPackage4]).isEqualTo(1)
         assertThat(locMap[testPackage5]).isEqualTo(2)
-
-        disableNewMigrationLogic()
     }
 
     /**
@@ -685,7 +682,6 @@ class GridSizeMigrationUtilTest {
         assertThat(locMap[testPackage3]).isEqualTo(0)
         assertThat(locMap[testPackage4]).isEqualTo(0)
         assertThat(locMap[testPackage5]).isEqualTo(0)
-        disableNewMigrationLogic()
     }
 
     /** Migrating from a larger grid to a smaller, we reflow from page 0 */
@@ -746,19 +742,9 @@ class GridSizeMigrationUtilTest {
         assertThat(locMap[testPackage3]).isEqualTo(0)
         assertThat(locMap[testPackage4]).isEqualTo(0)
         assertThat(locMap[testPackage5]).isEqualTo(0)
-
-        disableNewMigrationLogic()
     }
 
     private fun enableNewMigrationLogic(srcGridSize: String) {
         LauncherPrefs.get(context).putSync(WORKSPACE_SIZE.to(srcGridSize))
-        TestUtil.overrideBooleanFlagValue(context,
-                FeatureFlags.ENABLE_NEW_MIGRATION_LOGIC, true);
-        FeatureFlags.initialize(context)
-    }
-
-    private fun disableNewMigrationLogic() {
-        TestUtil.overrideBooleanFlagValue(context,
-                FeatureFlags.ENABLE_NEW_MIGRATION_LOGIC, false);
     }
 }
