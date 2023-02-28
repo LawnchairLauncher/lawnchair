@@ -56,7 +56,8 @@ annotation class TaskbarEduTooltipStep
 class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
     LoggableTaskbarController {
 
-    private val isTooltipEnabled = !IS_RUNNING_IN_TEST_HARNESS && ENABLE_TASKBAR_EDU_TOOLTIP.get()
+    private val isTooltipEnabled: Boolean
+        get() = !IS_RUNNING_IN_TEST_HARNESS && ENABLE_TASKBAR_EDU_TOOLTIP.get()
     private val isOpen: Boolean
         get() = tooltip?.isOpen ?: false
 
