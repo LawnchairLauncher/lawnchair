@@ -19,17 +19,13 @@ import static androidx.test.InstrumentationRegistry.getContext;
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 import static androidx.test.InstrumentationRegistry.getTargetContext;
 
-import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.UserHandle;
 
-import androidx.annotation.VisibleForTesting;
 import androidx.test.uiautomator.UiDevice;
-
-import com.android.launcher3.config.FeatureFlags;
 
 import org.junit.Assert;
 
@@ -70,18 +66,6 @@ public class TestUtil {
         } catch (InterruptedException e) {
             throw new IOException(e);
         }
-    }
-
-    @VisibleForTesting
-    // Override feature flag, mainly to be used ONLY in tests
-    public static void overrideBooleanFlagValue(
-            Context context, FeatureFlags.BooleanFlag flagToOverride,
-            boolean bool) {
-        context.getSharedPreferences(FeatureFlags.FLAGS_PREF_NAME, Context.MODE_PRIVATE)
-                .edit()
-                .putBoolean(flagToOverride.key, bool)
-                .commit();
-        FeatureFlags.initialize(context);
     }
 
     public static void uninstallDummyApp() throws IOException {

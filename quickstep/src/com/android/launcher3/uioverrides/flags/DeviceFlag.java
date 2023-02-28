@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.uioverrides;
+package com.android.launcher3.uioverrides.flags;
 
-import com.android.launcher3.config.FeatureFlags.DebugFlag;
+class DeviceFlag extends DebugFlag {
 
-public class DeviceFlag extends DebugFlag {
+    private final boolean mDefaultValueInCode;
 
-    public DeviceFlag(String key, boolean defaultValue, String description) {
-        super(key, defaultValue, description);
+    public DeviceFlag(String key, String description, boolean defaultValue,
+            boolean currentValue, boolean defaultValueInCode) {
+        super(key, description, defaultValue, currentValue);
+        mDefaultValueInCode = defaultValueInCode;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", mDefaultValueInCode=" + mDefaultValueInCode;
     }
 }
