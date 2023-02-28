@@ -1619,7 +1619,12 @@ public class TaskView extends FrameLayout implements Reusable {
             int boxWidth;
             int boxHeight;
             boolean isFocusedTask = isFocusedTask();
-            if (isFocusedTask || isDesktopTask()) {
+            if (isDesktopTask()) {
+                Rect lastComputedDesktopTaskSize =
+                        getRecentsView().getLastComputedDesktopTaskSize();
+                boxWidth = lastComputedDesktopTaskSize.width();
+                boxHeight = lastComputedDesktopTaskSize.height();
+            } else if (isFocusedTask) {
                 // Task will be focused and should use focused task size. Use focusTaskRatio
                 // that is associated with the original orientation of the focused task.
                 boxWidth = taskWidth;
