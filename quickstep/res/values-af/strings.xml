@@ -22,6 +22,8 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Speld vas"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Vormvry"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Geen onlangse items nie"</string>
+    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
+    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Programgebruikinstellings"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Vee alles uit"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Onlangse programme"</string>
