@@ -101,15 +101,18 @@ inline fun <reified T : Any> kotlinArgumentCaptor(): KotlinArgumentCaptor<T> =
 
 /**
  * Helper function for creating and using a single-use ArgumentCaptor in kotlin.
+ *
  * ```
  *    val captor = argumentCaptor<Foo>()
  *    verify(...).someMethod(captor.capture())
  *    val captured = captor.value
  * ```
+ *
  * becomes:
  * ```
  *    val captured = withArgCaptor<Foo> { verify(...).someMethod(capture()) }
  * ```
+ *
  * NOTE: this uses the KotlinArgumentCaptor to avoid the NullPointerException.
  */
 inline fun <reified T : Any> withArgCaptor(block: KotlinArgumentCaptor<T>.() -> Unit): T =
