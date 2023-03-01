@@ -161,16 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Служебните приложения са означени със значка и са видими за системния администратор"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Разбрах"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Служебните приложения са поставени на пауза"</string>
-    <!-- no translation found for work_apps_paused_info_body (1687828929959237477) -->
-    <skip />
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Няма да получавате известия от служебните си приложения"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Служебните ви приложения не могат да ви изпращат известия, да използват батерията или да осъществяват достъп до местоположението ви"</string>
-    <!-- no translation found for work_apps_paused_telephony_unavailable_body (8358872357502756790) -->
-    <skip />
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Няма да получавате телефонни обаждания, текстови съобщения и известия от служебните си приложения"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Служебните приложения са означени със значка и са видими за системния администратор"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Разбрах"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Поставяне на пауза на служебните приложения"</string>
-    <!-- no translation found for work_apps_enable_btn_text (1736198302467317371) -->
-    <skip />
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Отмяна на паузата"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Филтър"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Търсене в телефона ви"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Търсене в таблета ви"</string>
