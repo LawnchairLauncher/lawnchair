@@ -51,8 +51,11 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         onTaskbarWindowHeightOrInsetsChanged()
     }
     private val gestureNavSettingsObserver =
-        GestureNavigationSettingsObserver(context.mainThreadHandler, context,
-            this::onTaskbarWindowHeightOrInsetsChanged)
+        GestureNavigationSettingsObserver(
+            context.mainThreadHandler,
+            context,
+            this::onTaskbarWindowHeightOrInsetsChanged
+        )
 
     // Initialized in init.
     private lateinit var controllers: TaskbarControllers
@@ -71,13 +74,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                 ITYPE_LEFT_GESTURES,
                 ITYPE_RIGHT_GESTURES,
             ),
-            intArrayOf(
-                SOURCE_FRAME,
-                SOURCE_FRAME,
-                SOURCE_FRAME,
-                SOURCE_DISPLAY,
-                SOURCE_DISPLAY
-            )
+            intArrayOf(SOURCE_FRAME, SOURCE_FRAME, SOURCE_FRAME, SOURCE_DISPLAY, SOURCE_DISPLAY)
         )
 
         onTaskbarWindowHeightOrInsetsChanged()
@@ -102,7 +99,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         )
         val contentHeight = controllers.taskbarStashController.contentHeightToReportToApps
         val tappableHeight = controllers.taskbarStashController.tappableHeightToReportToApps
-        val res = context.resources;
+        val res = context.resources
         for (provider in windowLayoutParams.providedInsets) {
             if (
                 provider.type == ITYPE_EXTRA_NAVIGATION_BAR ||
@@ -157,6 +154,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
 
     /**
      * @return [Insets] where the [bottomInset] is either used as a bottom inset or
+     *
      * ```
      *         right/left inset if using 3 button nav
      * ```
@@ -174,20 +172,25 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
 
     /**
      * Sets {@param providesInsetsTypes} as the inset types provided by {@param params}.
+     *
      * @param params The window layout params.
      * @param providesInsetsTypes The inset types we would like this layout params to provide.
      */
-    fun setProvidesInsetsTypes(params: WindowManager.LayoutParams, providesInsetsTypes: IntArray,
-            providesInsetsSources: IntArray) {
+    fun setProvidesInsetsTypes(
+        params: WindowManager.LayoutParams,
+        providesInsetsTypes: IntArray,
+        providesInsetsSources: IntArray
+    ) {
         params.providedInsets = arrayOfNulls<InsetsFrameProvider>(providesInsetsTypes.size)
         for (i in providesInsetsTypes.indices) {
-            params.providedInsets[i] = InsetsFrameProvider(providesInsetsTypes[i],
-                    providesInsetsSources[i], null, null)
+            params.providedInsets[i] =
+                InsetsFrameProvider(providesInsetsTypes[i], providesInsetsSources[i], null, null)
         }
     }
 
     /**
      * Called to update the touchable insets.
+     *
      * @see InternalInsetsInfo.setTouchableInsets
      */
     fun updateInsetsTouchability(insetsInfo: ViewTreeObserver.InternalInsetsInfo) {

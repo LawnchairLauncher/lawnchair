@@ -22,7 +22,7 @@ import com.android.launcher3.logging.InstanceId
 object LogUtils {
     /**
      * @return a [Pair] of two InstanceIds but with different types, one that can be used by
-     * framework (if needing to pass through an intent or such) and one used in Launcher
+     *   framework (if needing to pass through an intent or such) and one used in Launcher
      */
     @JvmStatic
     fun getShellShareableInstanceId(): Pair<com.android.internal.logging.InstanceId, InstanceId> {
