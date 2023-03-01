@@ -32,8 +32,8 @@ import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource
 import com.android.launcher3.views.ActivityContext
 
 /**
- * Shortcut to allow starting split. Default interaction for [onClick] is to launch
- * split selection mode
+ * Shortcut to allow starting split. Default interaction for [onClick] is to launch split selection
+ * mode
  */
 abstract class SplitShortcut<T>(
     iconResId: Int,
