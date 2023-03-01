@@ -94,7 +94,7 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"タスクバーの説明を開きました"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"タスクバーの説明を閉じました"</string>
     <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"アプリを切り替えるには、タスクバーを使用します"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"2 個のアプリを同時に使用するには、横にドラッグします"</string>
+    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"2 個のアプリを同時に使用するには、横​に​ド​ラ​ッ​グ​し​ま​す"</string>
     <string name="taskbar_edu_stashing" msgid="5212374387411764031">"タスクバーを長押しすると非表示になります"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"次へ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"戻る"</string>
