@@ -161,16 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"工作應用程式會加上標記，且你的 IT 管理員可以看到這類應用程式"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"我知道了"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"系統已暫停工作應用程式"</string>
-    <!-- no translation found for work_apps_paused_info_body (1687828929959237477) -->
-    <skip />
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"你將不會收到工作應用程式的通知"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"工作應用程式不會消耗電量、無法傳送通知，也無法存取你的位置資訊"</string>
-    <!-- no translation found for work_apps_paused_telephony_unavailable_body (8358872357502756790) -->
-    <skip />
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"你將不會收到工作應用程式的訊息或通知，也無法使用工作應用程式接聽來電"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"工作應用程式會加上標記，且你的 IT 管理員可以看到這類應用程式"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"我知道了"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"暫停工作應用程式"</string>
-    <!-- no translation found for work_apps_enable_btn_text (1736198302467317371) -->
-    <skip />
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"取消暫停"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"篩選器"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"搜尋手機內容"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"搜尋平板電腦內容"</string>

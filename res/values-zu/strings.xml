@@ -161,16 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Ama-app omsebenzi anebheji futhi ayabonakala kumphathi wakho we-IT"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Ngiyezwa"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Izinhlelo zokusebenza zomsebenzi ziphunyuziwe"</string>
-    <!-- no translation found for work_apps_paused_info_body (1687828929959237477) -->
-    <skip />
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Ngeke uze uthole izaziso kua-app akho"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Ama-app akho omsebenzi awakwazi ukukuthumela izaziso, ukusebenzisa ibhethri lakho, noma ukufinyelela indawo yakho"</string>
-    <!-- no translation found for work_apps_paused_telephony_unavailable_body (8358872357502756790) -->
-    <skip />
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Ngeke uthole amakholi wefoni, imilayezo yombhalo, noma izaziso ezivela kuma-app"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Ama-app omsebenzi anebheji futhi ayabonakala kumphathi wakho we-IT"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Ngiyezwa"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Misa ama-app omsebenzi"</string>
-    <!-- no translation found for work_apps_enable_btn_text (1736198302467317371) -->
-    <skip />
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Susa ukumisa"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Hlunga"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Sesha ifoni yakho"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Sesha ithebulethi yakho"</string>
