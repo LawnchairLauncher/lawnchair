@@ -35,7 +35,7 @@ private const val TEMP_BACKGROUND_WINDOW_TITLE = "VoiceInteractionTaskbarBackgro
  * Controls Taskbar behavior while Voice Interaction Window (assistant) is showing. Specifically:
  * - We always hide the taskbar icons or stashed handle, whichever is currently showing.
  * - For persistent taskbar, we also move the taskbar background to a new window/layer
- * (TYPE_APPLICATION_OVERLAY) which is behind the assistant.
+ *   (TYPE_APPLICATION_OVERLAY) which is behind the assistant.
  * - For transient taskbar, we hide the real taskbar background (if it's showing).
  */
 class VoiceInteractionWindowController(val context: TaskbarActivityContext) :
