@@ -113,7 +113,6 @@ import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.LauncherAnimationRunner.RemoteAnimationFactory;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorListeners;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.model.data.ItemInfo;
@@ -558,11 +557,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
             final boolean scrimEnabled = ENABLE_SCRIM_FOR_APP_LAUNCH.get();
             if (scrimEnabled) {
-                boolean useTaskbarColor = mDeviceProfile.isTaskbarPresentInApps
-                        && !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get();
-                int scrimColor = useTaskbarColor
-                        ? mLauncher.getResources().getColor(R.color.taskbar_background)
-                        : Themes.getAttrColor(mLauncher, R.attr.overviewScrimColor);
+                int scrimColor = Themes.getAttrColor(mLauncher, R.attr.overviewScrimColor);
                 int scrimColorTrans = ColorUtils.setAlphaComponent(scrimColor, 0);
                 int[] colors = isAppOpening
                         ? new int[]{scrimColorTrans, scrimColor}
@@ -575,29 +570,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                             colors);
                     scrim.setDuration(CONTENT_SCRIM_DURATION);
                     scrim.setInterpolator(DEACCEL_1_5);
-
-                    if (useTaskbarColor) {
-                        // Hide the taskbar background color since it would duplicate the scrim.
-                        scrim.addListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-                                LauncherTaskbarUIController taskbarUIController =
-                                        mLauncher.getTaskbarUIController();
-                                if (taskbarUIController != null) {
-                                    taskbarUIController.forceHideBackground(true);
-                                }
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                LauncherTaskbarUIController taskbarUIController =
-                                        mLauncher.getTaskbarUIController();
-                                if (taskbarUIController != null) {
-                                    taskbarUIController.forceHideBackground(false);
-                                }
-                            }
-                        });
-                    }
 
                     launcherAnimator.play(scrim);
                 }
