@@ -22,6 +22,7 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"पिन करना"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"फ़्रीफ़ॉर्म"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"हाल ही में इस्तेमाल किया गया कोई ऐप्लिकेशन नहीं है"</string>
+    <string name="recents_empty_desktop_message" msgid="1358240150311509733">"डेस्कटॉप पर कोई आइटम नहीं मिला"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ऐप्लिकेशन इस्तेमाल की सेटिंग"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"सभी ऐप्लिकेशन बंद करें"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"हाल ही में इस्तेमाल किए गए ऐप्लिकेशन"</string>
