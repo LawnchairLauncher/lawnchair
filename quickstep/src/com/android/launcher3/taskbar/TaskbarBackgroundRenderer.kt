@@ -79,6 +79,7 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
 
     /**
      * Sets the roundness of the round corner above Taskbar. No effect on transient Taskkbar.
+     *
      * @param cornerRoundness 0 has no round corner, 1 has complete round corner.
      */
     fun setCornerRoundness(cornerRoundness: Float) {
