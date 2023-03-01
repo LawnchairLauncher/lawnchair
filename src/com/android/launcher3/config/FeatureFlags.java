@@ -391,6 +391,10 @@ public final class FeatureFlags {
             "ENABLE_KEYBOARD_QUICK_SWITCH", true,
             "Enables keyboard quick switching");
 
+    public static final BooleanFlag ENABLE_SMARTSPACE_DEFAULT_DATE_REMOVED = getDebugFlag(269761613,
+            "ENABLE_SMARTSPACE_DEFAULT_DATE_REMOVED", false,
+            "Enables remove smartspace default date");
+
     public static class BooleanFlag {
 
         private final boolean mCurrentValue;
