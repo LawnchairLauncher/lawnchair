@@ -126,8 +126,14 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
         mMaskHeight = ResourceUtils.pxFromDp(ALPHA_MASK_BITMAP_DP,
                 view.getResources().getDisplayMetrics());
         mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
-        mBottomMask = mTopScrim == null ? null : createDitheredAlphaMask();
-        mHideSysUiScrim = mTopScrim == null;
+        if (mTopScrim != null) {
+            mTopScrim.setDither(true);
+            mBottomMask = createDitheredAlphaMask();
+            mHideSysUiScrim = false;
+        } else {
+            mBottomMask = null;
+            mHideSysUiScrim = true;
+        }
 
         mDrawWallpaperScrim = FeatureFlags.ENABLE_WALLPAPER_SCRIM.get()
                 && !Themes.getAttrBoolean(view.getContext(), R.attr.isMainColorDark)
