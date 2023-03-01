@@ -56,7 +56,7 @@
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Toque para alterar as definições do widget"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Alterar definições do widget"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Pesquisar aplicações"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Pesquisar apps"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"A carregar aplicações…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nenhuma app correspondente a \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
     <string name="label_application" msgid="8531721983832654978">"Aplicação"</string>
@@ -162,7 +162,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Perfil de trabalho"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"As apps de trabalho têm um emblema e estão visíveis para o seu administrador de TI"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"As apps de trabalho estão em pausa"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"As apps de trabalho estão suspensas."</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"As apps de trabalho não podem enviar-lhe notificações, utilizar a bateria ou aceder à sua localização"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"As apps de trabalho estão desativadas. As apps de trabalho não podem enviar-lhe notificações, utilizar a bateria ou aceder à sua localização"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"As apps de trabalho têm um emblema e estão visíveis para o seu administrador de TI"</string>

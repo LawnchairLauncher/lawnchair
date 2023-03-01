@@ -32,12 +32,12 @@
     <string name="split_screen_position_left" msgid="7537793098851830883">"Dividir para a esquerda"</string>
     <string name="split_screen_position_right" msgid="1569377524925193369">"Dividir para a direita"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Informações do app %1$s"</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Toque e mantenha pressionado para mover um widget."</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Toque e pressione para mover um widget."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Toque duas vezes e mantenha a tela pressionada para mover um widget ou usar ações personalizadas."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d de largura por %2$d de altura"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Toque no widget e o mantenha pressionado para definir a posição dele na tela inicial"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Toque no widget e o pressione para definir a posição dele na tela inicial"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Adicionar à tela inicial"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g> adicionado à tela inicial"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}one{# widget}other{# widgets}}"</string>
