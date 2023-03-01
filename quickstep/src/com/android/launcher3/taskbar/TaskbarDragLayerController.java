@@ -127,10 +127,6 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         return mAssistantBgTaskbar;
     }
 
-    public AnimatedFloat getOverrideBackgroundAlpha() {
-        return mBgOverride;
-    }
-
     public AnimatedFloat getTaskbarBackgroundOffset() {
         return mBgOffset;
     }
