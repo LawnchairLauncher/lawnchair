@@ -216,10 +216,6 @@ public final class FeatureFlags {
             "ENABLE_ALL_APPS_ONE_SEARCH_IN_TASKBAR", false,
             "Enables One Search box in Taskbar All Apps.");
 
-    public static final BooleanFlag ENABLE_TASKBAR_IN_OVERVIEW = getDebugFlag(270393449,
-            "ENABLE_TASKBAR_IN_OVERVIEW", true,
-            "Enables accessing the system Taskbar in overview.");
-
     public static final BooleanFlag ENABLE_SPLIT_FROM_WORKSPACE = getDebugFlag(270393906,
             "ENABLE_SPLIT_FROM_WORKSPACE", true,
             "Enable initiating split screen from workspace.");

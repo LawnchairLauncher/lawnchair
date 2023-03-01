@@ -27,7 +27,6 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.VERTICAL;
-import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MAIN;
@@ -51,8 +50,6 @@ import android.widget.LinearLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
@@ -517,57 +514,29 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void setSplitInstructionsParams(View out, DeviceProfile dp, int splitInstructionsHeight,
-            int splitInstructionsWidth, int threeButtonNavShift) {
+            int splitInstructionsWidth) {
         out.setPivotX(0);
         out.setPivotY(splitInstructionsHeight);
         out.setRotation(getDegreesRotated());
         int distanceToEdge;
-        if ((DisplayController.getNavigationMode(out.getContext()) == THREE_BUTTONS)
-                && (dp.isTwoPanels || dp.isTablet)
-                // If taskbar is in overview, overview action has dedicated space above nav buttons
-                && !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
-            // If 3-button nav is active, align the splitInstructionsView with it.
-            distanceToEdge = dp.getTaskbarOffsetY()
-                    + ((dp.taskbarSize - splitInstructionsHeight) / 2);
-        } else {
-            // If 3-button nav is not active, set bottom margin according to spec.
-            if (dp.isPhone) {
-                if (dp.isLandscape) {
-                    distanceToEdge = out.getResources().getDimensionPixelSize(
-                            R.dimen.split_instructions_bottom_margin_phone_landscape);
-                } else {
-                    distanceToEdge = out.getResources().getDimensionPixelSize(
-                            R.dimen.split_instructions_bottom_margin_phone_portrait);
-                }
-            } else if (dp.isTwoPanels) {
-                if (dp.isLandscape) {
-                    distanceToEdge = out.getResources().getDimensionPixelSize(
-                            R.dimen.split_instructions_bottom_margin_twopanels_landscape);
-                } else {
-                    distanceToEdge = out.getResources().getDimensionPixelSize(
-                            R.dimen.split_instructions_bottom_margin_twopanels_portrait);
-                }
+        if (dp.isPhone) {
+            if (dp.isLandscape) {
+                distanceToEdge = out.getResources().getDimensionPixelSize(
+                        R.dimen.split_instructions_bottom_margin_phone_landscape);
             } else {
-                if (dp.isLandscape) {
-                    distanceToEdge = out.getResources().getDimensionPixelSize(
-                            R.dimen.split_instructions_bottom_margin_tablet_landscape);
-                } else {
-                    distanceToEdge = out.getResources().getDimensionPixelSize(
-                            R.dimen.split_instructions_bottom_margin_tablet_portrait);
-                }
+                distanceToEdge = out.getResources().getDimensionPixelSize(
+                        R.dimen.split_instructions_bottom_margin_phone_portrait);
             }
+        } else {
+            distanceToEdge = dp.getOverviewActionsClaimedSpaceBelow();
         }
 
         // Center the view in case of unbalanced insets on left or right of screen
         int insetCorrectionX = (dp.getInsets().right - dp.getInsets().left) / 2;
         // Adjust for any insets on the bottom edge
         int insetCorrectionY = dp.getInsets().bottom;
-        // Adjust for taskbar in overview
-        int taskbarCorrectionY =
-                dp.isTaskbarPresent && FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()
-                        ? dp.taskbarSize : 0;
-        out.setTranslationX(insetCorrectionX + threeButtonNavShift);
-        out.setTranslationY(-distanceToEdge + insetCorrectionY - taskbarCorrectionY);
+        out.setTranslationX(insetCorrectionX);
+        out.setTranslationY(-distanceToEdge + insetCorrectionY);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) out.getLayoutParams();
         lp.gravity = CENTER_HORIZONTAL | BOTTOM;
         out.setLayoutParams(lp);
