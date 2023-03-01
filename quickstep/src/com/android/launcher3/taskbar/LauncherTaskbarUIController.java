@@ -40,7 +40,6 @@ import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfo;
@@ -84,7 +83,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             };
 
     // Initialized in init.
-    private AnimatedFloat mTaskbarOverrideBackgroundAlpha;
     private TaskbarKeyguardController mKeyguardController;
     private final TaskbarLauncherStateController
             mTaskbarLauncherStateController = new TaskbarLauncherStateController();
@@ -98,8 +96,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         super.init(taskbarControllers);
 
         mTaskbarLauncherStateController.init(mControllers, mLauncher);
-        mTaskbarOverrideBackgroundAlpha = mControllers.taskbarDragLayerController
-                .getOverrideBackgroundAlpha();
 
         mLauncher.setTaskbarUIController(this);
         mKeyguardController = taskbarControllers.taskbarKeyguardController;
@@ -255,13 +251,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     /**
-     * Sets whether the background behind the taskbar/nav bar should be hidden.
-     */
-    public void forceHideBackground(boolean forceHide) {
-        mTaskbarOverrideBackgroundAlpha.updateValue(forceHide ? 0 : 1);
-    }
-
-    /**
      * Starts a Taskbar EDU flow, if the user should see one upon launching an application.
      */
     public void showEduOnAppLaunch() {
@@ -315,21 +304,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         InstanceId instanceId = new InstanceIdSequence().newInstanceId();
         mLauncher.logAppLaunch(mControllers.taskbarActivityContext.getStatsLogManager(), item,
                 instanceId);
-    }
-
-    @Override
-    public void setSystemGestureInProgress(boolean inProgress) {
-        super.setSystemGestureInProgress(inProgress);
-        if (DisplayController.isTransientTaskbar(mLauncher)) {
-            forceHideBackground(false);
-            return;
-        }
-        if (!FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
-            // Launcher's ScrimView will draw the background throughout the gesture. But once the
-            // gesture ends, start drawing taskbar's background again since launcher might stop
-            // drawing.
-            forceHideBackground(inProgress);
-        }
     }
 
     /**
@@ -400,10 +374,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     public void dumpLogs(String prefix, PrintWriter pw) {
         super.dumpLogs(prefix, pw);
 
-        pw.println(String.format(
-                "%s\tmTaskbarOverrideBackgroundAlpha=%.2f",
-                prefix,
-                mTaskbarOverrideBackgroundAlpha.value));
         pw.println(String.format("%s\tTaskbar in-app display progress:", prefix));
         mTaskbarInAppDisplayProgressMultiProp.dump(
                 prefix + "\t",
