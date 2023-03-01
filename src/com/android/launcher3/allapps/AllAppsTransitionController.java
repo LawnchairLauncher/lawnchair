@@ -406,6 +406,8 @@ public class AllAppsTransitionController
         Interpolator allAppsFade = config.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
         setter.setFloat(getAppsViewProgressAlpha(), MultiPropertyFactory.MULTI_PROPERTY_VALUE,
                 hasAllAppsContent ? 1 : 0, allAppsFade);
+        setter.setFloat(getAppsViewPullbackAlpha(), MultiPropertyFactory.MULTI_PROPERTY_VALUE,
+                hasAllAppsContent ? 1 : 0, allAppsFade);
 
         boolean shouldProtectHeader =
                 ALL_APPS == state || mLauncher.getStateManager().getState() == ALL_APPS;
