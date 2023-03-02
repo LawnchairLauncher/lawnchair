@@ -88,6 +88,7 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemClickHandler.ItemClickProxy;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -105,7 +106,6 @@ import com.android.systemui.unfold.updates.RotationChangeProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
 import java.io.PrintWriter;
-import java.util.function.Consumer;
 
 /**
  * The {@link ActivityContext} with which we inflate Taskbar-related Views. This allows UI elements
@@ -878,8 +878,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * (potentially breaking a split pair).
      */
     private void launchFromTaskbarPreservingSplitIfVisible(RecentsView recents, ItemInfo info) {
+        ComponentKey componentToBeLaunched = new ComponentKey(info.getTargetComponent(), info.user);
         recents.getSplitSelectController().findLastActiveTaskAndRunCallback(
-                info.getTargetComponent(),
+                componentToBeLaunched,
                 foundTask -> {
                     if (foundTask != null) {
                         TaskView foundTaskView =

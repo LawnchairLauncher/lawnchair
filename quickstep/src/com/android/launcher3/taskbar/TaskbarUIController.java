@@ -30,16 +30,15 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
-import com.android.systemui.shared.recents.model.Task;
 
 import java.io.PrintWriter;
-import java.util.function.Consumer;
 
 /**
  * Base class for providing different taskbar UI
@@ -189,8 +188,12 @@ public class TaskbarUIController {
         if (recentsView == null) {
             return;
         }
+
+        ComponentKey componentToBeStaged = new ComponentKey(
+                splitSelectSource.itemInfo.getTargetComponent(),
+                splitSelectSource.itemInfo.user);
         recentsView.getSplitSelectController().findLastActiveTaskAndRunCallback(
-                splitSelectSource.intent.getComponent(),
+                componentToBeStaged,
                 foundTask -> {
                     splitSelectSource.alreadyRunningTaskId = foundTask == null
                             ? INVALID_TASK_ID
@@ -206,8 +209,9 @@ public class TaskbarUIController {
      */
     public void triggerSecondAppForSplit(ItemInfoWithIcon info, Intent intent, View startingView) {
         RecentsView recents = getRecentsView();
+        ComponentKey secondAppComponent = new ComponentKey(info.getTargetComponent(), info.user);
         recents.getSplitSelectController().findLastActiveTaskAndRunCallback(
-                info.getTargetComponent(),
+                secondAppComponent,
                 foundTask -> {
                     if (foundTask != null) {
                         TaskView foundTaskView = recents.getTaskViewByTaskId(foundTask.key.id);
