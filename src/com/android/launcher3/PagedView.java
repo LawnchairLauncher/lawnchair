@@ -1370,8 +1370,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 int velocity = (int) mOrientationHandler.getPrimaryVelocity(velocityTracker,
                         mActivePointerId);
                 float delta = primaryDirection - mDownMotionPrimary;
-                int pageOrientedSize = (int) (mOrientationHandler.getMeasuredSize(
-                        getPageAt(mCurrentPage))
+
+                View current = getPageAt(mCurrentPage);
+                if (current == null) {
+                    Log.e(TAG, "current page was null. this should not happen.");
+                    return true;
+                }
+
+                int pageOrientedSize = (int) (mOrientationHandler.getMeasuredSize(current)
                         * mOrientationHandler.getPrimaryScale(this));
                 boolean isSignificantMove = isSignificantMove(Math.abs(delta), pageOrientedSize);
 
