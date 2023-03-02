@@ -50,7 +50,9 @@ class LockedUserState(private val mContext: Context) : SafeCloseable {
     }
 
     companion object {
-        @VisibleForTesting val INSTANCE = MainThreadInitializedObject { LockedUserState(it) }
+        @VisibleForTesting
+        @JvmField
+        val INSTANCE = MainThreadInitializedObject { LockedUserState(it) }
 
         @JvmStatic fun get(context: Context): LockedUserState = INSTANCE.get(context)
     }
