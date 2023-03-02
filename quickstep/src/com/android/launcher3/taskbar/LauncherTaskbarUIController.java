@@ -84,7 +84,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             };
 
     // Initialized in init.
-    private TaskbarKeyguardController mKeyguardController;
     private final TaskbarLauncherStateController
             mTaskbarLauncherStateController = new TaskbarLauncherStateController();
 
@@ -99,11 +98,12 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         mTaskbarLauncherStateController.init(mControllers, mLauncher);
 
         mLauncher.setTaskbarUIController(this);
-        mKeyguardController = taskbarControllers.taskbarKeyguardController;
 
         onLauncherResumedOrPaused(mLauncher.hasBeenResumed(), true /* fromInit */);
 
         onStashedInAppChanged(mLauncher.getDeviceProfile());
+        mTaskbarLauncherStateController.onChangeScreenState(
+                mControllers.getSharedState().sysuiStateFlags, true /* fromInit */);
         mLauncher.addOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
     }
 
@@ -121,7 +121,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Override
     protected boolean isTaskbarTouchable() {
         return !(mTaskbarLauncherStateController.isAnimatingToLauncher()
-                && mTaskbarLauncherStateController.goingToAlignedLauncherState());
+                && mTaskbarLauncherStateController.isTaskbarAlignedWithHotseat());
     }
 
     public void setShouldDelayLauncherStateAnim(boolean shouldDelayLauncherStateAnim) {
@@ -169,15 +169,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Nullable
     private Animator onLauncherResumedOrPaused(
             boolean isResumed, boolean fromInit, boolean startAnimation, int duration) {
-        if (mKeyguardController.isScreenOff()) {
-            if (!isResumed) {
-                return null;
-            } else {
-                // Resuming implicitly means device unlocked
-                mKeyguardController.setScreenOn();
-            }
-        }
-
         if (ENABLE_SHELL_TRANSITIONS && isResumed
                 && !mLauncher.getStateManager().getState().isTaskbarAlignedWithHotseat(mLauncher)) {
             // Launcher is resumed, but in a state where taskbar is still independent, so
@@ -326,6 +317,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         super.onExpandPip();
         mTaskbarLauncherStateController.updateStateForFlag(FLAG_RESUMED, false);
         mTaskbarLauncherStateController.applyState();
+    }
+
+    @Override
+    public void onChangeScreenState(int screenState) {
+        mTaskbarLauncherStateController.onChangeScreenState(screenState, false /* fromInit */);
     }
 
     @Override
