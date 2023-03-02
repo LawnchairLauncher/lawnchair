@@ -28,7 +28,6 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.mockito.MockitoAnnotations.initMocks
 import org.mockito.Mockito.`when` as whenever
 
 @RunWith(AndroidJUnit4::class)
@@ -37,10 +36,8 @@ class FallbackTaskbarUIControllerTest : TaskbarBaseTestCase() {
     lateinit var fallbackTaskbarUIController: FallbackTaskbarUIController
     lateinit var stateListener: StateManager.StateListener<RecentsState>
 
-    @Mock
-    lateinit var recentsActivity: RecentsActivity
-    @Mock
-    lateinit var stateManager: StateManager<RecentsState>
+    @Mock lateinit var recentsActivity: RecentsActivity
+    @Mock lateinit var stateManager: StateManager<RecentsState>
 
     @Before
     override fun setup() {

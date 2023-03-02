@@ -17,6 +17,7 @@ import com.android.launcher3.util.Themes
 
 /**
  * Use same context for shared preferences, so that we use a single cached instance
+ *
  * TODO(b/262721340): Replace all direct SharedPreference refs with LauncherPrefs / Item methods.
  */
 class LauncherPrefs(private val context: Context) {
@@ -90,7 +91,7 @@ class LauncherPrefs(private val context: Context) {
      * optimized to avoid retrieving the same shared preference file multiple times.
      *
      * @return `List<SharedPreferences.Editor>` 1 for each distinct shared preference file among the
-     * items given as part of the itemsToValues parameter
+     *   items given as part of the itemsToValues parameter
      */
     private fun prepareToPutValues(
         itemsToValues: Array<out Pair<Item, Any>>

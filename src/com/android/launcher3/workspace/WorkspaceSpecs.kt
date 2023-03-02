@@ -77,8 +77,7 @@ class WorkspaceSpecs(resourceHelper: ResourceHelper) {
                                         attrs.getInt(
                                             R.styleable.WorkspaceSpec_specType,
                                             WorkspaceSpec.SpecType.HEIGHT.ordinal
-                                        )
-                                    ]
+                                        )]
                             attrs.recycle()
 
                             var startPadding: SizeSpec? = null
