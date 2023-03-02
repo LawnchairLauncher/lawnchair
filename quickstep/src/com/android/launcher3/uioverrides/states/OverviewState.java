@@ -26,7 +26,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Themes;
 import com.android.quickstep.util.LayoutUtils;
@@ -104,13 +103,8 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public boolean isTaskbarStashed(Launcher launcher) {
-        return !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get();
-    }
-
-    @Override
     public boolean isTaskbarAlignedWithHotseat(Launcher launcher) {
-        return !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get();
+        return false;
     }
 
     @Override

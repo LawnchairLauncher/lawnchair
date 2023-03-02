@@ -184,6 +184,13 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
     public void reapplyState(boolean cancelCurrentAnimation) {
         boolean wasInAnimation = mConfig.currentAnimation != null;
         if (cancelCurrentAnimation) {
+            // Animation canceling can trigger a cleanup routine, causing problems when we are in a
+            // launcher state that relies on member variable data. So if we are in one of those
+            // states, accelerate the current animation to its end point rather than canceling it
+            // outright.
+            if (mState.shouldPreserveDataStateOnReapply() && mConfig.currentAnimation != null) {
+                mConfig.currentAnimation.end();
+            }
             mAtomicAnimationFactory.cancelAllStateElementAnimation();
             cancelAnimation();
         }

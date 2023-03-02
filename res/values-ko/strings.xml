@@ -161,16 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"직장 앱에는 배지가 있으며, IT 관리자는 직장 앱을 확인할 수 있습니다"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"확인"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"직장 앱이 일시중지됨"</string>
-    <!-- no translation found for work_apps_paused_info_body (1687828929959237477) -->
-    <skip />
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"직장 앱에서 보내는 알림을 받지 않게 됩니다."</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"직장 앱에서 알림을 보내거나 배터리를 사용하거나 위치 정보에 액세스할 수 없습니다."</string>
-    <!-- no translation found for work_apps_paused_telephony_unavailable_body (8358872357502756790) -->
-    <skip />
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"전화, 문자 메시지 또는 직장 앱에서 보내는 알림을 받지 않게 됩니다."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"직장 앱에는 배지가 있으며, IT 관리자는 직장 앱을 확인할 수 있습니다."</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"확인"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"직장 앱 일시중지"</string>
-    <!-- no translation found for work_apps_enable_btn_text (1736198302467317371) -->
-    <skip />
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"일시중지 해제"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"필터"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"휴대전화 속 항목 검색"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"태블릿 속 항목 검색"</string>

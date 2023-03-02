@@ -161,16 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"ୱାର୍କ ଆପ୍ସ ବ୍ୟାଜ୍ କରାଯାଇଛି ଏବଂ ସେଗୁଡ଼ିକ ଆପଣଙ୍କ IT ଆଡମିନଙ୍କୁ ଦୃଶ୍ୟମାନ ହେଉଛି"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ବୁଝିଗଲି"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"ୱାର୍କ ଆପ୍ସ ବିରତ କରାଯାଇଛି"</string>
-    <!-- no translation found for work_apps_paused_info_body (1687828929959237477) -->
-    <skip />
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"ଆପଣ ଆପଣଙ୍କ ୱାର୍କ ଆପ୍ସରୁ ବିଜ୍ଞପ୍ତି ପାଇବେ ନାହିଁ"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"ଆପଣଙ୍କ ୱାର୍କ ଆପ୍ସ ଆପଣଙ୍କୁ ବିଜ୍ଞପ୍ତି ପଠାଇପାରିବ ନାହିଁ, ଆପଣଙ୍କ ବ୍ୟାଟେରୀକୁ ବ୍ୟବହାର କରିପାରିବ ନାହିଁ କିମ୍ବା ଆପଣଙ୍କର ଲୋକେସନକୁ ଆକ୍ସେସ କରିପାରିବ ନାହିଁ"</string>
-    <!-- no translation found for work_apps_paused_telephony_unavailable_body (8358872357502756790) -->
-    <skip />
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"ଆପଣ ଆପଣଙ୍କ ୱାର୍କ ଆପ୍ସରୁ ଫୋନ କଲ, ଟେକ୍ସଟ ମେସେଜ କିମ୍ବା ବିଜ୍ଞପ୍ତି ପାଇବେ ନାହିଁ"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ୱାର୍କ ଆପ୍ସ ବ୍ୟାଜ୍ କରାଯାଇଛି ଏବଂ ଆପଣଙ୍କ IT ଆଡମିନଙ୍କୁ ଦେଖାଯାଉଛି"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ବୁଝିଗଲି"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ୱାର୍କ ଆପ୍ସ ବିରତ କରନ୍ତୁ"</string>
-    <!-- no translation found for work_apps_enable_btn_text (1736198302467317371) -->
-    <skip />
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"ପୁଣି ଚାଲୁ କରନ୍ତୁ"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ଫିଲ୍ଟର୍"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"ଆପଣଙ୍କ ଫୋନରେ ସନ୍ଧାନ କରନ୍ତୁ"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"ଆପଣଙ୍କ ଟାବଲେଟରେ ସନ୍ଧାନ କରନ୍ତୁ"</string>

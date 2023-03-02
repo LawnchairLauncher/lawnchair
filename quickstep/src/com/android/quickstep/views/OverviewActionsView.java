@@ -261,26 +261,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
      * Offsets OverviewActionsView horizontal position based on 3 button nav container in taskbar.
      */
     private void updatePadding() {
-        if (mDp == null) {
-            return;
-        }
-        boolean largeScreenLandscape = mDp.isTablet && !mDp.isTwoPanels && mDp.isLandscape;
-        // If in 3-button mode, shift action buttons to accommodate 3-button layout.
-        // (Special exception for landscape tablets, where there is enough room and we don't need to
-        // shift the action buttons.)
-        if (mDp.areNavButtonsInline && !largeScreenLandscape
-                // If taskbar is in overview, overview action has dedicated space above nav buttons
-                && !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
-            // Add extra horizontal spacing
-            int additionalPadding = mDp.hotseatBarEndOffset;
-            if (isLayoutRtl()) {
-                setPadding(mInsets.left + additionalPadding, 0, mInsets.right, 0);
-            } else {
-                setPadding(mInsets.left, 0, mInsets.right + additionalPadding, 0);
-            }
-        } else {
-            setPadding(mInsets.left, 0, mInsets.right, 0);
-        }
+        // If taskbar is in overview, overview action has dedicated space above nav buttons
+        setPadding(mInsets.left, 0, mInsets.right, 0);
     }
 
     /** Updates vertical margins for different navigation mode or configuration changes. */
@@ -298,11 +280,6 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     private int getBottomMargin() {
         if (mDp == null) {
             return 0;
-        }
-
-        if (!mDp.isGestureMode && mDp.isTaskbarPresent
-                && !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
-            return mDp.getOverviewActionsClaimedSpaceBelow();
         }
 
         if (mDp.isTablet && FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get()) {

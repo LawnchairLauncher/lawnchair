@@ -161,16 +161,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Las apps de trabajo tienen una insignia y el administrador de TI las puede ver"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Entendido"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Las apps de trabajo están detenidas"</string>
-    <!-- no translation found for work_apps_paused_info_body (1687828929959237477) -->
-    <skip />
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"No recibirás notificaciones de las apps de trabajo"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Las apps de trabajo no pueden enviarte notificaciones, usar la batería ni acceder a tu ubicación"</string>
-    <!-- no translation found for work_apps_paused_telephony_unavailable_body (8358872357502756790) -->
-    <skip />
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"No recibirás llamadas telefónicas, mensajes de texto ni notificaciones de tus apps de trabajo"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Las apps de trabajo tienen una insignia y el administrador de TI las puede ver"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Entendido"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Detener apps de trabajo"</string>
-    <!-- no translation found for work_apps_enable_btn_text (1736198302467317371) -->
-    <skip />
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Reanudar"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtro"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Busca tu teléfono"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Busca tu tablet"</string>

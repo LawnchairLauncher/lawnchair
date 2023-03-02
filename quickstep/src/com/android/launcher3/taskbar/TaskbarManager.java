@@ -130,10 +130,10 @@ public class TaskbarManager {
                         ? LauncherAppState.getIDP(mContext).getDeviceProfile(mContext)
                         : null;
                 int configDiff = mOldConfig.diff(newConfig);
+                int configDiffForRecreate = configDiff;
                 int configsRequiringRecreate = ActivityInfo.CONFIG_ASSETS_PATHS
                         | ActivityInfo.CONFIG_LAYOUT_DIRECTION | ActivityInfo.CONFIG_UI_MODE
                         | ActivityInfo.CONFIG_SCREEN_SIZE;
-                boolean requiresRecreate = (configDiff & configsRequiringRecreate) != 0;
                 if ((configDiff & ActivityInfo.CONFIG_SCREEN_SIZE) != 0
                         && mTaskbarActivityContext != null && dp != null
                         && !isPhoneMode(dp)) {
@@ -146,12 +146,19 @@ public class TaskbarManager {
                     int oldWidth = isOrientationChange ? oldDp.heightPx : oldDp.widthPx;
                     int oldHeight = isOrientationChange ? oldDp.widthPx : oldDp.heightPx;
                     if (dp.widthPx == oldWidth && dp.heightPx == oldHeight) {
-                        configDiff &= ~ActivityInfo.CONFIG_SCREEN_SIZE;
-                        requiresRecreate = (configDiff & configsRequiringRecreate) != 0;
+                        configDiffForRecreate &= ~ActivityInfo.CONFIG_SCREEN_SIZE;
+                    }
+                }
+                if ((configDiff & ActivityInfo.CONFIG_UI_MODE) != 0) {
+                    // Only recreate for theme changes, not other UI mode changes such as docking.
+                    int oldUiNightMode = (mOldConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK);
+                    int newUiNightMode = (newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK);
+                    if (oldUiNightMode == newUiNightMode) {
+                        configDiffForRecreate &= ~ActivityInfo.CONFIG_UI_MODE;
                     }
                 }
 
-                if (requiresRecreate) {
+                if ((configDiffForRecreate & configsRequiringRecreate) != 0) {
                     recreateTaskbar();
                 } else {
                     // Config change might be handled without re-creating the taskbar

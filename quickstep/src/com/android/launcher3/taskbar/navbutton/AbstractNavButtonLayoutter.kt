@@ -31,7 +31,7 @@ import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.NavButtonL
  *
  * @property navButtonContainer ViewGroup that holds the 3 navigation buttons.
  * @property endContextualContainer ViewGroup that holds the end contextual button (ex, IME
- * dismiss).
+ *   dismiss).
  * @property startContextualContainer ViewGroup that holds the start contextual button (ex, A11y).
  */
 abstract class AbstractNavButtonLayoutter(
