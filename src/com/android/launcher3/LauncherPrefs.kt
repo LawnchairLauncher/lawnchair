@@ -1,8 +1,25 @@
+/*
+ * Copyright (C) 2023 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.android.launcher3
 
 import android.content.Context
+import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import com.android.launcher3.LauncherFiles.DEVICE_PREFERENCES_KEY
 import com.android.launcher3.LauncherFiles.SHARED_PREFERENCES_KEY
@@ -20,10 +37,34 @@ import com.android.launcher3.util.Themes
  *
  * TODO(b/262721340): Replace all direct SharedPreference refs with LauncherPrefs / Item methods.
  */
-class LauncherPrefs(private val context: Context) {
+class LauncherPrefs(private val encryptedContext: Context) {
+    private val deviceProtectedStorageContext =
+        encryptedContext.createDeviceProtectedStorageContext()
+
+    private val bootAwarePrefs
+        get() =
+            deviceProtectedStorageContext.getSharedPreferences(BOOT_AWARE_PREFS_KEY, MODE_PRIVATE)
+
+    private val Item.encryptedPrefs
+        get() = encryptedContext.getSharedPreferences(sharedPrefFile, MODE_PRIVATE)
+
+    // This call to `SharedPreferences` needs to be explicit rather than using `get` since doing so
+    // would result in a circular dependency between `isStartupDataMigrated` and `choosePreferences`
+    val isStartupDataMigrated: Boolean
+        get() =
+            bootAwarePrefs.getBoolean(
+                IS_STARTUP_DATA_MIGRATED.sharedPrefKey,
+                IS_STARTUP_DATA_MIGRATED.defaultValue
+            )
+
+    private fun chooseSharedPreferences(item: Item): SharedPreferences =
+        if (isBootAwareStartupDataEnabled && item.isBootAware && isStartupDataMigrated)
+            bootAwarePrefs
+        else item.encryptedPrefs
 
     /** Wrapper around `getInner` for a `ContextualItem` */
-    fun <T> get(item: ContextualItem<T>): T = getInner(item, item.defaultValueFromContext(context))
+    fun <T> get(item: ContextualItem<T>): T =
+        getInner(item, item.defaultValueFromContext(encryptedContext))
 
     /** Wrapper around `getInner` for an `Item` */
     fun <T> get(item: ConstantItem<T>): T = getInner(item, item.defaultValue)
@@ -35,7 +76,7 @@ class LauncherPrefs(private val context: Context) {
      */
     @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
     private fun <T> getInner(item: Item, default: T): T {
-        val sp = context.getSharedPreferences(item.sharedPrefFile, Context.MODE_PRIVATE)
+        val sp = chooseSharedPreferences(item)
 
         return when (item.type) {
             String::class.java -> sp.getString(item.sharedPrefKey, default as? String)
@@ -68,16 +109,8 @@ class LauncherPrefs(private val context: Context) {
     fun put(vararg itemsToValues: Pair<Item, Any>): Unit =
         prepareToPutValues(itemsToValues).forEach { it.apply() }
 
-    /**
-     * Stores the value provided in `SharedPreferences` according to the item configuration provided
-     * It is asynchronous, so the caller can't assume that the value put is immediately available.
-     */
-    fun <T : Any> put(item: Item, value: T): Unit =
-        context
-            .getSharedPreferences(item.sharedPrefFile, Context.MODE_PRIVATE)
-            .edit()
-            .putValue(item, value)
-            .apply()
+    /** See referenced `put` method above. */
+    fun <T : Any> put(item: Item, value: T): Unit = put(item.to(value))
 
     /**
      * Synchronously stores all the values provided according to their associated Item
@@ -87,27 +120,35 @@ class LauncherPrefs(private val context: Context) {
         prepareToPutValues(itemsToValues).forEach { it.commit() }
 
     /**
-     * Update each shared preference file with the item - value pairs provided. This method is
-     * optimized to avoid retrieving the same shared preference file multiple times.
+     * Updates the values stored in `SharedPreferences` for each corresponding Item-value pair. If
+     * the item is boot aware, this method updates both the boot aware and the encrypted files. This
+     * is done because: 1) It allows for easy roll-back if the data is already in encrypted prefs
+     * and we need to turn off the boot aware data feature & 2) It simplifies Backup/Restore, which
+     * already points to encrypted storage.
      *
-     * @return `List<SharedPreferences.Editor>` 1 for each distinct shared preference file among the
-     *   items given as part of the itemsToValues parameter
+     * Returns a list of editors with all transactions added so that the caller can determine to use
+     * .apply() or .commit()
      */
     private fun prepareToPutValues(
-        itemsToValues: Array<out Pair<Item, Any>>
-    ): List<SharedPreferences.Editor> =
-        itemsToValues
-            .groupBy { it.first.sharedPrefFile }
-            .map { fileToItemValueList ->
-                context
-                    .getSharedPreferences(fileToItemValueList.key, Context.MODE_PRIVATE)
-                    .edit()
-                    .apply {
-                        fileToItemValueList.value.forEach { itemToValue ->
-                            putValue(itemToValue.first, itemToValue.second)
-                        }
-                    }
+        updates: Array<out Pair<Item, Any>>
+    ): List<SharedPreferences.Editor> {
+        val updatesPerPrefFile = updates.groupBy { it.first.encryptedPrefs }.toMutableMap()
+
+        if (isBootAwareStartupDataEnabled) {
+            val bootAwareUpdates = updates.filter { it.first.isBootAware }
+            if (bootAwareUpdates.isNotEmpty()) {
+                updatesPerPrefFile[bootAwarePrefs] = bootAwareUpdates
             }
+        }
+
+        return updatesPerPrefFile.map { prefToItemValueList ->
+            prefToItemValueList.key.edit().apply {
+                prefToItemValueList.value.forEach { itemToValue: Pair<Item, Any> ->
+                    putValue(itemToValue.first, itemToValue.second)
+                }
+            }
+        }
+    }
 
     /**
      * Handles adding values to `SharedPreferences` regardless of type. This method is especially
@@ -117,10 +158,10 @@ class LauncherPrefs(private val context: Context) {
     @Suppress("UNCHECKED_CAST")
     private fun SharedPreferences.Editor.putValue(
         item: Item,
-        value: Any
+        value: Any?
     ): SharedPreferences.Editor =
-        when (value::class.java) {
-            String::class.java -> putString(item.sharedPrefKey, value as String)
+        when (item.type) {
+            String::class.java -> putString(item.sharedPrefKey, value as? String)
             Boolean::class.java,
             java.lang.Boolean::class.java -> putBoolean(item.sharedPrefKey, value as Boolean)
             Int::class.java,
@@ -129,10 +170,10 @@ class LauncherPrefs(private val context: Context) {
             java.lang.Float::class.java -> putFloat(item.sharedPrefKey, value as Float)
             Long::class.java,
             java.lang.Long::class.java -> putLong(item.sharedPrefKey, value as Long)
-            Set::class.java -> putStringSet(item.sharedPrefKey, value as Set<String>)
+            Set::class.java -> putStringSet(item.sharedPrefKey, value as? Set<String>)
             else ->
                 throw IllegalArgumentException(
-                    "item type: ${value::class} is not compatible with sharedPref methods"
+                    "item type: ${item.type} is not compatible with sharedPref methods"
                 )
         }
 
@@ -143,13 +184,9 @@ class LauncherPrefs(private val context: Context) {
      */
     fun addListener(listener: OnSharedPreferenceChangeListener, vararg items: Item) {
         items
-            .map { it.sharedPrefFile }
+            .map { chooseSharedPreferences(it) }
             .distinct()
-            .forEach {
-                context
-                    .getSharedPreferences(it, Context.MODE_PRIVATE)
-                    .registerOnSharedPreferenceChangeListener(listener)
-            }
+            .forEach { it.registerOnSharedPreferenceChangeListener(listener) }
     }
 
     /**
@@ -159,13 +196,9 @@ class LauncherPrefs(private val context: Context) {
     fun removeListener(listener: OnSharedPreferenceChangeListener, vararg items: Item) {
         // If a listener is not registered to a SharedPreference, unregistering it does nothing
         items
-            .map { it.sharedPrefFile }
+            .map { chooseSharedPreferences(it) }
             .distinct()
-            .forEach {
-                context
-                    .getSharedPreferences(it, Context.MODE_PRIVATE)
-                    .unregisterOnSharedPreferenceChangeListener(listener)
-            }
+            .forEach { it.unregisterOnSharedPreferenceChangeListener(listener) }
     }
 
     /**
@@ -174,10 +207,8 @@ class LauncherPrefs(private val context: Context) {
      */
     fun has(vararg items: Item): Boolean {
         items
-            .groupBy { it.sharedPrefFile }
-            .forEach { (file, itemsSublist) ->
-                val prefs: SharedPreferences =
-                    context.getSharedPreferences(file, Context.MODE_PRIVATE)
+            .groupBy { chooseSharedPreferences(it) }
+            .forEach { (prefs, itemsSublist) ->
                 if (!itemsSublist.none { !prefs.contains(it.sharedPrefKey) }) return false
             }
         return true
@@ -192,62 +223,128 @@ class LauncherPrefs(private val context: Context) {
     fun removeSync(vararg items: Item) = prepareToRemove(items).forEach { it.commit() }
 
     /**
-     * Creates `SharedPreferences.Editor` transactions for removing all the provided [Item] values
-     * from their respective `SharedPreferences` files. These returned `Editors` can then be
-     * committed or applied for synchronous or async behavior.
+     * Removes the key value pairs stored in `SharedPreferences` for each corresponding Item. If the
+     * item is boot aware, this method removes the data from both the boot aware and encrypted
+     * files.
+     *
+     * @return a list of editors with all transactions added so that the caller can determine to use
+     * .apply() or .commit()
      */
-    private fun prepareToRemove(items: Array<out Item>): List<SharedPreferences.Editor> =
-        items
-            .groupBy { it.sharedPrefFile }
-            .map { (file, items) ->
-                context.getSharedPreferences(file, Context.MODE_PRIVATE).edit().also { editor ->
-                    items.forEach { item -> editor.remove(item.sharedPrefKey) }
-                }
+    private fun prepareToRemove(items: Array<out Item>): List<SharedPreferences.Editor> {
+        val itemsPerFile = items.groupBy { it.encryptedPrefs }.toMutableMap()
+
+        if (isBootAwareStartupDataEnabled) {
+            val bootAwareUpdates = items.filter { it.isBootAware }
+            if (bootAwareUpdates.isNotEmpty()) {
+                itemsPerFile[bootAwarePrefs] = bootAwareUpdates
             }
+        }
+
+        return itemsPerFile.map { (prefs, items) ->
+            prefs.edit().also { editor ->
+                items.forEach { item -> editor.remove(item.sharedPrefKey) }
+            }
+        }
+    }
+
+    fun migrateStartupDataToDeviceProtectedStorage() {
+        if (!isBootAwareStartupDataEnabled) return
+
+        Log.d(
+            TAG,
+            "Migrating data to unencrypted shared preferences to enable preloading " +
+                "while the user is locked the next time the device reboots."
+        )
+
+        with(bootAwarePrefs.edit()) {
+            BOOT_AWARE_ITEMS.forEach { putValue(it, get(it)) }
+            putBoolean(IS_STARTUP_DATA_MIGRATED.sharedPrefKey, true)
+            apply()
+        }
+    }
 
     companion object {
+        private const val TAG = "LauncherPrefs"
+        @VisibleForTesting const val BOOT_AWARE_PREFS_KEY = "boot_aware_prefs"
+
         @JvmField var INSTANCE = MainThreadInitializedObject { LauncherPrefs(it) }
 
         @JvmStatic fun get(context: Context): LauncherPrefs = INSTANCE.get(context)
 
-        @JvmField val ICON_STATE = nonRestorableItem(LauncherAppState.KEY_ICON_STATE, "")
-        @JvmField val THEMED_ICONS = backedUpItem(Themes.KEY_THEMED_ICONS, false)
+        @JvmField val ICON_STATE = nonRestorableItem(LauncherAppState.KEY_ICON_STATE, "", true)
+        @JvmField val THEMED_ICONS = backedUpItem(Themes.KEY_THEMED_ICONS, false, true)
         @JvmField val PROMISE_ICON_IDS = backedUpItem(InstallSessionHelper.PROMISE_ICON_IDS, "")
         @JvmField val WORK_EDU_STEP = backedUpItem(WorkProfileManager.KEY_WORK_EDU_STEP, 0)
-        @JvmField val WORKSPACE_SIZE = backedUpItem(DeviceGridState.KEY_WORKSPACE_SIZE, "")
-        @JvmField val HOTSEAT_COUNT = backedUpItem(DeviceGridState.KEY_HOTSEAT_COUNT, -1)
+        @JvmField val WORKSPACE_SIZE = backedUpItem(DeviceGridState.KEY_WORKSPACE_SIZE, "", true)
+        @JvmField val HOTSEAT_COUNT = backedUpItem(DeviceGridState.KEY_HOTSEAT_COUNT, -1, true)
         @JvmField
         val DEVICE_TYPE =
-            backedUpItem(DeviceGridState.KEY_DEVICE_TYPE, InvariantDeviceProfile.TYPE_PHONE)
-        @JvmField val DB_FILE = backedUpItem(DeviceGridState.KEY_DB_FILE, "")
+            backedUpItem(DeviceGridState.KEY_DEVICE_TYPE, InvariantDeviceProfile.TYPE_PHONE, true)
+        @JvmField val DB_FILE = backedUpItem(DeviceGridState.KEY_DB_FILE, "", true)
         @JvmField
         val RESTORE_DEVICE =
-            backedUpItem(RestoreDbTask.RESTORED_DEVICE_TYPE, InvariantDeviceProfile.TYPE_PHONE)
+            backedUpItem(
+                RestoreDbTask.RESTORED_DEVICE_TYPE,
+                InvariantDeviceProfile.TYPE_PHONE,
+                true
+            )
         @JvmField val APP_WIDGET_IDS = backedUpItem(RestoreDbTask.APPWIDGET_IDS, "")
         @JvmField val OLD_APP_WIDGET_IDS = backedUpItem(RestoreDbTask.APPWIDGET_OLD_IDS, "")
-        @JvmField val GRID_NAME = ConstantItem("idp_grid_name", true, null, String::class.java)
+        @JvmField
+        val GRID_NAME =
+            ConstantItem(
+                "idp_grid_name",
+                isBackedUp = true,
+                defaultValue = null,
+                isBootAware = true,
+                type = String::class.java
+            )
         @JvmField
         val ALLOW_ROTATION =
             backedUpItem(RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY, Boolean::class.java) {
                 RotationHelper.getAllowRotationDefaultValue(DisplayController.INSTANCE.get(it).info)
             }
+        @JvmField
+        val IS_STARTUP_DATA_MIGRATED =
+            ConstantItem(
+                "is_startup_data_boot_aware",
+                isBackedUp = false,
+                defaultValue = false,
+                isBootAware = true
+            )
 
         @VisibleForTesting
         @JvmStatic
-        fun <T> backedUpItem(sharedPrefKey: String, defaultValue: T): ConstantItem<T> =
-            ConstantItem(sharedPrefKey, true, defaultValue)
+        fun <T> backedUpItem(
+            sharedPrefKey: String,
+            defaultValue: T,
+            isBootAware: Boolean = false
+        ): ConstantItem<T> =
+            ConstantItem(sharedPrefKey, isBackedUp = true, defaultValue, isBootAware)
 
         @JvmStatic
         fun <T> backedUpItem(
             sharedPrefKey: String,
             type: Class<out T>,
+            isBootAware: Boolean = false,
             defaultValueFromContext: (c: Context) -> T
-        ): ContextualItem<T> = ContextualItem(sharedPrefKey, true, defaultValueFromContext, type)
+        ): ContextualItem<T> =
+            ContextualItem(
+                sharedPrefKey,
+                isBackedUp = true,
+                defaultValueFromContext,
+                isBootAware,
+                type
+            )
 
         @VisibleForTesting
         @JvmStatic
-        fun <T> nonRestorableItem(sharedPrefKey: String, defaultValue: T): ConstantItem<T> =
-            ConstantItem(sharedPrefKey, false, defaultValue)
+        fun <T> nonRestorableItem(
+            sharedPrefKey: String,
+            defaultValue: T,
+            isBootAware: Boolean = false
+        ): ConstantItem<T> =
+            ConstantItem(sharedPrefKey, isBackedUp = false, defaultValue, isBootAware)
 
         @Deprecated("Don't use shared preferences directly. Use other LauncherPref methods.")
         @JvmStatic
@@ -255,7 +352,7 @@ class LauncherPrefs(private val context: Context) {
             // Use application context for shared preferences, so we use single cached instance
             return context.applicationContext.getSharedPreferences(
                 SHARED_PREFERENCES_KEY,
-                Context.MODE_PRIVATE
+                MODE_PRIVATE
             )
         }
 
@@ -265,16 +362,23 @@ class LauncherPrefs(private val context: Context) {
             // Use application context for shared preferences, so we use a single cached instance
             return context.applicationContext.getSharedPreferences(
                 DEVICE_PREFERENCES_KEY,
-                Context.MODE_PRIVATE
+                MODE_PRIVATE
             )
         }
     }
 }
 
+// This is hard-coded to false for now until it is time to release this optimization. It is only
+// a var because the unit tests are setting this to true so they can run.
+@VisibleForTesting var isBootAwareStartupDataEnabled: Boolean = false
+
+private val BOOT_AWARE_ITEMS: MutableSet<ConstantItem<*>> = mutableSetOf()
+
 abstract class Item {
     abstract val sharedPrefKey: String
     abstract val isBackedUp: Boolean
     abstract val type: Class<*>
+    abstract val isBootAware: Boolean
     val sharedPrefFile: String
         get() = if (isBackedUp) SHARED_PREFERENCES_KEY else DEVICE_PREFERENCES_KEY
 
@@ -285,14 +389,22 @@ data class ConstantItem<T>(
     override val sharedPrefKey: String,
     override val isBackedUp: Boolean,
     val defaultValue: T,
+    override val isBootAware: Boolean,
     // The default value can be null. If so, the type needs to be explicitly stated, or else NPE
     override val type: Class<out T> = defaultValue!!::class.java
-) : Item()
+) : Item() {
+    init {
+        if (isBootAware && isBootAwareStartupDataEnabled) {
+            BOOT_AWARE_ITEMS.add(this)
+        }
+    }
+}
 
 data class ContextualItem<T>(
     override val sharedPrefKey: String,
     override val isBackedUp: Boolean,
     private val defaultSupplier: (c: Context) -> T,
+    override val isBootAware: Boolean,
     override val type: Class<out T>
 ) : Item() {
     private var default: T? = null
