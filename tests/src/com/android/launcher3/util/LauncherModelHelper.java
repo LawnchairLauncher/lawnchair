@@ -510,7 +510,7 @@ public class LauncherModelHelper {
                     UserCache.INSTANCE, InstallSessionHelper.INSTANCE, LauncherPrefs.INSTANCE,
                     LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE,
                     DisplayController.INSTANCE, CustomWidgetManager.INSTANCE,
-                    SettingsCache.INSTANCE, PluginManagerWrapper.INSTANCE,
+                    SettingsCache.INSTANCE, PluginManagerWrapper.INSTANCE, LockedUserState.INSTANCE,
                     ItemInstallQueue.INSTANCE, WindowManagerProxy.INSTANCE);
             mPm = spy(getBaseContext().getPackageManager());
             mDbDir = new File(getCacheDir(), UUID.randomUUID().toString());
