@@ -395,4 +395,20 @@ public final class FeatureFlags {
             return mCurrentValue;
         }
     }
+
+    /**
+     * Class representing an integer flag
+     */
+    public static class IntFlag {
+
+        private final int mCurrentValue;
+
+        public IntFlag(int currentValue) {
+            mCurrentValue = currentValue;
+        }
+
+        public int get() {
+            return mCurrentValue;
+        }
+    }
 }
