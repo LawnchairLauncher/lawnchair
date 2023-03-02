@@ -723,7 +723,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             }
         }
         play(as, mControllers.taskbarViewController
-                .createRevealAnimToIsStashed(isStashed, isInApp()), 0, duration, EMPHASIZED);
+                .createRevealAnimToIsStashed(isStashed), 0, duration, EMPHASIZED);
 
         if (skipInterpolator != null) {
             as.setInterpolator(skipInterpolator);
