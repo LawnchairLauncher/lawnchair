@@ -82,7 +82,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             };
 
     // Initialized in init.
-    private TaskbarKeyguardController mKeyguardController;
     private final TaskbarLauncherStateController
             mTaskbarLauncherStateController = new TaskbarLauncherStateController();
 
@@ -97,11 +96,12 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         mTaskbarLauncherStateController.init(mControllers, mLauncher);
 
         mLauncher.setTaskbarUIController(this);
-        mKeyguardController = taskbarControllers.taskbarKeyguardController;
 
         onLauncherResumedOrPaused(mLauncher.hasBeenResumed(), true /* fromInit */);
 
         onStashedInAppChanged(mLauncher.getDeviceProfile());
+        mTaskbarLauncherStateController.onChangeScreenState(
+                mControllers.getSharedState().sysuiStateFlags, true /* fromInit */);
         mLauncher.addOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
     }
 
@@ -119,7 +119,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Override
     protected boolean isTaskbarTouchable() {
         return !(mTaskbarLauncherStateController.isAnimatingToLauncher()
-                && mTaskbarLauncherStateController.goingToAlignedLauncherState());
+                && mTaskbarLauncherStateController.isTaskbarAlignedWithHotseat());
     }
 
     public void setShouldDelayLauncherStateAnim(boolean shouldDelayLauncherStateAnim) {
@@ -167,15 +167,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Nullable
     private Animator onLauncherResumedOrPaused(
             boolean isResumed, boolean fromInit, boolean startAnimation, int duration) {
-        if (mKeyguardController.isScreenOff()) {
-            if (!isResumed) {
-                return null;
-            } else {
-                // Resuming implicitly means device unlocked
-                mKeyguardController.setScreenOn();
-            }
-        }
-
         // Launcher is resumed during the swipe-to-overview gesture under shell-transitions, so
         // avoid updating taskbar state in that situation (when it's non-interactive -- or
         // "background") to avoid premature animations.
@@ -325,6 +316,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         super.onExpandPip();
         mTaskbarLauncherStateController.updateStateForFlag(FLAG_RESUMED, false);
         mTaskbarLauncherStateController.applyState();
+    }
+
+    @Override
+    public void onChangeScreenState(int screenState) {
+        mTaskbarLauncherStateController.onChangeScreenState(screenState, false /* fromInit */);
     }
 
     @Override

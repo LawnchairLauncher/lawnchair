@@ -125,6 +125,12 @@ public class TaskbarUIController {
     }
 
     /**
+     * Screen state changed, see QuickStepContract.SCREEN_STATE_* values.
+     */
+    public void onChangeScreenState(int screenState){
+    }
+
+    /**
      * Returns {@code true} iff taskbar is stashed.
      */
     public boolean isTaskbarStashed() {
