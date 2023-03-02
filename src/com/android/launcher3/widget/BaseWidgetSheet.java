@@ -341,7 +341,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     /** Returns {@code true} if tip has previously been shown on any of {@link BaseWidgetSheet}. */
     protected boolean hasSeenEducationTip() {
         return mActivityContext.getSharedPrefs().getBoolean(KEY_WIDGETS_EDUCATION_TIP_SEEN, false)
-                || Utilities.IS_RUNNING_IN_TEST_HARNESS;
+                || Utilities.isRunningInTestHarness();
     }
 
     @Override

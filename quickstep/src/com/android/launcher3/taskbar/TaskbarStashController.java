@@ -297,7 +297,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         }
         return supportsVisualStashing()
                 && isInApp()
-                && (!Utilities.IS_RUNNING_IN_TEST_HARNESS || mEnableManualStashingDuringTests)
+                && (!Utilities.isRunningInTestHarness() || mEnableManualStashingDuringTests)
                 && !DisplayController.isTransientTaskbar(mActivity);
     }
 

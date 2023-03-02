@@ -291,7 +291,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
      * Returns {@code true} if a Taskbar education should be shown on application launch.
      */
     public boolean shouldShowEduOnAppLaunch() {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+        if (Utilities.isRunningInTestHarness()) {
             return false;
         }
 
