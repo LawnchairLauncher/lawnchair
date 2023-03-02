@@ -17,6 +17,7 @@ package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.anim.AnimatedFloat.VALUE;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
@@ -303,7 +304,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      * @param isStashed When true, the icon crops vertically to the size of the stashed handle.
      *                  When false, the reverse happens.
      */
-    public AnimatorSet createRevealAnimToIsStashed(boolean isStashed, boolean isInApp) {
+    public AnimatorSet createRevealAnimToIsStashed(boolean isStashed) {
         AnimatorSet as = new AnimatorSet();
 
         Rect stashedBounds = new Rect();
@@ -316,6 +317,10 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
         for (int i = numChildren - 1; i >= 0; i--) {
             View child = mTaskbarView.getChildAt(i);
+
+            if (child == mTaskbarView.getQsb()) {
+                continue;
+            }
 
             // Crop the icons to/from the nav handle shape.
             as.play(createRevealAnimForView(child, isStashed));
@@ -437,7 +442,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 float scale = ((float) taskbarDp.iconSizePx) / launcherDp.hotseatQsbVisualHeight;
                 setter.addFloat(child, SCALE_PROPERTY, scale, 1f, interpolator);
 
-                setter.setFloat(child, ICON_TRANSLATE_Y, mTaskbarBottomMargin, interpolator);
+                setter.setFloat(child, VIEW_TRANSLATE_Y, mTaskbarBottomMargin, interpolator);
 
                 if (mIsHotseatIconOnTopWhenAligned) {
                     setter.addFloat(child, VIEW_ALPHA, 0f, 1f,
