@@ -1718,7 +1718,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             int finalTargetPage = targetPage;
             runOnPageScrollsInitialized(() -> {
                 // TODO(b/246283207): Remove logging once root cause of flake detected.
-                if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                if (Utilities.isRunningInTestHarness()) {
                     Log.d("b/246283207", "RecentsView#applyLoadPlan() -> "
                             + "previousCurrentPage: " + previousCurrentPage
                             + ", targetPage: " + finalTargetPage
