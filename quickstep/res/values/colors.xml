@@ -45,8 +45,8 @@
     <!-- Redesigned gesture navigation tutorial -->
     <color name="gesture_home_tutorial_background">#FFB399</color>
     <color name="gesture_home_tutorial_swipe_up_rect">#3857C7</color>
-    <color name="gesture_back_tutorial_background">#F3A5B9</color>
-    <color name="gesture_back_tutorial_swipe_rect">#217500</color>
+    <color name="gesture_back_tutorial_exiting_app">#F3A5B9</color>
+    <color name="gesture_back_tutorial_background">#3857C7</color>
     <color name="gesture_overview_tutorial_swipe_rect">#7E44AD</color>
 
     <!-- Mock hotseat -->
