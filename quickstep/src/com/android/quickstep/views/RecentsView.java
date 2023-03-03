@@ -450,6 +450,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected final Rect mLastComputedTaskSize = new Rect();
     protected final Rect mLastComputedGridSize = new Rect();
     protected final Rect mLastComputedGridTaskSize = new Rect();
+    protected final Rect mLastComputedDesktopTaskSize = new Rect();
     private TaskView mSelectedTask = null;
     // How much a task that is directly offscreen will be pushed out due to RecentsView scale/pivot.
     @Nullable
@@ -1940,6 +1941,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mLastComputedGridSize);
         mSizeStrategy.calculateGridTaskSize(mActivity, mActivity.getDeviceProfile(),
                 mLastComputedGridTaskSize, mOrientationHandler);
+        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+            mSizeStrategy.calculateDesktopTaskSize(mActivity, mActivity.getDeviceProfile(),
+                    mLastComputedDesktopTaskSize);
+        }
 
         mTaskGridVerticalDiff = mLastComputedGridTaskSize.top - mLastComputedTaskSize.top;
         mTopBottomRowHeightDiff =
@@ -2028,6 +2033,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     public Rect getLastComputedGridTaskSize() {
         return mLastComputedGridTaskSize;
+    }
+
+    /** Gets the last computed desktop task size */
+    public Rect getLastComputedDesktopTaskSize() {
+        return mLastComputedDesktopTaskSize;
     }
 
     /** Gets the task size for modal state. */
@@ -2764,10 +2774,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             } else if (taskView.isDesktopTask()) {
                 // Desktop task was not focused. Pin it to the right of focused
                 desktopTaskIndex = i;
-                gridTranslations[i] += mIsRtl ? taskWidthAndSpacing : -taskWidthAndSpacing;
+                if (!ENABLE_GRID_ONLY_OVERVIEW.get()) {
+                    // Only apply x-translation when using legacy overview grid
+                    gridTranslations[i] += mIsRtl ? taskWidthAndSpacing : -taskWidthAndSpacing;
+                }
 
                 // Center view vertically in case it's from different orientation.
-                taskView.setGridTranslationY((mLastComputedTaskSize.height() + taskTopMargin
+                taskView.setGridTranslationY((mLastComputedDesktopTaskSize.height() + taskTopMargin
                         - taskView.getLayoutParams().height) / 2f);
             } else {
                 if (i > focusedTaskIndex) {
