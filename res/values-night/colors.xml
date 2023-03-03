@@ -17,5 +17,5 @@
 -->
 
 <resources>
-    <color name="all_apps_button_color">@color/all_apps_button_color_dark</color>
+    <color name="all_apps_button_color">#BFC8CC</color>
 </resources>

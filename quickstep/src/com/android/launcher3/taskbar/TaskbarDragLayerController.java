@@ -59,10 +59,9 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
 
     // Initialized in init.
     private TaskbarControllers mControllers;
-    private AnimatedFloat mNavButtonDarkIntensityMultiplier;
+    private AnimatedFloat mOnBackgroundNavButtonColorIntensity;
 
     private float mLastSetBackgroundAlpha;
-    private boolean mIsBackgroundDrawnElsewhere;
 
     public TaskbarDragLayerController(TaskbarActivityContext activity,
             TaskbarDragLayer taskbarDragLayer) {
@@ -77,8 +76,8 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         mControllers = controllers;
         mTaskbarDragLayer.init(new TaskbarDragLayerCallbacks());
 
-        mNavButtonDarkIntensityMultiplier = mControllers.navbarButtonsViewController
-                .getNavButtonDarkIntensityMultiplier();
+        mOnBackgroundNavButtonColorIntensity = mControllers.navbarButtonsViewController
+                .getOnTaskbarBackgroundNavButtonColorOverride();
 
         mBgTaskbar.value = 1;
         mKeyguardBgTaskbar.value = 1;
@@ -152,7 +151,7 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         mLastSetBackgroundAlpha = mBgOverride.value * Math.max(bgNavbar, bgTaskbar);
         mTaskbarDragLayer.setTaskbarBackgroundAlpha(mLastSetBackgroundAlpha);
 
-        updateNavBarDarkIntensityMultiplier();
+        updateOnBackgroundNavButtonColorIntensity();
     }
 
     /**
@@ -165,7 +164,7 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
     private void updateBackgroundOffset() {
         mTaskbarDragLayer.setTaskbarBackgroundOffset(mBgOffset.value);
 
-        updateNavBarDarkIntensityMultiplier();
+        updateOnBackgroundNavButtonColorIntensity();
     }
 
     @Override
@@ -174,23 +173,16 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
     }
 
     /**
-     * Set if another controller is temporarily handling background drawing. In this case we:
-     * - Override our background alpha to be 0.
-     * - Keep the nav bar dark intensity assuming taskbar background is at full alpha.
+     * Set if another controller is temporarily handling background drawing. In this case we
+     * override our background alpha to be {@code 0}.
      */
     public void setIsBackgroundDrawnElsewhere(boolean isBackgroundDrawnElsewhere) {
-        mIsBackgroundDrawnElsewhere = isBackgroundDrawnElsewhere;
-        mBgOverride.updateValue(mIsBackgroundDrawnElsewhere ? 0 : 1);
-        updateNavBarDarkIntensityMultiplier();
+        mBgOverride.updateValue(isBackgroundDrawnElsewhere ? 0 : 1);
     }
 
-    private void updateNavBarDarkIntensityMultiplier() {
-        // Zero out the app-requested dark intensity when we're drawing our own background.
-        float effectiveBgAlpha = mLastSetBackgroundAlpha * (1 - mBgOffset.value);
-        if (mIsBackgroundDrawnElsewhere) {
-            effectiveBgAlpha = 1;
-        }
-        mNavButtonDarkIntensityMultiplier.updateValue(1 - effectiveBgAlpha);
+    private void updateOnBackgroundNavButtonColorIntensity() {
+        mOnBackgroundNavButtonColorIntensity.updateValue(
+                mLastSetBackgroundAlpha * (1 - mBgOffset.value));
     }
 
     @Override
