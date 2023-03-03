@@ -381,6 +381,7 @@ public class DesktopTaskView extends TaskView {
         }
         setOverlayEnabled(false);
         onTaskListVisibilityChanged(false);
+        setVisibility(VISIBLE);
     }
 
     @Override
