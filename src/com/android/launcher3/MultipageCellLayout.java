@@ -70,7 +70,7 @@ public class MultipageCellLayout extends CellLayout {
     boolean createAreaForResize(int cellX, int cellY, int spanX, int spanY, View dragView,
             int[] direction, boolean commit) {
         // Add seam to x position
-        if (cellX > mCountX / 2) {
+        if (cellX >= mCountX / 2) {
             cellX++;
         }
         int finalCellX = cellX;
@@ -109,7 +109,7 @@ public class MultipageCellLayout extends CellLayout {
         lp.canReorder = false;
         mCountX++;
         mShortcutsAndWidgets.addViewInLayout(mSeam, lp);
-        mOccupied = createGridOccupancy();
+        mOccupied = createGridOccupancyWithSeam(mOccupied);
         mTmpOccupied = new GridOccupancy(mCountX, mCountY);
     }
 
@@ -139,14 +139,19 @@ public class MultipageCellLayout extends CellLayout {
         return solution;
     }
 
-    GridOccupancy createGridOccupancy() {
-        GridOccupancy grid = new GridOccupancy(mCountX, mCountY);
-        for (int i = 0; i < mShortcutsAndWidgets.getChildCount(); i++) {
-            View view = mShortcutsAndWidgets.getChildAt(i);
-            CellLayoutLayoutParams lp = (CellLayoutLayoutParams) view.getLayoutParams();
-            int seamOffset = lp.getCellX() >= mCountX / 2 && lp.canReorder ? 1 : 0;
-            grid.markCells(lp.getCellX() + seamOffset, lp.getCellY(), lp.cellHSpan, lp.cellVSpan,
-                    true);
+
+
+    GridOccupancy createGridOccupancyWithSeam(GridOccupancy gridOccupancy) {
+        GridOccupancy grid = new GridOccupancy(getCountX(), getCountY());
+        for (int x = 0; x < getCountX(); x++) {
+            for (int y = 0; y < getCountY(); y++) {
+                int offset = x >= getCountX() / 2 ? 1 : 0;
+                if (x == getCountX() / 2) {
+                    grid.cells[x][y] = true;
+                } else {
+                    grid.cells[x][y] = gridOccupancy.cells[x - offset][y];
+                }
+            }
         }
         return grid;
     }
