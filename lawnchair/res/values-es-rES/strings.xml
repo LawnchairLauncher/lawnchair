@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">Toca esta tarjeta para establecer Lawnchair como tu lanzador predeterminado.</string>
     <string name="settings">Ajustes</string>
     <string name="general_label">General</string>
     <string name="general_description">Colores, Paquete de Íconos, Puntos de Notificación</string>
@@ -48,8 +48,8 @@
     <string name="font_picker_description">Algunos textos permanecen sin cambios.</string>
     <string name="smartspace_calendar_label">Personalización del calendario de un vistazo</string>
     <string name="smartspace_calendar_description">Permitir mostrar fechas en sistemas de calendario no gregorianos.</string>
-    <string name="workspace_increase_max_grid_size_label">Aumento del tamaño máximo de la cuadrícula de la pantalla de inicio</string>
-    <string name="workspace_increase_max_grid_size_description">Aumenta el tamaño máximo permitido de la cuadrícula de pantalla de inicio de 10 x 10 a 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">Aumento del tamaño máximo de la cuadrícula de pantalla de inicio</string>
+    <string name="workspace_increase_max_grid_size_description">Aumenta el tamaño máximo permitido de la cuadrícula de pantalla de inicio de 10 x 10 a 20 x 20. https://lawnchair. crowdin. com/translate/c26ac9577fbf791d8e74aae2a00d05d4/49/en-es/8? filter=basic&amp;value=0.</string>
     <string name="always_reload_icons_label">Siempre recargar los iconos</string>
     <string name="always_reload_icons_description">Evitar el uso de iconos en caché de paquetes de iconos</string>
     <string name="transparent_background_icons">Iconos temáticos transparentes</string>
@@ -181,16 +181,16 @@
     <string name="home_screen_unlock">Desbloquear pantalla de inicio</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">La pantalla de inicio está bloqueada.</string>
-    <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="popup_menu">Menú emergente</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Mostrar botón de bloqueo</string>
+    <string name="show_system_settings_entry">Mostrar entrada de ajustes del sistema</string>
     <string name="status_bar_label">Barra de estado</string>
     <string name="show_status_bar">Mostrar Barra de estado</string>
     <string name="dark_status_bar_label">Barra de Estado Oscura</string>
     <string name="icons">Iconos</string>
     <string name="icon_size">Tamaño de iconos</string>
     <string name="show_home_labels">Mostrar etiquetas</string>
-    <string name="label_size">Tamaño de Etiqueta</string>
+    <string name="label_size">Tamaño de etiqueta</string>
     <string name="reset_custom_icons">Restablecer iconos personalizados</string>
     <string name="reset_custom_icons_confirmation">Todos los iconos personalizados se restablecerán. ¿Desea continuar?</string>
     <string name="home_screen_text_color">Color del texto</string>
@@ -246,7 +246,7 @@
     <string name="hotseat_mode_google_search">Barra de búsqueda de Google</string>
     <string name="search_bar_label">Barra de Búsqueda</string>
     <string name="corner_radius_label">Radio de esquina</string>
-    <string name="apply_accent_color_label">Aplicar Acento de Color</string>
+    <string name="apply_accent_color_label">Aplicar acento de color</string>
     <string name="search_provider">Proveedor de Búsqueda</string>
     <string name="grid">Cuadrícula</string>
     <string name="dock_icons">Iconos del Dock</string>
@@ -271,8 +271,8 @@
     <string name="fuzzy_search_desc">Coincidencia aproximada para búsqueda de aplicaciones.</string>
     <string name="max_search_result_count_title">Número máximo de resultados de la búsqueda</string>
     <!-- <string name="grid" /> -->
-    <string name="app_drawer_columns">Columnas de Cajón de Aplicaciones</string>
-    <string name="row_height_label">Altura de Fila</string>
+    <string name="app_drawer_columns">Columnas del cajón de aplicaciones</string>
+    <string name="row_height_label">Altura de fila</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -288,11 +288,11 @@
     <!-- FolderPreferences -->
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
-    <string name="folder_preview_bg_opacity_label">Opacidad del Fondo de Íconos</string>
+    <string name="folder_preview_bg_opacity_label">Opacidad del fondo de iconos</string>
     <string name="folder_preview_bg_color_label">Color de fondo del icono</string>
     <!-- <string name="grid" /> -->
-    <string name="max_folder_columns">Máx. Columnas de Carpetas</string>
-    <string name="max_folder_rows">Máx. Filas de Carpetas</string>
+    <string name="max_folder_columns">Columnas max. de carpetas</string>
+    <string name="max_folder_rows">Filas máx. de carpetas</string>
     <!-- GesturePreference -->
     <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">Doble toque</string>
@@ -313,7 +313,7 @@
     <!-- <string name="quickstep_label" /> -->
     <!-- <string name="general_label" /> -->
     <string name="translucent_background">Fondo translúcido</string>
-    <string name="recents_actions_label">Acciones Rápidas</string>
+    <string name="recents_actions_label">Acciones rápidas</string>
     <!-- <string name="screenshot" /> (unknown source) -->
     <string name="action_share">Compartir</string>
     <string name="action_lens">Lens</string>
@@ -340,9 +340,9 @@
     <string name="translate">Traducir</string>
     <!-- IconPickerPreference -->
     <string name="icon_picker_default_category">Iconos</string>
-    <string name="icon_picker_reset_to_default">Restablecer a Configuración Predeterminada</string>
-    <string name="icon_pack_external_picker">Abrir Selector Externo</string>
-    <string name="pick_icon_from_label">Elegir ícono desde</string>
+    <string name="icon_picker_reset_to_default">Restablecer a configuración predeterminada</string>
+    <string name="icon_pack_external_picker">Abrir selector externo</string>
+    <string name="pick_icon_from_label">Elegir icono desde</string>
     <string name="icon_picker_load_failed">No se han podido cargar más iconos.</string>
     <!-- Misc -->
     <string name="all_apps_search_bar_hint">Buscar aplicaciones</string>
@@ -352,9 +352,9 @@
     <string name="dt2s_admin_hint_title">Permisos de administrador requeridos</string>
     <string name="dt2s_admin_hint">Para usar el doble toque para apagar la pantalla, establece Lawnchair como una app de administrador de dispositivos. Pulsa en \"Abrir Configuración\", luego en \"Activar esta aplicación de administrador de dispositivos.\"</string>
     <string name="dt2s_admin_warning">Se desactivará el doble toque para dormir.</string>
-    <string name="dt2s_a11y_hint_title">Activar el Servicio de Accesibilidad</string>
+    <string name="dt2s_a11y_hint_title">Activar el servicio de accesibilidad</string>
     <string name="dt2s_a11y_hint">Para usar el doble toque para apagar la pantalla, activa el servicio de accesibilidad de Lawnchair. Toca en \"Abrir Configuración\", luego selecciona \"Lawnchair\" y activa \"Usar Lawnchair\".</string>
-    <string name="dt2s_warning_open_settings">Abrir Configuración</string>
+    <string name="dt2s_warning_open_settings">Abrir configuración</string>
     <string name="loading">Cargando…</string>
     <string name="system">Sistema</string>
     <string name="customize_button_text">Personalizar</string>
@@ -365,17 +365,17 @@
     <string name="lawnchair_bug_report">Reportar error de Lawnchair</string>
     <string name="crash_report_notif_title">%1$s ha dejado de funcionar</string>
     <string name="action_upload_crash_report">Cargar registro de error</string>
-    <string name="action_copy_link">Copiar Enlace</string>
-    <string name="action_upload_error">Error al Subir</string>
+    <string name="action_copy_link">Copiar enlace</string>
+    <string name="action_upload_error">Error al subir</string>
     <string name="dogbin_uploading">Subiendo…</string>
-    <string name="bugreport_channel_name">Reportes de Errores</string>
-    <string name="status_channel_name">Estado de Subida</string>
+    <string name="bugreport_channel_name">Reportes de errores</string>
+    <string name="status_channel_name">Estado de subida</string>
     <string name="bugreport_group_summary">%d nuevos informes.</string>
     <string name="bugreport_group_summary_multiple">Varios informes nuevos.</string>
     <!-- Search ig -->
     <string name="show_search_result_types">Mostrar en Resultados de Búsqueda</string>
     <string name="search_pref_result_people_title">Gente</string>
-    <string name="search_pref_result_shortcuts_title">Accesos Directos de Aplicaciones</string>
+    <string name="search_pref_result_shortcuts_title">Accesos directos de aplicaciones</string>
     <string name="search_pref_result_tips_title">Consejos de Pixel</string>
     <string name="all_apps_device_search_hint">Buscar</string>
     <string name="search_input_action_clear_results">Vaciar Caja de Búsqueda</string>
@@ -392,7 +392,7 @@
     <string name="create_backup_action">Crear</string>
     <string name="what_to_backup">¿Qué respaldar?</string>
     <string name="backup_content_layout_and_settings">Diseño y ajustes</string>
-    <string name="backup_content_wallpaper">Fondo de Pantalla</string>
+    <string name="backup_content_wallpaper">Fondo de pantalla</string>
     <string name="backup_create_success">Copia de seguridad creada.</string>
     <string name="backup_create_error">Error al crear copia de seguridad.</string>
     <string name="restore_backup">Restaurar copia de seguridad</string>

@@ -183,7 +183,7 @@
     <string name="home_screen_locked">La schermata home è bloccata.</string>
     <string name="popup_menu">Menu a comparsa</string>
     <string name="home_screen_lock_toggle_from_home_popup">Mostra pulsante di blocco</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="show_system_settings_entry">Mostra voce \"Impostazioni di sistema\"</string>
     <string name="status_bar_label">Barra di stato</string>
     <string name="show_status_bar">Mostra barra di stato</string>
     <string name="dark_status_bar_label">Barra di stato scura</string>

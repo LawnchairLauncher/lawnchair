@@ -181,8 +181,8 @@
     <string name="home_screen_unlock">ホーム画面のロックを解除</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">ホーム画面はロックされています</string>
-    <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
+    <string name="popup_menu">ポップアップメニュー</string>
+    <string name="home_screen_lock_toggle_from_home_popup">ロックボタンを表示</string>
     <string name="show_system_settings_entry">Show System Settings Entry</string>
     <string name="status_bar_label">ステータスバー</string>
     <string name="show_status_bar">ステータスバーを表示</string>
@@ -329,7 +329,7 @@
     <string name="design_and_development">デザイン &amp; 開発</string>
     <string name="development">開発</string>
     <string name="quickswitch_maintenance">QuickSwitchのメンテナンス</string>
-    <string name="devops">開発者オプション</string>
+    <string name="devops">DevOps(開発者)</string>
     <string name="support_and_pr">サポート &amp; PR</string>
     <!--
       <string name="support" />
@@ -402,5 +402,5 @@
     <string name="invalid_backup_file">バックアップファイルが無効です</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="system_settings">System Settings</string>
+    <string name="system_settings">システム設定</string>
 </resources>

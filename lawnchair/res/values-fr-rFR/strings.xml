@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">Appuyez sur cette carte pour définir Lawnchair comme lanceur par défaut.</string>
     <string name="settings">Paramètres</string>
     <string name="general_label">Général</string>
     <string name="general_description">Couleurs, Pack d\'icônes, Pastilles de notification</string>
@@ -70,8 +70,8 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Afficher le compteur de notifications</string>
     <string name="notification_dots_color">Couleur des pastilles de notification</string>
-    <string name="notification_dots_text_color">Notification Count Color</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
+    <string name="notification_dots_text_color">Couleur du compteur de notification</string>
+    <string name="notification_dots_color_contrast_warning_always">Avertissement : Les couleurs de la pastille &amp; du compteur n\'ont pas assez de contraste entre elles</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Accès aux notifications requis</string>
@@ -89,14 +89,14 @@
     <string name="custom_icon_shape">Custom Icon Shape</string>
     <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
     <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_squircle">Smooth</string>
-    <string name="icon_shape_corner_cut">Cut</string>
-    <string name="icon_shape_top_left">Top Left</string>
-    <string name="icon_shape_top_right">Top Right</string>
-    <string name="icon_shape_bottom_left">Bottom Left</string>
-    <string name="icon_shape_bottom_right">Bottom Right</string>
+    <string name="icon_shape_corner">Forme de l\'angle</string>
+    <string name="icon_shape_corner_round">Arrondi</string>
+    <string name="icon_shape_corner_squircle">Lisse</string>
+    <string name="icon_shape_corner_cut">Coupé</string>
+    <string name="icon_shape_top_left">En haut à gauche</string>
+    <string name="icon_shape_top_right">En haut à droite</string>
+    <string name="icon_shape_bottom_left">En bas à gauche</string>
+    <string name="icon_shape_bottom_right">En bas à droite</string>
     <string name="create">Créer</string>
     <string name="clipboard">Presse-papier</string>
     <string name="export_to_clipboard">Exporter vers le presse-papier</string>
@@ -162,7 +162,7 @@
     <string name="action_paste">Coller</string>
     <string name="copied_toast">Copié dans le presse-papiers.</string>
     <string name="invalid_color">Couleur invalide</string>
-    <string name="launcher_default_color">Managed by Lawnchair</string>
+    <string name="launcher_default_color">Géré par Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Ajouter les nouvelles applications à l\'écran d\'accueil</string>
@@ -182,7 +182,7 @@
     <!-- used in popup menu-->
     <string name="home_screen_locked">L\'écran d\'accueil est verrouillé.</string>
     <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Afficher le bouton de verrouillage</string>
     <string name="show_system_settings_entry">Show System Settings Entry</string>
     <string name="status_bar_label">Barre d\'état</string>
     <string name="show_status_bar">Afficher la barre d\'état</string>

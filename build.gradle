@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "8.0.0-beta03"
-    id 'com.android.library' version "8.0.0-beta03" apply false
+    id 'com.android.application' version "7.4.2"
+    id 'com.android.library' version "7.4.2" apply false
     id 'org.jetbrains.kotlin.android' version "1.8.10"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.8.10"
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.8.10"
@@ -317,7 +317,7 @@ dependencies {
     implementation "androidx.preference:preference-ktx:1.2.0"
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0-RC'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.2.1'
 
@@ -366,9 +366,11 @@ dependencies {
     implementation 'com.github.LawnchairLauncher:oss-notices:1.0.2'
 
     // Persian Date
-    implementation 'com.github.samanzamani:PersianDate:1.5.4'
+    implementation 'com.github.samanzamani:PersianDate:1.6.1'
 
     implementation 'com.airbnb.android:lottie:6.0.0'
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:2.10"
 }
 
 ksp {

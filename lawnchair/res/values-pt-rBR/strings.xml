@@ -181,14 +181,14 @@
     <string name="home_screen_unlock">Desbloquear Tela Inicial</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">A Tela Inicial está bloqueada.</string>
-    <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="popup_menu">Menu Flutuante</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Mostrar Botão de Bloqueio</string>
+    <string name="show_system_settings_entry">Mostrar Entrada para Configurações do Sistema</string>
     <string name="status_bar_label">Barra de Status</string>
     <string name="show_status_bar">Mostrar barra de status</string>
     <string name="dark_status_bar_label">Barra de Status Escura</string>
     <string name="icons">Ícones</string>
-    <string name="icon_size">Tamanho do Ícone</string>
+    <string name="icon_size">Tamanho dos Ícones</string>
     <string name="show_home_labels">Mostrar Títulos</string>
     <string name="label_size">Tamanho do Rótulo</string>
     <string name="reset_custom_icons">Redefinir Ícones Personalizados</string>
