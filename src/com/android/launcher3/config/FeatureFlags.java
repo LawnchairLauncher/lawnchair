@@ -247,10 +247,6 @@ public final class FeatureFlags {
             270394392, "ENABLE_SEARCH_RESULT_LAUNCH_TRANSITION", false,
             "Enable option to launch search results using the new view container transitions");
 
-    public static final BooleanFlag TWO_PREDICTED_ROWS_ALL_APPS_SEARCH = getReleaseFlag(270394225,
-            "TWO_PREDICTED_ROWS_ALL_APPS_SEARCH", false,
-            "Use 2 rows of app predictions in All Apps search zero-state");
-
     public static final BooleanFlag ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS = getReleaseFlag(
             270394468, "ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS", true,
             "Enable option to show keyboard when going to all-apps");
@@ -354,10 +350,6 @@ public final class FeatureFlags {
             "Enable the ability to generate monochromatic icons, if it is not provided by the app"
     );
 
-    public static final BooleanFlag ENABLE_DREAM_TRANSITION = getDebugFlag(270396364,
-            "ENABLE_DREAM_TRANSITION", true,
-            "Enable the launcher transition when the device enters a dream");
-
     public static final BooleanFlag ENABLE_TASKBAR_EDU_TOOLTIP = getDebugFlag(270396268,
             "ENABLE_TASKBAR_EDU_TOOLTIP", true,
             "Enable the tooltip version of the Taskbar education flow.");
@@ -384,10 +376,6 @@ public final class FeatureFlags {
             "ENABLE_KEYBOARD_QUICK_SWITCH", false,
             "Enables keyboard quick switching");
 
-    public static final BooleanFlag ENABLE_SMARTSPACE_DEFAULT_DATE_REMOVED = getDebugFlag(269761613,
-            "ENABLE_SMARTSPACE_DEFAULT_DATE_REMOVED", false,
-            "Enables remove smartspace default date");
-
     public static class BooleanFlag {
 
         private final boolean mCurrentValue;
@@ -397,6 +385,22 @@ public final class FeatureFlags {
         }
 
         public boolean get() {
+            return mCurrentValue;
+        }
+    }
+
+    /**
+     * Class representing an integer flag
+     */
+    public static class IntFlag {
+
+        private final int mCurrentValue;
+
+        public IntFlag(int currentValue) {
+            mCurrentValue = currentValue;
+        }
+
+        public int get() {
             return mCurrentValue;
         }
     }
