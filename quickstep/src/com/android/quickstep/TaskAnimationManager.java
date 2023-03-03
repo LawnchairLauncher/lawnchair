@@ -231,7 +231,6 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
 
         if (ENABLE_SHELL_TRANSITIONS) {
             RemoteTransition transition = newRemoteTransition(mCallbacks,
-                    mController != null ? mController.getController() : null,
                     mCtx.getIApplicationThread());
             final ActivityOptions options = ActivityOptions.makeRemoteTransition(transition);
             // Allowing to pause Home if Home is top activity and Recents is not Home. So when user
