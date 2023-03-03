@@ -876,7 +876,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * as if the user tapped on it (preserving the split pair). Otherwise, launch it normally
      * (potentially breaking a split pair).
      */
-    private void launchFromTaskbarPreservingSplitIfVisible(RecentsView recents, ItemInfo info) {
+    private void launchFromTaskbarPreservingSplitIfVisible(@Nullable RecentsView recents,
+            ItemInfo info) {
+        if (recents == null) {
+            return;
+        }
         ComponentKey componentToBeLaunched = new ComponentKey(info.getTargetComponent(), info.user);
         recents.getSplitSelectController().findLastActiveTaskAndRunCallback(
                 componentToBeLaunched,
