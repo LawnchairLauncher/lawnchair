@@ -128,6 +128,11 @@ message TaskBarContainer {
 
   // Bit encoded value to capture pinned and predicted taskbar positions.
   optional int32 cardinality = 2;
+
+  // Container where taskbar was invoked.
+  oneof ParentContainer {
+    TaskSwitcherContainer task_switcher_container = 3;
+  }
 }
 
 // Next value 44
