@@ -147,6 +147,8 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DynamicResource;
@@ -1718,7 +1720,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             int finalTargetPage = targetPage;
             runOnPageScrollsInitialized(() -> {
                 // TODO(b/246283207): Remove logging once root cause of flake detected.
-                if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                if (Utilities.isRunningInTestHarness()) {
                     Log.d("b/246283207", "RecentsView#applyLoadPlan() -> "
                             + "previousCurrentPage: " + previousCurrentPage
                             + ", targetPage: " + finalTargetPage
@@ -4491,6 +4493,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Attempts to initiate split with an existing taskView, if one exists
      */
     public void initiateSplitSelect(SplitSelectSource splitSelectSource) {
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "enterSplitSelect");
         mSplitSelectSource = splitSelectSource;
         mSplitHiddenTaskView = getTaskViewByTaskId(splitSelectSource.alreadyRunningTaskId);
         mSplitHiddenTaskViewIndex = indexOfChild(mSplitHiddenTaskView);

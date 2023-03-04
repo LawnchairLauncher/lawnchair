@@ -28,7 +28,6 @@ import com.airbnb.lottie.LottieProperty.COLOR_FILTER
 import com.airbnb.lottie.model.KeyPath
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.Utilities.IS_RUNNING_IN_TEST_HARNESS
 import com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_EDU_TOOLTIP
 import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_EDU_OPEN
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
@@ -56,7 +55,8 @@ annotation class TaskbarEduTooltipStep
 class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
     LoggableTaskbarController {
 
-    private val isTooltipEnabled = !IS_RUNNING_IN_TEST_HARNESS && ENABLE_TASKBAR_EDU_TOOLTIP.get()
+    private val isTooltipEnabled: Boolean
+        get() = !Utilities.isRunningInTestHarness() && ENABLE_TASKBAR_EDU_TOOLTIP.get()
     private val isOpen: Boolean
         get() = tooltip?.isOpen ?: false
 

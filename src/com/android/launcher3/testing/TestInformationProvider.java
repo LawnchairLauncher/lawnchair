@@ -61,7 +61,7 @@ public class TestInformationProvider extends ContentProvider {
 
     @Override
     public Bundle call(String method, String arg, Bundle extras) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+        if (Utilities.isRunningInTestHarness()) {
             TestInformationHandler handler = TestInformationHandler.newInstance(getContext());
             handler.init(getContext());
 
