@@ -139,11 +139,11 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         // TODO(b/258604917): When running in test harness, use !sTransientTaskbarStatusForTests
         //  once tests are updated to expect new persistent behavior such as not allowing long press
         //  to stash.
-        if (!Utilities.IS_RUNNING_IN_TEST_HARNESS && FORCE_PERSISTENT_TASKBAR.get()) {
+        if (!Utilities.isRunningInTestHarness() && FORCE_PERSISTENT_TASKBAR.get()) {
             return false;
         }
         return getInfo().navigationMode == NavigationMode.NO_BUTTON
-                && (Utilities.IS_RUNNING_IN_TEST_HARNESS
+                && (Utilities.isRunningInTestHarness()
                     ? sTransientTaskbarStatusForTests
                     : ENABLE_TRANSIENT_TASKBAR.get());
     }

@@ -827,6 +827,6 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private boolean hasSeenReconfigurableWidgetEducationTip() {
         return mLauncher.getSharedPrefs()
                 .getBoolean(KEY_RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN, false)
-                || Utilities.IS_RUNNING_IN_TEST_HARNESS;
+                || Utilities.isRunningInTestHarness();
     }
 }
