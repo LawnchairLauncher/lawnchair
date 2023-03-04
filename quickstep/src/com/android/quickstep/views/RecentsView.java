@@ -450,6 +450,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected final Rect mLastComputedTaskSize = new Rect();
     protected final Rect mLastComputedGridSize = new Rect();
     protected final Rect mLastComputedGridTaskSize = new Rect();
+    protected final Rect mLastComputedDesktopTaskSize = new Rect();
     private TaskView mSelectedTask = null;
     // How much a task that is directly offscreen will be pushed out due to RecentsView scale/pivot.
     @Nullable
@@ -704,6 +705,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private OverviewActionsView mActionsView;
     private ObjectAnimator mActionsViewAlphaAnimator;
     private float mActionsViewAlphaAnimatorFinalValue;
+
+    /**
+     * Keeps track of the desktop task. Optional and only present when the feature flag is enabled.
+     */
+    @Nullable
+    private DesktopTaskView mDesktopTaskView;
 
     private MultiWindowModeChangedListener mMultiWindowModeChangedListener =
             new MultiWindowModeChangedListener() {
@@ -1585,6 +1592,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // update the map of instance counts
         mFilterState.updateInstanceCountMap(taskGroups);
 
+        // Clear out desktop view if it is set
+        mDesktopTaskView = null;
         DesktopTask desktopTask = null;
 
         // Add views as children based on whether it's grouped or single task. Looping through
@@ -1643,12 +1652,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (!taskGroups.isEmpty()) {
             addView(mClearAllButton);
 
-            if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
-                TaskView taskView = getTaskViewFromPool(TaskView.Type.DESKTOP);
+            if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED
+                    && !getSplitSelectController().isSplitSelectActive()) {
+                mDesktopTaskView = (DesktopTaskView) getTaskViewFromPool(TaskView.Type.DESKTOP);
                 // Always add a desktop task to the first position. Even if it is empty
-                addView(taskView, 0);
+                addView(mDesktopTaskView, 0);
                 ArrayList<Task> tasks = desktopTask != null ? desktopTask.tasks : new ArrayList<>();
-                ((DesktopTaskView) taskView).bind(tasks, mOrientationState);
+                mDesktopTaskView.bind(tasks, mOrientationState);
             }
         }
 
@@ -1940,6 +1950,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mLastComputedGridSize);
         mSizeStrategy.calculateGridTaskSize(mActivity, mActivity.getDeviceProfile(),
                 mLastComputedGridTaskSize, mOrientationHandler);
+        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+            mSizeStrategy.calculateDesktopTaskSize(mActivity, mActivity.getDeviceProfile(),
+                    mLastComputedDesktopTaskSize);
+        }
 
         mTaskGridVerticalDiff = mLastComputedGridTaskSize.top - mLastComputedTaskSize.top;
         mTopBottomRowHeightDiff =
@@ -2028,6 +2042,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     public Rect getLastComputedGridTaskSize() {
         return mLastComputedGridTaskSize;
+    }
+
+    /** Gets the last computed desktop task size */
+    public Rect getLastComputedDesktopTaskSize() {
+        return mLastComputedDesktopTaskSize;
     }
 
     /** Gets the task size for modal state. */
@@ -2764,10 +2783,17 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             } else if (taskView.isDesktopTask()) {
                 // Desktop task was not focused. Pin it to the right of focused
                 desktopTaskIndex = i;
-                gridTranslations[i] += mIsRtl ? taskWidthAndSpacing : -taskWidthAndSpacing;
+                if (taskView.getVisibility() == View.GONE) {
+                    // Desktop task view is hidden, skip it from grid calculations
+                    continue;
+                }
+                if (!ENABLE_GRID_ONLY_OVERVIEW.get()) {
+                    // Only apply x-translation when using legacy overview grid
+                    gridTranslations[i] += mIsRtl ? taskWidthAndSpacing : -taskWidthAndSpacing;
+                }
 
                 // Center view vertically in case it's from different orientation.
-                taskView.setGridTranslationY((mLastComputedTaskSize.height() + taskTopMargin
+                taskView.setGridTranslationY((mLastComputedDesktopTaskSize.height() + taskTopMargin
                         - taskView.getLayoutParams().height) / 2f);
             } else {
                 if (i > focusedTaskIndex) {
@@ -4454,6 +4480,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSplitSelectStateController.setAnimateCurrentTaskDismissal(
                 true /*animateCurrentTaskDismissal*/);
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
+        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+            updateDesktopTaskVisibility(false /* visible */);
+        }
     }
 
     /**
@@ -4470,6 +4499,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSplitSelectStateController.setInitialTaskSelect(splitSelectSource.intent,
                 splitSelectSource.position.stagePosition, splitSelectSource.itemInfo,
                 splitSelectSource.splitEvent, splitSelectSource.alreadyRunningTaskId);
+        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+            updateDesktopTaskVisibility(false /* visible */);
+        }
+    }
+
+    private void updateDesktopTaskVisibility(boolean visible) {
+        if (mDesktopTaskView != null) {
+            mDesktopTaskView.setVisibility(visible ? VISIBLE : GONE);
+        }
     }
 
     /**
@@ -4619,6 +4657,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (mSplitHiddenTaskView != null) {
             mSplitHiddenTaskView.setThumbnailVisibility(VISIBLE);
             mSplitHiddenTaskView = null;
+        }
+        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+            updateDesktopTaskVisibility(true /* visible */);
         }
     }
 
@@ -4991,8 +5032,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mRemoteTargetHandles = gluer.assignTargetsForDesktop(recentsAnimationTargets);
         } else {
             gluer = new RemoteTargetGluer(getContext(), getSizeStrategy());
-            mRemoteTargetHandles = gluer.assignTargetsForSplitScreen(
-                    getContext(), recentsAnimationTargets);
+            mRemoteTargetHandles = gluer.assignTargetsForSplitScreen(recentsAnimationTargets);
         }
         mSplitBoundsConfig = gluer.getSplitBounds();
         // Add release check to the targets from the RemoteTargetGluer and not the targets

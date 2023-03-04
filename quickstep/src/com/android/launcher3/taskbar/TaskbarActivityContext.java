@@ -45,6 +45,7 @@ import android.content.pm.LauncherApps;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.hardware.display.DisplayManager;
 import android.os.Process;
 import android.os.SystemProperties;
 import android.os.Trace;
@@ -218,8 +219,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarScrimViewController(this, taskbarScrimView),
                 new TaskbarUnfoldAnimationController(this, unfoldTransitionProgressProvider,
                     mWindowManager,
-                    new RotationChangeProvider(WindowManagerGlobal.getWindowManagerService(), this,
-                        getMainExecutor())),
+                    new RotationChangeProvider(c.getSystemService(DisplayManager.class), this,
+                        getMainThreadHandler())),
                 new TaskbarKeyguardController(this),
                 new StashedHandleViewController(this, stashedHandleView),
                 new TaskbarStashController(this),
@@ -876,7 +877,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * as if the user tapped on it (preserving the split pair). Otherwise, launch it normally
      * (potentially breaking a split pair).
      */
-    private void launchFromTaskbarPreservingSplitIfVisible(RecentsView recents, ItemInfo info) {
+    private void launchFromTaskbarPreservingSplitIfVisible(@Nullable RecentsView recents,
+            ItemInfo info) {
+        if (recents == null) {
+            return;
+        }
         ComponentKey componentToBeLaunched = new ComponentKey(info.getTargetComponent(), info.user);
         recents.getSplitSelectController().findLastActiveTaskAndRunCallback(
                 componentToBeLaunched,
