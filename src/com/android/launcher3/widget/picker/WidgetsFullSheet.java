@@ -201,6 +201,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private TextView mHeaderTitle;
     private FrameLayout mRightPane;
     private WidgetsListTableViewHolderBinder mWidgetsListTableViewHolderBinder;
+    private DeviceProfile mDeviceProfile;
     private final boolean mIsTwoPane;
 
     private int mOrientation;
@@ -210,8 +211,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     public WidgetsFullSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        DeviceProfile dp = Launcher.getLauncher(context).getDeviceProfile();
-        mIsTwoPane = dp.isTablet && dp.isLandscape && LARGE_SCREEN_WIDGET_PICKER.get();
+        mDeviceProfile = Launcher.getLauncher(context).getDeviceProfile();
+        mIsTwoPane = mDeviceProfile.isTablet
+                && mDeviceProfile.isLandscape
+                && LARGE_SCREEN_WIDGET_PICKER.get();
         mHasWorkProfile = context.getSystemService(LauncherApps.class).getProfiles().size() > 1;
         mAdapters.put(AdapterHolder.PRIMARY, new AdapterHolder(AdapterHolder.PRIMARY));
         mAdapters.put(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK));
@@ -874,7 +877,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
 
         // Checks the orientation of the screen
-        if (LARGE_SCREEN_WIDGET_PICKER.get() && mOrientation != newConfig.orientation) {
+        if (LARGE_SCREEN_WIDGET_PICKER.get()
+                && mOrientation != newConfig.orientation
+                && mDeviceProfile.isTablet) {
             mOrientation = newConfig.orientation;
             handleClose(false);
             show(Launcher.getLauncher(getContext()), false);
