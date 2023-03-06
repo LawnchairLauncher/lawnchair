@@ -116,7 +116,8 @@ android_test {
     manifest: "AndroidManifest.xml",
     platform_apis: true,
     test_config: "Launcher3Tests.xml",
-    data: [":Launcher3"]
+    data: [":Launcher3"],
+    test_suites: ["general-tests"],
 }
 
 // Shared between tests and launcher
