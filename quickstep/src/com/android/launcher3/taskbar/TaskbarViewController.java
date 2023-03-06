@@ -349,7 +349,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                         MULTI_PROPERTY_VALUE, isStashed
                                 ? new float[] {croppedTransX}
                                 : new float[] {croppedTransX, 0}));
-                as.play(ObjectAnimator.ofFloat(mtd.getTranslationX(INDEX_TASKBAR_REVEAL_ANIM),
+                as.play(ObjectAnimator.ofFloat(mtd.getTranslationY(INDEX_TASKBAR_REVEAL_ANIM),
                         MULTI_PROPERTY_VALUE, isStashed
                                 ? new float[] {croppedTransY}
                                 : new float[] {croppedTransY, 0}));
@@ -503,7 +503,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
                 setter.setFloat(mtd.getTranslationX(INDEX_TASKBAR_ALIGNMENT_ANIM),
                         MULTI_PROPERTY_VALUE, hotseatIconCenter - childCenter, interpolator);
-                setter.setFloat(mtd.getTranslationX(INDEX_TASKBAR_ALIGNMENT_ANIM),
+                setter.setFloat(mtd.getTranslationY(INDEX_TASKBAR_ALIGNMENT_ANIM),
                         MULTI_PROPERTY_VALUE, mTaskbarBottomMargin, interpolator);
             } else {
                 setter.setFloat(child, VIEW_TRANSLATE_X,
