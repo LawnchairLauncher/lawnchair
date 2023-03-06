@@ -163,6 +163,13 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         return ColorUtils.HSLToColor(colorHSL);
     }
 
+    /**
+     * Returns the icon touch size.
+     */
+    public int getIconTouchSize() {
+        return mIconTouchSize;
+    }
+
     private int calculateThemeIconsBackground() {
         int color = ThemedIconDrawable.getColors(mContext)[0];
         if (Utilities.isDarkTheme(mContext)) {
