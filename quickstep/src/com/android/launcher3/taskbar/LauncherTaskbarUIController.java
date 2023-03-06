@@ -25,7 +25,6 @@ import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITION
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
-import android.annotation.ColorInt;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.TaskTransitionSpec;
@@ -223,17 +222,10 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                 WindowManagerGlobal.getWindowManagerService().clearTaskTransitionSpec();
             } else {
                 // Adjust task transition spec to account for taskbar being visible
-                @ColorInt int taskAnimationBackgroundColor =
-                        DisplayController.isTransientTaskbar(mLauncher)
-                                ? mLauncher.getColor(R.color.transient_taskbar_background)
-                                : mLauncher.getColor(R.color.taskbar_background);
-
-                TaskTransitionSpec customTaskAnimationSpec = new TaskTransitionSpec(
-                        taskAnimationBackgroundColor,
-                        Set.of(ITYPE_EXTRA_NAVIGATION_BAR)
-                );
-                WindowManagerGlobal.getWindowManagerService()
-                        .setTaskTransitionSpec(customTaskAnimationSpec);
+                WindowManagerGlobal.getWindowManagerService().setTaskTransitionSpec(
+                        new TaskTransitionSpec(
+                                mLauncher.getColor(R.color.taskbar_background),
+                                Set.of(ITYPE_EXTRA_NAVIGATION_BAR)));
             }
         } catch (RemoteException e) {
             // This shouldn't happen but if it does task animations won't look good until the
