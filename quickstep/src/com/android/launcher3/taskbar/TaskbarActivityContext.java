@@ -45,6 +45,7 @@ import android.content.pm.LauncherApps;
 import android.content.res.Resources;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.hardware.display.DisplayManager;
 import android.os.Process;
 import android.os.SystemProperties;
 import android.os.Trace;
@@ -219,8 +220,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarScrimViewController(this, taskbarScrimView),
                 new TaskbarUnfoldAnimationController(this, unfoldTransitionProgressProvider,
                     mWindowManager,
-                    new RotationChangeProvider(WindowManagerGlobal.getWindowManagerService(), this,
-                        getMainExecutor())),
+                    new RotationChangeProvider(c.getSystemService(DisplayManager.class), this,
+                        getMainThreadHandler())),
                 new TaskbarKeyguardController(this),
                 new StashedHandleViewController(this, stashedHandleView),
                 new TaskbarStashController(this),
