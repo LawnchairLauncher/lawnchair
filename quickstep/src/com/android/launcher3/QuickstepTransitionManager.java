@@ -300,7 +300,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         ItemInfo tag = (ItemInfo) v.getTag();
         if (tag != null && tag.shouldUseBackgroundAnimation()) {
             ContainerAnimationRunner containerAnimationRunner =
-                    ContainerAnimationRunner.from(v, mStartingWindowListener);
+                    ContainerAnimationRunner.from(v, mStartingWindowListener, onEndCallback);
             if (containerAnimationRunner != null) {
                 delegateRunner = containerAnimationRunner;
             }
@@ -1764,7 +1764,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         @Nullable
         private static ContainerAnimationRunner from(
-                View v, StartingWindowListener startingWindowListener) {
+                View v, StartingWindowListener startingWindowListener, RunnableList onEndCallback) {
             View viewToUse = findViewWithBackground(v);
             if (viewToUse == null) {
                 viewToUse = v;
@@ -1791,8 +1791,15 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             ActivityLaunchAnimator.Callback callback = task -> ColorUtils.setAlphaComponent(
                     startingWindowListener.getBackgroundColor(), 255);
 
+            ActivityLaunchAnimator.Listener listener = new ActivityLaunchAnimator.Listener() {
+                @Override
+                public void onLaunchAnimationEnd() {
+                    onEndCallback.executeAllAndDestroy();
+                }
+            };
+
             return new ContainerAnimationRunner(
-                    new ActivityLaunchAnimator.AnimationDelegate(controller, callback));
+                    new ActivityLaunchAnimator.AnimationDelegate(controller, callback, listener));
         }
 
         /** Finds the closest parent of [view] (inclusive) with a background drawable. */
