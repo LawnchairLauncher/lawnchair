@@ -190,7 +190,7 @@ public final class TaskViewUtils {
             if (forDesktop) {
                 remoteTargetHandles = gluer.assignTargetsForDesktop(targets);
             } else if (v.containsMultipleTasks()) {
-                remoteTargetHandles = gluer.assignTargetsForSplitScreen(targets, v.getTaskIds());
+                remoteTargetHandles = gluer.assignTargetsForSplitScreen(targets);
             } else {
                 remoteTargetHandles = gluer.assignTargets(targets);
             }
