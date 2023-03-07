@@ -30,7 +30,9 @@ import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
 import android.graphics.Point;
+import android.os.SystemClock;
 import android.platform.test.annotations.IwTest;
+import android.util.Log;
 
 import androidx.test.filters.FlakyTest;
 import androidx.test.filters.LargeTest;
@@ -535,9 +537,11 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     public void testDragAppIconToWorkspaceCell() throws Exception {
+        long startTime, endTime, elapsedTime;
         Point[] targets = getCornersAndCenterPositions();
 
         for (Point target : targets) {
+            startTime = SystemClock.uptimeMillis();
             final HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
             allApps.freeze();
             try {
@@ -547,12 +551,21 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             }
             // Reset the workspace for the next shortcut creation.
             initialize(this);
+            endTime = SystemClock.uptimeMillis();
+            elapsedTime = endTime - startTime;
+            Log.d("testDragAppIconToWorkspaceCellTime",
+                    "Milliseconds taken to drag app icon to workspace cell: " + elapsedTime);
         }
 
         // test to move a shortcut to other cell.
         final HomeAppIcon launcherTestAppIcon = createShortcutInCenterIfNotExist(APP_NAME);
         for (Point target : targets) {
+            startTime = SystemClock.uptimeMillis();
             launcherTestAppIcon.dragToWorkspace(target.x, target.y);
+            endTime = SystemClock.uptimeMillis();
+            elapsedTime = endTime - startTime;
+            Log.d("testDragAppIconToWorkspaceCellTime",
+                    "Milliseconds taken to move shortcut to other cell: " + elapsedTime);
         }
     }
 
