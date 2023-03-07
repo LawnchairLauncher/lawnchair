@@ -1152,6 +1152,10 @@ public class TouchInteractionService extends Service
             return;
         }
 
+        // TODO(b/258022658): Remove temporary logging.
+        Log.i(TAG, "preloadOverview: forSUWAllSet=" + forSUWAllSet
+                + ", isHomeAndOverviewSame=" + mOverviewComponentObserver.isHomeAndOverviewSame());
+
         mTaskAnimationManager.preloadRecentsAnimation(overviewIntent);
     }
 
