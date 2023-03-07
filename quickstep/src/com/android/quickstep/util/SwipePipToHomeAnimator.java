@@ -150,7 +150,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             // to other classes like PipTaskOrganizer / RecentsAnimationController to complete
             // the cleanup.
             if (SystemProperties.getBoolean(
-                    "persist.wm.debug.enable_pip_app_icon_overlay", false)) {
+                    "persist.wm.debug.enable_pip_app_icon_overlay", true)) {
                 mPipContentOverlay = new PipContentOverlay.PipAppIconOverlay(view.getContext(),
                         mAppBounds, mActivityInfo);
             }  else {
