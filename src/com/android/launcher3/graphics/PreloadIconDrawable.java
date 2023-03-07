@@ -92,7 +92,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     private static final int PRELOAD_BACKGROUND_COLOR_INDEX = 1;
 
     private static final int ALPHA_DURATION_MILLIS = 3000;
-    private static final int OVERLAY_ALPHA_RANGE = 127;
+    private static final int OVERLAY_ALPHA_RANGE = 191;
     private static final long WAVE_MOTION_DELAY_FACTOR_MILLIS = 100;
     private static final WeakHashMap<Integer, PorterDuffColorFilter> COLOR_FILTER_MAP =
             new WeakHashMap<>();
