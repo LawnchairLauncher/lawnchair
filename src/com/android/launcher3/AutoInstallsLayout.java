@@ -16,11 +16,14 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
@@ -40,9 +43,12 @@ import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.qsb.QsbContainerView;
+import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.Partner;
 import com.android.launcher3.util.Thunk;
@@ -53,6 +59,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -162,7 +169,7 @@ public class AutoInstallsLayout {
     private final InvariantDeviceProfile mIdp;
     private final int mRowCount;
     private final int mColumnCount;
-
+    private final Map<String, LauncherActivityInfo> mActivityOverride;
     private final int[] mTemp = new int[2];
     @Thunk
     final ContentValues mValues;
@@ -193,6 +200,7 @@ public class AutoInstallsLayout {
         mIdp = LauncherAppState.getIDP(context);
         mRowCount = mIdp.numRows;
         mColumnCount = mIdp.numColumns;
+        mActivityOverride = ApiWrapper.getActivityOverrides(context);
     }
 
     /**
@@ -299,6 +307,9 @@ public class AutoInstallsLayout {
         mValues.put(Favorites.SPANX, 1);
         mValues.put(Favorites.SPANY, 1);
         mValues.put(Favorites._ID, id);
+
+        maybeReplaceShortcut(intent.getComponent().getPackageName(), type);
+
         if (mCallback.insertAndCheck(mDb, mValues) < 0) {
             return -1;
         } else {
@@ -364,7 +375,7 @@ public class AutoInstallsLayout {
                                     | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
                     return addShortcut(info.loadLabel(mPackageManager).toString(),
-                            intent, Favorites.ITEM_TYPE_APPLICATION);
+                            intent, ITEM_TYPE_APPLICATION);
                 } catch (PackageManager.NameNotFoundException e) {
                     Log.e(TAG, "Favorite not found: " + packageName + "/" + className);
                 }
@@ -404,7 +415,7 @@ public class AutoInstallsLayout {
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             return addShortcut(mContext.getString(R.string.package_state_unknown), intent,
-                    Favorites.ITEM_TYPE_APPLICATION);
+                    ITEM_TYPE_APPLICATION);
         }
     }
 
@@ -573,8 +584,7 @@ public class AutoInstallsLayout {
         }
 
         @Override
-        public int parseAndAdd(XmlPullParser parser)
-                throws XmlPullParserException, IOException {
+        public int parseAndAdd(XmlPullParser parser) throws XmlPullParserException, IOException {
             final String title;
             final int titleResId = getAttributeResourceValue(parser, ATTR_TITLE, 0);
             if (titleResId != 0) {
@@ -716,5 +726,14 @@ public class AutoInstallsLayout {
     @Thunk
     static void copyInteger(ContentValues from, ContentValues to, String key) {
         to.put(key, from.getAsInteger(key));
+    }
+
+    private void maybeReplaceShortcut(String packageName, int type) {
+        if (mActivityOverride.containsKey(packageName) && type == ITEM_TYPE_APPLICATION) {
+            LauncherActivityInfo replacementInfo = mActivityOverride.get(packageName);
+            mValues.put(Favorites.PROFILE_ID, UserCache.INSTANCE.get(mContext)
+                    .getSerialNumberForUser(replacementInfo.getUser()));
+            mValues.put(Favorites.INTENT, AppInfo.makeLaunchIntent(replacementInfo).toUri(0));
+        }
     }
 }
