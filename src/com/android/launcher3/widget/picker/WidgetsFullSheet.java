@@ -53,6 +53,7 @@ import android.widget.TextView;
 import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.Px;
 import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.RecyclerView;
@@ -181,14 +182,13 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
     };
 
-    private final int mTabsHeight;
-    private final int mWidgetSheetContentHorizontalPadding;
+    @Px private final int mTabsHeight;
 
     @Nullable private WidgetsRecyclerView mCurrentWidgetsRecyclerView;
     @Nullable private PersonalWorkPagedView mViewPager;
     private boolean mIsInSearchMode;
     private boolean mIsNoWidgetsViewNeeded;
-    private int mMaxSpansPerRow = DEFAULT_MAX_HORIZONTAL_SPANS;
+    @Px private int mMaxSpanPerRow;
     private TextView mNoWidgetsView;
 
     private StickyHeaderLayout mSearchScrollView;
@@ -224,8 +224,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mTabsHeight = mHasWorkProfile
                 ? resources.getDimensionPixelSize(R.dimen.all_apps_header_pill_height)
                 : 0;
-        mWidgetSheetContentHorizontalPadding = 2 * resources.getDimensionPixelSize(
-                R.dimen.widget_cell_horizontal_padding);
 
         mUserManagerState.init(UserCache.INSTANCE.get(context),
                 context.getSystemService(UserManager.class));
@@ -337,7 +335,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 : mSearchScrollView.findViewById(R.id.title);
         mRightPane = mIsTwoPane ? mContent.findViewById(R.id.right_pane) : null;
         mWidgetsListTableViewHolderBinder =
-                new WidgetsListTableViewHolderBinder(layoutInflater, this, this);
+                new WidgetsListTableViewHolderBinder(mActivityContext, layoutInflater, this, this);
         onRecommendedWidgetsBound();
         onWidgetsBound();
 
@@ -536,22 +534,20 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         View content = mHasWorkProfile
                 ? mViewPager
                 : mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView;
-
         if (mIsTwoPane && mRightPane != null) {
             content = mRightPane;
         }
 
-        int maxHorizontalSpans = computeMaxHorizontalSpans(content,
-                mWidgetSheetContentHorizontalPadding);
-        if (mMaxSpansPerRow != maxHorizontalSpans) {
-            mMaxSpansPerRow = maxHorizontalSpans;
-            mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
-                    mMaxSpansPerRow);
-            mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
-                    mMaxSpansPerRow);
+        @Px int maxHorizontalSpan = content.getMeasuredWidth() - (2 * mContentHorizontalMargin);
+        if (mMaxSpanPerRow != maxHorizontalSpan) {
+            mMaxSpanPerRow = maxHorizontalSpan;
+            mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.setMaxHorizontalSpansPxPerRow(
+                    maxHorizontalSpan);
+            mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.setMaxHorizontalSpansPxPerRow(
+                    maxHorizontalSpan);
             if (mHasWorkProfile) {
-                mAdapters.get(AdapterHolder.WORK).mWidgetsListAdapter.setMaxHorizontalSpansPerRow(
-                        mMaxSpansPerRow);
+                mAdapters.get(AdapterHolder.WORK).mWidgetsListAdapter.setMaxHorizontalSpansPxPerRow(
+                        maxHorizontalSpan);
             }
             onRecommendedWidgetsBound();
             return true;
@@ -700,8 +696,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     - noWidgetsViewHeight) * RECOMMENDATION_TABLE_HEIGHT_RATIO;
 
             List<ArrayList<WidgetItem>> recommendedWidgetsInTable =
-                    WidgetsTableUtils.groupWidgetItemsIntoTableWithoutReordering(
-                            recommendedWidgets, mMaxSpansPerRow);
+                    WidgetsTableUtils.groupWidgetItemsUsingRowPxWithoutReordering(
+                            recommendedWidgets,
+                            mActivityContext,
+                            mActivityContext.getDeviceProfile(),
+                            mMaxSpanPerRow,
+                            mWidgetCellHorizontalPadding);
             mRecommendedWidgetsTable.setRecommendedWidgets(
                     recommendedWidgetsInTable, maxTableHeight);
         } else {
@@ -1051,7 +1051,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             if (mAdapterType == PRIMARY || mAdapterType == WORK) {
                 mWidgetsRecyclerView.addOnAttachStateChangeListener(mBindScrollbarInSearchMode);
             }
-            mWidgetsListAdapter.setMaxHorizontalSpansPerRow(mMaxSpansPerRow);
+            mWidgetsListAdapter.setMaxHorizontalSpansPxPerRow(mMaxSpanPerRow);
         }
     }
 

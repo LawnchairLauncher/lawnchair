@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.widget.picker;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.util.Pair;
@@ -27,9 +28,13 @@ import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Px;
+
 import com.android.launcher3.R;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.util.WidgetsTableUtils;
@@ -47,13 +52,21 @@ public final class WidgetsListTableViewHolderBinder
 
     private final LayoutInflater mLayoutInflater;
     private final OnClickListener mIconClickListener;
+    private @NonNull final Context mContext;
+    private @NonNull final ActivityContext mActivityContext;
+    @Px private final int mCellPadding;
     private final OnLongClickListener mIconLongClickListener;
 
     public WidgetsListTableViewHolderBinder(
+            @NonNull Context context,
             LayoutInflater layoutInflater,
             OnClickListener iconClickListener,
             OnLongClickListener iconLongClickListener) {
         mLayoutInflater = layoutInflater;
+        mContext = context;
+        mActivityContext = ActivityContext.lookupContext(context);
+        mCellPadding = context.getResources().getDimensionPixelSize(
+                R.dimen.widget_cell_horizontal_padding);
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
     }
@@ -87,8 +100,11 @@ public final class WidgetsListTableViewHolderBinder
                         (position & POSITION_LAST) != 0));
 
         List<ArrayList<WidgetItem>> widgetItemsTable =
-                WidgetsTableUtils.groupWidgetItemsIntoTableWithReordering(
-                        entry.mWidgets, entry.getMaxSpanSizeInCells());
+                WidgetsTableUtils.groupWidgetItemsUsingRowPxWithReordering(entry.mWidgets,
+                        mContext,
+                        mActivityContext.getDeviceProfile(),
+                        entry.getMaxSpanSize(),
+                        mCellPadding);
         recycleTableBeforeBinding(table, widgetItemsTable);
 
         // Bind the widget items.
