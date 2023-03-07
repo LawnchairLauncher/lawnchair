@@ -19,6 +19,7 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_T
 
 import android.content.Context;
 import android.graphics.Insets;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,6 +34,10 @@ import com.android.launcher3.Utilities;
 
 /** Root layout that TutorialFragment uses to intercept motion events. */
 public class RootSandboxLayout extends RelativeLayout {
+
+    private final Rect mTempStepIndicatorBounds = new Rect();
+    private final Rect mTempInclusionBounds = new Rect();
+    private final Rect mTempExclusionBounds = new Rect();
 
     private View mFeedbackView;
     private View mTutorialStepView;
@@ -98,18 +103,23 @@ public class RootSandboxLayout extends RelativeLayout {
 
     private void updateTutorialStepViewTranslation(
             @NonNull View anchorView, boolean translateToRight) {
-        mTutorialStepView.setTranslationX(translateToRight
-                ? Math.min(
-                        // Translate to the right if the views are overlapping on large fonts and
-                        // display sizes.
-                        Math.max(0, anchorView.getRight() - mTutorialStepView.getLeft()),
-                        // Do not translate beyond the bounds of the container view.
-                        mFeedbackView.getWidth() - mTutorialStepView.getRight())
-                : Math.max(
-                        // Translate to the left if the views are overlapping on large fonts and
-                        // display sizes.
-                        Math.min(0, anchorView.getLeft() - mTutorialStepView.getRight()),
-                        // Do not translate beyond the bounds of the container view.
-                        -mTutorialStepView.getLeft()));
+        mTempStepIndicatorBounds.set(
+                mTutorialStepView.getLeft(),
+                mTutorialStepView.getTop(),
+                mTutorialStepView.getRight(),
+                mTutorialStepView.getBottom());
+        mTempInclusionBounds.set(0, 0, mFeedbackView.getWidth(), mFeedbackView.getHeight());
+        mTempExclusionBounds.set(
+                anchorView.getLeft(),
+                anchorView.getTop(),
+                anchorView.getRight(),
+                anchorView.getBottom());
+
+        Utilities.translateOverlappingView(
+                mTutorialStepView,
+                mTempStepIndicatorBounds,
+                mTempInclusionBounds,
+                mTempExclusionBounds,
+                translateToRight ? Utilities.TRANSLATE_RIGHT : Utilities.TRANSLATE_LEFT);
     }
 }
