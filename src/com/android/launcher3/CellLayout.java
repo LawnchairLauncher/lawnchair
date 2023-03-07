@@ -65,6 +65,7 @@ import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.CellPosMapper.CellPos;
+import com.android.launcher3.celllayout.ReorderAlgorithm;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.PreviewBackground;
@@ -115,7 +116,7 @@ public class CellLayout extends ViewGroup {
     final PointF mTmpPointF = new PointF();
 
     protected GridOccupancy mOccupied;
-    protected GridOccupancy mTmpOccupied;
+    public GridOccupancy mTmpOccupied;
 
     private OnTouchListener mInterceptTouchListener;
 
@@ -194,7 +195,7 @@ public class CellLayout extends ViewGroup {
 
     private final ArrayList<View> mIntersectingViews = new ArrayList<>();
     private final Rect mOccupiedRect = new Rect();
-    private final int[] mDirectionVector = new int[2];
+    public final int[] mDirectionVector = new int[2];
 
     ItemConfiguration mPreviousSolution = null;
     private static final int INVALID_DIRECTION = -100;
@@ -1246,8 +1247,8 @@ public class CellLayout extends ViewGroup {
      * @return The X, Y cell of a vacant area that can contain this object,
      *         nearest the requested location.
      */
-    int[] findNearestVacantArea(int pixelX, int pixelY, int minSpanX, int minSpanY, int spanX,
-            int spanY, int[] result, int[] resultSpan) {
+    public int[] findNearestVacantArea(int pixelX, int pixelY, int minSpanX, int minSpanY,
+            int spanX, int spanY, int[] result, int[] resultSpan) {
         return findNearestArea(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, false,
                 result, resultSpan);
     }
@@ -1378,6 +1379,10 @@ public class CellLayout extends ViewGroup {
             bestXY[1] = -1;
         }
         return bestXY;
+    }
+
+    public GridOccupancy getOccupied() {
+        return mOccupied;
     }
 
     private void copySolutionToTempState(ItemConfiguration solution, View dragView) {
@@ -1655,38 +1660,8 @@ public class CellLayout extends ViewGroup {
         }
     }
 
-    /**
-     * Returns a "reorder" where we simply drop the item in the closest empty space, without moving
-     * any other item in the way.
-     *
-     * @param pixelX X coordinate in pixels in the screen
-     * @param pixelY Y coordinate in pixels in the screen
-     * @param spanX horizontal cell span
-     * @param spanY vertical cell span
-     * @return the configuration that represents the found reorder
-     */
-    ItemConfiguration closestEmptySpaceReorder(int pixelX, int pixelY, int minSpanX,
-            int minSpanY, int spanX, int spanY) {
-        ItemConfiguration solution = new ItemConfiguration();
-        int[] result = new int[2];
-        int[] resultSpan = new int[2];
-        findNearestVacantArea(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, result,
-                resultSpan);
-        if (result[0] >= 0 && result[1] >= 0) {
-            copyCurrentStateToSolution(solution, false);
-            solution.cellX = result[0];
-            solution.cellY = result[1];
-            solution.spanX = resultSpan[0];
-            solution.spanY = resultSpan[1];
-            solution.isSolution = true;
-        } else {
-            solution.isSolution = false;
-        }
-        return solution;
-    }
-
     // For a given cell and span, fetch the set of views intersecting the region.
-    private void getViewsIntersectingRegion(int cellX, int cellY, int spanX, int spanY,
+    public void getViewsIntersectingRegion(int cellX, int cellY, int spanX, int spanY,
             View dragView, Rect boundingRect, ArrayList<View> intersectingViews) {
         if (boundingRect != null) {
             boundingRect.set(cellX, cellY, cellX + spanX, cellY + spanY);
@@ -1711,7 +1686,7 @@ public class CellLayout extends ViewGroup {
         }
     }
 
-    boolean isNearestDropLocationOccupied(int pixelX, int pixelY, int spanX, int spanY,
+    public boolean isNearestDropLocationOccupied(int pixelX, int pixelY, int spanX, int spanY,
             View dragView, int[] result) {
         result = findNearestAreaIgnoreOccupied(pixelX, pixelY, spanX, spanY, result);
         getViewsIntersectingRegion(result[0], result[1], spanX, spanY, dragView, null,
@@ -2257,7 +2232,7 @@ public class CellLayout extends ViewGroup {
     those cells. Instead we use some heuristics to often lock the vector to up, down, left
     or right, which helps make pushing feel right.
     */
-    private void getDirectionVectorForDrop(int dragViewCenterX, int dragViewCenterY, int spanX,
+    public void getDirectionVectorForDrop(int dragViewCenterX, int dragViewCenterY, int spanX,
             int spanY, View dragView, int[] resultDirection) {
 
         //TODO(adamcohen) b/151776141 use the items visual center for the direction vector
@@ -2349,7 +2324,7 @@ public class CellLayout extends ViewGroup {
         return success;
     }
 
-    private boolean rearrangementExists(int cellX, int cellY, int spanX, int spanY, int[] direction,
+    public boolean rearrangementExists(int cellX, int cellY, int spanX, int spanY, int[] direction,
             View ignoreView, ItemConfiguration solution) {
         // Return early if get invalid cell positions
         if (cellX < 0 || cellY < 0) return false;
@@ -2405,55 +2380,18 @@ public class CellLayout extends ViewGroup {
         return true;
     }
 
+    public ReorderAlgorithm createReorderAlgorithm() {
+        return new ReorderAlgorithm(this);
+    }
+
     protected ItemConfiguration findReorderSolution(int pixelX, int pixelY, int minSpanX,
             int minSpanY, int spanX, int spanY, int[] direction, View dragView, boolean decX,
             ItemConfiguration solution) {
-        return findReorderSolutionRecursive(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY,
-                direction, dragView, decX, solution);
+        return createReorderAlgorithm().findReorderSolution(pixelX, pixelY, minSpanX, minSpanY,
+                spanX, spanY, direction, dragView, decX, solution);
     }
 
-    protected ItemConfiguration findReorderSolutionRecursive(int pixelX, int pixelY, int minSpanX,
-            int minSpanY, int spanX, int spanY, int[] direction, View dragView, boolean decX,
-            ItemConfiguration solution) {
-        // Copy the current state into the solution. This solution will be manipulated as necessary.
-        copyCurrentStateToSolution(solution, false);
-        // Copy the current occupied array into the temporary occupied array. This array will be
-        // manipulated as necessary to find a solution.
-        mOccupied.copyTo(mTmpOccupied);
-
-        // We find the nearest cell into which we would place the dragged item, assuming there's
-        // nothing in its way.
-        int result[] = new int[2];
-        result = findNearestAreaIgnoreOccupied(pixelX, pixelY, spanX, spanY, result);
-
-        boolean success;
-        // First we try the exact nearest position of the item being dragged,
-        // we will then want to try to move this around to other neighbouring positions
-        success = rearrangementExists(result[0], result[1], spanX, spanY, direction, dragView,
-                solution);
-
-        if (!success) {
-            // We try shrinking the widget down to size in an alternating pattern, shrink 1 in
-            // x, then 1 in y etc.
-            if (spanX > minSpanX && (minSpanY == spanY || decX)) {
-                return findReorderSolutionRecursive(pixelX, pixelY, minSpanX, minSpanY, spanX - 1,
-                        spanY, direction, dragView, false, solution);
-            } else if (spanY > minSpanY) {
-                return findReorderSolutionRecursive(pixelX, pixelY, minSpanX, minSpanY, spanX,
-                        spanY - 1, direction, dragView, true, solution);
-            }
-            solution.isSolution = false;
-        } else {
-            solution.isSolution = true;
-            solution.cellX = result[0];
-            solution.cellY = result[1];
-            solution.spanX = spanX;
-            solution.spanY = spanY;
-        }
-        return solution;
-    }
-
-    protected void copyCurrentStateToSolution(ItemConfiguration solution, boolean temp) {
+    public void copyCurrentStateToSolution(ItemConfiguration solution, boolean temp) {
         int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
@@ -2466,35 +2404,6 @@ public class CellLayout extends ViewGroup {
             }
             solution.add(child, c);
         }
-    }
-
-    /**
-     * Returns a "reorder" if there is empty space without rearranging anything.
-     *
-     * @param pixelX X coordinate in pixels in the screen
-     * @param pixelY Y coordinate in pixels in the screen
-     * @param spanX horizontal cell span
-     * @param spanY vertical cell span
-     * @param dragView view being dragged in reorder
-     * @return the configuration that represents the found reorder
-     */
-    public ItemConfiguration dropInPlaceSolution(int pixelX, int pixelY, int spanX,
-            int spanY, View dragView) {
-        int[] result = new int[2];
-        if (isNearestDropLocationOccupied(pixelX, pixelY, spanX, spanY, dragView, result)) {
-            result[0] = result[1] = -1;
-        }
-        ItemConfiguration solution = new ItemConfiguration();
-        copyCurrentStateToSolution(solution, false);
-        solution.isSolution = result[0] != -1;
-        if (!solution.isSolution) {
-            return solution;
-        }
-        solution.cellX = result[0];
-        solution.cellY = result[1];
-        solution.spanX = spanX;
-        solution.spanY = spanY;
-        return solution;
     }
 
     /**
@@ -2514,29 +2423,8 @@ public class CellLayout extends ViewGroup {
      */
     public ItemConfiguration calculateReorder(int pixelX, int pixelY, int minSpanX, int minSpanY,
             int spanX, int spanY, View dragView) {
-        getDirectionVectorForDrop(pixelX, pixelY, spanX, spanY, dragView, mDirectionVector);
-
-        ItemConfiguration dropInPlaceSolution = dropInPlaceSolution(pixelX, pixelY, spanX, spanY,
-                dragView);
-
-        // Find a solution involving pushing / displacing any items in the way
-        ItemConfiguration swapSolution = findReorderSolution(pixelX, pixelY, minSpanX, minSpanY,
-                spanX,  spanY, mDirectionVector, dragView,  true,  new ItemConfiguration());
-
-        // We attempt the approach which doesn't shuffle views at all
-        ItemConfiguration closestSpaceSolution = closestEmptySpaceReorder(pixelX, pixelY, minSpanX,
-                minSpanY, spanX, spanY);
-
-        // If the reorder solution requires resizing (shrinking) the item being dropped, we instead
-        // favor a solution in which the item is not resized, but
-        if (swapSolution.isSolution && swapSolution.area() >= closestSpaceSolution.area()) {
-            return swapSolution;
-        } else if (closestSpaceSolution.isSolution) {
-            return closestSpaceSolution;
-        } else if (dropInPlaceSolution.isSolution) {
-            return dropInPlaceSolution;
-        }
-        return null;
+        return createReorderAlgorithm().calculateReorder(pixelX, pixelY, minSpanX, minSpanY,
+                spanX, spanY, dragView);
     }
 
     int[] performReorder(int pixelX, int pixelY, int minSpanX, int minSpanY, int spanX, int spanY,
@@ -2588,7 +2476,7 @@ public class CellLayout extends ViewGroup {
      *             {@link MODE_ON_DROP}, {@link MODE_ON_DROP_EXTERNAL}, {@link  MODE_ACCEPT_DROP}
      *             defined in {@link CellLayout}.
      */
-    void performReorder(ItemConfiguration solution, View dragView, int mode) {
+    public void performReorder(ItemConfiguration solution, View dragView, int mode) {
         if (mode == MODE_SHOW_REORDER_HINT) {
             beginOrAdjustReorderPreviewAnimations(solution, dragView,
                     ReorderPreviewAnimation.MODE_HINT);
@@ -2634,38 +2522,41 @@ public class CellLayout extends ViewGroup {
         return mItemPlacementDirty;
     }
 
-    static class ItemConfiguration extends CellAndSpan {
-        final ArrayMap<View, CellAndSpan> map = new ArrayMap<>();
+    /**
+     * Represents the solution to a reorder of items in the Workspace.
+     */
+    public static class ItemConfiguration extends CellAndSpan {
+        public final ArrayMap<View, CellAndSpan> map = new ArrayMap<>();
         private final ArrayMap<View, CellAndSpan> savedMap = new ArrayMap<>();
-        final ArrayList<View> sortedViews = new ArrayList<>();
-        ArrayList<View> intersectingViews;
-        boolean isSolution = false;
+        public final ArrayList<View> sortedViews = new ArrayList<>();
+        public ArrayList<View> intersectingViews;
+        public boolean isSolution = false;
 
-        void save() {
+        public void save() {
             // Copy current state into savedMap
             for (View v: map.keySet()) {
                 savedMap.get(v).copyFrom(map.get(v));
             }
         }
 
-        void restore() {
+        public void restore() {
             // Restore current state from savedMap
             for (View v: savedMap.keySet()) {
                 map.get(v).copyFrom(savedMap.get(v));
             }
         }
 
-        void add(View v, CellAndSpan cs) {
+        public void add(View v, CellAndSpan cs) {
             map.put(v, cs);
             savedMap.put(v, new CellAndSpan());
             sortedViews.add(v);
         }
 
-        int area() {
+        public int area() {
             return spanX * spanY;
         }
 
-        void getBoundingRectForViews(ArrayList<View> views, Rect outRect) {
+        public void getBoundingRectForViews(ArrayList<View> views, Rect outRect) {
             boolean first = true;
             for (View v: views) {
                 CellAndSpan c = map.get(v);
