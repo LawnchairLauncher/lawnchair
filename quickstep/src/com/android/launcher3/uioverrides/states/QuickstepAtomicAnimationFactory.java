@@ -23,6 +23,7 @@ import static com.android.launcher3.LauncherState.HINT_STATE_TWO_BUTTON;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
+import static com.android.launcher3.QuickstepTransitionManager.TASKBAR_TO_HOME_DURATION;
 import static com.android.launcher3.WorkspaceStateTransitionAnimation.getWorkspaceSpringScaleAnimator;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
@@ -119,6 +120,12 @@ public class QuickstepAtomicAnimationFactory extends
                 long scrollDuration = Math.min(MAX_PAGE_SCROLL_DURATION,
                         numPagesToScroll * PER_PAGE_SCROLL_DURATION);
                 config.duration = Math.max(config.duration, scrollDuration);
+
+                // Sync scroll so that it ends before or at the same time as the taskbar animation.
+                if (DisplayController.isTransientTaskbar(mActivity)
+                        && mActivity.getDeviceProfile().isTaskbarPresent) {
+                    config.duration = Math.min(config.duration, TASKBAR_TO_HOME_DURATION);
+                }
                 overview.snapToPage(DEFAULT_PAGE, Math.toIntExact(config.duration));
             } else {
                 config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, ACCEL_DEACCEL);
