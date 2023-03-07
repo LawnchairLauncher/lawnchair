@@ -1647,7 +1647,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     protected void onNewIntent(Intent intent) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+        if (Utilities.isRunningInTestHarness()) {
             Log.d(TestProtocol.PERMANENT_DIAG_TAG, "Launcher.onNewIntent: " + intent);
         }
         Object traceToken = TraceHelper.INSTANCE.beginSection(ON_NEW_INTENT_EVT);
@@ -3172,7 +3172,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
                 // Setting the touch point to (-1, -1) will show the options popup in the center of
                 // the screen.
-                if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                if (Utilities.isRunningInTestHarness()) {
                     Log.d(TestProtocol.PERMANENT_DIAG_TAG, "Opening options popup on key up");
                 }
                 showDefaultOptions(-1, -1);
