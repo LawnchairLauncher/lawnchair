@@ -16,33 +16,19 @@
 
 package com.android.launcher3;
 
-import android.graphics.PointF;
-import android.view.View;
+import com.android.launcher3.util.MultiTranslateDelegate;
 
 public interface Reorderable {
 
     /**
-     * Set the offset related to reorder hint and bounce animations
+     * Returns the delegate to control translation
      */
-    void setReorderBounceOffset(float x, float y);
-
-    void getReorderBounceOffset(PointF offset);
-
-    /**
-     * Set the offset related to previewing the new reordered position
-     */
-    void setReorderPreviewOffset(float x, float y);
-
-    void getReorderPreviewOffset(PointF offset);
+    MultiTranslateDelegate getTranslateDelegate();
 
     /**
      * Set the scale related to reorder hint and "bounce" animations
      */
     void setReorderBounceScale(float scale);
-    float getReorderBounceScale();
 
-    /**
-     * Get the com.android.view related to this object
-     */
-    View getView();
+    float getReorderBounceScale();
 }

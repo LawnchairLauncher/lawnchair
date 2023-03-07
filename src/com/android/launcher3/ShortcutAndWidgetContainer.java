@@ -21,6 +21,7 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static com.android.launcher3.CellLayout.FOLDER;
 import static com.android.launcher3.CellLayout.HOTSEAT;
 import static com.android.launcher3.CellLayout.WORKSPACE;
+import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_WIDGET_CENTERING;
 
 import android.app.WallpaperManager;
 import android.content.Context;
@@ -208,7 +209,8 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
             float scaleY = appWidgetScale.y;
 
             nahv.setScaleToFit(Math.min(scaleX, scaleY));
-            nahv.setTranslationForCentering(-(lp.width - (lp.width * scaleX)) / 2.0f,
+            nahv.getTranslateDelegate().setTranslation(INDEX_WIDGET_CENTERING,
+                    -(lp.width - (lp.width * scaleX)) / 2.0f,
                     -(lp.height - (lp.height * scaleY)) / 2.0f);
         }
 
