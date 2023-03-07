@@ -877,7 +877,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         if (DesktopTaskView.DESKTOP_MODE_SUPPORTED && targets.hasDesktopTasks()) {
             mRemoteTargetHandles = mTargetGluer.assignTargetsForDesktop(targets);
         } else {
-            mRemoteTargetHandles = mTargetGluer.assignTargetsForSplitScreen(mContext, targets);
+            mRemoteTargetHandles = mTargetGluer.assignTargetsForSplitScreen(targets);
         }
         mRecentsAnimationController = controller;
         mRecentsAnimationTargets = targets;
