@@ -68,6 +68,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.SensorManager;
 import android.hardware.devicestate.DeviceStateManager;
+import android.hardware.display.DisplayManager;
 import android.media.permission.SafeCloseable;
 import android.os.Bundle;
 import android.os.CancellationSignal;
@@ -885,7 +886,7 @@ public class QuickstepLauncher extends Launcher {
                         getMainExecutor(),
                         /* backgroundExecutor= */ UI_HELPER_EXECUTOR,
                         /* tracingTagPrefix= */ "launcher",
-                        WindowManagerGlobal.getWindowManagerService()
+                        getSystemService(DisplayManager.class)
                 );
 
         mUnfoldTransitionProgressProvider = unfoldComponent.getUnfoldTransitionProvider()
@@ -904,9 +905,10 @@ public class QuickstepLauncher extends Launcher {
                         /* context= */ this,
                         config,
                         getMainExecutor(),
+                        getMainThreadHandler(),
                         /* backgroundExecutor= */ UI_HELPER_EXECUTOR,
                         /* tracingTagPrefix= */ "launcher",
-                        WindowManagerGlobal.getWindowManagerService()
+                        getSystemService(DisplayManager.class)
                 );
 
         final RemoteUnfoldTransitionReceiver remoteUnfoldTransitionProgressProvider =
