@@ -939,7 +939,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected boolean hasSeenEducationDialog() {
         return mActivityContext.getSharedPrefs()
                 .getBoolean(KEY_WIDGETS_EDUCATION_DIALOG_SEEN, false)
-                || Utilities.IS_RUNNING_IN_TEST_HARNESS;
+                || Utilities.isRunningInTestHarness();
     }
 
     private void setUpEducationViewsIfNeeded() {

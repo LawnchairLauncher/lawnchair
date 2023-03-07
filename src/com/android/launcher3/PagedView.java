@@ -773,7 +773,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         if (mScroller.isFinished() && pageScrollChanged) {
             // TODO(b/246283207): Remove logging once root cause of flake detected.
-            if (Utilities.IS_RUNNING_IN_TEST_HARNESS && !(this instanceof Workspace)) {
+            if (Utilities.isRunningInTestHarness() && !(this instanceof Workspace)) {
                 Log.d("b/246283207", this.getClass().getSimpleName() + "#onLayout() -> "
                         + "if(mScroller.isFinished() && pageScrollChanged) -> getNextPage(): "
                         + getNextPage() + ", getScrollForPage(getNextPage()): "
@@ -1713,7 +1713,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             return false;
         }
 
-        if (FeatureFlags.IS_STUDIO_BUILD && !Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+        if (FeatureFlags.IS_STUDIO_BUILD && !Utilities.isRunningInTestHarness()) {
             duration *= Settings.Global.getFloat(getContext().getContentResolver(),
                     Settings.Global.WINDOW_ANIMATION_SCALE, 1);
         }

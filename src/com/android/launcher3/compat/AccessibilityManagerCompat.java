@@ -127,7 +127,7 @@ public class AccessibilityManagerCompat {
      */
     private static AccessibilityManager getAccessibilityManagerForTest(Context context) {
         // If not running in a test harness, don't participate in test exchanges.
-        if (!Utilities.IS_RUNNING_IN_TEST_HARNESS) return null;
+        if (!Utilities.isRunningInTestHarness()) return null;
 
         final AccessibilityManager accessibilityManager = getManager(context);
         if (!accessibilityManager.isEnabled()) return null;
