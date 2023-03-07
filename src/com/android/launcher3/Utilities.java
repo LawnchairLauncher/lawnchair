@@ -153,11 +153,14 @@ public final class Utilities {
                         Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0;
     }
 
-    public static boolean IS_RUNNING_IN_TEST_HARNESS =
-                    ActivityManager.isRunningInTestHarness();
+    private static boolean sIsRunningInTestHarness = ActivityManager.isRunningInTestHarness();
+
+    public static boolean isRunningInTestHarness() {
+        return sIsRunningInTestHarness;
+    }
 
     public static void enableRunningInTestHarnessForTests() {
-        IS_RUNNING_IN_TEST_HARNESS = true;
+        sIsRunningInTestHarness = true;
     }
 
     public static boolean isPropertyEnabled(String propertyName) {
