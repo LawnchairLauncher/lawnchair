@@ -227,17 +227,18 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         if (ENABLE_MATERIAL_U_POPUP.get()) {
             container = (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                     R.layout.popup_container_material_u, launcher.getDragLayer(), false);
+            container.configureForLauncher(launcher);
             container.populateAndShowRowsMaterialU(icon, deepShortcutCount, systemShortcuts);
         } else {
             container = (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                     R.layout.popup_container, launcher.getDragLayer(), false);
+            container.configureForLauncher(launcher);
             container.populateAndShow(
                     icon,
                     deepShortcutCount,
                     popupDataProvider.getNotificationKeysForItem(item),
                     systemShortcuts);
         }
-        container.configureForLauncher(launcher);
         launcher.refreshAndBindWidgetsForPackageUser(PackageUserKey.fromItemInfo(item));
         container.requestFocus();
         return container;
