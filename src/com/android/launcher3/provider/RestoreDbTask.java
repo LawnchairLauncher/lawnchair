@@ -20,15 +20,19 @@ import static com.android.launcher3.InvariantDeviceProfile.TYPE_MULTI_DISPLAY;
 import static com.android.launcher3.LauncherPrefs.APP_WIDGET_IDS;
 import static com.android.launcher3.LauncherPrefs.OLD_APP_WIDGET_IDS;
 import static com.android.launcher3.LauncherPrefs.RESTORE_DEVICE;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
 import android.app.backup.BackupManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.LauncherActivityInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.UserHandle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.SparseLongArray;
 
@@ -44,15 +48,21 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DeviceGridState;
 import com.android.launcher3.model.GridBackupTable;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
+import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LogConfig;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import java.io.InvalidObjectException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Utility class to update DB schema after it has been restored.
@@ -159,6 +169,7 @@ public class RestoreDbTask {
      *   3. If the user serial for any restored profile is different than that of the previous
      *      device, update the entries to the new profile id.
      *   4. If restored from a single display backup, remove gaps between screenIds
+     *   5. Override shortcuts that need to be replaced.
      *
      * @return number of items deleted.
      */
@@ -244,6 +255,9 @@ public class RestoreDbTask {
         if (LauncherPrefs.get(context).get(RESTORE_DEVICE) != TYPE_MULTI_DISPLAY) {
             removeScreenIdGaps(db);
         }
+
+        // Override shortcuts
+        maybeOverrideShortcuts(context, db, myProfileId);
 
         return itemsDeleted;
     }
@@ -372,6 +386,50 @@ public class RestoreDbTask {
         LauncherPrefs.get(context).putSync(
                 OLD_APP_WIDGET_IDS.to(IntArray.wrap(oldIds).toConcatString()),
                 APP_WIDGET_IDS.to(IntArray.wrap(newIds).toConcatString()));
+    }
+
+    protected static void maybeOverrideShortcuts(Context context, SQLiteDatabase db,
+            long currentUser) {
+        Map<String, LauncherActivityInfo> activityOverrides = ApiWrapper.getActivityOverrides(
+                context);
+
+        if (activityOverrides == null || activityOverrides.isEmpty()) {
+            return;
+        }
+
+        try (Cursor c = db.query(Favorites.TABLE_NAME,
+                new String[]{Favorites._ID, Favorites.INTENT},
+                String.format("%s=? AND %s=? AND ( %s )", Favorites.ITEM_TYPE, Favorites.PROFILE_ID,
+                        getTelephonyIntentSQLLiteSelection(activityOverrides.keySet())),
+                new String[]{String.valueOf(ITEM_TYPE_APPLICATION), String.valueOf(currentUser)},
+                null, null, null);
+             SQLiteTransaction t = new SQLiteTransaction(db)) {
+            final int idIndex = c.getColumnIndexOrThrow(Favorites._ID);
+            final int intentIndex = c.getColumnIndexOrThrow(Favorites.INTENT);
+            while (c.moveToNext()) {
+                LauncherActivityInfo override = activityOverrides.get(Intent.parseUri(
+                        c.getString(intentIndex), 0).getComponent().getPackageName());
+                if (override != null) {
+                    ContentValues values = new ContentValues();
+                    values.put(Favorites.PROFILE_ID,
+                            UserCache.INSTANCE.get(context).getSerialNumberForUser(
+                                    override.getUser()));
+                    values.put(Favorites.INTENT, AppInfo.makeLaunchIntent(override).toUri(0));
+                    db.update(Favorites.TABLE_NAME, values, String.format("%s=?", Favorites._ID),
+                            new String[]{String.valueOf(c.getInt(idIndex))});
+                }
+            }
+            t.commit();
+        } catch (Exception ex) {
+            Log.e(TAG, "Error while overriding shortcuts", ex);
+        }
+    }
+
+    private static String getTelephonyIntentSQLLiteSelection(Collection<String> packages) {
+        return packages.stream().map(
+                packageToChange -> String.format("intent LIKE '%%' || '%s' || '%%' ",
+                        packageToChange)).collect(
+                Collectors.joining(" OR "));
     }
 
 }
