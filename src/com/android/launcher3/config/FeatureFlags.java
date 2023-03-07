@@ -21,8 +21,13 @@ import static com.android.launcher3.uioverrides.flags.FlagsFactory.getReleaseFla
 
 import android.content.Context;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Utilities;
+
+import java.util.function.Predicate;
+import java.util.function.ToIntFunction;
 
 /**
  * Defines a set of flags used to control various launcher behaviors.
@@ -32,6 +37,11 @@ import com.android.launcher3.Utilities;
 public final class FeatureFlags {
 
     public static final String FLAGS_PREF_NAME = "featureFlags";
+
+    @VisibleForTesting
+    public static Predicate<BooleanFlag> sBooleanReader = f -> f.mCurrentValue;
+    @VisibleForTesting
+    public static ToIntFunction<IntFlag> sIntReader = f -> f.mCurrentValue;
 
     private FeatureFlags() { }
 
@@ -392,7 +402,7 @@ public final class FeatureFlags {
         }
 
         public boolean get() {
-            return mCurrentValue;
+            return sBooleanReader.test(this);
         }
     }
 
@@ -408,7 +418,7 @@ public final class FeatureFlags {
         }
 
         public int get() {
-            return mCurrentValue;
+            return sIntReader.applyAsInt(this);
         }
     }
 }
