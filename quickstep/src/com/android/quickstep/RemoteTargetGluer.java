@@ -89,7 +89,7 @@ public class RemoteTargetGluer {
      * Length of targets.apps should match that of {@link #mRemoteTargetHandles}.
      *
      * If split screen may be active when this is called, you might want to use
-     * {@link #assignTargetsForSplitScreen(Context, RemoteAnimationTargets)}
+     * {@link #assignTargetsForSplitScreen(RemoteAnimationTargets)}
      */
     public RemoteTargetHandle[] assignTargets(RemoteAnimationTargets targets) {
         for (int i = 0; i < mRemoteTargetHandles.length; i++) {
@@ -102,43 +102,45 @@ public class RemoteTargetGluer {
     }
 
     /**
-     * Similar to {@link #assignTargets(RemoteAnimationTargets)}, except this matches the
-     * apps in targets.apps to that of the _active_ split screened tasks.
-     * See {@link #assignTargetsForSplitScreen(RemoteAnimationTargets, int[])}
+     * Similar to {@link #assignTargets(RemoteAnimationTargets)}, except this assigns the
+     * apps in {@code targets.apps} to the {@link #mRemoteTargetHandles} with index 0 will being
+     * the left/top task, index 1 right/bottom.
      */
-    public RemoteTargetHandle[] assignTargetsForSplitScreen(
-            Context context, RemoteAnimationTargets targets) {
-        int[] splitIds = TopTaskTracker.INSTANCE.get(context).getRunningSplitTaskIds();
-        return assignTargetsForSplitScreen(targets, splitIds);
-    }
-
-    /**
-     * Assigns the provided splitIDs to the {@link #mRemoteTargetHandles}, with index 0 will being
-     * the left/top task, index 1 right/bottom
-     */
-    public RemoteTargetHandle[] assignTargetsForSplitScreen(RemoteAnimationTargets targets,
-            int[] splitIds) {
-        RemoteAnimationTarget topLeftTarget; // only one set if single/fullscreen task
-        RemoteAnimationTarget bottomRightTarget;
+    public RemoteTargetHandle[] assignTargetsForSplitScreen(RemoteAnimationTargets targets) {
         if (mRemoteTargetHandles.length == 1) {
             // If we're not in split screen, the splitIds count doesn't really matter since we
             // should always hit this case.
             mRemoteTargetHandles[0].mTransformParams.setTargetSet(targets);
             if (targets.apps.length > 0) {
                 // Unclear why/when target.apps length == 0, but it sure does happen :(
-                topLeftTarget = targets.apps[0];
-                mRemoteTargetHandles[0].mTaskViewSimulator.setPreview(topLeftTarget, null);
+                mRemoteTargetHandles[0].mTaskViewSimulator.setPreview(targets.apps[0], null);
             }
         } else {
-            // split screen
-            topLeftTarget = targets.findTask(splitIds[0]);
-            bottomRightTarget = targets.findTask(splitIds[1]);
+            RemoteAnimationTarget topLeftTarget = targets.apps[0];
+
+            // Fetch the adjacent target for split screen.
+            RemoteAnimationTarget bottomRightTarget = null;
+            for (int i = 1; i < targets.apps.length; i++) {
+                final RemoteAnimationTarget target = targets.apps[i];
+                Rect topLeftBounds = getStartBounds(topLeftTarget);
+                Rect bounds = getStartBounds(target);
+                if (topLeftBounds.left > bounds.right || topLeftBounds.top > bounds.bottom) {
+                    bottomRightTarget = topLeftTarget;
+                    topLeftTarget = target;
+                    break;
+                } else if (topLeftBounds.right < bounds.left || topLeftBounds.bottom < bounds.top) {
+                    bottomRightTarget = target;
+                    break;
+                }
+            }
 
             // remoteTargetHandle[0] denotes topLeft task, so we pass in the bottomRight to exclude,
             // vice versa
             mSplitBounds = new SplitBounds(
                     getStartBounds(topLeftTarget),
-                    getStartBounds(bottomRightTarget), splitIds[0], splitIds[1]);
+                    getStartBounds(bottomRightTarget),
+                    topLeftTarget.taskId,
+                    bottomRightTarget.taskId);
             mRemoteTargetHandles[0].mTransformParams.setTargetSet(
                     createRemoteAnimationTargetsForTarget(targets, bottomRightTarget));
             mRemoteTargetHandles[0].mTaskViewSimulator.setPreview(topLeftTarget,
