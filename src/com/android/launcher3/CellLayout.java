@@ -22,6 +22,8 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
 import static com.android.launcher3.config.FeatureFlags.SHOW_HOME_GARDENING;
 import static com.android.launcher3.dragndrop.DraggableView.DRAGGABLE_ICON;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
+import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_REORDER_BOUNCE_OFFSET;
+import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_REORDER_PREVIEW_OFFSET;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -70,6 +72,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.CellAndSpan;
 import com.android.launcher3.util.GridOccupancy;
+import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.util.ParcelableSparseArray;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
@@ -1099,12 +1102,11 @@ public class CellLayout extends ViewGroup {
             lp.isLockedToGrid = false;
             // End compute new x and y
 
-            item.getReorderPreviewOffset(mTmpPointF);
-            final float initPreviewOffsetX = mTmpPointF.x;
-            final float initPreviewOffsetY = mTmpPointF.y;
+            MultiTranslateDelegate mtd = item.getTranslateDelegate();
+            float initPreviewOffsetX = mtd.getTranslationX(INDEX_REORDER_PREVIEW_OFFSET).getValue();
+            float initPreviewOffsetY = mtd.getTranslationY(INDEX_REORDER_PREVIEW_OFFSET).getValue();
             final float finalPreviewOffsetX = newX - oldX;
             final float finalPreviewOffsetY = newY - oldY;
-
 
             // Exit early if we're not actually moving the view
             if (finalPreviewOffsetX == 0 && finalPreviewOffsetY == 0
@@ -1123,7 +1125,7 @@ public class CellLayout extends ViewGroup {
                     float r = (Float) animation.getAnimatedValue();
                     float x = (1 - r) * initPreviewOffsetX + r * finalPreviewOffsetX;
                     float y = (1 - r) * initPreviewOffsetY + r * finalPreviewOffsetY;
-                    item.setReorderPreviewOffset(x, y);
+                    item.getTranslateDelegate().setTranslation(INDEX_REORDER_PREVIEW_OFFSET, x, y);
                 }
             });
             va.addListener(new AnimatorListenerAdapter() {
@@ -1134,7 +1136,8 @@ public class CellLayout extends ViewGroup {
                     // place just yet.
                     if (!cancelled) {
                         lp.isLockedToGrid = true;
-                        item.setReorderPreviewOffset(0, 0);
+                        item.getTranslateDelegate()
+                                .setTranslation(INDEX_REORDER_PREVIEW_OFFSET, 0, 0);
                         child.requestLayout();
                     }
                     if (mReorderAnimators.containsKey(lp)) {
@@ -1434,7 +1437,7 @@ public class CellLayout extends ViewGroup {
 
             CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
             if (c != null && !skip && (child instanceof Reorderable)) {
-                ReorderPreviewAnimation rha = new ReorderPreviewAnimation((Reorderable) child,
+                ReorderPreviewAnimation rha = new ReorderPreviewAnimation(child,
                         mode, lp.getCellX(), lp.getCellY(), c.cellX, c.cellY, c.spanX, c.spanY);
                 rha.animate();
             }
@@ -1456,8 +1459,8 @@ public class CellLayout extends ViewGroup {
 
     // Class which represents the reorder preview animations. These animations show that an item is
     // in a temporary state, and hint at where the item will return to.
-    class ReorderPreviewAnimation {
-        final Reorderable child;
+    class ReorderPreviewAnimation<T extends View & Reorderable> {
+        final T child;
         float finalDeltaX;
         float finalDeltaY;
         float initDeltaX;
@@ -1477,7 +1480,7 @@ public class CellLayout extends ViewGroup {
         float animationProgress = 0;
         ValueAnimator a;
 
-        public ReorderPreviewAnimation(Reorderable child, int mode, int cellX0, int cellY0,
+        ReorderPreviewAnimation(View childView, int mode, int cellX0, int cellY0,
                 int cellX1, int cellY1, int spanX, int spanY) {
             regionToCenterPoint(cellX0, cellY0, spanX, spanY, mTmpPoint);
             final int x0 = mTmpPoint[0];
@@ -1488,16 +1491,16 @@ public class CellLayout extends ViewGroup {
             final int dX = x1 - x0;
             final int dY = y1 - y0;
 
-            this.child = child;
+            this.child = (T) childView;
             this.mode = mode;
             finalDeltaX = 0;
             finalDeltaY = 0;
 
-            child.getReorderBounceOffset(mTmpPointF);
-            initDeltaX = mTmpPointF.x;
-            initDeltaY = mTmpPointF.y;
+            MultiTranslateDelegate mtd = child.getTranslateDelegate();
+            initDeltaX = mtd.getTranslationX(INDEX_REORDER_BOUNCE_OFFSET).getValue();
+            initDeltaY = mtd.getTranslationY(INDEX_REORDER_BOUNCE_OFFSET).getValue();
             initScale = child.getReorderBounceScale();
-            finalScale = mChildScale - (CHILD_DIVIDEND / child.getView().getWidth()) * initScale;
+            finalScale = mChildScale - (CHILD_DIVIDEND / child.getWidth()) * initScale;
 
             int dir = mode == MODE_HINT ? -1 : 1;
             if (dX == dY && dX == 0) {
@@ -1573,7 +1576,7 @@ public class CellLayout extends ViewGroup {
             float r1 = (mode == MODE_HINT && repeating) ? 1.0f : animationProgress;
             float x = r1 * finalDeltaX + (1 - r1) * initDeltaX;
             float y = r1 * finalDeltaY + (1 - r1) * initDeltaY;
-            child.setReorderBounceOffset(x, y);
+            child.getTranslateDelegate().setTranslation(INDEX_REORDER_BOUNCE_OFFSET, x, y);
             float s = animationProgress * finalScale + (1 - animationProgress) * initScale;
             child.setReorderBounceScale(s);
         }
