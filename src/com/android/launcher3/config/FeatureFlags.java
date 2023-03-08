@@ -247,7 +247,7 @@ public final class FeatureFlags {
             "Enable the new grid migration logic, keeping pages when src < dest");
 
     public static final BooleanFlag ENABLE_WIDGET_HOST_IN_BACKGROUND = getDebugFlag(270394384,
-            "ENABLE_WIDGET_HOST_IN_BACKGROUND", false,
+            "ENABLE_WIDGET_HOST_IN_BACKGROUND", true,
             "Enable background widget updates listening for widget holder");
 
     public static final BooleanFlag ENABLE_ONE_SEARCH_MOTION = getReleaseFlag(270394223,
