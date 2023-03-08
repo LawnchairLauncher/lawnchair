@@ -40,6 +40,9 @@ import static com.android.launcher3.config.FeatureFlags.RECEIVE_UNFOLD_EVENTS_FR
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.popup.QuickstepSystemShortcut.getSplitSelectShortcutByPosition;
+import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
+import static com.android.launcher3.popup.SystemShortcut.INSTALL;
+import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
 import static com.android.launcher3.taskbar.LauncherTaskbarUIController.ALL_APPS_PAGE_PROGRESS_INDEX;
 import static com.android.launcher3.taskbar.LauncherTaskbarUIController.MINUS_ONE_PAGE_PROGRESS_INDEX;
 import static com.android.launcher3.taskbar.LauncherTaskbarUIController.WIDGETS_PAGE_PROGRESS_INDEX;
@@ -186,6 +189,8 @@ import com.android.systemui.unfold.updates.RotationChangeProvider;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -385,22 +390,30 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
-        Stream<SystemShortcut.Factory> base = Stream.of(WellbeingModel.SHORTCUT_FACTORY);
-        if (ENABLE_SPLIT_FROM_WORKSPACE.get() && mDeviceProfile.isTablet) {
-            RecentsView recentsView = getOverviewPanel();
-            // TODO(b/266482558): Pull it out of PagedOrentationHandler for split from workspace.
-            List<SplitPositionOption> positions =
-                    recentsView.getPagedOrientationHandler().getSplitPositionOptions(
-                            mDeviceProfile);
-            List<SystemShortcut.Factory<QuickstepLauncher>> splitShortcuts = new ArrayList<>();
-            for (SplitPositionOption position : positions) {
-                splitShortcuts.add(getSplitSelectShortcutByPosition(position));
-            }
-            base = Stream.concat(base, splitShortcuts.stream());
+        // Order matters as it affects order of appearance in popup container
+        List<SystemShortcut.Factory> shortcuts = new ArrayList(Arrays.asList(
+                APP_INFO, WellbeingModel.SHORTCUT_FACTORY, mHotseatPredictionController));
+        shortcuts.addAll(getSplitShortcuts());
+        shortcuts.add(WIDGETS);
+        shortcuts.add(INSTALL);
+        return shortcuts.stream();
+    }
+
+    private List<SystemShortcut.Factory<QuickstepLauncher>> getSplitShortcuts() {
+
+        if (!ENABLE_SPLIT_FROM_WORKSPACE.get() || !mDeviceProfile.isTablet) {
+            return Collections.emptyList();
         }
-        return Stream.concat(
-                Stream.of(mHotseatPredictionController),
-                Stream.concat(base, super.getSupportedShortcuts()));
+        RecentsView recentsView = getOverviewPanel();
+        // TODO(b/266482558): Pull it out of PagedOrentationHandler for split from workspace.
+        List<SplitPositionOption> positions =
+                recentsView.getPagedOrientationHandler().getSplitPositionOptions(
+                        mDeviceProfile);
+        List<SystemShortcut.Factory<QuickstepLauncher>> splitShortcuts = new ArrayList<>();
+        for (SplitPositionOption position : positions) {
+            splitShortcuts.add(getSplitSelectShortcutByPosition(position));
+        }
+        return splitShortcuts;
     }
 
     /**
