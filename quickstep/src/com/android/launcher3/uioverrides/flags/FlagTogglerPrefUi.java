@@ -35,6 +35,9 @@ import androidx.preference.SwitchPreference;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * Dev-build only UI allowing developers to toggle flag settings. See {@link FeatureFlags}.
  */
@@ -50,31 +53,15 @@ public final class FlagTogglerPrefUi {
 
         @Override
         public void putBoolean(String key, boolean value) {
-            for (DebugFlag flag : FlagsFactory.getDebugFlags()) {
-                if (flag.key.equals(key)) {
-                    SharedPreferences prefs = mContext.getSharedPreferences(
-                            FLAGS_PREF_NAME, Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = prefs.edit();
-                    // We keep the key in the prefs even if it has the default value, because it's a
-                    // signal that it has been changed at one point.
-                    if (!prefs.contains(key) && value == flag.defaultValue) {
-                        editor.remove(key).apply();
-                        flag.mHasBeenChangedAtLeastOnce = false;
-                    } else {
-                        editor.putBoolean(key, value).apply();
-                        flag.mHasBeenChangedAtLeastOnce = true;
-                    }
-                    updateMenu();
-                }
-            }
+            mSharedPreferences.edit().putBoolean(key, value).apply();
+            updateMenu();
         }
 
         @Override
         public boolean getBoolean(String key, boolean defaultValue) {
             for (DebugFlag flag : FlagsFactory.getDebugFlags()) {
                 if (flag.key.equals(key)) {
-                    return mContext.getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE)
-                            .getBoolean(key, flag.defaultValue);
+                    return mSharedPreferences.getBoolean(key, flag.defaultValue);
                 }
             }
             return defaultValue;
@@ -89,11 +76,22 @@ public final class FlagTogglerPrefUi {
     }
 
     public void applyTo(PreferenceGroup parent) {
+        Set<String> modifiedPrefs = mSharedPreferences.getAll().keySet();
+        List<DebugFlag> flags = FlagsFactory.getDebugFlags();
+        flags.sort((f1, f2) -> {
+            // Sort first by any prefs that the user has changed, then alphabetically.
+            int changeComparison = Boolean.compare(
+                    modifiedPrefs.contains(f2.key), modifiedPrefs.contains(f1.key));
+            return changeComparison != 0
+                    ? changeComparison
+                    : f1.key.compareToIgnoreCase(f2.key);
+        });
+
         // For flag overrides we only want to store when the engineer chose to override the
         // flag with a different value than the default. That way, when we flip flags in
         // future, engineers will pick up the new value immediately. To accomplish this, we use a
         // custom preference data store.
-        for (DebugFlag flag : FlagsFactory.getDebugFlags()) {
+        for (DebugFlag flag : flags) {
             SwitchPreference switchPreference = new SwitchPreference(mContext);
             switchPreference.setKey(flag.key);
             switchPreference.setDefaultValue(flag.defaultValue);
