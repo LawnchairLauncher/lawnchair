@@ -406,6 +406,10 @@ import java.util.StringJoiner;
         return mLauncherState != LauncherState.ALL_APPS;
     }
 
+    boolean isInOverview() {
+        return mLauncherState == LauncherState.OVERVIEW;
+    }
+
     private void playStateTransitionAnim(AnimatorSet animatorSet, long duration,
             boolean committed) {
         boolean isInStashedState = mLauncherState.isTaskbarStashed(mLauncher);
