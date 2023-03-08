@@ -722,8 +722,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 skipInterpolator = FINAL_FRAME;
             }
         }
-        play(as, mControllers.taskbarViewController
-                .createRevealAnimToIsStashed(isStashed), 0, duration, EMPHASIZED);
+        mControllers.taskbarViewController.addRevealAnimToIsStashed(as, isStashed, duration,
+                EMPHASIZED);
 
         if (skipInterpolator != null) {
             as.setInterpolator(skipInterpolator);
