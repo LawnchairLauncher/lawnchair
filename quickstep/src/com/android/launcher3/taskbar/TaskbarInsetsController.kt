@@ -17,18 +17,18 @@ package com.android.launcher3.taskbar
 
 import android.graphics.Insets
 import android.graphics.Region
+import android.os.Binder
+import android.os.IBinder
 import android.view.InsetsFrameProvider
 import android.view.InsetsFrameProvider.SOURCE_DISPLAY
-import android.view.InsetsFrameProvider.SOURCE_FRAME
-import android.view.InsetsState
-import android.view.InsetsState.ITYPE_BOTTOM_MANDATORY_GESTURES
-import android.view.InsetsState.ITYPE_BOTTOM_TAPPABLE_ELEMENT
-import android.view.InsetsState.ITYPE_EXTRA_NAVIGATION_BAR
-import android.view.InsetsState.ITYPE_LEFT_GESTURES
-import android.view.InsetsState.ITYPE_RIGHT_GESTURES
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_FRAME
 import android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_REGION
+import android.view.WindowInsets
+import android.view.WindowInsets.Type.mandatorySystemGestures
+import android.view.WindowInsets.Type.navigationBars
+import android.view.WindowInsets.Type.systemGestures
+import android.view.WindowInsets.Type.tappableElement
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.TYPE_INPUT_METHOD
 import android.view.WindowManager.LayoutParams.TYPE_VOICE_INTERACTION
@@ -44,9 +44,15 @@ import java.io.PrintWriter
 /** Handles the insets that Taskbar provides to underlying apps and the IME. */
 class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTaskbarController {
 
+    companion object {
+        private const val INDEX_LEFT = 0
+        private const val INDEX_RIGHT = 1
+    }
+
     /** The bottom insets taskbar provides to the IME when IME is visible. */
     val taskbarHeightForIme: Int = context.resources.getDimensionPixelSize(R.dimen.taskbar_ime_size)
     private val touchableRegion: Region = Region()
+    private val insetsOwner: IBinder = Binder()
     private val deviceProfileChangeListener = { _: DeviceProfile ->
         onTaskbarWindowHeightOrInsetsChanged()
     }
@@ -64,18 +70,16 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
     fun init(controllers: TaskbarControllers) {
         this.controllers = controllers
         windowLayoutParams = context.windowLayoutParams
-
-        setProvidesInsetsTypes(
-            windowLayoutParams,
-            intArrayOf(
-                ITYPE_EXTRA_NAVIGATION_BAR,
-                ITYPE_BOTTOM_TAPPABLE_ELEMENT,
-                ITYPE_BOTTOM_MANDATORY_GESTURES,
-                ITYPE_LEFT_GESTURES,
-                ITYPE_RIGHT_GESTURES,
-            ),
-            intArrayOf(SOURCE_FRAME, SOURCE_FRAME, SOURCE_FRAME, SOURCE_DISPLAY, SOURCE_DISPLAY)
-        )
+        windowLayoutParams.providedInsets =
+            arrayOf(
+                InsetsFrameProvider(insetsOwner, 0, navigationBars()),
+                InsetsFrameProvider(insetsOwner, 0, tappableElement()),
+                InsetsFrameProvider(insetsOwner, 0, mandatorySystemGestures()),
+                InsetsFrameProvider(insetsOwner, INDEX_LEFT, systemGestures())
+                    .setSource(SOURCE_DISPLAY),
+                InsetsFrameProvider(insetsOwner, INDEX_RIGHT, systemGestures())
+                    .setSource(SOURCE_DISPLAY)
+            )
 
         onTaskbarWindowHeightOrInsetsChanged()
 
@@ -101,14 +105,11 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         val tappableHeight = controllers.taskbarStashController.tappableHeightToReportToApps
         val res = context.resources
         for (provider in windowLayoutParams.providedInsets) {
-            if (
-                provider.type == ITYPE_EXTRA_NAVIGATION_BAR ||
-                    provider.type == ITYPE_BOTTOM_MANDATORY_GESTURES
-            ) {
+            if (provider.type == navigationBars() || provider.type == mandatorySystemGestures()) {
                 provider.insetsSize = getInsetsByNavMode(contentHeight)
-            } else if (provider.type == ITYPE_BOTTOM_TAPPABLE_ELEMENT) {
+            } else if (provider.type == tappableElement()) {
                 provider.insetsSize = getInsetsByNavMode(tappableHeight)
-            } else if (provider.type == ITYPE_LEFT_GESTURES) {
+            } else if (provider.type == systemGestures() && provider.index == INDEX_LEFT) {
                 provider.insetsSize =
                     Insets.of(
                         gestureNavSettingsObserver.getLeftSensitivityForCallingUser(res),
@@ -116,7 +117,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                         0,
                         0
                     )
-            } else if (provider.type == ITYPE_RIGHT_GESTURES) {
+            } else if (provider.type == systemGestures() && provider.index == INDEX_RIGHT) {
                 provider.insetsSize =
                     Insets.of(
                         0,
@@ -143,7 +144,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                 ),
             )
         for (provider in windowLayoutParams.providedInsets) {
-            if (context.isGestureNav && provider.type == ITYPE_BOTTOM_TAPPABLE_ELEMENT) {
+            if (context.isGestureNav && provider.type == tappableElement()) {
                 provider.insetsSizeOverrides = insetsSizeOverrideForGestureNavTappableElement
             } else {
                 provider.insetsSizeOverrides = insetsSizeOverride
@@ -168,24 +169,6 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
 
         // TODO(b/230394142): seascape
         return Insets.of(0, 0, bottomInset, 0)
-    }
-
-    /**
-     * Sets {@param providesInsetsTypes} as the inset types provided by {@param params}.
-     *
-     * @param params The window layout params.
-     * @param providesInsetsTypes The inset types we would like this layout params to provide.
-     */
-    fun setProvidesInsetsTypes(
-        params: WindowManager.LayoutParams,
-        providesInsetsTypes: IntArray,
-        providesInsetsSources: IntArray
-    ) {
-        params.providedInsets = arrayOfNulls<InsetsFrameProvider>(providesInsetsTypes.size)
-        for (i in providesInsetsTypes.indices) {
-            params.providedInsets[i] =
-                InsetsFrameProvider(providesInsetsTypes[i], providesInsetsSources[i], null, null)
-        }
     }
 
     /**
@@ -248,7 +231,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         for (provider in windowLayoutParams.providedInsets) {
             pw.print(
                 "$prefix\tprovidedInsets: (type=" +
-                    InsetsState.typeToString(provider.type) +
+                    WindowInsets.Type.toString(provider.type) +
                     " insetsSize=" +
                     provider.insetsSize
             )
