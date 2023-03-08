@@ -127,7 +127,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
                 || onboardingPrefs.getBoolean(OnboardingPrefs.HOME_BOUNCE_SEEN)
                 || AbstractFloatingView.getTopOpenView(launcher) != null
                 || launcher.getSystemService(UserManager.class).isDemoUser()
-                || Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                || Utilities.isRunningInTestHarness()) {
             return;
         }
 

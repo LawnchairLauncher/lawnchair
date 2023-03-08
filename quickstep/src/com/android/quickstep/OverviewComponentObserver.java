@@ -37,6 +37,7 @@ import android.util.SparseIntArray;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.R;
 import com.android.launcher3.tracing.OverviewComponentObserverProto;
 import com.android.launcher3.tracing.TouchInteractionServiceProto;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
@@ -65,6 +66,7 @@ public final class OverviewComponentObserver {
     private final Intent mMyHomeIntent;
     private final Intent mFallbackIntent;
     private final SparseIntArray mConfigChangesMap = new SparseIntArray();
+    private final String mSetupWizardPkg;
 
     private Consumer<Boolean> mOverviewChangeListener = b -> { };
 
@@ -86,6 +88,7 @@ public final class OverviewComponentObserver {
                 new ComponentName(context.getPackageName(), info.activityInfo.name);
         mMyHomeIntent.setComponent(myHomeComponent);
         mConfigChangesMap.append(myHomeComponent.hashCode(), info.activityInfo.configChanges);
+        mSetupWizardPkg = context.getString(R.string.setup_wizard_pkg);
 
         ComponentName fallbackComponent = new ComponentName(mContext, RecentsActivity.class);
         mFallbackIntent = new Intent(Intent.ACTION_MAIN)
@@ -127,6 +130,12 @@ public final class OverviewComponentObserver {
     private void updateOverviewTargets() {
         ComponentName defaultHome = PackageManagerWrapper.getInstance()
                 .getHomeActivities(new ArrayList<>());
+        if (defaultHome != null && defaultHome.getPackageName().equals(mSetupWizardPkg)) {
+            // Treat setup wizard as null default home, because there is a period between setup and
+            // launcher being default home where it is briefly null. Otherwise, it would appear as
+            // if overview targets are changing twice, giving the listener an incorrect signal.
+            defaultHome = null;
+        }
 
         mIsHomeDisabled = mDeviceState.isHomeDisabled();
         mIsDefaultHome = Objects.equals(mMyHomeIntent.getComponent(), defaultHome);

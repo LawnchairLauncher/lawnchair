@@ -147,6 +147,8 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DynamicResource;
@@ -705,6 +707,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private OverviewActionsView mActionsView;
     private ObjectAnimator mActionsViewAlphaAnimator;
     private float mActionsViewAlphaAnimatorFinalValue;
+
+    /**
+     * Keeps track of the desktop task. Optional and only present when the feature flag is enabled.
+     */
+    @Nullable
+    private DesktopTaskView mDesktopTaskView;
 
     private MultiWindowModeChangedListener mMultiWindowModeChangedListener =
             new MultiWindowModeChangedListener() {
@@ -1586,6 +1594,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // update the map of instance counts
         mFilterState.updateInstanceCountMap(taskGroups);
 
+        // Clear out desktop view if it is set
+        mDesktopTaskView = null;
         DesktopTask desktopTask = null;
 
         // Add views as children based on whether it's grouped or single task. Looping through
@@ -1644,12 +1654,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (!taskGroups.isEmpty()) {
             addView(mClearAllButton);
 
-            if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
-                TaskView taskView = getTaskViewFromPool(TaskView.Type.DESKTOP);
+            if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED
+                    && !getSplitSelectController().isSplitSelectActive()) {
+                mDesktopTaskView = (DesktopTaskView) getTaskViewFromPool(TaskView.Type.DESKTOP);
                 // Always add a desktop task to the first position. Even if it is empty
-                addView(taskView, 0);
+                addView(mDesktopTaskView, 0);
                 ArrayList<Task> tasks = desktopTask != null ? desktopTask.tasks : new ArrayList<>();
-                ((DesktopTaskView) taskView).bind(tasks, mOrientationState);
+                mDesktopTaskView.bind(tasks, mOrientationState);
             }
         }
 
@@ -1709,7 +1720,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             int finalTargetPage = targetPage;
             runOnPageScrollsInitialized(() -> {
                 // TODO(b/246283207): Remove logging once root cause of flake detected.
-                if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                if (Utilities.isRunningInTestHarness()) {
                     Log.d("b/246283207", "RecentsView#applyLoadPlan() -> "
                             + "previousCurrentPage: " + previousCurrentPage
                             + ", targetPage: " + finalTargetPage
@@ -2774,6 +2785,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             } else if (taskView.isDesktopTask()) {
                 // Desktop task was not focused. Pin it to the right of focused
                 desktopTaskIndex = i;
+                if (taskView.getVisibility() == View.GONE) {
+                    // Desktop task view is hidden, skip it from grid calculations
+                    continue;
+                }
                 if (!ENABLE_GRID_ONLY_OVERVIEW.get()) {
                     // Only apply x-translation when using legacy overview grid
                     gridTranslations[i] += mIsRtl ? taskWidthAndSpacing : -taskWidthAndSpacing;
@@ -4467,6 +4482,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSplitSelectStateController.setAnimateCurrentTaskDismissal(
                 true /*animateCurrentTaskDismissal*/);
         mSplitHiddenTaskViewIndex = indexOfChild(taskView);
+        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+            updateDesktopTaskVisibility(false /* visible */);
+        }
     }
 
     /**
@@ -4475,6 +4493,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Attempts to initiate split with an existing taskView, if one exists
      */
     public void initiateSplitSelect(SplitSelectSource splitSelectSource) {
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "enterSplitSelect");
         mSplitSelectSource = splitSelectSource;
         mSplitHiddenTaskView = getTaskViewByTaskId(splitSelectSource.alreadyRunningTaskId);
         mSplitHiddenTaskViewIndex = indexOfChild(mSplitHiddenTaskView);
@@ -4483,6 +4502,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSplitSelectStateController.setInitialTaskSelect(splitSelectSource.intent,
                 splitSelectSource.position.stagePosition, splitSelectSource.itemInfo,
                 splitSelectSource.splitEvent, splitSelectSource.alreadyRunningTaskId);
+        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+            updateDesktopTaskVisibility(false /* visible */);
+        }
+    }
+
+    private void updateDesktopTaskVisibility(boolean visible) {
+        if (mDesktopTaskView != null) {
+            mDesktopTaskView.setVisibility(visible ? VISIBLE : GONE);
+        }
     }
 
     /**
@@ -4632,6 +4660,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (mSplitHiddenTaskView != null) {
             mSplitHiddenTaskView.setThumbnailVisibility(VISIBLE);
             mSplitHiddenTaskView = null;
+        }
+        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+            updateDesktopTaskVisibility(true /* visible */);
         }
     }
 
@@ -5008,8 +5039,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mRemoteTargetHandles = gluer.assignTargetsForDesktop(recentsAnimationTargets);
         } else {
             gluer = new RemoteTargetGluer(getContext(), getSizeStrategy());
-            mRemoteTargetHandles = gluer.assignTargetsForSplitScreen(
-                    getContext(), recentsAnimationTargets);
+            mRemoteTargetHandles = gluer.assignTargetsForSplitScreen(recentsAnimationTargets);
         }
         mSplitBoundsConfig = gluer.getSplitBounds();
         // Add release check to the targets from the RemoteTargetGluer and not the targets

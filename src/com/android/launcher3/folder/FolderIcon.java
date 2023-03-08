@@ -28,7 +28,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -77,6 +76,7 @@ import com.android.launcher3.model.data.WorkspaceItemFactory;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.IconLabelDotView;
@@ -93,6 +93,7 @@ import java.util.function.Predicate;
 public class FolderIcon extends FrameLayout implements FolderListener, IconLabelDotView,
         DraggableView, Reorderable {
 
+    private final MultiTranslateDelegate mTranslateDelegate = new MultiTranslateDelegate(this);
     @Thunk ActivityContext mActivity;
     @Thunk Folder mFolder;
     public FolderInfo mInfo;
@@ -133,14 +134,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
     private Rect mTouchArea = new Rect();
 
-    private final PointF mTranslationForMoveFromCenterAnimation = new PointF(0, 0);
-    private float mTranslationXForTaskbarAlignmentAnimation = 0f;
-    private float mTranslationYForTaskbarAlignmentAnimation = 0f;
-    private float mTranslationXForTaskbarRevealAnimation = 0f;
-    private float mTranslationYForTaskbarRevealAnimation = 0f;
-
-    private final PointF mTranslationForReorderBounce = new PointF(0, 0);
-    private final PointF mTranslationForReorderPreview = new PointF(0, 0);
     private float mScaleForReorderBounce = 1f;
 
     private static final Property<FolderIcon, Float> DOT_SCALE_PROPERTY
@@ -770,118 +763,21 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         mPreviewItemManager.onFolderClose(currentPage);
     }
 
-    private void updateTranslation() {
-        super.setTranslationX(mTranslationForReorderBounce.x
-                + mTranslationForReorderPreview.x
-                + mTranslationForMoveFromCenterAnimation.x
-                + mTranslationXForTaskbarAlignmentAnimation
-                + mTranslationXForTaskbarRevealAnimation);
-        super.setTranslationY(mTranslationForReorderBounce.y + mTranslationForReorderPreview.y
-                + mTranslationForMoveFromCenterAnimation.y
-                + mTranslationYForTaskbarAlignmentAnimation
-                + mTranslationYForTaskbarRevealAnimation);
-    }
-
-    public void setReorderBounceOffset(float x, float y) {
-        mTranslationForReorderBounce.set(x, y);
-        updateTranslation();
-    }
-
-    public void getReorderBounceOffset(PointF offset) {
-        offset.set(mTranslationForReorderBounce);
-    }
-
-    /**
-     * Sets translationX value for taskbar to launcher alignment animation
-     */
-    public void setTranslationXForTaskbarAlignmentAnimation(float translationX) {
-        mTranslationXForTaskbarAlignmentAnimation = translationX;
-        updateTranslation();
-    }
-
-    /**
-     * Returns translation values for taskbar to launcher alignment animation
-     */
-    public float getTranslationXForTaskbarAlignmentAnimation() {
-        return mTranslationXForTaskbarAlignmentAnimation;
-    }
-
-    /**
-     * Sets translationY value for taskbar to launcher alignment animation
-     */
-    public void setTranslationYForTaskbarAlignmentAnimation(float translationY) {
-        mTranslationYForTaskbarAlignmentAnimation = translationY;
-        updateTranslation();
-    }
-
-    /**
-     * Returns translation values for taskbar to launcher alignment animation
-     */
-    public float getTranslationYForTaskbarAlignmentAnimation() {
-        return mTranslationYForTaskbarAlignmentAnimation;
-    }
-
-    /**
-     * Sets translationX value for taskbar reveal animation
-     */
-    public void setTranslationXForTaskbarRevealAnimation(float translationX) {
-        mTranslationXForTaskbarRevealAnimation = translationX;
-        updateTranslation();
-    }
-
-    /**
-     * Returns translation values for taskbar reveal animation
-     */
-    public float getTranslationXForTaskbarRevealAnimation() {
-        return mTranslationXForTaskbarRevealAnimation;
-    }
-
-    /**
-     * Sets translationY value for taskbar reveal animation
-     */
-    public void setTranslationYForTaskbarRevealAnimation(float translationY) {
-        mTranslationYForTaskbarRevealAnimation = translationY;
-        updateTranslation();
-    }
-
-    /**
-     * Returns translationY values for taskbar reveal animation
-     */
-    public float getTranslationYForTaskbarRevealAnimation() {
-        return mTranslationYForTaskbarRevealAnimation;
-    }
-
-    /**
-     * Sets translation values for move from center animation
-     */
-    public void setTranslationForMoveFromCenterAnimation(float x, float y) {
-        mTranslationForMoveFromCenterAnimation.set(x, y);
-        updateTranslation();
+    @Override
+    public MultiTranslateDelegate getTranslateDelegate() {
+        return mTranslateDelegate;
     }
 
     @Override
-    public void setReorderPreviewOffset(float x, float y) {
-        mTranslationForReorderPreview.set(x, y);
-        updateTranslation();
-    }
-
-    @Override
-    public void getReorderPreviewOffset(PointF offset) {
-        offset.set(mTranslationForReorderPreview);
-    }
-
     public void setReorderBounceScale(float scale) {
         mScaleForReorderBounce = scale;
         super.setScaleX(scale);
         super.setScaleY(scale);
     }
 
+    @Override
     public float getReorderBounceScale() {
         return mScaleForReorderBounce;
-    }
-
-    public View getView() {
-        return this;
     }
 
     @Override

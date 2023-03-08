@@ -43,7 +43,7 @@ public class SpringLoadedDragController implements OnAlarmListener {
 
     private long getEnterSpringLoadHoverTime() {
         // Some TAPL tests are flaky on Cuttlefish with a low waiting time
-        return Utilities.IS_RUNNING_IN_TEST_HARNESS
+        return Utilities.isRunningInTestHarness()
                 ? ENTER_SPRING_LOAD_HOVER_TIME_IN_TEST
                 : ENTER_SPRING_LOAD_HOVER_TIME;
     }

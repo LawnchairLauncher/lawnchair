@@ -433,6 +433,14 @@ import java.util.StringJoiner;
             });
             animatorSet.play(stashAnimator);
         }
+
+        if (isAnimatingToLauncher() || mLauncherState == LauncherState.NORMAL) {
+            // Translate back to 0 at a shorter or same duration as the icon alignment animation.
+            // This ensures there is no jump after switching to hotseat, e.g. when swiping up from
+            // overview to home. Currently we do duration / 2 just to make it feel snappier.
+            animatorSet.play(mControllers.taskbarTranslationController
+                    .createAnimToResetTranslation(duration / 2));
+        }
     }
 
     private boolean isInLauncher() {
@@ -460,7 +468,7 @@ import java.util.StringJoiner;
         updateIconAlphaForHome(taskbarWillBeVisible ? 1 : 0);
 
         // Sync the first frame where we swap taskbar and hotseat.
-        if (firstFrameVisChanged && mCanSyncViews && !Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+        if (firstFrameVisChanged && mCanSyncViews && !Utilities.isRunningInTestHarness()) {
             ViewRootSync.synchronizeNextDraw(mLauncher.getHotseat(),
                     mControllers.taskbarActivityContext.getDragLayer(),
                     () -> {});

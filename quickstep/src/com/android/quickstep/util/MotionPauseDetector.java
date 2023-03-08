@@ -129,7 +129,7 @@ public class MotionPauseDetector {
      * @param pointerIndex Index for the pointer being tracked in the motion event
      */
     public void addPosition(MotionEvent ev, int pointerIndex) {
-        long timeoutMs = Utilities.IS_RUNNING_IN_TEST_HARNESS
+        long timeoutMs = Utilities.isRunningInTestHarness()
                 ? TEST_HARNESS_TRIGGER_TIMEOUT
                 : mMakePauseHarderToTrigger
                         ? HARDER_TRIGGER_TIMEOUT
@@ -195,7 +195,7 @@ public class MotionPauseDetector {
         if (mIsPaused != isPaused) {
             mIsPaused = isPaused;
             String logString = "onMotionPauseChanged, paused=" + mIsPaused + " reason=" + reason;
-            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            if (Utilities.isRunningInTestHarness()) {
                 Log.d(TAG, logString);
             }
             ActiveGestureLog.INSTANCE.addLog(logString);

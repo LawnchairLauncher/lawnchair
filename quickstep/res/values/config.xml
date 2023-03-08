@@ -49,4 +49,6 @@
     <item name="config_wallpaperMaxScale" format="float" type="dimen">
         @*android:dimen/config_wallpaperMaxScale
     </item>
+
+    <string name="setup_wizard_pkg" translatable="false" />
 </resources>
