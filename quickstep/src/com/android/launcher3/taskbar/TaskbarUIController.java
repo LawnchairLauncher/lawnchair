@@ -166,6 +166,11 @@ public class TaskbarUIController {
         return true;
     }
 
+    /** Returns {@code true} if Taskbar is currently within overview. */
+    protected boolean isInOverview() {
+        return false;
+    }
+
     @CallSuper
     protected void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(String.format(
