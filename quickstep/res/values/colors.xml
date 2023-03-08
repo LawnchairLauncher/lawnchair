@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
 
     <color name="chip_hint_foreground_color">#fff</color>
     <color name="chip_scrim_start_color">#39000000</color>
@@ -95,4 +95,6 @@
     <color name="lottie_yellow400">#fcc934</color>
     <color name="lottie_yellow600">#f9ab00</color>
 
+    <!-- Turn on work apps button -->
+    <color name="work_turn_on_stroke">?androidprv:attr/colorAccentPrimaryVariant</color>
 </resources>
