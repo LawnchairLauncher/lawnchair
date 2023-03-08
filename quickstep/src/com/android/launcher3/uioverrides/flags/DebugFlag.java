@@ -24,8 +24,6 @@ class DebugFlag extends BooleanFlag {
 
     public final boolean defaultValue;
 
-    boolean mHasBeenChangedAtLeastOnce;
-
     public DebugFlag(String key, String description, boolean defaultValue, boolean currentValue) {
         super(currentValue);
         this.key = key;
