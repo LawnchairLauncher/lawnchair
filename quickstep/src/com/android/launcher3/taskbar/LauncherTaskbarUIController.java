@@ -340,6 +340,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
+    protected boolean isInOverview() {
+        return mTaskbarLauncherStateController.isInOverview();
+    }
+
+    @Override
     public RecentsView getRecentsView() {
         return mLauncher.getOverviewPanel();
     }
