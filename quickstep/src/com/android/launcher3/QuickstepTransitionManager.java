@@ -634,7 +634,10 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         boolean appTargetsAreTranslucent = areAllTargetsTranslucent(appTargets);
 
         RectF launcherIconBounds = new RectF();
-        FloatingIconView floatingView = FloatingIconView.getFloatingIconView(mLauncher, v,
+        FloatingIconView floatingView = getFloatingIconView(mLauncher, v,
+                mLauncher.getTaskbarUIController() == null
+                        ? null
+                        : mLauncher.getTaskbarUIController().findMatchingView(v),
                 !appTargetsAreTranslucent, launcherIconBounds, true /* isOpening */);
         Rect crop = new Rect();
         Matrix matrix = new Matrix();
@@ -1350,6 +1353,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     isTransluscent, fallbackBackgroundColor);
         } else if (launcherView != null) {
             floatingIconView = getFloatingIconView(mLauncher, launcherView,
+                    mLauncher.getTaskbarUIController() == null
+                            ? null
+                            : mLauncher.getTaskbarUIController().findMatchingView(launcherView),
                     true /* hideOriginal */, targetRect, false /* isOpening */);
         } else {
             targetRect.set(getDefaultWindowTargetRect());
