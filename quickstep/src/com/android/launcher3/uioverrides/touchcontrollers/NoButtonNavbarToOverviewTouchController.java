@@ -191,7 +191,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             // need to manually set the duration to a reasonable value.
             animator.setDuration(HINT_STATE.getTransitionDuration(mLauncher, true /* isToState */));
         }
-        if (FeatureFlags.ENABLE_HAPTICS_ALL_APPS.get() &&
+        if (FeatureFlags.ENABLE_PREMIUM_HAPTICS_ALL_APPS.get() &&
                 ((mFromState == NORMAL && mToState == ALL_APPS)
                         || (mFromState == ALL_APPS && mToState == NORMAL)) && isFling) {
             mVibratorWrapper.vibrateForDragBump();
