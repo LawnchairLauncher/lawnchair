@@ -94,6 +94,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
     private float mTransientTaskbarAllAppsButtonTranslationXOffset;
 
+    private final boolean mStartAlignTaskbar;
+
     public TaskbarView(@NonNull Context context) {
         this(context, null);
     }
@@ -121,6 +123,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                 resources.getDimension(isTransientTaskbar
                         ? R.dimen.transient_taskbar_all_apps_button_translation_x_offset
                         : R.dimen.taskbar_all_apps_button_translation_x_offset);
+        mStartAlignTaskbar = mActivityContext.isThreeButtonNav()
+                && resources.getBoolean(R.bool.start_align_taskbar);
 
         int actualMargin = resources.getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
         int actualIconSize = mActivityContext.getDeviceProfile().iconSizePx;
@@ -372,10 +376,22 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         boolean needMoreSpaceForNav = layoutRtl ?
                 navSpaceNeeded > (iconEnd - spaceNeeded) :
                 iconEnd > (right - navSpaceNeeded);
-        if (needMoreSpaceForNav) {
-            int offset = layoutRtl ?
-                    navSpaceNeeded - (iconEnd - spaceNeeded) :
-                    (right - navSpaceNeeded) - iconEnd;
+
+        if (mStartAlignTaskbar) {
+            // Taskbar is aligned to the start
+            int startSpacingPx = deviceProfile.inlineNavButtonsEndSpacingPx;
+
+            if (layoutRtl) {
+                iconEnd = right - startSpacingPx;
+            } else {
+                iconEnd = startSpacingPx + spaceNeeded;
+            }
+        } else if (needMoreSpaceForNav) {
+            // Add offset to account for nav bar when taskbar is centered
+            int offset = layoutRtl
+                    ? navSpaceNeeded - (iconEnd - spaceNeeded)
+                    : (right - navSpaceNeeded) - iconEnd;
+
             iconEnd += offset;
         }
 
