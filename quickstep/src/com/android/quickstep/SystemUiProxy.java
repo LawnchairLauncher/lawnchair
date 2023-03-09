@@ -88,6 +88,7 @@ public class SystemUiProxy implements ISystemUiProxy {
             new MainThreadInitializedObject<>(SystemUiProxy::new);
 
     private static final int MSG_SET_SHELF_HEIGHT = 1;
+    private static final int MSG_SET_LAUNCHER_KEEP_CLEAR_AREA_HEIGHT = 2;
 
     private ISystemUiProxy mSystemUiProxy;
     private IPip mPip;
@@ -123,6 +124,10 @@ public class SystemUiProxy implements ISystemUiProxy {
     // Used to dedupe calls to SystemUI
     private int mLastShelfHeight;
     private boolean mLastShelfVisible;
+
+    // Used to dedupe calls to SystemUI
+    private int mLastLauncherKeepClearAreaHeight;
+    private boolean mLastLauncherKeepClearAreaHeightVisible;
 
     private final Context mContext;
     private final Handler mAsyncHandler;
@@ -453,6 +458,33 @@ public class SystemUiProxy implements ISystemUiProxy {
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call setShelfHeight visible: " + visible
                         + " height: " + shelfHeight, e);
+            }
+        }
+    }
+
+    /**
+     * Sets the height of the keep clear area that is going to be reported by
+     * the Launcher for the Hotseat.
+     */
+    public void setLauncherKeepClearAreaHeight(boolean visible, int height) {
+        Message.obtain(mAsyncHandler, MSG_SET_LAUNCHER_KEEP_CLEAR_AREA_HEIGHT,
+                visible ? 1 : 0 , height).sendToTarget();
+    }
+
+    @WorkerThread
+    private void setLauncherKeepClearAreaHeight(int visibleInt, int height) {
+        boolean visible = visibleInt != 0;
+        boolean changed = visible != mLastLauncherKeepClearAreaHeightVisible
+                || height != mLastLauncherKeepClearAreaHeight;
+        IPip pip = mPip;
+        if (pip != null && changed) {
+            mLastLauncherKeepClearAreaHeightVisible = visible;
+            mLastLauncherKeepClearAreaHeight = height;
+            try {
+                pip.setLauncherKeepClearAreaHeight(visible, height);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setLauncherKeepClearAreaHeight visible: " + visible
+                        + " height: " + height, e);
             }
         }
     }
@@ -981,6 +1013,9 @@ public class SystemUiProxy implements ISystemUiProxy {
         switch (msg.what) {
             case MSG_SET_SHELF_HEIGHT:
                 setShelfHeightAsync(msg.arg1, msg.arg2);
+                return true;
+            case MSG_SET_LAUNCHER_KEEP_CLEAR_AREA_HEIGHT:
+                setLauncherKeepClearAreaHeight(msg.arg1, msg.arg2);
                 return true;
         }
 
