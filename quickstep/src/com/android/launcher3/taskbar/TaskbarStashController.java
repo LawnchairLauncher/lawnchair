@@ -16,6 +16,7 @@
 package com.android.launcher3.taskbar;
 
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
+import static android.view.accessibility.AccessibilityManager.FLAG_CONTENT_CONTROLS;
 
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
@@ -43,6 +44,7 @@ import android.util.Log;
 import android.view.InsetsController;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.NonNull;
@@ -189,6 +191,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     // Stashed handle properties.
     private MultiProperty mTaskbarStashedHandleAlpha;
     private AnimatedFloat mTaskbarStashedHandleHintScale;
+    private final AccessibilityManager mAccessibilityManager;
 
     /** Whether we are currently visually stashed (might change based on launcher state). */
     private boolean mIsStashed = false;
@@ -221,6 +224,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         mActivity = activity;
         mPrefs = LauncherPrefs.getPrefs(mActivity);
         mSystemUiProxy = SystemUiProxy.INSTANCE.get(activity);
+        mAccessibilityManager = mActivity.getSystemService(AccessibilityManager.class);
         if (isPhoneMode()) {
             // DeviceProfile's taskbar vars aren't initialized w/ the flag off
             Resources resources = mActivity.getResources();
@@ -1018,7 +1022,15 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         cancelTimeoutIfExists();
 
         mTimeoutAlarm.setOnAlarmListener(this::onTaskbarTimeout);
-        mTimeoutAlarm.setAlarm(NO_TOUCH_TIMEOUT_TO_STASH_MS);
+        mTimeoutAlarm.setAlarm(getTaskbarAutoHideTimeout());
+    }
+
+    /**
+     * returns appropriate timeout for taskbar to stash depending on accessibility being on/off.
+     */
+    private long getTaskbarAutoHideTimeout() {
+        return mAccessibilityManager.getRecommendedTimeoutMillis((int) NO_TOUCH_TIMEOUT_TO_STASH_MS,
+                FLAG_CONTENT_CONTROLS);
     }
 
     private void onTaskbarTimeout(Alarm alarm) {
