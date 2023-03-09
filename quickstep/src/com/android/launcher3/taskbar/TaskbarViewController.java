@@ -191,6 +191,13 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         mActivity.addOnDeviceProfileChangeListener(mDeviceProfileChangeListener);
     }
 
+    /**
+     * Announcement for Accessibility when Taskbar stashes/unstashes.
+     */
+    public void announceForAccessibility() {
+        mTaskbarView.announceAccessibilityChanges();
+    }
+
     public void onDestroy() {
         LauncherAppState.getInstance(mActivity).getModel().removeCallbacks(mModelCallbacks);
         mActivity.removeOnDeviceProfileChangeListener(mDeviceProfileChangeListener);
