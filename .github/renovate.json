@@ -30,6 +30,13 @@
             "matchPackagePatterns": [
                 "dev.rikka.tools.refine.*"
             ]
+        },
+        {
+            "groupName": "androidx.lifecycle",
+            "groupSlug": "lifecycle",
+            "matchPackagePatterns": [
+                "androidx.lifecycle:*"
+            ]
         }
     ]
 }
