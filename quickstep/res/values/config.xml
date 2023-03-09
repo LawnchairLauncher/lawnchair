@@ -51,4 +51,8 @@
     </item>
 
     <string name="setup_wizard_pkg" translatable="false" />
+
+    <!-- Taskbar -->
+    <!-- Align the Taskbar to the start (Left/Right) of the device when 3 button nav is enabled. -->
+    <bool name="start_align_taskbar">false</bool>
 </resources>
