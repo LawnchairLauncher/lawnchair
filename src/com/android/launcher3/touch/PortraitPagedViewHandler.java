@@ -634,6 +634,9 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                 primarySnapshot.setTranslationX(0);
             }
             secondarySnapshot.setTranslationY(spaceAboveSnapshot);
+
+            // Reset unused translations
+            primarySnapshot.setTranslationY(0);
         } else {
             float scale = (float) totalThumbnailHeight / dp.availableHeightPx;
             float topTaskHeight = dp.availableHeightPx * taskPercent;
@@ -667,6 +670,10 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                 View.MeasureSpec.makeMeasureSpec(secondarySnapshotWidth, View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(secondarySnapshotHeight,
                         View.MeasureSpec.EXACTLY));
+        primarySnapshot.setScaleX(1);
+        secondarySnapshot.setScaleX(1);
+        primarySnapshot.setScaleY(1);
+        secondarySnapshot.setScaleY(1);
     }
 
     @Override
@@ -697,13 +704,13 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                     : deviceProfile.getInsets().left;
             int fullscreenMidpointFromBottom = ((deviceProfile.widthPx
                     - fullscreenInsetThickness) / 2);
-            float midpointFromBottomPct = (float) fullscreenMidpointFromBottom
+            float midpointFromEndPct = (float) fullscreenMidpointFromBottom
                     / deviceProfile.widthPx;
             float insetPct = (float) fullscreenInsetThickness / deviceProfile.widthPx;
             int spaceAboveSnapshots = 0;
             int overviewThumbnailAreaThickness = groupedTaskViewWidth - spaceAboveSnapshots;
             int bottomToMidpointOffset = (int) (overviewThumbnailAreaThickness
-                    * midpointFromBottomPct);
+                    * midpointFromEndPct);
             int insetOffset = (int) (overviewThumbnailAreaThickness * insetPct);
 
             if (deviceProfile.isSeascape()) {

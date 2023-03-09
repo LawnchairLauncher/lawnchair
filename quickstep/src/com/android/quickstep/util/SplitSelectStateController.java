@@ -83,6 +83,7 @@ public class SplitSelectStateController {
     private final Context mContext;
     private final Handler mHandler;
     private final RecentsModel mRecentTasksModel;
+    private final SplitAnimationController mSplitAnimationController;
     private StatsLogManager mStatsLogManager;
     private final SystemUiProxy mSystemUiProxy;
     private final StateManager mStateManager;
@@ -97,6 +98,11 @@ public class SplitSelectStateController {
     private boolean mRecentsAnimationRunning;
     /** If {@code true}, animates the existing task view split placeholder view */
     private boolean mAnimateCurrentTaskDismissal;
+    /**
+     * Acts as a subset of {@link #mAnimateCurrentTaskDismissal}, we can't be dismissing from a
+     * split pair task view without wanting to animate current task dismissal overall
+     */
+    private boolean mDismissingFromSplitPair;
     @Nullable
     private UserHandle mUser;
     /** If not null, this is the TaskView we want to launch from */
@@ -117,6 +123,7 @@ public class SplitSelectStateController {
         mStateManager = stateManager;
         mDepthController = depthController;
         mRecentTasksModel = recentsModel;
+        mSplitAnimationController = new SplitAnimationController(this);
     }
 
     /**
@@ -401,6 +408,18 @@ public class SplitSelectStateController {
         mAnimateCurrentTaskDismissal = animateCurrentTaskDismissal;
     }
 
+    public boolean isDismissingFromSplitPair() {
+        return mDismissingFromSplitPair;
+    }
+
+    public void setDismissingFromSplitPair(boolean dismissingFromSplitPair) {
+        mDismissingFromSplitPair = dismissingFromSplitPair;
+    }
+
+    public SplitAnimationController getSplitAnimationController() {
+        return mSplitAnimationController;
+    }
+
     /**
      * Requires Shell Transitions
      */
@@ -508,6 +527,7 @@ public class SplitSelectStateController {
         mItemInfo = null;
         mSplitEvent = null;
         mAnimateCurrentTaskDismissal = false;
+        mDismissingFromSplitPair = false;
     }
 
     /**
@@ -532,6 +552,10 @@ public class SplitSelectStateController {
 
     public int getInitialTaskId() {
         return mInitialTaskId;
+    }
+
+    public int getSecondTaskId() {
+        return mSecondTaskId;
     }
 
     private boolean isSecondTaskIntentSet() {
