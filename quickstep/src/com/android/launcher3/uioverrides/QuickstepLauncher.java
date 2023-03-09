@@ -83,7 +83,6 @@ import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.RemoteAnimationTarget;
 import android.view.View;
-import android.view.WindowManagerGlobal;
 import android.window.BackEvent;
 import android.window.OnBackAnimationCallback;
 import android.window.OnBackInvokedDispatcher;
@@ -421,15 +420,18 @@ public class QuickstepLauncher extends Launcher {
      */
     private void onStateOrResumeChanging(boolean inTransition) {
         LauncherState state = getStateManager().getState();
-        if (!ENABLE_PIP_KEEP_CLEAR_ALGORITHM) {
-            boolean started = ((getActivityFlags() & ACTIVITY_STATE_STARTED)) != 0;
-            if (started) {
-                DeviceProfile profile = getDeviceProfile();
-                boolean willUserBeActive =
-                        (getActivityFlags() & ACTIVITY_STATE_USER_WILL_BE_ACTIVE) != 0;
-                boolean visible = (state == NORMAL || state == OVERVIEW)
-                        && (willUserBeActive || isUserActive())
-                        && !profile.isVerticalBarLayout();
+        boolean started = ((getActivityFlags() & ACTIVITY_STATE_STARTED)) != 0;
+        if (started) {
+            DeviceProfile profile = getDeviceProfile();
+            boolean willUserBeActive =
+                    (getActivityFlags() & ACTIVITY_STATE_USER_WILL_BE_ACTIVE) != 0;
+            boolean visible = (state == NORMAL || state == OVERVIEW)
+                    && (willUserBeActive || isUserActive())
+                    && !profile.isVerticalBarLayout();
+            if (ENABLE_PIP_KEEP_CLEAR_ALGORITHM)  {
+                SystemUiProxy.INSTANCE.get(this)
+                        .setLauncherKeepClearAreaHeight(visible, profile.hotseatBarSizePx);
+            } else {
                 SystemUiProxy.INSTANCE.get(this).setShelfHeight(visible, profile.hotseatBarSizePx);
             }
         }
