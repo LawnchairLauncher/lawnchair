@@ -95,6 +95,9 @@ public class FloatingIconView extends FrameLayout implements
     private ClipIconView mClipIconView;
     private @Nullable Drawable mBadge;
 
+    // A view whose visibility should update in sync with mOriginalIcon.
+    private @Nullable View mMatchVisibilityView;
+
     private View mOriginalIcon;
     private RectF mPositionOut;
     private Runnable mOnTargetChangeRunnable;
@@ -386,7 +389,7 @@ public class FloatingIconView extends FrameLayout implements
      * Checks if the icon result is loaded. If true, we set the icon immediately. Else, we add a
      * callback to set the icon once the icon result is loaded.
      */
-    private void checkIconResult(View originalView) {
+    private void checkIconResult() {
         CancellationSignal cancellationSignal = new CancellationSignal();
 
         if (mIconLoadResult == null) {
@@ -399,7 +402,7 @@ public class FloatingIconView extends FrameLayout implements
                 setIcon(mIconLoadResult.drawable, mIconLoadResult.badge,
                         mIconLoadResult.btvDrawable, mIconLoadResult.iconOffset);
                 setVisibility(VISIBLE);
-                setIconAndDotVisible(originalView, false);
+                updateViewsVisibility(false  /* isVisible */);
             } else {
                 mIconLoadResult.onIconLoaded = () -> {
                     if (cancellationSignal.isCanceled()) {
@@ -410,7 +413,7 @@ public class FloatingIconView extends FrameLayout implements
                             mIconLoadResult.btvDrawable, mIconLoadResult.iconOffset);
 
                     setVisibility(VISIBLE);
-                    setIconAndDotVisible(originalView, false);
+                    updateViewsVisibility(false  /* isVisible */);
                 };
                 mLoadIconSignal = cancellationSignal;
             }
@@ -481,9 +484,9 @@ public class FloatingIconView extends FrameLayout implements
             // No need to wait for icon load since we can display the BubbleTextView drawable.
             setVisibility(View.VISIBLE);
         }
-        if (!mIsOpening && mOriginalIcon != null) {
+        if (!mIsOpening) {
             // When closing an app, we want the item on the workspace to be invisible immediately
-            setIconAndDotVisible(mOriginalIcon, false);
+            updateViewsVisibility(false  /* isVisible */);
         }
     }
 
@@ -562,13 +565,14 @@ public class FloatingIconView extends FrameLayout implements
     /**
      * Creates a floating icon view for {@param originalView}.
      * @param originalView The view to copy
+     * @param secondView A view whose visibility should update in sync with originalView.
      * @param hideOriginal If true, it will hide {@param originalView} while this view is visible.
      *                     Else, we will not draw anything in this view.
      * @param positionOut Rect that will hold the size and position of v.
      * @param isOpening True if this view replaces the icon for app open animation.
      */
     public static FloatingIconView getFloatingIconView(Launcher launcher, View originalView,
-            boolean hideOriginal, RectF positionOut, boolean isOpening) {
+            @Nullable View secondView, boolean hideOriginal, RectF positionOut, boolean isOpening) {
         final DragLayer dragLayer = launcher.getDragLayer();
         ViewGroup parent = (ViewGroup) dragLayer.getParent();
         FloatingIconView view = launcher.getViewCache().getView(R.layout.floating_icon_view,
@@ -578,6 +582,7 @@ public class FloatingIconView extends FrameLayout implements
         // Init properties before getting the drawable.
         view.mIsOpening = isOpening;
         view.mOriginalIcon = originalView;
+        view.mMatchVisibilityView = secondView;
         view.mPositionOut = positionOut;
 
         // Get the drawable on the background thread
@@ -597,7 +602,8 @@ public class FloatingIconView extends FrameLayout implements
         view.matchPositionOf(launcher, originalView, isOpening, positionOut);
 
         // We need to add it to the overlay, but keep it invisible until animation starts..
-        setIconAndDotVisible(view, false);
+        view.setVisibility(View.INVISIBLE);
+
         parent.addView(view);
         dragLayer.addView(view.mListenerView);
         view.mListenerView.setListener(view::fastFinish);
@@ -606,7 +612,7 @@ public class FloatingIconView extends FrameLayout implements
             view.mEndRunnable = null;
 
             if (hideOriginal) {
-                setIconAndDotVisible(originalView, true);
+                view.updateViewsVisibility(true /* isVisible */);
                 view.finish(dragLayer);
             } else {
                 view.finish(dragLayer);
@@ -617,10 +623,19 @@ public class FloatingIconView extends FrameLayout implements
         // Must be called after the fastFinish listener and end runnable is created so that
         // the icon is not left in a hidden state.
         if (shouldLoadIcon) {
-            view.checkIconResult(originalView);
+            view.checkIconResult();
         }
 
         return view;
+    }
+
+    private void updateViewsVisibility(boolean isVisible) {
+        if (mOriginalIcon != null) {
+            setIconAndDotVisible(mOriginalIcon, isVisible);
+        }
+        if (mMatchVisibilityView != null) {
+            setIconAndDotVisible(mMatchVisibilityView, isVisible);
+        }
     }
 
     private void finish(DragLayer dragLayer) {
