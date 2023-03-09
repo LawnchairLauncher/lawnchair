@@ -359,8 +359,9 @@ public final class FeatureFlags {
             "Enable the ability to tap a staged app during split select to launch it in full screen"
     );
 
-    public static final BooleanFlag ENABLE_HAPTICS_ALL_APPS = getDebugFlag(270396358,
-            "ENABLE_HAPTICS_ALL_APPS", false, "Enables haptics opening/closing All apps");
+    public static final BooleanFlag ENABLE_PREMIUM_HAPTICS_ALL_APPS = getDebugFlag(270396358,
+            "ENABLE_PREMIUM_HAPTICS_ALL_APPS", false,
+            "Enables haptics opening/closing All apps");
 
     public static final BooleanFlag ENABLE_FORCED_MONO_ICON = getDebugFlag(270396209,
             "ENABLE_FORCED_MONO_ICON", false,
