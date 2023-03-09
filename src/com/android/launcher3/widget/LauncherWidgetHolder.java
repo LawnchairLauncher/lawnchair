@@ -322,13 +322,6 @@ public class LauncherWidgetHolder {
     }
 
     /**
-     * Delete the host
-     */
-    public void deleteHost() {
-        mWidgetHost.deleteHost();
-    }
-
-    /**
      * @return The app widget ids
      */
     @NonNull
