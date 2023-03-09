@@ -82,7 +82,6 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
@@ -559,9 +558,7 @@ public class TaskView extends FrameLayout implements Reusable {
         }
         mModalness = modalness;
         mIconView.setAlpha(1 - modalness);
-        mDigitalWellBeingToast.updateBannerOffset(modalness,
-                mCurrentFullscreenParams.mCurrentDrawnInsets.top
-                        + mCurrentFullscreenParams.mCurrentDrawnInsets.bottom);
+        mDigitalWellBeingToast.updateBannerOffset(modalness);
     }
 
     public DigitalWellBeingToast getDigitalWellBeingToast() {
@@ -1120,9 +1117,7 @@ public class TaskView extends FrameLayout implements Reusable {
         float scale = Interpolators.clampToProgress(FAST_OUT_SLOW_IN, lowerClamp, upperClamp)
                 .getInterpolation(progress);
         mIconView.setAlpha(scale);
-        mDigitalWellBeingToast.updateBannerOffset(1f - scale,
-                mCurrentFullscreenParams.mCurrentDrawnInsets.top
-                        + mCurrentFullscreenParams.mCurrentDrawnInsets.bottom);
+        mDigitalWellBeingToast.updateBannerOffset(1f - scale);
     }
 
     public void setIconScaleAnimStartProgress(float startProgress) {
@@ -1740,17 +1735,11 @@ public class TaskView extends FrameLayout implements Reusable {
         private final float mCornerRadius;
         private final float mWindowCornerRadius;
 
-        public RectF mCurrentDrawnInsets = new RectF();
         public float mCurrentDrawnCornerRadius;
-        /** The current scale we apply to the thumbnail to adjust for new left/right insets. */
-        public float mScale = 1;
-
-        private boolean mIsTaskbarTransient;
 
         public FullscreenDrawParams(Context context) {
             mCornerRadius = TaskCornerRadius.get(context);
             mWindowCornerRadius = QuickStepContract.getWindowCornerRadius(context);
-            mIsTaskbarTransient = DisplayController.isTransientTaskbar(context);
 
             mCurrentDrawnCornerRadius = mCornerRadius;
         }
@@ -1760,36 +1749,9 @@ public class TaskView extends FrameLayout implements Reusable {
          */
         public void setProgress(float fullscreenProgress, float parentScale, float taskViewScale,
                 int previewWidth, DeviceProfile dp, PreviewPositionHelper pph) {
-            RectF insets = getInsetsToDrawInFullscreen(pph, dp, mIsTaskbarTransient);
-
-            float currentInsetsLeft = insets.left * fullscreenProgress;
-            float currentInsetsTop = insets.top * fullscreenProgress;
-            float currentInsetsRight = insets.right * fullscreenProgress;
-            float currentInsetsBottom = insets.bottom * fullscreenProgress;
-            mCurrentDrawnInsets.set(
-                    currentInsetsLeft, currentInsetsTop, currentInsetsRight, currentInsetsBottom);
-
             mCurrentDrawnCornerRadius =
                     Utilities.mapRange(fullscreenProgress, mCornerRadius, mWindowCornerRadius)
                             / parentScale / taskViewScale;
-
-            // We scaled the thumbnail to fit the content (excluding insets) within task view width.
-            // Now that we are drawing left/right insets again, we need to scale down to fit them.
-            if (previewWidth > 0) {
-                mScale = previewWidth / (previewWidth + currentInsetsLeft + currentInsetsRight);
-            }
-        }
-
-        /**
-         * Insets to used for clipping the thumbnail (in case it is drawing outside its own space)
-         */
-        private static RectF getInsetsToDrawInFullscreen(PreviewPositionHelper pph,
-                DeviceProfile dp, boolean isTaskbarTransient) {
-            if (dp.isTaskbarPresent && isTaskbarTransient) {
-                return pph.getClippedInsets();
-            }
-            return dp.isTaskbarPresent && !dp.isTaskbarPresentInApps
-                    ? pph.getClippedInsets() : EMPTY_RECT_F;
         }
     }
 
