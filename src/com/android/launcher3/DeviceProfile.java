@@ -193,7 +193,7 @@ public class DeviceProfile {
     private final int mMinHotseatIconSpacePx;
     private final int mMinHotseatQsbWidthPx;
     private final int mMaxHotseatIconSpacePx;
-    private final int mInlineNavButtonsEndSpacingPx;
+    public final int inlineNavButtonsEndSpacingPx;
 
     // Bottom sheets
     public int bottomSheetTopPadding;
@@ -490,7 +490,7 @@ public class DeviceProfile {
         hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? workspacePageIndicatorHeight : 0;
         updateHotseatSizes(pxFromDp(inv.iconSize[INDEX_DEFAULT], mMetrics));
         if (areNavButtonsInline && !isPhone) {
-            mInlineNavButtonsEndSpacingPx =
+            inlineNavButtonsEndSpacingPx =
                     res.getDimensionPixelSize(inv.inlineNavButtonsEndSpacing);
             /*
              * 3 nav buttons +
@@ -499,9 +499,9 @@ public class DeviceProfile {
              */
             hotseatBarEndOffset = 3 * res.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size)
                     + 2 * res.getDimensionPixelSize(R.dimen.taskbar_button_space_inbetween)
-                    + mInlineNavButtonsEndSpacingPx;
+                    + inlineNavButtonsEndSpacingPx;
         } else {
-            mInlineNavButtonsEndSpacingPx = 0;
+            inlineNavButtonsEndSpacingPx = 0;
             hotseatBarEndOffset = 0;
         }
 
@@ -662,7 +662,7 @@ public class DeviceProfile {
         }
 
         // The side space with inline buttons should be what is defined in InvariantDeviceProfile
-        int sideSpacePx = mInlineNavButtonsEndSpacingPx;
+        int sideSpacePx = inlineNavButtonsEndSpacingPx;
         int maxHotseatWidthPx = availableWidthPx - sideSpacePx - hotseatBarEndOffset;
         int maxHotseatIconsWidthPx = maxHotseatWidthPx - (isQsbInline ? hotseatQsbWidth : 0);
         hotseatBorderSpace = calculateHotseatBorderSpace(maxHotseatIconsWidthPx,
@@ -1320,7 +1320,7 @@ public class DeviceProfile {
             int endSpacing;
             // Hotseat aligns to the left with nav buttons
             if (hotseatBarEndOffset > 0) {
-                startSpacing = mInlineNavButtonsEndSpacingPx;
+                startSpacing = inlineNavButtonsEndSpacingPx;
                 endSpacing = availableWidthPx - hotseatWidth - startSpacing + hotseatBorderSpace;
             } else {
                 startSpacing = (availableWidthPx - hotseatWidth) / 2;
