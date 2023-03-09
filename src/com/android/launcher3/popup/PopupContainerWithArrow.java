@@ -227,17 +227,18 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         if (ENABLE_MATERIAL_U_POPUP.get()) {
             container = (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                     R.layout.popup_container_material_u, launcher.getDragLayer(), false);
+            container.configureForLauncher(launcher);
             container.populateAndShowRowsMaterialU(icon, deepShortcutCount, systemShortcuts);
         } else {
             container = (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                     R.layout.popup_container, launcher.getDragLayer(), false);
+            container.configureForLauncher(launcher);
             container.populateAndShow(
                     icon,
                     deepShortcutCount,
                     popupDataProvider.getNotificationKeysForItem(item),
                     systemShortcuts);
         }
-        container.configureForLauncher(launcher);
         launcher.refreshAndBindWidgetsForPackageUser(PackageUserKey.fromItemInfo(item));
         container.requestFocus();
         return container;
@@ -257,14 +258,19 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         }
         // If there is only 1 shortcut, add it to its own container so it can show text and icon
         if (shortcuts.size() == 1) {
-            initializeSystemShortcut(R.layout.system_shortcut, this, shortcuts.get(0));
+            mSystemShortcutContainer = inflateAndAdd(R.layout.system_shortcut_rows_container,
+                    this, 0);
+            initializeSystemShortcut(R.layout.system_shortcut, mSystemShortcutContainer,
+                    shortcuts.get(0), false);
             return;
         }
-        mSystemShortcutContainer = inflateAndAdd(R.layout.system_shortcut_icons_container, this);
-        for (SystemShortcut shortcut : shortcuts) {
+        mSystemShortcutContainer = inflateAndAdd(R.layout.system_shortcut_icons_container, this, 0);
+        for (int i = 0; i < shortcuts.size(); i++) {
             initializeSystemShortcut(
-                    R.layout.system_shortcut_icon_only, mSystemShortcutContainer,
-                    shortcut);
+                    R.layout.system_shortcut_icon_only,
+                    mSystemShortcutContainer,
+                    shortcuts.get(i),
+                    i < shortcuts.size() - 1);
         }
     }
 
@@ -289,7 +295,6 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
             }
             updateNotificationHeader();
         }
-        int viewsToFlip = getChildCount();
         mSystemShortcutContainer = this;
         if (mDeepShortcutContainer == null) {
             mDeepShortcutContainer = findViewById(R.id.deep_shortcuts_container);
@@ -314,8 +319,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
             Optional<SystemShortcut.Widgets> widgetShortcutOpt = getWidgetShortcut(shortcuts);
             if (widgetShortcutOpt.isPresent()) {
                 if (mWidgetContainer == null) {
-                    mWidgetContainer = inflateAndAdd(R.layout.widget_shortcut_container,
-                            this);
+                    mWidgetContainer = inflateAndAdd(R.layout.widget_shortcut_container, this, 0);
                 }
                 initializeWidgetShortcut(mWidgetContainer, widgetShortcutOpt.get());
             }
@@ -324,14 +328,17 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         } else {
             mDeepShortcutContainer.setVisibility(View.GONE);
             if (!shortcuts.isEmpty()) {
-                for (SystemShortcut shortcut : shortcuts) {
-                    initializeSystemShortcut(R.layout.system_shortcut, this, shortcut);
+                for (int i = 0; i < shortcuts.size(); i++) {
+                    initializeSystemShortcut(
+                            R.layout.system_shortcut,
+                            this,
+                            shortcuts.get(i),
+                            i < shortcuts.size() - 1);
                 }
             }
         }
-
-        reorderAndShow(viewsToFlip);
-        showPopupContainer((ItemInfo) originalIcon.getTag(), notificationKeys);
+        show();
+        loadAppShortcuts((ItemInfo) originalIcon.getTag(), notificationKeys);
     }
 
     /**
@@ -351,19 +358,17 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
             addAllShortcutsMaterialU(deepShortcutCount, systemShortcuts);
         } else if (!systemShortcuts.isEmpty()) {
             addSystemShortcutsMaterialU(systemShortcuts,
-                    R.layout.system_shortcut_rows_container_material_u,
+                    R.layout.system_shortcut_rows_container,
                     R.layout.system_shortcut);
         }
-
-        // no reversing needed for U design
-        reorderAndShow(0);
-        showPopupContainer((ItemInfo) originalIcon.getTag(), /* notificationKeys= */ emptyList());
+        show();
+        loadAppShortcuts((ItemInfo) originalIcon.getTag(), /* notificationKeys= */ emptyList());
     }
 
     /**
      * Animates and loads shortcuts on background thread for this popup container
      */
-    private void showPopupContainer(ItemInfo originalItemInfo,
+    private void loadAppShortcuts(ItemInfo originalItemInfo,
             List<NotificationKeyData> notificationKeys) {
 
         if (ATLEAST_P) {
@@ -390,7 +395,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         if (deepShortcutCount + systemShortcuts.size() <= SHORTCUT_COLLAPSE_THRESHOLD) {
             // add all system shortcuts including widgets shortcut to same container
             addSystemShortcutsMaterialU(systemShortcuts,
-                    R.layout.system_shortcut_rows_container_material_u,
+                    R.layout.system_shortcut_rows_container,
                     R.layout.system_shortcut);
             addDeepShortcutsMaterialU(deepShortcutCount);
             return;
@@ -458,8 +463,12 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
             return;
         }
         mSystemShortcutContainer = inflateAndAdd(systemShortcutContainerLayout, this);
-        for (SystemShortcut shortcut : systemShortcuts) {
-            initializeSystemShortcut(systemShortcutLayout, mSystemShortcutContainer, shortcut);
+        for (int i = 0; i < systemShortcuts.size(); i++) {
+            initializeSystemShortcut(
+                    systemShortcutLayout,
+                    mSystemShortcutContainer,
+                    systemShortcuts.get(i),
+                    i < systemShortcuts.size() - 1);
         }
     }
 
@@ -533,36 +542,36 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
     }
 
     protected void initializeWidgetShortcut(ViewGroup container, SystemShortcut info) {
-        View view = initializeSystemShortcut(R.layout.system_shortcut, container, info);
+        View view = initializeSystemShortcut(R.layout.system_shortcut, container, info, false);
         view.getLayoutParams().width = mContainerWidth;
     }
 
-    protected View initializeSystemShortcut(int resId, ViewGroup container, SystemShortcut info) {
-        View view = inflateAndAdd(
-                resId, container, getInsertIndexForSystemShortcut(container, info));
+    /**
+     * Initializes and adds View for given SystemShortcut to a container.
+     * @param resId Resource id to use for SystemShortcut View.
+     * @param container ViewGroup to add the shortcut View to as a parent
+     * @param info The SystemShortcut instance to create a View for.
+     * @param shouldAddSpacer If True, will add a spacer after the shortcut, when showing the
+     *                        SystemShortcut as an icon only. Used to space the shortcut icons
+     *                        evenly.
+     * @return The view inflated for the SystemShortcut
+     */
+    protected View initializeSystemShortcut(int resId, ViewGroup container, SystemShortcut info,
+            boolean shouldAddSpacer) {
+        View view = inflateAndAdd(resId, container);
         if (view instanceof DeepShortcutView) {
-            // Expanded system shortcut, with both icon and text shown on white background.
+            // System shortcut takes entire row with icon and text
             final DeepShortcutView shortcutView = (DeepShortcutView) view;
             info.setIconAndLabelFor(shortcutView.getIconView(), shortcutView.getBubbleText());
         } else if (view instanceof ImageView) {
-            // Only the system shortcut icon shows on a gray background header.
+            // System shortcut is just an icon
             info.setIconAndContentDescriptionFor((ImageView) view);
+            if (shouldAddSpacer) inflateAndAdd(R.layout.system_shortcut_spacer, container);
             view.setTooltipText(view.getContentDescription());
         }
         view.setTag(info);
         view.setOnClickListener(info);
         return view;
-    }
-
-    /**
-     * Returns an index for inserting a shortcut into a container.
-     */
-    private int getInsertIndexForSystemShortcut(ViewGroup container, SystemShortcut shortcut) {
-        final View separator = container.findViewById(R.id.separator);
-
-        return separator != null && shortcut.isLeftGroup() ?
-                container.indexOfChild(separator) :
-                container.getChildCount();
     }
 
     /**

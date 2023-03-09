@@ -53,7 +53,6 @@ public class FlagsFactory {
 
     private static final List<DebugFlag> sDebugFlags = new ArrayList<>();
 
-
     private final Set<String> mKeySet = new HashSet<>();
     private boolean mRestartRequested = false;
 
@@ -75,7 +74,6 @@ public class FlagsFactory {
                     .getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE);
             boolean currentValue = prefs.getBoolean(key, defaultValue);
             DebugFlag flag = new DebugFlag(key, description, defaultValue, currentValue);
-            flag.mHasBeenChangedAtLeastOnce = prefs.contains(key);
             sDebugFlags.add(flag);
             return flag;
         } else {
@@ -96,7 +94,6 @@ public class FlagsFactory {
             boolean currentValue = prefs.getBoolean(key, defaultValue);
             DebugFlag flag = new DeviceFlag(key, description, defaultValue, currentValue,
                     defaultValueInCode);
-            flag.mHasBeenChangedAtLeastOnce = prefs.contains(key);
             sDebugFlags.add(flag);
             return flag;
         } else {
@@ -117,19 +114,9 @@ public class FlagsFactory {
         if (!Utilities.IS_DEBUG_DEVICE) {
             return Collections.emptyList();
         }
-        List<DebugFlag> flags;
         synchronized (sDebugFlags) {
-            flags = new ArrayList<>(sDebugFlags);
+            return new ArrayList<>(sDebugFlags);
         }
-        flags.sort((f1, f2) -> {
-            // Sort first by any prefs that the user has changed, then alphabetically.
-            int changeComparison = Boolean.compare(
-                    f2.mHasBeenChangedAtLeastOnce, f1.mHasBeenChangedAtLeastOnce);
-            return changeComparison != 0
-                    ? changeComparison
-                    : f1.key.compareToIgnoreCase(f2.key);
-        });
-        return flags;
     }
 
     /**

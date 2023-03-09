@@ -433,11 +433,16 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
         LauncherAtom.ContainerInfo oldContainer = itemInfoBuilder.getContainerInfo();
 
+        LauncherAtom.TaskBarContainer.Builder taskbarBuilder =
+                LauncherAtom.TaskBarContainer.newBuilder();
+        if (mControllers.uiController.isInOverview()) {
+            taskbarBuilder.setTaskSwitcherContainer(
+                    LauncherAtom.TaskSwitcherContainer.newBuilder());
+        }
+
         if (oldContainer.hasPredictedHotseatContainer()) {
             LauncherAtom.PredictedHotseatContainer predictedHotseat =
                     oldContainer.getPredictedHotseatContainer();
-            LauncherAtom.TaskBarContainer.Builder taskbarBuilder =
-                    LauncherAtom.TaskBarContainer.newBuilder();
 
             if (predictedHotseat.hasIndex()) {
                 taskbarBuilder.setIndex(predictedHotseat.getIndex());
@@ -450,8 +455,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                     .setTaskBarContainer(taskbarBuilder));
         } else if (oldContainer.hasHotseat()) {
             LauncherAtom.HotseatContainer hotseat = oldContainer.getHotseat();
-            LauncherAtom.TaskBarContainer.Builder taskbarBuilder =
-                    LauncherAtom.TaskBarContainer.newBuilder();
 
             if (hotseat.hasIndex()) {
                 taskbarBuilder.setIndex(hotseat.getIndex());
@@ -463,8 +466,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             LauncherAtom.FolderContainer.Builder folderBuilder = oldContainer.getFolder()
                     .toBuilder();
             LauncherAtom.HotseatContainer hotseat = folderBuilder.getHotseat();
-            LauncherAtom.TaskBarContainer.Builder taskbarBuilder =
-                    LauncherAtom.TaskBarContainer.newBuilder();
 
             if (hotseat.hasIndex()) {
                 taskbarBuilder.setIndex(hotseat.getIndex());
@@ -477,11 +478,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         } else if (oldContainer.hasAllAppsContainer()) {
             itemInfoBuilder.setContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
                     .setAllAppsContainer(oldContainer.getAllAppsContainer().toBuilder()
-                            .setTaskbarContainer(LauncherAtom.TaskBarContainer.newBuilder())));
+                            .setTaskbarContainer(taskbarBuilder)));
         } else if (oldContainer.hasPredictionContainer()) {
             itemInfoBuilder.setContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
                     .setPredictionContainer(oldContainer.getPredictionContainer().toBuilder()
-                            .setTaskbarContainer(LauncherAtom.TaskBarContainer.newBuilder())));
+                            .setTaskbarContainer(taskbarBuilder)));
         }
     }
 
