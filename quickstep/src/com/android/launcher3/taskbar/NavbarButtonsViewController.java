@@ -288,14 +288,9 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             updateButtonLayoutSpacing();
             updateStateForFlag(FLAG_SMALL_SCREEN, isPhoneButtonNavMode(mContext));
 
-            // Animate taskbar background when either..
-            // notification shade expanded AND not on keyguard
-            // back is visible for bouncer
             mPropertyHolders.add(new StatePropertyHolder(
                     mControllers.taskbarDragLayerController.getNavbarBackgroundAlpha(),
-                    flags -> ((flags & FLAG_NOTIFICATION_SHADE_EXPANDED) != 0
-                                && (flags & FLAG_KEYGUARD_VISIBLE) == 0)
-                            || (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0));
+                    flags -> (flags & FLAG_ONLY_BACK_FOR_BOUNCER_VISIBLE) != 0));
 
             // Rotation button
             RotationButton rotationButton = new RotationButtonImpl(
