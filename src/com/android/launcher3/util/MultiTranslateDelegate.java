@@ -33,7 +33,7 @@ public class MultiTranslateDelegate {
     public static final int INDEX_REORDER_PREVIEW_OFFSET = 1;
     public static final int INDEX_MOVE_FROM_CENTER_ANIM = 2;
 
-    // Specific for icons and folders
+    // Specific for items in taskbar (icons, folders, qsb)
     public static final int INDEX_TASKBAR_ALIGNMENT_ANIM = 3;
     public static final int INDEX_TASKBAR_REVEAL_ANIM = 4;
 
