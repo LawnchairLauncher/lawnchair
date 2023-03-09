@@ -29,6 +29,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
@@ -76,6 +77,12 @@ public class IconButtonView extends BubbleTextView {
         try (BaseIconFactory factory = LauncherIcons.obtain(context)) {
             setIcon(new IconDrawable(factory.getWhiteShadowLayer(), tint, fg));
         }
+    }
+
+    @Override
+    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
+        super.onPopulateAccessibilityEvent(event);
+        event.getText().add(this.getContentDescription());
     }
 
     /** Sets given Drawable as icon */

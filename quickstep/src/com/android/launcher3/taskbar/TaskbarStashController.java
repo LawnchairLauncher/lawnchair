@@ -600,6 +600,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 if (!mIsStashed) {
                     tryStartTaskbarTimeout();
                 }
+                mControllers.taskbarViewController.announceForAccessibility();
             }
         });
     }
