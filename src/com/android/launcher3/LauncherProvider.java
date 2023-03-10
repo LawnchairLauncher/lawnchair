@@ -107,6 +107,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final int TEST_WORKSPACE_LAYOUT_RES_XML = R.xml.default_test_workspace;
     private static final int TEST2_WORKSPACE_LAYOUT_RES_XML = R.xml.default_test2_workspace;
+    private static final int TAPL_WORKSPACE_LAYOUT_RES_XML = R.xml.default_tapl_test_workspace;
 
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
@@ -409,6 +410,9 @@ public class LauncherProvider extends ContentProvider {
                         break;
                     case LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TEST2:
                         mDefaultWorkspaceLayoutOverride = TEST2_WORKSPACE_LAYOUT_RES_XML;
+                        break;
+                    case LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TAPL:
+                        mDefaultWorkspaceLayoutOverride = TAPL_WORKSPACE_LAYOUT_RES_XML;
                         break;
                     default:
                         mDefaultWorkspaceLayoutOverride = 0;
