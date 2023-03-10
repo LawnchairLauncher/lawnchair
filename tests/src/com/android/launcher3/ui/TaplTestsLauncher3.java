@@ -506,7 +506,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
-    @ScreenRecord // (b/256659409)
     public void testUninstallFromAllApps() throws Exception {
         installDummyAppAndWaitForUIUpdate();
         try {
@@ -515,6 +514,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             allApps.freeze();
             try {
                 workspace = allApps.getAppIcon(DUMMY_APP_NAME).uninstall();
+                // After the toast clears, then the model tries to commit the uninstall transaction
+                mLauncher.waitForModelQueueCleared();
             } finally {
                 allApps.unfreeze();
             }
