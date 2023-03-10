@@ -113,6 +113,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_TWOLINE_ALLAPPS = getDebugFlag(270390937,
             "ENABLE_TWOLINE_ALLAPPS", false, "Enables two line label inside all apps.");
 
+    public static final BooleanFlag ENABLE_TWOLINE_DEVICESEARCH = getDebugFlag(201388851,
+            "ENABLE_TWOLINE_DEVICESEARCH", false,
+            "Enable two line label for icons with labels on device search.");
+
     public static final BooleanFlag ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING = getReleaseFlag(
             270391397, "ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING", false,
             "Allows on device search in all apps logging");
