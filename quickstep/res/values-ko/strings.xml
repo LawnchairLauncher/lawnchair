@@ -22,8 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"고정"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"자유 형식"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"최근 항목이 없습니다."</string>
-    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
-    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"앱 사용 설정"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"모두 삭제"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"최근 앱"</string>
@@ -101,7 +99,7 @@
     <string name="taskbar_edu_closed" msgid="126643734478892862">"작업 표시줄 튜토리얼 패널 닫힘"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"앱을 옆으로 드래그하여 앱 2개를 동시에 사용합니다."</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"위로 천천히 스와이프하면 태스크 바가 표시됩니다."</string>
-    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"루틴에 따라 앱 제안을 받습니다."</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"사용 습관에 따라 앱 제안을 받습니다."</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"태스크 바를 자동 숨김하려면 설정에서 동작 탐색을 켜세요."</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"태스크 바 최대한 활용하기"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"다음"</string>
@@ -116,6 +114,10 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"알림"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"빠른 설정"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"태스크 바"</string>
+    <!-- no translation found for taskbar_a11y_shown_title (6842833581088937713) -->
+    <skip />
+    <!-- no translation found for taskbar_a11y_hidden_title (9154903639589659284) -->
+    <skip />
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"탐색 메뉴"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"상단/왼쪽으로 이동"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"하단/오른쪽으로 이동"</string>
