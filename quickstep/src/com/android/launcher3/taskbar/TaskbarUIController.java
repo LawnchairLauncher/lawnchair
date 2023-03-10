@@ -17,6 +17,8 @@ package com.android.launcher3.taskbar;
 
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 
 import android.content.Intent;
@@ -282,4 +284,30 @@ public class TaskbarUIController {
      * No-op if the view is not yet open.
      */
     public void launchSplitTasks(@NonNull View taskview, @NonNull GroupTask groupTask) { }
+
+    /**
+     * Returns the matching view (if any) in the taskbar.
+     * @param view The view to match.
+     */
+    public @Nullable View findMatchingView(View view) {
+        if (!(view.getTag() instanceof ItemInfo)) {
+            return null;
+        }
+        ItemInfo info = (ItemInfo) view.getTag();
+        if (info.container != CONTAINER_HOTSEAT && info.container != CONTAINER_HOTSEAT_PREDICTION) {
+            return null;
+        }
+
+        // Taskbar has the same items as the hotseat and we can use screenId to find the match.
+        int screenId = info.screenId;
+        View[] views = mControllers.taskbarViewController.getIconViews();
+        for (int i = views.length - 1; i >= 0; --i) {
+            if (views[i] != null
+                    && views[i].getTag() instanceof ItemInfo
+                    && ((ItemInfo) views[i].getTag()).screenId == screenId) {
+                return views[i];
+            }
+        }
+        return null;
+    }
 }

@@ -355,7 +355,7 @@ public class AllAppsTransitionController
             });
         }
 
-        if(FeatureFlags.ENABLE_HAPTICS_ALL_APPS.get() && config.userControlled
+        if(FeatureFlags.ENABLE_PREMIUM_HAPTICS_ALL_APPS.get() && config.userControlled
                 && Utilities.ATLEAST_S) {
             if (toState == ALL_APPS) {
                 builder.addOnFrameListener(
@@ -385,8 +385,9 @@ public class AllAppsTransitionController
         builder.add(anim);
 
         setAlphas(toState, config, builder);
-
-        if (ALL_APPS.equals(toState) && mLauncher.isInState(NORMAL) && !(Utilities.ATLEAST_S)) {
+        // This controls both haptics for tapping on QSB and going to all apps.
+        if (ALL_APPS.equals(toState) && mLauncher.isInState(NORMAL) &&
+                !FeatureFlags.ENABLE_PREMIUM_HAPTICS_ALL_APPS.get()) {
             mLauncher.getAppsView().performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
                     HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
         }
