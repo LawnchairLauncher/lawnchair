@@ -1865,6 +1865,15 @@ public final class LauncherInstrumentation {
         getTestInfo(TestProtocol.REQUEST_USE_TEST2_WORKSPACE_LAYOUT);
     }
 
+
+    /**
+     * Reloads the workspace with a test layout that includes the chrome Activity app icon on the
+     * hotseat.
+     */
+    public void useTaplWorkspaceLayoutOnReload() {
+        getTestInfo(TestProtocol.REQUEST_USE_TAPL_WORKSPACE_LAYOUT);
+    }
+
     /** Reloads the workspace with the default layout defined by the user's grid size selection. */
     public void useDefaultWorkspaceLayoutOnReload() {
         getTestInfo(TestProtocol.REQUEST_USE_DEFAULT_WORKSPACE_LAYOUT);

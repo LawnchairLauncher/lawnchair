@@ -221,6 +221,12 @@ public class DebugTestInformationHandler extends TestInformationHandler {
                 return response;
             }
 
+            case TestProtocol.REQUEST_USE_TAPL_WORKSPACE_LAYOUT: {
+                useTestWorkspaceLayout(
+                        LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TAPL);
+                return response;
+            }
+
             case TestProtocol.REQUEST_USE_DEFAULT_WORKSPACE_LAYOUT: {
                 useTestWorkspaceLayout(null);
                 return response;
