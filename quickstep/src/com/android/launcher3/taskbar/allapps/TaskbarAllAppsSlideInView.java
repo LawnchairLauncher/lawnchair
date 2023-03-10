@@ -23,10 +23,14 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
+import android.window.BackEvent;
+import android.window.OnBackAnimationCallback;
+import android.window.OnBackInvokedDispatcher;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsViewController.TaskbarAllAppsCallbacks;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.launcher3.views.AbstractSlideInView;
@@ -53,6 +57,28 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         mAllAppsCallbacks = callbacks;
     }
 
+    private final OnBackAnimationCallback mOnBackAnimationCallback = new OnBackAnimationCallback() {
+        @Override
+        public void onBackCancelled() {
+            TaskbarAllAppsSlideInView.this.onBackCancelled();
+        }
+
+        @Override
+        public void onBackInvoked() {
+            TaskbarAllAppsSlideInView.this.onBackInvoked();
+        }
+
+        @Override
+        public void onBackProgressed(BackEvent backEvent) {
+            TaskbarAllAppsSlideInView.this.onBackProgressed(backEvent.getProgress());
+        }
+
+        @Override
+        public void onBackStarted(BackEvent backEvent) {
+            TaskbarAllAppsSlideInView.this.onBackStarted();
+        }
+    };
+
     /** Opens the all apps view. */
     void show(boolean animate) {
         if (mIsOpen || mOpenCloseAnimator.isRunning()) {
@@ -69,6 +95,11 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         } else {
             mTranslationShift = TRANSLATION_SHIFT_OPENED;
         }
+
+        if (FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
+            findOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT, mOnBackAnimationCallback);
+        }
     }
 
     /** The apps container inside this view. */
@@ -79,6 +110,9 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     @Override
     protected void handleClose(boolean animate) {
         handleClose(animate, mAllAppsCallbacks.getCloseDuration());
+        if (FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
+            findOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(mOnBackAnimationCallback);
+        }
     }
 
     @Override
