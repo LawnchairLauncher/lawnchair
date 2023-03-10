@@ -717,7 +717,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
                     || info.hasPromiseIconUi()
                     || (info.runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) != 0
                     || (ENABLE_DOWNLOAD_APP_UX_V2.get() && icon != null)) {
-                updateProgressBarUi(icon);
+                updateProgressBarUi(info.getProgressLevel() == 100 ? icon : null);
             }
         }
     }
