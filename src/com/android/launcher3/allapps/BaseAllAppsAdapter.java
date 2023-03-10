@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.views.ActivityContext;
@@ -140,7 +141,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
     protected final OnClickListener mOnIconClickListener;
     protected OnLongClickListener mOnIconLongClickListener = INSTANCE_ALL_APPS;
     protected OnFocusChangeListener mIconFocusListener;
-    private final int mExtraHeight;
+    private final int mExtraTextHeight;
 
     public BaseAllAppsAdapter(T activityContext, LayoutInflater inflater,
             AlphabeticalAppsList<T> apps, SearchAdapterProvider<?> adapterProvider) {
@@ -152,7 +153,8 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         mOnIconClickListener = mActivityContext.getItemOnClickListener();
 
         mAdapterProvider = adapterProvider;
-        mExtraHeight = res.getDimensionPixelSize(R.dimen.all_apps_height_extra);
+        mExtraTextHeight = Utilities.calculateTextHeight(
+                mActivityContext.getDeviceProfile().allAppsIconTextSizePx);
     }
 
     /**
@@ -197,7 +199,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 icon.getLayoutParams().height =
                         mActivityContext.getDeviceProfile().allAppsCellHeightPx;
                 if (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get()) {
-                    icon.getLayoutParams().height += mExtraHeight;
+                    icon.getLayoutParams().height += mExtraTextHeight;
                 }
                 return new ViewHolder(icon);
             case VIEW_TYPE_EMPTY_SEARCH:
