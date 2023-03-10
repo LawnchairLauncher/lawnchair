@@ -236,8 +236,8 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     /** Return extra space revealed during predictive back animation. */
     @Px
     protected int getBottomOffsetPx() {
-        return (int) (getMeasuredHeight()
-                * (1 - PREDICTIVE_BACK_MIN_SCALE) / 2);
+        final int height = getMeasuredHeight();
+        return (int) ((height / PREDICTIVE_BACK_MIN_SCALE - height) / 2);
     }
 
     /**
