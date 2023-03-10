@@ -74,6 +74,7 @@
 -dontwarn com.google.protobuf.nano.**
 -dontwarn dagger.**
 -dontwarn javax.inject.**
+# We can remove these rules after updating to OkHttp 4.10.1
 # https://github.com/square/okhttp/blob/339732e3a1b78be5d792860109047f68a011b5eb/okhttp/src/jvmMain/resources/META-INF/proguard/okhttp3.pro#L11-L14
 -dontwarn okhttp3.internal.platform.**
 -dontwarn org.conscrypt.**
