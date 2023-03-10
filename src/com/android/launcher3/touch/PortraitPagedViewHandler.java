@@ -582,8 +582,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                 ? splitInfo.dividerHeightPercent
                 : splitInfo.dividerWidthPercent;
 
-        int deviceHeightWithoutTaskbar = dp.availableHeightPx - dp.taskbarSize;
-        float scale = (float) outRect.height() / deviceHeightWithoutTaskbar;
+        float scale = (float) outRect.height() / dp.availableHeightPx;
         float topTaskHeight = dp.availableHeightPx * topLeftTaskPercent;
         float scaledTopTaskHeight = topTaskHeight * scale;
         float dividerHeight = dp.availableHeightPx * dividerBarPercent;
@@ -639,8 +638,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
             // Reset unused translations
             primarySnapshot.setTranslationY(0);
         } else {
-            int deviceHeightWithoutTaskbar = dp.availableHeightPx - dp.taskbarSize;
-            float scale = (float) totalThumbnailHeight / deviceHeightWithoutTaskbar;
+            float scale = (float) totalThumbnailHeight / dp.availableHeightPx;
             float topTaskHeight = dp.availableHeightPx * taskPercent;
             float finalDividerHeight = dividerBar * scale;
             float scaledTopTaskHeight = topTaskHeight * scale;
