@@ -147,8 +147,6 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
-import com.android.launcher3.testing.TestLogging;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DynamicResource;
@@ -1518,9 +1516,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mMovingTaskView = null;
         runningTaskView.resetPersistentViewTransforms();
         int frontTaskIndex = 0;
-        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED && !runningTaskView.isDesktopTask()) {
-            // If desktop mode is enabled, desktop task view is pinned at first position.
-            // Move running task to position 1
+        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED && mDesktopTaskView != null
+                && !runningTaskView.isDesktopTask()) {
+            // If desktop mode is enabled, desktop task view is pinned at first position if present.
+            // Move running task to position 1.
             frontTaskIndex = 1;
         }
         addView(runningTaskView, frontTaskIndex);
@@ -1653,14 +1652,18 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         if (!taskGroups.isEmpty()) {
             addView(mClearAllButton);
-
-            if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED
-                    && !getSplitSelectController().isSplitSelectActive()) {
-                mDesktopTaskView = (DesktopTaskView) getTaskViewFromPool(TaskView.Type.DESKTOP);
-                // Always add a desktop task to the first position. Even if it is empty
-                addView(mDesktopTaskView, 0);
-                ArrayList<Task> tasks = desktopTask != null ? desktopTask.tasks : new ArrayList<>();
-                mDesktopTaskView.bind(tasks, mOrientationState);
+            if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+                // Check if we have apps on the desktop
+                if (desktopTask != null && !desktopTask.tasks.isEmpty()) {
+                    // If we are actively choosing apps for split, skip the desktop tile
+                    if (!getSplitSelectController().isSplitSelectActive()) {
+                        mDesktopTaskView = (DesktopTaskView) getTaskViewFromPool(
+                                TaskView.Type.DESKTOP);
+                        // Always add a desktop task to the first position
+                        addView(mDesktopTaskView, 0);
+                        mDesktopTaskView.bind(desktopTask.tasks, mOrientationState);
+                    }
+                }
             }
         }
 
@@ -4493,7 +4496,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      * Attempts to initiate split with an existing taskView, if one exists
      */
     public void initiateSplitSelect(SplitSelectSource splitSelectSource) {
-        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "enterSplitSelect");
         mSplitSelectSource = splitSelectSource;
         mSplitHiddenTaskView = getTaskViewByTaskId(splitSelectSource.alreadyRunningTaskId);
         mSplitHiddenTaskViewIndex = indexOfChild(mSplitHiddenTaskView);
@@ -5205,7 +5207,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     private int getFirstViewIndex() {
-        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED && mDesktopTaskView != null) {
             // Desktop task is at position 0, that is the first view
             return 0;
         }

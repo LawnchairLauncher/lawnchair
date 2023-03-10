@@ -302,7 +302,10 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
 
         @Nullable
         public String getPackageName() {
-            return mTopTask == null ? null : mTopTask.baseActivity.getPackageName();
+            if (mTopTask == null || mTopTask.baseActivity == null) {
+                return null;
+            }
+            return mTopTask.baseActivity.getPackageName();
         }
     }
 }

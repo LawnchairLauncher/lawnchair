@@ -30,9 +30,6 @@
     <!-- Recents: The empty recents string. [CHAR LIMIT=NONE] -->
     <string name="recents_empty_message">No recent items</string>
 
-    <!-- Recents: The empty recents desktop tile string. [CHAR LIMIT=NONE] -->
-    <string name="recents_empty_desktop_message">No desktop items</string>
-
     <!-- Content description for the recent apps's accessibility option that opens its usage settings. [CHAR LIMIT=NONE] -->
     <string name="accessibility_app_usage_settings">App usage settings</string>
 
@@ -278,6 +275,10 @@
     <string name="taskbar_button_quick_settings">Quick Settings</string>
     <!-- Accessibility title for the Taskbar window. [CHAR_LIMIT=NONE] -->
     <string name="taskbar_a11y_title">Taskbar</string>
+    <!-- Accessibility title for the Taskbar window appeared. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_a11y_shown_title">Taskbar shown</string>
+    <!-- Accessibility title for the Taskbar window being close. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_a11y_hidden_title">Taskbar hidden</string>
     <!-- Accessibility title for the Taskbar window on phones. [CHAR_LIMIT=NONE] -->
     <string name="taskbar_phone_a11y_title">Navigation bar</string>
 

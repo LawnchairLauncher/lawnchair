@@ -23,7 +23,7 @@
     android:background="@drawable/keyboard_quick_switch_overview_button_background"
     android:clipToOutline="true"
     android:importantForAccessibility="yes"
-    launcher:borderColor="?androidprv:attr/colorAccentSecondaryVariant">
+    launcher:borderColor="?androidprv:attr/materialColorSecondaryContainer">
 
     <ImageView
         android:id="@+id/icon"

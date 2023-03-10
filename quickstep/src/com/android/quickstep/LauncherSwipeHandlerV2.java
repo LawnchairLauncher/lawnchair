@@ -105,6 +105,9 @@ public class LauncherSwipeHandlerV2 extends
     private HomeAnimationFactory createIconHomeAnimationFactory(View workspaceView) {
         RectF iconLocation = new RectF();
         FloatingIconView floatingIconView = getFloatingIconView(mActivity, workspaceView,
+                mActivity.getTaskbarUIController() == null
+                        ? null
+                        : mActivity.getTaskbarUIController().findMatchingView(workspaceView),
                 true /* hideOriginal */, iconLocation, false /* isOpening */);
 
         // We want the window alpha to be 0 once this threshold is met, so that the
