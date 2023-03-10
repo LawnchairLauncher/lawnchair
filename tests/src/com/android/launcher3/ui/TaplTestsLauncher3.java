@@ -231,6 +231,10 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Test
     @ScreenRecord // b/202433017
     public void testWorkspace() throws Exception {
+        // Make sure there is an instance of chrome on the hotseat
+        mLauncher.useTaplWorkspaceLayoutOnReload();
+        clearLauncherData();
+
         final Workspace workspace = mLauncher.getWorkspace();
 
         // Test that ensureWorkspaceIsScrollable adds a page by dragging an icon there.
