@@ -22,8 +22,10 @@ import static com.android.launcher3.LauncherPrefs.OLD_APP_WIDGET_IDS;
 import static com.android.launcher3.LauncherPrefs.RESTORE_DEVICE;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
+import static com.android.launcher3.widget.LauncherWidgetHolder.APPWIDGET_HOST_ID;
 
 import android.app.backup.BackupManager;
+import android.appwidget.AppWidgetHost;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -56,7 +58,6 @@ import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LogConfig;
-import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import java.io.InvalidObjectException;
 import java.util.Arrays;
@@ -368,12 +369,11 @@ public class RestoreDbTask {
     private void restoreAppWidgetIdsIfExists(Context context) {
         LauncherPrefs lp = LauncherPrefs.get(context);
         if (lp.has(APP_WIDGET_IDS, OLD_APP_WIDGET_IDS)) {
-            LauncherWidgetHolder holder = LauncherWidgetHolder.newInstance(context);
+            AppWidgetHost host = new AppWidgetHost(context, APPWIDGET_HOST_ID);
             AppWidgetsRestoredReceiver.restoreAppWidgetIds(context,
                     IntArray.fromConcatString(lp.get(OLD_APP_WIDGET_IDS)).toArray(),
                     IntArray.fromConcatString(lp.get(APP_WIDGET_IDS)).toArray(),
-                    holder);
-            holder.destroy();
+                    host);
         } else {
             FileLog.d(TAG, "No app widget ids to restore.");
         }
