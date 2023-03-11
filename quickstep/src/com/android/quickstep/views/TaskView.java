@@ -16,6 +16,7 @@
 
 package com.android.quickstep.views;
 
+import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.widget.Toast.LENGTH_SHORT;
 
@@ -41,6 +42,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.IdRes;
 import android.app.ActivityOptions;
+import android.app.ActivityTaskManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
@@ -82,7 +84,6 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
@@ -559,9 +560,7 @@ public class TaskView extends FrameLayout implements Reusable {
         }
         mModalness = modalness;
         mIconView.setAlpha(1 - modalness);
-        mDigitalWellBeingToast.updateBannerOffset(modalness,
-                mCurrentFullscreenParams.mCurrentDrawnInsets.top
-                        + mCurrentFullscreenParams.mCurrentDrawnInsets.bottom);
+        mDigitalWellBeingToast.updateBannerOffset(modalness);
     }
 
     public DigitalWellBeingToast getDigitalWellBeingToast() {
@@ -706,9 +705,12 @@ public class TaskView extends FrameLayout implements Reusable {
         }
         SplitSelectStateController splitSelectStateController =
                 recentsView.getSplitSelectController();
-        if (splitSelectStateController.isSplitSelectActive() &&
-                splitSelectStateController.getInitialTaskId() == getTask().key.id) {
-            // Prevent taps on the this taskview if it's being animated into split select state
+        // Disable taps for split selection animation unless we have multiple tasks
+        boolean disableTapsForSplitSelect =
+                splitSelectStateController.isSplitSelectActive()
+                        && splitSelectStateController.getInitialTaskId() == getTask().key.id
+                        && !containsMultipleTasks();
+        if (disableTapsForSplitSelect) {
             return false;
         }
 
@@ -716,6 +718,25 @@ public class TaskView extends FrameLayout implements Reusable {
             mLastTouchDownPosition.set(ev.getX(), ev.getY());
         }
         return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * @return taskId that split selection was initiated with,
+     *         {@link ActivityTaskManager#INVALID_TASK_ID} if no tasks in this TaskView are part of
+     *         split selection
+     */
+    protected int getThisTaskCurrentlyInSplitSelection() {
+        SplitSelectStateController splitSelectController =
+                getRecentsView().getSplitSelectController();
+        int initSplitTaskId = INVALID_TASK_ID;
+        for (TaskIdAttributeContainer container : getTaskIdAttributeContainers()) {
+            int taskId = container.getTask().key.id;
+            if (taskId == splitSelectController.getInitialTaskId()) {
+                initSplitTaskId = taskId;
+                break;
+            }
+        }
+        return initSplitTaskId;
     }
 
     private void onClick(View view) {
@@ -747,6 +768,8 @@ public class TaskView extends FrameLayout implements Reusable {
 
     /**
      * Returns the task index of the last selected child task (0 or 1).
+     * If we contain multiple tasks and this TaskView is used as part of split selection, the
+     * selected child task index will be that of the remaining task.
      */
     protected int getLastSelectedChildTaskIndex() {
         return 0;
@@ -1084,6 +1107,8 @@ public class TaskView extends FrameLayout implements Reusable {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         int thumbnailTopMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
 
+        // TODO(b/271468547), we should default to setting trasnlations only on the snapshot instead
+        //  of a hybrid of both margins and translations
         LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
         snapshotParams.topMargin = thumbnailTopMargin;
         mSnapshotView.setLayoutParams(snapshotParams);
@@ -1120,9 +1145,7 @@ public class TaskView extends FrameLayout implements Reusable {
         float scale = Interpolators.clampToProgress(FAST_OUT_SLOW_IN, lowerClamp, upperClamp)
                 .getInterpolation(progress);
         mIconView.setAlpha(scale);
-        mDigitalWellBeingToast.updateBannerOffset(1f - scale,
-                mCurrentFullscreenParams.mCurrentDrawnInsets.top
-                        + mCurrentFullscreenParams.mCurrentDrawnInsets.bottom);
+        mDigitalWellBeingToast.updateBannerOffset(1f - scale);
     }
 
     public void setIconScaleAnimStartProgress(float startProgress) {
@@ -1179,6 +1202,7 @@ public class TaskView extends FrameLayout implements Reusable {
         setAlpha(mStableAlpha);
         setIconScaleAndDim(1);
         setColorTint(0, 0);
+        mSnapshotView.resetViewTransforms();
     }
 
     public void setStableAlpha(float parentAlpha) {
@@ -1720,10 +1744,12 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     /**
-     *     Sets visibility for the thumbnail and associated elements (DWB banners and action chips).
-     *     IconView is unaffected.
+     *  Sets visibility for the thumbnail and associated elements (DWB banners and action chips).
+     *  IconView is unaffected.
+     *
+     * @param taskId is only used when setting visibility to a non-{@link View#VISIBLE} value
      */
-    void setThumbnailVisibility(int visibility) {
+    void setThumbnailVisibility(int visibility, int taskId) {
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
             if (child != mIconView) {
@@ -1740,17 +1766,11 @@ public class TaskView extends FrameLayout implements Reusable {
         private final float mCornerRadius;
         private final float mWindowCornerRadius;
 
-        public RectF mCurrentDrawnInsets = new RectF();
         public float mCurrentDrawnCornerRadius;
-        /** The current scale we apply to the thumbnail to adjust for new left/right insets. */
-        public float mScale = 1;
-
-        private boolean mIsTaskbarTransient;
 
         public FullscreenDrawParams(Context context) {
             mCornerRadius = TaskCornerRadius.get(context);
             mWindowCornerRadius = QuickStepContract.getWindowCornerRadius(context);
-            mIsTaskbarTransient = DisplayController.isTransientTaskbar(context);
 
             mCurrentDrawnCornerRadius = mCornerRadius;
         }
@@ -1760,36 +1780,9 @@ public class TaskView extends FrameLayout implements Reusable {
          */
         public void setProgress(float fullscreenProgress, float parentScale, float taskViewScale,
                 int previewWidth, DeviceProfile dp, PreviewPositionHelper pph) {
-            RectF insets = getInsetsToDrawInFullscreen(pph, dp, mIsTaskbarTransient);
-
-            float currentInsetsLeft = insets.left * fullscreenProgress;
-            float currentInsetsTop = insets.top * fullscreenProgress;
-            float currentInsetsRight = insets.right * fullscreenProgress;
-            float currentInsetsBottom = insets.bottom * fullscreenProgress;
-            mCurrentDrawnInsets.set(
-                    currentInsetsLeft, currentInsetsTop, currentInsetsRight, currentInsetsBottom);
-
             mCurrentDrawnCornerRadius =
                     Utilities.mapRange(fullscreenProgress, mCornerRadius, mWindowCornerRadius)
                             / parentScale / taskViewScale;
-
-            // We scaled the thumbnail to fit the content (excluding insets) within task view width.
-            // Now that we are drawing left/right insets again, we need to scale down to fit them.
-            if (previewWidth > 0) {
-                mScale = previewWidth / (previewWidth + currentInsetsLeft + currentInsetsRight);
-            }
-        }
-
-        /**
-         * Insets to used for clipping the thumbnail (in case it is drawing outside its own space)
-         */
-        private static RectF getInsetsToDrawInFullscreen(PreviewPositionHelper pph,
-                DeviceProfile dp, boolean isTaskbarTransient) {
-            if (dp.isTaskbarPresent && isTaskbarTransient) {
-                return pph.getClippedInsets();
-            }
-            return dp.isTaskbarPresent && !dp.isTaskbarPresentInApps
-                    ? pph.getClippedInsets() : EMPTY_RECT_F;
         }
     }
 

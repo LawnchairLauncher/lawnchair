@@ -113,6 +113,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_TWOLINE_ALLAPPS = getDebugFlag(270390937,
             "ENABLE_TWOLINE_ALLAPPS", false, "Enables two line label inside all apps.");
 
+    public static final BooleanFlag ENABLE_TWOLINE_DEVICESEARCH = getDebugFlag(201388851,
+            "ENABLE_TWOLINE_DEVICESEARCH", false,
+            "Enable two line label for icons with labels on device search.");
+
     public static final BooleanFlag ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING = getReleaseFlag(
             270391397, "ENABLE_DEVICE_SEARCH_PERFORMANCE_LOGGING", false,
             "Allows on device search in all apps logging");
@@ -302,7 +306,7 @@ public final class FeatureFlags {
                     + " is enabled or in prefix state");
 
     public static final BooleanFlag ENABLE_MATERIAL_U_POPUP = getDebugFlag(270395516,
-            "ENABLE_MATERIAL_U_POPUP", false, "Switch popup UX to use material U");
+            "ENABLE_MATERIAL_U_POPUP", true, "Switch popup UX to use material U");
 
     public static final BooleanFlag ENABLE_SEARCH_UNINSTALLED_APPS = getReleaseFlag(270395269,
             "ENABLE_SEARCH_UNINSTALLED_APPS", false, "Search uninstalled app results.");

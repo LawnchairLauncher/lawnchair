@@ -244,6 +244,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             float maxScale = res.getFloat(R.dimen.overview_max_scale);
             int taskMargin = dp.overviewTaskMarginPx;
             calculateTaskSizeInternal(
+                    context,
                     dp,
                     dp.overviewTaskThumbnailTopMarginPx,
                     dp.getOverviewActionsClaimedSpace(),
@@ -259,10 +260,10 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         float maxScale = res.getFloat(R.dimen.overview_max_scale);
         Rect gridRect = new Rect();
         calculateGridSize(dp, gridRect);
-        calculateTaskSizeInternal(dp, gridRect, maxScale, Gravity.CENTER, outRect);
+        calculateTaskSizeInternal(context, dp, gridRect, maxScale, Gravity.CENTER, outRect);
     }
 
-    private void calculateTaskSizeInternal(DeviceProfile dp, int claimedSpaceAbove,
+    private void calculateTaskSizeInternal(Context context, DeviceProfile dp, int claimedSpaceAbove,
             int claimedSpaceBelow, int minimumHorizontalPadding, float maxScale, int gravity,
             Rect outRect) {
         Rect insets = dp.getInsets();
@@ -275,12 +276,12 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
                 minimumHorizontalPadding,
                 claimedSpaceBelow);
 
-        calculateTaskSizeInternal(dp, potentialTaskRect, maxScale, gravity, outRect);
+        calculateTaskSizeInternal(context, dp, potentialTaskRect, maxScale, gravity, outRect);
     }
 
-    private void calculateTaskSizeInternal(DeviceProfile dp,
+    private void calculateTaskSizeInternal(Context context, DeviceProfile dp,
             Rect potentialTaskRect, float maxScale, int gravity, Rect outRect) {
-        PointF taskDimension = getTaskDimension(dp);
+        PointF taskDimension = getTaskDimension(context, dp);
 
         float scale = Math.min(
                 potentialTaskRect.width() / taskDimension.x,
@@ -292,19 +293,19 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         Gravity.apply(gravity, outWidth, outHeight, potentialTaskRect, outRect);
     }
 
-    private static PointF getTaskDimension(DeviceProfile dp) {
+    private static PointF getTaskDimension(Context context, DeviceProfile dp) {
         PointF dimension = new PointF();
-        getTaskDimension(dp, dimension);
+        getTaskDimension(context, dp, dimension);
         return dimension;
     }
 
     /**
      * Gets the dimension of the task in the current system state.
      */
-    public static void getTaskDimension(DeviceProfile dp, PointF out) {
+    public static void getTaskDimension(Context context, DeviceProfile dp, PointF out) {
         out.x = dp.widthPx;
         out.y = dp.heightPx;
-        if (dp.isTablet) {
+        if (dp.isTablet && !DisplayController.isTransientTaskbar(context)) {
             out.y -= dp.taskbarSize;
         }
     }
@@ -339,7 +340,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         float rowHeight = (potentialTaskRect.height() + dp.overviewTaskThumbnailTopMarginPx
                 - dp.overviewRowSpacing) / 2f;
 
-        PointF taskDimension = getTaskDimension(dp);
+        PointF taskDimension = getTaskDimension(context, dp);
         float scale = (rowHeight - dp.overviewTaskThumbnailTopMarginPx) / taskDimension.y;
         int outWidth = Math.round(scale * taskDimension.x);
         int outHeight = Math.round(scale * taskDimension.y);
@@ -373,6 +374,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
                     Math.round((dp.availableWidthPx - outRect.width() * maxScale) / 2);
         }
         calculateTaskSizeInternal(
+                context,
                 dp,
                 dp.overviewTaskMarginPx,
                 claimedSpaceBelow,

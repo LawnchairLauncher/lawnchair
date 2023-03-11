@@ -496,7 +496,7 @@ public class DesktopTaskView extends TaskView {
     }
 
     @Override
-    void setThumbnailVisibility(int visibility) {
+    void setThumbnailVisibility(int visibility, int taskId) {
         for (int i = 0; i < mSnapshotViewMap.size(); i++) {
             mSnapshotViewMap.valueAt(i).setVisibility(visibility);
         }

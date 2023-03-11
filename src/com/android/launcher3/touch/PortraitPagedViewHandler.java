@@ -582,8 +582,7 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                 ? splitInfo.dividerHeightPercent
                 : splitInfo.dividerWidthPercent;
 
-        int deviceHeightWithoutTaskbar = dp.availableHeightPx - dp.taskbarSize;
-        float scale = (float) outRect.height() / deviceHeightWithoutTaskbar;
+        float scale = (float) outRect.height() / dp.availableHeightPx;
         float topTaskHeight = dp.availableHeightPx * topLeftTaskPercent;
         float scaledTopTaskHeight = topTaskHeight * scale;
         float dividerHeight = dp.availableHeightPx * dividerBarPercent;
@@ -635,9 +634,11 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                 primarySnapshot.setTranslationX(0);
             }
             secondarySnapshot.setTranslationY(spaceAboveSnapshot);
+
+            // Reset unused translations
+            primarySnapshot.setTranslationY(0);
         } else {
-            int deviceHeightWithoutTaskbar = dp.availableHeightPx - dp.taskbarSize;
-            float scale = (float) totalThumbnailHeight / deviceHeightWithoutTaskbar;
+            float scale = (float) totalThumbnailHeight / dp.availableHeightPx;
             float topTaskHeight = dp.availableHeightPx * taskPercent;
             float finalDividerHeight = dividerBar * scale;
             float scaledTopTaskHeight = topTaskHeight * scale;
@@ -669,6 +670,10 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                 View.MeasureSpec.makeMeasureSpec(secondarySnapshotWidth, View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(secondarySnapshotHeight,
                         View.MeasureSpec.EXACTLY));
+        primarySnapshot.setScaleX(1);
+        secondarySnapshot.setScaleX(1);
+        primarySnapshot.setScaleY(1);
+        secondarySnapshot.setScaleY(1);
     }
 
     @Override
@@ -699,13 +704,13 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                     : deviceProfile.getInsets().left;
             int fullscreenMidpointFromBottom = ((deviceProfile.widthPx
                     - fullscreenInsetThickness) / 2);
-            float midpointFromBottomPct = (float) fullscreenMidpointFromBottom
+            float midpointFromEndPct = (float) fullscreenMidpointFromBottom
                     / deviceProfile.widthPx;
             float insetPct = (float) fullscreenInsetThickness / deviceProfile.widthPx;
             int spaceAboveSnapshots = 0;
             int overviewThumbnailAreaThickness = groupedTaskViewWidth - spaceAboveSnapshots;
             int bottomToMidpointOffset = (int) (overviewThumbnailAreaThickness
-                    * midpointFromBottomPct);
+                    * midpointFromEndPct);
             int insetOffset = (int) (overviewThumbnailAreaThickness * insetPct);
 
             if (deviceProfile.isSeascape()) {
