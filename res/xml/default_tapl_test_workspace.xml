@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2021 The Android Open Source Project
+<!-- Copyright (C) 2023 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,12 +13,16 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.BubbleTextView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto"
-    style="@style/BaseIcon.AllApps"
-    android:id="@+id/icon"
-    android:singleLine="false"
-    android:lines="2"
-    launcher:iconDisplay="all_apps"
-    launcher:centerVertically="true" />
+<!-- Split display specific version of Launcher3/res/xml/default_workspace_4x4.xml -->
+<favorites xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3" >
 
+    <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
+    <favorite
+        launcher:container="-101"
+        launcher:screen="0"
+        launcher:x="0"
+        launcher:y="0"
+        launcher:className="com.google.android.apps.chrome.Main"
+        launcher:packageName="com.android.chrome" />
+
+</favorites>

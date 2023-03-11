@@ -76,6 +76,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
             };
     protected static final float TRANSLATION_SHIFT_CLOSED = 1f;
     protected static final float TRANSLATION_SHIFT_OPENED = 0f;
+    private static final float VIEW_NO_SCALE = 1f;
 
     protected final T mActivityContext;
 
@@ -93,7 +94,8 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     protected @Nullable OnCloseListener mOnCloseBeginListener;
     protected List<OnCloseListener> mOnCloseListeners = new ArrayList<>();
 
-    private final AnimatedFloat mSlidInViewScale = new AnimatedFloat(this::onScaleProgressChanged);
+    private final AnimatedFloat mSlideInViewScale =
+            new AnimatedFloat(this::onScaleProgressChanged, VIEW_NO_SCALE);
     private boolean mIsBackProgressing;
     @Nullable private Drawable mContentBackground;
 
@@ -184,12 +186,12 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         float deceleratedProgress =
                 Interpolators.PREDICTIVE_BACK_DECELERATED_EASE.getInterpolation(progress);
         mIsBackProgressing = progress > 0f;
-        mSlidInViewScale.updateValue(PREDICTIVE_BACK_MIN_SCALE
+        mSlideInViewScale.updateValue(PREDICTIVE_BACK_MIN_SCALE
                 + (1 - PREDICTIVE_BACK_MIN_SCALE) * (1 - deceleratedProgress));
     }
 
     private void onScaleProgressChanged() {
-        float scaleProgress = mSlidInViewScale.value;
+        float scaleProgress = mSlideInViewScale.value;
         SCALE_PROPERTY.set(this, scaleProgress);
         setClipChildren(!mIsBackProgressing);
         mContent.setClipChildren(!mIsBackProgressing);
@@ -209,7 +211,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     }
 
     protected void animateSlideInViewToNoScale() {
-        mSlidInViewScale.animateToValue(1f)
+        mSlideInViewScale.animateToValue(1f)
                 .setDuration(REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS)
                 .start();
     }
@@ -236,8 +238,8 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     /** Return extra space revealed during predictive back animation. */
     @Px
     protected int getBottomOffsetPx() {
-        return (int) (getMeasuredHeight()
-                * (1 - PREDICTIVE_BACK_MIN_SCALE) / 2);
+        final int height = getMeasuredHeight();
+        return (int) ((height / PREDICTIVE_BACK_MIN_SCALE - height) / 2);
     }
 
     /**

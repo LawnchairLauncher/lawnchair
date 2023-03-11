@@ -52,8 +52,10 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.accessibility.BaseAccessibilityDelegate;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.dragndrop.DraggableView;
@@ -71,6 +73,8 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.util.MultiTranslateDelegate;
+import com.android.launcher3.search.StringMatcherUtility;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.views.ActivityContext;
@@ -97,10 +101,18 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     private static final float MIN_LETTER_SPACING = -0.05f;
     private static final int MAX_SEARCH_LOOP_COUNT = 20;
+    private static final Character NEW_LINE = '\n';
+    private static final String EMPTY = "";
+    private static final StringMatcherUtility.StringMatcher MATCHER =
+            StringMatcherUtility.StringMatcher.getInstance();
 
     private static final int[] STATE_PRESSED = new int[]{android.R.attr.state_pressed};
 
     private float mScaleForReorderBounce = 1f;
+
+    private IntArray mBreakPointsIntArray;
+    private CharSequence mLastOriginalText;
+    private CharSequence mLastModifiedText;
 
     private static final Property<BubbleTextView, Float> DOT_SCALE_PROPERTY
             = new Property<BubbleTextView, Float>(Float.TYPE, "dotScale") {
@@ -134,7 +146,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private FastBitmapDrawable mIcon;
     private boolean mCenterVertically;
 
-    protected final int mDisplay;
+    protected int mDisplay;
 
     private final CheckLongPressHelper mLongPressHelper;
 
@@ -255,6 +267,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         mDotParams.scale = 0f;
         mForceHideDot = false;
         setBackground(null);
+        setSingleLine(true);
+        setMaxLines(1);
 
         setTag(null);
         if (mIconLoadRequest != null) {
@@ -382,13 +396,26 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     @UiThread
-    private void applyLabel(ItemInfoWithIcon info) {
-        setText(info.title);
+    @VisibleForTesting
+    public void applyLabel(ItemInfoWithIcon info) {
+        CharSequence label = info.title;
+        if (label != null) {
+            mLastOriginalText = label;
+            mLastModifiedText = mLastOriginalText;
+            mBreakPointsIntArray = StringMatcherUtility.getListOfBreakpoints(label, MATCHER);
+            setText(label);
+        }
         if (info.contentDescription != null) {
             setContentDescription(info.isDisabled()
                     ? getContext().getString(R.string.disabled_app_label, info.contentDescription)
                     : info.contentDescription);
         }
+    }
+
+    /** This is used for testing to forcefully set the display to ALL_APPS */
+    @VisibleForTesting
+    public void setDisplayAllApps() {
+        mDisplay = DISPLAY_ALL_APPS;
     }
 
     /**
@@ -637,6 +664,27 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             setPadding(getPaddingLeft(), (height - cellHeightPx) / 2, getPaddingRight(),
                     getPaddingBottom());
         }
+        // only apply two line for all_apps
+        if (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() && (mLastOriginalText != null)
+                && (mDisplay == DISPLAY_ALL_APPS)) {
+            CharSequence modifiedString = modifyTitleToSupportMultiLine(
+                    MeasureSpec.getSize(widthMeasureSpec) - getCompoundPaddingLeft()
+                            - getCompoundPaddingRight(),
+                    mLastOriginalText,
+                    getPaint(), mBreakPointsIntArray);
+            if (!TextUtils.equals(modifiedString, mLastModifiedText)) {
+                mLastModifiedText = modifiedString;
+                setText(modifiedString);
+                // if text contains NEW_LINE, set max lines to 2
+                if (TextUtils.indexOf(modifiedString, NEW_LINE) != -1) {
+                    setSingleLine(false);
+                    setMaxLines(2);
+                } else {
+                    setSingleLine(true);
+                    setMaxLines(1);
+                }
+            }
+        }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
@@ -697,6 +745,73 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         return ObjectAnimator.ofFloat(this, TEXT_ALPHA_PROPERTY, toAlpha);
     }
 
+    /**
+     * Generate a new string that will support two line text depending on the current string.
+     * This method calculates the limited width of a text view and creates a string to fit as
+     * many words as it can until the limit is reached. Once the limit is reached, we decide to
+     * either return the original title or continue on a new line. How to get the new string is by
+     * iterating through the list of break points and determining if the strings between the break
+     * points can fit within the line it is in.
+     *  Example assuming each character takes up one spot:
+     *  title = "Battery Stats", breakpoint = [6], stringPtr = 0, limitedWidth = 7
+     *  We get the current word -> from sublist(0, breakpoint[i]+1) so sublist (0,7) -> Battery,
+     *  now stringPtr = 7 then from sublist(7) the current string is " Stats" and the runningWidth
+     *  at this point exceeds limitedWidth and so we put " Stats" onto the next line (after checking
+     *  if the first char is a SPACE, we trim to append "Stats". So resulting string would be
+     *  "Battery\nStats"
+     */
+    public static CharSequence modifyTitleToSupportMultiLine(int limitedWidth, CharSequence title,
+            TextPaint paint, IntArray breakPoints) {
+        // current title is less than the width allowed so we can just skip
+        if (title == null || paint.measureText(title, 0, title.length()) <= limitedWidth) {
+            return title;
+        }
+        float currentWordWidth, runningWidth = 0;
+        CharSequence currentWord;
+        StringBuilder newString = new StringBuilder();
+        int stringPtr = 0;
+        for (int i = 0; i < breakPoints.size()+1; i++) {
+            if (i < breakPoints.size()) {
+                currentWord = title.subSequence(stringPtr, breakPoints.get(i)+1);
+            } else {
+                // last word from recent breakpoint until the end of the string
+                currentWord = title.subSequence(stringPtr, title.length());
+            }
+            currentWordWidth = paint.measureText(currentWord,0, currentWord.length());
+            runningWidth += currentWordWidth;
+            if (runningWidth <= limitedWidth) {
+                newString.append(currentWord);
+            } else {
+                // there is no more space
+                if (i == 0) {
+                    // if the first words exceeds width, just return as the first line will ellipse
+                    return title;
+                } else {
+                    // If putting word onto a new line, make sure there is no space or new line
+                    // character in the beginning of the current word and just put in the rest of
+                    // the characters.
+                    CharSequence lastCharacters = title.subSequence(stringPtr, title.length());
+                    int beginningLetterType =
+                            Character.getType(Character.codePointAt(lastCharacters,0));
+                    if (beginningLetterType == Character.SPACE_SEPARATOR
+                            || beginningLetterType == Character.LINE_SEPARATOR) {
+                        lastCharacters = lastCharacters.length() > 1
+                                ? lastCharacters.subSequence(1, lastCharacters.length())
+                                : EMPTY;
+                    }
+                    newString.append(NEW_LINE).append(lastCharacters);
+                    return newString.toString();
+                }
+            }
+            if (i >= breakPoints.size()) {
+                // no need to look forward into the string if we've already finished processing
+                break;
+            }
+            stringPtr = breakPoints.get(i)+1;
+        }
+        return newString.toString();
+    }
+
     @Override
     public void cancelLongPress() {
         super.cancelLongPress();
@@ -717,7 +832,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
                     || info.hasPromiseIconUi()
                     || (info.runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) != 0
                     || (ENABLE_DOWNLOAD_APP_UX_V2.get() && icon != null)) {
-                updateProgressBarUi(icon);
+                updateProgressBarUi(info.getProgressLevel() == 100 ? icon : null);
             }
         }
     }
