@@ -102,120 +102,150 @@ public class BubbleTextViewTest {
 
     @Test
     public void testEmptyString_flagOn() {
-        TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true);
-        mItemInfoWithIcon.title = EMPTY_STRING;
-        mBubbleTextView.applyLabel(mItemInfoWithIcon);
-        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-        mBubbleTextView.measure(mLimitedWidth, 0);
-        mBubbleTextView.onPreDraw();
-        assertEquals(ONE_LINE, mBubbleTextView.getMaxLines());
+        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true)) {
+            mItemInfoWithIcon.title = EMPTY_STRING;
+            mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+            mBubbleTextView.measure(mLimitedWidth, 0);
+            mBubbleTextView.onPreDraw();
+            assertEquals(ONE_LINE, mBubbleTextView.getMaxLines());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
     public void testEmptyString_flagOff() {
-        TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, false);
-        mItemInfoWithIcon.title = EMPTY_STRING;
-        mBubbleTextView.applyLabel(mItemInfoWithIcon);
-        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-        mBubbleTextView.measure(mLimitedWidth, 0);
-        mBubbleTextView.onPreDraw();
-        assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
+        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, false)) {
+            mItemInfoWithIcon.title = EMPTY_STRING;
+            mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+            mBubbleTextView.measure(mLimitedWidth, 0);
+            mBubbleTextView.onPreDraw();
+            assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
     public void testStringWithSpaceLongerThanCharLimit_flagOn() {
-        TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true);
-        // test string: "Battery Stats"
-        mItemInfoWithIcon.title = TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
-        mBubbleTextView.applyLabel(mItemInfoWithIcon);
-        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-        mBubbleTextView.measure(mLimitedWidth, 0);
-        mBubbleTextView.onPreDraw();
-        assertEquals(TWO_LINE, mBubbleTextView.getLineCount());
+        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true)) {
+            // test string: "Battery Stats"
+            mItemInfoWithIcon.title = TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
+            mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+            mBubbleTextView.measure(mLimitedWidth, 0);
+            mBubbleTextView.onPreDraw();
+            assertEquals(TWO_LINE, mBubbleTextView.getLineCount());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
     public void testStringWithSpaceLongerThanCharLimit_flagOff() {
-        TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, false);
-        // test string: "Battery Stats"
-        mItemInfoWithIcon.title = TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
-        mBubbleTextView.applyLabel(mItemInfoWithIcon);
-        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-        mBubbleTextView.measure(mLimitedWidth, 0);
-        mBubbleTextView.onPreDraw();
-        assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
+        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, false)) {
+            // test string: "Battery Stats"
+            mItemInfoWithIcon.title = TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
+            mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+            mBubbleTextView.measure(mLimitedWidth, 0);
+            mBubbleTextView.onPreDraw();
+            assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
     public void testLongStringNoSpaceLongerThanCharLimit_flagOn() {
-        TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true);
-        // test string: "flutterappflorafy"
-        mItemInfoWithIcon.title = TEST_LONG_STRING_NO_SPACE_LONGER_THAN_CHAR_LIMIT;
-        mBubbleTextView.applyLabel(mItemInfoWithIcon);
-        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-        mBubbleTextView.measure(mLimitedWidth, 0);
-        mBubbleTextView.onPreDraw();
-        assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
+        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true)) {
+            // test string: "flutterappflorafy"
+            mItemInfoWithIcon.title = TEST_LONG_STRING_NO_SPACE_LONGER_THAN_CHAR_LIMIT;
+            mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+            mBubbleTextView.measure(mLimitedWidth, 0);
+            mBubbleTextView.onPreDraw();
+            assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Test
     public void testLongStringNoSpaceLongerThanCharLimit_flagOff() {
-        TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, false);
-        // test string: "flutterappflorafy"
-        mItemInfoWithIcon.title = TEST_LONG_STRING_NO_SPACE_LONGER_THAN_CHAR_LIMIT;
-        mBubbleTextView.applyLabel(mItemInfoWithIcon);
-        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-        mBubbleTextView.measure(mLimitedWidth, 0);
-        mBubbleTextView.onPreDraw();
-        assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
+        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, false)) {
+            // test string: "flutterappflorafy"
+            mItemInfoWithIcon.title = TEST_LONG_STRING_NO_SPACE_LONGER_THAN_CHAR_LIMIT;
+            mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+            mBubbleTextView.measure(mLimitedWidth, 0);
+            mBubbleTextView.onPreDraw();
+            assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
+        } catch (Exception e) {
+            throw  new RuntimeException(e);
+        }
     }
 
     @Test
     public void testLongStringWithSpaceLongerThanCharLimit_flagOn() {
-        TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true);
-        // test string: "System UWB Field Test"
-        mItemInfoWithIcon.title = TEST_LONG_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
-        mBubbleTextView.applyLabel(mItemInfoWithIcon);
-        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-        mBubbleTextView.measure(mLimitedWidth, 0);
-        mBubbleTextView.onPreDraw();
-        assertEquals(TWO_LINE, mBubbleTextView.getLineCount());
+        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true)) {
+            // test string: "System UWB Field Test"
+            mItemInfoWithIcon.title = TEST_LONG_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
+            mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+            mBubbleTextView.measure(mLimitedWidth, 0);
+            mBubbleTextView.onPreDraw();
+            assertEquals(TWO_LINE, mBubbleTextView.getLineCount());
+        } catch (Exception e) {
+            throw  new RuntimeException(e);
+        }
     }
 
     @Test
     public void testLongStringWithSpaceLongerThanCharLimit_flagOff() {
-        TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, false);
-        // test string: "System UWB Field Test"
-        mItemInfoWithIcon.title = TEST_LONG_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
-        mBubbleTextView.applyLabel(mItemInfoWithIcon);
-        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-        mBubbleTextView.measure(mLimitedWidth, 0);
-        mBubbleTextView.onPreDraw();
-        assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
+        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, false)) {
+            // test string: "System UWB Field Test"
+            mItemInfoWithIcon.title = TEST_LONG_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
+            mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+            mBubbleTextView.measure(mLimitedWidth, 0);
+            mBubbleTextView.onPreDraw();
+            assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
+        } catch (Exception e) {
+            throw  new RuntimeException(e);
+        }
     }
 
     @Test
     public void testLongStringSymbolLongerThanCharLimit_flagOn() {
-        TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true);
-        // test string: "LEGO®Builder"
-        mItemInfoWithIcon.title = TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT;
-        mBubbleTextView.applyLabel(mItemInfoWithIcon);
-        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-        mBubbleTextView.measure(mLimitedWidth, 0);
-        mBubbleTextView.onPreDraw();
-        assertEquals(TWO_LINE, mBubbleTextView.getLineCount());
+        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true)) {
+            // test string: "LEGO®Builder"
+            mItemInfoWithIcon.title = TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT;
+            mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+            mBubbleTextView.measure(mLimitedWidth, 0);
+            mBubbleTextView.onPreDraw();
+            assertEquals(TWO_LINE, mBubbleTextView.getLineCount());
+        } catch (Exception e) {
+            throw  new RuntimeException(e);
+        }
     }
 
     @Test
     public void testLongStringSymbolLongerThanCharLimit_flagOff() {
-        TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, false);
-        // test string: "LEGO®Builder"
-        mItemInfoWithIcon.title = TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT;
-        mBubbleTextView.applyLabel(mItemInfoWithIcon);
-        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-        mBubbleTextView.measure(mLimitedWidth, 0);
-        mBubbleTextView.onPreDraw();
-        assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
+        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, false)) {
+            // test string: "LEGO®Builder"
+            mItemInfoWithIcon.title = TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT;
+            mBubbleTextView.applyLabel(mItemInfoWithIcon);
+            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+            mBubbleTextView.measure(mLimitedWidth, 0);
+            mBubbleTextView.onPreDraw();
+            assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
+        } catch (Exception e) {
+            throw  new RuntimeException(e);
+        }
     }
 
     @Test
