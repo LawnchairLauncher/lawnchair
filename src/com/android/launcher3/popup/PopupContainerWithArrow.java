@@ -463,6 +463,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
             return;
         }
         mSystemShortcutContainer = inflateAndAdd(systemShortcutContainerLayout, this);
+        mWidgetContainer = mSystemShortcutContainer;
         for (int i = 0; i < systemShortcuts.size(); i++) {
             initializeSystemShortcut(
                     systemShortcutLayout,
