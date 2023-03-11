@@ -55,6 +55,11 @@ public class AnimatedFloat {
         mUpdateCallback = updateCallback;
     }
 
+    public AnimatedFloat(Runnable updateCallback, float initialValue) {
+        this(updateCallback);
+        value = initialValue;
+    }
+
     /**
      * Returns an animation from the current value to the given value.
      */
