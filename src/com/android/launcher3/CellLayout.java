@@ -92,6 +92,9 @@ public class CellLayout extends ViewGroup {
     private static final String TAG = "CellLayout";
     private static final boolean LOGD = false;
 
+    /** The color of the "leave-behind" shape when a folder is opened from Hotseat. */
+    private static final int FOLDER_LEAVE_BEHIND_COLOR = Color.argb(160, 245, 245, 245);
+
     protected final ActivityContext mActivity;
     @ViewDebug.ExportedProperty(category = "launcher")
     @Thunk int mCellWidth;
@@ -528,7 +531,7 @@ public class CellLayout extends ViewGroup {
                     mFolderLeaveBehind.mDelegateCellY, mTempLocation);
             canvas.save();
             canvas.translate(mTempLocation[0], mTempLocation[1]);
-            mFolderLeaveBehind.drawLeaveBehind(canvas);
+            mFolderLeaveBehind.drawLeaveBehind(canvas, FOLDER_LEAVE_BEHIND_COLOR);
             canvas.restore();
         }
 
