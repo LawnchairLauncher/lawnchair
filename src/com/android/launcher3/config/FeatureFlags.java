@@ -339,7 +339,7 @@ public final class FeatureFlags {
             "ENABLE_TRANSIENT_TASKBAR", true, "Enables transient taskbar.");
 
     public static final BooleanFlag ENABLE_TRACKPAD_GESTURE = getDebugFlag(271010401,
-            "ENABLE_TRACKPAD_GESTURE", false, "Enables trackpad gesture.");
+            "ENABLE_TRACKPAD_GESTURE", true, "Enables trackpad gesture.");
 
     public static final BooleanFlag ENABLE_ICON_IN_TEXT_HEADER = getDebugFlag(270395143,
             "ENABLE_ICON_IN_TEXT_HEADER", false, "Show icon in textheader");
