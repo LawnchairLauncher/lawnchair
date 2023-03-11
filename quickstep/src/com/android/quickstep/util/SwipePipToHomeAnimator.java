@@ -37,6 +37,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.icons.IconProvider;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.systemui.shared.pip.PipSurfaceTransactionHelper;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
@@ -152,7 +153,7 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             if (SystemProperties.getBoolean(
                     "persist.wm.debug.enable_pip_app_icon_overlay", true)) {
                 mPipContentOverlay = new PipContentOverlay.PipAppIconOverlay(view.getContext(),
-                        mAppBounds, mActivityInfo);
+                        mAppBounds, () -> new IconProvider(context).getIcon(mActivityInfo));
             }  else {
                 mPipContentOverlay = new PipContentOverlay.PipColorOverlay(view.getContext());
             }
