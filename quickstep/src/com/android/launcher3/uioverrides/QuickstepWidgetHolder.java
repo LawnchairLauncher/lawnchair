@@ -168,6 +168,7 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
     @Override
     public void deleteAppWidgetId(int appWidgetId) {
         super.deleteAppWidgetId(appWidgetId);
+        mViews.remove(appWidgetId);
         sListeners.remove(appWidgetId);
     }
 
@@ -260,6 +261,7 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
      */
     @Override
     public void clearViews() {
+        mViews.clear();
         for (int i = sListeners.size() - 1; i >= 0; i--) {
             sListeners.valueAt(i).mListeningHolders.remove(this);
         }
