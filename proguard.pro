@@ -58,25 +58,28 @@
 -dontwarn sun.misc.Unsafe
 
 # Silence warnings about classes that are available at runtime
--dontwarn android.provider.DeviceConfig
--dontwarn com.android.internal.colorextraction.ColorExtractor$GradientColors
--dontwarn com.android.internal.logging.MetricsLogger
--dontwarn com.android.internal.os.SomeArgs
--dontwarn android.content.pm.ParceledListSlice
--dontwarn com.android.internal.policy.ScreenDecorationsUtils
--dontwarn android.util.StatsEvent
--dontwarn android.service.wallpaper.IWallpaperEngine
--dontwarn android.content.pm.UserInfo
--dontwarn com.android.internal.app.IVoiceInteractionManagerService$Stub
--dontwarn com.android.internal.app.IVoiceInteractionManagerService
--dontwarn com.android.internal.annotations.VisibleForTesting
--dontwarn android.provider.DeviceConfig$OnPropertiesChangedListener
--dontwarn android.util.StatsEvent$Builder
--dontwarn com.android.internal.colorextraction.types.Tonal
--dontwarn android.content.pm.LauncherApps$AppUsageLimit
--dontwarn android.provider.SearchIndexablesContract
--dontwarn android.provider.SearchIndexablesProvider
--dontwarn android.content.pm.IPackageManager
+# These rules are generated automatically by the Android Gradle plugin.
+-dontwarn android.animation.AnimationHandler*
+-dontwarn android.content.om.**
+-dontwarn android.content.pm.**
+-dontwarn android.content.res.**
+-dontwarn android.hardware.devicestate.DeviceStateManager*
+-dontwarn android.provider.**
+-dontwarn android.service.wallpaper.IWallpaperEngine*
+-dontwarn android.util.**
+-dontwarn android.widget.RemoteViews*
+-dontwarn androidx.dynamicanimation.animation.AnimationHandler$FrameCallbackScheduler*
+-dontwarn com.android.internal.**
+-dontwarn com.google.android.collect.Sets*
+-dontwarn com.google.protobuf.nano.**
+-dontwarn dagger.**
+-dontwarn javax.inject.**
+# We can remove these rules after updating to OkHttp 4.10.1
+# https://github.com/square/okhttp/blob/339732e3a1b78be5d792860109047f68a011b5eb/okhttp/src/jvmMain/resources/META-INF/proguard/okhttp3.pro#L11-L14
+-dontwarn okhttp3.internal.platform.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**
 
 # Preserve Protobuf generated code
 -keep class com.android.launcher3.tracing.nano.LauncherTraceFileProto$* { *; }

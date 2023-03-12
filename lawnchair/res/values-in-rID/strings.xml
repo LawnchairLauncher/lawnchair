@@ -105,7 +105,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Paket Ikon</string>
-    <string name="themed_icon_pack">Themed Icon Source</string>
+    <string name="themed_icon_pack">Sumber Ikon Tema</string>
     <string name="system_icons">Ikon sistem</string>
     <string name="themed_icon_title">Ikon Bertema</string>
     <string name="themed_icons_off_label">Mati</string>
@@ -181,9 +181,9 @@
     <string name="home_screen_unlock">Buka Kunci Layar Beranda</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Susunan Layar beranda dikunci.</string>
-    <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="popup_menu">Menu Pop-up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Tampilkan Tombol Kunci</string>
+    <string name="show_system_settings_entry">Tampilkan Entri Pengaturan Sistem</string>
     <string name="status_bar_label">Bar Status</string>
     <string name="show_status_bar">Tampilkan bar status</string>
     <string name="dark_status_bar_label">Tingkat Kegelapan Bar Status</string>
@@ -269,7 +269,7 @@
     <string name="pref_search_auto_show_keyboard">Tampilkan keyboard secara otomatis</string>
     <string name="fuzzy_search_title">Pencarian Fuzzy</string>
     <string name="fuzzy_search_desc">Perkiraan pencocokan untuk pencarian aplikasi.</string>
-    <string name="max_search_result_count_title">Max Search Result Count</string>
+    <string name="max_search_result_count_title">Jumlah Hasil Pencarian Maksimal</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Kolom Laci Aplikasi</string>
     <string name="row_height_label">Tinggi Baris</string>
@@ -402,5 +402,5 @@
     <string name="invalid_backup_file">Berkas cadangan tidak valid.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="system_settings">System Settings</string>
+    <string name="system_settings">Pengaturan Sistem</string>
 </resources>
