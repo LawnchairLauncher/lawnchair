@@ -301,7 +301,7 @@
     <string name="gesture_home_tap">Tryck på hemknappen</string>
     <string name="gesture_back_tap">Tryck på bakåtknappen</string>
     <string name="gesture_handler_no_op">Gör ingenting</string>
-    <string name="gesture_handler_sleep">Viloläge</string>
+    <string name="gesture_handler_sleep">Vila</string>
     <string name="gesture_handler_open_notifications">Öppna aviseringspanelen</string>
     <string name="gesture_handler_open_app_option">Öppna app</string>
     <string name="gesture_handler_open_app_config">Öppna %1$s</string>

@@ -87,7 +87,7 @@
     <string name="accent_color">Цветовой акцент</string>
     <!-- CustomIconShapePreference -->
     <string name="custom_icon_shape">Пользовательская форма иконок</string>
-    <string name="custom_icon_shape_create">Содать свою форму иконок</string>
+    <string name="custom_icon_shape_create">Создать свою форму иконок</string>
     <string name="custom_icon_shape_edit">Редактировать свою форму иконок</string>
     <string name="icon_shape_corner">Форма углов</string>
     <string name="icon_shape_corner_round">Круглая</string>
@@ -146,7 +146,7 @@
     <!-- colorpreference/* -->
     <string name="dynamic">Динамический</string>
     <string name="swatches">Образцы</string>
-    <string name="presets">Предустановки</string>
+    <string name="presets">Пресеты</string>
     <string name="custom">Пользовательский</string>
     <string name="rgb">RGB</string>
     <string name="rgb_red">Красный</string>
@@ -329,11 +329,11 @@
     <string name="news">Новости</string>
     <string name="support">Поддержка</string>
     <string name="product">Продукт</string>
-    <string name="design_and_development">Дизайн и Разработка</string>
+    <string name="design_and_development">Дизайн &amp; Разработка</string>
     <string name="development">Разработка</string>
     <string name="quickswitch_maintenance">Поддержка QuickSwitch</string>
     <string name="devops">DevOps-инженер</string>
-    <string name="support_and_pr">Поддержка и PR</string>
+    <string name="support_and_pr">Поддержка &amp; PR</string>
     <!--
       <string name="support" />
       <string name="support_and_pr" />

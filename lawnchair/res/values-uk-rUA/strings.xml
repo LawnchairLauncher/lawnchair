@@ -252,8 +252,8 @@
     <string name="dock_icons">Значки док-панелі</string>
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
-    <string name="search_provider_app_search">Пошук додатків</string>
-    <string name="app_label">Додаток</string>
+    <string name="search_provider_app_search">Пошук застосунків</string>
+    <string name="app_label">Застосунок</string>
     <string name="website_label">Веб-сайт</string>
     <string name="qsb_search_provider_app_required">Необхідний додаток.</string>
     <!-- AppDrawerPrefences -->
