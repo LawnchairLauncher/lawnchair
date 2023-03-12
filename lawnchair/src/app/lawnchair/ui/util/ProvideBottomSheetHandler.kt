@@ -82,8 +82,7 @@ fun ProvideBottomSheetHandler(
 
     ModalBottomSheetLayout(
         sheetContent = {
-            val isSheetShown = bottomSheetState.isAnimationRunning || bottomSheetState.isVisible
-            BackHandler(enabled = isSheetShown) {
+            BackHandler(enabled = bottomSheetState.isVisible) {
                 bottomSheetHandler.hide()
             }
             CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
