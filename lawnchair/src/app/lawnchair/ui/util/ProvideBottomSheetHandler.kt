@@ -34,8 +34,8 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import kotlin.math.max
+import kotlinx.coroutines.launch
 import androidx.compose.material.MaterialTheme as Material2Theme
 
 internal val LocalBottomSheetHandler = staticCompositionLocalOf { BottomSheetHandler() }
@@ -55,7 +55,7 @@ fun ProvideBottomSheetHandler(
     val bottomSheetState = remember {
         ModalBottomSheetState(
             initialValue = ModalBottomSheetValue.Hidden,
-            confirmStateChange = {
+            confirmValueChange = {
                 if (it == ModalBottomSheetValue.Hidden) onDismiss()
                 true
             },
@@ -82,8 +82,7 @@ fun ProvideBottomSheetHandler(
 
     ModalBottomSheetLayout(
         sheetContent = {
-            val isSheetShown = bottomSheetState.isAnimationRunning || bottomSheetState.isVisible
-            BackHandler(enabled = isSheetShown) {
+            BackHandler(enabled = bottomSheetState.isVisible) {
                 bottomSheetHandler.hide()
             }
             CompositionLocalProvider(LocalContentColor provides MaterialTheme.colorScheme.onSurface) {
