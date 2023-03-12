@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">Πατήστε αυτή την κάρτα για να ορίσετε τον Lawnchair ως τον προεπιλεγμένο σας εκκινητή.</string>
     <string name="settings">Ρυθμίσεις</string>
     <string name="general_label">Γενικά</string>
     <string name="general_description">Κουκκκίδες Ειδοποιήσεων, Πακέτο Εικονιδίων</string>
@@ -181,9 +181,9 @@
     <string name="home_screen_unlock">Ξεκλείδωμα Αρχικής Οθόνης</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Η Αρχική Οθόνη είναι κλειδωμένη.</string>
-    <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="popup_menu">Αναδυόμενο Μενού</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Εμφάνιση Κουμπιού Κλειδώματος</string>
+    <string name="show_system_settings_entry">Εμφάνιση Καταχώρησης Ρυθμίσεων Συστήματος</string>
     <string name="status_bar_label">Γραμμή Κατάστασης</string>
     <string name="show_status_bar">Εμφάνιση Γραμμής Κατάστασης</string>
     <string name="dark_status_bar_label">Σκοτεινή Γραμμή Κατάστασης</string>
@@ -403,5 +403,5 @@
     <string name="invalid_backup_file">Μη έγκυρο αρχείο Αντιγράφου Ασφαλείας.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="system_settings">System Settings</string>
+    <string name="system_settings">Ρυθμίσεις Συστήματος</string>
 </resources>
