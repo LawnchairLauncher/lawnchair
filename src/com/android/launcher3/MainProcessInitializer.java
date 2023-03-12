@@ -19,15 +19,12 @@
 package com.android.launcher3;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.BitmapCreationCheck;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.ResourceBasedOverride;
-
-import org.chickenhook.restrictionbypass.Unseal;
 
 import app.lawnchair.preferences.PreferenceManager;
 
@@ -36,16 +33,7 @@ import app.lawnchair.preferences.PreferenceManager;
  */
 public class MainProcessInitializer implements ResourceBasedOverride {
 
-    private static final String TAG = "MainProcessInitializer";
-
     public static void initialize(Context context) {
-        try {
-            Unseal.unseal();
-            Log.i(TAG, "Unseal success!");
-        } catch (Exception e) {
-            Log.e(TAG, "Unseal fail!");
-            e.printStackTrace();
-        }
         PreferenceManager.getInstance(context);
         Overrides.getObject(
                 MainProcessInitializer.class, context, R.string.main_process_initializer_class)
