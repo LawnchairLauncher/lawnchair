@@ -338,16 +338,9 @@ public class TaskThumbnailView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        RectF currentDrawnInsets = mFullscreenParams.mCurrentDrawnInsets;
         canvas.save();
-        canvas.scale(mFullscreenParams.mScale, mFullscreenParams.mScale);
-        canvas.translate(currentDrawnInsets.left, currentDrawnInsets.top);
         // Draw the insets if we're being drawn fullscreen (we do this for quick switch).
-        drawOnCanvas(canvas,
-                -currentDrawnInsets.left,
-                -currentDrawnInsets.top,
-                getMeasuredWidth() + currentDrawnInsets.right,
-                getMeasuredHeight() + currentDrawnInsets.bottom,
+        drawOnCanvas(canvas, 0, 0, getMeasuredWidth(), getMeasuredHeight(),
                 mFullscreenParams.mCurrentDrawnCornerRadius);
         canvas.restore();
     }
@@ -506,9 +499,7 @@ public class TaskThumbnailView extends View {
             return false;
         }
 
-        RectF insets = mPreviewPositionHelper.getClippedInsets();
-        float thumbnailViewAspect = (getWidth() + insets.left + insets.right)
-                / (getHeight() + insets.top + insets.bottom);
+        float thumbnailViewAspect = getWidth() / (float) getHeight();
         float thumbnailDataAspect =
                 mThumbnailData.thumbnail.getWidth() / (float) mThumbnailData.thumbnail.getHeight();
 
