@@ -327,11 +327,14 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
             initializeSystemShortcuts(systemShortcuts);
         } else {
             mDeepShortcutContainer.setVisibility(View.GONE);
+            mSystemShortcutContainer = inflateAndAdd(R.layout.system_shortcut_rows_container,
+                    this, 0);
+            mWidgetContainer = mSystemShortcutContainer;
             if (!shortcuts.isEmpty()) {
                 for (int i = 0; i < shortcuts.size(); i++) {
                     initializeSystemShortcut(
                             R.layout.system_shortcut,
-                            this,
+                            mSystemShortcutContainer,
                             shortcuts.get(i),
                             i < shortcuts.size() - 1);
                 }
@@ -358,7 +361,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
             addAllShortcutsMaterialU(deepShortcutCount, systemShortcuts);
         } else if (!systemShortcuts.isEmpty()) {
             addSystemShortcutsMaterialU(systemShortcuts,
-                    R.layout.system_shortcut_rows_container,
+                    R.layout.system_shortcut_rows_container_material_u,
                     R.layout.system_shortcut);
         }
         show();
@@ -395,7 +398,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         if (deepShortcutCount + systemShortcuts.size() <= SHORTCUT_COLLAPSE_THRESHOLD) {
             // add all system shortcuts including widgets shortcut to same container
             addSystemShortcutsMaterialU(systemShortcuts,
-                    R.layout.system_shortcut_rows_container,
+                    R.layout.system_shortcut_rows_container_material_u,
                     R.layout.system_shortcut);
             addDeepShortcutsMaterialU(deepShortcutCount);
             return;
