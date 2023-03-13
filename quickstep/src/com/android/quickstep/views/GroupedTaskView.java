@@ -391,9 +391,7 @@ public class GroupedTaskView extends TaskView {
         // Value set by super call
         float scale = mIconView.getAlpha();
         mIconView2.setAlpha(scale);
-        mDigitalWellBeingToast2.updateBannerOffset(1f - scale,
-                mCurrentFullscreenParams.mCurrentDrawnInsets.top
-                        + mCurrentFullscreenParams.mCurrentDrawnInsets.bottom);
+        mDigitalWellBeingToast2.updateBannerOffset(1f - scale);
     }
 
     @Override
