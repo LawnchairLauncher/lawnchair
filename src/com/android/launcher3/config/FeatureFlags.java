@@ -378,6 +378,11 @@ public final class FeatureFlags {
             "Enables taskbar pinning to allow user to switch between transient and persistent "
                     + "taskbar flavors");
 
+    public static final BooleanFlag ENABLE_WORKSPACE_LOADING_OPTIMIZATION = getDebugFlag(251502424,
+            "ENABLE_WORKSPACE_LOADING_OPTIMIZATION", false, "load the current workspace screen "
+                    + "visible to the user before the rest rather than loading all of them at once."
+    );
+
     public static final BooleanFlag ENABLE_GRID_ONLY_OVERVIEW = getDebugFlag(270397206,
             "ENABLE_GRID_ONLY_OVERVIEW", false,
             "Enable a grid-only overview without a focused task.");
