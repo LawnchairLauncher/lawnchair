@@ -52,6 +52,7 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_SCRIM_FOR_APP_LAU
 import static com.android.launcher3.config.FeatureFlags.KEYGUARD_ANIMATION;
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
+import static com.android.launcher3.util.DisplayController.isTransientTaskbar;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 import static com.android.launcher3.util.window.RefreshRateTracker.getSingleFrameMs;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
@@ -123,7 +124,6 @@ import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ActivityOptionsWrapper;
-import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.ObjectWrapper;
 import com.android.launcher3.util.RunnableList;
@@ -449,7 +449,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
         if (mDeviceProfile.isTaskbarPresentInApps
                 && !target.willShowImeOnTarget
-                && !DisplayController.isTransientTaskbar(mLauncher)) {
+                && !isTransientTaskbar(mLauncher)) {
             // Animate to above the taskbar.
             bounds.bottom -= target.contentInsets.bottom;
         }
@@ -636,7 +636,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         RectF launcherIconBounds = new RectF();
         FloatingIconView floatingView = getFloatingIconView(mLauncher, v,
-                mLauncher.getTaskbarUIController() == null
+                (mLauncher.getTaskbarUIController() == null || !isTransientTaskbar(mLauncher))
                         ? null
                         : mLauncher.getTaskbarUIController().findMatchingView(v),
                 !appTargetsAreTranslucent, launcherIconBounds, true /* isOpening */);
