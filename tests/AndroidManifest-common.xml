@@ -24,6 +24,7 @@
     <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS"/>
     <uses-permission android:name="android.permission.READ_LOGS"/>
     <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS"/>
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
 
     <application android:debuggable="true" android:extractNativeLibs="true">
         <uses-library android:name="android.test.runner"/>
@@ -59,6 +60,17 @@
             </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                        android:resource="@xml/appwidget_with_config"/>
+        </receiver>
+
+        <receiver
+            android:name="com.android.launcher3.testcomponent.AppWidgetWithDialog"
+            android:exported="true"
+            android:label="With Dialog">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/appwidget_no_config"/>
         </receiver>
 
         <receiver
@@ -268,7 +280,7 @@
             </intent-filter>
         </activity-alias>
         <activity-alias android:name="Activity15" android:exported="true"
-            android:label="ThemeIconTestActivity"
+            android:label="IconThemedActivity"
             android:icon="@drawable/test_theme_icon"
             android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
             <intent-filter>
@@ -276,6 +288,26 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
+        <activity
+            android:name="com.android.launcher3.testcomponent.DialogTestActivity"
+            android:label="Dialog Activity"
+            android:theme="@android:style/Theme.Dialog"
+            android:exported="true"
+            android:taskAffinity="com.android.launcher3.testcomponent.Affinity2">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <activity android:name="com.android.launcher3.testcomponent.ImeTestActivity"
+            android:label="ImeTestActivity"
+            android:icon="@drawable/test_theme_icon"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <!-- [b/197780098] Disable eager initialization of Jetpack libraries. -->
         <provider

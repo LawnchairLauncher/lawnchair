@@ -77,25 +77,27 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Darslik: <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Hammasi tayyor!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Boshiga qaytish uchun tepaga suring"</string>
-    <string name="allset_description" msgid="6350320429953234580">"Telefoningiz xizmatga tayyor"</string>
-    <string name="allset_description_tablet" msgid="7332070270570039247">"Planshetingiz xizmatga tayyor"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"Bosh ekranga oʻtish uchun bosh ekran tugmasini bosing"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g> xizmatga tayyor"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"qurilma"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Tizim navigatsiya sozlamalari"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Ulashish"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Skrinshot"</string>
     <string name="action_split" msgid="2098009717623550676">"Ajratish"</string>
     <string name="toast_split_select_app" msgid="5453865907322018352">"Ekranni ikkiga ajratish uchun boshqa ilovani bosing"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"Bu ilovada ekranni ikkiga ajratish ishlamaydi."</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Ekranni ikkiga ajratish uchun boshqa ilovani tanlang"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Bu amal ilova yoki tashkilotingiz tomonidan taqiqlangan"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Navigatsiya darsi yopilsinmi?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Bu darslar <xliff:g id="NAME">%1$s</xliff:g> ilovasida chiqadi"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Bekor qilish"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Tashlab ketish"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Ekranni burish"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Vazifalar paneli qoʻllanmasi"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Taʼlim vazifalar paneli chiqdi"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Taʼlim vazifalar paneli yopildi"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Ilovalarni vazifalar panelida almashtirish mumkin"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Bir vaqtda ikkita ilova ochish uchun birini yoniga torting"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Vazifalar panelini ustiga bosib turib yashirish mumkin"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"Bir vaqtda 2 ta ilova ochish uchun birini yoniga torting"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Vazifalar panelini koʻrsatish uchun tepaga qisqa suring"</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Vazifalar paneli harakatlaringiz asosida ilova taklif qiladi"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Keyingisi"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Orqaga"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Yopish"</string>
@@ -107,6 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"Oxirgilar"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Bildirishnomalar"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Tezkor sozlamalar"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"Vazifalar paneli"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigatsiya paneli"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Yuqoriga yoki chapga oʻtkazish"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Pastga yoki oʻngga oʻtkazish"</string>
 </resources>

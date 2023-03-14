@@ -62,8 +62,6 @@ public class WidgetsModel {
 
     // True is the widget support is disabled.
     public static final boolean GO_DISABLE_WIDGETS = false;
-    // True is the shortcut support is disabled.
-    public static final boolean GO_DISABLE_SHORTCUTS = false;
     public static final boolean GO_DISABLE_NOTIFICATION_DOTS = false;
 
     private static final String TAG = "WidgetsModel";

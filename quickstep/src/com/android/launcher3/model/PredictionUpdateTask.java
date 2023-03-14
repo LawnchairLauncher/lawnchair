@@ -30,12 +30,14 @@ import android.os.UserHandle;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.QuickstepModelDelegate.PredictorState;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -59,7 +61,7 @@ public class PredictionUpdateTask extends BaseModelUpdateTask {
         Context context = app.getContext();
 
         // TODO: remove this
-        Utilities.getDevicePrefs(context).edit()
+        LauncherPrefs.getDevicePrefs(context).edit()
                 .putBoolean(LAST_PREDICTION_ENABLED_STATE, !mTargets.isEmpty()).apply();
 
         Set<UserHandle> usersForChangedShortcuts =
@@ -68,7 +70,7 @@ public class PredictionUpdateTask extends BaseModelUpdateTask {
                         .map(info -> info.user)
                         .collect(Collectors.toSet());
 
-        FixedContainerItems fci = new FixedContainerItems(mPredictorState.containerId);
+        List<ItemInfo> items = new ArrayList<>(mTargets.size());
         for (AppTarget target : mTargets) {
             WorkspaceItemInfo itemInfo;
             ShortcutInfo si = target.getShortcutInfo();
@@ -107,10 +109,11 @@ public class PredictionUpdateTask extends BaseModelUpdateTask {
                 }
             }
 
-            itemInfo.container = fci.containerId;
-            fci.items.add(itemInfo);
+            itemInfo.container = mPredictorState.containerId;
+            items.add(itemInfo);
         }
 
+        FixedContainerItems fci = new FixedContainerItems(mPredictorState.containerId, items);
         dataModel.extraItems.put(fci.containerId, fci);
         bindExtraContainerItems(fci);
         usersForChangedShortcuts.forEach(

@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.CellLayout.ContainerType;
+import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.views.ActivityContext;
@@ -80,7 +81,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         final int count = getChildCount();
         for (int i = 0; i < count; i++) {
             View child = getChildAt(i);
-            CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+            CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
 
             if ((lp.cellX <= cellX) && (cellX < lp.cellX + lp.cellHSpan)
                     && (lp.cellY <= cellY) && (cellY < lp.cellY + lp.cellVSpan)) {
@@ -107,7 +108,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
     }
 
     public void setupLp(View child) {
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+        CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
         if (child instanceof NavigableAppWidgetHostView) {
             DeviceProfile profile = mActivity.getDeviceProfile();
             ((NavigableAppWidgetHostView) child).getWidgetInset(profile, mTempRect);
@@ -131,7 +132,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
     }
 
     public void measureChild(View child) {
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+        CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
         final DeviceProfile dp = mActivity.getDeviceProfile();
 
         if (child instanceof NavigableAppWidgetHostView) {
@@ -151,7 +152,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
             // No need to add padding when cell layout border spacing is present.
             boolean noPaddingX =
                     (dp.cellLayoutBorderSpacePx.x > 0 && mContainerType == WORKSPACE)
-                            || (dp.folderCellLayoutBorderSpacePx.x > 0 && mContainerType == FOLDER)
+                            || (dp.folderCellLayoutBorderSpacePx > 0 && mContainerType == FOLDER)
                             || (dp.hotseatBorderSpace > 0 && mContainerType == HOTSEAT);
             int cellPaddingX = noPaddingX
                     ? 0
@@ -175,7 +176,6 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
-                CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
                 layoutChild(child);
             }
         }
@@ -185,7 +185,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
      * Core logic to layout a child for this ViewGroup.
      */
     public void layoutChild(View child) {
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+        CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
         if (child instanceof NavigableAppWidgetHostView) {
             NavigableAppWidgetHostView nahv = (NavigableAppWidgetHostView) child;
 
@@ -255,7 +255,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
 
     @Override
     public void drawFolderLeaveBehindForIcon(FolderIcon child) {
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+        CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
         // While the folder is open, the position of the icon cannot change.
         lp.canReorder = false;
         if (mContainerType == HOTSEAT) {
@@ -266,7 +266,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
 
     @Override
     public void clearFolderLeaveBehind(FolderIcon child) {
-        ((CellLayout.LayoutParams) child.getLayoutParams()).canReorder = true;
+        ((CellLayoutLayoutParams) child.getLayoutParams()).canReorder = true;
         if (mContainerType == HOTSEAT) {
             CellLayout cl = (CellLayout) getParent();
             cl.clearFolderLeaveBehind();

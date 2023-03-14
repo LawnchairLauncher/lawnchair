@@ -1,5 +1,7 @@
 package com.android.launcher3.accessibility;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
+import static android.view.accessibility.AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS;
 import static android.view.accessibility.AccessibilityNodeInfo.ACTION_LONG_CLICK;
 
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -23,6 +25,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.dragndrop.DragView;
@@ -171,7 +174,11 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             mContext.getDragLayer().getDescendantRectRelativeToSelf(host, pos);
             ArrowPopup popup = OptionsPopupView.show(mContext, new RectF(pos), actions, false);
             popup.requestFocus();
-            popup.setOnCloseCallback(host::requestFocus);
+            popup.setOnCloseCallback(() -> {
+                host.requestFocus();
+                host.sendAccessibilityEvent(TYPE_VIEW_FOCUSED);
+                host.performAccessibilityAction(ACTION_ACCESSIBILITY_FOCUS, null);
+            });
             return true;
         } else if (action == DEEP_SHORTCUTS || action == SHORTCUTS_AND_NOTIFICATIONS) {
             BubbleTextView btv = host instanceof BubbleTextView ? (BubbleTextView) host
@@ -244,7 +251,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
     }
 
     private boolean performResizeAction(int action, View host, LauncherAppWidgetInfo info) {
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) host.getLayoutParams();
+        CellLayoutLayoutParams lp = (CellLayoutLayoutParams) host.getLayoutParams();
         CellLayout layout = (CellLayout) host.getParent().getParent();
         layout.markCellsAsUnoccupiedForView(host);
 

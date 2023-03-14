@@ -77,25 +77,27 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Навчальний посібник <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Готово."</string>
     <string name="allset_hint" msgid="2384632994739392447">"Щоб перейти на головний екран, проведіть пальцем угору"</string>
-    <string name="allset_description" msgid="6350320429953234580">"Тепер ви можете користуватися телефоном"</string>
-    <string name="allset_description_tablet" msgid="7332070270570039247">"Тепер ви можете користуватися планшетом"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"Натисніть кнопку головного екрана, щоб відкрити його"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Тепер ви можете користуватися цим пристроєм: <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"пристрій"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Системні налаштування навігації"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Поділитися"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Знімок екрана"</string>
     <string name="action_split" msgid="2098009717623550676">"Розділити"</string>
     <string name="toast_split_select_app" msgid="5453865907322018352">"Щоб розділити екран, виберіть ще один додаток"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"Додаток не підтримує розділення екрана."</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Щоб розділити екран, виберіть ще один додаток"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Ця дія заборонена додатком або адміністратором організації"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Пропустити посібник із навігації?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Ви знайдете його пізніше в додатку <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Скасувати"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Пропустити"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Обернути екран"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Панель завдань Education"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Панель завдань Education відкрито"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Панель завдань Education закрито"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Переходьте між додатками за допомогою панелі завдань"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Перетягніть убік, щоб використовувати два додатки одночасно"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Натисніть і втримуйте панель завдань, щоб сховати її"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"Перетягніть убік, щоб використовувати 2 додатки одночасно"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Швидко проведіть пальцем угору, щоб відкрити панель завдань"</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Панель завдань пропонує додатки на основі вашої програми"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Далі"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Назад"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Закрити"</string>
@@ -107,6 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"Нещодавні"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Сповіщення"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Швидкі налаштув."</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"Панель завдань"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Панель навігації"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Перемістити вгору або вліво"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Перемістити вниз або вправо"</string>
 </resources>

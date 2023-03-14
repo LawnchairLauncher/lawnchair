@@ -58,7 +58,7 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                      "want to switch from background to overview")) {
             verifyActiveContainer();
             goToOverviewUnchecked();
-            return mLauncher.isFallbackOverview()
+            return mLauncher.is3PLauncher()
                     ? new BaseOverview(mLauncher) : new Overview(mLauncher);
         }
     }
@@ -206,21 +206,30 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                 MotionEvent.ACTION_UP, end, gestureScope);
     }
 
+    /**
+     * Quick switching to the app with swiping to right.
+     */
     @NonNull
     public LaunchedAppState quickSwitchToPreviousApp() {
-        boolean toRight = true;
-        quickSwitch(toRight);
+        quickSwitch(true /* toRight */);
         return new LaunchedAppState(mLauncher);
     }
 
+    /**
+     * Quick switching to the app with swiping to left.
+     */
     @NonNull
     public LaunchedAppState quickSwitchToPreviousAppSwipeLeft() {
-        boolean toRight = false;
-        quickSwitch(toRight);
+        quickSwitch(false /* toRight */);
         return new LaunchedAppState(mLauncher);
     }
 
-    @NonNull
+    /**
+     * Making swipe gesture to quick-switch app tasks.
+     *
+     * @param toRight {@code true} means swiping right, {@code false} means swiping left.
+     * @throws {@link AssertionError} when failing to verify the visible UI in the container.
+     */
     private void quickSwitch(boolean toRight) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(

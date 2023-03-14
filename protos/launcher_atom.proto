@@ -45,6 +45,9 @@ message ItemInfo {
 
   // Stores the origin of the Item
   repeated Attribute item_attributes = 12;
+
+  // Stores whether the navigation bar is in kids mode.
+  optional bool is_kids_mode = 13;
 }
 
 message LauncherAttributes{
@@ -127,7 +130,7 @@ message TaskBarContainer {
   optional int32 cardinality = 2;
 }
 
-// Next value 40
+// Next value 41
 enum Attribute {
   UNKNOWN = 0;
   DEFAULT_LAYOUT = 1;       // icon automatically placed in workspace, folder, hotseat
@@ -183,6 +186,7 @@ enum Attribute {
   WEB_SEARCH_RESULT_PERSONAL = 36;
   WEB_SEARCH_RESULT_CALCULATOR = 37;
   WEB_SEARCH_RESULT_URL = 38;
+  WEB_SEARCH_RESULT_RICH_ANSWER = 40;
 
   WIDGETS_BOTTOM_TRAY = 28;
   WIDGETS_TRAY_PREDICTION = 29;

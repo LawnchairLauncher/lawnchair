@@ -231,4 +231,10 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
      * etc.)
      */
     protected abstract void onHandleConfigurationChanged();
+
+    /**
+     * Enter staged split directly from the current running app.
+     * @param leftOrTop if the staged split will be positioned left or top.
+     */
+    public void enterStageSplitFromRunningApp(boolean leftOrTop) { }
 }

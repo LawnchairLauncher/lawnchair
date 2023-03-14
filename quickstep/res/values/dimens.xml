@@ -202,6 +202,9 @@
 
     <!-- All Set page -->
     <dimen name="allset_page_margin_horizontal">40dp</dimen>
+    <dimen name="allset_page_allset_text_size">36sp</dimen>
+    <dimen name="allset_page_swipe_up_text_size">14sp</dimen>
+
     <dimen name="allset_title_margin_top">24dp</dimen>
     <dimen name="allset_title_icon_margin_top">32dp</dimen>
     <dimen name="allset_subtitle_margin_top">24dp</dimen>
@@ -252,13 +255,19 @@
     <!-- Taskbar -->
     <dimen name="taskbar_size">@*android:dimen/taskbar_frame_height</dimen>
     <dimen name="taskbar_ime_size">48dp</dimen>
-    <dimen name="taskbar_icon_touch_size">48dp</dimen>
+    <dimen name="taskbar_icon_size">44dp</dimen>
+    <dimen name="taskbar_icon_min_touch_size">48dp</dimen>
+    <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
+    <dimen name="taskbar_icon_spacing">12dp</dimen>
     <dimen name="taskbar_icon_drag_icon_size">54dp</dimen>
     <dimen name="taskbar_folder_margin">16dp</dimen>
     <dimen name="taskbar_contextual_button_padding">16dp</dimen>
     <dimen name="taskbar_contextual_padding_top">8dp</dimen>
     <dimen name="taskbar_nav_buttons_size">44dp</dimen>
-    <dimen name="taskbar_contextual_button_margin">47dp</dimen>
+    <dimen name="taskbar_split_instructions_margin">48dp</dimen>
+    <dimen name="taskbar_contextual_button_margin">120dp</dimen>
+    <dimen name="taskbar_suw_insets">48dp</dimen>
+    <dimen name="taskbar_suw_frame">48dp</dimen>
     <dimen name="taskbar_hotseat_nav_spacing">24dp</dimen>
     <dimen name="taskbar_contextual_buttons_size">35dp</dimen>
     <dimen name="taskbar_stashed_size">24dp</dimen>
@@ -266,8 +275,7 @@
     <dimen name="taskbar_stashed_small_screen">108dp</dimen>
     <dimen name="taskbar_unstash_input_area">316dp</dimen>
     <dimen name="taskbar_stashed_handle_height">4dp</dimen>
-    <dimen name="taskbar_edu_wave_anim_trans_y">25dp</dimen>
-    <dimen name="taskbar_edu_wave_anim_trans_y_return_overshoot">4dp</dimen>
+    <dimen name="taskbar_edu_horizontal_margin">112dp</dimen>
     <dimen name="taskbar_nav_buttons_width_kids">88dp</dimen>
     <dimen name="taskbar_nav_buttons_height_kids">40dp</dimen>
     <dimen name="taskbar_nav_buttons_corner_radius_kids">40dp</dimen>
@@ -275,12 +283,37 @@
     <dimen name="taskbar_home_button_left_margin_kids">48dp</dimen>
     <dimen name="taskbar_icon_size_kids">32dp</dimen>
 
+    <!-- Transient taskbar -->
+    <dimen name="transient_taskbar_size">72dp</dimen>
+    <dimen name="transient_taskbar_icon_size">48dp</dimen>
+    <dimen name="transient_taskbar_margin">24dp</dimen>
+    <dimen name="transient_taskbar_shadow_blur">40dp</dimen>
+    <dimen name="transient_taskbar_key_shadow_distance">10dp</dimen>
+    <dimen name="transient_taskbar_stashed_size">32dp</dimen>
+    <!-- An additional touch slop to prevent x-axis movement during the swipe up to show taskbar -->
+    <dimen name="transient_taskbar_clamped_offset_bound">16dp</dimen>
+    <!-- Taskbar swipe up thresholds -->
+    <dimen name="taskbar_nav_threshold">40dp</dimen>
+    <dimen name="taskbar_app_window_threshold">150dp</dimen>
+    <dimen name="taskbar_home_overview_threshold">225dp</dimen>
+    <dimen name="taskbar_catch_up_threshold">300dp</dimen>
+
+    <dimen name="taskbar_nav_threshold_v2">30dp</dimen>
+    <dimen name="taskbar_app_window_threshold_v2">100dp</dimen>
+    <dimen name="taskbar_home_overview_threshold_v2">200dp</dimen>
+
     <!--  Taskbar 3 button spacing  -->
     <dimen name="taskbar_button_space_inbetween">24dp</dimen>
     <dimen name="taskbar_button_space_inbetween_phone">40dp</dimen>
-    <dimen name="taskbar_button_margin_5_5">26dp</dimen>
+    <dimen name="taskbar_button_margin_split">48dp</dimen>
     <dimen name="taskbar_button_margin_6_5">75dp</dimen>
-    <dimen name="taskbar_button_margin_4_5">47dp</dimen>
-    <dimen name="taskbar_button_margin_4_4">47dp</dimen>
-    <dimen name="taskbar_button_margin_default">47dp</dimen>
+    <dimen name="taskbar_button_margin_default">48dp</dimen>
+
+    <!-- Recents overview -->
+    <dimen name="recents_filter_icon_size">30dp</dimen>
+
+    <!-- Launcher splash screen -->
+    <!-- Note: keep this value in sync with the WindowManager/Shell dimens.xml -->
+    <!--     starting_surface_exit_animation_window_shift_length -->
+    <dimen name="starting_surface_exit_animation_window_shift_length">20dp</dimen>
 </resources>

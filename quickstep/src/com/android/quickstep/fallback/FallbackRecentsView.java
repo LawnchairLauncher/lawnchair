@@ -200,13 +200,12 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    public void setModalStateEnabled(boolean isModalState) {
-        super.setModalStateEnabled(isModalState);
+    public void setModalStateEnabled(boolean isModalState, boolean animate) {
         if (isModalState) {
-            mActivity.getStateManager().goToState(RecentsState.MODAL_TASK);
+            mActivity.getStateManager().goToState(RecentsState.MODAL_TASK, animate);
         } else {
             if (mActivity.isInState(RecentsState.MODAL_TASK)) {
-                mActivity.getStateManager().goToState(DEFAULT);
+                mActivity.getStateManager().goToState(DEFAULT, animate);
                 resetModalVisuals();
             }
         }
@@ -242,6 +241,9 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         setFreezeViewVisibility(false);
         if (finalState != MODAL_TASK) {
             setOverviewSelectEnabled(false);
+        }
+        if (finalState != OVERVIEW_SPLIT_SELECT) {
+            resetFromSplitSelectionState();
         }
 
         if (isOverlayEnabled) {

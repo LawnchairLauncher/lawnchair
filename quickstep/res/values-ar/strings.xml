@@ -77,25 +77,27 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"الدليل التوجيهي <xliff:g id="CURRENT">%1$d</xliff:g> من إجمالي <xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"اكتملت عملية الإعداد"</string>
     <string name="allset_hint" msgid="2384632994739392447">"مرِّر سريعًا للأعلى للانتقال إلى الشاشة الرئيسية."</string>
-    <string name="allset_description" msgid="6350320429953234580">"يمكنك الآن بدء استخدام هاتفك."</string>
-    <string name="allset_description_tablet" msgid="7332070270570039247">"يمكنك الآن بدء استخدام جهازك اللوحي."</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"انقر على زر الشاشة الرئيسية للانتقال إلى الشاشة الرئيسية."</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"يمكنك الآن بدء استخدام \"<xliff:g id="DEVICE">%1$s</xliff:g>\"."</string>
+    <string name="default_device_name" msgid="6660656727127422487">"الجهاز"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"إعدادات التنقّل داخل النظام"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"مشاركة"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"لقطة شاشة"</string>
     <string name="action_split" msgid="2098009717623550676">"تقسيم"</string>
     <string name="toast_split_select_app" msgid="5453865907322018352">"انقر على تطبيق آخر لاستخدام وضع تقسيم الشاشة."</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"التطبيق لا يتيح تقسيم الشاشة."</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"اختَر تطبيقًا آخر لاستخدام وضع تقسيم الشاشة."</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"لا يسمح التطبيق أو لا تسمح مؤسستك بهذا الإجراء."</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"هل تريد تخطي الدليل التوجيهي؟"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"يمكنك العثور على هذا الدليل التوجيهي لاحقًا في التطبيق \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"إلغاء"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"التخطي"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"تدوير الشاشة"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"التعريف بشريط التطبيقات"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ظهرت لوحة تعليم استخدام شريط المهام."</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"تم إغلاق لوحة تعليم استخدام شريط المهام."</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"يمكنك استخدام شريط المهام للتبديل بين التطبيقات."</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"اسحبه إلى جانب الشاشة لاستخدام تطبيقين في آنٍ واحد."</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"انقر مع الاستمرار لإخفاء شريط المهام."</string>
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"اسحبه إلى جانب الشاشة لاستخدام تطبيقَين في آنٍ واحد."</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"مرِّر سريعًا للأعلى تمريرة قصيرة لإظهار شريط التطبيقات."</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"يقترح شريط المهام تطبيقات بناءً على روتينك."</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"الشاشة التالية"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"رجوع"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"إغلاق"</string>
@@ -107,6 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"الأحدث"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"الإشعارات"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"إعدادات سريعة"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"شريط التطبيقات"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"شريط التنقل"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"الانتقال إلى يمين الشاشة أو أعلاها"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"الانتقال إلى يسار الشاشة أو أسفلها"</string>
 </resources>

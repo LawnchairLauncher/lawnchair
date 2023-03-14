@@ -37,7 +37,6 @@ import com.android.launcher3.popup.ArrowPopup
 import com.android.launcher3.popup.RoundedArrowDrawable
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.util.Themes
-import com.android.quickstep.KtR
 import com.android.quickstep.TaskOverlayFactory
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer
 
@@ -53,9 +52,9 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
                 .fromContext<BaseDraggingActivity>(taskContainer.taskView.context)
             val taskMenuViewWithArrow = activity.layoutInflater
                 .inflate(
-                    KtR.layout.task_menu_with_arrow,
-                    activity.dragLayer,
-                    false
+                        R.layout.task_menu_with_arrow,
+                        activity.dragLayer,
+                        false
                 ) as TaskMenuViewWithArrow<*>
 
             return taskMenuViewWithArrow.populateAndShowForTask(taskContainer, alignSecondRow)
@@ -93,7 +92,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
     private var optionMeasuredHeight = 0
     private val arrowHorizontalPadding: Int
         get() = if (taskView.isFocusedTask)
-            resources.getDimensionPixelSize(KtR.dimen.task_menu_horizontal_padding)
+            resources.getDimensionPixelSize(R.dimen.task_menu_horizontal_padding)
         else
             0
 
@@ -119,7 +118,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        optionLayout = findViewById(KtR.id.menu_option_layout)
+        optionLayout = findViewById(R.id.menu_option_layout)
     }
 
     private fun populateAndShowForTask(
@@ -170,7 +169,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
         // Add the spaces between items
         val divider = ShapeDrawable(RectShape())
         divider.paint.color = resources.getColor(android.R.color.transparent)
-        val dividerSpacing = resources.getDimension(KtR.dimen.task_menu_spacing).toInt()
+        val dividerSpacing = resources.getDimension(R.dimen.task_menu_spacing).toInt()
         optionLayout.showDividers = SHOW_DIVIDER_MIDDLE
 
         // Set the orientation, which makes the menu show
@@ -187,7 +186,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
 
     private fun addMenuOption(menuOption: SystemShortcut<*>) {
         val menuOptionView = mActivityContext.layoutInflater.inflate(
-            KtR.layout.task_view_menu_option, this, false
+                R.layout.task_view_menu_option, this, false
         ) as LinearLayout
         menuOption.setIconAndLabelFor(
             menuOptionView.findViewById(R.id.icon),

@@ -24,6 +24,7 @@ import android.os.SystemClock;
  */
 public class KeyboardStateManager {
     private long mUpdatedTime;
+    private int mImeHeight;
 
     public enum KeyboardState {
         NO_IME_ACTION,
@@ -57,5 +58,19 @@ public class KeyboardStateManager {
     public void setKeyboardState(KeyboardState keyboardState) {
         mUpdatedTime = SystemClock.elapsedRealtime();
         mKeyboardState = keyboardState;
+    }
+
+    /**
+     * Returns keyboard's current height.
+     */
+    public int getImeHeight() {
+        return mImeHeight;
+    }
+
+    /**
+     * Setter method to set keyboard height.
+     */
+    public void setImeHeight(int imeHeight) {
+        mImeHeight = imeHeight;
     }
 }

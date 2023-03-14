@@ -16,6 +16,7 @@
 package com.android.quickstep.interaction;
 
 import static com.android.launcher3.Utilities.squaredHypot;
+import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult.ASSISTANT_COMPLETED;
 import static com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult.ASSISTANT_NOT_STARTED_BAD_ANGLE;
 import static com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult.ASSISTANT_NOT_STARTED_SWIPE_TOO_SHORT;
@@ -25,7 +26,6 @@ import static com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestu
 import static com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult.HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION;
 import static com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult.OVERVIEW_GESTURE_COMPLETED;
 import static com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult.OVERVIEW_NOT_STARTED_TOO_FAR_FROM_EDGE;
-import static com.android.quickstep.util.VibratorWrapper.OVERVIEW_HAPTIC;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -48,10 +48,10 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
+import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.quickstep.util.TriggerSwipeUpTouchTracker;
-import com.android.quickstep.util.VibratorWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 
 /** Utility class to handle Home and Assistant gestures. */

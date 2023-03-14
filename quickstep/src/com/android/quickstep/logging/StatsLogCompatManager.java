@@ -62,11 +62,14 @@ import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LogConfig;
 import com.android.launcher3.views.ActivityContext;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.SysUiStatsLog;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -85,6 +88,7 @@ public class StatsLogCompatManager extends StatsLogManager {
 
     private static final String TAG = "StatsLog";
     private static final String LATENCY_TAG = "StatsLatencyLog";
+    private static final String IMPRESSION_TAG = "StatsImpressionLog";
     private static final boolean IS_VERBOSE = Utilities.isPropertyEnabled(LogConfig.STATSLOG);
     private static final InstanceId DEFAULT_INSTANCE_ID = InstanceId.fakeInstanceId(0);
     // LauncherAtom.ItemInfo.getDefaultInstance() should be used but until launcher proto migrates
@@ -119,7 +123,12 @@ public class StatsLogCompatManager extends StatsLogManager {
 
     @Override
     protected StatsLatencyLogger createLatencyLogger() {
-        return new StatsCompatLatencyLogger(mContext, mActivityContext);
+        return new StatsCompatLatencyLogger();
+    }
+
+    @Override
+    protected StatsImpressionLogger createImpressionLogger() {
+        return new StatsCompatImpressionLogger();
     }
 
     /**
@@ -190,7 +199,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                 getCardinality(info), // cardinality = 16;
                 info.getWidget().getSpanX(), // span_x = 17 [default = 1];
                 info.getWidget().getSpanY(), // span_y = 18 [default = 1];
-                getAttributes(info) /* attributes */
+                getAttributes(info) /* attributes = 19 [(log_mode) = MODE_BYTES] */,
+                info.getIsKidsMode() /* is_kids_mode = 20 */
         );
     }
 
@@ -216,6 +226,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         private Optional<String> mEditText = Optional.empty();
         private SliceItem mSliceItem;
         private LauncherAtom.Slice mSlice;
+        private Optional<Integer> mCardinality = Optional.empty();
 
         StatsCompatLogger(Context context, ActivityContext activityContext) {
             mContext = context;
@@ -303,6 +314,12 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
 
         @Override
+        public StatsLogger withCardinality(int cardinality) {
+            this.mCardinality = Optional.of(cardinality);
+            return this;
+        }
+
+        @Override
         public void log(EventEnum event) {
             if (!Utilities.ATLEAST_R) {
                 return;
@@ -322,6 +339,10 @@ public class StatsLogCompatManager extends StatsLogManager {
                             mContainerInfo.ifPresent(itemInfoBuilder::setContainerInfo);
                             write(event, applyOverwrites(itemInfoBuilder.build()));
                         });
+                return;
+            }
+
+            if (mItemInfo == null) {
                 return;
             }
 
@@ -420,6 +441,7 @@ public class StatsLogCompatManager extends StatsLogManager {
             if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
                 return;
             }
+            int cardinality = mCardinality.orElseGet(() -> getCardinality(atomInfo));
             SysUiStatsLog.write(
                     SysUiStatsLog.LAUNCHER_EVENT,
                     SysUiStatsLog.LAUNCHER_UICHANGED__ACTION__DEFAULT_ACTION /* deprecated */,
@@ -445,7 +467,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                     atomInfo.getFolderIcon().getFromLabelState().getNumber() /* fromState */,
                     atomInfo.getFolderIcon().getToLabelState().getNumber() /* toState */,
                     atomInfo.getFolderIcon().getLabelInfo() /* edittext */,
-                    getCardinality(atomInfo) /* cardinality */,
+                    cardinality /* cardinality */,
                     getFeatures(atomInfo) /* features */,
                     getSearchAttributes(atomInfo) /* searchAttributes */,
                     getAttributes(atomInfo) /* attributes */
@@ -457,18 +479,12 @@ public class StatsLogCompatManager extends StatsLogManager {
      * Helps to construct and log statsd compatible latency events.
      */
     private static class StatsCompatLatencyLogger implements StatsLatencyLogger {
-        private final Context mContext;
-        private final Optional<ActivityContext> mActivityContext;
         private InstanceId mInstanceId = DEFAULT_INSTANCE_ID;
         private LatencyType mType = LatencyType.UNKNOWN;
         private int mPackageId = 0;
         private long mLatencyInMillis;
         private int mQueryLength = -1;
-
-        StatsCompatLatencyLogger(Context context, ActivityContext activityContext) {
-            mContext = context;
-            mActivityContext = Optional.ofNullable(activityContext);
-        }
+        private int mSubEventType = 0;
 
         @Override
         public StatsLatencyLogger withInstanceId(InstanceId instanceId) {
@@ -501,6 +517,12 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
 
         @Override
+        public StatsLatencyLogger withSubEventType(int type) {
+            this.mSubEventType = type;
+            return this;
+        }
+
+        @Override
         public void log(EventEnum event) {
             if (IS_VERBOSE) {
                 String name = (event instanceof Enum) ? ((Enum) event).name() :
@@ -517,7 +539,98 @@ public class StatsLogCompatManager extends StatsLogManager {
                     mPackageId, // package_id
                     mLatencyInMillis, // latency_in_millis
                     mType.getId(), //type
-                    mQueryLength // query_length
+                    mQueryLength, // query_length
+                    mSubEventType // sub_event_type
+            );
+        }
+    }
+
+    /**
+     * Helps to construct and log statsd compatible impression events.
+     */
+    private static class StatsCompatImpressionLogger implements StatsImpressionLogger {
+        private final IntArray mResultTypeList = new IntArray();
+        private final IntArray mResultCountList = new IntArray();
+        private final List<Boolean> mAboveKeyboardList = new ArrayList<>();
+        private InstanceId mInstanceId = DEFAULT_INSTANCE_ID;
+        private State mLauncherState = State.UNKNOWN;
+        private int mQueryLength = -1;
+
+        @Override
+        public StatsImpressionLogger withInstanceId(InstanceId instanceId) {
+            this.mInstanceId = instanceId;
+            return this;
+        }
+
+        @Override
+        public StatsImpressionLogger withState(State state) {
+            this.mLauncherState = state;
+            return this;
+        }
+
+        @Override
+        public StatsImpressionLogger withQueryLength(int queryLength) {
+            this.mQueryLength = queryLength;
+            return this;
+        }
+
+        @Override
+        public StatsImpressionLogger withResultType(IntArray resultType) {
+            this.mResultTypeList.clear();
+            this.mResultTypeList.addAll(resultType);
+            return this;
+        }
+
+        @Override
+        public StatsImpressionLogger withResultCount(IntArray resultCount) {
+            this.mResultCountList.clear();
+            this.mResultCountList.addAll(resultCount);
+            return this;
+        }
+
+        @Override
+        public StatsImpressionLogger withAboveKeyboard(List<Boolean> aboveKeyboard) {
+            this.mAboveKeyboardList.clear();
+            this.mAboveKeyboardList.addAll(aboveKeyboard);
+            return this;
+        }
+
+        @Override
+        public void log(EventEnum event) {
+            boolean [] mAboveKeyboard = new boolean[mAboveKeyboardList.size()];
+            for (int i = 0; i < mAboveKeyboardList.size(); i++) {
+                mAboveKeyboard[i] = mAboveKeyboardList.get(i);
+            }
+            if (IS_VERBOSE) {
+                String name = (event instanceof Enum) ? ((Enum) event).name() :
+                        event.getId() + "";
+                StringBuilder logStringBuilder = new StringBuilder("\n");
+                logStringBuilder.append(String.format("InstanceId:%s ", mInstanceId));
+                logStringBuilder.append(String.format("ImpressionEvent:%s ", name));
+                logStringBuilder.append(String.format("LauncherState = %s ", mLauncherState));
+                logStringBuilder.append(String.format("QueryLength = %s ", mQueryLength));
+                for (int i = 0; i < mResultTypeList.size(); i++) {
+                    logStringBuilder.append(String.format(
+                            "\n ResultType = %s with ResultCount = %s with is_above_keyboard = %s",
+                            mResultTypeList.get(i), mResultCountList.get(i),
+                            mAboveKeyboard[i]));
+                }
+                Log.d(IMPRESSION_TAG, logStringBuilder.toString());
+            }
+
+
+
+            SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_IMPRESSION_EVENT,
+                    event.getId(), // event_id
+                    mInstanceId.getId(), // instance_id
+                    mLauncherState.getLauncherState(), // state
+                    mQueryLength, // query_length
+                    //result type list
+                    mResultTypeList.toArray(),
+                    // result count list
+                    mResultCountList.toArray(),
+                    // above keyboard list
+                    mAboveKeyboard
             );
         }
     }

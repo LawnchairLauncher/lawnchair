@@ -46,10 +46,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_S
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
 
 import android.app.ActivityTaskManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Region;
 import android.inputmethodservice.InputMethodService;
 import android.net.Uri;
@@ -63,12 +60,12 @@ import android.view.MotionEvent;
 import androidx.annotation.BinderThread;
 import androidx.annotation.NonNull;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.SettingsCache;
+import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -114,15 +111,12 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
     private boolean mIsUserUnlocked;
     private final ArrayList<Runnable> mUserUnlockedActions = new ArrayList<>();
-    private final BroadcastReceiver mUserUnlockedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (ACTION_USER_UNLOCKED.equals(intent.getAction())) {
-                mIsUserUnlocked = true;
-                notifyUserUnlocked();
-            }
+    private final SimpleBroadcastReceiver mUserUnlockedReceiver = new SimpleBroadcastReceiver(i -> {
+        if (ACTION_USER_UNLOCKED.equals(i.getAction())) {
+            mIsUserUnlocked = true;
+            notifyUserUnlocked();
         }
-    };
+    });
 
     private int mGestureBlockingTaskId = -1;
     private @NonNull Region mExclusionRegion = new Region();
@@ -153,10 +147,9 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
         mIsUserUnlocked = context.getSystemService(UserManager.class)
                 .isUserUnlocked(Process.myUserHandle());
         if (!mIsUserUnlocked) {
-            mContext.registerReceiver(mUserUnlockedReceiver,
-                    new IntentFilter(ACTION_USER_UNLOCKED));
+            mUserUnlockedReceiver.register(mContext, ACTION_USER_UNLOCKED);
         }
-        runOnDestroy(() -> Utilities.unregisterReceiverSafely(mContext, mUserUnlockedReceiver));
+        runOnDestroy(() -> mUserUnlockedReceiver.unregisterReceiverSafely(mContext));
 
         // Register for exclusion updates
         mExclusionListener = new SystemGestureExclusionListenerCompat(mDisplayId) {
@@ -347,7 +340,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
             action.run();
         }
         mUserUnlockedActions.clear();
-        Utilities.unregisterReceiverSafely(mContext, mUserUnlockedReceiver);
+        mUserUnlockedReceiver.unregisterReceiverSafely(mContext);
     }
 
     /**

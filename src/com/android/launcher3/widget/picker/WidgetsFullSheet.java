@@ -65,7 +65,7 @@ import com.android.launcher3.views.SpringRelativeLayout;
 import com.android.launcher3.views.StickyHeaderLayout;
 import com.android.launcher3.views.WidgetsEduView;
 import com.android.launcher3.widget.BaseWidgetSheet;
-import com.android.launcher3.widget.LauncherAppWidgetHost.ProviderChangedListener;
+import com.android.launcher3.widget.LauncherWidgetHolder.ProviderChangedListener;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.picker.search.SearchModeListener;
 import com.android.launcher3.widget.picker.search.WidgetsSearchBar;
@@ -169,6 +169,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private View mSearchBarContainer;
     private WidgetsSearchBar mSearchBar;
     private TextView mHeaderTitle;
+    private @Nullable WidgetsRecyclerView mCurrentTouchEventRecyclerView;
 
     public WidgetsFullSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -321,7 +322,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mActivityContext.getAppWidgetHost().addProviderChangeListener(this);
+        mActivityContext.getAppWidgetHolder().addProviderChangeListener(this);
         notifyWidgetProvidersChanged();
         onRecommendedWidgetsBound();
     }
@@ -329,7 +330,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mActivityContext.getAppWidgetHost().removeProviderChangeListener(this);
+        mActivityContext.getAppWidgetHolder().removeProviderChangeListener(this);
         mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView
                 .removeOnAttachStateChangeListener(mBindScrollbarInSearchMode);
         if (mHasWorkProfile) {
@@ -615,12 +616,13 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         // Disable swipe down when recycler view is scrolling
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = false;
-            RecyclerViewFastScroller scroller = getRecyclerView().getScrollbar();
+            WidgetsRecyclerView recyclerView = getRecyclerView();
+            RecyclerViewFastScroller scroller = recyclerView.getScrollbar();
             if (scroller.getThumbOffsetY() >= 0
                     && getPopupContainer().isEventOverView(scroller, ev)) {
                 mNoIntercept = true;
-            } else if (getPopupContainer().isEventOverView(mContent, ev)) {
-                mNoIntercept = !getRecyclerView().shouldContainerScroll(ev, getPopupContainer());
+            } else if (getPopupContainer().isEventOverView(recyclerView, ev)) {
+                mNoIntercept = !recyclerView.shouldContainerScroll(ev, getPopupContainer());
             }
 
             if (mSearchBar.isSearchBarFocused()
@@ -639,6 +641,51 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         sheet.mIsOpen = true;
         sheet.open(animate);
         return sheet;
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return isTouchOnScrollbar(ev) || super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return maybeHandleTouchEvent(ev) || super.onTouchEvent(ev);
+    }
+
+    private boolean maybeHandleTouchEvent(MotionEvent ev) {
+        boolean isEventHandled = false;
+
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            mCurrentTouchEventRecyclerView = isTouchOnScrollbar(ev) ? getRecyclerView() : null;
+        }
+
+        if (mCurrentTouchEventRecyclerView != null) {
+            final float offsetX = mContent.getX();
+            final float offsetY = mContent.getY();
+            ev.offsetLocation(-offsetX, -offsetY);
+            isEventHandled = mCurrentTouchEventRecyclerView.dispatchTouchEvent(ev);
+            ev.offsetLocation(offsetX, offsetY);
+        }
+
+        if (ev.getAction() == MotionEvent.ACTION_UP
+                || ev.getAction() == MotionEvent.ACTION_CANCEL) {
+            mCurrentTouchEventRecyclerView = null;
+        }
+
+        return isEventHandled;
+    }
+
+    private boolean isTouchOnScrollbar(MotionEvent ev) {
+        final float offsetX = mContent.getX();
+        final float offsetY = mContent.getY();
+        WidgetsRecyclerView rv = getRecyclerView();
+
+        ev.offsetLocation(-offsetX, -offsetY);
+        boolean isOnScrollBar = rv != null && rv.getScrollbar() != null && rv.isHitOnScrollBar(ev);
+        ev.offsetLocation(offsetX, offsetY);
+
+        return isOnScrollBar;
     }
 
     /** Gets the {@link WidgetsRecyclerView} which shows all widgets in {@link WidgetsFullSheet}. */

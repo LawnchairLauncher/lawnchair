@@ -218,4 +218,32 @@ public class LauncherAnimUtils {
             }
         };
     }
+
+    /**
+     * A property that updates the specified property within a given range of values (ie. even if
+     * the animator goes beyond 0..1, the interpolated value will still be bounded).
+     * @param <T> the specified property
+     */
+    public static class ClampedProperty<T> extends FloatProperty<T> {
+        private final FloatProperty<T> mProperty;
+        private final float mMinValue;
+        private final float mMaxValue;
+
+        public ClampedProperty(FloatProperty<T> property, float minValue, float maxValue) {
+            super(property.getName() + "Clamped");
+            mProperty = property;
+            mMinValue = minValue;
+            mMaxValue = maxValue;
+        }
+
+        @Override
+        public void setValue(T t, float v) {
+            mProperty.set(t, Utilities.boundToRange(v, mMinValue, mMaxValue));
+        }
+
+        @Override
+        public Float get(T t) {
+            return mProperty.get(t);
+        }
+    }
 }

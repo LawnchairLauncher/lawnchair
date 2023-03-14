@@ -49,9 +49,6 @@
     <!-- View tag key used to determine if we should fade in the child views.. -->
     <string name="popup_container_iterate_children" translatable="false">popup_container_iterate_children</string>
 
-    <!-- config used to determine if header protection is supported in AllApps -->
-    <bool name="config_header_protection_supported">false</bool>
-
     <!-- Workspace -->
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->
@@ -86,6 +83,7 @@
     <string name="model_delegate_class" translatable="false"></string>
     <string name="window_manager_proxy_class" translatable="false"></string>
     <string name="secondary_display_predictions_class" translatable="false"></string>
+    <string name="widget_holder_factory_class" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
@@ -205,6 +203,4 @@
     <!-- The max scale for the wallpaper when it's zoomed in -->
     <item name="config_wallpaperMaxScale" format="float" type="dimen">0</item>
 
-    <string name="floating_task_package" translatable="false"></string>
-    <string name="floating_task_action" translatable="false"></string>
 </resources>

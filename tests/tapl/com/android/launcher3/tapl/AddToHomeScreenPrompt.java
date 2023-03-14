@@ -45,7 +45,8 @@ public class AddToHomeScreenPrompt {
             mLauncher.clickObject(
                     mLauncher.waitForObjectInContainer(
                             mWidgetCell.getParent().getParent().getParent().getParent(),
-                            By.text(ADD_AUTOMATICALLY)));
+                            By.text(ADD_AUTOMATICALLY)),
+                    LauncherInstrumentation.GestureScope.OUTSIDE_WITHOUT_PILFER);
             mLauncher.waitUntilLauncherObjectGone(getSelector());
         }
     }

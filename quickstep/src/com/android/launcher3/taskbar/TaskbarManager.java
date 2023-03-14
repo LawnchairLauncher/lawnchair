@@ -32,6 +32,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemProperties;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Display;
 
 import androidx.annotation.NonNull;
@@ -224,8 +225,13 @@ public class TaskbarManager {
             return;
         }
         mActivity = activity;
-        mUnfoldProgressProvider.setSourceProvider(getUnfoldTransitionProgressProviderForActivity(
-                activity));
+        UnfoldTransitionProgressProvider unfoldTransitionProgressProvider =
+                getUnfoldTransitionProgressProviderForActivity(activity);
+        if (unfoldTransitionProgressProvider == null) {
+            Log.e("b/261320823", "UnfoldTransitionProgressProvider null in setActivity. "
+                    + "Unfold animation for launcher will not work.");
+        }
+        mUnfoldProgressProvider.setSourceProvider(unfoldTransitionProgressProvider);
 
         if (mTaskbarActivityContext != null) {
             mTaskbarActivityContext.setUIController(
@@ -311,6 +317,12 @@ public class TaskbarManager {
         mSharedState.sysuiStateFlags = systemUiStateFlags;
         if (mTaskbarActivityContext != null) {
             mTaskbarActivityContext.updateSysuiStateFlags(systemUiStateFlags, false /* fromInit */);
+        }
+    }
+
+    public void onLongPressHomeEnabled(boolean assistantLongPressEnabled) {
+        if (mNavButtonController != null) {
+            mNavButtonController.setAssistantLongPressEnabled(assistantLongPressEnabled);
         }
     }
 

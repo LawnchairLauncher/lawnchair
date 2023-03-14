@@ -60,6 +60,7 @@ filegroup {
       "src/com/android/launcher3/testcomponent/CustomShortcutConfigActivity.java",
       "src/com/android/launcher3/testcomponent/TestCommandReceiver.java",
       "src/com/android/launcher3/testcomponent/TestLauncherActivity.java",
+      "src/com/android/launcher3/testcomponent/ImeTestActivity.java",
     ],
 }
 

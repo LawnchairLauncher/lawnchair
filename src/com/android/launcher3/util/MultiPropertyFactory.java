@@ -16,10 +16,13 @@
 
 package com.android.launcher3.util;
 
-import android.util.ArrayMap;
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
 import android.util.Log;
-import android.util.Property;
+
+import java.io.PrintWriter;
+import java.util.Arrays;
 
 /**
  * Allows to combine multiple values set by several sources.
@@ -35,15 +38,30 @@ import android.util.Property;
  */
 public class MultiPropertyFactory<T> {
 
+    public static final FloatProperty<MultiPropertyFactory<?>.MultiProperty> MULTI_PROPERTY_VALUE =
+            new FloatProperty<MultiPropertyFactory<?>.MultiProperty>("value") {
+
+                @Override
+                public Float get(MultiPropertyFactory<?>.MultiProperty property) {
+                    return property.mValue;
+                }
+
+                @Override
+                public void setValue(MultiPropertyFactory<?>.MultiProperty property, float value) {
+                    property.setValue(value);
+                }
+            };
+
     private static final boolean DEBUG = false;
     private static final String TAG = "MultiPropertyFactory";
-    private final String mName;
-    private final ArrayMap<Integer, MultiProperty> mProperties = new ArrayMap<>();
+    private final MultiPropertyFactory<?>.MultiProperty[] mProperties;
 
     // This is an optimization for cases when set is called repeatedly with the same setterIndex.
     private float mAggregationOfOthers = 0f;
-    private Integer mLastIndexSet = -1;
-    private final Property<T, Float> mProperty;
+    private int mLastIndexSet = -1;
+
+    protected final T mTarget;
+    private final FloatProperty<T> mProperty;
     private final FloatBiFunction mAggregator;
 
     /**
@@ -56,72 +74,119 @@ public class MultiPropertyFactory<T> {
         float apply(float a, float b);
     }
 
-    public MultiPropertyFactory(String name, Property<T, Float> property,
+    public MultiPropertyFactory(T target, FloatProperty<T> property, int size,
             FloatBiFunction aggregator) {
-        mName = name;
+        this(target, property, size, aggregator, 0);
+    }
+
+    public MultiPropertyFactory(T target, FloatProperty<T> property, int size,
+            FloatBiFunction aggregator, float defaultPropertyValue) {
+        mTarget = target;
         mProperty = property;
         mAggregator = aggregator;
+
+        mProperties = new MultiPropertyFactory<?>.MultiProperty[size];
+        for (int i = 0; i < size; i++) {
+            mProperties[i] = new MultiProperty(i, defaultPropertyValue);
+        }
     }
 
     /** Returns the [MultiFloatProperty] associated with [inx], creating it if not present. */
-    public MultiProperty get(Integer index) {
-        return mProperties.computeIfAbsent(index,
-                (k) -> new MultiProperty(index, mName + "_" + index));
+    public MultiProperty get(int index) {
+        return (MultiProperty) mProperties[index];
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.deepToString(mProperties);
+    }
+
+    /**
+     * Dumps the alpha channel values to the given PrintWriter
+     *
+     * @param prefix String to be used before every line
+     * @param pw PrintWriter where the logs should be dumped
+     * @param label String used to help identify this object
+     * @param alphaIndexLabels Strings that represent each alpha channel, these should be entered
+     *                         in the order of the indexes they represent, starting from 0.
+     */
+    public void dump(String prefix, PrintWriter pw, String label, String... alphaIndexLabels) {
+        pw.println(prefix + label);
+
+        String innerPrefix = prefix + '\t';
+        for (int i = 0; i < alphaIndexLabels.length; i++) {
+            if (i >= mProperties.length) {
+                pw.println(innerPrefix + alphaIndexLabels[i] + " given for alpha index " + i
+                        + " however there are only " + mProperties.length + " alpha channels.");
+                continue;
+            }
+            pw.println(innerPrefix + alphaIndexLabels[i] + "=" + get(i).getValue());
+        }
     }
 
     /**
      * Each [setValue] will be aggregated with the other properties values created by the
      * corresponding factory.
      */
-    class MultiProperty extends FloatProperty<T> {
-        private final int mInx;
-        private float mValue = 0f;
+    public class MultiProperty {
 
-        MultiProperty(int inx, String name) {
-            super(name);
+        private final int mInx;
+        private final float mDefaultValue;
+        private float mValue;
+
+        MultiProperty(int inx, float defaultValue) {
             mInx = inx;
+            mDefaultValue = defaultValue;
+            mValue = defaultValue;
         }
 
-        @Override
-        public void setValue(T obj, float newValue) {
+        public void setValue(float newValue) {
             if (mLastIndexSet != mInx) {
-                mAggregationOfOthers = 0f;
-                mProperties.forEach((key, property) -> {
-                    if (key != mInx) {
+                mAggregationOfOthers = mDefaultValue;
+                for (MultiPropertyFactory<?>.MultiProperty other : mProperties) {
+                    if (other.mInx != mInx) {
                         mAggregationOfOthers =
-                                mAggregator.apply(mAggregationOfOthers, property.mValue);
+                                mAggregator.apply(mAggregationOfOthers, other.mValue);
                     }
-                });
+                }
+
                 mLastIndexSet = mInx;
             }
             float lastAggregatedValue = mAggregator.apply(mAggregationOfOthers, newValue);
             mValue = newValue;
-            apply(obj, lastAggregatedValue);
+            apply(lastAggregatedValue);
 
             if (DEBUG) {
-                Log.d(TAG, "name=" + mName
-                        + " newValue=" + newValue + " mInx=" + mInx
-                        + " aggregated=" + lastAggregatedValue + " others= " + mProperties);
+                Log.d(TAG, "name=" + mProperty.getName()
+                        + " target=" + mTarget.getClass()
+                        + " newValue=" + newValue
+                        + " mInx=" + mInx
+                        + " aggregated=" + lastAggregatedValue
+                        + " others= " + Arrays.deepToString(mProperties));
             }
         }
 
-        @Override
-        public Float get(T object) {
-            // The scale of the view should match mLastAggregatedValue. Still, if it has been
-            // changed without using this property, it can differ. As this get method is usually
-            // used to set the starting point on an animation, this would result in some jumps
-            // when the view scale is different than the last aggregated value. To stay on the
-            // safe side, let's return the real view scale.
-            return mProperty.get(object);
+        public float getValue() {
+            return mValue;
         }
 
         @Override
         public String toString() {
             return String.valueOf(mValue);
         }
+
+        /**
+         * Creates and returns an Animator from the current value to the given value. Future
+         * animator on the same target automatically cancels the previous one.
+         */
+        public Animator animateToValue(float value) {
+            ObjectAnimator animator = ObjectAnimator.ofFloat(this, MULTI_PROPERTY_VALUE, value);
+            animator.setAutoCancel(true);
+            return animator;
+        }
     }
 
-    protected void apply(T object, float value) {
-        mProperty.set(object, value);
+    protected void apply(float value) {
+        mProperty.set(mTarget, value);
     }
 }

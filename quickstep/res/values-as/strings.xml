@@ -77,25 +77,27 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"টিউট’ৰিয়েল <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"সকলো সাজু!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"গৃহ স্ক্ৰীনলৈ যাবলৈ ওপৰলৈ ছোৱাইপ কৰক"</string>
-    <string name="allset_description" msgid="6350320429953234580">"আপুনি আপোনাৰ ফ’নটো ব্যৱহাৰ কৰিবলৈ সাজু"</string>
-    <string name="allset_description_tablet" msgid="7332070270570039247">"আপুনি আপোনাৰ টেবলেটটো ব্যৱহাৰ কৰিবলৈ সাজু"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"আপোনাৰ গৃহ স্ক্ৰীনলৈ যাবলৈ গৃহপৃষ্ঠা বুটামটো টিপক"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"আপুনি আপোনাৰ <xliff:g id="DEVICE">%1$s</xliff:g>টো ব্যৱহাৰ কৰিবলৈ সাজু"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"ডিভাইচ"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"ছিষ্টেম নেভিগেশ্বনৰ ছেটিং"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"শ্বেয়াৰ কৰক"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"স্ক্ৰীনশ্বট"</string>
     <string name="action_split" msgid="2098009717623550676">"বিভাজন কৰক"</string>
     <string name="toast_split_select_app" msgid="5453865907322018352">"বিভাজিত স্ক্ৰীন ব্যৱহাৰ কৰিবলৈ অন্য এটা এপত টিপক"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"এপ্‌টোৱে বিভাজিত স্ক্ৰীন সমৰ্থন নকৰে।"</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"বিভাজিত স্ক্ৰীন ব্যৱহাৰ কৰিবলৈ অন্য এটা এপ্ বাছক"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"এপ্‌টোৱে অথবা আপোনাৰ প্ৰতিষ্ঠানে এই কাৰ্যটোৰ অনুমতি নিদিয়ে"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"নেভিগেশ্বনৰ টিউট’ৰিয়েল এৰিব বিচাৰে নেকি?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"আপুনি এয়া পাছত <xliff:g id="NAME">%1$s</xliff:g> এপ্‌টোত বিচাৰিব পাৰিব"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"বাতিল কৰক"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"এৰি যাওক"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"স্ক্ৰীনখন ঘূৰাওক"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"টাস্কবাৰৰ শিক্ষা"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"টাস্কবাৰৰ শিক্ষাৰ পেনেলটো প্ৰদর্শিত হৈছে"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"টাস্কবাৰৰ শিক্ষাৰ পেনেলটো বন্ধ হৈছে"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"এপ্‌ সলনি কৰিবলৈ টাস্কবাৰডাল ব্যৱহাৰ কৰক"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"এবাৰতে দুটা এপ্‌ ব্যৱহাৰ কৰিবলৈ কাষলৈ টানি আনি এৰক"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"টাস্কবাৰডাল লুকুৱাবলৈ স্পৰ্শ কৰি ধৰি ৰাখক"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"এবাৰতে দুটা এপ্‌ ব্যৱহাৰ কৰিবলৈ কাষলৈ টানি আনি এৰক"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"টাস্কবাৰ দেখুৱাবলৈ সামান্য পৰিমাণে ওপৰলৈ ছোৱাইপ কৰক"</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"টাস্কবাৰে আপোনাৰ ৰুটিনৰ ভিত্তিত এপৰ পৰামৰ্শ দিয়ে"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"পৰৱৰ্তী"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"উভতি যাওক"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"বন্ধ কৰক"</string>
@@ -107,6 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"শেহতীয়া"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"জাননী"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"ক্ষিপ্ৰ ছেটিং"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"টাস্কবাৰ"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"নেভিগেশ্বনৰ দণ্ড"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ওপৰৰ বাঁওফাললৈ নিয়ক"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"তলৰ সোঁফাললৈ নিয়ক"</string>
 </resources>

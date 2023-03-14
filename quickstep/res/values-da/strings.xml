@@ -77,25 +77,27 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Selvstudie <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Alt er parat!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Stryg opad for at gå til startsiden"</string>
-    <string name="allset_description" msgid="6350320429953234580">"Du er klar til at bruge din telefon"</string>
-    <string name="allset_description_tablet" msgid="7332070270570039247">"Du er klar til at bruge din tablet"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"Tryk på knappen Hjem for at gå til din startskærm"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Du er klar til at bruge din <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"enhed"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Indstillinger for systemnavigation"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Del"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Screenshot"</string>
     <string name="action_split" msgid="2098009717623550676">"Opdel"</string>
     <string name="toast_split_select_app" msgid="5453865907322018352">"Tryk på en anden app for at bruge opdelt skærm"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"Appen understøtter ikke opdelt skærm."</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Vælg en anden app for at bruge opdelt skærm"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Appen eller din organisation tillader ikke denne handling"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Vil du springe selvstudiet for navigation over?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Du kan finde dette senere i appen <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Annuller"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Spring over"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Roter skærm"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Oplysninger om proceslinjen"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Vejledningen om proceslinjen blev åbnet"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Vejledningen om proceslinjen blev lukket"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Skift mellem apps ved hjælp af proceslinjen"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Træk til siden for at bruge to apps samtidig"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Du kan skjule proceslinjen ved at holde fingeren nede"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"Træk til siden for at bruge 2 apps samtidig"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Stryg hurtigt opad for at se proceslinjen"</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Proceslinjen foreslår apps baseret på din rutine"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Næste"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Tilbage"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Luk"</string>
@@ -107,6 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"Seneste"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Notifikationer"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Kvikmenu"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"Proceslinje"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigationslinje"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Flyt til toppen eller venstre side"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Flyt til bunden eller højre side"</string>
 </resources>

@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.ItemInfo;
@@ -111,11 +112,11 @@ public interface WorkspaceLayoutManager {
         }
 
         ViewGroup.LayoutParams genericLp = child.getLayoutParams();
-        CellLayout.LayoutParams lp;
-        if (genericLp == null || !(genericLp instanceof CellLayout.LayoutParams)) {
-            lp = new CellLayout.LayoutParams(x, y, spanX, spanY);
+        CellLayoutLayoutParams lp;
+        if (genericLp == null || !(genericLp instanceof CellLayoutLayoutParams)) {
+            lp = new CellLayoutLayoutParams(x, y, spanX, spanY, screenId);
         } else {
-            lp = (CellLayout.LayoutParams) genericLp;
+            lp = (CellLayoutLayoutParams) genericLp;
             lp.cellX = x;
             lp.cellY = y;
             lp.cellHSpan = spanX;

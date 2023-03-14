@@ -18,7 +18,7 @@ package com.android.launcher3;
 
 import static android.app.admin.DevicePolicyManager.ACTION_DEVICE_POLICY_RESOURCE_UPDATED;
 
-import static com.android.launcher3.Utilities.getDevicePrefs;
+import static com.android.launcher3.LauncherPrefs.getDevicePrefs;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 
@@ -117,7 +117,7 @@ public class LauncherAppState implements SafeCloseable {
                 observer, MODEL_EXECUTOR.getHandler());
         mOnTerminateCallback.add(iconChangeTracker::close);
         MODEL_EXECUTOR.execute(observer::verifyIconChanged);
-        SharedPreferences prefs = Utilities.getPrefs(mContext);
+        SharedPreferences prefs = LauncherPrefs.getPrefs(mContext);
         prefs.registerOnSharedPreferenceChangeListener(observer);
         mOnTerminateCallback.add(
                 () -> prefs.unregisterOnSharedPreferenceChangeListener(observer));

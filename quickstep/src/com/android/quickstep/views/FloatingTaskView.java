@@ -11,6 +11,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
@@ -27,6 +28,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.views.BaseDragLayer;
@@ -74,6 +76,7 @@ public class FloatingTaskView extends FrameLayout {
         }
     };
 
+    private int mSplitHolderSize;
     private FloatingTaskThumbnailView mThumbnailView;
     private SplitPlaceholderView mSplitPlaceholderView;
     private RectF mStartingPosition;
@@ -83,6 +86,7 @@ public class FloatingTaskView extends FrameLayout {
     private PagedOrientationHandler mOrientationHandler;
     @SplitConfigurationOptions.StagePosition
     private int mStagePosition;
+    private final Rect mTmpRect = new Rect();
 
     public FloatingTaskView(Context context) {
         this(context, null);
@@ -97,6 +101,9 @@ public class FloatingTaskView extends FrameLayout {
         mActivity = BaseActivity.fromContext(context);
         mIsRtl = Utilities.isRtl(getResources());
         mFullscreenParams = new FullscreenDrawParams(context);
+
+        mSplitHolderSize = context.getResources().getDimensionPixelSize(
+                R.dimen.split_placeholder_icon_size);
     }
 
     @Override
@@ -126,8 +133,7 @@ public class FloatingTaskView extends FrameLayout {
         RecentsView recentsView = launcher.getOverviewPanel();
         mOrientationHandler = recentsView.getPagedOrientationHandler();
         mStagePosition = recentsView.getSplitSelectController().getActiveSplitStagePosition();
-        mSplitPlaceholderView.setIcon(icon,
-                mContext.getResources().getDimensionPixelSize(R.dimen.split_placeholder_icon_size));
+        mSplitPlaceholderView.setIcon(icon, mSplitHolderSize);
         mSplitPlaceholderView.getIconView().setRotation(mOrientationHandler.getDegreesRotated());
     }
 
@@ -154,10 +160,24 @@ public class FloatingTaskView extends FrameLayout {
     }
 
     public void updateInitialPositionForView(View originalView) {
-        Rect viewBounds = new Rect(0, 0, originalView.getWidth(), originalView.getHeight());
-        Utilities.getBoundsForViewInDragLayer(mActivity.getDragLayer(), originalView, viewBounds,
-                false /* ignoreTransform */, null /* recycle */,
-                mStartingPosition);
+        if (originalView.getContext() instanceof TaskbarActivityContext) {
+            // If original View is a button on the Taskbar, find the on-screen bounds and calculate
+            // the equivalent bounds in the DragLayer, so we can set the initial position of
+            // this FloatingTaskView and start the split animation at the correct spot.
+            originalView.getBoundsOnScreen(mTmpRect);
+            mStartingPosition.set(mTmpRect);
+            int[] dragLayerPositionRelativeToScreen =
+                    mActivity.getDragLayer().getLocationOnScreen();
+            mStartingPosition.offset(
+                    -dragLayerPositionRelativeToScreen[0],
+                    -dragLayerPositionRelativeToScreen[1]);
+        } else {
+            Rect viewBounds = new Rect(0, 0, originalView.getWidth(), originalView.getHeight());
+            Utilities.getBoundsForViewInDragLayer(mActivity.getDragLayer(), originalView,
+                    viewBounds, false /* ignoreTransform */, null /* recycle */,
+                    mStartingPosition);
+        }
+
         final BaseDragLayer.LayoutParams lp = new BaseDragLayer.LayoutParams(
                 Math.round(mStartingPosition.width()),
                 Math.round(mStartingPosition.height()));
@@ -191,6 +211,10 @@ public class FloatingTaskView extends FrameLayout {
     public void updateOrientationHandler(PagedOrientationHandler orientationHandler) {
         mOrientationHandler = orientationHandler;
         mSplitPlaceholderView.getIconView().setRotation(mOrientationHandler.getDegreesRotated());
+    }
+
+    public void setIcon(Bitmap icon) {
+        mSplitPlaceholderView.setIcon(new BitmapDrawable(icon), mSplitHolderSize);
     }
 
     protected void initPosition(RectF pos, InsettableFrameLayout.LayoutParams lp) {

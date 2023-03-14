@@ -30,6 +30,7 @@ import android.graphics.RectF;
 import android.os.IBinder;
 import android.os.UserHandle;
 import android.util.Size;
+import android.view.RemoteAnimationTarget;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -49,7 +50,6 @@ import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.system.InputConsumerController;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.ArrayList;
 
@@ -70,7 +70,7 @@ public class LauncherSwipeHandlerV2 extends
     @Override
     protected HomeAnimationFactory createHomeAnimationFactory(ArrayList<IBinder> launchCookies,
             long duration, boolean isTargetTranslucent, boolean appCanEnterPip,
-            RemoteAnimationTargetCompat runningTaskTarget) {
+            RemoteAnimationTarget runningTaskTarget) {
         if (mActivity == null) {
             mStateCallback.addChangeListener(STATE_LAUNCHER_PRESENT | STATE_HANDLER_INVALIDATED,
                     isPresent -> mRecentsView.startHome());
@@ -84,7 +84,8 @@ public class LauncherSwipeHandlerV2 extends
 
         final View workspaceView = findWorkspaceView(launchCookies,
                 mRecentsView.getRunningTaskView());
-        boolean canUseWorkspaceView = workspaceView != null && workspaceView.isAttachedToWindow();
+        boolean canUseWorkspaceView = workspaceView != null && workspaceView.isAttachedToWindow()
+                && workspaceView.getHeight() > 0;
 
         mActivity.getRootView().setForceHideBackArrow(true);
         if (!TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
@@ -143,7 +144,7 @@ public class LauncherSwipeHandlerV2 extends
 
     private HomeAnimationFactory createWidgetHomeAnimationFactory(
             LauncherAppWidgetHostView hostView, boolean isTargetTranslucent,
-            RemoteAnimationTargetCompat runningTaskTarget) {
+            RemoteAnimationTarget runningTaskTarget) {
         final float floatingWidgetAlpha = isTargetTranslucent ? 0 : 1;
         RectF backgroundLocation = new RectF();
         Rect crop = new Rect();

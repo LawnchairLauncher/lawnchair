@@ -15,21 +15,37 @@
  */
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE;
 import static com.android.launcher3.util.SplitConfigurationOptions.getLogEventForPosition;
+import static com.android.quickstep.util.SplitAnimationTimings.TABLET_HOME_TO_SPLIT;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.R;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.quickstep.util.SplitSelectStateController;
+import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.recents.model.Task;
+
+import java.util.function.Consumer;
 
 public interface QuickstepSystemShortcut {
 
@@ -44,6 +60,10 @@ public interface QuickstepSystemShortcut {
 
     class SplitSelectSystemShortcut extends SystemShortcut<QuickstepLauncher> {
 
+        private final int mSplitPlaceholderSize;
+        private final int mSplitPlaceholderInset;
+
+        private final Rect mTempRect = new Rect();
         private final SplitPositionOption mPosition;
 
         public SplitSelectSystemShortcut(QuickstepLauncher launcher, ItemInfo itemInfo,
@@ -51,6 +71,11 @@ public interface QuickstepSystemShortcut {
             super(position.iconResId, position.textResId, launcher, itemInfo, originalView);
 
             mPosition = position;
+
+            mSplitPlaceholderSize = launcher.getResources().getDimensionPixelSize(
+                    R.dimen.split_placeholder_size);
+            mSplitPlaceholderInset = launcher.getResources().getDimensionPixelSize(
+                    R.dimen.split_placeholder_inset);
         }
 
         @Override
@@ -72,11 +97,53 @@ public interface QuickstepSystemShortcut {
                 return;
             }
 
-            RecentsView recentsView = mTarget.getOverviewPanel();
             StatsLogManager.EventEnum splitEvent = getLogEventForPosition(mPosition.stagePosition);
-            recentsView.initiateSplitSelect(
-                    new SplitSelectSource(mOriginalView, new BitmapDrawable(bitmap), intent,
-                            mPosition, mItemInfo, splitEvent));
+            RecentsView recentsView = mTarget.getOverviewPanel();
+            // Check if there is already an instance of this app running, if so, initiate the split
+            // using that.
+            recentsView.findLastActiveTaskAndDoSplitOperation(
+                    intent.getComponent(),
+                    (Consumer<Task>) foundTask -> {
+                        SplitSelectSource source = new SplitSelectSource(mOriginalView,
+                                new BitmapDrawable(bitmap), intent, mPosition, mItemInfo,
+                                splitEvent, foundTask);
+                        if (ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+                            startSplitToHome(source);
+                        } else {
+                            recentsView.initiateSplitSelect(source);
+                        }
+                    }
+            );
+        }
+
+        private void startSplitToHome(SplitSelectSource source) {
+            AbstractFloatingView.closeAllOpenViews(mTarget);
+
+            SplitSelectStateController controller = mTarget.getSplitSelectStateController();
+            controller.setInitialTaskSelect(source.intent, source.position.stagePosition,
+                    source.itemInfo, source.splitEvent, source.alreadyRunningTask);
+
+            RecentsView recentsView = mTarget.getOverviewPanel();
+            recentsView.getPagedOrientationHandler().getInitialSplitPlaceholderBounds(
+                    mSplitPlaceholderSize, mSplitPlaceholderInset, mTarget.getDeviceProfile(),
+                    controller.getActiveSplitStagePosition(), mTempRect);
+
+            PendingAnimation anim = new PendingAnimation(TABLET_HOME_TO_SPLIT.getDuration());
+            RectF startingTaskRect = new RectF();
+            final FloatingTaskView floatingTaskView = FloatingTaskView.getFloatingTaskView(mTarget,
+                    source.view, null /* thumbnail */, source.drawable, startingTaskRect);
+            floatingTaskView.setAlpha(1);
+            floatingTaskView.addStagingAnimation(anim, startingTaskRect, mTempRect,
+                    false /* fadeWithThumbnail */, true /* isStagedTask */);
+            controller.setFirstFloatingTaskView(floatingTaskView);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    mTarget.getDragLayer().removeView(floatingTaskView);
+                    controller.resetState();
+                }
+            });
+            anim.buildAnim().start();
         }
     }
 
@@ -86,18 +153,21 @@ public interface QuickstepSystemShortcut {
         public final Drawable drawable;
         public final Intent intent;
         public final SplitPositionOption position;
-        public final ItemInfo mItemInfo;
+        public final ItemInfo itemInfo;
         public final StatsLogManager.EventEnum splitEvent;
+        @Nullable
+        public final Task alreadyRunningTask;
 
         public SplitSelectSource(View view, Drawable drawable, Intent intent,
                 SplitPositionOption position, ItemInfo itemInfo,
-                StatsLogManager.EventEnum splitEvent) {
+                StatsLogManager.EventEnum splitEvent, @Nullable Task foundTask) {
             this.view = view;
             this.drawable = drawable;
             this.intent = intent;
             this.position = position;
-            this.mItemInfo = itemInfo;
+            this.itemInfo = itemInfo;
             this.splitEvent = splitEvent;
+            this.alreadyRunningTask = foundTask;
         }
     }
 }

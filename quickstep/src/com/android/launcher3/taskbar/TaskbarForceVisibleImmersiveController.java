@@ -30,13 +30,10 @@ import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
-import com.android.launcher3.util.MultiValueAlpha;
+import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.TouchController;
-import com.android.quickstep.AnimatedFloat;
-
-import java.util.Optional;
-import java.util.function.Consumer;
 
 /**
  * Controller for taskbar when force visible in immersive mode is set.
@@ -54,8 +51,6 @@ public class TaskbarForceVisibleImmersiveController implements TouchController {
     private final Runnable mUndimmingRunnable = this::undimIcons;
     private final AnimatedFloat mIconAlphaForDimming = new AnimatedFloat(
             this::updateIconDimmingAlpha);
-    private final Consumer<MultiValueAlpha> mImmersiveModeAlphaUpdater = alpha -> alpha.getProperty(
-            ALPHA_INDEX_IMMERSIVE_MODE).setValue(mIconAlphaForDimming.value);
     private final View.AccessibilityDelegate mKidsModeAccessibilityDelegate =
             new View.AccessibilityDelegate() {
                 @Override
@@ -145,22 +140,20 @@ public class TaskbarForceVisibleImmersiveController implements TouchController {
     }
 
     private void updateIconDimmingAlpha() {
-        getBackButtonAlphaOptional().ifPresent(mImmersiveModeAlphaUpdater);
-        getHomeButtonAlphaOptional().ifPresent(mImmersiveModeAlphaUpdater);
-    }
-
-    private Optional<MultiValueAlpha> getBackButtonAlphaOptional() {
         if (mControllers == null || mControllers.navbarButtonsViewController == null) {
-            return Optional.empty();
+            return;
         }
-        return Optional.ofNullable(mControllers.navbarButtonsViewController.getBackButtonAlpha());
-    }
 
-    private Optional<MultiValueAlpha> getHomeButtonAlphaOptional() {
-        if (mControllers == null || mControllers.navbarButtonsViewController == null) {
-            return Optional.empty();
+        MultiPropertyFactory<View> ba =
+                mControllers.navbarButtonsViewController.getBackButtonAlpha();
+        if (ba != null) {
+            ba.get(ALPHA_INDEX_IMMERSIVE_MODE).setValue(mIconAlphaForDimming.value);
         }
-        return Optional.ofNullable(mControllers.navbarButtonsViewController.getHomeButtonAlpha());
+        MultiPropertyFactory<View> ha =
+                mControllers.navbarButtonsViewController.getHomeButtonAlpha();
+        if (ba != null) {
+            ha.get(ALPHA_INDEX_IMMERSIVE_MODE).setValue(mIconAlphaForDimming.value);
+        }
     }
 
     @Override

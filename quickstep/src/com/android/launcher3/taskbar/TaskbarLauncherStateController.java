@@ -35,11 +35,12 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
-import com.android.launcher3.util.MultiValueAlpha;
-import com.android.quickstep.AnimatedFloat;
+import com.android.launcher3.uioverrides.states.OverviewState;
+import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.views.RecentsView;
@@ -49,8 +50,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.StringJoiner;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * Track LauncherState, RecentsAnimation, resumed state for task bar in one place here and animate
@@ -65,19 +64,17 @@ import java.util.function.Supplier;
     public static final int FLAG_RECENTS_ANIMATION_RUNNING = 1 << 1;
     public static final int FLAG_TRANSITION_STATE_RUNNING = 1 << 2;
 
+    private static final int FLAGS_LAUNCHER = FLAG_RESUMED | FLAG_RECENTS_ANIMATION_RUNNING;
     /** Equivalent to an int with all 1s for binary operation purposes */
     private static final int FLAGS_ALL = ~0;
 
-    private final AnimatedFloat mIconAlignmentForResumedState =
-            new AnimatedFloat(this::onIconAlignmentRatioChangedForAppAndHomeTransition);
-    private final AnimatedFloat mIconAlignmentForGestureState =
-            new AnimatedFloat(this::onIconAlignmentRatioChangedForAppAndHomeTransition);
-    private final AnimatedFloat mIconAlignmentForLauncherState =
-            new AnimatedFloat(this::onIconAlignmentRatioChangedForStateTransition);
+    private final AnimatedFloat mIconAlignment =
+            new AnimatedFloat(this::onIconAlignmentRatioChanged);
 
     private TaskbarControllers mControllers;
     private AnimatedFloat mTaskbarBackgroundAlpha;
-    private MultiValueAlpha.AlphaProperty mIconAlphaForHome;
+    private AnimatedFloat mTaskbarCornerRoundness;
+    private MultiProperty mIconAlphaForHome;
     private QuickstepLauncher mLauncher;
 
     private Integer mPrevState;
@@ -86,26 +83,15 @@ import java.util.function.Supplier;
 
     private @Nullable TaskBarRecentsAnimationListener mTaskBarRecentsAnimationListener;
 
-    private boolean mIsAnimatingToLauncherViaGesture;
-    private boolean mIsAnimatingToLauncherViaResume;
+    private boolean mIsAnimatingToLauncher;
 
     private boolean mShouldDelayLauncherStateAnim;
 
     // We skip any view synchronizations during init/destroy.
     private boolean mCanSyncViews;
 
-    private final Consumer<Float> mIconAlphaForHomeConsumer = alpha -> {
-        /*
-         * Hide Launcher Hotseat icons when Taskbar icons have opacity. Both icon sets
-         * should not be visible at the same time.
-         */
-        mLauncher.getHotseat().setIconsAlpha(alpha > 0 ? 0 : 1);
-        mLauncher.getHotseat().setQsbAlpha(
-                mLauncher.getDeviceProfile().isQsbInline && alpha > 0 ? 0 : 1);
-    };
-
     private final DeviceProfile.OnDeviceProfileChangeListener mOnDeviceProfileChangeListener =
-            dp -> mIconAlphaForHomeConsumer.accept(mIconAlphaForHome.getValue());
+            dp -> updateIconAlphaForHome(mIconAlphaForHome.getValue());
 
     private final StateManager.StateListener<LauncherState> mStateListener =
             new StateManager.StateListener<LauncherState>() {
@@ -133,6 +119,13 @@ import java.util.function.Supplier;
                     mLauncherState = finalState;
                     updateStateForFlag(FLAG_TRANSITION_STATE_RUNNING, false);
                     applyState();
+                    boolean disallowGlobalDrag = finalState instanceof OverviewState;
+                    boolean disallowLongClick = finalState == LauncherState.OVERVIEW_SPLIT_SELECT;
+                    mControllers.taskbarDragController.setDisallowGlobalDrag(disallowGlobalDrag);
+                    mControllers.taskbarDragController.setDisallowLongClick(disallowLongClick);
+                    mControllers.taskbarAllAppsController.setDisallowGlobalDrag(disallowGlobalDrag);
+                    mControllers.taskbarAllAppsController.setDisallowLongClick(disallowLongClick);
+                    mControllers.taskbarPopupController.setHideSplitOptions(disallowGlobalDrag);
                 }
             };
 
@@ -144,12 +137,12 @@ import java.util.function.Supplier;
 
         mTaskbarBackgroundAlpha = mControllers.taskbarDragLayerController
                 .getTaskbarBackgroundAlpha();
-        MultiValueAlpha taskbarIconAlpha = mControllers.taskbarViewController.getTaskbarIconAlpha();
-        mIconAlphaForHome = taskbarIconAlpha.getProperty(ALPHA_INDEX_HOME);
-        mIconAlphaForHome.setConsumer(mIconAlphaForHomeConsumer);
+        mTaskbarCornerRoundness = mControllers.getTaskbarCornerRoundness();
+        mIconAlphaForHome = mControllers.taskbarViewController
+                .getTaskbarIconAlpha().get(ALPHA_INDEX_HOME);
 
-        mIconAlignmentForResumedState.finishAnimation();
-        onIconAlignmentRatioChangedForAppAndHomeTransition();
+        mIconAlignment.finishAnimation();
+        onIconAlignmentRatioChanged();
 
         mLauncher.getStateManager().addStateListener(mStateListener);
 
@@ -165,11 +158,8 @@ import java.util.function.Supplier;
     public void onDestroy() {
         mCanSyncViews = false;
 
-        mIconAlignmentForResumedState.finishAnimation();
-        mIconAlignmentForGestureState.finishAnimation();
-        mIconAlignmentForLauncherState.finishAnimation();
+        mIconAlignment.finishAnimation();
 
-        mIconAlphaForHome.setConsumer(null);
         mLauncher.getHotseat().setIconsAlpha(1f);
         mLauncher.getStateManager().removeStateListener(mStateListener);
 
@@ -187,12 +177,19 @@ import java.util.function.Supplier;
         TaskbarStashController stashController = mControllers.taskbarStashController;
         stashController.updateStateForFlag(FLAG_IN_STASHED_LAUNCHER_STATE,
                 toState.isTaskbarStashed(mLauncher));
+        if (DEBUG) {
+            Log.d(TAG, "createAnimToLauncher - FLAG_IN_APP: " + false);
+        }
         stashController.updateStateForFlag(FLAG_IN_APP, false);
 
         updateStateForFlag(FLAG_RECENTS_ANIMATION_RUNNING, true);
         animatorSet.play(stashController.applyStateWithoutStart(duration));
         animatorSet.play(applyState(duration, false));
 
+        if (mTaskBarRecentsAnimationListener != null) {
+            mTaskBarRecentsAnimationListener.endGestureStateOverride(
+                    !mLauncher.isInState(LauncherState.OVERVIEW));
+        }
         mTaskBarRecentsAnimationListener = new TaskBarRecentsAnimationListener(callbacks);
         callbacks.addListener(mTaskBarRecentsAnimationListener);
         ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchListener(() ->
@@ -201,7 +198,7 @@ import java.util.function.Supplier;
     }
 
     public boolean isAnimatingToLauncher() {
-        return mIsAnimatingToLauncherViaResume || mIsAnimatingToLauncherViaGesture;
+        return mIsAnimatingToLauncher;
     }
 
     public void setShouldDelayLauncherStateAnim(boolean shouldDelayLauncherStateAnim) {
@@ -261,11 +258,19 @@ import java.util.function.Supplier;
     }
 
     private Animator onStateChangeApplied(int changedFlags, long duration, boolean start) {
+        boolean goingToLauncher = isInLauncher();
+        final float toAlignment = isIconAlignedWithHotseat() ? 1 : 0;
+        if (DEBUG) {
+            Log.d(TAG, "onStateChangeApplied - mState: " + getStateString(mState)
+                    + ", changedFlags: " + getStateString(changedFlags)
+                    + ", goingToLauncher: " + goingToLauncher
+                    + ", mLauncherState: " + mLauncherState
+                    + ", toAlignment: " + toAlignment);
+        }
         AnimatorSet animatorSet = new AnimatorSet();
 
         // Add the state animation first to ensure FLAG_IN_STASHED_LAUNCHER_STATE is set and we can
         // determine whether goingToUnstashedLauncherStateChanged.
-        boolean wasGoingToUnstashedLauncherState = goingToUnstashedLauncherState();
         if (hasAnyFlag(changedFlags, FLAG_TRANSITION_STATE_RUNNING)) {
             boolean committed = !hasAnyFlag(FLAG_TRANSITION_STATE_RUNNING);
             playStateTransitionAnim(animatorSet, duration, committed);
@@ -276,95 +281,83 @@ import java.util.function.Supplier;
                 applyState(0 /* duration */);
             }
         }
-        boolean goingToUnstashedLauncherStateChanged = wasGoingToUnstashedLauncherState
-                != goingToUnstashedLauncherState();
 
-        boolean launcherStateChangedDuringAnimToResumeAlignment =
-                mIconAlignmentForResumedState.isAnimating() && goingToUnstashedLauncherStateChanged;
-        if (hasAnyFlag(changedFlags, FLAG_RESUMED)
-                || launcherStateChangedDuringAnimToResumeAlignment) {
-            boolean isResumed = isResumed();
-            // If launcher is resumed, we show the icons when going to an unstashed launcher state
-            // or launcher state is not changed (e.g. in overview, launcher is paused and resumed).
-            float toAlignmentForResumedState = isResumed && (goingToUnstashedLauncherState()
-                    || !goingToUnstashedLauncherStateChanged) ? 1 : 0;
-            // If we're already animating to the value, just leave it be instead of restarting it.
-            if (!mIconAlignmentForResumedState.isAnimatingToValue(toAlignmentForResumedState)) {
-                ObjectAnimator resumeAlignAnim = mIconAlignmentForResumedState
-                        .animateToValue(toAlignmentForResumedState)
-                        .setDuration(duration);
-                if (DEBUG) {
-                    Log.d(TAG, "mIconAlignmentForResumedState - "
-                            + mIconAlignmentForResumedState.value
-                            + " -> " + toAlignmentForResumedState + ": " + duration);
+        if (hasAnyFlag(changedFlags, FLAGS_LAUNCHER)) {
+            animatorSet.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mIsAnimatingToLauncher = false;
                 }
 
-                resumeAlignAnim.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mIsAnimatingToLauncherViaResume = false;
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    mIsAnimatingToLauncher = goingToLauncher;
+
+                    TaskbarStashController stashController =
+                            mControllers.taskbarStashController;
+                    if (DEBUG) {
+                        Log.d(TAG, "onAnimationStart - FLAG_IN_APP: " + !goingToLauncher);
                     }
-
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        mIsAnimatingToLauncherViaResume = isResumed;
-
-                        TaskbarStashController stashController =
-                                mControllers.taskbarStashController;
-                        stashController.updateStateForFlag(FLAG_IN_APP, !isResumed);
-                        stashController.applyState(duration);
-                    }
-                });
-                animatorSet.play(resumeAlignAnim);
-            }
-        }
-
-
-        boolean launcherStateChangedDuringAnimToGestureAlignment =
-                mIconAlignmentForGestureState.isAnimating() && goingToUnstashedLauncherStateChanged;
-        if (hasAnyFlag(changedFlags, FLAG_RECENTS_ANIMATION_RUNNING)
-                || launcherStateChangedDuringAnimToGestureAlignment) {
-            boolean isRecentsAnimationRunning = isRecentsAnimationRunning();
-            float toAlignmentForGestureState = isRecentsAnimationRunning
-                    && goingToUnstashedLauncherState() ? 1 : 0;
-            // If we're already animating to the value, just leave it be instead of restarting it.
-            if (!mIconAlignmentForGestureState.isAnimatingToValue(toAlignmentForGestureState)) {
-                Animator gestureAlignAnim = mIconAlignmentForGestureState
-                        .animateToValue(toAlignmentForGestureState);
-                if (isRecentsAnimationRunning) {
-                    gestureAlignAnim.setDuration(duration);
+                    stashController.updateStateForFlag(FLAG_IN_APP, !goingToLauncher);
+                    stashController.applyState(duration);
                 }
-                if (DEBUG) {
-                    Log.d(TAG, "mIconAlignmentForGestureState - "
-                            + mIconAlignmentForGestureState.value
-                            + " -> " + toAlignmentForGestureState + ": " + duration);
-                }
-                gestureAlignAnim.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mIsAnimatingToLauncherViaGesture = false;
-                    }
+            });
 
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-                        mIsAnimatingToLauncherViaGesture = isRecentsAnimationRunning();
-                    }
-                });
-                animatorSet.play(gestureAlignAnim);
-            }
-        }
-
-        if (hasAnyFlag(changedFlags, FLAG_RESUMED | FLAG_RECENTS_ANIMATION_RUNNING)) {
-            boolean goingToLauncher = hasAnyFlag(FLAG_RESUMED | FLAG_RECENTS_ANIMATION_RUNNING);
             if (goingToLauncher) {
                 // Handle closing open popups when going home/overview
                 AbstractFloatingView.closeAllOpenViews(mControllers.taskbarActivityContext);
             }
-            animatorSet.play(mTaskbarBackgroundAlpha.animateToValue(goingToLauncher ? 0 : 1)
+        }
+
+        float backgroundAlpha =
+                goingToLauncher && mLauncherState.isTaskbarAlignedWithHotseat(mLauncher)
+                        ? 0 : 1;
+        // Don't animate if background has reached desired value.
+        if (mTaskbarBackgroundAlpha.isAnimating()
+                || mTaskbarBackgroundAlpha.value != backgroundAlpha) {
+            mTaskbarBackgroundAlpha.cancelAnimation();
+            if (DEBUG) {
+                Log.d(TAG, "onStateChangeApplied - taskbarBackgroundAlpha - "
+                        + mTaskbarBackgroundAlpha.value
+                        + " -> " + backgroundAlpha + ": " + duration);
+            }
+            animatorSet.play(mTaskbarBackgroundAlpha.animateToValue(backgroundAlpha)
                     .setDuration(duration));
         }
 
+        float cornerRoundness = goingToLauncher ? 0 : 1;
+        // Don't animate if corner roundness has reached desired value.
+        if (mTaskbarCornerRoundness.isAnimating()
+                || mTaskbarCornerRoundness.value != cornerRoundness) {
+            mTaskbarCornerRoundness.cancelAnimation();
+            if (DEBUG) {
+                Log.d(TAG, "onStateChangeApplied - taskbarCornerRoundness - "
+                        + mTaskbarCornerRoundness.value
+                        + " -> " + cornerRoundness + ": " + duration);
+            }
+            animatorSet.play(mTaskbarCornerRoundness.animateToValue(cornerRoundness));
+        }
+
+        if (mIconAlignment.isAnimatingToValue(toAlignment)
+                || mIconAlignment.isSettledOnValue(toAlignment)) {
+            // Already at desired value, but make sure we run the callback at the end.
+            animatorSet.addListener(AnimatorListeners.forEndCallback(
+                    this::onIconAlignmentRatioChanged));
+        } else {
+            mIconAlignment.cancelAnimation();
+            ObjectAnimator iconAlignAnim = mIconAlignment
+                    .animateToValue(toAlignment)
+                    .setDuration(duration);
+            if (DEBUG) {
+                Log.d(TAG, "onStateChangeApplied - iconAlignment - "
+                        + mIconAlignment.value
+                        + " -> " + toAlignment + ": " + duration);
+            }
+            animatorSet.play(iconAlignAnim);
+        }
+
         animatorSet.setInterpolator(EMPHASIZED);
+
         if (start) {
             animatorSet.start();
         }
@@ -372,18 +365,36 @@ import java.util.function.Supplier;
     }
 
     /** Returns whether we're going to a state where taskbar icons should align with launcher. */
-    private boolean goingToUnstashedLauncherState() {
-        return !mControllers.taskbarStashController.isInStashedLauncherState();
+    public boolean goingToAlignedLauncherState() {
+        return mLauncherState.isTaskbarAlignedWithHotseat(mLauncher);
+    }
+
+    /**
+     * Returns if icons should be aligned to hotseat in the current transition
+     */
+    public boolean isIconAlignedWithHotseat() {
+        if (isInLauncher()) {
+            boolean isInStashedState = mLauncherState.isTaskbarStashed(mLauncher);
+            boolean willStashVisually = isInStashedState
+                    && mControllers.taskbarStashController.supportsVisualStashing();
+            boolean isTaskbarAlignedWithHotseat =
+                    mLauncherState.isTaskbarAlignedWithHotseat(mLauncher);
+            return isTaskbarAlignedWithHotseat && !willStashVisually;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Returns if the current Launcher state has hotseat on top of other elemnets.
+     */
+    public boolean isInHotseatOnTopStates() {
+        return mLauncherState != LauncherState.ALL_APPS;
     }
 
     private void playStateTransitionAnim(AnimatorSet animatorSet, long duration,
             boolean committed) {
         boolean isInStashedState = mLauncherState.isTaskbarStashed(mLauncher);
-        boolean willStashVisually =
-                isInStashedState && mControllers.taskbarStashController.supportsVisualStashing();
-        float toAlignment =
-                mLauncherState.isTaskbarAlignedWithHotseat(mLauncher) && !willStashVisually ? 1 : 0;
-
         TaskbarStashController stashController = mControllers.taskbarStashController;
         stashController.updateStateForFlag(FLAG_IN_STASHED_LAUNCHER_STATE, isInStashedState);
         Animator stashAnimator = stashController.applyStateWithoutStart(duration);
@@ -400,61 +411,29 @@ import java.util.function.Supplier;
                 @Override
                 public void onAnimationStart(Animator animation) {
                     if (mLauncher.getHotseat().getIconsAlpha() > 0) {
-                        mIconAlphaForHome.setValue(mLauncher.getHotseat().getIconsAlpha());
+                        updateIconAlphaForHome(mLauncher.getHotseat().getIconsAlpha());
                     }
                 }
             });
             animatorSet.play(stashAnimator);
         }
-        if (mIconAlignmentForLauncherState.value == toAlignment) {
-            // Already at expected value, but make sure we run the callback at the end.
-            animatorSet.addListener(AnimatorListeners.forEndCallback(
-                    this::onIconAlignmentRatioChangedForStateTransition));
-        }
-        if (!mIconAlignmentForLauncherState.isAnimatingToValue(toAlignment)) {
-            // If we're already animating to the value, just leave it be instead of restarting it.
-            mIconAlignmentForLauncherState.finishAnimation();
-            animatorSet.play(mIconAlignmentForLauncherState.animateToValue(toAlignment)
-                    .setDuration(duration));
-            if (DEBUG) {
-                Log.d(TAG, "mIconAlignmentForLauncherState - "
-                        + mIconAlignmentForLauncherState.value
-                        + " -> " + toAlignment + ": " + duration);
-            }
-            animatorSet.setInterpolator(EMPHASIZED);
-        }
     }
 
-    private boolean isResumed() {
-        return (mState & FLAG_RESUMED) != 0;
+    private boolean isInLauncher() {
+        return (mState & FLAGS_LAUNCHER) != 0;
     }
 
-    private boolean isRecentsAnimationRunning() {
-        return (mState & FLAG_RECENTS_ANIMATION_RUNNING) != 0;
-    }
-
-    private void onIconAlignmentRatioChangedForStateTransition() {
-        if (!isResumed() && mTaskBarRecentsAnimationListener == null) {
-            return;
-        }
-        onIconAlignmentRatioChanged(this::getCurrentIconAlignmentRatioForLauncherState);
-    }
-
-    private void onIconAlignmentRatioChangedForAppAndHomeTransition() {
-        onIconAlignmentRatioChanged(this::getCurrentIconAlignmentRatioBetweenAppAndHome);
-    }
-
-    private void onIconAlignmentRatioChanged(Supplier<AnimatedFloat> alignmentSupplier) {
-        if (mControllers == null) {
-            return;
-        }
-        AnimatedFloat animatedFloat = alignmentSupplier.get();
+    private void onIconAlignmentRatioChanged() {
         float currentValue = mIconAlphaForHome.getValue();
-        boolean taskbarWillBeVisible = animatedFloat.value < 1;
+        boolean taskbarWillBeVisible = mIconAlignment.value < 1;
         boolean firstFrameVisChanged = (taskbarWillBeVisible && Float.compare(currentValue, 1) != 0)
                 || (!taskbarWillBeVisible && Float.compare(currentValue, 0) != 0);
 
-        updateIconAlignment(animatedFloat.value, animatedFloat.getEndValue());
+        mControllers.taskbarViewController.setLauncherIconAlignment(
+                mIconAlignment.value, mLauncher.getDeviceProfile());
+        mControllers.navbarButtonsViewController.updateTaskbarAlignment(mIconAlignment.value);
+        // Switch taskbar and hotseat in last frame
+        updateIconAlphaForHome(taskbarWillBeVisible ? 1 : 0);
 
         // Sync the first frame where we swap taskbar and hotseat.
         if (firstFrameVisChanged && mCanSyncViews && !Utilities.IS_RUNNING_IN_TEST_HARNESS) {
@@ -464,26 +443,18 @@ import java.util.function.Supplier;
         }
     }
 
-    private void updateIconAlignment(float alignment, Float endAlignment) {
-        mControllers.taskbarViewController.setLauncherIconAlignment(
-                alignment, endAlignment, mLauncher.getDeviceProfile());
-
-        // Switch taskbar and hotseat in last frame
-        setTaskbarViewVisible(alignment < 1);
-        mControllers.navbarButtonsViewController.updateTaskbarAlignment(alignment);
-    }
-
-    private AnimatedFloat getCurrentIconAlignmentRatioBetweenAppAndHome() {
-        return mIconAlignmentForResumedState.value > mIconAlignmentForGestureState.value
-                ? mIconAlignmentForResumedState : mIconAlignmentForGestureState;
-    }
-
-    private AnimatedFloat getCurrentIconAlignmentRatioForLauncherState() {
-        return mIconAlignmentForLauncherState;
-    }
-
-    private void setTaskbarViewVisible(boolean isVisible) {
-        mIconAlphaForHome.setValue(isVisible ? 1 : 0);
+    private void updateIconAlphaForHome(float alpha) {
+        mIconAlphaForHome.setValue(alpha);
+        boolean hotseatVisible = alpha == 0
+                || (!mControllers.uiController.isHotseatIconOnTopWhenAligned()
+                && mIconAlignment.value > 0);
+        /*
+         * Hide Launcher Hotseat icons when Taskbar icons have opacity. Both icon sets
+         * should not be visible at the same time.
+         */
+        mLauncher.getHotseat().setIconsAlpha(hotseatVisible ? 1 : 0);
+        mLauncher.getHotseat().setQsbAlpha(
+                mLauncher.getDeviceProfile().isQsbInline && !hotseatVisible ? 0 : 1);
     }
 
     private final class TaskBarRecentsAnimationListener implements
@@ -515,11 +486,11 @@ import java.util.function.Supplier;
             updateStateForFlag(FLAG_RECENTS_ANIMATION_RUNNING, false);
             updateStateForFlag(FLAG_RESUMED, launcherResumed);
             applyState();
-            // Set this last because applyState() might also animate it.
-            mIconAlignmentForResumedState.cancelAnimation();
-            mIconAlignmentForResumedState.updateValue(launcherResumed ? 1 : 0);
 
             TaskbarStashController controller = mControllers.taskbarStashController;
+            if (DEBUG) {
+                Log.d(TAG, "endGestureStateOverride - FLAG_IN_APP: " + finishedToApp);
+            }
             controller.updateStateForFlag(FLAG_IN_APP, finishedToApp);
             controller.applyState();
         }
@@ -527,29 +498,24 @@ import java.util.function.Supplier;
 
     private static String getStateString(int flags) {
         StringJoiner str = new StringJoiner("|");
-        str.add((flags & FLAG_RESUMED) != 0 ? "FLAG_RESUMED" : "");
-        str.add((flags & FLAG_RECENTS_ANIMATION_RUNNING) != 0
-                ? "FLAG_RECENTS_ANIMATION_RUNNING" : "");
-        str.add((flags & FLAG_TRANSITION_STATE_RUNNING) != 0
-                ? "FLAG_TRANSITION_STATE_RUNNING" : "");
+        if ((flags & FLAG_RESUMED) != 0) {
+            str.add("FLAG_RESUMED");
+        }
+        if ((flags & FLAG_RECENTS_ANIMATION_RUNNING) != 0) {
+            str.add("FLAG_RECENTS_ANIMATION_RUNNING");
+        }
+        if ((flags & FLAG_TRANSITION_STATE_RUNNING) != 0) {
+            str.add("FLAG_TRANSITION_STATE_RUNNING");
+        }
         return str.toString();
     }
 
     protected void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarLauncherStateController:");
-
         pw.println(String.format(
-                "%s\tmIconAlignmentForResumedState=%.2f",
+                "%s\tmIconAlignment=%.2f",
                 prefix,
-                mIconAlignmentForResumedState.value));
-        pw.println(String.format(
-                "%s\tmIconAlignmentForGestureState=%.2f",
-                prefix,
-                mIconAlignmentForGestureState.value));
-        pw.println(String.format(
-                "%s\tmIconAlignmentForLauncherState=%.2f",
-                prefix,
-                mIconAlignmentForLauncherState.value));
+                mIconAlignment.value));
         pw.println(String.format(
                 "%s\tmTaskbarBackgroundAlpha=%.2f", prefix, mTaskbarBackgroundAlpha.value));
         pw.println(String.format(
@@ -558,13 +524,9 @@ import java.util.function.Supplier;
         pw.println(String.format("%s\tmState=%s", prefix, getStateString(mState)));
         pw.println(String.format("%s\tmLauncherState=%s", prefix, mLauncherState));
         pw.println(String.format(
-                "%s\tmIsAnimatingToLauncherViaGesture=%b",
+                "%s\tmIsAnimatingToLauncher=%b",
                 prefix,
-                mIsAnimatingToLauncherViaGesture));
-        pw.println(String.format(
-                "%s\tmIsAnimatingToLauncherViaResume=%b",
-                prefix,
-                mIsAnimatingToLauncherViaResume));
+                mIsAnimatingToLauncher));
         pw.println(String.format(
                 "%s\tmShouldDelayLauncherStateAnim=%b", prefix, mShouldDelayLauncherStateAnim));
     }

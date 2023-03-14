@@ -16,6 +16,9 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.tapl.LauncherInstrumentation.DEFAULT_POLL_INTERVAL;
+import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
+
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -37,6 +40,9 @@ import java.util.stream.Collectors;
  * Operations on AllApps opened from Home. Also a parent for All Apps opened from Overview.
  */
 public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
+    // Defer updates flag used to defer all apps updates by a test's request.
+    private static final int DEFER_UPDATES_TEST = 1 << 1;
+
     private static final int MAX_SCROLL_ATTEMPTS = 40;
 
     private final int mHeight;
@@ -46,8 +52,7 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
         super(launcher);
         final UiObject2 allAppsContainer = verifyActiveContainer();
         mHeight = mLauncher.getVisibleBounds(allAppsContainer).height();
-        final UiObject2 appListRecycler = mLauncher.waitForObjectInContainer(allAppsContainer,
-                "apps_list_view");
+        final UiObject2 appListRecycler = getAppListRecycler(allAppsContainer);
         // Wait for the recycler to populate.
         mLauncher.waitForObjectInContainer(appListRecycler, By.clazz(TextView.class));
         verifyNotFrozen("All apps freeze flags upon opening all apps");
@@ -78,6 +83,11 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
             LauncherInstrumentation.log("hasClickableIcon: icon center is under search box");
             return false;
         }
+        if (iconCenterInRecyclerTopPadding(appListRecycler, icon)) {
+            LauncherInstrumentation.log(
+                    "hasClickableIcon: icon center is under the app list recycler's top padding.");
+            return false;
+        }
         if (iconBounds.bottom > displayBottom) {
             LauncherInstrumentation.log("hasClickableIcon: icon bottom below bottom offset");
             return false;
@@ -90,6 +100,13 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
         final Point iconCenter = icon.getVisibleCenter();
         return mLauncher.getVisibleBounds(getSearchBox(allAppsContainer)).contains(
                 iconCenter.x, iconCenter.y);
+    }
+
+    private boolean iconCenterInRecyclerTopPadding(UiObject2 appListRecycler, UiObject2 icon) {
+        final Point iconCenter = icon.getVisibleCenter();
+
+        return iconCenter.y <= mLauncher.getVisibleBounds(appListRecycler).top
+                + getAppsListRecyclerTopPadding();
     }
 
     /**
@@ -105,9 +122,7 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "getting app icon " + appName + " on all apps")) {
             final UiObject2 allAppsContainer = verifyActiveContainer();
-            final UiObject2 appListRecycler = mLauncher.waitForObjectInContainer(allAppsContainer,
-                    "apps_list_view");
-            final UiObject2 searchBox = hasSearchBox() ? getSearchBox(allAppsContainer) : null;
+            final UiObject2 appListRecycler = getAppListRecycler(allAppsContainer);
 
             int deviceHeight = mLauncher.getRealDisplaySize().y;
             int bottomGestureStartOnScreen = mLauncher.getBottomGestureStartOnScreen();
@@ -128,10 +143,9 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
                                                 mLauncher.getVisibleBounds(icon).top
                                                         < bottomGestureStartOnScreen)
                                         .collect(Collectors.toList()),
-                                hasSearchBox()
-                                        ? mLauncher.getVisibleBounds(searchBox).bottom
-                                        - mLauncher.getVisibleBounds(allAppsContainer).top
-                                        : 0);
+                                mLauncher.getVisibleBounds(appListRecycler).top
+                                        + getAppsListRecyclerTopPadding()
+                                        - mLauncher.getVisibleBounds(allAppsContainer).top);
                         verifyActiveContainer();
                         final int newScroll = getAllAppsScroll();
                         mLauncher.assertTrue(
@@ -180,16 +194,22 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
 
     protected abstract boolean hasSearchBox();
 
+    protected abstract int getAppsListRecyclerTopPadding();
+
     private void scrollBackToBeginning() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to scroll back in all apps")) {
             LauncherInstrumentation.log("Scrolling to the beginning");
             final UiObject2 allAppsContainer = verifyActiveContainer();
-            final UiObject2 searchBox = hasSearchBox() ? getSearchBox(allAppsContainer) : null;
+            final UiObject2 appListRecycler = getAppListRecycler(allAppsContainer);
 
             int attempts = 0;
             final Rect margins = new Rect(
-                    0, hasSearchBox() ? mLauncher.getVisibleBounds(searchBox).bottom + 1 : 0, 0, 5);
+                    /* left= */ 0,
+                    mLauncher.getVisibleBounds(appListRecycler).top
+                            + getAppsListRecyclerTopPadding() + 1,
+                    /* right= */ 0,
+                    /* bottom= */ 5);
 
             for (int scroll = getAllAppsScroll();
                     scroll != 0;
@@ -220,7 +240,11 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
-    private UiObject2 getSearchBox(UiObject2 allAppsContainer) {
+    private UiObject2 getAppListRecycler(UiObject2 allAppsContainer) {
+        return mLauncher.waitForObjectInContainer(allAppsContainer, "apps_list_view");
+    }
+
+    protected UiObject2 getSearchBox(UiObject2 allAppsContainer) {
         return mLauncher.waitForObjectInContainer(allAppsContainer, "search_container_all_apps");
     }
 
@@ -274,12 +298,16 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
      */
     public void unfreeze() {
         mLauncher.getTestInfo(TestProtocol.REQUEST_UNFREEZE_APP_LIST);
-        verifyNotFrozen("All apps freeze flags upon unfreezing");
     }
 
     private void verifyNotFrozen(String message) {
+        mLauncher.assertEquals(message, 0, getFreezeFlags() & DEFER_UPDATES_TEST);
+        mLauncher.assertTrue(message, mLauncher.waitAndGet(() -> getFreezeFlags() == 0,
+                WAIT_TIME_MS, DEFAULT_POLL_INTERVAL));
+    }
+
+    private int getFreezeFlags() {
         final Bundle testInfo = mLauncher.getTestInfo(TestProtocol.REQUEST_APP_LIST_FREEZE_FLAGS);
-        if (testInfo == null) return;
-        mLauncher.assertEquals(message, 0, testInfo.getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD));
+        return testInfo == null ? 0 : testInfo.getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 }

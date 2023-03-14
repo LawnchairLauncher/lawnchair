@@ -77,25 +77,27 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"නිබන්ධනය <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"සියල්ල සූදානම්!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"මුල් පිටුවට යාමට ඉහළට ස්වයිප් කරන්න"</string>
-    <string name="allset_description" msgid="6350320429953234580">"ඔබ ඔබගේ දුරකථනය භාවිත කිරීම පටන් ගැනීමට සූදානම්"</string>
-    <string name="allset_description_tablet" msgid="7332070270570039247">"ඔබ ඔබගේ ටැබ්ලටය භාවිත කිරීම පටන් ගැනීමට සූදානම්"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"ඔබේ මුල් තිරය වෙත යාමට මුල් පිටුව බොත්තම තට්ටු කරන්න"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"ඔබ ඔබේ <xliff:g id="DEVICE">%1$s</xliff:g> භාවිත කිරීම පටන් ගැනීමට සූදානම්"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"උපාංගය"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"පද්ධති සංචාලන සැකසීම්"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"බෙදා ගන්න"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"තිර රුව"</string>
     <string name="action_split" msgid="2098009717623550676">"බෙදන්න"</string>
     <string name="toast_split_select_app" msgid="5453865907322018352">"බෙදුම් තිරය භාවිත කිරීමට තවත් යෙදුමක් තට්ටු කරන්න"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"යෙදුම බෙදුම් තිරය සඳහා සහාය නොදක්වයි."</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"බෙදීම් තිරය භාවිතා කිරීමට වෙනත් යෙදුමක් තෝරා ගන්න"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"මෙම ක්‍රියාව යෙදුම හෝ ඔබේ සංවිධානය මගින් ඉඩ නොදේ"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"නිබන්ධනය සංචාලනය මඟ හරින්නද?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"ඔබට මෙය පසුව <xliff:g id="NAME">%1$s</xliff:g> යෙදුම තුළ සොයා ගත හැකිය"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"අවලංගු කරන්න"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"මඟ හරින්න"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"තිරය කරකවන්න"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"කාර්ය තීරු අධ්‍යාපනය"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"කාර්ය තීරු අධ්‍යාපනය දිස් විය"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"කාර්ය තීරු අධ්‍යාපනය වසා ඇත"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"යෙදුම් මාරු කිරීමට කාර්ය තීරුව භාවිත කරන්න"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"එකවර යෙදුම් දෙකක් භාවිතා කිරීමට පැත්තට අදින්න"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"කාර්ය තීරුව සැඟවීමට ස්පර්ශ කර අල්ලා ගෙන සිටින්න"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"එකවර යෙදුම් 2 ක් භාවිත කිරීමට පැත්තට අදින්න"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"කාර්ය තීරුව පෙන්වීමට ඉහළට කෙටි ස්වයිප් කරන්න"</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"කාර්ය තීරුව ඔබේ දිනචරියාව මත පදනම්ව යෙදුම් යෝජනා කරයි"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ඊළඟ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ආපසු"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"වසන්න"</string>
@@ -107,6 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"මෑත"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"දැනුම්දීම්"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"ඉක්මන් සැකසීම්"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"කාර්ය තීරුව"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"සංචලන තීරුව"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ඉහළ/වම වෙත ගෙන යන්න"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"පහළ/දකුණ වෙත ගෙන යන්න"</string>
 </resources>

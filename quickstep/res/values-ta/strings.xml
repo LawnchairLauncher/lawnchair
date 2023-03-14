@@ -77,25 +77,27 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"பயிற்சி <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"அனைத்தையும் அமைத்துவிட்டீர்கள்!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"முகப்புத் திரைக்குச் செல்ல மேல்நோக்கி ஸ்வைப் செய்யுங்கள்"</string>
-    <string name="allset_description" msgid="6350320429953234580">"மொபைலைப் பயன்படுத்தத் தயாராகிவிட்டீர்கள்"</string>
-    <string name="allset_description_tablet" msgid="7332070270570039247">"உங்கள் டேப்லெட்டைப் பயன்படுத்தத் தயாராகிவிட்டீர்கள்"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"முகப்புத் திரைக்குச் செல்வதற்கு முகப்பு பட்டனைத் தட்டவும்"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"உங்கள் <xliff:g id="DEVICE">%1$s</xliff:g> சாதனத்தைப் பயன்படுத்தத் தயாராகிவிட்டீர்கள்"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"சாதனம்"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"சிஸ்டம் வழிசெலுத்தல் அமைப்புகள்"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"பகிர்"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ஸ்கிரீன்ஷாட்"</string>
     <string name="action_split" msgid="2098009717623550676">"பிரி"</string>
     <string name="toast_split_select_app" msgid="5453865907322018352">"ஸ்பிளிட் ஸ்கிரீனுக்கு மற்றொரு ஆப்ஸைத் தட்டவும்"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"திரைப் பிரிப்பு அம்சத்தை ஆப்ஸ் ஆதரிக்கவில்லை."</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"திரைப் பிரிப்பை பயன்படுத்த வேறு ஆப்ஸை தேர்வுசெய்க"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ஆப்ஸோ உங்கள் நிறுவனமோ இந்த செயலை அனுமதிப்பதில்லை"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"வழிகாட்டுதல் பயிற்சியைத் தவிர்க்கவா?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"<xliff:g id="NAME">%1$s</xliff:g> ஆப்ஸில் பிறகு இதைக் கண்டறியலாம்"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ரத்துசெய்"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"தவிர்"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"திரையைச் சுழற்றும்"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"செயல் பட்டியைப் பயன்படுத்தும் விதம்"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"பணிப்பட்டியை எவ்வாறு பயன்படுத்துவது என்பது பற்றிய பலகம் காட்டப்படுகிறது"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"பணிப்பட்டியை எவ்வாறு பயன்படுத்துவது என்பது பற்றிய பலகம் மூடப்பட்டது"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ஆப்ஸிற்கு இடையே மாற பணிப்பட்டியைப் பயன்படுத்தவும்"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"ஒரே நேரத்தில் இரு ஆப்ஸை உபயோகிக்க பக்கவாட்டிற்கு இழுக்கவும்"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"பணிப்பட்டியை மறைக்கத் தொட்டுப் பிடிக்கவும்"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"ஒரே நேரத்தில் 2 ஆப்ஸை உபயோகிக்க பக்கவாட்டிற்கு இழுக்கவும்"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"செயல் பட்டியைக் காட்டுவதற்கு மேலே சிறிது ஸ்வைப் செய்யவும்"</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"உங்கள் வழக்கத்திற்கேற்ப ஆப்ஸை செயல் பட்டி பரிந்துரைக்கும்"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"அடுத்து"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"பின்செல்"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"மூடுக"</string>
@@ -107,6 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"சமீபத்தியவை"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"அறிவிப்புகள்"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"விரைவு அமைப்புகள்"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"செயல் பட்டி"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"வழிசெலுத்தல் பட்டி"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"மேலே/இடதுபுறம் நகர்த்தும்"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"கீழே/வலதுபுறம் நகர்த்தும்"</string>
 </resources>

@@ -16,10 +16,6 @@
 
 package com.android.quickstep.util;
 
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
-
-import android.view.animation.Interpolator;
-
 /**
  * Timings for the OverviewSplitSelect > confirmed animation on phones.
  */
@@ -33,8 +29,4 @@ public class PhoneSplitToConfirmTimings
     public int getStagedRectSlideEnd() { return 333; }
 
     public int getDuration() { return PHONE_CONFIRM_DURATION; }
-    public Interpolator getStagedRectXInterpolator() { return EMPHASIZED; }
-    public Interpolator getStagedRectYInterpolator() { return EMPHASIZED; }
-    public Interpolator getStagedRectScaleXInterpolator() { return EMPHASIZED; }
-    public Interpolator getStagedRectScaleYInterpolator() { return EMPHASIZED; }
 }

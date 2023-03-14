@@ -77,25 +77,27 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"មេរៀនទី <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"រួចហើយ!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"អូសឡើងលើ ដើម្បី​ទៅកាន់​អេក្រង់ដើម"</string>
-    <string name="allset_description" msgid="6350320429953234580">"អ្នក​អាច​ចាប់ផ្ដើម​ប្រើ​ទូរសព្ទ​របស់អ្នក​បានហើយ"</string>
-    <string name="allset_description_tablet" msgid="7332070270570039247">"អ្នកអាចចាប់ផ្ដើមប្រើថេប្លេតរបស់អ្នកបានហើយ"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"ចុចប៊ូតុងដើម ដើម្បីចូលទៅកាន់អេក្រង់ដើមរបស់អ្នក"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"អ្នកអាចចាប់ផ្ដើមប្រើ <xliff:g id="DEVICE">%1$s</xliff:g> របស់អ្នកបានហើយ"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"ឧបករណ៍"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"ការកំណត់​ការរុករក​ប្រព័ន្ធ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"ចែករំលែក"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"រូបថតអេក្រង់"</string>
     <string name="action_split" msgid="2098009717623550676">"បំបែក"</string>
     <string name="toast_split_select_app" msgid="5453865907322018352">"ចុចកម្មវិធី​ផ្សេងទៀត ដើម្បីប្រើមុខងារ​បំបែកអេក្រង់"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"កម្មវិធីមិនអាចប្រើមុខងារ​បំបែកអេក្រង់បានទេ។"</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"ជ្រើសរើសកម្មវិធីផ្សេងទៀត ដើម្បីប្រើមុខងារ​បំបែកអេក្រង់"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"សកម្មភាពនេះ​មិនត្រូវបានអនុញ្ញាតដោយកម្មវិធី​ ឬ​ស្ថាប័ន​របស់អ្នកទេ"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"រំលង​មេរៀន​អំពី​ការរុករក​ឬ?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"អ្នកអាចស្វែងរកមេរៀននេះនៅពេលក្រោយក្នុងកម្មវិធី <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"បោះបង់"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"រំលង"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"បង្វិលអេក្រង់"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"ការអប់រំលើរបារកិច្ចការ"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ការបង្រៀនអំពីរបារកិច្ចការបានបង្ហាញ"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ការបង្រៀនអំពីរបារកិច្ចការត្រូវបានបិទ"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ប្រើ​របារកិច្ចការ ដើម្បី​ប្ដូរកម្មវិធី"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"អូស​ទៅចំហៀង ដើម្បីប្រើ​កម្មវិធីពីរ​ក្នុងពេលតែមួយ"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ចុចឱ្យជាប់ ដើម្បីលាក់របារកិច្ចការ"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"អូស​ទៅចំហៀង ដើម្បីប្រើ​កម្មវិធី 2 ក្នុងពេលតែមួយ"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"អូសឡើងលើបន្តិច ដើម្បីបង្ហាញរបារកិច្ចការ"</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"របារកិច្ចការនេះណែនាំកម្មវិធីផ្អែកលើទម្លាប់របស់អ្នក"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"បន្ទាប់"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ថយក្រោយ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"បិទ"</string>
@@ -107,6 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"ថ្មីៗ"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"ការ​ជូនដំណឹង"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"ការកំណត់រហ័ស"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"របារកិច្ចការ"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"របាររុករក"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ផ្លាស់ទីទៅខាងលើ/ឆ្វេង"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ផ្លាស់ទីទៅខាងក្រោម/ស្ដាំ"</string>
 </resources>

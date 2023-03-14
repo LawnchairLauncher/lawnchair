@@ -77,25 +77,27 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ଟ୍ୟୁଟୋରିଆଲ୍ <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"ସମ୍ପୂର୍ଣ୍ଣ ଭାବେ ପ୍ରସ୍ତୁତ!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"ହୋମକୁ ଯିବା ପାଇଁ ଉପରକୁ ସ୍ୱାଇପ କରନ୍ତୁ"</string>
-    <string name="allset_description" msgid="6350320429953234580">"ଆପଣ ଆପଣଙ୍କ ଫୋନ୍ ବ୍ୟବହାର କରିବା ପାଇଁ ପ୍ରସ୍ତୁତ ଅଛନ୍ତି"</string>
-    <string name="allset_description_tablet" msgid="7332070270570039247">"ଆପଣ ଆପଣଙ୍କ ଟାବଲେଟ ବ୍ୟବହାର କରିବା ଆରମ୍ଭ କରିବାକୁ ପ୍ରସ୍ତୁତ ଅଛନ୍ତି"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"ଆପଣଙ୍କ ହୋମ ସ୍କ୍ରିନକୁ ଯିବା ପାଇଁ ହୋମ ବଟନରେ ଟାପ କରନ୍ତୁ"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"ଆପଣ ଆପଣଙ୍କ <xliff:g id="DEVICE">%1$s</xliff:g> ବ୍ୟବହାର କରିବା ଆରମ୍ଭ କରିବାକୁ ପ୍ରସ୍ତୁତ ଅଛନ୍ତି"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"ଡିଭାଇସ"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"ସିଷ୍ଟମ ନାଭିଗେସନ ସେଟିଂସ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"ସେୟାର୍ କରନ୍ତୁ"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ସ୍କ୍ରିନସଟ୍"</string>
     <string name="action_split" msgid="2098009717623550676">"ସ୍ପ୍ଲିଟ୍"</string>
     <string name="toast_split_select_app" msgid="5453865907322018352">"ସ୍ପ୍ଲିଟସ୍କ୍ରିନ ବ୍ୟବହାର କରିବାକୁ ଅନ୍ୟ ଏକ ଆପରେ ଟାପ କର"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"ସ୍ପ୍ଲିଟ-ସ୍କ୍ରିନକୁ ଆପ ସମର୍ଥନ କରେ ନାହିଁ।"</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"ସ୍ପ୍ଲିଟ ସ୍କ୍ରିନ ବ୍ୟବହାର କରିବାକୁ ଅନ୍ୟ ଏକ ଆପ ବାଛନ୍ତୁ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ଆପ୍ କିମ୍ବା ଆପଣଙ୍କ ସଂସ୍ଥା ଦ୍ୱାରା ଏହି କାର୍ଯ୍ୟକୁ ଅନୁମତି ଦିଆଯାଇ ନାହିଁ"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"ନାଭିଗେସନ୍ ଟ୍ୟୁଟୋରିଆଲକୁ ବାଦ୍ ଦେବେ?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"ଆପଣ ପରେ ଏହାକୁ <xliff:g id="NAME">%1$s</xliff:g> ଆପରେ ପାଇପାରିବେ"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ବାତିଲ କରନ୍ତୁ"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ବାଦ୍ ଦିଅନ୍ତୁ"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ସ୍କ୍ରିନ ଘୂରାନ୍ତୁ"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"ଟାସ୍କବାର ଶିକ୍ଷା"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ଟାସ୍କବାର୍ ଶିକ୍ଷା ଦେଖାଯାଇଛି"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ଟାସ୍କବାର୍ ଶିକ୍ଷା ବନ୍ଦ ହୋଇଯାଇଛି"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ଆପଗୁଡ଼ିକୁ ସ୍ୱିଚ କରିବା ପାଇଁ ଟାସ୍କବାର ବ୍ୟବହାର କରନ୍ତୁ"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"ଥରକେ ଦୁଇଟି ଆପ ବ୍ୟବହାର କରିବା ପାଇଁ ପାର୍ଶ୍ୱକୁ ଡ୍ରାଗ କରନ୍ତୁ"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ଟାସ୍କବାରକୁ ଲୁଚାଇବା ପାଇଁ ସ୍ପର୍ଶ କରି ଧରି ରଖନ୍ତୁ"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"ଥରକେ 2ଟି ଆପ୍ସ ବ୍ୟବହାର କରିବା ପାଇଁ ପାର୍ଶ୍ୱକୁ ଡ୍ରାଗ କରନ୍ତୁ"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"ଟାସ୍କବାର ଦେଖାଇବା ପାଇଁ ଉପରକୁ ଅଳ୍ପ ସମୟ ସ୍ୱାଇପ କରନ୍ତୁ"</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"ଟାସ୍କବାର ଆପଣଙ୍କ ରୁଟିନ ଆଧାରରେ ଆପ୍ସ ପରାମର୍ଶ ଦିଏ"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ପରବର୍ତ୍ତୀ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ପଛକୁ ଫେରନ୍ତୁ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ବନ୍ଦ କରନ୍ତୁ"</string>
@@ -107,6 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"ବର୍ତ୍ତମାନର"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"ବିଜ୍ଞପ୍ତିଗୁଡ଼ିକ"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"କ୍ୱିକ ସେଟିଂସ"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"ଟାସ୍କବାର"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"ନାଭିଗେସନ ବାର"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ଶୀର୍ଷ/ବାମକୁ ମୁଭ କରନ୍ତୁ"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ନିମ୍ନ/ଡାହାଣକୁ ମୁଭ କରନ୍ତୁ"</string>
 </resources>

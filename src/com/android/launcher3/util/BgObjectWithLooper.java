@@ -15,9 +15,14 @@
  */
 package com.android.launcher3.util;
 
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Handler;
 import android.os.Looper;
 
 import androidx.annotation.WorkerThread;
+
+import java.util.function.Consumer;
 
 /**
  * Utility class to define an object which does most of it's processing on a
@@ -43,4 +48,16 @@ public abstract class BgObjectWithLooper {
      */
     @WorkerThread
     protected abstract void onInitialized(Looper looper);
+
+    /**
+     * Helper method to create a content provider
+     */
+    protected static ContentObserver newContentObserver(Handler handler, Consumer<Uri> command) {
+        return new ContentObserver(handler) {
+            @Override
+            public void onChange(boolean selfChange, Uri uri) {
+                command.accept(uri);
+            }
+        };
+    }
 }

@@ -284,6 +284,40 @@ public class WidgetCell extends LinearLayout {
         ensurePreviewWithCallback(callback, cachedPreview);
     }
 
+    private static class ScaledAppWidgetHostView extends LauncherAppWidgetHostView {
+        private boolean mKeepOrigForDragging = true;
+
+        ScaledAppWidgetHostView(Context context) {
+            super(context);
+        }
+
+        /**
+         * Set if the view will keep its original scale when dragged
+         * @param isKeepOrig True if keep original scale when dragged, false otherwise
+         */
+        public void setKeepOrigForDragging(boolean isKeepOrig) {
+            mKeepOrigForDragging = isKeepOrig;
+        }
+
+        /**
+         * @return True if the view is set to preserve original scale when dragged, false otherwise
+         */
+        public boolean isKeepOrigForDragging() {
+            return mKeepOrigForDragging;
+        }
+
+        @Override
+        public void startDrag() {
+            super.startDrag();
+            if (!isKeepOrigForDragging()) {
+                // restore to original scale when being dragged, if set to do so
+                setScaleToFit(1.0f);
+            }
+            // When the drag start, translations need to be set to zero to center the view
+            setTranslationForCentering(0f, 0f);
+        }
+    }
+
     private void applyPreviewOnAppWidgetHostView(WidgetItem item) {
         if (mRemoteViewsPreview != null) {
             mAppWidgetHostViewPreview = createAppWidgetHostView(getContext());
@@ -299,7 +333,7 @@ public class WidgetCell extends LinearLayout {
         // a preview during drag & drop. And thus, we should use LauncherAppWidgetHostView, which
         // supports applying local color extraction during drag & drop.
         mAppWidgetHostViewPreview = isLauncherContext(context)
-                ? new LauncherAppWidgetHostView(context)
+                ? new ScaledAppWidgetHostView(context)
                 : createAppWidgetHostView(context);
         LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo =
                 LauncherAppWidgetProviderInfo.fromProviderInfo(context, item.widgetInfo.clone());
@@ -398,23 +432,41 @@ public class WidgetCell extends LinearLayout {
             int containerWidth = (int) (mTargetPreviewWidth * mPreviewContainerScale);
             int containerHeight = (int) (mTargetPreviewHeight * mPreviewContainerScale);
             setContainerSize(containerWidth, containerHeight);
+            boolean shouldMeasureAndScale = false;
             if (mAppWidgetHostViewPreview.getChildCount() == 1) {
                 View widgetContent = mAppWidgetHostViewPreview.getChildAt(0);
                 ViewGroup.LayoutParams layoutParams = widgetContent.getLayoutParams();
                 // We only scale preview if both the width & height of the outermost view group are
                 // not set to MATCH_PARENT.
-                boolean shouldScale =
+                shouldMeasureAndScale =
                         layoutParams.width != MATCH_PARENT && layoutParams.height != MATCH_PARENT;
-                if (shouldScale) {
+                if (shouldMeasureAndScale) {
                     setNoClip(mWidgetImageContainer);
                     setNoClip(mAppWidgetHostViewPreview);
                     mAppWidgetHostViewScale = measureAndComputeWidgetPreviewScale();
-                    mAppWidgetHostViewPreview.setScaleToFit(mAppWidgetHostViewScale);
                 }
             }
+
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                    containerWidth, containerHeight, Gravity.FILL);
+                    mTargetPreviewWidth, mTargetPreviewHeight, Gravity.FILL);
             mAppWidgetHostViewPreview.setLayoutParams(params);
+
+            if (!shouldMeasureAndScale
+                    && mAppWidgetHostViewPreview instanceof ScaledAppWidgetHostView) {
+                // If the view is not measured & scaled, at least one side will match the grid size,
+                // so it should be safe to restore the original scale once it is dragged.
+                ScaledAppWidgetHostView tempView =
+                        (ScaledAppWidgetHostView) mAppWidgetHostViewPreview;
+                tempView.setKeepOrigForDragging(false);
+                tempView.setScaleToFit(mPreviewContainerScale);
+            } else if (!shouldMeasureAndScale) {
+                mAppWidgetHostViewPreview.setScaleToFit(mPreviewContainerScale);
+            } else {
+                mAppWidgetHostViewPreview.setScaleToFit(mAppWidgetHostViewScale);
+            }
+            mAppWidgetHostViewPreview.setTranslationForCentering(
+                    -(params.width - (params.width * mPreviewContainerScale)) / 2.0f,
+                    -(params.height - (params.height * mPreviewContainerScale)) / 2.0f);
             mWidgetImageContainer.addView(mAppWidgetHostViewPreview, /* index= */ 0);
             mWidgetImage.setVisibility(View.GONE);
             applyPreview(null);
