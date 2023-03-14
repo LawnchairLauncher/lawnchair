@@ -32,6 +32,7 @@ import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED_ACCELERATE;
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED_DECELERATE;
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -103,7 +104,10 @@ public class QuickstepAtomicAnimationFactory extends
             }
 
             config.setInterpolator(ANIM_OVERVIEW_ACTIONS_FADE, clampToProgress(LINEAR, 0, 0.25f));
-            config.setInterpolator(ANIM_SCRIM_FADE, clampToProgress(LINEAR, 0.33f, 1));
+            config.setInterpolator(ANIM_SCRIM_FADE,
+                    fromState == OVERVIEW_SPLIT_SELECT
+                            ? clampToProgress(LINEAR, 0.33f, 1)
+                            : LINEAR);
             config.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
             config.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
 
@@ -112,7 +116,10 @@ public class QuickstepAtomicAnimationFactory extends
                 // Overview is going offscreen, so keep it at its current scale and opacity.
                 config.setInterpolator(ANIM_OVERVIEW_SCALE, FINAL_FRAME);
                 config.setInterpolator(ANIM_OVERVIEW_FADE, FINAL_FRAME);
-                config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X, EMPHASIZED_DECELERATE);
+                config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_X,
+                        fromState == OVERVIEW_SPLIT_SELECT
+                                ? EMPHASIZED_DECELERATE
+                                : clampToProgress(FAST_OUT_SLOW_IN, 0, 0.75f));
                 config.setInterpolator(ANIM_OVERVIEW_TRANSLATE_Y, FINAL_FRAME);
 
                 // Scroll RecentsView to page 0 as it goes offscreen, if necessary.
