@@ -317,7 +317,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         return mTransientTaskbarBounds;
     }
 
-    @VisibleForTesting
     @Override
     public StatsLogManager getStatsLogManager() {
         // Used to mock, can't mock a default interface method directly

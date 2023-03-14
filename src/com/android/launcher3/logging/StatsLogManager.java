@@ -636,6 +636,12 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User scrolled up on the search result page.")
         LAUNCHER_ALLAPPS_SEARCH_SCROLLED_UP(1286),
+
+        @UiEvent(doc = "User or automatic timeout has hidden transient taskbar.")
+        LAUNCHER_TRANSIENT_TASKBAR_HIDE(1330),
+
+        @UiEvent(doc = "User has swiped upwards from the gesture handle to show transient taskbar.")
+        LAUNCHER_TRANSIENT_TASKBAR_SHOW(1331),
         ;
 
         // ADD MORE
