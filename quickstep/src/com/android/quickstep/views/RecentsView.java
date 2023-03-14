@@ -3166,6 +3166,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 InteractionJankMonitorWrapper.cancel(
                         InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
             }
+
+            updateCurrentTaskActionsVisibility();
         });
     }
 
@@ -4666,6 +4668,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mSecondSplitHiddenView = null;
         }
 
+        // We are leaving split selection state, so it is safe to reset thumbnail translations for
+        // the next time split is invoked.
+        setTaskViewsPrimarySplitTranslation(0);
+        setTaskViewsSecondarySplitTranslation(0);
+
         if (mSplitHiddenTaskViewIndex == -1) {
             return;
         }
@@ -4679,11 +4686,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             snapToPageImmediately(pageToSnapTo);
         }
         onLayout(false /*  changed */, getLeft(), getTop(), getRight(), getBottom());
-
-        // We are leaving split selection state, so it is safe to reset thumbnail translations for
-        // the next time split is invoked.
-        setTaskViewsPrimarySplitTranslation(0);
-        setTaskViewsSecondarySplitTranslation(0);
 
         resetTaskVisuals();
         mSplitHiddenTaskViewIndex = -1;
