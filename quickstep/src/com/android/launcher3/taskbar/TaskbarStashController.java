@@ -25,6 +25,8 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.FORCE_PERSISTENT_TASKBAR;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TRANSIENT_TASKBAR_HIDE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TRANSIENT_TASKBAR_SHOW;
 import static com.android.launcher3.taskbar.Utilities.appendFlag;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BOUNCER_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
@@ -971,6 +973,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             } else {
                 mActivity.getStatsLogManager().logger().log(LAUNCHER_TASKBAR_LONGPRESS_SHOW);
             }
+        }
+        if (hasAnyFlag(changedFlags, FLAG_STASHED_IN_APP_AUTO)) {
+            mActivity.getStatsLogManager().logger().log(hasAnyFlag(FLAG_STASHED_IN_APP_AUTO)
+                    ? LAUNCHER_TRANSIENT_TASKBAR_HIDE
+                    : LAUNCHER_TRANSIENT_TASKBAR_SHOW);
         }
     }
 
