@@ -41,6 +41,10 @@ public class LauncherSettings {
          * An animation using the view's background.
          */
         public static final int VIEW_BACKGROUND = 1;
+        /**
+         * The default animation for a given view/item info type, but without the splash icon.
+         */
+        public static final int DEFAULT_NO_ICON = 2;
     }
 
     /**
