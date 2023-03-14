@@ -18,13 +18,11 @@ package com.android.quickstep.util;
 import static com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_UNFOLD_ANIMATION;
 import static com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_FACTORY;
-import static com.android.launcher3.Utilities.comp;
 
 import android.annotation.Nullable;
 import android.util.FloatProperty;
 import android.util.MathUtils;
 import android.view.WindowManager;
-import android.view.WindowManagerGlobal;
 
 import androidx.core.view.OneShotPreDrawListener;
 
@@ -34,6 +32,7 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.util.HorizontalInsettableView;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
+import com.android.systemui.unfold.updates.RotationChangeProvider;
 import com.android.systemui.unfold.util.NaturalRotationUnfoldProgressProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
@@ -62,16 +61,17 @@ public class LauncherUnfoldAnimationController {
     public LauncherUnfoldAnimationController(
             Launcher launcher,
             WindowManager windowManager,
-            UnfoldTransitionProgressProvider unfoldTransitionProgressProvider) {
+            UnfoldTransitionProgressProvider unfoldTransitionProgressProvider,
+            RotationChangeProvider rotationChangeProvider) {
         mLauncher = launcher;
         mProgressProvider = new ScopedUnfoldTransitionProgressProvider(
                 unfoldTransitionProgressProvider);
         mUnfoldMoveFromCenterHotseatAnimator = new UnfoldMoveFromCenterHotseatAnimator(launcher,
-                windowManager);
+                windowManager, rotationChangeProvider);
         mUnfoldMoveFromCenterWorkspaceAnimator = new UnfoldMoveFromCenterWorkspaceAnimator(launcher,
-                windowManager);
+                windowManager, rotationChangeProvider);
         mNaturalOrientationProgressProvider = new NaturalRotationUnfoldProgressProvider(launcher,
-                WindowManagerGlobal.getWindowManagerService(), mProgressProvider);
+                rotationChangeProvider, mProgressProvider);
         mNaturalOrientationProgressProvider.init();
 
         // Animated in all orientations
@@ -134,7 +134,7 @@ public class LauncherUnfoldAnimationController {
         @Override
         public void onTransitionProgress(float progress) {
             if (mQsbInsettable != null) {
-                float insetPercentage = comp(progress) * MAX_WIDTH_INSET_FRACTION;
+                float insetPercentage = (1 - progress) * MAX_WIDTH_INSET_FRACTION;
                 mQsbInsettable.setHorizontalInsets(insetPercentage);
             }
         }

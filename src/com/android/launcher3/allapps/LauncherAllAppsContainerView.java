@@ -17,7 +17,6 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
 import android.view.WindowInsets;
 
 import com.android.launcher3.Launcher;
@@ -42,31 +41,16 @@ public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<L
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // The AllAppsContainerView houses the QSB and is hence visible from the Workspace
-        // Overview states. We shouldn't intercept for the scrubber in these cases.
-        if (!mActivityContext.isInState(LauncherState.ALL_APPS)) {
-            mTouchHandler = null;
-            return false;
-        }
-
-        return super.onInterceptTouchEvent(ev);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (!mActivityContext.isInState(LauncherState.ALL_APPS)) {
-            return false;
-        }
-        return super.onTouchEvent(ev);
-    }
-
-    @Override
     protected int getNavBarScrimHeight(WindowInsets insets) {
         if (Utilities.ATLEAST_Q) {
             return insets.getTappableElementInsets().bottom;
         } else {
             return insets.getStableInsetBottom();
         }
+    }
+
+    @Override
+    public boolean isInAllApps() {
+        return mActivityContext.getStateManager().isInStableState(LauncherState.ALL_APPS);
     }
 }

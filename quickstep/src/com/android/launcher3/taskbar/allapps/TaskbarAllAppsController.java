@@ -15,34 +15,18 @@
  */
 package com.android.launcher3.taskbar.allapps;
 
-import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
-import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-
-import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
-import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
-
-import android.content.Context;
-import android.graphics.PixelFormat;
-import android.view.Gravity;
-import android.view.MotionEvent;
-import android.view.WindowManager;
-import android.view.WindowManager.LayoutParams;
-
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.R;
 import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarControllers;
-import com.android.systemui.shared.system.TaskStackChangeListener;
-import com.android.systemui.shared.system.TaskStackChangeListeners;
+import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Handles the all apps overlay window initialization, updates, and its data.
@@ -57,35 +41,16 @@ import java.util.Optional;
  */
 public final class TaskbarAllAppsController {
 
-    private static final String WINDOW_TITLE = "Taskbar All Apps";
-
-    private final TaskbarActivityContext mTaskbarContext;
-    private final TaskbarAllAppsProxyView mProxyView;
-    private final LayoutParams mLayoutParams;
-
-    private final TaskStackChangeListener mTaskStackListener = new TaskStackChangeListener() {
-        @Override
-        public void onTaskStackChanged() {
-            mProxyView.close(false);
-        }
-    };
-
-    private DeviceProfile mDeviceProfile;
     private TaskbarControllers mControllers;
-    /** Window context for all apps if it is open. */
-    private @Nullable TaskbarAllAppsContext mAllAppsContext;
+    private @Nullable TaskbarAllAppsSlideInView mSlideInView;
+    private @Nullable TaskbarAllAppsContainerView mAppsView;
 
     // Application data models.
     private AppInfo[] mApps;
     private int mAppsModelFlags;
     private List<ItemInfo> mPredictedApps;
-
-    public TaskbarAllAppsController(TaskbarActivityContext context, DeviceProfile dp) {
-        mDeviceProfile = dp;
-        mTaskbarContext = context;
-        mProxyView = new TaskbarAllAppsProxyView(mTaskbarContext);
-        mLayoutParams = createLayoutParams();
-    }
+    private boolean mDisallowGlobalDrag;
+    private boolean mDisallowLongClick;
 
     /** Initialize the controller. */
     public void init(TaskbarControllers controllers, boolean allAppsVisible) {
@@ -111,9 +76,17 @@ public final class TaskbarAllAppsController {
 
         mApps = apps;
         mAppsModelFlags = flags;
-        if (mAllAppsContext != null) {
-            mAllAppsContext.getAppsView().getAppsStore().setApps(mApps, mAppsModelFlags);
+        if (mAppsView != null) {
+            mAppsView.getAppsStore().setApps(mApps, mAppsModelFlags);
         }
+    }
+
+    public void setDisallowGlobalDrag(boolean disableDragForOverviewState) {
+        mDisallowGlobalDrag = disableDragForOverviewState;
+    }
+
+    public void setDisallowLongClick(boolean disallowLongClick) {
+        mDisallowLongClick = disallowLongClick;
     }
 
     /** Updates the current predictions. */
@@ -123,8 +96,8 @@ public final class TaskbarAllAppsController {
         }
 
         mPredictedApps = predictedApps;
-        if (mAllAppsContext != null) {
-            mAllAppsContext.getAppsView().getFloatingHeaderView()
+        if (mAppsView != null) {
+            mAppsView.getFloatingHeaderView()
                     .findFixedRowByType(PredictionRowView.class)
                     .setPredictedApps(mPredictedApps);
         }
@@ -135,121 +108,49 @@ public final class TaskbarAllAppsController {
         show(true);
     }
 
+    /** Returns {@code true} if All Apps is open. */
+    public boolean isOpen() {
+        return mSlideInView != null && mSlideInView.isOpen();
+    }
+
     private void show(boolean animate) {
-        if (mProxyView.isOpen()) {
+        if (mAppsView != null) {
             return;
         }
-        mProxyView.show();
         // mControllers and getSharedState should never be null here. Do not handle null-pointer
         // to catch invalid states.
         mControllers.getSharedState().allAppsVisible = true;
 
-        mAllAppsContext = new TaskbarAllAppsContext(mTaskbarContext, this, mControllers);
-        mAllAppsContext.getDragController().init(mControllers);
-        TaskStackChangeListeners.getInstance().registerTaskStackListener(mTaskStackListener);
-        Optional.ofNullable(mAllAppsContext.getSystemService(WindowManager.class))
-                .ifPresent(m -> m.addView(mAllAppsContext.getDragLayer(), mLayoutParams));
+        TaskbarOverlayContext overlayContext =
+                mControllers.taskbarOverlayController.requestWindow();
+        mSlideInView = (TaskbarAllAppsSlideInView) overlayContext.getLayoutInflater().inflate(
+                R.layout.taskbar_all_apps, overlayContext.getDragLayer(), false);
+        mSlideInView.addOnCloseListener(() -> {
+            mControllers.getSharedState().allAppsVisible = false;
+            mSlideInView = null;
+            mAppsView = null;
+        });
+        TaskbarAllAppsViewController viewController = new TaskbarAllAppsViewController(
+                overlayContext, mSlideInView, mControllers);
 
-        mAllAppsContext.getAppsView().getAppsStore().setApps(mApps, mAppsModelFlags);
-        mAllAppsContext.getAppsView().getFloatingHeaderView()
+        viewController.show(animate);
+        mAppsView = overlayContext.getAppsView();
+        mAppsView.getAppsStore().setApps(mApps, mAppsModelFlags);
+        mAppsView.getFloatingHeaderView()
                 .findFixedRowByType(PredictionRowView.class)
                 .setPredictedApps(mPredictedApps);
-        mAllAppsContext.getAllAppsViewController().show(animate);
+        // 1 alternative that would be more work:
+        // Create a shared drag layer between taskbar and taskbarAllApps so that when dragging
+        // starts and taskbarAllApps can close, but the drag layer that the view is being dragged in
+        // doesn't also close
+        overlayContext.getDragController().setDisallowGlobalDrag(mDisallowGlobalDrag);
+        overlayContext.getDragController().setDisallowLongClick(mDisallowLongClick);
     }
 
-    /** Closes the {@link TaskbarAllAppsContainerView}. */
-    public void hide() {
-        mProxyView.close(true);
-    }
 
-    /**
-     * Removes the all apps window from the hierarchy, if all floating views are closed and there is
-     * no system drag operation in progress.
-     * <p>
-     * This method should be called after an exit animation finishes, if applicable.
-     */
-    void maybeCloseWindow() {
-        if (mAllAppsContext != null && (AbstractFloatingView.hasOpenView(mAllAppsContext, TYPE_ALL)
-                || mAllAppsContext.getDragController().isSystemDragInProgress())) {
-            return;
-        }
-        mProxyView.close(false);
-        // mControllers and getSharedState should never be null here. Do not handle null-pointer
-        // to catch invalid states.
-        mControllers.getSharedState().allAppsVisible = false;
-        onDestroy();
-    }
-
-    /** Destroys the controller and any All Apps window if present. */
-    public void onDestroy() {
-        TaskStackChangeListeners.getInstance().unregisterTaskStackListener(mTaskStackListener);
-        Optional.ofNullable(mAllAppsContext)
-                .map(c -> c.getSystemService(WindowManager.class))
-                .ifPresent(m -> m.removeViewImmediate(mAllAppsContext.getDragLayer()));
-        mAllAppsContext = null;
-    }
-
-    /** Updates {@link DeviceProfile} instance for Taskbar's All Apps window. */
-    public void updateDeviceProfile(DeviceProfile dp) {
-        mDeviceProfile = dp;
-        Optional.ofNullable(mAllAppsContext).ifPresent(c -> {
-            AbstractFloatingView.closeAllOpenViewsExcept(c, false, TYPE_REBIND_SAFE);
-            c.dispatchDeviceProfileChanged();
-        });
-    }
-
-    DeviceProfile getDeviceProfile() {
-        return mDeviceProfile;
-    }
-
-    private LayoutParams createLayoutParams() {
-        LayoutParams layoutParams = new LayoutParams(
-                TYPE_APPLICATION_OVERLAY,
-                WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
-                PixelFormat.TRANSLUCENT);
-        layoutParams.setTitle(WINDOW_TITLE);
-        layoutParams.gravity = Gravity.BOTTOM;
-        layoutParams.packageName = mTaskbarContext.getPackageName();
-        layoutParams.setFitInsetsTypes(0); // Handled by container view.
-        layoutParams.layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
-        layoutParams.setSystemApplicationOverlay(true);
-        return layoutParams;
-    }
-
-    /**
-     * Proxy view connecting taskbar drag layer to the all apps window.
-     * <p>
-     * The all apps view is in a separate window and has its own drag layer, but this proxy lets it
-     * behave as though its in the taskbar drag layer. For instance, when the taskbar closes all
-     * {@link AbstractFloatingView} instances, the all apps window will also close.
-     */
-    private class TaskbarAllAppsProxyView extends AbstractFloatingView {
-
-        private TaskbarAllAppsProxyView(Context context) {
-            super(context, null);
-        }
-
-        private void show() {
-            mIsOpen = true;
-            mTaskbarContext.getDragLayer().addView(this);
-        }
-
-        @Override
-        protected void handleClose(boolean animate) {
-            mTaskbarContext.getDragLayer().removeView(this);
-            Optional.ofNullable(mAllAppsContext)
-                    .map(TaskbarAllAppsContext::getAllAppsViewController)
-                    .ifPresent(v -> v.close(animate));
-        }
-
-        @Override
-        protected boolean isOfType(int type) {
-            return (type & TYPE_TASKBAR_ALL_APPS) != 0;
-        }
-
-        @Override
-        public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-            return false;
-        }
+    @VisibleForTesting
+    public int getTaskbarAllAppsTopPadding() {
+        // Allow null-pointer since this should only be null if the apps view is not showing.
+        return mAppsView.getActiveRecyclerView().getClipBounds().top;
     }
 }

@@ -15,13 +15,16 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_ALL_APPS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_ALL_APPS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.annotation.NonNull;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Intent;
@@ -49,7 +52,6 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
@@ -70,6 +72,7 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.quickstep.util.LogUtils;
+import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.systemui.shared.recents.model.Task;
 
 import java.io.PrintWriter;
@@ -83,7 +86,8 @@ import java.util.function.Predicate;
 public class TaskbarDragController extends DragController<BaseTaskbarContext> implements
         TaskbarControllers.LoggableTaskbarController {
 
-    private static boolean DEBUG_DRAG_SHADOW_SURFACE = false;
+    private static final boolean DEBUG_DRAG_SHADOW_SURFACE = false;
+    private static final int ANIM_DURATION_RETURN_ICON_TO_TASKBAR = 300;
 
     private final int mDragIconSize;
     private final int[] mTempXY = new int[2];
@@ -99,6 +103,8 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
 
     // Animation for the drag shadow back into position after an unsuccessful drag
     private ValueAnimator mReturnAnimator;
+    private boolean mDisallowGlobalDrag;
+    private boolean mDisallowLongClick;
 
     public TaskbarDragController(BaseTaskbarContext activity) {
         super(activity);
@@ -108,6 +114,14 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
 
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
+    }
+
+    public void setDisallowGlobalDrag(boolean disallowGlobalDrag) {
+        mDisallowGlobalDrag = disallowGlobalDrag;
+    }
+
+    public void setDisallowLongClick(boolean disallowLongClick) {
+        mDisallowLongClick = disallowLongClick;
     }
 
     /**
@@ -131,7 +145,7 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
             View view,
             @Nullable DragPreviewProvider dragPreviewProvider,
             @Nullable Point iconShift) {
-        if (!(view instanceof BubbleTextView)) {
+        if (!(view instanceof BubbleTextView) || mDisallowLongClick) {
             return false;
         }
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onTaskbarItemLongClick");
@@ -193,8 +207,13 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
 
                     if (FeatureFlags.ENABLE_TASKBAR_POPUP_MENU.get()
                             && !shouldStartDrag(0)) {
-                        // Immediately close the popup menu.
-                        mDragView.setOnAnimationEndCallback(() -> callOnDragStart());
+                        mDragView.setOnAnimationEndCallback(() -> {
+                            // Drag might be cancelled during the DragView animation, so check
+                            // mIsPreDrag again.
+                            if (mIsInPreDrag) {
+                                callOnDragStart();
+                            }
+                        });
                     }
                 }
 
@@ -288,11 +307,20 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
     protected void callOnDragStart() {
         super.callOnDragStart();
         // Pre-drag has ended, start the global system drag.
-        AbstractFloatingView.closeAllOpenViews(mActivity);
+        if (mDisallowGlobalDrag) {
+            AbstractFloatingView.closeAllOpenViewsExcept(mActivity, TYPE_TASKBAR_ALL_APPS);
+        } else {
+            // stash the transient taskbar
+            mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
+
+            AbstractFloatingView.closeAllOpenViews(mActivity);
+        }
+
         startSystemDrag((BubbleTextView) mDragObject.originalView);
     }
 
     private void startSystemDrag(BubbleTextView btv) {
+        if (mDisallowGlobalDrag) return;
         View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(btv) {
 
             @Override
@@ -393,9 +421,14 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                     if (dragEvent.getResult()) {
                         maybeOnDragEnd();
                     } else {
+                        // un-stash the transient taskbar in case drag and drop was canceled
+                        mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(false);
+
                         // This will take care of calling maybeOnDragEnd() after the animation
                         animateGlobalDragViewToOriginalPosition(btv, dragEvent);
                     }
+                    mActivity.getDragLayer().setOnDragListener(null);
+
                     return true;
             }
             return false;
@@ -422,6 +455,45 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
     }
 
     @Override
+    protected void endDrag() {
+        if (mDisallowGlobalDrag) {
+            // We need to explicitly set deferDragViewCleanupPostAnimation to true here so the
+            // super call doesn't remove it from the drag layer before the animation completes.
+            // This variable gets set in to false in super.dispatchDropComplete() because it
+            // (rightfully so, perhaps) thinks this drag operation has failed, and does its own
+            // internal cleanup.
+            // Another way to approach this would be to make all of overview a drop target and
+            // accept the drop as successful and then run the setupReturnDragAnimator to simulate
+            // drop failure to the user
+            mDragObject.deferDragViewCleanupPostAnimation = true;
+
+            float fromX = mDragObject.x - mDragObject.xOffset;
+            float fromY = mDragObject.y - mDragObject.yOffset;
+            DragView dragView = mDragObject.dragView;
+            setupReturnDragAnimator(fromX, fromY, (View) mDragObject.originalView,
+                    (x, y, scale, alpha) -> {
+                        dragView.setTranslationX(x);
+                        dragView.setTranslationY(y);
+                        dragView.setScaleX(scale);
+                        dragView.setScaleY(scale);
+                        dragView.setAlpha(alpha);
+                    });
+            mReturnAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    callOnDragEnd();
+                    dragView.remove();
+                    dragView.clearAnimation();
+                    mReturnAnimator = null;
+
+                }
+            });
+            mReturnAnimator.start();
+        }
+        super.endDrag();
+    }
+
+    @Override
     protected void callOnDragEnd() {
         super.callOnDragEnd();
         maybeOnDragEnd();
@@ -432,56 +504,20 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         SurfaceControl dragSurface = dragEvent.getDragSurface();
 
         // For top level icons, the target is the icon itself
-        View target = btv;
-        Object tag = btv.getTag();
-        if (tag instanceof ItemInfo) {
-            ItemInfo item = (ItemInfo) tag;
-            TaskbarViewController taskbarViewController = mControllers.taskbarViewController;
-            if (item.container == CONTAINER_ALL_APPS || item.container == CONTAINER_PREDICTION) {
-                // Since all apps closes when the drag starts, target the all apps button instead.
-                target = taskbarViewController.getAllAppsButtonView();
-            } else if (item.container >= 0) {
-                // Since folders close when the drag starts, target the folder icon instead.
-                Predicate<ItemInfo> matcher = ItemInfoMatcher.forFolderMatch(
-                        ItemInfoMatcher.ofItemIds(IntSet.wrap(item.id)));
-                target = taskbarViewController.getFirstIconMatch(matcher);
-            } else if (item.itemType == ITEM_TYPE_DEEP_SHORTCUT) {
-                // Find first icon with same package/user as the deep shortcut.
-                Predicate<ItemInfo> packageUserMatcher = ItemInfoMatcher.ofPackages(
-                        Collections.singleton(item.getTargetPackage()), item.user);
-                target = taskbarViewController.getFirstIconMatch(packageUserMatcher);
-            }
-        }
-
-        // Finish any pending return animation before starting a new drag
-        if (mReturnAnimator != null) {
-            mReturnAnimator.end();
-        }
+        View target = findTaskbarTargetForIconView(btv);
 
         float fromX = dragEvent.getX() - dragEvent.getOffsetX();
         float fromY = dragEvent.getY() - dragEvent.getOffsetY();
-        int[] toPosition = target.getLocationOnScreen();
-        float toScale = (float) target.getWidth() / mDragIconSize;
-        float toAlpha = (target == btv) ? 1f : 0f;
         final ViewRootImpl viewRoot = target.getViewRootImpl();
         SurfaceControl.Transaction tx = new SurfaceControl.Transaction();
-        mReturnAnimator = ValueAnimator.ofFloat(0f, 1f);
-        mReturnAnimator.setDuration(300);
-        mReturnAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
-        mReturnAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float t = animation.getAnimatedFraction();
-                float accelT = Interpolators.ACCEL_2.getInterpolation(t);
-                float scale = 1f - t * (1f - toScale);
-                float alpha = 1f - accelT * (1f - toAlpha);
-                tx.setPosition(dragSurface, Utilities.mapRange(t, fromX, toPosition[0]),
-                        Utilities.mapRange(t, fromY, toPosition[1]));
-                tx.setScale(dragSurface, scale, scale);
-                tx.setAlpha(dragSurface, alpha);
-                tx.apply();
-            }
-        });
+        setupReturnDragAnimator(fromX, fromY, btv,
+                (x, y, scale, alpha) -> {
+                    tx.setPosition(dragSurface, x, y);
+                    tx.setScale(dragSurface, scale, scale);
+                    tx.setAlpha(dragSurface, alpha);
+                    tx.apply();
+                });
+
         mReturnAnimator.addListener(new AnimatorListenerAdapter() {
             private boolean mCanceled = false;
 
@@ -517,6 +553,68 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         mReturnAnimator.start();
     }
 
+    private View findTaskbarTargetForIconView(@NonNull View iconView) {
+        Object tag = iconView.getTag();
+        TaskbarViewController taskbarViewController = mControllers.taskbarViewController;
+
+        if (tag instanceof ItemInfo) {
+            ItemInfo item = (ItemInfo) tag;
+            if (item.container == CONTAINER_ALL_APPS || item.container == CONTAINER_PREDICTION) {
+                if (mDisallowGlobalDrag) {
+                    // We're dragging in taskbarAllApps, we don't have folders or shortcuts
+                    return iconView;
+                }
+                // Since all apps closes when the drag starts, target the all apps button instead.
+                return taskbarViewController.getAllAppsButtonView();
+            } else if (item.container >= 0) {
+                // Since folders close when the drag starts, target the folder icon instead.
+                Predicate<ItemInfo> matcher = ItemInfoMatcher.forFolderMatch(
+                        ItemInfoMatcher.ofItemIds(IntSet.wrap(item.id)));
+                return taskbarViewController.getFirstIconMatch(matcher);
+            } else if (item.itemType == ITEM_TYPE_DEEP_SHORTCUT) {
+                // Find first icon with same package/user as the deep shortcut.
+                Predicate<ItemInfo> packageUserMatcher = ItemInfoMatcher.ofPackages(
+                        Collections.singleton(item.getTargetPackage()), item.user);
+                return taskbarViewController.getFirstIconMatch(packageUserMatcher);
+            }
+        }
+        return iconView;
+    }
+
+    private void setupReturnDragAnimator(float fromX, float fromY, View originalView,
+            TaskbarReturnPropertiesListener animListener) {
+        // Finish any pending return animation before starting a new return
+        if (mReturnAnimator != null) {
+            mReturnAnimator.end();
+        }
+
+        // For top level icons, the target is the icon itself
+        View target = findTaskbarTargetForIconView(originalView);
+
+        int[] toPosition = target.getLocationOnScreen();
+        float toScale = (float) target.getWidth() / mDragIconSize;
+        float toAlpha = (target == originalView) ? 1f : 0f;
+        MultiValueUpdateListener listener = new MultiValueUpdateListener() {
+            final FloatProp mDx = new FloatProp(fromX, toPosition[0], 0,
+                    ANIM_DURATION_RETURN_ICON_TO_TASKBAR, Interpolators.FAST_OUT_SLOW_IN);
+            final FloatProp mDy = new FloatProp(fromY, toPosition[1], 0,
+                    ANIM_DURATION_RETURN_ICON_TO_TASKBAR,
+                    FAST_OUT_SLOW_IN);
+            final FloatProp mScale = new FloatProp(1f, toScale, 0,
+                    ANIM_DURATION_RETURN_ICON_TO_TASKBAR, FAST_OUT_SLOW_IN);
+            final FloatProp mAlpha = new FloatProp(1f, toAlpha, 0,
+                    ANIM_DURATION_RETURN_ICON_TO_TASKBAR, Interpolators.ACCEL_2);
+            @Override
+            public void onUpdate(float percent, boolean initOnly) {
+                animListener.updateDragShadow(mDx.value, mDy.value, mScale.value, mAlpha.value);
+            }
+        };
+        mReturnAnimator = ValueAnimator.ofFloat(0f, 1f);
+        mReturnAnimator.setDuration(ANIM_DURATION_RETURN_ICON_TO_TASKBAR);
+        mReturnAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
+        mReturnAnimator.addUpdateListener(listener);
+    }
+
     @Override
     protected float getX(MotionEvent ev) {
         // We will resize to fill the screen while dragging, so use screen coordinates. This ensures
@@ -540,7 +638,7 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
 
     @Override
     protected void exitDrag() {
-        if (mDragObject != null) {
+        if (mDragObject != null && !mDisallowGlobalDrag) {
             mActivity.getDragLayer().removeView(mDragObject.dragView);
         }
     }
@@ -556,6 +654,10 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         return null;
     }
 
+    interface TaskbarReturnPropertiesListener {
+        void updateDragShadow(float x, float y, float scale, float alpha);
+    }
+
     @Override
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarDragController:");
@@ -566,5 +668,7 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         pw.println(prefix + "\tmRegistrationY=" + mRegistrationY);
         pw.println(prefix + "\tmIsSystemDragInProgress=" + mIsSystemDragInProgress);
         pw.println(prefix + "\tisInternalDragInProgess=" + super.isDragging());
+        pw.println(prefix + "\tmDisallowGlobalDrag=" + mDisallowGlobalDrag);
+        pw.println(prefix + "\tmDisallowLongClick=" + mDisallowLongClick);
     }
 }

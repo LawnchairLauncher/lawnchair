@@ -18,6 +18,9 @@ package com.android.launcher3.secondarydisplay;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,13 +29,21 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.DragSource;
+import com.android.launcher3.DropTarget;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
+import com.android.launcher3.dragndrop.DragController;
+import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.dragndrop.DraggableView;
+import com.android.launcher3.graphics.DragPreviewProvider;
+import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.data.AppInfo;
@@ -40,6 +51,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
+import com.android.launcher3.touch.ItemClickHandler.ItemClickProxy;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.OnboardingPrefs;
@@ -52,11 +64,11 @@ import java.util.HashMap;
  * Launcher activity for secondary displays
  */
 public class SecondaryDisplayLauncher extends BaseDraggingActivity
-        implements BgDataModel.Callbacks {
+        implements BgDataModel.Callbacks, DragController.DragListener {
 
     private LauncherModel mModel;
-
     private BaseDragLayer mDragLayer;
+    private SecondaryDragController mDragController;
     private ActivityAllAppsContainerView<SecondaryDisplayLauncher> mAppsView;
     private View mAppsButton;
 
@@ -69,11 +81,14 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     private boolean mBindingItems = false;
     private SecondaryDisplayPredictions mSecondaryDisplayPredictions;
 
+    private final int[] mTempXY = new int[2];
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mModel = LauncherAppState.getInstance(this).getModel();
-        mOnboardingPrefs = new OnboardingPrefs<>(this, Utilities.getPrefs(this));
+        mDragController = new SecondaryDragController(this);
+        mOnboardingPrefs = new OnboardingPrefs<>(this, LauncherPrefs.getPrefs(this));
         mSecondaryDisplayPredictions = SecondaryDisplayPredictions.newInstance(this);
         if (getWindow().getDecorView().isAttachedToWindow()) {
             initUi();
@@ -84,6 +99,12 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
         initUi();
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        this.getDragController().removeDragListener(this);
     }
 
     private void initUi() {
@@ -106,10 +127,17 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         mAppsView = findViewById(R.id.apps_view);
         mAppsButton = findViewById(R.id.all_apps_button);
 
+        mDragController.addDragListener(this);
         mPopupDataProvider = new PopupDataProvider(
                 mAppsView.getAppsStore()::updateNotificationDots);
 
         mModel.addCallbacksAndLoad(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mDragController.cancelDrag();
     }
 
     @Override
@@ -129,9 +157,18 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         showAppDrawer(false);
     }
 
+    public DragController getDragController() {
+        return mDragController;
+    }
+
     @Override
     public void onBackPressed() {
         if (finishAutoCancelActionMode()) {
+            return;
+        }
+
+        if (mDragController.isDragging()) {
+            mDragController.cancelDrag();
             return;
         }
 
@@ -202,7 +239,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         float closeR = Themes.getDialogCornerRadius(this);
         float startR = mAppsButton.getWidth() / 2f;
 
-        float[] buttonPos = new float[] { startR, startR};
+        float[] buttonPos = new float[]{startR, startR};
         mDragLayer.getDescendantCoordRelativeToSelf(mAppsButton, buttonPos);
         mDragLayer.mapCoordInSelfToDescendant(mAppsView, buttonPos);
         final Animator animator = ViewAnimationUtils.createCircularReveal(mAppsView,
@@ -236,6 +273,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     @Override
     public void startBinding() {
         mBindingItems = true;
+        mDragController.cancelDrag();
     }
 
     @Override
@@ -266,6 +304,10 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         }
     }
 
+    public SecondaryDisplayPredictions getSecondaryDisplayPredictions() {
+        return mSecondaryDisplayPredictions;
+    }
+
     @Override
     public StringCache getStringCache() {
         return mStringCache;
@@ -291,7 +333,9 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         if (v.getWindowToken() == null) return;
 
         Object tag = v.getTag();
-        if (tag instanceof ItemInfo) {
+        if (tag instanceof ItemClickProxy) {
+            ((ItemClickProxy) tag).onItemClicked(v);
+        } else if (tag instanceof ItemInfo) {
             ItemInfo item = (ItemInfo) tag;
             Intent intent;
             if (item instanceof ItemInfoWithIcon
@@ -308,4 +352,101 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
             startActivitySafely(v, intent, item);
         }
     }
+
+    /**
+     * Core functionality for beginning a drag operation for an item that will be dropped within
+     * the secondary display grid home screen
+     */
+    public void beginDragShared(View child, DragSource source, DragOptions options) {
+        Object dragObject = child.getTag();
+        if (!(dragObject instanceof ItemInfo)) {
+            String msg = "Drag started with a view that has no tag set. This "
+                    + "will cause a crash (issue 11627249) down the line. "
+                    + "View: " + child + "  tag: " + child.getTag();
+            throw new IllegalStateException(msg);
+        }
+        beginDragShared(child, source, (ItemInfo) dragObject,
+                new DragPreviewProvider(child), options);
+    }
+
+    private void beginDragShared(View child, DragSource source,
+            ItemInfo dragObject, DragPreviewProvider previewProvider, DragOptions options) {
+
+        float iconScale = 1f;
+        if (child instanceof BubbleTextView) {
+            FastBitmapDrawable icon = ((BubbleTextView) child).getIcon();
+            if (icon != null) {
+                iconScale = icon.getAnimatedScale();
+            }
+        }
+
+        // clear pressed state if necessary
+        child.clearFocus();
+        child.setPressed(false);
+        if (child instanceof BubbleTextView) {
+            BubbleTextView icon = (BubbleTextView) child;
+            icon.clearPressedBackground();
+        }
+
+        DraggableView draggableView = null;
+        if (child instanceof DraggableView) {
+            draggableView = (DraggableView) child;
+        }
+
+        final View contentView = previewProvider.getContentView();
+        final float scale;
+        // The draggable drawable follows the touch point around on the screen
+        final Drawable drawable;
+        if (contentView == null) {
+            drawable = previewProvider.createDrawable();
+            scale = previewProvider.getScaleAndPosition(drawable, mTempXY);
+        } else {
+            drawable = null;
+            scale = previewProvider.getScaleAndPosition(contentView, mTempXY);
+        }
+        int halfPadding = previewProvider.previewPadding / 2;
+        int dragLayerX = mTempXY[0];
+        int dragLayerY = mTempXY[1];
+
+        Point dragVisualizeOffset = null;
+        Rect dragRect = new Rect();
+        if (draggableView != null) {
+            draggableView.getSourceVisualDragBounds(dragRect);
+            dragLayerY += dragRect.top;
+            dragVisualizeOffset = new Point(-halfPadding, halfPadding);
+        }
+        if (contentView != null) {
+            mDragController.startDrag(
+                    contentView,
+                    draggableView,
+                    dragLayerX,
+                    dragLayerY,
+                    source,
+                    dragObject,
+                    dragVisualizeOffset,
+                    dragRect,
+                    scale * iconScale,
+                    scale,
+                    options);
+        } else {
+            mDragController.startDrag(
+                    drawable,
+                    draggableView,
+                    dragLayerX,
+                    dragLayerY,
+                    source,
+                    dragObject,
+                    dragVisualizeOffset,
+                    dragRect,
+                    scale * iconScale,
+                    scale,
+                    options);
+        }
+    }
+
+    @Override
+    public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) { }
+
+    @Override
+    public void onDragEnd() { }
 }

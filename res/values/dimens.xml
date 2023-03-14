@@ -114,6 +114,8 @@
     <dimen name="all_apps_tabs_indicator_height">2dp</dimen>
     <dimen name="all_apps_header_top_margin">33dp</dimen>
     <dimen name="all_apps_header_top_padding">36dp</dimen>
+    <!-- Additional top padding to add when Floating Searchbar is enabled. -->
+    <dimen name="all_apps_additional_top_padding_floating_search">16dp</dimen>
     <dimen name="all_apps_header_bottom_padding">14dp</dimen>
     <dimen name="all_apps_header_top_adjustment">6dp</dimen>
     <dimen name="all_apps_header_bottom_adjustment">4dp</dimen>
@@ -147,6 +149,8 @@
     <!-- Floating action button inside work tab to toggle work profile -->
     <dimen name="work_fab_height">56dp</dimen>
     <dimen name="work_fab_radius">16dp</dimen>
+    <dimen name="work_fab_icon_size">24dp</dimen>
+    <dimen name="work_fab_text_start_margin">8dp</dimen>
     <dimen name="work_card_padding_horizontal">10dp</dimen>
     <dimen name="work_card_button_height">52dp</dimen>
     <dimen name="work_fab_margin">16dp</dimen>
@@ -255,7 +259,7 @@
     <dimen name="folder_cell_y_padding">6dp</dimen>
     <!-- label text size = workspace text size multiplied by this scale -->
     <dimen name="folder_label_text_scale">1.14</dimen>
-    <dimen name="folder_label_height">56dp</dimen>
+    <dimen name="folder_footer_height_default">56dp</dimen>
 
     <dimen name="folder_content_padding_left_right">8dp</dimen>
     <dimen name="folder_content_padding_top">16dp</dimen>
@@ -333,7 +337,7 @@
 
     <!-- Snackbar -->
     <dimen name="snackbar_height">48dp</dimen>
-    <dimen name="snackbar_content_height">32dp</dimen>
+    <dimen name="snackbar_content_height">48dp</dimen>
     <dimen name="snackbar_padding">8dp</dimen>
     <dimen name="snackbar_min_margin_left_right">6dp</dimen>
     <dimen name="snackbar_max_margin_left_right">72dp</dimen>
@@ -359,19 +363,34 @@
     <dimen name="qsb_widget_height">0dp</dimen>
     <dimen name="qsb_shadow_height">0dp</dimen>
     <dimen name="min_hotseat_icon_space">18dp</dimen>
+    <dimen name="max_hotseat_icon_space">50dp</dimen>
     <dimen name="min_hotseat_qsb_width">0dp</dimen>
-    <dimen name="taskbar_icon_size">44dp</dimen>
-    <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
-    <dimen name="taskbar_icon_spacing">8dp</dimen>
+    <dimen name="taskbar_icon_size">0dp</dimen>
+    <dimen name="transient_taskbar_icon_size">0dp</dimen>
+    <!-- Transient taskbar (placeholders to compile in Launcher3 without Quickstep) -->
+    <dimen name="transient_taskbar_size">0dp</dimen>
+    <dimen name="transient_taskbar_margin">0dp</dimen>
+    <dimen name="transient_taskbar_shadow_blur">0dp</dimen>
+    <dimen name="transient_taskbar_key_shadow_distance">0dp</dimen>
+    <dimen name="transient_taskbar_stashed_size">0dp</dimen>
+    <dimen name="transient_taskbar_clamped_offset_bound">0dp</dimen>
+    <dimen name="taskbar_icon_spacing">0dp</dimen>
     <dimen name="taskbar_nav_buttons_size">0dp</dimen>
     <dimen name="taskbar_contextual_button_margin">0dp</dimen>
     <dimen name="taskbar_hotseat_nav_spacing">0dp</dimen>
     <dimen name="taskbar_button_margin_default">0dp</dimen>
     <dimen name="taskbar_button_space_inbetween">0dp</dimen>
-    <dimen name="taskbar_button_margin_5_5">0dp</dimen>
+    <dimen name="taskbar_button_space_inbetween_phone">0dp</dimen>
+    <dimen name="taskbar_button_margin_split">0dp</dimen>
     <dimen name="taskbar_button_margin_6_5">0dp</dimen>
-    <dimen name="taskbar_button_margin_4_5">0dp</dimen>
-    <dimen name="taskbar_button_margin_4_4">0dp</dimen>
+    <!-- Taskbar swipe up thresholds threshold -->
+    <dimen name="taskbar_nav_threshold">0dp</dimen>
+    <dimen name="taskbar_app_window_threshold">0dp</dimen>
+    <dimen name="taskbar_home_overview_threshold">0dp</dimen>
+    <dimen name="taskbar_catch_up_threshold">0dp</dimen>
+    <dimen name="taskbar_nav_threshold_v2">0dp</dimen>
+    <dimen name="taskbar_app_window_threshold_v2">0dp</dimen>
+    <dimen name="taskbar_home_overview_threshold_v2">0dp</dimen>
 
     <!-- Size of the maximum radius for the enforced rounded rectangles. -->
     <dimen name="enforced_rounded_corner_max_radius">16dp</dimen>
@@ -426,4 +445,8 @@
 
     <!-- State transition -->
     <item name="workspace_content_scale" format="float" type="dimen">0.97</item>
+
+    <!--  Folder spaces  -->
+    <dimen name="folder_top_padding_default">24dp</dimen>
+    <dimen name="folder_footer_horiz_padding">20dp</dimen>
 </resources>

@@ -36,6 +36,13 @@
     <!-- Recents: Title of a button that clears the task list, i.e. closes all tasks. [CHAR LIMIT=30] -->
     <string name="recents_clear_all">Clear all</string>
 
+    <!-- Recents: Title of a button that goes back from displaying tasks filtered by package name to displaying all tasks [CHAR LIMIT=30] -->
+    <string name="recents_back" translatable="false">Back</string>
+
+    <!-- TODO: b/260610444. Content description of filtering icons needs to be updated -->
+    <!-- Recents: Content description for the icon on top of taskviews to initiate filtering -->
+    <string name="recents_filter_icon_desc" translatable="false">Click to show only this app\'s tasks</string>
+
     <!-- Accessibility title for the list of recent apps [CHAR_LIMIT=none] -->
     <string name="accessibility_recent_apps">Recent apps</string>
 
@@ -187,10 +194,12 @@
     <string name="allset_title">All set!</string>
     <!-- Hint string at the bottom of "All Set" page [CHAR LIMIT=NONE] -->
     <string name="allset_hint">Swipe up to go Home</string>
-    <!-- Description of "All Set" page on phones [CHAR LIMIT=NONE] -->
-    <string name="allset_description">You\u2019re ready to start using your phone</string>
-    <!-- Description of "All Set" page on tablets [CHAR LIMIT=NONE] -->
-    <string name="allset_description_tablet">You\u2019re ready to start using your tablet</string>
+    <!-- Hint string at the bottom of "All Set" page for button navigation [CHAR LIMIT=NONE] -->
+    <string name="allset_button_hint">Tap the home button to go to your home screen</string>
+    <!-- Description of "All Set" page on the user's device [CHAR LIMIT=NONE] -->
+    <string name="allset_description_generic">You\u2019re ready to start using your <xliff:g id="device" example="Pixel 6">%1$s</xliff:g></string>
+    <!-- A default device name to use in the description of the "All Set" page [CHAR LIMIT=NONE] -->
+    <string name="default_device_name">device</string>
     <!-- String linking to navigation settings on "All Set" page [CHAR LIMIT=NONE] -->
     <string name="allset_navigation_settings"><annotation id="link">System navigation settings</annotation></string>
 
@@ -204,7 +213,7 @@
     <!-- Label for toast with instructions for split screen selection mode. [CHAR_LIMIT=50] -->
     <string name="toast_split_select_app">Tap another app to use splitscreen</string>
     <!-- Label for toast when app selected for split isn't supported. [CHAR_LIMIT=50] -->
-    <string name="toast_split_app_unsupported">App does not support split-screen.</string>
+    <string name="toast_split_app_unsupported">Choose another app to use split screen</string>
     <!-- Message shown when an action is blocked by a policy enforced by the app or the organization managing the device. [CHAR_LIMIT=NONE] -->
     <string name="blocked_by_policy">This action isn\'t allowed by the app or your organization</string>
 
@@ -222,19 +231,18 @@
     <string name="accessibility_rotate_button">Rotate screen</string>
 
     <!-- ******* Taskbar Edu ******* -->
+    <!-- Accessibility title for the taskbar education window. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_edu_a11y_title">Taskbar education</string>
     <!-- Accessibility text spoken when the taskbar education panel appears [CHAR_LIMIT=NONE] -->
     <string name="taskbar_edu_opened">Taskbar education appeared</string>
     <!-- Accessibility text spoken when the taskbar education panel disappears [CHAR_LIMIT=NONE] -->
     <string name="taskbar_edu_closed">Taskbar education closed</string>
-    <!-- Text in dialog that lets a user know how they can use the taskbar to switch apps on their device.
-         [CHAR_LIMIT=60] -->
-    <string name="taskbar_edu_switch_apps">Use the taskbar to switch apps</string>
-    <!-- Text in dialog that lets a user know how they can use the taskbar to use multiple apps at once on their device.
-         [CHAR_LIMIT=60] -->
-    <string name="taskbar_edu_splitscreen">Drag to the side to use two apps at once</string>
-    <!-- Text in dialog that lets a user know how they can hide the taskbar on their device.
-         [CHAR_LIMIT=60] -->
-    <string name="taskbar_edu_stashing">Touch &amp; hold to hide the taskbar</string>
+    <!-- Text in dialog that lets a user know how they can use the taskbar to use multiple apps at once on their device. [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_splitscreen">Drag to the side to use 2 apps at once</string>
+    <!-- Text in dialog that lets a user know how they can show the taskbar on their device. [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_stashing">Short swipe up to show the taskbar</string>
+    <!-- Text in dialog that lets a user know how the taskbar suggests apps based on their usage. [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_suggestions">The taskbar suggests apps based on your routine</string>
     <!-- Text on button to go to the next screen of a tutorial [CHAR_LIMIT=16] -->
     <string name="taskbar_edu_next">Next</string>
     <!-- Text on button to go to the previous screen of a tutorial [CHAR_LIMIT=16] -->
@@ -257,6 +265,10 @@
     <string name="taskbar_button_notifications">Notifications</string>
     <!-- Content description for quick settings button [CHAR_LIMIT=16] -->
     <string name="taskbar_button_quick_settings">Quick Settings</string>
+    <!-- Accessibility title for the taskbar window. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_a11y_title">Taskbar</string>
+    <!-- Accessibility title for the taskbar window on phones. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_phone_a11y_title">Navigation bar</string>
 
     <!-- Label for moving drop target to the top or left side of the screen, depending on orientation (from the taskbar only). -->
     <string name="move_drop_target_top_or_left">Move to top&#47;left</string>

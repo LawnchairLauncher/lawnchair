@@ -186,12 +186,17 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             case MotionEvent.ACTION_DOWN:
                 InteractionJankMonitorWrapper.begin(
                         mLauncher.getRootView(), InteractionJankMonitorWrapper.CUJ_OPEN_ALL_APPS);
+                InteractionJankMonitorWrapper.begin(
+                        mLauncher.getRootView(),
+                        InteractionJankMonitorWrapper.CUJ_CLOSE_ALL_APPS_SWIPE);
                 break;
 
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 InteractionJankMonitorWrapper.cancel(
                         InteractionJankMonitorWrapper.CUJ_OPEN_ALL_APPS);
+                InteractionJankMonitorWrapper.cancel(
+                        InteractionJankMonitorWrapper.CUJ_CLOSE_ALL_APPS_SWIPE);
                 break;
         }
         return super.onControllerInterceptTouchEvent(ev);
@@ -204,6 +209,10 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         if (newToState != ALL_APPS) {
             InteractionJankMonitorWrapper.cancel(InteractionJankMonitorWrapper.CUJ_OPEN_ALL_APPS);
         }
+        if (newToState != NORMAL) {
+            InteractionJankMonitorWrapper.cancel(
+                    InteractionJankMonitorWrapper.CUJ_CLOSE_ALL_APPS_SWIPE);
+        }
     }
 
     @Override
@@ -211,6 +220,9 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         super.onReachedFinalState(toState);
         if (toState == ALL_APPS) {
             InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_OPEN_ALL_APPS);
+        } else if (toState == NORMAL) {
+            InteractionJankMonitorWrapper.end(
+                    InteractionJankMonitorWrapper.CUJ_CLOSE_ALL_APPS_SWIPE);
         }
     }
 
@@ -218,5 +230,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     protected void clearState() {
         super.clearState();
         InteractionJankMonitorWrapper.cancel(InteractionJankMonitorWrapper.CUJ_OPEN_ALL_APPS);
+        InteractionJankMonitorWrapper.cancel(
+                InteractionJankMonitorWrapper.CUJ_CLOSE_ALL_APPS_SWIPE);
     }
 }

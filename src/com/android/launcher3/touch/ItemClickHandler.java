@@ -17,8 +17,6 @@ package com.android.launcher3.touch;
 
 import static com.android.launcher3.Launcher.REQUEST_BIND_PENDING_APPWIDGET;
 import static com.android.launcher3.Launcher.REQUEST_RECONFIGURE_APPWIDGET;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SEARCHINAPP_LAUNCH;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_BY_PUBLISHER;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
@@ -27,10 +25,8 @@ import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SA
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.Process;
@@ -56,7 +52,6 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.model.data.SearchActionItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.shortcuts.ShortcutKey;
@@ -105,8 +100,8 @@ public class ItemClickHandler {
             if (v instanceof PendingAppWidgetHostView) {
                 onClickPendingWidget((PendingAppWidgetHostView) v, launcher);
             }
-        } else if (tag instanceof SearchActionItemInfo) {
-            onClickSearchAction(launcher, (SearchActionItemInfo) tag);
+        } else if (tag instanceof ItemClickProxy) {
+            ((ItemClickProxy) tag).onItemClicked(v);
         }
     }
 
@@ -310,42 +305,6 @@ public class ItemClickHandler {
         startAppShortcutOrInfoActivity(v, shortcut, launcher);
     }
 
-    /**
-     * Event handler for a {@link SearchActionItemInfo} click
-     */
-    public static void onClickSearchAction(Launcher launcher, SearchActionItemInfo itemInfo) {
-        if (itemInfo.getIntent() != null) {
-            if (itemInfo.hasFlags(SearchActionItemInfo.FLAG_SHOULD_START_FOR_RESULT)) {
-                launcher.startActivityForResult(itemInfo.getIntent(), 0);
-            } else {
-                launcher.startActivity(itemInfo.getIntent());
-            }
-        } else if (itemInfo.getPendingIntent() != null) {
-            try {
-                PendingIntent pendingIntent = itemInfo.getPendingIntent();
-                if (!itemInfo.hasFlags(SearchActionItemInfo.FLAG_SHOULD_START)) {
-                    pendingIntent.send();
-                } else if (itemInfo.hasFlags(SearchActionItemInfo.FLAG_SHOULD_START_FOR_RESULT)) {
-                    launcher.startIntentSenderForResult(pendingIntent.getIntentSender(), 0, null, 0,
-                            0, 0);
-                } else {
-                    launcher.startIntentSender(pendingIntent.getIntentSender(), null, 0, 0, 0);
-                }
-            } catch (PendingIntent.CanceledException | IntentSender.SendIntentException e) {
-                Toast.makeText(launcher,
-                        launcher.getResources().getText(R.string.shortcut_not_available),
-                        Toast.LENGTH_SHORT).show();
-            }
-        }
-        if (itemInfo.hasFlags(SearchActionItemInfo.FLAG_SEARCH_IN_APP)) {
-            launcher.getStatsLogManager().logger().withItemInfo(itemInfo).log(
-                    LAUNCHER_ALLAPPS_SEARCHINAPP_LAUNCH);
-        } else {
-            launcher.getStatsLogManager().logger().withItemInfo(itemInfo).log(
-                    LAUNCHER_APP_LAUNCH_TAP);
-        }
-    }
-
     private static void startAppShortcutOrInfoActivity(View v, ItemInfo item, Launcher launcher) {
         TestLogging.recordEvent(
                 TestProtocol.SEQUENCE_MAIN, "start: startAppShortcutOrInfoActivity");
@@ -385,5 +344,16 @@ public class ItemClickHandler {
             FloatingIconView.fetchIcon(launcher, v, item, true /* isOpening */);
         }
         launcher.startActivitySafely(v, intent, item);
+    }
+
+    /**
+     * Interface to indicate that an item will handle the click itself.
+     */
+    public interface ItemClickProxy {
+
+        /**
+         * Called when the item is clicked
+         */
+        void onItemClicked(View view);
     }
 }

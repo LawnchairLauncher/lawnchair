@@ -21,7 +21,6 @@ import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICTION;
-import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SEARCH_RESULTS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SETTINGS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_SHORTCUTS;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_TASKSWITCHER;
@@ -39,8 +38,10 @@ import static com.android.launcher3.shortcuts.ShortcutKey.EXTRA_SHORTCUT_ID;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Process;
 import android.os.UserHandle;
+import android.provider.Settings;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -52,7 +53,6 @@ import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.AllAppsContainer;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.PredictionContainer;
-import com.android.launcher3.logger.LauncherAtom.SearchResultContainer;
 import com.android.launcher3.logger.LauncherAtom.SettingsContainer;
 import com.android.launcher3.logger.LauncherAtom.Shortcut;
 import com.android.launcher3.logger.LauncherAtom.ShortcutsContainer;
@@ -61,6 +61,7 @@ import com.android.launcher3.logger.LauncherAtom.WallpapersContainer;
 import com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.util.ContentWriter;
+import com.android.launcher3.util.SettingsCache;
 
 import java.util.Optional;
 
@@ -73,6 +74,9 @@ public class ItemInfo {
     public static final int NO_ID = -1;
     // An id that doesn't match any item, including predicted apps with have an id=NO_ID
     public static final int NO_MATCHING_ID = Integer.MIN_VALUE;
+
+    /** Hidden field Settings.Secure.NAV_BAR_KIDS_MODE */
+    private static final Uri NAV_BAR_KIDS_MODE = Settings.Secure.getUriFor("nav_bar_kids_mode");
 
     /**
      * The id in the settings database for this item
@@ -350,9 +354,11 @@ public class ItemInfo {
                 break;
             case ITEM_TYPE_TASK:
                 itemBuilder
-                        .setTask(LauncherAtom.Task.newBuilder()
-                                .setComponentName(getTargetComponent().flattenToShortString())
-                                .setIndex(screenId));
+                        .setTask(nullableComponent
+                                .map(component -> LauncherAtom.Task.newBuilder()
+                                        .setComponentName(component.flattenToShortString())
+                                        .setIndex(screenId))
+                                .orElse(LauncherAtom.Task.newBuilder()));
                 break;
             default:
                 break;
@@ -388,6 +394,9 @@ public class ItemInfo {
     protected LauncherAtom.ItemInfo.Builder getDefaultItemInfoBuilder() {
         LauncherAtom.ItemInfo.Builder itemBuilder = LauncherAtom.ItemInfo.newBuilder();
         itemBuilder.setIsWork(!Process.myUserHandle().equals(user));
+        SettingsCache settingsCache = SettingsCache.INSTANCE.getNoCreate();
+        boolean isKidsMode = settingsCache != null && settingsCache.getValue(NAV_BAR_KIDS_MODE, 0);
+        itemBuilder.setIsKidsMode(isKidsMode);
         itemBuilder.setRank(rank);
         return itemBuilder;
     }
@@ -428,10 +437,6 @@ public class ItemInfo {
                 return ContainerInfo.newBuilder()
                         .setPredictionContainer(PredictionContainer.getDefaultInstance())
                         .build();
-            case CONTAINER_SEARCH_RESULTS:
-                return ContainerInfo.newBuilder()
-                        .setSearchResultContainer(SearchResultContainer.getDefaultInstance())
-                        .build();
             case CONTAINER_SHORTCUTS:
                 return ContainerInfo.newBuilder()
                         .setShortcutsContainer(ShortcutsContainer.getDefaultInstance())
@@ -448,10 +453,12 @@ public class ItemInfo {
                 return ContainerInfo.newBuilder()
                         .setWallpapersContainer(WallpapersContainer.getDefaultInstance())
                         .build();
-            case EXTENDED_CONTAINERS:
-                return ContainerInfo.newBuilder()
-                        .setExtendedContainers(getExtendedContainer())
-                        .build();
+            default:
+                if (container <= EXTENDED_CONTAINERS) {
+                    return ContainerInfo.newBuilder()
+                            .setExtendedContainers(getExtendedContainer())
+                            .build();
+                }
         }
         return ContainerInfo.getDefaultInstance();
     }

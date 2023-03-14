@@ -116,7 +116,7 @@ public class OverviewCommandHelper {
      */
     @BinderThread
     public void addCommand(int type) {
-        if (mPendingCommands.size() > MAX_QUEUE_SIZE) {
+        if (mPendingCommands.size() >= MAX_QUEUE_SIZE) {
             return;
         }
         CommandInfo cmd = new CommandInfo(type);

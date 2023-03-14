@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import static com.android.launcher3.ButtonDropTarget.TOOLTIP_DEFAULT;
 import static com.android.launcher3.anim.AlphaUpdateListener.updateVisibility;
+import static com.android.launcher3.config.FeatureFlags.HOME_GARDENING_WORKSPACE_BUTTONS;
 
 import android.animation.TimeInterpolator;
 import android.content.Context;
@@ -118,7 +119,13 @@ public class DropTargetBar extends FrameLayout
             lp.rightMargin = (grid.widthPx - lp.width) / 2;
         }
         lp.height = grid.dropTargetBarSizePx;
-        lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
+        // TODO: Add tablet support for DropTargetBar when HOME_GARDENING_WORKSPACE_BUTTONS flag
+        //  is on
+        if (HOME_GARDENING_WORKSPACE_BUTTONS.get()) {
+            lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
+        } else {
+            lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.TOP;
+        }
 
         DeviceProfile dp = mLauncher.getDeviceProfile();
         int horizontalPadding = dp.dropTargetHorizontalPaddingPx;

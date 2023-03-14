@@ -33,7 +33,6 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
-import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 
@@ -43,19 +42,21 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
-import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.OverviewComponentObserver;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.RemoteTargetGluer;
 import com.android.quickstep.SwipeUpAnimationLogic;
 import com.android.quickstep.SwipeUpAnimationLogic.RunningWindowAnim;
+import com.android.quickstep.util.RecordingSurfaceTransaction;
 import com.android.quickstep.util.RectFSpringAnim;
+import com.android.quickstep.util.SurfaceTransaction;
+import com.android.quickstep.util.SurfaceTransaction.MockProperties;
 import com.android.quickstep.util.TransformParams;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams;
 
 @TargetApi(Build.VERSION_CODES.R)
 abstract class SwipeUpGestureTutorialController extends TutorialController {
@@ -415,21 +416,23 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
     private class FakeTransformParams extends TransformParams {
 
         @Override
-        public SurfaceParams[] createSurfaceParams(BuilderProxy proxy) {
-            SurfaceParams.Builder builder = new SurfaceParams.Builder((SurfaceControl) null);
-            proxy.onBuildTargetParams(builder, null, this);
-            return new SurfaceParams[] {builder.build()};
+        public SurfaceTransaction createSurfaceParams(BuilderProxy proxy) {
+            RecordingSurfaceTransaction transaction = new RecordingSurfaceTransaction();
+            proxy.onBuildTargetParams(transaction.mockProperties, null, this);
+            return transaction;
         }
 
         @Override
-        public void applySurfaceParams(SurfaceParams[] params) {
-            SurfaceParams p = params[0];
-            mFakeTaskView.setAnimationMatrix(p.matrix);
-            mFakePreviousTaskView.setAnimationMatrix(p.matrix);
-            mFakeTaskViewRect.set(p.windowCrop);
-            mFakeTaskViewRadius = p.cornerRadius;
-            mFakeTaskView.invalidateOutline();
-            mFakePreviousTaskView.invalidateOutline();
+        public void applySurfaceParams(SurfaceTransaction params) {
+            if (params instanceof RecordingSurfaceTransaction) {
+                MockProperties p = ((RecordingSurfaceTransaction) params).mockProperties;
+                mFakeTaskView.setAnimationMatrix(p.matrix);
+                mFakePreviousTaskView.setAnimationMatrix(p.matrix);
+                mFakeTaskViewRect.set(p.windowCrop);
+                mFakeTaskViewRadius = p.cornerRadius;
+                mFakeTaskView.invalidateOutline();
+                mFakePreviousTaskView.invalidateOutline();
+            }
         }
     }
 }

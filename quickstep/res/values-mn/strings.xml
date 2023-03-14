@@ -77,25 +77,27 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"<xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g> практик хичээл"</string>
     <string name="allset_title" msgid="5021126669778966707">"Тохируулж дууслаа!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Нүүр хуудас руу очихын тулд дээш шударна уу"</string>
-    <string name="allset_description" msgid="6350320429953234580">"Та утсаа ашиглаж эхлэхэд бэлэн боллоо"</string>
-    <string name="allset_description_tablet" msgid="7332070270570039247">"Та таблетаа ашиглаж эхлэхэд бэлэн боллоо"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"Үндсэн нүүр лүүгээ очихын тулд нүүр хуудасны товчлуурыг товшино уу"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Та <xliff:g id="DEVICE">%1$s</xliff:g>-г ашиглаж эхлэхэд бэлэн боллоо"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"төхөөрөмж"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Системийн навигацын тохиргоо"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Хуваалцах"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Дэлгэцийн агшин дарах"</string>
     <string name="action_split" msgid="2098009717623550676">"Хуваах"</string>
     <string name="toast_split_select_app" msgid="5453865907322018352">"Дэлгэц хуваахыг ашиглах бол өөр аппыг товшино уу"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"Апп дэлгэцийг хуваах горимыг дэмждэггүй."</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Дэлгэцийг хуваах горим ашиглах өөр апп сонгоно уу"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Энэ үйлдлийг апп эсвэл танай байгууллага зөвшөөрдөггүй"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Навигацын практик хичээлийг алгасах уу?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Та үүнийг дараа нь <xliff:g id="NAME">%1$s</xliff:g> аппаас олох боломжтой"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Цуцлах"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Алгасах"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Дэлгэцийг эргүүлэх"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Ажлын хэсгийн боловсрол"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Боловсролын ажлын талбар гарч ирсэн"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Боловсролын ажлын талбарыг хаасан"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Аппуудыг сэлгэхийн тулд талбарыг ашиглана уу"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Хоёр аппыг зэрэг ашиглахын тулд хажуу тал руу чирнэ үү"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Ажлын талбарыг нуухын тулд хүрээд удаан дарна уу"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"2 аппыг зэрэг ашиглахын тулд хажуу тийш чирнэ үү"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Ажлын хэсгийг харуулахын тулд бага зэрэг дээш шударна уу"</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Ажлын хэсэг таны хэвшилд тулгуурлан аппууд санал болгодог"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Дараах"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Буцах"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Хаах"</string>
@@ -107,6 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"Саяхны"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Мэдэгдэл"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Шуурхай тохиргоо"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"Ажлын хэсэг"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Навигацын самбар"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Зүүн дээд хэсэг рүү зөөх"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Баруун доод хэсэг рүү зөөх"</string>
 </resources>

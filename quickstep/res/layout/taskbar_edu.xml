@@ -40,74 +40,13 @@
             android:layout_width="match_parent"
             android:layout_height="378dp"
             app:layout_constraintTop_toTopOf="parent"
-            launcher:pageIndicator="@+id/content_page_indicator">
-
-            <LinearLayout
-                android:id="@+id/page_switch_apps"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/TextAppearance.TaskbarEdu.Title"
-                    android:text="@string/taskbar_edu_switch_apps"/>
-
-                <ImageView
-                    android:layout_width="322dp"
-                    android:layout_height="282dp"
-                    android:layout_marginTop="16dp"
-                    android:src="@drawable/taskbar_edu_switch_apps"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/page_splitscreen"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/TextAppearance.TaskbarEdu.Title"
-                    android:text="@string/taskbar_edu_splitscreen"/>
-
-                <ImageView
-                    android:layout_width="322dp"
-                    android:layout_height="282dp"
-                    android:layout_marginTop="16dp"
-                    android:src="@drawable/taskbar_edu_splitscreen"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/page_stashing"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="center_horizontal">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/TextAppearance.TaskbarEdu.Title"
-                    android:text="@string/taskbar_edu_stashing"/>
-
-                <ImageView
-                    android:layout_width="322dp"
-                    android:layout_height="282dp"
-                    android:layout_marginTop="16dp"
-                    android:src="@drawable/taskbar_edu_stashing"/>
-            </LinearLayout>
-        </com.android.launcher3.taskbar.TaskbarEduPagedView>
+            launcher:pageIndicator="@+id/content_page_indicator" />
 
         <Button
             android:id="@+id/edu_start_button"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:layout_marginBottom="92dp"
+            android:layout_marginBottom="18dp"
             android:layout_marginTop="32dp"
             app:layout_constraintTop_toBottomOf="@id/content"
             app:layout_constraintBottom_toBottomOf="parent"

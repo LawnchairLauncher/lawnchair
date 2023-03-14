@@ -15,30 +15,41 @@
 -->
 
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="80dp"
-    android:height="80dp"
-    android:viewportWidth="80"
-    android:viewportHeight="80"
-    android:theme="@style/AllAppsTheme">
-  <path
-      android:pathData="M40,0.5L40,0.5c21.8,0 39.5,17.7 39.5,39.5l0,0c0,21.8 -17.7,39.5 -39.5,39.5l0,0C18.2,79.5 0.5,61.8 0.5,40l0,0C0.5,18.2 18.2,0.5 40,0.5z"
-      android:fillColor="?attr/allAppsButtonBgColor"/>
-  <path
-      android:pathData="M26.8,32.1m-5.3,0a5.3,5.3 0,1 1,10.6 0a5.3,5.3 0,1 1,-10.6 0"
-      android:fillColor="?attr/allAppsButtonColor1"/>
-  <path
-      android:pathData="M26.8,47.9m-5.3,0a5.3,5.3 0,1 1,10.6 0a5.3,5.3 0,1 1,-10.6 0"
-      android:fillColor="?attr/allAppsButtonColor2"/>
-  <path
-      android:pathData="M40,32.1m-5.3,0a5.3,5.3 0,1 1,10.6 0a5.3,5.3 0,1 1,-10.6 0"
-      android:fillColor="?attr/allAppsButtonColor3"/>
-  <path
-      android:pathData="M40,47.9m-5.3,0a5.3,5.3 0,1 1,10.6 0a5.3,5.3 0,1 1,-10.6 0"
-      android:fillColor="?attr/allAppsButtonColor2"/>
-  <path
-      android:pathData="M53.2,32.1m-5.3,0a5.3,5.3 0,1 1,10.6 0a5.3,5.3 0,1 1,-10.6 0"
-      android:fillColor="?attr/allAppsButtonColor4"/>
-  <path
-      android:pathData="M53.2,47.9m-5.3,0a5.3,5.3 0,1 1,10.6 0a5.3,5.3 0,1 1,-10.6 0"
-      android:fillColor="?attr/allAppsButtonColor2"/>
+    android:width="29dp"
+    android:height="28dp"
+    android:viewportWidth="29"
+    android:viewportHeight="28">
+  <group
+      android:pivotY="14.5"
+      android:pivotX="22"
+      android:scaleX=".50"
+      android:scaleY=".50">
+    <path
+        android:pathData="M4 7C3.0375 7 2.215 6.65 1.5325 5.9675C0.85 5.285 0.5 4.4625 0.5 3.5C0.5 2.5375 0.85 1.715 1.5325 1.0325C2.215 0.35 3.0375 0 4 0C4.9625 0 5.785 0.35 6.4675 1.0325C7.15 1.715 7.5 2.5375 7.5 3.5C7.5 4.4625 7.15 5.285 6.4675 5.9675C5.785 6.65 4.9625 7 4 7Z"
+        android:fillColor="@color/all_apps_button_color"/>
+    <path
+        android:pathData="M14.5 7C13.5375 7 12.715 6.65 12.0325 5.9675C11.35 5.285 11 4.4625 11 3.5C11 2.5375 11.35 1.715 12.0325 1.0325C12.715 0.35 13.5375 0 14.5 0C15.4625 0 16.285 0.35 16.9675 1.0325C17.65 1.715 18 2.5375 18 3.5C18 4.4625 17.65 5.285 16.9675 5.9675C16.285 6.65 15.4625 7 14.5 7Z"
+        android:fillColor="@color/all_apps_button_color"/>
+    <path
+        android:pathData="M25 7C24.0375 7 23.215 6.65 22.5325 5.9675C21.85 5.285 21.5 4.4625 21.5 3.5C21.5 2.5375 21.85 1.715 22.5325 1.0325C23.215 0.35 24.0375 0 25 0C25.9625 0 26.785 0.35 27.4675 1.0325C28.15 1.715 28.5 2.5375 28.5 3.5C28.5 4.4625 28.15 5.285 27.4675 5.9675C26.785 6.65 25.9625 7 25 7Z"
+        android:fillColor="@color/all_apps_button_color"/>
+    <path
+        android:pathData="M4 17.5C3.0375 17.5 2.215 17.15 1.5325 16.4675C0.85 15.785 0.5 14.9625 0.5 14C0.5 13.0375 0.85 12.215 1.5325 11.5325C2.215 10.85 3.0375 10.5 4 10.5C4.9625 10.5 5.785 10.85 6.4675 11.5325C7.15 12.215 7.5 13.0375 7.5 14C7.5 14.9625 7.15 15.785 6.4675 16.4675C5.785 17.15 4.9625 17.5 4 17.5Z"
+        android:fillColor="@color/all_apps_button_color"/>
+    <path
+        android:pathData="M14.5 17.5C13.5375 17.5 12.715 17.15 12.0325 16.4675C11.35 15.785 11 14.9625 11 14C11 13.0375 11.35 12.215 12.0325 11.5325C12.715 10.85 13.5375 10.5 14.5 10.5C15.4625 10.5 16.285 10.85 16.9675 11.5325C17.65 12.215 18 13.0375 18 14C18 14.9625 17.65 15.785 16.9675 16.4675C16.285 17.15 15.4625 17.5 14.5 17.5Z"
+        android:fillColor="@color/all_apps_button_color"/>
+    <path
+        android:pathData="M25 17.5C24.0375 17.5 23.215 17.15 22.5325 16.4675C21.85 15.785 21.5 14.9625 21.5 14C21.5 13.0375 21.85 12.215 22.5325 11.5325C23.215 10.85 24.0375 10.5 25 10.5C25.9625 10.5 26.785 10.85 27.4675 11.5325C28.15 12.215 28.5 13.0375 28.5 14C28.5 14.9625 28.15 15.785 27.4675 16.4675C26.785 17.15 25.9625 17.5 25 17.5Z"
+        android:fillColor="@color/all_apps_button_color"/>
+    <path
+        android:pathData="M4 28C3.0375 28 2.215 27.65 1.5325 26.9675C0.85 26.285 0.5 25.4625 0.5 24.5C0.5 23.5375 0.85 22.715 1.5325 22.0325C2.215 21.35 3.0375 21 4 21C4.9625 21 5.785 21.35 6.4675 22.0325C7.15 22.715 7.5 23.5375 7.5 24.5C7.5 25.4625 7.15 26.285 6.4675 26.9675C5.785 27.65 4.9625 28 4 28Z"
+        android:fillColor="@color/all_apps_button_color"/>
+    <path
+        android:pathData="M14.5 28C13.5375 28 12.715 27.65 12.0325 26.9675C11.35 26.285 11 25.4625 11 24.5C11 23.5375 11.35 22.715 12.0325 22.0325C12.715 21.35 13.5375 21 14.5 21C15.4625 21 16.285 21.35 16.9675 22.0325C17.65 22.715 18 23.5375 18 24.5C18 25.4625 17.65 26.285 16.9675 26.9675C16.285 27.65 15.4625 28 14.5 28Z"
+        android:fillColor="@color/all_apps_button_color"/>
+    <path
+        android:pathData="M25 28C24.0375 28 23.215 27.65 22.5325 26.9675C21.85 26.285 21.5 25.4625 21.5 24.5C21.5 23.5375 21.85 22.715 22.5325 22.0325C23.215 21.35 24.0375 21 25 21C25.9625 21 26.785 21.35 27.4675 22.0325C28.15 22.715 28.5 23.5375 28.5 24.5C28.5 25.4625 28.15 26.285 27.4675 26.9675C26.785 27.65 25.9625 28 25 28Z"
+        android:fillColor="@color/all_apps_button_color"/>
+  </group>
 </vector>

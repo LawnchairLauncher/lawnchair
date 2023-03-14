@@ -77,25 +77,27 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ٹیوٹوریل <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"سب کچھ تیار ہے!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"ہوم پر جانے کے لیے اوپر سوائپ کریں"</string>
-    <string name="allset_description" msgid="6350320429953234580">"آپ اپنا فون استعمال شروع کرنے کے لیے تیار ہیں"</string>
-    <string name="allset_description_tablet" msgid="7332070270570039247">"آپ اپنے ٹیبلیٹ کا استعمال شروع کرنے کے لیے تیار ہیں"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"اپنی ہوم اسکرین پر جانے کے لیے ہوم بٹن پر تھپتھپائیں"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"آپ اپنے <xliff:g id="DEVICE">%1$s</xliff:g> کا استعمال شروع کرنے کے لیے تیار ہیں"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"آلہ"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"سسٹم نیویگیشن کی ترتیبات"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"اشتراک کریں"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"اسکرین شاٹ"</string>
     <string name="action_split" msgid="2098009717623550676">"اسپلٹ"</string>
     <string name="toast_split_select_app" msgid="5453865907322018352">"اسپلٹ اسکرین کا استعمال کرنے کیلئے دوسری ایپ پر تھپتھپائیں"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"ایپ سپلٹ اسکرین کو سپورٹ نہیں کرتی۔"</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"اسپلٹ اسکرین کے استعمال کیلئے دوسری ایپ منتخب کریں"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ایپ یا آپ کی تنظیم کی جانب سے اس کارروائی کی اجازت نہیں ہے"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"نیویگیشن کا ٹیوٹوریل نظر انداز کریں؟"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"آپ اسے بعد میں <xliff:g id="NAME">%1$s</xliff:g> ایپ میں تلاش کر سکتے ہیں"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"منسوخ کریں"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"نظر انداز کریں"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"اسکرین کو گھمائیں"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"ٹاسک بار کی تعلیم"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ٹاکس بار کا تعلیمی پینل ظاہر ہو گیا"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ٹاسک بار کا تعلیمی پینل بند ہو گیا"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ایپس کو سوئچ کرنے کیلئے ٹاسک بار کا استعمال کریں"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"ایک وقت میں دو ایپس استعمال کرنے کے لیے سائیڈ پر گھسیٹیں"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ٹاسک بار کو کسی بھی وقت چھپانے کیلئے ٹچ کریں اور دبائے رکھیں"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"ایک وقت میں 2 ایپس استعمال کرنے کے لیے سائیڈ پر گھسیٹیں"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"ٹاسک بار دکھانے کے لیے تھوڑا اوپر سوائپ کریں"</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"ٹاسک بار آپ کی روٹین کی بنیاد پر ایپس تجویز کرتا ہے"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"آگے"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"پیچھے"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"بند کریں"</string>
@@ -107,6 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"حالیہ"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"اطلاعات"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"فوری ترتیبات"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"ٹاسک بار"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"نیویگیشن بار"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"اوپر/بائیں طرف منتقل کریں"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"نیچے/دائیں طرف منتقل کریں"</string>
 </resources>

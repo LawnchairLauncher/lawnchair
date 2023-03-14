@@ -21,6 +21,9 @@ import android.content.pm.ShortcutInfo;
 
 import com.android.launcher3.Utilities;
 
+/**
+ * A wrapper for the hidden API calls
+ */
 public class ApiWrapper {
 
     public static final boolean TASKBAR_DRAWN_IN_PROCESS = false;

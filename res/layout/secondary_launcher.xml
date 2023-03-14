@@ -42,8 +42,7 @@
         android:contentDescription="@string/all_apps_button_label"
         android:onClick="onAppsButtonClicked" />
 
-    <view
-        class="com.android.launcher3.allapps.SecondaryLauncherAllAppsContainerView"
+    <com.android.launcher3.allapps.SecondaryLauncherAllAppsContainerView
         android:id="@+id/apps_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -53,57 +52,5 @@
         android:saveEnabled="false"
         android:layout_gravity="bottom|end"
         android:background="@drawable/round_rect_primary"
-        android:visibility="invisible" >
-
-        <include
-            layout="@layout/all_apps_bottom_sheet_background"
-            android:visibility="gone" />
-
-        <include
-            layout="@layout/search_results_rv_layout"
-            android:visibility="gone" />
-
-        <include
-            layout="@layout/all_apps_rv_layout"
-            android:visibility="gone" />
-
-        <com.android.launcher3.allapps.FloatingHeaderView
-            android:id="@+id/all_apps_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/search_container_all_apps"
-            android:clipToPadding="false"
-            android:paddingTop="@dimen/all_apps_header_top_padding"
-            android:orientation="vertical" >
-
-            <include layout="@layout/floating_header_content" />
-            <include layout="@layout/all_apps_personal_work_tabs" />
-        </com.android.launcher3.allapps.FloatingHeaderView>
-
-        <com.android.launcher3.allapps.search.AppsSearchContainerLayout
-            android:id="@id/search_container_all_apps"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/all_apps_search_bar_field_height"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="top|center_horizontal"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/bg_all_apps_searchbox"
-            android:elevation="1dp"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            android:hint="@string/all_apps_search_bar_hint"
-            android:imeOptions="actionSearch|flagNoExtractUi"
-            android:importantForAutofill="no"
-            android:inputType="text|textNoSuggestions|textCapWords"
-            android:maxLines="1"
-            android:padding="8dp"
-            android:saveEnabled="false"
-            android:scrollHorizontally="true"
-            android:singleLine="true"
-            android:textColor="?android:attr/textColorSecondary"
-            android:textColorHint="@drawable/all_apps_search_hint"
-            android:textSize="16sp" />
-
-        <include layout="@layout/all_apps_fast_scroller" />
-    </view>
+        android:visibility="invisible" />
 </com.android.launcher3.secondarydisplay.SecondaryDragLayer>

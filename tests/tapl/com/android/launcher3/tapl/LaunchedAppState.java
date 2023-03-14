@@ -17,7 +17,9 @@
 package com.android.launcher3.tapl;
 
 import static com.android.launcher3.tapl.LauncherInstrumentation.TASKBAR_RES_ID;
+import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_DISABLE_BLOCK_TIMEOUT;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_DISABLE_MANUAL_TASKBAR_STASHING;
+import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_ENABLE_BLOCK_TIMEOUT;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_ENABLE_MANUAL_TASKBAR_STASHING;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_STASHED_TASKBAR_HEIGHT;
 
@@ -55,7 +57,7 @@ public final class LaunchedAppState extends Background {
     public Taskbar getTaskbar() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to get the taskbar")) {
-            mLauncher.waitForLauncherObject(TASKBAR_RES_ID);
+            mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID);
 
             return new Taskbar(mLauncher);
         }
@@ -67,7 +69,17 @@ public final class LaunchedAppState extends Background {
     public void assertTaskbarHidden() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "waiting for taskbar to be hidden")) {
-            mLauncher.waitUntilLauncherObjectGone(TASKBAR_RES_ID);
+            mLauncher.waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
+        }
+    }
+
+    /**
+     * Waits for the taskbar to be visible, or fails.
+     */
+    public void assertTaskbarVisible() {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "waiting for taskbar to be visible")) {
+            mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID);
         }
     }
 
@@ -78,11 +90,12 @@ public final class LaunchedAppState extends Background {
      */
     public Taskbar showTaskbar() {
         mLauncher.getTestInfo(REQUEST_ENABLE_MANUAL_TASKBAR_STASHING);
+        mLauncher.getTestInfo(REQUEST_ENABLE_BLOCK_TIMEOUT);
 
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                      "want to show the taskbar")) {
-            mLauncher.waitUntilLauncherObjectGone(TASKBAR_RES_ID);
+            mLauncher.waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
 
             final long downTime = SystemClock.uptimeMillis();
             final int unstashTargetY = mLauncher.getRealDisplaySize().y
@@ -96,7 +109,7 @@ public final class LaunchedAppState extends Background {
             LauncherInstrumentation.log("showTaskbar: sent down");
 
             try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("pressed down")) {
-                mLauncher.waitForLauncherObject(TASKBAR_RES_ID);
+                mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID);
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_UP, unstashTarget,
                         LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER);
 
@@ -104,6 +117,7 @@ public final class LaunchedAppState extends Background {
             }
         } finally {
             mLauncher.getTestInfo(REQUEST_DISABLE_MANUAL_TASKBAR_STASHING);
+            mLauncher.getTestInfo(REQUEST_DISABLE_BLOCK_TIMEOUT);
         }
     }
 

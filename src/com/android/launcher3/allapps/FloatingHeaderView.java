@@ -17,7 +17,6 @@ package com.android.launcher3.allapps;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.ArrayMap;
@@ -85,7 +84,6 @@ public class FloatingHeaderView extends LinearLayout implements
     // These two values are necessary to ensure that the header protection is drawn correctly.
     private final int mTabsAdditionalPaddingTop;
     private final int mTabsAdditionalPaddingBottom;
-    private boolean mHeaderProtectionSupported;
 
     protected ViewGroup mTabLayout;
     private AllAppsRecyclerView mMainRV;
@@ -115,7 +113,6 @@ public class FloatingHeaderView extends LinearLayout implements
     // enabled or disabled, and represent the current set of all rows.
     private FloatingHeaderRow[] mAllRows = FloatingHeaderRow.NO_ROWS;
 
-
     public FloatingHeaderView(@NonNull Context context) {
         this(context, null);
     }
@@ -126,15 +123,6 @@ public class FloatingHeaderView extends LinearLayout implements
                 .getDimensionPixelSize(R.dimen.all_apps_header_top_adjustment);
         mTabsAdditionalPaddingBottom = context.getResources()
                 .getDimensionPixelSize(R.dimen.all_apps_header_bottom_adjustment);
-        mHeaderProtectionSupported = context.getResources().getBoolean(
-                R.bool.config_header_protection_supported);
-    }
-
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mHeaderProtectionSupported = getContext().getResources().getBoolean(
-                R.bool.config_header_protection_supported);
     }
 
     @Override
@@ -364,6 +352,10 @@ public class FloatingHeaderView extends LinearLayout implements
         onHeightUpdated();
     }
 
+    public int getClipTop() {
+        return mHeaderClip.top;
+    }
+
     public void reset(boolean animate) {
         if (mAnimator.isStarted()) {
             mAnimator.cancel();
@@ -406,10 +398,6 @@ public class FloatingHeaderView extends LinearLayout implements
         return mFloatingRowsHeight;
     }
 
-    int getTabsAdditionalPaddingTop() {
-        return mTabsAdditionalPaddingTop;
-    }
-
     int getTabsAdditionalPaddingBottom() {
         return mTabsAdditionalPaddingBottom;
     }
@@ -450,10 +438,6 @@ public class FloatingHeaderView extends LinearLayout implements
         p.y = getTop() - mCurrentRV.getTop() - ((ViewGroup) mCurrentRV.getParent()).getTop();
     }
 
-    public boolean isHeaderProtectionSupported() {
-        return mHeaderProtectionSupported;
-    }
-
     @Override
     public boolean hasOverlappingRendering() {
         return false;
@@ -479,10 +463,6 @@ public class FloatingHeaderView extends LinearLayout implements
      * Returns visible height of FloatingHeaderView contents requiring header protection
      */
     int getPeripheralProtectionHeight() {
-        if (!mHeaderProtectionSupported) {
-            return 0;
-        }
-
         // we only want to show protection when work tab is available and header is either
         // collapsed or animating to/from collapsed state
         if (mTabsHidden || mFloatingRowsCollapsed || !mHeaderCollapsed) {

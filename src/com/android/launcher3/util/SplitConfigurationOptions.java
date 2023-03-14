@@ -100,6 +100,7 @@ public final class SplitConfigurationOptions {
      * with the same name/functionality in wm.shell.util (which launcher3 cannot be built against)
      *
      * If you make changes here, consider making the same changes there
+     * TODO(b/254378592): We really need to consolidate this
      */
     public static class SplitBounds {
         public final Rect leftTopBounds;
@@ -180,5 +181,13 @@ public final class SplitConfigurationOptions {
         return position == STAGE_POSITION_TOP_OR_LEFT
                 ? LAUNCHER_APP_ICON_MENU_SPLIT_LEFT_TOP
                 : LAUNCHER_APP_ICON_MENU_SPLIT_RIGHT_BOTTOM;
+    }
+
+    public static @StagePosition int getOppositeStagePosition(@StagePosition int position) {
+        if (position == STAGE_POSITION_UNDEFINED) {
+            return position;
+        }
+        return position == STAGE_POSITION_TOP_OR_LEFT ? STAGE_POSITION_BOTTOM_OR_RIGHT
+                : STAGE_POSITION_TOP_OR_LEFT;
     }
 }

@@ -17,9 +17,5 @@
 -->
 
 <resources>
-    <color name="all_apps_button_bg_color">#2E3132</color>
-    <color name="all_apps_button_color_1">#33B9DB</color>
-    <color name="all_apps_button_color_2">#EFFBFF</color>
-    <color name="all_apps_button_color_3">#B1EBFF</color>
-    <color name="all_apps_button_color_4">#DEE0FF</color>
+    <color name="all_apps_button_color">#BFC8CC</color>
 </resources>

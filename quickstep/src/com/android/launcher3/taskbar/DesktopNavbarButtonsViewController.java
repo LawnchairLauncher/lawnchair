@@ -18,6 +18,8 @@ package com.android.launcher3.taskbar;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_NOTIFICATIONS;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_QUICK_SETTINGS;
 
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -31,6 +33,8 @@ public class DesktopNavbarButtonsViewController extends NavbarButtonsViewControl
     private final TaskbarActivityContext mContext;
     private final FrameLayout mNavButtonsView;
     private final ViewGroup mNavButtonContainer;
+    private final ViewGroup mStartContextualContainer;
+    private final View mAllAppsButton;
 
     private TaskbarControllers mControllers;
 
@@ -40,6 +44,12 @@ public class DesktopNavbarButtonsViewController extends NavbarButtonsViewControl
         mContext = context;
         mNavButtonsView = navButtonsView;
         mNavButtonContainer = mNavButtonsView.findViewById(R.id.end_nav_buttons);
+        mStartContextualContainer = mNavButtonsView.findViewById(R.id.start_contextual_buttons);
+        mAllAppsButton = LayoutInflater.from(context)
+                .inflate(R.layout.taskbar_all_apps_button, mStartContextualContainer, false);
+        mAllAppsButton.setOnClickListener((View v) -> {
+            mControllers.taskbarAllAppsController.show();
+        });
     }
 
     /**
@@ -57,6 +67,8 @@ public class DesktopNavbarButtonsViewController extends NavbarButtonsViewControl
         addButton(R.drawable.ic_sysbar_notifications, BUTTON_NOTIFICATIONS,
                 mNavButtonContainer, mControllers.navButtonController,
                 R.id.notifications_button);
+        // All apps button
+        mStartContextualContainer.addView(mAllAppsButton);
     }
 
     /** Cleans up on destroy */

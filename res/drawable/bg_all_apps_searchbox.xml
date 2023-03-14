@@ -15,5 +15,6 @@
 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <solid android:color="?attr/popupColorPrimary" />
-    <corners android:radius="2dp" />
+    <corners android:radius="@dimen/rounded_button_radius" />
+    <stroke android:color="?attr/allappsHeaderProtectionColor" android:width=".5dp" />
 </shape>

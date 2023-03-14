@@ -36,6 +36,7 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.AppWidgetsRestoredReceiver;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
@@ -47,6 +48,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LogConfig;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import java.io.InvalidObjectException;
 import java.util.Arrays;
@@ -85,7 +87,7 @@ public class RestoreDbTask {
 
         // Set is pending to false irrespective of the result, so that it doesn't get
         // executed again.
-        Utilities.getPrefs(context).edit().remove(RESTORED_DEVICE_TYPE).commit();
+        LauncherPrefs.getPrefs(context).edit().remove(RESTORED_DEVICE_TYPE).commit();
 
         idp.reinitializeAfterRestore(context);
     }
@@ -238,7 +240,7 @@ public class RestoreDbTask {
         }
 
         // If restored from a single display backup, remove gaps between screenIds
-        if (Utilities.getPrefs(context).getInt(RESTORED_DEVICE_TYPE, TYPE_PHONE)
+        if (LauncherPrefs.getPrefs(context).getInt(RESTORED_DEVICE_TYPE, TYPE_PHONE)
                 != TYPE_MULTI_DISPLAY) {
             removeScreenIdGaps(db);
         }
@@ -337,7 +339,7 @@ public class RestoreDbTask {
     }
 
     public static boolean isPending(Context context) {
-        return Utilities.getPrefs(context).contains(RESTORED_DEVICE_TYPE);
+        return LauncherPrefs.getPrefs(context).contains(RESTORED_DEVICE_TYPE);
     }
 
     /**
@@ -345,17 +347,20 @@ public class RestoreDbTask {
      */
     public static void setPending(Context context) {
         FileLog.d(TAG, "Restore data received through full backup ");
-        Utilities.getPrefs(context).edit()
+        LauncherPrefs.getPrefs(context).edit()
                 .putInt(RESTORED_DEVICE_TYPE, new DeviceGridState(context).getDeviceType())
                 .commit();
     }
 
     private void restoreAppWidgetIdsIfExists(Context context) {
-        SharedPreferences prefs = Utilities.getPrefs(context);
+        SharedPreferences prefs = LauncherPrefs.getPrefs(context);
         if (prefs.contains(APPWIDGET_OLD_IDS) && prefs.contains(APPWIDGET_IDS)) {
+            LauncherWidgetHolder holder = LauncherWidgetHolder.newInstance(context);
             AppWidgetsRestoredReceiver.restoreAppWidgetIds(context,
                     IntArray.fromConcatString(prefs.getString(APPWIDGET_OLD_IDS, "")).toArray(),
-                    IntArray.fromConcatString(prefs.getString(APPWIDGET_IDS, "")).toArray());
+                    IntArray.fromConcatString(prefs.getString(APPWIDGET_IDS, "")).toArray(),
+                    holder);
+            holder.destroy();
         } else {
             FileLog.d(TAG, "No app widget ids to restore.");
         }
@@ -366,7 +371,7 @@ public class RestoreDbTask {
 
     public static void setRestoredAppWidgetIds(Context context, @NonNull int[] oldIds,
             @NonNull int[] newIds) {
-        Utilities.getPrefs(context).edit()
+        LauncherPrefs.getPrefs(context).edit()
                 .putString(APPWIDGET_OLD_IDS, IntArray.wrap(oldIds).toConcatString())
                 .putString(APPWIDGET_IDS, IntArray.wrap(newIds).toConcatString())
                 .commit();

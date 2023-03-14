@@ -32,6 +32,7 @@ import com.android.launcher3.util.ScrollableLayoutManager;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * The grid view adapter of all the apps.
@@ -43,6 +44,32 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
 
     public static final String TAG = "AppsGridAdapter";
     private final AppsGridLayoutManager mGridLayoutMgr;
+    private final CopyOnWriteArrayList<OnLayoutCompletedListener> mOnLayoutCompletedListeners =
+            new CopyOnWriteArrayList<>();
+
+    /**
+     * Listener for {@link RecyclerView.LayoutManager#onLayoutCompleted(RecyclerView.State)}
+     */
+    public interface OnLayoutCompletedListener {
+        void onLayoutCompleted();
+    }
+
+    /**
+     * Adds a {@link OnLayoutCompletedListener} to receive a callback when {@link
+     * RecyclerView.LayoutManager#onLayoutCompleted(RecyclerView.State)} is called
+     */
+    public void addOnLayoutCompletedListener(OnLayoutCompletedListener listener) {
+        mOnLayoutCompletedListeners.add(listener);
+    }
+
+    /**
+     * Removes a {@link OnLayoutCompletedListener} to not receive a callback when {@link
+     * RecyclerView.LayoutManager#onLayoutCompleted(RecyclerView.State)} is called
+     */
+    public void removeOnLayoutCompletedListener(OnLayoutCompletedListener listener) {
+        mOnLayoutCompletedListeners.remove(listener);
+    }
+
 
     public AllAppsGridAdapter(T activityContext, LayoutInflater inflater,
             AlphabeticalAppsList apps, BaseAdapterProvider[] adapterProviders) {
@@ -133,6 +160,14 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
         }
 
         @Override
+        public void onLayoutCompleted(RecyclerView.State state) {
+            super.onLayoutCompleted(state);
+            for (OnLayoutCompletedListener listener : mOnLayoutCompletedListeners) {
+                listener.onLayoutCompleted();
+            }
+        }
+
+        @Override
         protected int incrementTotalHeight(Adapter adapter, int position, int heightUntilLastPos) {
             AllAppsGridAdapter.AdapterItem item = mApps.getAdapterItems().get(position);
             // only account for the first icon in the row since they are the same size within a row
@@ -168,8 +203,12 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
 
         @Override
         public int getSpanSize(int position) {
-            int viewType = mApps.getAdapterItems().get(position).viewType;
             int totalSpans = mGridLayoutMgr.getSpanCount();
+            List<AdapterItem> items = mApps.getAdapterItems();
+            if (position >= items.size()) {
+                return totalSpans;
+            }
+            int viewType = items.get(position).viewType;
             if (isIconViewType(viewType)) {
                 return totalSpans / mAppsPerRow;
             } else {

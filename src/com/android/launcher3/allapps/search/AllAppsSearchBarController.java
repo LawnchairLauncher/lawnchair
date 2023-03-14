@@ -15,9 +15,6 @@
  */
 package com.android.launcher3.allapps.search;
 
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_FOCUSED_ITEM_SELECTED_WITH_IME;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_QUICK_SEARCH_WITH_IME;
-
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -70,7 +67,7 @@ public class AllAppsSearchBarController
         mInput.addTextChangedListener(this);
         mInput.setOnEditorActionListener(this);
         mInput.setOnBackKeyListener(this);
-        mInput.setOnFocusChangeListener(this);
+        mInput.addOnFocusChangeListener(this);
         mSearchAlgorithm = searchAlgorithm;
     }
 
@@ -84,7 +81,10 @@ public class AllAppsSearchBarController
         mTextConversions = extractTextConversions(s);
     }
 
-    private static String[] extractTextConversions(CharSequence text) {
+    /**
+     * Extract text conversions from composing text and send them for search.
+     */
+    public static String[] extractTextConversions(CharSequence text) {
         if (text instanceof SpannableStringBuilder) {
             SpannableStringBuilder spanned = (SpannableStringBuilder) text;
             SuggestionSpan[] suggestionSpans =
@@ -122,10 +122,6 @@ public class AllAppsSearchBarController
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
         if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_GO) {
-            mLauncher.getStatsLogManager().logger()
-                    .log(actionId == EditorInfo.IME_ACTION_SEARCH
-                            ? LAUNCHER_ALLAPPS_QUICK_SEARCH_WITH_IME
-                            : LAUNCHER_ALLAPPS_FOCUSED_ITEM_SELECTED_WITH_IME);
             // selectFocusedView should return SearchTargetEvent that is passed onto onClick
             return mLauncher.getAppsView().getMainAdapterProvider().launchHighlightedItem();
         }
@@ -157,6 +153,7 @@ public class AllAppsSearchBarController
         mCallback.clearSearchResult();
         mInput.reset();
         mQuery = null;
+        mInput.removeOnFocusChangeListener(this);
     }
 
     /**

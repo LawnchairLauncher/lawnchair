@@ -50,7 +50,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.graphics.LauncherPreviewRenderer.PreviewContext;
 import com.android.launcher3.model.BgDataModel;
-import com.android.launcher3.model.GridSizeMigrationTaskV2;
+import com.android.launcher3.model.GridSizeMigrationUtil;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.RunnableList;
@@ -241,10 +241,10 @@ public class PreviewSurfaceRenderer {
 
     @WorkerThread
     private boolean doGridMigrationIfNecessary() {
-        if (!GridSizeMigrationTaskV2.needsToMigrate(mContext, mIdp)) {
+        if (!GridSizeMigrationUtil.needsToMigrate(mContext, mIdp)) {
             return false;
         }
-        return GridSizeMigrationTaskV2.migrateGridIfNeeded(mContext, mIdp);
+        return GridSizeMigrationUtil.migrateGridIfNeeded(mContext, mIdp);
     }
 
     @UiThread

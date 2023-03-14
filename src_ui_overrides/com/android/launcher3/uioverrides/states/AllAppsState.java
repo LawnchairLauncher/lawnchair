@@ -20,11 +20,11 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAP
 
 import android.content.Context;
 
-import com.android.launcher3.DeviceProfile.DeviceProfileListenable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.views.ActivityContext;
 
 /**
  * Definition for AllApps state
@@ -40,7 +40,7 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
-    public <DEVICE_PROFILE_CONTEXT extends Context & DeviceProfileListenable>
+    public <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
     int getTransitionDuration(DEVICE_PROFILE_CONTEXT context, boolean isToState) {
         return isToState
                 ? context.getDeviceProfile().allAppsOpenDuration

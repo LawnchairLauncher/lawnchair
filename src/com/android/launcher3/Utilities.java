@@ -26,20 +26,12 @@ import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.Person;
 import android.app.WallpaperManager;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.database.ContentObserver;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
@@ -51,7 +43,6 @@ import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Build.VERSION_CODES;
 import android.os.DeadObjectException;
@@ -71,27 +62,22 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
-import android.widget.LinearLayout;
 
 import androidx.annotation.ChecksSdkIntAtLeast;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.dragndrop.FolderAdaptiveIcon;
-import com.android.launcher3.graphics.GridCustomizationsProvider;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.icons.ShortcutCachingLogic;
 import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
-import com.android.launcher3.model.data.SearchActionItemInfo;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
 import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.IntArray;
-import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
@@ -100,10 +86,8 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -117,8 +101,6 @@ public final class Utilities {
     private static final Pattern sTrimPattern =
             Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
 
-    private static final int[] sLoc0 = new int[2];
-    private static final int[] sLoc1 = new int[2];
     private static final Matrix sMatrix = new Matrix();
     private static final Matrix sInverseMatrix = new Matrix();
 
@@ -167,14 +149,6 @@ public final class Utilities {
                         Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0;
     }
 
-    // An intent extra to indicate the horizontal scroll of the wallpaper.
-    public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
-    public static final String EXTRA_WALLPAPER_FLAVOR = "com.android.launcher3.WALLPAPER_FLAVOR";
-
-    // An intent extra to indicate the launch source by launcher.
-    public static final String EXTRA_WALLPAPER_LAUNCH_SOURCE =
-            "com.android.wallpaper.LAUNCH_SOURCE";
-
     public static boolean IS_RUNNING_IN_TEST_HARNESS =
                     ActivityManager.isRunningInTestHarness();
 
@@ -184,12 +158,6 @@ public final class Utilities {
 
     public static boolean isPropertyEnabled(String propertyName) {
         return Log.isLoggable(propertyName, Log.VERBOSE);
-    }
-
-    public static boolean existsStyleWallpapers(Context context) {
-        ResolveInfo ri = context.getPackageManager().resolveActivity(
-                PackageManagerHelper.getStyleWallpapersIntent(context), 0);
-        return ri != null;
     }
 
     /**
@@ -305,9 +273,9 @@ public final class Utilities {
      * Sets {@param out} to be same as {@param in} by rounding individual values
      */
     public static void roundArray(float[] in, int[] out) {
-       for (int i = 0; i < in.length; i++) {
-           out[i] = Math.round(in[i]);
-       }
+        for (int i = 0; i < in.length; i++) {
+            out[i] = Math.round(in[i]);
+        }
     }
 
     public static void offsetPoints(float[] points, float offsetX, float offsetY) {
@@ -328,80 +296,8 @@ public final class Utilities {
                 localY < (v.getHeight() + slop);
     }
 
-    public static int[] getCenterDeltaInScreenSpace(View v0, View v1) {
-        v0.getLocationInWindow(sLoc0);
-        v1.getLocationInWindow(sLoc1);
-
-        sLoc0[0] += (v0.getMeasuredWidth() * v0.getScaleX()) / 2;
-        sLoc0[1] += (v0.getMeasuredHeight() * v0.getScaleY()) / 2;
-        sLoc1[0] += (v1.getMeasuredWidth() * v1.getScaleX()) / 2;
-        sLoc1[1] += (v1.getMeasuredHeight() * v1.getScaleY()) / 2;
-        return new int[] {sLoc1[0] - sLoc0[0], sLoc1[1] - sLoc0[1]};
-    }
-
-    /**
-     * Helper method to set rectOut with rectFSrc.
-     */
-    public static void setRect(RectF rectFSrc, Rect rectOut) {
-        rectOut.left = (int) rectFSrc.left;
-        rectOut.top = (int) rectFSrc.top;
-        rectOut.right = (int) rectFSrc.right;
-        rectOut.bottom = (int) rectFSrc.bottom;
-    }
-
     public static void scaleRectFAboutCenter(RectF r, float scale) {
-        scaleRectFAboutPivot(r, scale, r.centerX(), r.centerY());
-    }
-
-    public static void scaleRectFAboutPivot(RectF r, float scale, float px, float py) {
-        if (scale != 1.0f) {
-            r.offset(-px, -py);
-            r.left = r.left * scale;
-            r.top = r.top * scale ;
-            r.right = r.right * scale;
-            r.bottom = r.bottom * scale;
-            r.offset(px, py);
-        }
-    }
-
-    public static void scaleRectAboutCenter(Rect r, float scale) {
-        if (scale != 1.0f) {
-            int cx = r.centerX();
-            int cy = r.centerY();
-            r.offset(-cx, -cy);
-            scaleRect(r, scale);
-            r.offset(cx, cy);
-        }
-    }
-
-    public static void scaleRect(Rect r, float scale) {
-        if (scale != 1.0f) {
-            r.left = (int) (r.left * scale + 0.5f);
-            r.top = (int) (r.top * scale + 0.5f);
-            r.right = (int) (r.right * scale + 0.5f);
-            r.bottom = (int) (r.bottom * scale + 0.5f);
-        }
-    }
-
-    public static void insetRect(Rect r, Rect insets) {
-        r.left = Math.min(r.right, r.left + insets.left);
-        r.top = Math.min(r.bottom, r.top + insets.top);
-        r.right = Math.max(r.left, r.right - insets.right);
-        r.bottom = Math.max(r.top, r.bottom - insets.bottom);
-    }
-
-    public static float shrinkRect(Rect r, float scaleX, float scaleY) {
-        float scale = Math.min(Math.min(scaleX, scaleY), 1.0f);
-        if (scale < 1.0f) {
-            int deltaX = (int) (r.width() * (scaleX - scale) * 0.5f);
-            r.left += deltaX;
-            r.right -= deltaX;
-
-            int deltaY = (int) (r.height() * (scaleY - scale) * 0.5f);
-            r.top += deltaY;
-            r.bottom -= deltaY;
-        }
-        return scale;
+        scaleRectFAboutCenter(r, scale, scale);
     }
 
     /**
@@ -417,6 +313,33 @@ public final class Utilities {
         r.right = r.right * scaleX;
         r.bottom = r.bottom * scaleY;
         r.offset(px, py);
+    }
+
+    public static void scaleRectAboutCenter(Rect r, float scale) {
+        if (scale != 1.0f) {
+            int cx = r.centerX();
+            int cy = r.centerY();
+            r.offset(-cx, -cy);
+            r.left = (int) (r.left * scale + 0.5f);
+            r.top = (int) (r.top * scale + 0.5f);
+            r.right = (int) (r.right * scale + 0.5f);
+            r.bottom = (int) (r.bottom * scale + 0.5f);
+            r.offset(cx, cy);
+        }
+    }
+
+    public static float shrinkRect(Rect r, float scaleX, float scaleY) {
+        float scale = Math.min(Math.min(scaleX, scaleY), 1.0f);
+        if (scale < 1.0f) {
+            int deltaX = (int) (r.width() * (scaleX - scale) * 0.5f);
+            r.left += deltaX;
+            r.right -= deltaX;
+
+            int deltaY = (int) (r.height() * (scaleY - scale) * 0.5f);
+            r.top += deltaY;
+            r.bottom -= deltaY;
+        }
+        return scale;
     }
 
     /**
@@ -451,30 +374,6 @@ public final class Utilities {
 
     public static float mapRange(float value, float min, float max) {
         return min + (value * (max - min));
-    }
-
-    /**
-     * Bounds parameter to the range [0, 1]
-     */
-    public static float saturate(float a) {
-        return boundToRange(a, 0, 1.0f);
-    }
-
-    /**
-     * Returns the compliment (1 - a) of the parameter.
-     */
-    public static float comp(float a) {
-        return 1 - a;
-    }
-
-    /**
-     * Returns the "probabilistic or" of a and b. (a + b - ab).
-     * Useful beyond probability, can be used to combine two unit progresses for example.
-     */
-    public static float or(float a, float b) {
-        float satA = saturate(a);
-        float satB = saturate(b);
-        return satA + satB - (satA * satB);
     }
 
     /**
@@ -521,6 +420,11 @@ public final class Utilities {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
+    /** Converts a dp value to pixels for a certain density. */
+    public static int dpToPx(float dp, int densityDpi) {
+        float densityRatio = (float) densityDpi / DisplayMetrics.DENSITY_DEFAULT;
+        return (int) (dp * densityRatio);
+    }
 
     public static int pxFromSp(float size, DisplayMetrics metrics) {
         return pxFromSp(size, metrics, 1f);
@@ -530,7 +434,6 @@ public final class Utilities {
         float value = scale * TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, size, metrics);
         return ResourceUtils.roundPxValueFromFloat(value);
     }
-
 
     public static String createDbSelectionQuery(String columnName, IntArray values) {
         return String.format(Locale.ENGLISH, "%s IN (%s)", columnName, values.toConcatString());
@@ -552,18 +455,6 @@ public final class Utilities {
             Log.d(TAG, "Unable to read system properties");
         }
         return defaultValue;
-    }
-
-    /**
-     * Using the view's bounds and icon size, calculate where the icon bounds will
-     * be if it was positioned at the center of the view.
-     */
-    public static void setRectToViewCenter(View iconView, int iconSize, Rect outBounds) {
-        int top = (iconView.getHeight() - iconSize) / 2;
-        int left = (iconView.getWidth() - iconSize) / 2;
-        int right = left + iconSize;
-        int bottom = top + iconSize;
-        outBounds.set(left, top, right, bottom);
     }
 
     /**
@@ -616,18 +507,6 @@ public final class Utilities {
         return spanned;
     }
 
-    public static SharedPreferences getPrefs(Context context) {
-        // Use application context for shared preferences, so that we use a single cached instance
-        return context.getApplicationContext().getSharedPreferences(
-                LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
-    }
-
-    public static SharedPreferences getDevicePrefs(Context context) {
-        // Use application context for shared preferences, so that we use a single cached instance
-        return context.getApplicationContext().getSharedPreferences(
-                LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
-    }
-
     public static boolean isWallpaperSupported(Context context) {
         return context.getSystemService(WallpaperManager.class).isWallpaperSupported();
     }
@@ -641,42 +520,6 @@ public final class Utilities {
                 || e.getCause() instanceof DeadObjectException;
     }
 
-    public static boolean isGridOptionsEnabled(Context context) {
-        return isComponentEnabled(context.getPackageManager(),
-                context.getPackageName(),
-                GridCustomizationsProvider.class.getName());
-    }
-
-    private static boolean isComponentEnabled(PackageManager pm, String pkgName, String clsName) {
-        ComponentName componentName = new ComponentName(pkgName, clsName);
-        int componentEnabledSetting = pm.getComponentEnabledSetting(componentName);
-
-        switch (componentEnabledSetting) {
-            case PackageManager.COMPONENT_ENABLED_STATE_DISABLED:
-                return false;
-            case PackageManager.COMPONENT_ENABLED_STATE_ENABLED:
-                return true;
-            case PackageManager.COMPONENT_ENABLED_STATE_DEFAULT:
-            default:
-                // We need to get the application info to get the component's default state
-                try {
-                    PackageInfo packageInfo = pm.getPackageInfo(pkgName,
-                            PackageManager.GET_PROVIDERS | PackageManager.GET_DISABLED_COMPONENTS);
-
-                    if (packageInfo.providers != null) {
-                        return Arrays.stream(packageInfo.providers).anyMatch(
-                                pi -> pi.name.equals(clsName) && pi.isEnabled());
-                    }
-
-                    // the component is not declared in the AndroidManifest
-                    return false;
-                } catch (PackageManager.NameNotFoundException e) {
-                    // the package isn't installed on the device
-                    return false;
-                }
-        }
-    }
-
     /**
      * Utility method to post a runnable on the handler, skipping the synchronization barriers.
      */
@@ -684,12 +527,6 @@ public final class Utilities {
         Message msg = Message.obtain(handler, callback);
         msg.setAsynchronous(true);
         handler.sendMessage(msg);
-    }
-
-    public static void unregisterReceiverSafely(Context context, BroadcastReceiver receiver) {
-        try {
-            context.unregisterReceiver(receiver);
-        } catch (IllegalArgumentException e) {}
     }
 
     /**
@@ -753,8 +590,8 @@ public final class Utilities {
             outObj[0] = icon;
             return icon;
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SEARCH_ACTION
-                && info instanceof SearchActionItemInfo) {
-            return ((SearchActionItemInfo) info).bitmap.newIcon(context);
+                && info instanceof ItemInfoWithIcon) {
+            return ((ItemInfoWithIcon) info).bitmap.newIcon(context);
         } else {
             return null;
         }
@@ -789,14 +626,6 @@ public final class Utilities {
         }
     }
 
-    /**
-     * @return true is the extra is either null or is of type {@param type}
-     */
-    public static boolean isValidExtraType(Intent intent, String key, Class type) {
-        Object extra = intent.getParcelableExtra(key);
-        return extra == null || type.isInstance(extra);
-    }
-
     public static float squaredHypot(float x, float y) {
         return x * x + y * y;
     }
@@ -804,28 +633,6 @@ public final class Utilities {
     public static float squaredTouchSlop(Context context) {
         float slop = ViewConfiguration.get(context).getScaledTouchSlop();
         return slop * slop;
-    }
-
-    /**
-     * Helper method to create a content provider
-     */
-    public static ContentObserver newContentObserver(Handler handler, Consumer<Uri> command) {
-        return new ContentObserver(handler) {
-            @Override
-            public void onChange(boolean selfChange, Uri uri) {
-                command.accept(uri);
-            }
-        };
-    }
-
-    /**
-     * Compares the ratio of two quantities and returns whether that ratio is greater than the
-     * provided bound. Order of quantities does not matter. Bound should be a decimal representation
-     * of a percentage.
-     */
-    public static boolean isRelativePercentDifferenceGreaterThan(float first, float second,
-            float bound) {
-        return (Math.abs(first - second) / Math.abs((first + second) / 2.0f)) > bound;
     }
 
     /**
@@ -876,16 +683,6 @@ public final class Utilities {
                 ColorUtils.blendARGB(0, color, tintAmount));
     }
 
-    /**
-     * Sets start margin on the provided {@param view} to be {@param margin}.
-     * Assumes {@param view} is a child of {@link LinearLayout}
-     */
-    public static void setStartMarginForView(View view, int margin) {
-        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) view.getLayoutParams();
-        lp.setMarginStart(margin);
-        view.setLayoutParams(lp);
-    }
-
     public static Rect getViewBounds(@NonNull View v) {
         int[] pos = new int[2];
         v.getLocationOnScreen(pos);
@@ -927,11 +724,13 @@ public final class Utilities {
         return options;
     }
 
-    public static boolean bothNull(@Nullable Object a, @Nullable Object b) {
-        return a == null && b == null;
-    }
-
-    public static boolean bothNonNull(@Nullable Object a, @Nullable Object b) {
-        return a != null && b != null;
+    /** Logs the Scale and Translate properties of a matrix. Ignores skew and perspective. */
+    public static void logMatrix(String label, Matrix matrix) {
+        float[] matrixValues = new float[9];
+        matrix.getValues(matrixValues);
+        Log.d(label, String.format("%s: %s\nscale (x,y) = (%f, %f)\ntranslate (x,y) = (%f, %f)",
+                label, matrix, matrixValues[Matrix.MSCALE_X], matrixValues[Matrix.MSCALE_Y],
+                matrixValues[Matrix.MTRANS_X], matrixValues[Matrix.MTRANS_Y]
+        ));
     }
 }

@@ -34,6 +34,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.SparseIntArray;
 
 import androidx.annotation.NonNull;
@@ -54,6 +55,8 @@ import java.util.function.Consumer;
  * and provide callers the relevant classes.
  */
 public final class OverviewComponentObserver {
+    private static final String TAG = "OverviewComponentObserver";
+
     private final BroadcastReceiver mUserPreferenceChangeReceiver =
             new SimpleBroadcastReceiver(this::updateOverviewTargets);
     private final BroadcastReceiver mOtherHomeAppUpdateReceiver =
@@ -115,11 +118,6 @@ public final class OverviewComponentObserver {
         if (mDeviceState.isHomeDisabled() != mIsHomeDisabled) {
             updateOverviewTargets();
         }
-
-        // Notify ALL_APPS touch controller when one handed mode state activated or deactivated
-        if (mDeviceState.isOneHandedModeEnabled()) {
-            mActivityInterface.onOneHandedModeStateChanged(mDeviceState.isOneHandedModeActive());
-        }
     }
 
     private void updateOverviewTargets(Intent unused) {
@@ -151,7 +149,12 @@ public final class OverviewComponentObserver {
             }
         }
 
-        if (!mDeviceState.isHomeDisabled() && (defaultHome == null || mIsDefaultHome)) {
+        // TODO(b/258022658): Remove temporary logging.
+        Log.i(TAG, "updateOverviewTargets: mIsHomeDisabled=" + mIsHomeDisabled
+                + ", isDefaultHomeNull=" + (defaultHome == null)
+                + ", mIsDefaultHome=" + mIsDefaultHome);
+
+        if (!mIsHomeDisabled && (defaultHome == null || mIsDefaultHome)) {
             // User default home is same as out home app. Use Overview integrated in Launcher.
             mActivityInterface = LauncherActivityInterface.INSTANCE;
             mIsHomeAndOverviewSame = true;

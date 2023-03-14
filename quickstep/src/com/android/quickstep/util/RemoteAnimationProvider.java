@@ -16,23 +16,22 @@
 package com.android.quickstep.util;
 
 import android.animation.AnimatorSet;
-
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+import android.view.RemoteAnimationTarget;
 
 public abstract class RemoteAnimationProvider {
 
-    public abstract AnimatorSet createWindowAnimation(RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets);
+    public abstract AnimatorSet createWindowAnimation(RemoteAnimationTarget[] appTargets,
+            RemoteAnimationTarget[] wallpaperTargets);
 
     /**
      * @return the target with the lowest opaque layer for a certain app animation, or null.
      */
-    public static RemoteAnimationTargetCompat findLowestOpaqueLayerTarget(
-            RemoteAnimationTargetCompat[] appTargets, int mode) {
+    public static RemoteAnimationTarget findLowestOpaqueLayerTarget(
+            RemoteAnimationTarget[] appTargets, int mode) {
         int lowestLayer = Integer.MAX_VALUE;
         int lowestLayerIndex = -1;
         for (int i = appTargets.length - 1; i >= 0; i--) {
-            RemoteAnimationTargetCompat target = appTargets[i];
+            RemoteAnimationTarget target = appTargets[i];
             if (target.mode == mode && !target.isTranslucent) {
                 int layer = target.prefixOrderIndex;
                 if (layer < lowestLayer) {

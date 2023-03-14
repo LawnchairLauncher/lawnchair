@@ -342,7 +342,6 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
             public void onAnimationSuccess(Animator animator) {
                 onStateTransitionEnd(state);
             }
-
         };
     }
 
@@ -377,12 +376,16 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
     }
 
     public void moveToRestState() {
+        moveToRestState(shouldAnimateStateChange());
+    }
+
+    public void moveToRestState(boolean isAnimated) {
         if (mConfig.currentAnimation != null && mConfig.userControlled) {
             // The user is doing something. Lets not mess it up
             return;
         }
         if (mState.shouldDisableRestore()) {
-            goToState(getRestState());
+            goToState(getRestState(), isAnimated);
             // Reset history
             mLastStableState = mBaseState;
         }

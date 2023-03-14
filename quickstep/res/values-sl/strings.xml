@@ -77,25 +77,27 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Vadnica <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Končano"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Povlecite navzgor za začetni zaslon"</string>
-    <string name="allset_description" msgid="6350320429953234580">"Pripravljeni ste, da začnete uporabljati telefon"</string>
-    <string name="allset_description_tablet" msgid="7332070270570039247">"Pripravljeni ste, da začnete uporabljati tablični računalnik."</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"Za pomik na začetni zaslon se dotaknite gumba za začetni zaslon."</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Pripravljeni ste, da začnete uporabljati <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"napravo"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Nastavitve krmarjenja po sistemu"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Deli"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Posnetek zaslona"</string>
     <string name="action_split" msgid="2098009717623550676">"Razdeli"</string>
     <string name="toast_split_select_app" msgid="5453865907322018352">"Za uporabo razdeljenega zaslona se dotaknite še ene aplikacije."</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"Aplikacija ne podpira načina razdeljenega zaslona."</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Izberite drugo aplikacijo za uporabo razdeljenega zaslona."</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Aplikacija ali vaša organizacija ne dovoljuje tega dejanja"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Želite preskočiti vadnico za krmarjenje?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"To lahko pozneje najdete v aplikaciji <xliff:g id="NAME">%1$s</xliff:g>."</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Prekliči"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Preskoči"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Sukanje zaslona"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Poučni nasveti o opravilni vrstici"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Poučni nasveti o opravilni vrstici so prikazani."</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Poučni nasveti o opravilni vrstici so zaprti."</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Za preklop aplikacij uporabite opravilno vrstico."</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Povlecite vstran za uporabo dveh aplikacij hkrati."</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Pridržite, če želite opravilno vrstico skriti."</string>
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"Povlecite vstran za uporabo dveh aplikacij hkrati."</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Na kratko povlecite navzgor za prikaz opravilne vrstice."</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Opravilna vrstica predlaga aplikacije na podlagi vaših navad."</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Naprej"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Nazaj"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zapri"</string>
@@ -107,6 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"Nedavno"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Obvestila"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Hitre nastavitve"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"Opravilna vrstica"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Vrstica za krmarjenje"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Premakni na vrh/levo"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Premakni na dno/desno"</string>
 </resources>

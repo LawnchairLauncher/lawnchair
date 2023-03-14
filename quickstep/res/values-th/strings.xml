@@ -77,25 +77,27 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"บทแนะนำ <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"เรียบร้อยแล้ว"</string>
     <string name="allset_hint" msgid="2384632994739392447">"ปัดขึ้นเพื่อไปที่หน้าแรก"</string>
-    <string name="allset_description" msgid="6350320429953234580">"คุณเริ่มใช้โทรศัพท์ได้แล้ว"</string>
-    <string name="allset_description_tablet" msgid="7332070270570039247">"คุณเริ่มใช้แท็บเล็ตได้แล้ว"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"แตะปุ่มหน้าแรกเพื่อไปที่หน้าจอหลัก"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"คุณเริ่มใช้<xliff:g id="DEVICE">%1$s</xliff:g>ได้แล้ว"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"อุปกรณ์"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"การตั้งค่าการนำทางของระบบ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"แชร์"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ภาพหน้าจอ"</string>
     <string name="action_split" msgid="2098009717623550676">"แยก"</string>
     <string name="toast_split_select_app" msgid="5453865907322018352">"แตะที่แอปอื่นเพื่อใช้แบ่งหน้าจอ"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"แอปไม่รองรับการแบ่งหน้าจอ"</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"เลือกแอปอื่นเพื่อใช้การแยกหน้าจอ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"แอปหรือองค์กรของคุณไม่อนุญาตการดำเนินการนี้"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"ข้ามบทแนะนำการนำทางไหม"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"คุณดูบทแนะนำนี้ได้ภายหลังในแอป \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ยกเลิก"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ข้าม"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"หมุนหน้าจอ"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"แถบงาน Education"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"แถบงาน Education ปรากฎขึ้น"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ปิดแถบงาน Education แล้ว"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ใช้แถบงานเพื่อเปลี่ยนแอป"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"ลากไปด้านข้างเพื่อใช้ 2 แอปพร้อมกัน"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"แตะค้างไว้เพื่อซ่อนแถบงาน"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"ลากไปด้านข้างเพื่อใช้ 2 แอปพร้อมกัน"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"ปัดขึ้นสั้นๆ เพื่อแสดงแถบงาน"</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"แถบงานจะแนะนำแอปโดยอิงตามกิจวัตรของคุณ"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ถัดไป"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"กลับ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ปิด"</string>
@@ -107,6 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"ล่าสุด"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"การแจ้งเตือน"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"การตั้งค่าด่วน"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"แถบงาน"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"แถบนำทาง"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ย้ายไปที่ด้านบนหรือด้านซ้าย"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ย้ายไปที่ด้านล่างหรือด้านขวา"</string>
 </resources>

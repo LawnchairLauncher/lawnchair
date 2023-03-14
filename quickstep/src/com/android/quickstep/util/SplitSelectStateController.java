@@ -22,10 +22,10 @@ import static android.app.PendingIntent.FLAG_MUTABLE;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.DEFAULT_SPLIT_RATIO;
-import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
-import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
+import static com.android.launcher3.util.SplitConfigurationOptions.getOppositeStagePosition;
 
 import android.annotation.NonNull;
+import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.app.ActivityThread;
 import android.app.PendingIntent;
@@ -35,12 +35,16 @@ import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.os.UserHandle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.view.RemoteAnimationAdapter;
+import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
+import android.window.IRemoteTransition;
+import android.window.IRemoteTransitionFinishedCallback;
+import android.window.RemoteTransition;
 import android.window.TransitionInfo;
 
 import androidx.annotation.Nullable;
@@ -58,14 +62,11 @@ import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.TaskViewUtils;
+import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
-import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.RemoteTransitionCompat;
-import com.android.systemui.shared.system.RemoteTransitionRunner;
 
 import java.util.function.Consumer;
 
@@ -86,8 +87,8 @@ public class SplitSelectStateController {
     private ItemInfo mItemInfo;
     private Intent mInitialTaskIntent;
     private int mInitialTaskId = INVALID_TASK_ID;
+    private Intent mSecondTaskIntent;
     private int mSecondTaskId = INVALID_TASK_ID;
-    private String mSecondTaskPackageName;
     private boolean mRecentsAnimationRunning;
     @Nullable
     private UserHandle mUser;
@@ -96,6 +97,8 @@ public class SplitSelectStateController {
     private GroupedTaskView mLaunchingTaskView;
     /** Represents where split is intended to be invoked from. */
     private StatsLogManager.EventEnum mSplitEvent;
+
+    private FloatingTaskView mFirstFloatingTaskView;
 
     public SplitSelectStateController(Context context, Handler handler, StateManager stateManager,
             DepthController depthController, StatsLogManager statsLogManager) {
@@ -108,19 +111,38 @@ public class SplitSelectStateController {
     }
 
     /**
-     * To be called after first task selected
+     * To be called after first task selected in Overview.
      */
-    public void setInitialTaskSelect(int taskId, @StagePosition int stagePosition,
+    public void setInitialTaskSelect(Task task, @StagePosition int stagePosition,
             StatsLogManager.EventEnum splitEvent, ItemInfo itemInfo) {
-        mInitialTaskId = taskId;
+        mInitialTaskId = task.key.id;
         setInitialData(stagePosition, splitEvent, itemInfo);
     }
 
+    /**
+     * To be called after first task selected from home or all apps.
+     */
     public void setInitialTaskSelect(Intent intent, @StagePosition int stagePosition,
-            @NonNull ItemInfo itemInfo, StatsLogManager.EventEnum splitEvent) {
-        mInitialTaskIntent = intent;
-        mUser = itemInfo.user;
-        mItemInfo = itemInfo;
+            @NonNull ItemInfo itemInfo, StatsLogManager.EventEnum splitEvent,
+            @Nullable Task alreadyRunningTask) {
+        if (alreadyRunningTask != null) {
+            mInitialTaskId = alreadyRunningTask.key.id;
+        } else {
+            mInitialTaskIntent = intent;
+            mUser = itemInfo.user;
+        }
+
+        setInitialData(stagePosition, splitEvent, itemInfo);
+    }
+
+    /**
+     * To be called after first task selected from using a split shortcut from the fullscreen
+     * running app.
+     */
+    public void setInitialTaskSelect(ActivityManager.RunningTaskInfo info,
+            @StagePosition int stagePosition, @NonNull ItemInfo itemInfo,
+            StatsLogManager.EventEnum splitEvent) {
+        mInitialTaskId = info.taskId;
         setInitialData(stagePosition, splitEvent, itemInfo);
     }
 
@@ -136,26 +158,10 @@ public class SplitSelectStateController {
      * to be launched. Call after launcher side animations are complete.
      */
     public void launchSplitTasks(Consumer<Boolean> callback) {
-        final Intent fillInIntent;
-        if (mInitialTaskIntent != null) {
-            fillInIntent = new Intent();
-            if (TextUtils.equals(mInitialTaskIntent.getComponent().getPackageName(),
-                    mSecondTaskPackageName)) {
-                fillInIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-            }
-        } else {
-            fillInIntent = null;
-        }
-
-        final PendingIntent pendingIntent = mInitialTaskIntent == null ? null : (mUser != null
-                ? PendingIntent.getActivityAsUser(mContext, 0, mInitialTaskIntent,
-                FLAG_MUTABLE, null /* options */, mUser)
-                : PendingIntent.getActivity(mContext, 0, mInitialTaskIntent, FLAG_MUTABLE));
-
         Pair<InstanceId, com.android.launcher3.logging.InstanceId> instanceIds =
                 LogUtils.getShellShareableInstanceId();
-        launchTasks(mInitialTaskId, pendingIntent, fillInIntent, mSecondTaskId, mStagePosition,
-                callback, false /* freezeTaskList */, DEFAULT_SPLIT_RATIO,
+        launchTasks(mInitialTaskId, mInitialTaskIntent, mSecondTaskId, mSecondTaskIntent,
+                mStagePosition, callback, false /* freezeTaskList */, DEFAULT_SPLIT_RATIO,
                 instanceIds.first);
 
         mStatsLogManager.logger()
@@ -164,23 +170,23 @@ public class SplitSelectStateController {
                 .log(mSplitEvent);
     }
 
-
     /**
      * To be called as soon as user selects the second task (even if animations aren't complete)
      * @param task The second task that will be launched.
      */
     public void setSecondTask(Task task) {
         mSecondTaskId = task.key.id;
-        if (mInitialTaskIntent != null) {
-            mSecondTaskPackageName = task.getTopComponent().getPackageName();
-        }
+    }
+
+    public void setSecondTask(Intent intent) {
+        mSecondTaskIntent = intent;
     }
 
     /**
      * To be called when we want to launch split pairs from an existing GroupedTaskView.
      */
-    public void launchTasks(GroupedTaskView groupedTaskView,
-            Consumer<Boolean> callback, boolean freezeTaskList) {
+    public void launchTasks(GroupedTaskView groupedTaskView, Consumer<Boolean> callback,
+            boolean freezeTaskList) {
         mLaunchingTaskView = groupedTaskView;
         TaskView.TaskIdAttributeContainer[] taskIdAttributeContainers =
                 groupedTaskView.getTaskIdAttributeContainers();
@@ -196,71 +202,116 @@ public class SplitSelectStateController {
      */
     public void launchTasks(int taskId1, int taskId2, @StagePosition int stagePosition,
             Consumer<Boolean> callback, boolean freezeTaskList, float splitRatio) {
-        launchTasks(taskId1, null /* taskPendingIntent */, null /* fillInIntent */, taskId2,
-                stagePosition, callback, freezeTaskList, splitRatio, null);
+        launchTasks(taskId1, null /* intent1 */, taskId2, null /* intent2 */, stagePosition,
+                callback, freezeTaskList, splitRatio, null);
     }
 
     /**
      * To be called when we want to launch split pairs from Overview. Split can be initiated from
      * either Overview or home, or all apps. Either both taskIds are set, or a pending intent + a
      * fill in intent with a taskId2 are set.
-     * @param taskPendingIntent is null when split is initiated from Overview
+     * @param intent1 is null when split is initiated from Overview
      * @param stagePosition representing location of task1
-     * @param shellInstanceId loggingId to be used by shell, will be non-null for actions that create
-     *                   a split instance, null for cases that bring existing instaces to the
+     * @param shellInstanceId loggingId to be used by shell, will be non-null for actions that
+     *                   create a split instance, null for cases that bring existing instaces to the
      *                   foreground (quickswitch, launching previous pairs from overview)
      */
-    public void launchTasks(int taskId1, @Nullable PendingIntent taskPendingIntent,
-            @Nullable Intent fillInIntent, int taskId2, @StagePosition int stagePosition,
+    public void launchTasks(int taskId1, @Nullable Intent intent1, int taskId2,
+            @Nullable Intent intent2, @StagePosition int stagePosition,
             Consumer<Boolean> callback, boolean freezeTaskList, float splitRatio,
             @Nullable InstanceId shellInstanceId) {
         TestLogging.recordEvent(
                 TestProtocol.SEQUENCE_MAIN, "launchSplitTasks");
-        // Assume initial task is for top/left part of screen
-        final int[] taskIds = stagePosition == STAGE_POSITION_TOP_OR_LEFT
-                ? new int[]{taskId1, taskId2}
-                : new int[]{taskId2, taskId1};
+        final ActivityOptions options1 = ActivityOptions.makeBasic();
+        if (freezeTaskList) {
+            options1.setFreezeRecentTasksReordering();
+        }
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
-            RemoteSplitLaunchTransitionRunner animationRunner =
-                    new RemoteSplitLaunchTransitionRunner(taskId1, taskPendingIntent, taskId2,
-                            callback);
-            mSystemUiProxy.startTasks(taskIds[0], null /* mainOptions */, taskIds[1],
-                    null /* sideOptions */, STAGE_POSITION_BOTTOM_OR_RIGHT, splitRatio,
-                    new RemoteTransitionCompat(animationRunner, MAIN_EXECUTOR,
-                            ActivityThread.currentActivityThread().getApplicationThread()),
-                    shellInstanceId);
-            // TODO(b/237635859): handle intent/shortcut + task with shell transition
+            final RemoteSplitLaunchTransitionRunner animationRunner =
+                    new RemoteSplitLaunchTransitionRunner(taskId1, taskId2, callback);
+            final RemoteTransition remoteTransition = new RemoteTransition(animationRunner,
+                    ActivityThread.currentActivityThread().getApplicationThread());
+            if (intent1 == null && intent2 == null) {
+                mSystemUiProxy.startTasks(taskId1, options1.toBundle(), taskId2,
+                        null /* options2 */, stagePosition, splitRatio, remoteTransition,
+                        shellInstanceId);
+            } else if (intent2 == null) {
+                launchIntentOrShortcut(intent1, options1, taskId2, stagePosition, splitRatio,
+                        remoteTransition, shellInstanceId);
+            } else if (intent1 == null) {
+                launchIntentOrShortcut(intent2, options1, taskId1,
+                        getOppositeStagePosition(stagePosition), splitRatio, remoteTransition,
+                        shellInstanceId);
+            } else {
+                mSystemUiProxy.startIntents(getPendingIntent(intent1), options1.toBundle(),
+                        getPendingIntent(intent2), null /* options2 */, stagePosition,
+                        splitRatio, remoteTransition, shellInstanceId);
+            }
         } else {
-            RemoteSplitLaunchAnimationRunner animationRunner =
-                    new RemoteSplitLaunchAnimationRunner(taskId1, taskPendingIntent, taskId2,
-                            callback);
+            final RemoteSplitLaunchAnimationRunner animationRunner =
+                    new RemoteSplitLaunchAnimationRunner(taskId1, taskId2, callback);
             final RemoteAnimationAdapter adapter = new RemoteAnimationAdapter(
-                    RemoteAnimationAdapterCompat.wrapRemoteAnimationRunner(animationRunner),
-                    300, 150,
+                    animationRunner, 300, 150,
                     ActivityThread.currentActivityThread().getApplicationThread());
 
-            ActivityOptions mainOpts = ActivityOptions.makeBasic();
-            if (freezeTaskList) {
-                mainOpts.setFreezeRecentTasksReordering();
-            }
-            if (taskPendingIntent == null) {
-                mSystemUiProxy.startTasksWithLegacyTransition(taskIds[0], mainOpts.toBundle(),
-                        taskIds[1], null /* sideOptions */, STAGE_POSITION_BOTTOM_OR_RIGHT,
-                        splitRatio, adapter, shellInstanceId);
+            if (intent1 == null && intent2 == null) {
+                mSystemUiProxy.startTasksWithLegacyTransition(taskId1, options1.toBundle(),
+                        taskId2, null /* options2 */, stagePosition, splitRatio, adapter,
+                        shellInstanceId);
+            } else if (intent2 == null) {
+                launchIntentOrShortcutLegacy(intent1, options1, taskId2, stagePosition, splitRatio,
+                        adapter, shellInstanceId);
+            } else if (intent1 == null) {
+                launchIntentOrShortcutLegacy(intent2, options1, taskId1,
+                        getOppositeStagePosition(stagePosition), splitRatio, adapter,
+                        shellInstanceId);
             } else {
-                final ShortcutInfo shortcutInfo = getShortcutInfo(mInitialTaskIntent,
-                        taskPendingIntent.getCreatorUserHandle());
-                if (shortcutInfo != null) {
-                    mSystemUiProxy.startShortcutAndTaskWithLegacyTransition(shortcutInfo, taskId2,
-                            mainOpts.toBundle(), null /* sideOptions */, stagePosition, splitRatio,
-                            adapter, shellInstanceId);
-                } else {
-                    mSystemUiProxy.startIntentAndTaskWithLegacyTransition(taskPendingIntent,
-                            fillInIntent, taskId2, mainOpts.toBundle(), null /* sideOptions */,
-                            stagePosition, splitRatio, adapter, shellInstanceId);
-                }
+                mSystemUiProxy.startIntentsWithLegacyTransition(getPendingIntent(intent1),
+                        options1.toBundle(), getPendingIntent(intent2), null /* options2 */,
+                        stagePosition, splitRatio, adapter, shellInstanceId);
             }
         }
+    }
+
+    private void launchIntentOrShortcut(Intent intent, ActivityOptions options1, int taskId,
+            @StagePosition int stagePosition, float splitRatio, RemoteTransition remoteTransition,
+            @Nullable InstanceId shellInstanceId) {
+        PendingIntent pendingIntent = getPendingIntent(intent);
+        final ShortcutInfo shortcutInfo = getShortcutInfo(intent,
+                pendingIntent.getCreatorUserHandle());
+        if (shortcutInfo != null) {
+            mSystemUiProxy.startShortcutAndTask(shortcutInfo,
+                    options1.toBundle(), taskId, null /* options2 */, stagePosition,
+                    splitRatio, remoteTransition, shellInstanceId);
+        } else {
+            mSystemUiProxy.startIntentAndTask(pendingIntent, options1.toBundle(), taskId,
+                    null /* options2 */, stagePosition, splitRatio, remoteTransition,
+                    shellInstanceId);
+        }
+    }
+
+    private void launchIntentOrShortcutLegacy(Intent intent, ActivityOptions options1, int taskId,
+            @StagePosition int stagePosition, float splitRatio, RemoteAnimationAdapter adapter,
+            @Nullable InstanceId shellInstanceId) {
+        PendingIntent pendingIntent = getPendingIntent(intent);
+        final ShortcutInfo shortcutInfo = getShortcutInfo(intent,
+                pendingIntent.getCreatorUserHandle());
+        if (shortcutInfo != null) {
+            mSystemUiProxy.startShortcutAndTaskWithLegacyTransition(shortcutInfo,
+                    options1.toBundle(), taskId, null /* options2 */, stagePosition,
+                    splitRatio, adapter, shellInstanceId);
+        } else {
+            mSystemUiProxy.startIntentAndTaskWithLegacyTransition(pendingIntent,
+                    options1.toBundle(), taskId, null /* options2 */, stagePosition, splitRatio,
+                    adapter, shellInstanceId);
+        }
+    }
+
+    private PendingIntent getPendingIntent(Intent intent) {
+        return intent == null ? null : (mUser != null
+                ? PendingIntent.getActivityAsUser(mContext, 0, intent,
+                FLAG_MUTABLE, null /* options */, mUser)
+                : PendingIntent.getActivity(mContext, 0, intent, FLAG_MUTABLE));
     }
 
     public @StagePosition int getActiveSplitStagePosition() {
@@ -272,7 +323,7 @@ public class SplitSelectStateController {
     }
 
     public void setRecentsAnimationRunning(boolean running) {
-        this.mRecentsAnimationRunning = running;
+        mRecentsAnimationRunning = running;
     }
 
     @Nullable
@@ -300,65 +351,75 @@ public class SplitSelectStateController {
     /**
      * Requires Shell Transitions
      */
-    private class RemoteSplitLaunchTransitionRunner implements RemoteTransitionRunner {
+    private class RemoteSplitLaunchTransitionRunner extends IRemoteTransition.Stub {
 
         private final int mInitialTaskId;
-        private final PendingIntent mInitialTaskPendingIntent;
         private final int mSecondTaskId;
         private final Consumer<Boolean> mSuccessCallback;
 
-        RemoteSplitLaunchTransitionRunner(int initialTaskId, PendingIntent initialTaskPendingIntent,
-                int secondTaskId, Consumer<Boolean> callback) {
+        RemoteSplitLaunchTransitionRunner(int initialTaskId, int secondTaskId,
+                Consumer<Boolean> callback) {
             mInitialTaskId = initialTaskId;
-            mInitialTaskPendingIntent = initialTaskPendingIntent;
             mSecondTaskId = secondTaskId;
             mSuccessCallback = callback;
         }
 
         @Override
-        public void startAnimation(@NonNull IBinder transition, @NonNull TransitionInfo info,
-                @NonNull SurfaceControl.Transaction t, @NonNull Runnable finishCallback) {
-            TaskViewUtils.composeRecentsSplitLaunchAnimator(mLaunchingTaskView, mStateManager,
-                    mDepthController, mInitialTaskId, mInitialTaskPendingIntent, mSecondTaskId,
-                    info, t, () -> {
-                    finishCallback.run();
-                    if (mSuccessCallback != null) {
-                        mSuccessCallback.accept(true);
-                    }
-                });
-            // After successful launch, call resetState
-            resetState();
+        public void startAnimation(IBinder transition, TransitionInfo info,
+                SurfaceControl.Transaction t,
+                IRemoteTransitionFinishedCallback finishedCallback) {
+            final Runnable finishAdapter = () ->  {
+                try {
+                    finishedCallback.onTransitionFinished(null /* wct */, null /* sct */);
+                } catch (RemoteException e) {
+                    Log.e(TAG, "Failed to call transition finished callback", e);
+                }
+            };
+
+            MAIN_EXECUTOR.execute(() -> {
+                TaskViewUtils.composeRecentsSplitLaunchAnimator(mLaunchingTaskView, mStateManager,
+                        mDepthController, mInitialTaskId, mSecondTaskId, info, t, () -> {
+                            finishAdapter.run();
+                            if (mSuccessCallback != null) {
+                                mSuccessCallback.accept(true);
+                            }
+                        });
+                // After successful launch, call resetState
+                resetState();
+            });
         }
+
+        @Override
+        public void mergeAnimation(IBinder transition, TransitionInfo info,
+                SurfaceControl.Transaction t, IBinder mergeTarget,
+                IRemoteTransitionFinishedCallback finishedCallback) { }
     }
 
     /**
      * LEGACY
      * Remote animation runner for animation to launch an app.
      */
-    private class RemoteSplitLaunchAnimationRunner implements RemoteAnimationRunnerCompat {
+    private class RemoteSplitLaunchAnimationRunner extends RemoteAnimationRunnerCompat {
 
         private final int mInitialTaskId;
-        private final PendingIntent mInitialTaskPendingIntent;
         private final int mSecondTaskId;
         private final Consumer<Boolean> mSuccessCallback;
 
-        RemoteSplitLaunchAnimationRunner(int initialTaskId, PendingIntent initialTaskPendingIntent,
-                int secondTaskId, Consumer<Boolean> successCallback) {
+        RemoteSplitLaunchAnimationRunner(int initialTaskId, int secondTaskId,
+                Consumer<Boolean> successCallback) {
             mInitialTaskId = initialTaskId;
-            mInitialTaskPendingIntent = initialTaskPendingIntent;
             mSecondTaskId = secondTaskId;
             mSuccessCallback = successCallback;
         }
 
         @Override
-        public void onAnimationStart(int transit, RemoteAnimationTargetCompat[] apps,
-                RemoteAnimationTargetCompat[] wallpapers, RemoteAnimationTargetCompat[] nonApps,
+        public void onAnimationStart(int transit, RemoteAnimationTarget[] apps,
+                RemoteAnimationTarget[] wallpapers, RemoteAnimationTarget[] nonApps,
                 Runnable finishedCallback) {
             postAsyncCallback(mHandler,
                     () -> TaskViewUtils.composeRecentsSplitLaunchAnimatorLegacy(
-                            mLaunchingTaskView, mInitialTaskId, mInitialTaskPendingIntent,
-                            mSecondTaskId, apps, wallpapers, nonApps, mStateManager,
-                            mDepthController, () -> {
+                            mLaunchingTaskView, mInitialTaskId, mSecondTaskId, apps, wallpapers,
+                            nonApps, mStateManager, mDepthController, () -> {
                                 finishedCallback.run();
                                 if (mSuccessCallback != null) {
                                     mSuccessCallback.accept(true);
@@ -368,7 +429,7 @@ public class SplitSelectStateController {
         }
 
         @Override
-        public void onAnimationCancelled() {
+        public void onAnimationCancelled(boolean isKeyguardOccluded) {
             postAsyncCallback(mHandler, () -> {
                 if (mSuccessCallback != null) {
                     // Launching legacy tasks while recents animation is running will always cause
@@ -387,6 +448,7 @@ public class SplitSelectStateController {
         mInitialTaskId = INVALID_TASK_ID;
         mInitialTaskIntent = null;
         mSecondTaskId = INVALID_TASK_ID;
+        mSecondTaskIntent = null;
         mStagePosition = SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
         mRecentsAnimationRunning = false;
         mLaunchingTaskView = null;
@@ -399,7 +461,7 @@ public class SplitSelectStateController {
      *         chosen
      */
     public boolean isSplitSelectActive() {
-        return isInitialTaskIntentSet() && mSecondTaskId == INVALID_TASK_ID;
+        return isInitialTaskIntentSet() && !isSecondTaskIntentSet();
     }
 
     /**
@@ -407,7 +469,7 @@ public class SplitSelectStateController {
      *          be launched
      */
     public boolean isBothSplitAppsConfirmed() {
-        return isInitialTaskIntentSet() && mSecondTaskId != INVALID_TASK_ID;
+        return isInitialTaskIntentSet() && isSecondTaskIntentSet();
     }
 
     private boolean isInitialTaskIntentSet() {
@@ -416,5 +478,17 @@ public class SplitSelectStateController {
 
     public int getInitialTaskId() {
         return mInitialTaskId;
+    }
+
+    private boolean isSecondTaskIntentSet() {
+        return (mSecondTaskId != INVALID_TASK_ID || mSecondTaskIntent != null);
+    }
+
+    public void setFirstFloatingTaskView(FloatingTaskView floatingTaskView) {
+        mFirstFloatingTaskView = floatingTaskView;
+    }
+
+    public FloatingTaskView getFirstFloatingTaskView() {
+        return mFirstFloatingTaskView;
     }
 }

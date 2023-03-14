@@ -18,8 +18,6 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
-import android.platform.test.annotations.IwTest;
-
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertEquals;
@@ -31,6 +29,7 @@ import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
 import android.graphics.Point;
+import android.platform.test.annotations.IwTest;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -196,6 +195,15 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
+    public void testAllAppsSwitchToWorkspace() {
+        assertNotNull("switchToWorkspace() returned null",
+                mLauncher.getWorkspace().switchToAllApps().switchToWorkspace());
+        assertTrue("Launcher internal state is not Workspace",
+                isInState(() -> LauncherState.NORMAL));
+    }
+
+    @Test
+    @PortraitLandscape
     public void testAllAppsDeadzoneForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
 
@@ -336,6 +344,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @IwTest(focusArea="launcher")
     @Test
     @PortraitLandscape
+    @ScreenRecord // b/256898879
     public void testDragAppIcon() throws Throwable {
         // 1. Open all apps and wait for load complete.
         // 2. Drag icon to homescreen.
@@ -437,6 +446,23 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
+    public void testDragAndCancelAppIcon() {
+        final HomeAppIcon homeAppIcon = createShortcutInCenterIfNotExist(GMAIL_APP_NAME);
+        Point positionBeforeDrag =
+                mLauncher.getWorkspace().getWorkspaceIconsPositions().get(GMAIL_APP_NAME);
+        assertNotNull("App not found in Workspace before dragging.", positionBeforeDrag);
+
+        mLauncher.getWorkspace().dragAndCancelAppIcon(homeAppIcon);
+
+        Point positionAfterDrag =
+                mLauncher.getWorkspace().getWorkspaceIconsPositions().get(GMAIL_APP_NAME);
+        assertNotNull("App not found in Workspace after dragging.", positionAfterDrag);
+        assertEquals("App not returned to same position in Workspace after drag & cancel",
+                positionBeforeDrag, positionAfterDrag);
+    }
+
+    @Test
+    @PortraitLandscape
     public void testDeleteFromWorkspace() throws Exception {
         // test delete both built-in apps and user-installed app from workspace
         for (String appName : new String[]{"Gmail", "Play Store", APP_NAME}) {
@@ -462,7 +488,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     public void testUninstallFromWorkspace() throws Exception {
-        TestUtil.installDummyApp();
+        installDummyAppAndWaitForUIUpdate();
         try {
             verifyAppUninstalledFromAllApps(
                     createShortcutInCenterIfNotExist(DUMMY_APP_NAME).uninstall(), DUMMY_APP_NAME);
@@ -473,8 +499,9 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
+    @ScreenRecord // (b/256659409)
     public void testUninstallFromAllApps() throws Exception {
-        TestUtil.installDummyApp();
+        installDummyAppAndWaitForUIUpdate();
         try {
             Workspace workspace = mLauncher.getWorkspace();
             final HomeAllApps allApps = workspace.switchToAllApps();
@@ -519,7 +546,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         Point[] gridPositions = getCornersAndCenterPositions();
         createShortcutIfNotExist(STORE_APP_NAME, gridPositions[0]);
         createShortcutIfNotExist(MAPS_APP_NAME, gridPositions[1]);
-        TestUtil.installDummyApp();
+        installDummyAppAndWaitForUIUpdate();
         try {
             createShortcutIfNotExist(DUMMY_APP_NAME, gridPositions[2]);
             Map<String, Point> initialPositions =
@@ -568,6 +595,17 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 .dragToHotseat(0);
         mLauncher.getWorkspace().deleteAppIcon(
                 mLauncher.getWorkspace().getHotseatAppIcon(APP_NAME));
+    }
+
+    private void installDummyAppAndWaitForUIUpdate() throws IOException {
+        TestUtil.installDummyApp();
+        // Wait for model thread completion as it may be processing
+        // the install event from the SystemService
+        mLauncher.waitForModelQueueCleared();
+        // Wait for Launcher UI thread completion, as it may be processing updating the UI in
+        // response to the model update. Not that `waitForLauncherInitialized` is just a proxy
+        // method, we can use any method which touches Launcher UI thread,
+        mLauncher.waitForLauncherInitialized();
     }
 
     /**

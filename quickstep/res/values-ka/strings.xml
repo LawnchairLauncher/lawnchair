@@ -77,25 +77,27 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"სახელმძღვანელო <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"მზადაა!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"მთავარ გვერდზე გადასასვლელად გადაფურცლეთ ზევით"</string>
-    <string name="allset_description" msgid="6350320429953234580">"მზად ხართ ტელეფონის გამოსაყენებლად"</string>
-    <string name="allset_description_tablet" msgid="7332070270570039247">"მზად ხართ ტაბლეტის გამოსაყენებლად"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"შეეხეთ მთავარი ეკრანის ღილაკს მთავარ ეკრანზე გადასასვლელად"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"მზად ხართ, გამოიყენოთ <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"მოწყობილობა"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"სისტემის ნავიგაციის პარამეტრები"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"გაზიარება"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ეკრანის ანაბეჭდი"</string>
     <string name="action_split" msgid="2098009717623550676">"გაყოფა"</string>
     <string name="toast_split_select_app" msgid="5453865907322018352">"შეეხეთ სხვა აპს ეკრანის გასაყოფად"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"ეკრანის გაყოფა არ არის მხარდაჭერილი აპის მიერ."</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"აირჩიეთ სხვა აპი ეკრანის გასაყოფად"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ეს მოქმედება არ არის დაშვებული აპის ან თქვენი ორგანიზაციის მიერ"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"გსურთ, გამოტოვოთ ნავიგაციის სახელმძღვანელო?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"ამის მოგვიანებით პოვნა <xliff:g id="NAME">%1$s</xliff:g> აპში შეგიძლიათ"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"გაუქმება"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"გამოტოვება"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ეკრანის შეტრიალება"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"ამოცანათა ზოლი: განათლება"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ამოცანების ზოლის სასწავლო არე გამოჩნდა"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ამოცანების ზოლის სასწავლო არე დაიხურა"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"აპების გადასართავად გამოიყენეთ ამოცანათა ზოლი"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"გადაათრიეთ კიდეზე ორი აპის ერთდოულად გამოსაყენებლად"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ხანგრძლივად შეეხეთ ამოცანების ზოლის დასამალად"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"გადაათრიეთ კიდეზე 2 აპის ერთდროულად გამოსაყენებლად"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"მოკლედ გადაფურცლეთ ზემოთ, რომ ამოცანათა ზოლი გამოაჩინოთ"</string>
+    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"ამოცანათა ზოლი გთავაზობთ აპებს თქვენი რუტინის მიხედვით"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"შემდეგი"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"უკან"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"დახურვა"</string>
@@ -107,6 +109,8 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"ბოლოდროინდელი"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"შეტყობინებები"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"სწრაფი პარამეტრები"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"ამოცანათა ზოლი"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"ნავიგაციის ზოლი"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ზემოთ/მარცხნივ გადატანა"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ქვემოთ/მარჯვნივ გადატანა"</string>
 </resources>

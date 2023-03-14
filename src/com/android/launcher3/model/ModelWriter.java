@@ -48,7 +48,7 @@ import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LooperExecutor;
-import com.android.launcher3.widget.LauncherAppWidgetHost;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -333,13 +333,13 @@ public class ModelWriter {
     /**
      * Deletes the widget info and the widget id.
      */
-    public void deleteWidgetInfo(final LauncherAppWidgetInfo info, LauncherAppWidgetHost host,
+    public void deleteWidgetInfo(final LauncherAppWidgetInfo info, LauncherWidgetHolder holder,
             @Nullable final String reason) {
         notifyDelete(Collections.singleton(info));
-        if (host != null && !info.isCustomWidget() && info.isWidgetIdAllocated()) {
+        if (holder != null && !info.isCustomWidget() && info.isWidgetIdAllocated()) {
             // Deleting an app widget ID is a void call but writes to disk before returning
             // to the caller...
-            enqueueDeleteRunnable(() -> host.deleteAppWidgetId(info.appWidgetId));
+            enqueueDeleteRunnable(() -> holder.deleteAppWidgetId(info.appWidgetId));
         }
         deleteItemFromDatabase(info, reason);
     }

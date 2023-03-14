@@ -36,13 +36,11 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.os.UserHandle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
@@ -111,7 +109,6 @@ public final class WidgetsPredicationUpdateTaskTest {
         doReturn(allWidgets).when(manager).getInstalledProvidersForProfile(eq(myUserHandle()));
         doAnswer(i -> {
             String pkg = i.getArgument(0);
-            Log.e("Hello", "Getting v " + pkg);
             return TextUtils.isEmpty(pkg) ? allWidgets : allWidgets.stream()
                     .filter(a -> pkg.equals(a.provider.getPackageName()))
                     .collect(Collectors.toList());
@@ -138,21 +135,21 @@ public final class WidgetsPredicationUpdateTaskTest {
     public void widgetsRecommendationRan_shouldOnlyReturnNotAddedWidgetsInAppPredictionOrder()
             throws Exception {
         // WHEN newPredicationTask is executed with app predication of 5 apps.
-        AppTarget app1 = new AppTarget(new AppTargetId("app1"), "app1", "className",
+        AppTarget app1 = new AppTarget(new AppTargetId("app1"), "app1", "provider1",
                 mUserHandle);
-        AppTarget app2 = new AppTarget(new AppTargetId("app2"), "app2", "className",
+        AppTarget app2 = new AppTarget(new AppTargetId("app2"), "app2", "provider1",
                 mUserHandle);
         AppTarget app3 = new AppTarget(new AppTargetId("app3"), "app3", "className",
                 mUserHandle);
-        AppTarget app4 = new AppTarget(new AppTargetId("app4"), "app4", "className",
+        AppTarget app4 = new AppTarget(new AppTargetId("app4"), "app4", "provider1",
                 mUserHandle);
-        AppTarget app5 = new AppTarget(new AppTargetId("app5"), "app5", "className",
+        AppTarget app5 = new AppTarget(new AppTargetId("app5"), "app5", "provider1",
                 mUserHandle);
         mModelHelper.executeTaskForTest(
                 newWidgetsPredicationTask(List.of(app5, app3, app2, app4, app1)))
                 .forEach(Runnable::run);
 
-        // THEN only 3 widgets are returned because
+        // THEN only 2 widgets are returned because
         // 1. app5/provider1 & app4/provider1 have already been added to workspace. They are
         //    excluded from the result.
         // 2. app3 doesn't have a widget.
@@ -161,45 +158,39 @@ public final class WidgetsPredicationUpdateTaskTest {
                 .stream()
                 .map(itemInfo -> (PendingAddWidgetInfo) itemInfo)
                 .collect(Collectors.toList());
-        assertThat(recommendedWidgets).hasSize(3);
+        assertThat(recommendedWidgets).hasSize(2);
         assertWidgetInfo(recommendedWidgets.get(0).info, mApp2Provider1);
-        assertWidgetInfo(recommendedWidgets.get(1).info, mApp4Provider2);
-        assertWidgetInfo(recommendedWidgets.get(2).info, mApp1Provider1);
+        assertWidgetInfo(recommendedWidgets.get(1).info, mApp1Provider1);
     }
 
     @Test
-    public void widgetsRecommendationRan_localFilterDisabled_shouldReturnWidgetsInPredicationOrder()
+    public void widgetsRecommendationRan_shouldReturnPackageWidgetsWhenEmpty()
             throws Exception {
-        if (FeatureFlags.ENABLE_LOCAL_RECOMMENDED_WIDGETS_FILTER.get()) {
-            return;
-        }
 
-        // WHEN newPredicationTask is executed with 5 predicated widgets.
-        AppTarget widget1 = new AppTarget(new AppTargetId("app1"), "app1", "provider1",
-                mUserHandle);
-        AppTarget widget2 = new AppTarget(new AppTargetId("app1"), "app1", "provider2",
+        // Not installed widget
+        AppTarget widget1 = new AppTarget(new AppTargetId("app1"), "app1", "provider3",
                 mUserHandle);
         // Not installed app
         AppTarget widget3 = new AppTarget(new AppTargetId("app2"), "app3", "provider1",
                 mUserHandle);
-        // Not installed widget
-        AppTarget widget4 = new AppTarget(new AppTargetId("app4"), "app4", "provider3",
+        // Workspace added widgets
+        AppTarget widget4 = new AppTarget(new AppTargetId("app4"), "app4", "provider1",
                 mUserHandle);
         AppTarget widget5 = new AppTarget(new AppTargetId("app5"), "app5", "provider1",
                 mUserHandle);
         mModelHelper.executeTaskForTest(
-                newWidgetsPredicationTask(List.of(widget5, widget3, widget2, widget4, widget1)))
+                newWidgetsPredicationTask(List.of(widget5, widget3, widget4, widget1)))
                 .forEach(Runnable::run);
 
-        // THEN only 3 widgets are returned because the launcher only filters out non-exist widgets.
+        // THEN only 2 widgets are returned because the launcher only filters out non-exist widgets.
         List<PendingAddWidgetInfo> recommendedWidgets = mCallback.mRecommendedWidgets.items
                 .stream()
                 .map(itemInfo -> (PendingAddWidgetInfo) itemInfo)
                 .collect(Collectors.toList());
-        assertThat(recommendedWidgets).hasSize(3);
-        assertWidgetInfo(recommendedWidgets.get(0).info, mApp5Provider1);
-        assertWidgetInfo(recommendedWidgets.get(1).info, mApp1Provider2);
-        assertWidgetInfo(recommendedWidgets.get(2).info, mApp1Provider1);
+        assertThat(recommendedWidgets).hasSize(2);
+        // Another widget from the same package
+        assertWidgetInfo(recommendedWidgets.get(0).info, mApp4Provider2);
+        assertWidgetInfo(recommendedWidgets.get(1).info, mApp1Provider1);
     }
 
     private void assertWidgetInfo(
