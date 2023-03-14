@@ -75,9 +75,17 @@ public class OverviewState extends LauncherState {
     @Override
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
         RecentsView recentsView = launcher.getOverviewPanel();
-        float workspacePageHeight = launcher.getDeviceProfile().getCellLayoutHeight();
         recentsView.getTaskSize(sTempRect);
-        float scale = (float) sTempRect.height() / workspacePageHeight;
+        float scale;
+        DeviceProfile deviceProfile = launcher.getDeviceProfile();
+        if (deviceProfile.isTwoPanels) {
+            // In two panel layout, width does not include both panels or space between them, so
+            // use height instead. We do not use height for handheld, as cell layout can be
+            // shorter than a task and we want the workspace to scale down to task size.
+            scale = (float) sTempRect.height() / deviceProfile.getCellLayoutHeight();
+        } else {
+            scale = (float) sTempRect.width() / deviceProfile.getCellLayoutWidth();
+        }
         float parallaxFactor = 0.5f;
         return new ScaleAndTranslation(scale, 0, -getDefaultSwipeHeight(launcher) * parallaxFactor);
     }
