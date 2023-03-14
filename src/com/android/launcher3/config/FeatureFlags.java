@@ -286,7 +286,7 @@ public final class FeatureFlags {
             "Use local overrides for search request timeout");
 
     public static final BooleanFlag CONTINUOUS_VIEW_TREE_CAPTURE = getDebugFlag(270395171,
-            "CONTINUOUS_VIEW_TREE_CAPTURE", false, "Capture View tree every frame");
+            "CONTINUOUS_VIEW_TREE_CAPTURE", true, "Capture View tree every frame");
 
     public static final BooleanFlag SECONDARY_DRAG_N_DROP_TO_PIN = getDebugFlag(
             270395140, "SECONDARY_DRAG_N_DROP_TO_PIN", false,
