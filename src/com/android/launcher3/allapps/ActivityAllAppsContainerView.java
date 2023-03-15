@@ -19,6 +19,7 @@ import static com.android.launcher3.allapps.ActivityAllAppsContainerView.Adapter
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_COUNT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB;
+import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
 import static com.android.launcher3.util.ScrollableLayoutManager.PREDICTIVE_BACK_MIN_SCALE;
 
 import android.animation.Animator;
@@ -73,6 +74,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
@@ -183,7 +185,12 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mNavBarScrimPaint = new Paint();
         mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
 
-        mAllAppsStore.addUpdateListener(this::onAppsUpdated);
+        AllAppsStore.OnUpdateListener onAppsUpdated = this::onAppsUpdated;
+        if (TestProtocol.sDebugTracing) {
+            Log.d(WORK_TAB_MISSING, "ActivityAllAppsContainer#init registeringListener: " +
+                    onAppsUpdated);
+        }
+        mAllAppsStore.addUpdateListener(onAppsUpdated);
         mActivityContext.addOnDeviceProfileChangeListener(this);
 
         // This is a focus listener that proxies focus from a view into the list view.  This is to
@@ -809,6 +816,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     private void onAppsUpdated() {
         mHasWorkApps = Stream.of(mAllAppsStore.getApps()).anyMatch(mWorkManager.getMatcher());
+        if (TestProtocol.sDebugTracing) {
+            Log.d(WORK_TAB_MISSING, "ActivityAllAppsContainerView#onAppsUpdated hasWorkApps: " +
+                    mHasWorkApps + " allApps: " + mAllAppsStore.getApps().length);
+        }
         if (!isSearching()) {
             rebindAdapters();
             if (mHasWorkApps) {
