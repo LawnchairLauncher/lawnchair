@@ -281,7 +281,7 @@
     <dimen name="deep_shortcuts_elevation">2dp</dimen>
     <dimen name="bg_popup_padding">2dp</dimen>
     <dimen name="bg_popup_item_width">216dp</dimen>
-    <dimen name="bg_popup_item_height">56dp</dimen>
+    <dimen name="bg_popup_item_height">52dp</dimen>
     <dimen name="bg_popup_item_vertical_padding">12dp</dimen>
     <dimen name="pre_drag_view_scale">6dp</dimen>
     <!-- an icon with shortcuts must be dragged this far before the container is removed. -->
@@ -290,10 +290,10 @@
     <dimen name="popup_margin">2dp</dimen>
     <dimen name="popup_single_item_radius">100dp</dimen>
     <dimen name="popup_smaller_radius">4dp</dimen>
-    <dimen name="deep_shortcut_drawable_padding">12dp</dimen>
+    <dimen name="deep_shortcut_drawable_padding">16dp</dimen>
     <dimen name="deep_shortcut_drag_handle_size">16dp</dimen>
     <dimen name="popup_padding_start">10dp</dimen>
-    <dimen name="popup_padding_end">16dp</dimen>
+    <dimen name="popup_padding_end">14dp</dimen>
     <dimen name="popup_vertical_padding">4dp</dimen>
     <dimen name="popup_arrow_width">12dp</dimen>
     <dimen name="popup_arrow_height">10dp</dimen>
@@ -301,32 +301,40 @@
     <!-- popup_padding_start + deep_shortcut_icon_size / 2 -->
     <dimen name="popup_arrow_horizontal_center_offset">26dp</dimen>
     <dimen name="popup_arrow_corner_radius">2dp</dimen>
-    <!-- popup_padding_start + deep_shortcut_icon_size + 10dp -->
-    <dimen name="deep_shortcuts_text_padding_start">52dp</dimen>
+    <!-- popup_padding_start + deep_shortcut_icon_size + 12dp -->
+    <dimen name="deep_shortcuts_text_padding_start">54dp</dimen>
     <dimen name="system_shortcut_icon_size">20dp</dimen>
     <!-- popup_arrow_horizontal_center_offset - system_shortcut_icon_size / 2 -->
     <dimen name="system_shortcut_margin_start">16dp</dimen>
-    <dimen name="system_shortcut_header_height">56dp</dimen>
+    <dimen name="system_shortcut_header_height">52dp</dimen>
     <dimen name="system_shortcut_header_icon_touch_size">48dp</dimen>
     <!-- (system_shortcut_header_icon_touch_size - system_shortcut_icon_size) / 2 -->
     <dimen name="system_shortcut_header_icon_padding">14dp</dimen>
+    <!-- side of start/end icon near to container edge -->
+    <dimen name="system_shortcut_header_icon_padding_outer">16dp</dimen>
+    <!-- side of start/end icon far from container edge -->
+    <dimen name="system_shortcut_header_icon_padding_inner">12dp</dimen>
+
 
     <!-- Notifications -->
     <dimen name="bg_round_rect_radius">8dp</dimen>
+    <dimen name="notification_container_height">104dp</dimen>
     <dimen name="notification_max_trans">8dp</dimen>
     <dimen name="notification_space">8dp</dimen>
-    <dimen name="notification_padding">16dp</dimen>
-    <dimen name="notification_padding_top">18dp</dimen>
+    <dimen name="notification_padding_end">16dp</dimen>
+    <dimen name="notification_padding_bottom">12dp</dimen>
+    <dimen name="notification_padding_top">12dp</dimen>
+    <dimen name="notification_padding_header_top">16dp</dimen>
+    <dimen name="notification_header_padding_start">14dp</dimen>
     <dimen name="notification_header_text_size">14sp</dimen>
     <dimen name="notification_header_count_text_size">12sp</dimen>
     <dimen name="notification_main_title_size">14sp</dimen>
     <dimen name="notification_main_text_size">14sp</dimen>
     <dimen name="notification_circle_icon_size">24dp</dimen>
     <dimen name="notification_icon_size">32dp</dimen>
-    <!-- Space between edge and icon and icon and text -->
-    <dimen name="notification_icon_padding">12dp</dimen>
+    <dimen name="notification_icon_padding_start">10dp</dimen>
     <!-- notification_icon_padding + notification_icon_size + notification_icon_padding -->
-    <dimen name="notification_main_text_padding_start">56dp</dimen>
+    <dimen name="notification_main_text_padding_start">54dp</dimen>
     <dimen name="horizontal_ellipsis_size">18dp</dimen>
 
     <!-- Overview -->
