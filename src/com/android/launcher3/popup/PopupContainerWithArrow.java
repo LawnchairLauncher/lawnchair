@@ -264,14 +264,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
                     shortcuts.get(0), false);
             return;
         }
-        mSystemShortcutContainer = inflateAndAdd(R.layout.system_shortcut_icons_container, this, 0);
-        for (int i = 0; i < shortcuts.size(); i++) {
-            initializeSystemShortcut(
-                    R.layout.system_shortcut_icon_only,
-                    mSystemShortcutContainer,
-                    shortcuts.get(i),
-                    i < shortcuts.size() - 1);
-        }
+        addSystemShortcutsIconsOnly(shortcuts);
     }
 
     @TargetApi(Build.VERSION_CODES.P)
@@ -404,9 +397,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         List<SystemShortcut> nonWidgetSystemShortcuts =
                 getNonWidgetSystemShortcuts(systemShortcuts);
         // If total shortcuts over threshold, collapse system shortcuts to single row
-        addSystemShortcutsMaterialU(nonWidgetSystemShortcuts,
-                R.layout.system_shortcut_icons_container_material_u,
-                R.layout.system_shortcut_icon_only);
+        addSystemShortcutsIconsOnly(nonWidgetSystemShortcuts);
         // May need to recalculate row width
         mContainerWidth = Math.max(mContainerWidth,
                 nonWidgetSystemShortcuts.size() * getResources()
@@ -470,6 +461,33 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
                     mSystemShortcutContainer,
                     systemShortcuts.get(i),
                     i < systemShortcuts.size() - 1);
+        }
+    }
+
+    private void addSystemShortcutsIconsOnly(List<SystemShortcut> systemShortcuts) {
+        if (systemShortcuts.size() == 0) {
+            return;
+        }
+
+        mSystemShortcutContainer = ENABLE_MATERIAL_U_POPUP.get()
+                ? inflateAndAdd(R.layout.system_shortcut_icons_container_material_u, this)
+                : inflateAndAdd(R.layout.system_shortcut_icons_container, this, 0);
+
+        for (int i = 0; i < systemShortcuts.size(); i++) {
+            @LayoutRes int shortcutIconLayout = R.layout.system_shortcut_icon_only;
+            boolean shouldAppendSpacer = true;
+
+            if (i == 0) {
+                shortcutIconLayout = R.layout.system_shortcut_icon_only_start;
+            } else if (i == systemShortcuts.size() - 1) {
+                shortcutIconLayout = R.layout.system_shortcut_icon_only_end;
+                shouldAppendSpacer = false;
+            }
+            initializeSystemShortcut(
+                    shortcutIconLayout,
+                    mSystemShortcutContainer,
+                    systemShortcuts.get(i),
+                    shouldAppendSpacer);
         }
     }
 
@@ -552,13 +570,13 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
      * @param resId Resource id to use for SystemShortcut View.
      * @param container ViewGroup to add the shortcut View to as a parent
      * @param info The SystemShortcut instance to create a View for.
-     * @param shouldAddSpacer If True, will add a spacer after the shortcut, when showing the
+     * @param shouldAppendSpacer If True, will add a spacer after the shortcut, when showing the
      *                        SystemShortcut as an icon only. Used to space the shortcut icons
      *                        evenly.
      * @return The view inflated for the SystemShortcut
      */
     protected View initializeSystemShortcut(int resId, ViewGroup container, SystemShortcut info,
-            boolean shouldAddSpacer) {
+            boolean shouldAppendSpacer) {
         View view = inflateAndAdd(resId, container);
         if (view instanceof DeepShortcutView) {
             // System shortcut takes entire row with icon and text
@@ -567,7 +585,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         } else if (view instanceof ImageView) {
             // System shortcut is just an icon
             info.setIconAndContentDescriptionFor((ImageView) view);
-            if (shouldAddSpacer) inflateAndAdd(R.layout.system_shortcut_spacer, container);
+            if (shouldAppendSpacer) inflateAndAdd(R.layout.system_shortcut_spacer, container);
             view.setTooltipText(view.getContentDescription());
         }
         view.setTag(info);

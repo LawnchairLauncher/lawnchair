@@ -249,6 +249,11 @@
         <item name="android:colorControlHighlight">?attr/popupColorTertiary</item>
     </style>
 
+    <style name="PopupItemIconOnly">
+        <item name="android:colorControlHighlight">?attr/popupColorTertiary</item>
+        <item name="android:background">?android:attr/selectableItemBackgroundBorderless</item>
+    </style>
+
     <!-- Drop targets -->
     <style name="DropTargetButtonBase" parent="@android:style/TextAppearance.DeviceDefault.Medium">
         <item name="android:drawablePadding">@dimen/drop_target_button_drawable_padding</item>
