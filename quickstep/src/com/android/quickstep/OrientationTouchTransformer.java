@@ -33,6 +33,7 @@ import android.view.Surface;
 
 import com.android.launcher3.R;
 import com.android.launcher3.testing.shared.ResourceUtils;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.window.CachedDisplayInfo;
@@ -119,7 +120,7 @@ class OrientationTouchTransformer {
     }
 
     void setNavigationMode(NavigationMode newMode, Info info, Resources newRes) {
-        if (DEBUG) {
+        if (enableLog()) {
             Log.d(TAG, "setNavigationMode new: " + newMode + " oldMode: " + mMode + " " + this);
         }
         if (mMode == newMode) {
@@ -206,7 +207,7 @@ class OrientationTouchTransformer {
      * Ok to call multiple times.
      */
     private void resetSwipeRegions(Info region) {
-        if (DEBUG) {
+        if (enableLog()) {
             Log.d(TAG, "clearing all regions except rotation: " + mCachedDisplayInfo.rotation);
         }
 
@@ -230,9 +231,11 @@ class OrientationTouchTransformer {
     }
 
     private OrientationRectF createRegionForDisplay(Info display) {
-        if (DEBUG) {
+        if (enableLog()) {
             Log.d(TAG, "creating rotation region for: " + mCachedDisplayInfo.rotation
-            + " with mode: " + mMode + " displayRotation: " + display.rotation);
+            + " with mode: " + mMode + " displayRotation: " + display.rotation +
+                    " displaySize: " + display.currentSize +
+                    " navBarHeight: " + mNavBarGesturalHeight);
         }
 
         Point size = display.currentSize;
@@ -296,9 +299,8 @@ class OrientationTouchTransformer {
     }
 
     boolean touchInValidSwipeRegions(float x, float y) {
-        if (DEBUG) {
-            Log.d(TAG, "touchInValidSwipeRegions " + x + "," + y + " in "
-                    + mLastRectTouched + " this: " + this);
+        if (enableLog()) {
+            Log.d(TAG, "touchInValidSwipeRegions " + x + "," + y + " in " + mLastRectTouched);
         }
         if (mLastRectTouched != null) {
             return mLastRectTouched.contains(x, y);
@@ -357,11 +359,17 @@ class OrientationTouchTransformer {
             }
             case ACTION_POINTER_DOWN:
             case ACTION_DOWN: {
+                if (enableLog()) {
+                    Log.d(TAG, "ACTION_DOWN mLastRectTouched: " + mLastRectTouched);
+                }
                 if (mLastRectTouched != null) {
                     return;
                 }
 
                 for (OrientationRectF rect : mSwipeTouchRegions.values()) {
+                    if (enableLog()) {
+                        Log.d(TAG, "ACTION_DOWN rect: " + rect);
+                    }
                     if (rect == null) {
                         continue;
                     }
@@ -376,7 +384,7 @@ class OrientationTouchTransformer {
                             mQuickStepStartingRotation = mLastRectTouched.getRotation();
                             resetSwipeRegions();
                         }
-                        if (DEBUG) {
+                        if (enableLog()) {
                             Log.d(TAG, "set active region: " + rect);
                         }
                         return;
@@ -385,6 +393,10 @@ class OrientationTouchTransformer {
                 break;
             }
         }
+    }
+
+    private boolean enableLog() {
+        return DEBUG || TestProtocol.sDebugTracing;
     }
 
     public void dump(PrintWriter pw) {
