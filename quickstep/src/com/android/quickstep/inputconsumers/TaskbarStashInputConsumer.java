@@ -54,6 +54,7 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
     private final float mScreenWidth;
 
     private final int mTaskbarNavThreshold;
+    private final int mTaskbarNavThresholdY;
     private final boolean mIsTaskbarAllAppsOpen;
     private boolean mHasPassedTaskbarNavThreshold;
 
@@ -75,6 +76,8 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
         Resources res = context.getResources();
         mUnstashArea = res.getDimensionPixelSize(R.dimen.taskbar_unstash_input_area);
         mTaskbarNavThreshold = res.getDimensionPixelSize(R.dimen.taskbar_nav_threshold);
+        mTaskbarNavThresholdY = taskbarActivityContext.getDeviceProfile().heightPx
+                - mTaskbarNavThreshold;
         mIsTaskbarAllAppsOpen =
                 mTaskbarActivityContext != null && mTaskbarActivityContext.isTaskbarAllAppsOpen();
 
@@ -165,7 +168,7 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
                             }
 
                             if (dY < 0) {
-                                dY = -OverScroll.dampedScroll(-dY, mTaskbarNavThreshold);
+                                dY = -OverScroll.dampedScroll(-dY, mTaskbarNavThresholdY);
                                 if (mTransitionCallback != null && !mIsTaskbarAllAppsOpen) {
                                     mTransitionCallback.onActionMove(dY);
                                 }
