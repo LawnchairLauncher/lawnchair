@@ -23,8 +23,6 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
-import android.window.BackEvent;
-import android.window.OnBackAnimationCallback;
 import android.window.OnBackInvokedDispatcher;
 
 import com.android.launcher3.DeviceProfile;
@@ -57,28 +55,6 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         mAllAppsCallbacks = callbacks;
     }
 
-    private final OnBackAnimationCallback mOnBackAnimationCallback = new OnBackAnimationCallback() {
-        @Override
-        public void onBackCancelled() {
-            TaskbarAllAppsSlideInView.this.onBackCancelled();
-        }
-
-        @Override
-        public void onBackInvoked() {
-            TaskbarAllAppsSlideInView.this.onBackInvoked();
-        }
-
-        @Override
-        public void onBackProgressed(BackEvent backEvent) {
-            TaskbarAllAppsSlideInView.this.onBackProgressed(backEvent.getProgress());
-        }
-
-        @Override
-        public void onBackStarted(BackEvent backEvent) {
-            TaskbarAllAppsSlideInView.this.onBackStarted();
-        }
-    };
-
     /** Opens the all apps view. */
     void show(boolean animate) {
         if (mIsOpen || mOpenCloseAnimator.isRunning()) {
@@ -100,7 +76,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
             mAppsView.getAppsRecyclerViewContainer().setOutlineProvider(mViewOutlineProvider);
             mAppsView.getAppsRecyclerViewContainer().setClipToOutline(true);
             findOnBackInvokedDispatcher().registerOnBackInvokedCallback(
-                    OnBackInvokedDispatcher.PRIORITY_DEFAULT, mOnBackAnimationCallback);
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT, this);
         }
     }
 
@@ -113,7 +89,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     protected void handleClose(boolean animate) {
         handleClose(animate, mAllAppsCallbacks.getCloseDuration());
         if (FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
-            findOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(mOnBackAnimationCallback);
+            findOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(this);
         }
     }
 
