@@ -755,7 +755,6 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             mBackButton.setImageDrawable(rotateDrawable);
             mBackButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
             mBackButton.setPadding(paddingleft, paddingTop, paddingRight, paddingBottom);
-            mBackButton.setScaleX(Utilities.isRtl(mContext.getResources()) ? -1f : 1f);
 
             mHomeButton.setImageDrawable(
                     mHomeButton.getContext().getDrawable(R.drawable.ic_sysbar_home_kids));
