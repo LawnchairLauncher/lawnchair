@@ -97,6 +97,8 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         }
 
         if (FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
+            mAppsView.getAppsRecyclerViewContainer().setOutlineProvider(mViewOutlineProvider);
+            mAppsView.getAppsRecyclerViewContainer().setClipToOutline(true);
             findOnBackInvokedDispatcher().registerOnBackInvokedCallback(
                     OnBackInvokedDispatcher.PRIORITY_DEFAULT, mOnBackAnimationCallback);
         }
@@ -135,6 +137,16 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         setShiftRange(dp.allAppsShiftRange);
 
         mActivityContext.addOnDeviceProfileChangeListener(this);
+        setContentBackgroundWithParent(
+                getContext().getDrawable(R.drawable.bg_rounded_corner_bottom_sheet),
+                mAppsView.getBottomSheetBackground());
+    }
+
+    @Override
+    protected void onScaleProgressChanged() {
+        super.onScaleProgressChanged();
+        mAppsView.setClipChildren(!mIsBackProgressing);
+        mAppsView.getAppsRecyclerViewContainer().setClipChildren(!mIsBackProgressing);
     }
 
     @Override
