@@ -46,7 +46,7 @@ public class FlagsFactory {
     private static final String TAG = "FlagsFactory";
 
     private static final FlagsFactory INSTANCE = new FlagsFactory();
-    private static final boolean FLAG_AUTO_APPLY_ENABLED = false;
+    private static final boolean FLAG_AUTO_APPLY_ENABLED = true;
 
     public static final String FLAGS_PREF_NAME = "featureFlags";
     public static final String NAMESPACE_LAUNCHER = "launcher";

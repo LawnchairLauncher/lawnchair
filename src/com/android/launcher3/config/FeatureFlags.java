@@ -348,7 +348,7 @@ public final class FeatureFlags {
             "ENABLE_APP_ICON_IN_INLINE_SHORTCUTS", false, "Show app icon for inline shortcut");
 
     public static final BooleanFlag SHOW_DOT_PAGINATION = getDebugFlag(270395278,
-            "SHOW_DOT_PAGINATION", false, "Enable showing dot pagination in workspace");
+            "SHOW_DOT_PAGINATION", true, "Enable showing dot pagination in workspace");
 
     public static final BooleanFlag LARGE_SCREEN_WIDGET_PICKER = getDebugFlag(270395809,
             "LARGE_SCREEN_WIDGET_PICKER", false, "Enable new widget picker that takes "

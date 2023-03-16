@@ -86,6 +86,7 @@ public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProg
     }
 
     private void clearRegisteredViews() {
+        restoreClippings();
         mMoveFromCenterAnimation.clearRegisteredViews();
 
         mOriginalClipChildren.clear();
