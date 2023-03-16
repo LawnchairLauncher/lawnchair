@@ -112,13 +112,14 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
         if (!hasSeenEducationTip()) {
             addOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
         }
-        setContentBackground(getContext().getDrawable(R.drawable.bg_rounded_corner_bottom_sheet));
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mContent = findViewById(R.id.widgets_bottom_sheet);
+        setContentBackgroundWithParent(
+                getContext().getDrawable(R.drawable.bg_rounded_corner_bottom_sheet), mContent);
     }
 
     @Override
