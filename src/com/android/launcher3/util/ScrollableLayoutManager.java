@@ -33,7 +33,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 public class ScrollableLayoutManager extends GridLayoutManager {
 
     public static final float PREDICTIVE_BACK_MIN_SCALE = 0.9f;
-    private static final float EXTRA_BOTTOM_SPACE_BY_HEIGHT_PERCENT =
+    public static final float EXTRA_BOTTOM_SPACE_BY_HEIGHT_PERCENT =
             (1 - PREDICTIVE_BACK_MIN_SCALE) / 2;
 
     // keyed on item type
