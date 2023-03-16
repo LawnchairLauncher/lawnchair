@@ -28,10 +28,12 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Outline;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.MotionEvent;
@@ -39,8 +41,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.animation.Interpolator;
+import android.window.BackEvent;
 
-import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
@@ -193,8 +195,9 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     }
 
     @Override
-    public void onBackProgressed(@FloatRange(from = 0.0, to = 1.0) float progress) {
-        super.onBackProgressed(progress);
+    @TargetApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    public void onBackProgressed(BackEvent backEvent) {
+        final float progress = backEvent.getProgress();
         float deceleratedProgress =
                 Interpolators.PREDICTIVE_BACK_DECELERATED_EASE.getInterpolation(progress);
         mIsBackProgressing = progress > 0f;

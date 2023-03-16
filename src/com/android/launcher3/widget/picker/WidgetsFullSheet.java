@@ -25,11 +25,13 @@ import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORD
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.PropertyValuesHolder;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -47,8 +49,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.window.BackEvent;
 
-import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
@@ -360,9 +362,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     @Override
-    public void onBackProgressed(@FloatRange(from = 0.0, to = 1.0) float progress) {
-        super.onBackProgressed(progress);
-        mFastScroller.setVisibility(progress > 0 ? View.INVISIBLE : View.VISIBLE);
+    @TargetApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    public void onBackProgressed(@NonNull BackEvent backEvent) {
+        super.onBackProgressed(backEvent);
+        mFastScroller.setVisibility(backEvent.getProgress() > 0 ? View.INVISIBLE : View.VISIBLE);
     }
 
     private void attachScrollbarToRecyclerView(WidgetsRecyclerView recyclerView) {

@@ -97,7 +97,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.OnBackPressedHandler;
 import com.android.launcher3.QuickstepAccessibilityDelegate;
 import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
@@ -172,7 +171,6 @@ import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.unfold.RemoteUnfoldSharedComponent;
 import com.android.systemui.unfold.UnfoldSharedComponent;
@@ -192,7 +190,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -745,48 +742,50 @@ public class QuickstepLauncher extends Launcher {
                 OnBackInvokedDispatcher.PRIORITY_DEFAULT,
                 new OnBackAnimationCallback() {
 
-                    @Nullable OnBackPressedHandler mActiveOnBackPressedHandler;
+                    @Nullable OnBackAnimationCallback mActiveOnBackAnimationCallback;
 
                     @Override
                     public void onBackStarted(@NonNull BackEvent backEvent) {
-                        if (mActiveOnBackPressedHandler != null) {
-                            mActiveOnBackPressedHandler.onBackCancelled();
+                        if (mActiveOnBackAnimationCallback != null) {
+                            mActiveOnBackAnimationCallback.onBackCancelled();
                         }
-                        mActiveOnBackPressedHandler = getOnBackPressedHandler();
-                        mActiveOnBackPressedHandler.onBackStarted();
+                        mActiveOnBackAnimationCallback = getOnBackAnimationCallback();
+                        mActiveOnBackAnimationCallback.onBackStarted(backEvent);
                     }
 
                     @Override
                     public void onBackInvoked() {
-                        // Recreate mActiveOnBackPressedHandler if necessary to avoid NPE because:
+                        // Recreate mActiveOnBackAnimationCallback if necessary to avoid NPE
+                        // because:
                         // 1. b/260636433: In 3-button-navigation mode, onBackStarted() is not
                         // called on ACTION_DOWN before onBackInvoked() is called in ACTION_UP.
                         // 2. Launcher#onBackPressed() will call onBackInvoked() without calling
                         // onBackInvoked() beforehand.
-                        if (mActiveOnBackPressedHandler == null) {
-                            mActiveOnBackPressedHandler = getOnBackPressedHandler();
+                        if (mActiveOnBackAnimationCallback == null) {
+                            mActiveOnBackAnimationCallback = getOnBackAnimationCallback();
                         }
-                        mActiveOnBackPressedHandler.onBackInvoked();
-                        mActiveOnBackPressedHandler = null;
+                        mActiveOnBackAnimationCallback.onBackInvoked();
+                        mActiveOnBackAnimationCallback = null;
                         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onBackInvoked");
                     }
 
                     @Override
                     public void onBackProgressed(@NonNull BackEvent backEvent) {
-                        if (!FeatureFlags.IS_STUDIO_BUILD && mActiveOnBackPressedHandler == null) {
+                        if (!FeatureFlags.IS_STUDIO_BUILD
+                                && mActiveOnBackAnimationCallback == null) {
                             return;
                         }
-                        mActiveOnBackPressedHandler
-                                .onBackProgressed(backEvent.getProgress());
+                        mActiveOnBackAnimationCallback.onBackProgressed(backEvent);
                     }
 
                     @Override
                     public void onBackCancelled() {
-                        if (!FeatureFlags.IS_STUDIO_BUILD && mActiveOnBackPressedHandler == null) {
+                        if (!FeatureFlags.IS_STUDIO_BUILD
+                                && mActiveOnBackAnimationCallback == null) {
                             return;
                         }
-                        mActiveOnBackPressedHandler.onBackCancelled();
-                        mActiveOnBackPressedHandler = null;
+                        mActiveOnBackAnimationCallback.onBackCancelled();
+                        mActiveOnBackAnimationCallback = null;
                     }
                 });
     }
