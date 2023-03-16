@@ -47,6 +47,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.WindowInsets;
 import android.widget.Button;
@@ -264,6 +265,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     public SearchUiManager getSearchUiManager() {
         return mSearchUiManager;
+    }
+
+    public View getBottomSheetBackground() {
+        return mBottomSheetBackground;
     }
 
     public View getSearchView() {
@@ -905,7 +910,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      * The container for A-Z apps (the ViewPager for main+work tabs, or main RV). This is currently
      * hidden while searching.
      **/
-    protected View getAppsRecyclerViewContainer() {
+    public ViewGroup getAppsRecyclerViewContainer() {
         return mViewPager != null ? mViewPager : findViewById(R.id.apps_list_view);
     }
 
