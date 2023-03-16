@@ -132,5 +132,10 @@
         <meta-data
             android:name="xyz.paphonb.quickstepswitcher.maxSdk"
             android:value="${quickstepMaxSdk}" />
+
+        <provider
+            android:name="org.chickenhook.restrictionbypass.BypassProvider"
+            android:authorities="${applicationId}.restrictionbypass"
+            tools:node="remove"/>
     </application>
 </manifest>
