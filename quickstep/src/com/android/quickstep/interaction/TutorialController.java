@@ -703,66 +703,65 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     }
 
     private AlertDialog createSkipTutorialDialog() {
-        if (mContext instanceof GestureSandboxActivity) {
-            GestureSandboxActivity sandboxActivity = (GestureSandboxActivity) mContext;
-            View contentView = View.inflate(
-                    sandboxActivity, R.layout.gesture_tutorial_dialog, null);
-            AlertDialog tutorialDialog = new AlertDialog
-                    .Builder(sandboxActivity, R.style.Theme_AppCompat_Dialog_Alert)
-                    .setView(contentView)
-                    .create();
+        if (!(mContext instanceof GestureSandboxActivity)) {
+            return null;
+        }
+        GestureSandboxActivity sandboxActivity = (GestureSandboxActivity) mContext;
+        View contentView = View.inflate(
+                sandboxActivity, R.layout.gesture_tutorial_dialog, null);
+        AlertDialog tutorialDialog = new AlertDialog
+                .Builder(sandboxActivity, R.style.Theme_AppCompat_Dialog_Alert)
+                .setView(contentView)
+                .create();
 
-            PackageManager packageManager = mContext.getPackageManager();
-            CharSequence tipsAppName = DEFAULT_PIXEL_TIPS_APP_NAME;
+        PackageManager packageManager = mContext.getPackageManager();
+        CharSequence tipsAppName = DEFAULT_PIXEL_TIPS_APP_NAME;
 
-            try {
-                tipsAppName = packageManager.getApplicationLabel(
-                        packageManager.getApplicationInfo(
-                                PIXEL_TIPS_APP_PACKAGE_NAME, PackageManager.GET_META_DATA));
-            } catch (PackageManager.NameNotFoundException e) {
-                Log.e(LOG_TAG,
-                        "Could not find app label for package name: "
-                                + PIXEL_TIPS_APP_PACKAGE_NAME
-                                + ". Defaulting to 'Pixel Tips.'",
-                        e);
-            }
-
-            TextView subtitleTextView = (TextView) contentView.findViewById(
-                    R.id.gesture_tutorial_dialog_subtitle);
-            if (subtitleTextView != null) {
-                subtitleTextView.setText(
-                        mContext.getString(R.string.skip_tutorial_dialog_subtitle, tipsAppName));
-            } else {
-                Log.w(LOG_TAG, "No subtitle view in the skip tutorial dialog to update.");
-            }
-
-            Button cancelButton = (Button) contentView.findViewById(
-                    R.id.gesture_tutorial_dialog_cancel_button);
-            if (cancelButton != null) {
-                cancelButton.setOnClickListener(
-                        v -> tutorialDialog.dismiss());
-            } else {
-                Log.w(LOG_TAG, "No cancel button in the skip tutorial dialog to update.");
-            }
-
-            Button confirmButton = contentView.findViewById(
-                    R.id.gesture_tutorial_dialog_confirm_button);
-            if (confirmButton != null) {
-                confirmButton.setOnClickListener(v -> {
-                    mTutorialFragment.closeTutorial(true);
-                    tutorialDialog.dismiss();
-                });
-            } else {
-                Log.w(LOG_TAG, "No confirm button in the skip tutorial dialog to update.");
-            }
-
-            tutorialDialog.getWindow().setBackgroundDrawable(
-                    new ColorDrawable(sandboxActivity.getColor(android.R.color.transparent)));
-
-            return tutorialDialog;
+        try {
+            tipsAppName = packageManager.getApplicationLabel(
+                    packageManager.getApplicationInfo(
+                            PIXEL_TIPS_APP_PACKAGE_NAME, PackageManager.GET_META_DATA));
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(LOG_TAG,
+                    "Could not find app label for package name: "
+                            + PIXEL_TIPS_APP_PACKAGE_NAME
+                            + ". Defaulting to 'Pixel Tips.'",
+                    e);
         }
 
-        return null;
+        TextView subtitleTextView = (TextView) contentView.findViewById(
+                R.id.gesture_tutorial_dialog_subtitle);
+        if (subtitleTextView != null) {
+            subtitleTextView.setText(
+                    mContext.getString(R.string.skip_tutorial_dialog_subtitle, tipsAppName));
+        } else {
+            Log.w(LOG_TAG, "No subtitle view in the skip tutorial dialog to update.");
+        }
+
+        Button cancelButton = (Button) contentView.findViewById(
+                R.id.gesture_tutorial_dialog_cancel_button);
+        if (cancelButton != null) {
+            cancelButton.setOnClickListener(
+                    v -> tutorialDialog.dismiss());
+        } else {
+            Log.w(LOG_TAG, "No cancel button in the skip tutorial dialog to update.");
+        }
+
+        Button confirmButton = contentView.findViewById(
+                R.id.gesture_tutorial_dialog_confirm_button);
+        if (confirmButton != null) {
+            confirmButton.setOnClickListener(v -> {
+                mTutorialFragment.closeTutorialStep(true);
+                tutorialDialog.dismiss();
+            });
+        } else {
+            Log.w(LOG_TAG, "No confirm button in the skip tutorial dialog to update.");
+        }
+
+        tutorialDialog.getWindow().setBackgroundDrawable(
+                new ColorDrawable(sandboxActivity.getColor(android.R.color.transparent)));
+
+        return tutorialDialog;
     }
 
     protected AnimatorSet createFingerDotAppearanceAnimatorSet() {
