@@ -547,8 +547,8 @@ public class TouchInteractionService extends Service
             boolean isFreeformActive =
                     (systemUiStateFlags & SYSUI_STATE_FREEFORM_ACTIVE_IN_DESKTOP_MODE) != 0;
             if (wasFreeformActive != isFreeformActive) {
-                DesktopVisibilityController controller = mOverviewComponentObserver
-                        .getActivityInterface().getDesktopVisibilityController();
+                DesktopVisibilityController controller =
+                        LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
                 if (controller != null) {
                     controller.setFreeformTasksVisible(isFreeformActive);
                 }
