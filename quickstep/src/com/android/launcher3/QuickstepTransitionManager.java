@@ -794,7 +794,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
                 if (initOnly) {
                     // For the init pass, we want full alpha since the window is not yet ready.
-                    floatingView.update(1f, 255, floatingIconBounds, percent, 0f,
+                    floatingView.update(1f, floatingIconBounds, percent, 0f,
                             mWindowRadius.value * scale, true /* isOpening */);
                     return;
                 }
@@ -822,7 +822,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                             matrix.postTranslate(windowTransX0, windowTransY0);
                         }
 
-                        floatingView.update(mIconAlpha.value, 255, floatingIconBounds, percent, 0f,
+                        floatingView.update(mIconAlpha.value, floatingIconBounds, percent, 0f,
                                 mWindowRadius.value * scale, true /* isOpening */);
                         builder.setMatrix(matrix)
                                 .setWindowCrop(crop)
@@ -1381,8 +1381,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     windowTargetBounds, startWindowCornerRadius) {
                 @Override
                 public void onUpdate(RectF currentRectF, float progress) {
-                    finalFloatingIconView.update(1f, 255 /* fgAlpha */, currentRectF, progress,
-                            windowAlphaThreshold, getCornerRadius(progress), false);
+                    finalFloatingIconView.update(1f, currentRectF, progress, windowAlphaThreshold,
+                            getCornerRadius(progress), false);
 
                     super.onUpdate(currentRectF, progress);
                 }
