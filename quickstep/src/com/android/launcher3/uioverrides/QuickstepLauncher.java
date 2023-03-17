@@ -1222,10 +1222,17 @@ public class QuickstepLauncher extends Launcher {
     }
 
     @Override
+    protected void onDeviceProfileInitiated() {
+        super.onDeviceProfileInitiated();
+        SystemUiProxy.INSTANCE.get(this).setLauncherAppIconSize(mDeviceProfile.iconSizePx);
+    }
+
+    @Override
     public void dispatchDeviceProfileChanged() {
         super.dispatchDeviceProfileChanged();
         Trace.instantForTrack(TRACE_TAG_APP, "QuickstepLauncher#DeviceProfileChanged",
                 getDeviceProfile().toSmallString());
+        SystemUiProxy.INSTANCE.get(this).setLauncherAppIconSize(mDeviceProfile.iconSizePx);
     }
 
     /**
