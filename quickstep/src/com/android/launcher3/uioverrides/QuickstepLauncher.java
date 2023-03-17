@@ -172,7 +172,6 @@ import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.unfold.RemoteUnfoldSharedComponent;
 import com.android.systemui.unfold.UnfoldSharedComponent;
@@ -192,7 +191,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -1220,10 +1218,17 @@ public class QuickstepLauncher extends Launcher {
     }
 
     @Override
+    protected void onDeviceProfileInitiated() {
+        super.onDeviceProfileInitiated();
+        SystemUiProxy.INSTANCE.get(this).setLauncherAppIconSize(mDeviceProfile.iconSizePx);
+    }
+
+    @Override
     public void dispatchDeviceProfileChanged() {
         super.dispatchDeviceProfileChanged();
         Trace.instantForTrack(TRACE_TAG_APP, "QuickstepLauncher#DeviceProfileChanged",
                 getDeviceProfile().toSmallString());
+        SystemUiProxy.INSTANCE.get(this).setLauncherAppIconSize(mDeviceProfile.iconSizePx);
     }
 
     /**
