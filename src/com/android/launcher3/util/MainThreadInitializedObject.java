@@ -37,8 +37,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import app.lawnchair.LawnchairApp;
-
 /**
  * Utility class for defining singletons which are initiated on main thread.
  */
@@ -57,17 +55,9 @@ public class MainThreadInitializedObject<T> {
         }
 
         if (mValue == null) {
-            Context app;
-            try {
-                app = context.getApplicationContext();
-            } catch (Exception ignored) {
-                // https://github.com/LawnchairLauncher/lawnchair/issues/3111
-                app = LawnchairApp.getInstance();
-            }
-            Context appContext = app;
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 mValue = TraceHelper.allowIpcs("main.thread.object",
-                        () -> mProvider.get(appContext));
+                        () -> mProvider.get(context.getApplicationContext()));
                 onPostInit(context);
             } else {
                 try {
