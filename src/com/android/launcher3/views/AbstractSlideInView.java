@@ -28,17 +28,22 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Outline;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.view.animation.Interpolator;
+import android.window.BackEvent;
 
-import androidx.annotation.FloatRange;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 
@@ -96,8 +101,21 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
 
     private final AnimatedFloat mSlideInViewScale =
             new AnimatedFloat(this::onScaleProgressChanged, VIEW_NO_SCALE);
-    private boolean mIsBackProgressing;
+    protected boolean mIsBackProgressing;
     @Nullable private Drawable mContentBackground;
+    @Nullable private View mContentBackgroundParentView;
+
+    protected final ViewOutlineProvider mViewOutlineProvider = new ViewOutlineProvider() {
+        @Override
+        public void getOutline(View view, Outline outline) {
+            outline.setRect(
+                    0,
+                    0,
+                    view.getMeasuredWidth(),
+                    view.getMeasuredHeight() + getBottomOffsetPx()
+            );
+        }
+    };
 
     public AbstractSlideInView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -117,10 +135,6 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         });
         int scrimColor = getScrimColor(context);
         mColorScrim = scrimColor != -1 ? createColorScrim(context, scrimColor) : null;
-    }
-
-    protected void setContentBackground(Drawable drawable) {
-        mContentBackground = drawable;
     }
 
     protected void attachToContainer() {
@@ -181,8 +195,9 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     }
 
     @Override
-    public void onBackProgressed(@FloatRange(from = 0.0, to = 1.0) float progress) {
-        super.onBackProgressed(progress);
+    @TargetApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    public void onBackProgressed(BackEvent backEvent) {
+        final float progress = backEvent.getProgress();
         float deceleratedProgress =
                 Interpolators.PREDICTIVE_BACK_DECELERATED_EASE.getInterpolation(progress);
         mIsBackProgressing = progress > 0f;
@@ -190,7 +205,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
                 + (1 - PREDICTIVE_BACK_MIN_SCALE) * (1 - deceleratedProgress));
     }
 
-    private void onScaleProgressChanged() {
+    protected void onScaleProgressChanged() {
         float scaleProgress = mSlideInViewScale.value;
         SCALE_PROPERTY.set(this, scaleProgress);
         setClipChildren(!mIsBackProgressing);
@@ -222,16 +237,27 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
         super.dispatchDraw(canvas);
     }
 
+    /**
+     * Set slide in view's background {@link Drawable} which will be draw onto a parent view in
+     * {@link #dispatchDraw(Canvas)}
+     */
+    protected void setContentBackgroundWithParent(
+            @NonNull Drawable drawable, @NonNull View parentView) {
+        mContentBackground = drawable;
+        mContentBackgroundParentView = parentView;
+    }
+
     /** Draw scaled background during predictive back animation. */
-    protected void drawScaledBackground(Canvas canvas) {
-        if (mContentBackground == null) {
+    private void drawScaledBackground(Canvas canvas) {
+        if (mContentBackground == null || mContentBackgroundParentView == null) {
             return;
         }
         mContentBackground.setBounds(
-                mContent.getLeft(),
-                mContent.getTop() + (int) mContent.getTranslationY(),
-                mContent.getRight(),
-                mContent.getBottom() + (mIsBackProgressing ? getBottomOffsetPx() : 0));
+                mContentBackgroundParentView.getLeft(),
+                mContentBackgroundParentView.getTop() + (int) mContent.getTranslationY(),
+                mContentBackgroundParentView.getRight(),
+                mContentBackgroundParentView.getBottom()
+                        + (mIsBackProgressing ? getBottomOffsetPx() : 0));
         mContentBackground.draw(canvas);
     }
 

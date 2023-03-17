@@ -25,12 +25,13 @@ import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORD
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.PropertyValuesHolder;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Outline;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -41,7 +42,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewOutlineProvider;
 import android.view.WindowInsets;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
@@ -49,8 +49,8 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.window.BackEvent;
 
-import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
@@ -170,18 +170,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 }
             };
 
-    private final ViewOutlineProvider mViewOutlineProvider = new ViewOutlineProvider() {
-        @Override
-        public void getOutline(View view, Outline outline) {
-            outline.setRect(
-                    0,
-                    0,
-                    view.getMeasuredWidth(),
-                    view.getMeasuredHeight() + getBottomOffsetPx()
-            );
-        }
-    };
-
     @Px private final int mTabsHeight;
 
     @Nullable private WidgetsRecyclerView mCurrentWidgetsRecyclerView;
@@ -227,7 +215,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         mUserManagerState.init(UserCache.INSTANCE.get(context),
                 context.getSystemService(UserManager.class));
-        setContentBackground(getContext().getDrawable(R.drawable.bg_widgets_full_sheet));
     }
 
     public WidgetsFullSheet(Context context, AttributeSet attrs) {
@@ -238,6 +225,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     protected void onFinishInflate() {
         super.onFinishInflate();
         mContent = findViewById(R.id.container);
+        setContentBackgroundWithParent(getContext().getDrawable(R.drawable.bg_widgets_full_sheet),
+                mContent);
 
         mContent.setOutlineProvider(mViewOutlineProvider);
         mContent.setClipToOutline(true);
@@ -373,9 +362,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     @Override
-    public void onBackProgressed(@FloatRange(from = 0.0, to = 1.0) float progress) {
-        super.onBackProgressed(progress);
-        mFastScroller.setVisibility(progress > 0 ? View.INVISIBLE : View.VISIBLE);
+    @TargetApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    public void onBackProgressed(@NonNull BackEvent backEvent) {
+        super.onBackProgressed(backEvent);
+        mFastScroller.setVisibility(backEvent.getProgress() > 0 ? View.INVISIBLE : View.VISIBLE);
     }
 
     private void attachScrollbarToRecyclerView(WidgetsRecyclerView recyclerView) {
