@@ -16,7 +16,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/system_shortcut_icons"
+    android:id="@+id/system_shortcuts_container"
     android:tag="@string/popup_container_iterate_children"
     android:layout_width="match_parent"
     android:layout_height="@dimen/system_shortcut_header_height"
