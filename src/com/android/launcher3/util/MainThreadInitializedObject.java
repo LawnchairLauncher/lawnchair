@@ -57,16 +57,15 @@ public class MainThreadInitializedObject<T> {
         }
 
         if (mValue == null) {
+            Context app;
+            try {
+                app = context.getApplicationContext();
+            } catch (Exception ignored) {
+                // https://github.com/LawnchairLauncher/lawnchair/issues/3111
+                app = LawnchairApp.getInstance();
+            }
+            Context appContext = app;
             if (Looper.myLooper() == Looper.getMainLooper()) {
-                Context app;
-                try {
-                    app = context.getApplicationContext();
-                } catch (Exception ignored) {
-                    // https://github.com/LawnchairLauncher/lawnchair/issues/3111
-                    app = LawnchairApp.getInstance();
-                }
-                Context appContext = app;
-
                 mValue = TraceHelper.allowIpcs("main.thread.object",
                         () -> mProvider.get(appContext));
                 onPostInit(context);
