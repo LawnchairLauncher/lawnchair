@@ -176,6 +176,7 @@ public class DepthController implements StateHandler<LauncherState>,
     public DepthController(Launcher l) {
         mLauncher = l;
         // TODO: No need to use app context here after merging Android 13 branch.
+        // https://cs.android.com/android/platform/superproject/+/master:packages/apps/Launcher3/quickstep/src/com/android/launcher3/uioverrides/QuickstepLauncher.java;drc=eef0b1640bbc8c26c824836271a71b929726e895;l=175
         Preference<Boolean, Boolean, ?> depthPref = PreferenceManager2.getInstance(LawnchairApp.getInstance()).getWallpaperDepthEffect();
         mEnableDepth = PreferenceExtensionsKt.firstBlocking(depthPref);
     }
