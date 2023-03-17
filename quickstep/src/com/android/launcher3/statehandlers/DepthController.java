@@ -48,6 +48,7 @@ import com.android.systemui.shared.system.WallpaperManagerCompat;
 import com.patrykmichalik.opto.domain.Preference;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
+import app.lawnchair.LawnchairApp;
 import app.lawnchair.preferences.BasePreferenceManager;
 import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
@@ -174,7 +175,8 @@ public class DepthController implements StateHandler<LauncherState>,
 
     public DepthController(Launcher l) {
         mLauncher = l;
-        Preference<Boolean, Boolean, ?> depthPref = PreferenceManager2.getInstance(l).getWallpaperDepthEffect();
+        // TODO: No need to use app context here after merging Android 13 branch.
+        Preference<Boolean, Boolean, ?> depthPref = PreferenceManager2.getInstance(LawnchairApp.getInstance()).getWallpaperDepthEffect();
         mEnableDepth = PreferenceExtensionsKt.firstBlocking(depthPref);
     }
 
