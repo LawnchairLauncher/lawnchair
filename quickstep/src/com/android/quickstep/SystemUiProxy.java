@@ -550,6 +550,19 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
+    /**
+     * Sets the app icon size in pixel used by Launcher all apps.
+     */
+    public void setLauncherAppIconSize(int iconSizePx) {
+        if (mPip != null) {
+            try {
+                mPip.setLauncherAppIconSize(iconSizePx);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setLauncherAppIconSize", e);
+            }
+        }
+    }
+
     //
     // Splitscreen
     //
