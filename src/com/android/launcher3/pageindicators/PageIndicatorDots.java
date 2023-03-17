@@ -25,42 +25,30 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Outline;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
-import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
-import android.util.IntProperty;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewOutlineProvider;
 import android.view.animation.Interpolator;
 import android.view.animation.OvershootInterpolator;
 
-import androidx.annotation.Nullable;
-
-import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.util.Themes;
 
 /**
  * {@link PageIndicator} which shows dots per page. The active page is shown with the current
  * accent color.
  */
-public class PageIndicatorDots extends View implements Insettable, PageIndicator {
+public class PageIndicatorDots extends View {
 
     private static final float SHIFT_PER_ANIMATION = 0.5f;
     private static final float SHIFT_THRESHOLD = 0.1f;
     private static final long ANIMATION_DURATION = 150;
-    private static final int PAGINATION_FADE_DELAY = ViewConfiguration.getScrollDefaultDelay();
-    private static final int PAGINATION_FADE_IN_DURATION = 83;
-    private static final int PAGINATION_FADE_OUT_DURATION = 167;
 
     private static final int ENTER_ANIMATION_START_DELAY = 300;
     private static final int ENTER_ANIMATION_STAGGERED_DELAY = 150;
@@ -70,9 +58,6 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     private static final int DOT_ALPHA = 128;
     private static final float DOT_ALPHA_FRACTION = 0.5f;
     private static final int DOT_GAP_FACTOR = SHOW_DOT_PAGINATION.get() ? 4 : 3;
-    private static final int VISIBLE_ALPHA = 255;
-    private static final int INVISIBLE_ALPHA = 0;
-    private Paint mPaginationPaint;
 
     // This value approximately overshoots to 1.5 times the original size.
     private static final float ENTER_ANIMATION_OVERSHOOT_TENSION = 4.9f;
@@ -94,30 +79,14 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
                 }
     };
 
-    private static final IntProperty<PageIndicatorDots> PAGINATION_ALPHA =
-            new IntProperty<PageIndicatorDots>("pagination_alpha") {
-        @Override
-        public Integer get(PageIndicatorDots obj) {
-            return obj.mPaginationPaint.getAlpha();
-        }
-
-        @Override
-        public void setValue(PageIndicatorDots obj, int alpha) {
-            obj.mPaginationPaint.setAlpha(alpha);
-            obj.invalidate();
-        }
-    };
-
-    private final Handler mDelayedPaginationFadeHandler = new Handler(Looper.getMainLooper());
     private final float mDotRadius;
     private final float mCircleGap;
     private final boolean mIsRtl;
 
+    private final Paint mPaginationPaint;
+
     private int mNumPages;
     private int mActivePage;
-    private int mTotalScroll;
-    private boolean mShouldAutoHide;
-    private int mToAlpha;
 
     /**
      * The current position of the active dot including the animation progress.
@@ -131,12 +100,8 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     private float mCurrentPosition;
     private float mFinalPosition;
     private ObjectAnimator mAnimator;
-    private @Nullable ObjectAnimator mAlphaAnimator;
 
     private float[] mEntryAnimationRadiusFactors;
-
-    private final Runnable mHidePaginationRunnable =
-            () -> animatePaginationToAlpha(INVISIBLE_ALPHA);
 
     public PageIndicatorDots(Context context) {
         this(context, null);
@@ -151,36 +116,33 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
         mPaginationPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaginationPaint.setStyle(Style.FILL);
-        mPaginationPaint.setColor(Themes.getAttrColor(context, R.attr.folderPaginationColor));
+
+        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.PagedIndicator);
+        mPaginationPaint.setColor(ta.getColor(R.styleable.PagedIndicator_indicatorDotColor, 0));
+        ta.recycle();
+
         mDotRadius = (SHOW_DOT_PAGINATION.get()
                 ? getResources().getDimension(R.dimen.page_indicator_dot_size_v2)
                 : getResources().getDimension(R.dimen.page_indicator_dot_size))
                 / 2;
         mCircleGap = DOT_GAP_FACTOR * mDotRadius;
         setOutlineProvider(new MyOutlineProver());
-        mIsRtl = Utilities.isRtl(getResources());
+        mIsRtl = getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
     }
 
-    @Override
     public void setScroll(int currentScroll, int totalScroll) {
         if (SHOW_DOT_PAGINATION.get() && mActivePage != 0 && currentScroll == 0) {
             CURRENT_POSITION.set(this, (float) mActivePage);
             return;
         }
 
-        if (mNumPages <= 1) {
+        if (mNumPages <= 1 || totalScroll == 0) {
             return;
-        }
-
-        if (mShouldAutoHide) {
-            animatePaginationToAlpha(VISIBLE_ALPHA);
         }
 
         if (mIsRtl) {
             currentScroll = totalScroll - currentScroll;
         }
-
-        mTotalScroll = totalScroll;
 
         int scrollPerPage = totalScroll / (mNumPages - 1);
         int pageToLeft = scrollPerPage == 0 ? 0 : currentScroll / scrollPerPage;
@@ -191,87 +153,12 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
         if (currentScroll < pageToLeftScroll + scrollThreshold) {
             // scroll is within the left page's threshold
             animateToPosition(pageToLeft);
-            if (mShouldAutoHide) {
-                hideAfterDelay();
-            }
         } else if (currentScroll > pageToRightScroll - scrollThreshold) {
             // scroll is far enough from left page to go to the right page
             animateToPosition(pageToLeft + 1);
-            if (mShouldAutoHide) {
-                hideAfterDelay();
-            }
         } else {
             // scroll is between left and right page
             animateToPosition(pageToLeft + SHIFT_PER_ANIMATION);
-            if (mShouldAutoHide) {
-                mDelayedPaginationFadeHandler.removeCallbacksAndMessages(null);
-            }
-        }
-    }
-
-    @Override
-    public void setShouldAutoHide(boolean shouldAutoHide) {
-        mShouldAutoHide = shouldAutoHide && SHOW_DOT_PAGINATION.get();
-        if (shouldAutoHide && mPaginationPaint.getAlpha() > INVISIBLE_ALPHA) {
-            hideAfterDelay();
-        } else if (!shouldAutoHide) {
-            mDelayedPaginationFadeHandler.removeCallbacksAndMessages(null);
-        }
-    }
-
-    @Override
-    public void setPaintColor(int color) {
-        mPaginationPaint.setColor(color);
-    }
-
-    private void hideAfterDelay() {
-        mDelayedPaginationFadeHandler.removeCallbacksAndMessages(null);
-        mDelayedPaginationFadeHandler.postDelayed(mHidePaginationRunnable, PAGINATION_FADE_DELAY);
-    }
-
-    private void animatePaginationToAlpha(int alpha) {
-        if (alpha == mToAlpha) {
-            // Ignore the new animation if it is going to the same alpha as the current animation.
-            return;
-        }
-
-        if (mAlphaAnimator != null) {
-            mAlphaAnimator.cancel();
-        }
-        mAlphaAnimator = ObjectAnimator.ofInt(this, PAGINATION_ALPHA,
-                alpha);
-        // If we are animating to decrease the alpha, then it's a fade out animation
-        // whereas if we are animating to increase the alpha, it's a fade in animation.
-        mAlphaAnimator.setDuration(alpha < mToAlpha
-                ? PAGINATION_FADE_OUT_DURATION
-                : PAGINATION_FADE_IN_DURATION);
-        mAlphaAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mAlphaAnimator = null;
-            }
-        });
-        mAlphaAnimator.start();
-        mToAlpha = alpha;
-    }
-
-    /**
-     * Pauses all currently running animations.
-     */
-    @Override
-    public void pauseAnimations() {
-        if (mAlphaAnimator != null) {
-            mAlphaAnimator.pause();
-        }
-    }
-
-    /**
-     * Force-ends all currently running or paused animations.
-     */
-    @Override
-    public void skipAnimationsToEnd() {
-        if (mAlphaAnimator != null) {
-            mAlphaAnimator.end();
         }
     }
 
@@ -281,14 +168,24 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
             mCurrentPosition = mFinalPosition;
         }
         if (mAnimator == null && Float.compare(mCurrentPosition, mFinalPosition) != 0) {
+            onAnimationStateChanged(false);
             float positionForThisAnim = mCurrentPosition > mFinalPosition ?
                     mCurrentPosition - SHIFT_PER_ANIMATION : mCurrentPosition + SHIFT_PER_ANIMATION;
             mAnimator = ObjectAnimator.ofFloat(this, CURRENT_POSITION, positionForThisAnim);
             mAnimator.addListener(new AnimationCycleListener());
             mAnimator.setDuration(ANIMATION_DURATION);
             mAnimator.start();
+        } else if (mAnimator == null) {
+            // The state is only settled if the indicator lands on a int value
+            onAnimationStateChanged(Float.compare(Math.round(mFinalPosition), mFinalPosition) == 0);
         }
     }
+
+    /**
+     * Called when the animation state of the page indicator changes.
+     * @param isSettled true if the page indicator has settled at its final position
+     */
+    protected void onAnimationStateChanged(boolean isSettled) { }
 
     public void stopAllAnimations() {
         if (mAnimator != null) {
@@ -345,14 +242,10 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
         animSet.start();
     }
 
-    @Override
     public void setActiveMarker(int activePage) {
-        if (mActivePage != activePage) {
-            mActivePage = activePage;
-        }
+        mActivePage = activePage;
     }
 
-    @Override
     public void setMarkersCount(int numMarkers) {
         mNumPages = numMarkers;
         requestLayout();
@@ -371,11 +264,6 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     @Override
     protected void onDraw(Canvas canvas) {
         if (mNumPages < 2) {
-            return;
-        }
-
-        if (mShouldAutoHide && mTotalScroll == 0) {
-            mPaginationPaint.setAlpha(INVISIBLE_ALPHA);
             return;
         }
 
@@ -480,20 +368,9 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
         @Override
         public void onAnimationEnd(Animator animation) {
             if (!mCancelled) {
-                if (mShouldAutoHide && SHOW_DOT_PAGINATION.get()) {
-                    hideAfterDelay();
-                }
                 mAnimator = null;
                 animateToPosition(mFinalPosition);
             }
         }
-    }
-
-    /**
-     * We need to override setInsets to prevent InsettableFrameLayout from applying different
-     * margins on the pagination.
-     */
-    @Override
-    public void setInsets(Rect insets) {
     }
 }
