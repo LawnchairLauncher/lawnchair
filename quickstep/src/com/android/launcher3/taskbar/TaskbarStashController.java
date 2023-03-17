@@ -27,7 +27,8 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TRANSIENT_TASKBAR_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TRANSIENT_TASKBAR_SHOW;
-import static com.android.launcher3.taskbar.Utilities.appendFlag;
+import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
+import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BOUNCER_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SWITCHER_SHOWING;
@@ -75,6 +76,8 @@ import java.util.function.IntPredicate;
  * create a cohesive animation between stashed/unstashed states.
  */
 public class TaskbarStashController implements TaskbarControllers.LoggableTaskbarController {
+    private static final String TAG = TaskbarStashController.class.getSimpleName();
+    private static final boolean DEBUG = false;
 
     public static final int FLAG_IN_APP = 1 << 0;
     public static final int FLAG_STASHED_IN_APP_MANUAL = 1 << 1; // long press, persisted
@@ -1095,12 +1098,22 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
          */
         @Nullable
         public Animator createSetStateAnimator(int flags, long duration) {
+            boolean isStashed = mStashCondition.test(flags);
+
+            if (DEBUG) {
+                String stateString = formatFlagChange(flags, mPrevFlags,
+                            TaskbarStashController::getStateString);
+                Log.d(TAG, "createSetStateAnimator: flags: " + stateString
+                        + ", duration: " + duration
+                        + ", isStashed: " + isStashed
+                        + ", mIsStashed: " + mIsStashed);
+            }
+
             int changedFlags = mPrevFlags ^ flags;
             if (mPrevFlags != flags) {
                 onStateChangeApplied(changedFlags);
                 mPrevFlags = flags;
             }
-            boolean isStashed = mStashCondition.test(flags);
             boolean isHotseatIconOnTopWhenAligned =
                     mControllers.uiController.isHotseatIconOnTopWhenAligned();
             // If an animation has started and mIsHotseatIconOnTopWhenAligned is changed, we need
