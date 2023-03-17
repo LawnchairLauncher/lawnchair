@@ -77,14 +77,13 @@ public class FallbackTaskbarUIController extends TaskbarUIController {
 
     /**
      * Creates an animation to animate the taskbar for the given state (but does not start it).
+     * Currently this animation just force stashes the taskbar in Overview.
      */
     public Animator createAnimToRecentsState(RecentsState toState, long duration) {
-        // Force stash the taskbar in overview modal state or when going home.
-        boolean useStashedLauncherState =
-                toState.hasOverviewActions() || toState == RecentsState.HOME;
-        boolean stashedLauncherState = useStashedLauncherState && (
-                (FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get() && toState == RecentsState.MODAL_TASK)
-                        || toState == RecentsState.HOME);
+        boolean useStashedLauncherState = toState.hasOverviewActions();
+        boolean stashedLauncherState =
+                useStashedLauncherState && FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get()
+                        && toState == RecentsState.MODAL_TASK;
         TaskbarStashController stashController = mControllers.taskbarStashController;
         // Set both FLAG_IN_STASHED_LAUNCHER_STATE and FLAG_IN_APP to ensure the state is respected.
         // For all other states, just use the current stashed-in-app setting (e.g. if long clicked).
