@@ -638,7 +638,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 (mLauncher.getTaskbarUIController() == null || !isTransientTaskbar(mLauncher))
                         ? null
                         : mLauncher.getTaskbarUIController().findMatchingView(v),
-                !appTargetsAreTranslucent, launcherIconBounds, true /* isOpening */);
+                null /* fadeOutView */, !appTargetsAreTranslucent, launcherIconBounds,
+                true /* isOpening */);
         Rect crop = new Rect();
         Matrix matrix = new Matrix();
 
@@ -1352,7 +1353,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     mDeviceProfile.isMultiWindowMode ? 0 : getWindowCornerRadius(mLauncher),
                     isTransluscent, fallbackBackgroundColor);
         } else if (launcherView != null) {
-            floatingIconView = getFloatingIconView(mLauncher, launcherView,
+            floatingIconView = getFloatingIconView(mLauncher, launcherView, null,
                     mLauncher.getTaskbarUIController() == null
                             ? null
                             : mLauncher.getTaskbarUIController().findMatchingView(launcherView),
