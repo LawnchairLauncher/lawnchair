@@ -114,10 +114,8 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"შეტყობინებები"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"სწრაფი პარამეტრები"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"ამოცანათა ზოლი"</string>
-    <!-- no translation found for taskbar_a11y_shown_title (6842833581088937713) -->
-    <skip />
-    <!-- no translation found for taskbar_a11y_hidden_title (9154903639589659284) -->
-    <skip />
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"ამოცანათა ზოლი ნაჩვენებია"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"ამოცანათა ზოლი დამალულია"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"ნავიგაციის ზოლი"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ზემოთ/მარცხნივ გადატანა"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ქვემოთ/მარჯვნივ გადატანა"</string>

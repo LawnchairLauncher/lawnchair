@@ -114,10 +114,8 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Notificaciones"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Config. rápida"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Barra de tareas"</string>
-    <!-- no translation found for taskbar_a11y_shown_title (6842833581088937713) -->
-    <skip />
-    <!-- no translation found for taskbar_a11y_hidden_title (9154903639589659284) -->
-    <skip />
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Barra de tareas visible"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Barra de tareas oculta"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Barra de navegación"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mover a la parte superior o izquierda"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mover a la parte inferior o derecha"</string>
