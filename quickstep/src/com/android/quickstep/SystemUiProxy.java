@@ -21,6 +21,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.app.ActivityManager;
+import android.app.ActivityOptions;
 import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
 import android.content.ComponentName;
@@ -38,6 +39,8 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.util.Log;
+import android.view.IRecentsAnimationController;
+import android.view.IRecentsAnimationRunner;
 import android.view.IRemoteAnimationRunner;
 import android.view.MotionEvent;
 import android.view.RemoteAnimationAdapter;
@@ -45,6 +48,7 @@ import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
 import android.window.IOnBackInvokedCallback;
 import android.window.RemoteTransition;
+import android.window.TaskSnapshot;
 import android.window.TransitionFilter;
 
 import androidx.annotation.Nullable;
@@ -55,6 +59,9 @@ import com.android.internal.util.ScreenshotRequest;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
+import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
+import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.smartspace.ILauncherUnlockAnimationController;
 import com.android.systemui.shared.system.smartspace.ISysuiUnlockAnimationController;
 import com.android.systemui.shared.system.smartspace.SmartspaceState;
@@ -135,9 +142,20 @@ public class SystemUiProxy implements ISystemUiProxy {
     // TODO(141886704): Find a way to remove this
     private int mLastSystemUiStateFlags;
 
+    /**
+     * This is a singleton pending intent that is used to start recents via Shell (which is a
+     * different process). It is bare-bones, so it's expected that the component and options will
+     * be provided via fill-in intent.
+     */
+    private final PendingIntent mRecentsPendingIntent;
+
     public SystemUiProxy(Context context) {
         mContext = context;
         mAsyncHandler = new Handler(UI_HELPER_EXECUTOR.getLooper(), this::handleMessageAsync);
+        final Intent baseIntent = new Intent().setPackage(mContext.getPackageName());
+        mRecentsPendingIntent = PendingIntent.getActivity(mContext, 0, baseIntent,
+                PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT
+                        | Intent.FILL_IN_COMPONENT);
     }
 
     @Override
@@ -1078,5 +1096,42 @@ public class SystemUiProxy implements ISystemUiProxy {
         } catch (RemoteException e) {
             Log.e(TAG, "Failed call setUnfoldAnimationListener", e);
         }
+    }
+
+
+    /**
+     * Starts the recents activity. The caller should manage the thread on which this is called.
+     */
+    public boolean startRecentsActivity(Intent intent, ActivityOptions options,
+            RecentsAnimationListener listener) {
+        final IRecentsAnimationRunner runner = new IRecentsAnimationRunner.Stub() {
+            @Override
+            public void onAnimationStart(IRecentsAnimationController controller,
+                    RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
+                    Rect homeContentInsets, Rect minimizedHomeBounds) {
+                listener.onAnimationStart(new RecentsAnimationControllerCompat(controller), apps,
+                        wallpapers, homeContentInsets, minimizedHomeBounds);
+            }
+
+            @Override
+            public void onAnimationCanceled(int[] taskIds, TaskSnapshot[] taskSnapshots) {
+                listener.onAnimationCanceled(
+                        ThumbnailData.wrap(taskIds, taskSnapshots));
+            }
+
+            @Override
+            public void onTasksAppeared(RemoteAnimationTarget[] apps) {
+                listener.onTasksAppeared(apps);
+            }
+        };
+        final Bundle optsBundle = options.toBundle();
+        try {
+            mRecentTasks.startRecentsTransition(mRecentsPendingIntent, intent, optsBundle,
+                    mContext.getIApplicationThread(), runner);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Error starting recents via shell", e);
+            return false;
+        }
+        return true;
     }
 }
