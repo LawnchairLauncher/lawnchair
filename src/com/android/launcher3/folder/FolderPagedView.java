@@ -45,7 +45,7 @@ import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.pageindicators.PageIndicatorDots;
+import com.android.launcher3.pageindicators.LauncherDotsPageIndicator;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator;
 import com.android.launcher3.util.Thunk;
@@ -60,7 +60,7 @@ import java.util.Map;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
-public class FolderPagedView extends PagedView<PageIndicatorDots> implements ClipPathView {
+public class FolderPagedView extends PagedView<LauncherDotsPageIndicator> implements ClipPathView {
 
     private static final String TAG = "FolderPagedView";
 
