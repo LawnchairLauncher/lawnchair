@@ -21,6 +21,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
+import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
 
 import android.content.ComponentCallbacks;
 import android.content.Context;
@@ -32,6 +33,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemProperties;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.Display;
 
 import androidx.annotation.NonNull;
@@ -51,6 +53,7 @@ import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
+import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
@@ -60,6 +63,8 @@ import java.io.PrintWriter;
  * Class to manage taskbar lifecycle
  */
 public class TaskbarManager {
+    private static final String TAG = "TaskbarManager";
+    private static final boolean DEBUG = false;
 
     public static final boolean FLAG_HIDE_NAVBAR_WINDOW =
             SystemProperties.getBoolean("persist.wm.debug.hide_navbar_window", false);
@@ -320,6 +325,10 @@ public class TaskbarManager {
     }
 
     public void onSystemUiFlagsChanged(int systemUiStateFlags) {
+        if (DEBUG) {
+            Log.d(TAG, "SysUI flags changed: " + formatFlagChange(systemUiStateFlags,
+                    mSharedState.sysuiStateFlags, QuickStepContract::getSystemUiStateString));
+        }
         mSharedState.sysuiStateFlags = systemUiStateFlags;
         if (mTaskbarActivityContext != null) {
             mTaskbarActivityContext.updateSysuiStateFlags(systemUiStateFlags, false /* fromInit */);
