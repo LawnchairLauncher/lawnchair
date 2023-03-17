@@ -306,7 +306,7 @@ public final class FeatureFlags {
                     + " is enabled or in prefix state");
 
     public static final BooleanFlag ENABLE_MATERIAL_U_POPUP = getDebugFlag(270395516,
-            "ENABLE_MATERIAL_U_POPUP", false, "Switch popup UX to use material U");
+            "ENABLE_MATERIAL_U_POPUP", true, "Switch popup UX to use material U");
 
     public static final BooleanFlag ENABLE_SEARCH_UNINSTALLED_APPS = getReleaseFlag(270395269,
             "ENABLE_SEARCH_UNINSTALLED_APPS", false, "Search uninstalled app results.");
