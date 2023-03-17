@@ -41,4 +41,10 @@
     <!-- Transient taskbar -->
     <dimen name="transient_taskbar_size">76dp</dimen>
     <dimen name="transient_taskbar_icon_size">52dp</dimen>
+
+    <!-- Taskbar swipe up thresholds -->
+    <dimen name="taskbar_nav_threshold">30dp</dimen>
+    <dimen name="taskbar_app_window_threshold">100dp</dimen>
+    <dimen name="taskbar_home_overview_threshold">180dp</dimen>
+    <dimen name="taskbar_catch_up_threshold">300dp</dimen>
 </resources>
