@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.taskbar.TaskbarKeyguardController.MASK_ANY_SYSUI_LOCKED;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_HOME;
@@ -91,6 +92,9 @@ public class TaskbarLauncherStateController {
      * again.
      */
     private static final int FLAG_LAUNCHER_ACTIVE_AT_SCREEN_OFF = 1 << 4;
+
+    /** Whether the device is currently locked. */
+    private static final int FLAG_DEVICE_LOCKED = 1 << 5;
 
     private static final int FLAGS_LAUNCHER_ACTIVE = FLAG_RESUMED | FLAG_TRANSITION_TO_RESUMED;
     /** Equivalent to an int with all 1s for binary operation purposes */
@@ -259,18 +263,23 @@ public class TaskbarLauncherStateController {
         mShouldDelayLauncherStateAnim = shouldDelayLauncherStateAnim;
     }
 
-    /** Screen state changed, see QuickStepContract.SCREEN_STATE_* values. */
-    public void onChangeScreenState(int screenState, boolean fromInit) {
+    /** SysUI flags updated, see QuickStepContract.SYSUI_STATE_* values. */
+    public void updateStateForSysuiFlags(int systemUiStateFlags, boolean skipAnim) {
         final boolean prevScreenIsOn = hasAnyFlag(FLAG_SCREEN_ON);
-        final boolean currScreenIsOn = hasAnyFlag(screenState, SYSUI_STATE_SCREEN_ON);
-
-        if (prevScreenIsOn == currScreenIsOn) return;
+        final boolean currScreenIsOn = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_SCREEN_ON);
 
         updateStateForFlag(FLAG_SCREEN_ON, currScreenIsOn);
-        updateStateForFlag(FLAG_LAUNCHER_ACTIVE_AT_SCREEN_OFF,
-                prevScreenIsOn && hasAnyFlag(FLAGS_LAUNCHER_ACTIVE));
+        if (prevScreenIsOn != currScreenIsOn) {
+            // The screen is switching between on/off. When turning off, capture whether the
+            // launcher is active and memoize this state.
+            updateStateForFlag(FLAG_LAUNCHER_ACTIVE_AT_SCREEN_OFF,
+                    prevScreenIsOn && hasAnyFlag(FLAGS_LAUNCHER_ACTIVE));
+        }
 
-        if (fromInit) {
+        boolean isDeviceLocked = hasAnyFlag(systemUiStateFlags, MASK_ANY_SYSUI_LOCKED);
+        updateStateForFlag(FLAG_DEVICE_LOCKED, isDeviceLocked);
+
+        if (skipAnim) {
             applyState(0);
         } else {
             applyState();
@@ -448,7 +457,13 @@ public class TaskbarLauncherStateController {
             animatorSet.play(mTaskbarCornerRoundness.animateToValue(cornerRoundness));
         }
 
-        if (mIconAlignment.isAnimatingToValue(toAlignment)
+        if (hasAnyFlag(changedFlags, FLAG_DEVICE_LOCKED)) {
+            // When transitioning between locked/unlocked, there is no stashing animation.
+            mIconAlignment.cancelAnimation();
+            // updateValue ensures onIconAlignmentRatioChanged will be called if there is an actual
+            // change in value
+            mIconAlignment.updateValue(toAlignment);
+        } else if (mIconAlignment.isAnimatingToValue(toAlignment)
                 || mIconAlignment.isSettledOnValue(toAlignment)) {
             // Already at desired value, but make sure we run the callback at the end.
             animatorSet.addListener(AnimatorListeners.forEndCallback(
@@ -656,6 +671,7 @@ public class TaskbarLauncherStateController {
         appendFlag(result, flags, FLAG_SCREEN_ON, "screen_on");
         appendFlag(result, flags, FLAG_LAUNCHER_ACTIVE_AT_SCREEN_OFF,
                 "launcher_active_at_screen_off");
+        appendFlag(result, flags, FLAG_DEVICE_LOCKED, "device_locked");
         return result.toString();
     }
 
