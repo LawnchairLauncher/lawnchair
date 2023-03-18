@@ -2616,7 +2616,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     private boolean hasDesktopTask(Task[] runningTasks) {
-        if (!DESKTOP_MODE_SUPPORTED) {
+        if (!DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
             return false;
         }
         for (Task task : runningTasks) {
