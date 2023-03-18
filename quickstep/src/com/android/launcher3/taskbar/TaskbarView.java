@@ -33,7 +33,6 @@ import android.widget.FrameLayout;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
@@ -60,10 +59,7 @@ import java.util.function.Predicate;
 public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconParent, Insettable {
     private static final String TAG = TaskbarView.class.getSimpleName();
 
-    private static final float TASKBAR_BACKGROUND_LUMINANCE = 0.30f;
     private static final Rect sTmpRect = new Rect();
-
-    public int mThemeIconsBackground;
 
     private final int[] mTempOutLocation = new int[2];
     private final Rect mIconLayoutBounds;
@@ -139,8 +135,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         // Needed to draw folder leave-behind when opening one.
         setWillNotDraw(false);
 
-        mThemeIconsBackground = calculateThemeIconsBackground();
-
         if (!mActivityContext.getPackageManager().hasSystemFeature(FEATURE_PC)) {
             mAllAppsButton = (IconButtonView) LayoutInflater.from(context)
                     .inflate(R.layout.taskbar_all_apps_button, this, false);
@@ -182,26 +176,11 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                 .sendAccessibilityEvent(TYPE_WINDOW_CONTENT_CHANGED);
     }
 
-    private int getColorWithGivenLuminance(int color, float luminance) {
-        float[] colorHSL = new float[3];
-        ColorUtils.colorToHSL(color, colorHSL);
-        colorHSL[2] = luminance;
-        return ColorUtils.HSLToColor(colorHSL);
-    }
-
     /**
      * Returns the icon touch size.
      */
     public int getIconTouchSize() {
         return mIconTouchSize;
-    }
-
-    private int calculateThemeIconsBackground() {
-        int color = ThemedIconDrawable.getColors(mContext)[0];
-        if (Utilities.isDarkTheme(mContext)) {
-            return getColorWithGivenLuminance(color, TASKBAR_BACKGROUND_LUMINANCE);
-        }
-        return color;
     }
 
     protected void init(TaskbarViewController.TaskbarViewCallbacks callbacks) {
@@ -332,9 +311,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             // Always set QSB to invisible after re-adding.
             mQsb.setVisibility(View.INVISIBLE);
         }
-
-        mThemeIconsBackground = calculateThemeIconsBackground();
-        setThemedIconsBackgroundColor(mThemeIconsBackground);
     }
 
     /**
