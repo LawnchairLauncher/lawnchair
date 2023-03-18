@@ -196,7 +196,7 @@ import java.util.stream.Stream;
 public class QuickstepLauncher extends Launcher {
 
     public static final boolean ENABLE_PIP_KEEP_CLEAR_ALGORITHM =
-            SystemProperties.getBoolean("persist.wm.debug.enable_pip_keep_clear_algorithm", false);
+            SystemProperties.getBoolean("persist.wm.debug.enable_pip_keep_clear_algorithm", true);
 
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
 
