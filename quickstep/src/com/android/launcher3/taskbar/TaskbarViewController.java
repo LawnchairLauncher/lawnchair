@@ -93,6 +93,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     // This allows the icons on the edge to stay within the taskbar background bounds.
     private static final float ICON_REVEAL_X_DURATION_MULTIPLIER = 0.8f;
 
+    private static final float TASKBAR_DARK_THEME_ICONS_BACKGROUND_LUMINANCE = 0.30f;
+
     private final TaskbarActivityContext mActivity;
     private final TaskbarView mTaskbarView;
     private final MultiValueAlpha mTaskbarIconAlpha;
@@ -107,13 +109,16 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
     private final int mTaskbarBottomMargin;
     private final int mStashedHandleHeight;
+    private final int mLauncherThemedIconsBackgroundColor;
+    private final int mTaskbarThemedIconsBackgroundColor;
 
-    private final AnimatedFloat mThemeIconsBackground = new AnimatedFloat(
+    /** Progress from {@code 0} for Launcher's color to {@code 1} for Taskbar's color. */
+    private final AnimatedFloat mThemedIconsBackgroundProgress = new AnimatedFloat(
             this::updateIconsBackground);
 
     private final TaskbarModelCallbacks mModelCallbacks;
 
-    // Captures swipe down action to close transient taskbar.
+    // Captures swipe down action to close transient Taskbar.
     protected @Nullable SingleAxisSwipeDetector mSwipeDownDetector;
 
     // Initialized in init.
@@ -124,7 +129,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     private AnimatorPlaybackController mIconAlignControllerLazy = null;
     private Runnable mOnControllerPreCreateCallback = NO_OP;
 
-    private int mThemeIconsColor;
     private boolean mIsHotseatIconOnTopWhenAligned;
 
     private final DeviceProfile.OnDeviceProfileChangeListener mDeviceProfileChangeListener =
@@ -141,6 +145,16 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 : 0;
         mStashedHandleHeight = activity.getResources()
                 .getDimensionPixelSize(R.dimen.taskbar_stashed_handle_height);
+        mLauncherThemedIconsBackgroundColor = ThemedIconDrawable.getColors(mActivity)[0];
+        if (!Utilities.isDarkTheme(mActivity)) {
+            mTaskbarThemedIconsBackgroundColor = mLauncherThemedIconsBackgroundColor;
+        } else {
+            // Increase luminance for dark themed icons given they are on a dark Taskbar background.
+            float[] colorHSL = new float[3];
+            ColorUtils.colorToHSL(mLauncherThemedIconsBackgroundColor, colorHSL);
+            colorHSL[2] = TASKBAR_DARK_THEME_ICONS_BACKGROUND_LUMINANCE;
+            mTaskbarThemedIconsBackgroundColor = ColorUtils.HSLToColor(colorHSL);
+        }
 
         if (DisplayController.isTransientTaskbar(mActivity)) {
             mSwipeDownDetector = new SingleAxisSwipeDetector(activity,
@@ -174,7 +188,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         mTaskbarView.getLayoutParams().height = isPhoneMode(mActivity.getDeviceProfile())
                 ? mActivity.getResources().getDimensionPixelSize(R.dimen.taskbar_size)
                 : mActivity.getDeviceProfile().taskbarSize;
-        mThemeIconsColor = ThemedIconDrawable.getColors(mTaskbarView.getContext())[0];
 
         mTaskbarIconScaleForStash.updateValue(1f);
 
@@ -213,7 +226,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     }
 
     /**
-     * Should be called when the recents button is disabled, so we can hide taskbar icons as well.
+     * Should be called when the recents button is disabled, so we can hide Taskbar icons as well.
      */
     public void setRecentsButtonDisabled(boolean isDisabled) {
         // TODO: check TaskbarStashController#supportsStashing(), to stash instead of setting alpha.
@@ -228,7 +241,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     }
 
     /**
-     * Adds one time pre draw listener to the taskbar view, it is called before
+     * Adds one time pre draw listener to the Taskbar view, it is called before
      * drawing a frame and invoked only once
      * @param listener callback that will be invoked before drawing the next frame
      */
@@ -284,12 +297,15 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 + mTaskbarIconTranslationYForSwipe);
     }
 
-    private void updateIconsBackground() {
+    /**
+     * Updates the Taskbar's themed icons background according to the progress between in-app/home.
+     */
+    protected void updateIconsBackground() {
         mTaskbarView.setThemedIconsBackgroundColor(
                 ColorUtils.blendARGB(
-                        mThemeIconsColor,
-                        mTaskbarView.mThemeIconsBackground,
-                        mThemeIconsBackground.value
+                        mLauncherThemedIconsBackgroundColor,
+                        mTaskbarThemedIconsBackgroundColor,
+                        mThemedIconsBackgroundProgress.value
                 ));
     }
 
@@ -347,7 +363,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             // We look at 'left' and 'right' values to ensure that the children stay within the
             // bounds of the stashed handle.
 
-            // All of the taskbar icons will overlap the entirety of the stashed handle
+            // All of the Taskbar icons will overlap the entirety of the stashed handle
             // And the QSB, if inline, will overlap part of stashed handle as well.
             int positionInHandle = (isQsbInline && !isQsb)
                     ? i + (isRtl ? 1 : -1)
@@ -397,7 +413,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     }
 
     /**
-     * Sets the taskbar icon alignment relative to Launcher hotseat icons
+     * Sets the Taskbar icon alignment relative to Launcher hotseat icons
      * @param alignmentRatio [0, 1]
      *                       0 => not aligned
      *                       1 => fully aligned
@@ -419,7 +435,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     }
 
     /**
-     * Creates an animation for aligning the taskbar icons with the provided Launcher device profile
+     * Creates an animation for aligning the Taskbar icons with the provided Launcher device profile
      */
     private AnimatorPlaybackController createIconAlignmentController(DeviceProfile launcherDp) {
         mOnControllerPreCreateCallback.run();
@@ -444,7 +460,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         setter.setFloat(mTaskbarNavButtonTranslationYForInAppDisplay, VALUE, offsetY, interpolator);
 
         if (Utilities.isDarkTheme(mTaskbarView.getContext())) {
-            setter.addFloat(mThemeIconsBackground, VALUE, 0f, 1f, LINEAR);
+            setter.addFloat(mThemedIconsBackgroundProgress, VALUE, 1f, 0f, LINEAR);
         }
 
         int collapsedHeight = mActivity.getDefaultTaskbarWindowHeight();
