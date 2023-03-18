@@ -22,7 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"पिन करना"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"फ़्रीफ़ॉर्म"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"हाल ही में इस्तेमाल किया गया कोई ऐप्लिकेशन नहीं है"</string>
-    <string name="recents_empty_desktop_message" msgid="1358240150311509733">"डेस्कटॉप पर कोई आइटम नहीं मिला"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ऐप्लिकेशन इस्तेमाल की सेटिंग"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"सभी ऐप्लिकेशन बंद करें"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"हाल ही में इस्तेमाल किए गए ऐप्लिकेशन"</string>
@@ -98,7 +97,7 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"टास्कबार का ट्यूटोरियल"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"टास्कबार ट्यूटोरियल दिखाया गया"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"टास्कबार ट्यूटोरियल बंद किया गया"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"किसी ऐप को किनारे की ओर ड्रैग करके, दो ऐप एक साथ यूज़ करें"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"किसी ऐप को किनारे की ओर ड्रैग करके 2 ऐप एक साथ इस्तेमाल करें"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"टास्कबार दिखाने के लिए, ऊपर की ओर धीरे से स्वाइप करें"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"डिवाइस के इस्तेमाल के आधार पर ऐप्लिकेशन के सुझाव पाएं"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"टास्कबार अपने-आप छिपाने वाली सुविधा के लिए, सेटिंग में जाकर जेस्चर वाला नेविगेशन चालू करें"</string>
@@ -115,6 +114,10 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"सूचनाएं"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"फटाफट सेटिंग"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"टास्कबार"</string>
+    <!-- no translation found for taskbar_a11y_shown_title (6842833581088937713) -->
+    <skip />
+    <!-- no translation found for taskbar_a11y_hidden_title (9154903639589659284) -->
+    <skip />
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"नेविगेशन बार"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ऊपर/बाईं तरफ़ ले जाएं"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"नीचे/दाईं तरफ़ ले जाएं"</string>

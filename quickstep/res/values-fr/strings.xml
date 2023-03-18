@@ -22,8 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Épingler"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Format libre"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Aucun élément récent"</string>
-    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
-    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Paramètres de consommation de l\'application"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Tout effacer"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Applications récentes"</string>
@@ -100,10 +98,10 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Infos sur la barre des tâches affichées"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Infos sur la barre des tâches fermées"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Faites glisser une appli sur le côté pour utiliser 2 applis"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Balayez lentement vers haut pour afficher barre des tâches"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Balayez lentement vers le haut pour l\'afficher"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Obtenez des suggestions d\'applis basées sur vos habitudes"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Activez la navigation par gestes dans paramètres pour masquage auto de la barre des tâches"</string>
-    <string name="taskbar_edu_features" msgid="3320337287472848162">"Exploitez les possibilités de la barre des tâches"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Faites-en plus avec la barre des tâches"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Suivant"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Retour"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Fermer"</string>
@@ -116,6 +114,10 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Notifications"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Réglages rapides"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Barre des tâches"</string>
+    <!-- no translation found for taskbar_a11y_shown_title (6842833581088937713) -->
+    <skip />
+    <!-- no translation found for taskbar_a11y_hidden_title (9154903639589659284) -->
+    <skip />
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Barre de navigation"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Déplacer en haut ou à gauche"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Déplacer en bas ou à droite"</string>

@@ -22,8 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Бекіту"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Еркін форма"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Соңғы элементтер жоқ"</string>
-    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
-    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Қолданбаны пайдалану параметрлері"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Барлығын өшіру"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Соңғы пайдаланылған қолданбалар"</string>
@@ -103,7 +101,7 @@
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Тапсырмалар жолағын көрсету үшін жоғары қарай ақырын сырғытыңыз."</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Іс-әрекеттеріңізге негізделген қолданба ұсыныстарын алыңыз."</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Тапсырмалар жолағын автоматты түрде жасыру үшін параметрлерден қимылмен басқаруды қосыңыз."</string>
-    <string name="taskbar_edu_features" msgid="3320337287472848162">"Тапсырмалар жолағы арқылы көп әрекетті орындаңыз"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Тапсырмалар жолағында мүмкіндік көп"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Келесі"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Артқа"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Жабу"</string>
@@ -116,6 +114,10 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Хабарландырулар"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Жылдам параметрлер"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Тапсырмалар жолағы"</string>
+    <!-- no translation found for taskbar_a11y_shown_title (6842833581088937713) -->
+    <skip />
+    <!-- no translation found for taskbar_a11y_hidden_title (9154903639589659284) -->
+    <skip />
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Навигация жолағы"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Жоғары/солға жылжыту"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Төмен/оңға жылжыту"</string>
