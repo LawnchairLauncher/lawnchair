@@ -89,8 +89,22 @@ import java.util.StringJoiner;
     // We skip any view synchronizations during init/destroy.
     private boolean mCanSyncViews;
 
+    private boolean mIsQsbInline;
+
     private final DeviceProfile.OnDeviceProfileChangeListener mOnDeviceProfileChangeListener =
-            dp -> updateIconAlphaForHome(mIconAlphaForHome.getValue());
+            new DeviceProfile.OnDeviceProfileChangeListener() {
+                @Override
+                public void onDeviceProfileChanged(DeviceProfile dp) {
+                    if (mIsQsbInline && !dp.isQsbInline) {
+                        // We only modify QSB alpha if isQsbInline = true. If we switch to a DP
+                        // where isQsbInline = false, then we need to reset the alpha.
+                        mLauncher.getHotseat().setQsbAlpha(1f);
+                    }
+                    mIsQsbInline = dp.isQsbInline;
+                    TaskbarLauncherStateController.this.updateIconAlphaForHome(
+                            mIconAlphaForHome.getValue());
+                }
+            };
 
     private final StateManager.StateListener<LauncherState> mStateListener =
             new StateManager.StateListener<LauncherState>() {
@@ -130,6 +144,8 @@ import java.util.StringJoiner;
 
         mControllers = controllers;
         mLauncher = launcher;
+
+        mIsQsbInline = mLauncher.getDeviceProfile().isQsbInline;
 
         mTaskbarBackgroundAlpha = mControllers.taskbarDragLayerController
                 .getTaskbarBackgroundAlpha();
@@ -497,8 +513,9 @@ import java.util.StringJoiner;
                 "updateIconAlphaForHome - setIconsAlpha(" + (hotseatVisible ? 1 : 0)
                         + "), isTaskbarPresent: " + mLauncher.getDeviceProfile().isTaskbarPresent);
         mLauncher.getHotseat().setIconsAlpha(hotseatVisible ? 1 : 0);
-        mLauncher.getHotseat().setQsbAlpha(
-                mLauncher.getDeviceProfile().isQsbInline && !hotseatVisible ? 0 : 1);
+        if (mIsQsbInline) {
+            mLauncher.getHotseat().setQsbAlpha(hotseatVisible ? 1 : 0);
+        }
     }
 
     private final class TaskBarRecentsAnimationListener implements
