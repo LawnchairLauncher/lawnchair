@@ -22,8 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Fest"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Fritt format"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Ingen nylige elementer"</string>
-    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
-    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Innstillinger for appbruk"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Fjern alt"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Nylige apper"</string>
@@ -116,6 +114,10 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Varsler"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Hurtiginnst."</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Oppgavelinje"</string>
+    <!-- no translation found for taskbar_a11y_shown_title (6842833581088937713) -->
+    <skip />
+    <!-- no translation found for taskbar_a11y_hidden_title (9154903639589659284) -->
+    <skip />
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigasjonsrad"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Flytt til øverst/venstre"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Flytt til nederst/høyre"</string>
