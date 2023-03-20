@@ -230,4 +230,9 @@
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="lineHeight">20sp</item>
     </style>
+
+    <style name="GestureTutorialActivity"
+        parent="@style/AppTheme">
+        <item name="background">@android:color/transparent</item>
+    </style>
 </resources>
