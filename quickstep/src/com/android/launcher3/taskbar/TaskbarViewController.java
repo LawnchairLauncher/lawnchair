@@ -90,9 +90,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     public static final int ALPHA_INDEX_SMALL_SCREEN = 6;
     private static final int NUM_ALPHA_CHANNELS = 7;
 
-    // This allows the icons on the edge to stay within the taskbar background bounds.
-    private static final float ICON_REVEAL_X_DURATION_MULTIPLIER = 0.8f;
-
     private static final float TASKBAR_DARK_THEME_ICONS_BACKGROUND_LUMINANCE = 0.30f;
 
     private final TaskbarActivityContext mActivity;
@@ -133,6 +130,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
     private final DeviceProfile.OnDeviceProfileChangeListener mDeviceProfileChangeListener =
             dp -> commitRunningAppsToUI();
+
+    private final boolean mIsRtl;
 
     public TaskbarViewController(TaskbarActivityContext activity, TaskbarView taskbarView) {
         mActivity = activity;
@@ -180,6 +179,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                     }, VERTICAL);
             mSwipeDownDetector.setDetectableScrollConditions(DIRECTION_NEGATIVE, false);
         }
+        mIsRtl = Utilities.isRtl(mTaskbarView.getResources());
     }
 
     public void init(TaskbarControllers controllers) {
@@ -309,18 +309,34 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 ));
     }
 
-    private ValueAnimator createRevealAnimForView(View view, boolean isStashed) {
+    private ValueAnimator createRevealAnimForView(View view, boolean isStashed, float newWidth,
+            boolean shouldStartAlign) {
         Rect viewBounds = new Rect(0, 0, view.getWidth(), view.getHeight());
         int centerY = viewBounds.centerY();
         int halfHandleHeight = mStashedHandleHeight / 2;
+        final int top = centerY - halfHandleHeight;
+        final int bottom = centerY + halfHandleHeight;
 
-        Rect stashedRect = new Rect(viewBounds.left,
-                centerY - halfHandleHeight,
-                viewBounds.right,
-                centerY + halfHandleHeight);
+        final int left;
+        final int right;
+        if (shouldStartAlign) {
+            if (mIsRtl) {
+                right = viewBounds.right;
+                left = (int) (right - newWidth);
+            } else {
+                left = viewBounds.left;
+                right = (int) (left + newWidth);
+            }
+        } else {
+            int widthDelta = (int) ((viewBounds.width() - newWidth) / 2);
 
+            left = viewBounds.left + widthDelta;
+            right = viewBounds.right - widthDelta;
+        }
+
+        Rect stashedRect = new Rect(left, top, right, bottom);
         float radius = 0;
-        float stashedRadius = viewBounds.width() / 2f;
+        float stashedRadius = stashedRect.width() / 2f;
 
         return new RoundedRectRevealOutlineProvider(radius, stashedRadius, viewBounds, stashedRect)
                 .createRevealAnimator(view, !isStashed, 0);
@@ -342,44 +358,36 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         Rect stashedBounds = new Rect();
         mControllers.stashedHandleViewController.getStashedHandleBounds(stashedBounds);
 
-        boolean isQsbInline = mActivity.getDeviceProfile().isQsbInline;
-        int numIcons = mTaskbarView.getChildCount() - (isQsbInline ? 1 : 0);
-        // We do not actually modify the width of the icons, but we will use this width to position
-        // the children to overlay the nav handle.
-        float virtualChildWidth = stashedBounds.width() / (float) numIcons;
+        int numIcons = mTaskbarView.getChildCount();
+        float newChildWidth = stashedBounds.width() / (float) numIcons;
 
         // All children move the same y-amount since they will be cropped to the same centerY.
         float croppedTransY = mTaskbarView.getIconTouchSize() - stashedBounds.height();
 
-        boolean isRtl = Utilities.isRtl(mTaskbarView.getResources());
         for (int i = mTaskbarView.getChildCount() - 1; i >= 0; i--) {
             View child = mTaskbarView.getChildAt(i);
             boolean isQsb = child == mTaskbarView.getQsb();
 
             // Crop the icons to/from the nav handle shape.
-            reveal.play(createRevealAnimForView(child, isStashed).setDuration(duration));
+            reveal.play(createRevealAnimForView(child, isStashed, newChildWidth, isQsb)
+                    .setDuration(duration));
 
             // Translate the icons to/from their locations as the "nav handle."
-            // We look at 'left' and 'right' values to ensure that the children stay within the
-            // bounds of the stashed handle.
 
             // All of the Taskbar icons will overlap the entirety of the stashed handle
             // And the QSB, if inline, will overlap part of stashed handle as well.
-            int positionInHandle = (isQsbInline && !isQsb)
-                    ? i + (isRtl ? 1 : -1)
-                    : i;
             float currentPosition = isQsb ? child.getX() : child.getLeft();
-            float newPosition = stashedBounds.left + (virtualChildWidth * positionInHandle);
+            float newPosition = stashedBounds.left + (newChildWidth * i);
             final float croppedTransX;
+            // We look at 'left' and 'right' values to ensure that the children stay within the
+            // bounds of the stashed handle since the new width only occurs at the end of the anim.
             if (currentPosition > newPosition) {
-                float newRight = stashedBounds.right - (virtualChildWidth
-                        * (numIcons - 1 - positionInHandle));
+                float newRight = stashedBounds.right - (newChildWidth
+                        * (numIcons - 1 - i));
                 croppedTransX = -(currentPosition + child.getWidth() - newRight);
             } else {
                 croppedTransX = newPosition - currentPosition;
             }
-
-            long transXDuration = (long) (duration * ICON_REVEAL_X_DURATION_MULTIPLIER);
             float[] transX = isStashed
                     ? new float[] {croppedTransX}
                     : new float[] {croppedTransX, 0};
@@ -392,14 +400,14 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
                 reveal.play(ObjectAnimator.ofFloat(mtd.getTranslationX(INDEX_TASKBAR_REVEAL_ANIM),
                         MULTI_PROPERTY_VALUE, transX)
-                        .setDuration(transXDuration));
+                        .setDuration(duration));
                 reveal.play(ObjectAnimator.ofFloat(mtd.getTranslationY(INDEX_TASKBAR_REVEAL_ANIM),
                         MULTI_PROPERTY_VALUE, transY));
                 as.addListener(forEndCallback(() ->
                         mtd.setTranslation(INDEX_TASKBAR_REVEAL_ANIM, 0, 0)));
             } else {
                 reveal.play(ObjectAnimator.ofFloat(child, VIEW_TRANSLATE_X, transX)
-                        .setDuration(transXDuration));
+                        .setDuration(duration));
                 reveal.play(ObjectAnimator.ofFloat(child, VIEW_TRANSLATE_Y, transY));
                 as.addListener(forEndCallback(() -> {
                     child.setTranslationX(0);

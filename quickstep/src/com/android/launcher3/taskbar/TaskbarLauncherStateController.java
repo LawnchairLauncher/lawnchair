@@ -39,7 +39,6 @@ import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
-import com.android.launcher3.util.window.RefreshRateTracker;
 import com.android.quickstep.RecentsAnimationCallbacks;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.views.RecentsView;
@@ -66,6 +65,10 @@ import java.util.StringJoiner;
     private static final int FLAGS_LAUNCHER = FLAG_RESUMED | FLAG_RECENTS_ANIMATION_RUNNING;
     /** Equivalent to an int with all 1s for binary operation purposes */
     private static final int FLAGS_ALL = ~0;
+
+    private static final float TASKBAR_BG_ALPHA_LAUNCHER_NOT_ALIGNED_DELAY_MULT = 0.33f;
+    private static final float TASKBAR_BG_ALPHA_NOT_LAUNCHER_NOT_ALIGNED_DELAY_MULT = 0.33f;
+    private static final float TASKBAR_BG_ALPHA_LAUNCHER_IS_ALIGNED_DURATION_MULT = 0.25f;
 
     private final AnimatedFloat mIconAlignment =
             new AnimatedFloat(this::onIconAlignmentRatioChanged);
@@ -274,7 +277,8 @@ import java.util.StringJoiner;
 
     private Animator onStateChangeApplied(int changedFlags, long duration, boolean start) {
         final boolean goingToLauncher = isInLauncher();
-        final float toAlignment = isIconAlignedWithHotseat() ? 1 : 0;
+        final boolean isIconAlignedWithHotseat = isIconAlignedWithHotseat();
+        final float toAlignment = isIconAlignedWithHotseat ? 1 : 0;
         boolean handleOpenFloatingViews = false;
         if (DEBUG) {
             Log.d(TAG, "onStateChangeApplied - mState: " + getStateString(mState)
@@ -343,15 +347,29 @@ import java.util.StringJoiner;
                         + " -> " + backgroundAlpha + ": " + duration);
             }
 
+            boolean goingToLauncherIconNotAligned = goingToLauncher && !isIconAlignedWithHotseat;
+            boolean notGoingToLauncherIconNotAligned = !goingToLauncher
+                    && !isIconAlignedWithHotseat;
+            boolean goingToLauncherIconIsAligned = goingToLauncher && isIconAlignedWithHotseat;
+
+            float startDelay = 0;
+            // We want to delay the background from fading in so that the icons have time to move
+            // into the bounds of the background before it appears.
+            if (goingToLauncherIconNotAligned) {
+                startDelay = duration * TASKBAR_BG_ALPHA_LAUNCHER_NOT_ALIGNED_DELAY_MULT;
+            } else if (notGoingToLauncherIconNotAligned) {
+                startDelay = duration * TASKBAR_BG_ALPHA_NOT_LAUNCHER_NOT_ALIGNED_DELAY_MULT;
+            }
+            float newDuration = duration - startDelay;
+            if (goingToLauncherIconIsAligned) {
+                // Make the background fade out faster so that it is gone by the time the
+                // icons move outside of the bounds of the background.
+                newDuration = duration * TASKBAR_BG_ALPHA_LAUNCHER_IS_ALIGNED_DURATION_MULT;
+            }
             Animator taskbarBackgroundAlpha = mTaskbarBackgroundAlpha
                     .animateToValue(backgroundAlpha)
-                    .setDuration(duration);
-            // Add a single frame delay to the taskbar bg to avoid too many moving parts during the
-            // app launch animation.
-            taskbarBackgroundAlpha.setStartDelay(
-                    (hasAnyFlag(changedFlags, FLAG_RESUMED) && !goingToLauncher)
-                            ? RefreshRateTracker.getSingleFrameMs(mLauncher)
-                            : 0);
+                    .setDuration((long) newDuration);
+            taskbarBackgroundAlpha.setStartDelay((long) startDelay);
             animatorSet.play(taskbarBackgroundAlpha);
         }
 
