@@ -30,12 +30,15 @@ import android.annotation.ColorRes;
 import android.annotation.RawRes;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Outline;
+import android.graphics.Rect;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -59,6 +62,7 @@ import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.views.ClipIconView;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureAttemptCallback;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureAttemptCallback;
+import com.android.systemui.shared.system.QuickStepContract;
 
 import com.airbnb.lottie.LottieAnimationView;
 
@@ -81,6 +85,11 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     private static final int GESTURE_ANIMATION_DELAY_MS = 1500;
     private static final int ADVANCE_TUTORIAL_TIMEOUT_MS = 2000;
     private static final long GESTURE_ANIMATION_PAUSE_DURATION_MILLIS = 1000;
+    protected float mExitingAppEndingCornerRadius;
+    protected float mExitingAppStartingCornerRadius;
+    protected int mScreenHeight;
+    protected float mScreenWidth;
+    protected float mExitingAppMargin;
 
     final TutorialFragment mTutorialFragment;
     TutorialType mTutorialType;
@@ -103,10 +112,14 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     final RippleDrawable mRippleDrawable;
     final TutorialStepIndicator mTutorialStepView;
     final ImageView mFingerDotView;
+    private final Rect mExitingAppRect = new Rect();
+    protected View mExitingAppView;
+    protected int mExitingAppRadius;
     private final AlertDialog mSkipTutorialDialog;
 
     private boolean mGestureCompleted = false;
     private LottieAnimationView mAnimatedGestureDemonstration;
+    private LottieAnimationView mCheckmarkAnimation;
     private RelativeLayout mFullGestureDemonstration;
 
     // These runnables  should be used when posting callbacks to their views and cleared from their
@@ -147,13 +160,28 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         mSkipTutorialDialog = createSkipTutorialDialog();
 
         if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-            mAnimatedGestureDemonstration = mTutorialFragment.getRootView().findViewById(
+            mFullGestureDemonstration = rootView.findViewById(R.id.full_gesture_demonstration);
+            mCheckmarkAnimation = rootView.findViewById(R.id.checkmark_animation);
+            mAnimatedGestureDemonstration = rootView.findViewById(
                     R.id.gesture_demonstration_animations);
-            mFullGestureDemonstration = mTutorialFragment.getRootView().findViewById(
-                    R.id.full_gesture_demonstration);
+            mExitingAppView = rootView.findViewById(R.id.exiting_app_back);
+            mScreenWidth = mTutorialFragment.getDeviceProfile().widthPx;
+            mScreenHeight = mTutorialFragment.getDeviceProfile().heightPx;
+            mExitingAppMargin = mContext.getResources().getDimensionPixelSize(
+                    R.dimen.gesture_tutorial_back_gesture_exiting_app_margin);
+            mExitingAppStartingCornerRadius = QuickStepContract.getWindowCornerRadius(mContext);
+            mExitingAppEndingCornerRadius = mContext.getResources().getDimensionPixelSize(
+                    R.dimen.gesture_tutorial_back_gesture_end_corner_radius);
 
             mFeedbackTitleView.setText(getIntroductionTitle());
             mFeedbackSubtitleView.setText(getIntroductionSubtitle());
+            mExitingAppView.setClipToOutline(true);
+            mExitingAppView.setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    outline.setRoundRect(mExitingAppRect, mExitingAppRadius);
+                }
+            });
         }
 
         mTitleViewCallback = () -> mFeedbackTitleView.sendAccessibilityEvent(
@@ -373,10 +401,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     }
 
     private void showSuccessPage() {
-        mFeedbackView.findViewById(
-                R.id.gesture_tutorial_checkbox_bg).setVisibility(View.VISIBLE);
-        mFeedbackView.findViewById(
-                R.id.gesture_tutorial_checkbox).setVisibility(View.VISIBLE);
+        mCheckmarkAnimation.setVisibility(View.VISIBLE);
+        mCheckmarkAnimation.playAnimation();
         mFeedbackTitleView.setTextAppearance(R.style.TextAppearance_GestureTutorial_SuccessTitle);
         mFeedbackSubtitleView.setTextAppearance(
                 R.style.TextAppearance_GestureTutorial_SuccessSubtitle);
@@ -496,7 +522,17 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         updateLayout();
 
         if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-            startGestureAnimation();
+            mCheckmarkAnimation.setAnimation(mTutorialFragment.isAtFinalStep()
+                    ? R.raw.checkmark_animation_end
+                    : R.raw.checkmark_animation_in_progress);
+            if (!isGestureCompleted()) {
+                mCheckmarkAnimation.setVisibility(GONE);
+                startGestureAnimation();
+                if (mTutorialType == TutorialType.BACK_NAVIGATION) {
+                    resetViewsForBackGesture();
+                }
+
+            }
         } else {
             hideFeedback();
             hideActionButton();
@@ -506,6 +542,23 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         if (mFakeHotseatView != null) {
             mFakeHotseatView.setVisibility(View.INVISIBLE);
         }
+    }
+
+    protected void resetViewsForBackGesture() {
+        mFakeTaskView.setVisibility(View.VISIBLE);
+        mFakeTaskView.setBackgroundColor(
+                mContext.getColor(R.color.gesture_back_tutorial_background));
+        mExitingAppView.setVisibility(View.VISIBLE);
+
+        // reset the exiting app's dimensions
+        mExitingAppRect.set(0, 0, (int) mScreenWidth, (int) mScreenHeight);
+        mExitingAppRadius = 0;
+        mExitingAppView.resetPivot();
+        mExitingAppView.setScaleX(1f);
+        mExitingAppView.setScaleY(1f);
+        mExitingAppView.setTranslationX(0);
+        mExitingAppView.setTranslationY(0);
+        mExitingAppView.invalidateOutline();
     }
 
     private void startGestureAnimation() {
