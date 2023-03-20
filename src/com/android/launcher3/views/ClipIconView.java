@@ -43,9 +43,6 @@ import android.view.ViewGroup.MarginLayoutParams;
 import android.view.ViewOutlineProvider;
 
 import androidx.annotation.Nullable;
-import androidx.dynamicanimation.animation.FloatPropertyCompat;
-import androidx.dynamicanimation.animation.SpringAnimation;
-import androidx.dynamicanimation.animation.SpringForce;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -62,39 +59,6 @@ import com.android.launcher3.graphics.IconShape;
 public class ClipIconView extends View implements ClipPathView {
 
     private static final Rect sTmpRect = new Rect();
-
-    // We spring the foreground drawable relative to the icon's movement in the DragLayer.
-    // We then use these two factor values to scale the movement of the fg within this view.
-    private static final int FG_TRANS_X_FACTOR = 60;
-    private static final int FG_TRANS_Y_FACTOR = 75;
-
-    private static final FloatPropertyCompat<ClipIconView> mFgTransYProperty =
-            new FloatPropertyCompat<ClipIconView>("ClipIconViewFgTransY") {
-                @Override
-                public float getValue(ClipIconView view) {
-                    return view.mFgTransY;
-                }
-
-                @Override
-                public void setValue(ClipIconView view, float transY) {
-                    view.mFgTransY = transY;
-                    view.invalidate();
-                }
-            };
-
-    private static final FloatPropertyCompat<ClipIconView> mFgTransXProperty =
-            new FloatPropertyCompat<ClipIconView>("ClipIconViewFgTransX") {
-                @Override
-                public float getValue(ClipIconView view) {
-                    return view.mFgTransX;
-                }
-
-                @Override
-                public void setValue(ClipIconView view, float transX) {
-                    view.mFgTransX = transX;
-                    view.invalidate();
-                }
-            };
 
     private final int mBlurSizeOutline;
     private final boolean mIsRtl;
@@ -114,11 +78,6 @@ public class ClipIconView extends View implements ClipPathView {
     private final Rect mOutline = new Rect();
     private final Rect mFinalDrawableBounds = new Rect();
 
-    private final SpringAnimation mFgSpringY;
-    private float mFgTransY;
-    private final SpringAnimation mFgSpringX;
-    private float mFgTransX;
-
     public ClipIconView(Context context) {
         this(context, null);
     }
@@ -132,22 +91,13 @@ public class ClipIconView extends View implements ClipPathView {
         mBlurSizeOutline = getResources().getDimensionPixelSize(
                 R.dimen.blur_size_medium_outline);
         mIsRtl = Utilities.isRtl(getResources());
-
-        mFgSpringX = new SpringAnimation(this, mFgTransXProperty)
-                .setSpring(new SpringForce()
-                        .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
-                        .setStiffness(SpringForce.STIFFNESS_LOW));
-        mFgSpringY = new SpringAnimation(this, mFgTransYProperty)
-                .setSpring(new SpringForce()
-                        .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
-                        .setStiffness(SpringForce.STIFFNESS_LOW));
     }
 
     /**
      * Update the icon UI to match the provided parameters during an animation frame
      */
     public void update(RectF rect, float progress, float shapeProgressStart, float cornerRadius,
-            int fgIconAlpha, boolean isOpening, View container, DeviceProfile dp) {
+            boolean isOpening, View container, DeviceProfile dp) {
         MarginLayoutParams lp = (MarginLayoutParams) container.getLayoutParams();
 
         float dX = mIsRtl
@@ -167,8 +117,7 @@ public class ClipIconView extends View implements ClipPathView {
             return;
         }
 
-        update(rect, progress, shapeProgressStart, cornerRadius, fgIconAlpha, isOpening, scale,
-                minSize, lp, dp);
+        update(rect, progress, shapeProgressStart, cornerRadius, isOpening, scale, minSize, dp);
 
         container.setPivotX(0);
         container.setPivotY(0);
@@ -179,13 +128,7 @@ public class ClipIconView extends View implements ClipPathView {
     }
 
     private void update(RectF rect, float progress, float shapeProgressStart, float cornerRadius,
-            int fgIconAlpha, boolean isOpening, float scale, float minSize,
-            MarginLayoutParams parentLp, DeviceProfile dp) {
-        float dX = mIsRtl
-                ? rect.left - (dp.widthPx - parentLp.getMarginStart() - parentLp.width)
-                : rect.left - parentLp.getMarginStart();
-        float dY = rect.top - parentLp.topMargin;
-
+            boolean isOpening, float scale, float minSize, DeviceProfile dp) {
         // shapeRevealProgress = 1 when progress = shapeProgressStart + SHAPE_PROGRESS_DURATION
         float toMax = isOpening ? 1 / SHAPE_PROGRESS_DURATION : 1f;
 
@@ -220,27 +163,17 @@ public class ClipIconView extends View implements ClipPathView {
             float drawableScale = (dp.isLandscape ? mOutline.width() : mOutline.height())
                     / minSize;
             setBackgroundDrawableBounds(drawableScale, dp.isLandscape);
-            if (isOpening) {
-                // Center align foreground
-                int height = mFinalDrawableBounds.height();
-                int width = mFinalDrawableBounds.width();
-                int diffY = dp.isLandscape ? 0
-                        : (int) (((height * drawableScale) - height) / 2);
-                int diffX = dp.isLandscape ? (int) (((width * drawableScale) - width) / 2)
-                        : 0;
-                sTmpRect.set(mFinalDrawableBounds);
-                sTmpRect.offset(diffX, diffY);
-                mForeground.setBounds(sTmpRect);
-            } else {
-                mForeground.setAlpha(fgIconAlpha);
 
-                // Spring the foreground relative to the icon's movement within the DragLayer.
-                int diffX = (int) (dX / dp.availableWidthPx * FG_TRANS_X_FACTOR);
-                int diffY = (int) (dY / dp.availableHeightPx * FG_TRANS_Y_FACTOR);
-
-                mFgSpringX.animateToFinalPosition(diffX);
-                mFgSpringY.animateToFinalPosition(diffY);
-            }
+            // Center align foreground
+            int height = mFinalDrawableBounds.height();
+            int width = mFinalDrawableBounds.width();
+            int diffY = dp.isLandscape ? 0
+                    : (int) (((height * drawableScale) - height) / 2);
+            int diffX = dp.isLandscape ? (int) (((width * drawableScale) - width) / 2)
+                    : 0;
+            sTmpRect.set(mFinalDrawableBounds);
+            sTmpRect.offset(diffX, diffY);
+            mForeground.setBounds(sTmpRect);
         }
         invalidate();
         invalidateOutline();
@@ -359,10 +292,7 @@ public class ClipIconView extends View implements ClipPathView {
             mBackground.draw(canvas);
         }
         if (mForeground != null) {
-            int count2 = canvas.save();
-            canvas.translate(mFgTransX, mFgTransY);
             mForeground.draw(canvas);
-            canvas.restoreToCount(count2);
         }
         canvas.restoreToCount(count);
     }
@@ -380,9 +310,5 @@ public class ClipIconView extends View implements ClipPathView {
         mRevealAnimator = null;
         mTaskCornerRadius = 0;
         mOutline.setEmpty();
-        mFgTransY = 0;
-        mFgSpringX.cancel();
-        mFgTransX = 0;
-        mFgSpringY.cancel();
     }
 }
