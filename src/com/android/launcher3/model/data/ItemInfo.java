@@ -307,6 +307,13 @@ public class ItemInfo {
     }
 
     /**
+     * Returns if an Item is in the hotseat.
+     */
+    public boolean isInHotseat() {
+        return container == CONTAINER_HOTSEAT || container == CONTAINER_HOTSEAT_PREDICTION;
+    }
+
+    /**
      * Returns whether this item should use the background animation.
      */
     public boolean shouldUseBackgroundAnimation() {
