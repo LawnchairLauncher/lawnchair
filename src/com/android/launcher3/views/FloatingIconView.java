@@ -146,17 +146,16 @@ public class FloatingIconView extends FrameLayout implements
     /**
      * Positions this view to match the size and location of {@param rect}.
      * @param alpha The alpha[0, 1] of the entire floating view.
-     * @param fgIconAlpha The alpha[0-255] of the foreground layer of the icon (if applicable).
      * @param progress A value from [0, 1] that represents the animation progress.
      * @param shapeProgressStart The progress value at which to start the shape reveal.
      * @param cornerRadius The corner radius of {@param rect}.
      * @param isOpening True if view is used for app open animation, false for app close animation.
      */
-    public void update(float alpha, int fgIconAlpha, RectF rect, float progress,
-            float shapeProgressStart, float cornerRadius, boolean isOpening) {
+    public void update(float alpha, RectF rect, float progress, float shapeProgressStart,
+            float cornerRadius, boolean isOpening) {
         setAlpha(alpha);
-        mClipIconView.update(rect, progress, shapeProgressStart, cornerRadius, fgIconAlpha,
-                isOpening, this, mLauncher.getDeviceProfile());
+        mClipIconView.update(rect, progress, shapeProgressStart, cornerRadius, isOpening, this,
+                mLauncher.getDeviceProfile());
     }
 
     @Override

@@ -139,8 +139,8 @@ public class LauncherSwipeHandlerV2 extends
             @Override
             public void update(RectF currentRect, float progress, float radius) {
                 super.update(currentRect, progress, radius);
-                floatingIconView.update(1f /* alpha */, 255 /* fgAlpha */, currentRect, progress,
-                        windowAlphaThreshold, radius, false);
+                floatingIconView.update(1f /* alpha */, currentRect, progress, windowAlphaThreshold,
+                        radius, false);
             }
         };
     }
