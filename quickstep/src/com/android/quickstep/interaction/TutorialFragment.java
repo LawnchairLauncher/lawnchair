@@ -312,7 +312,6 @@ abstract class TutorialFragment extends Fragment implements OnTouchListener {
         if (mEdgeAnimation != null && mEdgeAnimation.isRunning()) {
             mEdgeAnimation.stop();
         }
-
         mEdgeGestureVideoView.setVisibility(View.GONE);
     }
 
