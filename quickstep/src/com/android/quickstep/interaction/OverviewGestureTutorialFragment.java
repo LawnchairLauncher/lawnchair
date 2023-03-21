@@ -67,7 +67,7 @@ public class OverviewGestureTutorialFragment extends TutorialFragment {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
-                controller.animateTaskViewToOverview();
+                controller.animateTaskViewToOverview(null);
             }
         });
 
