@@ -355,7 +355,7 @@ public final class FeatureFlags {
                     + "advantage of large screen format");
 
     public static final BooleanFlag ENABLE_NEW_GESTURE_NAV_TUTORIAL = getDebugFlag(270396257,
-            "ENABLE_NEW_GESTURE_NAV_TUTORIAL", false,
+            "ENABLE_NEW_GESTURE_NAV_TUTORIAL", true,
             "Enable the redesigned gesture navigation tutorial");
 
     public static final BooleanFlag ENABLE_LAUNCH_FROM_STAGED_APP = getDebugFlag(270395567,
