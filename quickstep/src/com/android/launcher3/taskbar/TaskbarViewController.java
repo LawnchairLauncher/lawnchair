@@ -335,8 +335,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         }
 
         Rect stashedRect = new Rect(left, top, right, bottom);
-        float radius = 0;
-        float stashedRadius = stashedRect.width() / 2f;
+        float radius = viewBounds.height() / 2f;
+        float stashedRadius = stashedRect.height() / 2f;
 
         return new RoundedRectRevealOutlineProvider(radius, stashedRadius, viewBounds, stashedRect)
                 .createRevealAnimator(view, !isStashed, 0);
