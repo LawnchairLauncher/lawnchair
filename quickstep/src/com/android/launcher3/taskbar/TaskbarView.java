@@ -47,6 +47,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 import com.android.launcher3.views.IconButtonView;
@@ -66,6 +67,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     private final int mIconTouchSize;
     private final int mItemMarginLeftRight;
     private final int mItemPadding;
+    private final int mFolderLeaveBehindColor;
     private final boolean mIsRtl;
 
     private final TaskbarActivityContext mActivityContext;
@@ -131,6 +133,9 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         // We layout the icons to be of mIconTouchSize in width and height
         mItemMarginLeftRight = actualMargin - (mIconTouchSize - actualIconSize) / 2;
         mItemPadding = (mIconTouchSize - actualIconSize) / 2;
+
+        mFolderLeaveBehindColor = Themes.getAttrColor(mActivityContext,
+                android.R.attr.textColorTertiary);
 
         // Needed to draw folder leave-behind when opening one.
         setWillNotDraw(false);
@@ -523,7 +528,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         if (mLeaveBehindFolderIcon != null) {
             canvas.save();
             canvas.translate(mLeaveBehindFolderIcon.getLeft(), mLeaveBehindFolderIcon.getTop());
-            mLeaveBehindFolderIcon.getFolderBackground().drawLeaveBehind(canvas);
+            mLeaveBehindFolderIcon.getFolderBackground().drawLeaveBehind(canvas,
+                    mFolderLeaveBehindColor);
             canvas.restore();
         }
     }
