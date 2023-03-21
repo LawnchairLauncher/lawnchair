@@ -32,6 +32,7 @@ import static com.android.launcher3.taskbar.TaskbarManager.FLAG_HIDE_NAVBAR_WIND
 import static com.android.launcher3.testing.shared.ResourceUtils.getBoolByName;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_STATE_MASK;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_VOICE_INTERACTION_WINDOW_SHOWING;
 
 import android.animation.AnimatorSet;
@@ -56,7 +57,6 @@ import android.view.Gravity;
 import android.view.RoundedCorner;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.WindowManagerGlobal;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -579,6 +579,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mControllers.taskbarForceVisibleImmersiveController.updateSysuiFlags(systemUiStateFlags);
         mControllers.voiceInteractionWindowController.setIsVoiceInteractionWindowVisible(
                 (systemUiStateFlags & SYSUI_STATE_VOICE_INTERACTION_WINDOW_SHOWING) != 0, fromInit);
+
+        mControllers.uiController.onChangeScreenState(
+                systemUiStateFlags & SYSUI_STATE_SCREEN_STATE_MASK);
     }
 
     /**
