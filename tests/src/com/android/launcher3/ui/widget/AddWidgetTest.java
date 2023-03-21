@@ -60,11 +60,11 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
         final LauncherAppWidgetProviderInfo widgetInfo =
                 TestViewHelpers.findWidgetProvider(this, false /* hasConfigureScreen */);
 
-        WidgetResizeFrame resizeFrame = mLauncher.
-                getWorkspace().
-                openAllWidgets().
-                getWidget(widgetInfo.getLabel(mTargetContext.getPackageManager())).
-                dragWidgetToWorkspace();
+        WidgetResizeFrame resizeFrame = mLauncher
+                .getWorkspace()
+                .openAllWidgets()
+                .getWidget(widgetInfo.getLabel(mTargetContext.getPackageManager()))
+                .dragWidgetToWorkspace();
 
         assertTrue(mActivityMonitor.itemExists(
                 (info, view) -> info instanceof LauncherAppWidgetInfo &&
