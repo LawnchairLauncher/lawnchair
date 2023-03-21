@@ -138,7 +138,7 @@ public class TaskbarTranslationController implements TaskbarControllers.Loggable
      * Returns an animation to reset the taskbar translation to {@code 0}.
      */
     public ObjectAnimator createAnimToResetTranslation(long duration) {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(mTranslationYForSwipe, VALUE, 0);
+        ObjectAnimator animator = mTranslationYForSwipe.animateToValue(0);
         animator.setInterpolator(Interpolators.LINEAR);
         animator.setDuration(duration);
         animator.addListener(new AnimatorListenerAdapter() {
