@@ -103,7 +103,7 @@ public class CellLayout extends ViewGroup {
     private int mFixedCellWidth;
     private int mFixedCellHeight;
     @ViewDebug.ExportedProperty(category = "launcher")
-    private Point mBorderSpace;
+    protected Point mBorderSpace;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     protected int mCountX;
