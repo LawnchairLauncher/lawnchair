@@ -57,6 +57,7 @@ public class TaskbarControllers {
     public final VoiceInteractionWindowController voiceInteractionWindowController;
     public final TaskbarRecentAppsController taskbarRecentAppsController;
     public final TaskbarTranslationController taskbarTranslationController;
+    public final TaskbarSpringOnStashController taskbarSpringOnStashController;
     public final TaskbarOverlayController taskbarOverlayController;
     public final TaskbarEduTooltipController taskbarEduTooltipController;
     public final KeyboardQuickSwitchController keyboardQuickSwitchController;
@@ -103,6 +104,7 @@ public class TaskbarControllers {
             TaskbarInsetsController taskbarInsetsController,
             VoiceInteractionWindowController voiceInteractionWindowController,
             TaskbarTranslationController taskbarTranslationController,
+            TaskbarSpringOnStashController taskbarSpringOnStashController,
             TaskbarRecentAppsController taskbarRecentAppsController,
             TaskbarEduTooltipController taskbarEduTooltipController,
             KeyboardQuickSwitchController keyboardQuickSwitchController) {
@@ -127,6 +129,7 @@ public class TaskbarControllers {
         this.taskbarInsetsController = taskbarInsetsController;
         this.voiceInteractionWindowController = voiceInteractionWindowController;
         this.taskbarTranslationController = taskbarTranslationController;
+        this.taskbarSpringOnStashController = taskbarSpringOnStashController;
         this.taskbarRecentAppsController = taskbarRecentAppsController;
         this.taskbarEduTooltipController = taskbarEduTooltipController;
         this.keyboardQuickSwitchController = keyboardQuickSwitchController;
@@ -149,6 +152,7 @@ public class TaskbarControllers {
         taskbarScrimViewController.init(this);
         taskbarUnfoldAnimationController.init(this);
         taskbarKeyguardController.init(navbarButtonsViewController);
+        taskbarSpringOnStashController.init(this);
         stashedHandleViewController.init(this);
         taskbarStashController.init(this, sharedState.setupUIVisible);
         taskbarEduController.init(this);
