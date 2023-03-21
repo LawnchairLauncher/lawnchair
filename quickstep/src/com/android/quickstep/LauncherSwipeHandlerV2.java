@@ -38,6 +38,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ObjectWrapper;
@@ -122,6 +123,12 @@ public class LauncherSwipeHandlerV2 extends
                 return workspaceView;
             }
 
+            @Override
+            public boolean isInHotseat() {
+                return workspaceView.getTag() instanceof ItemInfo
+                        && ((ItemInfo) workspaceView.getTag()).isInHotseat();
+            }
+
             @NonNull
             @Override
             public RectF getWindowTargetRect() {
@@ -139,8 +146,8 @@ public class LauncherSwipeHandlerV2 extends
             @Override
             public void update(RectF currentRect, float progress, float radius) {
                 super.update(currentRect, progress, radius);
-                floatingIconView.update(1f /* alpha */, 255 /* fgAlpha */, currentRect, progress,
-                        windowAlphaThreshold, radius, false);
+                floatingIconView.update(1f /* alpha */, currentRect, progress, windowAlphaThreshold,
+                        radius, false);
             }
         };
     }

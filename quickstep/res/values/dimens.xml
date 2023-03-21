@@ -121,6 +121,8 @@
     <dimen name="gesture_tutorial_multi_row_task_view_spacing">72dp</dimen>
     <dimen name="gesture_tutorial_small_task_view_corner_radius">18dp</dimen>
     <dimen name="gesture_tutorial_mock_taskbar_height">80dp</dimen>
+    <dimen name="gesture_tutorial_back_gesture_exiting_app_margin">8dp</dimen>
+    <dimen name="gesture_tutorial_back_gesture_end_corner_radius">36dp</dimen>
 
     <!-- Gesture Tutorial mock conversations -->
     <dimen name="gesture_tutorial_message_icon_size">44dp</dimen>
@@ -301,10 +303,10 @@
     <!-- An additional touch slop to prevent x-axis movement during the swipe up to show taskbar -->
     <dimen name="transient_taskbar_clamped_offset_bound">16dp</dimen>
     <!-- Taskbar swipe up thresholds -->
-    <dimen name="taskbar_nav_threshold">30dp</dimen>
-    <dimen name="taskbar_app_window_threshold">100dp</dimen>
-    <dimen name="taskbar_home_overview_threshold">180dp</dimen>
-    <dimen name="taskbar_catch_up_threshold">300dp</dimen>
+    <dimen name="taskbar_nav_threshold">40dp</dimen>
+    <dimen name="taskbar_app_window_threshold">88dp</dimen>
+    <dimen name="taskbar_home_overview_threshold">156dp</dimen>
+    <dimen name="taskbar_catch_up_threshold">264dp</dimen>
 
     <!--  Taskbar 3 button spacing  -->
     <dimen name="taskbar_button_space_inbetween">24dp</dimen>

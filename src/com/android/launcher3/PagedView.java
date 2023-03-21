@@ -113,8 +113,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     private float mDownMotionX;
     private float mDownMotionY;
     private float mDownMotionPrimary;
-    private float mLastMotion;
-    private float mLastMotionRemainder;
+    private int mLastMotion;
     private float mTotalMotion;
     // Used in special cases where the fling checks can be relaxed for an intentional gesture
     private boolean mAllowEasyFling;
@@ -1072,8 +1071,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 // Remember location of down touch
                 mDownMotionX = x;
                 mDownMotionY = y;
-                mDownMotionPrimary = mLastMotion = mOrientationHandler.getPrimaryDirection(ev, 0);
-                mLastMotionRemainder = 0;
+                mDownMotionPrimary = mOrientationHandler.getPrimaryDirection(ev, 0);
+                mLastMotion = (int) mDownMotionPrimary;
                 mTotalMotion = 0;
                 mAllowEasyFling = false;
                 mActivePointerId = ev.getPointerId(0);
@@ -1155,8 +1154,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             // Scroll if the user moved far enough along the X axis
             mIsBeingDragged = true;
             mTotalMotion += Math.abs(mLastMotion - primaryDirection);
-            mLastMotion = primaryDirection;
-            mLastMotionRemainder = 0;
+            mLastMotion = (int) primaryDirection;
             pageBeginTransition();
             // Stop listening for things like pinches.
             requestDisallowInterceptTouchEvent(true);
@@ -1265,8 +1263,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             // Remember where the motion event started
             mDownMotionX = ev.getX();
             mDownMotionY = ev.getY();
-            mDownMotionPrimary = mLastMotion = mOrientationHandler.getPrimaryDirection(ev, 0);
-            mLastMotionRemainder = 0;
+            mDownMotionPrimary = mOrientationHandler.getPrimaryDirection(ev, 0);
+            mLastMotion = (int) mDownMotionPrimary;
             mTotalMotion = 0;
             mAllowEasyFling = false;
             mActivePointerId = ev.getPointerId(0);
@@ -1287,28 +1285,29 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 final int pointerIndex = ev.findPointerIndex(mActivePointerId);
 
                 if (pointerIndex == -1) return true;
-                float oldScroll = mOrientationHandler.getPrimaryScroll(this);
-                float dx = ev.getX(pointerIndex);
-                float dy = ev.getY(pointerIndex);
+                int oldScroll = mOrientationHandler.getPrimaryScroll(this);
+                int dx = (int) ev.getX(pointerIndex);
+                int dy = (int) ev.getY(pointerIndex);
 
-                float direction = mOrientationHandler.getPrimaryValue(dx, dy);
-                float delta = mLastMotion + mLastMotionRemainder - direction;
+                int direction = mOrientationHandler.getPrimaryValue(dx, dy);
+                int delta = mLastMotion - direction;
 
                 int width = getWidth();
                 int height = getHeight();
-                int size = mOrientationHandler.getPrimaryValue(width, height);
-
-                final float displacement = mOrientationHandler.getSecondaryValue(dx, dy)
-                        / mOrientationHandler.getSecondaryValue(width, height);
+                float size = mOrientationHandler.getPrimaryValue(width, height);
+                float displacement = (width == 0 || height == 0) ? 0
+                        : (float) mOrientationHandler.getSecondaryValue(dx, dy)
+                                / mOrientationHandler.getSecondaryValue(width, height);
                 mTotalMotion += Math.abs(delta);
 
                 if (mAllowOverScroll) {
-                    float consumed = 0;
+                    int consumed = 0;
                     if (delta < 0 && mEdgeGlowRight.getDistance() != 0f) {
-                        consumed = size * mEdgeGlowRight.onPullDistance(delta / size, displacement);
+                        consumed = Math.round(size *
+                                mEdgeGlowRight.onPullDistance(delta / size, displacement));
                     } else if (delta > 0 && mEdgeGlowLeft.getDistance() != 0f) {
-                        consumed = -size * mEdgeGlowLeft.onPullDistance(
-                                -delta / size, 1 - displacement);
+                        consumed = Math.round(-size *
+                                mEdgeGlowLeft.onPullDistance(-delta / size, 1 - displacement));
                     }
                     delta -= consumed;
                 }
@@ -1318,11 +1317,9 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 // keep the remainder because we are actually testing if we've moved from the last
                 // scrolled position (which is discrete).
                 mLastMotion = direction;
-                int movedDelta = (int) delta;
-                mLastMotionRemainder = delta - movedDelta;
 
                 if (delta != 0) {
-                    mOrientationHandler.setPrimary(this, VIEW_SCROLL_BY, movedDelta);
+                    mOrientationHandler.setPrimary(this, VIEW_SCROLL_BY, delta);
 
                     if (mAllowOverScroll) {
                         final float pulledToX = oldScroll + delta;
@@ -1377,7 +1374,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                         * mOrientationHandler.getPrimaryScale(this));
                 boolean isSignificantMove = isSignificantMove(Math.abs(delta), pageOrientedSize);
 
-                mTotalMotion += Math.abs(mLastMotion + mLastMotionRemainder - primaryDirection);
+                mTotalMotion += Math.abs(mLastMotion - primaryDirection);
                 boolean passedSlop = mAllowEasyFling || mTotalMotion > mPageSlop;
                 boolean isFling = passedSlop && shouldFlingForVelocity(velocity);
                 boolean isDeltaLeft = mIsRtl ? delta > 0 : delta < 0;
@@ -1562,9 +1559,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             // active pointer and adjust accordingly.
             // TODO: Make this decision more intelligent.
             final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
-            mLastMotion = mDownMotionPrimary = mOrientationHandler.getPrimaryDirection(ev,
-                newPointerIndex);
-            mLastMotionRemainder = 0;
+            mDownMotionPrimary = mOrientationHandler.getPrimaryDirection(ev, newPointerIndex);
+            mLastMotion = (int) mDownMotionPrimary;
             mActivePointerId = ev.getPointerId(newPointerIndex);
             if (mVelocityTracker != null) {
                 mVelocityTracker.clear();

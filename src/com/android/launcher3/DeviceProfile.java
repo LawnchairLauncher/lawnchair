@@ -28,6 +28,7 @@ import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVER
 import static com.android.launcher3.icons.GraphicsUtils.getShapePath;
 import static com.android.launcher3.testing.shared.ResourceUtils.INVALID_RESOURCE_HANDLE;
 import static com.android.launcher3.testing.shared.ResourceUtils.pxFromDp;
+import static com.android.launcher3.testing.shared.ResourceUtils.roundPxValueFromFloat;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -377,7 +378,7 @@ public class DeviceProfile {
 
         folderLabelTextScale = res.getFloat(R.dimen.folder_label_text_scale);
 
-        if (inv.folderStyle != INVALID_RESOURCE_HANDLE) {
+        if (isScalableGrid && inv.folderStyle != INVALID_RESOURCE_HANDLE) {
             TypedArray folderStyle = context.obtainStyledAttributes(inv.folderStyle,
                     R.styleable.FolderStyle);
             // These are re-set in #updateFolderCellSize if the grid is not scalable
@@ -395,7 +396,7 @@ public class DeviceProfile {
             folderStyle.recycle();
         } else {
             folderCellLayoutBorderSpacePx = 0;
-            folderFooterHeightPx = 0;
+            folderFooterHeightPx = res.getDimensionPixelSize(R.dimen.folder_footer_height_default);
             folderContentPaddingTop = res.getDimensionPixelSize(R.dimen.folder_top_padding_default);
         }
 
@@ -547,6 +548,9 @@ public class DeviceProfile {
         cellLayoutPaddingPx = new Rect(cellLayoutPadding, cellLayoutPadding, cellLayoutPadding,
                 cellLayoutPadding);
         updateWorkspacePadding();
+
+        // Folder scaling requires correct workspace paddings
+        updateAvailableFolderCellDimensions(res);
 
         mMinHotseatIconSpacePx = res.getDimensionPixelSize(R.dimen.min_hotseat_icon_space);
         mMinHotseatQsbWidthPx = res.getDimensionPixelSize(R.dimen.min_hotseat_qsb_width);
@@ -875,7 +879,6 @@ public class DeviceProfile {
             extraHeight = Math.max(0, maxHeight - getCellLayoutHeightSpecification());
         }
 
-        updateAvailableFolderCellDimensions(res);
         return Math.round(extraHeight);
     }
 
@@ -1064,22 +1067,22 @@ public class DeviceProfile {
     private void updateAvailableFolderCellDimensions(Resources res) {
         updateFolderCellSize(1f, res);
 
-        // Don't let the folder get too close to the edges of the screen.
-        int folderMargin = edgeMarginPx * 2;
+        // For usability we can't have the folder use the whole width of the screen
         Point totalWorkspacePadding = getTotalWorkspacePadding();
 
-        // Check if the icons fit within the available height.
+        // Check if the folder fit within the available height.
         float contentUsedHeight = folderCellHeightPx * inv.numFolderRows
-                + ((inv.numFolderRows - 1) * folderCellLayoutBorderSpacePx);
-        int contentMaxHeight = availableHeightPx - totalWorkspacePadding.y - folderFooterHeightPx
-                - folderMargin - folderContentPaddingTop;
+                + ((inv.numFolderRows - 1) * folderCellLayoutBorderSpacePx)
+                + folderFooterHeightPx
+                + folderContentPaddingTop;
+        int contentMaxHeight = availableHeightPx - totalWorkspacePadding.y;
         float scaleY = contentMaxHeight / contentUsedHeight;
 
-        // Check if the icons fit within the available width.
+        // Check if the folder fit within the available width.
         float contentUsedWidth = folderCellWidthPx * inv.numFolderColumns
-                + ((inv.numFolderColumns - 1) * folderCellLayoutBorderSpacePx);
-        int contentMaxWidth = availableWidthPx - totalWorkspacePadding.x - folderMargin
-                - folderContentPaddingLeftRight * 2;
+                + ((inv.numFolderColumns - 1) * folderCellLayoutBorderSpacePx)
+                + folderContentPaddingLeftRight * 2;
+        int contentMaxWidth = availableWidthPx - totalWorkspacePadding.x;
         float scaleX = contentMaxWidth / contentUsedWidth;
 
         float scale = Math.min(scaleX, scaleY);
@@ -1092,16 +1095,24 @@ public class DeviceProfile {
         float invIconSizeDp = inv.iconSize[mTypeIndex];
         folderChildIconSizePx = Math.max(1, pxFromDp(invIconSizeDp, mMetrics, scale));
         folderChildTextSizePx = pxFromSp(inv.iconTextSize[mTypeIndex], mMetrics, scale);
-        folderLabelTextSizePx = Math.max(pxFromSp(MIN_FOLDER_TEXT_SIZE_SP, mMetrics),
+        folderLabelTextSizePx = Math.max(pxFromSp(MIN_FOLDER_TEXT_SIZE_SP, mMetrics, scale),
                 (int) (folderChildTextSizePx * folderLabelTextScale));
 
         int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx);
 
         if (isScalableGrid) {
             if (inv.folderStyle == INVALID_RESOURCE_HANDLE) {
-                folderCellWidthPx = pxFromDp(getCellSize().x, mMetrics, scale);
-                folderCellHeightPx = pxFromDp(getCellSize().y, mMetrics, scale);
+                folderCellWidthPx = roundPxValueFromFloat(getCellSize().x * scale);
+                folderCellHeightPx = roundPxValueFromFloat(getCellSize().y * scale);
+            } else {
+                folderCellWidthPx = roundPxValueFromFloat(folderCellWidthPx * scale);
+                folderCellHeightPx = roundPxValueFromFloat(folderCellHeightPx * scale);
             }
+
+            folderContentPaddingTop = roundPxValueFromFloat(folderContentPaddingTop * scale);
+            folderCellLayoutBorderSpacePx = roundPxValueFromFloat(
+                    folderCellLayoutBorderSpacePx * scale);
+            folderFooterHeightPx = roundPxValueFromFloat(folderFooterHeightPx * scale);
 
             folderContentPaddingLeftRight = folderCellLayoutBorderSpacePx;
         } else {
@@ -1112,10 +1123,14 @@ public class DeviceProfile {
 
             folderCellWidthPx = folderChildIconSizePx + 2 * cellPaddingX;
             folderCellHeightPx = folderChildIconSizePx + 2 * cellPaddingY + textHeight;
+            folderContentPaddingTop = roundPxValueFromFloat(folderContentPaddingTop * scale);
             folderContentPaddingLeftRight =
                     res.getDimensionPixelSize(R.dimen.folder_content_padding_left_right);
             folderFooterHeightPx =
-                    res.getDimensionPixelSize(R.dimen.folder_footer_height_default);
+                    roundPxValueFromFloat(
+                            res.getDimensionPixelSize(R.dimen.folder_footer_height_default)
+                                    * scale);
+
         }
 
         folderChildDrawablePaddingPx = Math.max(0,

@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.interaction;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -29,8 +31,8 @@ import android.view.ViewGroup.LayoutParams;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.DisplayController;
 
 /**
@@ -207,7 +209,11 @@ public class EdgeBackGestureHandler implements OnTouchListener {
                         mThresholdCrossed = true;
                     }
                 }
+            }
 
+            if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+                mGestureCallback.onBackGestureProgress(ev.getX() - mDownPoint.x,
+                        ev.getY() - mDownPoint.y, mEdgeBackPanel.getIsLeftPanel());
             }
 
             // forward touch
@@ -242,5 +248,8 @@ public class EdgeBackGestureHandler implements OnTouchListener {
     interface BackGestureAttemptCallback {
         /** Called whenever any touch is completed. */
         void onBackGestureAttempted(BackGestureResult result);
+
+        /** Called when the back gesture is recognized and is in progress. */
+        default void onBackGestureProgress(float diffx, float diffy, boolean isLeftGesture) {}
     }
 }
