@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.celllayout;
 
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
+
 import android.view.View;
 
 import com.android.launcher3.CellLayout;
@@ -29,23 +31,31 @@ public class CellLayoutTestUtils {
         ArrayList<CellLayoutBoard> boards = new ArrayList<>();
         int widgetCount = 0;
         for (CellLayout cellLayout : launcher.getWorkspace().mWorkspaceScreens) {
-            CellLayoutBoard board = new CellLayoutBoard();
+
             int count = cellLayout.getShortcutsAndWidgets().getChildCount();
             for (int i = 0; i < count; i++) {
                 View callView = cellLayout.getShortcutsAndWidgets().getChildAt(i);
                 CellLayoutLayoutParams params =
                         (CellLayoutLayoutParams) callView.getLayoutParams();
+
+                CellPosMapper.CellPos pos = launcher.getCellPosMapper().mapPresenterToModel(
+                        params.getCellX(), params.getCellY(),
+                        launcher.getWorkspace().getIdForScreen(cellLayout), CONTAINER_DESKTOP);
+                int screenId = pos.screenId;
+                if (screenId >= boards.size() - 1) {
+                    boards.add(new CellLayoutBoard());
+                }
+                CellLayoutBoard board = boards.get(screenId);
                 // is icon
                 if (callView instanceof DoubleShadowBubbleTextView) {
-                    board.addIcon(params.getCellX(), params.getCellY());
+                    board.addIcon(pos.cellX, pos.cellY);
                 } else {
                     // is widget
-                    board.addWidget(params.getCellX(), params.getCellY(), params.cellHSpan,
-                            params.cellVSpan, (char) ('A' + widgetCount));
+                    board.addWidget(pos.cellX, pos.cellY, params.cellHSpan, params.cellVSpan,
+                            (char) ('A' + widgetCount));
                     widgetCount++;
                 }
             }
-            boards.add(board);
         }
         return boards;
     }
