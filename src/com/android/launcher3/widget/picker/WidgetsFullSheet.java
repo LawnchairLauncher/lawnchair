@@ -204,6 +204,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 && mDeviceProfile.isLandscape
                 && LARGE_SCREEN_WIDGET_PICKER.get();
         mHasWorkProfile = context.getSystemService(LauncherApps.class).getProfiles().size() > 1;
+        mOrientation = Launcher.getLauncher(context).getOrientation();
         mAdapters.put(AdapterHolder.PRIMARY, new AdapterHolder(AdapterHolder.PRIMARY));
         mAdapters.put(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK));
         mAdapters.put(AdapterHolder.SEARCH, new AdapterHolder(AdapterHolder.SEARCH));
@@ -232,13 +233,22 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         mContent.setClipToOutline(true);
 
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-        int contentLayoutRes = mHasWorkProfile ? R.layout.widgets_full_sheet_paged_view
-                : R.layout.widgets_full_sheet_recyclerview;
+
         if (mIsTwoPane) {
-            contentLayoutRes = mHasWorkProfile ? R.layout.widgets_full_sheet_paged_view_large_screen
-                    : R.layout.widgets_full_sheet_recyclerview_large_screen;
+            layoutInflater.inflate(
+                    mHasWorkProfile
+                           ? R.layout.widgets_full_sheet_paged_view_large_screen
+                           : R.layout.widgets_full_sheet_recyclerview_large_screen,
+                    findViewById(R.id.recycler_view_container),
+                    true);
+        } else {
+            layoutInflater.inflate(
+                    mHasWorkProfile
+                            ? R.layout.widgets_full_sheet_paged_view
+                            : R.layout.widgets_full_sheet_recyclerview,
+                    mContent,
+                    true);
         }
-        layoutInflater.inflate(contentLayoutRes, mContent, true);
 
         mFastScroller = findViewById(R.id.fast_scroller);
         if (mIsTwoPane) {
@@ -349,7 +359,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
         // if the current active page changes to personal or work we set suggestions
         // to be the selected widget
-        if (mIsTwoPane && (currentActivePage == PERSONAL_TAB || currentActivePage == WORK_TAB)) {
+        if (mIsTwoPane && mSuggestedWidgetsHeader != null
+                && (currentActivePage == PERSONAL_TAB || currentActivePage == WORK_TAB)) {
             mSuggestedWidgetsHeader.callOnClick();
         }
 
@@ -433,7 +444,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         super.onAttachedToWindow();
         mActivityContext.getAppWidgetHolder().addProviderChangeListener(this);
         notifyWidgetProvidersChanged();
-        onRecommendedWidgetsBound();
+        if (!mIsTwoPane) {
+            onRecommendedWidgetsBound();
+        }
     }
 
     @Override
@@ -696,6 +709,9 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                     recommendedWidgetsInTable, maxTableHeight);
         } else {
             mRecommendedWidgetsTable.setVisibility(GONE);
+            if (mSuggestedWidgetsContainer != null) {
+                mSuggestedWidgetsContainer.setVisibility(GONE);
+            }
         }
     }
 

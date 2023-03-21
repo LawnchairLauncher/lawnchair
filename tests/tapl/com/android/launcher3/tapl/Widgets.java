@@ -77,8 +77,8 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
             mLauncher.scroll(
                     widgetsContainer,
                     Direction.UP,
-                    new Rect(0, 0, mLauncher.getRightGestureMarginInContainer(widgetsContainer) + 1,
-                            0),
+                    new Rect(0, 0, 0,
+                            mLauncher.getBottomGestureMarginInContainer(widgetsContainer) + 1),
                     FLING_STEPS, false);
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer("flung back")) {
                 verifyActiveContainer();
@@ -168,6 +168,8 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
     private UiObject2 findTestAppWidgetsTableContainer() {
         final BySelector headerSelector = By.res(mLauncher.getLauncherPackageName(),
                 "widgets_list_header");
+        final BySelector widgetPickerSelector = By.res(mLauncher.getLauncherPackageName(),
+                "container");
         final BySelector targetAppSelector = By.clazz("android.widget.TextView").text(
                 mLauncher.getContext().getPackageName());
         final BySelector widgetsContainerSelector = By.res(mLauncher.getLauncherPackageName(),
@@ -176,17 +178,23 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
         boolean hasHeaderExpanded = false;
         int scrollDistance = 0;
         for (int i = 0; i < SCROLL_ATTEMPTS; i++) {
-            UiObject2 fullWidgetsPicker = verifyActiveContainer();
-
-            UiObject2 header = mLauncher.waitForObjectInContainer(fullWidgetsPicker,
+            UiObject2 widgetPicker = mLauncher.waitForLauncherObject(widgetPickerSelector);
+            UiObject2 widgetListView = verifyActiveContainer();
+            UiObject2 header = mLauncher.waitForObjectInContainer(widgetListView,
                     headerSelector);
+            // If we are in a tablet in landscape mode then we will have a two pane view and we use
+            // the right pane to display the widgets table.
+            UiObject2 rightPane = mLauncher.findObjectInContainer(
+                    widgetPicker,
+                    widgetsContainerSelector);
+
             // If a header is barely visible in the bottom edge of the screen, its height could be
             // too small for a scroll gesture. Since all header should have roughly the same height,
             // let's pick the max height we have seen so far.
             scrollDistance = Math.max(scrollDistance, header.getVisibleBounds().height());
 
             // Look for a header that has the test app name.
-            UiObject2 headerTitle = mLauncher.findObjectInContainer(fullWidgetsPicker,
+            UiObject2 headerTitle = mLauncher.findObjectInContainer(widgetListView,
                     targetAppSelector);
             if (headerTitle != null) {
                 // If we find the header and it has not been expanded, let's click it to see the
@@ -202,7 +210,8 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 }
 
                 // Look for a widgets list.
-                UiObject2 widgetsContainer = mLauncher.findObjectInContainer(fullWidgetsPicker,
+                UiObject2 widgetsContainer = mLauncher.findObjectInContainer(
+                        rightPane != null ? rightPane : widgetListView,
                         widgetsContainerSelector);
                 if (widgetsContainer != null) {
                     log("Widgets container found.");
@@ -210,7 +219,9 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 }
             }
             log("Finding test widget package - scroll with distance: " + scrollDistance);
-            mLauncher.scrollDownByDistance(fullWidgetsPicker, scrollDistance);
+            mLauncher.scrollDownByDistance(hasHeaderExpanded && rightPane != null
+                    ? rightPane
+                    : widgetListView, scrollDistance);
         }
 
         return null;
