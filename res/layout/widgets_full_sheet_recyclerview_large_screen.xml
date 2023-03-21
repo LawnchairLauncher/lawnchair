@@ -18,13 +18,11 @@
 
     <FrameLayout
         android:id="@+id/widgets_full_sheet_recyclerview_large_screen"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintEnd_toStartOf="@id/scrollView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintWidth_percent="0.33">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="start"
+        android:layout_gravity="start"
+        android:layout_alignParentStart="true">
 
         <com.android.launcher3.widget.picker.WidgetsRecyclerView
             android:id="@+id/primary_widgets_list_view"
