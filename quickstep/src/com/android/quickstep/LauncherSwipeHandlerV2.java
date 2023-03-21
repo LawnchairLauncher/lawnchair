@@ -105,7 +105,7 @@ public class LauncherSwipeHandlerV2 extends
 
     private HomeAnimationFactory createIconHomeAnimationFactory(View workspaceView) {
         RectF iconLocation = new RectF();
-        FloatingIconView floatingIconView = getFloatingIconView(mActivity, workspaceView,
+        FloatingIconView floatingIconView = getFloatingIconView(mActivity, workspaceView, null,
                 mActivity.getTaskbarUIController() == null
                         ? null
                         : mActivity.getTaskbarUIController().findMatchingView(workspaceView),
