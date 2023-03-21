@@ -38,6 +38,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ObjectWrapper;
@@ -104,7 +105,7 @@ public class LauncherSwipeHandlerV2 extends
 
     private HomeAnimationFactory createIconHomeAnimationFactory(View workspaceView) {
         RectF iconLocation = new RectF();
-        FloatingIconView floatingIconView = getFloatingIconView(mActivity, workspaceView,
+        FloatingIconView floatingIconView = getFloatingIconView(mActivity, workspaceView, null,
                 mActivity.getTaskbarUIController() == null
                         ? null
                         : mActivity.getTaskbarUIController().findMatchingView(workspaceView),
@@ -120,6 +121,12 @@ public class LauncherSwipeHandlerV2 extends
             @Override
             protected View getViewIgnoredInWorkspaceRevealAnimation() {
                 return workspaceView;
+            }
+
+            @Override
+            public boolean isInHotseat() {
+                return workspaceView.getTag() instanceof ItemInfo
+                        && ((ItemInfo) workspaceView.getTag()).isInHotseat();
             }
 
             @NonNull
