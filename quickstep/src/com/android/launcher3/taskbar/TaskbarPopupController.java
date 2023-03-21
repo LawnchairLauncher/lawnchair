@@ -65,6 +65,7 @@ import java.util.stream.Stream;
 
 /**
  * Implements interfaces required to show and allow interacting with a PopupContainerWithArrow.
+ * Controls the long-press menu on Taskbar and AllApps icons.
  */
 public class TaskbarPopupController implements TaskbarControllers.LoggableTaskbarController {
 
@@ -191,9 +192,8 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
 
         // Make focusable to receive back events
         context.onPopupVisibilityChanged(true);
-        container.setOnCloseCallback(() -> {
+        container.addOnCloseCallback(() -> {
             context.getDragLayer().post(() -> context.onPopupVisibilityChanged(false));
-            container.setOnCloseCallback(null);
         });
 
         return container;
@@ -294,13 +294,19 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
 
         @Override
         public void onClick(View view) {
+            // Add callbacks depending on what type of Taskbar context we're in (Taskbar or AllApps)
+            mTarget.onSplitScreenMenuButtonClicked();
             AbstractFloatingView.closeAllOpenViews(mTarget);
+
+            // Depending on what app state we're in, we either want to initiate the split screen
+            // staging process or immediately launch a split with an existing app.
+            // - Initiate the split screen staging process
              if (mAllowInitialSplitSelection) {
                  super.onClick(view);
                  return;
              }
 
-            // Initiate splitscreen from the in-app Taskbar or Taskbar All Apps
+            // - Immediately launch split with the running app
             Pair<InstanceId, com.android.launcher3.logging.InstanceId> instanceIds =
                     LogUtils.getShellShareableInstanceId();
             mTarget.getStatsLogManager().logger()
