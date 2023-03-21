@@ -65,4 +65,10 @@ public abstract class BaseTaskbarContext extends ContextThemeWrapper implements 
 
     /** Callback invoked when a popup is shown or closed within this context. */
     public abstract void onPopupVisibilityChanged(boolean isVisible);
+
+    /**
+     * Callback invoked when user attempts to split the screen through a long-press menu in Taskbar
+     * or AllApps.
+     */
+    public abstract void onSplitScreenMenuButtonClicked();
 }
