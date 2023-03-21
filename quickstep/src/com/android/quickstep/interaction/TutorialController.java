@@ -678,7 +678,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                         ? R.dimen.gesture_tutorial_tablet_feedback_margin_top
                         : R.dimen.gesture_tutorial_feedback_margin_top);
 
-        mFakeTaskbarView.setVisibility(mTutorialFragment.isLargeScreen() ? View.VISIBLE : GONE);
+        mFakeTaskbarView.setVisibility((mTutorialFragment.isLargeScreen()
+                && !ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) ? View.VISIBLE : GONE);
 
         RelativeLayout.LayoutParams hotseatLayoutParams =
                 (RelativeLayout.LayoutParams) mFakeHotseatView.getLayoutParams();
