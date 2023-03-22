@@ -16,6 +16,7 @@
 package com.android.launcher3.widget;
 
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
+import static com.android.launcher3.config.FeatureFlags.LARGE_SCREEN_WIDGET_PICKER;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -187,6 +188,10 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         int widthUsed;
         if (deviceProfile.isTablet) {
             int margin = deviceProfile.allAppsLeftRightMargin;
+            if (deviceProfile.isLandscape && LARGE_SCREEN_WIDGET_PICKER.get()) {
+                margin = getResources().getDimensionPixelSize(
+                        R.dimen.widget_picker_landscape_tablet_left_right_margin);
+            }
             widthUsed = Math.max(2 * margin, 2 * (mInsets.left + mInsets.right));
         } else if (mInsets.bottom > 0) {
             widthUsed = mInsets.left + mInsets.right;
