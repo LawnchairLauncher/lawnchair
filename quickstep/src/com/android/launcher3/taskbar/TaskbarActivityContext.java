@@ -80,6 +80,7 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.AutohideSuspendFlag;
 import com.android.launcher3.taskbar.TaskbarTranslationController.TransitionCallback;
@@ -523,6 +524,16 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     @Override
     public void onPopupVisibilityChanged(boolean isVisible) {
         setTaskbarWindowFocusable(isVisible);
+    }
+
+    @Override
+    public void onSplitScreenMenuButtonClicked() {
+        PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(this);
+        if (popup != null) {
+            popup.addOnCloseCallback(() -> {
+                mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
+            });
+        }
     }
 
     /**
