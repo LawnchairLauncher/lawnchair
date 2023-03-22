@@ -103,6 +103,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     private AnimatedFloat mTaskbarNavButtonTranslationY;
     private AnimatedFloat mTaskbarNavButtonTranslationYForInAppDisplay;
     private float mTaskbarIconTranslationYForSwipe;
+    private float mTaskbarIconTranslationYForSpringOnStash;
 
     private final int mTaskbarBottomMargin;
     private final int mStashedHandleHeight;
@@ -291,10 +292,19 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         updateTranslationY();
     }
 
+    /**
+     * Sets the translation of the TaskbarView during the spring on stash animation.
+     */
+    public void setTranslationYForStash(float transY) {
+        mTaskbarIconTranslationYForSpringOnStash = transY;
+        updateTranslationY();
+    }
+
     private void updateTranslationY() {
         mTaskbarView.setTranslationY(mTaskbarIconTranslationYForHome.value
                 + mTaskbarIconTranslationYForStash.value
-                + mTaskbarIconTranslationYForSwipe);
+                + mTaskbarIconTranslationYForSwipe
+                + mTaskbarIconTranslationYForSpringOnStash);
     }
 
     /**

@@ -50,6 +50,7 @@ abstract class TaskbarBaseTestCase {
     @Mock lateinit var voiceInteractionWindowController: VoiceInteractionWindowController
     @Mock lateinit var taskbarRecentAppsController: TaskbarRecentAppsController
     @Mock lateinit var taskbarTranslationController: TaskbarTranslationController
+    @Mock lateinit var taskbarSpringOnStashController: TaskbarSpringOnStashController
     @Mock lateinit var taskbarOverlayController: TaskbarOverlayController
     @Mock lateinit var taskbarEduTooltipController: TaskbarEduTooltipController
     @Mock lateinit var keyboardQuickSwitchController: KeyboardQuickSwitchController
@@ -89,6 +90,7 @@ abstract class TaskbarBaseTestCase {
                 taskbarInsetsController,
                 voiceInteractionWindowController,
                 taskbarTranslationController,
+                taskbarSpringOnStashController,
                 taskbarRecentAppsController,
                 taskbarEduTooltipController,
                 keyboardQuickSwitchController
