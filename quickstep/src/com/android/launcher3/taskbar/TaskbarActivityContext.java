@@ -235,6 +235,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarInsetsController(this),
                 new VoiceInteractionWindowController(this),
                 new TaskbarTranslationController(this),
+                new TaskbarSpringOnStashController(this),
                 isDesktopMode
                         ? new DesktopTaskbarRecentAppsController(this)
                         : TaskbarRecentAppsController.DEFAULT,
