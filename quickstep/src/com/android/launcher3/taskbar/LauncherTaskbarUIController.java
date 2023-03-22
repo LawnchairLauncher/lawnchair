@@ -100,7 +100,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         onLauncherResumedOrPaused(mLauncher.hasBeenResumed(), true /* fromInit */);
 
         onStashedInAppChanged(mLauncher.getDeviceProfile());
-        mTaskbarLauncherStateController.onChangeScreenState(
+        mTaskbarLauncherStateController.updateStateForSysuiFlags(
                 mControllers.getSharedState().sysuiStateFlags, true /* fromInit */);
         mLauncher.addOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
     }
@@ -319,8 +319,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
-    public void onChangeScreenState(int screenState) {
-        mTaskbarLauncherStateController.onChangeScreenState(screenState, false /* fromInit */);
+    public void updateStateForSysuiFlags(int sysuiFlags, boolean skipAnim) {
+        mTaskbarLauncherStateController.updateStateForSysuiFlags(sysuiFlags, skipAnim);
     }
 
     @Override
