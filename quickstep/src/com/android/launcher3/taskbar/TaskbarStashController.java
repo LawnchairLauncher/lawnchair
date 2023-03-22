@@ -712,6 +712,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             play(as, mTaskbarStashedHandleAlpha.animateToValue(1), alphaStartDelay,
                     Math.max(0, duration - alphaStartDelay), LINEAR);
 
+            play(as, mControllers.taskbarSpringOnStashController.createSpringToStash(), 0, duration,
+                    LINEAR);
+
             if (skipStashAnimation) {
                 skipInterpolator = INSTANT;
             }
