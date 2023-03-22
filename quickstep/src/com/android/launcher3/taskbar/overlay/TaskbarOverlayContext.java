@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.taskbar.overlay;
 
-import static android.app.ActivityTaskManager.INVALID_TASK_ID;
-
 import android.content.Context;
 import android.view.View;
 
@@ -33,10 +31,6 @@ import com.android.launcher3.taskbar.TaskbarStashController;
 import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsContainerView;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource;
-import com.android.quickstep.views.RecentsView;
-import com.android.systemui.shared.recents.model.Task;
-
-import java.util.function.Consumer;
 
 /**
  * Window context for the taskbar overlays such as All Apps and EDU.
@@ -141,4 +135,8 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
 
     @Override
     public void onPopupVisibilityChanged(boolean isVisible) {}
+
+    @Override
+    public void onSplitScreenMenuButtonClicked() {
+    }
 }

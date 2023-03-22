@@ -125,6 +125,12 @@ public class TaskbarUIController {
     }
 
     /**
+     * SysUI flags updated, see QuickStepContract.SYSUI_STATE_* values.
+     */
+    public void updateStateForSysuiFlags(int sysuiFlags, boolean skipAnim){
+    }
+
+    /**
      * Returns {@code true} iff taskbar is stashed.
      */
     public boolean isTaskbarStashed() {

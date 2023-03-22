@@ -56,7 +56,6 @@ import android.view.Gravity;
 import android.view.RoundedCorner;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.WindowManagerGlobal;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -80,6 +79,7 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.AutohideSuspendFlag;
 import com.android.launcher3.taskbar.TaskbarTranslationController.TransitionCallback;
@@ -233,6 +233,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarInsetsController(this),
                 new VoiceInteractionWindowController(this),
                 new TaskbarTranslationController(this),
+                new TaskbarSpringOnStashController(this),
                 isDesktopMode
                         ? new DesktopTaskbarRecentAppsController(this)
                         : TaskbarRecentAppsController.DEFAULT,
@@ -524,6 +525,16 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         setTaskbarWindowFocusable(isVisible);
     }
 
+    @Override
+    public void onSplitScreenMenuButtonClicked() {
+        PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(this);
+        if (popup != null) {
+            popup.addOnCloseCallback(() -> {
+                mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
+            });
+        }
+    }
+
     /**
      * Sets a new data-source for this taskbar instance
      */
@@ -578,6 +589,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mControllers.taskbarForceVisibleImmersiveController.updateSysuiFlags(systemUiStateFlags);
         mControllers.voiceInteractionWindowController.setIsVoiceInteractionWindowVisible(
                 (systemUiStateFlags & SYSUI_STATE_VOICE_INTERACTION_WINDOW_SHOWING) != 0, fromInit);
+
+        mControllers.uiController.updateStateForSysuiFlags(systemUiStateFlags, fromInit);
     }
 
     /**

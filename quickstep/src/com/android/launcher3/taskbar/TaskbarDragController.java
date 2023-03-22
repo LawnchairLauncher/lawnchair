@@ -159,7 +159,7 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
             if (iconShift != null) {
                 dragView.animateShift(-iconShift.x, -iconShift.y);
             }
-            btv.getIcon().setIsDisabled(true);
+            btv.setIconDisabled(true);
             mControllers.taskbarAutohideSuspendController.updateFlag(
                     TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING, true);
         });
@@ -453,7 +453,7 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
 
     private void maybeOnDragEnd() {
         if (!isDragging()) {
-            ((BubbleTextView) mDragObject.originalView).getIcon().setIsDisabled(false);
+            ((BubbleTextView) mDragObject.originalView).setIconDisabled(false);
             mControllers.taskbarAutohideSuspendController.updateFlag(
                     TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING, false);
             mActivity.onDragEnd();

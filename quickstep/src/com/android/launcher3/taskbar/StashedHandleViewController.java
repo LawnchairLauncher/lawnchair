@@ -84,6 +84,9 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
     private boolean mIsStashed;
     private boolean mTaskbarHidden;
 
+    private float mTranslationYForSwipe;
+    private float mTranslationYForStash;
+
     public StashedHandleViewController(TaskbarActivityContext activity,
             StashedHandleView stashedHandleView) {
         mActivity = activity;
@@ -254,7 +257,20 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
      * Sets the translation of the stashed handle during the swipe up gesture.
      */
     protected void setTranslationYForSwipe(float transY) {
-        mStashedHandleView.setTranslationY(transY);
+        mTranslationYForSwipe = transY;
+        updateTranslationY();
+    }
+
+    /**
+     * Sets the translation of the stashed handle during the spring on stash animation.
+     */
+    protected void setTranslationYForStash(float transY) {
+        mTranslationYForStash = transY;
+        updateTranslationY();
+    }
+
+    private void updateTranslationY() {
+        mStashedHandleView.setTranslationY(mTranslationYForSwipe + mTranslationYForStash);
     }
 
     /**

@@ -103,6 +103,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     private AnimatedFloat mTaskbarNavButtonTranslationY;
     private AnimatedFloat mTaskbarNavButtonTranslationYForInAppDisplay;
     private float mTaskbarIconTranslationYForSwipe;
+    private float mTaskbarIconTranslationYForSpringOnStash;
 
     private final int mTaskbarBottomMargin;
     private final int mStashedHandleHeight;
@@ -291,10 +292,19 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         updateTranslationY();
     }
 
+    /**
+     * Sets the translation of the TaskbarView during the spring on stash animation.
+     */
+    public void setTranslationYForStash(float transY) {
+        mTaskbarIconTranslationYForSpringOnStash = transY;
+        updateTranslationY();
+    }
+
     private void updateTranslationY() {
         mTaskbarView.setTranslationY(mTaskbarIconTranslationYForHome.value
                 + mTaskbarIconTranslationYForStash.value
-                + mTaskbarIconTranslationYForSwipe);
+                + mTaskbarIconTranslationYForSwipe
+                + mTaskbarIconTranslationYForSpringOnStash);
     }
 
     /**
@@ -335,8 +345,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         }
 
         Rect stashedRect = new Rect(left, top, right, bottom);
-        float radius = 0;
-        float stashedRadius = stashedRect.width() / 2f;
+        float radius = viewBounds.height() / 2f;
+        float stashedRadius = stashedRect.height() / 2f;
 
         return new RoundedRectRevealOutlineProvider(radius, stashedRadius, viewBounds, stashedRect)
                 .createRevealAnimator(view, !isStashed, 0);

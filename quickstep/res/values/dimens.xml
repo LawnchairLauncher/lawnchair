@@ -300,6 +300,8 @@
     <dimen name="transient_taskbar_key_shadow_distance">10dp</dimen>
     <dimen name="transient_taskbar_stashed_size">32dp</dimen>
     <dimen name="transient_taskbar_all_apps_button_translation_x_offset">4dp</dimen>
+    <dimen name="transient_taskbar_stash_spring_velocity_dp_per_s">400dp</dimen>
+
     <!-- An additional touch slop to prevent x-axis movement during the swipe up to show taskbar -->
     <dimen name="transient_taskbar_clamped_offset_bound">16dp</dimen>
     <!-- Taskbar swipe up thresholds -->

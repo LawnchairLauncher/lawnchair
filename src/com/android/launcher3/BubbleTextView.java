@@ -72,9 +72,9 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
-import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.search.StringMatcherUtility;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.views.ActivityContext;
@@ -976,6 +976,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         }
         Drawable icon = visible ? mIcon : new ColorDrawable(Color.TRANSPARENT);
         applyCompoundDrawables(icon);
+    }
+
+    /** Sets the icon visual state to disabled or not. */
+    public void setIconDisabled(boolean isDisabled) {
+        if (mIcon != null) {
+            mIcon.setIsDisabled(isDisabled);
+        }
     }
 
     protected boolean iconUpdateAnimationEnabled() {
