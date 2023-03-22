@@ -22,8 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"固定"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"フリーフォーム"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"最近のアイテムはありません"</string>
-    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
-    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"アプリの使用状況の設定"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"すべてクリア"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"最近使ったアプリ"</string>
@@ -55,6 +53,8 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"スワイプで戻る"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"直前の画面に戻るには、画面の左端または右端から中央に向かってスワイプします。"</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"直前の画面に戻るには、2 本の指で画面の左端または右端から中央に向かってスワイプします。"</string>
+    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
+    <skip />
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"画面の下端から上にスワイプしてください。"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"指を離す前にいったん止めないでください。"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"まっすぐ上にスワイプしてください。"</string>
@@ -73,6 +73,8 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"スワイプでアプリを切り替える"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"アプリを切り替えるには、画面を下から上にスワイプして長押しし、指を離します。"</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"アプリを切り替えるには、2 本の指で画面下部から上にスワイプしたまま長押しし、指を離します。"</string>
+    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
+    <skip />
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"設定完了"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"完了"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"設定"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"通知"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"クイック設定"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"タスクバー"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"タスクバー表示"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"タスクバー非表示"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"ナビゲーション バー"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"上 / 左に移動"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"下 / 右に移動"</string>

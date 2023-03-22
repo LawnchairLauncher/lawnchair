@@ -22,8 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Fixa"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Format lliure"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"No hi ha cap element recent"</string>
-    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
-    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Configuració d\'ús d\'aplicacions"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Esborra-ho tot"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Aplicacions recents"</string>
@@ -55,6 +53,8 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Llisca per anar enrere"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Per tornar a la darrera pantalla, llisca des de la vora esquerra o dreta cap al centre de la pantalla."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Per tornar a la pantalla anterior, llisca amb dos dits des de l\'extrem esquerre o dret cap al centre de la pantalla."</string>
+    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
+    <skip />
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Assegura\'t de lliscar des de la vora inferior de la pantalla."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Assegura\'t de no aturar-te abans de deixar anar."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Assegura\'t de lliscar directament cap amunt."</string>
@@ -73,6 +73,8 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Llisca per canviar d\'aplicació"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Per canviar entre aplicacions, llisca cap amunt des de la part inferior, mantén premut i deixa anar."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Per canviar entre apps, llisca amb dos dits cap amunt des de la part inferior, mantén i deixa anar."</string>
+    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
+    <skip />
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Tot a punt"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Fet"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Configuració"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Notificacions"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Config. ràpida"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Barra de tasques"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Es mostra la Barra de tasques"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"S\'ha amagat la Barra de tasques"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Barra de navegació"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mou a la part superior o a l\'esquerra"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mou a la part inferior o a la dreta"</string>

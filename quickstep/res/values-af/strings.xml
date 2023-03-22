@@ -22,8 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Speld vas"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Vormvry"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Geen onlangse items nie"</string>
-    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
-    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Programgebruikinstellings"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Vee alles uit"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Onlangse programme"</string>
@@ -55,6 +53,8 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Swiep om terug te gaan"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Swiep van die linker- of regterrand na die middel van die skerm om na die vorige skerm terug te gaan."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Swiep met 2 vingers van die linker- of regterkant van die skerm af na die middel toe om terug te keer na die vorige skerm."</string>
+    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
+    <skip />
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Maak seker dat jy van die onderrand van die skerm af opswiep."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Maak seker jy onderbreek nie voordat jy laat los nie."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Maak seker jy swiep reguit op."</string>
@@ -73,6 +73,8 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Swiep om tussen programme te wissel"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Swiep van die onderkant van jou skerm af op, hou en laat los dan om tussen programme te wissel."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Swiep met 2 vingers op van die onderkant van jou skerm af, hou en laat los dan om tussen programme te wissel."</string>
+    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
+    <skip />
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Gereed"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Klaar"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Instellings"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Kennisgewings"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Kitsinstellings"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Taakbalk"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Taakbalk word gewys"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Taakbalk is versteek"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigasiebalk"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Skuif na links bo"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Skuif na regs onder"</string>

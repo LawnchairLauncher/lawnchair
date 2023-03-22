@@ -22,7 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"पिन करना"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"फ़्रीफ़ॉर्म"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"हाल ही में इस्तेमाल किया गया कोई ऐप्लिकेशन नहीं है"</string>
-    <string name="recents_empty_desktop_message" msgid="1358240150311509733">"डेस्कटॉप पर कोई आइटम नहीं मिला"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ऐप्लिकेशन इस्तेमाल की सेटिंग"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"सभी ऐप्लिकेशन बंद करें"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"हाल ही में इस्तेमाल किए गए ऐप्लिकेशन"</string>
@@ -54,6 +53,8 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"पिछली स्क्रीन पर वापस जाने के लिए स्वाइप करें"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"पिछली स्क्रीन पर वापस जाने के लिए, स्क्रीन के बाएं या दाएं किनारे से बीचों-बीच तक स्वाइप करें."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"पिछली स्क्रीन पर वापस जाने के लिए, स्क्रीन के बाएं या दाएं किनारे से स्क्रीन के बीच तक दो उंगलियों से स्वाइप करें."</string>
+    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
+    <skip />
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"देख लें कि आप स्क्रीन के निचले किनारे से ऊपर की ओर स्वाइप कर रहे हों."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"देख लें कि आप स्क्रीन से अपनी उंगली उठाने से पहले, इसे कहीं न रोक रहे हों."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"देख लें कि आप ऊपर की ओर बिलकुल सीधे स्वाइप कर रहे हों."</string>
@@ -72,6 +73,8 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"एक ऐप्लिकेशन से दूसरे पर जाने के लिए स्वाइप करें"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"एक ऐप से दूसरे पर जाने के लिए, स्क्रीन पर नीचे से ऊपर की ओर स्वाइप करें, दबाकर रखें, और फिर छोड़ दें."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"इन ऐप के बीच स्विच करने के लिए, दो उंगलियों से नीचे से ऊपर स्वाइप करें, होल्ड करें, और फिर छोड़ें."</string>
+    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
+    <skip />
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"आप पूरी तरह तैयार हैं"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"हो गया"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"सेटिंग"</string>
@@ -98,7 +101,7 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"टास्कबार का ट्यूटोरियल"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"टास्कबार ट्यूटोरियल दिखाया गया"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"टास्कबार ट्यूटोरियल बंद किया गया"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"किसी ऐप को किनारे की ओर ड्रैग करके, दो ऐप एक साथ यूज़ करें"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"किसी ऐप को किनारे की ओर ड्रैग करके 2 ऐप एक साथ इस्तेमाल करें"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"टास्कबार दिखाने के लिए, ऊपर की ओर धीरे से स्वाइप करें"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"डिवाइस के इस्तेमाल के आधार पर ऐप्लिकेशन के सुझाव पाएं"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"टास्कबार अपने-आप छिपाने वाली सुविधा के लिए, सेटिंग में जाकर जेस्चर वाला नेविगेशन चालू करें"</string>
@@ -115,6 +118,8 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"सूचनाएं"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"फटाफट सेटिंग"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"टास्कबार"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"टास्कबार दिखाया गया"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"टास्कबार छिपाया गया"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"नेविगेशन बार"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ऊपर/बाईं तरफ़ ले जाएं"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"नीचे/दाईं तरफ़ ले जाएं"</string>

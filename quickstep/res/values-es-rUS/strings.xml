@@ -22,8 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Fijar"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Formato libre"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"No hay elementos recientes"</string>
-    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
-    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Configuración de uso de la app"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Borrar todo"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Apps recientes"</string>
@@ -55,6 +53,8 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Desliza para ir atrás"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Desliza el dedo desde el borde derecho o izquierdo hasta el centro para volver a la última pantalla."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Para volver la pantalla anterior, desliza 2 dedos desde el borde izquierdo o derecho hacia el centro de la pantalla."</string>
+    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
+    <skip />
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Desliza el dedo hacia arriba desde el borde inferior de la pantalla."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Asegúrate de no detenerte antes de soltarlo."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Desliza el dedo directamente hacia arriba."</string>
@@ -73,6 +73,8 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Desliza para cambiar de app"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Desliza el dedo hacia arriba desde la parte inferior, mantenlo presionado y suéltalo."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Para alternar entre apps, desliza el dedo hacia arriba, mantén presionado y, luego, suelta."</string>
+    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
+    <skip />
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Listo"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Listo"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Configuración"</string>
@@ -102,7 +104,7 @@
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Arrastra una app a un lado para usar 2 apps a la vez"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Desliza despacio hacia arriba para ver la Barra de tareas"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Recibe sugerencias de aplicaciones basadas en tu rutina"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Activa la navegación por gestos en la conf. para ocultar automát. la Barra de tareas"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Activa la navegación por gestos en la Configuración y la Barra de tareas se ocultará sola"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Haz más con la Barra de tareas"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Siguiente"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Atrás"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Notificaciones"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Config. rápida"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Barra de tareas"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Barra de tareas visible"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Barra de tareas oculta"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Barra de navegación"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mover a la parte superior o izquierda"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mover a la parte inferior o derecha"</string>
