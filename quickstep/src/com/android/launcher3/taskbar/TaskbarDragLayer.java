@@ -184,6 +184,14 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         invalidate();
     }
 
+    /*
+     * Sets the translation of the background during the spring on stash animation.
+     */
+    protected void setBackgroundTranslationYForStash(float translationY) {
+        mBackgroundRenderer.setTranslationYForStash(translationY);
+        invalidate();
+    }
+
     /** Returns the bounds in DragLayer coordinates of where the transient background was drawn. */
     protected RectF getLastDrawnTransientRect() {
         return mBackgroundRenderer.getLastDrawnTransientRect();
