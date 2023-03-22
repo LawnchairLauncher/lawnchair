@@ -36,6 +36,8 @@ import com.android.launcher3.util.Themes
  * Use same context for shared preferences, so that we use a single cached instance
  *
  * TODO(b/262721340): Replace all direct SharedPreference refs with LauncherPrefs / Item methods.
+ * TODO(b/274501660): Fix ReorderWidgets#simpleReorder test before enabling
+ *   isBootAwareStartupDataEnabled
  */
 class LauncherPrefs(private val encryptedContext: Context) {
     private val deviceProtectedStorageContext =
@@ -228,7 +230,7 @@ class LauncherPrefs(private val encryptedContext: Context) {
      * files.
      *
      * @return a list of editors with all transactions added so that the caller can determine to use
-     * .apply() or .commit()
+     *   .apply() or .commit()
      */
     private fun prepareToRemove(items: Array<out Item>): List<SharedPreferences.Editor> {
         val itemsPerFile = items.groupBy { it.encryptedPrefs }.toMutableMap()
