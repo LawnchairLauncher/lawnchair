@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Outline;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Process;
@@ -42,6 +43,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewOutlineProvider;
 import android.view.WindowInsets;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
@@ -187,7 +189,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private View mSearchBarContainer;
     private WidgetsSearchBar mSearchBar;
     private TextView mHeaderTitle;
-    private FrameLayout mRightPane;
+    private LinearLayout mRightPane;
+    private FrameLayout mRightPaneScrollView;
     private WidgetsListTableViewHolderBinder mWidgetsListTableViewHolderBinder;
     private DeviceProfile mDeviceProfile;
     private final boolean mIsTwoPane;
@@ -196,6 +199,21 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private @Nullable WidgetsRecyclerView mCurrentTouchEventRecyclerView;
 
     private RecyclerViewFastScroller mFastScroller;
+
+    private final ViewOutlineProvider mViewOutlineProviderRightPane = new ViewOutlineProvider() {
+        @Override
+        public void getOutline(View view, Outline outline) {
+            outline.setRoundRect(
+                    0,
+                    0,
+                    view.getMeasuredWidth(),
+                    view.getMeasuredHeight() - getResources().getDimensionPixelSize(
+                            R.dimen.widget_list_horizontal_margin_large_screen),
+                    view.getResources().getDimensionPixelSize(
+                                    R.dimen.widget_list_top_bottom_corner_radius)
+            );
+        }
+    };
 
     public WidgetsFullSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -333,6 +351,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 ? mContent.findViewById(R.id.title)
                 : mSearchScrollView.findViewById(R.id.title);
         mRightPane = mIsTwoPane ? mContent.findViewById(R.id.right_pane) : null;
+        if (mRightPane != null) {
+            mRightPane.setOutlineProvider(mViewOutlineProviderRightPane);
+        }
+        mRightPaneScrollView = mIsTwoPane
+                ? mContent.findViewById(R.id.right_pane_scroll_view) : null;
+
         mWidgetsListTableViewHolderBinder =
                 new WidgetsListTableViewHolderBinder(mActivityContext, layoutInflater, this, this);
         onRecommendedWidgetsBound();
@@ -760,15 +784,16 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mNoIntercept = false;
             WidgetsRecyclerView recyclerView = getRecyclerView();
             RecyclerViewFastScroller scroller = recyclerView.getScrollbar();
+
             if (scroller.getThumbOffsetY() >= 0
                     && getPopupContainer().isEventOverView(scroller, ev)) {
                 mNoIntercept = true;
             } else if (getPopupContainer().isEventOverView(recyclerView, ev)) {
                 mNoIntercept = !recyclerView.shouldContainerScroll(ev, getPopupContainer());
-            } else if (mIsTwoPane && getPopupContainer().isEventOverView(mRightPane, ev)) {
-                mNoIntercept = mRightPane.getScrollY() > 0;
+            } else if (mIsTwoPane && mRightPaneScrollView != null
+                    && getPopupContainer().isEventOverView(mRightPaneScrollView, ev)) {
+                mNoIntercept = mRightPaneScrollView.canScrollVertically(-1);
             }
-
             if (mSearchBar.isSearchBarFocused()
                     && !getPopupContainer().isEventOverView(mSearchBarContainer, ev)) {
                 mSearchBar.clearSearchBarFocus();
@@ -1002,10 +1027,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                             Collections.EMPTY_LIST);
                     widgetsRowViewHolder.mDataCallback = data -> {
                         mWidgetsListTableViewHolderBinder.bindViewHolder(widgetsRowViewHolder,
-                                contentEntry,
+                                contentEntry.withMaxSpanSize(mMaxSpanPerRow),
                                 ViewHolderBinder.POSITION_FIRST | ViewHolderBinder.POSITION_LAST,
                                 Collections.singletonList(data));
                     };
+
                     mRightPane.removeAllViews();
                     mRightPane.addView(widgetsRowViewHolder.itemView);
                 }
