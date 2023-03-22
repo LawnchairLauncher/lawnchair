@@ -30,6 +30,12 @@ public class TaskbarKeyguardController implements TaskbarControllers.LoggableTas
             | SYSUI_STATE_BACK_DISABLED | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED
             | SYSUI_STATE_SCREEN_STATE_MASK;
 
+    // If any of these SysUi flags (via QuickstepContract) is set, the device to be considered
+    // locked.
+    public static final int MASK_ANY_SYSUI_LOCKED = SYSUI_STATE_BOUNCER_SHOWING
+            | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING
+            | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
+
     private final TaskbarActivityContext mContext;
     private int mKeyguardSysuiFlags;
     private boolean mBouncerShowing;

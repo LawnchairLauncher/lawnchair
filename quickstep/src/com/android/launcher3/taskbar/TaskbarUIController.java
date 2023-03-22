@@ -125,9 +125,9 @@ public class TaskbarUIController {
     }
 
     /**
-     * Screen state changed, see QuickStepContract.SCREEN_STATE_* values.
+     * SysUI flags updated, see QuickStepContract.SYSUI_STATE_* values.
      */
-    public void onChangeScreenState(int screenState){
+    public void updateStateForSysuiFlags(int sysuiFlags, boolean skipAnim){
     }
 
     /**

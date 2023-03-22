@@ -27,16 +27,14 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TRANSIENT_TASKBAR_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TRANSIENT_TASKBAR_SHOW;
+import static com.android.launcher3.taskbar.TaskbarKeyguardController.MASK_ANY_SYSUI_LOCKED;
 import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
 import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BOUNCER_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SWITCHER_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -89,7 +87,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     public static final int FLAG_IN_SETUP = 1 << 7; // In the Setup Wizard
     public static final int FLAG_STASHED_SMALL_SCREEN = 1 << 8; // phone screen gesture nav, stashed
     public static final int FLAG_STASHED_IN_APP_AUTO = 1 << 9; // Autohide (transient taskbar).
-    public static final int FLAG_STASHED_SYSUI = 1 << 10; //  app pinning, keyguard, etc.
+    public static final int FLAG_STASHED_SYSUI = 1 << 10; //  app pinning,...
+    public static final int FLAG_STASHED_DEVICE_LOCKED = 1 << 11; // device is locked: keyguard, ...
 
     // If any of these flags are enabled, isInApp should return true.
     private static final int FLAGS_IN_APP = FLAG_IN_APP | FLAG_IN_SETUP;
@@ -109,6 +108,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     // since those cover the underlying app anyway and thus the app shouldn't change insets.
     private static final int FLAGS_REPORT_STASHED_INSETS_TO_APP = FLAGS_STASHED_IN_APP
             & ~FLAG_STASHED_IN_APP_IME & ~FLAG_STASHED_IN_TASKBAR_ALL_APPS;
+
+    // If any of these flags are enabled, the taskbar must be stashed.
+    private static final int FLAGS_FORCE_STASHED = FLAG_STASHED_SYSUI | FLAG_STASHED_DEVICE_LOCKED
+            | FLAG_STASHED_IN_TASKBAR_ALL_APPS | FLAG_STASHED_SMALL_SCREEN;
 
     /**
      * How long to stash/unstash when manually invoked via long press.
@@ -219,10 +222,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 boolean inApp = hasAnyFlag(flags, FLAGS_IN_APP);
                 boolean stashedInApp = hasAnyFlag(flags, FLAGS_STASHED_IN_APP);
                 boolean stashedLauncherState = hasAnyFlag(flags, FLAG_IN_STASHED_LAUNCHER_STATE);
-                boolean forceStashed = hasAnyFlag(flags,
-                        FLAG_STASHED_SYSUI
-                                | FLAG_STASHED_IN_TASKBAR_ALL_APPS
-                                | FLAG_STASHED_SMALL_SCREEN);
+                boolean forceStashed = hasAnyFlag(flags, FLAGS_FORCE_STASHED);
                 return (inApp && stashedInApp) || (!inApp && stashedLauncherState) || forceStashed;
             });
 
@@ -584,8 +584,12 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
         // If Hotseat is not the top element during animation to/from Launcher, fade in/out a
         // already stashed Taskbar.
-        boolean skipStashAnimation = !mControllers.uiController.isHotseatIconOnTopWhenAligned()
-                && hasAnyFlag(changedFlags, FLAG_IN_APP);
+        boolean hotseatTopElement = mControllers.uiController.isHotseatIconOnTopWhenAligned()
+                || !hasAnyFlag(changedFlags, FLAG_IN_APP);
+        // If transitioning between locked/unlocked device, do not play a stash animation.
+        boolean unLockedTransition = hasAnyFlag(changedFlags, FLAG_STASHED_DEVICE_LOCKED);
+        boolean skipStashAnimation = !hotseatTopElement || unLockedTransition;
+
         if (isTransientTaskbar) {
             createTransientAnimToIsStashed(mAnimator, isStashed, duration, animateBg, changedFlags,
                     skipStashAnimation);
@@ -905,11 +909,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         updateStateForFlag(FLAG_STASHED_IN_APP_SYSUI, hasAnyFlag(systemUiStateFlags,
                 SYSUI_STATE_QUICK_SETTINGS_EXPANDED
                         | SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED));
-        updateStateForFlag(FLAG_STASHED_SYSUI, hasAnyFlag(systemUiStateFlags,
-                SYSUI_STATE_SCREEN_PINNING
-                        | SYSUI_STATE_BOUNCER_SHOWING
-                        | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING
-                        | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED));
+        updateStateForFlag(FLAG_STASHED_SYSUI,
+                hasAnyFlag(systemUiStateFlags, SYSUI_STATE_SCREEN_PINNING));
+        updateStateForFlag(FLAG_STASHED_DEVICE_LOCKED,
+                hasAnyFlag(systemUiStateFlags, MASK_ANY_SYSUI_LOCKED));
 
         // Only update FLAG_STASHED_IN_APP_IME when system gesture is not in progress.
         mIsImeShowing = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_IME_SHOWING);
@@ -1081,6 +1084,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         appendFlag(sj, flags, FLAG_IN_SETUP, "FLAG_IN_SETUP");
         appendFlag(sj, flags, FLAG_STASHED_IN_APP_AUTO, "FLAG_STASHED_IN_APP_AUTO");
         appendFlag(sj, flags, FLAG_STASHED_SYSUI, "FLAG_STASHED_SYSUI");
+        appendFlag(sj, flags, FLAG_STASHED_DEVICE_LOCKED, "FLAG_STASHED_DEVICE_LOCKED");
         return sj.toString();
     }
 
