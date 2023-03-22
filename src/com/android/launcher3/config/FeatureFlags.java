@@ -332,7 +332,7 @@ public final class FeatureFlags {
                     + " nav mode and when transient taskbar is enabled.");
 
     public static final BooleanFlag FOLDABLE_SINGLE_PAGE = getDebugFlag(270395274,
-            "FOLDABLE_SINGLE_PAGE", false,
+            "FOLDABLE_SINGLE_PAGE", true,
             "Use a single page for the workspace");
 
     public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(270395798,
