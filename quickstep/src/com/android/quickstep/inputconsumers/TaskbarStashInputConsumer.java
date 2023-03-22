@@ -128,6 +128,10 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
                                 mCanceledUnstashHint = false;
                             }
                         }
+
+                        if (mTransitionCallback != null && !mIsTaskbarAllAppsOpen) {
+                            mTransitionCallback.onActionDown();
+                        }
                         break;
                     case MotionEvent.ACTION_POINTER_UP:
                         int ptrIdx = ev.getActionIndex();
