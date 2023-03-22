@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.quickstep;
+package com.android.launcher3;
 
 import static android.view.MotionEvent.CLASSIFICATION_TWO_FINGER_SWIPE;
 
