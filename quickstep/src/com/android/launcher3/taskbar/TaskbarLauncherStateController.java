@@ -377,7 +377,7 @@ public class TaskbarLauncherStateController {
             }
         }
 
-        if (hasAnyFlag(changedFlags, FLAGS_LAUNCHER_ACTIVE)) {
+        if (hasAnyFlag(changedFlags, FLAGS_LAUNCHER_ACTIVE | FLAG_SCREEN_ON)) {
             animatorSet.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
