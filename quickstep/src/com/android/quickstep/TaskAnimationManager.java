@@ -186,12 +186,8 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                         return;
                     }
                 } else if (nonAppTargets.length > 0) {
-                    TaskViewUtils.createSplitAuxiliarySurfacesAnimator(
-                            nonAppTargets /* nonApps */,
-                            true /*shown*/, dividerAnimator -> {
-                                dividerAnimator.start();
-                                dividerAnimator.end();
-                            });
+                    TaskViewUtils.createSplitAuxiliarySurfacesAnimator(nonAppTargets /* nonApps */,
+                            true /*shown*/, null /* animatorHandler */);
                 }
                 if (mController != null) {
                     if (mLastAppearedTaskTarget == null
