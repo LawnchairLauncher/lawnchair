@@ -95,6 +95,13 @@ public class MultipageCellLayout extends CellLayout {
     }
 
     @Override
+    public int getUnusedHorizontalSpace() {
+        return (int) Math.ceil(
+                (getMeasuredWidth() - getPaddingLeft() - getPaddingRight() - (mCountX * mCellWidth)
+                        - ((mCountX - 1) * mBorderSpace.x)) / 2f);
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         if (mLeftBackground.getAlpha() > 0) {
             mLeftBackground.setState(mBackground.getState());

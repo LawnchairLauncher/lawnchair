@@ -161,6 +161,13 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         mTaskbarDragLayer.setBackgroundTranslationYForSwipe(transY);
     }
 
+    /**
+     * Sets the translation of the background during the spring on stash animation.
+     */
+    public void setTranslationYForStash(float transY) {
+        mTaskbarDragLayer.setBackgroundTranslationYForStash(transY);
+    }
+
     private void updateBackgroundOffset() {
         mTaskbarDragLayer.setTaskbarBackgroundOffset(mBgOffset.value);
 

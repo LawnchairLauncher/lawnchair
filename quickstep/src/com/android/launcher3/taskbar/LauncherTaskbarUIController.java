@@ -64,9 +64,10 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     public static final int WIDGETS_PAGE_PROGRESS_INDEX = 2;
     public static final int SYSUI_SURFACE_PROGRESS_INDEX = 3;
 
-    private static final int DISPLAY_PROGRESS_COUNT = 4;
+    public static final int DISPLAY_PROGRESS_COUNT = 4;
 
-    private final AnimatedFloat mTaskbarInAppDisplayProgress = new AnimatedFloat();
+    private final AnimatedFloat mTaskbarInAppDisplayProgress = new AnimatedFloat(
+            this::onInAppDisplayProgressChanged);
     private final MultiPropertyFactory<AnimatedFloat> mTaskbarInAppDisplayProgressMultiProp =
             new MultiPropertyFactory<>(mTaskbarInAppDisplayProgress,
                     AnimatedFloat.VALUE, DISPLAY_PROGRESS_COUNT, Float::max);
@@ -82,7 +83,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             };
 
     // Initialized in init.
-    private TaskbarKeyguardController mKeyguardController;
     private final TaskbarLauncherStateController
             mTaskbarLauncherStateController = new TaskbarLauncherStateController();
 
@@ -97,12 +97,19 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         mTaskbarLauncherStateController.init(mControllers, mLauncher);
 
         mLauncher.setTaskbarUIController(this);
-        mKeyguardController = taskbarControllers.taskbarKeyguardController;
 
         onLauncherResumedOrPaused(mLauncher.hasBeenResumed(), true /* fromInit */);
 
         onStashedInAppChanged(mLauncher.getDeviceProfile());
+        mTaskbarLauncherStateController.updateStateForSysuiFlags(
+                mControllers.getSharedState().sysuiStateFlags, true /* fromInit */);
         mLauncher.addOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
+
+        // Restore the in-app display progress from before Taskbar was recreated.
+        float[] prevProgresses = mControllers.getSharedState().inAppDisplayProgressMultiPropValues;
+        for (int i = 0; i < prevProgresses.length; i++) {
+            mTaskbarInAppDisplayProgressMultiProp.get(i).setValue(prevProgresses[i]);
+        }
     }
 
     @Override
@@ -116,10 +123,22 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         updateTaskTransitionSpec(true);
     }
 
+    private void onInAppDisplayProgressChanged() {
+        if (mControllers != null) {
+            // Update our shared state so we can restore it if taskbar gets recreated.
+            for (int i = 0; i < DISPLAY_PROGRESS_COUNT; i++) {
+                mControllers.getSharedState().inAppDisplayProgressMultiPropValues[i] =
+                        mTaskbarInAppDisplayProgressMultiProp.get(i).getValue();
+            }
+            // Ensure nav buttons react to our latest state if necessary.
+            mControllers.navbarButtonsViewController.updateNavButtonTranslationY();
+        }
+    }
+
     @Override
     protected boolean isTaskbarTouchable() {
         return !(mTaskbarLauncherStateController.isAnimatingToLauncher()
-                && mTaskbarLauncherStateController.goingToAlignedLauncherState());
+                && mTaskbarLauncherStateController.isTaskbarAlignedWithHotseat());
     }
 
     public void setShouldDelayLauncherStateAnim(boolean shouldDelayLauncherStateAnim) {
@@ -167,15 +186,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Nullable
     private Animator onLauncherResumedOrPaused(
             boolean isResumed, boolean fromInit, boolean startAnimation, int duration) {
-        if (mKeyguardController.isScreenOff()) {
-            if (!isResumed) {
-                return null;
-            } else {
-                // Resuming implicitly means device unlocked
-                mKeyguardController.setScreenOn();
-            }
-        }
-
         // Launcher is resumed during the swipe-to-overview gesture under shell-transitions, so
         // avoid updating taskbar state in that situation (when it's non-interactive -- or
         // "background") to avoid premature animations.
@@ -328,6 +338,11 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
+    public void updateStateForSysuiFlags(int sysuiFlags, boolean skipAnim) {
+        mTaskbarLauncherStateController.updateStateForSysuiFlags(sysuiFlags, skipAnim);
+    }
+
+    @Override
     public boolean isIconAlignedWithHotseat() {
         return mTaskbarLauncherStateController.isIconAlignedWithHotseat();
     }
@@ -363,9 +378,10 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     public void dumpLogs(String prefix, PrintWriter pw) {
         super.dumpLogs(prefix, pw);
 
-        pw.println(String.format("%s\tTaskbar in-app display progress:", prefix));
+        pw.println(String.format("%s\tTaskbar in-app display progress: %.2f", prefix,
+                mTaskbarInAppDisplayProgress.value));
         mTaskbarInAppDisplayProgressMultiProp.dump(
-                prefix + "\t",
+                prefix + "\t\t",
                 pw,
                 "mTaskbarInAppDisplayProgressMultiProp",
                 "MINUS_ONE_PAGE_PROGRESS_INDEX",

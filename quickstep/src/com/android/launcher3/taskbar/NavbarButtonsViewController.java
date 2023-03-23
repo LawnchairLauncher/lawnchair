@@ -159,6 +159,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             this::updateNavButtonTranslationY);
     private final AnimatedFloat mTaskbarNavButtonTranslationYForIme = new AnimatedFloat(
             this::updateNavButtonTranslationY);
+    private float mLastSetNavButtonTranslationY;
     // Used for System UI state updates that should translate the nav button for in-app display.
     private final AnimatedFloat mNavButtonInAppDisplayProgressForSysui = new AnimatedFloat(
             this::updateNavButtonInAppDisplayProgressForSysui);
@@ -606,7 +607,10 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         }
     }
 
-    private void updateNavButtonTranslationY() {
+    /**
+     * Sets the translationY of the nav buttons based on the current device state.
+     */
+    public void updateNavButtonTranslationY() {
         if (isPhoneButtonNavMode(mContext)) {
             return;
         }
@@ -618,9 +622,10 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                         && ((LauncherTaskbarUIController) uiController).shouldUseInAppLayout())
                         ? mTaskbarNavButtonTranslationYForInAppDisplay.value : 0;
 
-        mNavButtonsView.setTranslationY(normalTranslationY
+        mLastSetNavButtonTranslationY = normalTranslationY
                 + imeAdjustmentTranslationY
-                + inAppDisplayAdjustmentTranslationY);
+                + inAppDisplayAdjustmentTranslationY;
+        mNavButtonsView.setTranslationY(mLastSetNavButtonTranslationY);
     }
 
     private void updateNavButtonColor() {
@@ -924,6 +929,13 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         pw.println(prefix + "\tmFloatingRotationButtonBounds=" + mFloatingRotationButtonBounds);
         pw.println(prefix + "\tmSysuiStateFlags=" + QuickStepContract.getSystemUiStateString(
                 mSysuiStateFlags));
+        pw.println(prefix + "\tLast set nav button translationY=" + mLastSetNavButtonTranslationY);
+        pw.println(prefix + "\t\tmTaskbarNavButtonTranslationY="
+                + mTaskbarNavButtonTranslationY.value);
+        pw.println(prefix + "\t\tmTaskbarNavButtonTranslationYForInAppDisplay="
+                + mTaskbarNavButtonTranslationYForInAppDisplay.value);
+        pw.println(prefix + "\t\tmTaskbarNavButtonTranslationYForIme="
+                + mTaskbarNavButtonTranslationYForIme.value);
     }
 
     private static String getStateString(int flags) {
