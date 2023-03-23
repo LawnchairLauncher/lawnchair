@@ -679,28 +679,36 @@ public final class TaskViewUtils {
     /**
      * Creates an animation to show/hide the auxiliary surfaces (aka. divider bar), only calling
      * {@param animatorHandler} if there are valid surfaces to animate.
+     * Passing null handler to apply the visibility immediately.
      *
      * @return the animator animating the surfaces
      */
     public static ValueAnimator createSplitAuxiliarySurfacesAnimator(
-            RemoteAnimationTarget[] nonApps, boolean shown,
-            Consumer<ValueAnimator> animatorHandler) {
+            @Nullable RemoteAnimationTarget[] nonApps, boolean shown,
+            @Nullable Consumer<ValueAnimator> animatorHandler) {
         if (nonApps == null || nonApps.length == 0) {
             return null;
         }
 
-        SurfaceControl.Transaction t = new SurfaceControl.Transaction();
-        List<SurfaceControl> auxiliarySurfaces = new ArrayList<>(nonApps.length);
-        boolean hasSurfaceToAnimate = false;
-        for (int i = 0; i < nonApps.length; ++i) {
-            final RemoteAnimationTarget targ = nonApps[i];
-            final SurfaceControl leash = targ.leash;
-            if (targ.windowType == TYPE_DOCK_DIVIDER && leash != null && leash.isValid()) {
+        List<SurfaceControl> auxiliarySurfaces = new ArrayList<>();
+        for (RemoteAnimationTarget target : nonApps) {
+            final SurfaceControl leash = target.leash;
+            if (target.windowType == TYPE_DOCK_DIVIDER && leash != null && leash.isValid()) {
                 auxiliarySurfaces.add(leash);
-                hasSurfaceToAnimate = true;
             }
         }
-        if (!hasSurfaceToAnimate) {
+        if (auxiliarySurfaces.isEmpty()) {
+            return null;
+        }
+
+        SurfaceControl.Transaction t = new SurfaceControl.Transaction();
+        if (animatorHandler == null) {
+            // Apply the visibility directly without fade animation.
+            for (SurfaceControl leash : auxiliarySurfaces) {
+                t.setVisibility(leash, shown);
+            }
+            t.apply();
+            t.close();
             return null;
         }
 
