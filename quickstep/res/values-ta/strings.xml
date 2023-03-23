@@ -22,8 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"பின் செய்தல்"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"குறிப்பிட்ட வடிவமில்லாத பயன்முறை"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"சமீபத்தியவை எதுவுமில்லை"</string>
-    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
-    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ஆப்ஸ் உபயோக அமைப்புகள்"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"எல்லாம் அழி"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"சமீபத்திய ஆப்ஸ்"</string>
@@ -55,6 +53,8 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"பின்செல்ல ஸ்வைப் செய்யுங்கள்"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"முந்தைய திரைக்கு மீண்டும் செல்ல, இடது/வலது ஓரத்திலிருந்து திரையின் மையப் பகுதிக்கு ஸ்வைப் செய்க."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"முந்தைய திரைக்கு மீண்டும் செல்ல, 2 விரல்களால் இடது அல்லது வலது ஓரத்திலிருந்து திரையின் மையப் பகுதிக்கு ஸ்வைப் செய்யுங்கள்."</string>
+    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
+    <skip />
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"திரையின் கீழ் ஓரத்திலிருந்து மேல்நோக்கி ஸ்வைப் செய்வதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"விடுவிப்பதற்கு முன்பாக இடைநிறுத்தவில்லை என்பதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"மேல்நோக்கி நேராக ஸ்வைப் செய்வதை உறுதிசெய்துகொள்ளுங்கள்."</string>
@@ -73,6 +73,8 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ஆப்ஸுக்கிடையே மாற ஸ்வைப் செய்யுங்கள்"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ஆப்ஸுக்கு இடையே மாற, திரையின் கீழிலிருந்து மேலாக ஸ்வைப் செய்து, பிடித்திருந்து, பிறகு விடுவிக்கவும்."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"ஆப்ஸுக்கிடையே மாற, திரையின் கீழிருந்து மேலாக 2 விரலால் ஸ்வைப் செய்து, பிடித்து, பிறகு விடுவிக்கவும்."</string>
+    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
+    <skip />
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"எல்லாம் தயார்"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"முடிந்தது"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"அமைப்புகள்"</string>
@@ -101,7 +103,7 @@
     <string name="taskbar_edu_closed" msgid="126643734478892862">"பணிப்பட்டியை எவ்வாறு பயன்படுத்துவது என்பது பற்றிய பலகம் மூடப்பட்டது"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ஒரே நேரத்தில் 2 ஆப்ஸைப் பயன்படுத்தப் பக்கவாட்டில் இழுக்கவும்"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"செயல் பட்டியைக் காட்ட மேல்நோக்கி மெதுவாக ஸ்வைப் செய்யவும்"</string>
-    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"உங்கள் வழக்கத்திற்கேற்ப ஆப்ஸ் பரிந்துரைகளைப் பெறுவீர்கள்"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"உங்கள் வழக்கத்திற்கேற்ப ஆப்ஸ் பரிந்துரைகளைப் பெறலாம்"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"செயல் பட்டியைத் தானாக மறைக்க அமைப்புகளில் சைகை வழிசெலுத்தலை இயக்கவும்"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"செயல் பட்டி மூலம் மேலும் பலவற்றைச் செய்யுங்கள்"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"அடுத்து"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"அறிவிப்புகள்"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"விரைவு அமைப்புகள்"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"செயல் பட்டி"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"செயல் பட்டி காட்டப்படுகிறது"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"செயல் பட்டி மறைக்கப்பட்டுள்ளது"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"வழிசெலுத்தல் பட்டி"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"மேலே/இடதுபுறம் நகர்த்தும்"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"கீழே/வலதுபுறம் நகர்த்தும்"</string>

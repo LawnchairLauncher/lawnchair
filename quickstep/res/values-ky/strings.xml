@@ -22,8 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Кадап коюу"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Эркин форма режими"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Акыркы колдонмолор жок"</string>
-    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
-    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Колдонмону пайдалануу параметрлери"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Баарын тазалоо"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Акыркы колдонмолор"</string>
@@ -55,6 +53,8 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Артка кайтуу үчүн сүрүңүз"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Акыркы экранга кайтуу үчүн экранды сол же оң жагынан ортосуна карай сүрүңүз."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Акыркы экранга кайтуу үчүн экранды сол же оң жагынан ортосуна карай 2 манжаңыз менен сүрүңүз."</string>
+    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
+    <skip />
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Экранды ылдыйдан өйдө сүрүңүз."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Манжаңызды алганга чейин токтотпоңуз."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Экранды өйдө сүрүңүз."</string>
@@ -73,6 +73,8 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Колдонмолорду которуштуруу үчүн сүрүңүз"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Бир колдонмодон экинчисине өтүү үчүн экранды ылдыйдан өйдө карай сүрүп, бир аз коё бербей туруңуз."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Бир колдонмодон экинчисине өтүү үчүн экранды 2 манжа менен ылдыйдан өйдө сүрүп, коё бербей туруңуз."</string>
+    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
+    <skip />
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Дапдаяр!"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Бүттү"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Параметрлер"</string>
@@ -96,14 +98,14 @@
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Жокко чыгаруу"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Өткрп жиберүү"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Экранды буруу"</string>
-    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Тапшырмалар панели жөнүндө маалымат"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Тапшырмалар тактасы жөнүндө маалымат"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Тапшырмалар тактасынын окутуу панели көрсөтүлдү"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Тапшырмалар тактасынын окутуу панели жабылды"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"2 колдонмону бир убакта пайдалануу үчүн капталга сүйрөңүз"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Тапшырмалар панелин көрүү үчүн экранды жай өйдө сүрүңүз"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Тапшырмалар тактасын көрүү үчүн экранды жай өйдө сүрүңүз"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Программаңыздын негизинде сунушталган колдонмолорду алуу"</string>
-    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Тапшырмалар панелин автоматтык түрдө жашыруу үчүн Тууралоодон жаңсап чабыттоону күйгүзүңүз"</string>
-    <string name="taskbar_edu_features" msgid="3320337287472848162">"Тапшырмалар панели менен көбүрөөк нерселерди аткарыңыз"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Тапшырмалар тактасын автоматтык түрдө жашыруу үчүн Тууралоодон жаңсап чабыттоону күйгүзүңүз"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Тапшырмалар тактасы менен көбүрөөк нерселерди аткарыңыз"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Кийинки"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Артка"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Жабуу"</string>
@@ -115,7 +117,9 @@
     <string name="taskbar_button_recents" msgid="7273376136216613134">"Акыркылар"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Билдирмелер"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Ыкчам жөндөөлөр"</string>
-    <string name="taskbar_a11y_title" msgid="6432169809852243110">"Тапшырмалар панели"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"Тапшырмалар тактасы"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Тапшырмалар панели көрсөтүлдү"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Тапшырмалар панели жашырылды"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Чабыттоо тилкеси"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Жогорку/сол бурчка жылдыруу"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Төмөнкү/оң бурчка жылдыруу"</string>

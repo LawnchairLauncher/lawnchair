@@ -22,8 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Бекіту"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Еркін форма"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Соңғы элементтер жоқ"</string>
-    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
-    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Қолданбаны пайдалану параметрлері"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Барлығын өшіру"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Соңғы пайдаланылған қолданбалар"</string>
@@ -55,6 +53,8 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Артқа қайту үшін сырғытыңыз"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Соңғы ашылған экранға оралу үшін экранның сол немесе оң жақ шетінен ортасына қарай сырғытыңыз."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Соңғы ашылған экранға оралу үшін екі саусақпен экранның сол не оң жағынан ортасына сырғытыңыз."</string>
+    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
+    <skip />
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Экранның төменгі шетінен жоғары қарай сырғытыңыз."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Жіберер алдында кідіріс жасамаңыз."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Тігінен жоғары қарай сырғытыңыз."</string>
@@ -73,6 +73,8 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Қолданбаларды ауыстыру үшін сырғытыңыз"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Бір қолданбадан екіншісіне ауысу үшін экранның төменгі жағынан жоғары қарай сырғытып, ұстап тұрып жіберіңіз."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Бір қолданбадан екіншісіне ауысу үшін екі саусақпен экранның төменгі жағынан жоғары қарай сырғытып, ұстап тұрып жіберіңіз."</string>
+    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
+    <skip />
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Бәрі дайын"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Дайын"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Параметрлер"</string>
@@ -103,7 +105,7 @@
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Тапсырмалар жолағын көрсету үшін жоғары қарай ақырын сырғытыңыз."</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Іс-әрекеттеріңізге негізделген қолданба ұсыныстарын алыңыз."</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Тапсырмалар жолағын автоматты түрде жасыру үшін параметрлерден қимылмен басқаруды қосыңыз."</string>
-    <string name="taskbar_edu_features" msgid="3320337287472848162">"Тапсырмалар жолағы арқылы көп әрекетті орындаңыз"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Тапсырмалар жолағында мүмкіндік көп"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Келесі"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Артқа"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Жабу"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Хабарландырулар"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Жылдам параметрлер"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Тапсырмалар жолағы"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Тапсырмалар жолағы көрсетілді"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Тапсырмалар жолағы жасырылды"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Навигация жолағы"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Жоғары/солға жылжыту"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Төмен/оңға жылжыту"</string>

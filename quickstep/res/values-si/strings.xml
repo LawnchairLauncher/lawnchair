@@ -22,8 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"අමුණන්න"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Freeform"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"මෑත අයිතම නැත"</string>
-    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
-    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"යෙදුම් භාවිත සැකසීම්"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"සියල්ල හිස් කරන්න"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"මෑත යෙදුම්"</string>
@@ -55,6 +53,8 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"ආපසු යාමට ස්වයිප් කරන්න"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"අවසාන තිරයට ආපසු යාමට, වම් හෝ දකුණු දාරයෙන් තිරයේ මැදට ස්වයිප් කරන්න."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"අවසාන තිරයට ආපසු යාමට, වම් හෝ දකුණු දාරයෙන් තිරයේ මැදට ඇඟිලි 2කින් ස්වයිප් කරන්න."</string>
+    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
+    <skip />
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ඔබ තිරයේ පහළ දාරයේ සිට ඉහළට ස්වයිප් කරන බව සහතික කර ගන්න."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"යාමට ඉඩ හැරීමට පෙර ඔබ විරාමයක් නොගන්නා බව සහතික කර ගන්න."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ඔබ කෙලින්ම ඉහළට ස්වයිප් කරන බව සහතික කර ගන්න."</string>
@@ -73,6 +73,8 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"යෙදුම් මාරු කිරීමට ස්වයිප් කරන්න"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"යෙදුම් අතර මාරු වීමට, ඔබගේ තිරයේ පහළම සිට උඩට ස්වයිප් කර, අල්ලාගෙන සිට, අනතුරුව මුදා හරින්න."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"යෙදුම් අතර මාරු වීමට, ඔබගේ තිරයේ පහළම සිට උඩට ඇඟිලි 2කින් ස්වයිප් කර, අල්ලාගෙන සිට, අනතුරුව මුදා හරින්න."</string>
+    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
+    <skip />
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"සියල්ල සකසා ඇත"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"නිමයි"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"සැකසීම්"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"දැනුම්දීම්"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"ඉක්මන් සැකසීම්"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"කාර්ය තීරුව"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"කාර්ය තීරුව පෙන්වා ඇත"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"කාර්ය තීරුව සඟවා ඇත"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"සංචලන තීරුව"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ඉහළ/වම වෙත ගෙන යන්න"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"පහළ/දකුණ වෙත ගෙන යන්න"</string>

@@ -22,8 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Fixieren"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Freeform-Modus"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Keine kürzlich verwendeten Elemente"</string>
-    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
-    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Einstellungen zur App-Nutzung"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Alle Apps schließen"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Kürzlich geöffnete Apps"</string>
@@ -55,12 +53,14 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Zum Zurückgehen wischen"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Wenn du zum letzten Bildschirm zurückgehen möchtest, wische vom linken oder rechten Rand zur Mitte."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Wenn du zum letzten Bildschirm zurückgehen möchtest, wische mit zwei Fingern vom linken oder rechten Displayrand zur Mitte."</string>
+    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
+    <skip />
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Wische vom unteren Displayrand nach oben."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Achte darauf, nicht innezuhalten, bevor du loslässt."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Wische gerade nach oben."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Du hast die „Startbildschirm“-Touch-Geste abgeschlossen. Gleich erfährst du, wie du zurückgelangst."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Du hast die „Startbildschirm“-Touch-Geste abgeschlossen."</string>
-    <string name="home_gesture_intro_title" msgid="836590312858441830">"Zum Startbildschirm gehen"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Du hast die Touch-Geste zum Aufrufen des Startbildschirms abgeschlossen. Gleich erfährst du, wie du zurückgelangst."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Du hast die Touch-Geste zum Aufrufen des Startbildschirms abgeschlossen."</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Den Startbildschirm aufrufen"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Wenn du zum Startbildschirm gehen möchtest, wische einfach vom unteren Displayrand nach oben."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Wische mit zwei Fingern vom unteren Displayrand nach oben. So gelangst du immer zum Startbildschirm."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Zum Startbildschirm"</string>
@@ -73,6 +73,8 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Zwischen Apps wechseln"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Wische auf dem Display von unten nach oben, halte den Finger gedrückt und lass dann los, um zwischen Apps zu wechseln."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Wische zum App-Wechseln mit zwei Fingern vom unteren Displayrand nach oben, halte und lass dann los."</string>
+    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
+    <skip />
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Fertig"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Fertig"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Einstellungen"</string>
@@ -91,7 +93,7 @@
     <string name="toast_split_select_app" msgid="8464310533320556058">"Für „Geteilter Bildschirm“ auf weitere App tippen"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Für geteilten Bildschirm andere App auswählen"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Die App oder deine Organisation lässt diese Aktion nicht zu"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Navigationstutorial überspringen?"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Tutorial zur Bedienung überspringen?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Du findest es später auch in der <xliff:g id="NAME">%1$s</xliff:g> App"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Abbrechen"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Überspringen"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Benachrichtigungen"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Schnelleinstellungen"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Taskleiste"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Taskleiste eingeblendet"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Taskleiste ausgeblendet"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigationsleiste"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Nach oben / Nach links verschieben"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Nach unten / Nach rechts verschieben"</string>

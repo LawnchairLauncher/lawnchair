@@ -22,8 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Закріпити"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Довільна форма"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Немає нещодавніх додатків"</string>
-    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
-    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Налаштування використання додатка"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Очистити все"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Нещодавні додатки"</string>
@@ -55,6 +53,8 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Щоб повернутися, проведіть пальцем по екрану"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Щоб перейти на попередній екран, проведіть пальцем від лівого чи правого краю до середини екрана."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Щоб перейти на попередній екран, проведіть двома пальцями від лівого чи правого краю до середини екрана."</string>
+    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
+    <skip />
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Проведіть пальцем угору від нижнього краю екрана."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Не робіть паузу перед тим, як відірвати палець від екрана."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Проводьте пальцем вертикально вгору."</string>
@@ -73,6 +73,8 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Проведіть пальцем, щоб перейти в інший додаток"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Щоб переключатися між додатками, проведіть знизу вгору по екрану, утримуйте палець, а потім відпустіть."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Щоб перейти в інший додаток, проведіть 2 пальцями від низу екрана, потримайте й відпустіть палець."</string>
+    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
+    <skip />
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Усе готово!"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Готово"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Налаштування"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Сповіщення"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Швидкі налаштув."</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Панель завдань"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Панель завдань показано"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Панель завдань приховано"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Панель навігації"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Перемістити вгору або вліво"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Перемістити вниз або вправо"</string>

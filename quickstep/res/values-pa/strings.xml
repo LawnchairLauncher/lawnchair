@@ -22,8 +22,6 @@
     <string name="recent_task_option_pin" msgid="7929860679018978258">"ਪਿੰਨ ਕਰੋ"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"ਫ੍ਰੀਫਾਰਮ"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"ਕੋਈ ਹਾਲੀਆ ਆਈਟਮਾਂ ਨਹੀਂ"</string>
-    <!-- no translation found for recents_empty_desktop_message (1358240150311509733) -->
-    <skip />
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ਐਪ ਵਰਤੋਂ ਦੀਆਂ ਸੈਟਿੰਗਾਂ"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"ਸਭ ਕਲੀਅਰ ਕਰੋ"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"ਹਾਲੀਆ ਐਪਾਂ"</string>
@@ -55,6 +53,8 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"ਪਿੱਛੇ ਜਾਣ ਲਈ ਸਵਾਈਪ ਕਰੋ"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"ਪਿਛਲੀ ਸਕ੍ਰੀਨ \'ਤੇ ਵਾਪਸ ਜਾਣ ਲਈ, ਖੱਬੇ ਜਾਂ ਸੱਜੇ ਕਿਨਾਰੇ ਤੋਂ ਸਕ੍ਰੀਨ ਦੇ ਵਿਚਕਾਰ ਤੱਕ ਸਵਾਈਪ ਕਰੋ।"</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"ਪਿਛਲੀ ਸਕ੍ਰੀਨ \'ਤੇ ਵਾਪਸ ਜਾਣ ਲਈ, ਖੱਬੇ ਜਾਂ ਸੱਜੇ ਕਿਨਾਰੇ ਤੋਂ ਸਕ੍ਰੀਨ ਦੇ ਵਿਚਕਾਰ ਤੱਕ 2 ਉਂਗਲਾਂ ਨਾਲ ਸਵਾਈਪ ਕਰੋ।"</string>
+    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
+    <skip />
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਲੇ ਕਿਨਾਰੇ ਤੋਂ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰਦੇ ਹੋ।"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"ਪੱਕਾ ਕਰੋ ਕਿ ਸਕ੍ਰੀਨ ਨੂੰ ਛੱਡਣ ਤੋਂ ਪਹਿਲਾਂ ਰੁਕੋ ਨਾ।"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਿੱਧੇ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰਦੇ ਹੋ।"</string>
@@ -73,6 +73,8 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ਐਪਾਂ ਵਿਚਾਲੇ ਅਦਲਾ-ਬਦਲੀ ਕਰਨ ਲਈ ਸਵਾਈਪ ਕਰੋ"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ਐਪਾਂ ਵਿਚਾਲੇ ਅਦਲਾ-ਬਦਲੀ ਕਰਨ ਲਈ, ਆਪਣੀ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਾਂ ਤੋਂ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰਕੇ ਦਬਾਈ ਰੱਖੋ ਅਤੇ ਫਿਰ ਛੱਡੋ।"</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"ਐਪਾਂ ਵਿਚਾਲੇ ਅਦਲਾ-ਬਦਲੀ ਕਰਨ ਲਈ, ਆਪਣੀ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਾਂ ਤੋਂ 2 ਉਂਗਲਾਂ ਨਾਲ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰ ਕੇ ਦਬਾਈ ਰੱਖੋ ਅਤੇ ਫਿਰ ਛੱਡੋ।"</string>
+    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
+    <skip />
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"ਪੂਰੀ ਤਰ੍ਹਾਂ ਤਿਆਰ"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"ਹੋ ਗਿਆ"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ਸੈਟਿੰਗਾਂ"</string>
@@ -107,7 +109,7 @@
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ਅੱਗੇ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ਪਿੱਛੇ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ਬੰਦ ਕਰੋ"</string>
-    <string name="taskbar_edu_done" msgid="6880178093977704569">"ਹੋ ਗਿਆ"</string>
+    <string name="taskbar_edu_done" msgid="6880178093977704569">"ਸਮਝ ਲਿਆ"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ਘਰ"</string>
     <string name="taskbar_button_a11y" msgid="5241161324875094465">"ਪਹੁੰਚਯੋਗਤਾ"</string>
     <string name="taskbar_button_back" msgid="8558862226461164514">"ਪਿੱਛੇ"</string>
@@ -116,6 +118,8 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"ਸੂਚਨਾਵਾਂ"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"ਤਤਕਾਲ ਸੈਟਿੰਗਾਂ"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"ਟਾਸਕਬਾਰ"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"ਟਾਸਕਬਾਰ ਨੂੰ ਦਿਖਾਇਆ ਗਿਆ"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"ਟਾਸਕਬਾਰ ਨੂੰ ਲੁਕਾਇਆ ਗਿਆ"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"ਨੈਵੀਗੇਸ਼ਨ ਵਾਲੀ ਪੱਟੀ"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ਸਿਖਰਲੇ/ਖੱਬੇ ਪਾਸੇ ਲੈ ਕੇ ਜਾਓ"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ਹੇਠਾਂ/ਸੱਜੇ ਪਾਸੇ ਲੈ ਕੇ ਜਾਓ"</string>
