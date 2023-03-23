@@ -26,8 +26,6 @@ import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP;
 import static com.android.launcher3.taskbar.TaskbarManager.isPhoneMode;
-import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_NEGATIVE;
-import static com.android.launcher3.touch.SingleAxisSwipeDetector.VERTICAL;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_TASKBAR_ALIGNMENT_ANIM;
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_TASKBAR_REVEAL_ANIM;
@@ -61,7 +59,6 @@ import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
@@ -116,9 +113,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
     private final TaskbarModelCallbacks mModelCallbacks;
 
-    // Captures swipe down action to close transient Taskbar.
-    protected @Nullable SingleAxisSwipeDetector mSwipeDownDetector;
-
     // Initialized in init.
     private TaskbarControllers mControllers;
 
@@ -154,31 +148,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             ColorUtils.colorToHSL(mLauncherThemedIconsBackgroundColor, colorHSL);
             colorHSL[2] = TASKBAR_DARK_THEME_ICONS_BACKGROUND_LUMINANCE;
             mTaskbarThemedIconsBackgroundColor = ColorUtils.HSLToColor(colorHSL);
-        }
-
-        if (DisplayController.isTransientTaskbar(mActivity)) {
-            mSwipeDownDetector = new SingleAxisSwipeDetector(activity,
-                    new SingleAxisSwipeDetector.Listener() {
-                        private float mLastDisplacement;
-
-                        @Override
-                        public boolean onDrag(float displacement) {
-                            mLastDisplacement = displacement;
-                            return false;
-                        }
-
-                        @Override
-                        public void onDragEnd(float velocity) {
-                            if (mLastDisplacement > 0) {
-                                mControllers.taskbarStashController
-                                        .updateAndAnimateTransientTaskbar(true);
-                            }
-                        }
-
-                        @Override
-                        public void onDragStart(boolean start, float startDisplacement) {}
-                    }, VERTICAL);
-            mSwipeDownDetector.setDetectableScrollConditions(DIRECTION_NEGATIVE, false);
         }
         mIsRtl = Utilities.isRtl(mTaskbarView.getResources());
     }
@@ -659,8 +628,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         private float mDownX, mDownY;
         private boolean mCanceledStashHint;
 
-        private boolean mTouchInProgress;
-
         public View.OnClickListener getIconOnClickListener() {
             return mActivity.getItemOnClickListener();
         }
@@ -682,75 +649,39 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         }
 
         /**
-         * Simply listens to all intercept touch events passed to TaskbarView.
-         */
-        public void onInterceptTouchEvent(MotionEvent ev) {
-            if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-                mTouchInProgress = true;
-            }
-
-            if (mTouchInProgress && mSwipeDownDetector != null) {
-                mSwipeDownDetector.onTouchEvent(ev);
-            }
-
-            if (ev.getAction() == MotionEvent.ACTION_UP
-                    || ev.getAction() == MotionEvent.ACTION_CANCEL) {
-                clearTouchInProgress();
-            }
-        }
-
-        /**
          * Get the first chance to handle TaskbarView#onTouchEvent, and return whether we want to
          * consume the touch so TaskbarView treats it as an ACTION_CANCEL.
+         * TODO(b/270395798): We can remove this entirely once we remove the Transient Taskbar flag.
          */
         public boolean onTouchEvent(MotionEvent motionEvent) {
-            boolean shouldConsumeTouch = false;
-            boolean clearTouchInProgress = false;
-
             final float x = motionEvent.getRawX();
             final float y = motionEvent.getRawY();
             switch (motionEvent.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    mTouchInProgress = true;
                     mDownX = x;
                     mDownY = y;
                     mControllers.taskbarStashController.startStashHint(/* animateForward = */ true);
                     mCanceledStashHint = false;
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    if (mTouchInProgress
-                            && !mCanceledStashHint
+                    if (!mCanceledStashHint
                             && squaredHypot(mDownX - x, mDownY - y) > mSquaredTouchSlop) {
                         mControllers.taskbarStashController.startStashHint(
                                 /* animateForward= */ false);
                         mCanceledStashHint = true;
-                        shouldConsumeTouch = true;
+                        return true;
                     }
                     break;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-                    if (mTouchInProgress && !mCanceledStashHint) {
+                    if (!mCanceledStashHint) {
                         mControllers.taskbarStashController.startStashHint(
                                 /* animateForward= */ false);
                     }
-                    clearTouchInProgress = true;
                     break;
             }
 
-            if (mTouchInProgress && mSwipeDownDetector != null) {
-                mSwipeDownDetector.onTouchEvent(motionEvent);
-            }
-            if (clearTouchInProgress) {
-                clearTouchInProgress();
-            }
-            return shouldConsumeTouch;
-        }
-
-        /**
-         * Ensures that we do not pass any more touch events to the SwipeDetector.
-         */
-        public void clearTouchInProgress() {
-            mTouchInProgress = false;
+            return false;
         }
 
         /**

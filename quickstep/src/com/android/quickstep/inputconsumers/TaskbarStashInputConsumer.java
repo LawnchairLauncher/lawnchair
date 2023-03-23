@@ -75,7 +75,7 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
 
         Resources res = context.getResources();
         mUnstashArea = res.getDimensionPixelSize(R.dimen.taskbar_unstash_input_area);
-        mTaskbarNavThreshold = res.getDimensionPixelSize(R.dimen.taskbar_nav_threshold);
+        mTaskbarNavThreshold = res.getDimensionPixelSize(R.dimen.taskbar_from_nav_threshold);
         mTaskbarNavThresholdY = taskbarActivityContext.getDeviceProfile().heightPx
                 - mTaskbarNavThreshold;
         mIsTaskbarAllAppsOpen =
