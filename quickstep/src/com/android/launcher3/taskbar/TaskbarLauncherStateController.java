@@ -377,7 +377,7 @@ public class TaskbarLauncherStateController {
             }
         }
 
-        if (hasAnyFlag(changedFlags, FLAGS_LAUNCHER_ACTIVE)) {
+        if (hasAnyFlag(changedFlags, FLAGS_LAUNCHER_ACTIVE | FLAG_SCREEN_ON)) {
             animatorSet.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -553,12 +553,16 @@ public class TaskbarLauncherStateController {
             animatorSet.play(stashAnimator);
         }
 
-        if (isAnimatingToLauncher() || mLauncherState == LauncherState.NORMAL) {
-            // Translate back to 0 at a shorter or same duration as the icon alignment animation.
-            // This ensures there is no jump after switching to hotseat, e.g. when swiping up from
-            // overview to home. Currently we do duration / 2 just to make it feel snappier.
+        // Translate back to 0 at a shorter or same duration as the icon alignment animation.
+        // This ensures there is no jump after switching to hotseat, e.g. when swiping up from
+        // overview to home. When not in app, we do duration / 2 just to make it feel snappier.
+        long resetDuration = mControllers.taskbarStashController.isInApp()
+                ? duration
+                : duration / 2;
+        if (!mControllers.taskbarTranslationController.willAnimateToZeroBefore(resetDuration)
+                && (isAnimatingToLauncher() || mLauncherState == LauncherState.NORMAL)) {
             animatorSet.play(mControllers.taskbarTranslationController
-                    .createAnimToResetTranslation(duration / 2));
+                    .createAnimToResetTranslation(resetDuration));
         }
     }
 
