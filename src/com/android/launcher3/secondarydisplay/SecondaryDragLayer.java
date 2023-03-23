@@ -197,13 +197,13 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
             return false;
         }
 
+        // order of this list will reflect in the popup
         List<SystemShortcut> systemShortcuts = new ArrayList<>();
-
+        systemShortcuts.add(APP_INFO.getShortcut(mActivity, item, v));
         // Hide redundant pin shortcut for app drawer icons if drag-n-drop is enabled.
         if (!FeatureFlags.SECONDARY_DRAG_N_DROP_TO_PIN.get() || !mActivity.isAppDrawerShown()) {
             systemShortcuts.add(mPinnedAppsAdapter.getSystemShortcut(item, v));
         }
-        systemShortcuts.add(APP_INFO.getShortcut(mActivity, item, v));
         int deepShortcutCount = popupDataProvider.getShortcutCountForItem(item);
         final PopupContainerWithArrow<SecondaryDisplayLauncher> container;
         if (ENABLE_MATERIAL_U_POPUP.get()) {
