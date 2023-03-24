@@ -125,7 +125,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                 && resources.getBoolean(R.bool.start_align_taskbar);
 
         int actualMargin = resources.getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
-        int actualIconSize = mActivityContext.getDeviceProfile().iconSizePx;
+        int actualIconSize = mActivityContext.getDeviceProfile().taskbarIconSize;
 
         mIconTouchSize = Math.max(actualIconSize,
                 resources.getDimensionPixelSize(R.dimen.taskbar_icon_min_touch_size));

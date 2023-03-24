@@ -164,6 +164,10 @@
     <item name="swipe_up_rect_xy_damping_ratio" type="dimen" format="float">0.8</item>
     <item name="swipe_up_rect_xy_stiffness" type="dimen" format="float">200</item>
 
+    <!-- Taskbar -->
+    <!-- This is a float because it is converted to dp later in DeviceProfile -->
+    <item name="taskbar_icon_size" type="dimen" format="float">0</item>
+
     <!-- These params are only used for hotseat items on devices that have a taskbar. -->
     <item name="taskbar_swipe_up_rect_x_stiffness" type="dimen" format="float">350</item>
     <item name="taskbar_swipe_up_rect_x_damping" type="dimen" format="float">0.9</item>

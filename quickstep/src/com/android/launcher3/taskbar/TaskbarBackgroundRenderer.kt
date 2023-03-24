@@ -37,11 +37,11 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
 
     val paint = Paint()
     val lastDrawnTransientRect = RectF()
-    var backgroundHeight = context.deviceProfile.taskbarSize.toFloat()
+    var backgroundHeight = context.deviceProfile.taskbarHeight.toFloat()
     var translationYForSwipe = 0f
     var translationYForStash = 0f
 
-    private var maxBackgroundHeight = context.deviceProfile.taskbarSize.toFloat()
+    private var maxBackgroundHeight = context.deviceProfile.taskbarHeight.toFloat()
     private val transientBackgroundBounds = context.transientTaskbarBounds
 
     private val isTransientTaskbar = DisplayController.isTransientTaskbar(context)
@@ -73,7 +73,7 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
 
         if (isTransientTaskbar) {
             val res = context.resources
-            bottomMargin = res.getDimensionPixelSize(R.dimen.transient_taskbar_margin)
+            bottomMargin = res.getDimensionPixelSize(R.dimen.transient_taskbar_bottom_margin)
             shadowBlur = res.getDimension(R.dimen.transient_taskbar_shadow_blur)
             keyShadowDistance = res.getDimension(R.dimen.transient_taskbar_key_shadow_distance)
         }

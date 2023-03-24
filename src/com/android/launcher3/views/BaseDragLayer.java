@@ -559,7 +559,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
             DeviceProfile dp = mActivity.getDeviceProfile();
             if (dp.isTaskbarPresent) {
                 // Ignore taskbar gesture insets to avoid interfering with TouchControllers.
-                gestureInsetBottom = Math.max(0, gestureInsetBottom - dp.taskbarSize);
+                gestureInsetBottom = Math.max(0, gestureInsetBottom - dp.taskbarHeight);
             }
             mSystemGestureRegion.set(
                     Math.max(gestureInsets.left, imeInset.left),
