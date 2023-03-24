@@ -344,6 +344,25 @@ public class LauncherPreviewRenderer extends ContextWrapper
         return mHotseat;
     }
 
+    /**
+     * Hides the components in the bottom row.
+     *
+     * @param hide True to hide and false to show.
+     */
+    public void hideBottomRow(boolean hide) {
+        mUiHandler.post(() -> {
+            if (mDp.isTaskbarPresent) {
+                // hotseat icons on bottom
+                mHotseat.setIconsAlpha(hide ? 0 : 1);
+                if (mDp.isQsbInline) {
+                    mHotseat.setQsbAlpha(hide ? 0 : 1);
+                }
+            } else {
+                mHotseat.setQsbAlpha(hide ? 0 : 1);
+            }
+        });
+    }
+
     @Override
     public CellLayout getScreenWithId(int screenId) {
         return mWorkspaceScreens.get(screenId);
