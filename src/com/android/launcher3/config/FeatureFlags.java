@@ -104,9 +104,6 @@ public final class FeatureFlags {
             "ENABLE_EXPANDING_PAUSE_WORK_BUTTON", false,
             "Expand and collapse pause work button while scrolling");
 
-    public static final BooleanFlag ENABLE_RECENT_BLOCK = getDebugFlag(270390950,
-            "ENABLE_RECENT_BLOCK", false, "Show recently tapped search target block in zero state");
-
     public static final BooleanFlag COLLECT_SEARCH_HISTORY = getReleaseFlag(270391455,
             "COLLECT_SEARCH_HISTORY", false, "Allow launcher to collect search history for log");
 
@@ -332,7 +329,7 @@ public final class FeatureFlags {
                     + " nav mode and when transient taskbar is enabled.");
 
     public static final BooleanFlag FOLDABLE_SINGLE_PAGE = getDebugFlag(270395274,
-            "FOLDABLE_SINGLE_PAGE", false,
+            "FOLDABLE_SINGLE_PAGE", true,
             "Use a single page for the workspace");
 
     public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(270395798,

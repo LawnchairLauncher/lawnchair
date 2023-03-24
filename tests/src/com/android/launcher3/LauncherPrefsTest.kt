@@ -25,6 +25,8 @@ import com.android.launcher3.LauncherPrefs.Companion.BOOT_AWARE_PREFS_KEY
 import com.google.common.truth.Truth.assertThat
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
+import org.junit.AfterClass
+import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -45,8 +47,18 @@ class LauncherPrefsTest {
     private val context by lazy { InstrumentationRegistry.getInstrumentation().targetContext }
     private val launcherPrefs by lazy { LauncherPrefs.get(context) }
 
-    init {
-        isBootAwareStartupDataEnabled = true
+    companion object {
+        @BeforeClass
+        @JvmStatic
+        fun setup() {
+            isBootAwareStartupDataEnabled = true
+        }
+
+        @AfterClass
+        @JvmStatic
+        fun teardown() {
+            isBootAwareStartupDataEnabled = false
+        }
     }
 
     @Test

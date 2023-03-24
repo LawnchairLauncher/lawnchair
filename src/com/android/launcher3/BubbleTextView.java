@@ -72,9 +72,9 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
-import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.search.StringMatcherUtility;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.views.ActivityContext;
@@ -220,7 +220,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             defaultIconSize = grid.folderChildIconSizePx;
         } else if (mDisplay == DISPLAY_SEARCH_RESULT) {
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
-            setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = getResources().getDimensionPixelSize(R.dimen.search_row_icon_size);
         } else if (mDisplay == DISPLAY_SEARCH_RESULT_SMALL) {
             defaultIconSize = getResources().getDimensionPixelSize(
@@ -976,6 +975,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         }
         Drawable icon = visible ? mIcon : new ColorDrawable(Color.TRANSPARENT);
         applyCompoundDrawables(icon);
+    }
+
+    /** Sets the icon visual state to disabled or not. */
+    public void setIconDisabled(boolean isDisabled) {
+        if (mIcon != null) {
+            mIcon.setIsDisabled(isDisabled);
+        }
     }
 
     protected boolean iconUpdateAnimationEnabled() {
