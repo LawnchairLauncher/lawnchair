@@ -28,6 +28,7 @@
     <item type="id" name="home" />
     <item type="id" name="recent_apps" />
     <item type="id" name="back" />
+    <item type="id" name="close"/>
     <item type="id" name="ime_switcher" />
     <item type="id" name="accessibility_button" />
     <item type="id" name="rotate_suggestion" />
@@ -41,4 +42,5 @@
 
     <item type="id" name="saved_floating_widget_foreground" />
     <item type="id" name="saved_floating_widget_background" />
+
 </resources>
