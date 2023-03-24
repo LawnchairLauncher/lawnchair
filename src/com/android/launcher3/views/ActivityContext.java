@@ -45,6 +45,7 @@ import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
+import android.window.SplashScreen;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -320,7 +321,14 @@ public interface ActivityContext {
             return false;
         }
 
-        Bundle optsBundle = (v != null) ? getActivityLaunchOptions(v, item).toBundle() : null;
+        Bundle optsBundle = null;
+        if (v != null) {
+            optsBundle = getActivityLaunchOptions(v, item).toBundle();
+        } else if (item != null && item.animationType == LauncherSettings.Animation.DEFAULT_NO_ICON
+                && Utilities.ATLEAST_T) {
+            optsBundle = ActivityOptions.makeBasic()
+                    .setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR).toBundle();
+        }
         UserHandle user = item == null ? null : item.user;
 
         // Prepare intent
