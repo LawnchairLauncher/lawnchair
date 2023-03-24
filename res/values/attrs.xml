@@ -379,6 +379,15 @@
         <!-- defaults to hotseatQsbSpace, if not specified -->
         <attr name="hotseatQsbSpaceTwoPanelPortrait" format="float" />
 
+        <!-- defaults to res.taskbar_icon_size, if not specified -->
+        <attr name="transientTaskbarIconSize" format="float" />
+        <!-- defaults to transientTaskbarIconSize, if not specified -->
+        <attr name="transientTaskbarIconSizeLandscape" format="float" />
+        <!-- defaults to transientTaskbarIconSize, if not specified -->
+        <attr name="transientTaskbarIconSizeTwoPanelLandscape" format="float" />
+        <!-- defaults to transientTaskbarIconSize, if not specified -->
+        <attr name="transientTaskbarIconSizeTwoPanelPortrait" format="float" />
+
         <attr name="iconImageSize" format="float" />
         <!-- defaults to iconImageSize, if not specified -->
         <attr name="iconSizeLandscape" format="float" />

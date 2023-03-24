@@ -283,7 +283,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         }
 
         if (mDp.isTablet && FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get()) {
-            return mDp.stashedTaskbarSize;
+            return mDp.stashedTaskbarHeight;
         }
 
         // Align to bottom of task Rect.
