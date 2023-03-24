@@ -149,6 +149,8 @@ public class InvariantDeviceProfile {
     public float[] allAppsIconTextSize;
     public PointF[] allAppsBorderSpaces;
 
+    public float[] transientTaskbarIconSize;
+
     private SparseArray<TypedValue> mExtraAttrs;
 
     /**
@@ -395,6 +397,8 @@ public class InvariantDeviceProfile {
         allAppsIconTextSize = displayOption.allAppsIconTextSizes;
 
         inlineQsb = closestProfile.inlineQsb;
+
+        transientTaskbarIconSize = displayOption.transientTaskbarIconSize;
 
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
@@ -908,8 +912,12 @@ public class InvariantDeviceProfile {
         private final float[] allAppsIconTextSizes = new float[COUNT_SIZES];
         private final PointF[] allAppsBorderSpaces = new PointF[COUNT_SIZES];
 
+        private final float[] transientTaskbarIconSize = new float[COUNT_SIZES];
+
         DisplayOption(GridOption grid, Context context, AttributeSet attrs) {
             this.grid = grid;
+
+            Resources res = context.getResources();
 
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ProfileDisplayOption);
 
@@ -1101,8 +1109,7 @@ public class InvariantDeviceProfile {
 
             hotseatBarBottomSpace[INDEX_DEFAULT] = a.getFloat(
                     R.styleable.ProfileDisplayOption_hotseatBarBottomSpace,
-                    ResourcesCompat.getFloat(context.getResources(),
-                            R.dimen.hotseat_bar_bottom_space_default));
+                    ResourcesCompat.getFloat(res, R.dimen.hotseat_bar_bottom_space_default));
             hotseatBarBottomSpace[INDEX_LANDSCAPE] = a.getFloat(
                     R.styleable.ProfileDisplayOption_hotseatBarBottomSpaceLandscape,
                     hotseatBarBottomSpace[INDEX_DEFAULT]);
@@ -1115,8 +1122,7 @@ public class InvariantDeviceProfile {
 
             hotseatQsbSpace[INDEX_DEFAULT] = a.getFloat(
                     R.styleable.ProfileDisplayOption_hotseatQsbSpace,
-                    ResourcesCompat.getFloat(context.getResources(),
-                            R.dimen.hotseat_qsb_space_default));
+                    ResourcesCompat.getFloat(res, R.dimen.hotseat_qsb_space_default));
             hotseatQsbSpace[INDEX_LANDSCAPE] = a.getFloat(
                     R.styleable.ProfileDisplayOption_hotseatQsbSpaceLandscape,
                     hotseatQsbSpace[INDEX_DEFAULT]);
@@ -1125,6 +1131,19 @@ public class InvariantDeviceProfile {
                     hotseatQsbSpace[INDEX_DEFAULT]);
             hotseatQsbSpace[INDEX_TWO_PANEL_PORTRAIT] = a.getFloat(
                     R.styleable.ProfileDisplayOption_hotseatQsbSpaceTwoPanelPortrait,
+                    hotseatQsbSpace[INDEX_DEFAULT]);
+
+            transientTaskbarIconSize[INDEX_DEFAULT] = a.getFloat(
+                    R.styleable.ProfileDisplayOption_transientTaskbarIconSize,
+                    ResourcesCompat.getFloat(res, R.dimen.taskbar_icon_size));
+            transientTaskbarIconSize[INDEX_LANDSCAPE] = a.getFloat(
+                    R.styleable.ProfileDisplayOption_transientTaskbarIconSizeLandscape,
+                    transientTaskbarIconSize[INDEX_DEFAULT]);
+            transientTaskbarIconSize[INDEX_TWO_PANEL_LANDSCAPE] = a.getFloat(
+                    R.styleable.ProfileDisplayOption_transientTaskbarIconSizeTwoPanelLandscape,
+                    transientTaskbarIconSize[INDEX_DEFAULT]);
+            transientTaskbarIconSize[INDEX_TWO_PANEL_PORTRAIT] = a.getFloat(
+                    R.styleable.ProfileDisplayOption_transientTaskbarIconSizeTwoPanelPortrait,
                     hotseatQsbSpace[INDEX_DEFAULT]);
 
             a.recycle();
@@ -1148,6 +1167,7 @@ public class InvariantDeviceProfile {
                 allAppsIconSizes[i] = 0;
                 allAppsIconTextSizes[i] = 0;
                 allAppsBorderSpaces[i] = new PointF();
+                transientTaskbarIconSize[i] = 0;
             }
         }
 
@@ -1168,6 +1188,7 @@ public class InvariantDeviceProfile {
                 allAppsIconTextSizes[i] *= w;
                 allAppsBorderSpaces[i].x *= w;
                 allAppsBorderSpaces[i].y *= w;
+                transientTaskbarIconSize[i] *= w;
             }
 
             return this;
@@ -1190,6 +1211,7 @@ public class InvariantDeviceProfile {
                 allAppsIconTextSizes[i] += p.allAppsIconTextSizes[i];
                 allAppsBorderSpaces[i].x += p.allAppsBorderSpaces[i].x;
                 allAppsBorderSpaces[i].y += p.allAppsBorderSpaces[i].y;
+                transientTaskbarIconSize[i] += p.transientTaskbarIconSize[i];
             }
 
             return this;

@@ -133,7 +133,7 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
             findViewById<View>(R.id.done_button)?.setOnClickListener { hide() }
             if (DisplayController.isTransientTaskbar(activityContext)) {
                 (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin +=
-                    activityContext.deviceProfile.taskbarSize
+                    activityContext.deviceProfile.taskbarHeight
             }
             show()
         }

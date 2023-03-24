@@ -55,4 +55,7 @@
     <!-- Taskbar -->
     <!-- Align the Taskbar to the start (Left/Right) of the device when 3 button nav is enabled. -->
     <bool name="start_align_taskbar">false</bool>
+
+    <!-- This is a float because it is converted to dp later in DeviceProfile -->
+    <item name="taskbar_icon_size" type="dimen" format="float">44</item>
 </resources>
