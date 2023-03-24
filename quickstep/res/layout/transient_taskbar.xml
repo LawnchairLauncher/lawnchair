@@ -26,6 +26,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:focusable="true"
+        android:importantForAccessibility="yes"
         android:forceHasOverlappingRendering="false"
         android:layout_gravity="bottom"
         android:layout_marginBottom="@dimen/transient_taskbar_bottom_margin"
