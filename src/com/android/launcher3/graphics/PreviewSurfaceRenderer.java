@@ -87,6 +87,8 @@ public class PreviewSurfaceRenderer {
     private final SurfaceControlViewHost mSurfaceControlViewHost;
 
     private boolean mDestroyed = false;
+    private LauncherPreviewRenderer mRenderer;
+    private boolean mHideQsb;
 
     public PreviewSurfaceRenderer(Context context, Bundle bundle) throws Exception {
         mContext = context;
@@ -97,6 +99,7 @@ public class PreviewSurfaceRenderer {
             gridName = InvariantDeviceProfile.getCurrentGridName(context);
         }
         mWallpaperColors = bundle.getParcelable(KEY_COLORS);
+        mHideQsb = bundle.getBoolean(GridCustomizationsProvider.KEY_HIDE_BOTTOM_ROW);
         mIdp = new InvariantDeviceProfile(context, gridName);
 
         mHostToken = bundle.getBinder(KEY_HOST_TOKEN);
@@ -174,6 +177,17 @@ public class PreviewSurfaceRenderer {
         MODEL_EXECUTOR.execute(this::loadModelData);
     }
 
+    /**
+     * Hides the components in the bottom row.
+     *
+     * @param hide True to hide and false to show.
+     */
+    public void hideBottomRow(boolean hide) {
+        if (mRenderer != null) {
+            mRenderer.hideBottomRow(hide);
+        }
+    }
+
     @WorkerThread
     private void loadModelData() {
         final boolean migrated = doGridMigrationIfNecessary();
@@ -209,8 +223,8 @@ public class PreviewSurfaceRenderer {
                     DeviceProfile deviceProfile = mIdp.getDeviceProfile(previewContext);
                     String query =
                             LauncherSettings.Favorites.SCREEN + " = " + Workspace.FIRST_SCREEN_ID
-                            + " or " + LauncherSettings.Favorites.CONTAINER + " = "
-                            + LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+                                    + " or " + LauncherSettings.Favorites.CONTAINER + " = "
+                                    + LauncherSettings.Favorites.CONTAINER_HOTSEAT;
                     if (deviceProfile.isTwoPanels) {
                         query += " or " + LauncherSettings.Favorites.SCREEN + " = "
                                 + Workspace.SECOND_SCREEN_ID;
@@ -254,8 +268,10 @@ public class PreviewSurfaceRenderer {
         if (mDestroyed) {
             return;
         }
-        View view = new LauncherPreviewRenderer(inflationContext, mIdp, mWallpaperColors,
-                launcherWidgetSpanInfo).getRenderedView(dataModel, widgetProviderInfoMap);
+        mRenderer = new LauncherPreviewRenderer(inflationContext, mIdp,
+                mWallpaperColors, launcherWidgetSpanInfo);
+        mRenderer.hideBottomRow(mHideQsb);
+        View view = mRenderer.getRenderedView(dataModel, widgetProviderInfoMap);
         // This aspect scales the view to fit in the surface and centers it
         final float scale = Math.min(mWidth / (float) view.getMeasuredWidth(),
                 mHeight / (float) view.getMeasuredHeight());
