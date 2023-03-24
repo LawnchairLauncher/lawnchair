@@ -72,9 +72,9 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupContainerWithArrow;
-import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.search.StringMatcherUtility;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.ShortcutUtil;
 import com.android.launcher3.views.ActivityContext;
@@ -269,8 +269,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         mDotParams.scale = 0f;
         mForceHideDot = false;
         setBackground(null);
-        setSingleLine(true);
-        setMaxLines(1);
+        if (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get()
+                || FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()) {
+            setMaxLines(1);
+        }
 
         setTag(null);
         if (mIconLoadRequest != null) {
