@@ -28,7 +28,7 @@
         android:gravity="center"
         android:forceHasOverlappingRendering="false"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="@dimen/transient_taskbar_margin"
+        android:layout_marginBottom="@dimen/transient_taskbar_bottom_margin"
         android:clipChildren="false" />
 
     <com.android.launcher3.taskbar.TaskbarScrimView

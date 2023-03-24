@@ -46,9 +46,9 @@ class TaskbarStashViaTouchController(val controllers: TaskbarControllers) : Touc
     private val displacementInterpolator = LINEAR
     /** How far we can translate the TaskbarView before it's offscreen. */
     private val maxVisualDisplacement =
-        activity.resources.getDimensionPixelSize(R.dimen.transient_taskbar_margin).toFloat()
+        activity.resources.getDimensionPixelSize(R.dimen.transient_taskbar_bottom_margin).toFloat()
     /** How far the swipe could go, if user swiped from the very top of TaskbarView. */
-    private val maxTouchDisplacement = maxVisualDisplacement + activity.deviceProfile.taskbarSize
+    private val maxTouchDisplacement = maxVisualDisplacement + activity.deviceProfile.taskbarHeight
     private val touchDisplacementToStash =
         activity.resources.getDimensionPixelSize(R.dimen.taskbar_to_nav_threshold).toFloat()
 

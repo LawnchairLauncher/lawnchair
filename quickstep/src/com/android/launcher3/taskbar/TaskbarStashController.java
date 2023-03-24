@@ -40,7 +40,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.util.Log;
 import android.view.InsetsController;
 import android.view.View;
@@ -231,21 +230,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         mPrefs = LauncherPrefs.getPrefs(mActivity);
         mSystemUiProxy = SystemUiProxy.INSTANCE.get(activity);
         mAccessibilityManager = mActivity.getSystemService(AccessibilityManager.class);
-        if (isPhoneMode()) {
-            // DeviceProfile's taskbar vars aren't initialized w/ the flag off
-            Resources resources = mActivity.getResources();
-            boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivity);
-            mUnstashedHeight = resources.getDimensionPixelSize(isTransientTaskbar
-                    ? R.dimen.transient_taskbar_size
-                    : R.dimen.taskbar_size);
-            mStashedHeight = resources.getDimensionPixelSize(isTransientTaskbar
-                    ? R.dimen.transient_taskbar_stashed_size
-                    : R.dimen.taskbar_stashed_size);
-        } else {
-            mUnstashedHeight = mActivity.getDeviceProfile().taskbarSize;
-            mStashedHeight = mActivity.getDeviceProfile().stashedTaskbarSize;
-        }
 
+        mUnstashedHeight = mActivity.getDeviceProfile().taskbarHeight;
+        mStashedHeight = mActivity.getDeviceProfile().stashedTaskbarHeight;
     }
 
     public void init(TaskbarControllers controllers, boolean setupUIVisible) {
@@ -407,12 +394,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * Returns the height that taskbar will be touchable.
      */
     public int getTouchableHeight() {
-        int bottomMargin = 0;
-        if (DisplayController.isTransientTaskbar(mActivity)) {
-            bottomMargin = mActivity.getResources().getDimensionPixelSize(
-                    R.dimen.transient_taskbar_margin);
-        }
-        return mIsStashed ? mStashedHeight : (mUnstashedHeight + bottomMargin);
+        return mIsStashed
+                ? mStashedHeight
+                : (mUnstashedHeight + mActivity.getDeviceProfile().taskbarBottomMargin);
     }
 
     /**

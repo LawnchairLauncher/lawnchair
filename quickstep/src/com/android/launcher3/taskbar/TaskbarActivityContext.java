@@ -302,10 +302,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                     deviceProfile.hotseatQsbWidth = originDeviceProfile.hotseatQsbWidth;
 
                     // Update icon size
-                    deviceProfile.iconSizePx = resources.getDimensionPixelSize(
-                            DisplayController.isTransientTaskbar(TaskbarActivityContext.this)
-                                    ? R.dimen.transient_taskbar_icon_size
-                                    : R.dimen.taskbar_icon_size);
+                    deviceProfile.iconSizePx = deviceProfile.taskbarIconSize;
                     deviceProfile.updateIconSize(1f, resources);
                 }).build();
     }
@@ -716,13 +713,13 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
 
         if (DisplayController.isTransientTaskbar(this)) {
-            int taskbarSize = resources.getDimensionPixelSize(R.dimen.transient_taskbar_size);
-            return taskbarSize
-                    + (2 * resources.getDimensionPixelSize(R.dimen.transient_taskbar_margin))
+            return mDeviceProfile.taskbarHeight
+                    + (2 * mDeviceProfile.taskbarBottomMargin)
                     + resources.getDimensionPixelSize(R.dimen.transient_taskbar_shadow_blur);
         }
 
-        return mDeviceProfile.taskbarSize + Math.max(getLeftCornerRadius(), getRightCornerRadius());
+        return mDeviceProfile.taskbarHeight
+                + Math.max(getLeftCornerRadius(), getRightCornerRadius());
     }
 
     public int getSetupWindowHeight() {

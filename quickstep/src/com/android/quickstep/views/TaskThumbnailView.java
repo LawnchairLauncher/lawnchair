@@ -559,7 +559,7 @@ public class TaskThumbnailView extends View {
             boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
             mPreviewPositionHelper.updateThumbnailMatrix(mPreviewRect, mThumbnailData,
                     getMeasuredWidth(), getMeasuredHeight(), dp.widthPx, dp.heightPx,
-                    dp.taskbarSize, dp.isTablet, currentRotation, isRtl);
+                    dp.taskbarHeight, dp.isTablet, currentRotation, isRtl);
 
             mBitmapShader.setLocalMatrix(mPreviewPositionHelper.getMatrix());
             mPaint.setShader(mBitmapShader);
