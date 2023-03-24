@@ -457,8 +457,13 @@ public class TaskbarLauncherStateController {
             animatorSet.play(mTaskbarCornerRoundness.animateToValue(cornerRoundness));
         }
 
-        if (hasAnyFlag(changedFlags, FLAG_DEVICE_LOCKED)) {
-            // When transitioning between locked/unlocked, there is no stashing animation.
+        // Keep isUnlockTransition in sync with its counterpart in
+        // TaskbarStashController#createAnimToIsStashed.
+        boolean isUnlockTransition =
+                hasAnyFlag(changedFlags, FLAG_DEVICE_LOCKED) && !hasAnyFlag(FLAG_DEVICE_LOCKED);
+        if (isUnlockTransition) {
+            // When transitioning to unlocked, ensure the hotseat is fully visible from the
+            // beginning. The hotseat itself is animated by LauncherUnlockAnimationController.
             mIconAlignment.cancelAnimation();
             // updateValue ensures onIconAlignmentRatioChanged will be called if there is an actual
             // change in value
