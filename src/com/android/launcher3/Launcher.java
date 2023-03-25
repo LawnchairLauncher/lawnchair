@@ -63,6 +63,8 @@ import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.ItemInfoMatcher.forFolderMatch;
 
 import android.animation.Animator;
@@ -2473,6 +2475,12 @@ public class Launcher extends StatefulActivity<LauncherState>
                     view = FolderIcon.inflateFolderAndIcon(R.layout.folder_icon, this,
                             (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
                             (FolderInfo) item);
+                    break;
+                }
+                case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR: {
+                    FolderInfo info = (FolderInfo) item;
+                    // TODO (jeremysim b/274189428): Create app pair icon
+                    view = null;
                     break;
                 }
                 case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:

@@ -112,6 +112,10 @@ public class LauncherSettings {
          */
         public static final int ITEM_TYPE_DEEP_SHORTCUT = 6;
 
+        /**
+         * The favorite is an app pair for launching split screen
+         */
+        public static final int ITEM_TYPE_APP_PAIR = 10;
 
         // *** Below enum values are used for metrics purpose but not used in Favorites DB ***
 
@@ -256,6 +260,7 @@ public class LauncherSettings {
                 case ITEM_TYPE_DEEP_SHORTCUT: return "DEEPSHORTCUT";
                 case ITEM_TYPE_TASK: return "TASK";
                 case ITEM_TYPE_QSB: return "QSB";
+                case ITEM_TYPE_APP_PAIR: return "APP_PAIR";
                 default: return String.valueOf(type);
             }
         }

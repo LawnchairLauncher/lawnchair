@@ -190,14 +190,15 @@ public class BgDataModel {
         for (ItemInfo item : items) {
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+                case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR:
                     folders.remove(item.id);
                     if (FeatureFlags.IS_STUDIO_BUILD) {
                         for (ItemInfo info : itemsIdMap) {
                             if (info.container == item.id) {
                                 // We are deleting a folder which still contains items that
                                 // think they are contained by that folder.
-                                String msg = "deleting a folder (" + item + ") which still " +
-                                        "contains items (" + info + ")";
+                                String msg = "deleting a collection (" + item + ") which still "
+                                        + "contains items (" + info + ")";
                                 Log.e(TAG, msg);
                             }
                         }
@@ -238,6 +239,7 @@ public class BgDataModel {
         itemsIdMap.put(item.id, item);
         switch (item.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
+            case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR:
                 folders.put(item.id, (FolderInfo) item);
                 workspaceItems.add(item);
                 break;
@@ -250,15 +252,14 @@ public class BgDataModel {
                 } else {
                     if (newItem) {
                         if (!folders.containsKey(item.container)) {
-                            // Adding an item to a folder that doesn't exist.
-                            String msg = "adding item: " + item + " to a folder that " +
-                                    " doesn't exist";
+                            // Adding an item to a nonexistent collection.
+                            String msg = "attempted to add item: " + item + " to a nonexistent app"
+                                    + " collection";
                             Log.e(TAG, msg);
                         }
                     } else {
                         findOrMakeFolder(item.container).add((WorkspaceItemInfo) item, false);
                     }
-
                 }
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
