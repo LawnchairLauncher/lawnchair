@@ -201,14 +201,12 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
 
     // Create a Stream of all applicable system shortcuts
     private Stream<SystemShortcut.Factory> getSystemShortcuts() {
-        // concat a Stream of split options with a Stream of APP_INFO
-        Stream<SystemShortcut.Factory> appInfo = Stream.of(APP_INFO);
-
+        // append split options to APP_INFO shortcut, the order here will reflect in the popup
         return Stream.concat(
+                Stream.of(APP_INFO),
                 Utilities.getSplitPositionOptions(mContext.getDeviceProfile())
                         .stream()
-                        .map(this::createSplitShortcutFactory),
-                appInfo
+                        .map(this::createSplitShortcutFactory)
         );
     }
 
@@ -250,7 +248,7 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
             // Move the icon to align with the center-top of the touch point
             Point iconShift = new Point();
             iconShift.x = mIconLastTouchPos.x - sv.getIconCenter().x;
-            iconShift.y = mIconLastTouchPos.y - mContext.getDeviceProfile().iconSizePx;
+            iconShift.y = mIconLastTouchPos.y - mContext.getDeviceProfile().taskbarIconSize;
 
             ((TaskbarDragController) ActivityContext.lookupContext(
                     v.getContext()).getDragController()).startDragOnLongClick(sv, iconShift);

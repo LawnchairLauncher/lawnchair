@@ -17,10 +17,13 @@ package com.android.launcher3.taskbar
 
 import android.graphics.PorterDuff.Mode.SRC_ATOP
 import android.graphics.PorterDuffColorFilter
+import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.IntDef
 import androidx.annotation.LayoutRes
 import com.airbnb.lottie.LottieAnimationView
@@ -130,7 +133,7 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
             findViewById<View>(R.id.done_button)?.setOnClickListener { hide() }
             if (DisplayController.isTransientTaskbar(activityContext)) {
                 (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin +=
-                    activityContext.deviceProfile.taskbarSize
+                    activityContext.deviceProfile.taskbarHeight
             }
             show()
         }
@@ -153,6 +156,7 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
             FLAG_AUTOHIDE_SUSPEND_EDU_OPEN,
             true
         )
+
         tooltip.onCloseCallback = {
             this.tooltip = null
             controllers.taskbarAutohideSuspendController.updateFlag(
@@ -161,10 +165,46 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
             )
             controllers.taskbarStashController.updateAndAnimateTransientTaskbar(true)
         }
+        tooltip.accessibilityDelegate = createAccessibilityDelegate()
 
         overlayContext.layoutInflater.inflate(contentResId, tooltip.content, true)
         this.tooltip = tooltip
     }
+
+    private fun createAccessibilityDelegate() =
+        object : View.AccessibilityDelegate() {
+            override fun performAccessibilityAction(
+                host: View?,
+                action: Int,
+                args: Bundle?
+            ): Boolean {
+                if (action == R.id.close) {
+                    hide()
+                    return true
+                }
+                return super.performAccessibilityAction(host, action, args)
+            }
+
+            override fun onPopulateAccessibilityEvent(host: View?, event: AccessibilityEvent?) {
+                super.onPopulateAccessibilityEvent(host, event)
+                if (event?.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+                    event.text?.add(host?.context?.getText(R.string.taskbar_edu_a11y_title))
+                }
+            }
+
+            override fun onInitializeAccessibilityNodeInfo(
+                host: View?,
+                info: AccessibilityNodeInfo?
+            ) {
+                super.onInitializeAccessibilityNodeInfo(host, info)
+                info?.addAction(
+                    AccessibilityNodeInfo.AccessibilityAction(
+                        R.id.close,
+                        host?.context?.getText(R.string.taskbar_edu_close)
+                    )
+                )
+            }
+        }
 
     override fun dumpLogs(prefix: String?, pw: PrintWriter?) {
         pw?.println(prefix + "TaskbarEduTooltipController:")

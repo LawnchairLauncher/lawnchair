@@ -22,6 +22,7 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.Utilities.mapRange
 import com.android.launcher3.Utilities.mapToRange
 import com.android.launcher3.anim.Interpolators
@@ -31,17 +32,21 @@ import com.android.launcher3.util.DisplayController
 /** Helps draw the taskbar background, made up of a rectangle plus two inverted rounded corners. */
 class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
 
+    private val DARK_THEME_SHADOW_ALPHA = 51f
+    private val LIGHT_THEME_SHADOW_ALPHA = 25f
+
     val paint = Paint()
     val lastDrawnTransientRect = RectF()
-    var backgroundHeight = context.deviceProfile.taskbarSize.toFloat()
+    var backgroundHeight = context.deviceProfile.taskbarHeight.toFloat()
     var translationYForSwipe = 0f
     var translationYForStash = 0f
 
-    private var maxBackgroundHeight = context.deviceProfile.taskbarSize.toFloat()
+    private var maxBackgroundHeight = context.deviceProfile.taskbarHeight.toFloat()
     private val transientBackgroundBounds = context.transientTaskbarBounds
 
     private val isTransientTaskbar = DisplayController.isTransientTaskbar(context)
 
+    private val shadowAlpha: Float
     private var shadowBlur = 0f
     private var keyShadowDistance = 0f
     private var bottomMargin = 0
@@ -68,10 +73,14 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
 
         if (isTransientTaskbar) {
             val res = context.resources
-            bottomMargin = res.getDimensionPixelSize(R.dimen.transient_taskbar_margin)
+            bottomMargin = res.getDimensionPixelSize(R.dimen.transient_taskbar_bottom_margin)
             shadowBlur = res.getDimension(R.dimen.transient_taskbar_shadow_blur)
             keyShadowDistance = res.getDimension(R.dimen.transient_taskbar_key_shadow_distance)
         }
+
+        shadowAlpha =
+            if (Utilities.isDarkTheme(context)) DARK_THEME_SHADOW_ALPHA
+            else LIGHT_THEME_SHADOW_ALPHA
 
         setCornerRoundness(DEFAULT_ROUNDNESS)
     }
@@ -142,13 +151,13 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
                     -mapRange(1f - progress, 0f, stashedHandleHeight / 2f)
 
             // Draw shadow.
-            val shadowAlpha =
-                mapToRange(paint.alpha.toFloat(), 0f, 255f, 0f, 25f, Interpolators.LINEAR)
+            val newShadowAlpha =
+                mapToRange(paint.alpha.toFloat(), 0f, 255f, 0f, shadowAlpha, Interpolators.LINEAR)
             paint.setShadowLayer(
                 shadowBlur,
                 0f,
                 keyShadowDistance,
-                setColorAlphaBound(Color.BLACK, Math.round(shadowAlpha))
+                setColorAlphaBound(Color.BLACK, Math.round(newShadowAlpha))
             )
 
             lastDrawnTransientRect.set(

@@ -32,15 +32,13 @@ import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
 import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SWITCHER_SHOWING;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.util.Log;
 import android.view.InsetsController;
 import android.view.View;
@@ -231,21 +229,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         mPrefs = LauncherPrefs.getPrefs(mActivity);
         mSystemUiProxy = SystemUiProxy.INSTANCE.get(activity);
         mAccessibilityManager = mActivity.getSystemService(AccessibilityManager.class);
-        if (isPhoneMode()) {
-            // DeviceProfile's taskbar vars aren't initialized w/ the flag off
-            Resources resources = mActivity.getResources();
-            boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivity);
-            mUnstashedHeight = resources.getDimensionPixelSize(isTransientTaskbar
-                    ? R.dimen.transient_taskbar_size
-                    : R.dimen.taskbar_size);
-            mStashedHeight = resources.getDimensionPixelSize(isTransientTaskbar
-                    ? R.dimen.transient_taskbar_stashed_size
-                    : R.dimen.taskbar_stashed_size);
-        } else {
-            mUnstashedHeight = mActivity.getDeviceProfile().taskbarSize;
-            mStashedHeight = mActivity.getDeviceProfile().stashedTaskbarSize;
-        }
 
+        mUnstashedHeight = mActivity.getDeviceProfile().taskbarHeight;
+        mStashedHeight = mActivity.getDeviceProfile().stashedTaskbarHeight;
     }
 
     public void init(TaskbarControllers controllers, boolean setupUIVisible) {
@@ -407,12 +393,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * Returns the height that taskbar will be touchable.
      */
     public int getTouchableHeight() {
-        int bottomMargin = 0;
-        if (DisplayController.isTransientTaskbar(mActivity)) {
-            bottomMargin = mActivity.getResources().getDimensionPixelSize(
-                    R.dimen.transient_taskbar_margin);
-        }
-        return mIsStashed ? mStashedHeight : (mUnstashedHeight + bottomMargin);
+        return mIsStashed
+                ? mStashedHeight
+                : (mUnstashedHeight + mActivity.getDeviceProfile().taskbarBottomMargin);
     }
 
     /**
@@ -586,9 +569,12 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         // already stashed Taskbar.
         boolean hotseatTopElement = mControllers.uiController.isHotseatIconOnTopWhenAligned()
                 || !hasAnyFlag(changedFlags, FLAG_IN_APP);
-        // If transitioning between locked/unlocked device, do not play a stash animation.
-        boolean unLockedTransition = hasAnyFlag(changedFlags, FLAG_STASHED_DEVICE_LOCKED);
-        boolean skipStashAnimation = !hotseatTopElement || unLockedTransition;
+        // If transitioning to unlocked device, do not play a stash animation.
+        // Keep isUnlockTransition in sync with its counterpart in
+        // TaskbarLauncherStateController#onStateChangeApplied.
+        boolean isUnlockTransition = hasAnyFlag(changedFlags, FLAG_STASHED_DEVICE_LOCKED)
+                && !hasAnyFlag(FLAG_STASHED_DEVICE_LOCKED);
+        boolean skipStashAnimation = !hotseatTopElement || isUnlockTransition;
 
         if (isTransientTaskbar) {
             createTransientAnimToIsStashed(mAnimator, isStashed, duration, animateBg, changedFlags,
@@ -907,12 +893,20 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         long startDelay = 0;
 
         updateStateForFlag(FLAG_STASHED_IN_APP_SYSUI, hasAnyFlag(systemUiStateFlags,
-                SYSUI_STATE_QUICK_SETTINGS_EXPANDED
-                        | SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED));
+                SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE));
         updateStateForFlag(FLAG_STASHED_SYSUI,
                 hasAnyFlag(systemUiStateFlags, SYSUI_STATE_SCREEN_PINNING));
-        updateStateForFlag(FLAG_STASHED_DEVICE_LOCKED,
-                hasAnyFlag(systemUiStateFlags, MASK_ANY_SYSUI_LOCKED));
+
+        boolean isLocked = hasAnyFlag(systemUiStateFlags, MASK_ANY_SYSUI_LOCKED);
+        boolean wasLocked = hasAnyFlag(FLAG_STASHED_DEVICE_LOCKED);
+        updateStateForFlag(FLAG_STASHED_DEVICE_LOCKED, isLocked);
+
+        if (isLocked && !wasLocked && DisplayController.isTransientTaskbar(mActivity)) {
+            // Stash the transient taskbar when locking the device. This improves the transition
+            // to AoD (otherwise the taskbar stays a bit too long above the collapsing AoD scrim),
+            // and ensures the taskar state is reset when unlocking the device afterwards.
+            updateStateForFlag(FLAG_STASHED_IN_APP_AUTO, true);
+        }
 
         // Only update FLAG_STASHED_IN_APP_IME when system gesture is not in progress.
         mIsImeShowing = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_IME_SHOWING);
