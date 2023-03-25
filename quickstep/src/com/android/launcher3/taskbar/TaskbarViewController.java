@@ -59,7 +59,6 @@ import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
 import com.android.launcher3.util.MultiPropertyFactory;
@@ -134,9 +133,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         mTaskbarIconAlpha = new MultiValueAlpha(mTaskbarView, NUM_ALPHA_CHANNELS);
         mTaskbarIconAlpha.setUpdateVisibility(true);
         mModelCallbacks = new TaskbarModelCallbacks(activity, mTaskbarView);
-        mTaskbarBottomMargin = DisplayController.isTransientTaskbar(activity)
-                ? activity.getResources().getDimensionPixelSize(R.dimen.transient_taskbar_margin)
-                : 0;
+        mTaskbarBottomMargin = activity.getDeviceProfile().taskbarBottomMargin;
         mStashedHandleHeight = activity.getResources()
                 .getDimensionPixelSize(R.dimen.taskbar_stashed_handle_height);
         mLauncherThemedIconsBackgroundColor = ThemedIconDrawable.getColors(mActivity)[0];
@@ -157,7 +154,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         mTaskbarView.init(new TaskbarViewCallbacks());
         mTaskbarView.getLayoutParams().height = isPhoneMode(mActivity.getDeviceProfile())
                 ? mActivity.getResources().getDimensionPixelSize(R.dimen.taskbar_size)
-                : mActivity.getDeviceProfile().taskbarSize;
+                : mActivity.getDeviceProfile().taskbarHeight;
 
         mTaskbarIconScaleForStash.updateValue(1f);
 
@@ -429,7 +426,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         PendingAnimation setter = new PendingAnimation(100);
         DeviceProfile taskbarDp = mActivity.getDeviceProfile();
         Rect hotseatPadding = launcherDp.getHotseatLayoutPadding(mActivity);
-        float scaleUp = ((float) launcherDp.iconSizePx) / taskbarDp.iconSizePx;
+        float scaleUp = ((float) launcherDp.iconSizePx) / taskbarDp.taskbarIconSize;
         int borderSpacing = launcherDp.hotseatBorderSpace;
         int hotseatCellSize = DeviceProfile.calculateCellWidth(
                 launcherDp.availableWidthPx - hotseatPadding.left - hotseatPadding.right,
@@ -451,7 +448,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         }
 
         int collapsedHeight = mActivity.getDefaultTaskbarWindowHeight();
-        int expandedHeight = Math.max(collapsedHeight, taskbarDp.taskbarSize + offsetY);
+        int expandedHeight = Math.max(collapsedHeight, taskbarDp.taskbarHeight + offsetY);
         setter.addOnFrameListener(anim -> mActivity.setTaskbarWindowHeight(
                 anim.getAnimatedFraction() > 0 ? expandedHeight : collapsedHeight));
 
@@ -485,8 +482,9 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                         : hotseatPadding.left - borderSpacing - launcherDp.hotseatQsbWidth / 2f;
                 float childCenter = (child.getLeft() + child.getRight()) / 2f;
                 float halfQsbIconWidthDiff =
-                        (launcherDp.hotseatQsbWidth - taskbarDp.iconSizePx) / 2f;
-                float scale = ((float) taskbarDp.iconSizePx) / launcherDp.hotseatQsbVisualHeight;
+                        (launcherDp.hotseatQsbWidth - taskbarDp.taskbarIconSize) / 2f;
+                float scale = ((float) taskbarDp.taskbarIconSize)
+                        / launcherDp.hotseatQsbVisualHeight;
                 setter.addFloat(child, SCALE_PROPERTY, scale, 1f, interpolator);
 
                 float fromX = isRtl ? -halfQsbIconWidthDiff : halfQsbIconWidthDiff;
@@ -559,7 +557,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             return;
         }
         mActivity.setTaskbarWindowHeight(
-                deviceProfile.taskbarSize + deviceProfile.getTaskbarOffsetY());
+                deviceProfile.taskbarHeight + deviceProfile.getTaskbarOffsetY());
         mTaskbarNavButtonTranslationY.updateValue(-deviceProfile.getTaskbarOffsetY());
     }
 

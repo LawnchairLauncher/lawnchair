@@ -68,9 +68,7 @@ public class TaskbarEduController implements TaskbarControllers.LoggableTaskbarC
         ViewGroup.MarginLayoutParams layoutParams =
                 (ViewGroup.MarginLayoutParams) startButton.getLayoutParams();
         DeviceProfile dp = overlayContext.getDeviceProfile();
-        layoutParams.bottomMargin += DisplayController.isTransientTaskbar(overlayContext)
-                ? dp.taskbarSize + dp.transientTaskbarMargin
-                : dp.taskbarSize;
+        layoutParams.bottomMargin += dp.taskbarHeight + dp.taskbarBottomMargin;
 
         mTaskbarEduView.init(new TaskbarEduCallbacks());
 
