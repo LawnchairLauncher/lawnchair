@@ -261,7 +261,6 @@
     <!-- Taskbar -->
     <dimen name="taskbar_size">@*android:dimen/taskbar_frame_height</dimen>
     <dimen name="taskbar_ime_size">48dp</dimen>
-    <dimen name="taskbar_icon_size">44dp</dimen>
     <dimen name="taskbar_icon_min_touch_size">48dp</dimen>
     <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
     <dimen name="taskbar_icon_spacing">12dp</dimen>
@@ -292,13 +291,12 @@
 
 
     <!-- Transient taskbar -->
-    <dimen name="transient_taskbar_size">72dp</dimen>
+    <dimen name="transient_taskbar_padding">12dp</dimen>
     <dimen name="transient_taskbar_min_width">150dp</dimen>
-    <dimen name="transient_taskbar_icon_size">48dp</dimen>
-    <dimen name="transient_taskbar_margin">24dp</dimen>
+    <dimen name="transient_taskbar_bottom_margin">24dp</dimen>
     <dimen name="transient_taskbar_shadow_blur">40dp</dimen>
     <dimen name="transient_taskbar_key_shadow_distance">10dp</dimen>
-    <dimen name="transient_taskbar_stashed_size">32dp</dimen>
+    <dimen name="transient_taskbar_stashed_height">32dp</dimen>
     <dimen name="transient_taskbar_all_apps_button_translation_x_offset">4dp</dimen>
     <dimen name="transient_taskbar_stash_spring_velocity_dp_per_s">400dp</dimen>
 
