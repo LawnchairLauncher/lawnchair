@@ -521,7 +521,6 @@ public class AllAppsTransitionController
      */
     private void onProgressAnimationEnd() {
         if (Float.compare(mProgress, 1f) == 0) {
-            mAppsView.reset(false /* animate */);
             if (mShouldControlKeyboard) {
                 mLauncher.getAppsView().getSearchUiManager().getEditText().hideKeyboard();
             }
