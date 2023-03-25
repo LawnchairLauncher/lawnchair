@@ -225,10 +225,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private static final String TAG = "RecentsView";
     private static final boolean DEBUG = false;
 
-    // TODO(b/184899234): We use this timeout to wait a fixed period after switching to the
-    // screenshot when dismissing the current live task to ensure the app can try and get stopped.
-    private static final int REMOVE_TASK_WAIT_FOR_APP_STOP_MS = 100;
-
     public static final FloatProperty<RecentsView> CONTENT_ALPHA =
             new FloatProperty<RecentsView>("contentAlpha") {
                 @Override
@@ -3893,14 +3889,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         int[] taskIds = getTaskIdsForTaskViewId(dismissedTaskViewId);
         int primaryTaskId = taskIds[0];
         int secondaryTaskId = taskIds[1];
-        UI_HELPER_EXECUTOR.getHandler().postDelayed(
+        UI_HELPER_EXECUTOR.getHandler().post(
                 () -> {
                     ActivityManagerWrapper.getInstance().removeTask(primaryTaskId);
                     if (secondaryTaskId != -1) {
                         ActivityManagerWrapper.getInstance().removeTask(secondaryTaskId);
                     }
-                },
-                REMOVE_TASK_WAIT_FOR_APP_STOP_MS);
+                });
     }
 
     protected void onDismissAnimationEnds() {
@@ -3923,9 +3918,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             if (isSuccess) {
                 // Remove all the task views now
                 finishRecentsAnimation(true /* toRecents */, false /* shouldPip */, () -> {
-                    UI_HELPER_EXECUTOR.getHandler().postDelayed(
-                            ActivityManagerWrapper.getInstance()::removeAllRecentTasks,
-                            REMOVE_TASK_WAIT_FOR_APP_STOP_MS);
+                    UI_HELPER_EXECUTOR.getHandler().post(
+                            ActivityManagerWrapper.getInstance()::removeAllRecentTasks);
                     removeTasksViewsAndClearAllButton();
                     startHome();
                 });

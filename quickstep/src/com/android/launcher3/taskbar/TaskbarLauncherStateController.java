@@ -457,8 +457,13 @@ public class TaskbarLauncherStateController {
             animatorSet.play(mTaskbarCornerRoundness.animateToValue(cornerRoundness));
         }
 
-        if (hasAnyFlag(changedFlags, FLAG_DEVICE_LOCKED)) {
-            // When transitioning between locked/unlocked, there is no stashing animation.
+        // Keep isUnlockTransition in sync with its counterpart in
+        // TaskbarStashController#createAnimToIsStashed.
+        boolean isUnlockTransition =
+                hasAnyFlag(changedFlags, FLAG_DEVICE_LOCKED) && !hasAnyFlag(FLAG_DEVICE_LOCKED);
+        if (isUnlockTransition) {
+            // When transitioning to unlocked, ensure the hotseat is fully visible from the
+            // beginning. The hotseat itself is animated by LauncherUnlockAnimationController.
             mIconAlignment.cancelAnimation();
             // updateValue ensures onIconAlignmentRatioChanged will be called if there is an actual
             // change in value
@@ -553,12 +558,16 @@ public class TaskbarLauncherStateController {
             animatorSet.play(stashAnimator);
         }
 
-        if (isAnimatingToLauncher() || mLauncherState == LauncherState.NORMAL) {
-            // Translate back to 0 at a shorter or same duration as the icon alignment animation.
-            // This ensures there is no jump after switching to hotseat, e.g. when swiping up from
-            // overview to home. Currently we do duration / 2 just to make it feel snappier.
+        // Translate back to 0 at a shorter or same duration as the icon alignment animation.
+        // This ensures there is no jump after switching to hotseat, e.g. when swiping up from
+        // overview to home. When not in app, we do duration / 2 just to make it feel snappier.
+        long resetDuration = mControllers.taskbarStashController.isInApp()
+                ? duration
+                : duration / 2;
+        if (!mControllers.taskbarTranslationController.willAnimateToZeroBefore(resetDuration)
+                && (isAnimatingToLauncher() || mLauncherState == LauncherState.NORMAL)) {
             animatorSet.play(mControllers.taskbarTranslationController
-                    .createAnimToResetTranslation(duration / 2));
+                    .createAnimToResetTranslation(resetDuration));
         }
     }
 

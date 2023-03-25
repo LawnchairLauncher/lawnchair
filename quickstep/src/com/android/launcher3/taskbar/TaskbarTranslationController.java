@@ -134,6 +134,21 @@ public class TaskbarTranslationController implements TaskbarControllers.Loggable
     }
 
     /**
+     * Returns true if we will animate to zero before the input duration.
+     */
+    public boolean willAnimateToZeroBefore(long duration) {
+        if (mSpringBounce != null && mSpringBounce.isRunning()) {
+            long springDuration = mSpringBounce.getDuration();
+            long current = mSpringBounce.getCurrentPlayTime();
+            return (springDuration - current < duration);
+        }
+        if (mTranslationYForSwipe.isAnimatingToValue(0)) {
+            return mTranslationYForSwipe.getRemainingTime() < duration;
+        }
+        return false;
+    }
+
+    /**
      * Returns an animation to reset the taskbar translation to {@code 0}.
      */
     public ObjectAnimator createAnimToResetTranslation(long duration) {

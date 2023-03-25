@@ -140,13 +140,11 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         mOutlineRadius = Themes.getDialogCornerRadius(context);
         mActivityContext = ActivityContext.lookupContext(context);
         mIsRtl = Utilities.isRtl(getResources());
-
-        int popupPrimaryColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
-        mArrowColor = popupPrimaryColor;
         mElevation = getResources().getDimension(R.dimen.deep_shortcuts_elevation);
 
         // Initialize arrow view
         final Resources resources = getResources();
+        mArrowColor = getColorStateList(getContext(), R.color.popup_shade_first).getDefaultColor();
         mMargin = resources.getDimensionPixelSize(R.dimen.popup_margin);
         mArrowWidth = resources.getDimensionPixelSize(R.dimen.popup_arrow_width);
         mArrowHeight = resources.getDimensionPixelSize(R.dimen.popup_arrow_height);
@@ -159,6 +157,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
 
         int smallerRadius = resources.getDimensionPixelSize(R.dimen.popup_smaller_radius);
         mRoundedTop = new GradientDrawable();
+        int popupPrimaryColor = Themes.getAttrColor(context, R.attr.popupColorPrimary);
         mRoundedTop.setColor(popupPrimaryColor);
         mRoundedTop.setCornerRadii(new float[] { mOutlineRadius, mOutlineRadius, mOutlineRadius,
                 mOutlineRadius, smallerRadius, smallerRadius, smallerRadius, smallerRadius});

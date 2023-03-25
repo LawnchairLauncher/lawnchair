@@ -305,10 +305,12 @@
     <!-- An additional touch slop to prevent x-axis movement during the swipe up to show taskbar -->
     <dimen name="transient_taskbar_clamped_offset_bound">16dp</dimen>
     <!-- Taskbar swipe up thresholds -->
-    <dimen name="taskbar_nav_threshold">40dp</dimen>
+    <dimen name="taskbar_from_nav_threshold">40dp</dimen>
     <dimen name="taskbar_app_window_threshold">88dp</dimen>
     <dimen name="taskbar_home_overview_threshold">156dp</dimen>
     <dimen name="taskbar_catch_up_threshold">264dp</dimen>
+    <!-- Taskbar swipe down threshold -->
+    <dimen name="taskbar_to_nav_threshold">24dp</dimen>
 
     <!--  Taskbar 3 button spacing  -->
     <dimen name="taskbar_button_space_inbetween">24dp</dimen>

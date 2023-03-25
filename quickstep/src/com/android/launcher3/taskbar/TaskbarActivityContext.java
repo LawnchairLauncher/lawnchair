@@ -30,8 +30,7 @@ import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLA
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_FULLSCREEN;
 import static com.android.launcher3.taskbar.TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW;
 import static com.android.launcher3.testing.shared.ResourceUtils.getBoolByName;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_VOICE_INTERACTION_WINDOW_SHOWING;
 
 import android.animation.AnimatorSet;
@@ -572,9 +571,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     public void updateSysuiStateFlags(int systemUiStateFlags, boolean fromInit) {
         mControllers.navbarButtonsViewController.updateStateForSysuiFlags(systemUiStateFlags,
                 fromInit);
-        int shadeExpandedFlags = SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED
-                | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
-        onNotificationShadeExpandChanged((systemUiStateFlags & shadeExpandedFlags) != 0, fromInit);
+        boolean isShadeVisible = (systemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE) != 0;
+        onNotificationShadeExpandChanged(isShadeVisible, fromInit);
         mControllers.taskbarViewController.setRecentsButtonDisabled(
                 mControllers.navbarButtonsViewController.isRecentsDisabled()
                         || isNavBarKidsModeActive());

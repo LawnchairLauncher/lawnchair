@@ -133,6 +133,15 @@ public class AnimatedFloat {
     }
 
     /**
+     * Returns the remaining time of the existing animation (if any).
+     */
+    public long getRemainingTime() {
+        return isAnimating() && mValueAnimator.isRunning()
+                ? Math.max(0, mValueAnimator.getDuration() - mValueAnimator.getCurrentPlayTime())
+                : 0;
+    }
+
+    /**
      * Returns whether we are currently not animating, and the animation's value matches the given.
      */
     public boolean isSettledOnValue(float endValue) {

@@ -32,8 +32,7 @@ import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
 import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SWITCHER_SHOWING;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
 
 import android.animation.Animator;
@@ -586,9 +585,12 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         // already stashed Taskbar.
         boolean hotseatTopElement = mControllers.uiController.isHotseatIconOnTopWhenAligned()
                 || !hasAnyFlag(changedFlags, FLAG_IN_APP);
-        // If transitioning between locked/unlocked device, do not play a stash animation.
-        boolean unLockedTransition = hasAnyFlag(changedFlags, FLAG_STASHED_DEVICE_LOCKED);
-        boolean skipStashAnimation = !hotseatTopElement || unLockedTransition;
+        // If transitioning to unlocked device, do not play a stash animation.
+        // Keep isUnlockTransition in sync with its counterpart in
+        // TaskbarLauncherStateController#onStateChangeApplied.
+        boolean isUnlockTransition = hasAnyFlag(changedFlags, FLAG_STASHED_DEVICE_LOCKED)
+                && !hasAnyFlag(FLAG_STASHED_DEVICE_LOCKED);
+        boolean skipStashAnimation = !hotseatTopElement || isUnlockTransition;
 
         if (isTransientTaskbar) {
             createTransientAnimToIsStashed(mAnimator, isStashed, duration, animateBg, changedFlags,
@@ -907,12 +909,20 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         long startDelay = 0;
 
         updateStateForFlag(FLAG_STASHED_IN_APP_SYSUI, hasAnyFlag(systemUiStateFlags,
-                SYSUI_STATE_QUICK_SETTINGS_EXPANDED
-                        | SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED));
+                SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE));
         updateStateForFlag(FLAG_STASHED_SYSUI,
                 hasAnyFlag(systemUiStateFlags, SYSUI_STATE_SCREEN_PINNING));
-        updateStateForFlag(FLAG_STASHED_DEVICE_LOCKED,
-                hasAnyFlag(systemUiStateFlags, MASK_ANY_SYSUI_LOCKED));
+
+        boolean isLocked = hasAnyFlag(systemUiStateFlags, MASK_ANY_SYSUI_LOCKED);
+        boolean wasLocked = hasAnyFlag(FLAG_STASHED_DEVICE_LOCKED);
+        updateStateForFlag(FLAG_STASHED_DEVICE_LOCKED, isLocked);
+
+        if (isLocked && !wasLocked && DisplayController.isTransientTaskbar(mActivity)) {
+            // Stash the transient taskbar when locking the device. This improves the transition
+            // to AoD (otherwise the taskbar stays a bit too long above the collapsing AoD scrim),
+            // and ensures the taskar state is reset when unlocking the device afterwards.
+            updateStateForFlag(FLAG_STASHED_IN_APP_AUTO, true);
+        }
 
         // Only update FLAG_STASHED_IN_APP_IME when system gesture is not in progress.
         mIsImeShowing = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_IME_SHOWING);

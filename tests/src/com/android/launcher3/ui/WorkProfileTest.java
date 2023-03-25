@@ -72,7 +72,8 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
         }
         updateWorkProfileSetupSuccessful("am start-user", output);
 
-        Log.d(WORK_TAB_MISSING, "workProfileSuccessful? " + mWorkProfileSetupSuccessful);
+        Log.d(WORK_TAB_MISSING, "workProfileSuccessful? " + mWorkProfileSetupSuccessful +
+                " shellCmd: " + logStr);
         if (!mWorkProfileSetupSuccessful) {
             return; // no need to setup launcher since all tests will skip.
         }
