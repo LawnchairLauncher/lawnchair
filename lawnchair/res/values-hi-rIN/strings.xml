@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">Lawnchair को अपने डिफ़ॉल्ट लॉन्चर के रूप में सेट करने के लिए इस कार्ड को टैप करें।</string>
     <string name="settings">सेटिंग्स</string>
     <string name="general_label">सामान्य</string>
     <string name="general_description">नोटिफिकेशन डॉट्स, आइकन पैक</string>
@@ -105,7 +105,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">चिह्न पैक</string>
-    <string name="themed_icon_pack">थीम्ड चिह्न स्रोत</string>
+    <string name="themed_icon_pack">थीम्ड चिह्न का स्रोत</string>
     <string name="system_icons">सिस्टम चिह्न</string>
     <string name="themed_icon_title">आइकन थीम करें</string>
     <string name="themed_icons_off_label">बंद</string>
@@ -130,7 +130,7 @@
     <string name="icon_shape_teardrop">आँसू आकार</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">फ़ॉन्ट्स जोड़ें</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF समर्थित।</string>
+    <string name="pref_fonts_add_fonts_summary">OTF और TTF समर्थित हैं।</string>
     <string name="pref_fonts_missing_font">फोंट नहीं मिला।</string>
     <string name="font_variant_italic">इटैलिक</string>
     <string name="font_weight_thin">पतला</string>
@@ -153,7 +153,7 @@
     <string name="rgb_green">हरा</string>
     <string name="rgb_blue">नीला</string>
     <string name="hsb">HSB</string>
-    <string name="hsb_hue">ह्यू</string>
+    <string name="hsb_hue">रंग</string>
     <string name="hsb_saturation">संतृप्ति</string>
     <string name="hsb_brightness">चमक</string>
     <string name="hex">Hex</string>
@@ -181,9 +181,9 @@
     <string name="home_screen_unlock">होम स्क्रीन अनलॉक करें</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">होम स्क्रीन लॉक है।</string>
-    <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="popup_menu">पॉपअप मेनू</string>
+    <string name="home_screen_lock_toggle_from_home_popup">लॉक बटन दिखाएं</string>
+    <string name="show_system_settings_entry">सिस्टम सेटिंग्स की प्रविष्टि दिखाएं</string>
     <string name="status_bar_label">स्टेटस बार</string>
     <string name="show_status_bar">स्टेट्स बार दिखाएँ</string>
     <string name="dark_status_bar_label">गहरा स्टेट्स बार</string>
@@ -403,5 +403,5 @@
     <string name="invalid_backup_file">बैकअप फाइल अमान्य है।</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="system_settings">System Settings</string>
+    <string name="system_settings">सिस्टम सेटिंग्स</string>
 </resources>

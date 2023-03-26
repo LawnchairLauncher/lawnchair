@@ -320,18 +320,18 @@
     <string name="recents_clear_all">Rensa alla</string>
     <string name="window_corner_radius_label">Skärmhörnsradie</string>
     <string name="override_window_corner_radius_label">Anpassad skärmhörnsradie</string>
-    <string name="window_corner_radius_description">När du sveper upp för att öppna Historiken, den aktuella appen följer fingret och krymper i ett kort. Använd detta reglage för att justera hörnradien på kortet när det är nästan helskärm så att det matchar hörnen på skärmen.</string>
-    <string name="taskbar_label">Aktivitetsfältet</string>
-    <string name="enable_taskbar_experimental">Aktivera aktivitetsfältet (experimentellt)</string>
+    <string name="window_corner_radius_description">När du sveper uppåt för att öppna Senaste, följer den aktuella appen med ditt finger och krymper till ett kort. Använd detta reglage för att justera kortets hörnradie när det nästan fyller hela skärmen så att den motsvarar hörnen på din skärm.</string>
+    <string name="taskbar_label">Aktivitetsfält</string>
+    <string name="enable_taskbar_experimental">Aktivera aktivitetsfält (experimentellt)</string>
     <!-- about/About.kt -->
     <string name="news">Nyheter</string>
-    <string name="support">Hjälp</string>
+    <string name="support">Support</string>
     <string name="product">Produkt</string>
-    <string name="design_and_development">Design &amp; Utveckling</string>
+    <string name="design_and_development">Design &amp; utveckling</string>
     <string name="development">Utveckling</string>
-    <string name="quickswitch_maintenance">Underhåll av QuickSwitch</string>
+    <string name="quickswitch_maintenance">QuickSwitch-underhåll</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Stöd &amp; PR</string>
+    <string name="support_and_pr">Support &amp; pr</string>
     <!--
       <string name="support" />
       <string name="support_and_pr" />
