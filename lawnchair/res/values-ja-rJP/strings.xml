@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">ここをタップして Lawnchair をデフォルトのランチャーに設定します</string>
     <string name="settings">設定</string>
     <string name="general_label">一般設定</string>
     <string name="general_description">色、アイコンパック、通知ドット</string>
@@ -70,7 +70,7 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">通知の数を表示</string>
     <string name="notification_dots_color">通知ドットの色</string>
-    <string name="notification_dots_text_color">通知カウントの色</string>
+    <string name="notification_dots_text_color">通知数の色</string>
     <string name="notification_dots_color_contrast_warning_always">警告：通知ドットとカウンターカラーのコントラストが互いに十分ではありません</string>
     <string name="notification_dots_color_contrast_warning_sometimes">警告：通知ドットとカウンターカラーのコントラストが互いに十分ではない場合があります</string>
     <!-- Notification popup -->
