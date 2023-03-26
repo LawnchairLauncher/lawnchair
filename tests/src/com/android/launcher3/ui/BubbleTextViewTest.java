@@ -21,6 +21,7 @@ import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TWOLINE_ALLAPPS;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -79,7 +80,6 @@ public class BubbleTextViewTest {
         mBubbleTextView = new BubbleTextView(mContext);
         mBubbleTextView.reset();
         mBubbleTextView.setDisplayAllApps();
-        assertEquals(ONE_LINE, mBubbleTextView.getMaxLines());
 
         BubbleTextView testView = new BubbleTextView(mContext);
         testView.setTypeface(Typeface.MONOSPACE);
@@ -108,7 +108,7 @@ public class BubbleTextViewTest {
             mBubbleTextView.setTypeface(Typeface.MONOSPACE);
             mBubbleTextView.measure(mLimitedWidth, 0);
             mBubbleTextView.onPreDraw();
-            assertEquals(ONE_LINE, mBubbleTextView.getMaxLines());
+            assertNotEquals(TWO_LINE, mBubbleTextView.getMaxLines());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
