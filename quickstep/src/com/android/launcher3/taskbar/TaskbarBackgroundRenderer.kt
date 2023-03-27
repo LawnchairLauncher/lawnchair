@@ -55,6 +55,7 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
     private val fullRightCornerRadius = context.rightCornerRadius.toFloat()
     private var leftCornerRadius = fullLeftCornerRadius
     private var rightCornerRadius = fullRightCornerRadius
+    private var widthInsetPercentage = 0f
     private val square: Path = Path()
     private val circle: Path = Path()
     private val invertedLeftCornerPath: Path = Path()
@@ -166,10 +167,20 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
                 transientBackgroundBounds.right - halfWidthDelta,
                 bottom
             )
+            val horizontalInset = fullWidth * widthInsetPercentage
+            lastDrawnTransientRect.inset(horizontalInset, 0f)
 
             canvas.drawRoundRect(lastDrawnTransientRect, radius, radius, paint)
         }
         canvas.restore()
+    }
+
+    /**
+     * Sets the width percentage to inset the transient taskbar's background from the left and from
+     * the right.
+     */
+    fun setBackgroundHorizontalInsets(insetPercentage: Float) {
+        widthInsetPercentage = insetPercentage
     }
 
     companion object {
