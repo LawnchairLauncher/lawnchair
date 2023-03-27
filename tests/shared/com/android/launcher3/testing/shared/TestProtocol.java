@@ -99,6 +99,7 @@ public final class TestProtocol {
     public static final String REQUEST_PID = "pid";
     public static final String REQUEST_FORCE_GC = "gc";
     public static final String REQUEST_VIEW_LEAK = "view-leak";
+    public static final String PRINT_VIEW_LEAK = "print-leak";
     public static final String REQUEST_RECENT_TASKS_LIST = "recent-tasks-list";
     public static final String REQUEST_START_EVENT_LOGGING = "start-event-logging";
     public static final String REQUEST_GET_TEST_EVENTS = "get-test-events";
