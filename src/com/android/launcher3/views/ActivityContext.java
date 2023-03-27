@@ -324,8 +324,9 @@ public interface ActivityContext {
         Bundle optsBundle = null;
         if (v != null) {
             optsBundle = getActivityLaunchOptions(v, item).toBundle();
-        } else if (item != null && item.animationType == LauncherSettings.Animation.DEFAULT_NO_ICON
-                && Utilities.ATLEAST_T) {
+        } else if (android.os.Build.VERSION.SDK_INT >= 33
+                && item != null
+                && item.animationType == LauncherSettings.Animation.DEFAULT_NO_ICON) {
             optsBundle = ActivityOptions.makeBasic()
                     .setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR).toBundle();
         }
