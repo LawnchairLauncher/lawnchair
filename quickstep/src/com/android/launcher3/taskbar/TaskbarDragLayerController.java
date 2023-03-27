@@ -183,6 +183,15 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
                 mLastSetBackgroundAlpha * (1 - mBgOffset.value));
     }
 
+    /**
+     * Sets the width percentage to inset the transient taskbar's background from the left and from
+     * the right.
+     */
+    public void setBackgroundHorizontalInsets(float insetPercentage) {
+        mTaskbarDragLayer.setBackgroundHorizontalInsets(insetPercentage);
+
+    }
+
     @Override
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarDragLayerController:");
