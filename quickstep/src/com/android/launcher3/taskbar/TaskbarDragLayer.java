@@ -200,4 +200,13 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         }
         return super.dispatchKeyEvent(event);
     }
+
+    /**
+     * Sets the width percentage to inset the transient taskbar's background from the left and from
+     * the right.
+     */
+    public void setBackgroundHorizontalInsets(float insetPercentage) {
+        mBackgroundRenderer.setBackgroundHorizontalInsets(insetPercentage);
+        invalidate();
+    }
 }
