@@ -23,8 +23,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewOutlineProvider;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 
@@ -52,7 +52,7 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
     private WidgetsListHeader mSuggestedWidgetsHeader;
     private LinearLayout mRightPane;
 
-    private FrameLayout mRightPaneScrollView;
+    private ScrollView mRightPaneScrollView;
     private WidgetsListTableViewHolderBinder mWidgetsListTableViewHolderBinder;
 
     private final ViewOutlineProvider mViewOutlineProviderRightPane = new ViewOutlineProvider() {
@@ -156,6 +156,7 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
             resetExpandedHeaders();
             mRightPane.removeAllViews();
             mRightPane.addView(mRecommendedWidgetsTable);
+            mRightPaneScrollView.setScrollY(0);
         });
         mSuggestedWidgetsContainer.addView(mSuggestedWidgetsHeader);
     }
@@ -249,6 +250,7 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
                 };
                 mRightPane.removeAllViews();
                 mRightPane.addView(widgetsRowViewHolder.itemView);
+                mRightPaneScrollView.setScrollY(0);
             }
         };
     }
