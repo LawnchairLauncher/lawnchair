@@ -80,7 +80,6 @@ public class FloatingIconView extends FrameLayout implements
 
     public static final float SHAPE_PROGRESS_DURATION = 0.10f;
     private static final RectF sTmpRectF = new RectF();
-    private static final Object[] sTmpObjArray = new Object[1];
 
     private Runnable mEndRunnable;
     private CancellationSignal mLoadIconSignal;
@@ -289,12 +288,13 @@ public class FloatingIconView extends FrameLayout implements
         } else {
             int width = (int) pos.width();
             int height = (int) pos.height();
+            Object[] tmpObjArray = new Object[1];
             if (supportsAdaptiveIcons) {
                 boolean shouldThemeIcon = btvIcon instanceof FastBitmapDrawable
                         && ((FastBitmapDrawable) btvIcon).isThemed();
-                drawable = getFullDrawable(l, info, width, height, shouldThemeIcon, sTmpObjArray);
+                drawable = getFullDrawable(l, info, width, height, shouldThemeIcon, tmpObjArray);
                 if (drawable instanceof AdaptiveIconDrawable) {
-                    badge = getBadge(l, info, sTmpObjArray[0]);
+                    badge = getBadge(l, info, tmpObjArray[0]);
                 } else {
                     // The drawable we get back is not an adaptive icon, so we need to use the
                     // BubbleTextView icon that is already legacy treated.
@@ -306,7 +306,7 @@ public class FloatingIconView extends FrameLayout implements
                     drawable = btvIcon;
                 } else {
                     drawable = getFullDrawable(l, info, width, height, true /* shouldThemeIcon */,
-                            sTmpObjArray);
+                            tmpObjArray);
                 }
             }
         }
@@ -679,7 +679,6 @@ public class FloatingIconView extends FrameLayout implements
         mOriginalIcon = null;
         mOnTargetChangeRunnable = null;
         mBadge = null;
-        sTmpObjArray[0] = null;
         sRecycledFetchIconId = sFetchIconId;
         mIconLoadResult = null;
         mClipIconView.recycle();
