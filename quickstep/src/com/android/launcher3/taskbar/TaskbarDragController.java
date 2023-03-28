@@ -457,9 +457,12 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
             mControllers.taskbarAutohideSuspendController.updateFlag(
                     TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING, false);
             mActivity.onDragEnd();
-            // Note, this must be done last to ensure no AutohideSuspendFlags are active, as that
-            // will prevent us from stashing until the timeout.
-            mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
+            if (mReturnAnimator == null) {
+                // Upon successful drag, immediately stash taskbar.
+                // Note, this must be done last to ensure no AutohideSuspendFlags are active, as
+                // that will prevent us from stashing until the timeout.
+                mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
+            }
         }
     }
 
@@ -493,8 +496,9 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                     callOnDragEnd();
                     dragView.remove();
                     dragView.clearAnimation();
+                    // Do this after callOnDragEnd(), because we use mReturnAnimator != null to
+                    // imply the drag was canceled rather than successful.
                     mReturnAnimator = null;
-
                 }
             });
             mReturnAnimator.start();
@@ -556,6 +560,8 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 syncGroup.add(viewRoot, null /* runnable */);
                 syncGroup.addTransaction(transaction);
                 syncGroup.markSyncReady();
+                // Do this after maybeOnDragEnd(), because we use mReturnAnimator != null to imply
+                // the drag was canceled rather than successful.
                 mReturnAnimator = null;
             }
         });
