@@ -92,6 +92,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
                     case BACK_COMPLETED_FROM_RIGHT:
                     case BACK_CANCELLED_FROM_LEFT:
                     case BACK_CANCELLED_FROM_RIGHT:
+                    case BACK_NOT_STARTED_TOO_FAR_FROM_EDGE:
                         showFeedback(R.string.home_gesture_feedback_swipe_too_far_from_edge);
                         break;
                 }
