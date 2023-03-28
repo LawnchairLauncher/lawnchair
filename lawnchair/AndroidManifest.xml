@@ -66,6 +66,11 @@
             android:exported="false"
             android:theme="@style/Theme.Transparent" />
 
+        <activity android:name="androidx.slice.compat.SlicePermissionActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
+            tools:node="replace" />
+
         <receiver
             android:name="app.lawnchair.gestures.handlers.SleepMethodDeviceAdmin$SleepDeviceAdmin"
             android:description="@string/dt2s_admin_hint"
