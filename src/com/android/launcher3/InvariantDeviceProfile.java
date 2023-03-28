@@ -1144,7 +1144,7 @@ public class InvariantDeviceProfile {
                     transientTaskbarIconSize[INDEX_DEFAULT]);
             transientTaskbarIconSize[INDEX_TWO_PANEL_PORTRAIT] = a.getFloat(
                     R.styleable.ProfileDisplayOption_transientTaskbarIconSizeTwoPanelPortrait,
-                    hotseatQsbSpace[INDEX_DEFAULT]);
+                    transientTaskbarIconSize[INDEX_DEFAULT]);
 
             a.recycle();
         }
