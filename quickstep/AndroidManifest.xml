@@ -61,6 +61,7 @@
 
         <activity android:name="com.android.quickstep.RecentsActivity"
              android:excludeFromRecents="true"
+             android:exported="true"
              android:launchMode="singleTask"
              android:clearTaskOnLaunch="true"
              android:stateNotNeeded="true"
