@@ -36,6 +36,7 @@ import com.android.launcher3.allapps.WorkEduCard;
 import com.android.launcher3.allapps.WorkPausedCard;
 import com.android.launcher3.allapps.WorkProfileManager;
 import com.android.launcher3.tapl.LauncherInstrumentation;
+import com.android.launcher3.testing.shared.TestProtocol;
 
 import org.junit.After;
 import org.junit.Before;
@@ -90,17 +91,14 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
 
     @After
     public void removeWorkProfile() throws Exception {
-        mDevice.executeShellCommand("pm remove-user " + mProfileUserId);
-    }
-
-    @After
-    public void resumeAppStoreUpdate() {
+        Log.d(TestProtocol.WORK_TAB_MISSING, "WorkProfileTest teardown");
         executeOnLauncher(launcher -> {
             if (launcher == null || launcher.getAppsView() == null) {
                 return;
             }
             launcher.getAppsView().getAppsStore().disableDeferUpdates(DEFER_UPDATES_TEST);
         });
+        mDevice.executeShellCommand("pm remove-user " + mProfileUserId);
     }
 
     private void waitForWorkTabSetup() {
