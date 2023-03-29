@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Повлечете за да се вратите назад"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"За да се вратите на последниот екран, повлечете од левиот или десниот раб кон средината на екранот."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"За да се вратите на последниот екран на кој бевте, повлечете со два прста од левиот или десниот раб кон средината на екранот."</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Назад"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Повлечете нагоре од долниот раб на екранот."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Не правете пауза пред да пуштите."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Повлечете право нагоре."</string>
@@ -73,8 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Повлечете за префрлање помеѓу апликации"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"За да смените апликација, повлечете нагоре од дното на екранот и задржете, па пуштете."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"За да се префрлате помеѓу апликации, повлечете нагоре со два прста од долниот раб на екранот, задржете и потоа отпуштете."</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Променете ја апликацијата"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Готово"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Готово"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Поставки"</string>

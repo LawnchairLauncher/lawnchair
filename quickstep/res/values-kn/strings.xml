@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"ಹಿಂದಕ್ಕೆ ಹೋಗಲು ಸ್ವೈಪ್ ಮಾಡಿ"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"ಕೊನೆಯ ಸ್ಕ್ರೀನ್‌ಗೆ ಹಿಂತಿರುಗಲು, ಎಡ ಅಥವಾ ಬಲ ಅಂಚಿನಿಂದ ಸ್ಕ್ರೀನ್ ಮಧ್ಯಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"ಹಿಂದಿನ ಸ್ಕ್ರೀನ್‌ಗೆ ಹೋಗಲು, 2 ಬೆರಳುಗಳಿಂದ ಎಡ ಅಥವಾ ಬಲ ಅಂಚಿನಿಂದ ಸ್ಕ್ರೀನ್ ಮಧ್ಯಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ."</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"ಹಿಂದಿರುಗಿ"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಗಿನ ಅಂಚಿನಿಂದ ನೀವು ಸ್ವೈಪ್ ಮಾಡುತ್ತಿದ್ದೀರಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"ವಿರಾಮಗೊಳಿಸದೆ ನಿಮ್ಮ ಬೆರಳನ್ನು ಸ್ಕ್ರೀನ್‌ನಿಂದ ಮೇಲೆತ್ತಿ."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ನೀವು ನೇರವಾಗಿ ಸ್ವೈಪ್ ಮಾಡುತ್ತಿದ್ದೀರಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."</string>
@@ -73,8 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ಆ್ಯಪ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಲು ಸ್ವೈಪ್ ಮಾಡಿ"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ಆ್ಯಪ್‌ಗಳ ನಡುವೆ ಬದಲಿಸಲು, ನಿಮ್ಮ ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಭಾಗದಿಂದ ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ, ಹಿಡಿದಿಟ್ಟುಕೊಳ್ಳಿ, ನಂತರ ಬಿಟ್ಟುಬಿಡಿ."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"ಆ್ಯಪ್‌ಗಳ ನಡುವೆ ಬದಲಿಸಲು, 2 ಬೆರಳುಗಳಿಂದ ನಿಮ್ಮ ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಭಾಗದಿಂದ ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ, ಹಿಡಿದಿಟ್ಟುಕೊಳ್ಳಿ, ನಂತರ ಬಿಟ್ಟುಬಿಡಿ."</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"ಆ್ಯಪ್‌ಗಳನ್ನು ಬದಲಿಸಿ"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"ಸಂಪೂರ್ಣ ಸಿದ್ಧವಾಗಿದೆ"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"ಮುಗಿದಿದೆ"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
