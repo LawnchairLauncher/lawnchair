@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Strjúktu til að fara til baka"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Til að fara til baka á síðasta skjá skaltu strjúka frá vinstri eða hægri brún að miðju skjásins."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Strjúktu frá vinstri eða hægri brún að miðju skjásins með 2 fingrum til að fara aftur á síðasta skjá."</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Til baka"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Passaðu að strjúka upp frá neðri brún skjásins."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Passaðu að stoppa ekki áður en þú sleppir."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Passaðu að strjúka beint upp."</string>
@@ -73,8 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Strjúktu til að skipta á milli forrita"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Strjúktu upp frá neðri hluta skjásins, haltu og slepptu svo til að skipta á milli forrita."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Strjúktu upp frá neðri brún skjásins með 2 fingrum, haltu og slepptu til að skipta á milli forrita."</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Skipta um forrit"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Allt til reiðu"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Lokið"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Stillingar"</string>

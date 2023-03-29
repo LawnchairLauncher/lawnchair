@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"উভতি যাবলৈ ছোৱাইপ কৰক"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"অন্তিম স্ক্ৰীনখনলৈ উভতি যাবলৈ বাওঁ অথবা সোঁ প্ৰান্তৰৰ পৰা মাজলৈ ছোৱাইপ কৰক।"</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"অন্তিম স্ক্ৰীনখনলৈ উভতি যাবলৈ ২ টা আঙুলিৰে স্ক্ৰীনখনৰ বাওঁ অথবা সোঁ প্ৰান্তৰৰ পৰা মাজলৈ ছোৱাইপ কৰক।"</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"উভতি যাওক"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"আপুনি স্ক্ৰীনৰ তলৰ প্ৰান্তৰ পৰা ওপৰলৈ ছোৱাইপ কৰাটো নিশ্চিত কৰক।"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"আপুনি এৰি দিয়াৰ পূৰ্বে অলপো নোৰোৱাটো নিশ্চিত কৰক।"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"আপুনি পোনকৈ ওপৰলৈ ছোৱাইপ কৰাটো নিশ্চিত কৰক।"</string>
@@ -73,8 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"এপ্‌ সলনি কৰিবলৈ ছোৱাইপ কৰক"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"এপ্‌সমূহ সালসলনিকৈ ব্যৱহাৰ কৰিবলৈ আপোনাৰ স্ক্ৰীনৰ একেবাৰে তলৰ অংশৰ পৰা ওপৰলৈ ছোৱাইপ কৰি ধৰি ৰাখক আৰু তাৰ পাছত এৰি দিয়ক।"</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"এপ্‌সমূহ সালসলনিকৈ ব্যৱহাৰ কৰিবলৈ ২ টা আঙুলিৰে আপোনাৰ স্ক্ৰীনৰ একেবাৰে তলৰ অংশৰ পৰা ওপৰলৈ ছোৱাইপ কৰি ধৰি ৰাখক আৰু তাৰ পাছত এৰি দিয়ক।"</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"এপ্‌ সলনি কৰক"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"সম্পূৰ্ণ সাজু"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"হ’ল"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ছেটিং"</string>
