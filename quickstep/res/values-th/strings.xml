@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"ปัดเพื่อย้อนกลับ"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"หากต้องการย้อนกลับไปที่หน้าจอล่าสุด ให้ปัดจากขอบด้านซ้ายหรือขวาไปตรงกลางหน้าจอ"</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"หากต้องการย้อนกลับไปที่หน้าจอล่าสุด ให้ใช้ 2 นิ้วปัดจากขอบด้านซ้ายหรือขวาไปตรงกลางหน้าจอ"</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"กลับ"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ปัดขึ้นจากขอบด้านล่างของหน้าจอ"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"ตรวจสอบว่าไม่มีการหยุดชั่วคราวก่อนยกนิ้วขึ้น"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ตรวจสอบว่าปัดขึ้นในแนวตรง"</string>
@@ -73,8 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ปัดเพื่อสลับแอป"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"หากต้องการสลับระหว่างแอปต่างๆ ให้ปัดขึ้นจากด้านล่างของหน้าจอ ค้างไว้ แล้วปล่อย"</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"หากต้องการสลับระหว่างแอป ให้ใช้ 2 นิ้วปัดขึ้นจากด้านล่างของหน้าจอค้างไว้แล้วปล่อย"</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"เปลี่ยนแอป"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"เรียบร้อย"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"เสร็จสิ้น"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"การตั้งค่า"</string>
