@@ -218,29 +218,15 @@ public class SystemUiProxy implements ISystemUiProxy {
         mUnfoldAnimation = unfoldAnimation;
         linkToDeath();
         // re-attach the listeners once missing due to setProxy has not been initialized yet.
-        if (mPipAnimationListener != null && mPip != null) {
-            setPipAnimationListener(mPipAnimationListener);
-        }
-        if (mSplitScreenListener != null && mSplitScreen != null) {
-            registerSplitScreenListener(mSplitScreenListener);
-        }
-        if (mStartingWindowListener != null && mStartingWindow != null) {
-            setStartingWindowListener(mStartingWindowListener);
-        }
-        if (mSysuiUnlockAnimationController != null && mLauncherUnlockAnimationController != null) {
-            setLauncherUnlockAnimationController(mLauncherUnlockAnimationController);
-        }
+        setPipAnimationListener(mPipAnimationListener);
+        registerSplitScreenListener(mSplitScreenListener);
+        setStartingWindowListener(mStartingWindowListener);
+        setLauncherUnlockAnimationController(mLauncherUnlockAnimationController);
         new LinkedHashMap<>(mRemoteTransitions).forEach(this::registerRemoteTransition);
         setupTransactionQueue();
-        if (mRecentTasksListener != null && mRecentTasks != null) {
-            registerRecentTasksListener(mRecentTasksListener);
-        }
-        if (mBackAnimation != null && mBackToLauncherCallback != null) {
-            setBackToLauncherCallback(mBackToLauncherCallback, mBackToLauncherRunner);
-        }
-        if (unfoldAnimation != null && mUnfoldAnimationListener != null) {
-            setUnfoldAnimationListener(mUnfoldAnimationListener);
-        }
+        registerRecentTasksListener(mRecentTasksListener);
+        setBackToLauncherCallback(mBackToLauncherCallback, mBackToLauncherRunner);
+        setUnfoldAnimationListener(mUnfoldAnimationListener);
     }
 
     public void clearProxy() {
