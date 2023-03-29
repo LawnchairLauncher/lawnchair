@@ -69,7 +69,7 @@
         <!--todo: We can remove this override if SlicePermissionActivity is exported in the library-->
         <activity android:name="androidx.slice.compat.SlicePermissionActivity"
             android:excludeFromRecents="true"
-            android:exported="true"
+            android:exported="false"
             tools:node="replace" />
 
         <receiver
