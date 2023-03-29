@@ -47,6 +47,13 @@
         <item name="android:lineHeight">44sp</item>
     </style>
 
+    <style name="TextAppearance.GestureTutorial.MenuButton"
+        parent="TextAppearance.GestureTutorial.Feedback.Title">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="fontWeight">400</item>
+    </style>
+
     <style name="TextAppearance.GestureTutorial.Feedback.Title.AllSet"
         parent="TextAppearance.GestureTutorial.Feedback.Title">
         <item name="android:letterSpacing">0.03</item>

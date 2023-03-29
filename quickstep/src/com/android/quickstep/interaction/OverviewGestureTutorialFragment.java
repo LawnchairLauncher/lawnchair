@@ -33,7 +33,13 @@ import java.util.ArrayList;
 /** Shows the Overview gesture interactive tutorial. */
 public class OverviewGestureTutorialFragment extends TutorialFragment {
 
-    public OverviewGestureTutorialFragment() {}
+    public OverviewGestureTutorialFragment() {
+        this(false);
+    }
+
+    public OverviewGestureTutorialFragment(boolean fromTutorialMenu) {
+        super(fromTutorialMenu);
+    }
 
     @Nullable
     @Override

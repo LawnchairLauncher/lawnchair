@@ -3259,6 +3259,10 @@ public class Launcher extends StatefulActivity<LauncherState>
         return new LauncherAccessibilityDelegate(this);
     }
 
+    /** Enables/disabled the hotseat prediction icon long press edu for testing. */
+    @VisibleForTesting
+    public void enableHotseatEdu(boolean enable) {}
+
     /**
      * @see LauncherState#getOverviewScaleAndOffset(Launcher)
      */

@@ -116,7 +116,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
             case OVERVIEW_NAVIGATION_COMPLETE:
                 if (result == BackGestureResult.BACK_COMPLETED_FROM_LEFT
                         || result == BackGestureResult.BACK_COMPLETED_FROM_RIGHT) {
-                    mTutorialFragment.closeTutorial();
+                    mTutorialFragment.close();
                 }
                 break;
         }
@@ -178,7 +178,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                 break;
             case OVERVIEW_NAVIGATION_COMPLETE:
                 if (result == NavBarGestureResult.HOME_GESTURE_COMPLETED) {
-                    mTutorialFragment.closeTutorial();
+                    mTutorialFragment.close();
                 }
                 break;
         }
