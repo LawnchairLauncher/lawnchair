@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"ປັດເພື່ອກັບຄືນ"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"ເພື່ອກັບໄປໜ້າຈໍຫຼ້າສຸດ, ໃຫ້ປັດຈາກຂອບຊ້າຍ ຫຼື ຂວາໄປຫາທາງກາງຂອງໜ້າຈໍ."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"ເພື່ອກັບໄປໜ້າຈໍຫຼ້າສຸດ, ໃຫ້ປັດດ້ວຍ 2 ນິ້ວຈາກຂອບຊ້າຍ ຫຼື ຂວາໄປຫາທາງກາງຂອງໜ້າຈໍ."</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"ກັບຄືນ"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນຈາກຂອບລຸ່ມສຸດຂອງໜ້າຈໍ."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"ກະລຸນາກວດສອບວ່າທ່ານບໍ່ຢຸດຊົ່ວຄາວກ່ອນປ່ອຍນິ້ວ."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນໄປຊື່ໆ."</string>
@@ -73,8 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ປັດເພື່ອສະຫຼັບແອັບ"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ເພື່ອສະຫຼັບລະຫວ່າງແອັບ, ໃຫ້ປັດຂຶ້ນຈາກລຸ່ມສຸດຂອງໜ້າຈໍທ່ານ, ກົດຄ້າງໄວ້, ຈາກນັ້ນປ່ອຍ."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"ເພື່ອສະຫຼັບລະຫວ່າງແອັບ, ໃຫ້ປັດຂຶ້ນດ້ວຍ 2 ນິ້ວຈາກລຸ່ມສຸດຂອງໜ້າຈໍທ່ານ, ກົດຄ້າງໄວ້ແລ້ວປ່ອຍ."</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"ສະຫຼັບແອັບ"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"ທຸກຢ່າງພ້ອມແລ້ວ"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"ແລ້ວໆ"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ການຕັ້ງຄ່າ"</string>
