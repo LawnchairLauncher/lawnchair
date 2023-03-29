@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Orqaga qaytish"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Ortga qaytish uchun barmoqni ekranning yon chekkalaridan oʻrtasigacha suring."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Oxirgi ekranga qaytish uchun 2 barmoq bilan ekranning chap yoki oʻng chekkasidan oʻrtasigacha suring."</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Orqaga"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Barmoqni ekranning pastki chetidan yuqoriga suring."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Barmoqni ekrandan pauzasiz qoʻyib uzing."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Barmoqni tik tepaga suring."</string>
@@ -73,8 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Ilovalar orasida almashish"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Ilovalarni ochish uchun ekranning pastidan tepaga qarab suring, biroz ushlab turing va qoʻyib yuboring"</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Ilovalarni almashtirish uchun 2 barmoq bilan ekranning quyidan tepasiga surib turib, qoʻyib yuboring"</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Ilovalarni almashtirish"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Tayyor"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Tayyor"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Sozlamalar"</string>

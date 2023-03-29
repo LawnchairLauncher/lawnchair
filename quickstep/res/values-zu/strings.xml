@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Swayipha ukuze uye emuva"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Ukuze ubuyele emuva esikrinini sokugcina, swapha kusuka emngceleni wesobunxele noma wesokudla kuya phakathi kwesikrini."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Ukuze ubuyele esikrinini sokugcina, swayipha ngeminwe emi-2 ukusuka kwesokunxele noma kwesokudla emphethweni uye phakathi kwesikrini."</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Iya emuva"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Qiniseka ukuthi uswayiphela phezulu kusuka emngceleni ophansi wesikrini."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Qiniseka ukuthi awumisi ngaphambi kokudedela."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Qiniseka ukuthi uswayiphela ngqo phezulu."</string>
@@ -73,8 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Swayipha ukuze ushintshe ama-app"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Ukuze ushintshe phakathi kwama-app, swayiphela phezulu kusuka ngezansi kwesikrini sakho, bese uyadedela."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Ukuze ushintshe phakathi kwama-app, swayiphela phezulu ngeminwe emi-2 kusukela phansi esikrinini sakho, ubambe, bese uyakhulula."</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Shintsha ama-app"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Konke kusethiwe"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Kwenziwe"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Amasethingi"</string>
