@@ -1104,6 +1104,9 @@ public class SystemUiProxy implements ISystemUiProxy {
      */
     public boolean startRecentsActivity(Intent intent, ActivityOptions options,
             RecentsAnimationListener listener) {
+        if (mRecentTasks == null) {
+            return false;
+        }
         final IRecentsAnimationRunner runner = new IRecentsAnimationRunner.Stub() {
             @Override
             public void onAnimationStart(IRecentsAnimationController controller,
