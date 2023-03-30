@@ -56,6 +56,7 @@ import androidx.annotation.WorkerThread;
 
 import com.android.internal.logging.InstanceId;
 import com.android.internal.util.ScreenshotRequest;
+import com.android.internal.view.AppearanceRegion;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -1009,6 +1010,20 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
+    /**
+     * Called when the status bar color needs to be customized when back navigation.
+     */
+    public void customizeStatusBarAppearance(AppearanceRegion appearance) {
+        if (mBackAnimation == null) {
+            return;
+        }
+        try {
+            mBackAnimation.customizeStatusBarAppearance(appearance);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed call useLauncherSysBarFlags", e);
+        }
+    }
+
     public ArrayList<GroupedRecentTaskInfo> getRecentTasks(int numTasks, int userId) {
         if (mRecentTasks != null) {
             try {
@@ -1097,8 +1112,6 @@ public class SystemUiProxy implements ISystemUiProxy {
             Log.e(TAG, "Failed call setUnfoldAnimationListener", e);
         }
     }
-
-
     /**
      * Starts the recents activity. The caller should manage the thread on which this is called.
      */
