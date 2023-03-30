@@ -26,7 +26,9 @@ import com.android.quickstep.interaction.TutorialController.TutorialType;
 /** Shows the general navigation gesture sandbox environment. */
 public class SandboxModeTutorialFragment extends TutorialFragment {
 
-    public SandboxModeTutorialFragment() {}
+    public SandboxModeTutorialFragment(boolean fromTutorialMenu) {
+        super(fromTutorialMenu);
+    }
 
     @Override
     TutorialController createController(TutorialType type) {
