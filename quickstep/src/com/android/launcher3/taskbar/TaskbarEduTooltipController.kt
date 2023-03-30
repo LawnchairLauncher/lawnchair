@@ -62,7 +62,8 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
         get() = !Utilities.isRunningInTestHarness() && ENABLE_TASKBAR_EDU_TOOLTIP.get()
     private val isOpen: Boolean
         get() = tooltip?.isOpen ?: false
-
+    val isBeforeTooltipFeaturesStep: Boolean
+        get() = isTooltipEnabled && tooltipStep <= TOOLTIP_STEP_FEATURES
     private lateinit var controllers: TaskbarControllers
 
     @TaskbarEduTooltipStep

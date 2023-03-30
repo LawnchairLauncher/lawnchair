@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Pasa o dedo para volver"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Para volver á última pantalla, pasa o dedo cara ao medio desde o bordo dereito ou esquerdo."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Para volver á última pantalla, pasa 2 dedos desde o bordo esquerdo ou o dereito ata a metade da pantalla."</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Atrás"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Asegúrate de pasar o dedo cara arriba desde o bordo inferior da pantalla."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Asegúrate de non facer unha pausa antes de avanzar."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Asegúrate de pasar o dedo cara arriba cun movemento vertical."</string>
@@ -73,8 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Pasa o dedo para cambiar de aplicación"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Para cambiar de aplicación, pasa o dedo cara arriba desde a parte inferior da pantalla, mantén premido e levanta o dedo."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Para cambiar de app, pasa 2 dedos cara arriba desde abaixo, mantén premida a pantalla e levántaos."</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Pasar dunha aplicación a outra"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Todo listo"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Feito"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Configuración"</string>

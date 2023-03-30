@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"스와이프하여 돌아가기"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"이전 화면으로 돌아가려면 왼쪽 또는 오른쪽 가장자리에서 화면 중앙으로 스와이프하세요."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"마지막 화면으로 돌아가려면 두 손가락을 사용해 왼쪽 또는 오른쪽 가장자리에서 화면 중앙으로 스와이프하세요"</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"뒤로"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"화면 하단 가장자리에서 위로 스와이프하세요."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"손가락을 떼기 전에 멈추지 않아야 합니다."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"위로 곧게 스와이프하세요."</string>
@@ -73,8 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"스와이프하여 앱 전환"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"앱 간에 전환하려면 화면 하단에서 위로 스와이프하고 잠시 멈춘 다음 손가락을 떼세요."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"앱 간에 전환하려면 두 손가락을 사용해 화면 하단에서 위로 스와이프하고 잠시 멈춘 다음 손가락을 떼세요"</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"앱 전환"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"설정 완료"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"완료"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"설정"</string>
@@ -84,7 +82,7 @@
     <string name="allset_title" msgid="5021126669778966707">"설정 완료"</string>
     <string name="allset_hint" msgid="459504134589971527">"위로 스와이프하여 홈으로 이동"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"홈 화면으로 이동하려면 홈 버튼을 탭하세요."</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g> 기기를 사용할 준비가 되었습니다."</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g>을(를) 사용할 준비가 되었습니다."</string>
     <string name="default_device_name" msgid="6660656727127422487">"기기"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"시스템 탐색 설정"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"공유"</string>

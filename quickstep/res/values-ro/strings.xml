@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Glisează pentru a reveni"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Pentru a reveni la ultimul ecran, glisează de la marginea stângă sau dreaptă spre mijlocul ecranului."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Pentru a reveni la ultimul ecran, glisează cu două degete dinspre marginea stângă sau dreaptă spre mijlocul ecranului."</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Înapoi"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Glisează în sus dinspre marginea de jos a ecranului."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Nu întrerupe gestul înainte de a elibera."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Glisează direct în sus."</string>
@@ -73,8 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Glisează pentru a comuta între aplicații"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Ca să comuți între aplicații, glisează în sus din partea de jos a ecranului, așteaptă și eliberează."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Ca să comuți între aplicații, glisează cu două degete de jos în sus, așteaptă și eliberează"</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Comută între aplicații"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Gata"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Gata"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Setări"</string>

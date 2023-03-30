@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"滑動即可返回"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"如要返回上一個畫面，請從螢幕左側或右側邊緣往中央滑動。"</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"如要返回上一個畫面，請用 2 隻手指從螢幕左側或右側邊緣往中央滑動。"</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"返回"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"請從螢幕底部邊緣向上滑動。"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"放開手指前請勿停下來。"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"請向上滑動。"</string>
@@ -73,8 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"滑動即可切換應用程式"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"如要切換應用程式，請從螢幕底部向上滑動並按住，然後放開。"</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"如要切換應用程式，請用 2 隻手指從螢幕底部向上滑動並按住，然後放開手指。"</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"切換應用程式"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"大功告成"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"完成"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"設定"</string>
