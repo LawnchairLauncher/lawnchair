@@ -404,6 +404,11 @@ public final class FeatureFlags {
             "ENABLE_APP_CLONING_CHANGES_IN_LAUNCHER", false,
             "Removes clone apps from the work profile tab.");
 
+    public static final BooleanFlag ENABLE_APP_PAIRS = getDebugFlag(274189428,
+            "ENABLE_APP_PAIRS", false,
+            "Enables the ability to create and save app pairs on the Home screen for easy"
+                    + " split screen launching.");
+
     public static class BooleanFlag {
 
         private final boolean mCurrentValue;
