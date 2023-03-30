@@ -124,6 +124,18 @@
     <dimen name="gesture_tutorial_back_gesture_exiting_app_margin">8dp</dimen>
     <dimen name="gesture_tutorial_back_gesture_end_corner_radius">36dp</dimen>
 
+    <!-- Gesture Tutorial menu page -->
+    <dimen name="gesture_tutorial_menu_padding_horizontal">24dp</dimen>
+    <dimen name="gesture_tutorial_menu_padding_top">31dp</dimen>
+    <dimen name="gesture_tutorial_menu_padding_bottom">24dp</dimen>
+    <dimen name="gesture_tutorial_menu_button_height">0dp</dimen>
+    <dimen name="gesture_tutorial_menu_button_spacing">16dp</dimen>
+    <dimen name="gesture_tutorial_menu_button_radius">28dp</dimen>
+    <dimen name="gesture_tutorial_menu_done_button_top_spacing">0dp</dimen>
+    <dimen name="gesture_tutorial_menu_back_shape_bottom_margin">0dp</dimen>
+    <dimen name="gesture_tutorial_menu_done_button_spacing">72dp</dimen>
+    <dimen name="gesture_tutorial_menu_done_button_margin">0dp</dimen>
+
     <!-- Gesture Tutorial mock conversations -->
     <dimen name="gesture_tutorial_message_icon_size">44dp</dimen>
     <dimen name="gesture_tutorial_message_icon_corner_radius">100dp</dimen>
