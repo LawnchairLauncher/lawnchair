@@ -15,17 +15,22 @@
  */
 package com.android.launcher3.taskbar;
 
+import static android.content.Context.RECEIVER_NOT_EXPORTED;
 import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
 
+import android.annotation.SuppressLint;
+import android.app.PendingIntent;
 import android.content.ComponentCallbacks;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.hardware.display.DisplayManager;
@@ -116,6 +121,17 @@ public class TaskbarManager {
 
     private boolean mUserUnlocked = false;
 
+    public static final int SYSTEM_ACTION_ID_TASKBAR = 499;
+
+    /**
+     * For Taskbar broadcast intent filter.
+     */
+    public static final String ACTION_SHOW_TASKBAR = "ACTION_SHOW_TASKBAR";
+
+    private final SimpleBroadcastReceiver mTaskbarBroadcastReceiver =
+            new SimpleBroadcastReceiver(this::showTaskbarFromBroadcast);
+
+    @SuppressLint("WrongConstant")
     public TaskbarManager(TouchInteractionService service) {
         mDisplayController = DisplayController.INSTANCE.get(service);
         Display display =
@@ -200,7 +216,17 @@ public class TaskbarManager {
                 mNavBarKidsModeListener);
         mContext.registerComponentCallbacks(mComponentCallbacks);
         mShutdownReceiver.register(mContext, Intent.ACTION_SHUTDOWN);
-
+        UI_HELPER_EXECUTOR.execute(() -> {
+            mSharedState.taskbarSystemActionPendingIntent = PendingIntent.getBroadcast(
+                    mContext,
+                    SYSTEM_ACTION_ID_TASKBAR,
+                    new Intent(ACTION_SHOW_TASKBAR).setPackage(mContext.getPackageName()),
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+            mContext.registerReceiver(
+                    mTaskbarBroadcastReceiver,
+                    new IntentFilter(ACTION_SHOW_TASKBAR),
+                    RECEIVER_NOT_EXPORTED);
+        });
         recreateTaskbar();
     }
 
@@ -210,6 +236,15 @@ public class TaskbarManager {
             if (!FLAG_HIDE_NAVBAR_WINDOW) {
                 mTaskbarActivityContext = null;
             }
+        }
+    }
+
+    /**
+     * Show Taskbar upon receiving broadcast
+     */
+    private void showTaskbarFromBroadcast(Intent intent) {
+        if (ACTION_SHOW_TASKBAR.equals(intent.getAction()) && mTaskbarActivityContext != null) {
+            mTaskbarActivityContext.showTaskbarFromBroadcast();
         }
     }
 
@@ -405,6 +440,8 @@ public class TaskbarManager {
      * Called when the manager is no longer needed
      */
     public void destroy() {
+        UI_HELPER_EXECUTOR.execute(
+                () -> mTaskbarBroadcastReceiver.unregisterReceiverSafely(mContext));
         destroyExistingTaskbar();
         mDisplayController.removeChangeListener(mDispInfoChangeListener);
         SettingsCache.INSTANCE.get(mContext).unregister(USER_SETUP_COMPLETE_URI,
