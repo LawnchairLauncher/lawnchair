@@ -28,6 +28,8 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TRANSIENT_TASKBAR_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TRANSIENT_TASKBAR_SHOW;
 import static com.android.launcher3.taskbar.TaskbarKeyguardController.MASK_ANY_SYSUI_LOCKED;
+import static com.android.launcher3.taskbar.TaskbarManager.SYSTEM_ACTION_ID_TASKBAR;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
 import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
@@ -38,7 +40,9 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_S
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.app.RemoteAction;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Icon;
 import android.util.Log;
 import android.view.InsetsController;
 import android.view.View;
@@ -224,6 +228,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 return (inApp && stashedInApp) || (!inApp && stashedLauncherState) || forceStashed;
             });
 
+    private boolean mIsTaskbarSystemActionRegistered = false;
+    private TaskbarSharedState mTaskbarSharedState;
+
     public TaskbarStashController(TaskbarActivityContext activity) {
         mActivity = activity;
         mPrefs = LauncherPrefs.getPrefs(mActivity);
@@ -234,8 +241,27 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         mStashedHeight = mActivity.getDeviceProfile().stashedTaskbarHeight;
     }
 
-    public void init(TaskbarControllers controllers, boolean setupUIVisible) {
+    /**
+     * Show Taskbar upon receiving broadcast
+     */
+    public void showTaskbarFromBroadcast() {
+        // If user is in middle of taskbar education handle go to next step of education
+        if (mControllers.taskbarEduTooltipController.isBeforeTooltipFeaturesStep()) {
+            mControllers.taskbarEduTooltipController.hide();
+            mControllers.taskbarEduTooltipController.maybeShowFeaturesEdu();
+        }
+        updateAndAnimateTransientTaskbar(false);
+    }
+
+    /**
+     * Initializes the controller
+     */
+    public void init(
+            TaskbarControllers controllers,
+            boolean setupUIVisible,
+            TaskbarSharedState sharedState) {
         mControllers = controllers;
+        mTaskbarSharedState = sharedState;
 
         TaskbarDragLayerController dragLayerController = controllers.taskbarDragLayerController;
         mTaskbarBackgroundOffset = dragLayerController.getTaskbarBackgroundOffset();
@@ -992,12 +1018,46 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
     private void notifyStashChange(boolean visible, boolean stashed) {
         mSystemUiProxy.notifyTaskbarStatus(visible, stashed);
+        setUpTaskbarSystemAction(visible);
         // If stashing taskbar is caused by IME visibility, we could just skip updating rounded
         // corner insets since the rounded corners will be covered by IME during IME is showing and
         // taskbar will be restored back to unstashed when IME is hidden.
         mControllers.taskbarActivityContext.updateInsetRoundedCornerFrame(
                     visible && !isStashedInAppIgnoringIme());
         mControllers.rotationButtonController.onTaskbarStateChange(visible, stashed);
+    }
+
+    /**
+     * Setup system action for showing Taskbar depending on its visibility.
+     */
+    public void setUpTaskbarSystemAction(boolean visible) {
+        UI_HELPER_EXECUTOR.execute(() -> {
+            if (!visible || !DisplayController.isTransientTaskbar(mActivity)) {
+                mAccessibilityManager.unregisterSystemAction(SYSTEM_ACTION_ID_TASKBAR);
+                mIsTaskbarSystemActionRegistered = false;
+                return;
+            }
+
+            if (!mIsTaskbarSystemActionRegistered) {
+                RemoteAction taskbarRemoteAction = new RemoteAction(
+                        Icon.createWithResource(mActivity, R.drawable.ic_info_no_shadow),
+                        mActivity.getString(R.string.taskbar_a11y_title),
+                        mActivity.getString(R.string.taskbar_a11y_title),
+                        mTaskbarSharedState.taskbarSystemActionPendingIntent);
+
+                mAccessibilityManager.registerSystemAction(taskbarRemoteAction,
+                        SYSTEM_ACTION_ID_TASKBAR);
+                mIsTaskbarSystemActionRegistered = true;
+            }
+        });
+    }
+
+    /**
+     * Clean up on destroy from TaskbarControllers
+     */
+    public void onDestroy() {
+        UI_HELPER_EXECUTOR.execute(
+                () -> mAccessibilityManager.unregisterSystemAction(SYSTEM_ACTION_ID_TASKBAR));
     }
 
     /**

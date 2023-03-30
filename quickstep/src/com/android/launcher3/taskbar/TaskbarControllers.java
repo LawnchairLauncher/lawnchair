@@ -154,7 +154,7 @@ public class TaskbarControllers {
         taskbarKeyguardController.init(navbarButtonsViewController);
         taskbarSpringOnStashController.init(this);
         stashedHandleViewController.init(this);
-        taskbarStashController.init(this, sharedState.setupUIVisible);
+        taskbarStashController.init(this, sharedState.setupUIVisible, mSharedState);
         taskbarEduController.init(this);
         taskbarPopupController.init(this);
         taskbarForceVisibleImmersiveController.init(this);
@@ -225,6 +225,7 @@ public class TaskbarControllers {
         voiceInteractionWindowController.onDestroy();
         taskbarRecentAppsController.onDestroy();
         keyboardQuickSwitchController.onDestroy();
+        taskbarStashController.onDestroy();
 
         mControllersToLog = null;
         mBackgroundRendererControllers = null;
