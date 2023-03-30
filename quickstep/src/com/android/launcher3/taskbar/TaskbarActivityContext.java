@@ -263,6 +263,13 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
     }
 
+    /**
+     * Show Taskbar upon receiving broadcast
+     */
+    public void showTaskbarFromBroadcast() {
+        mControllers.taskbarStashController.showTaskbarFromBroadcast();
+    }
+
     @Override
     public DeviceProfile getDeviceProfile() {
         return mDeviceProfile;
