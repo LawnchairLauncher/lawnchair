@@ -326,7 +326,11 @@ public final class DigitalWellBeingToast {
     }
 
     private void setBannerOutline() {
-        mOldBannerOutlineProvider = mBanner.getOutlineProvider();
+        // TODO(b\273367585) to investigate why mBanner.getOutlineProvider() can be null
+        mOldBannerOutlineProvider = mBanner.getOutlineProvider() != null
+                ? mBanner.getOutlineProvider()
+                : ViewOutlineProvider.BACKGROUND;
+
         mBanner.setOutlineProvider(new ViewOutlineProvider() {
             @Override
             public void getOutline(View view, Outline outline) {
