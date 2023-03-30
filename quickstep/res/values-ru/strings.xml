@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Возврат к предыдущему экрану"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Чтобы вернуться к предыдущему экрану, проведите от левого или правого края дисплея к центру."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Чтобы вернуться на предыдущий экран, проведите двумя пальцами от левого или правого края экрана к центру."</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Как вернуться к предыдущему экрану"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Проведите снизу вверх от самого края экрана."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Не приостанавливайтесь перед тем, как отпустить палец."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Проведите по экрану ровно вверх."</string>
@@ -73,8 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Переключение между приложениями"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Чтобы переключиться между приложениями‚ проведите по экрану снизу вверх, задержите палец, а затем отпустите."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Чтобы сменить приложение, проведите двумя пальцами снизу вверх, задержите пальцы, а затем отпустите."</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Как переключаться между приложениями"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Готово"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Готово"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Настройки"</string>
