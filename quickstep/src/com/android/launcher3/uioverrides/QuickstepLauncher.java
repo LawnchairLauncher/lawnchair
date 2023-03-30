@@ -316,6 +316,12 @@ public class QuickstepLauncher extends Launcher {
         return mHotseatPredictionController;
     }
 
+    @Override
+    public void enableHotseatEdu(boolean enable) {
+        super.enableHotseatEdu(enable);
+        mHotseatPredictionController.enableHotseatEdu(enable);
+    }
+
     /**
      * Builds the {@link QuickstepTransitionManager} instance to use for managing transitions.
      */
