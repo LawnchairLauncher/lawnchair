@@ -770,6 +770,13 @@ public class StatsLogManager implements ResourceBasedOverride {
         }
 
         /**
+         * Sets the input type of the log message.
+         */
+        default StatsLogger withInputType(int inputType) {
+            return this;
+        }
+
+        /**
          * Builds the final message and logs it as {@link EventEnum}.
          */
         default void log(EventEnum event) {
