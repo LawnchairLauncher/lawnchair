@@ -416,7 +416,7 @@ public abstract class ButtonDropTarget extends TextView
         getPaint().getTextBounds(mText.toString(), 0, mText.length(), mTempRect);
         // Add bounds bottom to height, as text bounds height measures from the text baseline and
         // above, which characters can descend below
-        return mTempRect.bottom + mTempRect.height() <= availableHeight;
+        return mTempRect.bottom + mTempRect.height() >= availableHeight;
     }
 
     /**
