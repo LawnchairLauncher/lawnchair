@@ -745,6 +745,10 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     protected void registerBackDispatcher() {
+        if (!FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
+            super.registerBackDispatcher();
+            return;
+        }
         getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
                 OnBackInvokedDispatcher.PRIORITY_DEFAULT,
                 new OnBackAnimationCallback() {
