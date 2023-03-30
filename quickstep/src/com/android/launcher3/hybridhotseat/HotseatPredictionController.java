@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DragSource;
@@ -51,6 +52,8 @@ import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.testing.TestLogging;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.uioverrides.PredictedAppIcon;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
@@ -89,10 +92,14 @@ public class HotseatPredictionController implements DragController.DragListener,
 
     private List<PredictedAppIcon.PredictedIconOutlineDrawing> mOutlineDrawings = new ArrayList<>();
 
+    private boolean mEnableHotseatLongPressTipForTesting = true;
+
     private final View.OnLongClickListener mPredictionLongClickListener = v -> {
         if (!ItemLongClickListener.canStartDrag(mLauncher)) return false;
         if (mLauncher.getWorkspace().isSwitchingState()) return false;
-        if (!mLauncher.getOnboardingPrefs().getBoolean(
+
+        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onWorkspaceItemLongClick");
+        if (mEnableHotseatLongPressTipForTesting && !mLauncher.getOnboardingPrefs().getBoolean(
                 OnboardingPrefs.HOTSEAT_LONGPRESS_TIP_SEEN)) {
             Snackbar.show(mLauncher, R.string.hotseat_tip_gaps_filled,
                     R.string.hotseat_prediction_settings, null,
@@ -130,6 +137,12 @@ public class HotseatPredictionController implements DragController.DragListener,
     @Override
     public void onChildViewRemoved(View parent, View child) {
         onHotseatHierarchyChanged();
+    }
+
+    /** Enables/disabled the hotseat prediction icon long press edu for testing. */
+    @VisibleForTesting
+    public void enableHotseatEdu(boolean enable) {
+        mEnableHotseatLongPressTipForTesting = enable;
     }
 
     private void onHotseatHierarchyChanged() {
