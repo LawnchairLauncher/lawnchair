@@ -200,8 +200,8 @@ public final class SplitConfigurationOptions {
         /** Keep in sync w/ ActivityTaskManager#INVALID_TASK_ID (unreference-able) */
         private static final int INVALID_TASK_ID = -1;
 
-        public final View view;
-        public final Drawable drawable;
+        private View view;
+        private Drawable drawable;
         public final Intent intent;
         public final SplitPositionOption position;
         public final ItemInfo itemInfo;
@@ -223,6 +223,14 @@ public final class SplitConfigurationOptions {
             this.position = position;
             this.itemInfo = itemInfo;
             this.splitEvent = splitEvent;
+        }
+
+        public Drawable getDrawable() {
+            return drawable;
+        }
+
+        public View getView() {
+            return view;
         }
     }
 }
