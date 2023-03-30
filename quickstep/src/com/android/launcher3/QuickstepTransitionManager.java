@@ -321,7 +321,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         ActivityOptions options = ActivityOptions.makeRemoteAnimation(
                 new RemoteAnimationAdapter(runner, duration, statusBarTransitionDelay),
                 new RemoteTransition(runner.toRemoteTransition(),
-                        mLauncher.getIApplicationThread()));
+                        mLauncher.getIApplicationThread(), "QuickstepLaunch"));
         return new ActivityOptionsWrapper(options, onEndCallback);
     }
 
@@ -1122,7 +1122,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             mLauncherOpenTransition = new RemoteTransition(
                     new LauncherAnimationRunner(mHandler, mWallpaperOpenTransitionRunner,
                             false /* startAtFrontOfQueue */).toRemoteTransition(),
-                    mLauncher.getIApplicationThread());
+                    mLauncher.getIApplicationThread(), "QuickstepLaunchHome");
 
             TransitionFilter homeCheck = new TransitionFilter();
             // No need to handle the transition that also dismisses keyguard.
