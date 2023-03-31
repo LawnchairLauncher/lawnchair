@@ -766,7 +766,7 @@ public class SystemUiProxy implements ISystemUiProxy {
      */
     @Nullable
     public RemoteAnimationTarget[] onGoingToRecentsLegacy(RemoteAnimationTarget[] apps) {
-        if (mSplitScreen != null) {
+        if (!TaskAnimationManager.ENABLE_SHELL_TRANSITIONS && mSplitScreen != null) {
             try {
                 return mSplitScreen.onGoingToRecentsLegacy(apps);
             } catch (RemoteException e) {
