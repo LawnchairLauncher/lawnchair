@@ -25,12 +25,12 @@ import android.util.AttributeSet;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
-import com.android.launcher3.pageindicators.PageIndicatorDots;
+import com.android.launcher3.pageindicators.LauncherDotsPageIndicator;
 import com.android.launcher3.taskbar.TaskbarEduController.TaskbarEduCallbacks;
 import com.android.launcher3.views.ActivityContext;
 
 /** Horizontal carousel of tutorial screens for Taskbar Edu. */
-public class TaskbarEduPagedView extends PagedView<PageIndicatorDots> {
+public class TaskbarEduPagedView extends PagedView<LauncherDotsPageIndicator> {
 
     private TaskbarEduView mTaskbarEduView;
     private TaskbarEduCallbacks mControllerCallbacks;
