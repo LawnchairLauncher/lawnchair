@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Превуците да бисте се вратили уназад"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Да бисте се вратили на последњи екран, превуците од леве или десне ивице до средине екрана."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Да бисте се вратили на последњи екран, превуците помоћу два прста од леве или десне ивице до средине екрана."</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Назад"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Обавезно превуците нагоре од доње ивице екрана."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Никако не стајте пре отпуштања."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Обавезно превуците право нагоре."</string>
@@ -73,8 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Превуците да бисте заменили апликације"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"За прелазак са једне апликације на другу превуците нагоре од дна екрана, задржите, па пустите."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"За прелазак између апликација превуците помоћу два прста нагоре од дна екрана, задржите, па пустите."</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Пређите на другу апликацију"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"То је то"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Готово"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Подешавања"</string>

@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"יש להחליק כדי לחזור"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"כדי לחזור למסך הקודם, יש להחליק מהקצה השמאלי או הימני למרכז המסך."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"כדי לחזור למסך הקודם, יש להחליק עם שתי אצבעות מהקצה השמאלי או הימני למרכז המסך."</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"הקודם"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"חשוב להקפיד להחליק למעלה מהקצה התחתון של המסך."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"חשוב לוודא שלא מחכים לפני שמשחררים."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"חשוב להקפיד להחליק ישר למעלה."</string>
@@ -73,8 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"יש להחליק כדי לעבור בין אפליקציות"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"כדי לעבור בין אפלקציות, יש להחליק למעלה מתחתית המסך, להחזיק ולאחר מכן לשחרר."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"כדי לעבור בין אפלקציות, יש להחליק למעלה עם שתי אצבעות מתחתית המסך, להחזיק ולאחר מכן לשחרר."</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"מעבר בין אפליקציות"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"הכול מוכן"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"סיום"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"הגדרות"</string>
