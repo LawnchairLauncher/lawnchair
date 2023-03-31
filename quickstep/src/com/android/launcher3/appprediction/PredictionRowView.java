@@ -76,7 +76,6 @@ public class PredictionRowView<T extends Context & ActivityContext>
 
         mFocusHelper = new SimpleFocusIndicatorHelper(this);
         mActivityContext = ActivityContext.lookupContext(context);
-        mActivityContext.addOnDeviceProfileChangeListener(this);
         mNumPredictedAppsPerRow = mActivityContext.getDeviceProfile().numShownAllAppsColumns;
         updateVisibility();
     }
@@ -84,6 +83,13 @@ public class PredictionRowView<T extends Context & ActivityContext>
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        mActivityContext.addOnDeviceProfileChangeListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mActivityContext.removeOnDeviceProfileChangeListener(this);
     }
 
     public void setup(FloatingHeaderView parent, FloatingHeaderRow[] rows, boolean tabsHidden) {

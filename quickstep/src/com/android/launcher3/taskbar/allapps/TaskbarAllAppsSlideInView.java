@@ -112,10 +112,21 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         DeviceProfile dp = mActivityContext.getDeviceProfile();
         setShiftRange(dp.allAppsShiftRange);
 
-        mActivityContext.addOnDeviceProfileChangeListener(this);
         setContentBackgroundWithParent(
                 getContext().getDrawable(R.drawable.bg_rounded_corner_bottom_sheet),
                 mAppsView.getBottomSheetBackground());
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mActivityContext.addOnDeviceProfileChangeListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mActivityContext.removeOnDeviceProfileChangeListener(this);
     }
 
     @Override
