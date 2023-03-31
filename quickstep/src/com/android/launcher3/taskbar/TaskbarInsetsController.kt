@@ -64,22 +64,9 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
     fun init(controllers: TaskbarControllers) {
         this.controllers = controllers
         windowLayoutParams = context.windowLayoutParams
-
-        setProvidesInsetsTypes(
-            windowLayoutParams,
-            intArrayOf(
-                ITYPE_EXTRA_NAVIGATION_BAR,
-                ITYPE_BOTTOM_TAPPABLE_ELEMENT,
-                ITYPE_BOTTOM_MANDATORY_GESTURES,
-                ITYPE_LEFT_GESTURES,
-                ITYPE_RIGHT_GESTURES,
-            ),
-            intArrayOf(SOURCE_FRAME, SOURCE_FRAME, SOURCE_FRAME, SOURCE_DISPLAY, SOURCE_DISPLAY)
-        )
-
+        windowLayoutParams.insetsRoundedCornerFrame = true
         onTaskbarWindowHeightOrInsetsChanged()
 
-        windowLayoutParams.insetsRoundedCornerFrame = true
         context.addOnDeviceProfileChangeListener(deviceProfileChangeListener)
         gestureNavSettingsObserver.registerForCallingUser()
     }
@@ -90,6 +77,38 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
     }
 
     fun onTaskbarWindowHeightOrInsetsChanged() {
+        if (context.isGestureNav) {
+            setProvidesInsetsTypes(
+                    windowLayoutParams,
+                    intArrayOf(
+                            ITYPE_EXTRA_NAVIGATION_BAR,
+                            ITYPE_BOTTOM_TAPPABLE_ELEMENT,
+                            ITYPE_BOTTOM_MANDATORY_GESTURES,
+                            ITYPE_LEFT_GESTURES,
+                            ITYPE_RIGHT_GESTURES,
+                    ),
+                    intArrayOf(
+                            SOURCE_FRAME,
+                            SOURCE_FRAME,
+                            SOURCE_FRAME,
+                            SOURCE_DISPLAY,
+                            SOURCE_DISPLAY
+                    )
+            )
+        } else {
+            setProvidesInsetsTypes(
+                    windowLayoutParams,
+                    intArrayOf(
+                            ITYPE_EXTRA_NAVIGATION_BAR,
+                            ITYPE_BOTTOM_TAPPABLE_ELEMENT
+                    ),
+                    intArrayOf(
+                            SOURCE_FRAME,
+                            SOURCE_FRAME
+                    )
+            )
+        }
+
         val touchableHeight = controllers.taskbarStashController.touchableHeight
         touchableRegion.set(
             0,
@@ -145,7 +164,9 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         for (provider in windowLayoutParams.providedInsets) {
             if (context.isGestureNav && provider.type == ITYPE_BOTTOM_TAPPABLE_ELEMENT) {
                 provider.insetsSizeOverrides = insetsSizeOverrideForGestureNavTappableElement
-            } else {
+            } else if (provider.type != ITYPE_LEFT_GESTURES
+                    && provider.type != ITYPE_RIGHT_GESTURES) {
+                // We only override insets at the bottom of the screen
                 provider.insetsSizeOverrides = insetsSizeOverride
             }
         }
