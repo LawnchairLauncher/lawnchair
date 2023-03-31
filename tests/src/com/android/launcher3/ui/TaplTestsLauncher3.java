@@ -51,7 +51,6 @@ import com.android.launcher3.tapl.Folder;
 import com.android.launcher3.tapl.FolderIcon;
 import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.tapl.HomeAppIcon;
-import com.android.launcher3.tapl.HomeAppIconMenu;
 import com.android.launcher3.tapl.HomeAppIconMenuItem;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
@@ -391,23 +390,14 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 .switchToAllApps();
         allApps.freeze();
         try {
-            final HomeAppIconMenu menu = allApps
+            final HomeAppIconMenuItem menuItem = allApps
                     .getAppIcon(APP_NAME)
-                    .openDeepShortcutMenu();
-            final HomeAppIconMenuItem menuItem0 = menu.getMenuItem(0);
-            final HomeAppIconMenuItem menuItem2 = menu.getMenuItem(2);
+                    .openDeepShortcutMenu()
+                    .getMenuItem(0);
+            final String actualShortcutName = menuItem.getText();
+            final String expectedShortcutName = "Shortcut 1";
 
-            final HomeAppIconMenuItem menuItem;
-
-            final String expectedShortcutName = "Shortcut 3";
-            if (menuItem0.getText().equals(expectedShortcutName)) {
-                menuItem = menuItem0;
-            } else {
-                final String shortcutName2 = menuItem2.getText();
-                assertEquals("Wrong menu item", expectedShortcutName, shortcutName2);
-                menuItem = menuItem2;
-            }
-
+            assertEquals(expectedShortcutName, actualShortcutName);
             menuItem.dragToWorkspace(false, false);
             mLauncher.getWorkspace().getWorkspaceAppIcon(expectedShortcutName)
                     .launch(getAppPackageName());
