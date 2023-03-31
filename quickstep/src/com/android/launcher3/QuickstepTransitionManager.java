@@ -1472,13 +1472,13 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     RemoteAnimationTarget target = appTargets[i];
                     SurfaceProperties builder = transaction.forSurface(target.leash);
 
-                    if (target.localBounds != null) {
-                        tmpPos.set(target.localBounds.left, target.localBounds.top);
+                    if (target.screenSpaceBounds != null) {
+                        tmpPos.set(target.screenSpaceBounds.left, target.screenSpaceBounds.top);
                     } else {
                         tmpPos.set(target.position.x, target.position.y);
                     }
 
-                    final Rect crop = new Rect(target.screenSpaceBounds);
+                    final Rect crop = new Rect(target.localBounds);
                     crop.offsetTo(0, 0);
                     if (target.mode == MODE_CLOSING) {
                         tmpRect.set(target.screenSpaceBounds);
