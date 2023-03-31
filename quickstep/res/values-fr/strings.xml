@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Balayez l\'écran pour revenir en arrière"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Pour revenir à l\'écran précédent, balayez l\'écran depuis le bord droit ou gauche jusqu\'au centre."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Pour revenir au dernier écran, balayez l\'écran avec deux doigts en partant du bord gauche ou droit vers le milieu."</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Retour"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Veillez à balayer l\'écran de bas en haut."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Veillez à ne pas marquer de pause dans votre geste avant de relever le doigt."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Veillez à balayer l\'écran vers le haut."</string>
@@ -73,8 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Balayez pour passer d\'une appli à l\'autre"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Pour changer d\'appli, balayez l\'écran de bas en haut, appuyez de manière prolongée et relâchez."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Pour changer d\'appli, balayez l\'écran de bas en haut avec deux doigts, maintenez appuyé et relâchez."</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Changer d\'appli"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Vous avez terminé"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"OK"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Paramètres"</string>
