@@ -192,7 +192,6 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                     onAppsUpdated);
         }
         mAllAppsStore.addUpdateListener(onAppsUpdated);
-        mActivityContext.addOnDeviceProfileChangeListener(this);
 
         // This is a focus listener that proxies focus from a view into the list view.  This is to
         // work around the search box from getting first focus and showing the cursor.
@@ -261,6 +260,18 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mBottomSheetBackgroundColor = value.data;
         updateBackground(mActivityContext.getDeviceProfile());
         mSearchUiManager.initializeSearch(this);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mActivityContext.addOnDeviceProfileChangeListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mActivityContext.removeOnDeviceProfileChangeListener(this);
     }
 
     public SearchUiManager getSearchUiManager() {
