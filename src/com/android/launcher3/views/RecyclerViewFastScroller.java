@@ -333,6 +333,7 @@ public class RecyclerViewFastScroller extends View {
         }
     }
 
+    @Override
     public void onDraw(Canvas canvas) {
         if (mThumbOffsetY < 0 || mRv == null) {
             return;
