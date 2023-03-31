@@ -53,12 +53,13 @@
             android:textColorHighlight="?android:attr/colorControlHighlight"
             android:textColorHint="?attr/folderHintColor"/>
 
-        <com.android.launcher3.pageindicators.PageIndicatorDots
+        <com.android.launcher3.pageindicators.LauncherDotsPageIndicator
             android:id="@+id/folder_page_indicator"
             android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="1dp"
+            launcher:indicatorDotColor="@color/folder_pagination_color"
             />
 
     </LinearLayout>
