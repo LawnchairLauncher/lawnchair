@@ -18,4 +18,6 @@
 
 <resources>
     <color name="all_apps_button_color">#BFC8CC</color>
+    <color name="folder_pagination_color">#ffbfebe3</color>
+
 </resources>

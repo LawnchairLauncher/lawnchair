@@ -55,7 +55,7 @@
             style="@style/TaskbarEdu.Button.Close"
             android:textColor="?android:attr/textColorPrimary"/>
 
-        <com.android.launcher3.pageindicators.PageIndicatorDots
+        <com.android.launcher3.pageindicators.LauncherDotsPageIndicator
             android:id="@+id/content_page_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -63,6 +63,7 @@
             app:layout_constraintBottom_toBottomOf="@id/edu_start_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:indicatorDotColor="@color/folder_pagination_color"
             android:elevation="1dp" />
 
         <Button
