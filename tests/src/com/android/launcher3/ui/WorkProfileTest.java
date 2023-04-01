@@ -177,6 +177,7 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/243688989
     public void testEdu() {
         assumeTrue(mWorkProfileSetupSuccessful);
         waitForWorkTabSetup();
