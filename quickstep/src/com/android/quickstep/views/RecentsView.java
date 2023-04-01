@@ -185,6 +185,7 @@ import com.android.quickstep.util.AnimUtils;
 import com.android.quickstep.util.DesktopTask;
 import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.util.RecentsAtomicAnimationFactory;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitAnimationController.Companion.SplitAnimInitProps;
 import com.android.quickstep.util.SplitAnimationTimings;
@@ -801,8 +802,29 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         // if multi-instance feature is enabled
         if (FeatureFlags.ENABLE_MULTI_INSTANCE.get()) {
-            // invalidate the current list of tasks if filter changes
-            mFilterState.setOnFilterUpdatedListener(this::invalidateTaskList);
+            // invalidate the current list of tasks if filter changes with a fading in/out animation
+            mFilterState.setOnFilterUpdatedListener(() -> {
+                Animator animatorFade = mActivity.getStateManager().createStateElementAnimation(
+                        RecentsAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM, 1f, 0f);
+                Animator animatorAppear = mActivity.getStateManager().createStateElementAnimation(
+                        RecentsAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM, 0f, 1f);
+                animatorFade.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(@NonNull Animator animation) {
+                        RecentsView.this.invalidateTaskList();
+                        updateClearAllFunction();
+                        reloadIfNeeded();
+                        if (mPendingAnimation != null) {
+                            mPendingAnimation.addEndListener(success -> {
+                                animatorAppear.start();
+                            });
+                        } else {
+                            animatorAppear.start();
+                        }
+                    }
+                });
+                animatorFade.start();
+            });
         }
         // make sure filter is turned off by default
         mFilterState.setFilterBy(null);
@@ -821,8 +843,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      */
     public void setAndApplyFilter(@Nullable String packageName) {
         mFilterState.setFilterBy(packageName);
-        updateClearAllFunction();
-        reloadIfNeeded();
     }
 
     /**
