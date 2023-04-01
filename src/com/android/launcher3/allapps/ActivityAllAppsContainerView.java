@@ -358,16 +358,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     public boolean shouldContainerScroll(MotionEvent ev) {
         BaseDragLayer dragLayer = mActivityContext.getDragLayer();
-        // IF the MotionEvent is inside the search box, and the container keeps on receiving
-        // touch input, container should move down.
-        if (dragLayer.isEventOverView(mSearchContainer, ev)) {
-            return true;
-        }
-        // Scroll if not within the container view (e.g. over large-screen scrim).
-        if (!dragLayer.isEventOverView(getVisibleContainerView(), ev)) {
-            return true;
-        }
-        if (dragLayer.isEventOverView(mBottomSheetHandleArea, ev)) {
+        // IF the MotionEvent is inside the search box or handle area, and the container keeps on
+        // receiving touch input, container should move down.
+        if (dragLayer.isEventOverView(mSearchContainer, ev)
+                || dragLayer.isEventOverView(mBottomSheetHandleArea, ev)) {
             return true;
         }
         AllAppsRecyclerView rv = getActiveRecyclerView();
@@ -378,6 +372,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 && rv.getScrollbar().getThumbOffsetY() >= 0
                 && dragLayer.isEventOverView(rv.getScrollbar(), ev)) {
             return false;
+        }
+        // Scroll if not within the container view (e.g. over large-screen scrim).
+        if (!dragLayer.isEventOverView(getVisibleContainerView(), ev)) {
+            return true;
         }
         return rv.shouldContainerScroll(ev, dragLayer);
     }
