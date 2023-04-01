@@ -49,4 +49,10 @@ public class OverviewTaskMenu {
             }
         }
     }
+
+    /** Returns true if an item matching the given string is present in the menu. */
+    public boolean hasMenuItem(String expectedMenuItemText) {
+        UiObject2 menuItem = mLauncher.findObjectInContainer(mMenu, By.text(expectedMenuItemText));
+        return menuItem != null;
+    }
 }
