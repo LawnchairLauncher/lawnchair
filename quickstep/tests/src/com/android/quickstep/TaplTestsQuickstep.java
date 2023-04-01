@@ -186,35 +186,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         actionsView.clickAndDismissScreenshot();
     }
 
-    @Test
-    @PortraitLandscape
-    public void testSplitFromOverview() {
-        assumeTrue(!mLauncher.isTablet());
-
-        startTestActivity(2);
-        startTestActivity(3);
-
-        mLauncher.goHome().switchToOverview().getCurrentTask()
-                .tapMenu()
-                .tapSplitMenuItem()
-                .getCurrentTask()
-                .open();
-    }
-
-    @Test
-    @PortraitLandscape
-    public void testSplitFromOverviewForTablet() {
-        assumeTrue(mLauncher.isTablet());
-
-        startTestActivity(2);
-        startTestActivity(3);
-
-        mLauncher.goHome().switchToOverview().getOverviewActions()
-                .clickSplit()
-                .getTestActivityTask(2)
-                .open();
-    }
-
     private int getCurrentOverviewPage(Launcher launcher) {
         return launcher.<RecentsView>getOverviewPanel().getCurrentPage();
     }

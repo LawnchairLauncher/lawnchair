@@ -766,7 +766,7 @@ public class SystemUiProxy implements ISystemUiProxy {
      */
     @Nullable
     public RemoteAnimationTarget[] onGoingToRecentsLegacy(RemoteAnimationTarget[] apps) {
-        if (mSplitScreen != null) {
+        if (!TaskAnimationManager.ENABLE_SHELL_TRANSITIONS && mSplitScreen != null) {
             try {
                 return mSplitScreen.onGoingToRecentsLegacy(apps);
             } catch (RemoteException e) {
@@ -1117,6 +1117,9 @@ public class SystemUiProxy implements ISystemUiProxy {
      */
     public boolean startRecentsActivity(Intent intent, ActivityOptions options,
             RecentsAnimationListener listener) {
+        if (mRecentTasks == null) {
+            return false;
+        }
         final IRecentsAnimationRunner runner = new IRecentsAnimationRunner.Stub() {
             @Override
             public void onAnimationStart(IRecentsAnimationController controller,

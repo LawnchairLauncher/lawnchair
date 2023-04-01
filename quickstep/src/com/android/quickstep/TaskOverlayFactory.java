@@ -129,7 +129,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             TaskShortcutFactory.PIN,
             TaskShortcutFactory.INSTALL,
             TaskShortcutFactory.FREE_FORM,
-            TaskShortcutFactory.WELLBEING
+            TaskShortcutFactory.WELLBEING,
+            TaskShortcutFactory.SAVE_APP_PAIR
     };
 
     /**
