@@ -42,6 +42,9 @@
     <string name="recent_task_option_split_screen">Split screen</string>
     <string name="split_app_info_accessibility">App info for %1$s</string>
 
+    <!-- App pairs -->
+    <string name="save_app_pair">Save app pair</string>
+
     <!-- Widgets -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
     <string name="long_press_widget_to_add">Touch &amp; hold to move a widget.</string>
