@@ -22,6 +22,7 @@ import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static com.android.launcher3.Launcher.INTENT_ACTION_ALL_APPS_TOGGLE;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
 import static com.android.launcher3.config.FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -514,7 +515,7 @@ public class TouchInteractionService extends Service
 
         if (isHomeAndOverviewSame) {
             Intent intent = new Intent(mOverviewComponentObserver.getHomeIntent())
-                    .setAction(Intent.ACTION_ALL_APPS);
+                    .setAction(INTENT_ACTION_ALL_APPS_TOGGLE);
             RemoteAction allAppsAction = new RemoteAction(
                     Icon.createWithResource(this, R.drawable.ic_apps),
                     getString(R.string.all_apps_label),
