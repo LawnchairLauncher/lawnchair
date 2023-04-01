@@ -40,6 +40,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.popup.SystemShortcut;
@@ -63,7 +64,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Represents a system shortcut that can be shown for a recent task.
+ * Represents a system shortcut that can be shown for a recent task. Appears as a single entry in
+ * the dropdown menu that shows up when you tap an app icon in Overview.
  */
 public interface TaskShortcutFactory {
     @Nullable
@@ -119,6 +121,26 @@ public interface TaskShortcutFactory {
         @Override
         public void onClick(View view) {
             mTaskView.initiateSplitSelect(mSplitPositionOption);
+        }
+    }
+
+    /**
+     * A menu item, "Save app pair", that allows the user to preserve the current app combination as
+     * a single persistent icon on the Home screen, allowing for quick split screen initialization.
+     */
+    class SaveAppPairSystemShortcut extends SystemShortcut {
+
+        private final TaskView mTaskView;
+
+        public SaveAppPairSystemShortcut(BaseDraggingActivity target, TaskView taskView) {
+            super(R.drawable.ic_save_app_pair, R.string.save_app_pair, target,
+                    taskView.getItemInfo(), taskView);
+            mTaskView = taskView;
+        }
+
+        @Override
+        public void onClick(View view) {
+            // TODO (b/274189428): Call "saveAppPair" function in new AppPairController class
         }
     }
 
@@ -257,9 +279,6 @@ public interface TaskShortcutFactory {
             final PagedOrientationHandler orientationHandler =
                     recentsView.getPagedOrientationHandler();
 
-            int[] taskViewTaskIds = taskView.getTaskIds();
-            boolean taskViewHasMultipleTasks = taskViewTaskIds[0] != -1 &&
-                    taskViewTaskIds[1] != -1;
             boolean notEnoughTasksToSplit = recentsView.getTaskViewCount() < 2;
             boolean isFocusedTask = deviceProfile.isTablet && taskView.isFocusedTask();
             boolean isTaskInExpectedScrollPosition =
@@ -267,11 +286,11 @@ public interface TaskShortcutFactory {
             boolean isTaskSplitNotSupported = !task.isDockable;
             boolean hideForExistingMultiWindow = activity.getDeviceProfile().isMultiWindowMode;
 
-            if (taskViewHasMultipleTasks ||
-                    notEnoughTasksToSplit ||
-                    isTaskSplitNotSupported ||
-                    hideForExistingMultiWindow ||
-                    (isFocusedTask && isTaskInExpectedScrollPosition)) {
+            if (taskView.containsMultipleTasks()
+                    || notEnoughTasksToSplit
+                    || isTaskSplitNotSupported
+                    || hideForExistingMultiWindow
+                    || (isFocusedTask && isTaskInExpectedScrollPosition)) {
                 return null;
             }
 
@@ -280,6 +299,26 @@ public interface TaskShortcutFactory {
                     .map((Function<SplitPositionOption, SystemShortcut>) option ->
                             new SplitSelectSystemShortcut(activity, taskView, option))
                     .collect(Collectors.toList());
+        }
+    };
+
+    TaskShortcutFactory SAVE_APP_PAIR = new TaskShortcutFactory() {
+        @Nullable
+        @Override
+        public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
+                TaskIdAttributeContainer taskContainer) {
+            final TaskView taskView = taskContainer.getTaskView();
+
+            if (!FeatureFlags.ENABLE_APP_PAIRS.get() || !taskView.containsMultipleTasks()) {
+                return null;
+            }
+
+            return Collections.singletonList(new SaveAppPairSystemShortcut(activity, taskView));
+        }
+
+        @Override
+        public boolean showForSplitscreen() {
+            return true;
         }
     };
 
