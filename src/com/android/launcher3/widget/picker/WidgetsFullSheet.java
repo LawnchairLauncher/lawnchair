@@ -110,6 +110,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             entry -> !mCurrentUser.equals(entry.mPkgItem.user)
                     && !mUserManagerState.isUserQuiet(entry.mPkgItem.user);
     protected final boolean mHasWorkProfile;
+    protected boolean mHasRecommendedWidgets;
     protected final SparseArray<AdapterHolder> mAdapters = new SparseArray();
     @Nullable private ArrowTipView mLatestEducationalTip;
     private final OnLayoutChangeListener mLayoutChangeListenerToShowTips =
@@ -537,7 +538,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public void onSearchResults(List<WidgetsListBaseEntry> entries) {
         mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.setWidgetsOnSearch(entries);
         updateRecyclerViewVisibility(mAdapters.get(AdapterHolder.SEARCH));
-        mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView.scrollToTop();
     }
 
     protected void setViewVisibilityBasedOnSearch(boolean isInSearchMode) {
@@ -574,7 +574,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
         List<WidgetItem> recommendedWidgets =
                 mActivityContext.getPopupDataProvider().getRecommendedWidgets();
-        if (recommendedWidgets.size() > 0) {
+        mHasRecommendedWidgets = recommendedWidgets.size() > 0;
+        if (mHasRecommendedWidgets) {
             float noWidgetsViewHeight = 0;
             if (mIsNoWidgetsViewNeeded) {
                 // Make sure recommended section leaves enough space for noWidgetsView.
@@ -603,12 +604,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
             mRecommendedWidgetsTable.setRecommendedWidgets(
                     recommendedWidgetsInTable, maxTableHeight);
         } else {
-            hideRecommendations();
+            mRecommendedWidgetsTable.setVisibility(GONE);
         }
-    }
-
-    protected void hideRecommendations() {
-        mRecommendedWidgetsTable.setVisibility(GONE);
     }
 
     protected float getMaxTableHeight(float noWidgetsViewHeight) {
@@ -896,7 +893,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         final WidgetsListAdapter mWidgetsListAdapter;
         private final DefaultItemAnimator mWidgetsListItemAnimator;
 
-        private WidgetsRecyclerView mWidgetsRecyclerView;
+        WidgetsRecyclerView mWidgetsRecyclerView;
 
         AdapterHolder(int adapterType) {
             mAdapterType = adapterType;

@@ -182,12 +182,6 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
             UiObject2 widgetListView = verifyActiveContainer();
             UiObject2 header = mLauncher.waitForObjectInContainer(widgetListView,
                     headerSelector);
-            // If we are in a tablet in landscape mode then we will have a two pane view and we use
-            // the right pane to display the widgets table.
-            UiObject2 rightPane = mLauncher.findObjectInContainer(
-                    widgetPicker,
-                    widgetsContainerSelector);
-
             // If a header is barely visible in the bottom edge of the screen, its height could be
             // too small for a scroll gesture. Since all header should have roughly the same height,
             // let's pick the max height we have seen so far.
@@ -209,6 +203,12 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                     mLauncher.clickLauncherObject(headerTitle);
                 }
 
+                // If we are in a tablet in landscape mode then we will have a two pane view and we
+                // use the right pane to display the widgets table.
+                UiObject2 rightPane = mLauncher.findObjectInContainer(
+                        widgetPicker,
+                        widgetsContainerSelector);
+
                 // Look for a widgets list.
                 UiObject2 widgetsContainer = mLauncher.findObjectInContainer(
                         rightPane != null ? rightPane : widgetListView,
@@ -219,6 +219,13 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                 }
             }
             log("Finding test widget package - scroll with distance: " + scrollDistance);
+
+            // If we are in a tablet in landscape mode then we will have a two pane view and we use
+            // the right pane to display the widgets table.
+            UiObject2 rightPane = mLauncher.findObjectInContainer(
+                    widgetPicker,
+                    widgetsContainerSelector);
+
             mLauncher.scrollDownByDistance(hasHeaderExpanded && rightPane != null
                     ? rightPane
                     : widgetListView, scrollDistance);
