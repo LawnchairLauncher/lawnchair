@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">הקש כאן זה כדי להגדיר את Lawnchair כעמוד הבית שלך.</string>
     <string name="settings">הגדרות</string>
     <string name="general_label">כללי</string>
     <string name="general_description">Notification Dots, Icon Pack</string>
@@ -47,7 +47,7 @@
     <string name="font_picker_label">התאמת גופן</string>
     <string name="font_picker_description">טקסט מסוים נותר ללא שינוי.</string>
     <string name="smartspace_calendar_label">התאמות לוח שנה במבט מהיר</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
+    <string name="smartspace_calendar_description">אפשר הצגת תאריכים באמצעות מערכות לוח שנה לא גרגוריאניות.</string>
     <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
     <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
     <string name="always_reload_icons_label">Always Reload Icons</string>
