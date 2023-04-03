@@ -16,11 +16,13 @@
 
 package com.android.launcher3.uioverrides.flags;
 
+import com.android.launcher3.config.FeatureFlags.FlagState;
+
 class DeviceFlag extends DebugFlag {
 
     private final boolean mDefaultValueInCode;
 
-    public DeviceFlag(String key, String description, boolean defaultValue,
+    DeviceFlag(String key, String description, FlagState defaultValue,
             boolean currentValue, boolean defaultValueInCode) {
         super(key, description, defaultValue, currentValue);
         mDefaultValueInCode = defaultValueInCode;
