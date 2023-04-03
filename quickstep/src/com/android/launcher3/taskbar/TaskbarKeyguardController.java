@@ -1,17 +1,17 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
-import static com.android.systemui.shared.system.QuickStepContract.SCREEN_STATE_OFF;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_AWAKE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BACK_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BOUNCER_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DEVICE_DOZING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DEVICE_DREAMING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_ON;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_STATE_MASK;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_WAKEFULNESS_MASK;
+import static com.android.systemui.shared.system.QuickStepContract.WAKEFULNESS_ASLEEP;
 
 import android.app.KeyguardManager;
 
@@ -29,7 +29,7 @@ public class TaskbarKeyguardController implements TaskbarControllers.LoggableTas
             | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING | SYSUI_STATE_DEVICE_DOZING
             | SYSUI_STATE_OVERVIEW_DISABLED | SYSUI_STATE_HOME_DISABLED
             | SYSUI_STATE_BACK_DISABLED | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED
-            | SYSUI_STATE_SCREEN_STATE_MASK;
+            | SYSUI_STATE_WAKEFULNESS_MASK;
 
     // If any of these SysUi flags (via QuickstepContract) is set, the device to be considered
     // locked.
@@ -75,13 +75,13 @@ public class TaskbarKeyguardController implements TaskbarControllers.LoggableTas
                 keyguardOccluded);
         updateIconsForBouncer();
 
-        boolean screenOffOrTransitioningOff = (systemUiStateFlags & SYSUI_STATE_SCREEN_ON) == 0;
-        boolean closeFloatingViews = keyguardShowing || screenOffOrTransitioningOff;
+        boolean asleepOrGoingToSleep = (systemUiStateFlags & SYSUI_STATE_AWAKE) == 0;
+        boolean closeFloatingViews = keyguardShowing || asleepOrGoingToSleep;
 
         if (closeFloatingViews) {
-            // animate the closing of the views, unless the screen is already fully turned off.
+            // animate the closing of the views, unless the screen is already asleep.
             boolean animateViewClosing =
-                    (systemUiStateFlags & SYSUI_STATE_SCREEN_STATE_MASK) != SCREEN_STATE_OFF;
+                    (systemUiStateFlags & SYSUI_STATE_WAKEFULNESS_MASK) != WAKEFULNESS_ASLEEP;
             AbstractFloatingView.closeOpenViews(mContext, animateViewClosing, TYPE_ALL);
         }
     }
