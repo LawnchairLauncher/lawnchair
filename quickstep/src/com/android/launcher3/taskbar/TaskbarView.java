@@ -218,7 +218,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             mAllAppsButton.setOnClickListener(mControllerCallbacks.getAllAppsButtonClickListener());
         }
         if (mTaskbarDivider != null) {
-            //TODO(b/265434705): set long press listener
+            mTaskbarDivider.setOnLongClickListener(
+                    mControllerCallbacks.getTaskbarDividerLongClickListener());
         }
     }
 

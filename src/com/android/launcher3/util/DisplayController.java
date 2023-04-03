@@ -19,9 +19,10 @@ import static android.content.Intent.ACTION_CONFIGURATION_CHANGED;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 
+import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
 import static com.android.launcher3.Utilities.dpiFromPx;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_PINNING;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TRANSIENT_TASKBAR;
-import static com.android.launcher3.config.FeatureFlags.FORCE_PERSISTENT_TASKBAR;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
 import static com.android.launcher3.util.window.WindowManagerProxy.MIN_TABLET_WIDTH;
@@ -45,6 +46,7 @@ import androidx.annotation.AnyThread;
 import androidx.annotation.UiThread;
 import androidx.annotation.VisibleForTesting;
 
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.window.CachedDisplayInfo;
 import com.android.launcher3.util.window.WindowManagerProxy;
@@ -101,9 +103,12 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
     private Info mInfo;
     private boolean mDestroyed = false;
 
+    private final LauncherPrefs mPrefs;
+
     private DisplayController(Context context) {
         mContext = context;
         mDM = context.getSystemService(DisplayManager.class);
+        mPrefs = LauncherPrefs.get(context);
 
         Display display = mDM.getDisplay(DEFAULT_DISPLAY);
         if (Utilities.ATLEAST_S) {
@@ -144,7 +149,9 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         // TODO(b/258604917): When running in test harness, use !sTransientTaskbarStatusForTests
         //  once tests are updated to expect new persistent behavior such as not allowing long press
         //  to stash.
-        if (!Utilities.isRunningInTestHarness() && FORCE_PERSISTENT_TASKBAR.get()) {
+        if (!Utilities.isRunningInTestHarness()
+                && ENABLE_TASKBAR_PINNING.get()
+                && mPrefs.get(TASKBAR_PINNING)) {
             return false;
         }
         return getInfo().navigationMode == NavigationMode.NO_BUTTON
