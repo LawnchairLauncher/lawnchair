@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.Utilities.isRunningInTestHarness;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
 
@@ -80,10 +81,13 @@ public class FallbackTaskbarUIController extends TaskbarUIController {
      * Currently this animation just force stashes the taskbar in Overview.
      */
     public Animator createAnimToRecentsState(RecentsState toState, long duration) {
-        boolean useStashedLauncherState = toState.hasOverviewActions();
-        boolean stashedLauncherState =
-                useStashedLauncherState && FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get()
-                        && toState == RecentsState.MODAL_TASK;
+        // Force stash the taskbar in overview modal state or when going home. We do not force
+        // stash on home when running in a test as 3p launchers rely on taskbar instead of hotseat.
+        boolean isGoingHome = toState == RecentsState.HOME && !isRunningInTestHarness();
+        boolean useStashedLauncherState = toState.hasOverviewActions() || isGoingHome;
+        boolean stashedLauncherState = useStashedLauncherState && (
+                (FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get() && toState == RecentsState.MODAL_TASK)
+                        || isGoingHome);
         TaskbarStashController stashController = mControllers.taskbarStashController;
         // Set both FLAG_IN_STASHED_LAUNCHER_STATE and FLAG_IN_APP to ensure the state is respected.
         // For all other states, just use the current stashed-in-app setting (e.g. if long clicked).
