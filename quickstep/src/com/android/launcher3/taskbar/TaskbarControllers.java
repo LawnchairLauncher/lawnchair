@@ -48,7 +48,6 @@ public class TaskbarControllers {
     public final TaskbarKeyguardController taskbarKeyguardController;
     public final StashedHandleViewController stashedHandleViewController;
     public final TaskbarStashController taskbarStashController;
-    public final TaskbarEduController taskbarEduController;
     public final TaskbarAutohideSuspendController taskbarAutohideSuspendController;
     public final TaskbarPopupController taskbarPopupController;
     public final TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController;
@@ -95,7 +94,6 @@ public class TaskbarControllers {
             TaskbarKeyguardController taskbarKeyguardController,
             StashedHandleViewController stashedHandleViewController,
             TaskbarStashController taskbarStashController,
-            TaskbarEduController taskbarEduController,
             TaskbarAutohideSuspendController taskbarAutoHideSuspendController,
             TaskbarPopupController taskbarPopupController,
             TaskbarForceVisibleImmersiveController taskbarForceVisibleImmersiveController,
@@ -120,7 +118,6 @@ public class TaskbarControllers {
         this.taskbarKeyguardController = taskbarKeyguardController;
         this.stashedHandleViewController = stashedHandleViewController;
         this.taskbarStashController = taskbarStashController;
-        this.taskbarEduController = taskbarEduController;
         this.taskbarAutohideSuspendController = taskbarAutoHideSuspendController;
         this.taskbarPopupController = taskbarPopupController;
         this.taskbarForceVisibleImmersiveController = taskbarForceVisibleImmersiveController;
@@ -155,7 +152,6 @@ public class TaskbarControllers {
         taskbarSpringOnStashController.init(this);
         stashedHandleViewController.init(this);
         taskbarStashController.init(this, sharedState.setupUIVisible, mSharedState);
-        taskbarEduController.init(this);
         taskbarPopupController.init(this);
         taskbarForceVisibleImmersiveController.init(this);
         taskbarOverlayController.init(this);
@@ -172,7 +168,7 @@ public class TaskbarControllers {
                 taskbarDragController, navButtonController, navbarButtonsViewController,
                 taskbarDragLayerController, taskbarScrimViewController, taskbarViewController,
                 taskbarUnfoldAnimationController, taskbarKeyguardController,
-                stashedHandleViewController, taskbarStashController, taskbarEduController,
+                stashedHandleViewController, taskbarStashController,
                 taskbarAutohideSuspendController, taskbarPopupController, taskbarInsetsController,
                 voiceInteractionWindowController, taskbarTranslationController,
                 taskbarEduTooltipController, keyboardQuickSwitchController
