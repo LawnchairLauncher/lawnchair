@@ -1785,7 +1785,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 viewToUse = v;
             }
 
-            // TODO(b/265134143): create a CUJ type for interaction jank monitoring.
+            // The CUJ is logged by the click handler, so we don't log it inside the animation
+            // library.
             ActivityLaunchAnimator.Controller controllerDelegate =
                     ActivityLaunchAnimator.Controller.fromView(viewToUse, null /* cujType */);
 
