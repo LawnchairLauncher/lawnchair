@@ -641,7 +641,7 @@ public class QuickstepLauncher extends Launcher {
         PendingAnimation anim = new PendingAnimation(TABLET_HOME_TO_SPLIT.getDuration());
         RectF startingTaskRect = new RectF();
         final FloatingTaskView floatingTaskView = FloatingTaskView.getFloatingTaskView(this,
-                source.view, null /* thumbnail */, source.drawable, startingTaskRect);
+                source.getView(), null /* thumbnail */, source.getDrawable(), startingTaskRect);
         floatingTaskView.setAlpha(1);
         floatingTaskView.addStagingAnimation(anim, startingTaskRect, tempRect,
                 false /* fadeWithThumbnail */, true /* isStagedTask */);

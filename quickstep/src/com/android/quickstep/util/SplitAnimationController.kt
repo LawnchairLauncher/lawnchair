@@ -24,6 +24,7 @@ import android.view.View
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource
+import com.android.quickstep.views.IconView
 import com.android.quickstep.views.TaskThumbnailView
 import com.android.quickstep.views.TaskView
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer
@@ -52,21 +53,22 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
      * depending on the state of the surface from which the split was initiated
      */
     fun getFirstAnimInitViews(taskViewSupplier: Supplier<TaskView>,
-                              splitSelectSourceSupplier: Supplier<SplitSelectSource>)
+                              splitSelectSourceSupplier: Supplier<SplitSelectSource?>)
             : SplitAnimInitProps {
+        val splitSelectSource = splitSelectSourceSupplier.get()
         if (!splitSelectStateController.isAnimateCurrentTaskDismissal) {
             // Initiating from home
-            val splitSelectSource = splitSelectSourceSupplier.get()
-            return SplitAnimInitProps(splitSelectSource.view, originalBitmap = null,
+            return SplitAnimInitProps(splitSelectSource!!.view, originalBitmap = null,
                     splitSelectSource.drawable, fadeWithThumbnail = false, isStagedTask = true,
                     iconView = null)
         } else if (splitSelectStateController.isDismissingFromSplitPair) {
             // Initiating split from overview, but on a split pair
             val taskView = taskViewSupplier.get()
             for (container : TaskIdAttributeContainer in taskView.taskIdAttributeContainers) {
-                if (container.task.key.id == splitSelectStateController.initialTaskId) {
+                if (container.task.getKey().getId() == splitSelectStateController.initialTaskId) {
+                    val drawable = getDrawable(container.iconView, splitSelectSource)
                     return SplitAnimInitProps(container.thumbnailView,
-                            container.thumbnailView.thumbnail, container.iconView.drawable!!,
+                            container.thumbnailView.thumbnail, drawable!!,
                             fadeWithThumbnail = true, isStagedTask = true,
                             iconView = container.iconView
                     )
@@ -77,11 +79,25 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         } else {
             // Initiating split from overview on fullscreen task TaskView
             val taskView = taskViewSupplier.get()
+            val drawable = getDrawable(taskView.iconView, splitSelectSource)
             return SplitAnimInitProps(taskView.thumbnail, taskView.thumbnail.thumbnail,
-                    taskView.iconView.drawable!!, fadeWithThumbnail = true, isStagedTask = true,
+                    drawable!!, fadeWithThumbnail = true, isStagedTask = true,
                     taskView.iconView
             )
         }
+    }
+
+    /**
+     * Returns the drawable that's provided in iconView, however if that
+     * is null it falls back to the drawable that's in splitSelectSource.
+     * TaskView's icon drawable can be null if the TaskView is scrolled far enough off screen
+     * @return [Drawable]
+     */
+    fun getDrawable(iconView: IconView, splitSelectSource: SplitSelectSource?) : Drawable? {
+        if (iconView.drawable == null && splitSelectSource != null) {
+            return splitSelectSource.drawable
+        }
+        return iconView.drawable
     }
 
     /**
