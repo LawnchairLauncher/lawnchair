@@ -16,7 +16,10 @@
 
 package com.android.launcher3.uioverrides.flags;
 
+import static com.android.launcher3.config.FeatureFlags.FlagState.ENABLED;
+
 import com.android.launcher3.config.FeatureFlags.BooleanFlag;
+import com.android.launcher3.config.FeatureFlags.FlagState;
 import com.android.launcher3.config.FeatureFlags.IntFlag;
 
 import java.io.PrintWriter;
@@ -31,16 +34,16 @@ public class FlagsFactory {
      * Creates a new debug flag
      */
     public static BooleanFlag getDebugFlag(
-            int bugId, String key, boolean defaultValue, String description) {
-        return new BooleanFlag(defaultValue);
+            int bugId, String key, FlagState flagState, String description) {
+        return new BooleanFlag(flagState == ENABLED);
     }
 
     /**
      * Creates a new debug flag
      */
     public static BooleanFlag getReleaseFlag(
-            int bugId, String key, boolean defaultValueInCode, String description) {
-        return new BooleanFlag(defaultValueInCode);
+            int bugId, String key, FlagState flagState, String description) {
+        return new BooleanFlag(flagState == ENABLED);
     }
 
     /**
