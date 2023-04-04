@@ -20,7 +20,6 @@
     android:layout_marginBottom="16dp"
     android:clipChildren="false"
     android:clipToPadding="false"
-    android:fitsSystemWindows="true"
     android:focusable="true"
     android:importantForAccessibility="yes"
     android:gravity="center"
