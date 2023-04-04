@@ -777,6 +777,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     protected void onTaskbarIconClicked(View view) {
+        boolean shouldCloseAllOpenViews = true;
         Object tag = view.getTag();
         if (tag instanceof Task) {
             Task task = (Task) tag;
@@ -784,6 +785,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                     ActivityOptions.makeBasic());
             mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
         } else if (tag instanceof FolderInfo) {
+            shouldCloseAllOpenViews = false;
             FolderIcon folderIcon = (FolderIcon) view;
             Folder folder = folderIcon.getFolder();
 
@@ -880,7 +882,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             Log.e(TAG, "Unknown type clicked: " + tag);
         }
 
-        AbstractFloatingView.closeAllOpenViews(this);
+        if (shouldCloseAllOpenViews) {
+            AbstractFloatingView.closeAllOpenViews(this);
+        }
     }
 
     /**
