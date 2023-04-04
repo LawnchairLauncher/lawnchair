@@ -22,6 +22,7 @@ import android.view.WindowInsets;
 
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 
 /** All apps container accessible from taskbar. */
@@ -44,6 +45,10 @@ public class TaskbarAllAppsContainerView extends
 
     @Override
     protected View inflateSearchBox() {
+        if (isSearchSupported()) {
+            return super.inflateSearchBox();
+        }
+
         // Remove top padding of header, since we do not have any search
         mHeader.setPadding(mHeader.getPaddingLeft(), 0,
                 mHeader.getPaddingRight(), mHeader.getPaddingBottom());
@@ -57,7 +62,7 @@ public class TaskbarAllAppsContainerView extends
 
     @Override
     protected boolean isSearchSupported() {
-        return false;
+        return FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR.get();
     }
 
     @Override
