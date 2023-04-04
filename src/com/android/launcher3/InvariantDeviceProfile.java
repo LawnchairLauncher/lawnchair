@@ -41,7 +41,6 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.SparseArray;
-import android.util.TypedValue;
 import android.util.Xml;
 import android.view.Display;
 
@@ -58,11 +57,9 @@ import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
-import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LockedUserState;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Partner;
-import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.util.window.WindowManagerProxy;
 
@@ -76,6 +73,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class InvariantDeviceProfile {
 
@@ -150,8 +148,6 @@ public class InvariantDeviceProfile {
     public PointF[] allAppsBorderSpaces;
 
     public float[] transientTaskbarIconSize;
-
-    private SparseArray<TypedValue> mExtraAttrs;
 
     /**
      * Number of icons inside the hotseat area.
@@ -360,8 +356,6 @@ public class InvariantDeviceProfile {
 
         inlineNavButtonsEndSpacing = closestProfile.inlineNavButtonsEndSpacing;
 
-        mExtraAttrs = closestProfile.extraAttrs;
-
         iconSize = displayOption.iconSizes;
         float maxIconSize = iconSize[0];
         for (int i = 1; i < iconSize.length; i++) {
@@ -495,9 +489,8 @@ public class InvariantDeviceProfile {
                 if ((type == XmlPullParser.START_TAG)
                         && GridOption.TAG_NAME.equals(parser.getName())) {
 
-                    GridOption gridOption = new GridOption(context, Xml.asAttributeSet(parser),
-                            deviceType);
-                    if (gridOption.isEnabled || allowDisabledGrid) {
+                    GridOption gridOption = new GridOption(context, Xml.asAttributeSet(parser));
+                    if (gridOption.isEnabled(deviceType) || allowDisabledGrid) {
                         final int displayDepth = parser.getDepth();
                         while (((type = parser.next()) != XmlPullParser.END_TAG
                                 || parser.getDepth() > displayDepth)
@@ -519,7 +512,7 @@ public class InvariantDeviceProfile {
         if (!TextUtils.isEmpty(gridName)) {
             for (DisplayOption option : profiles) {
                 if (gridName.equals(option.grid.name)
-                        && (option.grid.isEnabled || allowDisabledGrid)) {
+                        && (option.grid.isEnabled(deviceType) || allowDisabledGrid)) {
                     filteredProfiles.add(option);
                 }
             }
@@ -542,6 +535,16 @@ public class InvariantDeviceProfile {
      * @return all the grid options that can be shown on the device
      */
     public List<GridOption> parseAllGridOptions(Context context) {
+        return parseAllDefinedGridOptions(context)
+                .stream()
+                .filter(go -> go.isEnabled(deviceType))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * @return all the grid options that can be shown on the device
+     */
+    public static List<GridOption> parseAllDefinedGridOptions(Context context) {
         List<GridOption> result = new ArrayList<>();
 
         try (XmlResourceParser parser = context.getResources().getXml(R.xml.device_profiles)) {
@@ -551,11 +554,7 @@ public class InvariantDeviceProfile {
                     || parser.getDepth() > depth) && type != XmlPullParser.END_DOCUMENT) {
                 if ((type == XmlPullParser.START_TAG)
                         && GridOption.TAG_NAME.equals(parser.getName())) {
-                    GridOption option =
-                            new GridOption(context, Xml.asAttributeSet(parser), deviceType);
-                    if (option.isEnabled) {
-                        result.add(option);
-                    }
+                    result.add(new GridOption(context, Xml.asAttributeSet(parser)));
                 }
             }
         } catch (IOException | XmlPullParserException e) {
@@ -774,7 +773,7 @@ public class InvariantDeviceProfile {
         public final int numRows;
         public final int numColumns;
         public final int numSearchContainerColumns;
-        public final boolean isEnabled;
+        public final int deviceCategory;
 
         private final int numFolderRows;
         private final int numFolderColumns;
@@ -800,9 +799,7 @@ public class InvariantDeviceProfile {
         private final boolean isScalable;
         private final int devicePaddingId;
 
-        private final SparseArray<TypedValue> extraAttrs;
-
-        public GridOption(Context context, AttributeSet attrs, @DeviceType int deviceType) {
+        public GridOption(Context context, AttributeSet attrs) {
             TypedArray a = context.obtainStyledAttributes(
                     attrs, R.styleable.GridDisplayOption);
             name = a.getString(R.styleable.GridDisplayOption_name);
@@ -859,16 +856,8 @@ public class InvariantDeviceProfile {
                     R.styleable.GridDisplayOption_isScalable, false);
             devicePaddingId = a.getResourceId(
                     R.styleable.GridDisplayOption_devicePaddingId, INVALID_RESOURCE_HANDLE);
-
-            int deviceCategory = a.getInt(R.styleable.GridDisplayOption_deviceCategory,
+            deviceCategory = a.getInt(R.styleable.GridDisplayOption_deviceCategory,
                     DEVICE_CATEGORY_ALL);
-            isEnabled = (deviceType == TYPE_PHONE
-                        && ((deviceCategory & DEVICE_CATEGORY_PHONE) == DEVICE_CATEGORY_PHONE))
-                    || (deviceType == TYPE_TABLET
-                        && ((deviceCategory & DEVICE_CATEGORY_TABLET) == DEVICE_CATEGORY_TABLET))
-                    || (deviceType == TYPE_MULTI_DISPLAY
-                        && ((deviceCategory & DEVICE_CATEGORY_MULTI_DISPLAY)
-                            == DEVICE_CATEGORY_MULTI_DISPLAY));
 
             int inlineForRotation = a.getInt(R.styleable.GridDisplayOption_inlineQsb,
                     DONT_INLINE_QSB);
@@ -884,8 +873,20 @@ public class InvariantDeviceProfile {
                             == INLINE_QSB_FOR_TWO_PANEL_LANDSCAPE;
 
             a.recycle();
-            extraAttrs = Themes.createValueMap(context, attrs,
-                    IntArray.wrap(R.styleable.GridDisplayOption));
+        }
+
+        public boolean isEnabled(@DeviceType int deviceType) {
+            switch (deviceType) {
+                case TYPE_PHONE:
+                    return (deviceCategory & DEVICE_CATEGORY_PHONE) == DEVICE_CATEGORY_PHONE;
+                case TYPE_TABLET:
+                    return (deviceCategory & DEVICE_CATEGORY_TABLET) == DEVICE_CATEGORY_TABLET;
+                case TYPE_MULTI_DISPLAY:
+                    return (deviceCategory & DEVICE_CATEGORY_MULTI_DISPLAY)
+                            == DEVICE_CATEGORY_MULTI_DISPLAY;
+                default:
+                    return false;
+            }
         }
     }
 
