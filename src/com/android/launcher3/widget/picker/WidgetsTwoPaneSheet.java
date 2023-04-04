@@ -54,6 +54,7 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
     private ScrollView mRightPaneScrollView;
     private WidgetsListTableViewHolderBinder mWidgetsListTableViewHolderBinder;
+    private int mActivePage = -1;
 
     private final ViewOutlineProvider mViewOutlineProviderRightPane = new ViewOutlineProvider() {
         @Override
@@ -107,7 +108,6 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
         mRightPaneScrollView = mContent.findViewById(R.id.right_pane_scroll_view);
         mRightPaneScrollView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 
-        setupSuggestedWidgets(layoutInflater);
         onRecommendedWidgetsBound();
         onWidgetsBound();
         setUpEducationViewsIfNeeded();
@@ -117,9 +117,13 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
     }
 
     @Override
-    protected void hideRecommendations() {
-        super.hideRecommendations();
-        mSuggestedWidgetsContainer.setVisibility(GONE);
+    public void onRecommendedWidgetsBound() {
+        super.onRecommendedWidgetsBound();
+
+        if (mSuggestedWidgetsContainer == null && mHasRecommendedWidgets) {
+            setupSuggestedWidgets(LayoutInflater.from(getContext()));
+            mSuggestedWidgetsHeader.callOnClick();
+        }
     }
 
     private void setupSuggestedWidgets(LayoutInflater layoutInflater) {
@@ -168,13 +172,21 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
     @Override
     public void onActivePageChanged(int currentActivePage) {
-        // if the current active page changes to personal or work we set suggestions
-        // to be the selected widget
-        if (currentActivePage == PERSONAL_TAB || currentActivePage == WORK_TAB) {
-            mSuggestedWidgetsHeader.callOnClick();
+        super.onActivePageChanged(currentActivePage);
+
+        // If active page didn't change then we don't want to update the header.
+        if (mActivePage == currentActivePage) {
+            return;
         }
 
-        super.onActivePageChanged(currentActivePage);
+        mActivePage = currentActivePage;
+
+        if (mSuggestedWidgetsHeader == null) {
+            mAdapters.get(currentActivePage).mWidgetsListAdapter.selectFirstHeaderEntry();
+            mAdapters.get(currentActivePage).mWidgetsRecyclerView.scrollToTop();
+        } else if (currentActivePage == PERSONAL_TAB || currentActivePage == WORK_TAB) {
+            mSuggestedWidgetsHeader.callOnClick();
+        }
     }
 
     @Override
@@ -188,15 +200,10 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        mSuggestedWidgetsContainer.setVisibility(VISIBLE);
-    }
-
-    @Override
     public void onSearchResults(List<WidgetsListBaseEntry> entries) {
         super.onSearchResults(entries);
         mAdapters.get(AdapterHolder.SEARCH).mWidgetsListAdapter.selectFirstHeaderEntry();
+        mAdapters.get(AdapterHolder.SEARCH).mWidgetsRecyclerView.scrollToTop();
     }
 
     @Override
@@ -208,13 +215,19 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
     @Override
     protected void setViewVisibilityBasedOnSearch(boolean isInSearchMode) {
-        if (isInSearchMode) {
-            mSuggestedWidgetsContainer.setVisibility(GONE);
-        } else {
-            mSuggestedWidgetsContainer.setVisibility(VISIBLE);
-            mSuggestedWidgetsHeader.callOnClick();
-        }
         super.setViewVisibilityBasedOnSearch(isInSearchMode);
+
+        if (mSuggestedWidgetsHeader != null && mSuggestedWidgetsContainer != null) {
+            if (!isInSearchMode) {
+                mSuggestedWidgetsContainer.setVisibility(VISIBLE);
+                mSuggestedWidgetsHeader.callOnClick();
+            } else {
+                mSuggestedWidgetsContainer.setVisibility(GONE);
+            }
+        } else if (!isInSearchMode) {
+            mAdapters.get(mActivePage).mWidgetsListAdapter.selectFirstHeaderEntry();
+        }
+
     }
 
     @Override

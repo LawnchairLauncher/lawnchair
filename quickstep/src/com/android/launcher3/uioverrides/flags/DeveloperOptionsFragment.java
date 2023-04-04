@@ -39,6 +39,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.ArrayMap;
 import android.util.Pair;
@@ -182,9 +183,16 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
     }
 
     private PreferenceCategory newCategory(String title) {
+        return newCategory(title, null);
+    }
+
+    private PreferenceCategory newCategory(String title, @Nullable String summary) {
         PreferenceCategory category = new PreferenceCategory(getContext());
         category.setOrder(Preference.DEFAULT_ORDER);
         category.setTitle(title);
+        if (!TextUtils.isEmpty(summary)) {
+            category.setSummary(summary);
+        }
         mPreferenceScreen.addPreference(category);
         return category;
     }
@@ -195,7 +203,7 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         }
 
         mFlagTogglerPrefUi = new FlagTogglerPrefUi(this);
-        mFlagTogglerPrefUi.applyTo(newCategory("Feature flags"));
+        mFlagTogglerPrefUi.applyTo(newCategory("Feature flags", "Long press to reset"));
     }
 
     @Override

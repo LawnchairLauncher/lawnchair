@@ -641,7 +641,7 @@ public class QuickstepLauncher extends Launcher {
         PendingAnimation anim = new PendingAnimation(TABLET_HOME_TO_SPLIT.getDuration());
         RectF startingTaskRect = new RectF();
         final FloatingTaskView floatingTaskView = FloatingTaskView.getFloatingTaskView(this,
-                source.view, null /* thumbnail */, source.drawable, startingTaskRect);
+                source.getView(), null /* thumbnail */, source.getDrawable(), startingTaskRect);
         floatingTaskView.setAlpha(1);
         floatingTaskView.addStagingAnimation(anim, startingTaskRect, tempRect,
                 false /* fadeWithThumbnail */, true /* isStagedTask */);
@@ -745,6 +745,10 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     protected void registerBackDispatcher() {
+        if (!FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
+            super.registerBackDispatcher();
+            return;
+        }
         getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
                 OnBackInvokedDispatcher.PRIORITY_DEFAULT,
                 new OnBackAnimationCallback() {
