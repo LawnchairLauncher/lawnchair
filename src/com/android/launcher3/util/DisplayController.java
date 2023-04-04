@@ -392,6 +392,13 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
             return dpiFromPx(Math.min(bounds.bounds.width(), bounds.bounds.height()), densityDpi);
         }
 
+        /**
+         * Returns all displays for the device
+         */
+        public Set<CachedDisplayInfo> getAllDisplays() {
+            return Collections.unmodifiableSet(mPerDisplayBounds.keySet());
+        }
+
         public int getDensityDpi() {
             return densityDpi;
         }
