@@ -193,7 +193,7 @@
     <dimen name="widget_list_header_view_vertical_padding">20dp</dimen>
     <dimen name="widget_list_entry_spacing">2dp</dimen>
     <dimen name="widget_list_horizontal_margin">16dp</dimen>
-    <dimen name="widget_list_horizontal_margin_large_screen">24dp</dimen>
+    <dimen name="widget_list_horizontal_margin_two_pane">24dp</dimen>
 
     <dimen name="widget_preview_shadow_blur">0.5dp</dimen>
     <dimen name="widget_preview_key_shadow_distance">1dp</dimen>
