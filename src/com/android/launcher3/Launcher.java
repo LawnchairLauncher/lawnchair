@@ -288,6 +288,9 @@ public class Launcher extends StatefulActivity<LauncherState>
     // Type PendingSplitSelectInfo<Parcelable>
     protected static final String PENDING_SPLIT_SELECT_INFO = "launcher.pending_split_select_info";
 
+    public static final String INTENT_ACTION_ALL_APPS_TOGGLE =
+            "launcher.intent_action_all_apps_toggle";
+
     public static final String ON_CREATE_EVT = "Launcher.onCreate";
     public static final String ON_START_EVT = "Launcher.onStart";
     public static final String ON_RESUME_EVT = "Launcher.onResume";
@@ -1687,11 +1690,21 @@ public class Launcher extends StatefulActivity<LauncherState>
             handleGestureContract(intent);
         } else if (Intent.ACTION_ALL_APPS.equals(intent.getAction())) {
             showAllAppsFromIntent(alreadyOnHome);
+        } else if (INTENT_ACTION_ALL_APPS_TOGGLE.equals(intent.getAction())) {
+            toggleAllAppsFromIntent(alreadyOnHome);
         } else if (Intent.ACTION_SHOW_WORK_APPS.equals(intent.getAction())) {
             showAllAppsWorkTabFromIntent(alreadyOnHome);
         }
 
         TraceHelper.INSTANCE.endSection(traceToken);
+    }
+
+    protected void toggleAllAppsFromIntent(boolean alreadyOnHome) {
+        if (getStateManager().isInStableState(ALL_APPS)) {
+            getStateManager().goToState(NORMAL, alreadyOnHome);
+        } else {
+            showAllAppsFromIntent(alreadyOnHome);
+        }
     }
 
     protected void showAllAppsFromIntent(boolean alreadyOnHome) {
