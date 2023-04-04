@@ -267,6 +267,8 @@ public class DeviceProfile {
     public final int stashedTaskbarHeight;
     public final int taskbarBottomMargin;
     public final int taskbarIconSize;
+    // If true, used to layout taskbar in 3 button navigation mode.
+    public final boolean startAlignTaskbar;
 
     // DragController
     public int flingToDeleteThresholdVelocity;
@@ -338,12 +340,14 @@ public class DeviceProfile {
                     res.getDimensionPixelSize(R.dimen.transient_taskbar_stashed_height);
             taskbarBottomMargin =
                     res.getDimensionPixelSize(R.dimen.transient_taskbar_bottom_margin);
+            startAlignTaskbar = false;
         } else {
             taskbarIconSize = pxFromDp(ResourcesCompat.getFloat(res, R.dimen.taskbar_icon_size),
                     mMetrics);
             taskbarHeight = res.getDimensionPixelSize(R.dimen.taskbar_size);
             stashedTaskbarHeight = res.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
             taskbarBottomMargin = 0;
+            startAlignTaskbar = inv.startAlignTaskbar[mTypeIndex];
         }
 
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
