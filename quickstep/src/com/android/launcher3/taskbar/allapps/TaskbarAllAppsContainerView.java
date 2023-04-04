@@ -18,7 +18,6 @@ package com.android.launcher3.taskbar.allapps;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.WindowInsets;
 
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
@@ -34,12 +33,6 @@ public class TaskbarAllAppsContainerView extends
 
     public TaskbarAllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-    }
-
-    @Override
-    public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        setInsets(insets.getInsets(WindowInsets.Type.systemBars()).toRect());
-        return super.onApplyWindowInsets(insets);
     }
 
     @Override
