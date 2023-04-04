@@ -120,7 +120,9 @@ public class TaskbarOverlayDragLayer extends
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        return updateInsetsDueToStashing(insets);
+        insets = updateInsetsDueToStashing(insets);
+        setInsets(insets.getInsets(WindowInsets.Type.systemBars()).toRect());
+        return insets;
     }
 
     @Override

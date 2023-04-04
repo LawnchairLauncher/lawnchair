@@ -25,7 +25,8 @@
     android:clipToOutline="true"
     android:alpha="0"
     android:visibility="invisible"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    app:layout_ignoreInsets="true">
 
     <HorizontalScrollView
         android:id="@+id/scroll_view"
