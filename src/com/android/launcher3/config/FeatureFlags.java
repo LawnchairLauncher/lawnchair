@@ -222,9 +222,9 @@ public final class FeatureFlags {
             "ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT", DISABLED,
             "Enables displaying the all apps button in the hotseat.");
 
-    public static final BooleanFlag ENABLE_ALL_APPS_ONE_SEARCH_IN_TASKBAR = getDebugFlag(270393900,
-            "ENABLE_ALL_APPS_ONE_SEARCH_IN_TASKBAR", DISABLED,
-            "Enables One Search box in Taskbar All Apps.");
+    public static final BooleanFlag ENABLE_ALL_APPS_SEARCH_IN_TASKBAR = getDebugFlag(270393900,
+            "ENABLE_ALL_APPS_SEARCH_IN_TASKBAR", DISABLED,
+            "Enables Search box in Taskbar All Apps.");
 
     public static final BooleanFlag ENABLE_SPLIT_FROM_WORKSPACE = getDebugFlag(270393906,
             "ENABLE_SPLIT_FROM_WORKSPACE", ENABLED,
