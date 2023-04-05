@@ -58,6 +58,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tmInsets.right: 0.0px (0.0dp)\n" +
                     "\tmInsets.bottom: 126.0px (48.0dp)\n" +
                     "\taspectRatio:2.2222223\n" +
+                    "\tisResponsiveGrid:false\n" +
                     "\tisScalableGrid:false\n" +
                     "\tinv.numRows: 5\n" +
                     "\tinv.numColumns: 5\n" +
@@ -193,6 +194,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tmInsets.right: 0.0px (0.0dp)\n" +
                     "\tmInsets.bottom: 63.0px (24.0dp)\n" +
                     "\taspectRatio:2.2222223\n" +
+                    "\tisResponsiveGrid:false\n" +
                     "\tisScalableGrid:false\n" +
                     "\tinv.numRows: 5\n" +
                     "\tinv.numColumns: 5\n" +
@@ -328,6 +330,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tmInsets.right: 126.0px (48.0dp)\n" +
                     "\tmInsets.bottom: 0.0px (0.0dp)\n" +
                     "\taspectRatio:2.2222223\n" +
+                    "\tisResponsiveGrid:false\n" +
                     "\tisScalableGrid:false\n" +
                     "\tinv.numRows: 5\n" +
                     "\tinv.numColumns: 5\n" +
@@ -463,6 +466,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tmInsets.right: 0.0px (0.0dp)\n" +
                     "\tmInsets.bottom: 63.0px (24.0dp)\n" +
                     "\taspectRatio:2.2222223\n" +
+                    "\tisResponsiveGrid:false\n" +
                     "\tisScalableGrid:false\n" +
                     "\tinv.numRows: 5\n" +
                     "\tinv.numColumns: 5\n" +
@@ -599,6 +603,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tmInsets.right: 0.0px (0.0dp)\n" +
                     "\tmInsets.bottom: 0.0px (0.0dp)\n" +
                     "\taspectRatio:1.6\n" +
+                    "\tisResponsiveGrid:false\n" +
                     "\tisScalableGrid:true\n" +
                     "\tinv.numRows: 5\n" +
                     "\tinv.numColumns: 6\n" +
@@ -735,6 +740,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tmInsets.right: 0.0px (0.0dp)\n" +
                     "\tmInsets.bottom: 0.0px (0.0dp)\n" +
                     "\taspectRatio:1.6\n" +
+                    "\tisResponsiveGrid:false\n" +
                     "\tisScalableGrid:true\n" +
                     "\tinv.numRows: 5\n" +
                     "\tinv.numColumns: 6\n" +
@@ -871,6 +877,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tmInsets.right: 0.0px (0.0dp)\n" +
                     "\tmInsets.bottom: 0.0px (0.0dp)\n" +
                     "\taspectRatio:1.6\n" +
+                    "\tisResponsiveGrid:false\n" +
                     "\tisScalableGrid:true\n" +
                     "\tinv.numRows: 5\n" +
                     "\tinv.numColumns: 6\n" +
@@ -1007,6 +1014,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tmInsets.right: 0.0px (0.0dp)\n" +
                     "\tmInsets.bottom: 0.0px (0.0dp)\n" +
                     "\taspectRatio:1.6\n" +
+                    "\tisResponsiveGrid:false\n" +
                     "\tisScalableGrid:true\n" +
                     "\tinv.numRows: 5\n" +
                     "\tinv.numColumns: 6\n" +
@@ -1148,6 +1156,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tmInsets.right: 0.0px (0.0dp)\n" +
                     "\tmInsets.bottom: 0.0px (0.0dp)\n" +
                     "\taspectRatio:1.2\n" +
+                    "\tisResponsiveGrid:false\n" +
                     "\tisScalableGrid:false\n" +
                     "\tinv.numRows: 4\n" +
                     "\tinv.numColumns: 4\n" +
@@ -1288,6 +1297,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tmInsets.right: 0.0px (0.0dp)\n" +
                     "\tmInsets.bottom: 0.0px (0.0dp)\n" +
                     "\taspectRatio:1.2\n" +
+                    "\tisResponsiveGrid:false\n" +
                     "\tisScalableGrid:false\n" +
                     "\tinv.numRows: 4\n" +
                     "\tinv.numColumns: 4\n" +
@@ -1428,6 +1438,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tmInsets.right: 0.0px (0.0dp)\n" +
                     "\tmInsets.bottom: 0.0px (0.0dp)\n" +
                     "\taspectRatio:1.2\n" +
+                    "\tisResponsiveGrid:false\n" +
                     "\tisScalableGrid:false\n" +
                     "\tinv.numRows: 4\n" +
                     "\tinv.numColumns: 4\n" +
@@ -1564,6 +1575,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tmInsets.right: 0.0px (0.0dp)\n" +
                     "\tmInsets.bottom: 0.0px (0.0dp)\n" +
                     "\taspectRatio:1.2\n" +
+                    "\tisResponsiveGrid:false\n" +
                     "\tisScalableGrid:false\n" +
                     "\tinv.numRows: 4\n" +
                     "\tinv.numColumns: 4\n" +

@@ -420,6 +420,10 @@ public final class FeatureFlags {
 
     // TODO(Block 32): Empty block
 
+    public static final BooleanFlag ENABLE_RESPONSIVE_WORKSPACE = getDebugFlag(241386436,
+            "ENABLE_RESPONSIVE_WORKSPACE", DISABLED,
+            "Enables new workspace grid calculations method.");
+
     public static class BooleanFlag {
 
         private final boolean mCurrentValue;
