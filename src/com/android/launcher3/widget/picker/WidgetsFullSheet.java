@@ -689,7 +689,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         WidgetsFullSheet sheet;
         if (isTwoPane) {
             sheet = (WidgetsTwoPaneSheet) launcher.getLayoutInflater().inflate(
-                    R.layout.widgets_full_sheet_large_screen,
+                    R.layout.widgets_two_pane_sheet,
                     launcher.getDragLayer(),
                     false);
         } else {
