@@ -64,7 +64,7 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
                     0,
                     view.getMeasuredWidth(),
                     view.getMeasuredHeight() - getResources().getDimensionPixelSize(
-                            R.dimen.widget_list_horizontal_margin_large_screen),
+                            R.dimen.widget_list_horizontal_margin_two_pane),
                     view.getResources().getDimensionPixelSize(
                             R.dimen.widget_list_top_bottom_corner_radius)
             );
@@ -91,8 +91,8 @@ public class WidgetsTwoPaneSheet extends WidgetsFullSheet {
 
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
 
-        int contentLayoutRes = mHasWorkProfile ? R.layout.widgets_full_sheet_paged_view_large_screen
-                : R.layout.widgets_full_sheet_recyclerview_large_screen;
+        int contentLayoutRes = mHasWorkProfile ? R.layout.widgets_two_pane_sheet_paged_view
+                : R.layout.widgets_two_pane_sheet_recyclerview;
         layoutInflater.inflate(contentLayoutRes, findViewById(R.id.recycler_view_container), true);
 
         setupViews();
