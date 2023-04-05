@@ -344,6 +344,10 @@ public final class FeatureFlags {
             "LARGE_SCREEN_WIDGET_PICKER", ENABLED, "Enable new widget picker that takes "
                     + "advantage of large screen format");
 
+    public static final BooleanFlag MULTI_SELECT_EDIT_MODE = getDebugFlag(270709220,
+            "MULTI_SELECT_EDIT_MODE", DISABLED, "Enable new multi-select edit mode "
+                    + "for home screen");
+
     public static final BooleanFlag ENABLE_NEW_GESTURE_NAV_TUTORIAL = getDebugFlag(270396257,
             "ENABLE_NEW_GESTURE_NAV_TUTORIAL", ENABLED,
             "Enable the redesigned gesture navigation tutorial");
