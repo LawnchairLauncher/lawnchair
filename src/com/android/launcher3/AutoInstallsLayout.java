@@ -24,30 +24,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Process;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Patterns;
 import android.util.Xml;
 
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.icons.GraphicsUtils;
-import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.qsb.QsbContainerView;
+import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.Partner;
@@ -58,6 +57,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -135,6 +135,7 @@ public class AutoInstallsLayout {
     private static final String ATTR_TITLE = "title";
     private static final String ATTR_TITLE_TEXT = "titleText";
     private static final String ATTR_SCREEN = "screen";
+    private static final String ATTR_SHORTCUT_ID = "shortcutId";
 
     // x and y can be specified as negative integers, in which case -1 represents the
     // last row / column, -2 represents the second last, and so on.
@@ -143,8 +144,6 @@ public class AutoInstallsLayout {
 
     private static final String ATTR_SPAN_X = "spanX";
     private static final String ATTR_SPAN_Y = "spanY";
-    private static final String ATTR_ICON = "icon";
-    private static final String ATTR_URL = "url";
 
     // Attrs for "Include"
     private static final String ATTR_WORKSPACE = "workspace";
@@ -156,10 +155,8 @@ public class AutoInstallsLayout {
     private static final String HOTSEAT_CONTAINER_NAME =
             Favorites.containerToString(Favorites.CONTAINER_HOTSEAT);
 
-    @Thunk
-    final Context mContext;
-    @Thunk
-    final LauncherWidgetHolder mAppWidgetHolder;
+    protected final Context mContext;
+    protected final LauncherWidgetHolder mAppWidgetHolder;
     protected final LayoutParserCallback mCallback;
 
     protected final PackageManager mPackageManager;
@@ -308,7 +305,15 @@ public class AutoInstallsLayout {
         mValues.put(Favorites.SPANY, 1);
         mValues.put(Favorites._ID, id);
 
-        maybeReplaceShortcut(intent.getComponent().getPackageName(), type);
+        if (type == ITEM_TYPE_APPLICATION) {
+            ComponentName cn = intent.getComponent();
+            if (cn != null && mActivityOverride.containsKey(cn.getPackageName())) {
+                LauncherActivityInfo replacementInfo = mActivityOverride.get(cn.getPackageName());
+                mValues.put(Favorites.PROFILE_ID, UserCache.INSTANCE.get(mContext)
+                        .getSerialNumberForUser(replacementInfo.getUser()));
+                mValues.put(Favorites.INTENT, AppInfo.makeLaunchIntent(replacementInfo).toUri(0));
+            }
+        }
 
         if (mCallback.insertAndCheck(mDb, mValues) < 0) {
             return -1;
@@ -321,7 +326,7 @@ public class AutoInstallsLayout {
         ArrayMap<String, TagParser> parsers = new ArrayMap<>();
         parsers.put(TAG_APP_ICON, new AppShortcutParser());
         parsers.put(TAG_AUTO_INSTALL, new AutoInstallParser());
-        parsers.put(TAG_SHORTCUT, new ShortcutParser(mSourceRes));
+        parsers.put(TAG_SHORTCUT, new ShortcutParser());
         return parsers;
     }
 
@@ -332,7 +337,7 @@ public class AutoInstallsLayout {
         parsers.put(TAG_FOLDER, new FolderParser());
         parsers.put(TAG_APPWIDGET, new PendingWidgetParser());
         parsers.put(TAG_SEARCH_WIDGET, new SearchWidgetParser());
-        parsers.put(TAG_SHORTCUT, new ShortcutParser(mSourceRes));
+        parsers.put(TAG_SHORTCUT, new ShortcutParser());
         return parsers;
     }
 
@@ -420,59 +425,27 @@ public class AutoInstallsLayout {
     }
 
     /**
-     * Parses a web shortcut. Required attributes url, icon, title
+     * Parses a deep shortcut. Required attributes packageName and shortcutId
      */
     protected class ShortcutParser implements TagParser {
 
-        private final Resources mIconRes;
-
-        public ShortcutParser(Resources iconRes) {
-            mIconRes = iconRes;
-        }
-
         @Override
         public int parseAndAdd(XmlPullParser parser) {
-            final int titleResId = getAttributeResourceValue(parser, ATTR_TITLE, 0);
-            final int iconId = getAttributeResourceValue(parser, ATTR_ICON, 0);
+            final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
+            final String shortcutId = getAttributeValue(parser, ATTR_SHORTCUT_ID);
 
-            if (titleResId == 0 || iconId == 0) {
-                if (LOGD) Log.d(TAG, "Ignoring shortcut");
-                return -1;
+            try {
+                LauncherApps launcherApps = mContext.getSystemService(LauncherApps.class);
+                launcherApps.pinShortcuts(packageName, Collections.singletonList(shortcutId),
+                        Process.myUserHandle());
+                Intent intent = ShortcutKey.makeIntent(shortcutId, packageName);
+                mValues.put(Favorites.RESTORED, WorkspaceItemInfo.FLAG_RESTORED_ICON);
+                return addShortcut(null, intent, Favorites.ITEM_TYPE_DEEP_SHORTCUT);
+            } catch (Exception e) {
+                Log.e(TAG, "Unable to pin the shortcut for shortcut id = " + shortcutId
+                        + " and package name = " + packageName, e);
             }
-
-            final Intent intent = parseIntent(parser);
-            if (intent == null) {
-                return -1;
-            }
-
-            Drawable icon = mIconRes.getDrawable(iconId);
-            if (icon == null) {
-                if (LOGD) Log.d(TAG, "Ignoring shortcut, can't load icon");
-                return -1;
-            }
-
-            // Auto installs should always support the current platform version.
-            LauncherIcons li = LauncherIcons.obtain(mContext);
-            mValues.put(LauncherSettings.Favorites.ICON, GraphicsUtils.flattenBitmap(
-                    li.createBadgedIconBitmap(icon).icon));
-            li.recycle();
-
-            mValues.put(Favorites.ICON_PACKAGE, mIconRes.getResourcePackageName(iconId));
-            mValues.put(Favorites.ICON_RESOURCE, mIconRes.getResourceName(iconId));
-
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            return addShortcut(mSourceRes.getString(titleResId),
-                    intent, Favorites.ITEM_TYPE_SHORTCUT);
-        }
-
-        protected Intent parseIntent(XmlPullParser parser) {
-            final String url = getAttributeValue(parser, ATTR_URL);
-            if (TextUtils.isEmpty(url) || !Patterns.WEB_URL.matcher(url).matches()) {
-                if (LOGD) Log.d(TAG, "Ignoring shortcut, invalid url: " + url);
-                return null;
-            }
-            return new Intent(Intent.ACTION_VIEW, null).setData(Uri.parse(url));
+            return -1;
         }
     }
 
@@ -728,12 +701,4 @@ public class AutoInstallsLayout {
         to.put(key, from.getAsInteger(key));
     }
 
-    private void maybeReplaceShortcut(String packageName, int type) {
-        if (mActivityOverride.containsKey(packageName) && type == ITEM_TYPE_APPLICATION) {
-            LauncherActivityInfo replacementInfo = mActivityOverride.get(packageName);
-            mValues.put(Favorites.PROFILE_ID, UserCache.INSTANCE.get(mContext)
-                    .getSerialNumberForUser(replacementInfo.getUser()));
-            mValues.put(Favorites.INTENT, AppInfo.makeLaunchIntent(replacementInfo).toUri(0));
-        }
-    }
 }
