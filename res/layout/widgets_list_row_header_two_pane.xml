@@ -24,7 +24,7 @@
     android:focusable="true"
     launcher:appIconSize="48dp"
     android:descendantFocusability="afterDescendants"
-    android:background="@drawable/bg_widgets_header_large_screen" >
+    android:background="@drawable/bg_widgets_header_two_pane" >
 
     <ImageView
         android:id="@+id/app_icon"
