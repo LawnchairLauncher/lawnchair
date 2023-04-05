@@ -153,6 +153,9 @@ abstract class FakeInvariantDeviceProfileTest {
 
                 isScalable = true
 
+                transientTaskbarIconSize = FloatArray(4) { 44f }
+                startAlignTaskbar = BooleanArray(4) { false }
+
                 inlineQsb = BooleanArray(4) { false }
 
                 devicePaddingId = R.xml.paddings_handhelds
@@ -233,6 +236,9 @@ abstract class FakeInvariantDeviceProfileTest {
                 isScalable = true
                 devicePaddingId = R.xml.paddings_6x5
 
+                transientTaskbarIconSize = FloatArray(4) { 44f }
+                startAlignTaskbar = booleanArrayOf(true, false, true, true)
+
                 inlineQsb = booleanArrayOf(false, true, false, false)
 
                 devicePaddingId = R.xml.paddings_handhelds
@@ -307,6 +313,9 @@ abstract class FakeInvariantDeviceProfileTest {
                 numDatabaseAllAppsColumns = 6
 
                 isScalable = true
+
+                transientTaskbarIconSize = FloatArray(4) { 44f }
+                startAlignTaskbar = BooleanArray(4) { true }
 
                 inlineQsb = booleanArrayOf(false, false, false, false)
 
