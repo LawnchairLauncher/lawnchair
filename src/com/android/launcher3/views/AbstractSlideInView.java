@@ -99,7 +99,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     protected @Nullable OnCloseListener mOnCloseBeginListener;
     protected List<OnCloseListener> mOnCloseListeners = new ArrayList<>();
 
-    private final AnimatedFloat mSlideInViewScale =
+    protected final AnimatedFloat mSlideInViewScale =
             new AnimatedFloat(this::onScaleProgressChanged, VIEW_NO_SCALE);
     protected boolean mIsBackProgressing;
     @Nullable private Drawable mContentBackground;
