@@ -109,7 +109,7 @@
     <string name="taskbar_edu_close" msgid="887022990168191073">"Закрити"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Готово"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Головний екран"</string>
-    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Спеціальні можливості"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Доступність"</string>
     <string name="taskbar_button_back" msgid="8558862226461164514">"Назад"</string>
     <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Перемикач IME"</string>
     <string name="taskbar_button_recents" msgid="7273376136216613134">"Нещодавні"</string>

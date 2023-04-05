@@ -29,6 +29,8 @@
     <string name="home_screen" msgid="5629429142036709174">"Bosh ekran"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Ekranni ikkiga ajratish"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s ilovasi axboroti"</string>
+    <!-- no translation found for save_app_pair (5647523853662686243) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Vidjetni bosib turgan holatda suring."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Ikki marta bosib va bosib turgan holatda vidjetni tanlang yoki maxsus amaldan foydalaning."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -106,7 +108,7 @@
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Telefon burilganda"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Bildirishnoma belgilari"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Yoniq"</string>
-    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Yoqilmagan"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Oʻchiq"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Bildirishnomalarga ruxsat berilmagan"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Bildirishnoma belgilarini ko‘rsatish uchun <xliff:g id="NAME">%1$s</xliff:g> ilovasida bildirishnomalarni yoqing"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Sozlamalarni o‘zgartirish"</string>

@@ -286,7 +286,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     }
 
     private ValueAnimator createRevealAnimForView(View view, boolean isStashed, float newWidth,
-            boolean shouldStartAlign) {
+            boolean isQsb) {
         Rect viewBounds = new Rect(0, 0, view.getWidth(), view.getHeight());
         int centerY = viewBounds.centerY();
         int halfHandleHeight = mStashedHandleHeight / 2;
@@ -295,7 +295,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
         final int left;
         final int right;
-        if (shouldStartAlign) {
+        // QSB will crop from the 'start' whereas all other icons will crop from the center.
+        if (isQsb) {
             if (mIsRtl) {
                 right = viewBounds.right;
                 left = (int) (right - newWidth);
@@ -311,7 +312,10 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         }
 
         Rect stashedRect = new Rect(left, top, right, bottom);
-        float radius = viewBounds.height() / 2f;
+        // QSB radius can be > 0 since it does not have any UI elements outside of it bounds.
+        float radius = isQsb
+                ? viewBounds.height() / 2f
+                : 0f;
         float stashedRadius = stashedRect.height() / 2f;
 
         return new RoundedRectRevealOutlineProvider(radius, stashedRadius, viewBounds, stashedRect)

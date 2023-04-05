@@ -114,7 +114,7 @@
     <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME которгучу"</string>
     <string name="taskbar_button_recents" msgid="7273376136216613134">"Акыркылар"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Билдирмелер"</string>
-    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Ыкчам жөндөөлөр"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Ыкчам параметрлер"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Тапшырмалар тактасы"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Тапшырмалар панели көрсөтүлдү"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Тапшырмалар панели жашырылды"</string>

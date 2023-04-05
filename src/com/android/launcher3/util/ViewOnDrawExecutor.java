@@ -16,11 +16,13 @@
 
 package com.android.launcher3.util;
 
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnAttachStateChangeListener;
 import android.view.ViewTreeObserver.OnDrawListener;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.testing.shared.TestProtocol;
 
 import java.util.function.Consumer;
 
@@ -42,12 +44,21 @@ public class ViewOnDrawExecutor implements OnDrawListener, Runnable,
     private boolean mCancelled;
 
     public ViewOnDrawExecutor(RunnableList tasks) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.FLAKY_BINDING, "Initialize ViewOnDrawExecutor");
+        }
         mTasks = tasks;
     }
 
     public void attachTo(Launcher launcher) {
         mOnClearCallback = launcher::clearPendingExecutor;
         mAttachedView = launcher.getWorkspace();
+
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.FLAKY_BINDING, "ViewOnDrawExecutor.attachTo: launcher=" + launcher
+                    + ", isAttachedToWindow=" + mAttachedView.isAttachedToWindow());
+        }
+
         mAttachedView.addOnAttachStateChangeListener(this);
 
         if (mAttachedView.isAttachedToWindow()) {
@@ -56,6 +67,10 @@ public class ViewOnDrawExecutor implements OnDrawListener, Runnable,
     }
 
     private void attachObserver() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.FLAKY_BINDING,
+                    "ViewOnDrawExecutor.attachObserver: mCompleted=" + mCompleted);
+        }
         if (!mCompleted) {
             mAttachedView.getViewTreeObserver().addOnDrawListener(this);
         }
@@ -63,6 +78,9 @@ public class ViewOnDrawExecutor implements OnDrawListener, Runnable,
 
     @Override
     public void onViewAttachedToWindow(View v) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.FLAKY_BINDING, "ViewOnDrawExecutor.onViewAttachedToWindow");
+        }
         attachObserver();
     }
 
@@ -71,11 +89,19 @@ public class ViewOnDrawExecutor implements OnDrawListener, Runnable,
 
     @Override
     public void onDraw() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.FLAKY_BINDING, "ViewOnDrawExecutor.onDraw");
+        }
         mFirstDrawCompleted = true;
         mAttachedView.post(this);
     }
 
     public void onLoadAnimationCompleted() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.FLAKY_BINDING,
+                    "ViewOnDrawExecutor.onLoadAnimationCompleted: mAttachedView != null="
+                            + (mAttachedView != null));
+        }
         mLoadAnimationCompleted = true;
         if (mAttachedView != null) {
             mAttachedView.post(this);
@@ -84,6 +110,12 @@ public class ViewOnDrawExecutor implements OnDrawListener, Runnable,
 
     @Override
     public void run() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.FLAKY_BINDING,
+                    "ViewOnDrawExecutor.run: mLoadAnimationCompleted=" + mLoadAnimationCompleted
+                            + ", mFirstDrawCompleted=" + mFirstDrawCompleted
+                            + ", mCompleted=" + mCompleted);
+        }
         // Post the pending tasks after both onDraw and onLoadAnimationCompleted have been called.
         if (mLoadAnimationCompleted && mFirstDrawCompleted && !mCompleted) {
             markCompleted();
@@ -94,6 +126,12 @@ public class ViewOnDrawExecutor implements OnDrawListener, Runnable,
      * Executes all tasks immediately
      */
     public void markCompleted() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.FLAKY_BINDING,
+                    "ViewOnDrawExecutor.markCompleted: mCancelled=" + mCancelled
+                            + ", mOnClearCallback != null=" + (mOnClearCallback != null)
+                            + ", mAttachedView != null=" + (mAttachedView != null));
+        }
         if (!mCancelled) {
             mTasks.executeAllAndDestroy();
         }
@@ -108,6 +146,9 @@ public class ViewOnDrawExecutor implements OnDrawListener, Runnable,
     }
 
     public void cancel() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.FLAKY_BINDING, "ViewOnDrawExecutor.cancel");
+        }
         mCancelled = true;
         markCompleted();
     }

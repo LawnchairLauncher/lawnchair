@@ -53,8 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Zum Zurückgehen wischen"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Wenn du zum letzten Bildschirm zurückgehen möchtest, wische vom linken oder rechten Rand zur Mitte."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Wenn du zum letzten Bildschirm zurückgehen möchtest, wische mit zwei Fingern vom linken oder rechten Displayrand zur Mitte."</string>
-    <!-- no translation found for back_gesture_tutorial_title (1944737946101059789) -->
-    <skip />
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Zurück"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Wische vom unteren Displayrand nach oben."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Achte darauf, nicht innezuhalten, bevor du loslässt."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Wische gerade nach oben."</string>
@@ -73,12 +72,11 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Zwischen Apps wechseln"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Wische auf dem Display von unten nach oben, halte den Finger gedrückt und lass dann los, um zwischen Apps zu wechseln."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Wische zum App-Wechseln mit zwei Fingern vom unteren Displayrand nach oben, halte und lass dann los."</string>
-    <!-- no translation found for overview_gesture_tutorial_title (4125835002668708720) -->
-    <skip />
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Apps wechseln"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Fertig"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Fertig"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Einstellungen"</string>
-    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Wiederholen"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Noch einmal versuchen"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Sehr gut!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Anleitung <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Fertig!"</string>

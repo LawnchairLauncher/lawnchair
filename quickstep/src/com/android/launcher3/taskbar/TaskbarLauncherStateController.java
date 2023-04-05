@@ -22,7 +22,7 @@ import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_HO
 import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
 import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
 import static com.android.systemui.animation.Interpolators.EMPHASIZED;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_ON;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_AWAKE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -81,17 +81,17 @@ public class TaskbarLauncherStateController {
      *
      * This is cleared as soon as the screen begins to transition off.
      */
-    private static final int FLAG_SCREEN_ON = 1 << 3;
+    private static final int FLAG_AWAKE = 1 << 3;
 
     /**
-     * Captures whether the launcher was active at the time the FLAG_SCREEN_ON was cleared.
-     * Always cleared when FLAG_SCREEN_ON is set.
+     * Captures whether the launcher was active at the time the FLAG_AWAKE was cleared.
+     * Always cleared when FLAG_AWAKE is set.
      * <p>
-     * FLAG_RESUMED will be cleared when the screen is off, since all apps get paused at this point.
-     * Thus, this flag indicates whether the launcher will be shown when the screen gets turned on
+     * FLAG_RESUMED will be cleared when the device is asleep, since all apps get paused at this
+     * point. Thus, this flag indicates whether the launcher will be shown when the device wakes up
      * again.
      */
-    private static final int FLAG_LAUNCHER_ACTIVE_AT_SCREEN_OFF = 1 << 4;
+    private static final int FLAG_LAUNCHER_WAS_ACTIVE_WHILE_AWAKE = 1 << 4;
 
     /** Whether the device is currently locked. */
     private static final int FLAG_DEVICE_LOCKED = 1 << 5;
@@ -265,15 +265,15 @@ public class TaskbarLauncherStateController {
 
     /** SysUI flags updated, see QuickStepContract.SYSUI_STATE_* values. */
     public void updateStateForSysuiFlags(int systemUiStateFlags, boolean skipAnim) {
-        final boolean prevScreenIsOn = hasAnyFlag(FLAG_SCREEN_ON);
-        final boolean currScreenIsOn = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_SCREEN_ON);
+        final boolean prevIsAwake = hasAnyFlag(FLAG_AWAKE);
+        final boolean currIsAwake = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_AWAKE);
 
-        updateStateForFlag(FLAG_SCREEN_ON, currScreenIsOn);
-        if (prevScreenIsOn != currScreenIsOn) {
+        updateStateForFlag(FLAG_AWAKE, currIsAwake);
+        if (prevIsAwake != currIsAwake) {
             // The screen is switching between on/off. When turning off, capture whether the
             // launcher is active and memoize this state.
-            updateStateForFlag(FLAG_LAUNCHER_ACTIVE_AT_SCREEN_OFF,
-                    prevScreenIsOn && hasAnyFlag(FLAGS_LAUNCHER_ACTIVE));
+            updateStateForFlag(FLAG_LAUNCHER_WAS_ACTIVE_WHILE_AWAKE,
+                    prevIsAwake && hasAnyFlag(FLAGS_LAUNCHER_ACTIVE));
         }
 
         boolean isDeviceLocked = hasAnyFlag(systemUiStateFlags, MASK_ANY_SYSUI_LOCKED);
@@ -377,7 +377,7 @@ public class TaskbarLauncherStateController {
             }
         }
 
-        if (hasAnyFlag(changedFlags, FLAGS_LAUNCHER_ACTIVE | FLAG_SCREEN_ON)) {
+        if (hasAnyFlag(changedFlags, FLAGS_LAUNCHER_ACTIVE | FLAG_AWAKE)) {
             animatorSet.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -573,10 +573,10 @@ public class TaskbarLauncherStateController {
 
     /** Whether the launcher is considered active. */
     private boolean isInLauncher() {
-        if (hasAnyFlag(FLAG_SCREEN_ON)) {
+        if (hasAnyFlag(FLAG_AWAKE)) {
             return hasAnyFlag(FLAGS_LAUNCHER_ACTIVE);
         } else {
-            return hasAnyFlag(FLAG_LAUNCHER_ACTIVE_AT_SCREEN_OFF);
+            return hasAnyFlag(FLAG_LAUNCHER_WAS_ACTIVE_WHILE_AWAKE);
         }
     }
 
@@ -677,9 +677,9 @@ public class TaskbarLauncherStateController {
         appendFlag(result, flags, FLAG_TRANSITION_TO_RESUMED, "transition_to_resumed");
         appendFlag(result, flags, FLAG_LAUNCHER_IN_STATE_TRANSITION,
                 "launcher_in_state_transition");
-        appendFlag(result, flags, FLAG_SCREEN_ON, "screen_on");
-        appendFlag(result, flags, FLAG_LAUNCHER_ACTIVE_AT_SCREEN_OFF,
-                "launcher_active_at_screen_off");
+        appendFlag(result, flags, FLAG_AWAKE, "awake");
+        appendFlag(result, flags, FLAG_LAUNCHER_WAS_ACTIVE_WHILE_AWAKE,
+                "was_active_while_awake");
         appendFlag(result, flags, FLAG_DEVICE_LOCKED, "device_locked");
         return result.toString();
     }

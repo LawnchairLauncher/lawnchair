@@ -181,9 +181,10 @@ public class InstallSessionHelper {
     public boolean isTrustedPackage(String pkg, UserHandle user) {
         synchronized (mSessionVerifiedMap) {
             if (!mSessionVerifiedMap.containsKey(pkg)) {
-                boolean hasSystemFlag = new PackageManagerHelper(mAppContext).getApplicationInfo(
-                        pkg, user, ApplicationInfo.FLAG_SYSTEM) != null;
-                mSessionVerifiedMap.put(pkg, DEBUG || hasSystemFlag);
+                boolean hasSystemFlag = DEBUG || mAppContext.getPackageName().equals(pkg)
+                        || new PackageManagerHelper(mAppContext)
+                                .getApplicationInfo(pkg, user, ApplicationInfo.FLAG_SYSTEM) != null;
+                mSessionVerifiedMap.put(pkg, hasSystemFlag);
             }
         }
         return mSessionVerifiedMap.get(pkg);
