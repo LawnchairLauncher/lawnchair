@@ -505,9 +505,16 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     /**
-     * Stash or unstashes the transient taskbar.
+     * Stash or unstashes the transient taskbar, using the default TASKBAR_STASH_DURATION.
      */
     public void updateAndAnimateTransientTaskbar(boolean stash) {
+        updateAndAnimateTransientTaskbar(stash, TASKBAR_STASH_DURATION);
+    }
+
+    /**
+     * Stash or unstashes the transient taskbar.
+     */
+    public void updateAndAnimateTransientTaskbar(boolean stash, long duration) {
         if (!DisplayController.isTransientTaskbar(mActivity)) {
             return;
         }
@@ -945,15 +952,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 hasAnyFlag(systemUiStateFlags, SYSUI_STATE_SCREEN_PINNING));
 
         boolean isLocked = hasAnyFlag(systemUiStateFlags, MASK_ANY_SYSUI_LOCKED);
-        boolean wasLocked = hasAnyFlag(FLAG_STASHED_DEVICE_LOCKED);
         updateStateForFlag(FLAG_STASHED_DEVICE_LOCKED, isLocked);
-
-        if (isLocked && !wasLocked && DisplayController.isTransientTaskbar(mActivity)) {
-            // Stash the transient taskbar when locking the device. This improves the transition
-            // to AoD (otherwise the taskbar stays a bit too long above the collapsing AoD scrim),
-            // and ensures the taskar state is reset when unlocking the device afterwards.
-            updateStateForFlag(FLAG_STASHED_IN_APP_AUTO, true);
-        }
 
         // Only update FLAG_STASHED_IN_APP_IME when system gesture is not in progress.
         mIsImeShowing = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_IME_SHOWING);
