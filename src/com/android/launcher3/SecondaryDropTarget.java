@@ -3,8 +3,6 @@ package com.android.launcher3;
 import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
 import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURABLE;
 
-import static com.android.launcher3.Launcher.REQUEST_RECONFIGURE_APPWIDGET;
-import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.DISMISS_PREDICTION;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.INVALID;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.RECONFIGURE;
@@ -45,10 +43,7 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
-import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.util.PackageManagerHelper;
-import com.android.launcher3.util.PendingRequestArgs;
-import com.android.launcher3.views.Snackbar;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
 import java.net.URISyntaxException;
@@ -204,7 +199,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             user = item.user;
         }
         if (intent != null) {
-            LauncherActivityInfo info = mLauncher.getSystemService(LauncherApps.class)
+            LauncherActivityInfo info = getContext().getSystemService(LauncherApps.class)
                     .resolveActivity(intent, user);
             if (info != null
                     && (info.getApplicationInfo().flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
@@ -239,23 +234,11 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
     public void completeDrop(final DragObject d) {
         ComponentName target = performDropAction(getViewUnderDrag(d.dragInfo), d.dragInfo,
                 d.logInstanceId);
-        if (d.dragSource instanceof DeferredOnComplete) {
-            DeferredOnComplete deferred = (DeferredOnComplete) d.dragSource;
-            if (target != null) {
-                deferred.mPackageName = target.getPackageName();
-                mLauncher.addOnResumeCallback(deferred::onLauncherResume);
-            } else {
-                deferred.sendFailure();
-            }
-        }
+        mDropTargetHandler.onSecondaryTargetCompleteDrop(target, d);
     }
 
     private View getViewUnderDrag(ItemInfo info) {
-        if (info instanceof LauncherAppWidgetInfo && info.container == CONTAINER_DESKTOP &&
-                mLauncher.getWorkspace().getDragInfo() != null) {
-            return mLauncher.getWorkspace().getDragInfo().cell;
-        }
-        return null;
+        return mDropTargetHandler.getViewUnderDrag(info);
     }
 
     /**
@@ -286,18 +269,15 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         if (mCurrentAccessibilityAction == RECONFIGURE) {
             int widgetId = getReconfigurableWidgetId(view);
             if (widgetId != INVALID_APPWIDGET_ID) {
-                mLauncher.setWaitingForResult(
-                        PendingRequestArgs.forWidgetInfo(widgetId, null, info));
-                mLauncher.getAppWidgetHolder().startConfigActivity(mLauncher, widgetId,
-                        REQUEST_RECONFIGURE_APPWIDGET);
+                mDropTargetHandler.reconfigureWidget(widgetId, info);
             }
             return null;
         }
         if (mCurrentAccessibilityAction == DISMISS_PREDICTION) {
             if (FeatureFlags.ENABLE_DISMISS_PREDICTION_UNDO.get()) {
-                mLauncher.getDragLayer()
-                        .announceForAccessibility(getContext().getString(R.string.item_removed));
-                Snackbar.show(mLauncher, R.string.item_removed, R.string.undo, () -> { }, () -> {
+                CharSequence announcement = getContext().getString(R.string.item_removed);
+                mDropTargetHandler
+                        .dismissPrediction(announcement, () -> {}, () -> {
                     mStatsLogManager.logger()
                             .withInstanceId(instanceId)
                             .withItemInfo(info)
@@ -306,20 +286,23 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             }
             return null;
         }
-        // else: mCurrentAccessibilityAction == UNINSTALL
 
         ComponentName cn = getUninstallTarget(info);
         if (cn == null) {
             // System applications cannot be installed. For now, show a toast explaining that.
             // We may give them the option of disabling apps this way.
-            Toast.makeText(mLauncher, R.string.uninstall_system_app_text, Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                    getContext(),
+                    R.string.uninstall_system_app_text,
+                    Toast.LENGTH_SHORT
+                ).show();
             return null;
         }
         try {
-            Intent i = Intent.parseUri(mLauncher.getString(R.string.delete_package_intent), 0)
+            Intent i = Intent.parseUri(getContext().getString(R.string.delete_package_intent), 0)
                     .setData(Uri.fromParts("package", cn.getPackageName(), cn.getClassName()))
                     .putExtra(Intent.EXTRA_USER, info.user);
-            mLauncher.startActivity(i);
+            getContext().startActivity(i);
             FileLog.d(TAG, "start uninstall activity " + cn.getPackageName());
             return cn;
         } catch (URISyntaxException e) {
@@ -339,12 +322,12 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
      * A wrapper around {@link DragSource} which delays the {@link #onDropCompleted} action until
      * {@link #onLauncherResume}
      */
-    private class DeferredOnComplete implements DragSource {
+    protected class DeferredOnComplete implements DragSource {
 
         private final DragSource mOriginal;
         private final Context mContext;
 
-        private String mPackageName;
+        protected String mPackageName;
         private DragObject mDragObject;
 
         public DeferredOnComplete(DragSource original, Context context) {
