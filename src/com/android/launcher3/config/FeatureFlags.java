@@ -177,10 +177,6 @@ public final class FeatureFlags {
             "ENABLE_MINIMAL_DEVICE", DISABLED,
             "Allow user to toggle minimal device mode in launcher.");
 
-    public static final BooleanFlag ENABLE_TASKBAR_POPUP_MENU = getDebugFlag(270392477,
-            "ENABLE_TASKBAR_POPUP_MENU", ENABLED,
-            "Enables long pressing taskbar icons to show the popup menu.");
-
     public static final BooleanFlag ENABLE_TWO_PANEL_HOME = getDebugFlag(270392643,
             "ENABLE_TWO_PANEL_HOME", ENABLED,
             "Uses two panel on home screen. Only applicable on large screen devices.");
