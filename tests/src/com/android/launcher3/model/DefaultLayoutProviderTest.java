@@ -20,8 +20,10 @@ import static com.android.launcher3.util.LauncherModelHelper.TEST_ACTIVITY;
 import static com.android.launcher3.util.LauncherModelHelper.TEST_PACKAGE;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
 
 import android.content.Context;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionParams;
 
@@ -125,6 +127,38 @@ public class DefaultLayoutProviderTest {
         assertEquals(LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET, info.itemType);
         assertEquals(2, info.spanX);
         assertEquals(2, info.spanY);
+    }
+
+    @Test
+    public void testCustomProfileLoaded_with_shortcut_on_hotseat() throws Exception {
+        assumeTrue(mTargetContext.getSystemService(LauncherApps.class).hasShortcutHostPermission());
+        writeLayoutAndLoad(new LauncherLayoutBuilder().atHotseat(0)
+                .putShortcut(TEST_PACKAGE, "shortcut2"));
+
+        // Verify one item in hotseat
+        assertEquals(1, mModelHelper.getBgDataModel().workspaceItems.size());
+        ItemInfo info = mModelHelper.getBgDataModel().workspaceItems.get(0);
+        assertEquals(LauncherSettings.Favorites.CONTAINER_HOTSEAT, info.container);
+        assertEquals(LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT, info.itemType);
+    }
+
+    @Test
+    public void testCustomProfileLoaded_with_shortcut_in_folder() throws Exception {
+        assumeTrue(mTargetContext.getSystemService(LauncherApps.class).hasShortcutHostPermission());
+        writeLayoutAndLoad(new LauncherLayoutBuilder().atHotseat(0).putFolder(android.R.string.copy)
+                .addApp(TEST_PACKAGE, TEST_ACTIVITY)
+                .addApp(TEST_PACKAGE, TEST_ACTIVITY)
+                .addShortcut(TEST_PACKAGE, "shortcut2")
+                .build());
+
+        // Verify folder
+        assertEquals(1, mModelHelper.getBgDataModel().workspaceItems.size());
+        FolderInfo info = (FolderInfo) mModelHelper.getBgDataModel().workspaceItems.get(0);
+        assertEquals(3, info.contents.size());
+
+        // Verify last icon
+        assertEquals(LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT,
+                info.contents.get(info.contents.size() - 1).itemType);
     }
 
     private void writeLayoutAndLoad(LauncherLayoutBuilder builder) throws Exception {
