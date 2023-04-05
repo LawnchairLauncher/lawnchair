@@ -120,7 +120,7 @@ public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
      */
     @BinderThread
     @Override
-    public void onAnimationCancelled(boolean isKeyguardOccluded) {
+    public void onAnimationCancelled() {
         postAsyncCallback(mHandler, () -> {
             finishExistingAnimation();
             getFactory().onAnimationCancelled();
@@ -235,16 +235,12 @@ public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
                 RemoteAnimationTarget[] nonAppTargets,
                 LauncherAnimationRunner.AnimationResult result);
 
-        @Override
-        @UiThread
-        default void onAnimationCancelled(boolean isKeyguardOccluded) {
-            onAnimationCancelled();
-        }
-
         /**
          * Called when the animation is cancelled. This can happen with or without
          * the create being called.
          */
-        default void onAnimationCancelled() { }
+        @Override
+        @UiThread
+        default void onAnimationCancelled() {}
     }
 }
