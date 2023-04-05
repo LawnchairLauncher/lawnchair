@@ -525,14 +525,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         try {
             Workspace workspace = mLauncher.getWorkspace();
             final HomeAllApps allApps = workspace.switchToAllApps();
-            allApps.freeze();
-            try {
-                workspace = allApps.getAppIcon(DUMMY_APP_NAME).uninstall();
-                // After the toast clears, then the model tries to commit the uninstall transaction
-                mLauncher.waitForModelQueueCleared();
-            } finally {
-                allApps.unfreeze();
-            }
+            workspace = allApps.getAppIcon(DUMMY_APP_NAME).uninstall();
+            waitForLauncherUIUpdate();
             verifyAppUninstalledFromAllApps(workspace, DUMMY_APP_NAME);
         } finally {
             TestUtil.uninstallDummyApp();
@@ -633,6 +627,10 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     private void installDummyAppAndWaitForUIUpdate() throws IOException {
         TestUtil.installDummyApp();
+        waitForLauncherUIUpdate();
+    }
+
+    private void waitForLauncherUIUpdate() {
         // Wait for model thread completion as it may be processing
         // the install event from the SystemService
         mLauncher.waitForModelQueueCleared();
