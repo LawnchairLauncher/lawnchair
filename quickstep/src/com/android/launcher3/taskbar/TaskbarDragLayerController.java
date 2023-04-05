@@ -53,6 +53,10 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
     // Translation property for taskbar background.
     private final AnimatedFloat mBgOffset = new AnimatedFloat(this::updateBackgroundOffset);
 
+    // Used to fade in/out the entirety of the taskbar, for a smooth transition before/after sysui
+    // changes the inset visibility.
+    private final AnimatedFloat mTaskbarAlpha = new AnimatedFloat(this::updateTaskbarAlpha);
+
     // Initialized in init.
     private TaskbarControllers mControllers;
     private TaskbarStashViaTouchController mTaskbarStashViaTouchController;
@@ -83,6 +87,9 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         mAssistantBgTaskbar.value = 1;
         mBgOverride.value = 1;
         updateBackgroundAlpha();
+
+        mTaskbarAlpha.value = 1;
+        updateTaskbarAlpha();
     }
 
     public void onDestroy() {
@@ -127,6 +134,10 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         return mBgOffset;
     }
 
+    public AnimatedFloat getTaskbarAlpha() {
+        return mTaskbarAlpha;
+    }
+
     /**
      * Make updates when configuration changes.
      */
@@ -165,6 +176,10 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         updateOnBackgroundNavButtonColorIntensity();
     }
 
+    private void updateTaskbarAlpha() {
+        mTaskbarDragLayer.setAlpha(mTaskbarAlpha.value);
+    }
+
     @Override
     public void setCornerRoundness(float cornerRoundness) {
         mTaskbarDragLayer.setCornerRoundness(cornerRoundness);
@@ -197,6 +212,7 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
         pw.println(prefix + "TaskbarDragLayerController:");
 
         pw.println(prefix + "\tmBgOffset=" + mBgOffset.value);
+        pw.println(prefix + "\tmTaskbarAlpha=" + mTaskbarAlpha.value);
         pw.println(prefix + "\tmFolderMargin=" + mFolderMargin);
         pw.println(prefix + "\tmLastSetBackgroundAlpha=" + mLastSetBackgroundAlpha);
         pw.println(prefix + "\t\tmBgOverride=" + mBgOverride.value);
