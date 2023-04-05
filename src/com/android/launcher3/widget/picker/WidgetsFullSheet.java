@@ -683,7 +683,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public static WidgetsFullSheet show(Launcher launcher, boolean animate) {
         boolean isTwoPane = LARGE_SCREEN_WIDGET_PICKER.get()
                 && launcher.getDeviceProfile().isTablet
-                && launcher.getDeviceProfile().isLandscape;
+                && launcher.getDeviceProfile().isLandscape
+                && !launcher.getDeviceProfile().isTwoPanels;
 
         WidgetsFullSheet sheet;
         if (isTwoPane) {
