@@ -642,7 +642,7 @@ public class TaskbarLauncherStateController {
         long resetDuration = mControllers.taskbarStashController.isInApp()
                 ? duration
                 : duration / 2;
-        if (!mControllers.taskbarTranslationController.willAnimateToZeroBefore(resetDuration)
+        if (mControllers.taskbarTranslationController.shouldResetBackToZero(resetDuration)
                 && (isAnimatingToLauncher() || mLauncherState == LauncherState.NORMAL)) {
             animatorSet.play(mControllers.taskbarTranslationController
                     .createAnimToResetTranslation(resetDuration));
