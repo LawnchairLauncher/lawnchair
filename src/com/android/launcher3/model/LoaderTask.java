@@ -960,7 +960,7 @@ public class LoaderTask implements Runnable {
                 iconRequestInfos.add(new IconRequestInfo<>(
                         appInfo, app, /* useLowResIcon= */ false));
                 mBgAllAppsList.add(
-                        appInfo, app, !FeatureFlags.ENABLE_BULK_ALL_APPS_ICON_LOADING.get());
+                        appInfo, app, false);
             }
             allActivityList.addAll(apps);
         }
@@ -973,7 +973,7 @@ public class LoaderTask implements Runnable {
                 AppInfo promiseAppInfo = mBgAllAppsList.addPromiseApp(
                         mApp.getContext(),
                         PackageInstallInfo.fromInstallingState(info),
-                        !FeatureFlags.ENABLE_BULK_ALL_APPS_ICON_LOADING.get());
+                        false);
 
                 if (promiseAppInfo != null) {
                     iconRequestInfos.add(new IconRequestInfo<>(
@@ -984,15 +984,13 @@ public class LoaderTask implements Runnable {
             }
         }
 
-        if (FeatureFlags.ENABLE_BULK_ALL_APPS_ICON_LOADING.get()) {
-            Trace.beginSection("LoadAllAppsIconsInBulk");
-            try {
-                mIconCache.getTitlesAndIconsInBulk(iconRequestInfos);
-                iconRequestInfos.forEach(iconRequestInfo ->
-                        mBgAllAppsList.updateSectionName(iconRequestInfo.itemInfo));
-            } finally {
-                Trace.endSection();
-            }
+        Trace.beginSection("LoadAllAppsIconsInBulk");
+        try {
+            mIconCache.getTitlesAndIconsInBulk(iconRequestInfos);
+            iconRequestInfos.forEach(iconRequestInfo ->
+                    mBgAllAppsList.updateSectionName(iconRequestInfo.itemInfo));
+        } finally {
+            Trace.endSection();
         }
 
         mBgAllAppsList.setFlags(FLAG_QUIET_MODE_ENABLED,
