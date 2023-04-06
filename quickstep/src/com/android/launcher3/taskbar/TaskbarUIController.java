@@ -244,7 +244,8 @@ public class TaskbarUIController {
                                     taskAttributes.getIconView().getDrawable(),
                                     taskAttributes.getThumbnailView(),
                                     taskAttributes.getThumbnailView().getThumbnail(),
-                                    null /* intent */);
+                                    null /* intent */,
+                                    null /* user */);
                             return;
                         }
                     }
@@ -256,7 +257,8 @@ public class TaskbarUIController {
                             new BitmapDrawable(info.bitmap.icon),
                             startingView,
                             null /* thumbnail */,
-                            intent);
+                            intent,
+                            info.user);
                 }
         );
     }
