@@ -23,11 +23,15 @@ import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
 import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
 import static com.android.systemui.animation.Interpolators.EMPHASIZED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_AWAKE;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DEVICE_DREAMING;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_WAKEFULNESS_MASK;
+import static com.android.systemui.shared.system.QuickStepContract.WAKEFULNESS_AWAKE;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.os.SystemClock;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -93,8 +97,24 @@ public class TaskbarLauncherStateController {
      */
     private static final int FLAG_LAUNCHER_WAS_ACTIVE_WHILE_AWAKE = 1 << 4;
 
-    /** Whether the device is currently locked. */
+    /**
+     * Whether the device is currently locked.
+     * <ul>
+     *  <li>While locked, the taskbar is always stashed.<li/>
+     *  <li>Navbar animations on FLAG_DEVICE_LOCKED transitions will get special treatment.</li>
+     * </ul>
+     */
     private static final int FLAG_DEVICE_LOCKED = 1 << 5;
+
+    /**
+     * Whether the complete taskbar is completely hidden (neither visible stashed or unstashed).
+     * This is tracked to allow a nice transition of the taskbar before SysUI forces it away by
+     * hiding the inset.
+     *
+     * This flag is predominanlty set while FLAG_DEVICE_LOCKED is set, thus the taskbar's invisible
+     * resting state while hidden is stashed.
+     */
+    private static final int FLAG_TASKBAR_HIDDEN = 1 << 6;
 
     private static final int FLAGS_LAUNCHER_ACTIVE = FLAG_RESUMED | FLAG_TRANSITION_TO_RESUMED;
     /** Equivalent to an int with all 1s for binary operation purposes */
@@ -104,11 +124,21 @@ public class TaskbarLauncherStateController {
     private static final float TASKBAR_BG_ALPHA_NOT_LAUNCHER_NOT_ALIGNED_DELAY_MULT = 0.33f;
     private static final float TASKBAR_BG_ALPHA_LAUNCHER_IS_ALIGNED_DURATION_MULT = 0.25f;
 
+    /**
+     * Delay for the taskbar fade-in.
+     *
+     * Helps to avoid visual noise when unlocking successfully via SFPS, and the device transitions
+     * to launcher directly. The delay avoids the navbar to become briefly visible. The duration
+     * is the same as in SysUI, see http://shortn/_uNSbDoRUSr.
+     */
+    private static final long TASKBAR_SHOW_DELAY_MS = 250;
+
     private final AnimatedFloat mIconAlignment =
             new AnimatedFloat(this::onIconAlignmentRatioChanged);
 
     private TaskbarControllers mControllers;
     private AnimatedFloat mTaskbarBackgroundAlpha;
+    private AnimatedFloat mTaskbarAlpha;
     private AnimatedFloat mTaskbarCornerRoundness;
     private MultiProperty mIconAlphaForHome;
     private QuickstepLauncher mLauncher;
@@ -116,6 +146,9 @@ public class TaskbarLauncherStateController {
     private Integer mPrevState;
     private int mState;
     private LauncherState mLauncherState = LauncherState.NORMAL;
+
+    // Time when FLAG_TASKBAR_HIDDEN was last cleared, SystemClock.elapsedRealtime (milliseconds).
+    private long mLastUnlockTimeMs = 0;
 
     private @Nullable TaskBarRecentsAnimationListener mTaskBarRecentsAnimationListener;
 
@@ -187,6 +220,7 @@ public class TaskbarLauncherStateController {
 
         mTaskbarBackgroundAlpha = mControllers.taskbarDragLayerController
                 .getTaskbarBackgroundAlpha();
+        mTaskbarAlpha = mControllers.taskbarDragLayerController.getTaskbarAlpha();
         mTaskbarCornerRoundness = mControllers.getTaskbarCornerRoundness();
         mIconAlphaForHome = mControllers.taskbarViewController
                 .getTaskbarIconAlpha().get(ALPHA_INDEX_HOME);
@@ -278,6 +312,15 @@ public class TaskbarLauncherStateController {
 
         boolean isDeviceLocked = hasAnyFlag(systemUiStateFlags, MASK_ANY_SYSUI_LOCKED);
         updateStateForFlag(FLAG_DEVICE_LOCKED, isDeviceLocked);
+
+        // Taskbar is hidden whenever the device is dreaming. The dreaming state includes the
+        // interactive dreams, AoD, screen off. Since the SYSUI_STATE_DEVICE_DREAMING only kicks in
+        // when the device is asleep, the second condition extends ensures that the transition from
+        // and to the WAKEFULNESS_ASLEEP state also hide the taskbar, and improves the taskbar
+        // hide/reveal animation timings.
+        boolean isTaskbarHidden = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_DEVICE_DREAMING)
+                || (systemUiStateFlags & SYSUI_STATE_WAKEFULNESS_MASK) != WAKEFULNESS_AWAKE;
+        updateStateForFlag(FLAG_TASKBAR_HIDDEN, isTaskbarHidden);
 
         if (skipAnim) {
             applyState(0);
@@ -404,6 +447,41 @@ public class TaskbarLauncherStateController {
 
         if (handleOpenFloatingViews && isInLauncher) {
             AbstractFloatingView.closeAllOpenViews(mControllers.taskbarActivityContext);
+        }
+
+        if (hasAnyFlag(changedFlags, FLAG_TASKBAR_HIDDEN) && !hasAnyFlag(FLAG_TASKBAR_HIDDEN)) {
+            // Take note of the current time, as the taskbar is made visible again.
+            mLastUnlockTimeMs = SystemClock.elapsedRealtime();
+        }
+
+        boolean isHidden = hasAnyFlag(FLAG_TASKBAR_HIDDEN);
+        float taskbarAlpha = isHidden ? 0 : 1;
+        if (mTaskbarAlpha.isAnimating() || mTaskbarAlpha.value != taskbarAlpha) {
+            Animator taskbarVisibility = mTaskbarAlpha.animateToValue(taskbarAlpha);
+
+            taskbarVisibility.setDuration(duration);
+            if (isHidden) {
+                // Stash the transient taskbar once the taskbar is not visible. This reduces
+                // visual noise when unlocking the device afterwards.
+                animatorSet.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        TaskbarStashController stashController =
+                                mControllers.taskbarStashController;
+                        stashController.updateAndAnimateTransientTaskbar(
+                                /* stash */ true, /* duration */ 0);
+                    }
+                });
+            } else {
+                // delay the fade in animation a bit to reduce visual noise when waking up a device
+                // with a fingerprint reader. This should only be done when the device was woken
+                // up via fingerprint reader, however since this information is currently not
+                // available, opting to always delay the fade-in a bit.
+                long durationSinceLastUnlockMs = SystemClock.elapsedRealtime() - mLastUnlockTimeMs;
+                taskbarVisibility.setStartDelay(
+                        Math.max(0, TASKBAR_SHOW_DELAY_MS - durationSinceLastUnlockMs));
+            }
+            animatorSet.play(taskbarVisibility);
         }
 
         float backgroundAlpha = isInLauncher && isTaskbarAlignedWithHotseat() ? 0 : 1;
@@ -564,7 +642,7 @@ public class TaskbarLauncherStateController {
         long resetDuration = mControllers.taskbarStashController.isInApp()
                 ? duration
                 : duration / 2;
-        if (!mControllers.taskbarTranslationController.willAnimateToZeroBefore(resetDuration)
+        if (mControllers.taskbarTranslationController.shouldResetBackToZero(resetDuration)
                 && (isAnimatingToLauncher() || mLauncherState == LauncherState.NORMAL)) {
             animatorSet.play(mControllers.taskbarTranslationController
                     .createAnimToResetTranslation(resetDuration));

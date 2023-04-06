@@ -125,6 +125,7 @@ public class SearchTransitionController {
 
         mAllAppsContainerView.getFloatingHeaderView().setFloatingRowsCollapsed(true);
         mAllAppsContainerView.getFloatingHeaderView().setVisibility(VISIBLE);
+        mAllAppsContainerView.getFloatingHeaderView().maybeSetTabVisibility(VISIBLE);
         mAllAppsContainerView.getAppsRecyclerViewContainer().setVisibility(VISIBLE);
         getSearchRecyclerView().setVisibility(VISIBLE);
         getSearchRecyclerView().setChildAttachedConsumer(this::onSearchChildAttached);

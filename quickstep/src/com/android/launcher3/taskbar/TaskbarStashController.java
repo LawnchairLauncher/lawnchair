@@ -50,6 +50,7 @@ import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
@@ -68,6 +69,8 @@ import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.quickstep.SystemUiProxy;
 
 import java.io.PrintWriter;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.StringJoiner;
 import java.util.function.IntPredicate;
 
@@ -183,6 +186,36 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
     // Auto stashes when user has not interacted with the Taskbar after X ms.
     private static final long NO_TOUCH_TIMEOUT_TO_STASH_MS = 5000;
+
+    /**
+     * The default stash animation, morphing the taskbar into the navbar.
+     */
+    private static final int TRANSITION_DEFAULT = 0;
+    /**
+     * Transitioning from launcher to app. Same as TRANSITION_DEFAULT, differs in internal
+     * animation timings.
+     */
+    private static final int TRANSITION_HOME_TO_APP = 1;
+    /**
+     * Fading the navbar in and out, where the taskbar jumpcuts in and out at the very begin/end of
+     * the transition. Used to transition between the hotseat and navbar` without the stash/unstash
+     * transition.
+     */
+    private static final int TRANSITION_HANDLE_FADE = 2;
+    /**
+     * Same as TRANSITION_DEFAULT, but exclusively used during an "navbar unstash to hotseat
+     * animation" bound to the progress of a swipe gesture. It differs from TRANSITION_DEFAULT
+     * by not scaling the height of the taskbar background.
+     */
+    private static final int TRANSITION_UNSTASH_SUW_MANUAL = 3;
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef(value = {
+            TRANSITION_DEFAULT,
+            TRANSITION_HOME_TO_APP,
+            TRANSITION_HANDLE_FADE,
+            TRANSITION_UNSTASH_SUW_MANUAL,
+    })
+    private @interface StashAnimation {}
 
     private final TaskbarActivityContext mActivity;
     private final SharedPreferences mPrefs;
@@ -472,9 +505,16 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     /**
-     * Stash or unstashes the transient taskbar.
+     * Stash or unstashes the transient taskbar, using the default TASKBAR_STASH_DURATION.
      */
     public void updateAndAnimateTransientTaskbar(boolean stash) {
+        updateAndAnimateTransientTaskbar(stash, TASKBAR_STASH_DURATION);
+    }
+
+    /**
+     * Stash or unstashes the transient taskbar.
+     */
+    public void updateAndAnimateTransientTaskbar(boolean stash, long duration) {
         if (!DisplayController.isTransientTaskbar(mActivity)) {
             return;
         }
@@ -553,8 +593,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         createAnimToIsStashed(
                 /* isStashed= */ false,
                 placeholderDuration,
-                /* animateBg= */ false,
-                /* changedFlags=*/ 0);
+                TRANSITION_UNSTASH_SUW_MANUAL);
         animation.play(mAnimator);
     }
 
@@ -562,10 +601,15 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * Create a stash animation and save to {@link #mAnimator}.
      * @param isStashed whether it's a stash animation or an unstash animation
      * @param duration duration of the animation
-     * @param animateBg whether the taskbar's background should be animated
+     * @param animationType what transition type to play.
      */
-    private void createAnimToIsStashed(boolean isStashed, long duration, boolean animateBg,
-            int changedFlags) {
+    private void createAnimToIsStashed(boolean isStashed, long duration,
+            @StashAnimation int animationType) {
+        if (animationType == TRANSITION_UNSTASH_SUW_MANUAL && isStashed) {
+            // The STASH_ANIMATION_SUW_MANUAL must only be used during an unstash animation.
+            Log.e(TAG, "Illegal arguments:Using TRANSITION_UNSTASH_SUW_MANUAL to stash taskbar");
+        }
+
         if (mAnimator != null) {
             mAnimator.cancel();
         }
@@ -591,23 +635,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             return;
         }
 
-        // If Hotseat is not the top element during animation to/from Launcher, fade in/out a
-        // already stashed Taskbar.
-        boolean hotseatTopElement = mControllers.uiController.isHotseatIconOnTopWhenAligned()
-                || !hasAnyFlag(changedFlags, FLAG_IN_APP);
-        // If transitioning to unlocked device, do not play a stash animation.
-        // Keep isUnlockTransition in sync with its counterpart in
-        // TaskbarLauncherStateController#onStateChangeApplied.
-        boolean isUnlockTransition = hasAnyFlag(changedFlags, FLAG_STASHED_DEVICE_LOCKED)
-                && !hasAnyFlag(FLAG_STASHED_DEVICE_LOCKED);
-        boolean skipStashAnimation = !hotseatTopElement || isUnlockTransition;
-
         if (isTransientTaskbar) {
-            createTransientAnimToIsStashed(mAnimator, isStashed, duration, animateBg, changedFlags,
-                    skipStashAnimation);
+            createTransientAnimToIsStashed(mAnimator, isStashed, duration, animationType);
         } else {
-            createAnimToIsStashed(mAnimator, isStashed, duration, animateBg, skipStashAnimation,
-                    stashTranslation);
+            createAnimToIsStashed(mAnimator, isStashed, duration, stashTranslation, animationType);
         }
 
         mAnimator.addListener(new AnimatorListenerAdapter() {
@@ -636,7 +667,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     private void createAnimToIsStashed(AnimatorSet as, boolean isStashed, long duration,
-            boolean animateBg, boolean skipStashAnimation, float stashTranslation) {
+            float stashTranslation, @StashAnimation int animationType) {
         AnimatorSet fullLengthAnimatorSet = new AnimatorSet();
         // Not exactly half and may overlap. See [first|second]HalfDurationScale below.
         AnimatorSet firstHalfAnimatorSet = new AnimatorSet();
@@ -650,12 +681,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             secondHalfDurationScale = 0.5f;
 
             fullLengthAnimatorSet.play(mIconTranslationYForStash.animateToValue(stashTranslation));
-            if (animateBg) {
-                fullLengthAnimatorSet.play(mTaskbarBackgroundOffset.animateToValue(1));
-            } else {
-                fullLengthAnimatorSet.addListener(AnimatorListeners.forEndCallback(
-                        () -> mTaskbarBackgroundOffset.updateValue(1)));
-            }
+            fullLengthAnimatorSet.play(mTaskbarBackgroundOffset.animateToValue(1));
 
             firstHalfAnimatorSet.playTogether(
                     mIconAlphaForStash.animateToValue(0),
@@ -666,7 +692,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                     mTaskbarStashedHandleAlpha.animateToValue(1)
             );
 
-            if (skipStashAnimation) {
+            if (animationType == TRANSITION_HANDLE_FADE) {
                 fullLengthAnimatorSet.setInterpolator(INSTANT);
                 firstHalfAnimatorSet.setInterpolator(INSTANT);
             }
@@ -677,6 +703,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             fullLengthAnimatorSet.playTogether(
                     mIconScaleForStash.animateToValue(1),
                     mIconTranslationYForStash.animateToValue(0));
+
+            final boolean animateBg = animationType != TRANSITION_UNSTASH_SUW_MANUAL;
             if (animateBg) {
                 fullLengthAnimatorSet.play(mTaskbarBackgroundOffset.animateToValue(0));
             } else {
@@ -691,7 +719,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                     mIconAlphaForStash.animateToValue(1)
             );
 
-            if (skipStashAnimation) {
+            if (animationType == TRANSITION_HANDLE_FADE) {
                 fullLengthAnimatorSet.setInterpolator(FINAL_FRAME);
                 secondHalfAnimatorSet.setInterpolator(FINAL_FRAME);
             }
@@ -714,18 +742,13 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     private void createTransientAnimToIsStashed(AnimatorSet as, boolean isStashed, long duration,
-            boolean animateBg, int changedFlags, boolean skipStashAnimation) {
+            @StashAnimation int animationType) {
         Interpolator skipInterpolator = null;
 
         if (isStashed) {
-            if (animateBg) {
-                play(as, mTaskbarBackgroundOffset.animateToValue(1), 0, duration, EMPHASIZED);
-            } else {
-                as.addListener(AnimatorListeners.forEndCallback(
-                        () -> mTaskbarBackgroundOffset.updateValue(1)));
-            }
+            play(as, mTaskbarBackgroundOffset.animateToValue(1), 0, duration, EMPHASIZED);
 
-            long alphaStartDelay = duration == 0 ? 0 : (changedFlags == FLAG_IN_APP)
+            long alphaStartDelay = duration == 0 ? 0 : animationType == TRANSITION_HOME_TO_APP
                     ? TASKBAR_STASH_ICON_ALPHA_HOME_TO_APP_START_DELAY
                     : TASKBAR_STASH_ALPHA_START_DELAY;
             long alphaDuration = duration == 0 ? 0 : TASKBAR_STASH_ALPHA_DURATION;
@@ -736,10 +759,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             play(as, mControllers.taskbarSpringOnStashController.createSpringToStash(), 0, duration,
                     LINEAR);
 
-            if (skipStashAnimation) {
+            if (animationType == TRANSITION_HANDLE_FADE) {
                 skipInterpolator = INSTANT;
             }
         } else  {
+            final boolean animateBg = animationType != TRANSITION_UNSTASH_SUW_MANUAL;
             if (animateBg) {
                 play(as, mTaskbarBackgroundOffset.animateToValue(0), 0, duration, EMPHASIZED);
             } else {
@@ -752,7 +776,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             play(as, mIconAlphaForStash.animateToValue(1), alphaStartDelay, alphaDuration, LINEAR);
             play(as, mTaskbarStashedHandleAlpha.animateToValue(0), 0, alphaDuration, LINEAR);
 
-            if (skipStashAnimation) {
+            if (animationType == TRANSITION_HANDLE_FADE) {
                 skipInterpolator = FINAL_FRAME;
             }
         }
@@ -928,15 +952,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 hasAnyFlag(systemUiStateFlags, SYSUI_STATE_SCREEN_PINNING));
 
         boolean isLocked = hasAnyFlag(systemUiStateFlags, MASK_ANY_SYSUI_LOCKED);
-        boolean wasLocked = hasAnyFlag(FLAG_STASHED_DEVICE_LOCKED);
         updateStateForFlag(FLAG_STASHED_DEVICE_LOCKED, isLocked);
-
-        if (isLocked && !wasLocked && DisplayController.isTransientTaskbar(mActivity)) {
-            // Stash the transient taskbar when locking the device. This improves the transition
-            // to AoD (otherwise the taskbar stays a bit too long above the collapsing AoD scrim),
-            // and ensures the taskar state is reset when unlocking the device afterwards.
-            updateStateForFlag(FLAG_STASHED_IN_APP_AUTO, true);
-        }
 
         // Only update FLAG_STASHED_IN_APP_IME when system gesture is not in progress.
         mIsImeShowing = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_IME_SHOWING);
@@ -1150,7 +1166,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         private final IntPredicate mStashCondition;
 
         private boolean mIsStashed;
-        private boolean mIsHotseatIconOnTopWhenAligned;
+        private @StashAnimation int mLastStartedTransitionType = TRANSITION_DEFAULT;
         private int mPrevFlags;
 
         StatePropertyHolder(IntPredicate stashCondition) {
@@ -1182,28 +1198,64 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 onStateChangeApplied(changedFlags);
                 mPrevFlags = flags;
             }
-            boolean isHotseatIconOnTopWhenAligned =
-                    mControllers.uiController.isHotseatIconOnTopWhenAligned();
-            // If an animation has started and mIsHotseatIconOnTopWhenAligned is changed, we need
-            // to restart the animation with new parameters.
-            if (mIsStashed != isStashed
-                    || (mIsHotseatIconOnTopWhenAligned != isHotseatIconOnTopWhenAligned
-                    && mAnimator != null && mAnimator.isStarted())) {
+
+            @StashAnimation int animationType = computeTransitionType(changedFlags);
+
+            // Allow re-starting animation if upgrading from default animation type, otherwise
+            // stick with the already started transition.
+            boolean transitionTypeChanged = mAnimator != null && mAnimator.isStarted()
+                    && mLastStartedTransitionType == TRANSITION_DEFAULT
+                    && animationType != TRANSITION_DEFAULT;
+
+            if (mIsStashed != isStashed || transitionTypeChanged) {
                 if (TestProtocol.sDebugTracing) {
                     Log.d(TestProtocol.TASKBAR_IN_APP_STATE, String.format(
-                            "setState: mIsStashed=%b, isStashed=%b, duration=%d",
+                            "setState: mIsStashed=%b, isStashed=%b, "
+                                    + "mAnimationType=%d, animationType=%d, duration=%d",
                             mIsStashed,
                             isStashed,
+                            mLastStartedTransitionType,
+                            animationType,
                             duration));
                 }
                 mIsStashed = isStashed;
-                mIsHotseatIconOnTopWhenAligned = isHotseatIconOnTopWhenAligned;
+                mLastStartedTransitionType = animationType;
 
                 // This sets mAnimator.
-                createAnimToIsStashed(mIsStashed, duration, /* animateBg= */ true, changedFlags);
+                createAnimToIsStashed(mIsStashed, duration, animationType);
                 return mAnimator;
             }
             return null;
+        }
+
+        private @StashAnimation int computeTransitionType(int changedFlags) {
+            boolean hotseatHiddenDuringAppLaunch =
+                    !mControllers.uiController.isHotseatIconOnTopWhenAligned()
+                            && hasAnyFlag(changedFlags, FLAG_IN_APP);
+            if (hotseatHiddenDuringAppLaunch) {
+                // When launching an app from the all-apps drawer, the hotseat is hidden behind the
+                // drawer. In this case, the navbar must just fade in, without a stash transition,
+                // as the taskbar stash animation would otherwise be visible above the all-apps
+                // drawer once the hotseat is detached.
+                return TRANSITION_HANDLE_FADE;
+            }
+
+            boolean isUnlockTransition = hasAnyFlag(changedFlags, FLAG_STASHED_DEVICE_LOCKED)
+                    && !hasAnyFlag(FLAG_STASHED_DEVICE_LOCKED);
+            if (isUnlockTransition) {
+                // When transitioning to unlocked device, the  hotseat will already be visible on
+                // the homescreen, thus do not play an un-stash animation.
+                // Keep isUnlockTransition in sync with its counterpart in
+                // TaskbarLauncherStateController#onStateChangeApplied.
+                return TRANSITION_HANDLE_FADE;
+            }
+
+            boolean homeToApp = hasAnyFlag(changedFlags, FLAG_IN_APP) && hasAnyFlag(FLAG_IN_APP);
+            if (homeToApp) {
+                return TRANSITION_HOME_TO_APP;
+            }
+
+            return TRANSITION_DEFAULT;
         }
     }
 }
