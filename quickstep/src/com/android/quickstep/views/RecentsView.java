@@ -4589,11 +4589,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
      *                   is (either the ThumbnailView or the tapped icon).
      * @param intent If we are launching a fresh instance of the app, this is the Intent for it. If
      *               the second app is already running in Recents, this will be null.
+     * @param user If we are launching a fresh instance of the app, this is the UserHandle for it.
+     *             If the second app is already running in Recents, this will be null.
      * @return true if waiting for confirmation of second app or if split animations are running,
      *          false otherwise
      */
     public boolean confirmSplitSelect(TaskView containerTaskView, Task task, Drawable drawable,
-            View secondView, @Nullable Bitmap thumbnail, Intent intent) {
+            View secondView, @Nullable Bitmap thumbnail, Intent intent, UserHandle user) {
         if (canLaunchFullscreenTask()) {
             return false;
         }
@@ -4609,7 +4611,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
             mSplitSelectStateController.setSecondTask(task);
         } else {
-            mSplitSelectStateController.setSecondTask(intent);
+            mSplitSelectStateController.setSecondTask(intent, user);
         }
 
         RectF secondTaskStartingBounds = new RectF();
