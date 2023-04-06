@@ -143,9 +143,6 @@ public final class FeatureFlags {
             "ENABLE_BULK_WORKSPACE_ICON_LOADING", ENABLED,
             "Enable loading workspace icons in bulk.");
 
-    public static final BooleanFlag ENABLE_BULK_ALL_APPS_ICON_LOADING = getDebugFlag(270392465,
-            "ENABLE_BULK_ALL_APPS_ICON_LOADING", ENABLED, "Enable loading all apps icons in bulk.");
-
     public static final BooleanFlag ENABLE_DATABASE_RESTORE = getDebugFlag(270392706,
             "ENABLE_DATABASE_RESTORE", DISABLED,
             "Enable database restore when new restore session is created");
