@@ -227,6 +227,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         private SliceItem mSliceItem;
         private LauncherAtom.Slice mSlice;
         private Optional<Integer> mCardinality = Optional.empty();
+        private int mInputType = SysUiStatsLog.LAUNCHER_UICHANGED__INPUT_TYPE__UNKNOWN;
 
         StatsCompatLogger(Context context, ActivityContext activityContext) {
             mContext = context;
@@ -316,6 +317,12 @@ public class StatsLogCompatManager extends StatsLogManager {
         @Override
         public StatsLogger withCardinality(int cardinality) {
             this.mCardinality = Optional.of(cardinality);
+            return this;
+        }
+
+        @Override
+        public StatsLogger withInputType(int inputType) {
+            this.mInputType = inputType;
             return this;
         }
 
@@ -413,6 +420,7 @@ public class StatsLogCompatManager extends StatsLogManager {
             InstanceId instanceId = mInstanceId;
             int srcState = mSrcState;
             int dstState = mDstState;
+            int inputType = mInputType;
             if (IS_VERBOSE) {
                 String name = (event instanceof Enum) ? ((Enum) event).name() :
                         event.getId() + "";
@@ -470,7 +478,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                     cardinality /* cardinality */,
                     getFeatures(atomInfo) /* features */,
                     getSearchAttributes(atomInfo) /* searchAttributes */,
-                    getAttributes(atomInfo) /* attributes */
+                    getAttributes(atomInfo) /* attributes */,
+                    inputType /* input_type */
             );
         }
     }
