@@ -109,7 +109,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
     protected final int mArrowPointRadius;
     protected final View mArrow;
 
-    private final int mMargin;
+    protected final int mChildContainerMargin;
 
     protected boolean mIsLeftAligned;
     protected boolean mIsAboveIcon;
@@ -145,7 +145,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         // Initialize arrow view
         final Resources resources = getResources();
         mArrowColor = getColorStateList(getContext(), R.color.popup_shade_first).getDefaultColor();
-        mMargin = resources.getDimensionPixelSize(R.dimen.popup_margin);
+        mChildContainerMargin = resources.getDimensionPixelSize(R.dimen.popup_margin);
         mArrowWidth = resources.getDimensionPixelSize(R.dimen.popup_arrow_width);
         mArrowHeight = resources.getDimensionPixelSize(R.dimen.popup_arrow_height);
         mArrow = new View(context);
@@ -249,7 +249,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
             if (view.getVisibility() == VISIBLE) {
                 if (lastView != null) {
                     MarginLayoutParams mlp = (MarginLayoutParams) lastView.getLayoutParams();
-                    mlp.bottomMargin = mMargin;
+                    mlp.bottomMargin = mChildContainerMargin;
                 }
                 lastView = view;
                 MarginLayoutParams mlp = (MarginLayoutParams) lastView.getLayoutParams();
@@ -441,7 +441,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
                 numVisibleChildren++;
             }
         }
-        int childMargins = (numVisibleChildren - 1) * mMargin;
+        int childMargins = (numVisibleChildren - 1) * mChildContainerMargin;
         int height = getMeasuredHeight() + extraVerticalSpace + childMargins;
         int width = getMeasuredWidth() + getPaddingLeft() + getPaddingRight();
 
