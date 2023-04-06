@@ -57,7 +57,8 @@ import java.util.function.Predicate;
 /**
  * Hosts the Taskbar content such as Hotseat and Recent Apps. Drawn on top of other apps.
  */
-public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconParent, Insettable {
+public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconParent, Insettable,
+        DeviceProfile.OnDeviceProfileChangeListener {
     private static final String TAG = TaskbarView.class.getSimpleName();
 
     private static final Rect sTmpRect = new Rect();
@@ -92,7 +93,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
     private float mTransientTaskbarAllAppsButtonTranslationXOffset;
 
-    private final boolean mShouldTryStartAlign;
+    private boolean mShouldTryStartAlign;
 
     public TaskbarView(@NonNull Context context) {
         this(context, null);
@@ -121,8 +122,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                 resources.getDimension(isTransientTaskbar
                         ? R.dimen.transient_taskbar_all_apps_button_translation_x_offset
                         : R.dimen.taskbar_all_apps_button_translation_x_offset);
-        mShouldTryStartAlign = mActivityContext.isThreeButtonNav()
-                && resources.getBoolean(R.bool.start_align_taskbar);
+
+        onDeviceProfileChanged(mActivityContext.getDeviceProfile());
 
         int actualMargin = resources.getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
         int actualIconSize = mActivityContext.getDeviceProfile().taskbarIconSize;
@@ -159,6 +160,23 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
         // TODO: Disable touch events on QSB otherwise it can crash.
         mQsb = LayoutInflater.from(context).inflate(R.layout.search_container_hotseat, this, false);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mActivityContext.addOnDeviceProfileChangeListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mActivityContext.removeOnDeviceProfileChangeListener(this);
+    }
+
+    @Override
+    public void onDeviceProfileChanged(DeviceProfile dp) {
+        mShouldTryStartAlign = mActivityContext.isThreeButtonNav() && dp.startAlignTaskbar;
     }
 
     @Override
