@@ -150,10 +150,6 @@ public final class FeatureFlags {
             "ENABLE_DATABASE_RESTORE", DISABLED,
             "Enable database restore when new restore session is created");
 
-    public static final BooleanFlag ENABLE_SMARTSPACE_DISMISS = getDebugFlag(270391664,
-            "ENABLE_SMARTSPACE_DISMISS", ENABLED,
-            "Adds a menu option to dismiss the current Enhanced Smartspace card.");
-
     public static final BooleanFlag ENABLE_OVERLAY_CONNECTION_OPTIM = getDebugFlag(270392629,
             "ENABLE_OVERLAY_CONNECTION_OPTIM", DISABLED,
             "Enable optimizing overlay service connection");
