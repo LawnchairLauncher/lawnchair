@@ -69,17 +69,13 @@ public final class FeatureFlags {
 
     /**
      * Feature flag to handle define config changes dynamically instead of killing the process.
-     *
+     * <p>
      *
      * To add a new flag that can be toggled through the flags UI:
-     *
+     * <p>
      * Declare a new ToggleableFlag below. Give it a unique key (e.g. "QSB_ON_FIRST_SCREEN"),
      * and set a default value for the flag. This will be the default value on Debug builds.
      */
-    public static final BooleanFlag ENABLE_INPUT_CONSUMER_REASON_LOGGING = getDebugFlag(270390028,
-            "ENABLE_INPUT_CONSUMER_REASON_LOGGING", ENABLED,
-            "Log the reason why an Input Consumer was selected for a gesture.");
-
     public static final BooleanFlag ENABLE_GESTURE_ERROR_DETECTION = getDebugFlag(270389990,
             "ENABLE_GESTURE_ERROR_DETECTION", ENABLED,
             "Analyze gesture events and log detected errors");
