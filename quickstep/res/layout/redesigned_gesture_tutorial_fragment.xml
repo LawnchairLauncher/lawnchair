@@ -205,15 +205,16 @@
             android:id="@+id/checkmark_animation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="44dp"
             android:gravity="center"
             android:scaleType="centerCrop"
             app:lottie_loop="false"
             android:visibility="gone"
 
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_subtitle" />
+            app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_subtitle"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <Button
             android:id="@+id/gesture_tutorial_fragment_action_button"
@@ -224,6 +225,7 @@
             android:stateListAnimator="@null"
             android:text="@string/gesture_tutorial_action_button_label"
             android:visibility="invisible"
+            android:layout_marginBottom="60dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
