@@ -98,7 +98,8 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             windowLayoutParams.providedInsets =
                     arrayOf(
                             InsetsFrameProvider(insetsOwner, 0, navigationBars()),
-                            InsetsFrameProvider(insetsOwner, 0, tappableElement())
+                            InsetsFrameProvider(insetsOwner, 0, tappableElement()),
+                            InsetsFrameProvider(insetsOwner, 0, mandatorySystemGestures())
                     )
         }
 
