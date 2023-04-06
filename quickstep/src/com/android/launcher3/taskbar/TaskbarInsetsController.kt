@@ -100,9 +100,11 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                     windowLayoutParams,
                     intArrayOf(
                             ITYPE_EXTRA_NAVIGATION_BAR,
-                            ITYPE_BOTTOM_TAPPABLE_ELEMENT
+                            ITYPE_BOTTOM_TAPPABLE_ELEMENT,
+                            ITYPE_BOTTOM_MANDATORY_GESTURES
                     ),
                     intArrayOf(
+                            SOURCE_FRAME,
                             SOURCE_FRAME,
                             SOURCE_FRAME
                     )
@@ -119,6 +121,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         val contentHeight = controllers.taskbarStashController.contentHeightToReportToApps
         val tappableHeight = controllers.taskbarStashController.tappableHeightToReportToApps
         val res = context.resources
+
         for (provider in windowLayoutParams.providedInsets) {
             if (
                 provider.type == ITYPE_EXTRA_NAVIGATION_BAR ||
