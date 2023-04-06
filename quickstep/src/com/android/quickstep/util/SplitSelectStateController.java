@@ -298,10 +298,9 @@ public class SplitSelectStateController {
                         getOppositeStagePosition(stagePosition), splitRatio, remoteTransition,
                         shellInstanceId);
             } else {
-                mSystemUiProxy.startIntents(getPendingIntent(intent1), getShortcutInfo(intent1),
-                        options1.toBundle(), getPendingIntent(intent2), getShortcutInfo(intent2),
-                        null /* options2 */, stagePosition, splitRatio, remoteTransition,
-                        shellInstanceId);
+                mSystemUiProxy.startIntents(getPendingIntent(intent1), options1.toBundle(),
+                        getPendingIntent(intent2), null /* options2 */, stagePosition,
+                        splitRatio, remoteTransition, shellInstanceId);
             }
         } else {
             final RemoteSplitLaunchAnimationRunner animationRunner =
