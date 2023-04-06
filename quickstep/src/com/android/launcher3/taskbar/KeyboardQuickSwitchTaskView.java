@@ -23,6 +23,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -45,6 +46,7 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
 
     @Nullable private ImageView mThumbnailView1;
     @Nullable private ImageView mThumbnailView2;
+    @Nullable private View mContent;
 
     public KeyboardQuickSwitchTaskView(@NonNull Context context) {
         this(context, null);
@@ -84,7 +86,20 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
                                 .getColor(
                                         R.styleable.TaskView_borderColor,
                                         DEFAULT_BORDER_COLOR),
-                /* invalidateViewCallback= */ KeyboardQuickSwitchTaskView.this::invalidate);
+                /* invalidateViewCallback= */ KeyboardQuickSwitchTaskView.this::invalidate,
+                /* viewScaleTargetProvider= */ new BorderAnimator.ViewScaleTargetProvider() {
+                    @NonNull
+                    @Override
+                    public View getContainerView() {
+                        return KeyboardQuickSwitchTaskView.this;
+                    }
+
+                    @NonNull
+                    @Override
+                    public View getContentView() {
+                        return mContent;
+                    }
+                });
     }
 
     @Override
@@ -93,6 +108,7 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
 
         mThumbnailView1 = findViewById(R.id.thumbnail1);
         mThumbnailView2 = findViewById(R.id.thumbnail2);
+        mContent = findViewById(R.id.content);
     }
 
     @NonNull
