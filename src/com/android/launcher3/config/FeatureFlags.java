@@ -76,10 +76,6 @@ public final class FeatureFlags {
      * Declare a new ToggleableFlag below. Give it a unique key (e.g. "QSB_ON_FIRST_SCREEN"),
      * and set a default value for the flag. This will be the default value on Debug builds.
      */
-    public static final BooleanFlag ENABLE_GESTURE_ERROR_DETECTION = getDebugFlag(270389990,
-            "ENABLE_GESTURE_ERROR_DETECTION", ENABLED,
-            "Analyze gesture events and log detected errors");
-
     // When enabled the promise icon is visible in all apps while installation an app.
     public static final BooleanFlag PROMISE_APPS_IN_ALL_APPS = getDebugFlag(270390012,
             "PROMISE_APPS_IN_ALL_APPS", DISABLED, "Add promise icon in all-apps");
