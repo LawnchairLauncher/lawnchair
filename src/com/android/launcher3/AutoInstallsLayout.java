@@ -38,6 +38,7 @@ import android.util.Log;
 import android.util.Xml;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -531,6 +532,7 @@ public class AutoInstallsLayout {
     protected class SearchWidgetParser extends PendingWidgetParser {
         @Override
         @Nullable
+        @WorkerThread
         public ComponentName getComponentName(XmlPullParser parser) {
             return QsbContainerView.getSearchComponentName(mContext);
         }
