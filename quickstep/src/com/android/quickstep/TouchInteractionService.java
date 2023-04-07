@@ -18,6 +18,7 @@ package com.android.quickstep;
 import static android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS;
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
@@ -29,6 +30,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_DOWN;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_MOVE;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_UP;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
@@ -674,20 +676,24 @@ public class TouchInteractionService extends Service
 
         if (mUncheckedConsumer != InputConsumer.NO_OP) {
             switch (event.getActionMasked()) {
-                case ACTION_DOWN:
-                case ACTION_UP:
+                case ACTION_DOWN, ACTION_UP ->
                     ActiveGestureLog.INSTANCE.addLog(
                             /* event= */ "onMotionEvent(" + (int) event.getRawX() + ", "
                                     + (int) event.getRawY() + "): "
-                                    + MotionEvent.actionToString(event.getActionMasked()),
+                                    + MotionEvent.actionToString(event.getActionMasked()) + ", "
+                                    + MotionEvent.classificationToString(event.getClassification()),
                             /* gestureEvent= */ event.getActionMasked() == ACTION_DOWN
                                     ? MOTION_DOWN
                                     : MOTION_UP);
-                    break;
-                default:
+                case ACTION_MOVE ->
                     ActiveGestureLog.INSTANCE.addLog("onMotionEvent: "
-                            + MotionEvent.actionToString(event.getActionMasked()));
-                    break;
+                            + MotionEvent.actionToString(event.getActionMasked()) + ","
+                            + MotionEvent.classificationToString(event.getClassification())
+                            + ", pointerCount: " + event.getPointerCount(), MOTION_MOVE);
+                default ->
+                    ActiveGestureLog.INSTANCE.addLog("onMotionEvent: "
+                            + MotionEvent.actionToString(event.getActionMasked()) + ","
+                            + MotionEvent.classificationToString(event.getClassification()));
             }
         }
 
