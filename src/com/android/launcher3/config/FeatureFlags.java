@@ -69,17 +69,13 @@ public final class FeatureFlags {
 
     /**
      * Feature flag to handle define config changes dynamically instead of killing the process.
-     *
+     * <p>
      *
      * To add a new flag that can be toggled through the flags UI:
-     *
+     * <p>
      * Declare a new ToggleableFlag below. Give it a unique key (e.g. "QSB_ON_FIRST_SCREEN"),
      * and set a default value for the flag. This will be the default value on Debug builds.
      */
-    public static final BooleanFlag ENABLE_INPUT_CONSUMER_REASON_LOGGING = getDebugFlag(270390028,
-            "ENABLE_INPUT_CONSUMER_REASON_LOGGING", ENABLED,
-            "Log the reason why an Input Consumer was selected for a gesture.");
-
     public static final BooleanFlag ENABLE_GESTURE_ERROR_DETECTION = getDebugFlag(270389990,
             "ENABLE_GESTURE_ERROR_DETECTION", ENABLED,
             "Analyze gesture events and log detected errors");
@@ -143,16 +139,9 @@ public final class FeatureFlags {
             "ENABLE_BULK_WORKSPACE_ICON_LOADING", ENABLED,
             "Enable loading workspace icons in bulk.");
 
-    public static final BooleanFlag ENABLE_BULK_ALL_APPS_ICON_LOADING = getDebugFlag(270392465,
-            "ENABLE_BULK_ALL_APPS_ICON_LOADING", ENABLED, "Enable loading all apps icons in bulk.");
-
     public static final BooleanFlag ENABLE_DATABASE_RESTORE = getDebugFlag(270392706,
             "ENABLE_DATABASE_RESTORE", DISABLED,
             "Enable database restore when new restore session is created");
-
-    public static final BooleanFlag ENABLE_SMARTSPACE_DISMISS = getDebugFlag(270391664,
-            "ENABLE_SMARTSPACE_DISMISS", ENABLED,
-            "Adds a menu option to dismiss the current Enhanced Smartspace card.");
 
     public static final BooleanFlag ENABLE_OVERLAY_CONNECTION_OPTIM = getDebugFlag(270392629,
             "ENABLE_OVERLAY_CONNECTION_OPTIM", DISABLED,
@@ -176,10 +165,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_MINIMAL_DEVICE = getDebugFlag(270392984,
             "ENABLE_MINIMAL_DEVICE", DISABLED,
             "Allow user to toggle minimal device mode in launcher.");
-
-    public static final BooleanFlag ENABLE_TASKBAR_POPUP_MENU = getDebugFlag(270392477,
-            "ENABLE_TASKBAR_POPUP_MENU", ENABLED,
-            "Enables long pressing taskbar icons to show the popup menu.");
 
     public static final BooleanFlag ENABLE_TWO_PANEL_HOME = getDebugFlag(270392643,
             "ENABLE_TWO_PANEL_HOME", ENABLED,

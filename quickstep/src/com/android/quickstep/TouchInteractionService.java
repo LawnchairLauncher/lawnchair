@@ -910,10 +910,6 @@ public class TouchInteractionService extends Service
 
     private void logInputConsumerSelectionReason(
             InputConsumer consumer, CompoundString reasonString) {
-        if (!FeatureFlags.ENABLE_INPUT_CONSUMER_REASON_LOGGING.get()) {
-            ActiveGestureLog.INSTANCE.addLog("setInputConsumer: " + consumer.getName());
-            return;
-        }
         ActiveGestureLog.INSTANCE.addLog(new CompoundString("setInputConsumer: ")
                 .append(consumer.getName())
                 .append(". reason(s):")

@@ -184,7 +184,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 this, mActivityContext.getStatsLogManager());
         mAH = Arrays.asList(null, null, null);
         mNavBarScrimPaint = new Paint();
-        mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
+        mNavBarScrimPaint.setColor(Themes.getNavBarScrimColor(mActivityContext));
 
         AllAppsStore.OnUpdateListener onAppsUpdated = this::onAppsUpdated;
         if (TestProtocol.sDebugTracing) {
@@ -831,6 +831,12 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             }
         }
         updateBackground(dp);
+
+        int navBarScrimColor = Themes.getNavBarScrimColor(mActivityContext);
+        if (mNavBarScrimPaint.getColor() != navBarScrimColor) {
+            mNavBarScrimPaint.setColor(navBarScrimColor);
+            invalidate();
+        }
     }
 
     protected void updateBackground(DeviceProfile deviceProfile) {

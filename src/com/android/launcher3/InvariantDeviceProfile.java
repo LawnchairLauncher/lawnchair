@@ -149,6 +149,8 @@ public class InvariantDeviceProfile {
 
     public float[] transientTaskbarIconSize;
 
+    public boolean[] startAlignTaskbar;
+
     /**
      * Number of icons inside the hotseat area.
      */
@@ -393,6 +395,8 @@ public class InvariantDeviceProfile {
         inlineQsb = closestProfile.inlineQsb;
 
         transientTaskbarIconSize = displayOption.transientTaskbarIconSize;
+
+        startAlignTaskbar = displayOption.startAlignTaskbar;
 
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
@@ -915,6 +919,8 @@ public class InvariantDeviceProfile {
 
         private final float[] transientTaskbarIconSize = new float[COUNT_SIZES];
 
+        private final boolean[] startAlignTaskbar = new boolean[COUNT_SIZES];
+
         DisplayOption(GridOption grid, Context context, AttributeSet attrs) {
             this.grid = grid;
 
@@ -1147,6 +1153,18 @@ public class InvariantDeviceProfile {
                     R.styleable.ProfileDisplayOption_transientTaskbarIconSizeTwoPanelPortrait,
                     transientTaskbarIconSize[INDEX_DEFAULT]);
 
+            startAlignTaskbar[INDEX_DEFAULT] = a.getBoolean(
+                    R.styleable.ProfileDisplayOption_startAlignTaskbar, false);
+            startAlignTaskbar[INDEX_LANDSCAPE] = a.getBoolean(
+                    R.styleable.ProfileDisplayOption_startAlignTaskbarLandscape,
+                    startAlignTaskbar[INDEX_DEFAULT]);
+            startAlignTaskbar[INDEX_TWO_PANEL_LANDSCAPE] = a.getBoolean(
+                    R.styleable.ProfileDisplayOption_startAlignTaskbarTwoPanelLandscape,
+                    startAlignTaskbar[INDEX_LANDSCAPE]);
+            startAlignTaskbar[INDEX_TWO_PANEL_PORTRAIT] = a.getBoolean(
+                    R.styleable.ProfileDisplayOption_startAlignTaskbarTwoPanelPortrait,
+                    startAlignTaskbar[INDEX_DEFAULT]);
+
             a.recycle();
         }
 
@@ -1169,6 +1187,7 @@ public class InvariantDeviceProfile {
                 allAppsIconTextSizes[i] = 0;
                 allAppsBorderSpaces[i] = new PointF();
                 transientTaskbarIconSize[i] = 0;
+                startAlignTaskbar[i] = false;
             }
         }
 
@@ -1213,6 +1232,7 @@ public class InvariantDeviceProfile {
                 allAppsBorderSpaces[i].x += p.allAppsBorderSpaces[i].x;
                 allAppsBorderSpaces[i].y += p.allAppsBorderSpaces[i].y;
                 transientTaskbarIconSize[i] += p.transientTaskbarIconSize[i];
+                startAlignTaskbar[i] |= p.startAlignTaskbar[i];
             }
 
             return this;
