@@ -131,10 +131,6 @@ public final class FeatureFlags {
             "ASSISTANT_GIVES_LAUNCHER_FOCUS", DISABLED,
             "Allow Launcher to handle nav bar gestures while Assistant is running over it");
 
-    public static final BooleanFlag ENABLE_DATABASE_RESTORE = getDebugFlag(270392706,
-            "ENABLE_DATABASE_RESTORE", DISABLED,
-            "Enable database restore when new restore session is created");
-
     public static final BooleanFlag ENABLE_OVERLAY_CONNECTION_OPTIM = getDebugFlag(270392629,
             "ENABLE_OVERLAY_CONNECTION_OPTIM", DISABLED,
             "Enable optimizing overlay service connection");
@@ -153,10 +149,6 @@ public final class FeatureFlags {
     public static final BooleanFlag SEPARATE_RECENTS_ACTIVITY = getDebugFlag(270392980,
             "SEPARATE_RECENTS_ACTIVITY", DISABLED,
             "Uses a separate recents activity instead of using the integrated recents+Launcher UI");
-
-    public static final BooleanFlag ENABLE_MINIMAL_DEVICE = getDebugFlag(270392984,
-            "ENABLE_MINIMAL_DEVICE", DISABLED,
-            "Allow user to toggle minimal device mode in launcher.");
 
     public static final BooleanFlag ENABLE_TWO_PANEL_HOME = getDebugFlag(270392643,
             "ENABLE_TWO_PANEL_HOME", ENABLED,

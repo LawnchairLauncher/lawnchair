@@ -22,7 +22,6 @@ import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
 
 import android.annotation.TargetApi;
-import android.app.backup.BackupManager;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.ContentProvider;
@@ -85,7 +84,6 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -94,7 +92,6 @@ public class LauncherProvider extends ContentProvider {
     private static final boolean LOGD = false;
 
     private static final String DOWNGRADE_SCHEMA_FILE = "downgrade_schema.json";
-    private static final long RESTORE_BACKUP_TABLE_DELAY = TimeUnit.SECONDS.toMillis(30);
 
     /**
      * Represents the schema of the database. Changes in scheme need not be backwards compatible.
@@ -113,8 +110,6 @@ public class LauncherProvider extends ContentProvider {
 
     protected DatabaseHelper mOpenHelper;
     protected String mProviderAuthority;
-
-    private long mLastRestoreTimestamp = 0L;
 
     private int mDefaultWorkspaceLayoutOverride = 0;
 
@@ -374,13 +369,6 @@ public class LauncherProvider extends ContentProvider {
                 clearFlagEmptyDbCreated();
                 return null;
             }
-            case LauncherSettings.Settings.METHOD_WAS_EMPTY_DB_CREATED : {
-                Bundle result = new Bundle();
-                result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                        LauncherPrefs.getPrefs(getContext()).getBoolean(
-                                mOpenHelper.getKey(EMPTY_DATABASE_CREATED), false));
-                return result;
-            }
             case LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS: {
                 Bundle result = new Bundle();
                 result.putIntArray(LauncherSettings.Settings.EXTRA_VALUE, deleteEmptyFolders()
@@ -438,23 +426,9 @@ public class LauncherProvider extends ContentProvider {
                         new SQLiteTransaction(mOpenHelper.getWritableDatabase()));
                 return result;
             }
-            case LauncherSettings.Settings.METHOD_REFRESH_BACKUP_TABLE: {
-                mOpenHelper.mBackupTableExists = tableExists(mOpenHelper.getReadableDatabase(),
-                        Favorites.BACKUP_TABLE_NAME);
-                return null;
-            }
             case LauncherSettings.Settings.METHOD_REFRESH_HOTSEAT_RESTORE_TABLE: {
                 mOpenHelper.mHotseatRestoreTableExists = tableExists(
                         mOpenHelper.getReadableDatabase(), Favorites.HYBRID_HOTSEAT_BACKUP_TABLE);
-                return null;
-            }
-            case LauncherSettings.Settings.METHOD_RESTORE_BACKUP_TABLE: {
-                final long ts = System.currentTimeMillis();
-                if (ts - mLastRestoreTimestamp > RESTORE_BACKUP_TABLE_DELAY) {
-                    mLastRestoreTimestamp = ts;
-                    RestoreDbTask.restoreIfPossible(
-                            getContext(), mOpenHelper, new BackupManager(getContext()));
-                }
                 return null;
             }
             case LauncherSettings.Settings.METHOD_UPDATE_CURRENT_OPEN_HELPER: {
@@ -478,22 +452,6 @@ public class LauncherProvider extends ContentProvider {
                                         getContext(), arg, true /* forMigration */),
                                 () -> mOpenHelper));
                 return result;
-            }
-            case LauncherSettings.Settings.METHOD_SWITCH_DATABASE: {
-                if (TextUtils.equals(arg, mOpenHelper.getDatabaseName())) return null;
-                final DatabaseHelper helper = mOpenHelper;
-                if (extras == null || !extras.containsKey(KEY_LAYOUT_PROVIDER_AUTHORITY)) {
-                    mProviderAuthority = null;
-                } else {
-                    mProviderAuthority = extras.getString(KEY_LAYOUT_PROVIDER_AUTHORITY);
-                }
-                mOpenHelper = DatabaseHelper.createDatabaseHelper(
-                        getContext(), arg, false /* forMigration */);
-                helper.close();
-                LauncherAppState app = LauncherAppState.getInstanceNoCreate();
-                if (app == null) return null;
-                app.getModel().forceReload();
-                return null;
             }
         }
         return null;
@@ -666,7 +624,6 @@ public class LauncherProvider extends ContentProvider {
         private final Context mContext;
         private final boolean mForMigration;
         private int mMaxItemId = -1;
-        private boolean mBackupTableExists;
         private boolean mHotseatRestoreTableExists;
 
         static DatabaseHelper createDatabaseHelper(Context context, boolean forMigration) {
@@ -727,10 +684,6 @@ public class LauncherProvider extends ContentProvider {
         }
 
         protected void onAddOrDeleteOp(SQLiteDatabase db) {
-            if (mBackupTableExists) {
-                dropTable(db, Favorites.BACKUP_TABLE_NAME);
-                mBackupTableExists = false;
-            }
             if (mHotseatRestoreTableExists) {
                 dropTable(db, Favorites.HYBRID_HOTSEAT_BACKUP_TABLE);
                 mHotseatRestoreTableExists = false;
