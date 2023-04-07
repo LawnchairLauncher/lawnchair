@@ -56,13 +56,13 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
     private val touchableRegion: Region = Region()
     private val insetsOwner: IBinder = Binder()
     private val deviceProfileChangeListener = { _: DeviceProfile ->
-        onTaskbarWindowHeightOrInsetsChanged()
+        onTaskbarOrBubblebarWindowHeightOrInsetsChanged()
     }
     private val gestureNavSettingsObserver =
         GestureNavigationSettingsObserver(
             context.mainThreadHandler,
             context,
-            this::onTaskbarWindowHeightOrInsetsChanged
+            this::onTaskbarOrBubblebarWindowHeightOrInsetsChanged
         )
 
     // Initialized in init.
@@ -72,7 +72,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
     fun init(controllers: TaskbarControllers) {
         this.controllers = controllers
         windowLayoutParams = context.windowLayoutParams
-        onTaskbarWindowHeightOrInsetsChanged()
+        onTaskbarOrBubblebarWindowHeightOrInsetsChanged()
 
         context.addOnDeviceProfileChangeListener(deviceProfileChangeListener)
         gestureNavSettingsObserver.registerForCallingUser()
@@ -83,7 +83,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         gestureNavSettingsObserver.unregister()
     }
 
-    fun onTaskbarWindowHeightOrInsetsChanged() {
+    fun onTaskbarOrBubblebarWindowHeightOrInsetsChanged() {
         val tappableHeight = controllers.taskbarStashController.tappableHeightToReportToApps
         // We only report tappableElement height for unstashed, persistent taskbar,
         // which is also when we draw the rounded corners above taskbar.
@@ -121,13 +121,33 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                 )
         }
 
-        val touchableHeight = controllers.taskbarStashController.touchableHeight
-        touchableRegion.set(
-            0,
-            windowLayoutParams.height - touchableHeight,
-            context.deviceProfile.widthPx,
-            windowLayoutParams.height
-        )
+        val taskbarTouchableHeight = controllers.taskbarStashController.touchableHeight
+        val bubblesTouchableHeight =
+            if (controllers.bubbleControllers.isPresent)
+                controllers.bubbleControllers.get().bubbleStashController.touchableHeight
+            else 0
+        val touchableHeight = Math.max(taskbarTouchableHeight, bubblesTouchableHeight)
+
+        if (
+            controllers.bubbleControllers.isPresent &&
+                controllers.bubbleControllers.get().bubbleStashController.isBubblesShowingOnHome
+        ) {
+            val iconBounds =
+                controllers.bubbleControllers.get().bubbleBarViewController.bubbleBarBounds
+            touchableRegion.set(
+                iconBounds.left,
+                iconBounds.top,
+                iconBounds.right,
+                iconBounds.bottom
+            )
+        } else {
+            touchableRegion.set(
+                0,
+                windowLayoutParams.height - touchableHeight,
+                context.deviceProfile.widthPx,
+                windowLayoutParams.height
+            )
+        }
         val contentHeight = controllers.taskbarStashController.contentHeightToReportToApps
         val res = context.resources
         for (provider in windowLayoutParams.providedInsets) {
@@ -211,6 +231,9 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             context.dragLayer,
             insetsInfo.touchableRegion
         )
+        val bubbleBarVisible =
+            controllers.bubbleControllers.isPresent &&
+                controllers.bubbleControllers.get().bubbleBarViewController.isBubbleBarVisible()
         var insetsIsTouchableRegion = true
         if (context.dragLayer.alpha < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {
             // Let touches pass through us.
@@ -231,7 +254,9 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME)
             insetsIsTouchableRegion = false
         } else if (
-            controllers.taskbarViewController.areIconsVisible() || context.isNavBarKidsModeActive
+            controllers.taskbarViewController.areIconsVisible() ||
+                context.isNavBarKidsModeActive ||
+                bubbleBarVisible
         ) {
             // Taskbar has some touchable elements, take over the full taskbar area
             if (
