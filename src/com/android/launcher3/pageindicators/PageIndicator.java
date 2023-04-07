@@ -15,11 +15,6 @@
  */
 package com.android.launcher3.pageindicators;
 
-import android.animation.TimeInterpolator;
-import android.view.View;
-
-import com.android.launcher3.anim.PropertySetter;
-
 /**
  * Base class for a page indicator.
  */
@@ -53,9 +48,9 @@ public interface PageIndicator {
     }
 
     /**
-     * Sets the provided alpha on the pageIndicator
+     * Sets the paint color.
      */
-    default void setAlpha(PropertySetter setter, float alpha, TimeInterpolator interpolator) {
-        setter.setViewAlpha((View) this, alpha, interpolator);
+    default void setPaintColor(int color) {
+        // No-op by default
     }
 }
