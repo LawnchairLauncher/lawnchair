@@ -380,7 +380,6 @@ public class LauncherSettings {
                 LauncherProvider.AUTHORITY + "/settings");
 
         public static final String METHOD_CLEAR_EMPTY_DB_FLAG = "clear_empty_db_flag";
-        public static final String METHOD_WAS_EMPTY_DB_CREATED = "get_empty_db_flag";
 
         public static final String METHOD_DELETE_EMPTY_FOLDERS = "delete_empty_folders";
 
@@ -404,17 +403,11 @@ public class LauncherSettings {
 
         public static final String METHOD_NEW_TRANSACTION = "new_db_transaction";
 
-        public static final String METHOD_REFRESH_BACKUP_TABLE = "refresh_backup_table";
-
         public static final String METHOD_REFRESH_HOTSEAT_RESTORE_TABLE = "restore_hotseat_table";
-
-        public static final String METHOD_RESTORE_BACKUP_TABLE = "restore_backup_table";
 
         public static final String METHOD_UPDATE_CURRENT_OPEN_HELPER = "update_current_open_helper";
 
         public static final String METHOD_PREP_FOR_PREVIEW = "prep_for_preview";
-
-        public static final String METHOD_SWITCH_DATABASE = "switch_database";
 
         public static final String EXTRA_VALUE = "value";
 

@@ -29,14 +29,11 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.LauncherPrefs;
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -202,26 +199,6 @@ public class InstallSessionHelper {
             }
         }
         return list;
-    }
-
-    /**
-     * Attempt to restore workspace layout if the session is triggered due to device restore.
-     */
-    public boolean restoreDbIfApplicable(@NonNull final SessionInfo info) {
-        if (!FeatureFlags.ENABLE_DATABASE_RESTORE.get()) {
-            return false;
-        }
-        if (isRestore(info)) {
-            LauncherSettings.Settings.call(mAppContext.getContentResolver(),
-                    LauncherSettings.Settings.METHOD_RESTORE_BACKUP_TABLE);
-            return true;
-        }
-        return false;
-    }
-
-    @RequiresApi(26)
-    private static boolean isRestore(@NonNull final SessionInfo info) {
-        return info.getInstallReason() == PackageManager.INSTALL_REASON_DEVICE_RESTORE;
     }
 
     @WorkerThread
