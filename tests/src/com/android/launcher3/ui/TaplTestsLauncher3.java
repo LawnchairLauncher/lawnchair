@@ -522,6 +522,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @Test
+    @ScreenRecord // b/258071914
     @PortraitLandscape
     public void testUninstallFromAllApps() throws Exception {
         installDummyAppAndWaitForUIUpdate();
