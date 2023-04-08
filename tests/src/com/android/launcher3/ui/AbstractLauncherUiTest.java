@@ -106,6 +106,8 @@ public abstract class AbstractLauncherUiTest {
 
     private static boolean sDumpWasGenerated = false;
     private static boolean sActivityLeakReported = false;
+    private static boolean sSeenKeygard = false;
+
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     protected LooperExecutor mMainThreadExecutor = MAIN_EXECUTOR;
@@ -237,9 +239,13 @@ public abstract class AbstractLauncherUiTest {
     @Before
     public void setUp() throws Exception {
         mLauncher.onTestStart();
-        Assert.assertTrue("Keyguard is visible, which is likely caused by a crash in SysUI",
-                TestHelpers.wait(
-                        Until.gone(By.res(SYSTEMUI_PACKAGE, "keyguard_status_view")), 60000));
+
+        sSeenKeygard = sSeenKeygard
+                || !TestHelpers.wait(
+                Until.gone(By.res(SYSTEMUI_PACKAGE, "keyguard_status_view")), 60000);
+
+        Assert.assertFalse("Keyguard is visible, which is likely caused by a crash in SysUI",
+                sSeenKeygard);
 
         final String launcherPackageName = mDevice.getLauncherPackageName();
         try {
