@@ -417,7 +417,7 @@ public class LoaderTask implements Runnable {
                             tempPackageKey, widgetHelper, pmHelper, shortcutKeyToPinnedShortcuts,
                             iconRequestInfos, unlockedUsers, isSafeMode, allDeepShortcuts);
                 }
-                maybeLoadWorkspaceIconsInBulk(iconRequestInfos);
+                tryLoadWorkspaceIconsInBulk(iconRequestInfos);
             } finally {
                 IOUtils.closeSilently(c);
             }
@@ -598,8 +598,8 @@ public class LoaderTask implements Runnable {
                         // Already verified above that user is same as default user
                         info = c.getRestoredItemInfo(intent);
                     } else if (c.itemType == Favorites.ITEM_TYPE_APPLICATION) {
-                        info = c.getAppShortcutInfo(intent, allowMissingTarget, useLowResIcon,
-                                !FeatureFlags.ENABLE_BULK_WORKSPACE_ICON_LOADING.get());
+                        info = c.getAppShortcutInfo(
+                                intent, allowMissingTarget, useLowResIcon, false);
                     } else if (c.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
                         ShortcutKey key = ShortcutKey.fromIntent(intent, c.user);
                         if (unlockedUsers.get(c.serialNumber)) {
@@ -861,21 +861,19 @@ public class LoaderTask implements Runnable {
         }
     }
 
-    private void maybeLoadWorkspaceIconsInBulk(
+    private void tryLoadWorkspaceIconsInBulk(
             List<IconRequestInfo<WorkspaceItemInfo>> iconRequestInfos) {
-        if (FeatureFlags.ENABLE_BULK_WORKSPACE_ICON_LOADING.get()) {
-            Trace.beginSection("LoadWorkspaceIconsInBulk");
-            try {
-                mIconCache.getTitlesAndIconsInBulk(iconRequestInfos);
-                for (IconRequestInfo<WorkspaceItemInfo> iconRequestInfo : iconRequestInfos) {
-                    WorkspaceItemInfo wai = iconRequestInfo.itemInfo;
-                    if (mIconCache.isDefaultIcon(wai.bitmap, wai.user)) {
-                        iconRequestInfo.loadWorkspaceIcon(mApp.getContext());
-                    }
+        Trace.beginSection("LoadWorkspaceIconsInBulk");
+        try {
+            mIconCache.getTitlesAndIconsInBulk(iconRequestInfos);
+            for (IconRequestInfo<WorkspaceItemInfo> iconRequestInfo : iconRequestInfos) {
+                WorkspaceItemInfo wai = iconRequestInfo.itemInfo;
+                if (mIconCache.isDefaultIcon(wai.bitmap, wai.user)) {
+                    iconRequestInfo.loadWorkspaceIcon(mApp.getContext());
                 }
-            } finally {
-                Trace.endSection();
             }
+        } finally {
+            Trace.endSection();
         }
     }
 

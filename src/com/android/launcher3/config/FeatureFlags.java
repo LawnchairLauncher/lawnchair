@@ -76,10 +76,6 @@ public final class FeatureFlags {
      * Declare a new ToggleableFlag below. Give it a unique key (e.g. "QSB_ON_FIRST_SCREEN"),
      * and set a default value for the flag. This will be the default value on Debug builds.
      */
-    public static final BooleanFlag ENABLE_GESTURE_ERROR_DETECTION = getDebugFlag(270389990,
-            "ENABLE_GESTURE_ERROR_DETECTION", ENABLED,
-            "Analyze gesture events and log detected errors");
-
     // When enabled the promise icon is visible in all apps while installation an app.
     public static final BooleanFlag PROMISE_APPS_IN_ALL_APPS = getDebugFlag(270390012,
             "PROMISE_APPS_IN_ALL_APPS", DISABLED, "Add promise icon in all-apps");
@@ -135,14 +131,6 @@ public final class FeatureFlags {
             "ASSISTANT_GIVES_LAUNCHER_FOCUS", DISABLED,
             "Allow Launcher to handle nav bar gestures while Assistant is running over it");
 
-    public static final BooleanFlag ENABLE_BULK_WORKSPACE_ICON_LOADING = getDebugFlag(270392203,
-            "ENABLE_BULK_WORKSPACE_ICON_LOADING", ENABLED,
-            "Enable loading workspace icons in bulk.");
-
-    public static final BooleanFlag ENABLE_DATABASE_RESTORE = getDebugFlag(270392706,
-            "ENABLE_DATABASE_RESTORE", DISABLED,
-            "Enable database restore when new restore session is created");
-
     public static final BooleanFlag ENABLE_OVERLAY_CONNECTION_OPTIM = getDebugFlag(270392629,
             "ENABLE_OVERLAY_CONNECTION_OPTIM", DISABLED,
             "Enable optimizing overlay service connection");
@@ -161,10 +149,6 @@ public final class FeatureFlags {
     public static final BooleanFlag SEPARATE_RECENTS_ACTIVITY = getDebugFlag(270392980,
             "SEPARATE_RECENTS_ACTIVITY", DISABLED,
             "Uses a separate recents activity instead of using the integrated recents+Launcher UI");
-
-    public static final BooleanFlag ENABLE_MINIMAL_DEVICE = getDebugFlag(270392984,
-            "ENABLE_MINIMAL_DEVICE", DISABLED,
-            "Allow user to toggle minimal device mode in launcher.");
 
     public static final BooleanFlag ENABLE_TWO_PANEL_HOME = getDebugFlag(270392643,
             "ENABLE_TWO_PANEL_HOME", ENABLED,
@@ -213,7 +197,7 @@ public final class FeatureFlags {
             "Enable initiating split screen from workspace.");
 
     public static final BooleanFlag ENABLE_SPLIT_FROM_FULLSCREEN_WITH_KEYBOARD_SHORTCUTS =
-            getDebugFlag(270394122, "ENABLE_SPLIT_FROM_FULLSCREEN_SHORTCUT", ENABLED,
+            getDebugFlag(270394122, "ENABLE_SPLIT_FROM_FULLSCREEN_SHORTCUT", DISABLED,
             "Enable splitting from fullscreen app with keyboard shortcuts");
 
     public static final BooleanFlag ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE = getDebugFlag(
