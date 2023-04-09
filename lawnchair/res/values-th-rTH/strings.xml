@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">แตะที่การ์ดเพื่อตั้ง Lawnchair เป็นแอปเริ่มต้นสำหรับหน้าแรก</string>
     <string name="settings">การตั้งค่า</string>
     <string name="general_label">ทั่วไป</string>
     <string name="general_description">สี, ชุดไอคอน, จุดแจ้งเตือน</string>
@@ -46,14 +46,14 @@
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">การปรับแต่งแบบอักษร</string>
     <string name="font_picker_description">ข้อความบางส่วนยังไม่ถูกเปลี่ยนแปลง</string>
-    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
+    <string name="smartspace_calendar_label">ปรับแต่งปฎิทินที่ข้อมูลสรุป</string>
     <string name="smartspace_calendar_description">อนุญาตให้แสดงวันที่ในระบบปฏิทินที่ไม่ใช่แบบเกรกอเรียน</string>
     <string name="workspace_increase_max_grid_size_label">เพิ่มขนาดกริดหน้าจอหลักสูงสุดแล้ว</string>
     <string name="workspace_increase_max_grid_size_description">เพิ่มขนาดกริดหน้าจอหลักสูงสุดที่อนุญาตจาก 10 x 10 เป็น 20 x 20</string>
     <string name="always_reload_icons_label">โหลดไอคอนใหม่เสมอ</string>
     <string name="always_reload_icons_description">หลีกเลี่ยงการแคชจากชุดไอคอน</string>
-    <string name="transparent_background_icons">Transparent Themed Icons</string>
-    <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
+    <string name="transparent_background_icons">ไอคอนธีมโปร่งใส</string>
+    <string name="transparent_background_icons_description">ใช้พื้นหลังโปร่งใสบนไอคอนที่มีธีม</string>
     <string name="smartspace_mode_selection">การเลือกผู้ให้บริการข้อมูลโดยย่อ</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">อนุญาตให้หมุนหน้าจอหลัก</string>
@@ -71,8 +71,8 @@
     <string name="show_notification_count">แสดงตัวเลขจากการนับแจ้งเตือน</string>
     <string name="notification_dots_color">สีจุดการแจ้งเตือน</string>
     <string name="notification_dots_text_color">สีการนับการแจ้งเตือน</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_always">คำเตือน: จุดแจ้งเตือน &amp; สีของตัวนับไม่มีความต่างเพียงพอ</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">คำเตือน: จุดแจ้งเตือน &amp; สีตัวนับอาจไม่มีความต่างเพียงพอในบางครั้ง</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">ต้องการการอนุญาติให้เข้าถึงการแจ้งเตือน</string>
     <string name="missing_notification_access_description">ต้องการการอนุญาติให้เข้าถึงการแจ้งเตือน</string>
@@ -86,10 +86,10 @@
     <string name="theme_follow_wallpaper">เข้ากับภาพพื้นหลัง</string>
     <string name="accent_color">สีที่ใช้เน้น</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Custom Icon Shape</string>
-    <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
-    <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
-    <string name="icon_shape_corner">Corner Shape</string>
+    <string name="custom_icon_shape">กำหนดรูปร่างไอคอน</string>
+    <string name="custom_icon_shape_create">สร้างรูปแบบไอคอนที่กำหนดเอง</string>
+    <string name="custom_icon_shape_edit">แก้ไขรูปแบบไอคอนที่กำหนดเอง</string>
+    <string name="icon_shape_corner">รูปร่างขอบมุม</string>
     <string name="icon_shape_corner_round">กลม</string>
     <string name="icon_shape_corner_squircle">เรียบ</string>
     <string name="icon_shape_corner_cut">ตัด</string>
@@ -105,7 +105,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">ชุดไอคอน</string>
-    <string name="themed_icon_pack">Themed Icon Source</string>
+    <string name="themed_icon_pack">แหล่งที่มาของไอคอนธีม</string>
     <string name="system_icons">ไอคอนระบบ</string>
     <string name="themed_icon_title">ไอคอนของธีม</string>
     <string name="themed_icons_off_label">ปิด</string>
@@ -144,8 +144,8 @@
     <string name="font_weight_extra_black">ตัวหนามาก</string>
     <string name="reset_font">รีเซ็ต</string>
     <!-- colorpreference/* -->
-    <string name="dynamic">Dynamic</string>
-    <string name="swatches">Swatches</string>
+    <string name="dynamic">ไดนามิก</string>
+    <string name="swatches">ตัวอย่าง</string>
     <string name="presets">ค่าที่ตั้งไว้แล้ว</string>
     <string name="custom">ปรับแต่ง</string>
     <string name="rgb">RGB</string>
@@ -181,9 +181,9 @@
     <string name="home_screen_unlock">ปลดล็อคหน้าแรก</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">หน้าจอหลักถูกล็อคแล้ว</string>
-    <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="popup_menu">เมนูป็อปอัพ</string>
+    <string name="home_screen_lock_toggle_from_home_popup">แสดงปุ่มล็อค</string>
+    <string name="show_system_settings_entry">แสดงรายการตั้งค่าระบบ</string>
     <string name="status_bar_label">แถบสถานะ</string>
     <string name="show_status_bar">แสดงแถบสถานะ</string>
     <string name="dark_status_bar_label">แถบสถานะสีดำ</string>
@@ -233,14 +233,14 @@
     <string name="smartspace_calendar_persian">เปอร์เซีย</string>
     <string name="smartspace_preferences">ปรับแต่ง</string>
     <string name="smartspace_widget_toggle_label">แสดงบนหน้าจอหลัก</string>
-    <string name="smartspace_widget_toggle_description">At a Glance can be manually added by placing the \"Lawnchair\" widget.</string>
+    <string name="smartspace_widget_toggle_description">สามารถเพิ่มข้อมูลสรุปได้ด้วยตนเองโดยวางวิดเจ็ต \"Lawnchair\"</string>
     <string name="smartspace_mode_label">ผู้ให้บริการข้อมูลโดยย่อ</string>
     <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">แถบค้นหาของ Google</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="hotseat_mode_label">Search Bar Widget</string>
+    <string name="hotseat_mode_label">วิดเจ็ตแถบค้นหา</string>
     <string name="hotseat_mode_disabled">ปิด</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
     <string name="hotseat_mode_google_search">แถบค้นหาของ Google</string>
@@ -267,9 +267,9 @@
     <string name="pref_category_search">ค้นหา</string>
     <string name="show_app_search_bar">แสดงแถบค้นหา</string>
     <string name="pref_search_auto_show_keyboard">แสดงคีย์บอร์ดอัตโนมัติ</string>
-    <string name="fuzzy_search_title">Fuzzy Search</string>
+    <string name="fuzzy_search_title">การค้นหาแบบคาดเดา</string>
     <string name="fuzzy_search_desc">การจับคูแบบประมาณสำหรับค้นหาแอพ</string>
-    <string name="max_search_result_count_title">Max Search Result Count</string>
+    <string name="max_search_result_count_title">จำนวนผลการค้นหาสูงสุด</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">จำนวนคอลัมน์</string>
     <string name="row_height_label">ความสูงของแถว</string>
@@ -319,7 +319,7 @@
     <string name="recents_clear_all">ล้างทั้งหมด</string>
     <string name="window_corner_radius_label">หน้าจอขอบมน</string>
     <string name="override_window_corner_radius_label">ปรับแต่งขอบมนของหน้าจอ</string>
-    <string name="window_corner_radius_description">When you swipe up to open Recents, the current app follows your finger, shrinking into a card. Use this slider to adjust the corner radius of the card when it’s nearly full-screen such that it matches the corners of your screen.</string>
+    <string name="window_corner_radius_description">เมื่อคุณปัดขึ้นเพื่อเปิดแอพล่าสุด แอพปัจจุบันจะตามนิ้วของคุณโดยย่อเป็นการ์ด ใช้แถบเลื่อนนี้เพื่อปรับรัศมีมุมของการ์ดเมื่อเกือบเต็มหน้าจอ เพื่อให้พอดีกับมุมของหน้าจอของคุณ</string>
     <string name="taskbar_label">แถบงาน</string>
     <string name="enable_taskbar_experimental">เปิดใช้แถบงาน (อยู่ในการทดลอง)</string>
     <!-- about/About.kt -->
@@ -340,7 +340,7 @@
     <!-- IconPickerPreference -->
     <string name="icon_picker_default_category">ไอคอน</string>
     <string name="icon_picker_reset_to_default">กลับเป็นค่าเริ่มต้น</string>
-    <string name="icon_pack_external_picker">Open External Picker</string>
+    <string name="icon_pack_external_picker">เปิดตัวเลือกภายนอก</string>
     <string name="pick_icon_from_label">เลือกไอคอนจาก</string>
     <string name="icon_picker_load_failed">ไม่สามารถโหลดไอคอนเพิ่มเติมได้</string>
     <!-- Misc -->
@@ -349,15 +349,15 @@
     <string name="item_removed">นำรายการออกแล้ว</string>
     <string name="all_apps_no_search_results">ไม่พบแอปที่ตรงกับ \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
     <string name="dt2s_admin_hint_title">จำเป็นต้องมีสิทธิ์ผู้จัดการระบบ</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">หากต้องการใช้ แตะ 2 ครั้งเพี่อปิดจอ ให้ตั้งค่า Lawnchair เป็นแอปผู้ดูแลอุปกรณ์ แตะเปิดการตั้งค่า จากนั้นแตะ “เปิดใช้งานแอปผู้ดูแลระบบอุปกรณ์นี้”</string>
     <string name="dt2s_admin_warning">แตะสองครั้งเพื่อเข้าสู่โหมดสลีป หน้าจอจะถูกปิด</string>
     <string name="dt2s_a11y_hint_title">เปิดบริการการช่วยการเข้าถึง</string>
-    <string name="dt2s_a11y_hint">To use Double-Tap to Sleep, turn on the Lawnchair accessibility service. Tap Open Settings, then select Lawnchair and turn on Use Lawnchair.</string>
+    <string name="dt2s_a11y_hint">หากต้องการใช้การแตะสองครั้งเพื่อเข้าสู่โหมด sleep อนุญาติให้ Lawnchair เข้าถึงบริการ แตะเปิดการตั้งค่า จากนั้นเลือก Lawnchair และเปิดใช้ Lawnchair</string>
     <string name="dt2s_warning_open_settings">เปิดการตั้งค่า</string>
     <string name="loading">กำลังโหลด…</string>
     <string name="system">ระบบ</string>
     <string name="customize_button_text">ปรับแต่ง</string>
-    <string name="label">Label</string>
+    <string name="label">เครื่องหมาย</string>
     <string name="hide_from_drawer">ซ่อนจากรายการแอพ</string>
     <string name="suggestion_pref_screen_title">คำแนะนำ</string>
     <!-- Bug reporting -->
@@ -384,7 +384,7 @@
     <string name="all_apps_search_market_message">ค้นหาแอพเพิ่มเติม</string>
     <string name="error_no_market_or_browser_installed">ยังไม่ได้ติดตั้งแอพสโตร์หรือเบราว์เซอร์</string>
     <string name="quickstep_incompatible">ระบบไม่สามารถเข้ากันได้</string>
-    <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
+    <string name="quickstep_incompatible_description">อุปกรณ์ของคุณได้รับการกำหนดค่าให้มีรูปแบบลายเส้นของระบบ (เรียกว่า Quickstep) ซึ่งให้บริการโดย %1$s แต่ %1$s เวอร์ชันนี้ไม่สามารถทำงานร่วมกับ Android เวอร์ชันของคุณได้ หากต้องการใช้อุปกรณ์ของคุณต่อไป โปรดถอนการติดตั้งการอัปเดต %1$s หรือปิดใช้งาน %1$s ในการตั้งค่า</string>
     <string name="delete">ลบ</string>
     <!-- Backup -->
     <string name="create_backup">สร้างข้อมูลสำรอง</string>
@@ -402,5 +402,5 @@
     <string name="invalid_backup_file">ไฟล์สำรองข้อมูลไม่ถูกต้อง</string>
     <string name="x_by_y">%1$d x %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="system_settings">System Settings</string>
+    <string name="system_settings">ตั้งค่าระบบ</string>
 </resources>
