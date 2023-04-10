@@ -146,12 +146,6 @@ public final class TestProtocol {
     public static final String REQUEST_MOCK_SENSOR_ROTATION = "mock-sensor-rotation";
 
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
-    public static final String NO_DROP_TARGET = "b/195031154";
-    public static final String NULL_INT_SET = "b/200572078";
-    public static final String MISSING_PROMISE_ICON = "b/202985412";
-    public static final String TASKBAR_IN_APP_STATE = "b/227657604";
-    public static final String NPE_TRANSIENT_TASKBAR = "b/257549303";
-    public static final String FLAKY_BINDING = "b/270216650";
     public static final String VIEW_AND_ACTIVITY_LEAKS = "b/260260325";
     public static final String WORK_TAB_MISSING = "b/243688989";
 

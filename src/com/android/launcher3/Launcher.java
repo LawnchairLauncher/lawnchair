@@ -1828,9 +1828,6 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     private void setWorkspaceLoading(boolean value) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.FLAKY_BINDING, "running: setWorkspaceLoading=" + value);
-        }
         mWorkspaceLoading = value;
     }
 
@@ -2203,10 +2200,6 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         IntSet result = new IntSet();
         if (visibleIds.isEmpty()) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.NULL_INT_SET, "getPagesToBindSynchronously (1): "
-                        + result);
-            }
             return result;
         }
         for (int id : orderedScreenIds.toArray()) {
@@ -2226,10 +2219,6 @@ public class Launcher extends StatefulActivity<LauncherState>
             // Add the right panel if left panel is hidden when switching display, due to empty
             // pages being hidden in single panel.
             result.add(pairId);
-        }
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NULL_INT_SET, "getPagesToBindSynchronously (2): "
-                    + result);
         }
         return result;
     }
@@ -2252,14 +2241,11 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     /**
      * Refreshes the shortcuts shown on the workspace.
-     *
+     * <p>
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void startBinding() {
         Object traceToken = TraceHelper.INSTANCE.beginSection("startBinding");
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.FLAKY_BINDING, "running: startBinding");
-        }
         // Floating panels (except the full widget sheet) are associated with individual icons. If
         // we are starting a fresh bind, close all such panels as all the icons are about
         // to go away.
@@ -2438,10 +2424,6 @@ public class Launcher extends StatefulActivity<LauncherState>
                         throw (new RuntimeException(desc));
                     } else {
                         getModelWriter().deleteItemFromDatabase(item, desc);
-                        if (TestProtocol.sDebugTracing) {
-                            Log.d(TestProtocol.MISSING_PROMISE_ICON,
-                                    TAG + "bindItems failed for item=" + item);
-                        }
                         continue;
                     }
                 }
@@ -2727,14 +2709,11 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     /**
      * Callback saying that there aren't any more items to bind.
-     *
+     * <p>
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void finishBindingItems(IntSet pagesBoundFirst) {
         Object traceToken = TraceHelper.INSTANCE.beginSection("finishBindingItems");
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.FLAKY_BINDING, "running: finishBindingItems");
-        }
         mWorkspace.restoreInstanceStateForRemainingPages();
 
         setWorkspaceLoading(false);

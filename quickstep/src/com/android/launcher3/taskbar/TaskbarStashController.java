@@ -65,7 +65,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorListeners;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.quickstep.SystemUiProxy;
@@ -1021,10 +1020,6 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      *                unstashed.
      */
     public void updateStateForFlag(int flag, boolean enabled) {
-        if (flag == FLAG_IN_APP && TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.TASKBAR_IN_APP_STATE, String.format(
-                    "setting flag FLAG_IN_APP to: %b", enabled), new Exception());
-        }
         if (enabled) {
             mState |= flag;
         } else {
@@ -1249,16 +1244,6 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                     && animationType != TRANSITION_DEFAULT;
 
             if (mIsStashed != isStashed || transitionTypeChanged) {
-                if (TestProtocol.sDebugTracing) {
-                    Log.d(TestProtocol.TASKBAR_IN_APP_STATE, String.format(
-                            "setState: mIsStashed=%b, isStashed=%b, "
-                                    + "mAnimationType=%d, animationType=%d, duration=%d",
-                            mIsStashed,
-                            isStashed,
-                            mLastStartedTransitionType,
-                            animationType,
-                            duration));
-                }
                 mIsStashed = isStashed;
                 mLastStartedTransitionType = animationType;
 
