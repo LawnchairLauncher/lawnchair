@@ -421,6 +421,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                     launcherBinder.bindAllApps();
                     launcherBinder.bindDeepShortcuts();
                     launcherBinder.bindWidgets();
+                    if (FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
+                        mModelDelegate.bindAllModelExtras(callbacksList);
+                    }
                     return true;
                 } else {
                     stopLoader();

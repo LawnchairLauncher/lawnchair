@@ -349,6 +349,11 @@ public final class FeatureFlags {
             "load the current workspace screen visible to the user before the rest rather than "
                     + "loading all of them at once.");
 
+    public static final BooleanFlag CHANGE_MODEL_DELEGATE_LOADING_ORDER = getDebugFlag(251502424,
+            "CHANGE_MODEL_DELEGATE_LOADING_ORDER", DISABLED,
+            "changes the timing of the loading and binding of delegate items during "
+                    + "data preparation for loading the home screen");
+
     public static final BooleanFlag ENABLE_GRID_ONLY_OVERVIEW = getDebugFlag(270397206,
             "ENABLE_GRID_ONLY_OVERVIEW", DISABLED,
             "Enable a grid-only overview without a focused task.");
