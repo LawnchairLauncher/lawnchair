@@ -61,6 +61,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
+import com.android.launcher3.model.DatabaseHelper;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
