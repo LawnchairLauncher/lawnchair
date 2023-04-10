@@ -37,8 +37,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.android.launcher3.LauncherProvider;
-import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
 
@@ -74,7 +72,7 @@ public class DbDowngradeHelperTest {
         mSchemaFile.delete();
         assertFalse(mSchemaFile.exists());
         DbDowngradeHelper.updateSchemaFile(mSchemaFile, 0, mContext);
-        assertEquals(LauncherProvider.SCHEMA_VERSION, DbDowngradeHelper.parse(mSchemaFile).version);
+        assertEquals(DatabaseHelper.SCHEMA_VERSION, DbDowngradeHelper.parse(mSchemaFile).version);
     }
 
     @Test
@@ -140,7 +138,7 @@ public class DbDowngradeHelperTest {
             @Override
             public void onOpen(SQLiteDatabase db) { }
         };
-        assertEquals(LauncherProvider.SCHEMA_VERSION, helper.getWritableDatabase().getVersion());
+        assertEquals(DatabaseHelper.SCHEMA_VERSION, helper.getWritableDatabase().getVersion());
 
         try (Cursor c = helper.getWritableDatabase().query(Favorites.TABLE_NAME,
                 null, null, null, null, null, null)) {
@@ -165,7 +163,7 @@ public class DbDowngradeHelperTest {
         mSchemaFile.delete();
         mDbFile.delete();
 
-        DbDowngradeHelper.updateSchemaFile(mSchemaFile, LauncherProvider.SCHEMA_VERSION, mContext);
+        DbDowngradeHelper.updateSchemaFile(mSchemaFile, DatabaseHelper.SCHEMA_VERSION, mContext);
 
         DatabaseHelper dbHelper = new DatabaseHelper(mContext, DB_FILE, false) {
             @Override
