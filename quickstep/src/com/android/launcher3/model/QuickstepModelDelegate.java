@@ -48,11 +48,15 @@ import android.os.UserHandle;
 import android.util.Log;
 import android.util.StatsEvent;
 
+import androidx.annotation.AnyThread;
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
@@ -62,6 +66,7 @@ import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.IntSparseArrayMap;
 import com.android.launcher3.util.PersistedItemArray;
 import com.android.quickstep.logging.SettingsChangeLogger;
@@ -111,45 +116,80 @@ public class QuickstepModelDelegate extends ModelDelegate {
         mStatsManager = context.getSystemService(StatsManager.class);
     }
 
+    @CallSuper
     @Override
-    public void loadHotseatItems(UserManagerState ums,
-            Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) {
-        // TODO: Implement caching and preloading
-        super.loadHotseatItems(ums, pinnedShortcuts);
-
-        WorkspaceItemFactory hotseatFactory = new WorkspaceItemFactory(mApp, ums, pinnedShortcuts,
-                mIDP.numDatabaseHotseatIcons, mHotseatState.containerId);
-        FixedContainerItems hotseatItems = new FixedContainerItems(mHotseatState.containerId,
-                mHotseatState.storage.read(mApp.getContext(), hotseatFactory, ums.allUsers::get));
-        mDataModel.extraItems.put(mHotseatState.containerId, hotseatItems);
+    public void loadAndBindWorkspaceItems(@NonNull UserManagerState ums,
+            @NonNull BgDataModel.Callbacks[] callbacks,
+            @NonNull Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) {
+        loadAndBindItems(ums, pinnedShortcuts, callbacks, mIDP.numDatabaseHotseatIcons,
+                mHotseatState);
     }
 
+    @CallSuper
     @Override
-    public void loadAllAppsItems(UserManagerState ums,
-            Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) {
-        // TODO: Implement caching and preloading
-        super.loadAllAppsItems(ums, pinnedShortcuts);
-
-        WorkspaceItemFactory allAppsFactory = new WorkspaceItemFactory(mApp, ums, pinnedShortcuts,
-                mIDP.numDatabaseAllAppsColumns, mAllAppsState.containerId);
-        FixedContainerItems allAppsPredictionItems = new FixedContainerItems(
-                mAllAppsState.containerId, mAllAppsState.storage.read(mApp.getContext(),
-                allAppsFactory, ums.allUsers::get));
-        mDataModel.extraItems.put(mAllAppsState.containerId, allAppsPredictionItems);
+    public void loadAndBindAllAppsItems(@NonNull UserManagerState ums,
+            @NonNull BgDataModel.Callbacks[] callbacks,
+            @NonNull Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) {
+        loadAndBindItems(ums, pinnedShortcuts, callbacks, mIDP.numDatabaseAllAppsColumns,
+                mAllAppsState);
     }
 
-    @Override
-    public void loadWidgetsRecommendationItems() {
+    @WorkerThread
+    private void loadAndBindItems(@NonNull UserManagerState ums,
+            @NonNull Map<ShortcutKey, ShortcutInfo> pinnedShortcuts,
+            @NonNull BgDataModel.Callbacks[] callbacks,
+            int numColumns, @NonNull PredictorState state) {
         // TODO: Implement caching and preloading
-        super.loadWidgetsRecommendationItems();
+
+        WorkspaceItemFactory factory =
+                new WorkspaceItemFactory(mApp, ums, pinnedShortcuts, numColumns, state.containerId);
+        FixedContainerItems fci = new FixedContainerItems(state.containerId,
+                state.storage.read(mApp.getContext(), factory, ums.allUsers::get));
+        if (FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
+            bindPredictionItems(callbacks, fci);
+        }
+        mDataModel.extraItems.put(state.containerId, fci);
+    }
+
+    @CallSuper
+    @Override
+    public void loadAndBindOtherItems(@NonNull BgDataModel.Callbacks[] callbacks) {
+        FixedContainerItems widgetPredictionFCI = new FixedContainerItems(
+                mWidgetsRecommendationState.containerId, new ArrayList<>());
 
         // Widgets prediction isn't used frequently. And thus, it is not persisted on disk.
-        mDataModel.extraItems.put(mWidgetsRecommendationState.containerId,
-                new FixedContainerItems(mWidgetsRecommendationState.containerId,
-                        new ArrayList<>()));
+        mDataModel.extraItems.put(mWidgetsRecommendationState.containerId, widgetPredictionFCI);
+
+        bindPredictionItems(callbacks, widgetPredictionFCI);
+        loadStringCache(mDataModel.stringCache);
+    }
+
+    @AnyThread
+    private void bindPredictionItems(@NonNull BgDataModel.Callbacks[] callbacks,
+            @NonNull FixedContainerItems fci) {
+        Executors.MAIN_EXECUTOR.execute(() -> {
+            for (BgDataModel.Callbacks c : callbacks) {
+                c.bindExtraContainerItems(fci);
+            }
+        });
     }
 
     @Override
+    @WorkerThread
+    public void bindAllModelExtras(@NonNull BgDataModel.Callbacks[] callbacks) {
+        Iterable<FixedContainerItems> containerItems;
+        synchronized (mDataModel.extraItems) {
+            containerItems = mDataModel.extraItems.clone();
+        }
+        Executors.MAIN_EXECUTOR.execute(() -> {
+            for (BgDataModel.Callbacks c : callbacks) {
+                for (FixedContainerItems fci : containerItems) {
+                    c.bindExtraContainerItems(fci);
+                }
+            }
+        });
+    }
+
     public void markActive() {
         super.markActive();
         mActive = true;
