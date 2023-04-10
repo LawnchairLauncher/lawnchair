@@ -16,7 +16,6 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.QuickstepTransitionManager.TRANSIENT_TASKBAR_TRANSITION_DURATION;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_EDU_TOOLTIP;
 import static com.android.launcher3.statemanager.BaseState.FLAG_NON_INTERACTIVE;
 import static com.android.launcher3.taskbar.TaskbarEduTooltipControllerKt.TOOLTIP_STEP_FEATURES;
 import static com.android.launcher3.taskbar.TaskbarLauncherStateController.FLAG_RESUMED;
@@ -252,13 +251,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
             return;
         }
 
-        // Transient and persistent bottom sheet.
-        if (!ENABLE_TASKBAR_EDU_TOOLTIP.get()) {
-            mLauncher.getOnboardingPrefs().markChecked(OnboardingPrefs.TASKBAR_EDU_SEEN);
-            mControllers.taskbarEduController.showEdu();
-            return;
-        }
-
         // Persistent features EDU tooltip.
         if (!DisplayController.isTransientTaskbar(mLauncher)) {
             mControllers.taskbarEduTooltipController.maybeShowFeaturesEdu();
@@ -275,11 +267,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     public boolean shouldShowEduOnAppLaunch() {
         if (Utilities.isRunningInTestHarness()) {
             return false;
-        }
-
-        // Transient and persistent bottom sheet.
-        if (!ENABLE_TASKBAR_EDU_TOOLTIP.get()) {
-            return !mLauncher.getOnboardingPrefs().getBoolean(OnboardingPrefs.TASKBAR_EDU_SEEN);
         }
 
         // Persistent features EDU tooltip.

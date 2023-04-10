@@ -106,7 +106,7 @@
 
     <Button
         android:id="@+id/done_button"
-        style="@style/TaskbarEdu.Button.Next"
+        style="@style/TaskbarEdu.Button.Done"
         android:layout_width="wrap_content"
         android:layout_height="36dp"
         android:layout_marginTop="32dp"
