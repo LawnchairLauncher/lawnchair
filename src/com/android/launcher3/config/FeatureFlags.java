@@ -269,13 +269,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_SEARCH_UNINSTALLED_APPS = getReleaseFlag(270395269,
             "ENABLE_SEARCH_UNINSTALLED_APPS", DISABLED, "Search uninstalled app results.");
 
-    public static final BooleanFlag SHOW_HOME_GARDENING = getDebugFlag(270395183,
-            "SHOW_HOME_GARDENING", DISABLED, "Show the new home gardening mode");
-
-    public static final BooleanFlag HOME_GARDENING_WORKSPACE_BUTTONS = getDebugFlag(270395133,
-            "HOME_GARDENING_WORKSPACE_BUTTONS", DISABLED,
-            "Change workspace edit buttons to reflect home gardening");
-
     public static final BooleanFlag ENABLE_DOWNLOAD_APP_UX_V2 = getReleaseFlag(270395134,
             "ENABLE_DOWNLOAD_APP_UX_V2", ENABLED, "Updates the download app UX"
                     + " to have better visuals");
