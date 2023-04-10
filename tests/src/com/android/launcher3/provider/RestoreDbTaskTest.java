@@ -26,8 +26,8 @@ import androidx.test.InstrumentationRegistry;
 import androidx.test.filters.SmallTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.model.DatabaseHelper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
