@@ -155,7 +155,6 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
         } else if (KEY_VIEWS_UPDATE.equals(key)) {
             // For views update, remove all previous updates, except the provider
             pendingUpdate.remoteViews = (RemoteViews) data;
-            pendingUpdate.changedViews.clear();
         } else if (KEY_VIEW_DATA_CHANGED.equals(key)) {
             pendingUpdate.changedViews.add((Integer) data);
         }
