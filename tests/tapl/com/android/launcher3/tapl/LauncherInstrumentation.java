@@ -1012,8 +1012,6 @@ public final class LauncherInstrumentation {
                 if (hasLauncherObject(WORKSPACE_RES_ID)) {
                     log(action = "already at home");
                 } else {
-                    log("Hierarchy before swiping up to home:");
-                    dumpViewHierarchy();
                     action = "swiping up to home";
 
                     swipeToState(
