@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Salta"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Ruota lo schermo"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Informazioni sulla barra delle applicazioni"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Riquadro Formazione barra delle applicazioni visualizzato"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Riquadro Formazione barra delle applicazioni chiuso"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Trascina un\'app di lato per usare due app contemporaneamente"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Scorri lentamente in su per mostrare la barra delle app"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Visualizza le app suggerite in base alla tua routine"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Per nascondere automaticamente la barra delle app, attiva la navigazione tramite gesti"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Fai di più con la barra delle app"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Avanti"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Indietro"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Chiudi"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Fine"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Home"</string>

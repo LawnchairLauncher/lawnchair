@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ข้าม"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"หมุนหน้าจอ"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"แถบงาน Education"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"แถบงาน Education ปรากฎขึ้น"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"ปิดแถบงาน Education แล้ว"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ลากแอปไปด้านข้างเพื่อใช้ 2 แอปพร้อมกัน"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ปัดขึ้นช้าๆ เพื่อแสดงแถบงาน"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"รับคำแนะนำเกี่ยวกับแอปตามกิจวัตรของคุณ"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"เปิดการนำทางด้วยท่าทางสัมผัสในการตั้งค่าเพื่อซ่อนแถบงานโดยอัตโนมัติ"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ทำสิ่งต่างๆ ได้มากขึ้นด้วยแถบงาน"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"ถัดไป"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"กลับ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ปิด"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"เสร็จ"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"หน้าแรก"</string>

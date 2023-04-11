@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Ruka"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Zungusha skrini"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Elimu ya Upauzana"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Paneli ya elimu kwenye upau wa shughuli inaonyeshwa"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Paneli ya elimu kwenye upau wa shughuli imefungwa"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Buruta programu pembeni ili utumie programu 2 kwa wakati mmoja"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Telezesha kidole juu taratibu ili ufungue Upauzana"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Pata mapendekezo ya programu kulingana na ratiba yako"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Washa usogezaji kwa kutumia ishara kwenye Mipangilio ili ufiche Upauzana kiotomatiki"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Kamilisha mengi kwa kutumia Upauzana huu"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Endelea"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Nyuma"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Funga"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Imemaliza"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Mwanzo"</string>
