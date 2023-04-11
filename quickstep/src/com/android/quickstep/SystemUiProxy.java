@@ -621,14 +621,15 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
-    public void startIntents(PendingIntent pendingIntent1, Bundle options1,
-            PendingIntent pendingIntent2, Bundle options2,
-            @SplitConfigurationOptions.StagePosition int splitPosition,
+    public void startIntents(PendingIntent pendingIntent1, @Nullable ShortcutInfo shortcutInfo1,
+            Bundle options1, PendingIntent pendingIntent2, @Nullable ShortcutInfo shortcutInfo2,
+            Bundle options2, @SplitConfigurationOptions.StagePosition int splitPosition,
             float splitRatio, RemoteTransition remoteTransition, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
-                mSplitScreen.startIntents(pendingIntent1, options1, pendingIntent2, options2,
-                        splitPosition, splitRatio, remoteTransition, instanceId);
+                mSplitScreen.startIntents(pendingIntent1, shortcutInfo1, options1, pendingIntent2,
+                        shortcutInfo2, options2, splitPosition, splitRatio, remoteTransition,
+                        instanceId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startIntents");
             }
