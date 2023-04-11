@@ -40,7 +40,6 @@ abstract class TaskbarBaseTestCase {
     @Mock lateinit var taskbarKeyguardController: TaskbarKeyguardController
     @Mock lateinit var stashedHandleViewController: StashedHandleViewController
     @Mock lateinit var taskbarStashController: TaskbarStashController
-    @Mock lateinit var taskbarEduController: TaskbarEduController
     @Mock lateinit var taskbarAutohideSuspendController: TaskbarAutohideSuspendController
     @Mock lateinit var taskbarPopupController: TaskbarPopupController
     @Mock
@@ -81,7 +80,6 @@ abstract class TaskbarBaseTestCase {
                 taskbarKeyguardController,
                 stashedHandleViewController,
                 taskbarStashController,
-                taskbarEduController,
                 taskbarAutohideSuspendController,
                 taskbarPopupController,
                 taskbarForceVisibleImmersiveController,

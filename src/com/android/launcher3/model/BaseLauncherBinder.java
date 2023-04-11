@@ -63,7 +63,7 @@ public abstract class BaseLauncherBinder {
     protected final BgDataModel mBgDataModel;
     private final AllAppsList mBgAllAppsList;
 
-    private final Callbacks[] mCallbacksList;
+    final Callbacks[] mCallbacksList;
 
     private int mMyBindingId;
 
@@ -293,8 +293,10 @@ public abstract class BaseLauncherBinder {
             // Load items on the current page.
             bindWorkspaceItems(currentWorkspaceItems, mUiExecutor);
             bindAppWidgets(currentAppWidgets, mUiExecutor);
-            mExtraItems.forEach(item ->
-                    executeCallbacksTask(c -> c.bindExtraContainerItems(item), mUiExecutor));
+            if (!FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
+                mExtraItems.forEach(item ->
+                        executeCallbacksTask(c -> c.bindExtraContainerItems(item), mUiExecutor));
+            }
 
             RunnableList pendingTasks = new RunnableList();
             Executor pendingExecutor = pendingTasks::add;
@@ -382,14 +384,22 @@ public abstract class BaseLauncherBinder {
             // Save a copy of all the bg-thread collections
             ArrayList<ItemInfo> workspaceItems;
             ArrayList<LauncherAppWidgetInfo> appWidgets;
+            ArrayList<FixedContainerItems> fciList = new ArrayList<>();
 
             synchronized (mBgDataModel) {
                 workspaceItems = new ArrayList<>(mBgDataModel.workspaceItems);
                 appWidgets = new ArrayList<>(mBgDataModel.appWidgets);
+                if (!FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
+                    mBgDataModel.extraItems.forEach(fciList::add);
+                }
             }
 
             workspaceItems.forEach(it -> mBoundItemIds.add(it.id));
             appWidgets.forEach(it -> mBoundItemIds.add(it.id));
+            if (!FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
+                fciList.forEach(item ->
+                        executeCallbacksTask(c -> c.bindExtraContainerItems(item), mUiExecutor));
+            }
 
             sortWorkspaceItemsSpatially(mApp.getInvariantDeviceProfile(), workspaceItems);
 

@@ -331,10 +331,6 @@ public final class FeatureFlags {
             "ENABLE_FORCED_MONO_ICON", DISABLED,
             "Enable the ability to generate monochromatic icons, if it is not provided by the app");
 
-    public static final BooleanFlag ENABLE_TASKBAR_EDU_TOOLTIP = getDebugFlag(270396268,
-            "ENABLE_TASKBAR_EDU_TOOLTIP", ENABLED,
-            "Enable the tooltip version of the Taskbar education flow.");
-
     public static final BooleanFlag ENABLE_MULTI_INSTANCE = getDebugFlag(270396680,
             "ENABLE_MULTI_INSTANCE", DISABLED,
             "Enables creation and filtering of multiple task instances in overview");
@@ -348,6 +344,11 @@ public final class FeatureFlags {
             "ENABLE_WORKSPACE_LOADING_OPTIMIZATION", DISABLED,
             "load the current workspace screen visible to the user before the rest rather than "
                     + "loading all of them at once.");
+
+    public static final BooleanFlag CHANGE_MODEL_DELEGATE_LOADING_ORDER = getDebugFlag(251502424,
+            "CHANGE_MODEL_DELEGATE_LOADING_ORDER", DISABLED,
+            "changes the timing of the loading and binding of delegate items during "
+                    + "data preparation for loading the home screen");
 
     public static final BooleanFlag ENABLE_GRID_ONLY_OVERVIEW = getDebugFlag(270397206,
             "ENABLE_GRID_ONLY_OVERVIEW", DISABLED,
