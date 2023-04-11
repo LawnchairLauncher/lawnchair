@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Omet"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Gira la pantalla"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Informació sobre Barra de tasques"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Ha aparegut el tauler educatiu de la barra de tasques"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"S\'ha tancat el tauler educatiu de la barra de tasques"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Arrossega una app al costat per utilitzar 2 apps alhora"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Llisca lentament cap amunt per mostrar la Barra de tasques"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Obtén suggeriments d\'aplicacions basats en la teva rutina"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"A Configuració, activa la navegació amb gestos per amagar la Barra de tasques automàticament"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Fes més coses amb la Barra de tasques"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Següent"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Enrere"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Tanca"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Fet"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Inici"</string>

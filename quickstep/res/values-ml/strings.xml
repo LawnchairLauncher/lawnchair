@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ഒഴിവാക്കുക"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"സ്‌ക്രീൻ റൊട്ടേറ്റ് ചെയ്യുക"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"ടാസ്‌ക്ബാർ മാർഗ്ഗനിർദ്ദേശ വിൻഡോ"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"ടാസ്ക്ക്ബാർ വിവര പാനൽ ദൃശ്യമായി"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"ടാസ്ക്ക്ബാർ വിവര പാനൽ അടച്ചു"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ഒരേ സമയം 2 ആപ്പുകൾ ഉപയോഗിക്കാൻ ഒരു ആപ്പ് വശത്തേക്ക് വലിച്ചിടൂ"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ടാസ്‌ക്ബാർ ദൃശ്യമാക്കാൻ മുകളിലേക്ക് പതുക്കെ സ്വൈപ്പ് ചെയ്യൂ"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"നിങ്ങളുടെ ദിനചര്യ അനുസരിച്ച് ആപ്പ് നിർദ്ദേശങ്ങൾ നേടുക"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"ടാസ്‌ക്‌ബാർ സ്വയമേവ മറയ്‌ക്കാൻ ക്രമീകരണത്തിൽ ജെസ്ച്ചർ നാവിഗേഷൻ ഓണാക്കുക"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ടാസ്‌ക്‌ബാർ ഉപയോഗിച്ച് കൂടുതൽ ചെയ്യുക"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"അടുത്തത്"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"മടങ്ങുക"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"അടയ്ക്കുക"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"പൂർത്തിയായി"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ഹോം"</string>

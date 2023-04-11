@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ବାଦ୍ ଦିଅନ୍ତୁ"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ସ୍କ୍ରିନ ଘୂରାନ୍ତୁ"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"ଟାସ୍କବାର ଶିକ୍ଷା"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"ଟାସ୍କବାର୍ ଶିକ୍ଷା ଦେଖାଯାଇଛି"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"ଟାସ୍କବାର୍ ଶିକ୍ଷା ବନ୍ଦ ହୋଇଯାଇଛି"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ଥରକେ 2ଟି ଆପ୍ସ ବ୍ୟବହାର କରିବା ପାଇଁ ଏକ ଆପକୁ ପାର୍ଶ୍ୱକୁ ଡ୍ରାଗ କର"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ଟାସ୍କବାର ଦେଖାଇବା ପାଇଁ ଉପରକୁ ଧୀରେ-ସ୍ୱାଇପ କରନ୍ତୁ"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ଆପଣଙ୍କ ରୁଟିନ ଆଧାରରେ ଆପ ପରାମର୍ଶଗୁଡ଼ିକୁ ପାଆନ୍ତୁ"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"ଟାସ୍କବାରକୁ ସ୍ୱତଃ-ଲୁଚାଇବା ପାଇଁ ସେଟିଂସରେ ଜେଶ୍ଚର ନାଭିଗେସନକୁ ଚାଲୁ କରନ୍ତୁ"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ଟାସ୍କବାର ମାଧ୍ୟମରେ ଆହୁରି ଅନେକ କିଛି କରନ୍ତୁ"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"ପରବର୍ତ୍ତୀ"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"ପଛକୁ ଫେରନ୍ତୁ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ବନ୍ଦ କରନ୍ତୁ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ହୋଇଗଲା"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ହୋମ"</string>
