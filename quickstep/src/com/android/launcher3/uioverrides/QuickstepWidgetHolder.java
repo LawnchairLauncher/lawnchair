@@ -196,7 +196,7 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
     @Override
     public void addProviderChangeListener(
             @NonNull LauncherWidgetHolder.ProviderChangedListener listener) {
-        mProviderChangedListeners.add(listener);
+        MAIN_EXECUTOR.execute(() -> mProviderChangedListeners.add(listener));
     }
 
     /**
@@ -206,7 +206,7 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
     @Override
     public void removeProviderChangeListener(
             LauncherWidgetHolder.ProviderChangedListener listener) {
-        mProviderChangedListeners.remove(listener);
+        MAIN_EXECUTOR.execute(() -> mProviderChangedListeners.remove(listener));
     }
 
     /**
