@@ -192,9 +192,6 @@
     <string name="permdesc_write_settings">Allows the app to change the settings and
         shortcuts in home.</string>
 
-    <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
-    <string name="msg_no_phone_permission"><xliff:g id="app_name" example="Launcher3">%1$s</xliff:g> is not allowed to make phone calls</string>
-
     <!-- Widgets: -->
     <skip />
 
