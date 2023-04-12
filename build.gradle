@@ -1,4 +1,5 @@
 import com.android.build.gradle.BasePlugin
+import com.google.protobuf.gradle.GenerateProtoTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -48,6 +49,10 @@ allprojects {
         it.name.contains("transformClassesWithHiddenApiRefine")
     }.configureEach {
         notCompatibleWithConfigurationCache("https://github.com/RikkaApps/HiddenApiRefinePlugin/issues/9")
+    }
+
+    tasks.withType(GenerateProtoTask).configureEach {
+        notCompatibleWithConfigurationCache("https://github.com/google/protobuf-gradle-plugin/issues/687")
     }
 
     ext.addFrameworkJar = { String name ->
