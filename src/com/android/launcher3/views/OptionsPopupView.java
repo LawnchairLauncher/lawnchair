@@ -18,6 +18,7 @@ package com.android.launcher3.views;
 import static androidx.core.content.ContextCompat.getColorStateList;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
+import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS;
@@ -205,12 +206,23 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
                     LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS,
                     OptionsPopupView::onWidgetsClicked));
         }
+        if (MULTI_SELECT_EDIT_MODE.get()) {
+            options.add(new OptionItem(launcher,
+                    R.string.edit_home_screen,
+                    R.drawable.enter_home_gardening_icon,
+                    LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
+                    OptionsPopupView::enterHomeGardening));
+        }
         options.add(new OptionItem(launcher,
                 R.string.settings_button_text,
                 R.drawable.ic_setting,
                 LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
                 OptionsPopupView::startSettings));
         return options;
+    }
+
+    private static boolean enterHomeGardening(View view) {
+        return true;
     }
 
     private static boolean onWidgetsClicked(View view) {
