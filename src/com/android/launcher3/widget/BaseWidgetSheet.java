@@ -198,7 +198,9 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
         int widthUsed;
         if (deviceProfile.isTablet) {
             int margin = deviceProfile.allAppsLeftRightMargin;
-            if (deviceProfile.isLandscape && LARGE_SCREEN_WIDGET_PICKER.get()) {
+            if (deviceProfile.isLandscape
+                    && LARGE_SCREEN_WIDGET_PICKER.get()
+                    && !deviceProfile.isTwoPanels) {
                 margin = getResources().getDimensionPixelSize(
                         R.dimen.widget_picker_landscape_tablet_left_right_margin);
             }
