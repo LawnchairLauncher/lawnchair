@@ -308,15 +308,12 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         // Pre-drag has ended, start the global system drag.
         if (mDisallowGlobalDrag) {
             AbstractFloatingView.closeAllOpenViewsExcept(mActivity, TYPE_TASKBAR_ALL_APPS);
-        } else {
-            AbstractFloatingView.closeAllOpenViews(mActivity);
+            return;
         }
-
         startSystemDrag((BubbleTextView) mDragObject.originalView);
     }
 
     private void startSystemDrag(BubbleTextView btv) {
-        if (mDisallowGlobalDrag) return;
         View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(btv) {
 
             @Override
@@ -412,6 +409,9 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                         .log(StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED);
             }
         }
+
+        // Wait to close until after system drag has started, if applicable.
+        AbstractFloatingView.closeAllOpenViews(mActivity);
     }
 
     private void onSystemDragStarted(BubbleTextView btv) {

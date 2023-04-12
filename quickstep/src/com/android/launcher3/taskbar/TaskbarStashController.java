@@ -931,20 +931,6 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     /**
-     * Resets the flag if no system gesture is in progress.
-     * <p>
-     * Otherwise, the reset should be deferred until after the gesture is finished.
-     *
-     * @see #setSystemGestureInProgress
-     */
-    public void resetFlagIfNoGestureInProgress(int flag) {
-        if (!mIsSystemGestureInProgress) {
-            updateStateForFlag(flag, false);
-            applyState(mControllers.taskbarOverlayController.getCloseDuration());
-        }
-    }
-
-    /**
      * When hiding the IME, delay the unstash animation to align with the end of the transition.
      */
     private long getTaskbarStashStartDelayForIme() {
