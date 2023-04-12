@@ -72,8 +72,18 @@ public class DbDowngradeHelper {
         }
     }
 
+    /**
+     * Creates a helper from the provided file
+     */
     public static DbDowngradeHelper parse(File file) throws JSONException, IOException {
-        JSONObject obj = new JSONObject(new String(IOUtils.toByteArray(file)));
+        return parse(IOUtils.toByteArray(file));
+    }
+
+    /**
+     * Creates a helper from the provided bytes
+     */
+    public static DbDowngradeHelper parse(byte[] fileData) throws JSONException {
+        JSONObject obj = new JSONObject(new String(fileData));
         DbDowngradeHelper helper = new DbDowngradeHelper(obj.getInt(KEY_VERSION));
         for (int version = helper.version - 1; version > 0; version--) {
             if (obj.has(KEY_DOWNGRADE_TO + version)) {

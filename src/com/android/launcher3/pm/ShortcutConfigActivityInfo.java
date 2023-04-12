@@ -151,8 +151,6 @@ public abstract class ShortcutConfigActivityInfo implements ComponentWithLabelAn
     public static List<ShortcutConfigActivityInfo> queryList(
             Context context, @Nullable PackageUserKey packageUser) {
         List<ShortcutConfigActivityInfo> result = new ArrayList<>();
-        UserHandle myUser = Process.myUserHandle();
-
         final List<UserHandle> users;
         final String packageName;
         if (packageUser == null) {
@@ -164,11 +162,9 @@ public abstract class ShortcutConfigActivityInfo implements ComponentWithLabelAn
         }
         LauncherApps launcherApps = context.getSystemService(LauncherApps.class);
         for (UserHandle user : users) {
-            boolean ignoreTargetSdk = myUser.equals(user);
             for (LauncherActivityInfo activityInfo :
                     launcherApps.getShortcutConfigActivityList(packageName, user)) {
-                if (ignoreTargetSdk || activityInfo.getApplicationInfo().targetSdkVersion
-                        >= Build.VERSION_CODES.O) {
+                if (activityInfo.getApplicationInfo().targetSdkVersion >= Build.VERSION_CODES.O) {
                     result.add(new ShortcutConfigActivityInfoVO(activityInfo));
                 }
             }

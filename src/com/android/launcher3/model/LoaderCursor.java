@@ -75,8 +75,6 @@ public class LoaderCursor extends CursorWrapper {
     private final IntArray mRestoredRows = new IntArray();
     private final IntSparseArrayMap<GridOccupancy> mOccupied = new IntSparseArrayMap<>();
 
-    private final int mIconPackageIndex;
-    private final int mIconResourceIndex;
     private final int mIconIndex;
     public final int mTitleIndex;
 
@@ -122,8 +120,6 @@ public class LoaderCursor extends CursorWrapper {
 
         // Init column indices
         mIconIndex = getColumnIndexOrThrow(Favorites.ICON);
-        mIconPackageIndex = getColumnIndexOrThrow(Favorites.ICON_PACKAGE);
-        mIconResourceIndex = getColumnIndexOrThrow(Favorites.ICON_RESOURCE);
         mTitleIndex = getColumnIndexOrThrow(Favorites.TITLE);
 
         mIdIndex = getColumnIndexOrThrow(Favorites._ID);
@@ -200,23 +196,25 @@ public class LoaderCursor extends CursorWrapper {
 
     public IconRequestInfo<WorkspaceItemInfo> createIconRequestInfo(
             WorkspaceItemInfo wai, boolean useLowResIcon) {
-        String packageName = itemType == Favorites.ITEM_TYPE_SHORTCUT
-                ? getString(mIconPackageIndex) : null;
-        String resourceName = itemType == Favorites.ITEM_TYPE_SHORTCUT
-                ? getString(mIconResourceIndex) : null;
         byte[] iconBlob = itemType == Favorites.ITEM_TYPE_SHORTCUT
                 || itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT
                 || restoreFlag != 0
-                ? getBlob(mIconIndex) : null;
+                ? getIconBlob() : null;
 
-        return new IconRequestInfo<>(
-                wai, mActivityInfo, packageName, resourceName, iconBlob, useLowResIcon);
+        return new IconRequestInfo<>(wai, mActivityInfo, iconBlob, useLowResIcon);
+    }
+
+    /**
+     * Returns the icon data for at the current position
+     */
+    public byte[] getIconBlob() {
+        return getBlob(mIconIndex);
     }
 
     /**
      * Returns the title or empty string
      */
-    private String getTitle() {
+    public String getTitle() {
         return Utilities.trim(getString(mTitleIndex));
     }
 
