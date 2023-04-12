@@ -183,7 +183,7 @@ public class InvariantDeviceProfile {
 
     public String dbFile;
     public int defaultLayoutId;
-    int demoModeLayoutId;
+    public int demoModeLayoutId;
     public boolean[] inlineQsb = new boolean[COUNT_SIZES];
 
     /**
