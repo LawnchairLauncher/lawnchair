@@ -952,10 +952,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return mScreenOrder;
     }
 
-    protected View getFirstPagePinnedItem() {
-        return mFirstPagePinnedItem;
-    }
-
     /**
      * Returns the screen ID of a page that is shown together with the given page screen ID when the
      * two panel UI is enabled.
