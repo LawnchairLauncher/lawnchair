@@ -81,7 +81,7 @@ public class AutoInstallsLayout {
     private static final String FORMATTED_LAYOUT_RES = "default_layout_%dx%d";
     private static final String LAYOUT_RES = "default_layout";
 
-    static AutoInstallsLayout get(Context context, LauncherWidgetHolder appWidgetHolder,
+    public static AutoInstallsLayout get(Context context, LauncherWidgetHolder appWidgetHolder,
             LayoutParserCallback callback) {
         Partner partner = Partner.get(context.getPackageManager(), ACTION_LAUNCHER_CUSTOMIZATION);
         if (partner == null) {
