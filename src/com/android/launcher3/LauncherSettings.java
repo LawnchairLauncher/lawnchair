@@ -131,18 +131,6 @@ public class LauncherSettings {
         public static final int ITEM_TYPE_SEARCH_ACTION = 9;
 
         /**
-         * The icon package name in Intent.ShortcutIconResource
-         * <P>Type: TEXT</P>
-         */
-        public static final String ICON_PACKAGE = "iconPackage";
-
-        /**
-         * The icon resource name in Intent.ShortcutIconResource
-         * <P>Type: TEXT</P>
-         */
-        public static final String ICON_RESOURCE = "iconResource";
-
-        /**
          * The custom icon bitmap.
          * <P>Type: BLOB</P>
          */
@@ -357,8 +345,6 @@ public class LauncherSettings {
                     "spanY INTEGER," +
                     "itemType INTEGER," +
                     "appWidgetId INTEGER NOT NULL DEFAULT -1," +
-                    "iconPackage TEXT," +
-                    "iconResource TEXT," +
                     "icon BLOB," +
                     "appWidgetProvider TEXT," +
                     "modified INTEGER NOT NULL DEFAULT 0," +

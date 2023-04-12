@@ -437,9 +437,7 @@ public interface ActivityContext {
                 StrictMode.setVmPolicy(oldPolicy);
             }
         } catch (SecurityException e) {
-            if (!onErrorStartingShortcut(intent, info)) {
-                throw e;
-            }
+            throw e;
         }
     }
 
@@ -457,16 +455,6 @@ public interface ActivityContext {
         } catch (SecurityException | IllegalStateException e) {
             Log.e(TAG, "Failed to start shortcut", e);
         }
-    }
-
-    /**
-     * Invoked when a shortcut fails to launch.
-     * @param intent Shortcut intent that failed to start.
-     * @param info Shortcut information.
-     * @return {@code true} if the error is handled by this callback.
-     */
-    default boolean onErrorStartingShortcut(Intent intent, ItemInfo info) {
-        return false;
     }
 
     default CellPosMapper getCellPosMapper() {

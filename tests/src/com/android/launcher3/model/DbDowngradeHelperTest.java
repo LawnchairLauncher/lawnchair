@@ -109,6 +109,21 @@ public class DbDowngradeHelperTest {
     }
 
     @Test
+    public void testDowngrade_success_v31() throws Exception {
+        setupTestDb();
+
+        try (SQLiteOpenHelper helper = new MyDatabaseHelper()) {
+            assertFalse(hasFavoritesColumn(helper.getWritableDatabase(), "iconPackage"));
+            assertFalse(hasFavoritesColumn(helper.getWritableDatabase(), "iconResource"));
+        }
+
+        try (TestOpenHelper helper = new TestOpenHelper(24)) {
+            assertTrue(hasFavoritesColumn(helper.getWritableDatabase(), "iconPackage"));
+            assertTrue(hasFavoritesColumn(helper.getWritableDatabase(), "iconResource"));
+        }
+    }
+
+    @Test
     public void testDowngrade_success_v24() throws Exception {
         setupTestDb();
 
@@ -121,34 +136,18 @@ public class DbDowngradeHelperTest {
     public void testDowngrade_success_v22() throws Exception {
         setupTestDb();
 
-        SQLiteOpenHelper helper = new TestOpenHelper(22);
-        assertEquals(22, helper.getWritableDatabase().getVersion());
-
-        // Check column does not exist
-        try (Cursor c = helper.getWritableDatabase().query(Favorites.TABLE_NAME,
-                null, null, null, null, null, null)) {
-            assertEquals(-1, c.getColumnIndex(Favorites.OPTIONS));
-
-            // Check data is present
-            assertEquals(10, c.getCount());
+        try (SQLiteOpenHelper helper = new TestOpenHelper(22)) {
+            assertEquals(22, helper.getWritableDatabase().getVersion());
+            assertFalse(hasFavoritesColumn(helper.getWritableDatabase(), Favorites.OPTIONS));
+            assertEquals(10, getFavoriteDataCount(helper.getWritableDatabase()));
         }
-        helper.close();
 
-        helper = new DatabaseHelper(mContext, DB_FILE, false) {
-            @Override
-            public void onOpen(SQLiteDatabase db) { }
-        };
-        assertEquals(DatabaseHelper.SCHEMA_VERSION, helper.getWritableDatabase().getVersion());
-
-        try (Cursor c = helper.getWritableDatabase().query(Favorites.TABLE_NAME,
-                null, null, null, null, null, null)) {
-            // Check column exists
-            assertNotSame(-1, c.getColumnIndex(Favorites.OPTIONS));
-
-            // Check data is present
-            assertEquals(10, c.getCount());
+        try (SQLiteOpenHelper helper = new MyDatabaseHelper()) {
+            assertEquals(DatabaseHelper.SCHEMA_VERSION,
+                    helper.getWritableDatabase().getVersion());
+            assertTrue(hasFavoritesColumn(helper.getWritableDatabase(), Favorites.OPTIONS));
+            assertEquals(10, getFavoriteDataCount(helper.getWritableDatabase()));
         }
-        helper.close();
     }
 
     @Test(expected = DowngradeFailException.class)
@@ -165,10 +164,7 @@ public class DbDowngradeHelperTest {
 
         DbDowngradeHelper.updateSchemaFile(mSchemaFile, DatabaseHelper.SCHEMA_VERSION, mContext);
 
-        DatabaseHelper dbHelper = new DatabaseHelper(mContext, DB_FILE, false) {
-            @Override
-            public void onOpen(SQLiteDatabase db) { }
-        };
+        DatabaseHelper dbHelper = new MyDatabaseHelper();
         // Insert mock data
         for (int i = 0; i < 10; i++) {
             ContentValues values = new ContentValues();
@@ -209,5 +205,27 @@ public class DbDowngradeHelperTest {
         public DowngradeFailException(Exception e) {
             super(e);
         }
+    }
+
+    private static boolean hasFavoritesColumn(SQLiteDatabase db, String columnName) {
+        try (Cursor c = db.query(Favorites.TABLE_NAME, null, null, null, null, null, null)) {
+            return c.getColumnIndex(columnName) >= 0;
+        }
+    }
+
+    public static int getFavoriteDataCount(SQLiteDatabase db) {
+        try (Cursor c = db.query(Favorites.TABLE_NAME, null, null, null, null, null, null)) {
+            return c.getCount();
+        }
+    }
+
+    private class MyDatabaseHelper extends DatabaseHelper {
+
+        MyDatabaseHelper() {
+            super(mContext, DB_FILE, false);
+        }
+
+        @Override
+        public void onOpen(SQLiteDatabase db) { }
     }
 }

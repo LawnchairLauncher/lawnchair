@@ -155,7 +155,6 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
         } else if (KEY_VIEWS_UPDATE.equals(key)) {
             // For views update, remove all previous updates, except the provider
             pendingUpdate.remoteViews = (RemoteViews) data;
-            pendingUpdate.changedViews.clear();
         } else if (KEY_VIEW_DATA_CHANGED.equals(key)) {
             pendingUpdate.changedViews.add((Integer) data);
         }
@@ -197,7 +196,7 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
     @Override
     public void addProviderChangeListener(
             @NonNull LauncherWidgetHolder.ProviderChangedListener listener) {
-        mProviderChangedListeners.add(listener);
+        MAIN_EXECUTOR.execute(() -> mProviderChangedListeners.add(listener));
     }
 
     /**
@@ -207,7 +206,7 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
     @Override
     public void removeProviderChangeListener(
             LauncherWidgetHolder.ProviderChangedListener listener) {
-        mProviderChangedListeners.remove(listener);
+        MAIN_EXECUTOR.execute(() -> mProviderChangedListeners.remove(listener));
     }
 
     /**
