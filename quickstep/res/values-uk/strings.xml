@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Пропустити"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Обернути екран"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Панель завдань Education"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Панель завдань Education відкрито"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Панель завдань Education закрито"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Перетягніть убік, щоб використовувати 2 додатки одночасно"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Щоб відкрити панель завдань, повільно проведіть угору"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Отримуйте рекомендації додатків залежно від їх використання"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Увімкніть навігацію жестами в налаштуваннях, щоб автоматично приховувати панель завдань"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Більше можливостей завдяки панелі завдань"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Далі"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Назад"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Закрити"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Готово"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Головний екран"</string>

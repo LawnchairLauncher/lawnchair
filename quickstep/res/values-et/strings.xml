@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Jäta vahele"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Pöörake ekraani"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Tegumiriba tutvustus"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Tegumiriba juhised kuvati"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Tegumiriba juhised on suletud"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"2 rakenduse korraga kasutamiseks lohistage rakendus kõrvale"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Tegumiriba kuvamiseks pühkige aeglaselt üles"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Hankige oma rutiini põhjal rakenduste soovitusi"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Tegumiriba automaatseks peitmiseks lülitage seadetes sisse liigutustega navigeerimine"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Tehke tegumiriba abil enamat"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Järgmine"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Tagasi"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Sule"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Valmis"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Avaleht"</string>
