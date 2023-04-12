@@ -183,7 +183,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         super(context, attrs, defStyleAttr);
         mDeviceProfile = Launcher.getLauncher(context).getDeviceProfile();
         mHasWorkProfile = context.getSystemService(LauncherApps.class).getProfiles().size() > 1;
-        mOrientation = Launcher.getLauncher(context).getOrientation();
+        mOrientation = context.getResources().getConfiguration().orientation;
         mAdapters.put(AdapterHolder.PRIMARY, new AdapterHolder(AdapterHolder.PRIMARY));
         mAdapters.put(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK));
         mAdapters.put(AdapterHolder.SEARCH, new AdapterHolder(AdapterHolder.SEARCH));
@@ -799,7 +799,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         // Checks the orientation of the screen
         if (LARGE_SCREEN_WIDGET_PICKER.get()
                 && mOrientation != newConfig.orientation
-                && mDeviceProfile.isTablet) {
+                && mDeviceProfile.isTablet
+                && !mDeviceProfile.isTwoPanels) {
             mOrientation = newConfig.orientation;
             handleClose(false);
             show(Launcher.getLauncher(getContext()), false);
