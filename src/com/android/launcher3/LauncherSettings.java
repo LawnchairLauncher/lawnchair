@@ -139,11 +139,6 @@ public class LauncherSettings {
         public static final String TABLE_NAME = "favorites";
 
         /**
-         * Backup table created when the favorites table is modified during grid migration
-         */
-        public static final String BACKUP_TABLE_NAME = "favorites_bakup";
-
-        /**
          * Backup table created when user hotseat is moved to workspace for hybrid hotseat
          */
         public static final String HYBRID_HOTSEAT_BACKUP_TABLE = "hotseat_restore_backup";
@@ -163,12 +158,6 @@ public class LauncherSettings {
          */
         public static final Uri CONTENT_URI = Uri.parse("content://"
                 + LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
-
-        /**
-         * The content:// style URL for "favorites_bakup" table
-         */
-        public static final Uri BACKUP_CONTENT_URI = Uri.parse("content://"
-                + LauncherProvider.AUTHORITY + "/" + BACKUP_TABLE_NAME);
 
         /**
          * The content:// style URL for "favorites_preview" table

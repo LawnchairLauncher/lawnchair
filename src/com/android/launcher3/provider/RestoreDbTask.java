@@ -39,21 +39,19 @@ import android.util.LongSparseArray;
 import android.util.SparseLongArray;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.AppWidgetsRestoredReceiver;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DatabaseHelper;
 import com.android.launcher3.model.DeviceGridState;
-import com.android.launcher3.model.GridBackupTable;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.IntArray;
@@ -108,7 +106,6 @@ public class RestoreDbTask {
         SQLiteDatabase db = helper.getWritableDatabase();
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             RestoreDbTask task = new RestoreDbTask();
-            task.backupWorkspace(context, db);
             task.sanitizeDB(context, helper, db, new BackupManager(context));
             task.restoreAppWidgetIdsIfExists(context);
             t.commit();
@@ -116,49 +113,6 @@ public class RestoreDbTask {
         } catch (Exception e) {
             FileLog.e(TAG, "Failed to verify db", e);
             return false;
-        }
-    }
-
-    /**
-     * Restore the workspace if backup is available.
-     */
-    public static boolean restoreIfPossible(@NonNull Context context,
-            @NonNull DatabaseHelper helper, @NonNull BackupManager backupManager) {
-        final SQLiteDatabase db = helper.getWritableDatabase();
-        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-            RestoreDbTask task = new RestoreDbTask();
-            task.restoreWorkspace(context, db, helper, backupManager);
-            t.commit();
-            return true;
-        } catch (Exception e) {
-            FileLog.e(TAG, "Failed to restore db", e);
-            return false;
-        }
-    }
-
-    /**
-     * Backup the workspace so that if things go south in restore, we can recover these entries.
-     */
-    private void backupWorkspace(Context context, SQLiteDatabase db) throws Exception {
-        InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
-        new GridBackupTable(context, db, idp.numDatabaseHotseatIcons, idp.numColumns, idp.numRows)
-                .doBackup(getDefaultProfileId(db), GridBackupTable.OPTION_REQUIRES_SANITIZATION);
-    }
-
-    private void restoreWorkspace(@NonNull Context context, @NonNull SQLiteDatabase db,
-            @NonNull DatabaseHelper helper, @NonNull BackupManager backupManager)
-            throws Exception {
-        final InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
-        GridBackupTable backupTable = new GridBackupTable(context, db, idp.numDatabaseHotseatIcons,
-                idp.numColumns, idp.numRows);
-        if (backupTable.restoreFromRawBackupIfAvailable(getDefaultProfileId(db))) {
-            int itemsDeleted = sanitizeDB(context, helper, db, backupManager);
-            LauncherAppState.getInstance(context).getModel().forceReload();
-            restoreAppWidgetIdsIfExists(context);
-            if (itemsDeleted == 0) {
-                // all the items are restored, we no longer need the backup table
-                dropTable(db, Favorites.BACKUP_TABLE_NAME);
-            }
         }
     }
 
@@ -174,7 +128,8 @@ public class RestoreDbTask {
      *
      * @return number of items deleted.
      */
-    private int sanitizeDB(Context context, DatabaseHelper helper, SQLiteDatabase db,
+    @VisibleForTesting
+    protected int sanitizeDB(Context context, DatabaseHelper helper, SQLiteDatabase db,
             BackupManager backupManager) throws Exception {
         // Primary user ids
         long myProfileId = helper.getDefaultUserSerial();
@@ -258,7 +213,7 @@ public class RestoreDbTask {
         }
 
         // Override shortcuts
-        maybeOverrideShortcuts(context, db, myProfileId);
+        maybeOverrideShortcuts(context, helper, db, myProfileId);
 
         return itemsDeleted;
     }
@@ -388,8 +343,8 @@ public class RestoreDbTask {
                 APP_WIDGET_IDS.to(IntArray.wrap(newIds).toConcatString()));
     }
 
-    protected static void maybeOverrideShortcuts(Context context, SQLiteDatabase db,
-            long currentUser) {
+    protected static void maybeOverrideShortcuts(Context context, DatabaseHelper helper,
+            SQLiteDatabase db, long currentUser) {
         Map<String, LauncherActivityInfo> activityOverrides = ApiWrapper.getActivityOverrides(
                 context);
 
@@ -412,8 +367,7 @@ public class RestoreDbTask {
                 if (override != null) {
                     ContentValues values = new ContentValues();
                     values.put(Favorites.PROFILE_ID,
-                            UserCache.INSTANCE.get(context).getSerialNumberForUser(
-                                    override.getUser()));
+                            helper.getSerialNumberForUser(override.getUser()));
                     values.put(Favorites.INTENT, AppInfo.makeLaunchIntent(override).toUri(0));
                     db.update(Favorites.TABLE_NAME, values, String.format("%s=?", Favorites._ID),
                             new String[]{String.valueOf(c.getInt(idIndex))});
