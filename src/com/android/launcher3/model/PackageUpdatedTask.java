@@ -36,9 +36,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -203,18 +201,6 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
 
                     boolean infoUpdated = false;
                     boolean shortcutUpdated = false;
-
-                    // Update shortcuts which use iconResource.
-                    if ((si.iconResource != null)
-                            && packageSet.contains(si.iconResource.packageName)) {
-                        LauncherIcons li = LauncherIcons.obtain(context);
-                        BitmapInfo iconInfo = li.createIconBitmap(si.iconResource);
-                        li.recycle();
-                        if (iconInfo != null) {
-                            si.bitmap = iconInfo;
-                            infoUpdated = true;
-                        }
-                    }
 
                     ComponentName cn = si.getTargetComponent();
                     if (cn != null && matcher.test(si)) {
