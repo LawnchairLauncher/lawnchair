@@ -642,14 +642,8 @@ public class TaskbarLauncherStateController {
         long resetDuration = mControllers.taskbarStashController.isInApp()
                 ? duration
                 : duration / 2;
-        boolean shouldReset =
-                mControllers.taskbarTranslationController.shouldResetBackToZero(resetDuration);
-        boolean goingToLauncher = isAnimatingToLauncher();
-        boolean isNormalState = mLauncherState == LauncherState.NORMAL;
-        // Taskbar should always reset when animating to launcher in normal state to ensure there
-        // is no jump during the handoff to the hotseat.
-        if ((goingToLauncher && isNormalState)
-                || (shouldReset && (goingToLauncher || isNormalState))) {
+        if (mControllers.taskbarTranslationController.shouldResetBackToZero(resetDuration)
+                && (isAnimatingToLauncher() || mLauncherState == LauncherState.NORMAL)) {
             animatorSet.play(mControllers.taskbarTranslationController
                     .createAnimToResetTranslation(resetDuration));
         }
