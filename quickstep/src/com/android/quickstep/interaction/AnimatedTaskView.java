@@ -15,6 +15,10 @@
  */
 package com.android.quickstep.interaction;
 
+import static com.android.launcher3.QuickstepTransitionManager.ANIMATION_NAV_FADE_OUT_DURATION;
+import static com.android.launcher3.QuickstepTransitionManager.NAV_FADE_OUT_INTERPOLATOR;
+import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL;
 
 import android.animation.Animator;
@@ -29,6 +33,8 @@ import android.graphics.Outline;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Display;
+import android.view.RoundedCorner;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.view.animation.ScaleAnimation;
@@ -40,8 +46,12 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
+import com.android.quickstep.util.MultiValueUpdateListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Helper View for the gesture tutorial mock previous app task view.
@@ -50,6 +60,8 @@ import java.util.ArrayList;
  * large screen devices.
  */
 public class AnimatedTaskView extends ConstraintLayout {
+
+    private static final long ANIMATE_TO_FULL_SCREEN_DURATION = 300;
 
     private View mFullTaskView;
     private View mTopTaskView;
@@ -92,33 +104,86 @@ public class AnimatedTaskView extends ConstraintLayout {
         setToSingleRowLayout(false);
     }
 
-    void animateToFillScreen(@Nullable  Runnable onAnimationEndCallback) {
+    void animateToFillScreen(@Nullable Runnable onAnimationEndCallback) {
+        if (mTaskViewOutlineProvider == null) {
+            // This is an illegal state.
+            return;
+        }
+        // calculate start and end corner radius
+        Outline startOutline = new Outline();
+        mTaskViewOutlineProvider.getOutline(this, startOutline);
+        Rect outlineStartRect = new Rect();
+        startOutline.getRect(outlineStartRect);
+        float outlineStartRadius = startOutline.getRadius();
 
+        final Display display = mContext.getDisplay();;
+        RoundedCorner corner = display.getRoundedCorner(RoundedCorner.POSITION_TOP_LEFT);
+        float outlineEndRadius = corner.getRadius();
+
+        // create animation
         AnimatorSet set = new AnimatorSet();
         ArrayList<Animator> animations = new ArrayList<>();
 
         // center view
         animations.add(ObjectAnimator.ofFloat(this, TRANSLATION_X, 0));
 
-        // calculate full screen scaling, scale should be 1:1 for x and y
+        // retrieve start animation matrix to scale off of
         Matrix matrix = getAnimationMatrix();
+        if (matrix == null) {
+            // This is an illegal state.
+            return;
+        }
+
         float[] matrixValues = new float[9];
         matrix.getValues(matrixValues);
-        float scaleX = matrixValues[Matrix.MSCALE_X];
-        float scaleToFullScreen = 1 / scaleX;
+        float[] newValues = matrixValues.clone();
 
-        // scale view to full screen
-        ValueAnimator scale = ValueAnimator.ofFloat(1f, scaleToFullScreen);
-        scale.addUpdateListener(animation -> {
-            float value = (float) animation.getAnimatedValue();
-            mFullTaskView.setScaleX(value);
-            mFullTaskView.setScaleY(value);
-        });
+        ValueAnimator transformAnimation = ValueAnimator.ofFloat(0, 1);
 
-        animations.add(scale);
+        MultiValueUpdateListener listener = new MultiValueUpdateListener() {
+            Matrix currentMatrix = new Matrix();
+
+            FloatProp mOutlineRadius = new FloatProp(outlineStartRadius, outlineEndRadius, 0,
+                    ANIMATE_TO_FULL_SCREEN_DURATION, LINEAR);
+            FloatProp mTransX = new FloatProp(matrixValues[Matrix.MTRANS_X], 0f, 0,
+                    ANIMATE_TO_FULL_SCREEN_DURATION, LINEAR);
+            FloatProp mTransY = new FloatProp(matrixValues[Matrix.MTRANS_Y], 0f, 0,
+                    ANIMATE_TO_FULL_SCREEN_DURATION, LINEAR);
+            FloatProp mScaleX = new FloatProp(matrixValues[Matrix.MSCALE_X], 1f, 0,
+                    ANIMATE_TO_FULL_SCREEN_DURATION, LINEAR);
+            FloatProp mScaleY = new FloatProp(matrixValues[Matrix.MSCALE_Y], 1f, 0,
+                    ANIMATE_TO_FULL_SCREEN_DURATION, LINEAR);
+
+            @Override
+            public void onUpdate(float percent, boolean initOnly) {
+                // scale corner radius to match display radius
+                mTaskViewAnimatedRadius = mOutlineRadius.value;
+                mFullTaskView.invalidateOutline();
+
+                // translate to center, ends at translation x:0, y:0
+                newValues[Matrix.MTRANS_X] = mTransX.value;
+                newValues[Matrix.MTRANS_Y] = mTransY.value;
+
+                // scale to full size, ends at scale 1
+                newValues[Matrix.MSCALE_X] = mScaleX.value;
+                newValues[Matrix.MSCALE_Y] = mScaleY.value;
+
+                // create and set new animation matrix
+                currentMatrix.setValues(newValues);
+                setAnimationMatrix(currentMatrix);
+            }
+        };
+
+        transformAnimation.addUpdateListener(listener);
+        animations.add(transformAnimation);
         set.playSequentially(animations);
-
         set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                addAnimatedOutlineProvider(mFullTaskView, outlineStartRect, outlineStartRadius);
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
@@ -127,7 +192,6 @@ public class AnimatedTaskView extends ConstraintLayout {
                 }
             }
         });
-
         set.start();
     }
 
@@ -158,17 +222,7 @@ public class AnimatedTaskView extends ConstraintLayout {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
-
-                mTaskViewAnimatedRect.set(outlineStartRect);
-                mTaskViewAnimatedRadius = outlineStartRadius;
-
-                mFullTaskView.setClipToOutline(true);
-                mFullTaskView.setOutlineProvider(new ViewOutlineProvider() {
-                    @Override
-                    public void getOutline(View view, Outline outline) {
-                        outline.setRoundRect(mTaskViewAnimatedRect, mTaskViewAnimatedRadius);
-                    }
-                });
+                addAnimatedOutlineProvider(mFullTaskView, outlineStartRect, outlineStartRadius);
             }
 
             @Override
@@ -246,5 +300,18 @@ public class AnimatedTaskView extends ConstraintLayout {
     public void setOutlineProvider(ViewOutlineProvider provider) {
         mTaskViewOutlineProvider = provider;
         mFullTaskView.setOutlineProvider(mTaskViewOutlineProvider);
+    }
+
+    private void addAnimatedOutlineProvider(View view,
+            Rect outlineStartRect, float outlineStartRadius){
+        mTaskViewAnimatedRect.set(outlineStartRect);
+        mTaskViewAnimatedRadius = outlineStartRadius;
+        view.setClipToOutline(true);
+        view.setOutlineProvider(new ViewOutlineProvider() {
+            @Override
+            public void getOutline(View view, Outline outline) {
+                outline.setRoundRect(mTaskViewAnimatedRect, mTaskViewAnimatedRadius);
+            }
+        });
     }
 }
