@@ -45,12 +45,6 @@ allprojects {
         compilerOptions.jvmTarget = JvmTarget.JVM_1_8
     }
 
-    tasks.matching {
-        it.name.contains("transformClassesWithHiddenApiRefine")
-    }.configureEach {
-        notCompatibleWithConfigurationCache("https://github.com/RikkaApps/HiddenApiRefinePlugin/issues/9")
-    }
-
     tasks.withType(GenerateProtoTask).configureEach {
         notCompatibleWithConfigurationCache("https://github.com/google/protobuf-gradle-plugin/issues/687")
     }
