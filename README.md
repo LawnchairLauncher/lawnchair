@@ -6,6 +6,12 @@
 [![Telegram](https://img.shields.io/endpoint?url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Flccommunity)](https://t.me/lccommunity)
 [![Discord](https://img.shields.io/discord/803299970169700402?label=server&logo=discord)](https://discord.gg/3x8qNWxgGZ)
 
+> **This repository is currently in maintenance mode.** Most of our main developers are busy in real life, so only minor bug fixes/features and dependency updates will be made in this repo. Issues won't be prioritized as well.
+>
+> If you want to volunteer your time to restore more active development of Lawnchair, please message us. We'll gladly accept your help.
+> 
+> **Note that this is just temporary.** Once the developers have free time, more active development will be resumed.
+
 Lawnchair is a free, open-source home app for Android. Taking Launcher3 — Android’s default home app — as a starting point, it ports Pixel Launcher features and introduces rich options for customization. This branch houses the codebase of Lawnchair 12.1, currently in alpha and based on Launcher3 from Android 12.1. For Lawnchair 9, 10, 11, and 12, see the branches with the `9-`, `10-`, `11-`, and `12-` prefixes, respectively.
 
 ## Contribute code

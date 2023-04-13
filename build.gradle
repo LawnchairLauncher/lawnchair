@@ -1,4 +1,5 @@
 import com.android.build.gradle.BasePlugin
+import com.google.protobuf.gradle.GenerateProtoTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -35,7 +36,7 @@ allprojects {
             }
         }
         project.dependencies {
-            implementation 'androidx.core:core-ktx:1.9.0'
+            implementation 'androidx.core:core-ktx:1.10.0'
             implementation 'androidx.appcompat:appcompat:1.6.1'
         }
     }
@@ -48,6 +49,10 @@ allprojects {
         it.name.contains("transformClassesWithHiddenApiRefine")
     }.configureEach {
         notCompatibleWithConfigurationCache("https://github.com/RikkaApps/HiddenApiRefinePlugin/issues/9")
+    }
+
+    tasks.withType(GenerateProtoTask).configureEach {
+        notCompatibleWithConfigurationCache("https://github.com/google/protobuf-gradle-plugin/issues/687")
     }
 
     ext.addFrameworkJar = { String name ->
@@ -69,7 +74,7 @@ allprojects {
 // todo remove ext block after migrating to version catalog
 ext {
     FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
-    accompanist_version = '0.30.0'
+    accompanist_version = '0.30.1'
     libsu_version = '5.0.5'
     protocVersion = '3.22.2'
     room_version = '2.5.1'
@@ -124,7 +129,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.4"
+        kotlinCompilerExtensionVersion = "1.4.5"
     }
 
     final def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -321,7 +326,7 @@ dependencies {
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.3.0'
 
-    implementation platform("androidx.compose:compose-bom:2023.03.00")
+    implementation platform("androidx.compose:compose-bom:2023.04.00")
     implementation "androidx.compose.ui:ui"
     debugImplementation "androidx.compose.ui:ui-tooling"
     implementation "androidx.compose.ui:ui-text-google-fonts"
@@ -329,7 +334,7 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended"
     implementation "androidx.compose.material:material"
     implementation "androidx.compose.runtime:runtime-livedata"
-    implementation 'androidx.compose.material3:material3:1.1.0-beta01'
+    implementation 'androidx.compose.material3:material3:1.1.0-beta02'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.activity:activity-compose:1.7.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
@@ -344,7 +349,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-placeholder-material:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
     implementation "com.google.android.material:material:1.8.0"
-    implementation "io.github.fornewid:material-motion-compose-core:0.11.1"
+    implementation "io.github.fornewid:material-motion-compose-core:0.11.2"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
     implementation 'io.coil-kt:coil-compose:2.3.0'
     implementation 'me.xdrop:fuzzywuzzy:1.4.0'
