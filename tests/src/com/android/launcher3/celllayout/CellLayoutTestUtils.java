@@ -51,8 +51,8 @@ public class CellLayoutTestUtils {
                     board.addIcon(pos.cellX, pos.cellY);
                 } else {
                     // is widget
-                    board.addWidget(pos.cellX, pos.cellY, params.cellHSpan, params.cellVSpan,
-                            (char) ('A' + widgetCount));
+                    board.addWidget(params.getCellX(), params.getCellY(), params.cellHSpan,
+                            params.cellVSpan, (char) ('a' + widgetCount));
                     widgetCount++;
                 }
             }
