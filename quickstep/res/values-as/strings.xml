@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"এৰি যাওক"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"স্ক্ৰীনখন ঘূৰাওক"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"টাস্কবাৰৰ শিক্ষা"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"টাস্কবাৰৰ শিক্ষাৰ পেনেলটো প্ৰদর্শিত হৈছে"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"টাস্কবাৰৰ শিক্ষাৰ পেনেলটো বন্ধ হৈছে"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"এবাৰতে ২ টা এপ্‌ ব্যৱহাৰ কৰিবলৈ কোনো এপ্‌ কাষলৈ টানি আনি এৰক"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"টাস্কবাৰ দেখুৱাবলৈ লাহেকৈ ওপৰলৈ ছোৱাইপ কৰক"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"আপোনাৰ ৰুটিনৰ ওপৰত আধাৰিত এপৰ পৰামৰ্শ পাওক"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"টাস্কবাৰ স্বয়ংক্ৰিয়ভাৱে লুকুৱাবলৈ ছেটিঙত আঙুলিৰ স্পৰ্শৰ নিৰ্দেশেৰে কৰা নেভিগেশ্বন অন কৰক"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"টাস্কবাৰৰ জৰিয়তে অধিক কাৰ্য সম্পাদন কৰক"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"পৰৱৰ্তী"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"উভতি যাওক"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"বন্ধ কৰক"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"হ’ল"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"গৃহপৃষ্ঠা"</string>

@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"தவிர்"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"திரையைச் சுழற்றும்"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"செயல் பட்டியைப் பயன்படுத்தும் விதம்"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"பணிப்பட்டியை எவ்வாறு பயன்படுத்துவது என்பது பற்றிய பலகம் காட்டப்படுகிறது"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"பணிப்பட்டியை எவ்வாறு பயன்படுத்துவது என்பது பற்றிய பலகம் மூடப்பட்டது"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ஒரே நேரத்தில் 2 ஆப்ஸைப் பயன்படுத்தப் பக்கவாட்டில் இழுக்கவும்"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"செயல் பட்டியைக் காட்ட மேல்நோக்கி மெதுவாக ஸ்வைப் செய்யவும்"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"உங்கள் வழக்கத்திற்கேற்ப ஆப்ஸ் பரிந்துரைகளைப் பெறலாம்"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"செயல் பட்டியைத் தானாக மறைக்க அமைப்புகளில் சைகை வழிசெலுத்தலை இயக்கவும்"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"செயல் பட்டி மூலம் மேலும் பலவற்றைச் செய்யுங்கள்"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"அடுத்து"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"பின்செல்"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"மூடுக"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"முடிந்தது"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"முகப்பு"</string>

@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"वगळा"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"स्क्रीन फिरवा"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"टास्कबारशी संबंधित माहिती"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"टास्कबारशी संबंधित माहिती देणारे पॅनल उघडले आहे"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"टास्कबारशी संबंधित माहिती देणारे पॅनल बंद केले आहे"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"दोन ॲप्स एकत्र वापरण्यासाठी एक अ‍ॅप बाजूला ड्रॅग करा"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"टास्कबार दाखवण्यासाठी थोडे हळू वरती स्वाइप करा"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"तुमच्या दिनक्रमावर आधारित ॲप सूचना मिळवा"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"टास्कबार ऑटो हाइड करण्यासाठी सेटिंग्ज मधून जेश्चर नेव्हिगेशन सुरू करा"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"टास्कबार चा पुरेपूर वापर करा"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"पुढे"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"मागे जा"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"बंद करा"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"पूर्ण झाले"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"होम"</string>
