@@ -180,7 +180,8 @@ public class ModelMultiCallbacksTest {
         }
 
         @Override
-        public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks) {
+        public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks,
+                int workspaceItemCount, boolean isBindSync) {
             mPageBoundSync = boundPages;
             mPendingTasks = pendingTasks;
         }

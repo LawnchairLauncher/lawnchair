@@ -657,6 +657,39 @@ public class StatsLogManager implements ResourceBasedOverride {
         }
     }
 
+    /** Launcher's latency events. */
+    public enum LauncherLatencyEvent implements EventEnum {
+        // Details of below 6 events with prefix of "LAUNCHER_LATENCY_STARTUP_" are discussed in
+        // go/launcher-startup-latency
+        @UiEvent(doc = "The total duration of launcher startup latency.")
+        LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION(1362),
+
+        @UiEvent(doc = "The duration of launcher activity's onCreate().")
+        LAUNCHER_LATENCY_STARTUP_ACTIVITY_ON_CREATE(1363),
+
+        @UiEvent(doc =
+                "The duration to inflate launcher root view in launcher activity's onCreate().")
+        LAUNCHER_LATENCY_STARTUP_VIEW_INFLATION(1364),
+
+        @UiEvent(doc = "The duration of synchronous loading workspace")
+        LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC(1366),
+
+        @UiEvent(doc = "The duration of asynchronous loading workspace")
+        LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC(1367),
+        ;
+
+        private final int mId;
+
+        LauncherLatencyEvent(int id) {
+            mId = id;
+        }
+
+        @Override
+        public int getId() {
+            return mId;
+        }
+    }
+
     /**
      * Launcher specific ranking related events.
      */
@@ -807,7 +840,10 @@ public class StatsLogManager implements ResourceBasedOverride {
             CONTROLLED(7),
             CACHED(8),
             // example: device is rebooting via power key or shell command `adb reboot`
-            COLD_DEVICE_REBOOTING(9);
+            COLD_DEVICE_REBOOTING(9),
+            // Tracking warm startup latency:
+            // https://developer.android.com/topic/performance/vitals/launch-time#warm
+            WARM(10);
             private final int mId;
 
             LatencyType(int id) {
