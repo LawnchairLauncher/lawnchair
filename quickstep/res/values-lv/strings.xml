@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Izlaist"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Pagriezt ekrānu"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Informācija par uzdevumu joslu"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Tika atvērta uzdevumjoslas apmācība"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Tika aizvērta uzdevumjoslas apmācība"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Velciet lietotni sānis, lai izmantotu 2 lietotnes vienlaikus"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Lai skatītu uzdevumu joslu, lēni velciet augšup"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Skatiet ieteiktās lietotnes, balstoties uz jūsu ieradumiem"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Lai Uzdevumu josla tiktu automātiski paslēpta, iestatījumos ieslēdziet žestu navigāciju."</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Plašākas iespējas, izmantojot uzdevumu joslu"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Tālāk"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Atpakaļ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Aizvērt"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Gatavs"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Sākums"</string>

@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Saltar"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Girar la pantalla"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Información sobre la barra de tareas"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Ha aparecido una nota sobre la barra de tareas"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Nota sobre la barra de tareas cerrada"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Arrastra una aplicación hacia un lado para usar 2 a la vez"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Desliza hacia arriba lentamente para ver la barra de tareas"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Obtén sugerencias de aplicaciones basadas en tu rutina"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Activa la navegación por gestos en Ajustes para ocultar la barra de tareas automáticamente"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Sácale más partido a la barra de tareas"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Siguiente"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Atrás"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Cerrar"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Hecho"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Inicio"</string>

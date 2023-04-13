@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Saltatu"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Biratu pantaila"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Zereginen barra erabiltzeko argibideak"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Agertu egin da zereginen barraren tutoriala"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Itxi egin da zereginen barraren tutoriala"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Bi aplikazio batera erabiltzeko, arrastatu bat albo batera"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Zereginen barra ikusteko, pasatu hatza motel gora"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Jaso aplikazioen iradokizunak erabileran oinarrituta"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Zereginen barra automatikoki ezkutatzeko, aktibatu keinu bidezko nabigazioa ezarpenetan"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Egin gauza gehiago zereginen barrarekin"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Hurrengoa"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Atzera"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Itxi"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Eginda"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Hasiera"</string>
