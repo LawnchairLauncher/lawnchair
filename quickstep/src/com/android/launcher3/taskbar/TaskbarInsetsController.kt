@@ -19,6 +19,7 @@ import android.graphics.Insets
 import android.graphics.Region
 import android.os.Binder
 import android.os.IBinder
+import android.view.Gravity
 import android.view.InsetsFrameProvider
 import android.view.InsetsFrameProvider.SOURCE_DISPLAY
 import android.view.InsetsSource.FLAG_INSETS_ROUNDED_CORNER
@@ -109,16 +110,12 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                         .setSource(SOURCE_DISPLAY)
                 )
         } else {
-            windowLayoutParams.providedInsets =
-                arrayOf(
-                    InsetsFrameProvider(insetsOwner, 0, navigationBars())
-                        .setFlags(
-                            insetsRoundedCornerFlag,
-                            (FLAG_SUPPRESS_SCRIM or FLAG_INSETS_ROUNDED_CORNER)
-                        ),
-                    InsetsFrameProvider(insetsOwner, 0, tappableElement()),
-                    InsetsFrameProvider(insetsOwner, 0, mandatorySystemGestures())
-                )
+            windowLayoutParams.providedInsets = getButtonNavInsets(insetsRoundedCornerFlag)
+            if (windowLayoutParams.paramsForRotation != null) {
+                for (layoutParams in windowLayoutParams.paramsForRotation) {
+                    layoutParams.providedInsets = getButtonNavInsets(insetsRoundedCornerFlag)
+                }
+            }
         }
 
         val taskbarTouchableHeight = controllers.taskbarStashController.touchableHeight
@@ -148,75 +145,99 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                 windowLayoutParams.height
             )
         }
-        val contentHeight = controllers.taskbarStashController.contentHeightToReportToApps
-        val res = context.resources
+
+        val gravity = windowLayoutParams.gravity
         for (provider in windowLayoutParams.providedInsets) {
-            if (provider.type == navigationBars() || provider.type == mandatorySystemGestures()) {
-                provider.insetsSize = getInsetsByNavMode(contentHeight)
-            } else if (provider.type == tappableElement()) {
-                provider.insetsSize = getInsetsByNavMode(tappableHeight)
-            } else if (provider.type == systemGestures() && provider.index == INDEX_LEFT) {
-                provider.insetsSize =
-                    Insets.of(
-                        gestureNavSettingsObserver.getLeftSensitivityForCallingUser(res),
-                        0,
-                        0,
-                        0
-                    )
-            } else if (provider.type == systemGestures() && provider.index == INDEX_RIGHT) {
-                provider.insetsSize =
-                    Insets.of(
-                        0,
-                        0,
-                        gestureNavSettingsObserver.getRightSensitivityForCallingUser(res),
-                        0
-                    )
-            }
+            setProviderInsets(provider, gravity)
         }
 
-        val imeInsetsSize = getInsetsByNavMode(taskbarHeightForIme)
-        val insetsSizeOverride =
-            arrayOf(
-                InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
-            )
-        // Use 0 tappableElement insets for the VoiceInteractionWindow when gesture nav is enabled.
-        val visInsetsSizeForGestureNavTappableElement = getInsetsByNavMode(0)
-        val insetsSizeOverrideForGestureNavTappableElement =
-            arrayOf(
-                InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
-                InsetsFrameProvider.InsetsSizeOverride(
-                    TYPE_VOICE_INTERACTION,
-                    visInsetsSizeForGestureNavTappableElement
-                ),
-            )
-        for (provider in windowLayoutParams.providedInsets) {
-            if (context.isGestureNav && provider.type == tappableElement()) {
-                provider.insetsSizeOverrides = insetsSizeOverrideForGestureNavTappableElement
-            } else if (provider.type != systemGestures()) {
-                // We only override insets at the bottom of the screen
-                provider.insetsSizeOverrides = insetsSizeOverride
+        if (windowLayoutParams.paramsForRotation != null) {
+            // Add insets for navbar rotated params
+            for (layoutParams in windowLayoutParams.paramsForRotation) {
+                for (provider in layoutParams.providedInsets) {
+                    setProviderInsets(provider, layoutParams.gravity)
+                }
             }
         }
 
         context.notifyUpdateLayoutParams()
     }
 
+    private fun getButtonNavInsets(insetsRoundedCornerFlag: Int): Array<InsetsFrameProvider> {
+        return arrayOf(
+                    InsetsFrameProvider(insetsOwner, 0, navigationBars())
+                        .setFlags(
+                            insetsRoundedCornerFlag,
+                            (FLAG_SUPPRESS_SCRIM or FLAG_INSETS_ROUNDED_CORNER)
+                        ),
+                    InsetsFrameProvider(insetsOwner, 0, tappableElement()),
+                    InsetsFrameProvider(insetsOwner, 0, mandatorySystemGestures()))
+    }
+
+    private fun setProviderInsets(provider: InsetsFrameProvider, gravity: Int) {
+        val contentHeight = controllers.taskbarStashController.contentHeightToReportToApps
+        val tappableHeight = controllers.taskbarStashController.tappableHeightToReportToApps
+        val res = context.resources
+        if (provider.type == navigationBars() || provider.type == mandatorySystemGestures()) {
+            provider.insetsSize = getInsetsByNavMode(contentHeight, gravity)
+        } else if (provider.type == tappableElement()) {
+            provider.insetsSize = getInsetsByNavMode(tappableHeight, gravity)
+        } else if (provider.type == systemGestures() && provider.index == INDEX_LEFT) {
+            provider.insetsSize =
+                    Insets.of(
+                            gestureNavSettingsObserver.getLeftSensitivityForCallingUser(res),
+                            0,
+                            0,
+                            0
+                    )
+        } else if (provider.type == systemGestures() && provider.index == INDEX_RIGHT) {
+            provider.insetsSize =
+                    Insets.of(
+                            0,
+                            0,
+                            gestureNavSettingsObserver.getRightSensitivityForCallingUser(res),
+                            0
+                    )
+        }
+
+        val imeInsetsSize = getInsetsByNavMode(taskbarHeightForIme, gravity)
+        val insetsSizeOverride =
+                arrayOf(
+                        InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
+                )
+        // Use 0 tappableElement insets for the VoiceInteractionWindow when gesture nav is enabled.
+        val visInsetsSizeForGestureNavTappableElement = getInsetsByNavMode(0, gravity)
+        val insetsSizeOverrideForGestureNavTappableElement =
+                arrayOf(
+                        InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
+                        InsetsFrameProvider.InsetsSizeOverride(
+                                TYPE_VOICE_INTERACTION,
+                                visInsetsSizeForGestureNavTappableElement
+                        ),
+                )
+        if (context.isGestureNav && provider.type == tappableElement()) {
+            provider.insetsSizeOverrides = insetsSizeOverrideForGestureNavTappableElement
+        } else if (provider.type != systemGestures()) {
+            // We only override insets at the bottom of the screen
+            provider.insetsSizeOverrides = insetsSizeOverride
+        }
+    }
+
     /**
-     * @return [Insets] where the [bottomInset] is either used as a bottom inset or
-     *
-     * ```
-     *         right/left inset if using 3 button nav
-     * ```
+     * @return [Insets] where the [inset] is either used as a bottom inset or
+     * right/left inset if using 3 button nav
      */
-    private fun getInsetsByNavMode(bottomInset: Int): Insets {
-        val devicePortrait = !context.deviceProfile.isLandscape
-        if (!TaskbarManager.isPhoneButtonNavMode(context) || devicePortrait) {
+    private fun getInsetsByNavMode(inset: Int, gravity: Int): Insets {
+        if ((gravity and Gravity.BOTTOM) != 0) {
             // Taskbar or portrait phone mode
-            return Insets.of(0, 0, 0, bottomInset)
+            return Insets.of(0, 0, 0, inset)
         }
 
         // TODO(b/230394142): seascape
-        return Insets.of(0, 0, bottomInset, 0)
+        val isSeascape = (gravity and Gravity.START) != 0
+        val leftInset = if (isSeascape) inset else 0
+        val rightInset = if (isSeascape) 0 else inset
+        return Insets.of(leftInset , 0, rightInset, 0)
     }
 
     /**

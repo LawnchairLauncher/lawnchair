@@ -43,7 +43,8 @@ class PhonePortraitNavLayoutter(
         // TODO(b/230395757): Polish pending, this is just to make it usable
         val navContainerParams = navButtonContainer.layoutParams as FrameLayout.LayoutParams
         val taskbarDimensions =
-            DimensionUtils.getTaskbarPhoneDimensions(dp, resources, TaskbarManager.isPhoneMode(dp))
+            DimensionUtils.getTaskbarPhoneDimensions(dp, resources,
+                    TaskbarManager.isPhoneMode(dp))
         val endStartMargins = resources.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size)
         navContainerParams.width = taskbarDimensions.x
         navContainerParams.height = ViewGroup.LayoutParams.MATCH_PARENT

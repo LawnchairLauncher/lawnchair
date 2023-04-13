@@ -29,9 +29,9 @@ object DimensionUtils {
      */
     @JvmStatic
     fun getTaskbarPhoneDimensions(
-        deviceProfile: DeviceProfile,
-        res: Resources,
-        isPhoneMode: Boolean
+            deviceProfile: DeviceProfile,
+            res: Resources,
+            isPhoneMode: Boolean
     ): Point {
         val p = Point()
         // Taskbar for large screen
