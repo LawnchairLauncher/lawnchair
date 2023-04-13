@@ -19,7 +19,6 @@ package com.android.launcher3;
 import static android.animation.ValueAnimator.areAnimatorsEnabled;
 
 import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
-import static com.android.launcher3.config.FeatureFlags.SHOW_HOME_GARDENING;
 import static com.android.launcher3.dragndrop.DraggableView.DRAGGABLE_ICON;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_REORDER_BOUNCE_OFFSET;
@@ -557,9 +556,7 @@ public class CellLayout extends ViewGroup {
     public void setSpringLoadedProgress(float progress) {
         if (Float.compare(progress, mSpringLoadedProgress) != 0) {
             mSpringLoadedProgress = progress;
-            if (!SHOW_HOME_GARDENING.get()) {
-                updateBgAlpha();
-            }
+            updateBgAlpha();
             setGridAlpha(progress);
         }
     }
@@ -584,9 +581,7 @@ public class CellLayout extends ViewGroup {
     public void setScrollProgress(float progress) {
         if (Float.compare(Math.abs(progress), mScrollProgress) != 0) {
             mScrollProgress = Math.abs(progress);
-            if (!SHOW_HOME_GARDENING.get()) {
-                updateBgAlpha();
-            }
+            updateBgAlpha();
         }
     }
 
@@ -625,7 +620,7 @@ public class CellLayout extends ViewGroup {
             }
         }
 
-        if (mVisualizeDropLocation && !SHOW_HOME_GARDENING.get()) {
+        if (mVisualizeDropLocation) {
             for (int i = 0; i < mDragOutlines.length; i++) {
                 final float alpha = mDragOutlineAlphas[i];
                 if (alpha <= 0) continue;

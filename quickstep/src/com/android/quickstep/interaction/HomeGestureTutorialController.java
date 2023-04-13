@@ -71,7 +71,9 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
     @Override
     protected int getGestureLottieAnimationId() {
         return mTutorialFragment.isLargeScreen()
-                ? R.raw.home_gesture_tutorial_tablet_animation
+                ? mTutorialFragment.isFoldable()
+                    ? R.raw.home_gesture_tutorial_open_foldable_animation
+                    : R.raw.home_gesture_tutorial_tablet_animation
                 : R.raw.home_gesture_tutorial_animation;
     }
 
