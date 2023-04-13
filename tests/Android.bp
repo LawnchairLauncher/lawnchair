@@ -69,6 +69,7 @@ filegroup {
 android_library {
     name: "Launcher3TestLib",
     srcs: [ ],
+    asset_dirs: ["assets"],
     resource_dirs: ["res"],
     static_libs: [
         "launcher-aosp-tapl",

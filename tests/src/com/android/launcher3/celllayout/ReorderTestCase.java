@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.celllayout.testcases;
+package com.android.launcher3.celllayout;
 
 import android.graphics.Point;
-
-import com.android.launcher3.celllayout.CellLayoutBoard;
 
 import java.util.Arrays;
 import java.util.List;
