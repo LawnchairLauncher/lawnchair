@@ -61,7 +61,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
-import com.android.launcher3.model.DatabaseHelper;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.model.data.AppInfo;
@@ -371,54 +370,6 @@ public class LauncherModelHelper {
         sandboxContext.getContentResolver().delete(uri, null, null);
     }
 
-    public int[][][] createGrid(int[][][] typeArray) {
-        return createGrid(typeArray, 1);
-    }
-
-    public int[][][] createGrid(int[][][] typeArray, int startScreen) {
-        LauncherSettings.Settings.call(sandboxContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
-        LauncherSettings.Settings.call(sandboxContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
-        return createGrid(typeArray, startScreen, defaultProfileId);
-    }
-
-    /**
-     * Initializes the DB with mock elements to represent the provided grid structure.
-     * @param typeArray A 3d array of item types. {@see #addItem(int, long, long, int, int)} for
-     *                  type definitions. The first dimension represents the screens and the next
-     *                  two represent the workspace grid.
-     * @param startScreen First screen id from where the icons will be added.
-     * @return the same grid representation where each entry is the corresponding item id.
-     */
-    public int[][][] createGrid(int[][][] typeArray, int startScreen, long profileId) {
-        int[][][] ids = new int[typeArray.length][][];
-        for (int i = 0; i < typeArray.length; i++) {
-            // Add screen to DB
-            int screenId = startScreen + i;
-
-            // Keep the screen id counter up to date
-            LauncherSettings.Settings.call(sandboxContext.getContentResolver(),
-                    LauncherSettings.Settings.METHOD_NEW_SCREEN_ID);
-
-            ids[i] = new int[typeArray[i].length][];
-            for (int y = 0; y < typeArray[i].length; y++) {
-                ids[i][y] = new int[typeArray[i][y].length];
-                for (int x = 0; x < typeArray[i][y].length; x++) {
-                    if (typeArray[i][y][x] < 0) {
-                        // Empty cell
-                        ids[i][y][x] = -1;
-                    } else {
-                        ids[i][y][x] = addItem(
-                                typeArray[i][y][x], screenId, DESKTOP, x, y, profileId);
-                    }
-                }
-            }
-        }
-
-        return ids;
-    }
-
     /**
      * Sets up a mock provider to load the provided layout by default, next time the layout loads
      */
@@ -478,10 +429,6 @@ public class LauncherModelHelper {
 
         public SQLiteDatabase getDb() {
             return mModelDbController.getDatabaseHelper().getWritableDatabase();
-        }
-
-        public DatabaseHelper getHelper() {
-            return mModelDbController.getDatabaseHelper();
         }
     }
 
