@@ -127,6 +127,10 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             TYPE_WIDGETS_FULL_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_ON_BOARD_POPUP |
             TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU | TYPE_DRAG_DROP_POPUP;
 
+    // Floating views that are exclusive to the taskbar overlay window.
+    public static final int TYPE_TASKBAR_OVERLAYS =
+            TYPE_TASKBAR_ALL_APPS | TYPE_TASKBAR_EDUCATION_DIALOG;
+
     protected boolean mIsOpen;
 
     public AbstractFloatingView(Context context, AttributeSet attrs) {
