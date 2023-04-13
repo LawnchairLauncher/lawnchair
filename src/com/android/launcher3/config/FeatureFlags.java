@@ -39,8 +39,6 @@ import java.util.function.ToIntFunction;
  */
 public final class FeatureFlags {
 
-    public static final String FLAGS_PREF_NAME = "featureFlags";
-
     @VisibleForTesting
     public static Predicate<BooleanFlag> sBooleanReader = f -> f.mCurrentValue;
     @VisibleForTesting

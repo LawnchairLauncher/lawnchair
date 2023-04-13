@@ -16,12 +16,10 @@
 
 package com.android.launcher3.uioverrides.flags;
 
-import static com.android.launcher3.config.FeatureFlags.FLAGS_PREF_NAME;
 import static com.android.launcher3.config.FeatureFlags.FlagState.TEAMFOOD;
 import static com.android.launcher3.uioverrides.flags.FlagsFactory.TEAMFOOD_FLAG;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Process;
 import android.text.Html;
@@ -52,31 +50,27 @@ public final class FlagTogglerPrefUi {
 
     private final PreferenceFragmentCompat mFragment;
     private final Context mContext;
-    private final SharedPreferences mSharedPreferences;
-
     private final PreferenceDataStore mDataStore = new PreferenceDataStore() {
 
         @Override
         public void putBoolean(String key, boolean value) {
-            mSharedPreferences.edit().putBoolean(key, value).apply();
+            FlagsFactory.getSharedPreferences().edit().putBoolean(key, value).apply();
             updateMenu();
         }
 
         @Override
         public boolean getBoolean(String key, boolean defaultValue) {
-            return mSharedPreferences.getBoolean(key, defaultValue);
+            return FlagsFactory.getSharedPreferences().getBoolean(key, defaultValue);
         }
     };
 
     public FlagTogglerPrefUi(PreferenceFragmentCompat fragment) {
         mFragment = fragment;
         mContext = fragment.getActivity();
-        mSharedPreferences = mContext.getSharedPreferences(
-                FLAGS_PREF_NAME, Context.MODE_PRIVATE);
     }
 
     public void applyTo(PreferenceGroup parent) {
-        Set<String> modifiedPrefs = mSharedPreferences.getAll().keySet();
+        Set<String> modifiedPrefs = FlagsFactory.getSharedPreferences().getAll().keySet();
         List<DebugFlag> flags = FlagsFactory.getDebugFlags();
         flags.sort((f1, f2) -> {
             // Sort first by any prefs that the user has changed, then alphabetically.
@@ -102,7 +96,7 @@ public final class FlagTogglerPrefUi {
                 public void onBindViewHolder(PreferenceViewHolder holder) {
                     super.onBindViewHolder(holder);
                     holder.itemView.setOnLongClickListener(v -> {
-                        mSharedPreferences.edit().remove(flag.key).apply();
+                        FlagsFactory.getSharedPreferences().edit().remove(flag.key).apply();
                         setChecked(getFlagStateFromSharedPrefs(flag));
                         updateSummary(this, flag);
                         updateMenu();
@@ -133,7 +127,7 @@ public final class FlagTogglerPrefUi {
     private void updateSummary(SwitchPreference switchPreference, DebugFlag flag) {
         String summary = flag.defaultValue == TEAMFOOD
                 ? "<font color='blue'><b>[TEAMFOOD]</b> </font>" : "";
-        if (mSharedPreferences.contains(flag.key)) {
+        if (FlagsFactory.getSharedPreferences().contains(flag.key)) {
             summary += "<font color='red'><b>[OVERRIDDEN]</b> </font>";
         }
         if (!TextUtils.isEmpty(summary)) {
@@ -156,7 +150,7 @@ public final class FlagTogglerPrefUi {
 
     public void onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_apply_flags) {
-            mSharedPreferences.edit().commit();
+            FlagsFactory.getSharedPreferences().edit().commit();
             Log.e(TAG,
                     "Killing launcher process " + Process.myPid() + " to apply new flag values");
             System.exit(0);
