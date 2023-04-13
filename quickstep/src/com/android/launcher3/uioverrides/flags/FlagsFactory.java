@@ -21,7 +21,6 @@ import static android.app.ActivityThread.currentApplication;
 import static com.android.launcher3.BuildConfig.IS_DEBUG_DEVICE;
 import static com.android.launcher3.config.FeatureFlags.FlagState.DISABLED;
 import static com.android.launcher3.config.FeatureFlags.FlagState.ENABLED;
-import static com.android.launcher3.config.FeatureFlags.FlagState.TEAMFOOD;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.content.Context;
@@ -29,6 +28,8 @@ import android.content.SharedPreferences;
 import android.provider.DeviceConfig;
 import android.provider.DeviceConfig.Properties;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.android.launcher3.config.FeatureFlags.BooleanFlag;
 import com.android.launcher3.config.FeatureFlags.FlagState;
@@ -52,10 +53,11 @@ public class FlagsFactory {
     private static final FlagsFactory INSTANCE = new FlagsFactory();
     private static final boolean FLAG_AUTO_APPLY_ENABLED = true;
 
-    public static final String FLAGS_PREF_NAME = "featureFlags";
+    private static final String FLAGS_PREF_NAME = "featureFlags";
     public static final String NAMESPACE_LAUNCHER = "launcher";
 
     private static final List<DebugFlag> sDebugFlags = new ArrayList<>();
+    private static SharedPreferences sSharedPreferences;
 
     static final BooleanFlag TEAMFOOD_FLAG = getReleaseFlag(
             0, "LAUNCHER_TEAMFOOD", DISABLED, "Enable this flag to opt-in all team food flags");
@@ -93,10 +95,8 @@ public class FlagsFactory {
     public static BooleanFlag getDebugFlag(
             int bugId, String key, FlagState flagState, String description) {
         if (IS_DEBUG_DEVICE) {
-            SharedPreferences prefs = currentApplication()
-                    .getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE);
             boolean defaultValue = getEnabledValue(flagState);
-            boolean currentValue = prefs.getBoolean(key, defaultValue);
+            boolean currentValue = getSharedPreferences().getBoolean(key, defaultValue);
             DebugFlag flag = new DebugFlag(key, description, flagState, currentValue);
             sDebugFlags.add(flag);
             return flag;
@@ -115,9 +115,7 @@ public class FlagsFactory {
         boolean defaultValueInCode = getEnabledValue(flagState);
         boolean defaultValue = DeviceConfig.getBoolean(NAMESPACE_LAUNCHER, key, defaultValueInCode);
         if (IS_DEBUG_DEVICE) {
-            SharedPreferences prefs = currentApplication()
-                    .getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE);
-            boolean currentValue = prefs.getBoolean(key, defaultValue);
+            boolean currentValue = getSharedPreferences().getBoolean(key, defaultValue);
             DebugFlag flag = new DeviceFlag(key, description, flagState, currentValue,
                     defaultValueInCode);
             sDebugFlags.add(flag);
@@ -143,6 +141,17 @@ public class FlagsFactory {
         synchronized (sDebugFlags) {
             return new ArrayList<>(sDebugFlags);
         }
+    }
+
+    /** Returns the SharedPreferences instance backing Debug FeatureFlags. */
+    @NonNull
+    static SharedPreferences getSharedPreferences() {
+        if (sSharedPreferences == null) {
+            sSharedPreferences = currentApplication()
+                    .createDeviceProtectedStorageContext()
+                    .getSharedPreferences(FLAGS_PREF_NAME, Context.MODE_PRIVATE);
+        }
+        return sSharedPreferences;
     }
 
     /**
