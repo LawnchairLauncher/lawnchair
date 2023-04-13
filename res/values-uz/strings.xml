@@ -29,8 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"Bosh ekran"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Ekranni ikkiga ajratish"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s ilovasi axboroti"</string>
-    <!-- no translation found for save_app_pair (5647523853662686243) -->
-    <skip />
+    <string name="save_app_pair" msgid="5647523853662686243">"Ilova juftini saqlash"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Vidjetni bosib turgan holatda suring."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Ikki marta bosib va bosib turgan holatda vidjetni tanlang yoki maxsus amaldan foydalaning."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -169,7 +168,7 @@
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Ishga oid ilovalarning maxsus belgisi bor hamda ular administratoringizga koʻrinadi"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Ishga oid ilovalarni pauza qilish"</string>
-    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Davom ettirish"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Pauzadan chiqarish"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Saralash"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Telefondan qidirish"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Planshetingizni qidiring"</string>
