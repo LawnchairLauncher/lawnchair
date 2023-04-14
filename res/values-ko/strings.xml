@@ -29,8 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"홈"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"화면 분할"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s 앱 정보"</string>
-    <!-- no translation found for save_app_pair (5647523853662686243) -->
-    <skip />
+    <string name="save_app_pair" msgid="5647523853662686243">"앱 페어링 저장"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"길게 터치하여 위젯을 이동하세요."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"두 번 탭한 다음 길게 터치하여 위젯을 이동하거나 맞춤 작업을 사용하세요."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d×%2$d"</string>
@@ -165,7 +164,7 @@
     <string name="work_apps_paused_title" msgid="3040901117349444598">"직장 앱이 일시중지됨"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"직장 앱에서 보내는 알림을 받지 않게 됩니다."</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"직장 앱에서 알림을 보내거나 배터리를 사용하거나 위치 정보에 액세스할 수 없습니다."</string>
-    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"전화, 문자 메시지 또는 직장 앱에서 보내는 알림을 받지 않게 됩니다."</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"전화, 문자 메시지 또는 직장 앱에서 보내는 알림을 수신하지 않습니다."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"직장 앱에는 배지가 있으며, IT 관리자는 직장 앱을 확인할 수 있습니다."</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"확인"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"직장 앱 일시중지"</string>

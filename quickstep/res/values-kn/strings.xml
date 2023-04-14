@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ಸ್ಕಿಪ್ ಮಾಡಿ"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ಸ್ಕ್ರೀನ್ ತಿರುಗಿಸಿ"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"ಟಾಸ್ಕ್‌ಬಾರ್ ಶಿಕ್ಷಣ"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"ಟಾಸ್ಕ್‌ಬಾರ್ ಶಿಕ್ಷಣ ಕಾಣಿಸಿಕೊಂಡಿದೆ"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"ಟಾಸ್ಕ್‌ಬಾರ್ ಶಿಕ್ಷಣ ಮುಚ್ಚಿದೆ"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ಒಂದೇ ಬಾರಿಗೆ 2 ಆ್ಯಪ್‌ಗಳನ್ನು ಬಳಸಲು ಆ್ಯಪ್ ಅನ್ನು ಬದಿಗೆ ಎಳೆಯಿರಿ"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ಟಾಸ್ಕ್‌ಬಾರ್ ಅನ್ನು ತೋರಿಸಲು ನಿಧಾನವಾಗಿ ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ನಿಮ್ಮ ದಿನಚರಿಯ ಆಧಾರದ ಮೇಲೆ ಆ್ಯಪ್ ಸಲಹೆಗಳನ್ನು ಪಡೆಯಿರಿ"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"ಟಾಸ್ಕ್‌ಬಾರ್ ಅನ್ನು ಸ್ವಯಂ-ಮರೆಮಾಡಲು ಸೆಟ್ಟಿಂಗ್‌ಗಳಲ್ಲಿ ಗೆಸ್ಚರ್ ನ್ಯಾವಿಗೇಶನ್ ಅನ್ನು ಆನ್ ಮಾಡಿ"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ಟಾಸ್ಕ್‌ಬಾರ್ ಮೂಲಕ ಹೆಚ್ಚಿನದನ್ನು ಮಾಡಿ"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"ಮುಂದೆ"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"ಹಿಂದೆ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ಮುಚ್ಚಿರಿ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ಮುಗಿದಿದೆ"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ಮುಖಪುಟ"</string>
