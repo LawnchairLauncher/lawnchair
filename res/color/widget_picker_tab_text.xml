@@ -14,6 +14,6 @@
      limitations under the License.
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="#EFF1F2" android:state_expanded="false" />
-    <item android:color="#191C1D" android:state_expanded="true" />
+    <item android:color="?attr/widgetPickerSelectedTabTextColor" android:state_selected="true"/>
+    <item android:color="?attr/widgetPickerUnselectedTabTextColor"/>
 </selector>
