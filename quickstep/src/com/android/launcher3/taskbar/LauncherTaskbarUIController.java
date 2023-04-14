@@ -93,15 +93,14 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     protected void init(TaskbarControllers taskbarControllers) {
         super.init(taskbarControllers);
 
-        mTaskbarLauncherStateController.init(mControllers, mLauncher);
+        mTaskbarLauncherStateController.init(mControllers, mLauncher,
+                mControllers.getSharedState().sysuiStateFlags);
 
         mLauncher.setTaskbarUIController(this);
 
         onLauncherResumedOrPaused(mLauncher.hasBeenResumed(), true /* fromInit */);
 
         onStashedInAppChanged(mLauncher.getDeviceProfile());
-        mTaskbarLauncherStateController.updateStateForSysuiFlags(
-                mControllers.getSharedState().sysuiStateFlags, true /* fromInit */);
         mLauncher.addOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
 
         // Restore the in-app display progress from before Taskbar was recreated.
@@ -325,8 +324,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
-    public void updateStateForSysuiFlags(int sysuiFlags, boolean skipAnim) {
-        mTaskbarLauncherStateController.updateStateForSysuiFlags(sysuiFlags, skipAnim);
+    public void updateStateForSysuiFlags(int sysuiFlags) {
+        mTaskbarLauncherStateController.updateStateForSysuiFlags(sysuiFlags);
     }
 
     @Override
