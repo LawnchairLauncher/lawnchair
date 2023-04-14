@@ -218,29 +218,6 @@ public class DebugTestInformationHandler extends TestInformationHandler {
                 }
             }
 
-            case TestProtocol.REQUEST_USE_TEST_WORKSPACE_LAYOUT: {
-                useTestWorkspaceLayout(
-                        LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TEST);
-                return response;
-            }
-
-            case TestProtocol.REQUEST_USE_TEST2_WORKSPACE_LAYOUT: {
-                useTestWorkspaceLayout(
-                        LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TEST2);
-                return response;
-            }
-
-            case TestProtocol.REQUEST_USE_TAPL_WORKSPACE_LAYOUT: {
-                useTestWorkspaceLayout(
-                        LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TAPL);
-                return response;
-            }
-
-            case TestProtocol.REQUEST_USE_DEFAULT_WORKSPACE_LAYOUT: {
-                useTestWorkspaceLayout(null);
-                return response;
-            }
-
             case TestProtocol.REQUEST_HOTSEAT_ICON_NAMES: {
                 return getLauncherUIProperty(Bundle::putStringArrayList, l -> {
                     ShortcutAndWidgetContainer hotseatIconsContainer =
@@ -276,22 +253,6 @@ public class DebugTestInformationHandler extends TestInformationHandler {
 
             default:
                 return super.call(method, arg, extras);
-        }
-    }
-
-    private void useTestWorkspaceLayout(String layout) {
-        final long identity = Binder.clearCallingIdentity();
-        try {
-            if (layout != null) {
-                LauncherSettings.Settings.call(mContext.getContentResolver(),
-                        LauncherSettings.Settings.METHOD_SET_USE_TEST_WORKSPACE_LAYOUT_FLAG,
-                        layout);
-            } else {
-                LauncherSettings.Settings.call(mContext.getContentResolver(),
-                        LauncherSettings.Settings.METHOD_CLEAR_USE_TEST_WORKSPACE_LAYOUT_FLAG);
-            }
-        } finally {
-            Binder.restoreCallingIdentity(identity);
         }
     }
 }
