@@ -307,6 +307,12 @@ public final class FeatureFlags {
             "Enables receiving unfold animation events from sysui instead of calculating "
                     + "them in launcher process using hinge sensor values.");
 
+    public static final BooleanFlag PREEMPTIVE_UNFOLD_ANIMATION_START = getDebugFlag(270397209,
+            "PREEMPTIVE_UNFOLD_ANIMATION_START", ENABLED,
+            "Enables starting the unfold animation preemptively when unfolding, without"
+                    + "waiting for SystemUI and then merging the SystemUI progress whenever we "
+                    + "start receiving the events");
+
     // TODO(Block 23): Clean up flags
     public static final BooleanFlag ENABLE_GRID_ONLY_OVERVIEW = getDebugFlag(270397206,
             "ENABLE_GRID_ONLY_OVERVIEW", DISABLED,
