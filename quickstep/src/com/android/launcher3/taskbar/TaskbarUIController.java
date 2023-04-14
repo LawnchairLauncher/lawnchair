@@ -127,7 +127,7 @@ public class TaskbarUIController {
     /**
      * SysUI flags updated, see QuickStepContract.SYSUI_STATE_* values.
      */
-    public void updateStateForSysuiFlags(int sysuiFlags, boolean skipAnim){
+    public void updateStateForSysuiFlags(int sysuiFlags) {
     }
 
     /**
