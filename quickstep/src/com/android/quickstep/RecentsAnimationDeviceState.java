@@ -98,7 +98,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
     private final ArrayList<Runnable> mOnDestroyActions = new ArrayList<>();
 
-    private @SystemUiStateFlags int mSystemUiStateFlags;
+    private @SystemUiStateFlags int mSystemUiStateFlags = QuickStepContract.SYSUI_STATE_AWAKE;
     private NavigationMode mMode = THREE_BUTTONS;
     private NavBarPosition mNavBarPosition;
 

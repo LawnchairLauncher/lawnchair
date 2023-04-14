@@ -592,7 +592,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mControllers.voiceInteractionWindowController.setIsVoiceInteractionWindowVisible(
                 (systemUiStateFlags & SYSUI_STATE_VOICE_INTERACTION_WINDOW_SHOWING) != 0, fromInit);
 
-        mControllers.uiController.updateStateForSysuiFlags(systemUiStateFlags, fromInit);
+        mControllers.uiController.updateStateForSysuiFlags(systemUiStateFlags);
     }
 
     /**
