@@ -81,7 +81,6 @@ import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.StatefulActivity;
@@ -678,7 +677,9 @@ public class TouchInteractionService extends Service
 
         if (mUncheckedConsumer != InputConsumer.NO_OP) {
             switch (event.getActionMasked()) {
-                case ACTION_DOWN, ACTION_UP ->
+                case ACTION_DOWN:
+                    // fall through
+                case ACTION_UP:
                     ActiveGestureLog.INSTANCE.addLog(
                             /* event= */ "onMotionEvent(" + (int) event.getRawX() + ", "
                                     + (int) event.getRawY() + "): "
@@ -687,15 +688,18 @@ public class TouchInteractionService extends Service
                             /* gestureEvent= */ event.getActionMasked() == ACTION_DOWN
                                     ? MOTION_DOWN
                                     : MOTION_UP);
-                case ACTION_MOVE ->
+                    break;
+                case ACTION_MOVE:
                     ActiveGestureLog.INSTANCE.addLog("onMotionEvent: "
                             + MotionEvent.actionToString(event.getActionMasked()) + ","
                             + MotionEvent.classificationToString(event.getClassification())
                             + ", pointerCount: " + event.getPointerCount(), MOTION_MOVE);
-                default ->
+                    break;
+                default: {
                     ActiveGestureLog.INSTANCE.addLog("onMotionEvent: "
                             + MotionEvent.actionToString(event.getActionMasked()) + ","
                             + MotionEvent.classificationToString(event.getClassification()));
+                }
             }
         }
 
