@@ -50,6 +50,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.util.Xml;
 
+import androidx.annotation.WorkerThread;
+
 import com.android.launcher3.AutoInstallsLayout;
 import com.android.launcher3.AutoInstallsLayout.SourceResources;
 import com.android.launcher3.DefaultLayoutParser;
@@ -115,6 +117,7 @@ public class ModelDbController {
     /**
      * Refer {@link SQLiteDatabase#query}
      */
+    @WorkerThread
     public Cursor query(String table, String[] projection, String selection,
             String[] selectionArgs, String sortOrder) {
         createDbIfNotExists();
@@ -131,6 +134,7 @@ public class ModelDbController {
     /**
      * Refer {@link SQLiteDatabase#insert(String, String, ContentValues)}
      */
+    @WorkerThread
     public int insert(String table, ContentValues initialValues) {
         createDbIfNotExists();
 
@@ -146,6 +150,7 @@ public class ModelDbController {
     /**
      * Similar to insert but for adding multiple values in a transaction.
      */
+    @WorkerThread
     public int bulkInsert(String table, ContentValues[] values) {
         createDbIfNotExists();
 
@@ -167,6 +172,7 @@ public class ModelDbController {
     /**
      * Refer {@link SQLiteDatabase#delete(String, String, String[])}
      */
+    @WorkerThread
     public int delete(String table, String selection, String[] selectionArgs) {
         createDbIfNotExists();
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
@@ -185,6 +191,7 @@ public class ModelDbController {
     /**
      * Refer {@link SQLiteDatabase#update(String, ContentValues, String, String[])}
      */
+    @WorkerThread
     public int update(String table, ContentValues values,
             String selection, String[] selectionArgs) {
         createDbIfNotExists();
@@ -198,6 +205,7 @@ public class ModelDbController {
     /**
      * Clears a previously set flag corresponding to empty db creation
      */
+    @WorkerThread
     public void clearEmptyDbFlag() {
         createDbIfNotExists();
         clearFlagEmptyDbCreated();
@@ -206,6 +214,7 @@ public class ModelDbController {
     /**
      * Generates an id to be used for new item in the favorites table
      */
+    @WorkerThread
     public int generateNewItemId() {
         createDbIfNotExists();
         return mOpenHelper.generateNewItemId();
@@ -214,6 +223,7 @@ public class ModelDbController {
     /**
      * Generates an id to be used for new workspace screen
      */
+    @WorkerThread
     public int getNewScreenId() {
         createDbIfNotExists();
         return mOpenHelper.getNewScreenId();
@@ -222,6 +232,7 @@ public class ModelDbController {
     /**
      * Creates an empty DB clearing all existing data
      */
+    @WorkerThread
     public void createEmptyDB() {
         createDbIfNotExists();
         mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
@@ -230,6 +241,7 @@ public class ModelDbController {
     /**
      * Removes any widget which are present in the framework, but not in out internal DB
      */
+    @WorkerThread
     public void removeGhostWidgets() {
         createDbIfNotExists();
         mOpenHelper.removeGhostWidgets(mOpenHelper.getWritableDatabase());
@@ -238,6 +250,7 @@ public class ModelDbController {
     /**
      * Returns a new {@link SQLiteTransaction}
      */
+    @WorkerThread
     public SQLiteTransaction newTransaction() {
         createDbIfNotExists();
         return new SQLiteTransaction(mOpenHelper.getWritableDatabase());
@@ -246,6 +259,7 @@ public class ModelDbController {
     /**
      * Refreshes the internal state corresponding to presence of hotseat table
      */
+    @WorkerThread
     public void refreshHotseatRestoreTable() {
         createDbIfNotExists();
         mOpenHelper.mHotseatRestoreTableExists = tableExists(
@@ -256,6 +270,7 @@ public class ModelDbController {
      * Updates the current DB and copies all the existing data to the temp table
      * @param dbFile name of the target db file name
      */
+    @WorkerThread
     public boolean updateCurrentOpenHelper(String dbFile) {
         createDbIfNotExists();
         return prepForMigration(
@@ -270,6 +285,7 @@ public class ModelDbController {
      * Returns the current DatabaseHelper.
      * Only for tests
      */
+    @WorkerThread
     public DatabaseHelper getDatabaseHelper() {
         createDbIfNotExists();
         return mOpenHelper;
@@ -278,6 +294,7 @@ public class ModelDbController {
     /**
      * Prepares the DB for preview by copying all existing data to preview table
      */
+    @WorkerThread
     public boolean prepareForPreview(String dbFile) {
         createDbIfNotExists();
         return prepForMigration(
@@ -296,6 +313,7 @@ public class ModelDbController {
      * Deletes any empty folder from the DB.
      * @return Ids of deleted folders.
      */
+    @WorkerThread
     public IntArray deleteEmptyFolders() {
         createDbIfNotExists();
 
@@ -338,6 +356,7 @@ public class ModelDbController {
      *   3) From a partner configuration APK, already in the system image
      *   4) The default configuration for the particular device
      */
+    @WorkerThread
     public synchronized void loadDefaultFavoritesIfNecessary() {
         createDbIfNotExists();
         SharedPreferences sp = LauncherPrefs.getPrefs(mContext);

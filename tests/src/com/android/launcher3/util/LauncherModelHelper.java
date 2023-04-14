@@ -62,7 +62,6 @@ import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ItemInstallQueue;
-import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
@@ -423,12 +422,11 @@ public class LauncherModelHelper {
 
         @Override
         public boolean onCreate() {
-            mModelDbController = new ModelDbController(getContext());
             return true;
         }
 
         public SQLiteDatabase getDb() {
-            return mModelDbController.getDatabaseHelper().getWritableDatabase();
+            return getModelDbController().getDatabaseHelper().getWritableDatabase();
         }
     }
 
