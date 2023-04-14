@@ -20,6 +20,7 @@ package com.android.launcher3.graphics;
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_DOWNLOAD_APP_UX_V2;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_DOWNLOAD_APP_UX_V3;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -33,6 +34,8 @@ import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.Rect;
 import android.util.Property;
+
+import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -73,12 +76,11 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     // Duration = COMPLETE_ANIM_FRACTION * DURATION_SCALE
     private static final float COMPLETE_ANIM_FRACTION = 1f;
 
-    private static final float SMALL_SCALE = 0.7f;
+    private static final float SMALL_SCALE = ENABLE_DOWNLOAD_APP_UX_V3.get() ? 0.8f : 0.7f;
     private static final float PROGRESS_STROKE_SCALE = ENABLE_DOWNLOAD_APP_UX_V2.get()
-            ? 0.0655f
+            ? 0.06666667f
             : 0.075f;
-    private static final float PROGRESS_BOUNDS_SCALE = 0.075f;
-
+    private static final float PROGRESS_BOUNDS_SCALE = 0.08f;
     private static final int PRELOAD_ACCENT_COLOR_INDEX = 0;
     private static final int PRELOAD_BACKGROUND_COLOR_INDEX = 1;
 
@@ -97,6 +99,11 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     private final int mIndicatorColor;
     private final int mSystemAccentColor;
     private final int mSystemBackgroundColor;
+
+    private int mProgressColor;
+    private int mTrackColor;
+    private int mPlateColor;
+
     private final boolean mIsDarkMode;
 
     private float mTrackLength;
@@ -137,7 +144,34 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
 
         mProgressPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         mProgressPaint.setStrokeCap(Paint.Cap.ROUND);
+        if (ENABLE_DOWNLOAD_APP_UX_V3.get()) {
+            mProgressPaint.setAlpha(MAX_PAINT_ALPHA);
+        }
         mIndicatorColor = indicatorColor;
+
+        // This is the color
+        int primaryIconColor = mItem.bitmap.color;
+
+        // Progress color
+        float[] m3HCT = new float[3];
+        ColorUtils.colorToM3HCT(primaryIconColor, m3HCT);
+        mProgressColor = ColorUtils.M3HCTtoColor(
+                m3HCT[0],
+                m3HCT[1],
+                isDarkMode ? Math.max(m3HCT[2], 55) : Math.min(m3HCT[2], 40));
+
+        // Track color
+        mTrackColor = ColorUtils.M3HCTtoColor(
+                m3HCT[0],
+                16,
+                isDarkMode ? 30 : 90
+        );
+        // Plate color
+        mPlateColor = ColorUtils.M3HCTtoColor(
+                m3HCT[0],
+                isDarkMode ? 36 : 24,
+                isDarkMode ? (isThemed() ? 10 : 20) : 80
+        );
 
         mSystemAccentColor = preloadColors[PRELOAD_ACCENT_COLOR_INDEX];
         mSystemBackgroundColor = preloadColors[PRELOAD_BACKGROUND_COLOR_INDEX];
@@ -156,10 +190,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
 
-
-        float progressWidth = bounds.width() * (ENABLE_DOWNLOAD_APP_UX_V2.get()
-                ? PROGRESS_BOUNDS_SCALE
-                : PROGRESS_STROKE_SCALE);
+        float progressWidth = bounds.width() * PROGRESS_BOUNDS_SCALE;
         mTmpMatrix.setScale(
                 (bounds.width() - 2 * progressWidth) / DEFAULT_PATH_SIZE,
                 (bounds.height() - 2 * progressWidth) / DEFAULT_PATH_SIZE);
@@ -181,20 +212,32 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
             return;
         }
 
-        if (!ENABLE_DOWNLOAD_APP_UX_V2.get() && mInternalStateProgress > 0) {
+        if (mInternalStateProgress > 0
+                && (ENABLE_DOWNLOAD_APP_UX_V3.get() || !ENABLE_DOWNLOAD_APP_UX_V2.get())) {
             // Draw background.
-            mProgressPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-            mProgressPaint.setColor(mSystemBackgroundColor);
+            mProgressPaint.setStyle(ENABLE_DOWNLOAD_APP_UX_V3.get()
+                    ? Paint.Style.FILL
+                    : Paint.Style.FILL_AND_STROKE);
+            mProgressPaint.setColor(ENABLE_DOWNLOAD_APP_UX_V3.get()
+                    ? mPlateColor
+                    : mSystemBackgroundColor);
             canvas.drawPath(mScaledTrackPath, mProgressPaint);
         }
 
         if (!ENABLE_DOWNLOAD_APP_UX_V2.get() || mInternalStateProgress > 0) {
             // Draw track and progress.
             mProgressPaint.setStyle(Paint.Style.STROKE);
-            mProgressPaint.setColor(mSystemAccentColor);
-            mProgressPaint.setAlpha(TRACK_ALPHA);
+            mProgressPaint.setColor(ENABLE_DOWNLOAD_APP_UX_V3.get()
+                    ? mTrackColor
+                    : mSystemAccentColor);
+            if (!ENABLE_DOWNLOAD_APP_UX_V3.get()) {
+                mProgressPaint.setAlpha(TRACK_ALPHA);
+            }
             canvas.drawPath(mScaledTrackPath, mProgressPaint);
             mProgressPaint.setAlpha(MAX_PAINT_ALPHA);
+            if (ENABLE_DOWNLOAD_APP_UX_V3.get()) {
+                mProgressPaint.setColor(mProgressColor);
+            }
             canvas.drawPath(mScaledProgressPath, mProgressPaint);
         }
 
@@ -233,6 +276,10 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
      */
     public void maybePerformFinishedAnimation(
             PreloadIconDrawable oldIcon, Runnable onFinishCallback) {
+
+        mProgressColor = oldIcon.mProgressColor;
+        mTrackColor = oldIcon.mTrackColor;
+        mPlateColor = oldIcon.mPlateColor;
 
         if (oldIcon.mInternalStateProgress >= 1) {
             mInternalStateProgress = oldIcon.mInternalStateProgress;
