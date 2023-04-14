@@ -1851,36 +1851,6 @@ public final class LauncherInstrumentation {
         getTestInfo(TestProtocol.REQUEST_CLEAR_DATA);
     }
 
-    /**
-     * Reloads the workspace with a test layout that includes the Test Activity app icon on the
-     * hotseat.
-     */
-    public void useTestWorkspaceLayoutOnReload() {
-        getTestInfo(TestProtocol.REQUEST_USE_TEST_WORKSPACE_LAYOUT);
-    }
-
-    /**
-     * Reloads the workspace with a test layout that includes Maps/Play on workspace, and
-     * Dialer/Messaging/Chrome/Camera on hotseat.
-     */
-    public void useTest2WorkspaceLayoutOnReload() {
-        getTestInfo(TestProtocol.REQUEST_USE_TEST2_WORKSPACE_LAYOUT);
-    }
-
-
-    /**
-     * Reloads the workspace with a test layout that includes the chrome Activity app icon on the
-     * hotseat.
-     */
-    public void useTaplWorkspaceLayoutOnReload() {
-        getTestInfo(TestProtocol.REQUEST_USE_TAPL_WORKSPACE_LAYOUT);
-    }
-
-    /** Reloads the workspace with the default layout defined by the user's grid size selection. */
-    public void useDefaultWorkspaceLayoutOnReload() {
-        getTestInfo(TestProtocol.REQUEST_USE_DEFAULT_WORKSPACE_LAYOUT);
-    }
-
     /** Shows the taskbar if it is hidden, otherwise does nothing. */
     public void showTaskbarIfHidden() {
         getTestInfo(TestProtocol.REQUEST_UNSTASH_TASKBAR_IF_STASHED);
