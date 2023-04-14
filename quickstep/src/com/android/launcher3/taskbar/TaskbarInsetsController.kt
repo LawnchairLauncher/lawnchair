@@ -21,6 +21,7 @@ import android.os.Binder
 import android.os.IBinder
 import android.view.InsetsFrameProvider
 import android.view.InsetsFrameProvider.SOURCE_DISPLAY
+import android.view.InsetsSource.FLAG_SUPPRESS_SCRIM
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_FRAME
 import android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_REGION
@@ -86,7 +87,8 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         if (context.isGestureNav) {
             windowLayoutParams.providedInsets =
                     arrayOf(
-                            InsetsFrameProvider(insetsOwner, 0, navigationBars()),
+                            InsetsFrameProvider(insetsOwner, 0, navigationBars())
+                                    .setFlags(FLAG_SUPPRESS_SCRIM, FLAG_SUPPRESS_SCRIM),
                             InsetsFrameProvider(insetsOwner, 0, tappableElement()),
                             InsetsFrameProvider(insetsOwner, 0, mandatorySystemGestures()),
                             InsetsFrameProvider(insetsOwner, INDEX_LEFT, systemGestures())
