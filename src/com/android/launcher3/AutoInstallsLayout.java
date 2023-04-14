@@ -27,6 +27,8 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.content.res.Resources.NotFoundException;
+import android.content.res.XmlResourceParser;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -38,7 +40,9 @@ import android.util.Log;
 import android.util.Xml;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.annotation.WorkerThread;
+import androidx.annotation.XmlRes;
 
 import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -161,7 +165,7 @@ public class AutoInstallsLayout {
     protected final LayoutParserCallback mCallback;
 
     protected final PackageManager mPackageManager;
-    protected final Resources mSourceRes;
+    protected final SourceResources mSourceRes;
     protected final Supplier<XmlPullParser> mInitialLayoutSupplier;
 
     private final InvariantDeviceProfile mIdp;
@@ -178,11 +182,12 @@ public class AutoInstallsLayout {
     public AutoInstallsLayout(Context context, LauncherWidgetHolder appWidgetHolder,
             LayoutParserCallback callback, Resources res,
             int layoutId, String rootTag) {
-        this(context, appWidgetHolder, callback, res, () -> res.getXml(layoutId), rootTag);
+        this(context, appWidgetHolder, callback, SourceResources.wrap(res),
+                () -> res.getXml(layoutId), rootTag);
     }
 
     public AutoInstallsLayout(Context context, LauncherWidgetHolder appWidgetHolder,
-            LayoutParserCallback callback, Resources res,
+            LayoutParserCallback callback, SourceResources res,
             Supplier<XmlPullParser> initialLayoutSupplier, String rootTag) {
         mContext = context;
         mAppWidgetHolder = appWidgetHolder;
@@ -702,5 +707,43 @@ public class AutoInstallsLayout {
     static void copyInteger(ContentValues from, ContentValues to, String key) {
         to.put(key, from.getAsInteger(key));
     }
+
+    /**
+     * Wrapper over resources for easier abstraction
+     */
+    public interface SourceResources {
+
+        /**
+         * Refer {@link Resources#getXml(int)}
+         */
+        default XmlResourceParser getXml(@XmlRes int id) throws NotFoundException {
+            throw new NotFoundException();
+        }
+
+        /**
+         * Refer {@link Resources#getString(int)}
+         */
+        default String getString(@StringRes int id) throws NotFoundException {
+            throw new NotFoundException();
+        }
+
+        /**
+         * Returns a {@link SourceResources} corresponding to the provided resources
+         */
+        static SourceResources wrap(Resources res) {
+            return new SourceResources() {
+                @Override
+                public XmlResourceParser getXml(int id) {
+                    return res.getXml(id);
+                }
+
+                @Override
+                public String getString(int id) {
+                    return res.getString(id);
+                }
+            };
+        }
+    }
+
 
 }
