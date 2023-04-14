@@ -43,6 +43,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_N
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_BACK_ANIMATION;
+import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_BUBBLES;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_DESKTOP_MODE;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_DRAG_AND_DROP;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_ONE_HANDED;
@@ -126,6 +127,7 @@ import com.android.systemui.shared.system.smartspace.ISysuiUnlockAnimationContro
 import com.android.systemui.shared.tracing.ProtoTraceable;
 import com.android.systemui.unfold.progress.IUnfoldAnimation;
 import com.android.wm.shell.back.IBackAnimation;
+import com.android.wm.shell.bubbles.IBubbles;
 import com.android.wm.shell.desktopmode.IDesktopMode;
 import com.android.wm.shell.draganddrop.IDragAndDrop;
 import com.android.wm.shell.onehanded.IOneHanded;
@@ -169,6 +171,7 @@ public class TouchInteractionService extends Service
             ISystemUiProxy proxy = ISystemUiProxy.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SYSUI_PROXY));
             IPip pip = IPip.Stub.asInterface(bundle.getBinder(KEY_EXTRA_SHELL_PIP));
+            IBubbles bubbles = IBubbles.Stub.asInterface(bundle.getBinder(KEY_EXTRA_SHELL_BUBBLES));
             ISplitScreen splitscreen = ISplitScreen.Stub.asInterface(bundle.getBinder(
                     KEY_EXTRA_SHELL_SPLIT_SCREEN));
             IOneHanded onehanded = IOneHanded.Stub.asInterface(
@@ -192,7 +195,7 @@ public class TouchInteractionService extends Service
                     bundle.getBinder(KEY_EXTRA_SHELL_DRAG_AND_DROP));
             MAIN_EXECUTOR.execute(() -> {
                 SystemUiProxy.INSTANCE.get(TouchInteractionService.this).setProxy(proxy, pip,
-                        splitscreen, onehanded, shellTransitions, startingWindow,
+                        bubbles, splitscreen, onehanded, shellTransitions, startingWindow,
                         recentTasks, launcherUnlockAnimationController, backAnimation, desktopMode,
                         unfoldTransition, dragAndDrop);
                 TouchInteractionService.this.initInputMonitor("TISBinder#onInitialize()");
