@@ -15,38 +15,49 @@
  */
 package com.android.launcher3.model;
 
+import static android.util.Base64.NO_PADDING;
+import static android.util.Base64.NO_WRAP;
+
 import static com.android.launcher3.DefaultLayoutParser.RES_PARTNER_DEFAULT_LAYOUT;
+import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_KEY;
+import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_LABEL;
+import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_TAG;
 import static com.android.launcher3.model.DatabaseHelper.EMPTY_DATABASE_CREATED;
 import static com.android.launcher3.provider.LauncherDbUtils.copyTable;
 import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
 
+import android.app.blob.BlobHandle;
+import android.app.blob.BlobStoreManager;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
 import android.os.Process;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.util.Xml;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.AutoInstallsLayout;
+import com.android.launcher3.AutoInstallsLayout.SourceResources;
 import com.android.launcher3.DefaultLayoutParser;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
@@ -69,14 +80,7 @@ import java.util.function.Supplier;
 public class ModelDbController {
     private static final String TAG = "LauncherProvider";
 
-    private static final int TEST_WORKSPACE_LAYOUT_RES_XML = R.xml.default_test_workspace;
-    private static final int TEST2_WORKSPACE_LAYOUT_RES_XML = R.xml.default_test2_workspace;
-    private static final int TAPL_WORKSPACE_LAYOUT_RES_XML = R.xml.default_tapl_test_workspace;
-
     protected DatabaseHelper mOpenHelper;
-    protected String mProviderAuthority;
-
-    private int mDefaultWorkspaceLayoutOverride = 0;
 
     private final Context mContext;
 
@@ -221,21 +225,6 @@ public class ModelDbController {
     public void createEmptyDB() {
         createDbIfNotExists();
         mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
-    }
-
-    /**
-     * Overrides the default xml to be used for setting up workspace
-     */
-    public void setUseTestWorkspaceLayout(@Nullable String layout) {
-        if (LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TEST.equals(layout)) {
-            mDefaultWorkspaceLayoutOverride = TEST_WORKSPACE_LAYOUT_RES_XML;
-        } else if (LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TEST2.equals(layout)) {
-            mDefaultWorkspaceLayoutOverride = TEST2_WORKSPACE_LAYOUT_RES_XML;
-        } else if (LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TAPL.equals(layout)) {
-            mDefaultWorkspaceLayoutOverride = TAPL_WORKSPACE_LAYOUT_RES_XML;
-        } else {
-            mDefaultWorkspaceLayoutOverride = 0;
-        }
     }
 
     /**
@@ -403,37 +392,53 @@ public class ModelDbController {
      */
     private AutoInstallsLayout createWorkspaceLoaderFromAppRestriction(
             LauncherWidgetHolder widgetHolder) {
-        final String authority;
-        if (!TextUtils.isEmpty(mProviderAuthority)) {
-            authority = mProviderAuthority;
-        } else {
-            authority = Settings.Secure.getString(mContext.getContentResolver(),
-                    "launcher3.layout.provider");
+        ContentResolver cr = mContext.getContentResolver();
+        String blobHandlerDigest = Settings.Secure.getString(cr, LAYOUT_DIGEST_KEY);
+        if (Utilities.ATLEAST_R && !TextUtils.isEmpty(blobHandlerDigest)) {
+            BlobStoreManager blobManager = mContext.getSystemService(BlobStoreManager.class);
+            try (InputStream in = new ParcelFileDescriptor.AutoCloseInputStream(
+                    blobManager.openBlob(BlobHandle.createWithSha256(
+                            Base64.decode(blobHandlerDigest, NO_WRAP | NO_PADDING),
+                            LAYOUT_DIGEST_LABEL, 0, LAYOUT_DIGEST_TAG)))) {
+                return getAutoInstallsLayoutFromIS(in, widgetHolder, new SourceResources() { });
+            } catch (Exception e) {
+                Log.e(TAG, "Error getting layout from blob handle" , e);
+                return null;
+            }
         }
+
+        String authority = Settings.Secure.getString(cr, "launcher3.layout.provider");
         if (TextUtils.isEmpty(authority)) {
             return null;
         }
 
-        ProviderInfo pi = mContext.getPackageManager().resolveContentProvider(authority, 0);
+        PackageManager pm = mContext.getPackageManager();
+        ProviderInfo pi = pm.resolveContentProvider(authority, 0);
         if (pi == null) {
             Log.e(TAG, "No provider found for authority " + authority);
             return null;
         }
         Uri uri = getLayoutUri(authority, mContext);
-        try (InputStream in = mContext.getContentResolver().openInputStream(uri)) {
-            // Read the full xml so that we fail early in case of any IO error.
-            String layout = new String(IOUtils.toByteArray(in));
-            XmlPullParser parser = Xml.newPullParser();
-            parser.setInput(new StringReader(layout));
-
+        try (InputStream in = cr.openInputStream(uri)) {
             Log.d(TAG, "Loading layout from " + authority);
-            return new AutoInstallsLayout(mContext, widgetHolder, mOpenHelper,
-                    mContext.getPackageManager().getResourcesForApplication(pi.applicationInfo),
-                    () -> parser, AutoInstallsLayout.TAG_WORKSPACE);
+
+            Resources res = pm.getResourcesForApplication(pi.applicationInfo);
+            return getAutoInstallsLayoutFromIS(in, widgetHolder, SourceResources.wrap(res));
         } catch (Exception e) {
             Log.e(TAG, "Error getting layout stream from: " + authority , e);
             return null;
         }
+    }
+
+    private AutoInstallsLayout getAutoInstallsLayoutFromIS(InputStream in,
+            LauncherWidgetHolder widgetHolder, SourceResources res) throws Exception {
+        // Read the full xml so that we fail early in case of any IO error.
+        String layout = new String(IOUtils.toByteArray(in));
+        XmlPullParser parser = Xml.newPullParser();
+        parser.setInput(new StringReader(layout));
+
+        return new AutoInstallsLayout(mContext, widgetHolder, mOpenHelper, res,
+                () -> parser, AutoInstallsLayout.TAG_WORKSPACE);
     }
 
     private static Uri getLayoutUri(String authority, Context ctx) {
@@ -448,13 +453,9 @@ public class ModelDbController {
 
     private DefaultLayoutParser getDefaultLayoutParser(LauncherWidgetHolder widgetHolder) {
         InvariantDeviceProfile idp = LauncherAppState.getIDP(mContext);
-        int defaultLayout = mDefaultWorkspaceLayoutOverride > 0
-                ? mDefaultWorkspaceLayoutOverride : idp.defaultLayoutId;
-
-        if (mContext.getSystemService(UserManager.class).isDemoUser()
-                && idp.demoModeLayoutId != 0) {
-            defaultLayout = idp.demoModeLayoutId;
-        }
+        int defaultLayout = idp.demoModeLayoutId != 0
+                && mContext.getSystemService(UserManager.class).isDemoUser()
+                ? idp.demoModeLayoutId : idp.defaultLayoutId;
 
         return new DefaultLayoutParser(mContext, widgetHolder,
                 mOpenHelper, mContext.getResources(), defaultLayout);

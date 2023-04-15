@@ -39,8 +39,6 @@ import java.util.function.ToIntFunction;
  */
 public final class FeatureFlags {
 
-    public static final String FLAGS_PREF_NAME = "featureFlags";
-
     @VisibleForTesting
     public static Predicate<BooleanFlag> sBooleanReader = f -> f.mCurrentValue;
     @VisibleForTesting
@@ -274,7 +272,7 @@ public final class FeatureFlags {
                     + " to have better visuals");
 
     public static final BooleanFlag ENABLE_DOWNLOAD_APP_UX_V3 = getDebugFlag(270395186,
-            "ENABLE_DOWNLOAD_APP_UX_V3", DISABLED, "Updates the download app UX"
+            "ENABLE_DOWNLOAD_APP_UX_V3", ENABLED, "Updates the download app UX"
                     + " to have better visuals, improve contrast, and color");
 
     public static final BooleanFlag FORCE_PERSISTENT_TASKBAR = getDebugFlag(270395077,

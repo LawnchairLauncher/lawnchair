@@ -244,14 +244,6 @@ public class LauncherProvider extends ContentProvider {
                 mModelDbController.createEmptyDB();
                 return null;
             }
-            case LauncherSettings.Settings.METHOD_SET_USE_TEST_WORKSPACE_LAYOUT_FLAG: {
-                mModelDbController.setUseTestWorkspaceLayout(arg);
-                return null;
-            }
-            case LauncherSettings.Settings.METHOD_CLEAR_USE_TEST_WORKSPACE_LAYOUT_FLAG: {
-                mModelDbController.setUseTestWorkspaceLayout(null);
-                return null;
-            }
             case LauncherSettings.Settings.METHOD_LOAD_DEFAULT_FAVORITES: {
                 mModelDbController.loadDefaultFavoritesIfNecessary();
                 return null;
