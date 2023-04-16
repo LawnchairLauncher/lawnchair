@@ -52,7 +52,7 @@
     <string name="workspace_increase_max_grid_size_description">Zwiększ maksymalny dozwolony rozmiar siatki ekranu głównego z 10 x 10 do 20 x 20.</string>
     <string name="always_reload_icons_label">Zawsze odświeżaj ikony</string>
     <string name="always_reload_icons_description">Unikaj używania buforowanych ikon z pakietów ikon</string>
-    <string name="transparent_background_icons">Przezroczyste ikony tematyczne</string>
+    <string name="transparent_background_icons">Przezroczysty styl ikon</string>
     <string name="transparent_background_icons_description">Użyj przezroczystego tła na ikonach tematycznych</string>
     <string name="smartspace_mode_selection">\"W skrócie\" wybór dostawcy</string>
     <!-- GeneralPreferences -->
@@ -86,11 +86,11 @@
     <string name="theme_follow_wallpaper">Dopasuj do tapety</string>
     <string name="accent_color">Kolor Akcentujący</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Własny kształt ikony</string>
+    <string name="custom_icon_shape">Niestandardowy kształt ikony</string>
     <string name="custom_icon_shape_create">Stwórz własny kształt ikony</string>
     <string name="custom_icon_shape_edit">Edytuj własny kształt ikony</string>
     <string name="icon_shape_corner">Kształt narożnika</string>
-    <string name="icon_shape_corner_round">Okrągły</string>
+    <string name="icon_shape_corner_round">Zaokrąglony</string>
     <string name="icon_shape_corner_squircle">Gładki</string>
     <string name="icon_shape_corner_cut">Wycięty</string>
     <string name="icon_shape_top_left">Lewy górny</string>
