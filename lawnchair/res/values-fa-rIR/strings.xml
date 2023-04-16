@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">برای تنظیم Lawnchair بعنوان لانچر پیشفرض روی این کارت ضربه بزنید.</string>
     <string name="settings">تنظیمات</string>
     <string name="general_label">عمومی</string>
     <string name="general_description">رنگ‌ها، آیکون پک، نشان اعلان‌ها</string>
@@ -105,7 +105,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">آیکون پک</string>
-    <string name="themed_icon_pack">Themed Icon Source</string>
+    <string name="themed_icon_pack">منبع آیکون های پویا</string>
     <string name="system_icons">آیکون‌های سیستمی</string>
     <string name="themed_icon_title">آیکون‌های خاص</string>
     <string name="themed_icons_off_label">خاموش</string>
@@ -181,9 +181,9 @@
     <string name="home_screen_unlock">باز کردن قفل صفحه اصلی</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">صفحه اصلی قفل شده است.</string>
-    <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="popup_menu">منو Pop-up</string>
+    <string name="home_screen_lock_toggle_from_home_popup">نمایش دکمه قفل</string>
+    <string name="show_system_settings_entry">نمایش ورودی تنظیمات سیستم</string>
     <string name="status_bar_label">نوار وضعیت</string>
     <string name="show_status_bar">نشان‌دادن نوار وضعیت</string>
     <string name="dark_status_bar_label">نوار وضعیت تاریک</string>
@@ -269,7 +269,7 @@
     <string name="pref_search_auto_show_keyboard">نمایش خودکار صفحه کلید</string>
     <string name="fuzzy_search_title">جست‌و‌جو فازی</string>
     <string name="fuzzy_search_desc">مطابقت تقریبی برای جستجوی برنامه‌ها.</string>
-    <string name="max_search_result_count_title">Max Search Result Count</string>
+    <string name="max_search_result_count_title">حداکثر تعداد نتایج جستجو</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">ستون‌های کشوی برنامه‌ها</string>
     <string name="row_height_label">ارتفاع ردیف</string>
@@ -403,5 +403,5 @@
     <string name="invalid_backup_file">فایل بکاپ نامعتبر.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s و %s</string>
-    <string name="system_settings">System Settings</string>
+    <string name="system_settings">تنظیمات سیستم</string>
 </resources>
