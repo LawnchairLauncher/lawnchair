@@ -19,13 +19,14 @@ package com.android.launcher3.util;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.UserHandle;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.GraphicsUtils;
+import com.android.launcher3.model.DatabaseHelper;
 import com.android.launcher3.pm.UserCache;
 
 /**
@@ -105,7 +106,8 @@ public class ContentWriter {
 
     public int commit() {
         if (mCommitParams != null) {
-            return mContext.getContentResolver().update(mCommitParams.mUri, getValues(mContext),
+            mCommitParams.mDatabaseHelper.getWritableDatabase().update(
+                    Favorites.TABLE_NAME, getValues(mContext),
                     mCommitParams.mWhere, mCommitParams.mSelectionArgs);
         }
         return 0;
@@ -113,12 +115,12 @@ public class ContentWriter {
 
     public static final class CommitParams {
 
-        final Uri mUri;
+        final DatabaseHelper mDatabaseHelper;
         final String mWhere;
         final String[] mSelectionArgs;
 
-        public CommitParams(String where, String[] selectionArgs) {
-            mUri = LauncherSettings.Favorites.CONTENT_URI;
+        public CommitParams(DatabaseHelper helper, String where, String[] selectionArgs) {
+            mDatabaseHelper = helper;
             mWhere = where;
             mSelectionArgs = selectionArgs;
         }
