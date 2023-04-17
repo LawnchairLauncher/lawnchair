@@ -55,8 +55,8 @@
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"ৱিজেটৰ ছেটিং সলনি কৰিবলৈ টিপক"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"বুজি পালোঁ"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"ৱিজেটৰ ছেটিং সলনি কৰক"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"এপসমূহ সন্ধান কৰক"</string>
-    <string name="all_apps_loading_message" msgid="5813968043155271636">"এপসমূহ ল’ড কৰি থকা হৈছে…"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"এপ্‌সমূহ সন্ধান কৰক"</string>
+    <string name="all_apps_loading_message" msgid="5813968043155271636">"এপ্‌সমূহ ল’ড কৰি থকা হৈছে…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\"ৰ সৈতে মিলা কোনো এপ্ বিচাৰি পোৱা নগ\'ল"</string>
     <string name="label_application" msgid="8531721983832654978">"এপ্"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"আটাইবোৰ এপ্"</string>
@@ -81,7 +81,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"এপ্‌টোক গৃহ স্ক্ৰীনত ছেটিং আৰু শ্বৰ্টকাটসমূহ পঢ়াৰ অনুমতি দিয়ে।"</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"গৃহ স্ক্ৰীনত ছেটিং আৰু শ্বৰ্টকাটসমূহ লিখা"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"এপ্‌টোক গৃহ স্ক্ৰীনত ছেটিং আৰু শ্বৰ্টকাটসমূহ সলনি কৰাৰ অনুমতি দিয়ে।"</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g>ক ফ\'ন কলবোৰ কৰাৰ অনুমতি দিয়া হোৱা নাই"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"ৱিজেট ল’ড কৰিব নোৱাৰি"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"ৱিজেটৰ ছেটিং"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"ছেটআপ সমাপ্ত কৰিবলৈ টিপক"</string>
@@ -101,6 +100,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ফ’ল্ডাৰ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> টা অথবা তাতকৈ অধিক বস্তু"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ৱালপেপাৰসমূহ"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ৱালপেপাৰ আৰু শৈলী"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"গৃহ স্ক্ৰীন সম্পাদনা কৰক"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"গৃহ ছেটিং"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"আপোনাৰ প্ৰশাসকে অক্ষম কৰি ৰাখিছে"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"গৃহ স্ক্ৰীন ঘূৰোৱাৰ অনুমতি দিয়ক"</string>
