@@ -107,7 +107,7 @@ public class RestoreDbTask {
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             RestoreDbTask task = new RestoreDbTask();
             task.sanitizeDB(context, helper, db, new BackupManager(context));
-            task.restoreAppWidgetIdsIfExists(context);
+            task.restoreAppWidgetIdsIfExists(context, helper);
             t.commit();
             return true;
         } catch (Exception e) {
@@ -321,11 +321,11 @@ public class RestoreDbTask {
                 .putSync(RESTORE_DEVICE.to(new DeviceGridState(context).getDeviceType()));
     }
 
-    private void restoreAppWidgetIdsIfExists(Context context) {
+    private void restoreAppWidgetIdsIfExists(Context context, DatabaseHelper helper) {
         LauncherPrefs lp = LauncherPrefs.get(context);
         if (lp.has(APP_WIDGET_IDS, OLD_APP_WIDGET_IDS)) {
             AppWidgetHost host = new AppWidgetHost(context, APPWIDGET_HOST_ID);
-            AppWidgetsRestoredReceiver.restoreAppWidgetIds(context,
+            AppWidgetsRestoredReceiver.restoreAppWidgetIds(context, helper,
                     IntArray.fromConcatString(lp.get(OLD_APP_WIDGET_IDS)).toArray(),
                     IntArray.fromConcatString(lp.get(APP_WIDGET_IDS)).toArray(),
                     host);
