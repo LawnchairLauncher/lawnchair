@@ -137,6 +137,7 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
         if (folder != null) {
             folder.iterateOverItems(op);
         }
+        mControllers.taskbarAllAppsController.updateNotificationDots(updatedDots);
     }
 
     /**
