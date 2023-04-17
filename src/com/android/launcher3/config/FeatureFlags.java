@@ -362,6 +362,10 @@ public final class FeatureFlags {
             "Enables the ability to create and save app pairs on the Home screen for easy"
                     + " split screen launching.");
 
+    public static final BooleanFlag ENABLE_CURSOR_HOVER_STATES = getDebugFlag(243191650,
+            "ENABLE_CURSOR_HOVER_STATES", DISABLED,
+            "Enables cursor hover states for certain elements.");
+
     public static class BooleanFlag {
 
         private final boolean mCurrentValue;
