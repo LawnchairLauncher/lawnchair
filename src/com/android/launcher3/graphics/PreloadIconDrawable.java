@@ -78,9 +78,9 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
 
     private static final float SMALL_SCALE = ENABLE_DOWNLOAD_APP_UX_V3.get() ? 0.8f : 0.7f;
     private static final float PROGRESS_STROKE_SCALE = ENABLE_DOWNLOAD_APP_UX_V2.get()
-            ? 0.06666667f
+            ? 0.055f
             : 0.075f;
-    private static final float PROGRESS_BOUNDS_SCALE = 0.08f;
+    private static final float PROGRESS_BOUNDS_SCALE = 0.075f;
     private static final int PRELOAD_ACCENT_COLOR_INDEX = 0;
     private static final int PRELOAD_BACKGROUND_COLOR_INDEX = 1;
 
