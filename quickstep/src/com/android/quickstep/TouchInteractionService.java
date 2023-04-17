@@ -864,7 +864,6 @@ public class TouchInteractionService extends Service
             }
 
             if (ENABLE_TRACKPAD_GESTURE.get() && mGestureState.isTrackpadGesture()
-                    && mGestureState.getActivityInterface().isResumed()
                     && !previousGestureState.isRecentsAnimationRunning()) {
                 reasonString = newCompoundString(reasonPrefix)
                         .append(SUBSTRING_PREFIX)

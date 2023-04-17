@@ -294,8 +294,14 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 boolean haveNotPassedSlopOnContinuedGesture =
                         !mPassedSlopOnThisGesture && mPassedPilferInputSlop;
                 double degrees = Math.toDegrees(Math.atan(upDist / horizontalDist));
-                boolean isLikelyToStartNewTask = haveNotPassedSlopOnContinuedGesture
-                        || degrees <= OVERVIEW_MIN_DEGREES;
+
+                // Regarding degrees >= -OVERVIEW_MIN_DEGREES - Trackpad gestures can start anywhere
+                // on the screen, allowing downward swipes. We want to impose the same angle in that
+                // scenario.
+                boolean swipeWithinQuickSwitchRange = degrees <= OVERVIEW_MIN_DEGREES
+                        && (!mGestureState.isTrackpadGesture() || degrees >= -OVERVIEW_MIN_DEGREES);
+                boolean isLikelyToStartNewTask =
+                        haveNotPassedSlopOnContinuedGesture || swipeWithinQuickSwitchRange;
 
                 if (!mPassedPilferInputSlop) {
                     if (passedSlop) {
