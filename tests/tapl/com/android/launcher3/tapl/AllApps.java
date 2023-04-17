@@ -261,10 +261,7 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
         }
     }
 
-    private int getAllAppsScroll() {
-        return mLauncher.getTestInfo(TestProtocol.REQUEST_APPS_LIST_SCROLL_Y)
-                .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
-    }
+    protected abstract int getAllAppsScroll();
 
     protected UiObject2 getAppListRecycler(UiObject2 allAppsContainer) {
         return mLauncher.waitForObjectInContainer(allAppsContainer, "apps_list_view");

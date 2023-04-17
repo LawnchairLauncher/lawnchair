@@ -1122,4 +1122,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     public int getTaskbarAllAppsTopPadding() {
         return mControllers.taskbarAllAppsController.getTaskbarAllAppsTopPadding();
     }
+
+    @VisibleForTesting
+    public int getTaskbarAllAppsScroll() {
+        return mControllers.taskbarAllAppsController.getTaskbarAllAppsScroll();
+    }
 }

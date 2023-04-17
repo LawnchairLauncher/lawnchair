@@ -135,10 +135,15 @@ public final class TaskbarAllAppsController {
         overlayContext.getDragController().setDisallowLongClick(mDisallowLongClick);
     }
 
-
     @VisibleForTesting
     public int getTaskbarAllAppsTopPadding() {
         // Allow null-pointer since this should only be null if the apps view is not showing.
         return mAppsView.getActiveRecyclerView().getClipBounds().top;
+    }
+
+    @VisibleForTesting
+    public int getTaskbarAllAppsScroll() {
+        // Allow null-pointer since this should only be null if the apps view is not showing.
+        return mAppsView.getActiveRecyclerView().computeVerticalScrollOffset();
     }
 }
