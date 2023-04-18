@@ -23,7 +23,7 @@
     android:background="@drawable/keyboard_quick_switch_overview_button_background"
     android:clipToOutline="true"
     android:importantForAccessibility="yes"
-    launcher:borderColor="?androidprv:attr/materialColorSecondaryContainer">
+    launcher:borderColor="?androidprv:attr/materialColorOutline">
 
     <ImageView
         android:id="@+id/icon"
@@ -32,7 +32,7 @@
         android:layout_marginBottom="8dp"
         android:src="@drawable/ic_empty_recents"
 
-        app:tint="?android:attr/textColorPrimary"
+        app:tint="?androidprv:attr/materialColorOnSurface"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/text"
