@@ -26,7 +26,6 @@ import android.view.animation.Interpolator;
 import androidx.annotation.NonNull;
 import androidx.annotation.Px;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.anim.Interpolators;
@@ -61,7 +60,7 @@ public final class BorderAnimator {
     @NonNull private final Interpolator mInterpolator;
     @NonNull private final Paint mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    private int mAlignmentAdjustment;
+    private float mAlignmentAdjustment;
 
     @Nullable private Animator mRunningBorderAnimation;
 
@@ -106,16 +105,12 @@ public final class BorderAnimator {
     private void updateOutline() {
         float interpolatedProgress = mInterpolator.getInterpolation(
                 mBorderAnimationProgress.value);
-        mAlignmentAdjustment = (int) Utilities.mapBoundToRange(
-                mBorderAnimationProgress.value,
-                /* lowerBound= */ 0f,
-                /* upperBound= */ 1f,
-                /* toMin= */ 0f,
-                /* toMax= */ (float) (mBorderWidthPx / 2f),
-                mInterpolator);
+        float borderWidth = mBorderWidthPx * interpolatedProgress;
+        // Inset the border by half the width to create an inwards-growth animation
+        mAlignmentAdjustment = borderWidth / 2f;
 
         mBorderPaint.setAlpha(Math.round(255 * interpolatedProgress));
-        mBorderPaint.setStrokeWidth(Math.round(mBorderWidthPx * interpolatedProgress));
+        mBorderPaint.setStrokeWidth(borderWidth);
         mInvalidateViewCallback.run();
     }
 
