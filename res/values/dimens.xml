@@ -21,7 +21,6 @@
     <!-- Dynamic Grid -->
     <dimen name="dynamic_grid_edge_margin">10.77dp</dimen>
     <dimen name="dynamic_grid_left_right_margin">8dp</dimen>
-    <dimen name="dynamic_grid_icon_drawable_padding">7dp</dimen>
     <!-- Minimum amount of next page visible in spring loaded mode -->
     <dimen name="dynamic_grid_spring_loaded_min_next_space_visible">24dp</dimen>
 
@@ -93,6 +92,8 @@
     -->
     <dimen name="fastscroll_width">58dp</dimen>
     <dimen name="fastscroll_end_margin">-26dp</dimen>
+    <!-- Extra margin between bottom of the scrollbar and the search bar protection layer. -->
+    <dimen name="fastscroll_bottom_margin_floating_search">4dp</dimen>
 
     <!-- PagedView -->
     <dimen name="fling_threshold_velocity">500dp</dimen>
@@ -129,7 +130,6 @@
     <dimen name="all_apps_content_fade_in_offset">150dp</dimen>
     <dimen name="all_apps_tip_bottom_margin">8dp</dimen>
     <dimen name="all_apps_height_extra">6dp</dimen>
-    <dimen name="all_apps_bottom_sheet_horizontal_padding">0dp</dimen>
     <dimen name="all_apps_paged_view_top_padding">40dp</dimen>
 
     <dimen name="all_apps_icon_drawable_padding">8dp</dimen>
@@ -138,11 +138,6 @@
     <dimen name="arrow_toast_corner_radius">2dp</dimen>
     <dimen name="arrow_toast_elevation">2dp</dimen>
     <dimen name="arrow_toast_arrow_width">10dp</dimen>
-
-    <!-- Search bar in All Apps -->
-    <dimen name="all_apps_header_max_elevation">3dp</dimen>
-    <dimen name="all_apps_header_scroll_to_elevation">16dp</dimen>
-    <dimen name="all_apps_header_shadow_height">6dp</dimen>
 
     <dimen name="all_apps_divider_margin_vertical">8dp</dimen>
 
@@ -160,6 +155,7 @@
     <dimen name="work_edu_card_margin">16dp</dimen>
     <dimen name="work_edu_card_radius">16dp</dimen>
     <dimen name="work_edu_card_bottom_margin">26dp</dimen>
+    <dimen name="work_apps_paused_button_stroke">1dp</dimen>
 
     <dimen name="work_card_margin">24dp</dimen>
     <!-- (x) icon button inside work edu card -->
@@ -196,6 +192,7 @@
     <dimen name="widget_list_header_view_vertical_padding">20dp</dimen>
     <dimen name="widget_list_entry_spacing">2dp</dimen>
     <dimen name="widget_list_horizontal_margin">16dp</dimen>
+    <dimen name="widget_list_horizontal_margin_large_screen">24dp</dimen>
 
     <dimen name="widget_preview_shadow_blur">0.5dp</dimen>
     <dimen name="widget_preview_key_shadow_distance">1dp</dimen>
@@ -252,6 +249,7 @@
 
     <!-- Folders -->
     <dimen name="page_indicator_dot_size">8dp</dimen>
+    <dimen name="page_indicator_dot_size_v2">6dp</dimen>
     <dimen name="page_indicator_size">10dp</dimen>
 
 
@@ -283,7 +281,7 @@
     <dimen name="deep_shortcuts_elevation">2dp</dimen>
     <dimen name="bg_popup_padding">2dp</dimen>
     <dimen name="bg_popup_item_width">216dp</dimen>
-    <dimen name="bg_popup_item_height">56dp</dimen>
+    <dimen name="bg_popup_item_height">52dp</dimen>
     <dimen name="bg_popup_item_vertical_padding">12dp</dimen>
     <dimen name="pre_drag_view_scale">6dp</dimen>
     <!-- an icon with shortcuts must be dragged this far before the container is removed. -->
@@ -292,10 +290,10 @@
     <dimen name="popup_margin">2dp</dimen>
     <dimen name="popup_single_item_radius">100dp</dimen>
     <dimen name="popup_smaller_radius">4dp</dimen>
-    <dimen name="deep_shortcut_drawable_padding">12dp</dimen>
+    <dimen name="deep_shortcut_drawable_padding">16dp</dimen>
     <dimen name="deep_shortcut_drag_handle_size">16dp</dimen>
     <dimen name="popup_padding_start">10dp</dimen>
-    <dimen name="popup_padding_end">16dp</dimen>
+    <dimen name="popup_padding_end">14dp</dimen>
     <dimen name="popup_vertical_padding">4dp</dimen>
     <dimen name="popup_arrow_width">12dp</dimen>
     <dimen name="popup_arrow_height">10dp</dimen>
@@ -303,32 +301,40 @@
     <!-- popup_padding_start + deep_shortcut_icon_size / 2 -->
     <dimen name="popup_arrow_horizontal_center_offset">26dp</dimen>
     <dimen name="popup_arrow_corner_radius">2dp</dimen>
-    <!-- popup_padding_start + deep_shortcut_icon_size + 10dp -->
-    <dimen name="deep_shortcuts_text_padding_start">52dp</dimen>
+    <!-- popup_padding_start + deep_shortcut_icon_size + 12dp -->
+    <dimen name="deep_shortcuts_text_padding_start">54dp</dimen>
     <dimen name="system_shortcut_icon_size">20dp</dimen>
     <!-- popup_arrow_horizontal_center_offset - system_shortcut_icon_size / 2 -->
     <dimen name="system_shortcut_margin_start">16dp</dimen>
-    <dimen name="system_shortcut_header_height">56dp</dimen>
+    <dimen name="system_shortcut_header_height">52dp</dimen>
     <dimen name="system_shortcut_header_icon_touch_size">48dp</dimen>
     <!-- (system_shortcut_header_icon_touch_size - system_shortcut_icon_size) / 2 -->
     <dimen name="system_shortcut_header_icon_padding">14dp</dimen>
+    <!-- side of start/end icon near to container edge -->
+    <dimen name="system_shortcut_header_icon_padding_outer">16dp</dimen>
+    <!-- side of start/end icon far from container edge -->
+    <dimen name="system_shortcut_header_icon_padding_inner">12dp</dimen>
+
 
     <!-- Notifications -->
     <dimen name="bg_round_rect_radius">8dp</dimen>
+    <dimen name="notification_container_height">104dp</dimen>
     <dimen name="notification_max_trans">8dp</dimen>
     <dimen name="notification_space">8dp</dimen>
-    <dimen name="notification_padding">16dp</dimen>
-    <dimen name="notification_padding_top">18dp</dimen>
+    <dimen name="notification_padding_end">16dp</dimen>
+    <dimen name="notification_padding_bottom">12dp</dimen>
+    <dimen name="notification_padding_top">12dp</dimen>
+    <dimen name="notification_padding_header_top">16dp</dimen>
+    <dimen name="notification_header_padding_start">14dp</dimen>
     <dimen name="notification_header_text_size">14sp</dimen>
     <dimen name="notification_header_count_text_size">12sp</dimen>
     <dimen name="notification_main_title_size">14sp</dimen>
     <dimen name="notification_main_text_size">14sp</dimen>
     <dimen name="notification_circle_icon_size">24dp</dimen>
     <dimen name="notification_icon_size">32dp</dimen>
-    <!-- Space between edge and icon and icon and text -->
-    <dimen name="notification_icon_padding">12dp</dimen>
+    <dimen name="notification_icon_padding_start">10dp</dimen>
     <!-- notification_icon_padding + notification_icon_size + notification_icon_padding -->
-    <dimen name="notification_main_text_padding_start">56dp</dimen>
+    <dimen name="notification_main_text_padding_start">54dp</dimen>
     <dimen name="horizontal_ellipsis_size">18dp</dimen>
 
     <!-- Overview -->
@@ -351,7 +357,7 @@
     <dimen name="developer_options_filter_margins">10dp</dimen>
 
     <!-- Theming related -->
-    <dimen name="default_dialog_corner_radius">8dp</dimen>
+    <dimen name="default_dialog_corner_radius">26dp</dimen>
     <dimen name="dialogCornerRadius">@dimen/default_dialog_corner_radius</dimen>
 
     <!-- Onboarding bottomsheet related -->
@@ -365,14 +371,13 @@
     <dimen name="min_hotseat_icon_space">18dp</dimen>
     <dimen name="max_hotseat_icon_space">50dp</dimen>
     <dimen name="min_hotseat_qsb_width">0dp</dimen>
-    <dimen name="taskbar_icon_size">0dp</dimen>
-    <dimen name="transient_taskbar_icon_size">0dp</dimen>
+
     <!-- Transient taskbar (placeholders to compile in Launcher3 without Quickstep) -->
-    <dimen name="transient_taskbar_size">0dp</dimen>
-    <dimen name="transient_taskbar_margin">0dp</dimen>
+    <dimen name="transient_taskbar_padding">0dp</dimen>
+    <dimen name="transient_taskbar_bottom_margin">0dp</dimen>
     <dimen name="transient_taskbar_shadow_blur">0dp</dimen>
     <dimen name="transient_taskbar_key_shadow_distance">0dp</dimen>
-    <dimen name="transient_taskbar_stashed_size">0dp</dimen>
+    <dimen name="transient_taskbar_stashed_height">0dp</dimen>
     <dimen name="transient_taskbar_clamped_offset_bound">0dp</dimen>
     <dimen name="taskbar_icon_spacing">0dp</dimen>
     <dimen name="taskbar_nav_buttons_size">0dp</dimen>
@@ -383,14 +388,6 @@
     <dimen name="taskbar_button_space_inbetween_phone">0dp</dimen>
     <dimen name="taskbar_button_margin_split">0dp</dimen>
     <dimen name="taskbar_button_margin_6_5">0dp</dimen>
-    <!-- Taskbar swipe up thresholds threshold -->
-    <dimen name="taskbar_nav_threshold">0dp</dimen>
-    <dimen name="taskbar_app_window_threshold">0dp</dimen>
-    <dimen name="taskbar_home_overview_threshold">0dp</dimen>
-    <dimen name="taskbar_catch_up_threshold">0dp</dimen>
-    <dimen name="taskbar_nav_threshold_v2">0dp</dimen>
-    <dimen name="taskbar_app_window_threshold_v2">0dp</dimen>
-    <dimen name="taskbar_home_overview_threshold_v2">0dp</dimen>
 
     <!-- Size of the maximum radius for the enforced rounded rectangles. -->
     <dimen name="enforced_rounded_corner_max_radius">16dp</dimen>
@@ -418,10 +415,6 @@
     <dimen name="split_instructions_elevation">1dp</dimen>
     <dimen name="split_instructions_horizontal_padding">24dp</dimen>
     <dimen name="split_instructions_vertical_padding">12dp</dimen>
-    <dimen name="split_instructions_bottom_margin_tablet_landscape">32dp</dimen>
-    <dimen name="split_instructions_bottom_margin_tablet_portrait">44dp</dimen>
-    <dimen name="split_instructions_bottom_margin_twopanels_landscape">33dp</dimen>
-    <dimen name="split_instructions_bottom_margin_twopanels_portrait">51dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_landscape">24dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_portrait">60dp</dimen>
     

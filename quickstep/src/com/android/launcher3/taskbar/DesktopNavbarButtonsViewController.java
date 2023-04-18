@@ -58,7 +58,7 @@ public class DesktopNavbarButtonsViewController extends NavbarButtonsViewControl
     @Override
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
-        mNavButtonsView.getLayoutParams().height = mContext.getDeviceProfile().taskbarSize;
+        mNavButtonsView.getLayoutParams().height = mContext.getDeviceProfile().taskbarHeight;
 
         // Quick settings and notifications buttons
         addButton(R.drawable.ic_sysbar_quick_settings, BUTTON_QUICK_SETTINGS,

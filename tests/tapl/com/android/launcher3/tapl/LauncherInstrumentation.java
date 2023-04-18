@@ -76,8 +76,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
@@ -242,7 +240,8 @@ public final class LauncherInstrumentation {
         // Launcher should run in test harness so that custom accessibility protocol between
         // Launcher and TAPL is enabled. In-process tests enable this protocol with a direct call
         // into Launcher.
-        assertTrue("Device must run in a test harness",
+        assertTrue("Device must run in a test harness. "
+                        + "Run `adb shell setprop ro.test_harness 1` to enable it.",
                 TestHelpers.isInLauncherProcess() || ActivityManager.isRunningInTestHarness());
 
         final String testPackage = getContext().getPackageName();
@@ -1485,19 +1484,21 @@ public final class LauncherInstrumentation {
     }
 
     void scrollToLastVisibleRow(
-            UiObject2 container, Collection<UiObject2> items, int topPaddingInContainer) {
-        final UiObject2 lowestItem = Collections.max(items, (i1, i2) ->
-                Integer.compare(getVisibleBounds(i1).top, getVisibleBounds(i2).top));
-
-        final int itemRowCurrentTopOnScreen = getVisibleBounds(lowestItem).top;
+            UiObject2 container, Rect bottomVisibleIconBounds, int topPaddingInContainer,
+            int appsListBottomPadding) {
+        final int itemRowCurrentTopOnScreen = bottomVisibleIconBounds.top;
         final Rect containerRect = getVisibleBounds(container);
         final int itemRowNewTopOnScreen = containerRect.top + topPaddingInContainer;
         final int distance = itemRowCurrentTopOnScreen - itemRowNewTopOnScreen + getTouchSlop();
 
-        scrollDownByDistance(container, distance);
+        scrollDownByDistance(container, distance, appsListBottomPadding);
     }
 
     void scrollDownByDistance(UiObject2 container, int distance) {
+        scrollDownByDistance(container, distance, 0);
+    }
+
+    void scrollDownByDistance(UiObject2 container, int distance, int bottomPadding) {
         final Rect containerRect = getVisibleBounds(container);
         final int bottomGestureMarginInContainer = getBottomGestureMarginInContainer(container);
         scroll(
@@ -1507,7 +1508,7 @@ public final class LauncherInstrumentation {
                         0,
                         containerRect.height() - distance - bottomGestureMarginInContainer,
                         0,
-                        bottomGestureMarginInContainer),
+                        bottomGestureMarginInContainer + bottomPadding),
                 /* steps= */ 10,
                 /* slowDown= */ true);
     }
@@ -1829,6 +1830,10 @@ public final class LauncherInstrumentation {
         getTestInfo(TestProtocol.REQUEST_VIEW_LEAK);
     }
 
+    public void printViewLeak() {
+        getTestInfo(TestProtocol.PRINT_VIEW_LEAK);
+    }
+
     public ArrayList<ComponentName> getRecentTasks() {
         ArrayList<ComponentName> tasks = new ArrayList<>();
         ArrayList<String> components = getTestInfo(TestProtocol.REQUEST_RECENT_TASKS_LIST)
@@ -1857,6 +1862,15 @@ public final class LauncherInstrumentation {
      */
     public void useTest2WorkspaceLayoutOnReload() {
         getTestInfo(TestProtocol.REQUEST_USE_TEST2_WORKSPACE_LAYOUT);
+    }
+
+
+    /**
+     * Reloads the workspace with a test layout that includes the chrome Activity app icon on the
+     * hotseat.
+     */
+    public void useTaplWorkspaceLayoutOnReload() {
+        getTestInfo(TestProtocol.REQUEST_USE_TAPL_WORKSPACE_LAYOUT);
     }
 
     /** Reloads the workspace with the default layout defined by the user's grid size selection. */

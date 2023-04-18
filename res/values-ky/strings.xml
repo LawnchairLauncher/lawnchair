@@ -53,12 +53,13 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"Сүйлөшүүлөр"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Керектүү маалымат манжаңыздын учунда"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Бир нерсе билүү үчүн колдонмолорду улам ачып убара болбостон, башкы экранга виджеттерди кошуп коюңуз."</string>
-    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Виджеттин параметрлерин өзгөртүү үчүн таптап коюңуз"</string>
+    <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Виджеттин жөндөөлөрүн өзгөртүү үчүн таптап коюңуз"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Түшүндүм"</string>
-    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Виджеттин параметрлерин өзгөртүү"</string>
+    <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Виджеттин жөндөөлөрүн өзгөртүү"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Колдонмолорду издөө"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Колдонмолор жүктөлүүдө…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" сурамына дал келген колдонмолор табылган жок"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Көбүрөөк колдонмолорду издөө"</string>
     <string name="label_application" msgid="8531721983832654978">"Колдонмо"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Бардык колдонмолор"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Билдирмелер"</string>
@@ -74,18 +75,18 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Чыгарып салуу"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Колдонмо тууралуу"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Орнотуу"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Cунушталбасын"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Колдонмо сунушталбасын"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Божомолдонгон колдонмону кадап коюу"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"тез чакырмаларды орнотуу"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Колдонмого колдонуучуга кайрылбастан тез чакырма кошууга уруксат берет."</string>
-    <string name="permlab_read_settings" msgid="5136500343007704955">"үйдүн параметрлерин жана ыкчам баскычтарын окуу"</string>
-    <string name="permdesc_read_settings" msgid="4208061150510996676">"Колдонмого үйдүн параметрлерин жана ыкчам баскычтарын окууга уруксат берет."</string>
-    <string name="permlab_write_settings" msgid="4820028712156303762">"үйдүн параметрлерин жана ыкчам баскычтарын жазуу"</string>
-    <string name="permdesc_write_settings" msgid="726859348127868466">"Колдонмого үйдүн параметрлерин жана ыкчам баскычтарын өзгөртүүгө уруксат берет."</string>
+    <string name="permlab_read_settings" msgid="5136500343007704955">"үйдүн жөндөөлөрүн жана ыкчам баскычтарын окуу"</string>
+    <string name="permdesc_read_settings" msgid="4208061150510996676">"Колдонмого үйдүн жөндөөлөрүн жана ыкчам баскычтарын окууга уруксат берет."</string>
+    <string name="permlab_write_settings" msgid="4820028712156303762">"үйдүн жөндөөлөрүн жана ыкчам баскычтарын жазуу"</string>
+    <string name="permdesc_write_settings" msgid="726859348127868466">"Колдонмого үйдүн жөндөөлөрүн жана ыкчам баскычтарын өзгөртүүгө уруксат берет."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> телефон чалууларды аткарууга уруксаты жок"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Виджет жүктөлбөй жатат"</string>
-    <string name="gadget_setup_text" msgid="8348374825537681407">"Виджеттин параметрлери"</string>
-    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Аягына чейин тууралоо үчүн басып коюңуз"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Виджеттин жөндөөлөрү"</string>
+    <string name="gadget_complete_setup_text" msgid="309040266978007925">"Жөндөп бүтүү үчүн таптап коюңуз"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Бул системдик колдонмо жана аны чечкенге болбойт."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Аталышын түзөтүү"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"<xliff:g id="APP_NAME">%1$s</xliff:g> өчүрүлгөн"</string>
@@ -102,7 +103,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"<xliff:g id="NAME">%1$s</xliff:g> папкасындагы объекттер: <xliff:g id="SIZE">%2$d</xliff:g> же андан көбүрөөк"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Тушкагаздар"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Тушкагаз жана стиль"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"Башкы бет параметрлери"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"Башкы бет жөндөөлөрү"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Администраторуңуз өчүрүп койгон"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Башкы экранды бурууга уруксат берүү"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Телефон бурулганда"</string>
@@ -113,7 +114,6 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Эскертме белгилерин көрсөтүү максатында, <xliff:g id="NAME">%1$s</xliff:g> үчүн колдонмонун билдирмелерин күйгүзүү керек"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Параметрлерди өзгөртүү"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Билдирмелер белгилерин көрсөтүү"</string>
-    <string name="developer_options_title" msgid="700788437593726194">"Иштеп чыгуучунун параметрлери"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Колдонмонун сүрөтчөсүн башкы экранга кошуу"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Жаңы колдонмолор үчүн"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Белгисиз"</string>
@@ -124,10 +124,14 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> орнотулууда, <xliff:g id="PROGRESS">%2$s</xliff:g> аткарылды"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> жүктөлүп алынууда, <xliff:g id="PROGRESS">%2$s</xliff:g> аяктады"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> орнотулушу күтүлүүдө"</string>
-    <string name="dialog_update_title" msgid="114234265740994042">"Колдонмону жаңыртыңыз"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"Бул сүрөтчөнүн колдонмосу жаңыртылган эмес. Ыкчам баскычты кайра иштетүү үчүн аны кол менен жаңыртып же сүрөтчөнү өчүрүп койсоңуз болот."</string>
-    <string name="dialog_update" msgid="2178028071796141234">"Жаңыртуу"</string>
-    <string name="dialog_remove" msgid="6510806469849709407">"Өчүрүү"</string>
+    <!-- no translation found for dialog_update_title (114234265740994042) -->
+    <skip />
+    <!-- no translation found for dialog_update_message (4176784553982226114) -->
+    <skip />
+    <!-- no translation found for dialog_update (2178028071796141234) -->
+    <skip />
+    <!-- no translation found for dialog_remove (6510806469849709407) -->
+    <skip />
     <string name="widgets_list" msgid="796804551140113767">"Виджеттердин тизмеси"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Виджеттердин тизмеси жабык"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Башкы экранга кошуу"</string>
@@ -136,7 +140,7 @@
     <string name="item_removed" msgid="851119963877842327">"Жоюлду"</string>
     <string name="undo" msgid="4151576204245173321">"Кайтаруу"</string>
     <string name="action_move" msgid="4339390619886385032">"Муну жылдыруу"</string>
-    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"<xliff:g id="STRING">%3$s</xliff:g> ичиндеги <xliff:g id="NUMBER_1">%2$s</xliff:g>-тилкенин <xliff:g id="NUMBER_0">%1$s</xliff:g>-cабына жылдыруу"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"<xliff:g id="NUMBER_0">%1$s</xliff:g> катарга <xliff:g id="NUMBER_1">%2$s</xliff:g> тилкеге жылдыруу"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g> орунга жылдыруу"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Тандалмаларга <xliff:g id="NUMBER">%1$s</xliff:g> жылдыруу"</string>
     <string name="item_moved" msgid="4606538322571412879">"Нерсе жылдырылды"</string>
@@ -167,10 +171,8 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Жумуш колдонмолору өчүк жана билдирмелерди жөнөтүп, түзмөгүңүздүн батареясын керектеп же кайда жүргөнүңүздү көрө албайт"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Жумуш колдонмолору белгиленип, аларды IT администраторлору көрөт"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Түшүндүм"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Жумуш колдонмолорун тындыруу"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Жумуш колдонмолорун өчүрүү"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Жумуш колдонмолорун күйгүзүү"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Чыпкалоо"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"Телефондо издөө"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Планшетте издөө"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Аткарылган жок: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

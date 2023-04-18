@@ -36,7 +36,6 @@ import com.android.launcher3.tapl.HomeAppIconMenuItem;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.Executors;
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 
 import org.junit.Test;
 
@@ -111,7 +110,6 @@ public class ThemeIconsTest extends AbstractLauncherUiTest {
     }
 
     @Test
-    @ScreenRecord // b/260722220
     public void testShortcutIconWithTheme() throws Exception {
         setThemeEnabled(true);
         TaplTestsLauncher3.initialize(this);

@@ -59,6 +59,7 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Tafuta programu"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Inapakia programu..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Haikupata programu zozote zinazolingana na \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Tafuta programu zaidi"</string>
     <string name="label_application" msgid="8531721983832654978">"Programu"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Programu zote"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Arifa"</string>
@@ -71,7 +72,7 @@
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Orodha ya programu za binafsi"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Orodha ya programu za kazini"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Ondoa"</string>
-    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Ondoa"</string>
+    <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Sakinua"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Maelezo ya programu"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Sakinisha"</string>
     <string name="dismiss_prediction_label" msgid="3357562989568808658">"Isipendekeze programu"</string>
@@ -113,7 +114,6 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Ili kuonyesha Vitone vya Arifa, washa kipengele cha arifa za programu katika <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Badilisha mipangilio"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Onyesha vitone vya arifa"</string>
-    <string name="developer_options_title" msgid="700788437593726194">"Chaguo za Wasanidi Programu"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Weka aikoni za programu kwenye skrini ya kwanza"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Kwa ajili ya programu mpya"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Yasiyojulikana"</string>
@@ -124,10 +124,14 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Inasakinisha <xliff:g id="NAME">%1$s</xliff:g>, imekamilika <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> inapakuliwa, <xliff:g id="PROGRESS">%2$s</xliff:g> imekamilika"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> inasubiri kusakinisha"</string>
-    <string name="dialog_update_title" msgid="114234265740994042">"Unahitaji kusasisha programu"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"Programu ya aikoni hii haijasasishwa. Unaweza kusasisha mwenyewe ili uruhusu upya njia hii ya mkato au uondoe aikoni."</string>
-    <string name="dialog_update" msgid="2178028071796141234">"Sasisha"</string>
-    <string name="dialog_remove" msgid="6510806469849709407">"Ondoa"</string>
+    <!-- no translation found for dialog_update_title (114234265740994042) -->
+    <skip />
+    <!-- no translation found for dialog_update_message (4176784553982226114) -->
+    <skip />
+    <!-- no translation found for dialog_update (2178028071796141234) -->
+    <skip />
+    <!-- no translation found for dialog_remove (6510806469849709407) -->
+    <skip />
     <string name="widgets_list" msgid="796804551140113767">"Orodha ya wijeti"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Orodha ya wijeti imefungwa"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Weka kwenye skrini ya kwanza"</string>
@@ -136,7 +140,7 @@
     <string name="item_removed" msgid="851119963877842327">"Kipengee kimeondolewa"</string>
     <string name="undo" msgid="4151576204245173321">"Tendua"</string>
     <string name="action_move" msgid="4339390619886385032">"Hamisha kipengee"</string>
-    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"Hamishia safu mlalo <xliff:g id="NUMBER_0">%1$s</xliff:g> safu wima <xliff:g id="NUMBER_1">%2$s</xliff:g> kwenye <xliff:g id="STRING">%3$s</xliff:g>"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"Hamishia safu mlalo <xliff:g id="NUMBER_0">%1$s</xliff:g> safu wima <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Hamishia nafasi ya <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Hamishia nafasi inayopendwa ya <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="item_moved" msgid="4606538322571412879">"Kipengee kimesogezwa"</string>
@@ -167,10 +171,8 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Programu za kazini zimezimwa. Programu zako za kazini haziwezi kukutumia arifa, kutumia betri yako au kufikia maelezo ya mahali ulipo"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Programu za kazini zina beji na msimamizi wako wa TEHAMA anaziona"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Nimeelewa"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Simamisha programu za kazini"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Zima programu za kazini"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Washa programu za kazini"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Kichujio"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"Tafuta kwenye simu yako"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Tafuta kwenye kompyuta kibao yako"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Hitilafu: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

@@ -18,6 +18,8 @@ package com.android.quickstep.util;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+import static android.view.WindowManager.ScreenshotSource.SCREENSHOT_OVERVIEW;
+import static android.view.WindowManager.TAKE_SCREENSHOT_PROVIDED_IMAGE;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
@@ -47,7 +49,7 @@ import androidx.annotation.WorkerThread;
 import androidx.core.content.FileProvider;
 
 import com.android.internal.app.ChooserActivity;
-import com.android.internal.util.ScreenshotHelper;
+import com.android.internal.util.ScreenshotRequest;
 import com.android.launcher3.BuildConfig;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
@@ -74,11 +76,17 @@ public class ImageActionUtils {
      * Saves screenshot to location determine by SystemUiProxy
      */
     public static void saveScreenshot(SystemUiProxy systemUiProxy, Bitmap screenshot,
-            Rect screenshotBounds,
-            Insets visibleInsets, Task.TaskKey task) {
-        systemUiProxy.handleImageBundleAsScreenshot(
-                ScreenshotHelper.HardwareBitmapBundler.hardwareBitmapToBundle(screenshot),
-                screenshotBounds, visibleInsets, task);
+            Rect screenshotBounds, Insets visibleInsets, Task.TaskKey task) {
+        ScreenshotRequest request =
+                new ScreenshotRequest.Builder(TAKE_SCREENSHOT_PROVIDED_IMAGE, SCREENSHOT_OVERVIEW)
+                .setTopComponent(task.sourceComponent)
+                .setTaskId(task.id)
+                .setUserId(task.userId)
+                .setBitmap(screenshot)
+                .setBoundsOnScreen(screenshotBounds)
+                .setInsets(visibleInsets)
+                .build();
+        systemUiProxy.takeScreenshot(request);
     }
 
     /**

@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.interaction;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL;
+
 import android.annotation.TargetApi;
 import android.graphics.PointF;
 import android.os.Build;
@@ -33,12 +35,16 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     @Override
     public int getIntroductionTitle() {
-        return R.string.home_gesture_intro_title;
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? R.string.home_gesture_tutorial_title
+                : R.string.home_gesture_intro_title;
     }
 
     @Override
     public int getIntroductionSubtitle() {
-        return R.string.home_gesture_intro_subtitle;
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? R.string.home_gesture_tutorial_subtitle
+                : R.string.home_gesture_intro_subtitle;
     }
 
     @Override
@@ -55,9 +61,23 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     @Override
     protected int getMockAppTaskLayoutResId() {
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? R.layout.swipe_up_gesture_tutorial_shape
+                : mTutorialFragment.isLargeScreen()
+                    ? R.layout.gesture_tutorial_tablet_mock_webpage
+                    : R.layout.gesture_tutorial_mock_webpage;
+    }
+
+    @Override
+    protected int getGestureLottieAnimationId() {
         return mTutorialFragment.isLargeScreen()
-                ? R.layout.gesture_tutorial_tablet_mock_webpage
-                : R.layout.gesture_tutorial_mock_webpage;
+                ? R.raw.home_gesture_tutorial_tablet_animation
+                : R.raw.home_gesture_tutorial_animation;
+    }
+
+    @Override
+    protected int getSwipeActionColorResId() {
+        return R.color.gesture_home_tutorial_swipe_up_rect;
     }
 
     @Override
@@ -72,6 +92,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
                     case BACK_COMPLETED_FROM_RIGHT:
                     case BACK_CANCELLED_FROM_LEFT:
                     case BACK_CANCELLED_FROM_RIGHT:
+                    case BACK_NOT_STARTED_TOO_FAR_FROM_EDGE:
                         showFeedback(R.string.home_gesture_feedback_swipe_too_far_from_edge);
                         break;
                 }
@@ -79,7 +100,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
             case HOME_NAVIGATION_COMPLETE:
                 if (result == BackGestureResult.BACK_COMPLETED_FROM_LEFT
                         || result == BackGestureResult.BACK_COMPLETED_FROM_RIGHT) {
-                    mTutorialFragment.closeTutorial();
+                    mTutorialFragment.close();
                 }
                 break;
         }
@@ -118,7 +139,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
                 break;
             case HOME_NAVIGATION_COMPLETE:
                 if (result == NavBarGestureResult.HOME_GESTURE_COMPLETED) {
-                    mTutorialFragment.closeTutorial();
+                    mTutorialFragment.close();
                 }
                 break;
         }

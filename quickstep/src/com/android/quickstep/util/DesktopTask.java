@@ -16,6 +16,8 @@
 
 package com.android.quickstep.util;
 
+import androidx.annotation.NonNull;
+
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 
@@ -27,9 +29,10 @@ import java.util.ArrayList;
  */
 public class DesktopTask extends GroupTask {
 
-    public ArrayList<Task> tasks;
+    @NonNull
+    public final ArrayList<Task> tasks;
 
-    public DesktopTask(ArrayList<Task> tasks) {
+    public DesktopTask(@NonNull ArrayList<Task> tasks) {
         super(tasks.get(0), null, null, TaskView.Type.DESKTOP);
         this.tasks = tasks;
     }

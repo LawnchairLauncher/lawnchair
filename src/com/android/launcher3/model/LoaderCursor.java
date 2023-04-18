@@ -37,7 +37,6 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
@@ -72,24 +71,32 @@ public class LoaderCursor extends CursorWrapper {
     private final IconCache mIconCache;
     private final InvariantDeviceProfile mIDP;
 
-    private final IntArray itemsToRemove = new IntArray();
-    private final IntArray restoredRows = new IntArray();
-    private final IntSparseArrayMap<GridOccupancy> occupied = new IntSparseArrayMap<>();
+    private final IntArray mItemsToRemove = new IntArray();
+    private final IntArray mRestoredRows = new IntArray();
+    private final IntSparseArrayMap<GridOccupancy> mOccupied = new IntSparseArrayMap<>();
 
-    private final int iconPackageIndex;
-    private final int iconResourceIndex;
-    private final int iconIndex;
-    public final int titleIndex;
+    private final int mIconPackageIndex;
+    private final int mIconResourceIndex;
+    private final int mIconIndex;
+    public final int mTitleIndex;
 
-    private final int idIndex;
-    private final int containerIndex;
-    private final int itemTypeIndex;
-    private final int screenIndex;
-    private final int cellXIndex;
-    private final int cellYIndex;
-    private final int profileIdIndex;
-    private final int restoredIndex;
-    private final int intentIndex;
+    private final int mIdIndex;
+    private final int mContainerIndex;
+    private final int mItemTypeIndex;
+    private final int mScreenIndex;
+    private final int mCellXIndex;
+    private final int mCellYIndex;
+    private final int mProfileIdIndex;
+    private final int mRestoredIndex;
+    private final int mIntentIndex;
+
+    private final int mAppWidgetIdIndex;
+    private final int mAppWidgetProviderIndex;
+    private final int mSpanXIndex;
+    private final int mSpanYIndex;
+    private final int mRankIndex;
+    private final int mOptionsIndex;
+    private final int mAppWidgetSourceIndex;
 
     @Nullable
     private LauncherActivityInfo mActivityInfo;
@@ -114,20 +121,28 @@ public class LoaderCursor extends CursorWrapper {
         mPM = mContext.getPackageManager();
 
         // Init column indices
-        iconIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.ICON);
-        iconPackageIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_PACKAGE);
-        iconResourceIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_RESOURCE);
-        titleIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
+        mIconIndex = getColumnIndexOrThrow(Favorites.ICON);
+        mIconPackageIndex = getColumnIndexOrThrow(Favorites.ICON_PACKAGE);
+        mIconResourceIndex = getColumnIndexOrThrow(Favorites.ICON_RESOURCE);
+        mTitleIndex = getColumnIndexOrThrow(Favorites.TITLE);
 
-        idIndex = getColumnIndexOrThrow(LauncherSettings.Favorites._ID);
-        containerIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.CONTAINER);
-        itemTypeIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.ITEM_TYPE);
-        screenIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.SCREEN);
-        cellXIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.CELLX);
-        cellYIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.CELLY);
-        profileIdIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.PROFILE_ID);
-        restoredIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.RESTORED);
-        intentIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
+        mIdIndex = getColumnIndexOrThrow(Favorites._ID);
+        mContainerIndex = getColumnIndexOrThrow(Favorites.CONTAINER);
+        mItemTypeIndex = getColumnIndexOrThrow(Favorites.ITEM_TYPE);
+        mScreenIndex = getColumnIndexOrThrow(Favorites.SCREEN);
+        mCellXIndex = getColumnIndexOrThrow(Favorites.CELLX);
+        mCellYIndex = getColumnIndexOrThrow(Favorites.CELLY);
+        mProfileIdIndex = getColumnIndexOrThrow(Favorites.PROFILE_ID);
+        mRestoredIndex = getColumnIndexOrThrow(Favorites.RESTORED);
+        mIntentIndex = getColumnIndexOrThrow(Favorites.INTENT);
+
+        mAppWidgetIdIndex = getColumnIndexOrThrow(Favorites.APPWIDGET_ID);
+        mAppWidgetProviderIndex = getColumnIndexOrThrow(Favorites.APPWIDGET_PROVIDER);
+        mSpanXIndex = getColumnIndexOrThrow(Favorites.SPANX);
+        mSpanYIndex = getColumnIndexOrThrow(Favorites.SPANY);
+        mRankIndex = getColumnIndexOrThrow(Favorites.RANK);
+        mOptionsIndex = getColumnIndexOrThrow(Favorites.OPTIONS);
+        mAppWidgetSourceIndex = getColumnIndexOrThrow(Favorites.APPWIDGET_SOURCE);
     }
 
     @Override
@@ -137,18 +152,18 @@ public class LoaderCursor extends CursorWrapper {
             mActivityInfo = null;
 
             // Load common properties.
-            itemType = getInt(itemTypeIndex);
-            container = getInt(containerIndex);
-            id = getInt(idIndex);
-            serialNumber = getInt(profileIdIndex);
+            itemType = getInt(mItemTypeIndex);
+            container = getInt(mContainerIndex);
+            id = getInt(mIdIndex);
+            serialNumber = getInt(mProfileIdIndex);
             user = allUsers.get(serialNumber);
-            restoreFlag = getInt(restoredIndex);
+            restoreFlag = getInt(mRestoredIndex);
         }
         return result;
     }
 
     public Intent parseIntent() {
-        String intentDescription = getString(intentIndex);
+        String intentDescription = getString(mIntentIndex);
         try {
             return TextUtils.isEmpty(intentDescription) ?
                     null : Intent.parseUri(intentDescription, 0);
@@ -185,14 +200,14 @@ public class LoaderCursor extends CursorWrapper {
 
     public IconRequestInfo<WorkspaceItemInfo> createIconRequestInfo(
             WorkspaceItemInfo wai, boolean useLowResIcon) {
-        String packageName = itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
-                ? getString(iconPackageIndex) : null;
-        String resourceName = itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
-                ? getString(iconResourceIndex) : null;
-        byte[] iconBlob = itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
+        String packageName = itemType == Favorites.ITEM_TYPE_SHORTCUT
+                ? getString(mIconPackageIndex) : null;
+        String resourceName = itemType == Favorites.ITEM_TYPE_SHORTCUT
+                ? getString(mIconResourceIndex) : null;
+        byte[] iconBlob = itemType == Favorites.ITEM_TYPE_SHORTCUT
                 || itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT
                 || restoreFlag != 0
-                ? getBlob(iconIndex) : null;
+                ? getBlob(mIconIndex) : null;
 
         return new IconRequestInfo<>(
                 wai, mActivityInfo, packageName, resourceName, iconBlob, useLowResIcon);
@@ -202,7 +217,70 @@ public class LoaderCursor extends CursorWrapper {
      * Returns the title or empty string
      */
     private String getTitle() {
-        return Utilities.trim(getString(titleIndex));
+        return Utilities.trim(getString(mTitleIndex));
+    }
+
+    /**
+     * When loading an app widget for the workspace, returns it's app widget id
+     */
+    public int getAppWidgetId() {
+        return getInt(mAppWidgetIdIndex);
+    }
+
+    /**
+     * When loading an app widget for the workspace, returns the widget provider
+     */
+    public String getAppWidgetProvider() {
+        return getString(mAppWidgetProviderIndex);
+    }
+
+    /**
+     * Returns the x position for the item in the cell layout's grid
+     */
+    public int getSpanX() {
+        return getInt(mSpanXIndex);
+    }
+
+    /**
+     * Returns the y position for the item in the cell layout's grid
+     */
+    public int getSpanY() {
+        return getInt(mSpanYIndex);
+    }
+
+    /**
+     * Returns the rank for the item
+     */
+    public int getRank() {
+        return getInt(mRankIndex);
+    }
+
+    /**
+     * Returns the options for the item
+     */
+    public int getOptions() {
+        return getInt(mOptionsIndex);
+    }
+
+    /**
+     * When loading an app widget for the workspace, returns it's app widget source
+     */
+    public int getAppWidgetSource() {
+        return getInt(mAppWidgetSourceIndex);
+    }
+
+    /**
+     * Returns the screen that the item is on
+     */
+    public int getScreen() {
+        return getInt(mScreenIndex);
+    }
+
+    /**
+     * Returns the UX container that the item is in
+     */
+    public int getContainer() {
+        return getInt(mContainerIndex);
     }
 
     /**
@@ -232,7 +310,7 @@ public class LoaderCursor extends CursorWrapper {
             throw new InvalidParameterException("Invalid restoreType " + restoreFlag);
         }
 
-        info.contentDescription = mPM.getUserBadgedLabel(info.title, info.user);
+        info.contentDescription = mIconCache.getUserBadgedLabel(info.title, info.user);
         info.itemType = itemType;
         info.status = restoreFlag;
         return info;
@@ -303,7 +381,7 @@ public class LoaderCursor extends CursorWrapper {
             }
         }
 
-        info.contentDescription = mPM.getUserBadgedLabel(info.title, info.user);
+        info.contentDescription = mIconCache.getUserBadgedLabel(info.title, info.user);
         return info;
     }
 
@@ -320,7 +398,7 @@ public class LoaderCursor extends CursorWrapper {
      */
     public void markDeleted(String reason) {
         FileLog.e(TAG, reason);
-        itemsToRemove.add(id);
+        mItemsToRemove.add(id);
     }
 
     /**
@@ -328,10 +406,10 @@ public class LoaderCursor extends CursorWrapper {
      * @return true is any item was removed.
      */
     public boolean commitDeleted() {
-        if (itemsToRemove.size() > 0) {
+        if (mItemsToRemove.size() > 0) {
             // Remove dead items
             mContext.getContentResolver().delete(mContentUri, Utilities.createDbSelectionQuery(
-                    LauncherSettings.Favorites._ID, itemsToRemove), null);
+                    Favorites._ID, mItemsToRemove), null);
             return true;
         }
         return false;
@@ -342,7 +420,7 @@ public class LoaderCursor extends CursorWrapper {
      */
     public void markRestored() {
         if (restoreFlag != 0) {
-            restoredRows.add(id);
+            mRestoredRows.add(id);
             restoreFlag = 0;
         }
     }
@@ -352,13 +430,13 @@ public class LoaderCursor extends CursorWrapper {
     }
 
     public void commitRestoredItems() {
-        if (restoredRows.size() > 0) {
+        if (mRestoredRows.size() > 0) {
             // Update restored items that no longer require special handling
             ContentValues values = new ContentValues();
-            values.put(LauncherSettings.Favorites.RESTORED, 0);
+            values.put(Favorites.RESTORED, 0);
             mContext.getContentResolver().update(mContentUri, values,
                     Utilities.createDbSelectionQuery(
-                            LauncherSettings.Favorites._ID, restoredRows), null);
+                            Favorites._ID, mRestoredRows), null);
         }
     }
 
@@ -366,8 +444,7 @@ public class LoaderCursor extends CursorWrapper {
      * Returns true is the item is on workspace or hotseat
      */
     public boolean isOnWorkspaceOrHotseat() {
-        return container == LauncherSettings.Favorites.CONTAINER_DESKTOP ||
-                container == LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+        return container == Favorites.CONTAINER_DESKTOP || container == Favorites.CONTAINER_HOTSEAT;
     }
 
     /**
@@ -381,9 +458,9 @@ public class LoaderCursor extends CursorWrapper {
     public void applyCommonProperties(ItemInfo info) {
         info.id = id;
         info.container = container;
-        info.screenId = getInt(screenIndex);
-        info.cellX = getInt(cellXIndex);
-        info.cellY = getInt(cellYIndex);
+        info.screenId = getInt(mScreenIndex);
+        info.cellX = getInt(mCellXIndex);
+        info.cellY = getInt(mCellYIndex);
     }
 
     public void checkAndAddItem(ItemInfo info, BgDataModel dataModel) {
@@ -396,7 +473,7 @@ public class LoaderCursor extends CursorWrapper {
      */
     public void checkAndAddItem(
             ItemInfo info, BgDataModel dataModel, LoaderMemoryLogger logger) {
-        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+        if (info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             // Ensure that it is a valid intent. An exception here will
             // cause the item loading to get skipped
             ShortcutKey.fromItemInfo(info);
@@ -413,9 +490,9 @@ public class LoaderCursor extends CursorWrapper {
      */
     protected boolean checkItemPlacement(ItemInfo item) {
         int containerIndex = item.screenId;
-        if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+        if (item.container == Favorites.CONTAINER_HOTSEAT) {
             final GridOccupancy hotseatOccupancy =
-                    occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT);
+                    mOccupied.get(Favorites.CONTAINER_HOTSEAT);
 
             if (item.screenId >= mIDP.numDatabaseHotseatIcons) {
                 Log.e(TAG, "Error loading shortcut " + item
@@ -438,19 +515,18 @@ public class LoaderCursor extends CursorWrapper {
             } else {
                 final GridOccupancy occupancy = new GridOccupancy(mIDP.numDatabaseHotseatIcons, 1);
                 occupancy.cells[item.screenId][0] = true;
-                occupied.put(LauncherSettings.Favorites.CONTAINER_HOTSEAT, occupancy);
+                mOccupied.put(Favorites.CONTAINER_HOTSEAT, occupancy);
                 return true;
             }
-        } else if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+        } else if (item.container != Favorites.CONTAINER_DESKTOP) {
             // Skip further checking if it is not the hotseat or workspace container
             return true;
         }
 
         final int countX = mIDP.numColumns;
         final int countY = mIDP.numRows;
-        if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                item.cellX < 0 || item.cellY < 0 ||
-                item.cellX + item.spanX > countX || item.cellY + item.spanY > countY) {
+        if (item.container == Favorites.CONTAINER_DESKTOP && item.cellX < 0 || item.cellY < 0
+                || item.cellX + item.spanX > countX || item.cellY + item.spanY > countY) {
             Log.e(TAG, "Error loading shortcut " + item
                     + " into cell (" + containerIndex + "-" + item.screenId + ":"
                     + item.cellX + "," + item.cellY
@@ -458,7 +534,7 @@ public class LoaderCursor extends CursorWrapper {
             return false;
         }
 
-        if (!occupied.containsKey(item.screenId)) {
+        if (!mOccupied.containsKey(item.screenId)) {
             GridOccupancy screen = new GridOccupancy(countX + 1, countY + 1);
             if (item.screenId == Workspace.FIRST_SCREEN_ID && FeatureFlags.QSB_ON_FIRST_SCREEN) {
                 // Mark the first X columns (X is width of the search container) in the first row as
@@ -468,9 +544,9 @@ public class LoaderCursor extends CursorWrapper {
                 int spanY = 1;
                 screen.markCells(0, 0, spanX, spanY, true);
             }
-            occupied.put(item.screenId, screen);
+            mOccupied.put(item.screenId, screen);
         }
-        final GridOccupancy occupancy = occupied.get(item.screenId);
+        final GridOccupancy occupancy = mOccupied.get(item.screenId);
 
         // Check if any workspace icons overlap with each other
         if (occupancy.isRegionVacant(item.cellX, item.cellY, item.spanX, item.spanY)) {

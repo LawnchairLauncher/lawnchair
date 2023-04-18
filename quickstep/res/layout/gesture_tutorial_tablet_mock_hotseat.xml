@@ -22,101 +22,81 @@
     android:paddingStart="@dimen/gesture_tutorial_hotseat_padding_start_end"
     android:paddingEnd="@dimen/gesture_tutorial_hotseat_padding_start_end">
 
-    <androidx.cardview.widget.CardView
+    <View
         android:id="@+id/hotseat_search_bar"
         android:layout_width="0dp"
         android:layout_height="@dimen/gesture_tutorial_hotseat_search_height"
+        android:background="@drawable/hotseat_search_bar"
+        android:clipToOutline="true"
 
-        app:cardElevation="0dp"
-        app:cardCornerRadius="@dimen/gesture_tutorial_hotseat_search_corner_radius"
-        app:cardBackgroundColor="@color/mock_search_bar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <androidx.cardview.widget.CardView
+    <View
         android:id="@+id/hotseat_icon_1"
         android:layout_width="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_height="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_marginTop="@dimen/gesture_tutorial_hotseat_icon_search_margin"
+        android:background="@drawable/hotseat_icon"
+        android:clipToOutline="true"
 
-        app:cardElevation="0dp"
-        app:cardCornerRadius="@dimen/gesture_tutorial_hotseat_icon_corner_radius"
-        app:cardBackgroundColor="@color/mock_app_icon_1"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintTop_toBottomOf="@id/hotseat_search_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/hotseat_icon_2"/>
 
-    <androidx.cardview.widget.CardView
+    <View
         android:id="@+id/hotseat_icon_2"
         android:layout_width="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_height="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_marginTop="@dimen/gesture_tutorial_hotseat_icon_search_margin"
+        android:background="@drawable/hotseat_icon"
+        android:clipToOutline="true"
 
-        app:cardElevation="0dp"
-        app:cardCornerRadius="@dimen/gesture_tutorial_hotseat_icon_corner_radius"
-        app:cardBackgroundColor="@color/mock_app_icon_2"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toBottomOf="@id/hotseat_search_bar"
         app:layout_constraintStart_toEndOf="@id/hotseat_icon_1"
         app:layout_constraintEnd_toStartOf="@id/hotseat_icon_3"/>
 
-    <androidx.cardview.widget.CardView
+    <View
         android:id="@+id/hotseat_icon_3"
         android:layout_width="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_height="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_marginTop="@dimen/gesture_tutorial_hotseat_icon_search_margin"
+        android:background="@drawable/hotseat_icon"
+        android:clipToOutline="true"
 
-        app:cardElevation="0dp"
-        app:cardCornerRadius="@dimen/gesture_tutorial_hotseat_icon_corner_radius"
-        app:cardBackgroundColor="@color/mock_app_icon_3"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toBottomOf="@id/hotseat_search_bar"
         app:layout_constraintStart_toEndOf="@id/hotseat_icon_2"
         app:layout_constraintEnd_toStartOf="@id/hotseat_icon_4"/>
 
-    <androidx.cardview.widget.CardView
+    <View
         android:id="@+id/hotseat_icon_4"
         android:layout_width="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_height="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_marginTop="@dimen/gesture_tutorial_hotseat_icon_search_margin"
+        android:background="@drawable/hotseat_icon"
+        android:clipToOutline="true"
 
-        app:cardElevation="0dp"
-        app:cardCornerRadius="@dimen/gesture_tutorial_hotseat_icon_corner_radius"
-        app:cardBackgroundColor="@color/mock_app_icon_1"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toBottomOf="@id/hotseat_search_bar"
         app:layout_constraintStart_toEndOf="@id/hotseat_icon_3"
         app:layout_constraintEnd_toStartOf="@id/hotseat_icon_5"/>
 
-    <androidx.cardview.widget.CardView
+    <View
         android:id="@+id/hotseat_icon_5"
         android:layout_width="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_height="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_marginTop="@dimen/gesture_tutorial_hotseat_icon_search_margin"
+        android:background="@drawable/hotseat_icon"
+        android:clipToOutline="true"
 
-        app:cardElevation="0dp"
-        app:cardCornerRadius="@dimen/gesture_tutorial_hotseat_icon_corner_radius"
-        app:cardBackgroundColor="@color/mock_app_icon_4"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toBottomOf="@id/hotseat_search_bar"
         app:layout_constraintStart_toEndOf="@id/hotseat_icon_4"
-        app:layout_constraintEnd_toStartOf="@id/hotseat_icon_6"/>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/hotseat_icon_6"
-        android:layout_width="@dimen/gesture_tutorial_hotseat_icon_size"
-        android:layout_height="@dimen/gesture_tutorial_hotseat_icon_size"
-        android:layout_marginTop="@dimen/gesture_tutorial_hotseat_icon_search_margin"
-
-        app:cardElevation="0dp"
-        app:cardCornerRadius="@dimen/gesture_tutorial_hotseat_icon_corner_radius"
-        app:cardBackgroundColor="@color/mock_app_icon_2"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintTop_toBottomOf="@id/hotseat_search_bar"
-        app:layout_constraintStart_toEndOf="@id/hotseat_icon_5"
         app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

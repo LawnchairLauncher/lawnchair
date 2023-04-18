@@ -23,6 +23,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.app.ActivityOptions;
+import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -44,7 +45,9 @@ import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
+import android.window.SplashScreen;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.BubbleTextView;
@@ -54,6 +57,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
+import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.folder.FolderIcon;
@@ -70,6 +74,7 @@ import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RunnableList;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.ViewCache;
 
 import java.util.List;
@@ -128,6 +133,12 @@ public interface ActivityContext {
             return LayoutInflater.from(context).cloneInContext(context);
         }
         return null;
+    }
+
+    /** Called when the first app in split screen has been selected */
+    default void startSplitSelection(
+            SplitConfigurationOptions.SplitSelectSource splitSelectSource) {
+        // Overridden, intentionally empty
     }
 
     /**
@@ -189,9 +200,9 @@ public interface ActivityContext {
     }
 
     /**
-     * Returns {@code true} if popups should use color extraction.
+     * Returns {@code true} if popups can use a range of color shades instead of a singular color.
      */
-    default boolean shouldUseColorExtractionForPopup() {
+    default boolean canUseMultipleShadesForPopup() {
         return true;
     }
 
@@ -270,6 +281,29 @@ public interface ActivityContext {
         }
     }
 
+
+    /**
+     * Sends a pending intent animating from a view.
+     *
+     * @param v View to animate.
+     * @param intent The pending intent being launched.
+     * @param item Item associated with the view.
+     * @return {@code true} if the intent is sent successfully.
+     */
+    default boolean sendPendingIntentWithAnimation(
+            @NonNull View v, PendingIntent intent, @Nullable ItemInfo item) {
+        Bundle optsBundle = getActivityLaunchOptions(v, item).toBundle();
+        try {
+            intent.send(null, 0, null, null, null, null, optsBundle);
+            return true;
+        } catch (PendingIntent.CanceledException e) {
+            Toast.makeText(v.getContext(),
+                    v.getContext().getResources().getText(R.string.shortcut_not_available),
+                    Toast.LENGTH_SHORT).show();
+        }
+        return false;
+    }
+
     /**
      * Safely starts an activity.
      *
@@ -280,14 +314,22 @@ public interface ActivityContext {
      */
     default boolean startActivitySafely(
             View v, Intent intent, @Nullable ItemInfo item) {
-
+        Preconditions.assertUIThread();
         Context context = (Context) this;
         if (isAppBlockedForSafeMode() && !PackageManagerHelper.isSystemApp(context, intent)) {
             Toast.makeText(context, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        Bundle optsBundle = (v != null) ? getActivityLaunchOptions(v, item).toBundle() : null;
+        Bundle optsBundle = null;
+        if (v != null) {
+            optsBundle = getActivityLaunchOptions(v, item).toBundle();
+        } else if (android.os.Build.VERSION.SDK_INT >= 33
+                && item != null
+                && item.animationType == LauncherSettings.Animation.DEFAULT_NO_ICON) {
+            optsBundle = ActivityOptions.makeBasic()
+                    .setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR).toBundle();
+        }
         UserHandle user = item == null ? null : item.user;
 
         // Prepare intent
@@ -425,6 +467,10 @@ public interface ActivityContext {
      */
     default boolean onErrorStartingShortcut(Intent intent, ItemInfo info) {
         return false;
+    }
+
+    default CellPosMapper getCellPosMapper() {
+        return CellPosMapper.DEFAULT;
     }
 
     /**

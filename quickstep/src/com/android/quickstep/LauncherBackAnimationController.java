@@ -36,6 +36,7 @@ import android.view.SurfaceControl;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.window.BackEvent;
+import android.window.BackMotionEvent;
 import android.window.BackProgressAnimator;
 import android.window.IOnBackInvokedCallback;
 
@@ -134,14 +135,14 @@ public class LauncherBackAnimationController {
             }
 
             @Override
-            public void onBackProgressed(BackEvent backEvent) {
+            public void onBackProgressed(BackMotionEvent backEvent) {
                 handler.post(() -> {
                     mProgressAnimator.onBackProgressed(backEvent);
                 });
             }
 
             @Override
-            public void onBackStarted(BackEvent backEvent) {
+            public void onBackStarted(BackMotionEvent backEvent) {
                 handler.post(() -> {
                     startBack(backEvent);
                     mProgressAnimator.onBackStarted(backEvent, event -> {
@@ -185,7 +186,7 @@ public class LauncherBackAnimationController {
         mBackCallback = null;
     }
 
-    private void startBack(BackEvent backEvent) {
+    private void startBack(BackMotionEvent backEvent) {
         mBackInProgress = true;
         RemoteAnimationTarget appTarget = backEvent.getDepartingAnimationTarget();
 
@@ -289,7 +290,8 @@ public class LauncherBackAnimationController {
                     new RemoteAnimationTarget[0],
                     false /* fromUnlock */,
                     mCurrentRect,
-                    cornerRadius);
+                    cornerRadius,
+                    mBackInProgress /* fromPredictiveBack */);
         startTransitionAnimations(pair.first, pair.second);
         mLauncher.clearForceInvisibleFlag(INVISIBLE_ALL);
     }

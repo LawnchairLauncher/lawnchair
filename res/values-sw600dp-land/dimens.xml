@@ -30,6 +30,4 @@
     <dimen name="dynamic_grid_edge_margin">11.33dp</dimen>
     <dimen name="cell_layout_padding">11.33dp</dimen>
 
-<!-- AllApps -->
-    <dimen name="all_apps_bottom_sheet_horizontal_padding">52dp</dimen>
 </resources>

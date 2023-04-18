@@ -558,14 +558,11 @@ public class StatsLogManager implements ResourceBasedOverride {
                 + "result page etc.")
         LAUNCHER_ALLAPPS_SCROLLED(985),
 
-        @UiEvent(doc = "User scrolled up on one of the all apps surfaces such as A-Z list, search "
-                + "result page etc.")
-        LAUNCHER_ALLAPPS_SCROLLED_UP(1229),
+        @UiEvent(doc = "User scrolled up on the all apps personal A-Z list.")
+        LAUNCHER_ALLAPPS_PERSONAL_SCROLLED_UP(1287),
 
-        @UiEvent(doc =
-                "User scrolled down on one of the all apps surfaces such as A-Z list, search "
-                        + "result page etc.")
-        LAUNCHER_ALLAPPS_SCROLLED_DOWN(1230),
+        @UiEvent(doc = "User scrolled down on the all apps personal A-Z list.")
+        LAUNCHER_ALLAPPS_PERSONAL_SCROLLED_DOWN(1288),
 
         @UiEvent(doc = "User scrolled on one of the all apps surfaces such as A-Z list, search "
                 + "result page etc and we don't know the direction since user came back to "
@@ -626,11 +623,25 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User has invoked split to left half with a keyboard shortcut.")
         LAUNCHER_KEYBOARD_SHORTCUT_SPLIT_LEFT_TOP(1233),
 
-        @UiEvent(doc = "User has collapsed the work FAB button by swiping down")
+        @UiEvent(doc = "User has collapsed the work FAB button by scrolling down in the all apps"
+                + " work A-Z list.")
         LAUNCHER_WORK_FAB_BUTTON_COLLAPSE(1276),
 
-        @UiEvent(doc = "User has collapsed the work FAB button by swiping up")
+        @UiEvent(doc = "User has collapsed the work FAB button by scrolling up in the all apps"
+                + " work A-Z list.")
         LAUNCHER_WORK_FAB_BUTTON_EXTEND(1277),
+
+        @UiEvent(doc = "User scrolled down on the search result page.")
+        LAUNCHER_ALLAPPS_SEARCH_SCROLLED_DOWN(1285),
+
+        @UiEvent(doc = "User scrolled up on the search result page.")
+        LAUNCHER_ALLAPPS_SEARCH_SCROLLED_UP(1286),
+
+        @UiEvent(doc = "User or automatic timeout has hidden transient taskbar.")
+        LAUNCHER_TRANSIENT_TASKBAR_HIDE(1330),
+
+        @UiEvent(doc = "User has swiped upwards from the gesture handle to show transient taskbar.")
+        LAUNCHER_TRANSIENT_TASKBAR_SHOW(1331),
         ;
 
         // ADD MORE

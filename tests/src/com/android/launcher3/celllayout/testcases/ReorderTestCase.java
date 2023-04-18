@@ -24,23 +24,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ReorderTestCase {
-    public CellLayoutBoard mStart;
+    public List<CellLayoutBoard> mStart;
     public Point moveMainTo;
-    public List<CellLayoutBoard> mEnd;
+    public List<List<CellLayoutBoard>> mEnd;
 
-    ReorderTestCase(CellLayoutBoard start, Point moveMainTo, CellLayoutBoard ... end) {
+    public ReorderTestCase(List<CellLayoutBoard> start, Point moveMainTo,
+            List<CellLayoutBoard>... end) {
         mStart = start;
         this.moveMainTo = moveMainTo;
         mEnd = Arrays.asList(end);
     }
 
-    ReorderTestCase(String start, Point moveMainTo, String ... end) {
-        mStart = CellLayoutBoard.boardFromString(start);
+    public ReorderTestCase(String start, Point moveMainTo, String ... end) {
+        mStart = CellLayoutBoard.boardListFromString(start);
         this.moveMainTo = moveMainTo;
         mEnd = Arrays
                 .asList(end)
                 .stream()
-                .map(CellLayoutBoard::boardFromString)
+                .map(CellLayoutBoard::boardListFromString)
                 .collect(Collectors.toList());
     }
 }

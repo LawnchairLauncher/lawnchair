@@ -128,37 +128,27 @@ public class RectFSpringAnim extends ReleaseCheck {
 
     @Tracking
     public final int mTracking;
+    protected final float mStiffnessX;
+    protected final float mStiffnessY;
+    protected final float mDampingX;
+    protected final float mDampingY;
+    protected final float mRectStiffness;
 
-    public RectFSpringAnim(RectF startRect, RectF targetRect, Context context,
-            @Nullable DeviceProfile deviceProfile) {
-        mStartRect = startRect;
-        mTargetRect = targetRect;
+    public RectFSpringAnim(SpringConfig config) {
+        mStartRect = config.startRect;
+        mTargetRect = config.targetRect;
         mCurrentCenterX = mStartRect.centerX();
 
-        ResourceProvider rp = DynamicResource.provider(context);
-        mMinVisChange = rp.getDimension(R.dimen.swipe_up_fling_min_visible_change);
-        mMaxVelocityPxPerS = (int) rp.getDimension(R.dimen.swipe_up_max_velocity);
+        mMinVisChange = config.minVisChange;
+        mMaxVelocityPxPerS = config.maxVelocityPxPerS;
         setCanRelease(true);
 
-        if (deviceProfile == null) {
-            mTracking = startRect.bottom < targetRect.bottom
-                    ? TRACKING_BOTTOM
-                    : TRACKING_TOP;
-        } else {
-            int heightPx = deviceProfile.heightPx;
-            Rect padding = deviceProfile.workspacePadding;
-
-            final float topThreshold = heightPx / 3f;
-            final float bottomThreshold = deviceProfile.heightPx - padding.bottom;
-
-            if (targetRect.bottom > bottomThreshold) {
-                mTracking = TRACKING_BOTTOM;
-            } else if (targetRect.top < topThreshold) {
-                mTracking = TRACKING_TOP;
-            } else {
-                mTracking = TRACKING_CENTER;
-            }
-        }
+        mTracking = config.tracking;
+        mStiffnessX = config.stiffnessX;
+        mStiffnessY = config.stiffnessY;
+        mDampingX = config.dampingX;
+        mDampingY = config.dampingY;
+        mRectStiffness = config.rectStiffness;
 
         mCurrentY = getTrackedYFromRect(mStartRect);
     }
@@ -240,14 +230,15 @@ public class RectFSpringAnim extends ReleaseCheck {
         float maxXValue = Math.max(startX, endX);
 
         mRectXAnim = new FlingSpringAnim(this, context, RECT_CENTER_X, startX, endX,
-                dampedXVelocityPxPerS, mMinVisChange, minXValue, maxXValue, onXEndListener);
+                dampedXVelocityPxPerS, mMinVisChange, minXValue, maxXValue, mDampingX, mStiffnessX,
+                onXEndListener);
 
         float startY = mCurrentY;
         float endY = getTrackedYFromRect(mTargetRect);
         float minYValue = Math.min(startY, endY);
         float maxYValue = Math.max(startY, endY);
         mRectYAnim = new FlingSpringAnim(this, context, RECT_Y, startY, endY, dampedYVelocityPxPerS,
-                mMinVisChange, minYValue, maxYValue, onYEndListener);
+                mMinVisChange, minYValue, maxYValue, mDampingY, mStiffnessY, onYEndListener);
 
         float minVisibleChange = Math.abs(1f / mStartRect.height());
         ResourceProvider rp = DynamicResource.provider(context);
@@ -368,4 +359,98 @@ public class RectFSpringAnim extends ReleaseCheck {
 
         default void onCancel() { }
     }
+
+    private abstract static class SpringConfig {
+        protected RectF startRect;
+        protected RectF targetRect;
+        protected @Tracking int tracking;
+        protected float stiffnessX;
+        protected float stiffnessY;
+        protected float dampingX;
+        protected float dampingY;
+        protected float rectStiffness;
+        protected float minVisChange;
+        protected int maxVelocityPxPerS;
+
+        private SpringConfig(Context context, RectF start, RectF target) {
+            startRect = start;
+            targetRect = target;
+
+            ResourceProvider rp = DynamicResource.provider(context);
+            minVisChange = rp.getDimension(R.dimen.swipe_up_fling_min_visible_change);
+            maxVelocityPxPerS = (int) rp.getDimension(R.dimen.swipe_up_max_velocity);
+        }
+    }
+
+    /**
+     * Standard spring configuration parameters.
+     */
+    public static class DefaultSpringConfig extends SpringConfig {
+
+        public DefaultSpringConfig(Context context, DeviceProfile deviceProfile,
+                RectF startRect, RectF targetRect) {
+            super(context, startRect, targetRect);
+
+            ResourceProvider rp = DynamicResource.provider(context);
+            tracking = getDefaultTracking(deviceProfile);
+            stiffnessX = rp.getFloat(R.dimen.swipe_up_rect_xy_stiffness);
+            stiffnessY = rp.getFloat(R.dimen.swipe_up_rect_xy_stiffness);
+            dampingX = rp.getFloat(R.dimen.swipe_up_rect_xy_damping_ratio);
+            dampingY = rp.getFloat(R.dimen.swipe_up_rect_xy_damping_ratio);
+
+            this.startRect = startRect;
+            this.targetRect = targetRect;
+
+            // Increase the stiffness for devices where we want the window size to transform
+            // quicker.
+            boolean shouldUseHigherStiffness = deviceProfile != null
+                    && (deviceProfile.isLandscape || deviceProfile.isTablet);
+            rectStiffness = shouldUseHigherStiffness
+                    ? rp.getFloat(R.dimen.swipe_up_rect_scale_higher_stiffness)
+                    : rp.getFloat(R.dimen.swipe_up_rect_scale_stiffness);
+        }
+
+        private @Tracking int getDefaultTracking(@Nullable DeviceProfile deviceProfile) {
+            @Tracking int tracking;
+            if (deviceProfile == null) {
+                tracking = startRect.bottom < targetRect.bottom
+                        ? TRACKING_BOTTOM
+                        : TRACKING_TOP;
+            } else {
+                int heightPx = deviceProfile.heightPx;
+                Rect padding = deviceProfile.workspacePadding;
+
+                final float topThreshold = heightPx / 3f;
+                final float bottomThreshold = deviceProfile.heightPx - padding.bottom;
+
+                if (targetRect.bottom > bottomThreshold) {
+                    tracking = TRACKING_BOTTOM;
+                } else if (targetRect.top < topThreshold) {
+                    tracking = TRACKING_TOP;
+                } else {
+                    tracking = TRACKING_CENTER;
+                }
+            }
+            return tracking;
+        }
+    }
+
+    /**
+     * Spring configuration parameters for Taskbar/Hotseat items on devices that have a taskbar.
+     */
+    public static class TaskbarHotseatSpringConfig extends SpringConfig {
+
+        public TaskbarHotseatSpringConfig(Context context, RectF start, RectF target) {
+            super(context, start, target);
+
+            ResourceProvider rp = DynamicResource.provider(context);
+            tracking = TRACKING_CENTER;
+            stiffnessX = rp.getFloat(R.dimen.taskbar_swipe_up_rect_x_stiffness);
+            stiffnessY = rp.getFloat(R.dimen.taskbar_swipe_up_rect_y_stiffness);
+            dampingX = rp.getFloat(R.dimen.taskbar_swipe_up_rect_x_damping);
+            dampingY = rp.getFloat(R.dimen.taskbar_swipe_up_rect_y_damping);
+            rectStiffness = rp.getFloat(R.dimen.taskbar_swipe_up_rect_scale_stiffness);
+        }
+    }
+
 }

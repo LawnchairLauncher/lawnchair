@@ -20,7 +20,7 @@
         android:layout_below="@id/collapse_handle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
+        android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
         android:clipToPadding="false" />
 
     <!-- SearchAndRecommendationsView without the tab layout as well -->
@@ -30,7 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/collapse_handle"
         android:paddingBottom="16dp"
-        android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
+        android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
+        android:clipToOutline="true"
         android:orientation="vertical">
 
         <TextView
@@ -60,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/widgets_recommendation_background"
+            android:background="@drawable/widgets_surface_background"
             android:paddingVertical="@dimen/recommended_widgets_table_vertical_padding"
             android:visibility="gone" />
     </com.android.launcher3.views.StickyHeaderLayout>

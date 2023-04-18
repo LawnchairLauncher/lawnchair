@@ -16,17 +16,10 @@
 
 package com.android.launcher3.graphics;
 
-import static android.content.Intent.ACTION_SCREEN_OFF;
-import static android.content.Intent.ACTION_USER_PRESENT;
-
 import static com.android.launcher3.config.FeatureFlags.KEYGUARD_ANIMATION;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.animation.ObjectAnimator;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -39,14 +32,15 @@ import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.util.FloatProperty;
 import android.view.View;
-import android.view.WindowInsets;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.testing.shared.ResourceUtils;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.util.DynamicResource;
+import com.android.launcher3.util.ScreenOnTracker;
+import com.android.launcher3.util.ScreenOnTracker.ScreenOnListener;
 import com.android.launcher3.util.Themes;
 import com.android.systemui.plugins.ResourceProvider;
 
@@ -85,17 +79,19 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
     /**
      * Receiver used to get a signal that the user unlocked their device.
      */
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+    private final ScreenOnListener mScreenOnListener = new ScreenOnListener() {
         @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            if (ACTION_SCREEN_OFF.equals(action)) {
+        public void onScreenOnChanged(boolean isOn) {
+            if (!isOn) {
                 mAnimateScrimOnNextDraw = true;
-            } else if (ACTION_USER_PRESENT.equals(action)) {
-                // ACTION_USER_PRESENT is sent after onStart/onResume. This covers the case where
-                // the user unlocked and the Launcher is not in the foreground.
-                mAnimateScrimOnNextDraw = false;
             }
+        }
+
+        @Override
+        public void onUserPresent() {
+            // ACTION_USER_PRESENT is sent after onStart/onResume. This covers the case where
+            // the user unlocked and the Launcher is not in the foreground.
+            mAnimateScrimOnNextDraw = false;
         }
     };
 
@@ -130,8 +126,14 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
         mMaskHeight = ResourceUtils.pxFromDp(ALPHA_MASK_BITMAP_DP,
                 view.getResources().getDisplayMetrics());
         mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
-        mBottomMask = mTopScrim == null ? null : createDitheredAlphaMask();
-        mHideSysUiScrim = mTopScrim == null;
+        if (mTopScrim != null) {
+            mTopScrim.setDither(true);
+            mBottomMask = createDitheredAlphaMask();
+            mHideSysUiScrim = false;
+        } else {
+            mBottomMask = null;
+            mHideSysUiScrim = true;
+        }
 
         mDrawWallpaperScrim = FeatureFlags.ENABLE_WALLPAPER_SCRIM.get()
                 && !Themes.getAttrBoolean(view.getContext(), R.attr.isMainColorDark)
@@ -188,36 +190,31 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
 
     /**
      * Determines whether to draw the top and/or bottom scrim based on new insets.
+     *
+     * In order for the bottom scrim to be drawn this 3 condition should be meet at the same time:
+     * the device is in 3 button navigation, the taskbar is not present and the Hotseat is
+     * horizontal
      */
     public void onInsetsChanged(Rect insets) {
+        DeviceProfile dp = mActivity.getDeviceProfile();
         mDrawTopScrim = mTopScrim != null && insets.top > 0;
         mDrawBottomScrim = mBottomMask != null
-                && !mActivity.getDeviceProfile().isVerticalBarLayout()
-                && hasBottomNavButtons();
-    }
-
-    private boolean hasBottomNavButtons() {
-        if (Utilities.ATLEAST_Q && mActivity.getRootView() != null
-                && mActivity.getRootView().getRootWindowInsets() != null) {
-            WindowInsets windowInsets = mActivity.getRootView().getRootWindowInsets();
-            return windowInsets.getTappableElementInsets().bottom > 0;
-        }
-        return true;
+                && !dp.isVerticalBarLayout()
+                && !dp.isGestureMode
+                && !dp.isTaskbarPresent;
     }
 
     @Override
     public void onViewAttachedToWindow(View view) {
         if (!KEYGUARD_ANIMATION.get() && mTopScrim != null) {
-            IntentFilter filter = new IntentFilter(ACTION_SCREEN_OFF);
-            filter.addAction(ACTION_USER_PRESENT); // When the device wakes up + keyguard is gone
-            mRoot.getContext().registerReceiver(mReceiver, filter);
+            ScreenOnTracker.INSTANCE.get(mActivity).addListener(mScreenOnListener);
         }
     }
 
     @Override
     public void onViewDetachedFromWindow(View view) {
         if (!KEYGUARD_ANIMATION.get() && mTopScrim != null) {
-            mRoot.getContext().unregisterReceiver(mReceiver);
+            ScreenOnTracker.INSTANCE.get(mActivity).removeListener(mScreenOnListener);
         }
     }
 

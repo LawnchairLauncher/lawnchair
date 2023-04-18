@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
+import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.util.ScrollableLayoutManager;
 import com.android.launcher3.views.ActivityContext;
 
@@ -72,8 +73,8 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
 
 
     public AllAppsGridAdapter(T activityContext, LayoutInflater inflater,
-            AlphabeticalAppsList apps, BaseAdapterProvider[] adapterProviders) {
-        super(activityContext, inflater, apps, adapterProviders);
+            AlphabeticalAppsList apps, SearchAdapterProvider<?> adapterProvider) {
+        super(activityContext, inflater, apps, adapterProvider);
         mGridLayoutMgr = new AppsGridLayoutManager(mActivityContext);
         mGridLayoutMgr.setSpanSizeLookup(new GridSpanSizer());
         setAppsPerRow(activityContext.getDeviceProfile().numShownAllAppsColumns);
@@ -181,11 +182,9 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
     public void setAppsPerRow(int appsPerRow) {
         mAppsPerRow = appsPerRow;
         int totalSpans = mAppsPerRow;
-        for (BaseAdapterProvider adapterProvider : mAdapterProviders) {
-            for (int itemPerRow : adapterProvider.getSupportedItemsPerRowArray()) {
-                if (totalSpans % itemPerRow != 0) {
-                    totalSpans *= itemPerRow;
-                }
+        for (int itemPerRow : mAdapterProvider.getSupportedItemsPerRowArray()) {
+            if (totalSpans % itemPerRow != 0) {
+                totalSpans *= itemPerRow;
             }
         }
         mGridLayoutMgr.setSpanCount(totalSpans);
@@ -212,9 +211,8 @@ public class AllAppsGridAdapter<T extends Context & ActivityContext> extends
             if (isIconViewType(viewType)) {
                 return totalSpans / mAppsPerRow;
             } else {
-                BaseAdapterProvider adapterProvider = getAdapterProvider(viewType);
-                if (adapterProvider != null) {
-                    return totalSpans / adapterProvider.getItemsPerRow(viewType, mAppsPerRow);
+                if (mAdapterProvider.isViewSupported(viewType)) {
+                    return totalSpans / mAdapterProvider.getItemsPerRow(viewType, mAppsPerRow);
                 }
 
                 // Section breaks span the full width

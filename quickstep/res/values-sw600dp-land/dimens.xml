@@ -15,10 +15,17 @@
 */
 -->
 <resources>
-    <!--  Overview actions  -->
-    <dimen name="overview_actions_top_margin">12dp</dimen>
-
     <!-- All Set page -->
     <dimen name="allset_page_margin_horizontal">48dp</dimen>
+
+    <!-- Gesture Tutorial menu page -->
+    <dimen name="gesture_tutorial_menu_padding_horizontal">48dp</dimen>
+    <dimen name="gesture_tutorial_menu_padding_top">32dp</dimen>
+    <dimen name="gesture_tutorial_menu_padding_bottom">16dp</dimen>
+    <dimen name="gesture_tutorial_menu_button_height">491dp</dimen>
+    <dimen name="gesture_tutorial_menu_button_spacing">24dp</dimen>
+    <dimen name="gesture_tutorial_menu_done_button_top_spacing">40dp</dimen>
+    <dimen name="gesture_tutorial_menu_back_shape_bottom_margin">49dp</dimen>
+    <dimen name="gesture_tutorial_menu_done_button_margin">16dp</dimen>
 
 </resources>

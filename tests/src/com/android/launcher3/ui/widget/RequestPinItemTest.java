@@ -42,6 +42,7 @@ import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
 import com.android.launcher3.testcomponent.RequestPinItemActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.Wait.Condition;
@@ -75,6 +76,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         super.setUp();
         mCallbackAction = UUID.randomUUID().toString();
         mShortcutId = UUID.randomUUID().toString();
+        TaplTestsLauncher3.initialize(this);
     }
 
     @Test
@@ -147,7 +149,8 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
         // Set callback
         PendingIntent callback = PendingIntent.getBroadcast(mTargetContext, 0,
-                new Intent(mCallbackAction), FLAG_ONE_SHOT | FLAG_MUTABLE);
+                new Intent(mCallbackAction).setPackage(mTargetContext.getPackageName()),
+                FLAG_ONE_SHOT | FLAG_MUTABLE);
         mTargetContext.sendBroadcast(RequestPinItemActivity.getCommandIntent(
                 RequestPinItemActivity.class, "setCallback").putExtra(
                 RequestPinItemActivity.EXTRA_PARAM + "0", callback));

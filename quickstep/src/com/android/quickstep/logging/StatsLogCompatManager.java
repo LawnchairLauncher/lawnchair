@@ -139,7 +139,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         if (IS_VERBOSE) {
             Log.d(TAG, String.format("\nwriteSnapshot(%d):\n%s", instanceId.getId(), info));
         }
-        if (!Utilities.ATLEAST_R || Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+        if (!Utilities.ATLEAST_R || Utilities.isRunningInTestHarness()) {
             return;
         }
         SysUiStatsLog.write(SysUiStatsLog.LAUNCHER_SNAPSHOT,
@@ -438,7 +438,7 @@ public class StatsLogCompatManager extends StatsLogManager {
             }
 
             // TODO: remove this when b/231648228 is fixed.
-            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            if (Utilities.isRunningInTestHarness()) {
                 return;
             }
             int cardinality = mCardinality.orElseGet(() -> getCardinality(atomInfo));
@@ -636,7 +636,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private static int getCardinality(LauncherAtom.ItemInfo info) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+        if (Utilities.isRunningInTestHarness()) {
             return 0;
         }
         switch (info.getContainerInfo().getContainerCase()) {
@@ -758,7 +758,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private static int getHierarchy(LauncherAtom.ItemInfo info) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+        if (Utilities.isRunningInTestHarness()) {
             return 0;
         }
         if (info.getContainerInfo().getContainerCase() == FOLDER) {
@@ -801,7 +801,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     }
 
     private static int getSearchAttributes(LauncherAtom.ItemInfo info) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+        if (Utilities.isRunningInTestHarness()) {
             return 0;
         }
         ContainerInfo containerInfo = info.getContainerInfo();

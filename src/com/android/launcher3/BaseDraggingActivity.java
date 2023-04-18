@@ -125,9 +125,13 @@ public abstract class BaseDraggingActivity extends BaseActivity
         mCurrentActionMode = null;
     }
 
+    protected boolean isInAutoCancelActionMode() {
+        return mCurrentActionMode != null && AUTO_CANCEL_ACTION_MODE == mCurrentActionMode.getTag();
+    }
+
     @Override
     public boolean finishAutoCancelActionMode() {
-        if (mCurrentActionMode != null && AUTO_CANCEL_ACTION_MODE == mCurrentActionMode.getTag()) {
+        if (isInAutoCancelActionMode()) {
             mCurrentActionMode.finish();
             return true;
         }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
- * Copyright (c) 2022, The Android Open Source Project
+ * Copyright (c) 2023, The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,13 @@
 */
 -->
 <resources>
-    <!--  Overview actions  -->
-    <dimen name="overview_actions_top_margin">20dp</dimen>
+
+    <!-- Gesture Tutorial menu page -->
+    <dimen name="gesture_tutorial_menu_button_height">580dp</dimen>
+    <dimen name="gesture_tutorial_menu_button_spacing">49dp</dimen>
+    <dimen name="gesture_tutorial_menu_done_button_top_spacing">24dp</dimen>
+    <dimen name="gesture_tutorial_menu_back_shape_bottom_margin">21dp</dimen>
+    <dimen name="gesture_tutorial_menu_done_button_spacing">80dp</dimen>
+    <dimen name="gesture_tutorial_menu_done_button_margin">0dp</dimen>
+
 </resources>

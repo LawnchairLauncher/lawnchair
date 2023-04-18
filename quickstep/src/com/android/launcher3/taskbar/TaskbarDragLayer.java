@@ -20,6 +20,7 @@ import static android.view.KeyEvent.KEYCODE_BACK;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -116,22 +117,6 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     }
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (mControllerCallbacks != null) {
-            mControllerCallbacks.tryStashBasedOnMotionEvent(ev);
-        }
-        return super.onInterceptTouchEvent(ev);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (mControllerCallbacks != null) {
-            mControllerCallbacks.tryStashBasedOnMotionEvent(ev);
-        }
-        return super.onTouchEvent(ev);
-    }
-
-    @Override
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
         if (mControllerCallbacks != null) {
@@ -183,6 +168,19 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         invalidate();
     }
 
+    /*
+     * Sets the translation of the background during the spring on stash animation.
+     */
+    protected void setBackgroundTranslationYForStash(float translationY) {
+        mBackgroundRenderer.setTranslationYForStash(translationY);
+        invalidate();
+    }
+
+    /** Returns the bounds in DragLayer coordinates of where the transient background was drawn. */
+    protected RectF getLastDrawnTransientRect() {
+        return mBackgroundRenderer.getLastDrawnTransientRect();
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         TestLogging.recordMotionEvent(TestProtocol.SEQUENCE_MAIN, "Touch event", ev);
@@ -194,7 +192,8 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == ACTION_UP && event.getKeyCode() == KEYCODE_BACK) {
             AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
-            if (topView != null && topView.onBackPressed()) {
+            if (topView != null && topView.canHandleBack()) {
+                topView.onBackInvoked();
                 // Handled by the floating view.
                 return true;
             }

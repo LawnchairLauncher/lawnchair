@@ -4,31 +4,37 @@
 # People who can approve changes for submission
 #
 
-alexchau@google.com
-andraskloczl@google.com
-patmanning@google.com
 adamcohen@google.com
-hyunyoungs@google.com
-mrcasey@google.com
-sunnygoyal@google.com
+alexchau@google.com
+andonian@google.com
 awickham@google.com
-twickham@google.com
-winsonc@google.com
-zakcohen@google.com
-santie@google.com
-vadimt@google.com
-jonmiranda@google.com
-pinyaoting@google.com
-gwasserman@google.com
-jamesoleary@google.com
-joshtrask@google.com
-mrenouf@google.com
-mkephart@google.com
-hwwang@google.com
-tracyzhou@google.com
-peanutbutter@google.com
-xuqiu@google.com
+brdayauon@google.com
 brianji@google.com
+captaincole@google.com
+charlander@google.com
+fbaron@google.com
+ganjam@google.com
+hwwang@google.com
+hyunyoungs@google.com
+jagrutdesai@google.com
+jeremysim@google.com
+jiuyu@google.com
+jonmiranda@google.com
+kylim@google.com
+patmanning@google.com
+peanutbutter@google.com
+pinyaoting@google.com
+randypfohl@google.com
+saumyaprakash@google.com
+sihua@google.com
+sunnygoyal@google.com
+tracyzhou@google.com
+tsuharesu@google.com
+twickham@google.com
+vadimt@google.com
+victortulias@google.com
+winsonc@google.com
+xuqiu@google.com
 
 per-file FeatureFlags.java, globs = set noparent
-per-file FeatureFlags.java = sunnygoyal@google.com, winsonc@google.com, zakcohen@google.com, mrcasey@google.com, adamcohen@google.com, hyunyoungs@google.com
+per-file FeatureFlags.java = sunnygoyal@google.com, winsonc@google.com, adamcohen@google.com, hyunyoungs@google.com, captaincole@google.com

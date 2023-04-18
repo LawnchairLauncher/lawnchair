@@ -59,6 +59,7 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"መተግበሪያዎችን ፈልግ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"መተግበሪያዎችን በመጫን ላይ…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"ከ«<xliff:g id="QUERY">%1$s</xliff:g>» ጋር የሚዛመዱ ምንም መተግበሪያዎች አልተገኙም"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"ተጨማሪ መተግበሪያዎች ይፈልጉ"</string>
     <string name="label_application" msgid="8531721983832654978">"መተግበሪያ"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"ሁሉም መተግበሪያዎች"</string>
     <string name="notifications_header" msgid="1404149926117359025">"ማሳወቂያዎች"</string>
@@ -80,7 +81,7 @@
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"መተግበሪያው ያለተጠቃሚ ጣልቃ ገብነት አቋራጭ እንዲያክል ያስችለዋል።"</string>
     <string name="permlab_read_settings" msgid="5136500343007704955">"የመነሻ ቅንብሮች እና አቋራጮችን ያነባል"</string>
     <string name="permdesc_read_settings" msgid="4208061150510996676">"ቅንብሮችን እና አቋራጮችን በመነሻ ለማንበብ ለትግበራ ይፈቅዳል።"</string>
-    <string name="permlab_write_settings" msgid="4820028712156303762">"መነሻ ቅንብሮች እና አቋራጮች ጻፍ"</string>
+    <string name="permlab_write_settings" msgid="4820028712156303762">"መነሻ ቅንብሮች እና አቋራጮች ፃፍ"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"ቅንብሮችን እና አቋራጮችን በመነሻ ለመለወጥ ለመተግበሪያ ይፈቅዳል።"</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> የስልክ ጥሪዎችን ለማድረግ አልተፈቀደለትም"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"ምግብርን መጫን አልተቻለም"</string>
@@ -113,7 +114,6 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"የማሳወቂያ ነጥቦችን ለማሳየት የመተግብሪያ ማሳወቂያዎችን ለ<xliff:g id="NAME">%1$s</xliff:g> ያብሩ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ቅንብሮችን ቀይር"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"የማሳወቂያ ነጥቦችን አሳይ"</string>
-    <string name="developer_options_title" msgid="700788437593726194">"የገንቢ አማራጮች"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"የመተግበሪያ አዶዎችን ወደ መነሻ ገጹ ያክሉ"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"ለአዲስ መተግበሪያዎች"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"የማይታወቅ"</string>
@@ -124,10 +124,14 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> በመጫን ላይ፣ <xliff:g id="PROGRESS">%2$s</xliff:g> ተጠናቅቋል"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> በመውረድ ላይ፣ <xliff:g id="PROGRESS">%2$s</xliff:g> ተጠናቋል"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ለመጫን በመጠበቅ ላይ"</string>
-    <string name="dialog_update_title" msgid="114234265740994042">"መተግበሪያ ማዘመን አስፈላጊ ነው"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"የዚህ አዶ መተግበሪያ አልተዘመነም። ይህን አቋራጭ ዳግም ለማንቃት በራስዎ ማዘመን ወይም አዶውን ማስወገድ ይችላሉ።"</string>
-    <string name="dialog_update" msgid="2178028071796141234">"አዘምን"</string>
-    <string name="dialog_remove" msgid="6510806469849709407">"አስወግድ"</string>
+    <!-- no translation found for dialog_update_title (114234265740994042) -->
+    <skip />
+    <!-- no translation found for dialog_update_message (4176784553982226114) -->
+    <skip />
+    <!-- no translation found for dialog_update (2178028071796141234) -->
+    <skip />
+    <!-- no translation found for dialog_remove (6510806469849709407) -->
+    <skip />
     <string name="widgets_list" msgid="796804551140113767">"የመግብሮች ዝርዝር"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"የመግብሮች ዝርዝር ተዘግቷል"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"ወደ መነሻ ማያ ገጽ አክል"</string>
@@ -136,7 +140,7 @@
     <string name="item_removed" msgid="851119963877842327">"ንጥል ነገር ተንቀሳቅሷል"</string>
     <string name="undo" msgid="4151576204245173321">"ቀልብስ"</string>
     <string name="action_move" msgid="4339390619886385032">"ንጥልን አንቀሳቅስ"</string>
-    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"በ<xliff:g id="STRING">%3$s</xliff:g> ውስጥ ወደ ረድፍ <xliff:g id="NUMBER_0">%1$s</xliff:g> ዓምድ <xliff:g id="NUMBER_1">%2$s</xliff:g> ይውሰዱ"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"ወደ ረድፍ <xliff:g id="NUMBER_0">%1$s</xliff:g> ዓምድ <xliff:g id="NUMBER_1">%2$s</xliff:g> አንቀሳቅስ"</string>
     <string name="move_to_position" msgid="6750008980455459790">"ወደ አቀማመጥ <xliff:g id="NUMBER">%1$s</xliff:g> አንቀሳቅስ"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"ወደ ተወዳጆች አቀማመጥ <xliff:g id="NUMBER">%1$s</xliff:g> አንቀሳቅስ"</string>
     <string name="item_moved" msgid="4606538322571412879">"ንጥል ተንቀሳቅሷል"</string>
@@ -167,10 +171,8 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"የሥራ መተግበሪያዎች ጠፍተዋል። የስራ መተግበሪያዎችዎ ማሳወቂያዎችን ሊልክልዎ፣ ባትሪዎን መጠቀም ወይም አካባቢዎን መድረስ አይችሉም"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"የሥራ መተግበሪያዎች ባጅ የተደረገባቸው ሲሆን ለእርስዎ IT ቡድን ታይ ናቸው"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ገባኝ"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"የሥራ መተግበሪያዎችን ባሉበት አቁም"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"የሥራ መተግበሪያዎችን ያጥፉ"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"የሥራ መተግበሪያዎችን ያብሩ"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"አጣራ"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"ስልክዎን ይፈልጉ"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"ጡባዊዎን ይፈልጉ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"አልተሳካም፦ <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

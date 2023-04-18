@@ -23,7 +23,7 @@ import androidx.test.uiautomator.UiObject2;
 import java.util.ArrayList;
 
 /**
- * Operations on search result page opened from home screen qsb.
+ * Operations on search result page opened from qsb.
  */
 public class SearchResultFromQsb {
     // The input resource id in the search box.

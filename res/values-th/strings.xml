@@ -59,6 +59,7 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ค้นหาแอป"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"กำลังโหลดแอป…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"ไม่พบแอปที่ตรงกับ \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"ค้นหาแอปเพิ่มเติม"</string>
     <string name="label_application" msgid="8531721983832654978">"แอป"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"แอปทั้งหมด"</string>
     <string name="notifications_header" msgid="1404149926117359025">"การแจ้งเตือน"</string>
@@ -102,7 +103,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"โฟลเดอร์: <xliff:g id="NAME">%1$s</xliff:g>, อย่างน้อย <xliff:g id="SIZE">%2$d</xliff:g> รายการ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"วอลเปเปอร์"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"วอลเปเปอร์และรูปแบบ"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"การตั้งค่าหน้าจอหลัก"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"การตั้งค่าหน้าแรก"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ปิดใช้โดยผู้ดูแลระบบ"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"อนุญาตให้หมุนหน้าจอหลัก"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"เมื่อหมุนโทรศัพท์"</string>
@@ -113,7 +114,6 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"เปิดการแจ้งเตือนแอปของ <xliff:g id="NAME">%1$s</xliff:g> เพื่อแสดงเครื่องหมายจุดแสดงการแจ้งเตือน"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"เปลี่ยนการตั้งค่า"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"แสดงเครื่องหมายจุดแสดงการแจ้งเตือน"</string>
-    <string name="developer_options_title" msgid="700788437593726194">"ตัวเลือกสำหรับนักพัฒนาแอป"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"เพิ่มไอคอนแอปในหน้าจอหลัก"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"สำหรับแอปใหม่"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"ไม่รู้จัก"</string>
@@ -124,10 +124,14 @@
     <string name="app_installing_title" msgid="5864044122733792085">"กำลังติดตั้ง <xliff:g id="NAME">%1$s</xliff:g> เสร็จแล้ว <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"กำลังดาวน์โหลด <xliff:g id="NAME">%1$s</xliff:g> เสร็จแล้ว <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> กำลังรอติดตั้ง"</string>
-    <string name="dialog_update_title" msgid="114234265740994042">"ต้องอัปเดตแอป"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"แอปสำหรับไอคอนนี้ยังไม่ได้อัปเดต คุณอัปเดตด้วยตนเองได้โดยเปิดใช้ทางลัดนี้อีกครั้งหรือนำไอคอนออก"</string>
-    <string name="dialog_update" msgid="2178028071796141234">"อัปเดต"</string>
-    <string name="dialog_remove" msgid="6510806469849709407">"นำออก"</string>
+    <!-- no translation found for dialog_update_title (114234265740994042) -->
+    <skip />
+    <!-- no translation found for dialog_update_message (4176784553982226114) -->
+    <skip />
+    <!-- no translation found for dialog_update (2178028071796141234) -->
+    <skip />
+    <!-- no translation found for dialog_remove (6510806469849709407) -->
+    <skip />
     <string name="widgets_list" msgid="796804551140113767">"รายการวิดเจ็ต"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"ปิดรายการวิดเจ็ตแล้ว"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"เพิ่มลงในหน้าจอหลัก"</string>
@@ -136,7 +140,7 @@
     <string name="item_removed" msgid="851119963877842327">"นำรายการออกแล้ว"</string>
     <string name="undo" msgid="4151576204245173321">"เลิกทำ"</string>
     <string name="action_move" msgid="4339390619886385032">"ย้ายรายการ"</string>
-    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"ย้ายไปยังแถว <xliff:g id="NUMBER_0">%1$s</xliff:g> คอลัมน์ <xliff:g id="NUMBER_1">%2$s</xliff:g> ใน <xliff:g id="STRING">%3$s</xliff:g>"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"ย้ายไปที่แถว <xliff:g id="NUMBER_0">%1$s</xliff:g> คอลัมน์ <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"ย้ายไปยังตำแหน่ง <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"ย้ายไปยังตำแหน่งที่ <xliff:g id="NUMBER">%1$s</xliff:g> ของรายการโปรด"</string>
     <string name="item_moved" msgid="4606538322571412879">"ย้ายรายการแล้ว"</string>
@@ -167,10 +171,8 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"แอปงานปิดอยู่ แอปงานจะส่งการแจ้งเตือน ใช้แบตเตอรี่ หรือเข้าถึงตำแหน่งของคุณไม่ได้"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"แอปงานจะติดป้ายไว้และผู้ดูแลระบบไอทีจะมองเห็น"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"รับทราบ"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"หยุดแอปงานชั่วคราว"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"ปิดแอปงาน"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"เปิดแอปงาน"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ตัวกรอง"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"ค้นหาในโทรศัพท์"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"ค้นหาในแท็บเล็ต"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ไม่สำเร็จ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

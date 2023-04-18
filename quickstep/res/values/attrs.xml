@@ -19,4 +19,13 @@
         <attr name="android:textSize"/>
         <attr name="android:fontFamily"/>
     </declare-styleable>
+
+    <!--
+         TaskView specific attributes. These attributes are used to customize a TaskView view in
+         XML files.
+     -->
+    <declare-styleable name="TaskView">
+        <!-- Border color for a keyboard quick switch task views -->
+        <attr name="borderColor" format="color" />
+    </declare-styleable>
 </resources>

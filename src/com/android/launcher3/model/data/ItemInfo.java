@@ -47,8 +47,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherSettings.Animation;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.AllAppsContainer;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
@@ -92,6 +94,12 @@ public class ItemInfo {
      * {@link Favorites#ITEM_TYPE_CUSTOM_APPWIDGET}.
      */
     public int itemType;
+
+    /**
+     * One of {@link Animation#DEFAULT},
+     * {@link Animation#VIEW_BACKGROUND}.
+     */
+    public int animationType = Animation.DEFAULT;
 
     /**
      * The id of the container that holds this item. For the desktop, this will be
@@ -185,6 +193,7 @@ public class ItemInfo {
         rank = info.rank;
         screenId = info.screenId;
         itemType = info.itemType;
+        animationType = info.animationType;
         container = info.container;
         user = info.user;
         contentDescription = info.contentDescription;
@@ -295,6 +304,22 @@ public class ItemInfo {
      */
     public boolean isPredictedItem() {
         return container == CONTAINER_HOTSEAT_PREDICTION || container == CONTAINER_PREDICTION;
+    }
+
+    /**
+     * Returns if an Item is in the hotseat.
+     */
+    public boolean isInHotseat() {
+        return container == CONTAINER_HOTSEAT || container == CONTAINER_HOTSEAT_PREDICTION;
+    }
+
+    /**
+     * Returns whether this item should use the background animation.
+     */
+    public boolean shouldUseBackgroundAnimation() {
+        return animationType == LauncherSettings.Animation.VIEW_BACKGROUND
+                && FeatureFlags.ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES.get()
+                && FeatureFlags.ENABLE_SEARCH_RESULT_LAUNCH_TRANSITION.get();
     }
 
     /**

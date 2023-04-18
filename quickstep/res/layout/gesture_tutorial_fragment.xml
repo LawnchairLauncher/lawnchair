@@ -57,33 +57,34 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <androidx.cardview.widget.CardView
+
+        <View
             android:id="@+id/top_task_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:visibility="invisible"
             android:layout_marginBottom="@dimen/gesture_tutorial_multi_row_task_view_spacing"
+            android:background="@drawable/top_task_view"
+            android:clipToOutline="true"
+            android:visibility="invisible"
 
-            app:cardElevation="0dp"
-            app:cardCornerRadius="@dimen/gesture_tutorial_small_task_view_corner_radius"
             app:layout_constraintVertical_chainStyle="spread"
-            app:layout_constraintTop_toTopOf="@id/full_task_view"
             app:layout_constraintBottom_toTopOf="@id/bottom_task_view"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toTopOf="@id/full_task_view" />
 
-        <androidx.cardview.widget.CardView
+        <View
             android:id="@+id/bottom_task_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:background="@drawable/top_task_view"
+            android:clipToOutline="true"
             android:visibility="invisible"
 
-            app:cardElevation="0dp"
-            app:cardCornerRadius="@dimen/gesture_tutorial_small_task_view_corner_radius"
-            app:layout_constraintTop_toBottomOf="@id/top_task_view"
             app:layout_constraintBottom_toBottomOf="@id/full_task_view"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/top_task_view" />
 
     </com.android.quickstep.interaction.AnimatedTaskView>
 
@@ -102,11 +103,11 @@
     <include
         layout="@layout/gesture_tutorial_tablet_mock_taskbar"
         android:id="@+id/gesture_tutorial_fake_taskbar_view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/gesture_tutorial_mock_taskbar_height"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/gesture_tutorial_taskbar_margin_bottom"/>
 
     <ImageView
         android:id="@+id/gesture_tutorial_edge_gesture_video"

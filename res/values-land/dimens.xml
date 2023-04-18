@@ -23,7 +23,6 @@
 
     <!-- Dynamic grid -->
     <dimen name="dynamic_grid_edge_margin">15.28dp</dimen>
-    <dimen name="dynamic_grid_icon_drawable_padding">4dp</dimen>
     <dimen name="dynamic_grid_drop_target_size">36dp</dimen>
     <dimen name="cell_layout_padding">20dp</dimen>
 

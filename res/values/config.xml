@@ -164,6 +164,17 @@
     <item name="swipe_up_rect_xy_damping_ratio" type="dimen" format="float">0.8</item>
     <item name="swipe_up_rect_xy_stiffness" type="dimen" format="float">200</item>
 
+    <!-- Taskbar -->
+    <!-- This is a float because it is converted to dp later in DeviceProfile -->
+    <item name="taskbar_icon_size" type="dimen" format="float">0</item>
+
+    <!-- These params are only used for hotseat items on devices that have a taskbar. -->
+    <item name="taskbar_swipe_up_rect_x_stiffness" type="dimen" format="float">350</item>
+    <item name="taskbar_swipe_up_rect_x_damping" type="dimen" format="float">0.9</item>
+    <item name="taskbar_swipe_up_rect_y_stiffness" type="dimen" format="float">200</item>
+    <item name="taskbar_swipe_up_rect_y_damping" type="dimen" format="float">0.78</item>
+    <item name="taskbar_swipe_up_rect_scale_stiffness" type="dimen" format="float">200</item>
+
     <item name="staggered_damping_ratio" type="dimen" format="float">0.7</item>
     <item name="staggered_stiffness" type="dimen" format="float">150</item>
     <dimen name="unlock_staggered_velocity_dp_per_s">2dp</dimen>
@@ -203,4 +214,7 @@
     <!-- The max scale for the wallpaper when it's zoomed in -->
     <item name="config_wallpaperMaxScale" format="float" type="dimen">0</item>
 
+    <!-- Whether the floating rotation button should be on the left/right in the device's natural
+         orientation -->
+    <bool name="floating_rotation_button_position_left">true</bool>
 </resources>

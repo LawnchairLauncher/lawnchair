@@ -52,6 +52,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.states.RotationHelper;
+import com.android.launcher3.uioverrides.flags.DeveloperOptionsFragment;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.DisplayController;
 
@@ -93,7 +94,8 @@ public class SettingsActivity extends FragmentActivity
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         Intent intent = getIntent();
-        if (intent.hasExtra(EXTRA_FRAGMENT) || intent.hasExtra(EXTRA_FRAGMENT_ARGS)) {
+        if (intent.hasExtra(EXTRA_FRAGMENT) || intent.hasExtra(EXTRA_FRAGMENT_ARGS)
+                || intent.hasExtra(EXTRA_FRAGMENT_ARG_KEY)) {
             getActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
@@ -225,9 +227,10 @@ public class SettingsActivity extends FragmentActivity
                         getResources().getString(R.string.search_pref_screen_title))){
                     DeviceProfile mDeviceProfile = InvariantDeviceProfile.INSTANCE.get(
                             getContext()).getDeviceProfile(getContext());
-                    getPreferenceScreen().setTitle(mDeviceProfile.isTablet ?
-                            R.string.search_pref_screen_title_tablet
-                            : R.string.search_pref_screen_title);
+                    getPreferenceScreen().setTitle(mDeviceProfile.isMultiDisplay
+                            || mDeviceProfile.isPhone ?
+                            R.string.search_pref_screen_title :
+                            R.string.search_pref_screen_title_tablet);
                 }
                 getActivity().setTitle(getPreferenceScreen().getTitle());
             }

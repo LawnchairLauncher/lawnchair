@@ -15,14 +15,37 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.taskbar.LauncherTaskbarUIController.DISPLAY_PROGRESS_COUNT;
+
+import android.app.PendingIntent;
+
 /**
  * State shared across different taskbar instance
  */
 public class TaskbarSharedState {
 
+    // TaskbarManager#onSystemUiFlagsChanged
     public int sysuiStateFlags;
+
+    // TaskbarManager#disableNavBarElements()
+    public int disableNavBarDisplayId;
+    public int disableNavBarState1;
+    public int disableNavBarState2;
+
+    // TaskbarManager#onSystemBarAttributesChanged()
+    public int systemBarAttrsDisplayId;
+    public int systemBarAttrsBehavior;
+
+    // TaskbarManager#onNavButtonsDarkIntensityChanged()
+    public float navButtonsDarkIntensity;
 
     public boolean setupUIVisible = false;
 
     public boolean allAppsVisible = false;
+
+    // LauncherTaskbarUIController#mTaskbarInAppDisplayProgressMultiProp
+    public float[] inAppDisplayProgressMultiPropValues = new float[DISPLAY_PROGRESS_COUNT];
+
+    // Taskbar System Action
+    public PendingIntent taskbarSystemActionPendingIntent;
 }

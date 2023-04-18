@@ -15,8 +15,10 @@
  */
 package com.android.launcher3.search;
 
+import static com.android.launcher3.search.StringMatcherUtility.getListOfBreakpoints;
 import static com.android.launcher3.search.StringMatcherUtility.matches;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -25,6 +27,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.search.StringMatcherUtility.StringMatcher;
 import com.android.launcher3.search.StringMatcherUtility.StringMatcherSpace;
+import com.android.launcher3.util.IntArray;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -137,5 +140,97 @@ public class StringMatcherUtilityTest {
         assertFalse(matches("ba", "bot", MATCHER_SPACE));
         assertFalse(matches("phant", "elephant", MATCHER_SPACE));
         assertFalse(matches("elephants", "elephant", MATCHER_SPACE));
+    }
+
+    @Test
+    public void testStringWithProperBreaks() {
+        // empty string
+        assertEquals(IntArray.wrap(), getListOfBreakpoints("", MATCHER));
+
+        // should be "D Dz" that's why breakpoint is at 0
+        assertEquals(IntArray.wrap(0), getListOfBreakpoints("DDz", MATCHER));
+
+        // test all caps and all lower-case
+        assertEquals(IntArray.wrap(), getListOfBreakpoints("SNKRS", MATCHER));
+        assertEquals(IntArray.wrap(), getListOfBreakpoints("flutterappflorafy", MATCHER));
+        assertEquals(IntArray.wrap(), getListOfBreakpoints("LEGO®", MATCHER));
+
+        // test camel case
+        // breakpoint at 9 to be "flutterapp Florafy"
+        assertEquals(IntArray.wrap(9), getListOfBreakpoints("flutterappFlorafy", MATCHER));
+        // breakpoint at 4 to be "Metro Zone"
+        assertEquals(IntArray.wrap(4), getListOfBreakpoints("MetroZone", MATCHER));
+        // breakpoint at 4,5 to be "metro X Zone"
+        assertEquals(IntArray.wrap(4,5), getListOfBreakpoints("metroXZone", MATCHER));
+        // breakpoint at 0 to be "G Pay"
+        assertEquals(IntArray.wrap(0), getListOfBreakpoints("GPay", MATCHER));
+        // breakpoint at 4 to be "Whats App"
+        assertEquals(IntArray.wrap(4), getListOfBreakpoints("WhatsApp", MATCHER));
+        // breakpoint at 2 to be "aaa A"
+        assertEquals(IntArray.wrap(2), getListOfBreakpoints("aaaA", MATCHER));
+        // breakpoint at 4,12,16 to be "Other Launcher Test App"
+        assertEquals(IntArray.wrap(4,12,16),
+                getListOfBreakpoints("OtherLauncherTestApp", MATCHER));
+
+        // test with TITLECASE_LETTER
+        // should be "Dǲ" that's why there are no break points
+        assertEquals(IntArray.wrap(), getListOfBreakpoints("Dǲ", MATCHER));
+        // breakpoint at 0 to be "D Dǅ"
+        assertEquals(IntArray.wrap(0), getListOfBreakpoints("DDǅ", MATCHER));
+        // breakpoint at 0 because there is a space to be "ǅ DD"
+        assertEquals(IntArray.wrap(0), getListOfBreakpoints("ǅ DD", MATCHER));
+        // breakpoint at 1 to be "Dw ǲ"
+        assertEquals(IntArray.wrap(1), getListOfBreakpoints("Dwǲ", MATCHER));
+        // breakpoint at 0,2 to be "Dw ǲ"
+        assertEquals(IntArray.wrap(0,2), getListOfBreakpoints("wDwǲ", MATCHER));
+        // breakpoint at 1,3 to be "ᾋw Dw ǲ"
+        assertEquals(IntArray.wrap(1,3), getListOfBreakpoints("ᾋwDwǲ", MATCHER));
+        // breakpoint at 0,2,4 to be "ᾋ ᾋw Dw ǲ"
+        assertEquals(IntArray.wrap(0,2,4), getListOfBreakpoints("ᾋᾋwDwǲ", MATCHER));
+        // breakpoint at 0,2,4 to be "ᾋ ᾋw Dw ǲ®"
+        assertEquals(IntArray.wrap(0,2,4), getListOfBreakpoints("ᾋᾋwDwǲ®", MATCHER));
+
+        // test with numbers and symbols
+        // breakpoint at 3,11 to be "Test Activity 13"
+        assertEquals(IntArray.wrap(3,11), getListOfBreakpoints("TestActivity13", MATCHER));
+        // breakpoint at 3, 4, 12, 13 as the breakpoints are at the dashes
+        assertEquals(IntArray.wrap(3,4,12,13),
+                getListOfBreakpoints("Test-Activity-12", MATCHER));
+        // breakpoint at 1 to be "AA 2"
+        assertEquals(IntArray.wrap(1), getListOfBreakpoints("AA2", MATCHER));
+        // breakpoint at 1 to be "AAA 2"
+        assertEquals(IntArray.wrap(2), getListOfBreakpoints("AAA2", MATCHER));
+        // breakpoint at 1 to be "ab 2"
+        assertEquals(IntArray.wrap(1), getListOfBreakpoints("ab2", MATCHER));
+        // breakpoint at 1,2 to be "el 3 suhwee"
+        assertEquals(IntArray.wrap(1,2), getListOfBreakpoints("el3suhwee", MATCHER));
+        // breakpoint at 0,1 as the breakpoints are at '-'
+        assertEquals(IntArray.wrap(0,1), getListOfBreakpoints("t-mobile", MATCHER));
+        assertEquals(IntArray.wrap(0,1), getListOfBreakpoints("t-Mobile", MATCHER));
+        // breakpoint at 0,1,2 as the breakpoints are at '-'
+        assertEquals(IntArray.wrap(0,1,2), getListOfBreakpoints("t--Mobile", MATCHER));
+        // breakpoint at 1,2,3 as the breakpoints are at '-'
+        assertEquals(IntArray.wrap(1,2,3), getListOfBreakpoints("tr--Mobile", MATCHER));
+        // breakpoint at 3,4 as the breakpoints are at '.'
+        assertEquals(IntArray.wrap(3,4), getListOfBreakpoints("Agar.io", MATCHER));
+        assertEquals(IntArray.wrap(3,4), getListOfBreakpoints("Hole.Io", MATCHER));
+
+        // breakpoint at 0 to be "µ Torrent®"
+        assertEquals(IntArray.wrap(0), getListOfBreakpoints("µTorrent®", MATCHER));
+        // breakpoint at 4 to be "LEGO® Builder"
+        assertEquals(IntArray.wrap(4), getListOfBreakpoints("LEGO®Builder", MATCHER));
+        // breakpoint at 4 to be "LEGO® builder"
+        assertEquals(IntArray.wrap(4), getListOfBreakpoints("LEGO®builder", MATCHER));
+        // breakpoint at 4 to be "lego® builder"
+        assertEquals(IntArray.wrap(4), getListOfBreakpoints("lego®builder", MATCHER));
+
+        // test string with spaces - where the breakpoints are right before where the spaces are at
+        assertEquals(IntArray.wrap(3,8), getListOfBreakpoints("HEAD BALL 2", MATCHER));
+        assertEquals(IntArray.wrap(2,8),
+                getListOfBreakpoints("OFL Agent Application", MATCHER));
+        assertEquals(IntArray.wrap(0,2), getListOfBreakpoints("D D z", MATCHER));
+        assertEquals(IntArray.wrap(6), getListOfBreakpoints("Battery Stats", MATCHER));
+        assertEquals(IntArray.wrap(5,9,15),
+                getListOfBreakpoints("System UWB Field Test", MATCHER));
     }
 }

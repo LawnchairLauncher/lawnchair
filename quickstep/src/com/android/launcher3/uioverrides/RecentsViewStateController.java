@@ -91,7 +91,7 @@ public final class RecentsViewStateController extends
             builder.addOnFrameCallback(() -> mRecentsView.loadVisibleTaskData(FLAG_UPDATE_ALL));
             mRecentsView.updateEmptyMessage();
             // TODO(b/246283207): Remove logging once root cause of flake detected.
-            if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+            if (Utilities.isRunningInTestHarness()) {
                 Log.d("b/246283207", "RecentsView#setStateWithAnimationInternal getCurrentPage(): "
                                 + mRecentsView.getCurrentPage()
                                 + ", getScrollForPage(getCurrentPage())): "
@@ -121,8 +121,7 @@ public final class RecentsViewStateController extends
     private void handleSplitSelectionState(@NonNull LauncherState toState,
             @NonNull PendingAnimation builder, boolean animate) {
         if (toState != OVERVIEW_SPLIT_SELECT) {
-            // Not going to split, nothing to do but ensure taskviews are at correct offset
-            mRecentsView.resetSplitPrimaryScrollOffset();
+            // Not going to split
             return;
         }
 
@@ -153,8 +152,6 @@ public final class RecentsViewStateController extends
             as.start();
             as.end();
         }
-
-        mRecentsView.applySplitPrimaryScrollOffset();
     }
 
     private void setAlphas(PropertySetter propertySetter, StateAnimationConfig config,

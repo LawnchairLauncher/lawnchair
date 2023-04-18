@@ -33,7 +33,13 @@ import java.util.ArrayList;
 /** Shows the Home gesture interactive tutorial. */
 public class HomeGestureTutorialFragment extends TutorialFragment {
 
-    public HomeGestureTutorialFragment() {}
+    public HomeGestureTutorialFragment() {
+        this(false);
+    }
+
+    public HomeGestureTutorialFragment(boolean fromTutorialMenu) {
+        super(fromTutorialMenu);
+    }
 
     @Nullable
     @Override

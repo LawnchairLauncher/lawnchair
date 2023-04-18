@@ -26,10 +26,12 @@ import android.view.View;
 import android.view.Window;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.quickstep.TouchInteractionService.TISBinder;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
@@ -42,11 +44,12 @@ public class GestureSandboxActivity extends FragmentActivity {
 
     private static final String KEY_TUTORIAL_STEPS = "tutorial_steps";
     private static final String KEY_CURRENT_STEP = "current_step";
-    private static final String KEY_GESTURE_COMPLETE = "gesture_complete";
+    static final String KEY_TUTORIAL_TYPE = "tutorial_type";
+    static final String KEY_GESTURE_COMPLETE = "gesture_complete";
+    static final String KEY_USE_TUTORIAL_MENU = "use_tutorial_menu";
 
-    private TutorialType[] mTutorialSteps;
-    private TutorialType mCurrentTutorialStep;
-    private TutorialFragment mFragment;
+    @Nullable private TutorialType[] mTutorialSteps;
+    private GestureSandboxFragment mFragment;
 
     private int mCurrentStep;
     private int mNumSteps;
@@ -67,10 +70,26 @@ public class GestureSandboxActivity extends FragmentActivity {
         mStatsLogManager = StatsLogManager.newInstance(getApplicationContext());
 
         Bundle args = savedInstanceState == null ? getIntent().getExtras() : savedInstanceState;
-        mTutorialSteps = getTutorialSteps(args);
-        mCurrentTutorialStep = mTutorialSteps[mCurrentStep - 1];
-        mFragment = TutorialFragment.newInstance(
-                mCurrentTutorialStep, args.getBoolean(KEY_GESTURE_COMPLETE, false));
+
+        boolean gestureComplete = args != null && args.getBoolean(KEY_GESTURE_COMPLETE, false);
+        if (FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                && args != null
+                && args.getBoolean(KEY_USE_TUTORIAL_MENU, false)) {
+            mTutorialSteps = null;
+            TutorialType tutorialTypeOverride = (TutorialType) args.get(KEY_TUTORIAL_TYPE);
+            mFragment = tutorialTypeOverride == null
+                    ? new MenuFragment()
+                    : makeTutorialFragment(
+                            tutorialTypeOverride,
+                            gestureComplete,
+                            /* fromMenu= */ true);
+        } else {
+            mTutorialSteps = getTutorialSteps(args);
+            mFragment = makeTutorialFragment(
+                    mTutorialSteps[mCurrentStep - 1],
+                    gestureComplete,
+                    /* fromMenu= */ false);
+        }
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.gesture_tutorial_fragment_container, mFragment)
                 .commit();
@@ -81,7 +100,9 @@ public class GestureSandboxActivity extends FragmentActivity {
     @Override
     public void onAttachedToWindow() {
         super.onAttachedToWindow();
-        disableSystemGestures();
+        if (mFragment.shouldDisableSystemGestures()) {
+            disableSystemGestures();
+        }
         mFragment.onAttachedToWindow();
     }
 
@@ -103,7 +124,7 @@ public class GestureSandboxActivity extends FragmentActivity {
     protected void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         savedInstanceState.putStringArray(KEY_TUTORIAL_STEPS, getTutorialStepNames());
         savedInstanceState.putInt(KEY_CURRENT_STEP, mCurrentStep);
-        savedInstanceState.putBoolean(KEY_GESTURE_COMPLETE, mFragment.isGestureComplete());
+        mFragment.onSaveInstanceState(savedInstanceState);
         super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -134,21 +155,45 @@ public class GestureSandboxActivity extends FragmentActivity {
      * If there is no following step, the tutorial is closed.
      */
     public void continueTutorial() {
-        if (isTutorialComplete()) {
-            mFragment.closeTutorial();
+        if (isTutorialComplete() || mTutorialSteps == null) {
+            mFragment.close();
             return;
         }
-        mCurrentTutorialStep = mTutorialSteps[mCurrentStep];
-        mFragment = TutorialFragment.newInstance(
-                mCurrentTutorialStep, /* gestureComplete= */ false);
+        launchTutorialStep(mTutorialSteps[mCurrentStep], false);
+        mCurrentStep++;
+    }
+
+    private TutorialFragment makeTutorialFragment(
+            @NonNull TutorialType tutorialType, boolean gestureComplete, boolean fromMenu) {
+        return TutorialFragment.newInstance(tutorialType, gestureComplete, fromMenu);
+    }
+
+    /**
+     * Launches the given gesture nav tutorial step.
+     *
+     * If the step is being launched from the gesture nav tutorial menu, then that step will launch
+     * the menu when complete.
+     */
+    public void launchTutorialStep(@NonNull TutorialType tutorialType, boolean fromMenu) {
+        mFragment = makeTutorialFragment(tutorialType, false, fromMenu);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.gesture_tutorial_fragment_container, mFragment)
                 .runOnCommit(() -> mFragment.onAttachedToWindow())
                 .commit();
-        mCurrentStep++;
+    }
+
+    /** Launches the gesture nav tutorial menu page */
+    public void launchTutorialMenu() {
+        mFragment = new MenuFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.gesture_tutorial_fragment_container, mFragment)
+                .commit();
     }
 
     private String[] getTutorialStepNames() {
+        if (mTutorialSteps == null) {
+            return new String[0];
+        }
         String[] tutorialStepNames = new String[mTutorialSteps.length];
 
         int i = 0;
@@ -160,18 +205,19 @@ public class GestureSandboxActivity extends FragmentActivity {
     }
 
     private TutorialType[] getTutorialSteps(Bundle extras) {
-        TutorialType[] defaultSteps = new TutorialType[] {TutorialType.BACK_NAVIGATION};
+        TutorialType[] defaultSteps = new TutorialType[] {
+                TutorialType.HOME_NAVIGATION,
+                TutorialType.BACK_NAVIGATION,
+                TutorialType.OVERVIEW_NAVIGATION};
         mCurrentStep = 1;
-        mNumSteps = 1;
+        mNumSteps = defaultSteps.length;
 
         if (extras == null || !extras.containsKey(KEY_TUTORIAL_STEPS)) {
             return defaultSteps;
         }
 
-        Object savedSteps = extras.get(KEY_TUTORIAL_STEPS);
-        int currentStep = extras.getInt(KEY_CURRENT_STEP, -1);
         String[] savedStepsNames;
-
+        Object savedSteps = extras.get(KEY_TUTORIAL_STEPS);
         if (savedSteps instanceof String) {
             savedStepsNames = TextUtils.isEmpty((String) savedSteps)
                     ? null : ((String) savedSteps).split(",");
@@ -181,7 +227,7 @@ public class GestureSandboxActivity extends FragmentActivity {
             return defaultSteps;
         }
 
-        if (savedStepsNames == null) {
+        if (savedStepsNames == null || savedStepsNames.length == 0) {
             return defaultSteps;
         }
 
@@ -190,7 +236,7 @@ public class GestureSandboxActivity extends FragmentActivity {
             tutorialSteps[i] = TutorialType.valueOf(savedStepsNames[i]);
         }
 
-        mCurrentStep = Math.max(currentStep, 1);
+        mCurrentStep = Math.max(extras.getInt(KEY_CURRENT_STEP, -1), 1);
         mNumSteps = tutorialSteps.length;
 
         return tutorialSteps;

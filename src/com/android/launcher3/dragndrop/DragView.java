@@ -56,7 +56,6 @@ import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
@@ -84,6 +83,7 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
     protected final int mRegistrationX;
     protected final int mRegistrationY;
     private final float mInitialScale;
+    private final float mEndScale;
     protected final float mScaleOnDrop;
     protected final int[] mTempLoc = new int[2];
 
@@ -159,7 +159,7 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
             setClipToPadding(false);
         }
 
-        final float scale = (width + finalScaleDps) / width;
+        mEndScale = (width + finalScaleDps) / width;
 
         // Set the initial scale to avoid any jumps
         setScaleX(initialScale);
@@ -170,8 +170,8 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         mAnim.setDuration(VIEW_ZOOM_DURATION);
         mAnim.addUpdateListener(animation -> {
             final float value = (Float) animation.getAnimatedValue();
-            setScaleX(initialScale + (value * (scale - initialScale)));
-            setScaleY(initialScale + (value * (scale - initialScale)));
+            setScaleX(Utilities.mapRange(value, initialScale, mEndScale));
+            setScaleY(Utilities.mapRange(value, initialScale, mEndScale));
             if (!isAttachedToWindow()) {
                 animation.cancel();
             }
@@ -218,12 +218,6 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
      */
     @TargetApi(Build.VERSION_CODES.O)
     public void setItemInfo(final ItemInfo info) {
-        if (info.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
-                && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_SEARCH_ACTION
-                && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
-                && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-            return;
-        }
         // Load the adaptive icon on a background thread and add the view in ui thread.
         MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(() -> {
             Object[] outObj = new Object[1];
@@ -513,6 +507,10 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
 
     public float getInitialScale() {
         return mInitialScale;
+    }
+
+    public float getEndScale() {
+        return mEndScale;
     }
 
     @Override

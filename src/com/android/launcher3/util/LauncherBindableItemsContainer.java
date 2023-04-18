@@ -50,7 +50,12 @@ public interface LauncherBindableItemsContainer {
                 Drawable oldIcon = shortcut.getIcon();
                 boolean oldPromiseState = (oldIcon instanceof PreloadIconDrawable)
                         && ((PreloadIconDrawable) oldIcon).hasNotCompleted();
-                shortcut.applyFromWorkspaceItem(si, si.isPromise() != oldPromiseState);
+                shortcut.applyFromWorkspaceItem(
+                        si,
+                        si.isPromise() != oldPromiseState
+                                && oldIcon instanceof PreloadIconDrawable
+                                ? (PreloadIconDrawable) oldIcon
+                                : null);
             } else if (info instanceof FolderInfo && v instanceof FolderIcon) {
                 ((FolderIcon) v).updatePreviewItems(updates::contains);
             }
@@ -74,7 +79,7 @@ public interface LauncherBindableItemsContainer {
         ItemOperator op = (info, v) -> {
             if (info instanceof WorkspaceItemInfo && v instanceof BubbleTextView
                     && updates.contains(info)) {
-                ((BubbleTextView) v).applyLoadingState(false /* promiseStateChanged */);
+                ((BubbleTextView) v).applyLoadingState(null);
             } else if (v instanceof PendingAppWidgetHostView
                     && info instanceof LauncherAppWidgetInfo
                     && updates.contains(info)) {

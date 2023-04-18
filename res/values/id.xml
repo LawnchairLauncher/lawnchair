@@ -19,7 +19,6 @@
     <item type="id" name="view_type_widgets_space" />
     <item type="id" name="view_type_widgets_list" />
     <item type="id" name="view_type_widgets_header" />
-    <item type="id" name="view_type_widgets_search_header" />
     <!--  Used for A11y actions in staged split to identify each task uniquely  -->
     <item type="id" name="split_topLeft_appInfo" />
     <item type="id" name="split_bottomRight_appInfo" />
@@ -29,6 +28,7 @@
     <item type="id" name="home" />
     <item type="id" name="recent_apps" />
     <item type="id" name="back" />
+    <item type="id" name="close"/>
     <item type="id" name="ime_switcher" />
     <item type="id" name="accessibility_button" />
     <item type="id" name="rotate_suggestion" />
@@ -37,4 +37,10 @@
     <item type="id" name="quick_settings_button" />
     <item type="id" name="notifications_button" />
     <item type="id" name="cache_entry_tag_id" />
+
+    <item type="id" name="saved_clip_children_tag_id" />
+
+    <item type="id" name="saved_floating_widget_foreground" />
+    <item type="id" name="saved_floating_widget_background" />
+
 </resources>

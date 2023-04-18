@@ -27,8 +27,10 @@ import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.RemoteViews.RemoteViewOutlineProvider;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.R;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.RoundedCornerEnforcement;
 
@@ -65,14 +67,20 @@ final class FloatingWidgetBackgroundView extends View {
         setClipToOutline(true);
     }
 
-    void init(LauncherAppWidgetHostView hostView, View backgroundView, float finalRadius,
-            int fallbackBackgroundColor) {
+    void init(LauncherAppWidgetHostView hostView, @NonNull View backgroundView,
+            float finalRadius, int fallbackBackgroundColor) {
         mFinalRadius = finalRadius;
         mSourceView = backgroundView;
         mInitialOutlineRadius = getOutlineRadius(hostView, backgroundView);
         mIsUsingFallback = false;
         if (isSupportedDrawable(backgroundView.getForeground())) {
-            mOriginalForeground = backgroundView.getForeground();
+            if (backgroundView.getTag(R.id.saved_floating_widget_foreground) == null) {
+                mOriginalForeground = backgroundView.getForeground();
+                backgroundView.setTag(R.id.saved_floating_widget_foreground, mOriginalForeground);
+            } else {
+                mOriginalForeground = (Drawable) backgroundView.getTag(
+                        R.id.saved_floating_widget_foreground);
+            }
             mForegroundProperties.init(
                     mOriginalForeground.getConstantState().newDrawable().mutate());
             setForeground(mForegroundProperties.mDrawable);
@@ -82,7 +90,13 @@ final class FloatingWidgetBackgroundView extends View {
             mSourceView.setForeground(clipPlaceholder);
         }
         if (isSupportedDrawable(backgroundView.getBackground())) {
-            mOriginalBackground = backgroundView.getBackground();
+            if (backgroundView.getTag(R.id.saved_floating_widget_background) == null) {
+                mOriginalBackground = backgroundView.getBackground();
+                backgroundView.setTag(R.id.saved_floating_widget_background, mOriginalBackground);
+            } else {
+                mOriginalBackground = (Drawable) backgroundView.getTag(
+                        R.id.saved_floating_widget_background);
+            }
             mBackgroundProperties.init(
                     mOriginalBackground.getConstantState().newDrawable().mutate());
             setBackground(mBackgroundProperties.mDrawable);
@@ -115,6 +129,10 @@ final class FloatingWidgetBackgroundView extends View {
     }
 
     void recycle() {
+        if (mSourceView != null) {
+            mSourceView.setTag(R.id.saved_floating_widget_foreground, null);
+            mSourceView.setTag(R.id.saved_floating_widget_background, null);
+        }
         mSourceView = null;
         mOriginalForeground = null;
         mOriginalBackground = null;

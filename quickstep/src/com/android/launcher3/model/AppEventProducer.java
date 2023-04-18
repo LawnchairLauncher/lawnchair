@@ -118,7 +118,7 @@ public class AppEventProducer implements StatsLogConsumer {
     private void sendEvent(AppTarget target, LauncherAtom.ItemInfo locationInfo, int eventId,
             int targetPredictor) {
         // TODO: remove the running test check when b/231648228 is fixed.
-        if (target != null && !Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+        if (target != null && !Utilities.isRunningInTestHarness()) {
             AppTargetEvent event = new AppTargetEvent.Builder(target, eventId)
                     .setLaunchLocation(getContainer(locationInfo))
                     .build();

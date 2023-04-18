@@ -18,7 +18,6 @@ package com.android.quickstep.inputconsumers;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 import static com.android.launcher3.Utilities.squaredHypot;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_REVISED_THRESHOLDS;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_TOUCHING;
 
 import android.content.Context;
@@ -53,6 +52,7 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
     private final float mUnstashArea;
     private final float mScreenWidth;
 
+    private final int mTaskbarNavThreshold;
     private final int mTaskbarNavThresholdY;
     private final boolean mIsTaskbarAllAppsOpen;
     private boolean mHasPassedTaskbarNavThreshold;
@@ -74,11 +74,9 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
 
         Resources res = context.getResources();
         mUnstashArea = res.getDimensionPixelSize(R.dimen.taskbar_unstash_input_area);
-        int taskbarNavThreshold = res.getDimensionPixelSize(ENABLE_TASKBAR_REVISED_THRESHOLDS.get()
-                ? R.dimen.taskbar_nav_threshold_v2
-                : R.dimen.taskbar_nav_threshold);
-        int screenHeight = taskbarActivityContext.getDeviceProfile().heightPx;
-        mTaskbarNavThresholdY = screenHeight - taskbarNavThreshold;
+        mTaskbarNavThreshold = res.getDimensionPixelSize(R.dimen.taskbar_from_nav_threshold);
+        mTaskbarNavThresholdY = taskbarActivityContext.getDeviceProfile().heightPx
+                - mTaskbarNavThreshold;
         mIsTaskbarAllAppsOpen =
                 mTaskbarActivityContext != null && mTaskbarActivityContext.isTaskbarAllAppsOpen();
 
@@ -128,6 +126,10 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
                                 mCanceledUnstashHint = false;
                             }
                         }
+
+                        if (mTransitionCallback != null && !mIsTaskbarAllAppsOpen) {
+                            mTransitionCallback.onActionDown();
+                        }
                         break;
                     case MotionEvent.ACTION_POINTER_UP:
                         int ptrIdx = ev.getActionIndex();
@@ -160,7 +162,7 @@ public class TaskbarStashInputConsumer extends DelegateInputConsumer {
                         if (mIsTransientTaskbar) {
                             float dY = mLastPos.y - mDownPos.y;
                             boolean passedTaskbarNavThreshold = dY < 0
-                                    && mLastPos.y < mTaskbarNavThresholdY;
+                                    && Math.abs(dY) >= mTaskbarNavThreshold;
 
                             if (!mHasPassedTaskbarNavThreshold && passedTaskbarNavThreshold) {
                                 mHasPassedTaskbarNavThreshold = true;

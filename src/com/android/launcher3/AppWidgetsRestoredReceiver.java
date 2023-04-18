@@ -2,6 +2,7 @@ package com.android.launcher3;
 
 import static android.os.Process.myUserHandle;
 
+import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
@@ -51,10 +52,10 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
      */
     @WorkerThread
     public static void restoreAppWidgetIds(Context context, int[] oldWidgetIds, int[] newWidgetIds,
-            @NonNull LauncherWidgetHolder holder) {
+            @NonNull AppWidgetHost host) {
         if (WidgetsModel.GO_DISABLE_WIDGETS) {
             Log.e(TAG, "Skipping widget ID remap as widgets not supported");
-            holder.deleteHost();
+            host.deleteHost();
             return;
         }
         if (!RestoreDbTask.isPending(context)) {
@@ -63,7 +64,7 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
             Log.e(TAG, "Skipping widget ID remap as DB already in use");
             for (int widgetId : newWidgetIds) {
                 Log.d(TAG, "Deleting widgetId: " + widgetId);
-                holder.deleteAppWidgetId(widgetId);
+                host.deleteAppWidgetId(widgetId);
             }
             return;
         }
@@ -100,7 +101,7 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
                 try {
                     if (!cursor.moveToFirst()) {
                         // The widget no long exists.
-                        holder.deleteAppWidgetId(newWidgetIds[i]);
+                        host.deleteAppWidgetId(newWidgetIds[i]);
                     }
                 } finally {
                     cursor.close();

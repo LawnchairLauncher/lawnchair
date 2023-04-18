@@ -18,7 +18,9 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.model.data.AppInfo.COMPONENT_KEY_COMPARATOR;
 import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_SHOW_DOWNLOAD_PROGRESS_MASK;
+import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -27,6 +29,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 
@@ -119,6 +122,9 @@ public class AllAppsStore {
             return;
         }
         for (OnUpdateListener listener : mUpdateListeners) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(WORK_TAB_MISSING, "AllAppsStore#notifyUpdate listener: " + listener);
+            }
             listener.onAppsUpdated();
         }
     }

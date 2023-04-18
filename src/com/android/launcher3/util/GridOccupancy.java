@@ -81,4 +81,16 @@ public class GridOccupancy extends AbsGridOccupancy {
     public void clear() {
         markCells(0, 0, mCountX, mCountY, false);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder("Grid: \n");
+        for (int y = 0; y < mCountY; y++) {
+            for (int x = 0; x < mCountX; x++) {
+                s.append(cells[x][y] ? 1 : 0).append(" ");
+            }
+            s.append("\n");
+        }
+        return s.toString();
+    }
 }

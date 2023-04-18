@@ -49,4 +49,9 @@
     <item name="config_wallpaperMaxScale" format="float" type="dimen">
         @*android:dimen/config_wallpaperMaxScale
     </item>
+
+    <string name="setup_wizard_pkg" translatable="false" />
+
+    <!-- This is a float because it is converted to dp later in DeviceProfile -->
+    <item name="taskbar_icon_size" type="dimen" format="float">44</item>
 </resources>

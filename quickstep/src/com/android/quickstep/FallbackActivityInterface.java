@@ -61,7 +61,7 @@ public final class FallbackActivityInterface extends
     @Override
     public int getSwipeUpDestinationAndLength(DeviceProfile dp, Context context, Rect outRect,
             PagedOrientationHandler orientationHandler) {
-        calculateTaskSize(context, dp, outRect);
+        calculateTaskSize(context, dp, outRect, orientationHandler);
         if (dp.isVerticalBarLayout() && DisplayController.getNavigationMode(context) != NO_BUTTON) {
             return dp.isSeascape() ? outRect.left : (dp.widthPx - outRect.right);
         } else {

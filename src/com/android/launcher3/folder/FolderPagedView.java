@@ -113,7 +113,6 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     public void setFolder(Folder folder) {
         mFolder = folder;
         mPageIndicator = folder.findViewById(R.id.folder_page_indicator);
-        mPageIndicator.setShouldAutoHide(false);
         initParentViews(folder);
     }
 
@@ -223,10 +222,10 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         CellLayoutLayoutParams lp = (CellLayoutLayoutParams) textView.getLayoutParams();
         if (lp == null) {
             textView.setLayoutParams(new CellLayoutLayoutParams(
-                    item.cellX, item.cellY, item.spanX, item.spanY, item.screenId));
+                    item.cellX, item.cellY, item.spanX, item.spanY));
         } else {
-            lp.cellX = item.cellX;
-            lp.cellY = item.cellY;
+            lp.setCellX(item.cellX);
+            lp.setCellY(item.cellY);
             lp.cellHSpan = lp.cellVSpan = 1;
         }
         return textView;

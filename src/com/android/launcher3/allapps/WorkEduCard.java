@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.LauncherPrefs.WORK_EDU_STEP;
 import static com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.getTabWidth;
 
 import android.content.Context;
@@ -85,8 +86,7 @@ public class WorkEduCard extends FrameLayout implements
     @Override
     public void onClick(View view) {
         startAnimation(mDismissAnim);
-        LauncherPrefs.getPrefs(getContext()).edit().putInt(WorkProfileManager.KEY_WORK_EDU_STEP,
-                1).apply();
+        LauncherPrefs.get(getContext()).put(WORK_EDU_STEP, 1);
     }
 
     @Override

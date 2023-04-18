@@ -38,6 +38,7 @@
             app:lottie_loop="true" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/text_content_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/allset_page_margin_horizontal"

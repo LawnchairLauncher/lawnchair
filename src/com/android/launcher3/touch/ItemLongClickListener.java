@@ -80,7 +80,8 @@ public class ItemLongClickListener {
             }
         }
 
-        CellLayout.CellInfo longClickCellInfo = new CellLayout.CellInfo(v, info);
+        CellLayout.CellInfo longClickCellInfo = new CellLayout.CellInfo(v, info,
+                launcher.getCellPosMapper().mapModelToPresenter(info));
         launcher.getWorkspace().startDrag(longClickCellInfo, dragOptions);
     }
 

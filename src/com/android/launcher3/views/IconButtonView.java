@@ -29,11 +29,16 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.accessibility.AccessibilityEvent;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.util.MultiTranslateDelegate;
 
 /**
  * Button in Taskbar that shows a tinted background and foreground.
@@ -41,6 +46,12 @@ import com.android.launcher3.icons.LauncherIcons;
 public class IconButtonView extends BubbleTextView {
 
     private static final int[] ATTRS = {android.R.attr.icon};
+
+    private static final int INDEX_TASKBAR_ALL_APPS_ICON = MultiTranslateDelegate.COUNT;
+    private static final int MY_COUNT = MultiTranslateDelegate.COUNT + 1;
+
+    private final MultiTranslateDelegate mTranslateDelegate =
+            new MultiTranslateDelegate(this, MY_COUNT, MultiTranslateDelegate.COUNT);
 
     public IconButtonView(Context context) {
         this(context, null);
@@ -66,6 +77,41 @@ public class IconButtonView extends BubbleTextView {
         try (BaseIconFactory factory = LauncherIcons.obtain(context)) {
             setIcon(new IconDrawable(factory.getWhiteShadowLayer(), tint, fg));
         }
+    }
+
+    @Override
+    public void onPopulateAccessibilityEvent(AccessibilityEvent event) {
+        super.onPopulateAccessibilityEvent(event);
+        event.getText().add(this.getContentDescription());
+    }
+
+    /** Sets given Drawable as icon */
+    public void setIconDrawable(@NonNull Drawable drawable) {
+        ColorStateList tintList = getBackgroundTintList();
+        int tint = tintList == null ? Color.WHITE : tintList.getDefaultColor();
+        try (BaseIconFactory factory = LauncherIcons.obtain(getContext())) {
+            setIcon(new IconDrawable(factory.getWhiteShadowLayer(), tint, drawable));
+        }
+    }
+
+    /** Updates the color of the icon's foreground layer. */
+    public void setForegroundTint(@ColorInt int tintColor) {
+        FastBitmapDrawable icon = getIcon();
+        if (icon instanceof IconDrawable) {
+            ((IconDrawable) icon).mFg.setTint(tintColor);
+        }
+    }
+
+    @Override
+    public MultiTranslateDelegate getTranslateDelegate() {
+        return mTranslateDelegate;
+    }
+
+    /**
+     * Sets translationX for taskbar all apps icon
+     */
+    public void setTranslationXForTaskbarAllAppsIcon(float translationX) {
+        getTranslateDelegate().getTranslationX(INDEX_TASKBAR_ALL_APPS_ICON).setValue(translationX);
     }
 
     private static class IconDrawable extends FastBitmapDrawable {

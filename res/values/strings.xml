@@ -40,9 +40,6 @@
     <!-- Options for recent tasks -->
     <!-- Title for an option to enter split screen mode for a given app -->
     <string name="recent_task_option_split_screen">Split screen</string>
-    <string name="split_screen_position_top">Split top</string>
-    <string name="split_screen_position_left">Split left</string>
-    <string name="split_screen_position_right">Split right</string>
     <string name="split_app_info_accessibility">App info for %1$s</string>
 
     <!-- Widgets -->
@@ -66,6 +63,9 @@
     <!-- Accessibility spoken message announced when a widget gets added to the home screen using a
          button in a dialog. [CHAR_LIMIT=none] -->
     <string name="added_to_home_screen_accessibility_text"><xliff:g id="widget_name" example="Calendar month view">%1$s</xliff:g> widget added to home screen</string>
+    <!-- Widget suggestions header title in the full widgets picker for large screen devices
+    in landscape mode. [CHAR_LIMIT=50] -->
+    <string name="suggested_widgets_header_title">Suggestions</string>
     <!-- Label for showing the number of widgets an app has in the full widgets picker.
          [CHAR_LIMIT=25][ICU SYNTAX] -->
     <string name="widgets_count">

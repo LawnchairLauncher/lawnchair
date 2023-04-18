@@ -17,6 +17,8 @@ package com.android.launcher3.widget;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
 
+import android.content.Context;
+
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 
@@ -27,13 +29,28 @@ import com.android.launcher3.pm.ShortcutConfigActivityInfo;
  */
 public class PendingAddShortcutInfo extends PendingAddItemInfo {
 
-    public ShortcutConfigActivityInfo activityInfo;
+    // TODO: Make it @NonNull
+    protected ShortcutConfigActivityInfo mActivityInfo;
 
     public PendingAddShortcutInfo(ShortcutConfigActivityInfo activityInfo) {
-        this.activityInfo = activityInfo;
+        this.mActivityInfo = activityInfo;
         componentName = activityInfo.getComponent();
         user = activityInfo.getUser();
         itemType = activityInfo.getItemType();
         this.container = CONTAINER_WIDGETS_TRAY;
+    }
+
+    public PendingAddShortcutInfo(PendingAddShortcutInfo info) {
+        super(info);
+        mActivityInfo = info.mActivityInfo;
+    }
+
+    public PendingAddShortcutInfo() { }
+
+    /**
+     * Returns the info used for creating the shortcut
+     */
+    public ShortcutConfigActivityInfo getActivityInfo(Context context) {
+        return mActivityInfo;
     }
 }

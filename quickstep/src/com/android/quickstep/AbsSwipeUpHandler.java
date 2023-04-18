@@ -27,7 +27,6 @@ import static com.android.launcher3.PagedView.INVALID_PAGE;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
 import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_REVISED_THRESHOLDS;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
@@ -51,6 +50,7 @@ import static com.android.quickstep.GestureState.STATE_RECENTS_SCROLLING_FINISHE
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.CANCEL_RECENTS_ANIMATION;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.EXPECTING_TASK_APPEARED;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.LAUNCHER_DESTROYED;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.ON_SETTLED_ON_END_TARGET;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -127,6 +127,7 @@ import com.android.quickstep.util.SurfaceTransaction;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.SwipePipToHomeAnimator;
 import com.android.quickstep.util.TaskViewSimulator;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
@@ -181,6 +182,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     if (mActivity != activity) {
                         return;
                     }
+                    ActiveGestureLog.INSTANCE.addLog("Launcher destroyed", LAUNCHER_DESTROYED);
                     mRecentsView = null;
                     mActivity = null;
                 }
@@ -276,8 +278,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private RunningWindowAnim[] mRunningWindowAnim;
     // Possible second animation running at the same time as mRunningWindowAnim
     private Animator mParallelRunningAnim;
-    // Current running divider animation
-    private ValueAnimator mDividerAnimator;
     private boolean mIsMotionPaused;
     private boolean mHasMotionEverBeenPaused;
 
@@ -323,6 +323,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private final boolean mIsTransientTaskbar;
     // May be set to false when mIsTransientTaskbar is true.
     private boolean mCanSlowSwipeGoHome = true;
+    // Indicates whether the divider is shown, only used when split screen is activated.
+    private boolean mIsDividerShown = true;
 
     @Nullable
     private RemoteAnimationTargets.ReleaseCheck mSwipePipToHomeReleaseCheck = null;
@@ -364,14 +366,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         TaskbarUIController controller = mActivityInterface.getTaskbarController();
         mTaskbarAlreadyOpen = controller != null && !controller.isTaskbarStashed();
         mIsTaskbarAllAppsOpen = controller != null && controller.isTaskbarAllAppsOpen();
-        mTaskbarAppWindowThreshold = res
-                .getDimensionPixelSize(ENABLE_TASKBAR_REVISED_THRESHOLDS.get()
-                        ? R.dimen.taskbar_app_window_threshold_v2
-                        : R.dimen.taskbar_app_window_threshold);
-        mTaskbarHomeOverviewThreshold = res.getDimensionPixelSize(
-                ENABLE_TASKBAR_REVISED_THRESHOLDS.get()
-                        ? R.dimen.taskbar_home_overview_threshold_v2
-                        : R.dimen.taskbar_home_overview_threshold);
+        mTaskbarAppWindowThreshold =
+                res.getDimensionPixelSize(R.dimen.taskbar_app_window_threshold);
+        boolean swipeWillNotShowTaskbar = mTaskbarAlreadyOpen;
+        mTaskbarHomeOverviewThreshold = swipeWillNotShowTaskbar
+                ? 0
+                : res.getDimensionPixelSize(R.dimen.taskbar_home_overview_threshold);
         mTaskbarCatchUpThreshold = res.getDimensionPixelSize(R.dimen.taskbar_catch_up_threshold);
     }
 
@@ -676,7 +676,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             @Override
             public void onMotionPauseDetected() {
                 mHasMotionEverBeenPaused = true;
-                maybeUpdateRecentsAttachedState(true/* animate */, true/* moveFocusedTask */);
+                maybeUpdateRecentsAttachedState(true/* animate */, true/* moveRunningTask */);
                 Optional.ofNullable(mActivityInterface.getTaskbarController())
                         .ifPresent(TaskbarUIController::startTranslationSpring);
                 performHapticFeedback();
@@ -694,7 +694,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     private void maybeUpdateRecentsAttachedState(boolean animate) {
-        maybeUpdateRecentsAttachedState(animate, false /* moveFocusedTask */);
+        maybeUpdateRecentsAttachedState(animate, false /* moveRunningTask */);
     }
 
     /**
@@ -704,9 +704,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      *
      * Note this method has no effect unless the navigation mode is NO_BUTTON.
      * @param animate whether to animate when attaching RecentsView
-     * @param moveFocusedTask whether to move focused task to front when attaching
+     * @param moveRunningTask whether to move running task to front when attaching
      */
-    private void maybeUpdateRecentsAttachedState(boolean animate, boolean moveFocusedTask) {
+    private void maybeUpdateRecentsAttachedState(boolean animate, boolean moveRunningTask) {
         if (!mDeviceState.isFullyGesturalNavMode() || mRecentsView == null) {
             return;
         }
@@ -725,11 +725,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         } else {
             recentsAttachedToAppWindow = mHasMotionEverBeenPaused || mIsLikelyToStartNewTask;
         }
-        if (moveFocusedTask && !mAnimationFactory.hasRecentsEverAttachedToAppWindow()
+        if (moveRunningTask && !mAnimationFactory.hasRecentsEverAttachedToAppWindow()
                 && recentsAttachedToAppWindow) {
-            // Only move focused task if RecentsView has never been attached before, to avoid
+            // Only move running task if RecentsView has never been attached before, to avoid
             // TaskView jumping to new position as we move the tasks.
-            mRecentsView.moveFocusedTaskToFront();
+            mRecentsView.moveRunningTaskToFront();
         }
         mAnimationFactory.setRecentsAttachedToAppWindow(recentsAttachedToAppWindow, animate);
 
@@ -869,7 +869,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     public void onRecentsAnimationStart(RecentsAnimationController controller,
             RecentsAnimationTargets targets) {
         super.onRecentsAnimationStart(controller, targets);
-        mRemoteTargetHandles = mTargetGluer.assignTargetsForSplitScreen(mContext, targets);
+        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED && targets.hasDesktopTasks()) {
+            mRemoteTargetHandles = mTargetGluer.assignTargetsForDesktop(targets);
+        } else {
+            mRemoteTargetHandles = mTargetGluer.assignTargetsForSplitScreen(targets);
+        }
         mRecentsAnimationController = controller;
         mRecentsAnimationTargets = targets;
         mSwipePipToHomeReleaseCheck = new RemoteAnimationTargets.ReleaseCheck();
@@ -1100,9 +1104,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 } else {
                     mStateCallback.setState(STATE_RESUME_LAST_TASK);
                 }
-                if (mRecentsAnimationTargets != null) {
-                    setDividerShown(true /* shown */, true /* immediate */);
-                }
+                // Restore the divider as it resumes the last top-tasks.
+                setDividerShown(true);
                 break;
         }
         ActiveGestureLog.INSTANCE.addLog(
@@ -1154,6 +1157,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
 
         if (mDeviceState.isOverviewDisabled() && endTarget == RECENTS) {
+            return LAST_TASK;
+        }
+
+        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED && endTarget == NEW_TASK) {
+            // TODO(b/268075592): add support for quickswitch to/from desktop
             return LAST_TASK;
         }
 
@@ -1583,7 +1591,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         final SwipePipToHomeAnimator.Builder builder = new SwipePipToHomeAnimator.Builder()
                 .setContext(mContext)
                 .setTaskId(runningTaskTarget.taskId)
-                .setComponentName(taskInfo.topActivity)
+                .setActivityInfo(taskInfo.topActivityInfo)
+                .setAppIconSizePx(mDp.iconSizePx)
                 .setLeash(runningTaskTarget.leash)
                 .setSourceRectHint(
                         runningTaskTarget.taskInfo.pictureInPictureParams.getSourceRectHint())
@@ -1667,9 +1676,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         }
 
         mRecentsAnimationController.enableInputConsumer();
-
-        // Start hiding the divider
-        setDividerShown(false /* shown */, true /* immediate */);
     }
 
     private void computeRecentsScrollIfInvisible() {
@@ -2133,9 +2139,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     @Override
     public void onRecentsAnimationFinished(RecentsAnimationController controller) {
-        if (!controller.getFinishTargetIsLauncher()) {
-            setDividerShown(true /* shown */, false /* immediate */);
-        }
         mRecentsAnimationController = null;
         mRecentsAnimationTargets = null;
         if (mRecentsView != null) {
@@ -2235,18 +2238,23 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         boolean notSwipingToHome = mRecentsAnimationTargets != null
                 && mGestureState.getEndTarget() != HOME;
         boolean setRecentsScroll = mRecentsViewScrollLinked && mRecentsView != null;
+        float progress = Math.max(mCurrentShift.value, getScaleProgressDueToScroll());
+        int scrollOffset = setRecentsScroll ? mRecentsView.getScrollOffset() : 0;
+        if (progress > 0 || scrollOffset != 0) {
+            // Hide the divider as the tasks start moving.
+            setDividerShown(false);
+        }
         for (RemoteTargetHandle remoteHandle : mRemoteTargetHandles) {
             AnimatorControllerWithResistance playbackController =
                     remoteHandle.getPlaybackController();
             if (playbackController != null) {
-                playbackController.setProgress(Math.max(mCurrentShift.value,
-                        getScaleProgressDueToScroll()), mDragLengthFactor);
+                playbackController.setProgress(progress, mDragLengthFactor);
             }
 
             if (notSwipingToHome) {
                 TaskViewSimulator taskViewSimulator = remoteHandle.getTaskViewSimulator();
                 if (setRecentsScroll) {
-                    taskViewSimulator.setScroll(mRecentsView.getScrollOffset());
+                    taskViewSimulator.setScroll(scrollOffset);
                 }
                 taskViewSimulator.apply(remoteHandle.getTransformParams());
             }
@@ -2312,17 +2320,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         return displacement;
     }
 
-    private void setDividerShown(boolean shown, boolean immediate) {
-        if (mDividerAnimator != null) {
-            mDividerAnimator.cancel();
+    private void setDividerShown(boolean shown) {
+        if (mRecentsAnimationTargets == null || mIsDividerShown == shown) {
+            return;
         }
-        mDividerAnimator = TaskViewUtils.createSplitAuxiliarySurfacesAnimator(
-                mRecentsAnimationTargets.nonApps, shown, (dividerAnimator) -> {
-                    dividerAnimator.start();
-                    if (immediate) {
-                        dividerAnimator.end();
-                    }
-                });
+        mIsDividerShown = shown;
+        TaskViewUtils.createSplitAuxiliarySurfacesAnimator(
+                mRecentsAnimationTargets.nonApps, shown, null /* animatorHandler */);
     }
 
     /**

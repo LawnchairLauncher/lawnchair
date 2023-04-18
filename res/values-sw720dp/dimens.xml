@@ -18,9 +18,6 @@
 <!-- PagedView  -->
     <dimen name="min_page_snap_velocity">3400dp</dimen>
 
-<!-- AllApps -->
-    <dimen name="all_apps_bottom_sheet_horizontal_padding">28dp</dimen>
-
 <!-- Dynamic grid -->
     <dimen name="dynamic_grid_edge_margin">27.59dp</dimen>
     <dimen name="cell_layout_padding">36dp</dimen>
@@ -29,7 +26,7 @@
     <dimen name="drop_target_text_size">20sp</dimen>
     <dimen name="dynamic_grid_drop_target_size">72dp</dimen>
     <dimen name="drop_target_button_drawable_horizontal_padding">24dp</dimen>
-    <dimen name="drop_target_button_drawable_vertical_padding">20dp</dimen>
+    <dimen name="drop_target_button_drawable_vertical_padding">8dp</dimen>
     <dimen name="drop_target_button_gap">32dp</dimen>
     <dimen name="drop_target_button_workspace_edge_gap">32dp</dimen>
     <dimen name="drop_target_top_margin">110dp</dimen>

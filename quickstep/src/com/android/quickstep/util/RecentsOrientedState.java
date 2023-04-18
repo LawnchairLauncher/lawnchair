@@ -22,7 +22,7 @@ import static android.view.Surface.ROTATION_180;
 import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 
-import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
+import static com.android.launcher3.LauncherPrefs.ALLOW_ROTATION;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.ROTATION_SETTING_URI;
 import static com.android.quickstep.BaseActivityInterface.getTaskDimension;
@@ -116,7 +116,6 @@ public class RecentsOrientedState implements
                     | FLAG_SWIPE_UP_NOT_RUNNING;
 
     private final Context mContext;
-    private final SharedPreferences mSharedPrefs;
     private final OrientationEventListener mOrientationListener;
     private final SettingsCache mSettingsCache;
     private final SettingsCache.OnChangeListener mRotationChangeListener =
@@ -139,7 +138,6 @@ public class RecentsOrientedState implements
     public RecentsOrientedState(Context context, BaseActivityInterface sizeStrategy,
             IntConsumer rotationChangeListener) {
         mContext = context;
-        mSharedPrefs = LauncherPrefs.getPrefs(context);
         mOrientationListener = new OrientationEventListener(context) {
             @Override
             public void onOrientationChanged(int degrees) {
@@ -278,7 +276,7 @@ public class RecentsOrientedState implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        if (ALLOW_ROTATION_PREFERENCE_KEY.equals(s)) {
+        if (LauncherPrefs.ALLOW_ROTATION.getSharedPrefKey().equals(s)) {
             updateHomeRotationSetting();
         }
     }
@@ -289,7 +287,7 @@ public class RecentsOrientedState implements
     }
 
     private void updateHomeRotationSetting() {
-        boolean homeRotationEnabled = mSharedPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY, false);
+        boolean homeRotationEnabled = LauncherPrefs.get(mContext).get(ALLOW_ROTATION);
         setFlag(FLAG_HOME_ROTATION_ALLOWED_IN_PREFS, homeRotationEnabled);
         SystemUiProxy.INSTANCE.get(mContext).setHomeRotationEnabled(homeRotationEnabled);
     }
@@ -303,13 +301,13 @@ public class RecentsOrientedState implements
     }
 
     private void initMultipleOrientationListeners() {
-        mSharedPrefs.registerOnSharedPreferenceChangeListener(this);
+        LauncherPrefs.get(mContext).addListener(this, ALLOW_ROTATION);
         mSettingsCache.register(ROTATION_SETTING_URI, mRotationChangeListener);
         updateAutoRotateSetting();
     }
 
     private void destroyMultipleOrientationListeners() {
-        mSharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
+        LauncherPrefs.get(mContext).removeListener(this, ALLOW_ROTATION);
         mSettingsCache.unregister(ROTATION_SETTING_URI, mRotationChangeListener);
     }
 
@@ -398,7 +396,7 @@ public class RecentsOrientedState implements
      * Returns the scale and pivot so that the provided taskRect can fit the provided full size
      */
     public float getFullScreenScaleAndPivot(Rect taskView, DeviceProfile dp, PointF outPivot) {
-        getTaskDimension(dp, outPivot);
+        getTaskDimension(mContext, dp, outPivot);
         float scale = Math.min(outPivot.x / taskView.width(), outPivot.y / taskView.height());
         if (scale == 1) {
             outPivot.set(taskView.centerX(), taskView.centerY());

@@ -88,6 +88,10 @@ public class AllSetActivity extends Activity {
 
     private static final float ANIMATION_PAUSE_ALPHA_THRESHOLD = 0.1f;
 
+    private final Rect mTempSettingsBounds = new Rect();
+    private final Rect mTempInclusionBounds = new Rect();
+    private final Rect mTempExclusionBounds = new Rect();
+
     private TISBindHelper mTISBindHelper;
     private TISBinder mBinder;
 
@@ -131,9 +135,9 @@ public class AllSetActivity extends Activity {
                 !TextUtils.isEmpty(suwDeviceName)
                         ? suwDeviceName : getString(R.string.default_device_name)));
 
-        TextView tv = findViewById(R.id.navigation_settings);
-        tv.setTextColor(accentColor);
-        tv.setOnClickListener(v -> {
+        TextView settings = findViewById(R.id.navigation_settings);
+        settings.setTextColor(accentColor);
+        settings.setOnClickListener(v -> {
             try {
                 startActivityForResult(
                         Intent.parseUri(URI_SYSTEM_NAVIGATION_SETTING, 0), 0);
@@ -142,12 +146,41 @@ public class AllSetActivity extends Activity {
             }
         });
 
-        TextView hintTextView = findViewById(R.id.hint);
+        TextView hint = findViewById(R.id.hint);
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(this).getDeviceProfile(this);
         if (!dp.isGestureMode) {
-            hintTextView.setText(R.string.allset_button_hint);
+            hint.setText(R.string.allset_button_hint);
         }
-        hintTextView.setAccessibilityDelegate(new SkipButtonAccessibilityDelegate());
+        hint.setAccessibilityDelegate(new SkipButtonAccessibilityDelegate());
+
+        View textContent = findViewById(R.id.text_content_view);
+        textContent.addOnLayoutChangeListener(
+                (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+                    mTempSettingsBounds.set(
+                            settings.getLeft(),
+                            settings.getTop(),
+                            settings.getRight(),
+                            settings.getBottom());
+                    mTempInclusionBounds.set(
+                            0,
+                            // Do not allow overlapping with the subtitle text
+                            subtitle.getBottom(),
+                            textContent.getWidth(),
+                            textContent.getHeight());
+                    mTempExclusionBounds.set(
+                            hint.getLeft(),
+                            hint.getTop(),
+                            hint.getRight(),
+                            hint.getBottom());
+
+                    Utilities.translateOverlappingView(
+                            settings,
+                            mTempSettingsBounds,
+                            mTempInclusionBounds,
+                            mTempExclusionBounds,
+                            Utilities.TRANSLATE_UP);
+                });
+
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
 
         mVibrator = getSystemService(Vibrator.class);
@@ -240,6 +273,7 @@ public class AllSetActivity extends Activity {
         maybeResumeOrPauseBackgroundAnimation();
         if (mSwipeProgress.value >= 1) {
             finishAndRemoveTask();
+            dispatchLauncherAnimStartEnd();
         }
     }
 
@@ -251,6 +285,18 @@ public class AllSetActivity extends Activity {
         }
     }
 
+    /**
+     * Should be called when we have successfully reached Launcher, so we dispatch to animation
+     * listeners to ensure the state matches the visual animation that just occurred.
+      */
+    private void dispatchLauncherAnimStartEnd() {
+        if (mLauncherStartAnim != null) {
+            mLauncherStartAnim.dispatchOnStart();
+            mLauncherStartAnim.dispatchOnEnd();
+            mLauncherStartAnim = null;
+        }
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -259,6 +305,7 @@ public class AllSetActivity extends Activity {
         if (mBackgroundAnimatorListener != null) {
             mAnimatedBackground.removeAnimatorListener(mBackgroundAnimatorListener);
         }
+        dispatchLauncherAnimStartEnd();
     }
 
     private AnimatedFloat createSwipeUpProxy(GestureState state) {

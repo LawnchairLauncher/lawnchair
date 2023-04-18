@@ -15,9 +15,7 @@
  */
 package com.android.launcher3.widget.picker;
 
-import static com.android.launcher3.widget.picker.WidgetsListDrawableState.LAST;
-import static com.android.launcher3.widget.picker.WidgetsListDrawableState.MIDDLE;
-
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.util.Pair;
@@ -30,9 +28,13 @@ import android.view.ViewGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Px;
+
 import com.android.launcher3.R;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.WidgetCell;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.util.WidgetsTableUtils;
@@ -50,18 +52,23 @@ public final class WidgetsListTableViewHolderBinder
 
     private final LayoutInflater mLayoutInflater;
     private final OnClickListener mIconClickListener;
+    private @NonNull final Context mContext;
+    private @NonNull final ActivityContext mActivityContext;
+    @Px private final int mCellPadding;
     private final OnLongClickListener mIconLongClickListener;
-    private final WidgetsListDrawableFactory mListDrawableFactory;
 
     public WidgetsListTableViewHolderBinder(
+            @NonNull Context context,
             LayoutInflater layoutInflater,
             OnClickListener iconClickListener,
-            OnLongClickListener iconLongClickListener,
-            WidgetsListDrawableFactory listDrawableFactory) {
+            OnLongClickListener iconLongClickListener) {
         mLayoutInflater = layoutInflater;
+        mContext = context;
+        mActivityContext = ActivityContext.lookupContext(context);
+        mCellPadding = context.getResources().getDimensionPixelSize(
+                R.dimen.widget_cell_horizontal_padding);
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
-        mListDrawableFactory = listDrawableFactory;
     }
 
     @Override
@@ -70,12 +77,8 @@ public final class WidgetsListTableViewHolderBinder
             Log.v(TAG, "\nonCreateViewHolder");
         }
 
-        WidgetsRowViewHolder viewHolder =
-                new WidgetsRowViewHolder(mLayoutInflater.inflate(
+        return new WidgetsRowViewHolder(mLayoutInflater.inflate(
                         R.layout.widgets_table_container, parent, false));
-        viewHolder.tableContainer.setBackgroundDrawable(
-                mListDrawableFactory.createContentBackgroundDrawable());
-        return viewHolder;
     }
 
     @Override
@@ -91,10 +94,17 @@ public final class WidgetsListTableViewHolderBinder
             Log.d(TAG, String.format("onBindViewHolder [widget#=%d, table.getChildCount=%d]",
                     entry.mWidgets.size(), table.getChildCount()));
         }
-        table.setListDrawableState(((position & POSITION_LAST) != 0) ? LAST : MIDDLE);
+        table.setListDrawableState(
+                WidgetsListDrawableState.obtain(
+                        (position & POSITION_FIRST) != 0,
+                        (position & POSITION_LAST) != 0));
+
         List<ArrayList<WidgetItem>> widgetItemsTable =
-                WidgetsTableUtils.groupWidgetItemsIntoTableWithReordering(
-                        entry.mWidgets, entry.getMaxSpanSizeInCells());
+                WidgetsTableUtils.groupWidgetItemsUsingRowPxWithReordering(entry.mWidgets,
+                        mContext,
+                        mActivityContext.getDeviceProfile(),
+                        entry.getMaxSpanSize(),
+                        mCellPadding);
         recycleTableBeforeBinding(table, widgetItemsTable);
 
         // Bind the widget items.
@@ -110,13 +120,8 @@ public final class WidgetsListTableViewHolderBinder
 
                 // When preview loads, notify adapter to rebind the item and possibly animate
                 widget.applyFromCellItem(widgetItem, 1f,
-                        bitmap -> {
-                        if (holder.getBindingAdapter() != null) {
-                            holder.getBindingAdapter().notifyItemChanged(
-                                    holder.getBindingAdapterPosition(),
-                                    Pair.create(widgetItem, bitmap));
-                            }
-                        }, holder.previewCache.get(widgetItem));
+                        bitmap -> holder.onPreviewLoaded(Pair.create(widgetItem, bitmap)),
+                        holder.previewCache.get(widgetItem));
             }
         }
     }

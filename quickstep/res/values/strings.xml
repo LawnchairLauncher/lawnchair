@@ -117,6 +117,8 @@
     <string name="back_gesture_intro_subtitle">To go back to the last screen, swipe from the left or right edge to the middle of the screen.</string>
     <!-- Introduction subtitle for the Back gesture tutorial that will be spoken by screen readers. [CHAR LIMIT=200] -->
     <string name="back_gesture_spoken_intro_subtitle">To go back to the last screen, swipe with 2 fingers from the left or right edge to the middle of the screen.</string>
+    <!-- Title of the gesture tutorial section educating users on how to go back to the previous screen. [CHAR LIMIT=100] -->
+    <string name="back_gesture_tutorial_title">Go back</string>
 
     <string name="home_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe up from the bottom edge of the screen.</string>
     <!-- Feedback shown during interactive parts of Home gesture tutorial when the Overview gesture is detected. [CHAR LIMIT=100] -->
@@ -133,6 +135,10 @@
     <string name="home_gesture_intro_subtitle">Swipe up from the bottom of your screen. This gesture always takes you to the Home screen.</string>
     <!-- Introduction subtitle for the Home gesture tutorial that will be spoken by screen readers. [CHAR LIMIT=100] -->
     <string name="home_gesture_spoken_intro_subtitle">Swipe up with 2 fingers from the bottom of the screen. This gesture always takes you to the Home screen.</string>
+    <!-- Title of the gesture tutorial section educating users on how to go to the home screen. [CHAR LIMIT=100] -->
+    <string name="home_gesture_tutorial_title">Go home</string>
+    <!-- Subtitle of the gesture tutorial section educating users on how to go to the home screen [CHAR LIMIT=100] -->
+    <string name="home_gesture_tutorial_subtitle">To go to your home screen at any time, swipe up from the bottom of your screen</string>
 
     <!-- Feedback shown during interactive parts of Overview gesture tutorial when the gesture is started too far from the edge. [CHAR LIMIT=100] -->
     <string name="overview_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe up from the bottom edge of the screen.</string>
@@ -150,6 +156,8 @@
     <string name="overview_gesture_intro_subtitle">To switch between apps, swipe up from the bottom of your screen, hold, then release.</string>
     <!-- Introduction subtitle for the Overview gesture tutorial that will be spoken by screen readers. [CHAR LIMIT=100] -->
     <string name="overview_gesture_spoken_intro_subtitle">To switch between apps, swipe up with 2 fingers from the bottom of your screen, hold, then release.</string>
+    <!-- Title of the gesture tutorial section educating users on how to switch between apps. [CHAR LIMIT=100] -->
+    <string name="overview_gesture_tutorial_title">Switch apps</string>
 
     <!-- Title shown during interactive part of Assistant gesture tutorial. [CHAR LIMIT=30] -->
     <string name="assistant_gesture_tutorial_playground_title" translatable="false">Tutorial: Assistant</string>
@@ -193,7 +201,7 @@
     <!-- Title of "All Set" page [CHAR LIMIT=NONE] -->
     <string name="allset_title">All set!</string>
     <!-- Hint string at the bottom of "All Set" page [CHAR LIMIT=NONE] -->
-    <string name="allset_hint">Swipe up to go Home</string>
+    <string name="allset_hint">Swipe up to go home</string>
     <!-- Hint string at the bottom of "All Set" page for button navigation [CHAR LIMIT=NONE] -->
     <string name="allset_button_hint">Tap the home button to go to your home screen</string>
     <!-- Description of "All Set" page on the user's device [CHAR LIMIT=NONE] -->
@@ -211,7 +219,7 @@
     <!-- Label for a button that enters split screen selection mode. [CHAR_LIMIT=20] -->
     <string name="action_split">Split</string>
     <!-- Label for toast with instructions for split screen selection mode. [CHAR_LIMIT=50] -->
-    <string name="toast_split_select_app">Tap another app to use splitscreen</string>
+    <string name="toast_split_select_app">Tap another app to use split screen</string>
     <!-- Label for toast when app selected for split isn't supported. [CHAR_LIMIT=50] -->
     <string name="toast_split_app_unsupported">Choose another app to use split screen</string>
     <!-- Message shown when an action is blocked by a policy enforced by the app or the organization managing the device. [CHAR_LIMIT=NONE] -->
@@ -231,18 +239,22 @@
     <string name="accessibility_rotate_button">Rotate screen</string>
 
     <!-- ******* Taskbar Edu ******* -->
-    <!-- Accessibility title for the taskbar education window. [CHAR_LIMIT=NONE] -->
+    <!-- Accessibility title for the Taskbar education window. [CHAR_LIMIT=NONE] -->
     <string name="taskbar_edu_a11y_title">Taskbar education</string>
-    <!-- Accessibility text spoken when the taskbar education panel appears [CHAR_LIMIT=NONE] -->
+    <!-- Accessibility text spoken when the Taskbar education panel appears [CHAR_LIMIT=NONE] -->
     <string name="taskbar_edu_opened">Taskbar education appeared</string>
-    <!-- Accessibility text spoken when the taskbar education panel disappears [CHAR_LIMIT=NONE] -->
+    <!-- Accessibility text spoken when the Taskbar education panel disappears [CHAR_LIMIT=NONE] -->
     <string name="taskbar_edu_closed">Taskbar education closed</string>
-    <!-- Text in dialog that lets a user know how they can use the taskbar to use multiple apps at once on their device. [CHAR_LIMIT=60] -->
-    <string name="taskbar_edu_splitscreen">Drag to the side to use 2 apps at once</string>
-    <!-- Text in dialog that lets a user know how they can show the taskbar on their device. [CHAR_LIMIT=60] -->
-    <string name="taskbar_edu_stashing">Short swipe up to show the taskbar</string>
-    <!-- Text in dialog that lets a user know how the taskbar suggests apps based on their usage. [CHAR_LIMIT=60] -->
-    <string name="taskbar_edu_suggestions">The taskbar suggests apps based on your routine</string>
+    <!-- Text in dialog that lets a user know how they can use the Taskbar to use multiple apps at once on their device. [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_splitscreen">Drag an app to the side to use 2 apps at once</string>
+    <!-- Text in dialog that lets a user know how they can show the Taskbar on their device. [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_stashing">Slow-swipe up to show the Taskbar</string>
+    <!-- Text in dialog that lets a user know how the Taskbar suggests apps based on their usage. [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_suggestions">Get app suggestions based on your routine</string>
+    <!-- Text in dialog that lets a user know that Taskbar will auto-hide, if the user switches to gesture navigation in system settings. [CHAR_LIMIT=90] -->
+    <string name="taskbar_edu_settings_persistent">Turn on gesture navigation in Settings to auto-hide the Taskbar</string>
+    <!-- Title in dialog that shows a user what they can do with the Taskbar. [CHAR_LIMIT=60] -->
+    <string name="taskbar_edu_features">Do more with the Taskbar</string>
     <!-- Text on button to go to the next screen of a tutorial [CHAR_LIMIT=16] -->
     <string name="taskbar_edu_next">Next</string>
     <!-- Text on button to go to the previous screen of a tutorial [CHAR_LIMIT=16] -->
@@ -265,13 +277,25 @@
     <string name="taskbar_button_notifications">Notifications</string>
     <!-- Content description for quick settings button [CHAR_LIMIT=16] -->
     <string name="taskbar_button_quick_settings">Quick Settings</string>
-    <!-- Accessibility title for the taskbar window. [CHAR_LIMIT=NONE] -->
+    <!-- Accessibility title for the Taskbar window. [CHAR_LIMIT=NONE] -->
     <string name="taskbar_a11y_title">Taskbar</string>
-    <!-- Accessibility title for the taskbar window on phones. [CHAR_LIMIT=NONE] -->
+    <!-- Accessibility title for the Taskbar window appeared. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_a11y_shown_title">Taskbar shown</string>
+    <!-- Accessibility title for the Taskbar window being close. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_a11y_hidden_title">Taskbar hidden</string>
+    <!-- Accessibility title for the Taskbar window on phones. [CHAR_LIMIT=NONE] -->
     <string name="taskbar_phone_a11y_title">Navigation bar</string>
 
-    <!-- Label for moving drop target to the top or left side of the screen, depending on orientation (from the taskbar only). -->
+    <!-- Label for moving drop target to the top or left side of the screen, depending on orientation (from the Taskbar only). -->
     <string name="move_drop_target_top_or_left">Move to top&#47;left</string>
-    <!-- Label for moving drop target to the bottom or right side of the screen, depending on orientation (from the taskbar only). -->
+    <!-- Label for moving drop target to the bottom or right side of the screen, depending on orientation (from the Taskbar only). -->
     <string name="move_drop_target_bottom_or_right">Move to bottom&#47;right</string>
+
+    <!-- Label for quick switch tile showing how many more apps are available [CHAR LIMIT=NONE] -->
+    <string name="quick_switch_overflow">{count, plural,
+            =1{Show # more app.}
+            other{Show # more apps.}
+        }</string>
+    <!-- Accessibility label for quick switch tiles showing split tasks [CHAR LIMIT=NONE] -->
+    <string name="quick_switch_split_task"><xliff:g id="app_name_1" example="Chrome">%1$s</xliff:g> and <xliff:g id="app_name_2" example="Gmail">%2$s</xliff:g></string>
 </resources>

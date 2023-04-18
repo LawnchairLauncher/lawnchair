@@ -59,7 +59,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 }
                 Rect focusedTaskRect = new Rect();
                 LauncherActivityInterface.INSTANCE.calculateTaskSize(mContext, mDeviceProfile,
-                        focusedTaskRect);
+                        focusedTaskRect, PagedOrientationHandler.PORTRAIT);
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, focusedTaskRect.height());
                 return response;
             }

@@ -18,6 +18,8 @@ package com.android.launcher3.model;
 
 import static android.content.ContentResolver.SCHEME_CONTENT;
 
+import static com.android.launcher3.util.SimpleBroadcastReceiver.getPackageFilter;
+
 import android.annotation.TargetApi;
 import android.app.RemoteAction;
 import android.content.ContentProviderClient;
@@ -55,7 +57,6 @@ import com.android.launcher3.popup.RemoteActionShortcut;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.BgObjectWithLooper;
 import com.android.launcher3.util.MainThreadInitializedObject;
-import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
 
@@ -117,7 +118,7 @@ public final class WellbeingModel extends BgObjectWithLooper {
         if (!TextUtils.isEmpty(mWellbeingProviderPkg)) {
             mContext.registerReceiver(
                     new SimpleBroadcastReceiver(t -> restartObserver()),
-                    PackageManagerHelper.getPackageFilter(mWellbeingProviderPkg,
+                    getPackageFilter(mWellbeingProviderPkg,
                             Intent.ACTION_PACKAGE_ADDED, Intent.ACTION_PACKAGE_CHANGED,
                             Intent.ACTION_PACKAGE_REMOVED, Intent.ACTION_PACKAGE_DATA_CLEARED,
                             Intent.ACTION_PACKAGE_RESTARTED),

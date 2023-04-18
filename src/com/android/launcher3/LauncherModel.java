@@ -37,6 +37,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.logging.FileLog;
@@ -47,7 +48,7 @@ import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.CacheDataUpdatedTask;
 import com.android.launcher3.model.ItemInstallQueue;
-import com.android.launcher3.model.LoaderResults;
+import com.android.launcher3.model.LauncherBinder;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.ModelDelegate;
 import com.android.launcher3.model.ModelWriter;
@@ -165,9 +166,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     @NonNull
     public ModelWriter getWriter(final boolean hasVerticalHotseat, final boolean verifyChanges,
-            @Nullable final Callbacks owner) {
+            CellPosMapper cellPosMapper, @Nullable final Callbacks owner) {
         return new ModelWriter(mApp.getContext(), this, mBgDataModel,
-                hasVerticalHotseat, verifyChanges, owner);
+                hasVerticalHotseat, verifyChanges, cellPosMapper, owner);
     }
 
     @Override
@@ -284,6 +285,10 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                 Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action) ||
                 Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)) {
             UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
+            if (TestProtocol.sDebugTracing) {
+                Log.d(TestProtocol.WORK_TAB_MISSING, "onBroadcastIntent intentAction: " + action +
+                        " user: " + user);
+            }
             if (user != null) {
                 if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action) ||
                         Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action)) {
@@ -405,22 +410,22 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                     MAIN_EXECUTOR.execute(cb::clearPendingBinds);
                 }
 
-                LoaderResults loaderResults = new LoaderResults(
+                LauncherBinder launcherBinder = new LauncherBinder(
                         mApp, mBgDataModel, mBgAllAppsList, callbacksList);
                 if (bindDirectly) {
                     // Divide the set of loaded items into those that we are binding synchronously,
                     // and everything else that is to be bound normally (asynchronously).
-                    loaderResults.bindWorkspace(bindAllCallbacks);
+                    launcherBinder.bindWorkspace(bindAllCallbacks);
                     // For now, continue posting the binding of AllApps as there are other
                     // issues that arise from that.
-                    loaderResults.bindAllApps();
-                    loaderResults.bindDeepShortcuts();
-                    loaderResults.bindWidgets();
+                    launcherBinder.bindAllApps();
+                    launcherBinder.bindDeepShortcuts();
+                    launcherBinder.bindWidgets();
                     return true;
                 } else {
                     stopLoader();
                     mLoaderTask = new LoaderTask(
-                            mApp, mBgAllAppsList, mBgDataModel, mModelDelegate, loaderResults);
+                            mApp, mBgAllAppsList, mBgDataModel, mModelDelegate, launcherBinder);
 
                     // Always post the loader task, instead of running directly
                     // (even on same thread) so that we exit any nested synchronized blocks

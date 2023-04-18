@@ -59,6 +59,7 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"جستجوی برنامه‌ها"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"درحال بارگیری برنامه‌‌ها…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"هیچ برنامه‌ای در مطابقت با «<xliff:g id="QUERY">%1$s</xliff:g>» پیدا نشد"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"جستجوی برنامه‌های بیشتر"</string>
     <string name="label_application" msgid="8531721983832654978">"برنامه"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"همه برنامه‌ها"</string>
     <string name="notifications_header" msgid="1404149926117359025">"اعلان‌ها"</string>
@@ -113,7 +114,6 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"برای نمایش «نقطه‌های اعلان»، اعلان‌های برنامه را برای <xliff:g id="NAME">%1$s</xliff:g> روشن کنید"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"تغییر تنظیمات"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"نمایش نقطه‌های اعلان"</string>
-    <string name="developer_options_title" msgid="700788437593726194">"گزینه‌های برنامه‌نویس"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"افزودن نماد برنامه‌ها به صفحه اصلی"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"برای برنامه‌های جدید"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"نامشخص"</string>
@@ -124,10 +124,14 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> درحال نصب است، <xliff:g id="PROGRESS">%2$s</xliff:g> تکمیل شده است"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"درحال بارگیری <xliff:g id="NAME">%1$s</xliff:g>، <xliff:g id="PROGRESS">%2$s</xliff:g> کامل شد"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> درانتظار نصب"</string>
-    <string name="dialog_update_title" msgid="114234265740994042">"برنامه باید به‌روز شود"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"برنامه برای این نماد به‌روز نشده است. می‌توانید آن را به‌صورت دستی به‌روز کنید تا میان‌بر دوباره فعال شود، یا نماد را بردارید."</string>
-    <string name="dialog_update" msgid="2178028071796141234">"به‌روزرسانی"</string>
-    <string name="dialog_remove" msgid="6510806469849709407">"برداشتن"</string>
+    <!-- no translation found for dialog_update_title (114234265740994042) -->
+    <skip />
+    <!-- no translation found for dialog_update_message (4176784553982226114) -->
+    <skip />
+    <!-- no translation found for dialog_update (2178028071796141234) -->
+    <skip />
+    <!-- no translation found for dialog_remove (6510806469849709407) -->
+    <skip />
     <string name="widgets_list" msgid="796804551140113767">"فهرست ابزارک‌ها"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"فهرست ابزارک‌ها بسته شد"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"افزودن به صفحه اصلی"</string>
@@ -136,7 +140,7 @@
     <string name="item_removed" msgid="851119963877842327">"مورد حذف شد"</string>
     <string name="undo" msgid="4151576204245173321">"واگرد"</string>
     <string name="action_move" msgid="4339390619886385032">"انتقال مورد"</string>
-    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"انتقال به ردیف <xliff:g id="NUMBER_0">%1$s</xliff:g> ستون <xliff:g id="NUMBER_1">%2$s</xliff:g> در <xliff:g id="STRING">%3$s</xliff:g>"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"انتقال به سطر <xliff:g id="NUMBER_0">%1$s</xliff:g> ستون <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"انتقال به موقعیت <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"انتقال به موقعیت دلخواه <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="item_moved" msgid="4606538322571412879">"مورد منتقل شد"</string>
@@ -160,17 +164,15 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"شخصی"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"کاری"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"نمایه کاری"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"برنامه‌های کاری نشان‌دار هستند و سرپرست فناوری اطلاعات می‌تواند آن‌ها را ببیند"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"برنامه‌های کاری دارای نشان هستند و سرپرست سیستم می‌تواند آن‌ها را ببیند"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"متوجه‌ام"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"برنامه‌های کاری موقتاً متوقف شده‌اند."</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"برنامه‌های کاری نمی‌توانند برای شما اعلان ارسال کنند، از باتری استفاده کنند، یا به مکانتان دسترسی داشته باشند"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"برنامه‌های کاری خاموش است. برنامه‌های کاری نمی‌توانند برای شما اعلان ارسال کنند، از باتری استفاده کنند، یا به مکانتان دسترسی داشته باشند"</string>
-    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"برنامه‌های کاری نشان‌دار هستند و سرپرست فناوری اطلاعات می‌تواند آن‌ها را ببیند."</string>
+    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"برنامه‌های کاری دارای نشان هستند و سرپرست سیستم می‌تواند آن‌ها را ببیند."</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"متوجه‌ام"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"توقف موقت برنامه‌های کاری"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"خاموش کردن برنامه‌های کاری"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"روشن کردن برنامه‌های کاری"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"فیلتر"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"جستجوی تلفن"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"جستجوی رایانه لوحی"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ناموفق بود: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

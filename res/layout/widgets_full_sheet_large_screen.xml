@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2022 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<com.android.launcher3.widget.picker.WidgetsFullSheet xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:theme="?attr/widgetsTheme">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:importantForAccessibility="no">
+
+        <FrameLayout
+            android:id="@+id/recycler_view_container"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            app:layout_constraintWidth_percent="0.33">
+
+            <TextView
+                android:id="@+id/fast_scroller_popup"
+                style="@style/FastScrollerPopup"
+                android:layout_marginEnd="@dimen/fastscroll_popup_margin" />
+
+            <!-- Fast scroller popup -->
+            <com.android.launcher3.views.RecyclerViewFastScroller
+                android:id="@+id/fast_scroller"
+                android:layout_width="@dimen/fastscroll_width"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/fastscroll_end_margin" />
+
+            <com.android.launcher3.widget.picker.WidgetsRecyclerView
+                android:id="@+id/search_widgets_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingHorizontal="@dimen/widget_list_horizontal_margin_large_screen"
+                android:visibility="gone" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/recycler_view_container"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            android:paddingEnd="16dp"
+            android:paddingStart="8dp"
+            android:layout_marginTop="26dp"
+            app:layout_constraintWidth_percent="0.67"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/no_widgets_text"
+                style="@style/PrimaryHeadline"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:visibility="gone"
+                tools:text="No widgets available" />
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/right_pane">
+                    <com.android.launcher3.widget.picker.WidgetsRecommendationTableLayout
+                        android:id="@+id/recommended_widget_table"
+                        android:background="@drawable/widgets_surface_background"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal=
+                            "@dimen/widget_list_horizontal_margin_large_screen"
+                        android:paddingVertical="@dimen/recommended_widgets_table_vertical_padding"
+                        android:visibility="gone" />
+            </ScrollView>
+        </FrameLayout>
+
+        <View
+            android:id="@+id/collapse_handle"
+            android:layout_width="@dimen/bottom_sheet_handle_width"
+            android:layout_height="@dimen/bottom_sheet_handle_height"
+            android:layout_marginTop="@dimen/bottom_sheet_handle_margin"
+            android:background="@drawable/bg_rounded_corner_bottom_sheet_handle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/collapse_handle"
+            android:layout_marginTop="24dp"
+            android:gravity="center_horizontal"
+            android:paddingHorizontal="@dimen/widget_list_horizontal_margin_large_screen"
+            android:text="@string/widget_button_text"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="24sp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.android.launcher3.widget.picker.WidgetsFullSheet>

@@ -40,6 +40,7 @@ import java.util.List;
 public abstract class SystemShortcut<T extends Context & ActivityContext> extends ItemInfo
         implements View.OnClickListener {
 
+    private static final String TAG = SystemShortcut.class.getSimpleName();
     private final int mIconResId;
     protected final int mLabelResId;
     protected int mAccessibilityActionId;

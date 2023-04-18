@@ -59,6 +59,7 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ऐप सर्च करें"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ऐप्लिकेशन लोड हो रहे हैं…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" से मिलता-जुलता कोई ऐप्लिकेशन नहीं मिला"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"और ऐप सर्च करें"</string>
     <string name="label_application" msgid="8531721983832654978">"ऐप्लिकेशन"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"सभी ऐप्लिकेशन"</string>
     <string name="notifications_header" msgid="1404149926117359025">"सूचनाएं"</string>
@@ -107,13 +108,12 @@
     <string name="allow_rotation_title" msgid="7222049633713050106">"होम स्क्रीन घुमाने की अनुमति दें"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फ़ोन घुुमाए जाने पर"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"सूचनाएं बताने वाला डॉट"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"चालू है"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"चालू"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"चालू"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"सूचना के ऐक्सेस की ज़रूरत है"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"सूचना बिंदु दिखाने के लिए, <xliff:g id="NAME">%1$s</xliff:g> के ऐप्लिकेशन सूचना चालू करें"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"सेटिंग बदलें"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"नई सूचनाएं बताने वाला गोल निशान दिखाएं"</string>
-    <string name="developer_options_title" msgid="700788437593726194">"डेवलपर के लिए सेटिंग और टूल"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"होम स्क्रीन पर ऐप्लिकेशन के आइकॉन जोड़ें"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"नए ऐप्लिकेशन के लिए"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"अज्ञात"</string>
@@ -124,10 +124,14 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> इंस्टॉल किया जा रहा है, <xliff:g id="PROGRESS">%2$s</xliff:g> पूरा हो गया"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> डाउनलोड हो रहा है, <xliff:g id="PROGRESS">%2$s</xliff:g> पूरी हुई"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> के इंस्टॉल होने की प्रतीक्षा की जा रही है"</string>
-    <string name="dialog_update_title" msgid="114234265740994042">"ऐप्लिकेशन को अपडेट करना ज़रूरी है"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"इस आइकॉन का ऐप्लिकेशन अपडेट नहीं है. इस शॉर्टकट को फिर से चालू करने या आइकॉन को हटाने के लिए, ऐप्लिकेशन को मैन्युअल रूप से अपडेट किया जा सकता है."</string>
-    <string name="dialog_update" msgid="2178028071796141234">"अपडेट करें"</string>
-    <string name="dialog_remove" msgid="6510806469849709407">"हटाएं"</string>
+    <!-- no translation found for dialog_update_title (114234265740994042) -->
+    <skip />
+    <!-- no translation found for dialog_update_message (4176784553982226114) -->
+    <skip />
+    <!-- no translation found for dialog_update (2178028071796141234) -->
+    <skip />
+    <!-- no translation found for dialog_remove (6510806469849709407) -->
+    <skip />
     <string name="widgets_list" msgid="796804551140113767">"विजेट की सूची"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"विजेट की सूची बंद हो गई है"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"होम स्क्रीन पर जोड़ें"</string>
@@ -136,7 +140,7 @@
     <string name="item_removed" msgid="851119963877842327">"आइटम हटाया गया"</string>
     <string name="undo" msgid="4151576204245173321">"पहले जैसा करें"</string>
     <string name="action_move" msgid="4339390619886385032">"आइटम ले जाएं"</string>
-    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"<xliff:g id="STRING">%3$s</xliff:g> में, पंक्ति <xliff:g id="NUMBER_0">%1$s</xliff:g> कॉलम <xliff:g id="NUMBER_1">%2$s</xliff:g> पर जाएं"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"पंक्ति <xliff:g id="NUMBER_0">%1$s</xliff:g> स्तंभ <xliff:g id="NUMBER_1">%2$s</xliff:g> पर ले जाएं"</string>
     <string name="move_to_position" msgid="6750008980455459790">"<xliff:g id="NUMBER">%1$s</xliff:g> स्थिति पर ले जाएं"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"<xliff:g id="NUMBER">%1$s</xliff:g> की पसंदीदा स्थिति पर ले जाएं"</string>
     <string name="item_moved" msgid="4606538322571412879">"आइटम ले जाया गया"</string>
@@ -158,19 +162,17 @@
     <string name="accessibility_close" msgid="2277148124685870734">"बंद करें"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"सूचना को खारिज किया गया"</string>
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"निजी ऐप"</string>
-    <string name="all_apps_work_tab" msgid="4884822796154055118">"वर्क ऐप्लिकेशन"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"काम से जुड़े ऐप"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"वर्क प्रोफ़ाइल"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"वर्क ऐप्लिकेशन बैज किए गए हैं और आईटी एडमिन को दिख रहे हैं"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन बैज किए गए हैं और आईटी एडमिन को दिख रहे हैं"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ठीक है"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"वर्क ऐप्लिकेशन रोके गए"</string>
-    <string name="work_apps_paused_body" msgid="261634750995824906">"आपके वर्क ऐप्लिकेशन, आपको सूचनाएं नहीं भेज सकते. साथ ही, आपकी बैटरी का इस्तेमाल या आपकी जगह की जानकारी को ऐक्सेस भी नहीं कर सकते"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन रोके गए"</string>
+    <string name="work_apps_paused_body" msgid="261634750995824906">"ऑफ़िस के काम से जुड़े आपके ऐप्लिकेशन, आपको सूचनाएं नहीं भेज सकते. साथ ही, आपकी बैटरी का इस्तेमाल या आपकी जगह की जानकारी को ऐक्सेस भी नहीं कर सकते"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन बंद हैं. ये ऐप्लिकेशन, आपको सूचनाएं नहीं भेज सकते. साथ ही, आपकी बैटरी का इस्तेमाल या आपकी जगह की जानकारी को ऐक्सेस भी नहीं कर सकते"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन बैज किए गए हैं और आईटी एडमिन को दिख रहे हैं"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ठीक है"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"वर्क ऐप्लिकेशन रोकें"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन बंद करें"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन चालू करें"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फ़िल्टर"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"अपने फ़ोन में खोजें"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"अपने टैबलेट में खोजें"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"पूरा नहीं हुआ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

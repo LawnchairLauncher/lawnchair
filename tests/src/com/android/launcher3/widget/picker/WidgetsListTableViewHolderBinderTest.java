@@ -94,10 +94,10 @@ public final class WidgetsListTableViewHolderBinderTest {
         }).when(mIconCache).getTitleNoCache(any());
 
         mViewHolderBinder = new WidgetsListTableViewHolderBinder(
+                mContext,
                 LayoutInflater.from(mContext),
                 mOnIconClickListener,
-                mOnLongClickListener,
-                new WidgetsListDrawableFactory(mContext));
+                mOnLongClickListener);
     }
 
     @Test

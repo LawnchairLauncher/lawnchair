@@ -33,13 +33,13 @@ public class SimpleReorderCase {
             + "--mm-\n"
             + "-----\n"
             + "-----";
-    private static final Point MOVE_TO_5x5 = new Point(4, 4);
+    private static final Point MOVE_TO_5x5 = new Point(0, 4);
     private static final String END_BOARD_STR_5x5 = ""
             + "xxxxx\n"
             + "-----\n"
             + "-----\n"
-            + "---mm\n"
-            + "---mm";
+            + "mm---\n"
+            + "mm---";
     private static final ReorderTestCase TEST_CASE_5x5 = new ReorderTestCase(START_BOARD_STR_5x5,
             MOVE_TO_5x5,
             END_BOARD_STR_5x5);
@@ -61,7 +61,27 @@ public class SimpleReorderCase {
             MOVE_TO_4x4,
             END_BOARD_STR_4x4);
 
+    /** 6x5 Test
+     **/
+    private static final String START_BOARD_STR_6x5 = ""
+            + "xxxxxx\n"
+            + "-mm---\n"
+            + "-mm---\n"
+            + "------\n"
+            + "------";
+    private static final Point MOVE_TO_6x5 = new Point(4, 3);
+    private static final String END_BOARD_STR_6x5 = ""
+            + "xxxxxx\n"
+            + "------\n"
+            + "------\n"
+            + "----mm\n"
+            + "----mm";
+    private static final ReorderTestCase TEST_CASE_6x5 = new ReorderTestCase(START_BOARD_STR_6x5,
+            MOVE_TO_6x5,
+            END_BOARD_STR_6x5);
+
     public static final Map<Point, ReorderTestCase> TEST_BY_GRID_SIZE =
             Map.of(new Point(5, 5), TEST_CASE_5x5,
-                    new Point(4, 4), TEST_CASE_4x4);
+                    new Point(4, 4), TEST_CASE_4x4,
+                    new Point(6, 5), TEST_CASE_6x5);
 }

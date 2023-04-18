@@ -27,16 +27,44 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowInsets;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /** Root drag layer for the Taskbar overlay window. */
 public class TaskbarOverlayDragLayer extends
         BaseDragLayer<TaskbarOverlayContext> implements
         ViewTreeObserver.OnComputeInternalInsetsListener {
+
+    private final List<OnClickListener> mOnClickListeners = new CopyOnWriteArrayList<>();
+    private final TouchController mClickListenerTouchController = new TouchController() {
+        @Override
+        public boolean onControllerTouchEvent(MotionEvent ev) {
+            if (ev.getActionMasked() == MotionEvent.ACTION_UP) {
+                for (OnClickListener listener : mOnClickListeners) {
+                    listener.onClick(TaskbarOverlayDragLayer.this);
+                }
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
+            for (int i = 0; i < getChildCount(); i++) {
+                if (isEventOverView(getChildAt(i), ev)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    };
 
     TaskbarOverlayDragLayer(Context context) {
         super(context, null, 1);
@@ -58,7 +86,10 @@ public class TaskbarOverlayDragLayer extends
 
     @Override
     public void recreateControllers() {
-        mControllers = new TouchController[]{mActivity.getDragController()};
+        mControllers = mOnClickListeners.isEmpty()
+                ? new TouchController[]{mActivity.getDragController()}
+                : new TouchController[] {
+                        mActivity.getDragController(), mClickListenerTouchController};
     }
 
     @Override
@@ -71,7 +102,8 @@ public class TaskbarOverlayDragLayer extends
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == ACTION_UP && event.getKeyCode() == KEYCODE_BACK) {
             AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mActivity);
-            if (topView != null && topView.onBackPressed()) {
+            if (topView != null && topView.canHandleBack()) {
+                topView.onBackInvoked();
                 return true;
             }
         }
@@ -95,6 +127,51 @@ public class TaskbarOverlayDragLayer extends
     public void onViewRemoved(View child) {
         super.onViewRemoved(child);
         mActivity.getOverlayController().maybeCloseWindow();
+    }
+
+    /**
+     * Adds the given callback to clicks to this drag layer.
+     * <p>
+     * Clicks are only accepted on this drag layer if they fall within this drag layer's bounds and
+     * outside the bounds of all child views.
+     * <p>
+     * If the click falls within the bounds of a child view, then this callback does not run and
+     * that child can optionally handle it.
+     */
+    private void addOnClickListener(@NonNull OnClickListener listener) {
+        boolean wasEmpty = mOnClickListeners.isEmpty();
+        mOnClickListeners.add(listener);
+        if (wasEmpty) {
+            recreateControllers();
+        }
+    }
+
+    /**
+     * Removes the given on click callback.
+     * <p>
+     * No-op if the callback was never added.
+     */
+    private void removeOnClickListener(@NonNull OnClickListener listener) {
+        boolean wasEmpty = mOnClickListeners.isEmpty();
+        mOnClickListeners.remove(listener);
+        if (!wasEmpty && mOnClickListeners.isEmpty()) {
+            recreateControllers();
+        }
+    }
+
+    /**
+     * Queues the given callback on the next click on this drag layer.
+     * <p>
+     * Once run, this callback is immediately removed.
+     */
+    public void runOnClickOnce(@NonNull OnClickListener listener) {
+        addOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onClick(v);
+                removeOnClickListener(this);
+            }
+        });
     }
 
     /**

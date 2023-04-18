@@ -21,11 +21,15 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
+import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.view.View;
 
 import androidx.annotation.IntDef;
 
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.model.data.ItemInfo;
 
 import java.lang.annotation.Retention;
 
@@ -189,5 +193,44 @@ public final class SplitConfigurationOptions {
         }
         return position == STAGE_POSITION_TOP_OR_LEFT ? STAGE_POSITION_BOTTOM_OR_RIGHT
                 : STAGE_POSITION_TOP_OR_LEFT;
+    }
+
+    public static class SplitSelectSource {
+
+        /** Keep in sync w/ ActivityTaskManager#INVALID_TASK_ID (unreference-able) */
+        private static final int INVALID_TASK_ID = -1;
+
+        private View view;
+        private Drawable drawable;
+        public final Intent intent;
+        public final SplitPositionOption position;
+        public final ItemInfo itemInfo;
+        public final StatsLogManager.EventEnum splitEvent;
+        /** Represents the taskId of the first app to start in split screen */
+        public int alreadyRunningTaskId = INVALID_TASK_ID;
+        /**
+         * If {@code true}, animates the view represented by {@link #alreadyRunningTaskId} into the
+         * split placeholder view
+         */
+        public boolean animateCurrentTaskDismissal;
+
+        public SplitSelectSource(View view, Drawable drawable, Intent intent,
+                SplitPositionOption position, ItemInfo itemInfo,
+                StatsLogManager.EventEnum splitEvent) {
+            this.view = view;
+            this.drawable = drawable;
+            this.intent = intent;
+            this.position = position;
+            this.itemInfo = itemInfo;
+            this.splitEvent = splitEvent;
+        }
+
+        public Drawable getDrawable() {
+            return drawable;
+        }
+
+        public View getView() {
+            return view;
+        }
     }
 }

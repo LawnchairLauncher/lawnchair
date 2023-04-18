@@ -81,6 +81,47 @@ public class TaskThumbnailView extends View {
                 }
             };
 
+    public static final Property<TaskThumbnailView, Float> SPLASH_ALPHA =
+            new FloatProperty<TaskThumbnailView>("splashAlpha") {
+                @Override
+                public void setValue(TaskThumbnailView thumbnail, float splashAlpha) {
+                    thumbnail.setSplashAlpha(splashAlpha);
+                }
+
+                @Override
+                public Float get(TaskThumbnailView thumbnailView) {
+                    return thumbnailView.mSplashAlpha / 255f;
+                }
+            };
+
+    /** Use to animate thumbnail translationX while first app in split selection is initiated */
+    public static final Property<TaskThumbnailView, Float> SPLIT_SELECT_TRANSLATE_X =
+            new FloatProperty<TaskThumbnailView>("splitSelectTranslateX") {
+                @Override
+                public void setValue(TaskThumbnailView thumbnail, float splitSelectTranslateX) {
+                    thumbnail.applySplitSelectTranslateX(splitSelectTranslateX);
+                }
+
+                @Override
+                public Float get(TaskThumbnailView thumbnailView) {
+                    return thumbnailView.mSplitSelectTranslateX;
+                }
+            };
+
+    /** Use to animate thumbnail translationY while first app in split selection is initiated */
+    public static final Property<TaskThumbnailView, Float> SPLIT_SELECT_TRANSLATE_Y =
+            new FloatProperty<TaskThumbnailView>("splitSelectTranslateY") {
+                @Override
+                public void setValue(TaskThumbnailView thumbnail, float splitSelectTranslateY) {
+                    thumbnail.applySplitSelectTranslateY(splitSelectTranslateY);
+                }
+
+                @Override
+                public Float get(TaskThumbnailView thumbnailView) {
+                    return thumbnailView.mSplitSelectTranslateY;
+                }
+            };
+
     private final BaseActivity mActivity;
     @Nullable
     private TaskOverlay mOverlay;
@@ -111,6 +152,10 @@ public class TaskThumbnailView extends View {
     private int mSplashAlpha = 0;
 
     private boolean mOverlayEnabled;
+    /** Used as a placeholder when the original thumbnail animates out to. */
+    private boolean mShowSplashForSplitSelection;
+    private float mSplitSelectTranslateX;
+    private float mSplitSelectTranslateY;
 
     public TaskThumbnailView(Context context) {
         this(context, null);
@@ -293,16 +338,9 @@ public class TaskThumbnailView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        RectF currentDrawnInsets = mFullscreenParams.mCurrentDrawnInsets;
         canvas.save();
-        canvas.scale(mFullscreenParams.mScale, mFullscreenParams.mScale);
-        canvas.translate(currentDrawnInsets.left, currentDrawnInsets.top);
         // Draw the insets if we're being drawn fullscreen (we do this for quick switch).
-        drawOnCanvas(canvas,
-                -currentDrawnInsets.left,
-                -currentDrawnInsets.top,
-                getMeasuredWidth() + currentDrawnInsets.right,
-                getMeasuredHeight() + currentDrawnInsets.bottom,
+        drawOnCanvas(canvas, 0, 0, getMeasuredWidth(), getMeasuredHeight(),
                 mFullscreenParams.mCurrentDrawnCornerRadius);
         canvas.restore();
     }
@@ -342,14 +380,47 @@ public class TaskThumbnailView extends View {
 
         // Draw splash above thumbnail to hide inconsistencies in rotation and aspect ratios.
         if (shouldShowSplashView()) {
-            if (mSplashView != null) {
-                canvas.drawRoundRect(x, y, width + 1, height + 1, cornerRadius,
-                        cornerRadius, mSplashBackgroundPaint);
+            float cornerRadiusX = cornerRadius;
+            float cornerRadiusY = cornerRadius;
+            if (mShowSplashForSplitSelection) {
+                cornerRadiusX = cornerRadius / getScaleX();
+                cornerRadiusY = cornerRadius / getScaleY();
+            }
 
+            // Always draw background for hiding inconsistencies, even if splash view is not yet
+            // loaded (which can happen as task icons are loaded asynchronously in the background)
+            canvas.drawRoundRect(x, y, width + 1, height + 1, cornerRadiusX,
+                    cornerRadiusY, mSplashBackgroundPaint);
+            if (mSplashView != null) {
                 mSplashView.layout((int) x, (int) (y + 1), (int) width, (int) height - 1);
                 mSplashView.draw(canvas);
             }
         }
+    }
+
+    /** See {@link #SPLIT_SELECT_TRANSLATE_X} */
+    protected void applySplitSelectTranslateX(float splitSelectTranslateX) {
+        mSplitSelectTranslateX = splitSelectTranslateX;
+        applyTranslateX();
+    }
+
+    /** See {@link #SPLIT_SELECT_TRANSLATE_Y} */
+    protected void applySplitSelectTranslateY(float splitSelectTranslateY) {
+        mSplitSelectTranslateY = splitSelectTranslateY;
+        applyTranslateY();
+    }
+
+    private void applyTranslateX() {
+        setTranslationX(mSplitSelectTranslateX);
+    }
+
+    private void applyTranslateY() {
+        setTranslationY(mSplitSelectTranslateY);
+    }
+
+    protected void resetViewTransforms() {
+        mSplitSelectTranslateX = 0;
+        mSplitSelectTranslateY = 0;
     }
 
     public TaskView getTaskView() {
@@ -372,11 +443,25 @@ public class TaskThumbnailView extends View {
      */
     public boolean shouldShowSplashView() {
         return isThumbnailAspectRatioDifferentFromThumbnailData()
-                || isThumbnailRotationDifferentFromTask();
+                || isThumbnailRotationDifferentFromTask()
+                || mShowSplashForSplitSelection;
+    }
+
+    public void setShowSplashForSplitSelection(boolean showSplashForSplitSelection) {
+        mShowSplashForSplitSelection = showSplashForSplitSelection;
+    }
+
+    protected void refreshSplashView() {
+        if (mTask != null) {
+            updateSplashView(mTask.icon);
+            invalidate();
+        }
     }
 
     private void updateSplashView(Drawable icon) {
         if (icon == null || icon.getConstantState() == null) {
+            mSplashViewDrawable = null;
+            mSplashView = null;
             return;
         }
         mSplashViewDrawable = icon.getConstantState().newDrawable().mutate();
@@ -386,7 +471,6 @@ public class TaskThumbnailView extends View {
 
         imageView.setScaleType(ImageView.ScaleType.MATRIX);
         Matrix matrix = new Matrix();
-
         float drawableWidth = mSplashViewDrawable.getIntrinsicWidth();
         float drawableHeight = mSplashViewDrawable.getIntrinsicHeight();
         float viewWidth = getMeasuredWidth();
@@ -398,12 +482,13 @@ public class TaskThumbnailView extends View {
         float nonGridScale = getTaskView() == null ? 1 : 1 / getTaskView().getNonGridScale();
         float recentsMaxScale = getTaskView() == null || getTaskView().getRecentsView() == null
                 ? 1 : 1 / getTaskView().getRecentsView().getMaxScaleForFullScreen();
-        float scale = nonGridScale * recentsMaxScale;
+        float scaleX = nonGridScale * recentsMaxScale * (1 / getScaleX());
+        float scaleY = nonGridScale * recentsMaxScale * (1 / getScaleY());
 
         // Center the image in the view.
         matrix.setTranslate(centeredDrawableLeft, centeredDrawableTop);
         // Apply scale transformation after translation, pivoting around center of view.
-        matrix.postScale(scale, scale, viewCenterX, viewCenterY);
+        matrix.postScale(scaleX, scaleY, viewCenterX, viewCenterY);
 
         imageView.setImageMatrix(matrix);
         mSplashView = imageView;
@@ -414,9 +499,7 @@ public class TaskThumbnailView extends View {
             return false;
         }
 
-        RectF insets = mPreviewPositionHelper.getClippedInsets();
-        float thumbnailViewAspect = (getWidth() + insets.left + insets.right)
-                / (getHeight() + insets.top + insets.bottom);
+        float thumbnailViewAspect = getWidth() / (float) getHeight();
         float thumbnailDataAspect =
                 mThumbnailData.thumbnail.getWidth() / (float) mThumbnailData.thumbnail.getHeight();
 
@@ -476,7 +559,7 @@ public class TaskThumbnailView extends View {
             boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
             mPreviewPositionHelper.updateThumbnailMatrix(mPreviewRect, mThumbnailData,
                     getMeasuredWidth(), getMeasuredHeight(), dp.widthPx, dp.heightPx,
-                    dp.taskbarSize, dp.isTablet, currentRotation, isRtl);
+                    dp.taskbarHeight, dp.isTablet, currentRotation, isRtl);
 
             mBitmapShader.setLocalMatrix(mPreviewPositionHelper.getMatrix());
             mPaint.setShader(mBitmapShader);

@@ -59,6 +59,7 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Paieškos programos"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Įkeliamos programos…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nerasta jokių užklausą „<xliff:g id="QUERY">%1$s</xliff:g>“ atitinkančių programų"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Ieškoti daugiau programų"</string>
     <string name="label_application" msgid="8531721983832654978">"Programa"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Visos programos"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Pranešimai"</string>
@@ -113,7 +114,6 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Kad būtų rodomi pranešimų taškai, įjunkite programos „<xliff:g id="NAME">%1$s</xliff:g>“ pranešimus."</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Keisti nustatymus"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Rodyti pranešimų taškus"</string>
-    <string name="developer_options_title" msgid="700788437593726194">"Kūrėjo parinktys"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Pridėti programų piktogramas pagrindiniame ekrane"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Skirta naujoms programoms"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Nežinoma"</string>
@@ -124,10 +124,14 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Įdiegiama: „<xliff:g id="NAME">%1$s</xliff:g>“; baigta: <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Atsisiunčiama programa „<xliff:g id="NAME">%1$s</xliff:g>“, <xliff:g id="PROGRESS">%2$s</xliff:g> baigta"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Laukiama, kol bus įdiegta programa „<xliff:g id="NAME">%1$s</xliff:g>“"</string>
-    <string name="dialog_update_title" msgid="114234265740994042">"Būtina atnaujinti programą"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"Šios piktogramos programa neatnaujinta. Galite patys atnaujinti, kad iš naujo įgalintumėte šį spartųjį klavišą, arba pašalinkite piktogramą."</string>
-    <string name="dialog_update" msgid="2178028071796141234">"Atnaujinti"</string>
-    <string name="dialog_remove" msgid="6510806469849709407">"Pašalinti"</string>
+    <!-- no translation found for dialog_update_title (114234265740994042) -->
+    <skip />
+    <!-- no translation found for dialog_update_message (4176784553982226114) -->
+    <skip />
+    <!-- no translation found for dialog_update (2178028071796141234) -->
+    <skip />
+    <!-- no translation found for dialog_remove (6510806469849709407) -->
+    <skip />
     <string name="widgets_list" msgid="796804551140113767">"Valdiklių sąrašas"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Valdiklių sąrašas uždarytas"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Pridėti prie pagrind. ekrano"</string>
@@ -136,7 +140,7 @@
     <string name="item_removed" msgid="851119963877842327">"Elementas perkeltas"</string>
     <string name="undo" msgid="4151576204245173321">"Anuliuoti"</string>
     <string name="action_move" msgid="4339390619886385032">"Perkelti elementą"</string>
-    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"Perkelti į <xliff:g id="NUMBER_0">%1$s</xliff:g> eilutės <xliff:g id="NUMBER_1">%2$s</xliff:g> stulpelį, esantį <xliff:g id="STRING">%3$s</xliff:g>"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"Perkelti į <xliff:g id="NUMBER_0">%1$s</xliff:g> eilutę, <xliff:g id="NUMBER_1">%2$s</xliff:g> stulpelį"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Perkelti į <xliff:g id="NUMBER">%1$s</xliff:g> poziciją"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Perkelti į <xliff:g id="NUMBER">%1$s</xliff:g> mėgstamiausių poziciją"</string>
     <string name="item_moved" msgid="4606538322571412879">"Elementas perkeltas"</string>
@@ -167,10 +171,8 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Darbo programos išjungtos. Darbo programos negali siųsti jums pranešimų, naudoti jūsų akumuliatoriaus ar pasiekti jūsų vietovės"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Darbo programos yra pažymėtos ženkleliu ir matomos IT administratoriui"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Supratau"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Pristabdyti darbo programas"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Išjungti darbo programas"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Įjungti darbo programas"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtruoti"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"Paieška telefone"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Paieška planšetiniame kompiuteryje"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Nepavyko: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

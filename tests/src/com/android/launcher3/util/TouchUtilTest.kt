@@ -18,9 +18,9 @@ package com.android.launcher3.util
 
 import android.view.InputDevice
 import android.view.MotionEvent
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Test
 import org.junit.runner.RunWith
 

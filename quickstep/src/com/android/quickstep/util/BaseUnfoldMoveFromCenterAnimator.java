@@ -56,7 +56,6 @@ public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProg
         mAnimationInProgress = true;
         mMoveFromCenterAnimation.updateDisplayProperties();
         onPrepareViewsForAnimation();
-        onTransitionProgress(0f);
         mRotationChangeProvider.addCallback(mRotationListener);
     }
 
@@ -87,6 +86,7 @@ public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProg
     }
 
     private void clearRegisteredViews() {
+        restoreClippings();
         mMoveFromCenterAnimation.clearRegisteredViews();
 
         mOriginalClipChildren.clear();
@@ -101,22 +101,34 @@ public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProg
         mMoveFromCenterAnimation.registerViewForAnimation(view);
     }
 
-    protected void disableClipping(ViewGroup view) {
+    /**
+     * Sets clipToPadding for the view which then could be restored to the original value
+     * using {@link BaseUnfoldMoveFromCenterAnimator#restoreClippings} method call
+     * @param view view to set the property
+     * @param clipToPadding value of the property
+     */
+    protected void setClipToPadding(ViewGroup view, boolean clipToPadding) {
         mOriginalClipToPadding.put(view, view.getClipToPadding());
-        mOriginalClipChildren.put(view, view.getClipChildren());
-        view.setClipToPadding(false);
-        view.setClipChildren(false);
+        view.setClipToPadding(clipToPadding);
     }
 
-    protected void restoreClipping(ViewGroup view) {
-        final Boolean originalClipToPadding = mOriginalClipToPadding.get(view);
-        if (originalClipToPadding != null) {
-            view.setClipToPadding(originalClipToPadding);
-        }
-        final Boolean originalClipChildren = mOriginalClipChildren.get(view);
-        if (originalClipChildren != null) {
-            view.setClipChildren(originalClipChildren);
-        }
+    /**
+     * Sets clipChildren for the view which then could be restored to the original value
+     * using {@link BaseUnfoldMoveFromCenterAnimator#restoreClippings} method call
+     * @param view view to set the property
+     * @param clipChildren value of the property
+     */
+    protected void setClipChildren(ViewGroup view, boolean clipChildren) {
+        mOriginalClipChildren.put(view, view.getClipChildren());
+        view.setClipChildren(clipChildren);
+    }
+
+    /**
+     * Restores original clip properties after their modifications
+     */
+    protected void restoreClippings() {
+        mOriginalClipToPadding.forEach(ViewGroup::setClipToPadding);
+        mOriginalClipChildren.forEach(ViewGroup::setClipChildren);
     }
 
     private class UnfoldMoveFromCenterRotationListener implements

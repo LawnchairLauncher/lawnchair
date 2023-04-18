@@ -57,6 +57,8 @@ public abstract class ButtonDropTarget extends TextView
     public static final int TOOLTIP_LEFT = 1;
     public static final int TOOLTIP_RIGHT = 2;
 
+    private final Rect mTempRect = new Rect();
+
     protected final Launcher mLauncher;
 
     protected DropTargetBar mDropTargetBar;
@@ -403,6 +405,21 @@ public abstract class ButtonDropTarget extends TextView
     }
 
     /**
+     * Returns if the text will be clipped vertically within the provided availableHeight.
+     */
+    private boolean isTextClippedVertically(int availableHeight) {
+        availableHeight -= getPaddingTop() + getPaddingBottom();
+        if (availableHeight <= 0) {
+            return true;
+        }
+
+        getPaint().getTextBounds(mText.toString(), 0, mText.length(), mTempRect);
+        // Add bounds bottom to height, as text bounds height measures from the text baseline and
+        // above, which characters can descend below
+        return mTempRect.bottom + mTempRect.height() >= availableHeight;
+    }
+
+    /**
      * Reduce the size of the text until it fits the measured width or reaches a minimum.
      *
      * The minimum size is defined by {@code R.dimen.button_drop_target_min_text_size} and
@@ -423,7 +440,9 @@ public abstract class ButtonDropTarget extends TextView
         float textSize = Utilities.pxToSp(getTextSize());
 
         int availableWidth = getMeasuredWidth();
-        while (isTextTruncated(availableWidth)) {
+        int availableHeight = getMeasuredHeight();
+
+        while (isTextTruncated(availableWidth) || isTextClippedVertically(availableHeight)) {
             textSize -= step;
             if (textSize < minSize) {
                 textSize = minSize;

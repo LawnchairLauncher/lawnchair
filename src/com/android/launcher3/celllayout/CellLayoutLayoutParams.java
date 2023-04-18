@@ -29,29 +29,15 @@ import androidx.annotation.Nullable;
  */
 public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
 
-    public int screenId = -1;
-
-    /**
-     * Horizontal location of the item in the grid.
-     */
     @ViewDebug.ExportedProperty
-    public int cellX;
+    private int mCellX;
 
-    /**
-     * Vertical location of the item in the grid.
-     */
     @ViewDebug.ExportedProperty
-    public int cellY;
+    private int mCellY;
 
-    /**
-     * Temporary horizontal location of the item in the grid during reorder
-     */
-    public int tmpCellX;
+    private int mTmpCellX;
 
-    /**
-     * Temporary vertical location of the item in the grid during reorder
-     */
-    public int tmpCellY;
+    private int mTmpCellY;
 
     /**
      * Indicates that the temporary coordinates should be used to layout the items
@@ -105,24 +91,21 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
 
     public CellLayoutLayoutParams(CellLayoutLayoutParams source) {
         super(source);
-        this.cellX = source.cellX;
-        this.cellY = source.cellY;
+        this.mCellX = source.getCellX();
+        this.mCellY = source.getCellY();
         this.cellHSpan = source.cellHSpan;
         this.cellVSpan = source.cellVSpan;
-        this.screenId = source.screenId;
-        this.tmpCellX = source.tmpCellX;
-        this.tmpCellY = source.tmpCellY;
+        this.mTmpCellX = source.getTmpCellX();
+        this.mTmpCellY = source.getTmpCellY();
         this.useTmpCoords = source.useTmpCoords;
     }
 
-    public CellLayoutLayoutParams(int cellX, int cellY, int cellHSpan, int cellVSpan,
-            int screenId) {
+    public CellLayoutLayoutParams(int cellX, int cellY, int cellHSpan, int cellVSpan) {
         super(CellLayoutLayoutParams.MATCH_PARENT, CellLayoutLayoutParams.MATCH_PARENT);
-        this.cellX = cellX;
-        this.cellY = cellY;
+        this.mCellX = cellX;
+        this.mCellY = cellY;
         this.cellHSpan = cellHSpan;
         this.cellVSpan = cellVSpan;
-        this.screenId = screenId;
     }
 
     /**
@@ -148,8 +131,8 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
         if (isLockedToGrid) {
             final int myCellHSpan = cellHSpan;
             final int myCellVSpan = cellVSpan;
-            int myCellX = useTmpCoords ? tmpCellX : cellX;
-            int myCellY = useTmpCoords ? tmpCellY : cellY;
+            int myCellX = useTmpCoords ? getTmpCellX() : getCellX();
+            int myCellY = useTmpCoords ? getTmpCellY() : getCellY();
 
             if (invertHorizontally) {
                 myCellX = colCount - myCellX - cellHSpan;
@@ -179,14 +162,58 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
      * Sets the position to the provided point
      */
     public void setCellXY(Point point) {
-        cellX = point.x;
-        cellY = point.y;
+        setCellX(point.x);
+        setCellY(point.y);
     }
 
     /**
      * @return the string representation of the position of the {@link CellLayoutLayoutParams}
      */
     public String toString() {
-        return "(" + this.cellX + ", " + this.cellY + ")";
+        return "(" + this.getCellX() + ", " + this.getCellY() + ")";
+    }
+
+    /**
+     * Horizontal location of the item in the grid.
+     */
+    public int getCellX() {
+        return mCellX;
+    }
+
+    public void setCellX(int cellX) {
+        this.mCellX = cellX;
+    }
+
+    /**
+     * Vertical location of the item in the grid.
+     */
+    public int getCellY() {
+        return mCellY;
+    }
+
+    public void setCellY(int cellY) {
+        this.mCellY = cellY;
+    }
+
+    /**
+     * Temporary horizontal location of the item in the grid during reorder
+     */
+    public int getTmpCellX() {
+        return mTmpCellX;
+    }
+
+    public void setTmpCellX(int tmpCellX) {
+        this.mTmpCellX = tmpCellX;
+    }
+
+    /**
+     * Temporary vertical location of the item in the grid during reorder
+     */
+    public int getTmpCellY() {
+        return mTmpCellY;
+    }
+
+    public void setTmpCellY(int tmpCellY) {
+        this.mTmpCellY = tmpCellY;
     }
 }

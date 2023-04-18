@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
 
     <color name="chip_hint_foreground_color">#fff</color>
     <color name="chip_scrim_start_color">#39000000</color>
@@ -40,13 +40,20 @@
     <color name="gesture_tutorial_fake_task_view_color">#6DA1FF</color> <!-- Light Blue -->
     <!-- Must contrast gesture_tutorial_fake_wallpaper_color -->
     <color name="gesture_tutorial_fake_previous_task_view_color">#3C4043</color> <!-- Gray -->
-    <color name="gesture_tutorial_taskbar_color">#202124</color>
+    <color name="gesture_tutorial_taskbar_color">#E8EAED</color>
+
+    <!-- Redesigned gesture navigation tutorial -->
+    <color name="gesture_home_tutorial_background">#FFAD91</color>
+    <color name="gesture_home_tutorial_swipe_up_rect">#3857C7</color>
+    <color name="gesture_back_tutorial_exiting_app">#F9A2B9</color>
+    <color name="gesture_back_tutorial_background">#3857C7</color>
+    <color name="gesture_overview_tutorial_background">#DFF3AF</color>
+    <color name="gesture_overview_tutorial_swipe_rect">#7E44AD</color>
+    <color name="gesture_overview_background">#BFC8CB</color>
+    <color name="gesture_tutorial_menu_background">#1C1B1F</color>
 
     <!-- Mock hotseat -->
-    <color name="mock_app_icon_1">#8AB4F8</color>
-    <color name="mock_app_icon_2">#F28B82</color>
-    <color name="mock_app_icon_3">#FDD663</color>
-    <color name="mock_app_icon_4">#81C995</color>
+    <color name="mock_app_icon">#BDC1C6</color>
     <color name="mock_search_bar">#3C4043</color>
 
     <!-- Mock conversation -->
@@ -79,4 +86,18 @@
     <!-- Recents overview -->
     <color name="recents_filter_icon">#333333</color>
 
+    <!-- Lottie light theme colors. -->
+    <color name="lottie_blue400">#669df6</color>
+    <color name="lottie_blue600">#1a73e8</color>
+    <color name="lottie_green400">#5bb974</color>
+    <color name="lottie_green600">#1e8e3e</color>
+    <color name="lottie_grey200">#e8eaed</color>
+    <color name="lottie_grey600">#80868b</color>
+    <color name="lottie_grey700">#5f6368</color>
+    <color name="lottie_red600">#d93025</color>
+    <color name="lottie_yellow400">#fcc934</color>
+    <color name="lottie_yellow600">#f9ab00</color>
+
+    <!-- Turn on work apps button -->
+    <color name="work_turn_on_stroke">?androidprv:attr/colorAccentPrimaryVariant</color>
 </resources>

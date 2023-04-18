@@ -184,7 +184,6 @@ public class TaskbarModelCallbacks implements
         int predictionSize = mPredictedItems.size();
         int predictionNextIndex = 0;
 
-        boolean isHotseatEmpty = true;
         for (int i = 0; i < hotseatItemInfos.length; i++) {
             hotseatItemInfos[i] = mHotseatItems.get(i);
             if (hotseatItemInfos[i] == null && predictionNextIndex < predictionSize) {
@@ -192,20 +191,11 @@ public class TaskbarModelCallbacks implements
                 hotseatItemInfos[i].screenId = i;
                 predictionNextIndex++;
             }
-            if (hotseatItemInfos[i] != null) {
-                isHotseatEmpty = false;
-            }
         }
         hotseatItemInfos = mControllers.taskbarRecentAppsController
                 .updateHotseatItemInfos(hotseatItemInfos);
         mContainer.updateHotseatItems(hotseatItemInfos);
-
-        final boolean finalIsHotseatEmpty = isHotseatEmpty;
-        mControllers.runAfterInit(() -> {
-            mControllers.taskbarStashController.updateStateForFlag(
-                    TaskbarStashController.FLAG_STASHED_IN_APP_EMPTY, finalIsHotseatEmpty);
-            mControllers.taskbarStashController.applyState();
-        });
+        mControllers.taskbarViewController.updateIconsBackground();
     }
 
     @Override

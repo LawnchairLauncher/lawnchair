@@ -50,7 +50,6 @@ import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.model.WidgetsListContentEntry;
 import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
-import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -117,12 +116,12 @@ public class SimpleWidgetsSearchAlgorithmTest {
                 .getAllWidgets();
 
         assertEquals(List.of(
-                new WidgetsListSearchHeaderEntry(
+                WidgetsListHeaderEntry.createForSearch(
                         mCalendarHeaderEntry.mPkgItem,
                         mCalendarHeaderEntry.mTitleSectionName,
                         mCalendarHeaderEntry.mWidgets),
                 mCalendarContentEntry,
-                new WidgetsListSearchHeaderEntry(
+                WidgetsListHeaderEntry.createForSearch(
                         mCameraHeaderEntry.mPkgItem,
                         mCameraHeaderEntry.mTitleSectionName,
                         mCameraHeaderEntry.mWidgets),
@@ -138,7 +137,7 @@ public class SimpleWidgetsSearchAlgorithmTest {
                 .getAllWidgets();
 
         assertEquals(List.of(
-                new WidgetsListSearchHeaderEntry(
+                WidgetsListHeaderEntry.createForSearch(
                         mCalendarHeaderEntry.mPkgItem,
                         mCalendarHeaderEntry.mTitleSectionName,
                         mCalendarHeaderEntry.mWidgets.subList(1, 2)),
@@ -146,7 +145,7 @@ public class SimpleWidgetsSearchAlgorithmTest {
                         mCalendarHeaderEntry.mPkgItem,
                         mCalendarHeaderEntry.mTitleSectionName,
                         mCalendarHeaderEntry.mWidgets.subList(1, 2)),
-                new WidgetsListSearchHeaderEntry(
+                WidgetsListHeaderEntry.createForSearch(
                         mCameraHeaderEntry.mPkgItem,
                         mCameraHeaderEntry.mTitleSectionName,
                         mCameraHeaderEntry.mWidgets.subList(1, 3)),
@@ -175,7 +174,7 @@ public class SimpleWidgetsSearchAlgorithmTest {
         PackageItemInfo pInfo = createPackageItemInfo(packageName, appName,
                 widgetItems.get(0).user);
 
-        return new WidgetsListHeaderEntry(pInfo, /* titleSectionName= */ "", widgetItems);
+        return WidgetsListHeaderEntry.create(pInfo, /* titleSectionName= */ "", widgetItems);
     }
 
     private WidgetsListContentEntry createWidgetsContentEntry(String packageName, String appName,

@@ -24,16 +24,17 @@ import android.widget.LinearLayout
 import com.android.launcher3.DeviceProfile
 
 class SetupNavLayoutter(
-        resources: Resources,
-        navButtonContainer: LinearLayout,
-        endContextualContainer: ViewGroup,
-        startContextualContainer: ViewGroup
-) : AbstractNavButtonLayoutter(
+    resources: Resources,
+    navButtonContainer: LinearLayout,
+    endContextualContainer: ViewGroup,
+    startContextualContainer: ViewGroup
+) :
+    AbstractNavButtonLayoutter(
         resources,
         navButtonContainer,
         endContextualContainer,
         startContextualContainer
-) {
+    ) {
 
     override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
         // Since setup wizard only has back button enabled, it looks strange to be

@@ -28,7 +28,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -41,6 +40,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.Alarm;
 import com.android.launcher3.BubbleTextView;
@@ -76,6 +76,7 @@ import com.android.launcher3.model.data.WorkspaceItemFactory;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Executors;
+import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.IconLabelDotView;
@@ -92,6 +93,7 @@ import java.util.function.Predicate;
 public class FolderIcon extends FrameLayout implements FolderListener, IconLabelDotView,
         DraggableView, Reorderable {
 
+    private final MultiTranslateDelegate mTranslateDelegate = new MultiTranslateDelegate(this);
     @Thunk ActivityContext mActivity;
     @Thunk Folder mFolder;
     public FolderInfo mInfo;
@@ -132,11 +134,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
     private Rect mTouchArea = new Rect();
 
-    private final PointF mTranslationForMoveFromCenterAnimation = new PointF(0, 0);
-    private float mTranslationXForTaskbarAlignmentAnimation = 0f;
-
-    private final PointF mTranslationForReorderBounce = new PointF(0, 0);
-    private final PointF mTranslationForReorderPreview = new PointF(0, 0);
     private float mScaleForReorderBounce = 1f;
 
     private static final Property<FolderIcon, Float> DOT_SCALE_PROPERTY
@@ -181,8 +178,11 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         return icon;
     }
 
-    public static FolderIcon inflateIcon(int resId, ActivityContext activity, ViewGroup group,
-            FolderInfo folderInfo) {
+    /**
+     * Builds a FolderIcon to be added to the Launcher
+     */
+    public static FolderIcon inflateIcon(int resId, ActivityContext activity,
+            @Nullable ViewGroup group, FolderInfo folderInfo) {
         @SuppressWarnings("all") // suppress dead code warning
         final boolean error = INITIAL_ITEM_ANIMATION_DURATION >= DROP_IN_ANIMATION_DURATION;
         if (error) {
@@ -192,8 +192,10 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         }
 
         DeviceProfile grid = activity.getDeviceProfile();
-        FolderIcon icon = (FolderIcon) LayoutInflater.from(group.getContext())
-                .inflate(resId, group, false);
+        LayoutInflater inflater = (group != null)
+                ? LayoutInflater.from(group.getContext())
+                : activity.getLayoutInflater();
+        FolderIcon icon = (FolderIcon) inflater.inflate(resId, group, false);
 
         icon.setClipToPadding(false);
         icon.mFolderName = icon.findViewById(R.id.folder_icon_name);
@@ -281,7 +283,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         CellLayoutLayoutParams lp = (CellLayoutLayoutParams) getLayoutParams();
         CellLayout cl = (CellLayout) getParent().getParent();
 
-        mBackground.animateToAccept(cl, lp.cellX, lp.cellY);
+        mBackground.animateToAccept(cl, lp.getCellX(), lp.getCellY());
         mOpenAlarm.setOnAlarmListener(mOnOpenListener);
         if (SPRING_LOADING_ENABLED &&
                 ((dragInfo instanceof WorkspaceItemFactory)
@@ -410,7 +412,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
                     () -> {
                         mPreviewItemManager.hidePreviewItem(finalIndex, false);
                         mFolder.showItem(item);
-                    }, 
+                    },
                     DragLayer.ANIMATION_END_DISAPPEAR, null);
 
             mFolder.hideItem(item);
@@ -761,69 +763,21 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         mPreviewItemManager.onFolderClose(currentPage);
     }
 
-    private void updateTranslation() {
-        super.setTranslationX(mTranslationForReorderBounce.x + mTranslationForReorderPreview.x
-                + mTranslationForMoveFromCenterAnimation.x
-                + mTranslationXForTaskbarAlignmentAnimation);
-        super.setTranslationY(mTranslationForReorderBounce.y + mTranslationForReorderPreview.y
-                + mTranslationForMoveFromCenterAnimation.y);
-    }
-
-    public void setReorderBounceOffset(float x, float y) {
-        mTranslationForReorderBounce.set(x, y);
-        updateTranslation();
-    }
-
-    public void getReorderBounceOffset(PointF offset) {
-        offset.set(mTranslationForReorderBounce);
-    }
-
-    /**
-     * Sets translationX value for taskbar to launcher alignment animation
-     */
-    public void setTranslationForTaskbarAlignmentAnimation(float translationX) {
-        mTranslationXForTaskbarAlignmentAnimation = translationX;
-        updateTranslation();
-    }
-
-    /**
-     * Returns translation values for taskbar to launcher alignment animation
-     */
-    public float getTranslationXForTaskbarAlignmentAnimation() {
-        return mTranslationXForTaskbarAlignmentAnimation;
-    }
-
-    /**
-     * Sets translation values for move from center animation
-     */
-    public void setTranslationForMoveFromCenterAnimation(float x, float y) {
-        mTranslationForMoveFromCenterAnimation.set(x, y);
-        updateTranslation();
+    @Override
+    public MultiTranslateDelegate getTranslateDelegate() {
+        return mTranslateDelegate;
     }
 
     @Override
-    public void setReorderPreviewOffset(float x, float y) {
-        mTranslationForReorderPreview.set(x, y);
-        updateTranslation();
-    }
-
-    @Override
-    public void getReorderPreviewOffset(PointF offset) {
-        offset.set(mTranslationForReorderPreview);
-    }
-
     public void setReorderBounceScale(float scale) {
         mScaleForReorderBounce = scale;
         super.setScaleX(scale);
         super.setScaleY(scale);
     }
 
+    @Override
     public float getReorderBounceScale() {
         return mScaleForReorderBounce;
-    }
-
-    public View getView() {
-        return this;
     }
 
     @Override

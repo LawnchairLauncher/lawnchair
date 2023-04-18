@@ -38,6 +38,7 @@ import android.graphics.LightingColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
@@ -64,6 +65,7 @@ import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.ChecksSdkIntAtLeast;
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.core.graphics.ColorUtils;
 
@@ -85,7 +87,7 @@ import com.android.launcher3.views.BaseDragLayer;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
@@ -130,10 +132,18 @@ public final class Utilities {
     /**
      * Indicates if the device has a debug build. Should only be used to store additional info or
      * add extra logging and not for changing the app behavior.
+     * @deprecated Use {@link BuildConfig#IS_DEBUG_DEVICE} directly
      */
-    public static final boolean IS_DEBUG_DEVICE =
-            Build.TYPE.toLowerCase(Locale.ROOT).contains("debug") ||
-            Build.TYPE.toLowerCase(Locale.ROOT).equals("eng");
+    @Deprecated
+    public static final boolean IS_DEBUG_DEVICE = BuildConfig.IS_DEBUG_DEVICE;
+
+    public static final int TRANSLATE_UP = 0;
+    public static final int TRANSLATE_DOWN = 1;
+    public static final int TRANSLATE_LEFT = 2;
+    public static final int TRANSLATE_RIGHT = 3;
+
+    @IntDef({TRANSLATE_UP, TRANSLATE_DOWN, TRANSLATE_LEFT, TRANSLATE_RIGHT})
+    public @interface AdjustmentDirection{}
 
     /**
      * Returns true if theme is dark.
@@ -149,11 +159,14 @@ public final class Utilities {
                         Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0;
     }
 
-    public static boolean IS_RUNNING_IN_TEST_HARNESS =
-                    ActivityManager.isRunningInTestHarness();
+    private static boolean sIsRunningInTestHarness = ActivityManager.isRunningInTestHarness();
+
+    public static boolean isRunningInTestHarness() {
+        return sIsRunningInTestHarness;
+    }
 
     public static void enableRunningInTestHarnessForTests() {
-        IS_RUNNING_IN_TEST_HARNESS = true;
+        sIsRunningInTestHarness = true;
     }
 
     public static boolean isPropertyEnabled(String propertyName) {
@@ -340,6 +353,21 @@ public final class Utilities {
             r.bottom -= deltaY;
         }
         return scale;
+    }
+
+    /**
+     * Sets the x and y pivots for scaling from one Rect to another.
+     *
+     * @param src the source rectangle to scale from.
+     * @param dst the destination rectangle to scale to.
+     * @param outPivot the pivots set for scaling from src to dst.
+     */
+    public static void getPivotsForScalingRectToRect(Rect src, Rect dst, PointF outPivot) {
+        float pivotXPct = ((float) src.left - dst.left) / ((float) dst.width() - src.width());
+        outPivot.x = dst.left + dst.width() * pivotXPct;
+
+        float pivotYPct = ((float) src.top - dst.top) / ((float) dst.height() - src.height());
+        outPivot.y = dst.top + dst.height() * pivotYPct;
     }
 
     /**
@@ -557,6 +585,12 @@ public final class Utilities {
             int width, int height, Object[] outObj) {
         ActivityContext activity = ActivityContext.lookupContext(context);
         LauncherAppState appState = LauncherAppState.getInstance(context);
+        if (info instanceof PendingAddShortcutInfo) {
+            ShortcutConfigActivityInfo activityInfo =
+                    ((PendingAddShortcutInfo) info).getActivityInfo(context);
+            outObj[0] = activityInfo;
+            return activityInfo.getFullResIcon(appState.getIconCache());
+        }
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
             LauncherActivityInfo activityInfo = context.getSystemService(LauncherApps.class)
                     .resolveActivity(info.getIntent(), info.user);
@@ -565,12 +599,6 @@ public final class Utilities {
                     .getIconProvider().getIcon(
                             activityInfo, activity.getDeviceProfile().inv.fillResIconDpi);
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-            if (info instanceof PendingAddShortcutInfo) {
-                ShortcutConfigActivityInfo activityInfo =
-                        ((PendingAddShortcutInfo) info).activityInfo;
-                outObj[0] = activityInfo;
-                return activityInfo.getFullResIcon(appState.getIconCache());
-            }
             List<ShortcutInfo> si = ShortcutKey.fromItemInfo(info)
                     .buildRequest(context)
                     .query(ShortcutRequest.ALL);
@@ -691,37 +719,16 @@ public final class Utilities {
 
     /**
      * Returns a list of screen-splitting options depending on the device orientation (split top for
-     * portrait, split left for landscape, split left and right for landscape tablets, etc.)
+     * portrait, split right for landscape)
      */
     public static List<SplitPositionOption> getSplitPositionOptions(
             DeviceProfile dp) {
-        List<SplitPositionOption> options = new ArrayList<>();
-        // Add both left and right options if we're in tablet mode
-        if (dp.isTablet && dp.isLandscape) {
-            options.add(new SplitPositionOption(
-                    R.drawable.ic_split_left, R.string.split_screen_position_left,
-                    STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
-            options.add(new SplitPositionOption(
-                    R.drawable.ic_split_right, R.string.split_screen_position_right,
-                    STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_MAIN));
-        } else {
-            if (dp.isSeascape()) {
-                // Add left/right options
-                options.add(new SplitPositionOption(
-                        R.drawable.ic_split_right, R.string.split_screen_position_right,
-                        STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_MAIN));
-            } else if (dp.isLandscape) {
-                options.add(new SplitPositionOption(
-                        R.drawable.ic_split_left, R.string.split_screen_position_left,
-                        STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
-            } else {
-                // Only add top option
-                options.add(new SplitPositionOption(
-                        R.drawable.ic_split_top, R.string.split_screen_position_top,
-                        STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
-            }
-        }
-        return options;
+        return Collections.singletonList(new SplitPositionOption(
+                dp.isLandscape ? R.drawable.ic_split_horizontal : R.drawable.ic_split_vertical,
+                R.string.recent_task_option_split_screen,
+                dp.isLandscape ? STAGE_POSITION_BOTTOM_OR_RIGHT : STAGE_POSITION_TOP_OR_LEFT,
+                STAGE_TYPE_MAIN
+        ));
     }
 
     /** Logs the Scale and Translate properties of a matrix. Ignores skew and perspective. */
@@ -732,5 +739,64 @@ public final class Utilities {
                 label, matrix, matrixValues[Matrix.MSCALE_X], matrixValues[Matrix.MSCALE_Y],
                 matrixValues[Matrix.MTRANS_X], matrixValues[Matrix.MTRANS_Y]
         ));
+    }
+
+    /**
+     * Translates the {@code targetView} so that it overlaps with {@code exclusionBounds} as little
+     * as possible, while remaining within {@code inclusionBounds}.
+     * <p>
+     * {@code inclusionBounds} will always take precedence over {@code exclusionBounds}, so if
+     * {@code targetView} needs to be translated outside of {@code inclusionBounds} to fully fix an
+     * overlap with {@code exclusionBounds}, then {@code targetView} will only be translated up to
+     * the border of {@code inclusionBounds}.
+     * <p>
+     * Note: {@code targetViewBounds}, {@code inclusionBounds} and {@code exclusionBounds} must all
+     * be in relation to the same reference point on screen.
+     * <p>
+     * @param targetView the view being translated
+     * @param targetViewBounds the bounds of the {@code targetView}
+     * @param inclusionBounds the bounds the {@code targetView} absolutely must stay within
+     * @param exclusionBounds the bounds to try to move the {@code targetView} away from
+     * @param adjustmentDirection the translation direction that should be attempted to fix an
+     *                            overlap
+     */
+    public static void translateOverlappingView(
+            @NonNull View targetView,
+            @NonNull Rect targetViewBounds,
+            @NonNull Rect inclusionBounds,
+            @NonNull Rect exclusionBounds,
+            @AdjustmentDirection int adjustmentDirection) {
+        switch (adjustmentDirection) {
+            case TRANSLATE_RIGHT:
+                targetView.setTranslationX(Math.min(
+                        // Translate to the right if the view is overlapping on the left.
+                        Math.max(0, exclusionBounds.right - targetViewBounds.left),
+                        // Do not translate beyond the inclusion bounds.
+                        inclusionBounds.right - targetViewBounds.right));
+                break;
+            case TRANSLATE_LEFT:
+                targetView.setTranslationX(Math.max(
+                        // Translate to the left if the view is overlapping on the right.
+                        Math.min(0, exclusionBounds.left - targetViewBounds.right),
+                        // Do not translate beyond the inclusion bounds.
+                        inclusionBounds.left - targetViewBounds.left));
+                break;
+            case TRANSLATE_DOWN:
+                targetView.setTranslationY(Math.min(
+                        // Translate downwards if the view is overlapping on the top.
+                        Math.max(0, exclusionBounds.bottom - targetViewBounds.top),
+                        // Do not translate beyond the inclusion bounds.
+                        inclusionBounds.bottom - targetViewBounds.bottom));
+                break;
+            case TRANSLATE_UP:
+                targetView.setTranslationY(Math.max(
+                        // Translate upwards if the view is overlapping on the bottom.
+                        Math.min(0, exclusionBounds.top - targetViewBounds.bottom),
+                        // Do not translate beyond the inclusion bounds.
+                        inclusionBounds.top - targetViewBounds.top));
+                break;
+            default:
+                // No-Op
+        }
     }
 }

@@ -171,12 +171,14 @@ public class RecyclerViewFastScroller extends View {
         ta.recycle();
     }
 
-    /** @return whether there is a RecyclerView bound to this scroller. */
-    public boolean hasRecyclerView() {
-        return mRv != null;
+    /** Sets the popup view to show while the scroller is being dragged */
+    public void setPopupView(TextView popupView) {
+        mPopupView = popupView;
+        mPopupView.setBackground(
+                new FastScrollThumbDrawable(mThumbPaint, Utilities.isRtl(getResources())));
     }
 
-    public void setRecyclerView(FastScrollRecyclerView rv, TextView popupView) {
+    public void setRecyclerView(FastScrollRecyclerView rv) {
         if (mRv != null && mOnScrollListener != null) {
             mRv.removeOnScrollListener(mOnScrollListener);
         }
@@ -194,10 +196,6 @@ public class RecyclerViewFastScroller extends View {
                 mRv.onUpdateScrollbar(dy);
             }
         });
-
-        mPopupView = popupView;
-        mPopupView.setBackground(
-                new FastScrollThumbDrawable(mThumbPaint, Utilities.isRtl(getResources())));
     }
 
     public void reattachThumbToScroll() {
@@ -283,15 +281,7 @@ public class RecyclerViewFastScroller extends View {
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                mRv.onFastScrollCompleted();
-                mTouchOffsetY = 0;
-                mLastTouchY = 0;
-                mIgnoreDragGesture = false;
-                if (mIsDragging) {
-                    mIsDragging = false;
-                    animatePopupVisibility(false);
-                    showActiveScrollbar(false);
-                }
+                endFastScrolling();
                 break;
         }
         if (DEBUG) {
@@ -330,8 +320,22 @@ public class RecyclerViewFastScroller extends View {
         setThumbOffsetY((int) mLastTouchY);
     }
 
+    /** End any active fast scrolling touch handling, if applicable. */
+    public void endFastScrolling() {
+        mRv.onFastScrollCompleted();
+        mTouchOffsetY = 0;
+        mLastTouchY = 0;
+        mIgnoreDragGesture = false;
+        if (mIsDragging) {
+            mIsDragging = false;
+            animatePopupVisibility(false);
+            showActiveScrollbar(false);
+        }
+    }
+
+    @Override
     public void onDraw(Canvas canvas) {
-        if (mThumbOffsetY < 0) {
+        if (mThumbOffsetY < 0 || mRv == null) {
             return;
         }
         int saveCount = canvas.save();

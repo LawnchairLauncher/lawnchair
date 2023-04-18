@@ -55,7 +55,9 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             HIDDEN_NO_TASKS,
             HIDDEN_NO_RECENTS,
             HIDDEN_SPLIT_SCREEN,
-            HIDDEN_SPLIT_SELECT_ACTIVE
+            HIDDEN_SPLIT_SELECT_ACTIVE,
+            HIDDEN_ACTIONS_IN_MENU,
+            HIDDEN_DESKTOP
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface ActionsHiddenFlags { }
@@ -65,6 +67,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public static final int HIDDEN_NO_RECENTS = 1 << 2;
     public static final int HIDDEN_SPLIT_SCREEN = 1 << 3;
     public static final int HIDDEN_SPLIT_SELECT_ACTIVE = 1 << 4;
+    public static final int HIDDEN_ACTIONS_IN_MENU = 1 << 5;
+    public static final int HIDDEN_DESKTOP = 1 << 6;
 
     @IntDef(flag = true, value = {
             DISABLED_SCROLLING,
@@ -257,26 +261,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
      * Offsets OverviewActionsView horizontal position based on 3 button nav container in taskbar.
      */
     private void updatePadding() {
-        if (mDp == null) {
-            return;
-        }
-        boolean largeScreenLandscape = mDp.isTablet && !mDp.isTwoPanels && mDp.isLandscape;
-        // If in 3-button mode, shift action buttons to accommodate 3-button layout.
-        // (Special exception for landscape tablets, where there is enough room and we don't need to
-        // shift the action buttons.)
-        if (mDp.areNavButtonsInline && !largeScreenLandscape
-                // If taskbar is in overview, overview action has dedicated space above nav buttons
-                && !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
-            // Add extra horizontal spacing
-            int additionalPadding = mDp.hotseatBarEndOffset;
-            if (isLayoutRtl()) {
-                setPadding(mInsets.left + additionalPadding, 0, mInsets.right, 0);
-            } else {
-                setPadding(mInsets.left, 0, mInsets.right + additionalPadding, 0);
-            }
-        } else {
-            setPadding(mInsets.left, 0, mInsets.right, 0);
-        }
+        // If taskbar is in overview, overview action has dedicated space above nav buttons
+        setPadding(mInsets.left, 0, mInsets.right, 0);
     }
 
     /** Updates vertical margins for different navigation mode or configuration changes. */
@@ -296,9 +282,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             return 0;
         }
 
-        if (!mDp.isGestureMode && mDp.isTaskbarPresent
-                && !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
-            return mDp.getOverviewActionsClaimedSpaceBelow();
+        if (mDp.isTablet && FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get()) {
+            return mDp.stashedTaskbarHeight;
         }
 
         // Align to bottom of task Rect.
@@ -316,7 +301,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
         requestLayout();
 
-        mSplitButton.setCompoundDrawablesWithIntrinsicBounds(
+        mSplitButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
                 (dp.isLandscape ? R.drawable.ic_split_horizontal : R.drawable.ic_split_vertical),
                 0, 0, 0);
     }

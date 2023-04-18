@@ -112,10 +112,23 @@ public class QuickstepModelDelegate extends ModelDelegate {
     }
 
     @Override
-    @WorkerThread
-    public void loadItems(UserManagerState ums, Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) {
+    public void loadHotseatItems(UserManagerState ums,
+            Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) {
         // TODO: Implement caching and preloading
-        super.loadItems(ums, pinnedShortcuts);
+        super.loadHotseatItems(ums, pinnedShortcuts);
+
+        WorkspaceItemFactory hotseatFactory = new WorkspaceItemFactory(mApp, ums, pinnedShortcuts,
+                mIDP.numDatabaseHotseatIcons, mHotseatState.containerId);
+        FixedContainerItems hotseatItems = new FixedContainerItems(mHotseatState.containerId,
+                mHotseatState.storage.read(mApp.getContext(), hotseatFactory, ums.allUsers::get));
+        mDataModel.extraItems.put(mHotseatState.containerId, hotseatItems);
+    }
+
+    @Override
+    public void loadAllAppsItems(UserManagerState ums,
+            Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) {
+        // TODO: Implement caching and preloading
+        super.loadAllAppsItems(ums, pinnedShortcuts);
 
         WorkspaceItemFactory allAppsFactory = new WorkspaceItemFactory(mApp, ums, pinnedShortcuts,
                 mIDP.numDatabaseAllAppsColumns, mAllAppsState.containerId);
@@ -123,17 +136,22 @@ public class QuickstepModelDelegate extends ModelDelegate {
                 mAllAppsState.containerId, mAllAppsState.storage.read(mApp.getContext(),
                 allAppsFactory, ums.allUsers::get));
         mDataModel.extraItems.put(mAllAppsState.containerId, allAppsPredictionItems);
+    }
 
-        WorkspaceItemFactory hotseatFactory = new WorkspaceItemFactory(mApp, ums, pinnedShortcuts,
-                mIDP.numDatabaseHotseatIcons, mHotseatState.containerId);
-        FixedContainerItems hotseatItems = new FixedContainerItems(mHotseatState.containerId,
-                mHotseatState.storage.read(mApp.getContext(), hotseatFactory, ums.allUsers::get));
-        mDataModel.extraItems.put(mHotseatState.containerId, hotseatItems);
+    @Override
+    public void loadWidgetsRecommendationItems() {
+        // TODO: Implement caching and preloading
+        super.loadWidgetsRecommendationItems();
 
         // Widgets prediction isn't used frequently. And thus, it is not persisted on disk.
         mDataModel.extraItems.put(mWidgetsRecommendationState.containerId,
                 new FixedContainerItems(mWidgetsRecommendationState.containerId,
                         new ArrayList<>()));
+    }
+
+    @Override
+    public void markActive() {
+        super.markActive();
         mActive = true;
     }
 
@@ -306,6 +324,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
     }
 
     private void registerPredictor(PredictorState state, AppPredictor predictor) {
+        state.setTargets(Collections.emptyList());
         state.predictor = predictor;
         state.predictor.registerPredictionUpdates(
                 MODEL_EXECUTOR, t -> handleUpdate(state, t));

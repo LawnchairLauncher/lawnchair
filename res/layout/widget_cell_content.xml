@@ -23,6 +23,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:importantForAccessibility="noHideDescendants"
+        android:hapticFeedbackEnabled="false"
         android:layout_marginVertical="8dp">
         <!-- The image of the widget. This view does not support padding. Any placement adjustment
              should be done using margins. Width & height are set at runtime after scaling the

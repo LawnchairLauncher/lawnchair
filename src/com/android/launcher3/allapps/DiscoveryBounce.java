@@ -81,10 +81,10 @@ public class DiscoveryBounce extends AbstractFloatingView {
     }
 
     @Override
-    public boolean onBackPressed() {
-        super.onBackPressed();
-        // Go back to the previous state (from a user's perspective this floating view isn't
-        // something to go back from).
+    public boolean canHandleBack() {
+        // Since DiscoveryBounce doesn't handle back, onBackInvoked() won't be called and we should
+        // close it without animation.
+        close(false);
         return false;
     }
 
@@ -127,7 +127,7 @@ public class DiscoveryBounce extends AbstractFloatingView {
                 || onboardingPrefs.getBoolean(OnboardingPrefs.HOME_BOUNCE_SEEN)
                 || AbstractFloatingView.getTopOpenView(launcher) != null
                 || launcher.getSystemService(UserManager.class).isDemoUser()
-                || Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+                || Utilities.isRunningInTestHarness()) {
             return;
         }
 

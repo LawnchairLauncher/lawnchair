@@ -59,6 +59,7 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"অ্যাপ খুঁজুন"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"অ্যাপ লোড হচ্ছে…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" এর সাথে মেলে এমন কোনো অ্যাপ পাওয়া যায়নি"</string>
+    <string name="all_apps_search_market_message" msgid="1366263386197059176">"আরও অ্যাপ্লিকেশানের জন্য খুঁজুন"</string>
     <string name="label_application" msgid="8531721983832654978">"অ্যাপ"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"সব অ্যাপ"</string>
     <string name="notifications_header" msgid="1404149926117359025">"বিজ্ঞপ্তি"</string>
@@ -113,7 +114,6 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"বিজ্ঞপ্তির ডটগুলি দেখানোর জন্য, <xliff:g id="NAME">%1$s</xliff:g> এর অ্যাপ বিজ্ঞপ্তি চালু করুন"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"সেটিংস পরিবর্তন করুন"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"বিজ্ঞপ্তির ডট দেখুন"</string>
-    <string name="developer_options_title" msgid="700788437593726194">"ডেভেলপার বিকল্প"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"হোম স্ক্রিনে অ্যাপের আইকন যোগ করুন"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"নতুন অ্যাপের জন্য"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"অজানা"</string>
@@ -124,10 +124,14 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> ইনস্টল করা হচ্ছে, <xliff:g id="PROGRESS">%2$s</xliff:g> সম্পূর্ণ হয়েছে"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> ডাউনলোড হচ্ছে <xliff:g id="PROGRESS">%2$s</xliff:g> সম্পন্ন হয়েছে"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> ইনস্টলের অপেক্ষায় রয়েছে"</string>
-    <string name="dialog_update_title" msgid="114234265740994042">"অ্যাপটি আপডেট করা প্রয়োজন"</string>
-    <string name="dialog_update_message" msgid="4176784553982226114">"এই আইকনের জন্য অ্যাপটি আপডেট করা নেই। এই শর্টকার্ট আবার চালু করতে, আপনি ম্যানুয়ালি আপডেট করতে বা সরিয়ে দিতে পারবেন।"</string>
-    <string name="dialog_update" msgid="2178028071796141234">"আপডেট করুন"</string>
-    <string name="dialog_remove" msgid="6510806469849709407">"সরান"</string>
+    <!-- no translation found for dialog_update_title (114234265740994042) -->
+    <skip />
+    <!-- no translation found for dialog_update_message (4176784553982226114) -->
+    <skip />
+    <!-- no translation found for dialog_update (2178028071796141234) -->
+    <skip />
+    <!-- no translation found for dialog_remove (6510806469849709407) -->
+    <skip />
     <string name="widgets_list" msgid="796804551140113767">"উইজেটের তালিকা"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"উইজেটের তালিকা বন্ধ করা হয়েছে"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"হোম স্ক্রিনে যোগ করুন"</string>
@@ -136,7 +140,7 @@
     <string name="item_removed" msgid="851119963877842327">"আইটেম সরানো হয়েছে"</string>
     <string name="undo" msgid="4151576204245173321">"ফিরিয়ে আনুন"</string>
     <string name="action_move" msgid="4339390619886385032">"আইটেম সরান"</string>
-    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"<xliff:g id="STRING">%3$s</xliff:g>-এ সারি <xliff:g id="NUMBER_0">%1$s</xliff:g> কলাম <xliff:g id="NUMBER_1">%2$s</xliff:g> সরান"</string>
+    <string name="move_to_empty_cell" msgid="2833711483015685619">"সারি <xliff:g id="NUMBER_0">%1$s</xliff:g> কলাম <xliff:g id="NUMBER_1">%2$s</xliff:g> এ সরান"</string>
     <string name="move_to_position" msgid="6750008980455459790">"অবস্থানে সরান <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"পছন্দসই অবস্থানে সরান <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="item_moved" msgid="4606538322571412879">"আইটেম সরানো হয়েছে"</string>
@@ -167,10 +171,8 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"অফিসের অ্যাপ বন্ধ আছে। আপনার অফিসের অ্যাপ আপনাকে বিজ্ঞপ্তি পাঠাতে, ব্যাটারি ব্যবহার করতে বা লোকেশন অ্যাক্সেস করতে পারবে না"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"অফিসের অ্যাপে ব্যাজ যোগ করা হয়েছে এবং আপনার আইটি অ্যাডমিন সেটি দেখতে পাবেন"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"বুঝেছি"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"অফিসের অ্যাপ পজ করুন"</string>
+    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"অফিসের অ্যাপ বন্ধ করুন"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"অফিস অ্যাপ চালু করুন"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ফিল্টার"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"ফোনে সার্চ করে দেখুন"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"আপনার ট্যাবলেটে সার্চ করুন"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"কাজটি করা যায়নি: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

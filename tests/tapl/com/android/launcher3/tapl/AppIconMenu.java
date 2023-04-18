@@ -54,5 +54,14 @@ public abstract class AppIconMenu {
         return createMenuItem(menuItem);
     }
 
+    /**
+     * Returns a menu item that matches the text "Split screen". Fails if it doesn't exist.
+     */
+    public SplitScreenMenuItem getSplitScreenMenuItem() {
+        final UiObject2 menuItem = mLauncher.waitForObjectInContainer(mDeepShortcutsContainer,
+                AppIcon.getAppIconSelector("Split screen", mLauncher));
+        return new SplitScreenMenuItem(mLauncher, menuItem);
+    }
+
     protected abstract AppIconMenuItem createMenuItem(UiObject2 menuItem);
 }

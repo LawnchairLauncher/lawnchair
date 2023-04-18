@@ -34,6 +34,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.FloatRange;
+
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.HintState;
@@ -129,7 +131,11 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final LauncherState OVERVIEW = new OverviewState(OVERVIEW_STATE_ORDINAL);
     public static final LauncherState OVERVIEW_MODAL_TASK = OverviewState.newModalTaskState(
             OVERVIEW_MODAL_TASK_STATE_ORDINAL);
-    public static final LauncherState QUICK_SWITCH =
+    /**
+     * State when user performs a quickswitch gesture from home/workspace to the most recent
+     * app
+     */
+    public static final LauncherState QUICK_SWITCH_FROM_HOME =
             OverviewState.newSwitchState(QUICK_SWITCH_STATE_ORDINAL);
     public static final LauncherState BACKGROUND_APP =
             OverviewState.newBackgroundState(BACKGROUND_APP_STATE_ORDINAL);
@@ -217,6 +223,20 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     /** Returns whether taskbar is aligned with the hotseat vs position inside apps */
     public boolean isTaskbarAlignedWithHotseat(Launcher launcher) {
         return true;
+    }
+
+    /**
+     * Returns whether taskbar global drag is disallowed in this state.
+     */
+    public boolean disallowTaskbarGlobalDrag() {
+        return false;
+    }
+
+    /**
+     * Returns whether the taskbar shortcut should trigger split selection mode.
+     */
+    public boolean allowTaskbarInitialSplitSelection() {
+        return false;
     }
 
     /**
@@ -340,6 +360,27 @@ public abstract class LauncherState implements BaseState<LauncherState> {
             LauncherState lastState = lsm.getLastState();
             lsm.goToState(lastState);
         }
+    }
+
+    /**
+     * Find {@link StateManager} and target {@link LauncherState} to handle back progress in
+     * predictive back gesture.
+     */
+    public void onBackProgressed(
+            Launcher launcher, @FloatRange(from = 0.0, to = 1.0) float backProgress) {
+        StateManager<LauncherState> lsm = launcher.getStateManager();
+        LauncherState toState = lsm.getLastState();
+        lsm.onBackProgressed(toState, backProgress);
+    }
+
+    /**
+     * Find {@link StateManager} and target {@link LauncherState} to handle backProgress in
+     * predictive back gesture.
+     */
+    public void onBackCancelled(Launcher launcher) {
+        StateManager<LauncherState> lsm = launcher.getStateManager();
+        LauncherState toState = lsm.getLastState();
+        lsm.onBackCancelled(toState);
     }
 
     public static abstract class PageAlphaProvider {
