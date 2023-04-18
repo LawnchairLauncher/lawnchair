@@ -70,17 +70,17 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         extends AbstractFloatingView {
 
     // Duration values (ms) for popup open and close animations.
-    protected int OPEN_DURATION = 276;
-    protected int OPEN_FADE_START_DELAY = 0;
-    protected int OPEN_FADE_DURATION = 38;
-    protected int OPEN_CHILD_FADE_START_DELAY = 38;
-    protected int OPEN_CHILD_FADE_DURATION = 76;
+    protected int mOpenDuration = 276;
+    protected int mOpenFadeStartDelay = 0;
+    protected int mOpenFadeDuration = 38;
+    protected int mOpenChildFadeStartDelay = 38;
+    protected int mOpenChildFadeDuration = 76;
 
-    protected int CLOSE_DURATION = 200;
-    protected int CLOSE_FADE_START_DELAY = 140;
-    protected int CLOSE_FADE_DURATION = 50;
-    protected int CLOSE_CHILD_FADE_START_DELAY = 0;
-    protected int CLOSE_CHILD_FADE_DURATION = 140;
+    protected int mCloseDuration = 200;
+    protected int mCloseFadeStartDelay = 140;
+    protected int mCloseFadeDuration = 50;
+    protected int mCloseChildFadeStartDelay = 0;
+    protected int mCloseChildFadeDuration = 140;
 
     private static final int OPEN_DURATION_U = 200;
     private static final int OPEN_FADE_START_DELAY_U = 0;
@@ -583,11 +583,11 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
                         EMPHASIZED_DECELERATE)
                 : getOpenCloseAnimator(
                         true,
-                        OPEN_DURATION,
-                        OPEN_FADE_START_DELAY,
-                        OPEN_FADE_DURATION,
-                        OPEN_CHILD_FADE_START_DELAY,
-                        OPEN_CHILD_FADE_DURATION,
+                        mOpenDuration,
+                        mOpenFadeStartDelay,
+                        mOpenFadeDuration,
+                        mOpenChildFadeStartDelay,
+                        mOpenChildFadeDuration,
                         DECELERATED_EASE);
 
         onCreateOpenAnimation(mOpenCloseAnimator);
@@ -672,8 +672,8 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         }
         mIsOpen = false;
 
-        mOpenCloseAnimator = getOpenCloseAnimator(false, CLOSE_DURATION, CLOSE_FADE_START_DELAY,
-                CLOSE_FADE_DURATION, CLOSE_CHILD_FADE_START_DELAY, CLOSE_CHILD_FADE_DURATION,
+        mOpenCloseAnimator = getOpenCloseAnimator(false, mCloseDuration, mCloseFadeStartDelay,
+                mCloseFadeDuration, mCloseChildFadeStartDelay, mCloseChildFadeDuration,
                 ACCELERATED_EASE);
 
         mOpenCloseAnimator = ENABLE_MATERIAL_U_POPUP.get()
@@ -686,11 +686,11 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
                         CLOSE_CHILD_FADE_DURATION_U,
                         EMPHASIZED_ACCELERATE)
                 : getOpenCloseAnimator(false,
-                        CLOSE_DURATION,
-                        CLOSE_FADE_START_DELAY,
-                        CLOSE_FADE_DURATION,
-                        CLOSE_CHILD_FADE_START_DELAY,
-                        CLOSE_CHILD_FADE_DURATION,
+                        mCloseDuration,
+                        mCloseFadeStartDelay,
+                        mCloseFadeDuration,
+                        mCloseChildFadeStartDelay,
+                        mCloseChildFadeDuration,
                         ACCELERATED_EASE);
 
         onCreateCloseAnimation(mOpenCloseAnimator);
