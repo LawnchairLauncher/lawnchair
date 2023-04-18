@@ -81,7 +81,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"Umożliwia aplikacji odczytywanie ustawień i skrótów na ekranie głównym."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"Zapisuje ustawienia i skróty na ekranie głównym"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"Umożliwia aplikacji zmianę ustawień i skrótów na ekranie głównym."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> nie może wykonywać połączeń telefonicznych"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Nie udało się załadować widżetu"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Ustawienia widżetu"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Kliknij, aby dokończyć konfigurację"</string>
@@ -101,13 +100,15 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, liczba elementów: <xliff:g id="SIZE">%2$d</xliff:g> lub więcej"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Tapety"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Tapeta i styl"</string>
+    <!-- no translation found for edit_home_screen (8947858375782098427) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"Ustawienia ekranu głównego"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Funkcja wyłączona przez administratora"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Zezwalaj na obrót ekranu głównego"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Po obróceniu telefonu"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Kropki powiadomień"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Włączono"</string>
-    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Wyłączono"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Włączone"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Wyłączone"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Wymagany jest dostęp do powiadomień"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Aby pokazywać kropki powiadomień, włącz powiadomienia aplikacji <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Zmień ustawienia"</string>

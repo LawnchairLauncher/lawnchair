@@ -81,7 +81,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"முகப்புத் திரையிலுள்ள அமைப்புகளையும் ஷார்ட்கட்களையும் படிக்க ஆப்ஸை அனுமதிக்கும்."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"முகப்புத் திரையின் அமைப்புகளையும் ஷார்ட்கட்களையும் எழுதுதல்"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"முகப்புத் திரையிலுள்ள அமைப்புகளையும் ஷார்ட்கட்களையும் மாற்ற ஆப்ஸை அனுமதிக்கும்."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"ஃபோன் அழைப்புகள் செய்ய, <xliff:g id="APP_NAME">%1$s</xliff:g> அனுமதிக்கப்படவில்லை"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"விட்ஜெட்டை ஏற்ற முடியவில்லை"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"விட்ஜெட் அமைப்புகள்"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"அமைவை நிறைவுசெய்யத் தட்டவும்"</string>
@@ -101,6 +100,8 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ஃபோல்டர்: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> அல்லது அதற்கு அதிகமான ஃபைல்கள்"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"வால்பேப்பர்கள்"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"வால்பேப்பர் &amp; ஸ்டைல்"</string>
+    <!-- no translation found for edit_home_screen (8947858375782098427) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"முகப்பு அமைப்புகள்"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"உங்கள் நிர்வாகி முடக்கியுள்ளார்"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"முகப்புத் திரை சுழற்சியை அனுமதித்தல்"</string>
@@ -159,7 +160,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"தனிப்பட்டவை"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"பணி"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"பணிக் கணக்கு"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"பணி ஆப்ஸில் பேட்ஜ் இடப்பட்டுள்ளன. உங்கள் IT நிர்வாகியால் அவற்றைப் பார்க்க முடியும்"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"பணி ஆப்ஸில் பேட்ஜ் இடப்பட்டிருக்கும், உங்கள் IT நிர்வாகியால் பணி ஆப்ஸைப் பார்க்க முடியும்"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"முடிந்தது"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"பணி ஆப்ஸ் இடைநிறுத்தப்பட்டுள்ளன"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"உங்கள் பணி ஆப்ஸிலிருந்து அறிவிப்புகளைப் பெறமாட்டீர்கள்"</string>

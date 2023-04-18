@@ -81,7 +81,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"अ‍ॅपला होममधील सेटिंग्ज आणि शॉर्टकट वाचण्याची अनुमती देते."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"होम सेटिंग्ज आणि शॉर्टकट लिहा"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"अ‍ॅपला होममधील सेटिंग्ज आणि शॉर्टकट बदलण्याची अनुमती देते."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ला फोन कॉल करण्याची अनुमती नाही"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"विजेट लोड करू शकत नाही"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"विजेटची सेटिंग्ज"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"सेटअप पूर्ण करण्‍यासाठी टॅप करा"</string>
@@ -101,6 +100,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"फोल्डर: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> किंवा त्याहून अधिक आयटम"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"वॉलपेपर"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"वॉलपेपर आणि शैली"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"होम स्क्रीन संपादित करा"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"होम सेटिंग्‍ज"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपल्या प्रशासकाने अक्षम केले"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"होम स्क्रीन फिरवण्‍याची अनुमती द्या"</string>
