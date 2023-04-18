@@ -26,6 +26,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -63,11 +64,13 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.util.Executors;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.TouchInteractionService.TISBinder;
+import com.android.quickstep.util.LottieAnimationColorUtils;
 import com.android.quickstep.util.TISBindHelper;
 
 import com.airbnb.lottie.LottieAnimationView;
 
 import java.net.URISyntaxException;
+import java.util.Map;
 
 /**
  * A page shows after SUW flow to hint users to swipe up from the bottom of the screen to go home
@@ -81,6 +84,9 @@ public class AllSetActivity extends Activity {
     private static final String EXTRA_ACCENT_COLOR_DARK_MODE = "suwColorAccentDark";
     private static final String EXTRA_ACCENT_COLOR_LIGHT_MODE = "suwColorAccentLight";
     private static final String EXTRA_DEVICE_NAME = "suwDeviceName";
+
+    private static final String LOTTIE_PRIMARY_COLOR_TOKEN = ".primary";
+    private static final String LOTTIE_TERTIARY_COLOR_TOKEN = ".tertiary";
 
     private static final float HINT_BOTTOM_FACTOR = 1 - .94f;
 
@@ -114,7 +120,8 @@ public class AllSetActivity extends Activity {
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
-        int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        Resources resources = getResources();
+        int mode = resources.getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         boolean isDarkTheme = mode == Configuration.UI_MODE_NIGHT_YES;
         Intent intent = getIntent();
         int accentColor = intent.getIntExtra(
@@ -126,7 +133,7 @@ public class AllSetActivity extends Activity {
         mBackground = new BgDrawable(this);
         findViewById(R.id.root_view).setBackground(mBackground);
         mContentView = findViewById(R.id.content_view);
-        mSwipeUpShift = getResources().getDimension(R.dimen.allset_swipe_up_shift);
+        mSwipeUpShift = resources.getDimension(R.dimen.allset_swipe_up_shift);
 
         TextView subtitle = findViewById(R.id.subtitle);
         String suwDeviceName = intent.getStringExtra(EXTRA_DEVICE_NAME);
@@ -188,8 +195,15 @@ public class AllSetActivity extends Activity {
         // There's a bug in the currently used external Lottie library (v5.2.0), and it doesn't load
         // the correct animation from the raw resources when configuration changes, so we need to
         // manually load the resource and pass it to Lottie.
-        mAnimatedBackground.setAnimation(getResources().openRawResource(R.raw.all_set_page_bg),
+        mAnimatedBackground.setAnimation(resources.openRawResource(R.raw.all_set_page_bg),
                 null);
+
+        LottieAnimationColorUtils.updateColors(
+                mAnimatedBackground,
+                Map.of(LOTTIE_PRIMARY_COLOR_TOKEN, R.color.all_set_bg_primary,
+                        LOTTIE_TERTIARY_COLOR_TOKEN, R.color.all_set_bg_tertiary),
+                getTheme());
+
         startBackgroundAnimation();
     }
 
