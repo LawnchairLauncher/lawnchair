@@ -81,7 +81,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"Consente all\'app di leggere le impostazioni e le scorciatoie nella schermata Home."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"creare impostazioni e scorciatoie nella schermata Home"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"Consente all\'app di modificare le impostazioni e le scorciatoie nella schermata Home."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"L\'app <xliff:g id="APP_NAME">%1$s</xliff:g> non è autorizzata a effettuare telefonate"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Impossibile caricare il widget"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Impostazioni widget"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Tocca per completare la configurazione"</string>
@@ -101,6 +100,8 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Cartella: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> o più elementi"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Sfondi"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Sfondo e stile"</string>
+    <!-- no translation found for edit_home_screen (8947858375782098427) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"Impostazioni schermata Home"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Disattivata dall\'amministratore"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Consenti rotazione della schermata Home"</string>

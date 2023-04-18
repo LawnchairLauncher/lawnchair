@@ -81,7 +81,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"ഹോമിലെ ക്രമീകരണങ്ങളും കുറുക്കുവഴികളും വായിക്കാൻ ആപ്പിനെ അനുവദിക്കുന്നു."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"ഹോം ക്രമീകരണവും കുറുക്കുവഴികളും എഴുതുക"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"ഹോമിലെ ക്രമീകരണങ്ങളും കുറുക്കുവഴികളും മാറ്റാൻ ആപ്പിനെ അനുവദിക്കുന്നു."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"ഫോൺ കോൾ ചെയ്യാൻ <xliff:g id="APP_NAME">%1$s</xliff:g> എന്നതിനെ അനുവദിച്ചിട്ടില്ല"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"വിജറ്റ് ലോഡ് ചെയ്യാനാകുന്നില്ല"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"വിജറ്റ് ക്രമീകരണം"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"സജ്ജീകരണം പൂർത്തിയാക്കാൻ ടാപ്പ് ചെയ്യുക"</string>
@@ -101,6 +100,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ഫോൾഡർ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> അല്ലെങ്കിൽ അതിലധികം ഇനങ്ങൾ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"വാൾപേപ്പർ"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"വാൾപേപ്പറും സ്‌റ്റൈലും"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"ഹോം സ്‌ക്രീൻ എഡിറ്റ് ചെയ്യുക"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ഹോം ക്രമീകരണം"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"അഡ്മിൻ പ്രവർത്തനരഹിതമാക്കിയിരിക്കുന്നു"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"ഹോം സ്ക്രീൻ റൊട്ടേഷൻ അനുവദിക്കുക"</string>
@@ -164,7 +164,7 @@
     <string name="work_apps_paused_title" msgid="3040901117349444598">"ഔദ്യോഗിക ആപ്പുകൾ തൽക്കാലം നിർത്തിയിരിക്കുന്നു"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"ഔദ്യോഗിക ആപ്പുകളിൽ നിന്ന് നിങ്ങൾക്ക് അറിയിപ്പുകളൊന്നും ലഭിക്കില്ല"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"നിങ്ങൾക്ക് അറിയിപ്പുകൾ അയയ്ക്കാനോ ബാറ്ററി ഉപയോഗിക്കാനോ ലൊക്കേഷൻ ആക്‌സസ് ചെയ്യാനോ നിങ്ങളുടെ ഔദ്യോഗിക ആപ്പുകൾക്ക് കഴിയില്ല"</string>
-    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Work ആപ്പുകളിൽ നിന്ന് നിങ്ങൾക്ക് ഫോൺ കോളുകളും ടെക്സ്റ്റ് മെസേജുകളും അറിയിപ്പുകളും ലഭിക്കില്ല"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"വർക്ക് ആപ്പുകളിൽ നിന്ന് നിങ്ങൾക്ക് ഫോൺ കോളുകളും ടെക്സ്റ്റ് മെസേജുകളും അറിയിപ്പുകളും ലഭിക്കില്ല"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ഔദ്യോഗിക ആപ്പുകൾക്ക് ബാഡ്‌ജ് നൽകിയിരിക്കുന്നു, അവ നിങ്ങളുടെ ഐടി അഡ്‌മിന് കാണാനും കഴിയും"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"മനസ്സിലായി"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ഔദ്യോഗിക ആപ്പുകൾ താൽക്കാലികമായി നിർത്തുക"</string>

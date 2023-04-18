@@ -81,7 +81,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"මුල් පිටුවේ ඇති සැකසීම් සහ කෙටි මං කියවීමට යෙදුමට ඉඩ දෙයි."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"මුල් පිටු සැකසීම් සහ කෙටි මං ලියන්න"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"මුල් පිටුවේ සැකසීම් සහ කෙටි මං ඉවත් කිරීමට යෙදුමට ඉඩ දෙයි."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> හට දුරකථන ඇමතුම් සිදු කිරීමට ඉඩ නොදේ"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"විජට් පූරණය කළ නොහැකිය"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"විජට් සැකසීම්"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"පිහිටුවීම අවසන් කිරීමට තට්ටු කරන්න"</string>
@@ -101,6 +100,8 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ෆෝල්ඩර: <xliff:g id="NAME">%1$s</xliff:g>, අයිතම <xliff:g id="SIZE">%2$d</xliff:g>ක් හෝ වැඩි ගණනක්"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"වෝල්පේපර"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"වෝල්පේපරය සහ මෝස්තරය"</string>
+    <!-- no translation found for edit_home_screen (8947858375782098427) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"නිවසේ සැකසීම්"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ඔබගේ පරිපාලක විසින් අබල කරන ලදී"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"මුල් තිරය කරකැවීමට ඉඩ දෙන්න"</string>

@@ -81,7 +81,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"Овозможува апликацијата да ги чита поставките и кратенките на почетната страница."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"да пишува поставки и кратенки на почетна страница"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"Овозможува апликацијата да ги менува поставките и кратенките на почетната страница."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> нема дозвола за телефонски повици"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Не може да се вчита виџетот"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Поставки за виџет"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Допрете за да го завршите поставувањето"</string>
@@ -101,6 +100,8 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Папка: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> или повеќе ставки"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Тапети"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Тапет и стил"</string>
+    <!-- no translation found for edit_home_screen (8947858375782098427) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"Поставки за почетен екран"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Оневозможено од администраторот"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Дозволи ротирање на почетниот екран"</string>
