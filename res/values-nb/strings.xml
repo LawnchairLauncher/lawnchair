@@ -81,7 +81,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"Lar appen lese innstillingene og snarveiene på startsiden."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"angi startsideinnstillinger og -snarveier"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"Lar appen endre innstillingene og snarveiene på startsiden."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> har ikke tillatelse til å ringe"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Kan ikke laste inn modulen"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Modulinnstillinger"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Trykk for å fullføre konfigureringen"</string>
@@ -101,6 +100,8 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Mappe: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> eller flere elementer"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Bakgrunner"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Bakgrunn og stil"</string>
+    <!-- no translation found for edit_home_screen (8947858375782098427) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"Startsideinnstillinger"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Administratoren har slått av funksjonen"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Tillat at startskjermen roterer"</string>
