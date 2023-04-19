@@ -33,7 +33,7 @@
             android:layout_height="@dimen/bottom_sheet_handle_height"
             android:layout_marginTop="@dimen/bottom_sheet_handle_margin"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/bg_rounded_corner_bottom_sheet_handle"/>
+            android:background="@drawable/widget_picker_collapse_handle"/>
 
         <TextView
             android:id="@+id/title"
@@ -44,7 +44,7 @@
             android:layout_below="@id/collapse_handle"
             android:paddingHorizontal="@dimen/widget_list_horizontal_margin_two_pane"
             android:text="@string/widget_button_text"
-            android:textColor="?android:attr/textColorSecondary"
+            android:textColor="?attr/widgetPickerTitleColor"
             android:textSize="24sp" />
 
         <LinearLayout
