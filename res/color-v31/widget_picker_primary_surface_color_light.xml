@@ -13,19 +13,8 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <item android:state_expanded="true">
-        <shape android:shape="rectangle">
-            <solid android:color="@color/widget_picker_background_selected" />
-            <corners android:radius="@dimen/widget_list_top_bottom_corner_radius" />
-        </shape>
-    </item>
-
-    <item android:state_expanded="false">
-        <shape android:shape="rectangle">
-            <solid android:color="@android:color/transparent" />
-            <corners android:radius="@dimen/widget_list_top_bottom_corner_radius" />
-        </shape>
-    </item>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:color="@android:color/system_accent2_50"
+        android:lStar="94" />
 </selector>

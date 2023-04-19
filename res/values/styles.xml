@@ -174,14 +174,63 @@
         <item name="android:colorPrimaryDark">#E8EAED</item>
         <item name="android:textColorSecondary">?android:attr/textColorPrimary</item>
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
-        <item name="widgetPickerHeaderAppTitleColor">@color/app_title_text_light</item>
-        <item name="widgetPickerHeaderAppSubtitleColor">@color/app_subtitle_text_light</item>
+        <item name="widgetPickerPrimarySurfaceColor">
+            @color/widget_picker_primary_surface_color_light</item>
+        <item name="widgetPickerSecondarySurfaceColor">
+            @color/widget_picker_secondary_surface_color_light</item>
+        <item name="widgetPickerTitleColor">@color/widget_picker_title_color_light</item>
+        <item name="widgetPickerHeaderAppTitleColor">
+            @color/widget_picker_header_app_title_color_light</item>
+        <item name="widgetPickerHeaderAppSubtitleColor">
+            @color/widget_picker_header_app_subtitle_color_light</item>
+        <item name="widgetPickerHeaderBackgroundColor">
+            @color/widget_picker_header_background_color_light</item>
+        <item name="widgetPickerSuggestionsIconBackgroundColor">
+            @color/widget_picker_suggestions_icon_background_color_light</item>
+        <item name="widgetPickerSuggestionsIconColor">
+            @color/widget_picker_suggestions_icon_color_light</item>
+        <item name="widgetPickerSearchTextColor">@color/widget_picker_search_text_color_light</item>
+        <item name="widgetPickerTabBackgroundSelected">
+            @color/widget_picker_tab_background_selected_light</item>
+        <item name="widgetPickerTabBackgroundUnselected">
+            @color/widget_picker_tab_background_unselected_light</item>
+        <item name="widgetPickerSelectedTabTextColor">
+            @color/widget_picker_selected_tab_text_color_light</item>
+        <item name="widgetPickerUnselectedTabTextColor">
+            @color/widget_picker_unselected_tab_text_color_light</item>
+        <item name="widgetPickerCollapseHandleColor">
+            @color/widget_picker_collapse_handle_color_light</item>
     </style>
     <style name="WidgetContainerTheme.Dark" parent="AppTheme.Dark">
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
         <item name="android:colorPrimaryDark">#616161</item> <!-- Gray 700 -->
-        <item name="widgetPickerHeaderAppTitleColor">@color/app_title_text_dark</item>
-        <item name="widgetPickerHeaderAppSubtitleColor">@color/app_subtitle_text_dark</item>
+        <item name="widgetPickerPrimarySurfaceColor">
+            @color/widget_picker_primary_surface_color_dark</item>
+        <item name="widgetPickerSecondarySurfaceColor">
+            @color/widget_picker_secondary_surface_color_dark</item>
+        <item name="widgetPickerTitleColor">
+            @color/widget_picker_title_color_dark</item>
+        <item name="widgetPickerHeaderAppTitleColor">
+            @color/widget_picker_header_app_title_color_dark</item>
+        <item name="widgetPickerHeaderAppSubtitleColor">
+            @color/widget_picker_header_app_subtitle_color_dark</item>
+        <item name="widgetPickerHeaderBackgroundColor">
+            @color/widget_picker_header_background_color_dark</item>
+        <item name="widgetPickerSuggestionsIconBackgroundColor">
+            @color/widget_picker_suggestions_icon_background_color_dark</item>
+        <item name="widgetPickerSuggestionsIconColor">
+            @color/widget_picker_suggestions_icon_color_dark</item>
+        <item name="widgetPickerSearchTextColor">@color/widget_picker_search_text_color_dark</item>
+        <item name="widgetPickerTabBackgroundSelected">
+            @color/widget_picker_tab_background_selected_dark</item>
+        <item name="widgetPickerTabBackgroundUnselected">
+            @color/widget_picker_tab_background_unselected_dark</item>
+        <item name="widgetPickerSelectedTabTextColor">
+            @color/widget_picker_selected_tab_text_color_dark</item>
+        <item name="widgetPickerUnselectedTabTextColor">
+            @color/widget_picker_unselected_tab_text_color_dark</item>
+        <item name="widgetPickerCollapseHandleColor">
+            @color/widget_picker_collapse_handle_color_dark</item>
     </style>
 
     <style name="FastScrollerPopup" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">
