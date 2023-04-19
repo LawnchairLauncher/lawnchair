@@ -81,7 +81,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"អនុញ្ញាតឱ្យកម្មវិធីអានការកំណត់ និងផ្លូវកាត់នៅក្នុងអេក្រង់ដើម។"</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"សរសេរការកំណត់ និងផ្លូវកាត់សម្រាប់អេក្រង់ដើម"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"អនុញ្ញាតឱ្យកម្មវិធីប្ដូរការកំណត់ និងផ្លូវកាត់នៅក្នុងអេក្រង់ដើម។"</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> មិនត្រូវបានអនុញ្ញាតឲ្យធ្វើការហៅទូរស័ព្ទទេ"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"មិនអាចផ្ទុក​ធាតុក្រាហ្វិក​បានទេ"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"ការកំណត់​ធាតុក្រាហ្វិក"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"ចុច​ដើម្បី​បញ្ចប់​ការរៀបចំ"</string>
@@ -101,6 +100,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ថត៖ <xliff:g id="NAME">%1$s</xliff:g>, ធាតុ <xliff:g id="SIZE">%2$d</xliff:g> ឬច្រើនជាងនេះ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ផ្ទាំង​រូបភាព"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ផ្ទាំងរូបភាព និងរចនាប័ទ្ម"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"កែអេក្រង់ដើម"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ការកំណត់​ទំព័រដើម"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"បានបិទដំណើរការដោយអ្នកគ្រប់គ្រងរបស់អ្នក"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"អនុញ្ញាតការបងិ្វលអេក្រង់ដើម"</string>
