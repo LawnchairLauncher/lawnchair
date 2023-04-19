@@ -50,8 +50,6 @@ public class LauncherProvider extends ContentProvider {
 
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".settings";
 
-    protected ModelDbController mModelDbController;
-
     /**
      * $ adb shell dumpsys activity provider com.android.launcher3
      */
@@ -69,12 +67,15 @@ public class LauncherProvider extends ContentProvider {
         if (FeatureFlags.IS_STUDIO_BUILD) {
             Log.d(TAG, "Launcher process started");
         }
-        mModelDbController = new ModelDbController(getContext());
 
         // The content provider exists for the entire duration of the launcher main process and
         // is the first component to get created.
         MainProcessInitializer.initialize(getContext().getApplicationContext());
         return true;
+    }
+
+    public ModelDbController getModelDbController() {
+        return LauncherAppState.getInstance(getContext()).getModel().getModelDbController();
     }
 
     @Override
@@ -95,7 +96,7 @@ public class LauncherProvider extends ContentProvider {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         qb.setTables(args.table);
 
-        Cursor result = mModelDbController.query(
+        Cursor result = getModelDbController().query(
                 args.table, projection, args.where, args.args, sortOrder);
         result.setNotificationUri(getContext().getContentResolver(), uri);
         return result;
@@ -120,7 +121,7 @@ public class LauncherProvider extends ContentProvider {
         }
 
         SqlArguments args = new SqlArguments(uri);
-        int rowId = mModelDbController.insert(args.table, initialValues);
+        int rowId = getModelDbController().insert(args.table, initialValues);
         if (rowId < 0) return null;
 
         uri = ContentUris.withAppendedId(uri, rowId);
@@ -130,7 +131,7 @@ public class LauncherProvider extends ContentProvider {
 
     private boolean initializeExternalAdd(ContentValues values) {
         // 1. Ensure that externally added items have a valid item id
-        int id = mModelDbController.generateNewItemId();
+        int id = getModelDbController().generateNewItemId();
         values.put(LauncherSettings.Favorites._ID, id);
 
         // 2. In the case of an app widget, and if no app widget id is specified, we
@@ -171,7 +172,7 @@ public class LauncherProvider extends ContentProvider {
     @Override
     public int bulkInsert(Uri uri, ContentValues[] values) {
         SqlArguments args = new SqlArguments(uri);
-        mModelDbController.bulkInsert(args.table, values);
+        getModelDbController().bulkInsert(args.table, values);
         reloadLauncherIfExternal();
         return values.length;
     }
@@ -180,7 +181,7 @@ public class LauncherProvider extends ContentProvider {
     @Override
     public ContentProviderResult[] applyBatch(ArrayList<ContentProviderOperation> operations)
             throws OperationApplicationException {
-        try (SQLiteTransaction t = mModelDbController.newTransaction()) {
+        try (SQLiteTransaction t = getModelDbController().newTransaction()) {
             final int numOperations = operations.size();
             final ContentProviderResult[] results = new ContentProviderResult[numOperations];
             for (int i = 0; i < numOperations; i++) {
@@ -196,7 +197,7 @@ public class LauncherProvider extends ContentProvider {
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         SqlArguments args = new SqlArguments(uri, selection, selectionArgs);
-        int count = mModelDbController.delete(args.table, args.where, args.args);
+        int count = getModelDbController().delete(args.table, args.where, args.args);
         if (count > 0) {
             reloadLauncherIfExternal();
         }
@@ -206,7 +207,7 @@ public class LauncherProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         SqlArguments args = new SqlArguments(uri, selection, selectionArgs);
-        int count = mModelDbController.update(args.table, values, args.where, args.args);
+        int count = getModelDbController().update(args.table, values, args.where, args.args);
         reloadLauncherIfExternal();
         return count;
     }
@@ -219,59 +220,59 @@ public class LauncherProvider extends ContentProvider {
 
         switch (method) {
             case LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG: {
-                mModelDbController.clearEmptyDbFlag();
+                getModelDbController().clearEmptyDbFlag();
                 return null;
             }
             case LauncherSettings.Settings.METHOD_DELETE_EMPTY_FOLDERS: {
                 Bundle result = new Bundle();
                 result.putIntArray(LauncherSettings.Settings.EXTRA_VALUE,
-                        mModelDbController.deleteEmptyFolders().toArray());
+                        getModelDbController().deleteEmptyFolders().toArray());
                 return result;
             }
             case LauncherSettings.Settings.METHOD_NEW_ITEM_ID: {
                 Bundle result = new Bundle();
                 result.putInt(LauncherSettings.Settings.EXTRA_VALUE,
-                        mModelDbController.generateNewItemId());
+                        getModelDbController().generateNewItemId());
                 return result;
             }
             case LauncherSettings.Settings.METHOD_NEW_SCREEN_ID: {
                 Bundle result = new Bundle();
                 result.putInt(LauncherSettings.Settings.EXTRA_VALUE,
-                        mModelDbController.getNewScreenId());
+                        getModelDbController().getNewScreenId());
                 return result;
             }
             case LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB: {
-                mModelDbController.createEmptyDB();
+                getModelDbController().createEmptyDB();
                 return null;
             }
             case LauncherSettings.Settings.METHOD_LOAD_DEFAULT_FAVORITES: {
-                mModelDbController.loadDefaultFavoritesIfNecessary();
+                getModelDbController().loadDefaultFavoritesIfNecessary();
                 return null;
             }
             case LauncherSettings.Settings.METHOD_REMOVE_GHOST_WIDGETS: {
-                mModelDbController.removeGhostWidgets();
+                getModelDbController().removeGhostWidgets();
                 return null;
             }
             case LauncherSettings.Settings.METHOD_NEW_TRANSACTION: {
                 Bundle result = new Bundle();
                 result.putBinder(LauncherSettings.Settings.EXTRA_VALUE,
-                        mModelDbController.newTransaction());
+                        getModelDbController().newTransaction());
                 return result;
             }
             case LauncherSettings.Settings.METHOD_REFRESH_HOTSEAT_RESTORE_TABLE: {
-                mModelDbController.refreshHotseatRestoreTable();
+                getModelDbController().refreshHotseatRestoreTable();
                 return null;
             }
             case LauncherSettings.Settings.METHOD_UPDATE_CURRENT_OPEN_HELPER: {
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                        mModelDbController.updateCurrentOpenHelper(arg /* dbFile */));
+                        getModelDbController().updateCurrentOpenHelper(arg /* dbFile */));
                 return result;
             }
             case LauncherSettings.Settings.METHOD_PREP_FOR_PREVIEW: {
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                        mModelDbController.prepareForPreview(arg /* dbFile */));
+                        getModelDbController().prepareForPreview(arg /* dbFile */));
                 return result;
             }
         }

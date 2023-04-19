@@ -16,6 +16,6 @@
 <shape
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="?attr/overviewScrimColor" />
+    <solid android:color="@color/quick_switch_view_background" />
     <corners android:radius="@dimen/keyboard_quick_switch_view_radius" />
 </shape>

@@ -65,6 +65,7 @@ public class LoaderCursor extends CursorWrapper {
 
     private final LongSparseArray<UserHandle> allUsers;
 
+    private final LauncherAppState mApp;
     private final Uri mContentUri;
     private final Context mContext;
     private final PackageManager mPM;
@@ -111,6 +112,7 @@ public class LoaderCursor extends CursorWrapper {
             UserManagerState userManagerState) {
         super(cursor);
 
+        mApp = app;
         allUsers = userManagerState.allUsers;
         mContentUri = contentUri;
         mContext = app.getContext();
@@ -388,6 +390,7 @@ public class LoaderCursor extends CursorWrapper {
      */
     public ContentWriter updater() {
        return new ContentWriter(mContext, new ContentWriter.CommitParams(
+               mApp.getModel().getModelDbController().getDatabaseHelper(),
                BaseColumns._ID + "= ?", new String[]{Integer.toString(id)}));
     }
 
