@@ -205,7 +205,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
 
         icon.setTag(folderInfo);
-        icon.setOnClickListener(ItemClickHandler.INSTANCE);
+        icon.setOnClickListener(activity.getItemOnClickListener());
         icon.mInfo = folderInfo;
         icon.mActivity = activity;
         icon.mDotRenderer = grid.mDotRendererWorkSpace;
