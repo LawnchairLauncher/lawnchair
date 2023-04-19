@@ -81,7 +81,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"Permite aplicației să citească setările și comenzile rapide de pe ecranul de pornire."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"scrie setările și comenzile rapide de pe ecranul de pornire"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"Permite aplicației să modifice setările și comenzile rapide de pe ecranul de pornire."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> nu are permisiunea de a apela"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Widgetul nu poate fi încărcat"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Setări pentru widget"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Atinge pentru a finaliza configurarea"</string>
@@ -101,6 +100,8 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Dosar: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> sau mai multe elemente"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Imagini de fundal"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Imagine de fundal și stil"</string>
+    <!-- no translation found for edit_home_screen (8947858375782098427) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"Setări ecran de pornire"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Dezactivată de administrator"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Permite rotirea ecranului de pornire"</string>

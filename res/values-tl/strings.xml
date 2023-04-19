@@ -81,7 +81,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"Binibigyang-daan ang app na basahin ang mga setting at shortcut sa home."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"magsulat ng mga setting at shortcut ng home"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"Binibigyang-daan ang app na baguhin ang mga setting at shortcut sa home."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"Hindi pinahihintulutang tumawag ang <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Hindi ma-load ang widget"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Mga setting ng widget"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"I-tap para tapusin ang pag-set up"</string>
@@ -101,6 +100,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> o higit pang item"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Mga Wallpaper"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Wallpaper &amp; istilo"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"I-edit ang Home Screen"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Mga setting ng Home"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Na-disable ng iyong admin"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Payagan ang pag-rotate ng home screen"</string>
