@@ -141,8 +141,8 @@ public class LauncherBackAnimationController {
             @Override
             public void onBackCancelled() {
                 handler.post(() -> {
-                    resetPositionAnimated();
-                    mProgressAnimator.reset();
+                    mProgressAnimator.onBackCancelled(
+                            LauncherBackAnimationController.this::resetPositionAnimated);
                 });
             }
 
