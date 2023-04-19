@@ -624,7 +624,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                                     mActivityInterface);
                 });
 
-        notifyGestureStartedAsync();
+        notifyGestureStarted();
     }
 
     private void onDeferredActivityLaunch() {
@@ -961,7 +961,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 }
             });
         }
-        notifyGestureStartedAsync();
+        notifyGestureStarted();
         setIsLikelyToStartNewTask(isLikelyToStartNewTask, false /* animate */);
 
         if (mIsTransientTaskbar && !mTaskbarAlreadyOpen && !isLikelyToStartNewTask) {
@@ -994,7 +994,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      * Notifies the launcher that the swipe gesture has started. This can be called multiple times.
      */
     @UiThread
-    private void notifyGestureStartedAsync() {
+    private void notifyGestureStarted() {
         final T curActivity = mActivity;
         if (curActivity != null) {
             // Once the gesture starts, we can no longer transition home through the button, so
