@@ -125,6 +125,13 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                                 .getTaskbarAllAppsTopPadding());
             }
 
+            case TestProtocol.REQUEST_TASKBAR_APPS_LIST_SCROLL_Y: {
+                return getTISBinderUIProperty(Bundle::putInt, tisBinder ->
+                        tisBinder.getTaskbarManager()
+                                .getCurrentActivityContext()
+                                .getTaskbarAllAppsScroll());
+            }
+
             case TestProtocol.REQUEST_ENABLE_BLOCK_TIMEOUT:
                 runOnTISBinder(tisBinder -> {
                     enableBlockingTimeout(tisBinder, true);
