@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -30,6 +32,7 @@ import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
@@ -106,6 +109,10 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
         List<WorkspaceItemInfo> workspaceUpdates = allUpdates.stream()
                 .filter(info -> info.id != ItemInfo.NO_ID)
                 .collect(Collectors.toList());
+        if (TestProtocol.sDebugTracing) {
+            Log.d(WORK_TAB_MISSING, "allUpdates: " + allUpdates.size() + ", workspaceUpdates "
+                    + workspaceUpdates.size());
+        }
         if (!workspaceUpdates.isEmpty()) {
             scheduleCallbackTask(c -> c.bindWorkspaceItemsChanged(workspaceUpdates));
         }
