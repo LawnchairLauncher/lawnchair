@@ -16,11 +16,14 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.tapl.LauncherInstrumentation.DEFAULT_POLL_INTERVAL;
 import static com.android.launcher3.tapl.LauncherInstrumentation.TASKBAR_RES_ID;
+import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_DISABLE_BLOCK_TIMEOUT;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_DISABLE_MANUAL_TASKBAR_STASHING;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_ENABLE_BLOCK_TIMEOUT;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_ENABLE_MANUAL_TASKBAR_STASHING;
+import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_SHELL_DRAG_READY;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_STASHED_TASKBAR_HEIGHT;
 
 import android.graphics.Point;
@@ -146,6 +149,12 @@ public final class LaunchedAppState extends Background {
 
             try (LauncherInstrumentation.Closable c2 = launcher.addContextLayer(
                     "started item drag")) {
+                launcher.assertTrue("Shell drag not marked as ready", launcher.waitAndGet(() -> {
+                    LauncherInstrumentation.log("Checking shell drag ready");
+                    return launcher.getTestInfo(REQUEST_SHELL_DRAG_READY)
+                            .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, false);
+                }, WAIT_TIME_MS, DEFAULT_POLL_INTERVAL));
+
                 launcher.movePointer(
                         dragStart,
                         endPoint,
