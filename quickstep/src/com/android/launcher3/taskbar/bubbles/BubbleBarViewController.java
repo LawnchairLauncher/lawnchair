@@ -47,10 +47,11 @@ public class BubbleBarViewController {
     private final int mIconSize;
 
     // Initialized in init.
+    private BubbleStashController mBubbleStashController;
     private View.OnClickListener mBubbleClickListener;
     private View.OnClickListener mBubbleBarClickListener;
 
-    // These are exposed to BubbleStashController to animate for stashing/un-stashing
+    // These are exposed to {@link BubbleStashController} to animate for stashing/un-stashing
     private final MultiValueAlpha mBubbleBarAlpha;
     private final AnimatedFloat mBubbleBarScale = new AnimatedFloat(this::updateScale);
     private final AnimatedFloat mBubbleBarTranslationY = new AnimatedFloat(
@@ -73,6 +74,8 @@ public class BubbleBarViewController {
     }
 
     public void init(TaskbarControllers controllers, BubbleControllers bubbleControllers) {
+        mBubbleStashController = bubbleControllers.bubbleStashController;
+
         mActivity.addOnDeviceProfileChangeListener(dp ->
                 mBarView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarHeight
         );
@@ -171,8 +174,7 @@ public class BubbleBarViewController {
 
     // TODO: (b/273592694) animate it
     private void updateVisibilityForStateChange() {
-        // TODO: check if it's stashed
-        if (!mHiddenForSysui && !mHiddenForNoBubbles) {
+        if (!mHiddenForSysui && !mBubbleStashController.isStashed() && !mHiddenForNoBubbles) {
             mBarView.setVisibility(VISIBLE);
         } else {
             mBarView.setVisibility(INVISIBLE);
@@ -271,6 +273,10 @@ public class BubbleBarViewController {
      * from SystemUI.
      */
     public void setExpandedFromSysui(boolean isExpanded) {
-        // TODO: Tell bubble bar stash controller to stash or unstash the bubble bar
+        if (!isExpanded) {
+            mBubbleStashController.stashBubbleBar();
+        } else {
+            mBubbleStashController.showBubbleBar(true /* expand the bubbles */);
+        }
     }
 }
