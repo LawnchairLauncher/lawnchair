@@ -20,7 +20,7 @@
         android:paddingTop="@dimen/widget_list_header_view_vertical_padding"
         android:paddingBottom="@dimen/widget_list_header_view_vertical_padding" >
         <item android:id="@android:id/mask"
-            android:drawable="@drawable/bg_widgets_header_states_large_screen" />
-        <item android:drawable="@drawable/bg_widgets_header_states_large_screen" />
+            android:drawable="@drawable/bg_widgets_header_states_two_pane" />
+        <item android:drawable="@drawable/bg_widgets_header_states_two_pane" />
     </ripple>
 </inset>

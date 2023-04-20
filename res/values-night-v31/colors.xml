@@ -26,4 +26,27 @@
     <color name="home_settings_track_off_color">@android:color/system_neutral1_700</color>
 
     <color name="all_apps_button_color">@android:color/system_neutral2_200</color>
+
+    <color name="widget_picker_title_color_dark">@android:color/system_neutral1_100</color>
+    <color name="widget_picker_header_app_title_color_dark">
+        @android:color/system_neutral1_100</color>
+    <color name="widget_picker_header_app_subtitle_color_dark">
+        @android:color/system_neutral2_200</color>
+    <color name="widget_picker_header_background_color_dark">
+        @android:color/system_accent2_700</color>
+    <color name="widget_picker_suggestions_icon_background_color_dark">
+        @android:color/system_accent1_800</color>
+    <color name="widget_picker_suggestions_icon_color_dark">
+        @android:color/system_accent1_200</color>
+    <color name="widget_picker_search_text_color_dark">
+        @android:color/system_neutral2_200</color>
+    <color name="widget_picker_tab_background_selected_dark">
+        @android:color/system_accent1_200</color>
+    <color name="widget_picker_selected_tab_text_color_dark">
+        @android:color/system_accent1_800</color>
+    <color name="widget_picker_unselected_tab_text_color_dark">
+        @android:color/system_neutral2_200</color>
+    <color name="widget_picker_collapse_handle_color_dark">
+        @android:color/system_neutral2_700</color>
+
 </resources>
