@@ -19,6 +19,6 @@
 -->
 <shape android:shape="rectangle"
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/surface" />
+    <solid android:color="?attr/widgetPickerSecondarySurfaceColor" />
     <corners android:radius="@dimen/widget_list_top_bottom_corner_radius"/>
 </shape>

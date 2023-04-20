@@ -13,7 +13,8 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="#EFF1F2" android:state_expanded="false" />
-    <item android:color="#191C1D" android:state_expanded="true" />
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:color="@android:color/system_neutral1_900"
+        android:lStar="12" />
 </selector>
