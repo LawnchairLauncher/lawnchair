@@ -115,7 +115,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             }
         }
         // But force-finish it anyways
-        finishRunningRecentsAnimation(false /* toHome */);
+        finishRunningRecentsAnimation(false /* toHome */, true /* forceFinish */);
 
         if (mCallbacks != null) {
             // If mCallbacks still != null, that means we are getting this startRecentsAnimation()
@@ -291,13 +291,26 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
      * Finishes the running recents animation.
      */
     public void finishRunningRecentsAnimation(boolean toHome) {
+        finishRunningRecentsAnimation(toHome, false /* forceFinish */);
+    }
+
+    /**
+     * Finishes the running recents animation.
+     * @param forceFinish will synchronously finish the controller
+     */
+    private void finishRunningRecentsAnimation(boolean toHome, boolean forceFinish) {
         if (mController != null) {
             ActiveGestureLog.INSTANCE.addLog(
                     /* event= */ "finishRunningRecentsAnimation", toHome);
             mCallbacks.notifyAnimationCanceled();
-            Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), toHome
-                    ? mController::finishAnimationToHome
-                    : mController::finishAnimationToApp);
+            if (forceFinish) {
+                mController.finishController(toHome, null, false /* sendUserLeaveHint */,
+                        true /* forceFinish */);
+            } else {
+                Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), toHome
+                        ? mController::finishAnimationToHome
+                        : mController::finishAnimationToApp);
+            }
             cleanUpRecentsAnimation();
         }
     }
