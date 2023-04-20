@@ -690,9 +690,11 @@ public class LoaderTask implements Runnable {
                     break;
 
                 case Favorites.ITEM_TYPE_FOLDER:
+                case Favorites.ITEM_TYPE_APP_PAIR:
                     FolderInfo folderInfo = mBgDataModel.findOrMakeFolder(c.id);
                     c.applyCommonProperties(folderInfo);
 
+                    folderInfo.itemType = c.itemType;
                     // Do not trim the folder label, as is was set by the user.
                     folderInfo.title = c.getString(c.mTitleIndex);
                     folderInfo.spanX = 1;

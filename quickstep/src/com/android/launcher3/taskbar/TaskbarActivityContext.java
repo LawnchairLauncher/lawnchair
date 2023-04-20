@@ -117,6 +117,7 @@ import com.android.systemui.unfold.updates.RotationChangeProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
 import java.io.PrintWriter;
+import java.util.Collections;
 import java.util.Optional;
 
 /**
@@ -992,9 +993,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         if (recents == null) {
             return;
         }
-        recents.getSplitSelectController().findLastActiveTaskAndRunCallback(
-                info.getComponentKey(),
-                foundTask -> {
+        recents.getSplitSelectController().findLastActiveTasksAndRunCallback(
+                Collections.singletonList(info.getComponentKey()),
+                foundTasks -> {
+                    @Nullable Task foundTask = foundTasks.get(0);
                     if (foundTask != null) {
                         TaskView foundTaskView =
                                 recents.getTaskViewByTaskId(foundTask.key.id);
