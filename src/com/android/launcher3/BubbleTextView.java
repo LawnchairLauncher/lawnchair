@@ -398,6 +398,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
                 || mDisplay == DISPLAY_TASKBAR;
     }
 
+    /**
+     *  Only if actual text can be displayed in two line, the {@code true} value will be effective.
+     */
+    protected boolean shouldUseTwoLine() {
+        return (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() && mDisplay == DISPLAY_ALL_APPS)
+                || (FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()
+                && mDisplay == DISPLAY_SEARCH_RESULT);
+    }
+
     @UiThread
     @VisibleForTesting
     public void applyLabel(ItemInfoWithIcon info) {
@@ -667,10 +676,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             setPadding(getPaddingLeft(), (height - cellHeightPx) / 2, getPaddingRight(),
                     getPaddingBottom());
         }
-        // only apply two line for all_apps
-        if (((FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() && mDisplay == DISPLAY_ALL_APPS)
-                || (FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()
-                && mDisplay == DISPLAY_SEARCH_RESULT)) && (mLastOriginalText != null)) {
+        // Only apply two line for all_apps and device search only if necessary.
+        if (shouldUseTwoLine() && (mLastOriginalText != null)) {
             CharSequence modifiedString = modifyTitleToSupportMultiLine(
                     MeasureSpec.getSize(widthMeasureSpec) - getCompoundPaddingLeft()
                             - getCompoundPaddingRight(),
