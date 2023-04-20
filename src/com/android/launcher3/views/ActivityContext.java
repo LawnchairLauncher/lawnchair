@@ -53,6 +53,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
+import com.android.launcher3.DropTargetHandler;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -185,6 +186,13 @@ public interface ActivityContext {
      * Controller for supporting item drag-and-drop
      */
     default <T extends DragController> T getDragController() {
+        return null;
+    }
+
+    /**
+     * Handler for actions taken on drop targets that require launcher
+     */
+    default DropTargetHandler getDropTargetHandler() {
         return null;
     }
 
