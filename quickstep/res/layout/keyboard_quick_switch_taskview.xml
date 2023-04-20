@@ -25,6 +25,16 @@
     android:clipToOutline="true"
     launcher:borderColor="?androidprv:attr/materialColorOutline">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
         <include
             layout="@layout/keyboard_quick_switch_thumbnail"
             android:id="@+id/thumbnail1"
@@ -48,5 +58,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.android.launcher3.taskbar.KeyboardQuickSwitchTaskView>
