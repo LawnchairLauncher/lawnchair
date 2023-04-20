@@ -43,7 +43,7 @@
                 android:id="@+id/search_bar_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?android:attr/colorBackground"
+                android:background="?attr/widgetPickerPrimarySurfaceColor"
                 android:clipToPadding="false"
                 android:elevation="0.1dp"
                 android:paddingBottom="8dp"
@@ -61,7 +61,7 @@
                 android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin_two_pane"
                 android:paddingBottom="16dp"
                 android:orientation="horizontal"
-                android:background="?android:attr/colorBackground"
+                android:background="?attr/widgetPickerPrimarySurfaceColor"
                 launcher:layout_sticky="true">
             </LinearLayout>
         </com.android.launcher3.views.StickyHeaderLayout>
