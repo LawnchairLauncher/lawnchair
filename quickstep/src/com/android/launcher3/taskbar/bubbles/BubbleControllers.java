@@ -24,6 +24,8 @@ import com.android.launcher3.util.RunnableList;
 public class BubbleControllers {
 
     public final BubbleBarViewController bubbleBarViewController;
+    public final BubbleStashController bubbleStashController;
+    public final BubbleStashedHandleViewController bubbleStashedHandleViewController;
 
     private final RunnableList mPostInitRunnables = new RunnableList();
 
@@ -32,8 +34,12 @@ public class BubbleControllers {
      *   * Call init
      *   * Call onDestroy
      */
-    public BubbleControllers(BubbleBarViewController bubbleBarViewController) {
+    public BubbleControllers(BubbleBarViewController bubbleBarViewController,
+            BubbleStashController bubbleStashController,
+            BubbleStashedHandleViewController bubbleStashedHandleViewController) {
         this.bubbleBarViewController = bubbleBarViewController;
+        this.bubbleStashController = bubbleStashController;
+        this.bubbleStashedHandleViewController = bubbleStashedHandleViewController;
     }
 
     /**
@@ -43,6 +49,8 @@ public class BubbleControllers {
      */
     public void init(TaskbarControllers taskbarControllers) {
         bubbleBarViewController.init(taskbarControllers, this);
+        bubbleStashedHandleViewController.init(taskbarControllers, this);
+        bubbleStashController.init(taskbarControllers, this);
 
         mPostInitRunnables.executeAllAndDestroy();
     }
@@ -61,6 +69,6 @@ public class BubbleControllers {
      * Cleans up all controllers.
      */
     public void onDestroy() {
-        // TODO
+        bubbleStashedHandleViewController.onDestroy();
     }
 }

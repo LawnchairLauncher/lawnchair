@@ -168,9 +168,14 @@ public class TaskbarManager {
                     DeviceProfile oldDp = mTaskbarActivityContext.getDeviceProfile();
                     boolean isOrientationChange =
                             (configDiff & ActivityInfo.CONFIG_ORIENTATION) != 0;
+
+                    int newOrientation = newConfig.windowConfiguration.getRotation();
+                    int oldOrientation = mOldConfig.windowConfiguration.getRotation();
                     int oldWidth = isOrientationChange ? oldDp.heightPx : oldDp.widthPx;
                     int oldHeight = isOrientationChange ? oldDp.widthPx : oldDp.heightPx;
-                    if (dp.widthPx == oldWidth && dp.heightPx == oldHeight) {
+
+                    if ((dp.widthPx == oldWidth && dp.heightPx == oldHeight)
+                            || (newOrientation == oldOrientation)) {
                         configDiffForRecreate &= ~ActivityInfo.CONFIG_SCREEN_SIZE;
                     }
                 }

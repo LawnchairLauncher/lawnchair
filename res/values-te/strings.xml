@@ -81,7 +81,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"హోమ్‌లో సెట్టింగ్‌లు, షార్ట్‌కట్‌లను చదవడానికి యాప్‌ను అనుమతిస్తుంది."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"హోమ్ సెట్టింగ్‌లు, షార్ట్‌కట్‌లను రాయండి"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"హోమ్‌లో సెట్టింగ్‌లు, షార్ట్‌కట్‌లను మార్చడానికి యాప్‌ను అనుమతిస్తుంది."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"ఫోన్ కాల్స్‌ను చేసేందుకు <xliff:g id="APP_NAME">%1$s</xliff:g>కి అనుమతి లేదు"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"విడ్జెట్‌ను లోడ్ చేయడం సాధ్యం కాలేదు"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"విడ్జెట్ సెట్టింగ్‌లు"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"సెటప్‌ను ముగించడానికి ట్యాప్ చేయండి"</string>
@@ -101,6 +100,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ఫోల్డర్: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> లేదా అంతకంటే ఎక్కువ ఐటెమ్‌లు"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"వాల్‌పేపర్‌లు"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"వాల్‌పేపర్ &amp; స్టయిల్"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"మొదటి స్క్రీన్‌ను ఎడిట్ చేయండి"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"మొదటి స్క్రీన్ సెట్టింగ్‌లు"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"మీ నిర్వాహకులు నిలిపివేసారు"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"మొదటి స్క్రీన్ రొటేషన్‌ను అనుమతించండి"</string>

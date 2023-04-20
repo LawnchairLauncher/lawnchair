@@ -118,4 +118,10 @@ public class HomeAllApps extends AllApps {
     public Qsb getQsb() {
         return new AllAppsQsb(mLauncher, verifyActiveContainer());
     }
+
+    @Override
+    protected int getAllAppsScroll() {
+        return mLauncher.getTestInfo(TestProtocol.REQUEST_APPS_LIST_SCROLL_Y)
+                .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
 }
