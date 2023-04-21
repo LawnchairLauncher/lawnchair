@@ -74,6 +74,10 @@ public class BaseDepthController {
     // Hints that there is potentially content behind Launcher and that we shouldn't optimize by
     // marking the launcher surface as opaque.  Only used in certain Launcher states.
     private boolean mHasContentBehindLauncher;
+
+    /** Pause applying depth and blur, can be used when something behind the Launcher. */
+    protected boolean mPauseBlurs;
+
     /**
      * Last blur value, in pixels, that was applied.
      * For debugging purposes.
@@ -104,6 +108,13 @@ public class BaseDepthController {
         mHasContentBehindLauncher = hasContentBehindLauncher;
     }
 
+    public void pauseBlursOnWindows(boolean pause) {
+        if (pause != mPauseBlurs) {
+            mPauseBlurs = pause;
+            applyDepthAndBlur();
+        }
+    }
+
     protected void applyDepthAndBlur() {
         float depth = mDepth;
         IBinder windowToken = mLauncher.getRootView().getWindowToken();
@@ -121,9 +132,9 @@ public class BaseDepthController {
             return;
         }
         boolean hasOpaqueBg = mLauncher.getScrimView().isFullyOpaque();
-        boolean isSurfaceOpaque = !mHasContentBehindLauncher && hasOpaqueBg;
+        boolean isSurfaceOpaque = mPauseBlurs || (!mHasContentBehindLauncher && hasOpaqueBg);
 
-        mCurrentBlur = !mCrossWindowBlursEnabled || hasOpaqueBg
+        mCurrentBlur = !mCrossWindowBlursEnabled || hasOpaqueBg || mPauseBlurs
                 ? 0 : (int) (depth * mMaxBlurRadius);
         SurfaceControl.Transaction transaction = new SurfaceControl.Transaction()
                 .setBackgroundBlurRadius(mSurface, mCurrentBlur)
