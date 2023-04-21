@@ -165,7 +165,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"వర్క్ యాప్‌లు ఆఫ్‌లో ఉన్నాయి. మీకు నోటిఫికేషన్‌లు పంపడం, మీ బ్యాటరీని ఉపయోగించడం, లేదా మీ లొకేషన్‌ను యాక్సెస్ చేయడం మీ వర్క్ యాప్‌లకు సాధ్యపడదు"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"వర్క్ యాప్‌లకు బ్యాడ్జ్ ఉంటుంది, అవి మీ IT అడ్మిన్‌కు కనిపిస్తాయి"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"అర్థమైంది"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"వర్క్ యాప్‌లను పాజ్ చేయి"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"వర్క్ యాప్‌లను పాజ్ చేయండి"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"వర్క్ యాప్‌లను ఆన్ చేయి"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ఫిల్టర్ చేయి"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"మీ ఫోన్‌లో సెర్చ్ చేయండి"</string>

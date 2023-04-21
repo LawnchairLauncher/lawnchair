@@ -160,7 +160,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil professionnel"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Les applis professionnelles sont identifiées par un badge et votre administrateur informatique peut les voir"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"Applications professionnelles en veille"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Applis professionnelles en pause"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Vos applis professionnelles ne peuvent pas vous envoyer de notifications, utiliser votre batterie ni accéder à votre position"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Vos applis professionnelles sont désactivées. Elles ne peuvent pas vous envoyer de notifications, utiliser votre batterie ni accéder à votre position."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Les applis professionnelles sont identifiées par un badge et votre administrateur informatique peut les voir"</string>

@@ -169,6 +169,6 @@
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Zapnout pracovní aplikace"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtr"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Prohledávání telefonu"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Vyhledávat na tabletu"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Vyhledávání na tabletu"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Selhalo: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
