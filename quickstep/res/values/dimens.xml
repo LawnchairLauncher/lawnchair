@@ -341,6 +341,9 @@
     <dimen name="taskbar_edu_features_lottie_height">106dp</dimen>
     <dimen name="taskbar_edu_features_horizontal_spacing">24dp</dimen>
 
+    <!--- Taskbar Pinning -->
+    <dimen name="taskbar_pinning_popup_menu_width">300dp</dimen>
+
     <!-- Recents overview -->
     <dimen name="recents_filter_icon_size">30dp</dimen>
 

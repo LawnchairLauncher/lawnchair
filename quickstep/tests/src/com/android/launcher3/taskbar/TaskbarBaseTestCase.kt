@@ -53,6 +53,7 @@ abstract class TaskbarBaseTestCase {
     @Mock lateinit var taskbarOverlayController: TaskbarOverlayController
     @Mock lateinit var taskbarEduTooltipController: TaskbarEduTooltipController
     @Mock lateinit var keyboardQuickSwitchController: KeyboardQuickSwitchController
+    @Mock lateinit var taskbarPinningController: TaskbarDividerPopupController
 
     lateinit var taskbarControllers: TaskbarControllers
 
@@ -91,7 +92,8 @@ abstract class TaskbarBaseTestCase {
                 taskbarSpringOnStashController,
                 taskbarRecentAppsController,
                 taskbarEduTooltipController,
-                keyboardQuickSwitchController
+                keyboardQuickSwitchController,
+                taskbarPinningController,
             )
     }
 }
