@@ -119,6 +119,7 @@ import android.window.OnBackAnimationCallback;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 
@@ -572,7 +573,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Note that state handler will always be handling the back press event if the previous 3 don't.
      */
     @NonNull
-    @TargetApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     protected OnBackAnimationCallback getOnBackAnimationCallback() {
         // #1 auto cancel action mode handler
         if (isInAutoCancelActionMode()) {
