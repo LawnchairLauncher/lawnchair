@@ -277,6 +277,13 @@
     <string name="taskbar_a11y_hidden_title">Taskbar hidden</string>
     <!-- Accessibility title for the Taskbar window on phones. [CHAR_LIMIT=NONE] -->
     <string name="taskbar_phone_a11y_title">Navigation bar</string>
+    <!-- Text in popup dialog for user to switch between always showing Taskbar or not. [CHAR LIMIT=30] -->
+    <string name="always_show_taskbar">Always show Taskbar</string>
+    <!-- Text in popup dialog for user to switch between system navigation modes. [CHAR LIMIT=30] -->
+    <string name="change_navigation_mode">Change navigation mode</string>
+    <!-- Accessibility title for the Taskbar vertical divider icon. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_divider_a11y_title">Taskbar Divider</string>
+
 
     <!-- Label for moving drop target to the top or left side of the screen, depending on orientation (from the Taskbar only). -->
     <string name="move_drop_target_top_or_left">Move to top&#47;left</string>
