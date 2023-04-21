@@ -18,7 +18,6 @@ package com.android.launcher3.secondarydisplay;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -405,17 +404,25 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
             drawable = null;
             scale = previewProvider.getScaleAndPosition(contentView, mTempXY);
         }
-        int halfPadding = previewProvider.previewPadding / 2;
+
         int dragLayerX = mTempXY[0];
         int dragLayerY = mTempXY[1];
 
-        Point dragVisualizeOffset = null;
         Rect dragRect = new Rect();
         if (draggableView != null) {
             draggableView.getSourceVisualDragBounds(dragRect);
             dragLayerY += dragRect.top;
-            dragVisualizeOffset = new Point(-halfPadding, halfPadding);
         }
+
+        if (options.preDragCondition != null) {
+            int xOffSet = options.preDragCondition.getDragOffset().x;
+            int yOffSet = options.preDragCondition.getDragOffset().y;
+            if (xOffSet != 0 && yOffSet != 0) {
+                dragLayerX += xOffSet;
+                dragLayerY += yOffSet;
+            }
+        }
+
         if (contentView != null) {
             mDragController.startDrag(
                     contentView,
@@ -424,7 +431,6 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
                     dragLayerY,
                     source,
                     dragObject,
-                    dragVisualizeOffset,
                     dragRect,
                     scale * iconScale,
                     scale,
@@ -437,7 +443,6 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
                     dragLayerY,
                     source,
                     dragObject,
-                    dragVisualizeOffset,
                     dragRect,
                     scale * iconScale,
                     scale,
