@@ -1270,6 +1270,11 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         rv.addOnScrollListener(mScrollListener);
     }
 
+    /** Returns the instance of @{code SearchTransitionController}. */
+    public SearchTransitionController getSearchTransitionController() {
+        return mSearchTransitionController;
+    }
+
     /** Holds a {@link BaseAllAppsAdapter} and related fields. */
     public class AdapterHolder {
         public static final int MAIN = 0;
