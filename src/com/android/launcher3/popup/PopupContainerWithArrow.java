@@ -241,6 +241,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
                     deepShortcutCount,
                     popupDataProvider.getNotificationKeysForItem(item),
                     systemShortcuts);
+            launcher.tryClearAccessibilityFocus(icon);
         }
         launcher.refreshAndBindWidgetsForPackageUser(PackageUserKey.fromItemInfo(item));
         container.requestFocus();
