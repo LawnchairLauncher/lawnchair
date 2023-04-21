@@ -238,7 +238,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                         ? new DesktopTaskbarRecentAppsController(this)
                         : TaskbarRecentAppsController.DEFAULT,
                 new TaskbarEduTooltipController(this),
-                new KeyboardQuickSwitchController());
+                new KeyboardQuickSwitchController(),
+                new TaskbarDividerPopupController(this));
     }
 
     public void init(@NonNull TaskbarSharedState sharedState) {
