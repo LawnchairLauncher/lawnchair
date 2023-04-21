@@ -641,6 +641,13 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             };
         }
 
+        public View.OnLongClickListener getTaskbarDividerLongClickListener() {
+            return v -> {
+                mControllers.taskbarPinningController.showPinningView(v);
+                return true;
+            };
+        }
+
         public View.OnLongClickListener getIconOnLongClickListener() {
             return mControllers.taskbarDragController::startDragOnLongClick;
         }

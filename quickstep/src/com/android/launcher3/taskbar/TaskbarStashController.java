@@ -18,11 +18,12 @@ package com.android.launcher3.taskbar;
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
 import static android.view.accessibility.AccessibilityManager.FLAG_CONTENT_CONTROLS;
 
+import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING_KEY;
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.FORCE_PERSISTENT_TASKBAR;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_PINNING;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TRANSIENT_TASKBAR_HIDE;
@@ -324,7 +325,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         // that taskbar unstashes when going to 3 button mode (supportsVisualStashing() false).
         boolean isManuallyStashedInApp = supportsVisualStashing()
                 && !isTransientTaskbar
-                && !FORCE_PERSISTENT_TASKBAR.get()
+                && !ENABLE_TASKBAR_PINNING.get()
                 && mPrefs.getBoolean(SHARED_PREFS_STASHED_KEY, DEFAULT_STASHED_PREF);
         boolean isInSetup = !mActivity.isUserSetupComplete() || setupUIVisible;
         updateStateForFlag(FLAG_STASHED_IN_APP_MANUAL, isManuallyStashedInApp);
@@ -353,7 +354,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * Returns whether the user can manually stash the taskbar based on the current device state.
      */
     protected boolean supportsManualStashing() {
-        if (FORCE_PERSISTENT_TASKBAR.get()) {
+        if (ENABLE_TASKBAR_PINNING.get() && mPrefs.getBoolean(TASKBAR_PINNING_KEY, false)) {
             return false;
         }
         return supportsVisualStashing()
