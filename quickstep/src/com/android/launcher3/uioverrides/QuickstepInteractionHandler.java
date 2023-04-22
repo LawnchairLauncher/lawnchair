@@ -56,6 +56,10 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
             return RemoteViews.startPendingIntent(hostView, pendingIntent,
                     remoteResponse.getLaunchOptions(view));
         }
+        if (mLauncher.getSplitToWorkspaceController().handleSecondWidgetSelectionForSplit(view,
+                pendingIntent)) {
+            return true;
+        }
         Pair<Intent, ActivityOptions> options = remoteResponse.getLaunchOptions(view);
         ActivityOptionsWrapper activityOptions = mLauncher.getAppTransitionManager()
                 .getActivityLaunchOptions(hostView);
