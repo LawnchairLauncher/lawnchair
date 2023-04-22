@@ -105,6 +105,7 @@ import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.tracing.InputConsumerProto;
 import com.android.launcher3.tracing.SwipeHandlerProto;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TraceHelper;
@@ -624,7 +625,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                                     mActivityInterface);
                 });
 
-        notifyGestureStartedAsync();
+        notifyGestureStarted();
     }
 
     private void onDeferredActivityLaunch() {
@@ -961,7 +962,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 }
             });
         }
-        notifyGestureStartedAsync();
+        notifyGestureStarted();
         setIsLikelyToStartNewTask(isLikelyToStartNewTask, false /* animate */);
 
         if (mIsTransientTaskbar && !mTaskbarAlreadyOpen && !isLikelyToStartNewTask) {
@@ -994,7 +995,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      * Notifies the launcher that the swipe gesture has started. This can be called multiple times.
      */
     @UiThread
-    private void notifyGestureStartedAsync() {
+    private void notifyGestureStarted() {
         final T curActivity = mActivity;
         if (curActivity != null) {
             // Once the gesture starts, we can no longer transition home through the button, so
@@ -2168,7 +2169,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 ActiveGestureLog.INSTANCE.addLog("Unexpected task appeared"
                         + " id=" + taskInfo.taskId
                         + " pkg=" + taskInfo.baseIntent.getComponent().getPackageName());
-                finishRecentsAnimationOnTasksAppeared();
+                finishRecentsAnimationOnTasksAppeared(null /* onFinishComplete */);
             } else if (handleTaskAppeared(appearedTaskTargets)) {
                 Optional<RemoteAnimationTarget> taskTargetOptional =
                         Arrays.stream(appearedTaskTargets)
@@ -2176,17 +2177,22 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                                         targetCompat.taskId == mGestureState.getLastStartedTaskId())
                                 .findFirst();
                 if (!taskTargetOptional.isPresent()) {
-                    finishRecentsAnimationOnTasksAppeared();
+                    finishRecentsAnimationOnTasksAppeared(null /* onFinishComplete */);
                     return;
                 }
                 RemoteAnimationTarget taskTarget = taskTargetOptional.get();
                 TaskView taskView = mRecentsView.getTaskViewByTaskId(taskTarget.taskId);
                 if (taskView == null || !taskView.getThumbnail().shouldShowSplashView()) {
-                    finishRecentsAnimationOnTasksAppeared();
+                    finishRecentsAnimationOnTasksAppeared(null /* onFinishComplete */);
                     return;
                 }
 
                 ViewGroup splashView = mActivity.getDragLayer();
+                final QuickstepLauncher quickstepLauncher = mActivity instanceof QuickstepLauncher
+                        ? (QuickstepLauncher) mActivity : null;
+                if (quickstepLauncher != null) {
+                    quickstepLauncher.getDepthController().pauseBlursOnWindows(true);
+                }
 
                 // When revealing the app with launcher splash screen, make the app visible
                 // and behind the splash view before the splash is animated away.
@@ -2194,7 +2200,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                         new SurfaceTransactionApplier(splashView);
                 SurfaceTransaction transaction = new SurfaceTransaction();
                 for (RemoteAnimationTarget target : appearedTaskTargets) {
-                    transaction.forSurface(target.leash).setAlpha(1).setLayer(-1);
+                    transaction.forSurface(target.leash).setAlpha(1).setLayer(-1).setShow();
                 }
                 surfaceApplier.scheduleApply(transaction);
 
@@ -2206,16 +2212,25 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                         new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
-                                finishRecentsAnimationOnTasksAppeared();
+                                // Hiding launcher which shows the app surface behind, then
+                                // finishing recents to the app. After transition finish, showing
+                                // the views on launcher again, so it can be visible when next
+                                // animation starts.
+                                splashView.setAlpha(0);
+                                if (quickstepLauncher != null) {
+                                    quickstepLauncher.getDepthController()
+                                            .pauseBlursOnWindows(false);
+                                }
+                                finishRecentsAnimationOnTasksAppeared(() -> splashView.setAlpha(1));
                             }
                         });
             }
         }
     }
 
-    private void finishRecentsAnimationOnTasksAppeared() {
+    private void finishRecentsAnimationOnTasksAppeared(Runnable onFinishComplete) {
         if (mRecentsAnimationController != null) {
-            mRecentsAnimationController.finish(false /* toRecents */, null /* onFinishComplete */);
+            mRecentsAnimationController.finish(false /* toRecents */, onFinishComplete);
         }
         ActiveGestureLog.INSTANCE.addLog("finishRecentsAnimationOnTasksAppeared");
     }
