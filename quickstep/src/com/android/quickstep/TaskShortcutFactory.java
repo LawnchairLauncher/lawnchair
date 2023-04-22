@@ -128,19 +128,19 @@ public interface TaskShortcutFactory {
      * A menu item, "Save app pair", that allows the user to preserve the current app combination as
      * a single persistent icon on the Home screen, allowing for quick split screen initialization.
      */
-    class SaveAppPairSystemShortcut extends SystemShortcut {
-
+    class SaveAppPairSystemShortcut extends SystemShortcut<BaseDraggingActivity> {
         private final TaskView mTaskView;
 
-        public SaveAppPairSystemShortcut(BaseDraggingActivity target, TaskView taskView) {
-            super(R.drawable.ic_save_app_pair, R.string.save_app_pair, target,
+        public SaveAppPairSystemShortcut(BaseDraggingActivity activity, TaskView taskView) {
+            super(R.drawable.ic_save_app_pair, R.string.save_app_pair, activity,
                     taskView.getItemInfo(), taskView);
             mTaskView = taskView;
         }
 
         @Override
         public void onClick(View view) {
-            // TODO (b/274189428): Call "saveAppPair" function in new AppPairController class
+            ((RecentsView) mTarget.getOverviewPanel())
+                    .getSplitSelectController().getAppPairsController().saveAppPair(mTaskView);
         }
     }
 
