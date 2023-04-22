@@ -973,8 +973,8 @@ public class QuickstepLauncher extends Launcher {
         return mTaskbarUIController;
     }
 
-    public SplitSelectStateController getSplitSelectStateController() {
-        return mSplitSelectStateController;
+    public SplitToWorkspaceController getSplitToWorkspaceController() {
+        return mSplitToWorkspaceController;
     }
 
     public <T extends OverviewActionsView> T getActionsView() {
