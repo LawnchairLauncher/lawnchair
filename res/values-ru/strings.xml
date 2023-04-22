@@ -28,11 +28,8 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"Ярлык недоступен"</string>
     <string name="home_screen" msgid="5629429142036709174">"Главный экран"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Разделить экран"</string>
-    <string name="split_screen_position_top" msgid="1504965011158689649">"Приложение сверху"</string>
-    <string name="split_screen_position_left" msgid="7537793098851830883">"Приложение слева"</string>
-    <string name="split_screen_position_right" msgid="1569377524925193369">"Приложение справа"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Сведения о приложении \"%1$s\""</string>
-    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Нажмите и удерживайте для переноса виджета."</string>
+    <string name="long_press_widget_to_add" msgid="3587712543577675817">"Чтобы переместить виджет, нажмите на него и удерживайте"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Чтобы использовать специальные действия или перенести виджет, нажмите на него дважды и удерживайте."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d x %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"Ширина %1$d, высота %2$d"</string>
@@ -40,6 +37,7 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Нажмите на виджет и удерживайте его, чтобы переместить в нужное место на главном экране."</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Добавить на главный экран"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Виджет \"<xliff:g id="WIDGET_NAME">%1$s</xliff:g>\" добавлен на главный экран"</string>
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Подсказки"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# виджет}one{# виджет}few{# виджета}many{# виджетов}other{# виджета}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# ярлык}one{# ярлык}few{# ярлыка}many{# ярлыков}other{# ярлыка}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -59,7 +57,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Поиск приложений"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Загрузка приложений…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"По запросу \"<xliff:g id="QUERY">%1$s</xliff:g>\" ничего не найдено"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Искать другие приложения"</string>
     <string name="label_application" msgid="8531721983832654978">"Приложение"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Все приложения"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Уведомления"</string>
@@ -114,6 +111,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Чтобы показывать значки уведомлений, включите уведомления в приложении \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Изменить настройки"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Показывать значки уведомлений"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"Для разработчиков"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Добавлять значки приложений на главный экран"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Добавлять значки установленных приложений на главный экран"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Неизвестно"</string>
@@ -124,14 +122,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Установка приложения \"<xliff:g id="NAME">%1$s</xliff:g>\" (выполнено <xliff:g id="PROGRESS">%2$s</xliff:g>)"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Скачивается \"<xliff:g id="NAME">%1$s</xliff:g>\" (<xliff:g id="PROGRESS">%2$s</xliff:g>)"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Ожидание установки \"<xliff:g id="NAME">%1$s</xliff:g>\""</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"Обновите приложение"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Эта версия приложения устарела. Обновите его вручную, чтобы снова пользоваться ярлыком, или удалите значок."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Обновить"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Удалить"</string>
     <string name="widgets_list" msgid="796804551140113767">"Список виджетов"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Список виджетов закрыт"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Добавить на главный экран"</string>
@@ -140,7 +134,7 @@
     <string name="item_removed" msgid="851119963877842327">"Объект убран."</string>
     <string name="undo" msgid="4151576204245173321">"Отменить"</string>
     <string name="action_move" msgid="4339390619886385032">"Переместить элемент"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"Переместить в ячейку <xliff:g id="NUMBER_0">%1$s</xliff:g> <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"Переместите в строку <xliff:g id="NUMBER_0">%1$s</xliff:g> столбца <xliff:g id="NUMBER_1">%2$s</xliff:g> на экране \"<xliff:g id="STRING">%3$s</xliff:g>\""</string>
     <string name="move_to_position" msgid="6750008980455459790">"Переместить в позицию <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Переместить в Избранное (<xliff:g id="NUMBER">%1$s</xliff:g>)"</string>
     <string name="item_moved" msgid="4606538322571412879">"Элемент перемещен."</string>
@@ -164,15 +158,17 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Личные"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Рабочие"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Рабочий профиль"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"У рабочих приложений есть специальная пометка. Они видны системному администратору."</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"У рабочих приложений есть специальный значок. Они видны системному администратору."</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ОК"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Рабочие приложения приостановлены"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Рабочие приложения не могут отправлять уведомления, расходовать заряд батареи и получать доступ к данным о вашем местоположении."</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Рабочие приложения отключены. Они не могут отправлять уведомления, расходовать заряд батареи и получать доступ к вашему местоположению."</string>
-    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"У рабочих приложений есть специальная пометка. Они видны системному администратору."</string>
+    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"У рабочих приложений есть специальный значок. Они видны системному администратору."</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ОК"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Отключить рабочие приложения"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Приостановить рабочие приложения"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Включить рабочие приложения"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Фильтр"</string>
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"Поиск на телефоне"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Поиск на планшете"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Не удалось выполнить действие (<xliff:g id="WHAT">%1$s</xliff:g>)."</string>
 </resources>

@@ -28,9 +28,6 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"Shkurtorja nuk është e disponueshme"</string>
     <string name="home_screen" msgid="5629429142036709174">"Ekrani bazë"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Ekrani i ndarë"</string>
-    <string name="split_screen_position_top" msgid="1504965011158689649">"Ndaj lart"</string>
-    <string name="split_screen_position_left" msgid="7537793098851830883">"Ndaj majtas"</string>
-    <string name="split_screen_position_right" msgid="1569377524925193369">"Ndaj djathtas"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Informacioni i aplikacionit për %1$s"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Prek dhe mbaj shtypur një miniaplikacion për ta zhvendosur."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Trokit dy herë dhe mbaje shtypur një miniapliikacion për ta zhvendosur atë ose për të përdorur veprimet e personalizuara."</string>
@@ -40,6 +37,7 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Prek dhe mbaj të shtypur miniaplikacionin për ta lëvizur atë nëpër ekranin bazë"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Shto në ekranin bazë"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Miniaplikacioni <xliff:g id="WIDGET_NAME">%1$s</xliff:g> u shtua në ekranin bazë"</string>
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Sugjerime"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# miniaplikacion}other{# miniaplikacione}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# shkurtore}other{# shkurtore}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -59,7 +57,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Kërko për aplikacione"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Po ngarkon aplikacionet..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Nuk u gjet asnjë aplikacion që përputhet me \"<xliff:g id="QUERY">%1$s</xliff:g>\""</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Kërko për më shumë aplikacione"</string>
     <string name="label_application" msgid="8531721983832654978">"Aplikacioni"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Të gjitha aplikacionet"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Njoftimet"</string>
@@ -114,6 +111,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Për të shfaqur \"Pikat e njoftimeve\", aktivizo njoftimet e aplikacionit për <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Ndrysho cilësimet"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Shfaq pikat e njoftimeve"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"Opsionet e zhvilluesit‏"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Shto ikona aplikacionesh në ekranin bazë"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Për aplikacionet e reja"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"I panjohur"</string>
@@ -124,14 +122,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> po instalohet, <xliff:g id="PROGRESS">%2$s</xliff:g> i përfunduar"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> po shkarkohet, <xliff:g id="PROGRESS">%2$s</xliff:g> të përfunduara"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> po pret të instalohet"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"Kërkohet përditësimi i aplikacionit"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Aplikacioni për këtë ikonë nuk është përditësuar. Mund ta përditësosh manualisht për të riaktivizuar këtë shkurtore ose hiq ikonën."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Përditëso"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Hiq"</string>
     <string name="widgets_list" msgid="796804551140113767">"Lista e miniaplikacioneve"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Lista e miniaplikacioneve u mbyll"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Shto në ekranin bazë"</string>
@@ -140,7 +134,7 @@
     <string name="item_removed" msgid="851119963877842327">"Artikulli u hoq"</string>
     <string name="undo" msgid="4151576204245173321">"Zhbëj"</string>
     <string name="action_move" msgid="4339390619886385032">"Zhvendose artikullin"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"Zhvendos te rreshti <xliff:g id="NUMBER_0">%1$s</xliff:g>, kolona <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"Kalo te rreshti <xliff:g id="NUMBER_0">%1$s</xliff:g> kolona <xliff:g id="NUMBER_1">%2$s</xliff:g> në <xliff:g id="STRING">%3$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Zhvendos te pozicioni <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Zhvendos te pozicioni <xliff:g id="NUMBER">%1$s</xliff:g> i preferencave"</string>
     <string name="item_moved" msgid="4606538322571412879">"Artikulli u zhvendos"</string>
@@ -171,8 +165,10 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Aplikacionet e punës janë joaktive. Aplikacionet e tua të punës nuk mund të të dërgojnë njoftime, të përdorin baterinë tënde apo të kenë qasje në vendndodhjen tënde"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Aplikacionet e punës janë të shënuara dhe të dukshme për administratorin e teknologjisë së informacionit"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"E kuptova"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Çaktivizo aplikacionet e punës"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Vendos në pauzë aplikacionet e punës"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Aktivizo aplikacionet e punës"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtro"</string>
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"Kërko në telefonin tënd"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Kërko në tabletin tënd"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Dështoi: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

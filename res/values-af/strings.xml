@@ -28,9 +28,6 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"Kortpad is nie beskikbaar nie"</string>
     <string name="home_screen" msgid="5629429142036709174">"Tuis"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Verdeelde skerm"</string>
-    <string name="split_screen_position_top" msgid="1504965011158689649">"Verdeel bo"</string>
-    <string name="split_screen_position_left" msgid="7537793098851830883">"Verdeel links"</string>
-    <string name="split_screen_position_right" msgid="1569377524925193369">"Verdeel regs"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Programinligting vir %1$s"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Raak en hou om \'n legstuk te skuif."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Dubbeltik en hou om \'n legstuk te skuif of gebruik gepasmaakte handelinge."</string>
@@ -40,6 +37,7 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Raak en hou die legstuk om dit op die tuisskerm rond te beweeg"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Voeg by tuisskerm"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g>-legstuk by tuisskerm gevoeg"</string>
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Voorstelle"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# legstuk}other{# legstukke}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# kortpad}other{# kortpaaie}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -59,7 +57,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Deursoek programme"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Laai tans programme …"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Kon geen programme kry wat by \"<xliff:g id="QUERY">%1$s</xliff:g>\" pas nie"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Soek meer programme"</string>
     <string name="label_application" msgid="8531721983832654978">"Program"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Alle programme"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Kennisgewings"</string>
@@ -75,7 +72,7 @@
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Deïnstalleer"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Programinligting"</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Installeer"</string>
-    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Moenie program voorstel nie"</string>
+    <string name="dismiss_prediction_label" msgid="3357562989568808658">"Moenie voorstel nie"</string>
     <string name="pin_prediction" msgid="4196423321649756498">"Vasspeldvoorspelling"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"installeer kortpaaie"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Laat \'n program toe om kortpaaie by te voeg sonder gebruikerinmenging."</string>
@@ -114,6 +111,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Skakel programkennisgewings vir <xliff:g id="NAME">%1$s</xliff:g> aan om kennisgewingkolle te sien"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Verander instellings"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Wys kennisgewingkolle"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"Ontwikkelaaropsies"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Voeg programikone by tuisskerm"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Vir nuwe programme"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Onbekend"</string>
@@ -124,14 +122,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> installeer tans; <xliff:g id="PROGRESS">%2$s</xliff:g> voltooi"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> laai tans af, <xliff:g id="PROGRESS">%2$s</xliff:g> voltooid"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> wag tans om te installeer"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"Programopdatering word vereis"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Die program vir hierdie ikoon is nie opgedateer nie. Jy kan dit handmatig opdateer om hierdie kortpad weer te aktiveer, of die ikoon verwyder."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Dateer op"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Verwyder"</string>
     <string name="widgets_list" msgid="796804551140113767">"Legstukkelys"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Legstukkelys is toegemaak"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Voeg by tuisskerm"</string>
@@ -140,7 +134,7 @@
     <string name="item_removed" msgid="851119963877842327">"Item is verwyder"</string>
     <string name="undo" msgid="4151576204245173321">"Ontdoen"</string>
     <string name="action_move" msgid="4339390619886385032">"Skuif item"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"Skuif na ry <xliff:g id="NUMBER_0">%1$s</xliff:g> kolom <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"Skuif na ry <xliff:g id="NUMBER_0">%1$s</xliff:g> kolom <xliff:g id="NUMBER_1">%2$s</xliff:g> in <xliff:g id="STRING">%3$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Skuif na posisie <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Skuif na gunstelingposisie <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="item_moved" msgid="4606538322571412879">"Item geskuif"</string>
@@ -171,8 +165,10 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Werkprogramme is af. Jou werkprogramme kan nie vir jou kennisgewings stuur, jou battery gebruik of toegang tot jou ligging kry nie"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Werkprogramme het \'n kenteken en is sigbaar vir jou IT-administrateur"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Het dit"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Skakel werkprogramme af"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Onderbreek werkprogramme"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Skakel werkprogramme aan"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filter"</string>
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"Deursoek jou foon"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Deursoek jou tablet"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Misluk: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

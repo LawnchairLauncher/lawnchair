@@ -28,9 +28,6 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"Otsetee pole saadaval"</string>
     <string name="home_screen" msgid="5629429142036709174">"Avakuva"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Jagatud ekraanikuva"</string>
-    <string name="split_screen_position_top" msgid="1504965011158689649">"Jaga üles"</string>
-    <string name="split_screen_position_left" msgid="7537793098851830883">"Jaga vasakule"</string>
-    <string name="split_screen_position_right" msgid="1569377524925193369">"Jaga paremale"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Rakenduse teave: %1$s"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Vidina teisaldamiseks puudutage ja hoidke all."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Vidina teisaldamiseks või kohandatud toimingute kasutamiseks topeltpuudutage ja hoidke all."</string>
@@ -40,6 +37,7 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Vidina teisaldamiseks avakuval puudutage vidinat ja hoidke seda all"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Lisa avakuvale"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Vidin <xliff:g id="WIDGET_NAME">%1$s</xliff:g> lisati avakuvale"</string>
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Soovitused"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# vidin}other{# vidinat}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# otsetee}other{# otseteed}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -59,7 +57,6 @@
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Otsige rakendusi"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Rakenduste laadimine …"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Päringule „<xliff:g id="QUERY">%1$s</xliff:g>” ei vastanud ükski rakendus"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Otsi rohkem rakendusi"</string>
     <string name="label_application" msgid="8531721983832654978">"Rakendus"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Kõik rakendused"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Märguanded"</string>
@@ -114,6 +111,7 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Märguandetäppide kuvamiseks lülitage sisse rakenduse <xliff:g id="NAME">%1$s</xliff:g> märguanded"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Seadete muutmine"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Kuva märguandetäpid"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"Arendaja valikud"</string>
     <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Lisa rakenduste ikoonid avakuvale"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Uute rakenduste puhul"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Teadmata"</string>
@@ -124,14 +122,10 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Üksust <xliff:g id="NAME">%1$s</xliff:g> installitakse, <xliff:g id="PROGRESS">%2$s</xliff:g> on valmis"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Rakenduse <xliff:g id="NAME">%1$s</xliff:g> allalaadimine, <xliff:g id="PROGRESS">%2$s</xliff:g> on valmis"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> on installimise ootel"</string>
-    <!-- no translation found for dialog_update_title (114234265740994042) -->
-    <skip />
-    <!-- no translation found for dialog_update_message (4176784553982226114) -->
-    <skip />
-    <!-- no translation found for dialog_update (2178028071796141234) -->
-    <skip />
-    <!-- no translation found for dialog_remove (6510806469849709407) -->
-    <skip />
+    <string name="dialog_update_title" msgid="114234265740994042">"Rakendust tuleb värskendada"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Selle ikooni rakendust pole värskendatud. Otsetee uuesti lubamiseks võite rakendust käsitsi värskendada või ikooni eemaldada."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Värskenda"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Eemalda"</string>
     <string name="widgets_list" msgid="796804551140113767">"Vidinate loend"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Vidinate loend on suletud"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"Lisa avakuvale"</string>
@@ -140,7 +134,7 @@
     <string name="item_removed" msgid="851119963877842327">"Üksus eemaldati"</string>
     <string name="undo" msgid="4151576204245173321">"Võta tagasi"</string>
     <string name="action_move" msgid="4339390619886385032">"Teisalda üksus"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"Teisaldamine <xliff:g id="NUMBER_0">%1$s</xliff:g>. rea <xliff:g id="NUMBER_1">%2$s</xliff:g>. veergu"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"Teisalda reale <xliff:g id="NUMBER_0">%1$s</xliff:g> veerus <xliff:g id="NUMBER_1">%2$s</xliff:g> kohas <xliff:g id="STRING">%3$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Teisaldamine <xliff:g id="NUMBER">%1$s</xliff:g>. positsioonile"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Teisaldamine lemmikute <xliff:g id="NUMBER">%1$s</xliff:g>. positsioonile"</string>
     <string name="item_moved" msgid="4606538322571412879">"Üksus teisaldati"</string>
@@ -171,8 +165,10 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Töörakendused on välja lülitatud. Töörakendused ei saa teile märguandeid saata, akut kasutada ega teie asukohale juurde pääseda."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Töörakendustel on märk ja need on teie IT-administraatorile nähtavad"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Selge"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Lülita töörakendused välja"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Peata töörakendused"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Lülita töörakendused sisse"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filter"</string>
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"Otsimine telefonist"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Otsimine tahvelarvutist"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Nurjus: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>
