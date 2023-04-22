@@ -84,6 +84,7 @@ public class SplitSelectStateController {
     private final Handler mHandler;
     private final RecentsModel mRecentTasksModel;
     private final SplitAnimationController mSplitAnimationController;
+    private final AppPairsController mAppPairsController;
     private StatsLogManager mStatsLogManager;
     private final SystemUiProxy mSystemUiProxy;
     private final StateManager mStateManager;
@@ -128,6 +129,7 @@ public class SplitSelectStateController {
         mDepthController = depthController;
         mRecentTasksModel = recentsModel;
         mSplitAnimationController = new SplitAnimationController(this);
+        mAppPairsController = new AppPairsController(context, this);
     }
 
     /**
@@ -586,5 +588,9 @@ public class SplitSelectStateController {
 
     public FloatingTaskView getFirstFloatingTaskView() {
         return mFirstFloatingTaskView;
+    }
+
+    public AppPairsController getAppPairsController() {
+        return mAppPairsController;
     }
 }
