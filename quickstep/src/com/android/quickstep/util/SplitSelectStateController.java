@@ -98,8 +98,15 @@ public class SplitSelectStateController {
     private UserHandle mInitialUser;
     private int mInitialTaskId = INVALID_TASK_ID;
     /** {@link #mSecondTaskIntent} and {@link #mSecondUser} (the user of the Intent) are set
-     * together when split is confirmed with an Intent. */
+     * together when split is confirmed with an Intent. Either this or {@link #mSecondPendingIntent}
+     * will be set, but not both
+     */
     private Intent mSecondTaskIntent;
+    /**
+     * Set when split is confirmed via a widget. Either this or {@link #mSecondTaskIntent} will be
+     * set, but not both
+     */
+    private PendingIntent mSecondPendingIntent;
     private UserHandle mSecondUser;
     private int mSecondTaskId = INVALID_TASK_ID;
     private boolean mRecentsAnimationRunning;
@@ -249,6 +256,16 @@ public class SplitSelectStateController {
     }
 
     /**
+     * To be called as soon as user selects the second app (even if animations aren't complete)
+     * Sets {@link #mSecondUser} from that of the pendingIntent
+     * @param pendingIntent The second PendingIntent that will be launched.
+     */
+    public void setSecondTask(PendingIntent pendingIntent) {
+        mSecondPendingIntent = pendingIntent;
+        mSecondUser = pendingIntent.getCreatorUserHandle();
+    }
+
+    /**
      * To be called when we want to launch split pairs from an existing GroupedTaskView.
      */
     public void launchTasks(GroupedTaskView groupedTaskView, Consumer<Boolean> callback,
@@ -292,17 +309,18 @@ public class SplitSelectStateController {
         if (freezeTaskList) {
             options1.setFreezeRecentTasksReordering();
         }
+        boolean hasSecondaryPendingIntent = mSecondPendingIntent != null;
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
             final RemoteSplitLaunchTransitionRunner animationRunner =
                     new RemoteSplitLaunchTransitionRunner(taskId1, taskId2, callback);
             final RemoteTransition remoteTransition = new RemoteTransition(animationRunner,
                     ActivityThread.currentActivityThread().getApplicationThread(),
                     "LaunchSplitPair");
-            if (intent1 == null && intent2 == null) {
+            if (intent1 == null && (intent2 == null && !hasSecondaryPendingIntent)) {
                 mSystemUiProxy.startTasks(taskId1, options1.toBundle(), taskId2,
                         null /* options2 */, stagePosition, splitRatio, remoteTransition,
                         shellInstanceId);
-            } else if (intent2 == null) {
+            } else if (intent2 == null && !hasSecondaryPendingIntent) {
                 launchIntentOrShortcut(intent1, mInitialUser, options1, taskId2, stagePosition,
                         splitRatio, remoteTransition, shellInstanceId);
             } else if (intent1 == null) {
@@ -312,7 +330,9 @@ public class SplitSelectStateController {
             } else {
                 mSystemUiProxy.startIntents(getPendingIntent(intent1, mInitialUser),
                         getShortcutInfo(intent1, mInitialUser), options1.toBundle(),
-                        getPendingIntent(intent2, mSecondUser),
+                        hasSecondaryPendingIntent
+                                ? mSecondPendingIntent
+                                : getPendingIntent(intent2, mSecondUser),
                         getShortcutInfo(intent2, mSecondUser), null /* options2 */,
                         stagePosition, splitRatio, remoteTransition, shellInstanceId);
             }
@@ -323,11 +343,11 @@ public class SplitSelectStateController {
                     animationRunner, 300, 150,
                     ActivityThread.currentActivityThread().getApplicationThread());
 
-            if (intent1 == null && intent2 == null) {
+            if (intent1 == null && (intent2 == null && !hasSecondaryPendingIntent)) {
                 mSystemUiProxy.startTasksWithLegacyTransition(taskId1, options1.toBundle(),
                         taskId2, null /* options2 */, stagePosition, splitRatio, adapter,
                         shellInstanceId);
-            } else if (intent2 == null) {
+            } else if (intent2 == null && !hasSecondaryPendingIntent) {
                 launchIntentOrShortcutLegacy(intent1, mInitialUser, options1, taskId2,
                         stagePosition, splitRatio, adapter, shellInstanceId);
             } else if (intent1 == null) {
@@ -338,7 +358,9 @@ public class SplitSelectStateController {
                 mSystemUiProxy.startIntentsWithLegacyTransition(
                         getPendingIntent(intent1, mInitialUser),
                         getShortcutInfo(intent1, mInitialUser), options1.toBundle(),
-                        getPendingIntent(intent2, mSecondUser),
+                        hasSecondaryPendingIntent
+                                ? mSecondPendingIntent
+                                : getPendingIntent(intent2, mSecondUser),
                         getShortcutInfo(intent2, mSecondUser), null /* options2 */, stagePosition,
                         splitRatio, adapter, shellInstanceId);
             }
@@ -376,7 +398,22 @@ public class SplitSelectStateController {
         }
     }
 
+    /**
+     * We treat launching by intents as grouped in two ways,
+     * If {@param intent} represents the first app, we always convert the intent to pending intent
+     * It it represents second app, either the second intent OR mSecondPendingIntent will be used
+     *    convert second intent to a pendingIntent OR return mSecondPendingIntent as is
+     */
     private PendingIntent getPendingIntent(Intent intent, UserHandle user) {
+        boolean isParamFirstIntent = intent != null && intent == mInitialTaskIntent;
+        if (!isParamFirstIntent && mSecondPendingIntent != null) {
+            // Because mSecondPendingIntent and mSecondTaskIntent can't both be set, we know we need
+            // to be using mSecondPendingIntent
+            return mSecondPendingIntent;
+        }
+
+        // intent param must either be mInitialTaskIntent or mSecondTaskIntent, convert either to
+        // a new PendingIntent
         return intent == null ? null : (user != null
                 ? PendingIntent.getActivityAsUser(mContext, 0, intent,
                 FLAG_MUTABLE | FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT, null /* options */, user)
@@ -548,6 +585,7 @@ public class SplitSelectStateController {
         mSplitEvent = null;
         mAnimateCurrentTaskDismissal = false;
         mDismissingFromSplitPair = false;
+        mSecondPendingIntent = null;
     }
 
     /**
@@ -579,7 +617,8 @@ public class SplitSelectStateController {
     }
 
     private boolean isSecondTaskIntentSet() {
-        return (mSecondTaskId != INVALID_TASK_ID || mSecondTaskIntent != null);
+        return (mSecondTaskId != INVALID_TASK_ID || mSecondTaskIntent != null
+                || mSecondPendingIntent != null);
     }
 
     public void setFirstFloatingTaskView(FloatingTaskView floatingTaskView) {
