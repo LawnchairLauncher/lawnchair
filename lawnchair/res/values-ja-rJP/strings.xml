@@ -183,7 +183,7 @@
     <string name="home_screen_locked">ホーム画面はロックされています</string>
     <string name="popup_menu">ポップアップメニュー</string>
     <string name="home_screen_lock_toggle_from_home_popup">ロックボタンを表示</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="show_system_settings_entry">システム設定項目を表示</string>
     <string name="status_bar_label">ステータスバー</string>
     <string name="show_status_bar">ステータスバーを表示</string>
     <string name="dark_status_bar_label">暗いステータスバー</string>
@@ -329,7 +329,7 @@
     <string name="design_and_development">デザイン &amp; 開発</string>
     <string name="development">開発</string>
     <string name="quickswitch_maintenance">QuickSwitchのメンテナンス</string>
-    <string name="devops">DevOps(開発者)</string>
+    <string name="devops">開発・運用</string>
     <string name="support_and_pr">サポート &amp; PR</string>
     <!--
       <string name="support" />
