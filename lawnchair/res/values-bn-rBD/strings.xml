@@ -54,9 +54,9 @@
     <string name="always_reload_icons_description">ক্যাসে থেকে আইকন ব্যাবহার করা থেকে এড়ান</string>
     <string name="transparent_background_icons">সচ্ছ থীম-যুক্ত আইকন</string>
     <string name="transparent_background_icons_description">স্বচ্ছ আইকন ব্যাবহার করুন থিম-যুক্ত আইকন গুলিতে</string>
-    <string name="smartspace_mode_selection">এট এ গ্লান্স প্রদানকারী নির্বাচন</string>
+    <string name="smartspace_mode_selection">গ্লান্স প্রদানকারী নির্বাচন</string>
     <!-- GeneralPreferences -->
-    <string name="home_screen_rotation_label">মূল পেজ ঘূর্ণন</string>
+    <string name="home_screen_rotation_label">মূল পেজ ঘোরানো</string>
     <string name="home_screen_rotaton_description">যখন ডিভাইস ঘোরানো হয়.</string>
     <string name="font_label">হরফ (পরীক্ষামূলক)</string>
     <!-- <string name="icons" /> -->
