@@ -22,6 +22,7 @@ import static org.junit.Assert.assertNull;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.util.Log;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -49,6 +50,7 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
+    private static final String WIDGET_PROVIDER_INFO = "b/276794291";
     @Rule
     public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
@@ -95,6 +97,9 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
                         .dragConfigWidgetToWorkspace(acceptConfig);
         // Widget id for which the config activity was opened
         mWidgetId = monitor.getWidgetId();
+
+        Log.e(WIDGET_PROVIDER_INFO,
+                "InstalledProviders count: " + mAppWidgetManager.getInstalledProviders().size());
 
         // Verify that the widget id is valid and bound
         assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
