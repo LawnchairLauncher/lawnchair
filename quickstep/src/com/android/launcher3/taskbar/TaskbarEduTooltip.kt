@@ -26,15 +26,15 @@ import android.view.MotionEvent.ACTION_DOWN
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Interpolator
-import com.android.app.animation.Interpolators.EMPHASIZED_ACCELERATE
-import com.android.app.animation.Interpolators.EMPHASIZED_DECELERATE
-import com.android.app.animation.Interpolators.STANDARD
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.R
 import com.android.launcher3.anim.AnimatorListeners
 import com.android.launcher3.popup.RoundedArrowDrawable
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
+import com.android.systemui.animation.Interpolators.EMPHASIZED_ACCELERATE
+import com.android.systemui.animation.Interpolators.EMPHASIZED_DECELERATE
+import com.android.systemui.animation.Interpolators.STANDARD
 
 private const val ENTER_DURATION_MS = 300L
 private const val EXIT_DURATION_MS = 150L
