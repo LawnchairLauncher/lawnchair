@@ -581,6 +581,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 mIconView, STAGE_POSITION_UNDEFINED);
         mSnapshotView.bind(task);
         setOrientationState(orientedState);
+        mDigitalWellBeingToast.initialize(mTask);
     }
 
     /**
@@ -984,10 +985,7 @@ public class TaskView extends FrameLayout implements Reusable {
             }
             if (needsUpdate(changes, FLAG_UPDATE_ICON)) {
                 mIconLoadRequest = iconCache.updateIconInBackground(mTask,
-                        (task) -> {
-                            setIcon(mIconView, task.icon);
-                            mDigitalWellBeingToast.initialize(mTask);
-                        });
+                        (task) -> setIcon(mIconView, task.icon));
             }
         } else {
             if (needsUpdate(changes, FLAG_UPDATE_THUMBNAIL)) {
