@@ -192,7 +192,7 @@ public class LauncherBackAnimationController {
             }
 
             @Override
-            public void onAnimationCancelled(boolean isKeyguardOccluded) {}
+            public void onAnimationCancelled() {}
         };
 
         SystemUiProxy.INSTANCE.get(mLauncher).setBackToLauncherCallback(mBackCallback, runner);
