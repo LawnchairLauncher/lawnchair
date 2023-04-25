@@ -48,6 +48,7 @@ public class BubbleBarViewController {
 
     // Initialized in init.
     private BubbleStashController mBubbleStashController;
+    private BubbleBarController mBubbleBarController;
     private View.OnClickListener mBubbleClickListener;
     private View.OnClickListener mBubbleBarClickListener;
 
@@ -75,6 +76,7 @@ public class BubbleBarViewController {
 
     public void init(TaskbarControllers controllers, BubbleControllers bubbleControllers) {
         mBubbleStashController = bubbleControllers.bubbleStashController;
+        mBubbleBarController = bubbleControllers.bubbleBarController;
 
         mActivity.addOnDeviceProfileChangeListener(dp ->
                 mBarView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarHeight
@@ -92,7 +94,15 @@ public class BubbleBarViewController {
         if (bubble == null) {
             Log.e(TAG, "bubble click listener, bubble was null");
         }
-        // TODO: handle the click
+        final String currentlySelected = mBubbleBarController.getSelectedBubbleKey();
+        if (mBarView.isExpanded() && Objects.equals(bubble.getKey(), currentlySelected)) {
+            // Tapping the currently selected bubble while expanded collapses the view.
+            setExpanded(false);
+            mBubbleStashController.stashBubbleBar();
+        } else {
+            mBubbleBarController.setSelectedBubble(bubble);
+            // TODO: Tell SysUi to show the expanded view for this bubble.
+        }
     }
 
     //
@@ -262,7 +272,12 @@ public class BubbleBarViewController {
             if (!isExpanded) {
                 // TODO: Tell SysUi to collapse the bubble
             } else {
-                // TODO: Tell SysUi to show the bubble
+                final String selectedKey = mBubbleBarController.getSelectedBubbleKey();
+                if (selectedKey != null) {
+                    // TODO: Tell SysUi to show the bubble
+                } else {
+                    Log.w(TAG, "trying to expand bubbles when there isn't one selected");
+                }
                 // TODO: Tell taskbar stash controller to stash without bubbles following
             }
         }
