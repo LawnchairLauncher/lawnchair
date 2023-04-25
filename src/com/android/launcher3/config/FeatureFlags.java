@@ -35,6 +35,12 @@ import java.util.function.ToIntFunction;
 /**
  * Defines a set of flags used to control various launcher behaviors.
  *
+ * Please only add flags to your assigned block to prevent merge conflicts. If you do not have
+ * a block, please update the current empty block and add a new empty block below to prevent
+ * merge conflicts with the previous block.
+ * List of blocks can be found:
+ * <a href="http://go/gnl-flags-block-directory">here</a>
+ *
  * <p>All the flags should be defined here with appropriate default values.
  */
 public final class FeatureFlags {
@@ -74,9 +80,6 @@ public final class FeatureFlags {
      * Declare a new ToggleableFlag below. Give it a unique key (e.g. "QSB_ON_FIRST_SCREEN"),
      * and set a default value for the flag. This will be the default value on Debug builds.
      * <p>
-     * Please only add flags to your assigned block to prevent merge conflicts. If you do not have
-     * a block, please update the current empty block and add a new empty block below to prevent
-     * merge conflicts with the previous block.
      */
     // TODO(Block 1): Clean up flags
     public static final BooleanFlag ENABLE_ONE_SEARCH_MOTION = getReleaseFlag(270394223,
