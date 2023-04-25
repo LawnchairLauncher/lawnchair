@@ -26,6 +26,7 @@ import java.util.zip.ZipOutputStream;
 
 public class FailureWatcher extends TestWatcher {
     private static final String TAG = "FailureWatcher";
+    private static boolean sSavedBugreport = false;
     final private UiDevice mDevice;
     private final LauncherInstrumentation mLauncher;
 
@@ -127,10 +128,10 @@ public class FailureWatcher extends TestWatcher {
         dumpCommand("logcat -d -s TestRunner", diagFile(description, "FilteredLogcat", "txt"));
 
         // Dump bugreport
-        final String systemAnomalyMessage = launcher.getSystemAnomalyMessage(false, false);
-        if (systemAnomalyMessage != null) {
-            Log.d(TAG, "Saving bugreport, system anomaly message: " + systemAnomalyMessage, e);
+        if (!sSavedBugreport) {
             dumpCommand("bugreportz -s", diagFile(description, "Bugreport", "zip"));
+            // Not saving bugreport for each failure for time and space economy.
+            sSavedBugreport = true;
         }
     }
 
