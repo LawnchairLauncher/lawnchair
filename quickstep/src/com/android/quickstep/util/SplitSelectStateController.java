@@ -556,7 +556,7 @@ public class SplitSelectStateController {
         }
 
         @Override
-        public void onAnimationCancelled(boolean isKeyguardOccluded) {
+        public void onAnimationCancelled() {
             postAsyncCallback(mHandler, () -> {
                 if (mSuccessCallback != null) {
                     // Launching legacy tasks while recents animation is running will always cause
