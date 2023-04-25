@@ -17,6 +17,7 @@ package com.android.launcher3.dragndrop;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_DISCOVERY_BOUNCE;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
+import static com.android.launcher3.LauncherState.EDIT_MODE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
@@ -157,7 +158,9 @@ public class LauncherDragController extends DragController<Launcher> {
 
     @Override
     protected void exitDrag() {
-        mActivity.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
+        if (!mActivity.isInState(EDIT_MODE)) {
+            mActivity.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
+        }
     }
 
     @Override
