@@ -1317,5 +1317,8 @@ public class QuickstepLauncher extends Launcher {
         writer.println("\nQuickstepLauncher:");
         writer.println(prefix + "\tmOrientationState: " + (recentsView == null ? "recentsNull" :
                 recentsView.getPagedViewOrientedState()));
+        if (recentsView != null) {
+            recentsView.getSplitSelectController().dump(prefix, writer);
+        }
     }
 }
