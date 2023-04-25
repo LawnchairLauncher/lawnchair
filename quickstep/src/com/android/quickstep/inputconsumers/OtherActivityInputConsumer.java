@@ -203,8 +203,24 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         }
         int edgeFlags = ev.getEdgeFlags();
         ev.setEdgeFlags(edgeFlags | EDGE_NAV_BAR);
-        // Disable scrolling in RecentsView for trackpad gestures.
-        if (!mGestureState.isTrackpadGesture()) {
+
+        if (mGestureState.isTrackpadGesture()) {
+            // Disable scrolling in RecentsView for 3-finger trackpad gesture. We don't know if a
+            // trackpad motion event is 3-finger or 4-finger with the U API until ACTION_MOVE (we
+            // skip ACTION_POINTER_UP events in TouchInteractionService), so in order to make sure
+            // that RecentsView always get a closed sequence of motion events and yet disable
+            // 3-finger scroll, we do the following (1) always dispatch ACTION_DOWN and ACTION_UP
+            // trackpad multi-finger motion events. (2) only dispatch 4-finger ACTION_MOVE motion
+            // events.
+            switch (ev.getActionMasked()) {
+                case ACTION_MOVE -> {
+                    if (mGestureState.isFourFingerTrackpadGesture()) {
+                        mRecentsViewDispatcher.dispatchEvent(ev);
+                    }
+                }
+                default -> mRecentsViewDispatcher.dispatchEvent(ev);
+            }
+        } else {
             mRecentsViewDispatcher.dispatchEvent(ev);
         }
         ev.setEdgeFlags(edgeFlags);
@@ -312,9 +328,12 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         // Do not allow quick switch for trackpad 3-finger gestures
                         // TODO(b/261815244): might need to impose stronger conditions for the swipe
                         //  angle
-                        boolean noQuickSwitchForTrackpadGesture = mGestureState.isTrackpadGesture()
-                                && isLikelyToStartNewTask;
-                        if (isHorizontalSwipeWhenDisabled || noQuickSwitchForTrackpadGesture) {
+                        boolean noQuickSwitchForThreeFingerGesture = isLikelyToStartNewTask
+                                && mGestureState.isThreeFingerTrackpadGesture();
+                        boolean noQuickstepForFourFingerGesture = !isLikelyToStartNewTask
+                                && mGestureState.isFourFingerTrackpadGesture();
+                        if (isHorizontalSwipeWhenDisabled || noQuickSwitchForThreeFingerGesture
+                                || noQuickstepForFourFingerGesture) {
                             forceCancelGesture(ev);
                             break;
                         }
