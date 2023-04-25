@@ -27,7 +27,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"Widgets im abgesicherten Modus deaktiviert"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Verknüpfung nicht verfügbar"</string>
     <string name="home_screen" msgid="5629429142036709174">"Startbildschirm"</string>
-    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Geteilter Bildschirm"</string>
+    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Splitscreen"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"App-Info für %1$s"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Zum Verschieben des Widgets berühren und halten"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Doppeltippen und halten, um ein Widget zu bewegen oder benutzerdefinierte Aktionen zu nutzen."</string>
