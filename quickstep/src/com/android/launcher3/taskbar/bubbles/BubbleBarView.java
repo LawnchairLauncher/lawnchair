@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * The view that holds all the bubble views. Modifying this view should happen through
  * {@link BubbleBarViewController}. Updates to the bubbles themselves (adds, removes, updates,
- * selection) should happen through BubbleBarController which is the source of truth
+ * selection) should happen through {@link BubbleBarController} which is the source of truth
  * for state information about the bubbles.
  * <p>
  * The bubble bar has a couple of visual states:
