@@ -2064,8 +2064,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mRecentsView.setRecentsAnimationTargets(mRecentsAnimationController,
                         mRecentsAnimationTargets));
 
-        // Disable scrolling in RecentsView for trackpad gestures.
-        if (!mGestureState.isTrackpadGesture()) {
+        // Disable scrolling in RecentsView for trackpad 3-finger swipe up gesture.
+        if (!mGestureState.isThreeFingerTrackpadGesture()) {
             mRecentsViewScrollLinked = true;
         }
     }

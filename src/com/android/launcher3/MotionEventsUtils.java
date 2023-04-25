@@ -42,6 +42,14 @@ public class MotionEventsUtils {
                 && event.getClassification() == CLASSIFICATION_MULTI_FINGER_SWIPE;
     }
 
+    public static boolean isTrackpadThreeFingerSwipe(MotionEvent event) {
+        return isTrackpadMultiFingerSwipe(event) && event.getPointerCount() == 3;
+    }
+
+    public static boolean isTrackpadFourFingerSwipe(MotionEvent event) {
+        return isTrackpadMultiFingerSwipe(event) && event.getPointerCount() == 4;
+    }
+
     public static boolean isTrackpadMotionEvent(MotionEvent event) {
         return isTrackpadScroll(event) || isTrackpadMultiFingerSwipe(event);
     }
