@@ -116,6 +116,7 @@ public class RecentsOrientedState implements
                     | FLAG_SWIPE_UP_NOT_RUNNING;
 
     private final Context mContext;
+    private final BaseActivityInterface mActivityInterface;
     private final OrientationEventListener mOrientationListener;
     private final SettingsCache mSettingsCache;
     private final SettingsCache.OnChangeListener mRotationChangeListener =
@@ -135,9 +136,10 @@ public class RecentsOrientedState implements
      *                              is enabled
      * @see #setRotationWatcherEnabled(boolean)
      */
-    public RecentsOrientedState(Context context, BaseActivityInterface sizeStrategy,
+    public RecentsOrientedState(Context context, BaseActivityInterface activityInterface,
             IntConsumer rotationChangeListener) {
         mContext = context;
+        mActivityInterface = activityInterface;
         mOrientationListener = new OrientationEventListener(context) {
             @Override
             public void onOrientationChanged(int degrees) {
@@ -149,12 +151,16 @@ public class RecentsOrientedState implements
             }
         };
 
-        mFlags = sizeStrategy.rotationSupportedByActivity
+        mFlags = mActivityInterface.rotationSupportedByActivity
                 ? FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_ACTIVITY : 0;
 
         mFlags |= FLAG_SWIPE_UP_NOT_RUNNING;
         mSettingsCache = SettingsCache.INSTANCE.get(mContext);
         initFlags();
+    }
+
+    public BaseActivityInterface getActivityInterface() {
+        return mActivityInterface;
     }
 
     /**
