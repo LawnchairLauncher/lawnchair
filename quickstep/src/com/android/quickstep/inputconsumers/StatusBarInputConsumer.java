@@ -33,6 +33,7 @@ public class StatusBarInputConsumer extends DelegateInputConsumer {
     private final SystemUiProxy mSystemUiProxy;
     private final float mTouchSlop;
     private final PointF mDown = new PointF();
+    private boolean mHasPassedTouchSlop;
 
     public StatusBarInputConsumer(Context context, InputConsumer delegate,
             InputMonitorCompat inputMonitor) {
@@ -53,13 +54,21 @@ public class StatusBarInputConsumer extends DelegateInputConsumer {
             mDelegate.onMotionEvent(ev);
 
             switch (ev.getActionMasked()) {
-                case ACTION_DOWN -> mDown.set(ev.getX(), ev.getY());
+                case ACTION_DOWN -> {
+                    mDown.set(ev.getX(), ev.getY());
+                    mHasPassedTouchSlop = false;
+                }
                 case ACTION_MOVE -> {
-                    float displacementY = ev.getY() - mDown.y;
-                    if (displacementY > mTouchSlop) {
-                        setActive(ev);
-                        ev.setAction(ACTION_DOWN);
-                        dispatchTouchEvent(ev);
+                    if (!mHasPassedTouchSlop) {
+                        float displacementY = ev.getY() - mDown.y;
+                        if (Math.abs(displacementY) > mTouchSlop) {
+                            mHasPassedTouchSlop = true;
+                            if (displacementY > 0) {
+                                setActive(ev);
+                                ev.setAction(ACTION_DOWN);
+                                dispatchTouchEvent(ev);
+                            }
+                        }
                     }
                 }
             }
