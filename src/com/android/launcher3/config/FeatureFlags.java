@@ -182,7 +182,7 @@ public final class FeatureFlags {
     // TODO(Block 10): Clean up flags
     public static final BooleanFlag ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION = getDebugFlag(270614790,
             "ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION", DISABLED,
-            "Enables predictive back aniamtion from all apps and widgets to home");
+            "Enables predictive back animation from all apps and widgets to home");
 
     // TODO(Block 11): Clean up flags
     public static final BooleanFlag ENABLE_TWO_PANEL_HOME = getDebugFlag(270392643,
