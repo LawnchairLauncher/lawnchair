@@ -967,7 +967,7 @@ public class SystemUiProxy implements ISystemUiProxy {
             IRemoteAnimationRunner runner) {
         mBackToLauncherCallback = callback;
         mBackToLauncherRunner = runner;
-        if (mBackAnimation == null) {
+        if (mBackAnimation == null || mBackToLauncherCallback == null) {
             return;
         }
         try {
