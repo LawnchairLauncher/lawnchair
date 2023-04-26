@@ -350,7 +350,8 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
                 enableMultipleRegions(true);
             }
             activityInterface.onExitOverview(this, mExitOverviewRunnable);
-        } else if (endTarget == GestureState.GestureEndTarget.HOME) {
+        } else if (endTarget == GestureState.GestureEndTarget.HOME
+                || endTarget == GestureState.GestureEndTarget.ALL_APPS) {
             enableMultipleRegions(false);
         } else if (endTarget == GestureState.GestureEndTarget.NEW_TASK) {
             if (mOrientationTouchTransformer.getQuickStepStartingRotation() == -1) {

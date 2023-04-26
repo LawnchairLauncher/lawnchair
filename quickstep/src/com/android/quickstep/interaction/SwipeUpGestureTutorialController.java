@@ -309,7 +309,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
         }
 
         @Override
-        public void updateFinalShift() {
+        public void onCurrentShiftUpdated() {
             mRemoteTargetHandles[0].getPlaybackController()
                     .setProgress(mCurrentShift.value, mDragLengthFactor);
             mRemoteTargetHandles[0].getTaskViewSimulator().apply(
