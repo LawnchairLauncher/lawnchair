@@ -135,7 +135,7 @@ message TaskBarContainer {
   }
 }
 
-// Next value 44
+// Next value 45
 enum Attribute {
   option allow_alias = true;
 
@@ -173,6 +173,7 @@ enum Attribute {
   ALL_APPS_SEARCH_RESULT_SLICE = 19;
   ALL_APPS_SEARCH_RESULT_WIDGETS = 20;
   ALL_APPS_SEARCH_RESULT_PLAY = 21;
+  ALL_APPS_SEARCH_RESULT_PLAY_GMS = 44;
   ALL_APPS_SEARCH_RESULT_FALLBACK = 22;
   ALL_APPS_SEARCH_RESULT_SUGGEST = 22 [deprecated = true];
   ALL_APPS_SEARCH_RESULT_ASSISTANT = 23;
