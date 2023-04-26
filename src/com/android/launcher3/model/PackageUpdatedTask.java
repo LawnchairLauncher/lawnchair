@@ -44,6 +44,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -67,7 +68,7 @@ import java.util.stream.Collectors;
  */
 public class PackageUpdatedTask extends BaseModelUpdateTask {
 
-    private static final boolean DEBUG = false;
+    private static boolean DEBUG = false;
     private static final String TAG = "PackageUpdatedTask";
 
     public static final int OP_NONE = 0;
@@ -92,6 +93,11 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         mOp = op;
         mUser = user;
         mPackages = packages;
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.WORK_TAB_MISSING, "PackageUpdatedTask mOp: " + mOp +
+                    " packageCount: " + mPackages.length);
+            DEBUG = true;
+        }
     }
 
     @Override
@@ -136,6 +142,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         // The update may have changed which shortcuts/widgets are available.
                         // Refresh the widgets for the package if we have an activity running.
                         Launcher launcher = Launcher.ACTIVITY_TRACKER.getCreatedActivity();
+                        if (TestProtocol.sDebugTracing) {
+                            Log.d(TestProtocol.WORK_TAB_MISSING, "launcher: " + launcher);
+                        }
                         if (launcher != null) {
                             launcher.refreshAndBindWidgetsForPackageUser(
                                     new PackageUserKey(packages[i], mUser));
