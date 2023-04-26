@@ -402,8 +402,9 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
         PredictedAppIcon icon = (PredictedAppIcon) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.predicted_app_icon, parent, false);
         icon.applyFromWorkspaceItem(info);
-        icon.setOnClickListener(ItemClickHandler.INSTANCE);
-        icon.setOnFocusChangeListener(Launcher.getLauncher(parent.getContext()).getFocusHandler());
+        Launcher launcher = Launcher.getLauncher(parent.getContext());
+        icon.setOnClickListener(launcher.getItemOnClickListener());
+        icon.setOnFocusChangeListener(launcher.getFocusHandler());
         return icon;
     }
 

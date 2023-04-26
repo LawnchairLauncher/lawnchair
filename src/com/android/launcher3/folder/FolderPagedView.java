@@ -216,7 +216,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         final BubbleTextView textView = mViewCache.getView(
                 R.layout.folder_application, getContext(), null);
         textView.applyFromWorkspaceItem(item);
-        textView.setOnClickListener(ItemClickHandler.INSTANCE);
+        textView.setOnClickListener(mFolder.mActivityContext.getItemOnClickListener());
         textView.setOnLongClickListener(mFolder);
         textView.setOnFocusChangeListener(mFocusIndicatorHelper);
         CellLayoutLayoutParams lp = (CellLayoutLayoutParams) textView.getLayoutParams();
