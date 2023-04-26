@@ -67,7 +67,7 @@ public abstract class SwipeUpAnimationLogic implements
     // 0 => preview snapShot is completely visible, and hotseat is completely translated down
     // 1 => preview snapShot is completely aligned with the recents view and hotseat is completely
     // visible.
-    protected final AnimatedFloat mCurrentShift = new AnimatedFloat(this::updateFinalShift);
+    protected final AnimatedFloat mCurrentShift = new AnimatedFloat(this::onCurrentShiftUpdated);
     protected float mCurrentDisplacement;
 
     // The distance needed to drag to reach the task size in recents.
@@ -148,7 +148,7 @@ public abstract class SwipeUpAnimationLogic implements
      * Called when the value of {@link #mCurrentShift} changes
      */
     @UiThread
-    public abstract void updateFinalShift();
+    public abstract void onCurrentShiftUpdated();
 
     protected PagedOrientationHandler getOrientationHandler() {
         // OrientationHandler should be independent of remote target, can directly take one

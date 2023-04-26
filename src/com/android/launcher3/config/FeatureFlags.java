@@ -118,8 +118,12 @@ public final class FeatureFlags {
 
     // TODO(Block 4): Cleanup flags
     public static final BooleanFlag ENABLE_FLOATING_SEARCH_BAR =
-            getReleaseFlag(270390286, "ENABLE_FLOATING_SEARCH_BAR", DISABLED,
+            getReleaseFlag(268388460, "ENABLE_FLOATING_SEARCH_BAR", DISABLED,
                     "Keep All Apps search bar at the bottom (but above keyboard if open)");
+
+    public static final BooleanFlag ENABLE_ALL_APPS_FROM_OVERVIEW =
+            getDebugFlag(275132633, "ENABLE_ALL_APPS_FROM_OVERVIEW", DISABLED,
+                    "Allow entering All Apps from Overview (e.g. long swipe up from app)");
 
     public static final BooleanFlag ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS = getReleaseFlag(
             270394468, "ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS", ENABLED,
