@@ -315,6 +315,10 @@ public final class FeatureFlags {
             "ENABLE_GRID_ONLY_OVERVIEW", DISABLED,
             "Enable a grid-only overview without a focused task.");
 
+    public static final BooleanFlag ENABLE_CURSOR_HOVER_STATES = getDebugFlag(243191650,
+            "ENABLE_CURSOR_HOVER_STATES", DISABLED,
+            "Enables cursor hover states for certain elements.");
+
     // TODO(Block 24): Clean up flags
     public static final BooleanFlag ENABLE_NEW_MIGRATION_LOGIC = getDebugFlag(270393455,
             "ENABLE_NEW_MIGRATION_LOGIC", ENABLED,
@@ -400,10 +404,6 @@ public final class FeatureFlags {
             "Use local overrides for search request timeout");
 
     // TODO(Block 31): Empty block
-
-    public static final BooleanFlag ENABLE_CURSOR_HOVER_STATES = getDebugFlag(243191650,
-            "ENABLE_CURSOR_HOVER_STATES", DISABLED,
-            "Enables cursor hover states for certain elements.");
 
     public static class BooleanFlag {
 
