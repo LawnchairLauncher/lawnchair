@@ -233,13 +233,19 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
     @LayoutRes
     protected int getMockHotseatResId() {
-        return mTutorialFragment.isLargeScreen()
-                ? (mTutorialFragment.isFoldable()
+        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+            return mTutorialFragment.isLargeScreen()
+                    ? mTutorialFragment.isFoldable()
+                        ? R.layout.redesigned_gesture_tutorial_foldable_mock_hotseat
+                        : R.layout.redesigned_gesture_tutorial_tablet_mock_hotseat
+                    : R.layout.redesigned_gesture_tutorial_mock_hotseat;
+        } else {
+            return mTutorialFragment.isLargeScreen()
+                    ? mTutorialFragment.isFoldable()
                         ? R.layout.gesture_tutorial_foldable_mock_hotseat
-                        : R.layout.gesture_tutorial_tablet_mock_hotseat)
-                : (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                        ? R.layout.redesigned_gesture_tutorial_mock_hotseat
-                        : R.layout.gesture_tutorial_mock_hotseat);
+                        : R.layout.gesture_tutorial_tablet_mock_hotseat
+                    : R.layout.gesture_tutorial_mock_hotseat;
+        }
     }
 
     @LayoutRes
