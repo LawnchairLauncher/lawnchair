@@ -71,13 +71,6 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         } else {
             mTranslationShift = TRANSLATION_SHIFT_OPENED;
         }
-
-        if (FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
-            mAppsView.getAppsRecyclerViewContainer().setOutlineProvider(mViewOutlineProvider);
-            mAppsView.getAppsRecyclerViewContainer().setClipToOutline(true);
-            findOnBackInvokedDispatcher().registerOnBackInvokedCallback(
-                    OnBackInvokedDispatcher.PRIORITY_DEFAULT, this);
-        }
     }
 
     /** The apps container inside this view. */
@@ -88,9 +81,6 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     @Override
     protected void handleClose(boolean animate) {
         handleClose(animate, mAllAppsCallbacks.getCloseDuration());
-        if (FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
-            findOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(this);
-        }
     }
 
     @Override
@@ -121,12 +111,29 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mActivityContext.addOnDeviceProfileChangeListener(this);
+        if (FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
+            mAppsView.getAppsRecyclerViewContainer().setOutlineProvider(mViewOutlineProvider);
+            mAppsView.getAppsRecyclerViewContainer().setClipToOutline(true);
+            OnBackInvokedDispatcher dispatcher = findOnBackInvokedDispatcher();
+            if (dispatcher != null) {
+                dispatcher.registerOnBackInvokedCallback(
+                        OnBackInvokedDispatcher.PRIORITY_DEFAULT, this);
+            }
+        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mActivityContext.removeOnDeviceProfileChangeListener(this);
+        if (FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
+            mAppsView.getAppsRecyclerViewContainer().setOutlineProvider(null);
+            mAppsView.getAppsRecyclerViewContainer().setClipToOutline(false);
+            OnBackInvokedDispatcher dispatcher = findOnBackInvokedDispatcher();
+            if (dispatcher != null) {
+                dispatcher.unregisterOnBackInvokedCallback(this);
+            }
+        }
     }
 
     @Override
