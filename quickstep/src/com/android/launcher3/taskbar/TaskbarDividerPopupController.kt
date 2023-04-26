@@ -38,14 +38,21 @@ class TaskbarDividerPopupController(private val context: TaskbarActivityContext)
         view.post {
             val popupView = createAndPopulate(view, context)
             popupView.requestFocus()
-            popupView.onCloseCallback = {
-                context.onPopupVisibilityChanged(false)
-                if (launcherPrefs.get(TASKBAR_PINNING)) {
-                    animateTransientToPersistentTaskBar()
-                } else {
-                    animatePersistentToTransientTaskbar()
+
+            popupView.onCloseCallback =
+                callback@{ didPreferenceChange ->
+                    context.dragLayer.post { context.onPopupVisibilityChanged(false) }
+
+                    if (!didPreferenceChange) {
+                        return@callback
+                    }
+
+                    if (launcherPrefs.get(TASKBAR_PINNING)) {
+                        animateTransientToPersistentTaskbar()
+                    } else {
+                        animatePersistentToTransientTaskbar()
+                    }
                 }
-            }
             popupView.changePreference = {
                 launcherPrefs.put(TASKBAR_PINNING, !launcherPrefs.get(TASKBAR_PINNING))
             }
@@ -55,7 +62,7 @@ class TaskbarDividerPopupController(private val context: TaskbarActivityContext)
     }
 
     // TODO(b/265436799): provide animation/transition from transient taskbar to persistent one
-    private fun animateTransientToPersistentTaskBar() {}
+    private fun animateTransientToPersistentTaskbar() {}
 
     // TODO(b/265436799): provide animation/transition from persistent taskbar to transient one
     private fun animatePersistentToTransientTaskbar() {}
