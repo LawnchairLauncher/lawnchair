@@ -61,6 +61,14 @@ public class OverviewInputConsumer<S extends BaseState<S>, T extends StatefulAct
 
         mTarget = activity.getDragLayer();
         mTarget.getLocationOnScreen(mLocationOnScreen);
+
+        // When Overview is launched via meta+tab or swipe up from an app,
+        // the touch mode somehow is not changed to false by the Android framework.
+        // The subsequent key events (e.g. DPAD_LEFT, DPAD_RIGHT) can only be dispatched to
+        // focused views, while focus can only be requested in
+        // {@link View#requestFocusNoSearch(int, Rect)} when touch mode is false. To note,
+        // here we launch overview with live tile.
+        mActivity.getRootView().getViewRootImpl().touchModeChanged(false);
     }
 
     @Override
