@@ -309,7 +309,7 @@ public class DesktopTaskView extends TaskView {
 
     @Override
     public RunnableList launchTasks() {
-        SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps();
+        SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps(mActivity.getDisplayId());
         Launcher.getLauncher(mActivity).getStateManager().goToState(NORMAL, false /* animated */);
         return null;
     }
