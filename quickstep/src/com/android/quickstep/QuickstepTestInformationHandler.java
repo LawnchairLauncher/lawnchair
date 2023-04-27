@@ -1,6 +1,5 @@
 package com.android.quickstep;
 
-import static com.android.launcher3.testing.shared.TestProtocol.NPE_TRANSIENT_TASKBAR;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.app.Activity;
@@ -8,7 +7,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -184,13 +182,9 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
             TouchInteractionService.TISBinder tisBinder, boolean enable) {
         TaskbarActivityContext context = tisBinder.getTaskbarManager().getCurrentActivityContext();
         if (context == null) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(NPE_TRANSIENT_TASKBAR, "enableBlockingTimeout: enable=" + enable,
-                        new Exception());
-            }
-        } else {
-            context.enableBlockingTimeoutDuringTests(enable);
+            return;
         }
+        context.enableBlockingTimeoutDuringTests(enable);
     }
 
     private void enableTransientTaskbar(boolean enable) {
