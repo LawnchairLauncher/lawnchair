@@ -50,6 +50,8 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"वैयक्तिक"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ऑफिस"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"संभाषणे"</string>
+    <!-- no translation found for widget_category_note_taking (3469689394504266039) -->
+    <skip />
     <string name="widget_education_header" msgid="4874760613775913787">"तुमच्यासाठी सहज उपलब्ध असलेली माहिती"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"ॲप्स न उघडता माहिती मिळवण्यासाठी, तुम्ही तुमच्या होम स्क्रीनवर विजेट जोडू शकता"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेट सेटिंग्ज बदलण्यासाठी टॅप करा"</string>
