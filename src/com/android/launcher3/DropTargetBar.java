@@ -23,7 +23,6 @@ import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -31,13 +30,10 @@ import android.view.ViewDebug;
 import android.view.ViewPropertyAnimator;
 import android.widget.FrameLayout;
 
-import androidx.annotation.NonNull;
-
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.testing.shared.TestProtocol;
 
 /*
  * The top bar containing various drop targets: Delete/App Info/Uninstall.
@@ -299,9 +295,6 @@ public class DropTargetBar extends FrameLayout
     }
 
     public void animateToVisibility(boolean isVisible) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_DROP_TARGET, "8");
-        }
         if (mVisible != isVisible) {
             mVisible = isVisible;
 
@@ -328,9 +321,6 @@ public class DropTargetBar extends FrameLayout
      */
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_DROP_TARGET, "7");
-        }
         animateToVisibility(true);
     }
 
@@ -353,17 +343,5 @@ public class DropTargetBar extends FrameLayout
 
     public ButtonDropTarget[] getDropTargets() {
         return getVisibility() == View.VISIBLE ? mDropTargets : new ButtonDropTarget[0];
-    }
-
-    @Override
-    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
-        super.onVisibilityChanged(changedView, visibility);
-        if (TestProtocol.sDebugTracing) {
-            if (visibility == VISIBLE) {
-                Log.d(TestProtocol.NO_DROP_TARGET, "9");
-            } else {
-                Log.d(TestProtocol.NO_DROP_TARGET, "Hiding drop target", new Exception());
-            }
-        }
     }
 }
