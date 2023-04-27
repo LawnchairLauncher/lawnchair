@@ -34,7 +34,6 @@ import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LooperExecutor;
@@ -258,20 +257,8 @@ public abstract class BaseLauncherBinder {
             ArrayList<LauncherAppWidgetInfo> currentAppWidgets = new ArrayList<>();
             ArrayList<LauncherAppWidgetInfo> otherAppWidgets = new ArrayList<>();
 
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.NULL_INT_SET, "bind (1) currentScreenIds: "
-                        + currentScreenIds
-                        + ", pointer: "
-                        + mCallbacks
-                        + ", name: "
-                        + mCallbacks.getClass().getName());
-            }
             filterCurrentWorkspaceItems(currentScreenIds, mWorkspaceItems, currentWorkspaceItems,
                     otherWorkspaceItems);
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.NULL_INT_SET, "bind (2) currentScreenIds: "
-                        + currentScreenIds);
-            }
             filterCurrentWorkspaceItems(currentScreenIds, mAppWidgets, currentAppWidgets,
                     otherAppWidgets);
             final InvariantDeviceProfile idp = mApp.getInvariantDeviceProfile();
@@ -279,9 +266,6 @@ public abstract class BaseLauncherBinder {
             sortWorkspaceItemsSpatially(idp, otherWorkspaceItems);
 
             // Tell the workspace that we're about to start binding items
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.FLAKY_BINDING, "scheduling: startBinding");
-            }
             executeCallbacksTask(c -> {
                 c.clearPendingBinds();
                 c.startBinding();
@@ -302,9 +286,6 @@ public abstract class BaseLauncherBinder {
             Executor pendingExecutor = pendingTasks::add;
             bindWorkspaceItems(otherWorkspaceItems, pendingExecutor);
             bindAppWidgets(otherAppWidgets, pendingExecutor);
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.FLAKY_BINDING, "scheduling: finishBindingItems");
-            }
             executeCallbacksTask(c -> c.finishBindingItems(currentScreenIds), pendingExecutor);
             pendingExecutor.execute(
                     () -> {
