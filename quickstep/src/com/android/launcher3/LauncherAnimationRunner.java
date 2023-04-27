@@ -196,14 +196,13 @@ public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
                         finish();
                     }
                 });
-                mAnimator.start();
-
                 if (skipFirstFrame) {
                     // Because t=0 has the app icon in its original spot, we can skip the
                     // first frame and have the same movement one frame earlier.
                     mAnimator.setCurrentPlayTime(
                             Math.min(getSingleFrameMs(context), mAnimator.getTotalDuration()));
                 }
+                mAnimator.start();
             }
         }
 
