@@ -151,7 +151,12 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     }
 
     public void bindApplicationsIfNeeded() {
-        if (mAllAppsList.getAndResetChangeFlag()) {
+        boolean changeFlag = mAllAppsList.getAndResetChangeFlag();
+        if (TestProtocol.sDebugTracing) {
+            Log.d(WORK_TAB_MISSING, "bindApplicationsIfNeeded changeFlag? " +
+                    changeFlag);
+        }
+        if (changeFlag) {
             AppInfo[] apps = mAllAppsList.copyData();
             int flags = mAllAppsList.getFlags();
             scheduleCallbackTask(c -> c.bindAllApplications(apps, flags));

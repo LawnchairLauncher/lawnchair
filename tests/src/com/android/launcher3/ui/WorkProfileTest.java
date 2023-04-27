@@ -105,6 +105,8 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     }
 
     private void waitForWorkTabSetup() {
+        // Added for b/243688989 flake to determine if we really are in allApps or not at this point
+        mLauncher.getAllApps();
         waitForLauncherCondition("Work tab not setup", launcher -> {
             if (launcher.getAppsView().getContentView() instanceof AllAppsPagedView) {
                 Log.d(WORK_TAB_MISSING, "Deferring AppsStore updates");

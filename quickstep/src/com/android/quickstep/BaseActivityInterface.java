@@ -187,6 +187,9 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
 
     public abstract boolean allowMinimizeSplitScreen();
 
+    /** @return whether to allow going to All Apps from Overview. */
+    public abstract boolean allowAllAppsFromOverview();
+
     public boolean deferStartingActivity(RecentsAnimationDeviceState deviceState, MotionEvent ev) {
         return deviceState.isInDeferredGestureRegion(ev) || deviceState.isImeRenderingNavButtons()
                 || isTrackpadMultiFingerSwipe(ev);
