@@ -115,6 +115,9 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Forritastika sýnd"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Forritastika falin"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Yfirlitsstika"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Alltaf sýna forritastiku"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Breyta leiðsagnarstillingu"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Skipting forritastiku"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Færa efst/til vinstri"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Færa neðst/til hægri"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Sýna # forrit í viðbót.}one{Sýna # forrit í viðbót.}other{Sýna # forrit í viðbót.}}"</string>
