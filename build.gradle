@@ -45,9 +45,6 @@ allprojects {
         compilerOptions.jvmTarget = JvmTarget.JVM_1_8
     }
 
-    tasks.withType(GenerateProtoTask).configureEach {
-        notCompatibleWithConfigurationCache("https://github.com/google/protobuf-gradle-plugin/issues/687")
-    }
 
     ext.addFrameworkJar = { String name ->
         def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
