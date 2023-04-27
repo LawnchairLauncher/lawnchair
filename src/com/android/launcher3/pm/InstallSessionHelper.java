@@ -25,7 +25,6 @@ import android.content.pm.PackageManager;
 import android.os.Process;
 import android.os.UserHandle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,7 +35,6 @@ import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.ItemInstallQueue;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.MainThreadInitializedObject;
@@ -156,16 +154,6 @@ public class InstallSessionHelper {
         if (sessionInfo == null
                 || sessionInfo.getInstallerPackageName() == null
                 || TextUtils.isEmpty(sessionInfo.getAppPackageName())) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.MISSING_PROMISE_ICON, LOG + " verify"
-                        + ", info=" + (sessionInfo == null)
-                        + ", info install name" + (sessionInfo == null
-                                ? null
-                                : sessionInfo.getInstallerPackageName())
-                        + ", empty pkg name" + TextUtils.isEmpty((sessionInfo == null
-                                ? null
-                                : sessionInfo.getAppPackageName())));
-            }
             return null;
         }
         return isTrustedPackage(sessionInfo.getInstallerPackageName(), getUserHandle(sessionInfo))
@@ -224,13 +212,6 @@ public class InstallSessionHelper {
      */
     @WorkerThread
     void tryQueuePromiseAppIcon(@Nullable final PackageInstaller.SessionInfo sessionInfo) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.MISSING_PROMISE_ICON, LOG + " tryQueuePromiseAppIcon"
-                    + ", SessionCommitReceiveEnabled" + SessionCommitReceiver.isEnabled(mAppContext)
-                    + ", verifySessionInfo(sessionInfo)=" + verifySessionInfo(sessionInfo)
-                    + ", !promiseIconAdded=" + (sessionInfo != null
-                    && !promiseIconAddedForId(sessionInfo.getSessionId())));
-        }
         if (SessionCommitReceiver.isEnabled(mAppContext)
                 && verifySessionInfo(sessionInfo)
                 && !promiseIconAddedForId(sessionInfo.getSessionId())) {
@@ -246,20 +227,6 @@ public class InstallSessionHelper {
     }
 
     public boolean verifySessionInfo(@Nullable final PackageInstaller.SessionInfo sessionInfo) {
-        if (TestProtocol.sDebugTracing) {
-            boolean appNotInstalled = sessionInfo == null
-                    || !new PackageManagerHelper(mAppContext)
-                    .isAppInstalled(sessionInfo.getAppPackageName(), getUserHandle(sessionInfo));
-            boolean labelNotEmpty = sessionInfo != null
-                    && !TextUtils.isEmpty(sessionInfo.getAppLabel());
-            Log.d(TestProtocol.MISSING_PROMISE_ICON, LOG + " verifySessionInfo"
-                    + ", verify(sessionInfo)=" + verify(sessionInfo)
-                    + ", reason=" + (sessionInfo == null ? null : sessionInfo.getInstallReason())
-                    + ", PackageManager.INSTALL_REASON_USER=" + PackageManager.INSTALL_REASON_USER
-                    + ", hasIcon=" + (sessionInfo != null && sessionInfo.getAppIcon() != null)
-                    + ", label is ! empty=" + labelNotEmpty
-                    + " +, app not installed="  + appNotInstalled);
-        }
         return verify(sessionInfo) != null
                 && sessionInfo.getInstallReason() == PackageManager.INSTALL_REASON_USER
                 && sessionInfo.getAppIcon() != null

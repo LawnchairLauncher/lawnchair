@@ -15,11 +15,8 @@
  */
 package com.android.launcher3.model;
 
-import android.util.Log;
-
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 
@@ -33,8 +30,6 @@ import java.util.stream.IntStream;
  * Utils class for {@link com.android.launcher3.LauncherModel}.
  */
 public class ModelUtils {
-
-    private static final String TAG = "ModelUtils";
 
     /**
      * Filters the set of items who are directly or indirectly (via another container) on the
@@ -55,10 +50,6 @@ public class ModelUtils {
                 (lhs, rhs) -> Integer.compare(lhs.container, rhs.container));
         for (T info : allWorkspaceItems) {
             if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                if (TestProtocol.sDebugTracing) {
-                    Log.d(TestProtocol.NULL_INT_SET, "filterCurrentWorkspaceItems: "
-                            + currentScreenIds);
-                }
                 if (currentScreenIds.contains(info.screenId)) {
                     currentScreenItems.add(info);
                     itemsOnScreen.add(info.id);
