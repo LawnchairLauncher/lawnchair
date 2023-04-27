@@ -383,12 +383,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     public void addCallbacks(@NonNull final Callbacks callbacks) {
         Preconditions.assertUIThread();
         synchronized (mCallbacksList) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.NULL_INT_SET, "addCallbacks pointer: "
-                        + callbacks
-                        + ", name: "
-                        + callbacks.getClass().getName(), new Exception());
-            }
             mCallbacksList.add(callbacks);
         }
     }
