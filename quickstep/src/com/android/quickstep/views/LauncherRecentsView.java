@@ -245,7 +245,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
             desktopVisibilityController.setGestureInProgress(false);
         }
         if (showDesktopApps) {
-            SystemUiProxy.INSTANCE.get(mActivity).showDesktopApps();
+            SystemUiProxy.INSTANCE.get(mActivity).showDesktopApps(mActivity.getDisplayId());
         }
     }
 }
