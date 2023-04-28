@@ -1192,6 +1192,17 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         .setMatrix(matrix);
                 surfaceApplier.scheduleApply(transaction);
             });
+            appAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    final SurfaceTransaction showTransaction = new SurfaceTransaction();
+                    for (int i = apps.length - 1; i >= 0; --i) {
+                        showTransaction.getTransaction().show(apps[i].leash);
+                    }
+                    surfaceApplier.scheduleApply(showTransaction);
+                }
+            });
             anim.play(appAnimator);
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override

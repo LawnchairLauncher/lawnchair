@@ -179,7 +179,6 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
     Map<Character, WidgetRect> mWidgetsMap = new HashMap<>();
 
     List<IconPoint> mIconPoints = new ArrayList<>();
-    Map<Character, IconPoint> mIconsMap = new HashMap<>();
 
     WidgetRect mMain = null;
 
@@ -270,7 +269,9 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
     }
 
     public void addIcon(int x, int y) {
-        removeOverlappingItems(new Point(x, y));
+        Point iconCoord = new Point(x, y);
+        removeOverlappingItems(iconCoord);
+        mIconPoints.add(new IconPoint(iconCoord, CellType.ICON));
         mWidget[x][y] = 'i';
     }
 
@@ -306,8 +307,12 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
         return new WidgetRect(type, widgetRect);
     }
 
+    public static boolean isFolder(char type) {
+        return type >= 'A' && type <= 'Z';
+    }
+
     public static boolean isWidget(char type) {
-        return type != CellType.ICON && type != CellType.EMPTY;
+        return type != CellType.ICON && type != CellType.EMPTY && (type >= 'a' && type <= 'z');
     }
 
     public static boolean isIcon(char type) {

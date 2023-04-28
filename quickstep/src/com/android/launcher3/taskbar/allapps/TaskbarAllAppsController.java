@@ -24,8 +24,10 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Handles the all apps overlay window initialization, updates, and its data.
@@ -91,6 +93,13 @@ public final class TaskbarAllAppsController {
         }
     }
 
+    /** Updates the current notification dots. */
+    public void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
+        if (mAppsView != null) {
+            mAppsView.getAppsStore().updateNotificationDots(updatedDots);
+        }
+    }
+
     /** Opens the {@link TaskbarAllAppsContainerView} in a new window. */
     public void show() {
         show(true);
@@ -135,10 +144,15 @@ public final class TaskbarAllAppsController {
         overlayContext.getDragController().setDisallowLongClick(mDisallowLongClick);
     }
 
-
     @VisibleForTesting
     public int getTaskbarAllAppsTopPadding() {
         // Allow null-pointer since this should only be null if the apps view is not showing.
         return mAppsView.getActiveRecyclerView().getClipBounds().top;
+    }
+
+    @VisibleForTesting
+    public int getTaskbarAllAppsScroll() {
+        // Allow null-pointer since this should only be null if the apps view is not showing.
+        return mAppsView.getActiveRecyclerView().computeVerticalScrollOffset();
     }
 }

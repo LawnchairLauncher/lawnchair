@@ -29,6 +29,8 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.tapl.Taskbar;
 import com.android.launcher3.ui.TaplTestsLauncher3;
+import com.android.launcher3.util.LauncherLayoutBuilder;
+import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 
@@ -49,11 +51,17 @@ public class TaplTestsTaskbar extends AbstractQuickStepTest {
     private static final String CALCULATOR_APP_PACKAGE =
             resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR);
 
+    private AutoCloseable mLauncherLayout;
+
     @Override
     public void setUp() throws Exception {
         Assume.assumeTrue(mLauncher.isTablet());
         super.setUp();
-        mLauncher.useTestWorkspaceLayoutOnReload();
+
+        LauncherLayoutBuilder layoutBuilder = new LauncherLayoutBuilder().atHotseat(0).putApp(
+                "com.google.android.apps.nexuslauncher.tests",
+                "com.android.launcher3.testcomponent.BaseTestingActivity");
+        mLauncherLayout = TestUtil.setLauncherDefaultLayout(mTargetContext, layoutBuilder);
         TaplTestsLauncher3.initialize(this);
 
         startAppFast(CALCULATOR_APP_PACKAGE);
@@ -62,9 +70,11 @@ public class TaplTestsTaskbar extends AbstractQuickStepTest {
     }
 
     @After
-    public void tearDown() {
-        mLauncher.useDefaultWorkspaceLayoutOnReload();
+    public void tearDown() throws Exception {
         mLauncher.enableBlockTimeout(false);
+        if (mLauncherLayout != null) {
+            mLauncherLayout.close();
+        }
     }
 
     @Test

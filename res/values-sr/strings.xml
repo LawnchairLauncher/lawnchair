@@ -81,7 +81,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"Дозвољава апликацији да чита подешавања и пречице на почетном екрану."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"уписивање подешавања и пречица на почетном екрану"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"Дозвољава апликацији да мења подешавања и пречице на почетном екрану."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> нема дозволу за упућивање телефонских позива"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Учитавање виџета није успело"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Подешавања виџета"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Додирните да бисте довршили подешавање"</string>
@@ -101,6 +100,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Фолдер: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> или више ставки"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Позадине"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Позадина и стил"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"Измени почетни екран"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Подешавања почетног екрана"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Администратор је онемогућио"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Дозволи ротацију почетног екрана"</string>
@@ -156,8 +156,8 @@
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Одбаци"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Затвори"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Обавештење је одбачено"</string>
-    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Личне"</string>
-    <string name="all_apps_work_tab" msgid="4884822796154055118">"Пословне"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Лично"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Посао"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Пословни профил"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Пословне апликације су означене значком и ИТ администратор може да их види"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Важи"</string>

@@ -341,8 +341,24 @@
     <dimen name="taskbar_edu_features_lottie_height">106dp</dimen>
     <dimen name="taskbar_edu_features_horizontal_spacing">24dp</dimen>
 
+    <!--- Taskbar Pinning -->
+    <dimen name="taskbar_pinning_popup_menu_width">300dp</dimen>
+
     <!-- Recents overview -->
     <dimen name="recents_filter_icon_size">30dp</dimen>
+
+    <!-- Bubble bar -->
+    <dimen name="bubblebar_size">72dp</dimen>
+    <dimen name="bubblebar_stashed_handle_width">55dp</dimen>
+    <dimen name="bubblebar_stashed_size">@dimen/transient_taskbar_stashed_height</dimen>
+    <dimen name="bubblebar_stashed_handle_height">@dimen/taskbar_stashed_handle_height</dimen>
+    <dimen name="bubblebar_pointer_size">8dp</dimen>
+
+    <dimen name="bubblebar_icon_size">50dp</dimen>
+    <dimen name="bubblebar_badge_size">24dp</dimen>
+    <dimen name="bubblebar_icon_overlap">12dp</dimen>
+    <dimen name="bubblebar_icon_spacing">3dp</dimen>
+    <dimen name="bubblebar_icon_elevation">1dp</dimen>
 
     <!-- Launcher splash screen -->
     <!-- Note: keep this value in sync with the WindowManager/Shell dimens.xml -->

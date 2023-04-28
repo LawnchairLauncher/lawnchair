@@ -63,6 +63,8 @@ import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.ItemInfoMatcher.forFolderMatch;
 
 import android.animation.Animator;
@@ -119,6 +121,7 @@ import android.window.OnBackAnimationCallback;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 
@@ -572,7 +575,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Note that state handler will always be handling the back press event if the previous 3 don't.
      */
     @NonNull
-    @TargetApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     protected OnBackAnimationCallback getOnBackAnimationCallback() {
         // #1 auto cancel action mode handler
         if (isInAutoCancelActionMode()) {
@@ -1771,6 +1774,11 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     @Override
+    public DropTargetHandler getDropTargetHandler() {
+        return new DropTargetHandler(this);
+    }
+
+    @Override
     public void startActivityForResult(Intent intent, int requestCode, Bundle options) {
         if (requestCode != -1) {
             mPendingActivityRequestCode = requestCode;
@@ -2406,6 +2414,12 @@ public class Launcher extends StatefulActivity<LauncherState>
                     view = FolderIcon.inflateFolderAndIcon(R.layout.folder_icon, this,
                             (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
                             (FolderInfo) item);
+                    break;
+                }
+                case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR: {
+                    FolderInfo info = (FolderInfo) item;
+                    // TODO (jeremysim b/274189428): Create app pair icon
+                    view = null;
                     break;
                 }
                 case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:

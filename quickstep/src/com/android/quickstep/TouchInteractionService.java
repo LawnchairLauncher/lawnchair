@@ -24,11 +24,11 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Launcher.INTENT_ACTION_ALL_APPS_TOGGLE;
-import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
 import static com.android.launcher3.config.FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TRACKPAD_GESTURE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
+import static com.android.quickstep.GestureState.TrackpadGestureType.getTrackpadGestureType;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_DOWN;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_MOVE;
@@ -77,11 +77,11 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.StatefulActivity;
@@ -647,7 +647,7 @@ public class TouchInteractionService extends Service
                 // onConsumerInactive and wipe the previous gesture state
                 GestureState prevGestureState = new GestureState(mGestureState);
                 GestureState newGestureState = createGestureState(mGestureState,
-                        isTrackpadMultiFingerSwipe(event));
+                        getTrackpadGestureType(event));
                 newGestureState.setSwipeUpStartTimeMs(SystemClock.uptimeMillis());
                 mConsumer.onConsumerAboutToBeSwitched();
                 mGestureState = newGestureState;
@@ -656,7 +656,7 @@ public class TouchInteractionService extends Service
             } else if (mDeviceState.isUserUnlocked() && mDeviceState.isFullyGesturalNavMode()
                     && mDeviceState.canTriggerAssistantAction(event)) {
                 mGestureState = createGestureState(mGestureState,
-                        isTrackpadMultiFingerSwipe(event));
+                        getTrackpadGestureType(event));
                 // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we
                 // should not interrupt it. QuickSwitch assumes that interruption can only
                 // happen if the next gesture is also quick switch.
@@ -678,7 +678,9 @@ public class TouchInteractionService extends Service
 
         if (mUncheckedConsumer != InputConsumer.NO_OP) {
             switch (event.getActionMasked()) {
-                case ACTION_DOWN, ACTION_UP ->
+                case ACTION_DOWN:
+                    // fall through
+                case ACTION_UP:
                     ActiveGestureLog.INSTANCE.addLog(
                             /* event= */ "onMotionEvent(" + (int) event.getRawX() + ", "
                                     + (int) event.getRawY() + "): "
@@ -687,15 +689,18 @@ public class TouchInteractionService extends Service
                             /* gestureEvent= */ event.getActionMasked() == ACTION_DOWN
                                     ? MOTION_DOWN
                                     : MOTION_UP);
-                case ACTION_MOVE ->
+                    break;
+                case ACTION_MOVE:
                     ActiveGestureLog.INSTANCE.addLog("onMotionEvent: "
                             + MotionEvent.actionToString(event.getActionMasked()) + ","
                             + MotionEvent.classificationToString(event.getClassification())
                             + ", pointerCount: " + event.getPointerCount(), MOTION_MOVE);
-                default ->
+                    break;
+                default: {
                     ActiveGestureLog.INSTANCE.addLog("onMotionEvent: "
                             + MotionEvent.actionToString(event.getActionMasked()) + ","
                             + MotionEvent.classificationToString(event.getClassification()));
+                }
             }
         }
 
@@ -708,9 +713,13 @@ public class TouchInteractionService extends Service
             event.setAction(ACTION_CANCEL);
         }
 
-        // Skip ACTION_POINTER_DOWN and ACTION_POINTER_UP events from trackpad.
-        if (!mGestureState.isTrackpadGesture() || (action != ACTION_POINTER_DOWN
-                && action != ACTION_POINTER_UP)) {
+        if (mGestureState.isTrackpadGesture() && (action == ACTION_POINTER_DOWN
+                || action == ACTION_POINTER_UP)) {
+            // Skip ACTION_POINTER_DOWN and ACTION_POINTER_UP events from trackpad.
+            if (action == ACTION_POINTER_DOWN) {
+                mGestureState.setTrackpadGestureType(getTrackpadGestureType(event));
+            }
+        } else {
             mUncheckedConsumer.onMotionEvent(event);
         }
 
@@ -744,7 +753,7 @@ public class TouchInteractionService extends Service
     }
 
     public GestureState createGestureState(GestureState previousGestureState,
-            boolean isTrackpadGesture) {
+            GestureState.TrackpadGestureType trackpadGestureType) {
         final GestureState gestureState;
         TopTaskTracker.CachedTaskInfo taskInfo;
         if (mTaskAnimationManager.isRecentsAnimationRunning()) {
@@ -761,7 +770,7 @@ public class TouchInteractionService extends Service
             taskInfo = TopTaskTracker.INSTANCE.get(this).getCachedTopTask(false);
             gestureState.updateRunningTask(taskInfo);
         }
-        gestureState.setIsTrackpadGesture(isTrackpadGesture);
+        gestureState.setTrackpadGestureType(trackpadGestureType);
 
         // Log initial state for the gesture.
         ActiveGestureLog.INSTANCE.addLog(new CompoundString("Current running task package name=")
@@ -835,12 +844,18 @@ public class TouchInteractionService extends Service
 
             // If Taskbar is present, we listen for long press to unstash it.
             TaskbarActivityContext tac = mTaskbarManager.getCurrentActivityContext();
-            if (tac != null && canStartSystemGesture) {
-                reasonString.append(NEWLINE_PREFIX)
-                        .append(reasonPrefix)
-                        .append(SUBSTRING_PREFIX)
-                        .append("TaskbarActivityContext != null, using TaskbarStashInputConsumer");
-                base = new TaskbarStashInputConsumer(this, base, mInputMonitorCompat, tac);
+            if (tac != null) {
+                // Present always on large screen or on small screen w/ flag
+                DeviceProfile dp = tac.getDeviceProfile();
+                boolean useTaskbarConsumer = dp.isTaskbarPresent && !TaskbarManager.isPhoneMode(dp);
+                if (canStartSystemGesture && useTaskbarConsumer) {
+                    reasonString.append(NEWLINE_PREFIX)
+                            .append(reasonPrefix)
+                            .append(SUBSTRING_PREFIX)
+                            .append("TaskbarActivityContext != null, "
+                                    + "using TaskbarStashInputConsumer");
+                    base = new TaskbarStashInputConsumer(this, base, mInputMonitorCompat, tac);
+                }
             }
 
             if (mDeviceState.isBubblesExpanded()) {
@@ -860,7 +875,6 @@ public class TouchInteractionService extends Service
             }
 
             if (ENABLE_TRACKPAD_GESTURE.get() && mGestureState.isTrackpadGesture()
-                    && mGestureState.getActivityInterface().isResumed()
                     && !previousGestureState.isRecentsAnimationRunning()) {
                 reasonString = newCompoundString(reasonPrefix)
                         .append(SUBSTRING_PREFIX)

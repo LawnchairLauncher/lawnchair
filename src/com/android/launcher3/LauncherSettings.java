@@ -112,6 +112,10 @@ public class LauncherSettings {
          */
         public static final int ITEM_TYPE_DEEP_SHORTCUT = 6;
 
+        /**
+         * The favorite is an app pair for launching split screen
+         */
+        public static final int ITEM_TYPE_APP_PAIR = 10;
 
         // *** Below enum values are used for metrics purpose but not used in Favorites DB ***
 
@@ -139,11 +143,6 @@ public class LauncherSettings {
         public static final String TABLE_NAME = "favorites";
 
         /**
-         * Backup table created when the favorites table is modified during grid migration
-         */
-        public static final String BACKUP_TABLE_NAME = "favorites_bakup";
-
-        /**
          * Backup table created when user hotseat is moved to workspace for hybrid hotseat
          */
         public static final String HYBRID_HOTSEAT_BACKUP_TABLE = "hotseat_restore_backup";
@@ -163,12 +162,6 @@ public class LauncherSettings {
          */
         public static final Uri CONTENT_URI = Uri.parse("content://"
                 + LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
-
-        /**
-         * The content:// style URL for "favorites_bakup" table
-         */
-        public static final Uri BACKUP_CONTENT_URI = Uri.parse("content://"
-                + LauncherProvider.AUTHORITY + "/" + BACKUP_TABLE_NAME);
 
         /**
          * The content:// style URL for "favorites_preview" table
@@ -244,6 +237,7 @@ public class LauncherSettings {
                 case ITEM_TYPE_DEEP_SHORTCUT: return "DEEPSHORTCUT";
                 case ITEM_TYPE_TASK: return "TASK";
                 case ITEM_TYPE_QSB: return "QSB";
+                case ITEM_TYPE_APP_PAIR: return "APP_PAIR";
                 default: return String.valueOf(type);
             }
         }
@@ -374,15 +368,6 @@ public class LauncherSettings {
 
         public static final String METHOD_CREATE_EMPTY_DB = "create_empty_db";
 
-        public static final String METHOD_SET_USE_TEST_WORKSPACE_LAYOUT_FLAG =
-                "set_use_test_workspace_layout_flag";
-        public static final String ARG_DEFAULT_WORKSPACE_LAYOUT_TEST = "default_test_workspace";
-        public static final String ARG_DEFAULT_WORKSPACE_LAYOUT_TEST2 = "default_test2_workspace";
-        public static final String ARG_DEFAULT_WORKSPACE_LAYOUT_TAPL = "default_tapl_workspace";
-
-        public static final String METHOD_CLEAR_USE_TEST_WORKSPACE_LAYOUT_FLAG =
-                "clear_use_test_workspace_layout_flag";
-
         public static final String METHOD_LOAD_DEFAULT_FAVORITES = "load_default_favorites";
 
         public static final String METHOD_REMOVE_GHOST_WIDGETS = "remove_ghost_widgets";
@@ -398,6 +383,10 @@ public class LauncherSettings {
         public static final String EXTRA_VALUE = "value";
 
         public static final String EXTRA_DB_NAME = "db_name";
+
+        public static final String LAYOUT_DIGEST_KEY = "launcher3.layout.provider.blob";
+        public static final String LAYOUT_DIGEST_LABEL = "launcher-layout";
+        public static final String LAYOUT_DIGEST_TAG = "ignore";
 
         public static Bundle call(ContentResolver cr, String method) {
             return call(cr, method, null /* arg */);

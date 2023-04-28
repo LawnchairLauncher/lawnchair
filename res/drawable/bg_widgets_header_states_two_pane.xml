@@ -13,16 +13,19 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/taskbar_divider_container"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <View
-        android:id="@+id/taskbar_divider_bar"
-        android:layout_height="32dp"
-        android:layout_width="2dp"
-        android:layout_gravity="center"
-        android:background="@drawable/bg_rounded_corner_bottom_sheet_handle" />
-    <!-- TODO(b/265347148): Create separate drawable -->
-</FrameLayout>
+    <item android:state_expanded="true">
+        <shape android:shape="rectangle">
+            <solid android:color="?attr/widgetPickerHeaderBackgroundColor" />
+            <corners android:radius="@dimen/widget_list_top_bottom_corner_radius" />
+        </shape>
+    </item>
+
+    <item android:state_expanded="false">
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <corners android:radius="@dimen/widget_list_top_bottom_corner_radius" />
+        </shape>
+    </item>
+</selector>

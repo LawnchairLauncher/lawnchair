@@ -93,6 +93,7 @@ public final class TestProtocol {
     public static final String REQUEST_RECREATE_TASKBAR = "recreate-taskbar";
     public static final String REQUEST_APP_LIST_FREEZE_FLAGS = "app-list-freeze-flags";
     public static final String REQUEST_APPS_LIST_SCROLL_Y = "apps-list-scroll-y";
+    public static final String REQUEST_TASKBAR_APPS_LIST_SCROLL_Y = "taskbar-apps-list-scroll-y";
     public static final String REQUEST_WIDGETS_SCROLL_Y = "widgets-scroll-y";
     public static final String REQUEST_TARGET_INSETS = "target-insets";
     public static final String REQUEST_WINDOW_INSETS = "window-insets";
@@ -106,11 +107,6 @@ public final class TestProtocol {
     public static final String REQUEST_GET_HAD_NONTEST_EVENTS = "get-had-nontest-events";
     public static final String REQUEST_STOP_EVENT_LOGGING = "stop-event-logging";
     public static final String REQUEST_CLEAR_DATA = "clear-data";
-    public static final String REQUEST_USE_TEST_WORKSPACE_LAYOUT = "use-test-workspace-layout";
-    public static final String REQUEST_USE_TEST2_WORKSPACE_LAYOUT = "use-test2-workspace-layout";
-    public static final String REQUEST_USE_TAPL_WORKSPACE_LAYOUT = "use-tapl-workspace-layout";
-    public static final String REQUEST_USE_DEFAULT_WORKSPACE_LAYOUT =
-            "use-default-workspace-layout";
     public static final String REQUEST_HOTSEAT_ICON_NAMES = "get-hotseat-icon-names";
     public static final String REQUEST_IS_TABLET = "is-tablet";
     public static final String REQUEST_IS_TWO_PANELS = "is-two-panel";

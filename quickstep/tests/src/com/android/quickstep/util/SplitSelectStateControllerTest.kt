@@ -18,6 +18,7 @@
 package com.android.quickstep.util
 
 import android.app.ActivityManager
+import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -32,6 +33,8 @@ import com.android.launcher3.statehandlers.DepthController
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.SplitConfigurationOptions
+import com.android.launcher3.util.SplitConfigurationOptions.StagePosition
+import com.android.launcher3.util.mock
 import com.android.launcher3.util.withArgCaptor
 import com.android.quickstep.RecentsModel
 import com.android.quickstep.SystemUiProxy
@@ -59,6 +62,7 @@ class SplitSelectStateControllerTest {
     @Mock lateinit var handler: Handler
     @Mock lateinit var context: Context
     @Mock lateinit var recentsModel: RecentsModel
+    @Mock lateinit var pendingIntent: PendingIntent
 
     lateinit var splitSelectStateController: SplitSelectStateController
 
@@ -346,6 +350,14 @@ class SplitSelectStateControllerTest {
         )
         splitSelectStateController.resetState()
         assertFalse(splitSelectStateController.isSplitSelectActive)
+    }
+
+    @Test
+    fun secondPendingIntentSet() {
+        val itemInfo = ItemInfo()
+        splitSelectStateController.setInitialTaskSelect(null, 0, itemInfo, null, 1)
+        splitSelectStateController.setSecondTask(pendingIntent)
+        assertTrue(splitSelectStateController.isBothSplitAppsConfirmed)
     }
 
     // Generate GroupTask with default userId.

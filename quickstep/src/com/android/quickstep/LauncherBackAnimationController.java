@@ -141,8 +141,8 @@ public class LauncherBackAnimationController {
             @Override
             public void onBackCancelled() {
                 handler.post(() -> {
-                    resetPositionAnimated();
-                    mProgressAnimator.reset();
+                    mProgressAnimator.onBackCancelled(
+                            LauncherBackAnimationController.this::resetPositionAnimated);
                 });
             }
 
@@ -192,7 +192,7 @@ public class LauncherBackAnimationController {
             }
 
             @Override
-            public void onAnimationCancelled(boolean isKeyguardOccluded) {}
+            public void onAnimationCancelled() {}
         };
 
         SystemUiProxy.INSTANCE.get(mLauncher).setBackToLauncherCallback(mBackCallback, runner);

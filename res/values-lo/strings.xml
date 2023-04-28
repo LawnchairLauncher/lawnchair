@@ -81,7 +81,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"ອະນຸຍາດໃຫ້ແອັບອ່ານການຕັ້ງຄ່າ ແລະ ທາງລັດໃນໜ້າຫຼັກ."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"ຂຽນການຕັ້ງຄ່າໜ້າຫຼັກ ແລະ ທາງລັດ"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"ອະນຸຍາດໃຫ້ແອັບປ່ຽນການຕັ້ງຄ່າ ແລະ ທາງລັດໃນໜ້າຫຼັກ."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ບໍ່​ໄດ້​ຮັບ​ອະ​ນຸ​ຍາດ​ໃຫ້​ໂທ"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"ບໍ່ສາມາດໂຫຼດວິດເຈັດໄດ້"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"ການຕັ້ງຄ່າວິດເຈັດ"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"ແຕະເພື່ອຕັ້ງຄ່າໃຫ້ແລ້ວ"</string>
@@ -101,6 +100,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ໂຟນເດີ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ຫຼື ລາຍການເພີ່ມເຕີມ"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ພາບພື້ນຫຼັງ"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ຮູບພື້ນຫຼັງ ແລະ ຮູບແບບ"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"ແກ້ໄຂໂຮມສະກຣີນ"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ການຕັ້ງຄ່າໜ້າຫຼັກ"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"ຖືກປິດການນຳໃຊ້ໂດຍຜູ້ເບິ່ງແຍງລະບົບຂອງທ່ານ"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"ອະນຸຍາດໃຫ້ໝຸນໜ້າຈໍຢູ່ໂຮມສະກຣີນໄດ້"</string>

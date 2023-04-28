@@ -50,6 +50,7 @@ import com.android.launcher3.model.CacheDataUpdatedTask;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.model.LauncherBinder;
 import com.android.launcher3.model.LoaderTask;
+import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.model.ModelDelegate;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.PackageIncrementalDownloadUpdatedTask;
@@ -93,6 +94,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     @NonNull
     private final LauncherAppState mApp;
+    @NonNull
+    private final ModelDbController mModelDbController;
     @NonNull
     private final Object mLock = new Object();
     @Nullable
@@ -143,6 +146,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
             @NonNull final IconCache iconCache, @NonNull final AppFilter appFilter,
             final boolean isPrimaryInstance) {
         mApp = app;
+        mModelDbController = new ModelDbController(context);
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
         mModelDelegate = ModelDelegate.newInstance(context, app, mBgAllAppsList, mBgDataModel,
                 isPrimaryInstance);
@@ -151,6 +155,10 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     @NonNull
     public ModelDelegate getModelDelegate() {
         return mModelDelegate;
+    }
+
+    public ModelDbController getModelDbController() {
+        return mModelDbController;
     }
 
     /**

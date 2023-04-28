@@ -114,7 +114,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         mActivityContext = ActivityContext.lookupContext(context);
         mIconLayoutBounds = mActivityContext.getTransientTaskbarBounds();
         Resources resources = getResources();
-        boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivityContext);
+        boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivityContext)
+                && !TaskbarManager.isPhoneMode(mActivityContext.getDeviceProfile());
         mIsRtl = Utilities.isRtl(resources);
         mTransientTaskbarMinWidth = mContext.getResources().getDimension(
                 R.dimen.transient_taskbar_min_width);
@@ -217,7 +218,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
             mAllAppsButton.setOnClickListener(mControllerCallbacks.getAllAppsButtonClickListener());
         }
         if (mTaskbarDivider != null) {
-            //TODO(b/265434705): set long press listener
+            mTaskbarDivider.setOnLongClickListener(
+                    mControllerCallbacks.getTaskbarDividerLongClickListener());
         }
     }
 

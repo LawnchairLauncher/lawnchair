@@ -210,7 +210,9 @@ public class TaskbarLauncherStateController {
                 }
             };
 
-    public void init(TaskbarControllers controllers, QuickstepLauncher launcher) {
+    /** Initializes the controller instance, and applies the initial state immediately. */
+    public void init(TaskbarControllers controllers, QuickstepLauncher launcher,
+            int sysuiStateFlags) {
         mCanSyncViews = false;
 
         mControllers = controllers;
@@ -229,6 +231,8 @@ public class TaskbarLauncherStateController {
 
         mLauncher.getStateManager().addStateListener(mStateListener);
         mLauncherState = launcher.getStateManager().getState();
+        updateStateForSysuiFlags(sysuiStateFlags, /*applyState*/ false);
+
         applyState(0);
 
         mCanSyncViews = true;
@@ -298,7 +302,11 @@ public class TaskbarLauncherStateController {
     }
 
     /** SysUI flags updated, see QuickStepContract.SYSUI_STATE_* values. */
-    public void updateStateForSysuiFlags(int systemUiStateFlags, boolean skipAnim) {
+    public void updateStateForSysuiFlags(int systemUiStateFlags) {
+        updateStateForSysuiFlags(systemUiStateFlags, /* applyState */ true);
+    }
+
+    private  void updateStateForSysuiFlags(int systemUiStateFlags, boolean applyState) {
         final boolean prevIsAwake = hasAnyFlag(FLAG_AWAKE);
         final boolean currIsAwake = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_AWAKE);
 
@@ -322,9 +330,7 @@ public class TaskbarLauncherStateController {
                 || (systemUiStateFlags & SYSUI_STATE_WAKEFULNESS_MASK) != WAKEFULNESS_AWAKE;
         updateStateForFlag(FLAG_TASKBAR_HIDDEN, isTaskbarHidden);
 
-        if (skipAnim) {
-            applyState(0);
-        } else {
+        if (applyState) {
             applyState();
         }
     }
@@ -359,10 +365,6 @@ public class TaskbarLauncherStateController {
 
     public void applyState(long duration) {
         applyState(duration, true);
-    }
-
-    public Animator applyState(boolean start) {
-        return applyState(mControllers.taskbarStashController.getStashDuration(), start);
     }
 
     public Animator applyState(long duration, boolean start) {
@@ -420,7 +422,7 @@ public class TaskbarLauncherStateController {
             }
         }
 
-        if (hasAnyFlag(changedFlags, FLAGS_LAUNCHER_ACTIVE | FLAG_AWAKE)) {
+        if (hasAnyFlag(changedFlags, FLAGS_LAUNCHER_ACTIVE)) {
             animatorSet.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -642,14 +644,8 @@ public class TaskbarLauncherStateController {
         long resetDuration = mControllers.taskbarStashController.isInApp()
                 ? duration
                 : duration / 2;
-        boolean shouldReset =
-                mControllers.taskbarTranslationController.shouldResetBackToZero(resetDuration);
-        boolean goingToLauncher = isAnimatingToLauncher();
-        boolean isNormalState = mLauncherState == LauncherState.NORMAL;
-        // Taskbar should always reset when animating to launcher in normal state to ensure there
-        // is no jump during the handoff to the hotseat.
-        if ((goingToLauncher && isNormalState)
-                || (shouldReset && (goingToLauncher || isNormalState))) {
+        if (!mControllers.taskbarTranslationController.willAnimateToZeroBefore(resetDuration)
+                && (isAnimatingToLauncher() || mLauncherState == LauncherState.NORMAL)) {
             animatorSet.play(mControllers.taskbarTranslationController
                     .createAnimToResetTranslation(resetDuration));
         }

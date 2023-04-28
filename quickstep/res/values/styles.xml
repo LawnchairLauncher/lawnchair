@@ -14,7 +14,8 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
 
     <style name="TextAppearance.GestureTutorial"
         parent="android:TextAppearance.Material.Body1" />
@@ -217,7 +218,7 @@
     <style name="KeyboardQuickSwitchOverview">
         <item name="fontFamily">google-sans-text</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textColor">?androidprv:attr/materialColorOnSurface</item>
         <item name="lineHeight">20sp</item>
     </style>
 
