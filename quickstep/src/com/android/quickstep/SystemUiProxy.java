@@ -1060,10 +1060,10 @@ public class SystemUiProxy implements ISystemUiProxy {
     //
 
     /** Call shell to show all apps active on the desktop */
-    public void showDesktopApps() {
+    public void showDesktopApps(int displayId) {
         if (mDesktopMode != null) {
             try {
-                mDesktopMode.showDesktopApps();
+                mDesktopMode.showDesktopApps(displayId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call showDesktopApps", e);
             }
@@ -1071,10 +1071,10 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     /** Call shell to get number of visible freeform tasks */
-    public int getVisibleDesktopTaskCount() {
+    public int getVisibleDesktopTaskCount(int displayId) {
         if (mDesktopMode != null) {
             try {
-                return mDesktopMode.getVisibleTaskCount();
+                return mDesktopMode.getVisibleTaskCount(displayId);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call getVisibleDesktopTaskCount", e);
             }

@@ -52,9 +52,10 @@ public class RemoteTargetGluer {
      */
     public RemoteTargetGluer(Context context, BaseActivityInterface sizingStrategy) {
         if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
-            // TODO: binder call, only for prototyping. Creating the gluer should be postponed so
-            //  we can create it when we have the remote animation targets ready.
-            int desktopTasks = SystemUiProxy.INSTANCE.get(context).getVisibleDesktopTaskCount();
+            // TODO(279931899): binder call, only for prototyping. Creating the gluer should be
+            //  postponed so we can create it when we have the remote animation targets ready.
+            int desktopTasks = SystemUiProxy.INSTANCE.get(context).getVisibleDesktopTaskCount(
+                    context.getDisplayId());
             if (desktopTasks > 0) {
                 init(context, sizingStrategy, desktopTasks, true /* forDesktop */);
                 return;
