@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 
 import android.app.WallpaperColors;
 import android.app.WallpaperManager;
@@ -76,8 +77,8 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
         // Update theme
         if (Utilities.ATLEAST_P) {
-            getSystemService(WallpaperManager.class)
-                    .addOnColorsChangedListener(this, MAIN_EXECUTOR.getHandler());
+            THREAD_POOL_EXECUTOR.execute(() -> getSystemService(WallpaperManager.class)
+                    .addOnColorsChangedListener(this, MAIN_EXECUTOR.getHandler()));
         }
         int themeRes = Themes.getActivityThemeRes(this);
         if (themeRes != mThemeRes) {

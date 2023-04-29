@@ -24,6 +24,9 @@ import android.os.Build;
 import com.android.launcher3.R;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
+import com.android.quickstep.util.LottieAnimationColorUtils;
+
+import java.util.Map;
 
 /** A {@link TutorialController} for the Home tutorial. */
 @TargetApi(Build.VERSION_CODES.R)
@@ -31,6 +34,14 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     HomeGestureTutorialController(HomeGestureTutorialFragment fragment, TutorialType tutorialType) {
         super(fragment, tutorialType);
+        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+            LottieAnimationColorUtils.updateColors(
+                    mAnimatedGestureDemonstration,
+                    Map.of(".onSurfaceHome", R.color.gesture_tutorial_workspace_background,
+                            ".surfaceHome", R.color.gesture_home_tutorial_background,
+                            ".arrow", R.color.gesture_home_tutorial_arrow),
+                    mContext.getTheme());
+        }
     }
 
     @Override
@@ -79,7 +90,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     @Override
     protected int getSwipeActionColorResId() {
-        return R.color.gesture_home_tutorial_swipe_up_rect;
+        return R.color.gesture_tutorial_workspace_background;
     }
 
     @Override
