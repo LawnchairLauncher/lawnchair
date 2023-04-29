@@ -733,10 +733,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         }
 
         mPageIndicator.stopAllAnimations();
-        startAnimation(anim);
+
         // Because t=0 has the folder match the folder icon, we can skip the
         // first frame and have the same movement one frame earlier.
         anim.setCurrentPlayTime(Math.min(getSingleFrameMs(getContext()), anim.getTotalDuration()));
+        startAnimation(anim);
 
         // Make sure the folder picks up the last drag move even if the finger doesn't move.
         if (mDragController.isDragging()) {
