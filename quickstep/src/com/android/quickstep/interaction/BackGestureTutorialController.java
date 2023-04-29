@@ -96,7 +96,7 @@ final class BackGestureTutorialController extends TutorialController {
 
     @Override
     protected int getSwipeActionColorResId() {
-        return R.color.gesture_back_tutorial_background;
+        return R.color.gesture_tutorial_workspace_background;
     }
 
     @Override
