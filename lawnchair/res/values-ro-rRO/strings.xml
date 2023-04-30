@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">Atingeți acest card pentru a seta Lawnchair ca lansator implicit.</string>
     <string name="settings">Setări</string>
     <string name="general_label">General</string>
     <string name="general_description">Pictograme pentru Notificări, Pachet Pictograme</string>
