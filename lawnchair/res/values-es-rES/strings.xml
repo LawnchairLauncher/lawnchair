@@ -49,12 +49,12 @@
     <string name="smartspace_calendar_label">Personalización del calendario de un vistazo</string>
     <string name="smartspace_calendar_description">Permitir mostrar fechas en sistemas de calendario no gregorianos.</string>
     <string name="workspace_increase_max_grid_size_label">Aumento del tamaño máximo de la cuadrícula de pantalla de inicio</string>
-    <string name="workspace_increase_max_grid_size_description">Aumenta el tamaño máximo permitido de la cuadrícula de pantalla de inicio de 10 x 10 a 20 x 20. https://lawnchair. crowdin. com/translate/c26ac9577fbf791d8e74aae2a00d05d4/49/en-es/8? filter=basic&amp;value=0.</string>
+    <string name="workspace_increase_max_grid_size_description">Aumente el tamaño máximo permitido de la cuadrícula de la pantalla de inicio de 10 x 10 a 20 x 20.</string>
     <string name="always_reload_icons_label">Siempre recargar los iconos</string>
     <string name="always_reload_icons_description">Evitar el uso de iconos en caché de paquetes de iconos</string>
     <string name="transparent_background_icons">Iconos temáticos transparentes</string>
     <string name="transparent_background_icons_description">Usar fondo transparente en iconos temáticos</string>
-    <string name="smartspace_mode_selection">Selección de proveedores de un vistazo</string>
+    <string name="smartspace_mode_selection">Selección de proveedores de Un vistazo</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotación de Pantalla de Inicio</string>
     <string name="home_screen_rotaton_description">Cuando se rota el dispositivo.</string>
@@ -71,19 +71,19 @@
     <string name="show_notification_count">Mostrar contador de notificaciones</string>
     <string name="notification_dots_color">Color del punto de notificación</string>
     <string name="notification_dots_text_color">Color del contador de notificaciones</string>
-    <string name="notification_dots_color_contrast_warning_always">Advertencia: Es posible que los colores de punto &amp; contador de notificaciones no siempre tengan suficiente contraste entre sí</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Advertencia: Es posible que los colores de punto &amp; contador de notificaciones no siempre tengan suficiente contraste entre sí</string>
+    <string name="notification_dots_color_contrast_warning_always">Advertencia: Los puntos de notificación y los contadores de colores no tienen suficiente contraste entre sí</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Advertencia: Los puntos de notificación y los contadores de colores pueden que no siempre tengan suficiente contraste entre sí</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Se necesita acceso a las notificaciones</string>
     <string name="missing_notification_access_description">Se necesita acceso a las notificaciones.</string>
-    <string name="msg_missing_notification_access">Para usar puntos de notificación, concede acceso a las notificaciones a <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
+    <string name="msg_missing_notification_access">Para usar los Puntos de notificación, concede acceso a las notificaciones a <xliff:g id="name" example="My App">%1$s</xliff:g>.</string>
     <string name="title_change_settings">Cambiar ajustes</string>
     <string name="colors">Colores</string>
     <string name="theme_label">Tema</string>
     <string name="theme_light">Claro</string>
     <string name="theme_dark">Oscuro</string>
     <string name="theme_system_default">Sistema</string>
-    <string name="theme_follow_wallpaper">Coincidir con fondo</string>
+    <string name="theme_follow_wallpaper">Coincidir con el fondo de pantalla</string>
     <string name="accent_color">Color de acento</string>
     <!-- CustomIconShapePreference -->
     <string name="custom_icon_shape">Forma de icono personalizada</string>
@@ -216,7 +216,7 @@
     <string name="smartspace_widget_placeholder_date">Vie, 3 mar</string>
     <string name="preview_label">Vista previa</string>
     <string name="smartspace_calendar">Calendario</string>
-    <string name="smartspace_date_and_time">Fecha &amp; hora</string>
+    <string name="smartspace_date_and_time">Fecha y hora</string>
     <string name="smartspace_date">Fecha</string>
     <string name="smartspace_time">Hora</string>
     <string name="smartspace_time_format">Formato de hora</string>
@@ -327,7 +327,7 @@
     <string name="news">Noticias</string>
     <string name="support">Soporte</string>
     <string name="product">Producto</string>
-    <string name="design_and_development">Diseño &amp; Desarrollo</string>
+    <string name="design_and_development">Diseño y desarrollo</string>
     <string name="development">Desarrollo</string>
     <string name="quickswitch_maintenance">Mantenimiento de QuickSwitch</string>
     <string name="devops">Opciones de desarrollador</string>
@@ -362,7 +362,7 @@
     <string name="hide_from_drawer">Ocultar del Cajón</string>
     <string name="suggestion_pref_screen_title">Sugerencias</string>
     <!-- Bug reporting -->
-    <string name="lawnchair_bug_report">Reportar error de Lawnchair</string>
+    <string name="lawnchair_bug_report">Reporte de errores de Lawnchair</string>
     <string name="crash_report_notif_title">%1$s ha dejado de funcionar</string>
     <string name="action_upload_crash_report">Cargar registro de error</string>
     <string name="action_copy_link">Copiar enlace</string>
