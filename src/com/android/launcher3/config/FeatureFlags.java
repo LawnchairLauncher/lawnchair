@@ -415,7 +415,7 @@ public final class FeatureFlags {
 
     // TODO(Block 31)
     public static final BooleanFlag ENABLE_SPLIT_LAUNCH_DATA_REFACTOR = getDebugFlag(279494325,
-            "ENABLE_SPLIT_LAUNCH_DATA_REFACTOR", DISABLED,
+            "ENABLE_SPLIT_LAUNCH_DATA_REFACTOR", ENABLED,
             "Use refactored split launching code path");
 
     // TODO(Block 32): Empty block
