@@ -337,7 +337,6 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
         if (getTag() instanceof WorkspaceItemInfo) {
             WorkspaceItemInfo info = (WorkspaceItemInfo) getTag();
             isBadged = !Process.myUserHandle().equals(info.user)
-                    || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
                     || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
         }
 

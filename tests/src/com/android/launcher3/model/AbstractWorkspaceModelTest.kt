@@ -17,17 +17,18 @@ package com.android.launcher3.model
 
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.graphics.Rect
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherSettings
+import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
-import com.android.launcher3.util.ContentWriter
 import com.android.launcher3.util.GridOccupancy
 import com.android.launcher3.util.IntArray
 import com.android.launcher3.util.IntSparseArrayMap
+import com.android.launcher3.util.LauncherLayoutBuilder
 import com.android.launcher3.util.LauncherModelHelper
+import com.android.launcher3.util.LauncherModelHelper.TEST_ACTIVITY
+import com.android.launcher3.util.LauncherModelHelper.TEST_PACKAGE
 import java.util.UUID
 
 /** Base class for workspace related tests. */
@@ -38,6 +39,7 @@ abstract class AbstractWorkspaceModelTest {
         val nonEmptyScreenSpaces = listOf(Rect(1, 2, 3, 4))
     }
 
+    protected lateinit var mLayoutBuilder: LauncherLayoutBuilder
     protected lateinit var mTargetContext: Context
     protected lateinit var mIdp: InvariantDeviceProfile
     protected lateinit var mAppState: LauncherAppState
@@ -47,6 +49,7 @@ abstract class AbstractWorkspaceModelTest {
     protected lateinit var mScreenOccupancy: IntSparseArrayMap<GridOccupancy>
 
     open fun setup() {
+        mLayoutBuilder = LauncherLayoutBuilder()
         mModelHelper = LauncherModelHelper()
         mTargetContext = mModelHelper.sandboxContext
         mIdp = InvariantDeviceProfile.INSTANCE[mTargetContext]
@@ -64,10 +67,11 @@ abstract class AbstractWorkspaceModelTest {
 
     /** Sets up workspaces with the given screen IDs with some items and a 2x2 space. */
     fun setupWorkspaces(screenIdsWithItems: List<Int>) {
-        var nextItemId = 1
-        screenIdsWithItems.forEach { screenId ->
-            nextItemId = setupWorkspace(nextItemId, screenId, nonEmptyScreenSpaces)
-        }
+        screenIdsWithItems.forEach { screenId -> setupWorkspace(screenId, nonEmptyScreenSpaces) }
+        mModelHelper.setupDefaultLayoutProvider(mLayoutBuilder)
+        mIdp.numRows = 5
+        mIdp.numColumns = mIdp.numRows
+        mModelHelper.loadModelSync()
     }
 
     /**
@@ -78,30 +82,23 @@ abstract class AbstractWorkspaceModelTest {
         screen1: List<Rect>? = null,
         screen2: List<Rect>? = null,
         screen3: List<Rect>? = null,
-    ) = listOf(screen0, screen1, screen2, screen3).let(this::setupWithSpaces)
+    ) {
+        listOf(screen0, screen1, screen2, screen3).let(this::setupWithSpaces)
+        mModelHelper.setupDefaultLayoutProvider(mLayoutBuilder)
+        mIdp.numRows = 5
+        mIdp.numColumns = mIdp.numRows
+        mModelHelper.loadModelSync()
+    }
 
     private fun setupWithSpaces(workspaceSpaces: List<List<Rect>?>) {
-        var nextItemId = 1
         workspaceSpaces.forEachIndexed { screenId, spaces ->
             if (spaces != null) {
-                nextItemId = setupWorkspace(nextItemId, screenId, spaces)
+                setupWorkspace(screenId, spaces)
             }
         }
     }
 
-    private fun setupWorkspace(startId: Int, screenId: Int, spaces: List<Rect>): Int {
-        return mModelHelper.executeSimpleTask { dataModel ->
-            writeWorkspaceWithSpaces(dataModel, startId, screenId, spaces)
-        }
-    }
-
-    private fun writeWorkspaceWithSpaces(
-        bgDataModel: BgDataModel,
-        itemStartId: Int,
-        screenId: Int,
-        spaces: List<Rect>,
-    ): Int {
-        var itemId = itemStartId
+    private fun setupWorkspace(screenId: Int, spaces: List<Rect>) {
         val occupancy = GridOccupancy(mIdp.numColumns, mIdp.numRows)
         occupancy.markCells(0, 0, mIdp.numColumns, mIdp.numRows, true)
         spaces.forEach { spaceRect -> occupancy.markCells(spaceRect, false) }
@@ -109,35 +106,22 @@ abstract class AbstractWorkspaceModelTest {
         mScreenOccupancy.append(screenId, occupancy)
         for (x in 0 until mIdp.numColumns) {
             for (y in 0 until mIdp.numRows) {
-                if (!occupancy.cells[x][y]) {
-                    continue
+                if (occupancy.cells[x][y]) {
+                    mLayoutBuilder.atWorkspace(x, y, screenId).putApp(TEST_PACKAGE, TEST_ACTIVITY)
                 }
-                val info = getExistingItem()
-                info.id = itemId++
-                info.screenId = screenId
-                info.cellX = x
-                info.cellY = y
-                info.container = LauncherSettings.Favorites.CONTAINER_DESKTOP
-                bgDataModel.addItem(mTargetContext, info, false)
-                val writer = ContentWriter(mTargetContext)
-                info.writeToValues(writer)
-                writer.put(LauncherSettings.Favorites._ID, info.id)
-                mTargetContext.contentResolver.insert(
-                    LauncherSettings.Favorites.CONTENT_URI,
-                    writer.getValues(mTargetContext)
-                )
             }
         }
-        return itemId
     }
 
     fun getExistingItem() =
-        WorkspaceItemInfo().apply { intent = Intent().setComponent(ComponentName("a", "b")) }
+        WorkspaceItemInfo().apply {
+            intent = AppInfo.makeLaunchIntent(ComponentName(TEST_PACKAGE, TEST_ACTIVITY))
+        }
 
     fun getNewItem(): WorkspaceItemInfo {
         val itemPackage = UUID.randomUUID().toString()
         return WorkspaceItemInfo().apply {
-            intent = Intent().setComponent(ComponentName(itemPackage, itemPackage))
+            intent = AppInfo.makeLaunchIntent(ComponentName(itemPackage, itemPackage))
         }
     }
 }

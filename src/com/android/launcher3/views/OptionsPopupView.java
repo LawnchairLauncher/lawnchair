@@ -290,7 +290,6 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
     static WorkspaceItemInfo placeholderInfo(Intent intent) {
         WorkspaceItemInfo placeholderInfo = new WorkspaceItemInfo();
         placeholderInfo.intent = intent;
-        placeholderInfo.itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
         placeholderInfo.container = LauncherSettings.Favorites.CONTAINER_SETTINGS;
         return placeholderInfo;
     }

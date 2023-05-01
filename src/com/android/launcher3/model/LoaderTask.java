@@ -503,7 +503,6 @@ public class LoaderTask implements Runnable {
 
             boolean allowMissingTarget = false;
             switch (c.itemType) {
-                case Favorites.ITEM_TYPE_SHORTCUT:
                 case Favorites.ITEM_TYPE_APPLICATION:
                 case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                     Intent intent = c.parseIntent();
@@ -517,9 +516,8 @@ public class LoaderTask implements Runnable {
                     ComponentName cn = intent.getComponent();
                     String targetPkg = cn == null ? intent.getPackage() : cn.getPackageName();
 
-                    if (TextUtils.isEmpty(targetPkg)
-                            && c.itemType != Favorites.ITEM_TYPE_SHORTCUT) {
-                        c.markDeleted("Only legacy shortcuts can have null package");
+                    if (TextUtils.isEmpty(targetPkg)) {
+                        c.markDeleted("Shortcuts can't have null package");
                         return;
                     }
 
