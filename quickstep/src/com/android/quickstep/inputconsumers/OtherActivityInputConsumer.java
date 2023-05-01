@@ -351,7 +351,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         mInteractionHandler.updateDisplacement(displacement - mStartDisplacement);
                     }
 
-                    if (mDeviceState.isFullyGesturalNavMode()) {
+                    if (mDeviceState.isFullyGesturalNavMode()
+                            || mGestureState.isTrackpadGesture()) {
                         boolean minSwipeMet = upDist >= Math.max(mMotionPauseMinDisplacement,
                                 mInteractionHandler.getThresholdToAllowMotionPause());
                         mInteractionHandler.setCanSlowSwipeGoHome(minSwipeMet);

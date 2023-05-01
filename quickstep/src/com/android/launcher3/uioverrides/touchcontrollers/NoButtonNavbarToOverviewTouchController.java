@@ -22,9 +22,11 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
+import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ONE_HANDED_ACTIVE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
@@ -43,6 +45,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
@@ -89,6 +92,10 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
 
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
+        if (!isTrackpadMotionEvent(ev) && DisplayController.getNavigationMode(mLauncher)
+                == THREE_BUTTONS) {
+            return false;
+        }
         mDidTouchStartInNavBar = (ev.getEdgeFlags() & EDGE_NAV_BAR) != 0;
         boolean isOneHandedModeActive = (SystemUiProxy.INSTANCE.get(mLauncher)
                 .getLastSystemUiStateFlags() & SYSUI_STATE_ONE_HANDED_ACTIVE) != 0;

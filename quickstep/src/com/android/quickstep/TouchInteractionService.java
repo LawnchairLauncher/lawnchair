@@ -24,6 +24,8 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Launcher.INTENT_ACTION_ALL_APPS_TOGGLE;
+import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
+import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TRACKPAD_GESTURE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
@@ -465,7 +467,7 @@ public class TouchInteractionService extends Service
     private void initInputMonitor(String reason) {
         disposeEventHandlers("Initializing input monitor due to: " + reason);
 
-        if (mDeviceState.isButtonNavMode()) {
+        if (mDeviceState.isButtonNavMode() && !ENABLE_TRACKPAD_GESTURE.get()) {
             return;
         }
 
@@ -645,7 +647,8 @@ public class TouchInteractionService extends Service
         TestLogging.recordMotionEvent(
                 TestProtocol.SEQUENCE_TIS, "TouchInteractionService.onInputEvent", event);
 
-        if (!mDeviceState.isUserUnlocked()) {
+        if (!mDeviceState.isUserUnlocked() || (mDeviceState.isButtonNavMode()
+                && !isTrackpadMotionEvent(event))) {
             return;
         }
 
@@ -673,7 +676,8 @@ public class TouchInteractionService extends Service
                 mGestureState = newGestureState;
                 mConsumer = newConsumer(prevGestureState, mGestureState, event);
                 mUncheckedConsumer = mConsumer;
-            } else if (mDeviceState.isUserUnlocked() && mDeviceState.isFullyGesturalNavMode()
+            } else if (mDeviceState.isUserUnlocked()
+                    && (mDeviceState.isFullyGesturalNavMode() || isTrackpadMultiFingerSwipe(event))
                     && mDeviceState.canTriggerAssistantAction(event)) {
                 mGestureState = createGestureState(mGestureState,
                         getTrackpadGestureType(event));
@@ -850,11 +854,12 @@ public class TouchInteractionService extends Service
                     .append(", trying to use default input consumer");
             base = getDefaultInputConsumer(reasonString);
         }
-        if (mDeviceState.isGesturalNavMode()) {
+        if (mDeviceState.isGesturalNavMode() || newGestureState.isTrackpadGesture()) {
             handleOrientationSetup(base);
         }
-        if (mDeviceState.isFullyGesturalNavMode()) {
-            String reasonPrefix = "device is in gesture navigation mode";
+        if (mDeviceState.isFullyGesturalNavMode() || newGestureState.isTrackpadGesture()) {
+            String reasonPrefix = "device is in gesture navigation mode or 3-button mode with a"
+                    + "trackpad gesture";
             if (mDeviceState.canTriggerAssistantAction(event)) {
                 reasonString.append(NEWLINE_PREFIX)
                         .append(reasonPrefix)
@@ -1065,17 +1070,21 @@ public class TouchInteractionService extends Service
 
     private InputConsumer createDeviceLockedInputConsumer(
             GestureState gestureState, CompoundString reasonString) {
-        if (mDeviceState.isFullyGesturalNavMode() && gestureState.getRunningTask() != null) {
+        if ((mDeviceState.isFullyGesturalNavMode() || gestureState.isTrackpadGesture())
+                && gestureState.getRunningTask() != null) {
             reasonString.append(SUBSTRING_PREFIX)
-                    .append("device is in gesture nav mode and running task != null")
+                    .append("device is in gesture nav mode or 3-button mode with a trackpad gesture"
+                            + "and running task != null")
                     .append(", using DeviceLockedInputConsumer");
             return new DeviceLockedInputConsumer(
                     this, mDeviceState, mTaskAnimationManager, gestureState, mInputMonitorCompat);
         } else {
             return getDefaultInputConsumer(reasonString
                     .append(SUBSTRING_PREFIX)
-                    .append(mDeviceState.isFullyGesturalNavMode()
-                        ? "running task == null" : "device is not in gesture nav mode")
+                    .append((mDeviceState.isFullyGesturalNavMode()
+                                    || gestureState.isTrackpadGesture())
+                            ? "running task == null"
+                            : "device is not in gesture nav mode and it's not a trackpad gesture")
                     .append(", trying to use default input consumer"));
         }
     }
