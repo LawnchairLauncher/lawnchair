@@ -674,18 +674,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     /**
-     * Notify system to inset the rounded corner frame based on the task bar insets.
-     */
-    public void updateInsetRoundedCornerFrame(boolean shouldInsetsRoundedCorner) {
-        if (!mDragLayer.isAttachedToWindow()
-                || mWindowLayoutParams.insetsRoundedCornerFrame == shouldInsetsRoundedCorner) {
-            return;
-        }
-        mWindowLayoutParams.insetsRoundedCornerFrame = shouldInsetsRoundedCorner;
-        mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
-    }
-
-    /**
      * Updates the TaskbarContainer height (pass {@link #getDefaultTaskbarWindowHeight()} to reset).
      */
     public void setTaskbarWindowHeight(int height) {
