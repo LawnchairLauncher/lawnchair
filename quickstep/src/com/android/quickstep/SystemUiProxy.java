@@ -70,6 +70,7 @@ import com.android.systemui.unfold.progress.IUnfoldAnimation;
 import com.android.systemui.unfold.progress.IUnfoldTransitionListener;
 import com.android.wm.shell.back.IBackAnimation;
 import com.android.wm.shell.desktopmode.IDesktopMode;
+import com.android.wm.shell.draganddrop.IDragAndDrop;
 import com.android.wm.shell.onehanded.IOneHanded;
 import com.android.wm.shell.pip.IPip;
 import com.android.wm.shell.pip.IPipAnimationListener;
@@ -128,6 +129,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     private IBinder mOriginalTransactionToken = null;
     private IOnBackInvokedCallback mBackToLauncherCallback;
     private IRemoteAnimationRunner mBackToLauncherRunner;
+    private IDragAndDrop mDragAndDrop;
 
     // Used to dedupe calls to SystemUI
     private int mLastShelfHeight;
@@ -203,7 +205,7 @@ public class SystemUiProxy implements ISystemUiProxy {
             IStartingWindow startingWindow, IRecentTasks recentTasks,
             ISysuiUnlockAnimationController sysuiUnlockAnimationController,
             IBackAnimation backAnimation, IDesktopMode desktopMode,
-            IUnfoldAnimation unfoldAnimation) {
+            IUnfoldAnimation unfoldAnimation, IDragAndDrop dragAndDrop) {
         unlinkToDeath();
         mSystemUiProxy = proxy;
         mPip = pip;
@@ -216,6 +218,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         mBackAnimation = backAnimation;
         mDesktopMode = desktopMode;
         mUnfoldAnimation = unfoldAnimation;
+        mDragAndDrop = dragAndDrop;
         linkToDeath();
         // re-attach the listeners once missing due to setProxy has not been initialized yet.
         setPipAnimationListener(mPipAnimationListener);
@@ -230,7 +233,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     public void clearProxy() {
-        setProxy(null, null, null, null, null, null, null, null, null, null, null);
+        setProxy(null, null, null, null, null, null, null, null, null, null, null, null);
     }
 
     // TODO(141886704): Find a way to remove this
@@ -1099,6 +1102,11 @@ public class SystemUiProxy implements ISystemUiProxy {
             Log.e(TAG, "Failed call setUnfoldAnimationListener", e);
         }
     }
+
+    //
+    // Recents
+    //
+
     /**
      * Starts the recents activity. The caller should manage the thread on which this is called.
      */
@@ -1131,10 +1139,30 @@ public class SystemUiProxy implements ISystemUiProxy {
         try {
             mRecentTasks.startRecentsTransition(mRecentsPendingIntent, intent, optsBundle,
                     mContext.getIApplicationThread(), runner);
+            return true;
         } catch (RemoteException e) {
             Log.e(TAG, "Error starting recents via shell", e);
             return false;
         }
-        return true;
+    }
+
+    //
+    // Drag and drop
+    //
+
+    /**
+     * For testing purposes.  Returns `true` only if the shell drop target has shown and
+     * drawn and is ready to handle drag events and the subsequent drop.
+     */
+    public boolean isDragAndDropReady() {
+        if (mDragAndDrop == null) {
+            return false;
+        }
+        try {
+            return mDragAndDrop.isReadyToHandleDrag();
+        } catch (RemoteException e) {
+            Log.e(TAG, "Error querying drag state", e);
+            return false;
+        }
     }
 }
