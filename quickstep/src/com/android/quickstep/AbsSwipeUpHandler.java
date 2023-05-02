@@ -177,7 +177,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     protected @Nullable RecentsAnimationController mDeferredCleanupRecentsAnimationController;
     protected RecentsAnimationTargets mRecentsAnimationTargets;
     protected T mActivity;
-    protected Q mRecentsView;
+    protected @Nullable Q mRecentsView;
     protected Runnable mGestureEndCallback;
     protected MultiStateCallback mStateCallback;
     protected boolean mCanceled;
@@ -1895,7 +1895,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private void invalidateHandlerWithLauncher() {
         endLauncherTransitionController();
 
-        mRecentsView.onGestureAnimationEnd();
+        if (mRecentsView != null) {
+            mRecentsView.onGestureAnimationEnd();
+        }
         resetLauncherListeners();
     }
 
@@ -1922,7 +1924,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private void resetLauncherListeners() {
         mActivity.getRootView().setOnApplyWindowInsetsListener(null);
 
-        mRecentsView.removeOnScrollChangedListener(mOnRecentsScrollListener);
+        if (mRecentsView != null) {
+            mRecentsView.removeOnScrollChangedListener(mOnRecentsScrollListener);
+        }
     }
 
     private void resetStateForAnimationCancel() {
@@ -1981,8 +1985,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private boolean updateThumbnail(int runningTaskId, boolean refreshView) {
         boolean finishTransitionPosted = false;
         final TaskView taskView;
-        if (mGestureState.getEndTarget() == HOME || mGestureState.getEndTarget() == NEW_TASK
-                || mGestureState.getEndTarget() == ALL_APPS) {
+        if (mGestureState.getEndTarget() == HOME
+                || mGestureState.getEndTarget() == NEW_TASK
+                || mGestureState.getEndTarget() == ALL_APPS
+                || mRecentsView == null) {
             // Capture the screenshot before finishing the transition to home or quickswitching to
             // ensure it's taken in the correct orientation, but no need to update the thumbnail.
             taskView = null;
@@ -2135,7 +2141,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     protected void startNewTask(Consumer<Boolean> resultCallback) {
         // Launch the task user scrolled to (mRecentsView.getNextPage()).
         if (!mCanceled) {
-            TaskView nextTask = mRecentsView.getNextPageTaskView();
+            TaskView nextTask = mRecentsView == null ? null : mRecentsView.getNextPageTaskView();
             if (nextTask != null) {
                 Task.TaskKey nextTaskKey = nextTask.getTask().key;
                 int taskId = nextTaskKey.id;
@@ -2237,7 +2243,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     return;
                 }
                 RemoteAnimationTarget taskTarget = taskTargetOptional.get();
-                TaskView taskView = mRecentsView.getTaskViewByTaskId(taskTarget.taskId);
+                TaskView taskView = mRecentsView == null
+                        ? null : mRecentsView.getTaskViewByTaskId(taskTarget.taskId);
                 if (taskView == null || !taskView.getThumbnail().shouldShowSplashView()) {
                     finishRecentsAnimationOnTasksAppeared(null /* onFinishComplete */);
                     return;
@@ -2296,9 +2303,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      * resume if we finish the controller.
      */
     protected int getLastAppearedTaskIndex() {
-        return mGestureState.getLastAppearedTaskId() != -1
-                ? mRecentsView.getTaskIndexForId(mGestureState.getLastAppearedTaskId())
-                : mRecentsView.getRunningTaskIndex();
+        return mRecentsView == null
+                ? -1
+                : mGestureState.getLastAppearedTaskId() != -1
+                        ? mRecentsView.getTaskIndexForId(mGestureState.getLastAppearedTaskId())
+                        : mRecentsView.getRunningTaskIndex();
     }
 
     /**
