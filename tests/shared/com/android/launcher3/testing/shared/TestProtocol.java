@@ -111,6 +111,7 @@ public final class TestProtocol {
     public static final String REQUEST_IS_TABLET = "is-tablet";
     public static final String REQUEST_IS_TWO_PANELS = "is-two-panel";
     public static final String REQUEST_START_DRAG_THRESHOLD = "start-drag-threshold";
+    public static final String REQUEST_SHELL_DRAG_READY = "shell-drag-ready";
     public static final String REQUEST_GET_ACTIVITIES_CREATED_COUNT =
             "get-activities-created-count";
     public static final String REQUEST_GET_ACTIVITIES = "get-activities";
