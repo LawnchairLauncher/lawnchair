@@ -107,7 +107,7 @@
     <string name="notification_dots_title" msgid="9062440428204120317">"ಅಧಿಸೂಚನೆ ಡಾಟ್‌ಗಳು"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"ಆನ್ ಆಗಿದೆ"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"ಆಫ್ ಆಗಿದೆ"</string>
-    <string name="title_missing_notification_access" msgid="7503287056163941064">"ಅಧಿಸೂಚನೆ ಪ್ರವೇಶ ಅಗತ್ಯವಿದೆ"</string>
+    <string name="title_missing_notification_access" msgid="7503287056163941064">"ನೋಟಿಫಿಕೇಶನ್ ಆ್ಯಕ್ಸೆಸ್ ಅಗತ್ಯವಿದೆ"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"ಅಧಿಸೂಚನೆ ಚುಕ್ಕೆಗಳನ್ನು ತೋರಿಸಲು, <xliff:g id="NAME">%1$s</xliff:g> ಗೆ ಅಪ್ಲಿಕೇಶನ್‌ ಅಧಿಸೂಚನೆಗಳನ್ನು ಆನ್‌ ಮಾಡಿ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ಸೆಟ್ಟಿಂಗ್‌‌ಗಳನ್ನು ಬದಲಾಯಿಸಿ"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"ಅಧಿಸೂಚನೆ ಡಾಟ್‌ಗಳನ್ನು ತೋರಿಸಿ"</string>

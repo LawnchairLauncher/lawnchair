@@ -104,7 +104,7 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Inhabilitado por el administrador"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Permitir rotación de la pantalla de inicio"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Al girar el teléfono"</string>
-    <string name="notification_dots_title" msgid="9062440428204120317">"Puntos de notificación"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"Burbujas de notificación"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Activado"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Desactivadas"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Se necesita acceso a las notificaciones"</string>

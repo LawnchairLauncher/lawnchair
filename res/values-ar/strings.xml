@@ -82,7 +82,7 @@
     <string name="permdesc_write_settings" msgid="726859348127868466">"يسمح هذا الإذن للتطبيق بتغيير الإعدادات والاختصارات على الشاشة الرئيسية."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> غير مسموح به لإجراء مكالمات هاتفية"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"يتعذّر تحميل الأداة."</string>
-    <string name="gadget_setup_text" msgid="8348374825537681407">"إعدادات الأداة"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"إعدادات التطبيق المصغّر"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"انقر لإكمال الإعداد."</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"هذا تطبيق نظام وتتعذر إزالته."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"تعديل الاسم"</string>
