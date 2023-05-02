@@ -2345,7 +2345,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(false);
         });
         resetFromSplitSelectionState();
-        mSplitSelectStateController.resetState();
 
         // These are relatively expensive and don't need to be done this frame (RecentsView isn't
         // visible anyway), so defer by a frame to get off the critical path, e.g. app to home.
@@ -4740,6 +4739,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setTaskViewsPrimarySplitTranslation(0);
         setTaskViewsSecondarySplitTranslation(0);
 
+        mSplitSelectStateController.resetState();
         if (mSplitHiddenTaskViewIndex == -1) {
             return;
         }
