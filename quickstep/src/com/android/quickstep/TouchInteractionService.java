@@ -43,6 +43,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_Q
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_BACK_ANIMATION;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_DESKTOP_MODE;
+import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_DRAG_AND_DROP;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_ONE_HANDED;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_PIP;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_RECENT_TASKS;
@@ -125,6 +126,7 @@ import com.android.systemui.shared.tracing.ProtoTraceable;
 import com.android.systemui.unfold.progress.IUnfoldAnimation;
 import com.android.wm.shell.back.IBackAnimation;
 import com.android.wm.shell.desktopmode.IDesktopMode;
+import com.android.wm.shell.draganddrop.IDragAndDrop;
 import com.android.wm.shell.onehanded.IOneHanded;
 import com.android.wm.shell.pip.IPip;
 import com.android.wm.shell.recents.IRecentTasks;
@@ -185,11 +187,13 @@ public class TouchInteractionService extends Service
                     bundle.getBinder(KEY_EXTRA_SHELL_DESKTOP_MODE));
             IUnfoldAnimation unfoldTransition = IUnfoldAnimation.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_UNFOLD_ANIMATION_FORWARDER));
+            IDragAndDrop dragAndDrop = IDragAndDrop.Stub.asInterface(
+                    bundle.getBinder(KEY_EXTRA_SHELL_DRAG_AND_DROP));
             MAIN_EXECUTOR.execute(() -> {
                 SystemUiProxy.INSTANCE.get(TouchInteractionService.this).setProxy(proxy, pip,
                         splitscreen, onehanded, shellTransitions, startingWindow,
                         recentTasks, launcherUnlockAnimationController, backAnimation, desktopMode,
-                        unfoldTransition);
+                        unfoldTransition, dragAndDrop);
                 TouchInteractionService.this.initInputMonitor("TISBinder#onInitialize()");
                 preloadOverview(true /* fromInit */);
             });
