@@ -95,7 +95,11 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
                     i -> MAIN_EXECUTOR.execute(() ->
                             sHolders.forEach(h -> h.mAppWidgetRemovedCallback.accept(i))),
                     () -> MAIN_EXECUTOR.execute(() ->
-                            sHolders.forEach(h -> h.mProviderChangedListeners.forEach(
+                            sHolders.forEach(h ->
+                                    // Listeners might remove themselves from the list during the
+                                    // iteration. Creating a copy of the list to avoid exceptions
+                                    // for concurrent modification.
+                                    new ArrayList<>(h.mProviderChangedListeners).forEach(
                                     ProviderChangedListener::notifyWidgetProvidersChanged))),
                     UI_HELPER_EXECUTOR.getLooper());
             if (!WidgetsModel.GO_DISABLE_WIDGETS) {
