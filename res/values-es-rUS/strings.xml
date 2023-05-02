@@ -50,6 +50,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personales"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Trabajo"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversaciones"</string>
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"Tomar notas"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Información útil a tu alcance"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Para recibir información de apps sin abrirlas, puedes agregar widgets a la pantalla principal"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Presiona para cambiar la configuración del widget"</string>

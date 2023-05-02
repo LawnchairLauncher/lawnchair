@@ -50,6 +50,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"தனிப்பட்டவை"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"பணி"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"உரையாடல்கள்"</string>
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"குறிப்பெடுத்தல்"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"விரல்நுனியில் பயனுள்ள தகவல்களைப் பெறுங்கள்"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"முகப்புத் திரையில் விட்ஜெட்டுகளைச் சேர்த்து ஆப்ஸைத் திறக்காமலேயே தகவல்களைப் பெறலாம்"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"விட்ஜெட் அமைப்புகளை மாற்றத் தட்டவும்"</string>
