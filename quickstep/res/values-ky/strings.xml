@@ -49,7 +49,7 @@
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Артка кайтуу үчүн экранды оңдон солго карай сүрүүнү үйрөндүңүз. Эми колдонмолорду которуштурганды үйрөнүп алыңыз."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"\"Артка\" жаңсоосун үйрөндүңүз."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Манжаңызды экрандын ылдый жагына өтө жакындатпай сүрүңүз."</string>
-    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"\"Артка\" жаң-нун сезгичтигин өзгөртүү үчүн жөндөөлөргө өтүңүз"</string>
+    <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"\"Артка\" жаң-нун сезгичтигин өзгөртүү үчүн параметрлерге өтүңүз"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Артка кайтуу үчүн сүрүңүз"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Акыркы экранга кайтуу үчүн экранды сол же оң жагынан ортосуна карай сүрүңүз."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Акыркы экранга кайтуу үчүн экранды сол же оң жагынан ортосуна карай 2 манжаңыз менен сүрүңүз."</string>
@@ -67,7 +67,7 @@
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Экранды ылдыйдан өйдө сүрүңүз."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Манжаңызды алуудан мурун экранда узагыраак кармаңыз."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Экранды өйдө карай сүрүп, токтоп туруңуз."</string>
-    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Жаңсоолорду колдонгонду үйрөндүңүз. Жаңсоолорду өчүрүү үчүн жөндөөлөргө өтүңүз."</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Жаңсоолорду колдонгонду үйрөндүңүз. Жаңсоолорду өчүрүү үчүн параметрлерге өтүңүз."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"\"Колдонмолорду которуштуруу\" жаңсоосун үйрөндүңүз."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Колдонмолорду которуштуруу үчүн сүрүңүз"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Бир колдонмодон экинчисине өтүү үчүн экранды ылдыйдан өйдө карай сүрүп, бир аз коё бербей туруңуз."</string>
