@@ -149,6 +149,11 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
             case TestProtocol.REQUEST_DISABLE_TRANSIENT_TASKBAR:
                 enableTransientTaskbar(false);
                 return response;
+
+            case TestProtocol.REQUEST_SHELL_DRAG_READY:
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        SystemUiProxy.INSTANCE.get(mContext).isDragAndDropReady());
+                return response;
         }
 
         return super.call(method, arg, extras);
