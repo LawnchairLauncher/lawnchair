@@ -85,6 +85,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Stack;
 
 public class CellLayout extends ViewGroup {
@@ -891,7 +892,7 @@ public class CellLayout extends ViewGroup {
      *
      * @param result Array of 2 ints to hold the x and y coordinate of the point
      */
-    void regionToCenterPoint(int cellX, int cellY, int spanX, int spanY, int[] result) {
+    public void regionToCenterPoint(int cellX, int cellY, int spanX, int spanY, int[] result) {
         cellToRect(cellX, cellY, spanX, spanY, mTempRect);
         result[0] = mTempRect.centerX();
         result[1] = mTempRect.centerY();
@@ -2340,7 +2341,16 @@ public class CellLayout extends ViewGroup {
         }
         Rect r0 = new Rect(cellX, cellY, cellX + spanX, cellY + spanY);
         Rect r1 = new Rect();
-        for (View child: solution.map.keySet()) {
+        // The views need to be sorted so that the results are deterministic on the views positions
+        // and not by the views hash which is "random".
+        // The views are sorted twice, once for the X position and a second time for the Y position
+        // to ensure same order everytime.
+        Comparator comparator = Comparator.comparing(view ->
+                        ((CellLayoutLayoutParams) ((View) view).getLayoutParams()).getCellX())
+                .thenComparing(view ->
+                        ((CellLayoutLayoutParams) ((View) view).getLayoutParams()).getCellY());
+        List<View> views = solution.map.keySet().stream().sorted(comparator).toList();
+        for (View child : views) {
             if (child == ignoreView) continue;
             CellAndSpan c = solution.map.get(child);
             CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
