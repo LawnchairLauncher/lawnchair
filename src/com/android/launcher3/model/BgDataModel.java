@@ -484,7 +484,9 @@ public class BgDataModel {
         default void bindWorkspaceComponentsRemoved(Predicate<ItemInfo> matcher) { }
         default void bindAllWidgets(List<WidgetsListBaseEntry> widgets) { }
 
-        default void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks) {
+        /** Called when workspace has been bound. */
+        default void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks,
+                int workspaceItemCount, boolean isBindSync) {
             pendingTasks.executeAllAndDestroy();
         }
 
