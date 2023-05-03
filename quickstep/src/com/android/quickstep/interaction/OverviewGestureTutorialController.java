@@ -111,6 +111,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                     case BACK_COMPLETED_FROM_RIGHT:
                     case BACK_CANCELLED_FROM_LEFT:
                     case BACK_CANCELLED_FROM_RIGHT:
+                    case BACK_NOT_STARTED_TOO_FAR_FROM_EDGE:
                         showFeedback(R.string.overview_gesture_feedback_swipe_too_far_from_edge);
                         break;
                 }
