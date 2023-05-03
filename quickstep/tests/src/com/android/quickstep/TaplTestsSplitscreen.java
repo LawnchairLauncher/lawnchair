@@ -23,7 +23,6 @@ import android.content.Intent;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.ui.TaplTestsLauncher3;
-import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 
 import org.junit.After;
@@ -61,10 +60,6 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
     }
 
     @Test
-    // TODO (b/270201357): When this test is proven stable, remove this TestStabilityRule and
-    //  introduce into presubmit as well.
-    @TestStabilityRule.Stability(
-            flavors = TestStabilityRule.LOCAL | TestStabilityRule.PLATFORM_POSTSUBMIT)
     @PortraitLandscape
     @TaskbarModeSwitch
     public void testSplitAppFromHomeWithItself() throws Exception {
