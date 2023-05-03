@@ -2014,21 +2014,41 @@ public final class LauncherInstrumentation {
     }
 
     /**
-     * Taps outside container to dismiss.
+     * Taps outside container to dismiss, centered vertically and halfway to the edge of the screen.
      *
      * @param container container to be dismissed
      * @param tapRight  tap on the right of the container if true, or left otherwise
      */
     void touchOutsideContainer(UiObject2 container, boolean tapRight) {
+        touchOutsideContainer(container, tapRight, true);
+    }
+
+    /**
+     * Taps outside the container, to the right or left, and centered vertically.
+     *
+     * @param tapRight      if true touches to the right of the container, otherwise touches on left
+     * @param halfwayToEdge if true touches halfway to the screen edge, if false touches 1 px from
+     *                      container
+     */
+    void touchOutsideContainer(UiObject2 container, boolean tapRight, boolean halfwayToEdge) {
         try (LauncherInstrumentation.Closable c = addContextLayer(
                 "want to tap outside container on the " + (tapRight ? "right" : "left"))) {
             Rect containerBounds = getVisibleBounds(container);
+
+            int x;
+            if (halfwayToEdge) {
+                x = tapRight
+                        ? (containerBounds.right + getRealDisplaySize().x) / 2
+                        : containerBounds.left / 2;
+            } else {
+                x = tapRight
+                        ? containerBounds.right + 1
+                        : containerBounds.left - 1;
+            }
+            int y = containerBounds.top + containerBounds.height() / 2;
+
             final long downTime = SystemClock.uptimeMillis();
-            final Point tapTarget = new Point(
-                    tapRight
-                            ? (containerBounds.right + getRealDisplaySize().x) / 2
-                            : containerBounds.left / 2,
-                    containerBounds.top + 1);
+            final Point tapTarget = new Point(x, y);
             sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, tapTarget,
                     LauncherInstrumentation.GestureScope.INSIDE);
             sendPointer(downTime, downTime, MotionEvent.ACTION_UP, tapTarget,
