@@ -24,12 +24,12 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CellLayoutTestUtils {
 
     public static ArrayList<CellLayoutBoard> workspaceToBoards(Launcher launcher) {
         ArrayList<CellLayoutBoard> boards = new ArrayList<>();
-        int widgetCount = 0;
         for (CellLayout cellLayout : launcher.getWorkspace().mWorkspaceScreens) {
 
             int count = cellLayout.getShortcutsAndWidgets().getChildCount();
@@ -52,11 +52,29 @@ public class CellLayoutTestUtils {
                 } else {
                     // is widget
                     board.addWidget(params.getCellX(), params.getCellY(), params.cellHSpan,
-                            params.cellVSpan, (char) ('a' + widgetCount));
-                    widgetCount++;
+                            params.cellVSpan);
                 }
             }
         }
         return boards;
+    }
+
+    public static CellLayoutBoard viewsToBoard(List<View> views, int width, int height) {
+        CellLayoutBoard board = new CellLayoutBoard();
+        board.mWidth = width;
+        board.mHeight = height;
+
+        for (View callView : views) {
+            CellLayoutLayoutParams params = (CellLayoutLayoutParams) callView.getLayoutParams();
+            // is icon
+            if (callView instanceof DoubleShadowBubbleTextView) {
+                board.addIcon(params.getCellX(), params.getCellY());
+            } else {
+                // is widget
+                board.addWidget(params.getCellX(), params.getCellY(), params.cellHSpan,
+                        params.cellVSpan);
+            }
+        }
+        return board;
     }
 }
