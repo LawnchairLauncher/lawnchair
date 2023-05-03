@@ -19,11 +19,10 @@ import static android.util.Base64.NO_PADDING;
 import static android.util.Base64.NO_WRAP;
 
 import static com.android.launcher3.DefaultLayoutParser.RES_PARTNER_DEFAULT_LAYOUT;
+import static com.android.launcher3.LauncherSettings.Favorites.addTableToDb;
 import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_KEY;
 import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_LABEL;
 import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_TAG;
-import static com.android.launcher3.model.DatabaseHelper.EMPTY_DATABASE_CREATED;
-import static com.android.launcher3.provider.LauncherDbUtils.copyTable;
 import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
 
 import android.app.blob.BlobHandle;
@@ -31,7 +30,6 @@ import android.app.blob.BlobStoreManager;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.content.res.Resources;
@@ -43,6 +41,7 @@ import android.os.Binder;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.os.Process;
+import android.os.UserHandle;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -54,18 +53,22 @@ import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.AutoInstallsLayout;
 import com.android.launcher3.AutoInstallsLayout.SourceResources;
+import com.android.launcher3.ConstantItem;
 import com.android.launcher3.DefaultLayoutParser;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.IOUtils;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext;
 import com.android.launcher3.util.Partner;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 
@@ -73,7 +76,6 @@ import org.xmlpull.v1.XmlPullParser;
 
 import java.io.InputStream;
 import java.io.StringReader;
-import java.util.function.Supplier;
 
 /**
  * Utility class which maintains an instance of Launcher database and provides utility methods
@@ -81,6 +83,8 @@ import java.util.function.Supplier;
  */
 public class ModelDbController {
     private static final String TAG = "LauncherProvider";
+
+    private static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
     protected DatabaseHelper mOpenHelper;
 
@@ -92,26 +96,36 @@ public class ModelDbController {
 
     private synchronized void createDbIfNotExists() {
         if (mOpenHelper == null) {
-            mOpenHelper = DatabaseHelper.createDatabaseHelper(
-                    mContext, false /* forMigration */);
-
-            RestoreDbTask.restoreIfNeeded(mContext, mOpenHelper);
+            mOpenHelper = createDatabaseHelper(false /* forMigration */);
+            RestoreDbTask.restoreIfNeeded(mContext, this);
         }
     }
 
-    private synchronized boolean prepForMigration(String dbFile, String targetTableName,
-            Supplier<DatabaseHelper> src, Supplier<DatabaseHelper> dst) {
-        if (TextUtils.equals(dbFile, mOpenHelper.getDatabaseName())) {
-            Log.e(TAG, "prepForMigration - target db is same as current: " + dbFile);
-            return false;
-        }
+    protected DatabaseHelper createDatabaseHelper(boolean forMigration) {
+        boolean isSandbox = mContext instanceof SandboxContext;
+        String dbName = isSandbox ? null : InvariantDeviceProfile.INSTANCE.get(mContext).dbFile;
 
-        final DatabaseHelper helper = src.get();
-        mOpenHelper = dst.get();
-        copyTable(helper.getReadableDatabase(), Favorites.TABLE_NAME,
-                mOpenHelper.getWritableDatabase(), targetTableName, mContext);
-        helper.close();
-        return true;
+        // Set the flag for empty DB
+        Runnable onEmptyDbCreateCallback = forMigration ? () -> { }
+                : () -> LauncherPrefs.get(mContext).putSync(getEmptyDbCreatedKey(dbName).to(true));
+
+        DatabaseHelper databaseHelper = new DatabaseHelper(mContext, dbName,
+                this::getSerialNumberForUser, onEmptyDbCreateCallback);
+        // Table creation sometimes fails silently, which leads to a crash loop.
+        // This way, we will try to create a table every time after crash, so the device
+        // would eventually be able to recover.
+        if (!tableExists(databaseHelper.getReadableDatabase(), Favorites.TABLE_NAME)) {
+            Log.e(TAG, "Tables are missing after onCreate has been called. Trying to recreate");
+            // This operation is a no-op if the table already exists.
+            addTableToDb(databaseHelper.getWritableDatabase(),
+                    getSerialNumberForUser(Process.myUserHandle()),
+                    true /* optional */);
+        }
+        databaseHelper.mHotseatRestoreTableExists = tableExists(
+                databaseHelper.getReadableDatabase(), Favorites.HYBRID_HOTSEAT_BACKUP_TABLE);
+
+        databaseHelper.initIds();
+        return databaseHelper;
     }
 
     /**
@@ -267,42 +281,38 @@ public class ModelDbController {
     }
 
     /**
-     * Updates the current DB and copies all the existing data to the temp table
-     * @param dbFile name of the target db file name
+     * Migrates the DB if needed, and returns false if the migration failed
+     * and DB needs to be cleared.
      */
-    @WorkerThread
-    public boolean updateCurrentOpenHelper(String dbFile) {
-        createDbIfNotExists();
-        return prepForMigration(
-                dbFile,
-                Favorites.TMP_TABLE,
-                () -> mOpenHelper,
-                () -> DatabaseHelper.createDatabaseHelper(
-                        mContext, true /* forMigration */));
+    public boolean migrateGridIfNeeded() {
+        InvariantDeviceProfile idp = LauncherAppState.getIDP(mContext);
+        if (!GridSizeMigrationUtil.needsToMigrate(mContext, idp)) {
+            return true;
+        }
+        String targetDbName = new DeviceGridState(idp).getDbFile();
+        if (TextUtils.equals(targetDbName, mOpenHelper.getDatabaseName())) {
+            // DB is same, ignore
+            return true;
+        }
+        DatabaseHelper oldHelper = mOpenHelper;
+        mOpenHelper = (mContext instanceof SandboxContext) ? oldHelper
+                : createDatabaseHelper(true /* forMigration */);
+        try {
+            return GridSizeMigrationUtil.migrateGridIfNeeded(mContext, idp, mOpenHelper,
+                   oldHelper.getWritableDatabase());
+        } finally {
+            if (mOpenHelper != oldHelper) {
+                oldHelper.close();
+            }
+        }
     }
 
     /**
-     * Returns the current DatabaseHelper.
-     * Only for tests
+     * Returns the underlying model database
      */
-    @WorkerThread
-    public DatabaseHelper getDatabaseHelper() {
+    public SQLiteDatabase getDb() {
         createDbIfNotExists();
-        return mOpenHelper;
-    }
-
-    /**
-     * Prepares the DB for preview by copying all existing data to preview table
-     */
-    @WorkerThread
-    public boolean prepareForPreview(String dbFile) {
-        createDbIfNotExists();
-        return prepForMigration(
-                dbFile,
-                Favorites.PREVIEW_TABLE_NAME,
-                () -> DatabaseHelper.createDatabaseHelper(
-                        mContext, dbFile, true /* forMigration */),
-                () -> mOpenHelper);
+        return mOpenHelper.getWritableDatabase();
     }
 
     private void onAddOrDeleteOp(SQLiteDatabase db) {
@@ -345,8 +355,7 @@ public class ModelDbController {
     }
 
     private void clearFlagEmptyDbCreated() {
-        LauncherPrefs.getPrefs(mContext).edit()
-                .remove(mOpenHelper.getKey(EMPTY_DATABASE_CREATED)).commit();
+        LauncherPrefs.get(mContext).removeSync(getEmptyDbCreatedKey(mOpenHelper.getDatabaseName()));
     }
 
     /**
@@ -359,9 +368,8 @@ public class ModelDbController {
     @WorkerThread
     public synchronized void loadDefaultFavoritesIfNecessary() {
         createDbIfNotExists();
-        SharedPreferences sp = LauncherPrefs.getPrefs(mContext);
 
-        if (sp.getBoolean(mOpenHelper.getKey(EMPTY_DATABASE_CREATED), false)) {
+        if (LauncherPrefs.get(mContext).get(getEmptyDbCreatedKey(mOpenHelper.getDatabaseName()))) {
             Log.d(TAG, "loading default workspace");
 
             LauncherWidgetHolder widgetHolder = mOpenHelper.newLauncherWidgetHolder();
@@ -478,5 +486,28 @@ public class ModelDbController {
 
         return new DefaultLayoutParser(mContext, widgetHolder,
                 mOpenHelper, mContext.getResources(), defaultLayout);
+    }
+
+    /**
+     * Re-composite given key in respect to database. If the current db is
+     * {@link LauncherFiles#LAUNCHER_DB}, return the key as-is. Otherwise append the db name to
+     * given key. e.g. consider key="EMPTY_DATABASE_CREATED", dbName="minimal.db", the returning
+     * string will be "EMPTY_DATABASE_CREATED@minimal.db".
+     */
+    private ConstantItem<Boolean> getEmptyDbCreatedKey(String dbName) {
+        if (mContext instanceof SandboxContext) {
+            return LauncherPrefs.nonRestorableItem(EMPTY_DATABASE_CREATED,
+                    false /* default value */, false /* boot aware */);
+        }
+        String key = TextUtils.equals(dbName, LauncherFiles.LAUNCHER_DB)
+                ? EMPTY_DATABASE_CREATED : EMPTY_DATABASE_CREATED + "@" + dbName;
+        return LauncherPrefs.backedUpItem(key, false /* default value */, false /* boot aware */);
+    }
+
+    /**
+     * Returns the serial number for the provided user
+     */
+    public long getSerialNumberForUser(UserHandle user) {
+        return UserCache.INSTANCE.get(mContext).getSerialNumberForUser(user);
     }
 }
