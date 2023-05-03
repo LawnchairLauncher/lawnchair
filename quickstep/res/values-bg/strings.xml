@@ -115,6 +115,9 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Лентата на задачите се показва"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Лентата на задачите е скрита"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Лента за навигация"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Лентата на задачите винаги да се показва"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Промяна на режима на навигация"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Разделител на лентата на задачите"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Преместване горе/вляво"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Преместване долу/вдясно"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Показване на още # приложение.}other{Показване на още # приложения.}}"</string>
