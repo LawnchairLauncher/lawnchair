@@ -232,7 +232,7 @@ public class LoaderTask implements Runnable {
             }
 
             verifyNotStopped();
-            mLauncherBinder.bindWorkspace(true /* incrementBindId */);
+            mLauncherBinder.bindWorkspace(true /* incrementBindId */, /* isBindSync= */ false);
             logASplit(timingLogger, "bindWorkspace");
 
             mModelDelegate.workspaceLoadComplete();
