@@ -213,8 +213,8 @@ public class KeyboardQuickSwitchViewController {
             mControllerCallbacks.updateThumbnailInBackground(task, callback);
         }
 
-        void updateTitleInBackground(Task task, Consumer<Task> callback) {
-            mControllerCallbacks.updateTitleInBackground(task, callback);
+        void updateIconInBackground(Task task, Consumer<Task> callback) {
+            mControllerCallbacks.updateIconInBackground(task, callback);
         }
     }
 }
