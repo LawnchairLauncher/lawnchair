@@ -49,10 +49,6 @@ public class SandboxModeTutorialController extends SwipeUpGestureTutorialControl
     @Override
     public void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity) {
         switch (result) {
-            case ASSISTANT_COMPLETED:
-                showRippleEffect(null);
-                showFeedback(R.string.sandbox_mode_assistant_gesture_feedback_successful);
-                break;
             case HOME_GESTURE_COMPLETED:
                 animateFakeTaskViewHome(finalVelocity, () -> {
                     showFeedback(R.string.sandbox_mode_home_gesture_feedback_successful);

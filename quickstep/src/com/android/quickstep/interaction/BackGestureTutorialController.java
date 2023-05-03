@@ -205,9 +205,6 @@ final class BackGestureTutorialController extends TutorialController {
                 case HOME_GESTURE_COMPLETED:
                 case OVERVIEW_GESTURE_COMPLETED:
                 case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
-                case ASSISTANT_COMPLETED:
-                case ASSISTANT_NOT_STARTED_BAD_ANGLE:
-                case ASSISTANT_NOT_STARTED_SWIPE_TOO_SHORT:
                 default:
                     showFeedback(R.string.back_gesture_feedback_swipe_in_nav_bar);
 
