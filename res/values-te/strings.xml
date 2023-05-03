@@ -50,8 +50,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"వ్యక్తిగత గ్యాడ్జెట్స్"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ఆఫీస్"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"సంభాషణలు"</string>
-    <!-- no translation found for widget_category_note_taking (3469689394504266039) -->
-    <skip />
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"నోట్-టేకింగ్"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"మీ చేతివేళ్ల మీద ఉపయోగకరమైన సమాచారం"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"యాప్‌లను తెరవకుండా సమాచారాన్ని పొందడానికి, మీరు మీ మొదటి స్క్రీన్‌కు విడ్జెట్‌లను జోడించవచ్చు"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"విడ్జెట్ సెట్టింగ్‌లను మార్చడానికి ట్యాప్ చేయండి"</string>
