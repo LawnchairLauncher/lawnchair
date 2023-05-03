@@ -21,7 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"Fäst"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Fritt format"</string>
-    <string name="recents_empty_message" msgid="7040467240571714191">"Listan med de senaste åtgärderna är tom"</string>
+    <string name="recents_empty_message" msgid="7040467240571714191">"Listan är tom"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Inställningar för appanvändning"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Rensa alla"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Senaste apparna"</string>
@@ -115,12 +115,9 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Aktivitetsfältet visas"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Aktivitetsfältet är dolt"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigeringsfält"</string>
-    <!-- no translation found for always_show_taskbar (3608801276107751229) -->
-    <skip />
-    <!-- no translation found for change_navigation_mode (9088393078736808968) -->
-    <skip />
-    <!-- no translation found for taskbar_divider_a11y_title (6608690309720242080) -->
-    <skip />
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Visa alltid aktivitetsfältet"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Ändra navigeringsläge"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Avdelare för aktivitetsfältet"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Flytta högst upp/till vänster"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Flytta längst ned/till höger"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Visa # app till.}other{Visa # appar till.}}"</string>
