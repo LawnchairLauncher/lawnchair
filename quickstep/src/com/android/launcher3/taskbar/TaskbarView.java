@@ -515,6 +515,14 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     }
 
     /**
+     * Returns the taskbar divider in the taskbar.
+     */
+    @Nullable
+    public View getTaskbarDividerView() {
+        return mTaskbarDivider;
+    }
+
+    /**
      * Returns the QSB in the taskbar.
      */
     public View getQsb() {
