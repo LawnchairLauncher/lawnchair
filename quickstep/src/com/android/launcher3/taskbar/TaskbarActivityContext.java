@@ -979,9 +979,14 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mControllers.taskbarEduTooltipController.hide();
     }
 
-    /** Returns {@code true} if taskbar All Apps is open. */
+    /** Returns {@code true} if Taskbar All Apps is open. */
     public boolean isTaskbarAllAppsOpen() {
         return mControllers.taskbarAllAppsController.isOpen();
+    }
+
+    /** Toggles the Taskbar's stash state. */
+    public void toggleTaskbarStash() {
+        mControllers.taskbarStashController.toggleTaskbarStash();
     }
 
     /**

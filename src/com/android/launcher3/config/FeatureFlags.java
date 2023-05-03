@@ -404,6 +404,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_KEYBOARD_QUICK_SWITCH = getDebugFlag(270396844,
             "ENABLE_KEYBOARD_QUICK_SWITCH", ENABLED, "Enables keyboard quick switching");
 
+    public static final BooleanFlag ENABLE_KEYBOARD_TASKBAR_TOGGLE = getDebugFlag(281726846,
+            "ENABLE_KEYBOARD_TASKBAR_TOGGLE", ENABLED,
+            "Enables keyboard taskbar stash toggling");
+
     // TODO(Block 30): Clean up flags
     public static final BooleanFlag USE_SEARCH_REQUEST_TIMEOUT_OVERRIDES = getDebugFlag(270395010,
             "USE_SEARCH_REQUEST_TIMEOUT_OVERRIDES", DISABLED,
