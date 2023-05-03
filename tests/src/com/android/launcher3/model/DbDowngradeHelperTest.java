@@ -39,6 +39,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
+import com.android.launcher3.pm.UserCache;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -222,7 +223,9 @@ public class DbDowngradeHelperTest {
     private class MyDatabaseHelper extends DatabaseHelper {
 
         MyDatabaseHelper() {
-            super(mContext, DB_FILE, false);
+            super(mContext, DB_FILE,
+                    UserCache.INSTANCE.get(mContext)::getSerialNumberForUser,
+                    () -> { });
         }
 
         @Override

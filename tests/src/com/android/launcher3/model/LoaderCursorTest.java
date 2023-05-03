@@ -59,7 +59,6 @@ import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.util.Executors;
@@ -102,7 +101,7 @@ public class LoaderCursorTest {
         });
 
         UserManagerState ums = new UserManagerState();
-        mLoaderCursor = new LoaderCursor(mCursor, Favorites.CONTENT_URI, mApp, ums);
+        mLoaderCursor = new LoaderCursor(mCursor, mApp, ums);
         ums.allUsers.put(0, Process.myUserHandle());
     }
 
