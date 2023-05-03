@@ -417,7 +417,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                 if (bindDirectly) {
                     // Divide the set of loaded items into those that we are binding synchronously,
                     // and everything else that is to be bound normally (asynchronously).
-                    launcherBinder.bindWorkspace(bindAllCallbacks);
+                    launcherBinder.bindWorkspace(bindAllCallbacks, /* isBindSync= */ true);
                     // For now, continue posting the binding of AllApps as there are other
                     // issues that arise from that.
                     launcherBinder.bindAllApps();
