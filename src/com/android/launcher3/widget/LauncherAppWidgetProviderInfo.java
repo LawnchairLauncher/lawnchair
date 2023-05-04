@@ -2,7 +2,6 @@ package com.android.launcher3.widget;
 
 import static com.android.launcher3.Utilities.ATLEAST_S;
 
-import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
@@ -105,44 +104,35 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
         int spanX = 0;
         int spanY = 0;
 
-        Rect widgetPadding = new Rect();
-        Rect localPadding = new Rect();
-        AppWidgetHostView.getDefaultPaddingForWidget(context, provider, widgetPadding);
 
         Point cellSize = new Point();
         for (DeviceProfile dp : idp.supportedProfiles) {
             dp.getCellSize(cellSize);
-            // We want to account for the extra amount of padding that we are adding to the widget
-            // to ensure that it gets the full amount of space that it has requested.
-            // If grids supports insetting widgets, we do not account for widget padding.
-            if (dp.shouldInsetWidgets()) {
-                localPadding.setEmpty();
-            } else {
-                localPadding.set(widgetPadding);
-            }
+            Rect widgetPadding = dp.widgetPadding;
+
             minSpanX = Math.max(minSpanX,
-                    getSpanX(localPadding, minResizeWidth, dp.cellLayoutBorderSpacePx.x,
+                    getSpanX(widgetPadding, minResizeWidth, dp.cellLayoutBorderSpacePx.x,
                             cellSize.x));
             minSpanY = Math.max(minSpanY,
-                    getSpanY(localPadding, minResizeHeight, dp.cellLayoutBorderSpacePx.y,
+                    getSpanY(widgetPadding, minResizeHeight, dp.cellLayoutBorderSpacePx.y,
                             cellSize.y));
 
             if (ATLEAST_S) {
                 if (maxResizeWidth > 0) {
-                    maxSpanX = Math.min(maxSpanX, getSpanX(localPadding, maxResizeWidth,
+                    maxSpanX = Math.min(maxSpanX, getSpanX(widgetPadding, maxResizeWidth,
                             dp.cellLayoutBorderSpacePx.x, cellSize.x));
                 }
                 if (maxResizeHeight > 0) {
-                    maxSpanY = Math.min(maxSpanY, getSpanY(localPadding, maxResizeHeight,
+                    maxSpanY = Math.min(maxSpanY, getSpanY(widgetPadding, maxResizeHeight,
                             dp.cellLayoutBorderSpacePx.y, cellSize.y));
                 }
             }
 
             spanX = Math.max(spanX,
-                    getSpanX(localPadding, minWidth, dp.cellLayoutBorderSpacePx.x,
+                    getSpanX(widgetPadding, minWidth, dp.cellLayoutBorderSpacePx.x,
                             cellSize.x));
             spanY = Math.max(spanY,
-                    getSpanY(localPadding, minHeight, dp.cellLayoutBorderSpacePx.y,
+                    getSpanY(widgetPadding, minHeight, dp.cellLayoutBorderSpacePx.y,
                             cellSize.y));
         }
 
@@ -184,15 +174,22 @@ public class LauncherAppWidgetProviderInfo extends AppWidgetProviderInfo
     }
 
     private int getSpanX(Rect widgetPadding, int widgetWidth, int cellSpacing, float cellWidth) {
-        return Math.max(1, (int) Math.ceil(
-                (widgetWidth + widgetPadding.left + widgetPadding.right + cellSpacing) / (cellWidth
-                        + cellSpacing)));
+        return getSpan(widgetPadding.left + widgetPadding.right,
+                widgetWidth, cellSpacing, cellWidth);
     }
 
     private int getSpanY(Rect widgetPadding, int widgetHeight, int cellSpacing, float cellHeight) {
+        return getSpan(widgetPadding.top + widgetPadding.bottom, widgetHeight,
+                cellSpacing, cellHeight);
+    }
+
+    /**
+     * Solving the equation:
+     *   n * cellSize + (n - 1) * cellSpacing - widgetPadding = widgetSize
+     */
+    private int getSpan(int widgetPadding, int widgetSize, int cellSpacing, float cellSize) {
         return Math.max(1, (int) Math.ceil(
-                (widgetHeight + widgetPadding.top + widgetPadding.bottom + cellSpacing) / (
-                        cellHeight + cellSpacing)));
+                (widgetSize + widgetPadding + cellSpacing) / (cellSize + cellSpacing)));
     }
 
     public String getLabel(PackageManager packageManager) {
