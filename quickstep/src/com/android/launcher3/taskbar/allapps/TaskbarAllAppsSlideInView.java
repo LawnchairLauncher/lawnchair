@@ -19,6 +19,7 @@ import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -99,12 +100,13 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         mAppsView = findViewById(R.id.apps_view);
         mContent = mAppsView;
 
+        // Setup header protection for search bar, if enabled.
+        if (FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR.get()) {
+            mAppsView.setOnInvalidateHeaderListener(this::invalidate);
+        }
+
         DeviceProfile dp = mActivityContext.getDeviceProfile();
         setShiftRange(dp.allAppsShiftRange);
-
-        setContentBackgroundWithParent(
-                getContext().getDrawable(R.drawable.bg_rounded_corner_bottom_sheet),
-                mAppsView.getBottomSheetBackground());
     }
 
     @Override
@@ -134,6 +136,12 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
                 dispatcher.unregisterOnBackInvokedCallback(this);
             }
         }
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        mAppsView.drawOnScrimWithScale(canvas, mSlideInViewScale.value);
+        super.dispatchDraw(canvas);
     }
 
     @Override
