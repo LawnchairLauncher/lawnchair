@@ -19,11 +19,13 @@ import android.os.Bundle
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.MarginLayoutParams
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.IntDef
 import androidx.annotation.LayoutRes
+import androidx.core.view.updateLayoutParams
 import com.airbnb.lottie.LottieAnimationView
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -127,11 +129,24 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
                 settingsEdu.visibility = VISIBLE
             }
 
-            findViewById<View>(R.id.done_button)?.setOnClickListener { hide() }
-            if (DisplayController.isTransientTaskbar(activityContext)) {
-                (layoutParams as ViewGroup.MarginLayoutParams).bottomMargin +=
-                    activityContext.deviceProfile.taskbarHeight
+            // Set up layout parameters.
+            content.updateLayoutParams { width = MATCH_PARENT }
+            updateLayoutParams<MarginLayoutParams> {
+                if (DisplayController.isTransientTaskbar(activityContext)) {
+                    width =
+                        resources.getDimensionPixelSize(
+                            R.dimen.taskbar_edu_features_tooltip_width_transient
+                        )
+                    bottomMargin += activityContext.deviceProfile.taskbarHeight
+                } else {
+                    width =
+                        resources.getDimensionPixelSize(
+                            R.dimen.taskbar_edu_features_tooltip_width_persistent
+                        )
+                }
             }
+
+            findViewById<View>(R.id.done_button)?.setOnClickListener { hide() }
             show()
         }
     }
