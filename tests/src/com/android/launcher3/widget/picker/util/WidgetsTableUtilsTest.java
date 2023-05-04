@@ -38,6 +38,7 @@ import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.icons.ComponentWithLabel;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.WidgetItem;
@@ -50,6 +51,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.ArrayList;
@@ -68,7 +70,6 @@ public final class WidgetsTableUtilsTest {
     @Mock
     private IconCache mIconCache;
 
-    @Mock
     private DeviceProfile mTestDeviceProfile;
 
     private Context mContext;
@@ -198,13 +199,18 @@ public final class WidgetsTableUtilsTest {
     }
 
     private void initDP() {
+        DeviceProfile dp = LauncherAppState.getIDP(mContext)
+                .getDeviceProfile(mContext).copy(mContext);
+        mTestDeviceProfile = Mockito.spy(dp);
+
         doAnswer(i -> {
             ((Point) i.getArgument(0)).set(CELL_SIZE, CELL_SIZE);
             return null;
         }).when(mTestDeviceProfile).getCellSize(any(Point.class));
         when(mTestDeviceProfile.getCellSize()).thenReturn(new Point(CELL_SIZE, CELL_SIZE));
         mTestDeviceProfile.cellLayoutBorderSpacePx = new Point(SPACE_SIZE, SPACE_SIZE);
-        when(mTestDeviceProfile.shouldInsetWidgets()).thenReturn(false);
+        mTestDeviceProfile.widgetPadding.setEmpty();
+        mTestDeviceProfile.allAppsIconSizePx = 0;
     }
 
     private void initTestWidgets() {
