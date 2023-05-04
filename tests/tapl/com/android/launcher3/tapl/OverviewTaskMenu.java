@@ -55,4 +55,12 @@ public class OverviewTaskMenu {
         UiObject2 menuItem = mLauncher.findObjectInContainer(mMenu, By.text(expectedMenuItemText));
         return menuItem != null;
     }
+
+    /**
+     * Returns the menu item specified by name if present.
+     */
+    public OverviewTaskMenuItem getMenuItemByName(String menuItemName) {
+        return new OverviewTaskMenuItem(mLauncher,
+                mLauncher.waitForObjectInContainer(mMenu, By.text(menuItemName)));
+    }
 }
