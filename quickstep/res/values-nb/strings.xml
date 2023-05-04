@@ -115,12 +115,9 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Oppgavelinjen vises"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Oppgavelinjen er skjult"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigasjonsrad"</string>
-    <!-- no translation found for always_show_taskbar (3608801276107751229) -->
-    <skip />
-    <!-- no translation found for change_navigation_mode (9088393078736808968) -->
-    <skip />
-    <!-- no translation found for taskbar_divider_a11y_title (6608690309720242080) -->
-    <skip />
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Vis alltid oppgavelinjen"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Endre navigasjonsmodus"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Skille for oppgavelinjen"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Flytt til øverst/venstre"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Flytt til nederst/høyre"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Vis # app til.}other{Vis # apper til.}}"</string>

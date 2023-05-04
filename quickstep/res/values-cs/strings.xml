@@ -99,9 +99,9 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Informace o panelu aplikací"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Přetáhněte aplikaci na stranu a používejte tak dvě najednou"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Panel aplikací zobrazíte pomalým přejetím prstem nahoru"</string>
-    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Získejte návrhy aplikací na základě vašeho používání"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Dostávejte návrhy aplikací podle toho, jaké používáte"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Pokud chcete panel aplikací automaticky skrýt, zapněte v Nastavení navigaci gesty"</string>
-    <string name="taskbar_edu_features" msgid="3320337287472848162">"Pomocí panelu aplikací můžete dělat více věcí"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Více možností s panelem aplikací"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zavřít"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Hotovo"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Domů"</string>
