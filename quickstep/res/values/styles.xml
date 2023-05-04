@@ -200,7 +200,7 @@
         <item name="android:background">@drawable/button_taskbar_edu_colored</item>
         <item name="android:stateListAnimator">@null</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:padding">4dp</item>
+        <item name="android:minHeight">36dp</item>
     </style>
 
     <style name="TextAppearance.TaskbarEduTooltip.Title" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">
