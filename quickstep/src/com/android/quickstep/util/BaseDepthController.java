@@ -75,7 +75,7 @@ public class BaseDepthController {
     // marking the launcher surface as opaque.  Only used in certain Launcher states.
     private boolean mHasContentBehindLauncher;
 
-    /** Pause applying depth and blur, can be used when something behind the Launcher. */
+    /** Pause blur but allow transparent, can be used when launch something behind the Launcher. */
     protected boolean mPauseBlurs;
 
     /**
@@ -132,7 +132,7 @@ public class BaseDepthController {
             return;
         }
         boolean hasOpaqueBg = mLauncher.getScrimView().isFullyOpaque();
-        boolean isSurfaceOpaque = mPauseBlurs || (!mHasContentBehindLauncher && hasOpaqueBg);
+        boolean isSurfaceOpaque = !mHasContentBehindLauncher && hasOpaqueBg && !mPauseBlurs;
 
         mCurrentBlur = !mCrossWindowBlursEnabled || hasOpaqueBg || mPauseBlurs
                 ? 0 : (int) (depth * mMaxBlurRadius);
