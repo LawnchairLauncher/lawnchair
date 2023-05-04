@@ -25,7 +25,9 @@ import android.view.MotionEvent
 import android.view.MotionEvent.ACTION_DOWN
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.animation.Interpolator
+import androidx.core.view.updateLayoutParams
 import com.android.app.animation.Interpolators.EMPHASIZED_ACCELERATE
 import com.android.app.animation.Interpolators.EMPHASIZED_DECELERATE
 import com.android.app.animation.Interpolators.STANDARD
@@ -77,6 +79,18 @@ constructor(
         }
         mIsOpen = true
         activityContext.dragLayer.addView(this)
+
+        // Make sure we have enough height to display all of the content, which can be an issue on
+        // large text and display scaling configurations. If we run out of height, remove the width
+        // constraint to reduce the number of lines of text and hopefully free up some height.
+        activityContext.dragLayer.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+        if (
+            measuredHeight + activityContext.deviceProfile.taskbarHeight >=
+                activityContext.deviceProfile.availableHeightPx
+        ) {
+            updateLayoutParams { width = MATCH_PARENT }
+        }
+
         openCloseAnimator = createOpenCloseAnimator(isOpening = true).apply { start() }
     }
 
