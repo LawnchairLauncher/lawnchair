@@ -1,0 +1,1804 @@
+###################################################################################################
+# This file contains test case composed of the following tags:
+#     * # (coments): Lines starting with this character would be ignored.
+#     * arguments: is set of words separated by spaces that can later be parsed
+#     * board: represent a workspace, the first line is the dimensions of the board width x height (wxh)
+# There are different characters on the board that represent different things:
+#     * x: The x character represents spaces that would be ignored, for example it can be used in
+#          the first row if we don't know how wide the smartspace is.
+#     * i: Represents an icon on the workspace, none in particular just an icon
+#     * [a-z]: Represents a widget and it can be any number or character
+#          except any other already in use. The whole continuos are of the same character is the
+#          area of the widget.
+#     * [A-Z]: Represents a folder and number of icons in the folder is represented by the order of
+#          letter in the alphabet, A=2, B=3, C=4 ... etc.
+#
+# The "arguments:" tag represents where you want to add an item, the format is:
+#   "x y spanX spanY minSpanX minSpanY type<widget/icon/folder> ifSolutionIsPossible<valid/invalid>"
+#
+# Test are parsed by CellLayoutTestCaseReader.java and boards are parsed by CellLayoutBoard.java
+###################################################################################################
+# Test 0
+board: 7x10
+-----de
+-----de
+-----di
+-----ii
+-----ii
+-----ci
+-----ci
+-----ii
+aaaaaai
+iibbbbi
+# This represents where you want to add an item, the format is "x y spanX spanY minSpanX minSpanY type<widget/icon/folder> ifSolutionIsPossible<valid/invalid>"
+arguments: 1 3 5 4 4 1 widget valid
+board: 7x10
+-----cb
+-----cb
+-----ci
+izzzzzi
+izzzzzi
+azzzzzi
+azzzzzi
+-----ii
+ddddddi
+iieeeei
+# Test 1
+board: 9x10
+aaaaaaaai
+i-----hhj
+c-----hhj
+c-----hhi
+c-----iii
+i-----iii
+beddddddi
+befffffii
+iifffffii
+iiggggggi
+arguments: 3 3 4 6 1 2 widget valid
+board: 9x10
+ggggggggi
+i-zzzzffe
+h-zzzzffe
+h-zzzzffi
+h-zzzziii
+i-zzzziii
+dcbbbbbbi
+dcaaaaaii
+iiaaaaaii
+iijjjjjji
+# Test 2
+board: 7x6
+aiii--f
+acci--f
+addi--f
+iebi--i
+iebiiii
+iiiiiii
+arguments: 1 1 1 1 1 1 icon valid
+board: 7x6
+aiii--f
+azeei-f
+abbi--f
+icdi--i
+icdiiii
+iiiiiii
+# Test 3
+board: 4x10
+-ibg
+-ibg
+-ibi
+-idf
+-cdf
+-cdi
+-cei
+-cei
+-iii
+aaai
+arguments: 2 1 1 5 1 1 widget valid
+board: 4x10
+if-c
+ifzc
+ifzi
+igzb
+egzb
+egzi
+e-di
+e-di
+-iii
+aaai
+# Test 4
+board: 8x8
+i---c---
+a---c---
+a---i---
+ibbbi---
+--------
+--------
+----i---
+ii--i---
+arguments: 1 1 3 6 1 4 widget valid
+board: 8x8
+i---c---
+azzzc---
+azzzi---
+izzzbbbi
+-zzz----
+-zzz----
+-zzzi---
+ii--i---
+# Test 5
+board: 10x8
+aaaaaaaaai
+bbbbbcciii
+---------f
+---------f
+---------f
+---------i
+iiddddddii
+iieeiiiiii
+arguments: 2 5 7 1 3 1 widget valid
+board: 10x8
+bbbbbbbbbi
+eeeeecciii
+---------a
+---------a
+---------a
+--zzzzzzzi
+iiddddddii
+iiffiiiiii
+# Test 6
+board: 8x7
+-------i
+bbcaaaah
+bbcaaaah
+bbcaaaai
+bbcddddi
+bbieeeii
+iiiffggi
+arguments: 5 1 1 2 1 1 icon valid
+board: 8x7
+-----z-i
+bbfaaaad
+bbfaaaad
+bbfaaaai
+bbfhhhhi
+bbigggii
+iiieecci
+# Test 7
+board: 10x3
+ii-------i
+----------
+-ii----iii
+arguments: 1 0 7 1 2 1 widget valid
+board: 10x3
+izzzzzzzii
+----------
+-ii----iii
+# Test 8
+board: 8x9
+aaaaaiii
+ibbbbbii
+-----ffi
+-----eei
+-----hhi
+-----ggi
+-----jji
+iiccccii
+iidddddi
+arguments: 2 2 5 2 3 1 widget valid
+board: 8x9
+fffffiii
+ihhhhhii
+bbzzzzzi
+jjzzzzzi
+-----ggi
+-----cci
+-----aai
+iiddddii
+iieeeeei
+# Test 9
+board: 4x8
+--ci
+--cd
+--cd
+--ci
+--ii
+aaai
+aaai
+bbbi
+arguments: 1 4 2 1 2 1 widget valid
+board: 4x8
+--bi
+--bc
+--bc
+--bi
+izzi
+aaai
+aaai
+dddi
+# Test 10
+board: 8x3
+i----cci
+iaaaaaai
+iiibbbbi
+arguments: 2 1 2 1 1 1 widget valid
+board: 8x3
+i-zz-cci
+ibbbbbbi
+iiiaaaai
+# Test 11
+board: 5x10
+-----
+-----
+-----
+-----
+-----
+-----
+-----
+-----
+i---i
+iaaai
+arguments: 0 3 3 6 1 2 widget valid
+board: 5x10
+-----
+-----
+-----
+zzz--
+zzz--
+zzz--
+zzz--
+zzz--
+zzzii
+iaaai
+# Test 12
+board: 6x10
+aad-ii
+aad-ii
+aai-eg
+aac-eg
+aac-ei
+aac-ef
+aai-ef
+aai-ei
+aai-ii
+bbiiii
+arguments: 1 5 1 4 1 3 widget valid
+board: 6x10
+ccb-ii
+ccb-ii
+cci-fa
+cce-fa
+cce-fi
+ccezfg
+ccizfg
+ccizfi
+ccizii
+ddiiii
+# Test 13
+board: 10x10
+iaaaaaaiii
+i-------ii
+i-------ii
+i-------ei
+i-------ei
+b-------ei
+b-------ei
+b-------ii
+biccccccci
+iiddddddii
+arguments: 0 2 6 1 3 1 widget valid
+board: 10x10
+iaaaaaaiii
+i-------ii
+zzzzzzi-ii
+i-------ci
+i-------ci
+e-------ci
+e-------ci
+e-------ii
+eibbbbbbbi
+iiddddddii
+# Test 14
+board: 3x6
+--a
+--a
+--a
+--a
+--i
+iii
+arguments: 0 2 1 3 1 3 widget valid
+board: 3x6
+--a
+--a
+z-a
+z-a
+z-i
+iii
+# Test 15
+board: 6x7
+------
+-i---i
+-i---c
+ia---c
+ia---i
+ia---i
+iibbbi
+arguments: 2 0 2 3 2 1 widget valid
+board: 6x7
+--zz--
+-izz-i
+-izz-b
+ia---b
+ia---i
+ia---i
+iiccci
+# Test 16
+board: 8x6
+bbbiiddi
+icccccci
+aaaggiii
+eeeeeffi
+ii----ii
+iiihhhhi
+arguments: 3 3 2 1 1 1 widget valid
+board: 8x6
+ccciiffi
+ieeeeeei
+ggghhiii
+aaaaaddi
+ii-zz-ii
+iiibbbbi
+# Test 17
+board: 4x9
+---i
+---i
+---d
+---d
+---i
+---i
+ibbi
+iaai
+icci
+arguments: 0 2 1 6 1 1 widget valid
+board: 4x9
+i--i
+i--i
+z--d
+z--d
+z--i
+z--i
+zaai
+zbbi
+icci
+# Test 18
+board: 7x5
+iaaaaai
+----iii
+----iii
+iiibbbi
+iiiccii
+arguments: 2 0 4 1 3 1 widget valid
+board: 7x5
+ibbbbbi
+zzzziii
+----iii
+iiiccci
+iiiaaii
+# Test 19
+board: 6x4
+aaaaii
+bbi--i
+cci--i
+iiiddi
+arguments: 4 0 1 2 1 1 widget valid
+board: 6x4
+cccczi
+aai-zi
+bbi-ii
+iiiddi
+# Test 20
+board: 8x5
+bbiaeeei
+bbiaiffi
+cciddddi
+----hhii
+iigggggi
+arguments: 0 1 1 3 1 1 widget valid
+board: 8x5
+bbieccci
+bbieiddi
+z-iffffi
+zaa-ggii
+iihhhhhi
+# Test 21
+board: 5x4
+i--ii
+a--ii
+aicci
+iibbi
+arguments: 1 2 2 1 1 1 widget valid
+board: 5x4
+iaaii
+bi-ii
+bzz-i
+iicci
+# Test 22
+board: 4x10
+---i
+---d
+---d
+---d
+---i
+aaai
+aaai
+aaai
+bbbi
+ccci
+arguments: 2 0 1 1 1 1 icon valid
+board: 4x10
+--zi
+---d
+---d
+---d
+---i
+bbbi
+bbbi
+bbbi
+ccci
+aaai
+# Test 23
+board: 10x10
+----------
+----------
+----------
+----------
+----------
+----------
+----------
+----------
+----------
+--aaai---i
+arguments: 0 0 8 5 5 4 widget valid
+board: 10x10
+zzzzzzzz--
+zzzzzzzz--
+zzzzzzzz--
+zzzzzzzz--
+zzzzzzzz--
+----------
+----------
+----------
+----------
+--aaai---i
+# Test 24
+board: 4x9
+---b
+---b
+---b
+---b
+---b
+---c
+---c
+---i
+iaai
+arguments: 2 0 1 2 1 1 widget valid
+board: 4x9
+--zc
+--zc
+---c
+---c
+---c
+---a
+---a
+---i
+ibbi
+# Test 25
+board: 4x5
+-cci
+-bbi
+-bbi
+-iii
+iaai
+arguments: 0 1 1 1 1 1 icon valid
+board: 4x5
+-bbi
+zaai
+-aai
+-iii
+icci
+# Test 26
+board: 7x3
+a-----i
+a-----i
+ibbbbbi
+arguments: 0 0 2 1 1 1 widget valid
+board: 7x3
+zza---i
+--a---i
+ibbbbbi
+# Test 27
+board: 8x6
+i-----di
+------di
+------ii
+--bbbbii
+i-iiccci
+i--iiaai
+arguments: 5 1 2 3 1 1 widget valid
+board: 8x6
+i---d--i
+----dzzi
+----izzi
+aaaaizzi
+i-iiccci
+i--iibbi
+# Test 28
+board: 4x7
+---i
+---i
+---a
+---a
+---a
+---i
+iiii
+arguments: 1 2 1 3 1 3 widget valid
+board: 4x7
+---i
+---i
+-z-a
+-z-a
+-z-a
+---i
+iiii
+# Test 29
+board: 5x10
+ii--b
+ii--b
+ai--i
+ai--i
+iiiii
+-----
+-----
+-----
+-----
+-----
+arguments: 1 2 2 5 1 4 widget valid
+board: 5x10
+ii--a
+ii--a
+bzz-i
+bzz-i
+izzii
+-zz--
+-zz--
+-i---
+-i---
+-ii--
+# Test 30
+board: 10x4
+a--------i
+a--------i
+i--------i
+ibbbbbicci
+arguments: 7 1 1 2 1 2 widget valid
+board: 10x4
+b--------i
+b------z-i
+i------z-i
+iaaaaaicci
+# Test 31
+board: 5x3
+a--ii
+a--ii
+iiiii
+arguments: 1 0 3 1 2 1 widget valid
+board: 5x3
+azzzi
+a-iii
+iiiii
+# Test 32
+board: 5x9
+-----
+-----
+-----
+-----
+----i
+----b
+----b
+----i
+aaaii
+arguments: 1 0 2 7 2 1 widget valid
+board: 5x9
+-zz--
+-zz--
+-zz--
+-zz--
+-zz-i
+-zz-a
+-zz-a
+----i
+bbbii
+# Test 33
+board: 4x8
+icci
+aaai
+aaai
+iiii
+ibbi
+---i
+---i
+dddi
+arguments: 2 1 1 6 1 5 icon invalid
+board: 4x8
+----
+----
+----
+----
+----
+----
+----
+----
+# Test 34
+board: 7x3
+------i
+------i
+iaaiiii
+arguments: 0 1 4 1 1 1 widget valid
+board: 7x3
+------i
+zzzz--i
+iaaiiii
+# Test 35
+board: 5x4
+ii-bi
+ai-bi
+ai-ii
+iiiii
+arguments: 1 1 2 1 2 1 widget valid
+board: 5x4
+iiiai
+bzzai
+bi-ii
+iiiii
+# Test 36
+board: 9x7
+iii--iiii
+aai--bbbi
+aai--bbbi
+aai--ccii
+iiiiiiiii
+---------
+---------
+arguments: 1 1 6 2 4 2 widget valid
+board: 9x7
+iii--iiii
+-zzzzzz-i
+-zzzzzz-i
+bbi--aaai
+bbiiiaaai
+bbi--cci-
+iii--iii-
+# Test 37
+board: 6x9
+aai--i
+-iii-i
+iiiiii
+-i----
+-ibbbi
+-ibbbi
+-iccci
+-i---i
+iidddi
+arguments: 2 2 3 1 2 1 widget valid
+board: 6x9
+ddi--i
+-iii-i
+iizzzi
+-iiii-
+-iaaai
+-iaaai
+-iccci
+-i---i
+iibbbi
+# Test 38
+board: 10x6
+----------
+----------
+----------
+----------
+----------
+----------
+arguments: 0 0 6 4 1 2 widget valid
+board: 10x6
+zzzzzz----
+zzzzzz----
+zzzzzz----
+zzzzzz----
+----------
+----------
+# Test 39
+board: 3x9
+-bc
+-bc
+-bd
+-bd
+-bi
+-bi
+-ii
+aai
+iii
+arguments: 0 1 1 6 1 4 widget valid
+board: 3x9
+-bd
+zbd
+zbc
+zbc
+zbi
+zbi
+zii
+aai
+iii
+# Test 40
+board: 3x3
+--i
+--i
+aai
+arguments: 1 0 1 1 1 1 icon valid
+board: 3x3
+-zi
+--i
+aai
+# Test 41
+board: 6x3
+-----i
+------
+--i---
+arguments: 0 1 4 1 3 1 widget valid
+board: 6x3
+-----i
+zzzz--
+--i---
+# Test 42
+board: 5x5
+iaaai
+---ii
+iibbi
+iicci
+iiiii
+arguments: 1 0 1 2 1 2 icon invalid
+board: 5x5
+-----
+-----
+-----
+-----
+-----
+# Test 43
+board: 3x6
+--i
+--i
+--b
+--b
+--i
+aai
+arguments: 1 2 1 3 1 3 widget valid
+board: 3x6
+--i
+--i
+-za
+-za
+-zi
+bbi
+# Test 44
+board: 4x8
+---a
+---a
+---a
+---a
+---a
+---i
+iiii
+iiii
+arguments: 2 2 1 3 1 3 widget valid
+board: 4x8
+---a
+---a
+--za
+--za
+--za
+---i
+iiii
+iiii
+# Test 45
+board: 9x9
+i-----kki
+i-----kki
+a-----kki
+a-----kki
+i-----lli
+iicccibbj
+idiffibbj
+ideeiibbi
+iigggihhi
+arguments: 2 1 5 3 4 2 widget valid
+board: 9x9
+i-----lli
+izzzzzlli
+fzzzzzlli
+fzzzzzlli
+i-----jji
+iihhhikke
+igiccikke
+igbbiikki
+iiaaaiddi
+# Test 46
+board: 9x5
+ab---iggi
+ab---iffi
+ab---eeei
+aicccccci
+iiiidddii
+arguments: 1 0 2 3 1 3 widget valid
+board: 9x5
+bzze-iffi
+bzze-iaai
+bzze-dddi
+bicccccci
+iiiigggii
+# Test 47
+board: 5x6
+ai--b
+ai--b
+ai--i
+ai--i
+iiiii
+iiiii
+arguments: 2 4 2 1 2 1 widget valid
+board: 5x6
+bi--a
+bi--a
+bi--i
+biiii
+iizzi
+iiiii
+# Test 48
+board: 5x4
+-----
+-i---
+----i
+-iiii
+arguments: 1 0 3 2 2 1 widget valid
+board: 5x4
+-zzz-
+-zzzi
+----i
+-iiii
+# Test 49
+board: 6x3
+i---ii
+i---ii
+iiaaai
+arguments: 2 0 1 1 1 1 icon valid
+board: 6x3
+i-z-ii
+i---ii
+iiaaai
+# Test 50
+board: 8x9
+--------
+--------
+--------
+--------
+--------
+--------
+--------
+--------
+--------
+arguments: 1 1 6 7 3 1 widget valid
+board: 8x9
+--------
+-zzzzzz-
+-zzzzzz-
+-zzzzzz-
+-zzzzzz-
+-zzzzzz-
+-zzzzzz-
+-zzzzzz-
+--------
+# Test 51
+board: 3x6
+--b
+--b
+--b
+--i
+iii
+aai
+arguments: 0 3 1 2 1 2 widget valid
+board: 3x6
+--a
+--a
+i-a
+z-i
+zii
+bbi
+# Test 52
+board: 5x8
+a--df
+a--df
+a--di
+a--ei
+i--ei
+i--ii
+ibbbi
+iccci
+arguments: 1 3 1 3 1 2 widget valid
+board: 5x8
+e--cb
+e--cb
+e--ci
+ez-di
+iz-di
+iz-ii
+iaaai
+ifffi
+# Test 53
+board: 8x3
+aaaai--i
+iccci--i
+bbbiiiii
+arguments: 1 1 3 1 3 1 icon invalid
+board: 8x3
+--------
+--------
+--------
+# Test 54
+board: 8x9
+------di
+------di
+------di
+------ii
+iaaaaaai
+baaaaaai
+baaaaaai
+baaaaaai
+iiccccci
+arguments: 3 3 2 1 1 1 widget valid
+board: 8x9
+------ai
+------ai
+------ai
+---zz-ii
+icccccci
+bcccccci
+bcccccci
+bcccccci
+iidddddi
+# Test 55
+board: 4x8
+ibbi
+iaai
+iaai
+caai
+ciii
+iddi
+--ii
+ieei
+arguments: 1 4 1 1 1 1 icon valid
+board: 4x8
+iaai
+icci
+icci
+ecci
+ezii
+ibbi
+-iii
+iddi
+# Test 56
+board: 6x9
+-----i
+------
+-i---i
+i----i
+-----i
+--icci
+-i-bbi
+-i-iii
+iiaaai
+arguments: 1 0 4 2 4 2 widget valid
+board: 6x9
+-zzzzi
+-zzzz-
+-i---i
+i----i
+-----i
+--icci
+-i-bbi
+-i-iii
+iiaaai
+# Test 57
+board: 4x9
+aaai
+ibbi
+c-ii
+c-ei
+c-ei
+c-ii
+c-ii
+ciii
+iddi
+arguments: 1 6 2 2 2 2 widget valid
+board: 4x9
+eeei
+icci
+d-ii
+dibi
+dibi
+diii
+dzzi
+dzzi
+iaai
+# Test 58
+board: 3x6
+aai
+iii
+--b
+--b
+--i
+iii
+arguments: 0 1 1 1 1 1 icon valid
+board: 3x6
+aai
+zii
+i-b
+--b
+--i
+iii
+# Test 59
+board: 9x6
+iiiiii--i
+iaaeii--g
+baaeii--g
+baaiii--i
+icciiiiii
+iddiiiffi
+arguments: 3 3 5 1 4 1 widget valid
+board: 9x6
+iiiiii--i
+ibbdiii-a
+ebbdiiiia
+ebbzzzzzi
+icciiiiii
+iffiiiggi
+# Test 60
+board: 5x8
+iiiii
+ii-ii
+ai-ii
+ai-ii
+ai-ii
+aibbi
+iicci
+iiiii
+arguments: 2 0 2 2 1 2 widget valid
+board: 5x8
+iizzi
+iizzi
+biiii
+biiii
+biiii
+bicci
+iiaai
+iiiii
+# Test 61
+board: 7x10
+-------
+-------
+-------
+-------
+-------
+-------
+-------
+-------
+-------
+-------
+arguments: 2 0 3 8 2 7 widget valid
+board: 7x10
+--zzz--
+--zzz--
+--zzz--
+--zzz--
+--zzz--
+--zzz--
+--zzz--
+--zzz--
+-------
+-------
+# Test 62
+board: 8x8
+aaiiiiii
+iiibbbbi
+dddi---i
+iiii---i
+ccci---h
+ccci---h
+eeei---i
+fffigggi
+arguments: 1 4 4 2 1 1 widget valid
+board: 8x8
+eeiiiiii
+iiiaaaai
+fffigggi
+iiiigggi
+-zzzzi-c
+-zzzz--c
+hhhii--i
+dddibbbi
+# Test 63
+board: 8x5
+ibbii--d
+iiiii--d
+aaaii--d
+aaaii--i
+cccciiii
+arguments: 3 2 2 1 2 1 widget valid
+board: 8x5
+ibbii--d
+iiiii--d
+ccczziid
+cccii--i
+aaaaiiii
+# Test 64
+board: 9x5
+iiac--iii
+iiac--ffi
+biac--eei
+biai--iii
+iiiiddddi
+arguments: 3 1 2 3 2 1 widget valid
+board: 9x5
+iif--eiii
+iifzzebbi
+cifzzeaai
+cifzziiii
+iiiiddddi
+# Test 65
+board: 6x7
+aaaiii
+aaaiii
+ibbcci
+i----f
+d----f
+d----i
+iieeei
+arguments: 2 1 1 5 1 4 widget valid
+board: 6x7
+aaaiii
+aaaiii
+i-zbbi
+i-zeec
+d-z--c
+d-z--i
+iifffi
+# Test 66
+board: 10x10
+aaaaaaaaii
+i---ijjjni
+i---ijjjni
+b---kjjjni
+b---kjjjii
+b---klliii
+b---immmmi
+bcccccccci
+ieeiddiiii
+iffiigghhi
+arguments: 2 4 3 4 3 1 widget valid
+board: 10x10
+aaaaaaaaii
+i---innnci
+i---innnci
+hzzzknnnci
+hzzzknnnii
+hzzzkeeiii
+hzzziffffi
+hddddddddi
+ijjilliiii
+iggiimmbbi
+# Test 67
+board: 3x8
+--i
+--i
+--i
+bai
+bai
+iai
+iai
+iii
+arguments: 0 0 1 2 1 1 widget valid
+board: 3x8
+z-i
+z-i
+--i
+bai
+bai
+iai
+iai
+iii
+# Test 68
+board: 6x5
+i---ii
+ibcaei
+ibcaei
+ibiaii
+iiiddi
+arguments: 4 1 1 3 1 1 icon valid
+board: 6x5
+i--zii
+icadbi
+icadbi
+icidii
+iiieei
+# Test 69
+board: 3x7
+a-i
+a-b
+a-b
+a-b
+a-i
+i-i
+iii
+arguments: 0 0 1 4 1 1 widget valid
+board: 3x7
+zbi
+zba
+zba
+zba
+-bi
+i-i
+iii
+# Test 70
+board: 5x10
+---ii
+---ii
+---ii
+aaaai
+-----
+-----
+-----
+-----
+-----
+-----
+arguments: 0 5 3 4 3 1 widget valid
+board: 5x10
+---ii
+---ii
+---ii
+aaaai
+-----
+zzz--
+zzz--
+zzz--
+zzz--
+-----
+# Test 71
+board: 8x9
+-----i-i
+--------
+--------
+--------
+--------
+--------
+--------
+--------
+--------
+arguments: 2 3 5 5 1 4 widget valid
+board: 8x9
+-----i-i
+--------
+--------
+--zzzzz-
+--zzzzz-
+--zzzzz-
+--zzzzz-
+--zzzzz-
+--------
+# Test 72
+board: 4x6
+i--d
+a--d
+a--i
+acbi
+acbi
+iiii
+arguments: 0 2 1 3 1 2 widget valid
+board: 4x6
+iz-b
+cz-b
+cz-i
+cadi
+cadi
+iiii
+# Test 73
+board: 3x7
+--c
+--c
+--c
+--i
+bai
+bai
+iii
+arguments: 1 0 1 2 1 1 widget valid
+board: 3x7
+-zb
+-zb
+--b
+--i
+cai
+cai
+iii
+# Test 74
+board: 4x7
+---i
+---i
+---b
+---b
+---b
+---i
+iaai
+arguments: 2 2 1 3 1 1 widget valid
+board: 4x7
+---i
+---i
+--zb
+--zb
+--zb
+---i
+iaai
+# Test 75
+board: 4x3
+a--i
+a--i
+ibbi
+arguments: 1 0 1 1 1 1 icon valid
+board: 4x3
+bz-i
+b--i
+iaai
+# Test 76
+board: 10x5
+--ai------
+--aii----i
+--iii----i
+--iii----i
+iiiiiibbbi
+arguments: 5 2 4 2 3 2 widget valid
+board: 10x5
+--bi------
+--bii----i
+--iiizzzzi
+--iiizzzzi
+iiiiiiaaai
+# Test 77
+board: 8x10
+-------i
+-------e
+-------e
+-------e
+-------e
+-------e
+-------i
+ccibbbii
+iaaaaaai
+iiiddddi
+arguments: 4 2 3 5 3 1 widget valid
+board: 8x10
+-------i
+-------c
+----zzzc
+----zzzc
+----zzzc
+----zzzc
+----zzzi
+aaibbbii
+iddddddi
+iiieeeei
+# Test 78
+board: 3x9
+aai
+i-i
+iii
+--i
+---
+--i
+b-i
+bii
+iii
+arguments: 1 1 1 7 1 6 widget valid
+board: 3x9
+aai
+izi
+izi
+izi
+-z-
+izi
+bzi
+bzi
+iii
+# Test 79
+board: 6x5
+aaii-i
+--i---
+--i--i
+iii--i
+iiiiii
+arguments: 2 3 3 1 3 1 widget valid
+board: 6x5
+aaii-i
+--i---
+--ii-i
+iizzzi
+iiiiii
+# Test 80
+board: 6x4
+------
+------
+----ii
+------
+arguments: 0 0 4 2 3 1 widget valid
+board: 6x4
+zzzz--
+zzzz--
+----ii
+------
+# Test 81
+board: 5x6
+aaaai
+i--ii
+b--ii
+b--ii
+b--ii
+iiiii
+arguments: 2 3 2 1 1 1 widget valid
+board: 5x6
+aaaai
+i--ii
+b--ii
+bizzi
+b--ii
+iiiii
+# Test 82
+board: 6x8
+aaaaii
+bbbbbi
+icciii
+-----i
+-----i
+ddfffi
+ddgggi
+eeeeei
+arguments: 1 3 2 2 1 1 widget valid
+board: 6x8
+bbbbii
+gggggi
+icciii
+-zz--i
+-zz--i
+eedddi
+eefffi
+aaaaai
+# Test 83
+board: 8x10
+iiaaaaai
+------cd
+------cd
+------ci
+------ii
+iiiiibbi
+--------
+--------
+--------
+--------
+arguments: 2 0 5 3 5 1 widget valid
+board: 8x10
+iizzzzzi
+--zzzzza
+--zzzzza
+--dddddi
+------bi
+iiiii-bi
+------b-
+------i-
+-----cc-
+--------
+# Test 84
+board: 6x6
+---aii
+---aii
+---bbi
+---iii
+--iiii
+i----i
+arguments: 2 0 3 4 1 3 widget valid
+board: 6x6
+bizzzi
+bizzzi
+aazzzi
+iizzzi
+--iiii
+i----i
+# Test 85
+board: 4x7
+iaai
+ii-i
+ii-i
+ii-i
+iiii
+----
+---i
+arguments: 2 2 1 4 1 2 widget valid
+board: 4x7
+iaai
+ii-i
+iizi
+iizi
+iizi
+--z-
+--ii
+# Test 86
+board: 4x9
+----
+a--i
+a--i
+i--i
+i--c
+i--c
+b--i
+b--i
+iiii
+arguments: 0 0 2 7 2 7 widget valid
+board: 4x9
+zz--
+zzbi
+zzbi
+zzii
+zzia
+zzia
+zzci
+--ci
+iiii
+# Test 87
+board: 5x6
+-----
+-i--i
+-----
+-----
+-----
+-----
+arguments: 0 0 3 3 1 2 widget valid
+board: 5x6
+zzz--
+zzzii
+zzz--
+-----
+-----
+-----
+# Test 88
+board: 5x5
+ii--a
+ii--a
+-i--i
+-i-ii
+ii--i
+arguments: 0 1 2 3 2 1 widget valid
+board: 5x5
+iiiia
+zz-ia
+zz-ii
+zz-ii
+ii--i
+# Test 89
+board: 5x10
+ccddi
+bbbii
+eeeei
+iajji
+faiii
+fgggi
+fgggi
+ihhhi
+----i
+iikki
+arguments: 1 3 1 4 1 2 icon invalid
+board: 5x10
+-----
+-----
+-----
+-----
+-----
+-----
+-----
+-----
+-----
+-----
+# Test 90
+board: 3x6
+--i
+--b
+--b
+--b
+--i
+aai
+arguments: 1 0 1 2 1 1 widget valid
+board: 3x6
+-zi
+-za
+--a
+--a
+--i
+bbi
+# Test 91
+board: 4x8
+---i
+---c
+---c
+---c
+---c
+---i
+aaai
+bbbi
+arguments: 1 1 1 2 1 2 widget valid
+board: 4x8
+---i
+-z-c
+-z-c
+---c
+---c
+---i
+bbbi
+aaai
+# Test 92
+board: 5x7
+----c
+----c
+----c
+----c
+----i
+aaaai
+ibbii
+arguments: 1 1 2 4 1 2 widget valid
+board: 5x7
+----b
+-zz-b
+-zz-b
+-zz-b
+-zz-i
+aaaai
+iccii
+# Test 93
+board: 5x4
+i--ii
+i--ii
+i--ii
+iiiii
+arguments: 2 1 1 2 1 2 widget valid
+board: 5x4
+i--ii
+i-zii
+i-zii
+iiiii
+# Test 94
+board: 10x5
+aabc---iii
+aabc---eei
+aabi---ffi
+aaii---ggi
+iiiiiddddi
+arguments: 4 1 3 3 1 3 widget valid
+board: 10x5
+ggfe---iii
+ggfezzzddi
+ggfizzzbbi
+ggiizzzaai
+iiiiicccci
+# Test 95
+board: 9x5
+baffi---i
+baeei---i
+caiii---i
+ciddi---i
+iiiiiggii
+arguments: 0 0 4 3 3 1 widget valid
+board: 9x5
+ezzzdccii
+ezzzdggii
+fzzzdiiii
+fibbi---i
+iiiiiaaii
+# Test 96
+board: 7x7
+-------
+--i---i
+-------
+-------
+------i
+-------
+------i
+arguments: 0 1 5 2 3 1 widget valid
+board: 7x7
+-------
+zzzzzii
+zzzzz--
+-------
+------i
+-------
+------i
+# Test 97
+board: 10x4
+i-----ccii
+a-----ccii
+a-----iddi
+iibbbiiiii
+arguments: 7 2 1 1 1 1 icon valid
+board: 10x4
+i-----ccii
+d-----ccii
+d---ibbz-i
+iiaaaiiiii
+# Test 98
+board: 7x9
+--i-iii
+ai-icci
+ai-iiii
+iibbbbi
+ii-iiii
+-i-ii-i
+-i-ii-i
+ii-iiii
+ii----i
+arguments: 1 6 3 2 3 2 widget valid
+board: 7x9
+--i-iii
+bi-iaai
+bi-iiii
+iicccci
+ii-iiii
+-iiii-i
+izzzi-i
+izzziii
+iiii--i
+# Test 99
+board: 4x10
+aaii
+iiii
+---c
+---c
+---c
+---d
+---d
+---i
+ibbi
+iiii
+arguments: 0 0 2 6 1 2 widget valid
+board: 4x10
+zzii
+zzii
+zz-c
+zz-c
+zz-c
+zz-b
+aa-b
+ii-i
+iddi
+iiii
+# Test 100
+board: 8x4
+iittt---
+yyyy---i
+yyyyi--i
+yyyy---i
+# This represents where you want to add an item, the format is "x y spanX spanY minSpanX minSpanY type<widget/icon/folder> ifSolutionIsPossible<valid/invalid>"
+arguments: 5 1 2 3 1 1 widget valid
+board: 8x4
+iittt---
+yyyy-hhi
+yyyyihhi
+yyyy-hhi
