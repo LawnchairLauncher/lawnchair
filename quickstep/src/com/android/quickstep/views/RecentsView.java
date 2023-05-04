@@ -213,6 +213,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * A list of recent tasks.
@@ -1320,6 +1321,29 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         return null;
     }
 
+    /**
+     * Returns a {@link TaskView} that has taskIds matching {@code taskIds} or null if no match.
+     */
+    @Nullable
+    public TaskView getTaskViewByTaskIds(int[] taskIds) {
+        if (!hasAnyValidTaskIds(taskIds)) {
+            return null;
+        }
+
+        for (int i = 0; i < getTaskViewCount(); i++) {
+            TaskView taskView = requireTaskViewAt(i);
+            if (Arrays.equals(taskIds, taskView.getTaskIds())) {
+                return taskView;
+            }
+        }
+        return null;
+    }
+
+    /** Returns false if {@code taskIds} is null or contains invalid values, true otherwise */
+    private boolean hasAnyValidTaskIds(int[] taskIds) {
+        return taskIds != null && !Arrays.equals(taskIds, INVALID_TASK_IDS);
+    }
+
     public void setOverviewStateEnabled(boolean enabled) {
         mOverviewStateEnabled = enabled;
         updateTaskStackListenerState();
@@ -1589,10 +1613,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return;
         }
 
-        int currentTaskId = INVALID_TASK_ID;
+        int[] currentTaskId = INVALID_TASK_IDS;
         TaskView currentTaskView = getTaskViewAt(mCurrentPage);
         if (currentTaskView != null && currentTaskView.getTask() != null) {
-            currentTaskId = currentTaskView.getTask().key.id;
+            currentTaskId = currentTaskView.getTaskIds();
         }
 
         // Unload existing visible task data
@@ -1604,8 +1628,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         // Save running task ID if it exists before rebinding all taskViews, otherwise the task from
         // the runningTaskView currently bound could get assigned to another TaskView
-        int runningTaskId = getTaskIdsForTaskViewId(mRunningTaskViewId)[0];
-        int focusedTaskId = getTaskIdsForTaskViewId(mFocusedTaskViewId)[0];
+        int[] runningTaskId = getTaskIdsForTaskViewId(mRunningTaskViewId);
+        int[] focusedTaskId = getTaskIdsForTaskViewId(mFocusedTaskViewId);
 
         // Removing views sets the currentPage to 0, so we save this and restore it after
         // the new set of views are added
@@ -1699,7 +1723,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
 
         // Keep same previous focused task
-        TaskView newFocusedTaskView = getTaskViewByTaskId(focusedTaskId);
+        TaskView newFocusedTaskView = getTaskViewByTaskIds(focusedTaskId);
         // If the list changed, maybe the focused task doesn't exist anymore
         if (newFocusedTaskView == null && getTaskViewCount() > 0) {
             newFocusedTaskView = getTaskViewAt(0);
@@ -1716,10 +1740,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         updateChildTaskOrientations();
 
         TaskView newRunningTaskView = null;
-        if (runningTaskId != INVALID_TASK_ID) {
+        if (hasAnyValidTaskIds(runningTaskId)) {
             // Update mRunningTaskViewId to be the new TaskView that was assigned by binding
             // the full list of tasks to taskViews
-            newRunningTaskView = getTaskViewByTaskId(runningTaskId);
+            newRunningTaskView = getTaskViewByTaskIds(runningTaskId);
             if (newRunningTaskView != null) {
                 mRunningTaskViewId = newRunningTaskView.getTaskViewId();
             } else {
@@ -1731,15 +1755,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (mNextPage != INVALID_PAGE) {
             // Restore mCurrentPage but don't call setCurrentPage() as that clobbers the scroll.
             mCurrentPage = previousCurrentPage;
-            if (currentTaskId != INVALID_TASK_ID) {
-                currentTaskView = getTaskViewByTaskId(currentTaskId);
+            if (hasAnyValidTaskIds(currentTaskId)) {
+                currentTaskView = getTaskViewByTaskIds(currentTaskId);
                 if (currentTaskView != null) {
                     targetPage = indexOfChild(currentTaskView);
                 }
             }
         } else {
             // Set the current page to the running task, but not if settling on new task.
-            if (runningTaskId != INVALID_TASK_ID) {
+            if (hasAnyValidTaskIds(runningTaskId)) {
                 targetPage = indexOfChild(newRunningTaskView);
             } else if (getTaskViewCount() > 0) {
                 TaskView taskView = requireTaskViewAt(0);
@@ -2210,8 +2234,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Update the task data for the in/visible children
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView taskView = requireTaskViewAt(i);
-            Task task = taskView.getTask();
-            if (task == null) {
+            TaskIdAttributeContainer[] containers = taskView.getTaskIdAttributeContainers();
+            if (containers[0] == null && containers[1] == null) {
                 continue;
             }
             int index = indexOfChild(taskView);
@@ -2222,34 +2246,43 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 visible = lower <= index && index <= upper;
             }
             if (visible) {
-                boolean skipLoadingTask = false;
+                // Default update all non-null tasks, then remove running ones
+                List<Task> tasksToUpdate = Arrays.stream(containers).filter(Objects::nonNull)
+                        .map(TaskIdAttributeContainer::getTask)
+                        .collect(Collectors.toCollection(ArrayList::new));
                 if (mTmpRunningTasks != null) {
                     for (Task t : mTmpRunningTasks) {
-                        if (task == t) {
-                            // Skip loading if this is the task that we are animating into
-                            skipLoadingTask = true;
-                            break;
-                        }
+                        // Skip loading if this is the task that we are animating into
+                        // TODO(b/280812109) change this equality check to use A.equals(B)
+                        tasksToUpdate.removeIf(task -> task == t);
                     }
                 }
-                if (skipLoadingTask) {
+                if (tasksToUpdate.isEmpty()) {
                     continue;
                 }
-                if (!mHasVisibleTaskData.get(task.key.id)) {
-                    // Ignore thumbnail update if it's current running task during the gesture
-                    // We snapshot at end of gesture, it will update then
-                    int changes = dataChanges;
-                    if (taskView == getRunningTaskView() && mGestureActive) {
-                        changes &= ~TaskView.FLAG_UPDATE_THUMBNAIL;
+                for (Task task : tasksToUpdate) {
+                    if (!mHasVisibleTaskData.get(task.key.id)) {
+                        // Ignore thumbnail update if it's current running task during the gesture
+                        // We snapshot at end of gesture, it will update then
+                        int changes = dataChanges;
+                        if (taskView == getRunningTaskView() && mGestureActive) {
+                            changes &= ~TaskView.FLAG_UPDATE_THUMBNAIL;
+                        }
+                        taskView.onTaskListVisibilityChanged(true /* visible */, changes);
                     }
-                    taskView.onTaskListVisibilityChanged(true /* visible */, changes);
+                    mHasVisibleTaskData.put(task.key.id, visible);
                 }
-                mHasVisibleTaskData.put(task.key.id, visible);
             } else {
-                if (mHasVisibleTaskData.get(task.key.id)) {
-                    taskView.onTaskListVisibilityChanged(false /* visible */, dataChanges);
+                for (TaskIdAttributeContainer container : containers) {
+                    if (container == null) {
+                        continue;
+                    }
+
+                    if (mHasVisibleTaskData.get(container.getTask().key.id)) {
+                        taskView.onTaskListVisibilityChanged(false /* visible */, dataChanges);
+                    }
+                    mHasVisibleTaskData.delete(container.getTask().key.id);
                 }
-                mHasVisibleTaskData.delete(task.key.id);
             }
         }
     }
