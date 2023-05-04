@@ -67,13 +67,11 @@ public class DeviceProfile {
     private static final int DEFAULT_DOT_SIZE = 100;
     private static final float ALL_APPS_TABLET_MAX_ROWS = 5.5f;
     private static final float MIN_FOLDER_TEXT_SIZE_SP = 16f;
+    private static final float MIN_WIDGET_PADDING_DP = 6f;
 
     public static final PointF DEFAULT_SCALE = new PointF(1.0f, 1.0f);
     public static final ViewScaleProvider DEFAULT_PROVIDER = itemInfo -> DEFAULT_SCALE;
     public static final Consumer<DeviceProfile> DEFAULT_DIMENSION_PROVIDER = dp -> {};
-
-    // Ratio of empty space, qsb should take up to appear visually centered.
-    private final float mQsbCenterFactor;
 
     public final InvariantDeviceProfile inv;
     private final Info mInfo;
@@ -252,6 +250,10 @@ public class DeviceProfile {
     // Insets
     private final Rect mInsets = new Rect();
     public final Rect workspacePadding = new Rect();
+    // Additional padding added to the widget inside its cellSpace. It is applied outside
+    // the widgetView, such that the actual view size is same as the widget size.
+    public final Rect widgetPadding = new Rect();
+
     // When true, nav bar is on the left side of the screen.
     private boolean mIsSeascape;
 
@@ -314,9 +316,6 @@ public class DeviceProfile {
         availableHeightPx = windowBounds.availableSize.y;
 
         aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
-        boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
-        mQsbCenterFactor = res.getFloat(R.dimen.qsb_center_factor);
-
         if (isTwoPanels) {
             if (isLandscape) {
                 mTypeIndex = INDEX_TWO_PANEL_LANDSCAPE;
@@ -730,22 +729,6 @@ public class DeviceProfile {
         return mInfo;
     }
 
-    /**
-     * We inset the widget padding added by the system and instead rely on the border spacing
-     * between cells to create reliable consistency between widgets
-     */
-    public boolean shouldInsetWidgets() {
-        Rect widgetPadding = inv.defaultWidgetPadding;
-
-        // Check all sides to ensure that the widget won't overlap into another cell, or into
-        // status bar.
-        return workspaceTopPadding > widgetPadding.top
-                && cellLayoutBorderSpacePx.x > widgetPadding.left
-                && cellLayoutBorderSpacePx.y > widgetPadding.top
-                && cellLayoutBorderSpacePx.x > widgetPadding.right
-                && cellLayoutBorderSpacePx.y > widgetPadding.bottom;
-    }
-
     public Builder toBuilder(Context context) {
         WindowBounds bounds = new WindowBounds(
                 widthPx, heightPx, availableWidthPx, availableHeightPx, rotationHint);
@@ -999,6 +982,18 @@ public class DeviceProfile {
         // Folder icon
         folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
         folderIconOffsetYPx = (iconSizePx - folderIconSizePx) / 2;
+
+        // Update widget padding:
+        float minSpacing = pxFromDp(MIN_WIDGET_PADDING_DP, mMetrics);
+        if (cellLayoutBorderSpacePx.x < minSpacing
+                || cellLayoutBorderSpacePx.y < minSpacing) {
+            widgetPadding.left = widgetPadding.right =
+                    Math.round(Math.max(0, minSpacing - cellLayoutBorderSpacePx.x));
+            widgetPadding.top = widgetPadding.bottom =
+                    Math.round(Math.max(0, minSpacing - cellLayoutBorderSpacePx.y));
+        } else {
+            widgetPadding.setEmpty();
+        }
     }
 
     /**
