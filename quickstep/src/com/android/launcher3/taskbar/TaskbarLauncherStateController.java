@@ -15,13 +15,13 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.taskbar.TaskbarKeyguardController.MASK_ANY_SYSUI_LOCKED;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_HOME;
 import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
 import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
-import static com.android.systemui.animation.Interpolators.EMPHASIZED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_AWAKE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DEVICE_DREAMING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_WAKEFULNESS_MASK;
