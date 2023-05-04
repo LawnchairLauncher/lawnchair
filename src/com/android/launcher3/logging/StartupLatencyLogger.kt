@@ -21,11 +21,15 @@ open class StartupLatencyLogger(val latencyType: LatencyType) {
         const val UNSET_LONG = -1L
     }
 
-    @VisibleForTesting val startTimeByEvent = SparseLongArray()
-    @VisibleForTesting val endTimeByEvent = SparseLongArray()
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    val startTimeByEvent = SparseLongArray()
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    val endTimeByEvent = SparseLongArray()
 
-    @VisibleForTesting var cardinality: Int = UNSET_INT
-    @VisibleForTesting var workspaceLoadStartTime: Long = UNSET_LONG
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    var cardinality: Int = UNSET_INT
+    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    var workspaceLoadStartTime: Long = UNSET_LONG
 
     private var isInTest = false
 
@@ -116,7 +120,7 @@ open class StartupLatencyLogger(val latencyType: LatencyType) {
             return true
         }
         if (startTimeByEvent.contains(event.id)) {
-            Log.e(TAG, String.format("Cannot restart same %s event", event.name))
+            Log.e(TAG, "Cannot restart same ${event.name} event")
             return false
         } else if (
             startTimeByEvent.isEmpty() &&
@@ -124,10 +128,8 @@ open class StartupLatencyLogger(val latencyType: LatencyType) {
         ) {
             Log.e(
                 TAG,
-                String.format(
-                    "The first log start event must be %s.",
-                    LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION.name
-                )
+                "The first log start event must be " +
+                    "${LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION.name}.",
             )
             return false
         } else if (
@@ -138,11 +140,7 @@ open class StartupLatencyLogger(val latencyType: LatencyType) {
         ) {
             Log.e(
                 TAG,
-                String.format(
-                    "Cannot start %s event after %s starts",
-                    LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC.name,
-                    LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC.name
-                )
+                "Cannot start ${LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC.name} event after ${LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC.name} starts",
             )
             return false
         } else if (
@@ -153,11 +151,7 @@ open class StartupLatencyLogger(val latencyType: LatencyType) {
         ) {
             Log.e(
                 TAG,
-                String.format(
-                    "Cannot start %s event after %s starts",
-                    LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC.name,
-                    LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC.name
-                )
+                "Cannot start ${LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC.name} event after ${LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC.name} starts",
             )
             return false
         }
@@ -172,10 +166,10 @@ open class StartupLatencyLogger(val latencyType: LatencyType) {
             return true
         }
         if (!startTimeByEvent.contains(event.id)) {
-            Log.e(TAG, String.format("Cannot end %s event before starting it", event.name))
+            Log.e(TAG, "Cannot end ${event.name} event before starting it")
             return false
         } else if (endTimeByEvent.contains(event.id)) {
-            Log.e(TAG, String.format("Cannot end same %s event again", event.name))
+            Log.e(TAG, "Cannot end same ${event.name} event again")
             return false
         } else if (
             event != LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION &&
@@ -185,11 +179,7 @@ open class StartupLatencyLogger(val latencyType: LatencyType) {
         ) {
             Log.e(
                 TAG,
-                String.format(
-                    "Cannot end %s event after %s",
-                    event.name,
-                    LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION.name
-                )
+                "Cannot end ${event.name} event after ${LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION.name}",
             )
             return false
         }
