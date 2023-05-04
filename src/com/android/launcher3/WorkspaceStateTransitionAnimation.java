@@ -35,7 +35,6 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.WORKSPACE_PAGE_INDICATOR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.graphics.Scrim.SCRIM_PROGRESS;
-import static com.android.launcher3.graphics.SysUiScrim.SYSUI_PROGRESS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_TRANSLATE;
@@ -54,6 +53,7 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.LauncherState.PageAlphaProvider;
 import com.android.launcher3.LauncherState.PageTranslationProvider;
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.SpringAnimationBuilder;
@@ -196,7 +196,7 @@ public class WorkspaceStateTransitionAnimation {
                 state.getWorkspaceBackgroundAlpha(mLauncher), LINEAR);
 
         SysUiScrim sysUiScrim = mLauncher.getRootView().getSysUiScrim();
-        propertySetter.setFloat(sysUiScrim, SYSUI_PROGRESS,
+        propertySetter.setFloat(sysUiScrim.getSysUIProgress(), AnimatedFloat.VALUE,
                 state.hasFlag(FLAG_HAS_SYS_UI_SCRIM) ? 1 : 0, LINEAR);
 
         propertySetter.setViewBackgroundColor(mLauncher.getScrimView(),
