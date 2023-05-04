@@ -16,7 +16,6 @@
 
 package com.android.launcher3.model;
 
-import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
@@ -42,6 +41,7 @@ import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Trace;
 import android.os.UserHandle;
@@ -50,6 +50,7 @@ import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.Log;
 import android.util.LongSparseArray;
+import android.util.TimingLogger;
 
 import androidx.annotation.Nullable;
 
@@ -199,10 +200,25 @@ public class LoaderTask implements Runnable {
         }
 
         Object traceToken = TraceHelper.INSTANCE.beginSection(TAG);
+        TimingLogger timingLogger = new TimingLogger(TAG, "run");
         LoaderMemoryLogger memoryLogger = new LoaderMemoryLogger();
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
-            loadWorkspace(allShortcuts, "", memoryLogger);
+            Trace.beginSection("LoadWorkspace");
+            try {
+                loadWorkspace(allShortcuts, memoryLogger);
+            } finally {
+                Trace.endSection();
+            }
+            logASplit(timingLogger, "loadWorkspace");
+
+            if (FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
+                verifyNotStopped();
+                mModelDelegate.loadAndBindWorkspaceItems(mUserManagerState,
+                        mLauncherBinder.mCallbacksList, mShortcutKeyToPinnedShortcuts);
+                mModelDelegate.markActive();
+                logASplit(timingLogger, "workspaceDelegateItems");
+            }
 
             // Sanitize data re-syncs widgets/shortcuts based on the workspace loaded from db.
             // sanitizeData should not be invoked if the workspace is loaded from a db different
@@ -212,21 +228,21 @@ public class LoaderTask implements Runnable {
                 verifyNotStopped();
                 sanitizeFolders(mItemsDeleted);
                 sanitizeWidgetsShortcutsAndPackages();
-                logASplit("sanitizeData");
+                logASplit(timingLogger, "sanitizeData");
             }
 
             verifyNotStopped();
             mLauncherBinder.bindWorkspace(true /* incrementBindId */, /* isBindSync= */ false);
-            logASplit("bindWorkspace");
+            logASplit(timingLogger, "bindWorkspace");
 
             mModelDelegate.workspaceLoadComplete();
             // Notify the installer packages of packages with active installs on the first screen.
             sendFirstScreenActiveInstallsBroadcast();
-            logASplit("sendFirstScreenActiveInstallsBroadcast");
+            logASplit(timingLogger, "sendFirstScreenActiveInstallsBroadcast");
 
             // Take a break
             waitForIdle();
-            logASplit("step 1 complete");
+            logASplit(timingLogger, "step 1 complete");
             verifyNotStopped();
 
             // second step
@@ -237,16 +253,16 @@ public class LoaderTask implements Runnable {
             } finally {
                 Trace.endSection();
             }
-            logASplit("loadAllApps");
+            logASplit(timingLogger, "loadAllApps");
 
             if (FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
                 mModelDelegate.loadAndBindAllAppsItems(mUserManagerState,
                         mLauncherBinder.mCallbacksList, mShortcutKeyToPinnedShortcuts);
-                logASplit("allAppsDelegateItems");
+                logASplit(timingLogger, "allAppsDelegateItems");
             }
             verifyNotStopped();
             mLauncherBinder.bindAllApps();
-            logASplit("bindAllApps");
+            logASplit(timingLogger, "bindAllApps");
 
             verifyNotStopped();
             IconCacheUpdateHandler updateHandler = mIconCache.getUpdateHandler();
@@ -254,73 +270,75 @@ public class LoaderTask implements Runnable {
             updateHandler.updateIcons(allActivityList,
                     LauncherActivityCachingLogic.newInstance(mApp.getContext()),
                     mApp.getModel()::onPackageIconsUpdated);
-            logASplit("update icon cache");
+            logASplit(timingLogger, "update icon cache");
 
             verifyNotStopped();
-            logASplit("save shortcuts in icon cache");
+            logASplit(timingLogger, "save shortcuts in icon cache");
             updateHandler.updateIcons(allShortcuts, new ShortcutCachingLogic(),
                     mApp.getModel()::onPackageIconsUpdated);
 
             // Take a break
             waitForIdle();
-            logASplit("step 2 complete");
+            logASplit(timingLogger, "step 2 complete");
             verifyNotStopped();
 
             // third step
             List<ShortcutInfo> allDeepShortcuts = loadDeepShortcuts();
-            logASplit("loadDeepShortcuts");
+            logASplit(timingLogger, "loadDeepShortcuts");
 
             verifyNotStopped();
             mLauncherBinder.bindDeepShortcuts();
-            logASplit("bindDeepShortcuts");
+            logASplit(timingLogger, "bindDeepShortcuts");
 
             verifyNotStopped();
-            logASplit("save deep shortcuts in icon cache");
+            logASplit(timingLogger, "save deep shortcuts in icon cache");
             updateHandler.updateIcons(allDeepShortcuts,
                     new ShortcutCachingLogic(), (pkgs, user) -> { });
 
             // Take a break
             waitForIdle();
-            logASplit("step 3 complete");
+            logASplit(timingLogger, "step 3 complete");
             verifyNotStopped();
 
             // fourth step
             List<ComponentWithLabelAndIcon> allWidgetsList =
                     mBgDataModel.widgetsModel.update(mApp, null);
-            logASplit("load widgets");
+            logASplit(timingLogger, "load widgets");
 
             verifyNotStopped();
             mLauncherBinder.bindWidgets();
-            logASplit("bindWidgets");
+            logASplit(timingLogger, "bindWidgets");
             verifyNotStopped();
 
             if (FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
                 mModelDelegate.loadAndBindOtherItems(mLauncherBinder.mCallbacksList);
-                logASplit("otherDelegateItems");
+                logASplit(timingLogger, "otherDelegateItems");
                 verifyNotStopped();
             }
 
             updateHandler.updateIcons(allWidgetsList,
                     new ComponentWithIconCachingLogic(mApp.getContext(), true),
                     mApp.getModel()::onWidgetLabelsUpdated);
-            logASplit("save widgets in icon cache");
+            logASplit(timingLogger, "save widgets in icon cache");
 
             // fifth step
             loadFolderNames();
 
             verifyNotStopped();
             updateHandler.finish();
-            logASplit("finish icon update");
+            logASplit(timingLogger, "finish icon update");
 
             mModelDelegate.modelLoadComplete();
             transaction.commit();
             memoryLogger.clearLogs();
         } catch (CancellationException e) {
             // Loader stopped, ignore
-            logASplit("Cancelled");
+            logASplit(timingLogger, "Cancelled");
         } catch (Exception e) {
             memoryLogger.printLogs();
             throw e;
+        } finally {
+            timingLogger.dumpToLog();
         }
         TraceHelper.INSTANCE.endSection(traceToken);
     }
@@ -330,29 +348,25 @@ public class LoaderTask implements Runnable {
         this.notify();
     }
 
-    protected void loadWorkspace(
-            List<ShortcutInfo> allDeepShortcuts,
-            String selection,
-            LoaderMemoryLogger memoryLogger) {
-        Trace.beginSection("LoadWorkspace");
-        try {
-            loadWorkspaceImpl(allDeepShortcuts, selection, memoryLogger);
-        } finally {
-            Trace.endSection();
-        }
-        logASplit("loadWorkspace");
+    private void loadWorkspace(
+            List<ShortcutInfo> allDeepShortcuts, LoaderMemoryLogger memoryLogger) {
+        loadWorkspace(allDeepShortcuts, Favorites.CONTENT_URI,
+                null /* selection */, memoryLogger);
+    }
 
+    protected void loadWorkspaceForPreviewSurfaceRenderer(
+            List<ShortcutInfo> allDeepShortcuts, Uri contentUri, String selection) {
+        loadWorkspace(allDeepShortcuts, contentUri, selection, null);
         if (FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
-            verifyNotStopped();
             mModelDelegate.loadAndBindWorkspaceItems(mUserManagerState,
                     mLauncherBinder.mCallbacksList, mShortcutKeyToPinnedShortcuts);
             mModelDelegate.markActive();
-            logASplit("workspaceDelegateItems");
         }
     }
 
-    private void loadWorkspaceImpl(
+    protected void loadWorkspace(
             List<ShortcutInfo> allDeepShortcuts,
+            Uri contentUri,
             String selection,
             @Nullable LoaderMemoryLogger memoryLogger) {
         final Context context = mApp.getContext();
@@ -363,7 +377,7 @@ public class LoaderTask implements Runnable {
         final WidgetManagerHelper widgetHelper = new WidgetManagerHelper(context);
 
         boolean clearDb = false;
-        if (!mApp.getModel().getModelDbController().migrateGridIfNeeded()) {
+        if (!GridSizeMigrationUtil.migrateGridIfNeeded(context)) {
             // Migration failed. Clear workspace.
             clearDb = true;
         }
@@ -388,9 +402,8 @@ public class LoaderTask implements Runnable {
             mFirstScreenBroadcast = new FirstScreenBroadcast(installingPkgs);
 
             mShortcutKeyToPinnedShortcuts = new HashMap<>();
-            ModelDbController dbController = mApp.getModel().getModelDbController();
             final LoaderCursor c = new LoaderCursor(
-                    dbController.query(TABLE_NAME, null, selection, null, null),
+                    contentResolver.query(contentUri, null, selection, null, null), contentUri,
                     mApp, mUserManagerState);
             final Bundle extras = c.getExtras();
             mDbName = extras == null ? null : extras.getString(Settings.EXTRA_DB_NAME);
@@ -1099,9 +1112,12 @@ public class LoaderTask implements Runnable {
         FileLog.d(TAG, widgetDimension.toString());
     }
 
-    private static void logASplit(String label) {
-        if (DEBUG) {
-            Log.d(TAG, label);
+    private static void logASplit(@Nullable TimingLogger timingLogger, String label) {
+        if (timingLogger != null) {
+            timingLogger.addSplit(label);
+            if (DEBUG) {
+                Log.d(TAG, label);
+            }
         }
     }
 }
