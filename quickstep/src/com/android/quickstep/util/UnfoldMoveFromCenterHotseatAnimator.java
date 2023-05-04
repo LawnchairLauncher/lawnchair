@@ -48,6 +48,8 @@ public class UnfoldMoveFromCenterHotseatAnimator extends BaseUnfoldMoveFromCente
             View child = hotseatIcons.getChildAt(i);
             registerViewForAnimation(child);
         }
+
+        super.onPrepareViewsForAnimation();
     }
 
     @Override
