@@ -50,8 +50,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ବ୍ୟକ୍ତିଗତ"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ୱାର୍କ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"ବାର୍ତ୍ତାଳାପଗୁଡ଼ିକ"</string>
-    <!-- no translation found for widget_category_note_taking (3469689394504266039) -->
-    <skip />
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"ନୋଟ-ଟେକିଂ"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"ଉପଯୋଗୀ ସୂଚନା ଆପଣଙ୍କ ପାଖରେ ସହଜରେ ଉପଲବ୍ଧ"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"ଆପ୍ସକୁ ନଖୋଲି ସୂଚନା ପାଇବା ପାଇଁ, ଆପଣ ଆପଣଙ୍କ ହୋମ ସ୍କ୍ରିନରେ ୱିଜେଟଗୁଡ଼ିକୁ ଯୋଗ କରିପାରିବେ"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"ୱିଜେଟ ସେଟିଂସ ପରିବର୍ତ୍ତନ କରିବାକୁ ଟାପ କରନ୍ତୁ"</string>
