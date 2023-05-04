@@ -86,6 +86,11 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
     }
 
     @Override
+    public View.AccessibilityDelegate getAccessibilityDelegate() {
+        return mTaskbarContext.getAccessibilityDelegate();
+    }
+
+    @Override
     public TaskbarDragController getDragController() {
         return mDragController;
     }
