@@ -99,7 +99,7 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Tehtäväpalkin ohje"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Tehtäväpalkin ohje näkyvissä"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Tehtäväpalkin ohje suljettu"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Vedä sovellus sivuun, niin voit käyttää samalla 2 sellaista"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Vedä sovellus sivuun, ja voit käyttää kahta sovellusta"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Näytä tehtäväpalkki pyyhkäisemällä ylös hitaasti"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Sovellussuosituksia käytön perusteella"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Laita eleillä navigointi päälle Asetuksista Tehtäväpalkin piilottamiseksi automaattisesti"</string>

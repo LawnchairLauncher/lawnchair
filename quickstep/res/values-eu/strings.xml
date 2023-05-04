@@ -100,7 +100,7 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Agertu egin da zereginen barraren tutoriala"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Itxi egin da zereginen barraren tutoriala"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Bi aplikazio batera erabiltzeko, arrastatu bat albo batera"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Zereginen barra ikusteko, pasatu hatza motel gora"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Zereginen barra ikusteko, pasatu hatza gora poliki"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Jaso aplikazioen iradokizunak erabileran oinarrituta"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Zereginen barra automatikoki ezkutatzeko, aktibatu keinu bidezko nabigazioa ezarpenetan"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Egin gauza gehiago zereginen barrarekin"</string>
