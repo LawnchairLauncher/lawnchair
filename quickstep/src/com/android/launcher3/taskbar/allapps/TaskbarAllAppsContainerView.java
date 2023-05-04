@@ -19,14 +19,20 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 
+import java.util.Optional;
+
 /** All apps container accessible from taskbar. */
 public class TaskbarAllAppsContainerView extends
         ActivityAllAppsContainerView<TaskbarOverlayContext> {
+
+    private @Nullable OnInvalidateHeaderListener mOnInvalidateHeaderListener;
 
     public TaskbarAllAppsContainerView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -34,6 +40,10 @@ public class TaskbarAllAppsContainerView extends
 
     public TaskbarAllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    void setOnInvalidateHeaderListener(OnInvalidateHeaderListener onInvalidateHeaderListener) {
+        mOnInvalidateHeaderListener = onInvalidateHeaderListener;
     }
 
     @Override
@@ -54,6 +64,13 @@ public class TaskbarAllAppsContainerView extends
     }
 
     @Override
+    public void invalidateHeader() {
+        super.invalidateHeader();
+        Optional.ofNullable(mOnInvalidateHeaderListener).ifPresent(
+                OnInvalidateHeaderListener::onInvalidateHeader);
+    }
+
+    @Override
     protected boolean isSearchSupported() {
         return FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR.get();
     }
@@ -62,5 +79,9 @@ public class TaskbarAllAppsContainerView extends
     public boolean isInAllApps() {
         // All apps is always open
         return true;
+    }
+
+    interface OnInvalidateHeaderListener {
+        void onInvalidateHeader();
     }
 }
