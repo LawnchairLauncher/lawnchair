@@ -227,7 +227,8 @@ public class LauncherModelHelper {
                     UserCache.INSTANCE, InstallSessionHelper.INSTANCE, LauncherPrefs.INSTANCE,
                     LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE,
                     DisplayController.INSTANCE, CustomWidgetManager.INSTANCE,
-                    SettingsCache.INSTANCE, PluginManagerWrapper.INSTANCE, LockedUserState.INSTANCE,
+                    SettingsCache.INSTANCE, PluginManagerWrapper.INSTANCE,
+                    LockedUserState.INSTANCE, WallpaperColorHints.INSTANCE,
                     ItemInstallQueue.INSTANCE, WindowManagerProxy.INSTANCE);
 
             // System settings cache content provider. Ensure that they are statically initialized
