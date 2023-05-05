@@ -117,8 +117,6 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
             case OVERVIEW_NAVIGATION:
             case OVERVIEW_NAVIGATION_COMPLETE:
                 return new OverviewGestureTutorialFragment(fromTutorialMenu);
-            case SANDBOX_MODE:
-                return new SandboxModeTutorialFragment(fromTutorialMenu);
             default:
                 Log.e(LOG_TAG, "Failed to find an appropriate fragment for " + tutorialType.name());
         }
