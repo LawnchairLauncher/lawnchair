@@ -36,6 +36,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarControllers;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
@@ -65,7 +66,9 @@ public final class TaskbarOverlayController {
 
         @Override
         public void onTaskMovedToFront(int taskId) {
-            mProxyView.close(false);
+            if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+                mProxyView.close(false);
+            }
         }
     };
 
