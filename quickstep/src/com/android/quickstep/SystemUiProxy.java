@@ -51,6 +51,7 @@ import android.window.RemoteTransition;
 import android.window.TaskSnapshot;
 import android.window.TransitionFilter;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
@@ -58,6 +59,7 @@ import com.android.internal.logging.InstanceId;
 import com.android.internal.util.ScreenshotRequest;
 import com.android.internal.view.AppearanceRegion;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -200,12 +202,17 @@ public class SystemUiProxy implements ISystemUiProxy {
         return null;
     }
 
+    /**
+     * Sets proxy state, including death linkage, various listeners, and other configuration objects
+     */
+    @MainThread
     public void setProxy(ISystemUiProxy proxy, IPip pip, ISplitScreen splitScreen,
             IOneHanded oneHanded, IShellTransitions shellTransitions,
             IStartingWindow startingWindow, IRecentTasks recentTasks,
             ISysuiUnlockAnimationController sysuiUnlockAnimationController,
             IBackAnimation backAnimation, IDesktopMode desktopMode,
             IUnfoldAnimation unfoldAnimation, IDragAndDrop dragAndDrop) {
+        Preconditions.assertUIThread();
         unlinkToDeath();
         mSystemUiProxy = proxy;
         mPip = pip;
@@ -232,6 +239,10 @@ public class SystemUiProxy implements ISystemUiProxy {
         setUnfoldAnimationListener(mUnfoldAnimationListener);
     }
 
+    /**
+     * Clear the proxy to release held resources and turn the majority of its operations into no-ops
+     */
+    @MainThread
     public void clearProxy() {
         setProxy(null, null, null, null, null, null, null, null, null, null, null, null);
     }
@@ -292,8 +303,10 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
+    @MainThread
     @Override
     public void onStatusBarMotionEvent(MotionEvent event) {
+        Preconditions.assertUIThread();
         if (mSystemUiProxy != null) {
             try {
                 mSystemUiProxy.onStatusBarMotionEvent(event);
