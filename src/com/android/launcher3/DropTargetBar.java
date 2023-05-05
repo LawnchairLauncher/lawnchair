@@ -152,6 +152,7 @@ public class DropTargetBar extends FrameLayout
             firstButton.setTextVisible(true);
             firstButton.setIconVisible(true);
             firstButton.measure(widthSpec, heightSpec);
+            firstButton.resizeTextToFit();
         } else if (visibleCount == 2) {
             DeviceProfile dp = mLauncher.getDeviceProfile();
             int verticalPadding = dp.dropTargetVerticalPaddingPx;
