@@ -359,18 +359,6 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
             return true;
         });
         sandboxCategory.addPreference(launchOverviewTutorialPreference);
-        Preference launchSandboxModeTutorialPreference = new Preference(context);
-        launchSandboxModeTutorialPreference.setKey("launchSandboxMode");
-        launchSandboxModeTutorialPreference.setTitle("Launch Sandbox Mode");
-        launchSandboxModeTutorialPreference.setSummary("Practice navigation gestures");
-        launchSandboxModeTutorialPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(launchSandboxIntent
-                    .putExtra("use_tutorial_menu", false)
-                    .putExtra("tutorial_steps", new String[] {"SANDBOX_MODE"}));
-            return true;
-        });
-        sandboxCategory.addPreference(launchSandboxModeTutorialPreference);
-
         Preference launchSecondaryDisplayPreference = new Preference(context);
         launchSecondaryDisplayPreference.setKey("launchSecondaryDisplay");
         launchSecondaryDisplayPreference.setTitle("Launch Secondary Display");
