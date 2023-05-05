@@ -19,20 +19,17 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
 import static com.android.launcher3.Utilities.squaredHypot;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_CURSOR_HOVER_STATES;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_TOUCHING;
 
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
@@ -43,11 +40,9 @@ import com.android.quickstep.InputConsumer;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 /**
- * Listens for touch and hover events to unstash the Taskbar.
- *
- * <p>Cancels the current gesture if the long press causes the Taskbar to be unstashed.
+ * Listens for a long press, and cancels the current gesture if that causes Taskbar to be unstashed.
  */
-public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
+public class TaskbarStashInputConsumer extends DelegateInputConsumer {
 
     private final TaskbarActivityContext mTaskbarActivityContext;
     private final GestureDetector mLongPressDetector;
@@ -69,15 +64,9 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
 
     private final boolean mIsTransientTaskbar;
 
-    private boolean mIsStashedTaskbarHovered = false;
-    private final Rect mStashedTaskbarHandleBounds = new Rect();
-    private final Rect mBottomEdgeBounds = new Rect();
-    private final int mBottomScreenEdge;
-    private final int mStashedTaskbarBottomEdge;
-
     private final @Nullable TransitionCallback mTransitionCallback;
 
-    public TaskbarUnstashInputConsumer(Context context, InputConsumer delegate,
+    public TaskbarStashInputConsumer(Context context, InputConsumer delegate,
             InputMonitorCompat inputMonitor, TaskbarActivityContext taskbarActivityContext) {
         super(delegate, inputMonitor);
         mTaskbarActivityContext = taskbarActivityContext;
@@ -101,11 +90,6 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
             }
         });
 
-        mBottomScreenEdge = res.getDimensionPixelSize(
-                R.dimen.taskbar_stashed_screen_edge_hover_deadzone_height);
-        mStashedTaskbarBottomEdge =
-                res.getDimensionPixelSize(R.dimen.taskbar_stashed_below_hover_deadzone_height);
-
         mTransitionCallback = mIsTransientTaskbar
                 ? taskbarActivityContext.getTranslationCallbacks()
                 : null;
@@ -113,7 +97,7 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
 
     @Override
     public int getType() {
-        return TYPE_TASKBAR_STASH | TYPE_CURSOR_HOVER | mDelegate.getType();
+        return TYPE_TASKBAR_STASH | mDelegate.getType();
     }
 
     @Override
@@ -228,74 +212,5 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
                 setActive(motionEvent);
             }
         }
-    }
-
-    /**
-     * Listen for hover events for the stashed taskbar.
-     *
-     * <p>When hovered over the stashed taskbar handle, show the unstash hint.
-     * <p>When the cursor is touching the bottom edge below the stashed taskbar, unstash it.
-     * <p>When the cursor is within a defined threshold of the screen's bottom edge outside of
-     * the stashed taskbar, unstash it.
-     */
-    @Override
-    public void onHoverEvent(MotionEvent ev) {
-        if (!ENABLE_CURSOR_HOVER_STATES.get() || mTaskbarActivityContext == null
-                || !mTaskbarActivityContext.isTaskbarStashed()) {
-            return;
-        }
-
-        if (mIsStashedTaskbarHovered) {
-            updateHoveredTaskbarState((int) ev.getX(), (int) ev.getY());
-        } else {
-            updateUnhoveredTaskbarState((int) ev.getX(), (int) ev.getY());
-        }
-    }
-
-    private void updateHoveredTaskbarState(int x, int y) {
-        DeviceProfile dp = mTaskbarActivityContext.getDeviceProfile();
-        mStashedTaskbarHandleBounds.set(
-                (dp.widthPx - (int) mUnstashArea) / 2,
-                dp.heightPx - dp.stashedTaskbarHeight,
-                (int) (((dp.widthPx - mUnstashArea) / 2) + mUnstashArea),
-                dp.heightPx);
-        mBottomEdgeBounds.set(mStashedTaskbarHandleBounds);
-        mBottomEdgeBounds.top = dp.heightPx - mStashedTaskbarBottomEdge;
-
-        if (mBottomEdgeBounds.contains(x, y)) {
-            // If hovering stashed taskbar and then hover screen bottom edge, unstash it.
-            mTaskbarActivityContext.onSwipeToUnstashTaskbar();
-            mIsStashedTaskbarHovered = false;
-        } else if (!mStashedTaskbarHandleBounds.contains(x, y)) {
-            // If exit hovering stashed taskbar, remove hint.
-            startStashedTaskbarHover(/* isHovered = */ false);
-        }
-    }
-
-    private void updateUnhoveredTaskbarState(int x, int y) {
-        DeviceProfile dp = mTaskbarActivityContext.getDeviceProfile();
-        mStashedTaskbarHandleBounds.set(
-                (dp.widthPx - (int) mUnstashArea) / 2,
-                dp.heightPx - dp.stashedTaskbarHeight,
-                (int) (((dp.widthPx - mUnstashArea) / 2) + mUnstashArea),
-                dp.heightPx);
-        mBottomEdgeBounds.set(
-                0,
-                dp.heightPx - mBottomScreenEdge,
-                dp.widthPx,
-                dp.heightPx);
-
-        if (mStashedTaskbarHandleBounds.contains(x, y)) {
-            // If enter hovering stashed taskbar, start hint.
-            startStashedTaskbarHover(/* isHovered = */ true);
-        } else if (mBottomEdgeBounds.contains(x, y)) {
-            // If hover screen's bottom edge not below the stashed taskbar, unstash it.
-            mTaskbarActivityContext.onSwipeToUnstashTaskbar();
-        }
-    }
-
-    private void startStashedTaskbarHover(boolean isHovered) {
-        mTaskbarActivityContext.startTaskbarUnstashHint(isHovered, /* forceUnstash = */ true);
-        mIsStashedTaskbarHovered = isHovered;
     }
 }
