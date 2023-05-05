@@ -292,8 +292,6 @@
     <dimen name="taskbar_stashed_small_screen">108dp</dimen>
     <dimen name="taskbar_unstash_input_area">316dp</dimen>
     <dimen name="taskbar_stashed_handle_height">4dp</dimen>
-    <dimen name="taskbar_stashed_screen_edge_hover_deadzone_height">10dp</dimen>
-    <dimen name="taskbar_stashed_below_hover_deadzone_height">1dp</dimen>
     <dimen name="taskbar_edu_horizontal_margin">112dp</dimen>
     <dimen name="taskbar_nav_buttons_width_kids">88dp</dimen>
     <dimen name="taskbar_nav_buttons_height_kids">40dp</dimen>
