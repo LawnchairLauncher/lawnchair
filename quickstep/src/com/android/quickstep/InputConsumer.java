@@ -41,7 +41,6 @@ public interface InputConsumer {
     int TYPE_ONE_HANDED = 1 << 11;
     int TYPE_TASKBAR_STASH = 1 << 12;
     int TYPE_STATUS_BAR = 1 << 13;
-    int TYPE_CURSOR_HOVER = 1 << 14;
 
     String[] NAMES = new String[] {
            "TYPE_NO_OP",                    // 0
@@ -58,7 +57,6 @@ public interface InputConsumer {
             "TYPE_ONE_HANDED",              // 11
             "TYPE_TASKBAR_STASH",           // 12
             "TYPE_STATUS_BAR",              // 13
-            "TYPE_CURSOR_HOVER",            // 14
     };
 
     InputConsumer NO_OP = () -> TYPE_NO_OP;
