@@ -29,7 +29,6 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_TRACKPAD_GESTURE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
 import static com.android.quickstep.GestureState.TrackpadGestureType.getTrackpadGestureType;
-import static com.android.quickstep.InputConsumer.TYPE_CURSOR_HOVER;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_DOWN;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.MOTION_MOVE;
@@ -111,7 +110,7 @@ import com.android.quickstep.inputconsumers.ResetGestureInputConsumer;
 import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
 import com.android.quickstep.inputconsumers.StatusBarInputConsumer;
 import com.android.quickstep.inputconsumers.SysUiOverlayInputConsumer;
-import com.android.quickstep.inputconsumers.TaskbarUnstashInputConsumer;
+import com.android.quickstep.inputconsumers.TaskbarStashInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActiveGestureLog.CompoundString;
 import com.android.quickstep.util.ProtoTracer;
@@ -642,17 +641,12 @@ public class TouchInteractionService extends Service
                 TraceHelper.FLAG_ALLOW_BINDER_TRACKING);
 
         final int action = event.getActionMasked();
-        // Note this will create a new consumer every mouse click, as after ACTION_UP from the click
-        // an ACTION_HOVER_ENTER will fire as well.
-        boolean isHoverActionWithoutConsumer =
-                event.isHoverEvent() && (mUncheckedConsumer.getType() & TYPE_CURSOR_HOVER) == 0;
-        if (action == ACTION_DOWN || isHoverActionWithoutConsumer) {
+        if (action == ACTION_DOWN) {
             mRotationTouchHelper.setOrientationTransformIfNeeded(event);
 
-            if ((!mDeviceState.isOneHandedModeActive()
+            if (!mDeviceState.isOneHandedModeActive()
                     && mRotationTouchHelper.isInSwipeUpTouchRegion(event,
-                    mOverviewComponentObserver.getActivityInterface()))
-                    || isHoverActionWithoutConsumer) {
+                    mOverviewComponentObserver.getActivityInterface())) {
                 // Clone the previous gesture state since onConsumerAboutToBeSwitched might trigger
                 // onConsumerInactive and wipe the previous gesture state
                 GestureState prevGestureState = new GestureState(mGestureState);
@@ -729,8 +723,6 @@ public class TouchInteractionService extends Service
             if (action == ACTION_POINTER_DOWN) {
                 mGestureState.setTrackpadGestureType(getTrackpadGestureType(event));
             }
-        } else if (event.isHoverEvent()) {
-            mUncheckedConsumer.onHoverEvent(event);
         } else {
             mUncheckedConsumer.onMotionEvent(event);
         }
@@ -854,7 +846,7 @@ public class TouchInteractionService extends Service
                 base = tryCreateAssistantInputConsumer(base, newGestureState, event, reasonString);
             }
 
-            // If Taskbar is present, we listen for long press or cursor hover events to unstash it.
+            // If Taskbar is present, we listen for long press to unstash it.
             TaskbarActivityContext tac = mTaskbarManager.getCurrentActivityContext();
             if (tac != null) {
                 // Present always on large screen or on small screen w/ flag
@@ -865,8 +857,8 @@ public class TouchInteractionService extends Service
                             .append(reasonPrefix)
                             .append(SUBSTRING_PREFIX)
                             .append("TaskbarActivityContext != null, "
-                                    + "using TaskbarUnstashInputConsumer");
-                    base = new TaskbarUnstashInputConsumer(this, base, mInputMonitorCompat, tac);
+                                    + "using TaskbarStashInputConsumer");
+                    base = new TaskbarStashInputConsumer(this, base, mInputMonitorCompat, tac);
                 }
             }
 
