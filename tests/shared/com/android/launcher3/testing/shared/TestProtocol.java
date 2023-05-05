@@ -90,6 +90,7 @@ public final class TestProtocol {
     public static final String REQUEST_DISABLE_TRANSIENT_TASKBAR = "disable-transient-taskbar";
     public static final String REQUEST_UNSTASH_TASKBAR_IF_STASHED = "unstash-taskbar-if-stashed";
     public static final String REQUEST_STASHED_TASKBAR_HEIGHT = "stashed-taskbar-height";
+    public static final String REQUEST_STASHED_TASKBAR_SCALE = "taskbar-stash-handle-scale";
     public static final String REQUEST_RECREATE_TASKBAR = "recreate-taskbar";
     public static final String REQUEST_APP_LIST_FREEZE_FLAGS = "app-list-freeze-flags";
     public static final String REQUEST_APPS_LIST_SCROLL_Y = "apps-list-scroll-y";
