@@ -856,15 +856,18 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     /**
      * Creates and starts a partial unstash animation, hinting at the new state that will trigger
      * when long press is detected.
+     *
      * @param animateForward Whether we are going towards the new unstashed state or returning to
      *                       the stashed state.
+     * @param forceUnstash Whether we force the unstash hint to animate.
      */
-    public void startUnstashHint(boolean animateForward) {
+    protected void startUnstashHint(boolean animateForward, boolean forceUnstash) {
         if (!isStashed()) {
             // Already unstashed, no need to hint in that direction.
             return;
         }
-        if (!canCurrentlyManuallyUnstash()) {
+        // TODO(b/270395798): Clean up after removing long-press unstashing code path.
+        if (!canCurrentlyManuallyUnstash() && !forceUnstash) {
             // If any other flags are causing us to be stashed, long press won't cause us to
             // unstash, so don't hint that it will.
             return;
