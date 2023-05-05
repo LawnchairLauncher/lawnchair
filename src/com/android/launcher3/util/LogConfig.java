@@ -55,4 +55,9 @@ public class LogConfig {
      * When turned on, we enable quick launch v2 related logging.
      */
     public static final String QUICK_LAUNCH_V2 = "QuickLaunchV2";
+
+    /**
+     * When turned on, we enable Gms Play related logging.
+     */
+    public static final String GMS_PLAY = "GmsPlay";
 }
