@@ -30,7 +30,5 @@ data class BubbleBarBubble(
     val appName: String
 ) {
 
-    fun getKey(): String {
-        return info.key
-    }
+    val key: String = info.key
 }
