@@ -116,16 +116,6 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 return response;
             }
 
-            case TestProtocol.REQUEST_STASHED_TASKBAR_SCALE: {
-                runOnTISBinder(tisBinder -> {
-                    response.putFloat(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                            tisBinder.getTaskbarManager()
-                                    .getCurrentActivityContext()
-                                    .getStashedTaskbarScale());
-                });
-                return response;
-            }
-
             case TestProtocol.REQUEST_TASKBAR_ALL_APPS_TOP_PADDING: {
                 return getTISBinderUIProperty(Bundle::putInt, tisBinder ->
                         tisBinder.getTaskbarManager()
