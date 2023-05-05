@@ -157,8 +157,15 @@ public class PendingItemDragHelper extends DragPreviewProvider {
                 previewBounds.right -= padding;
             }
             if (mAppWidgetHostViewPreview != null) {
-                previewWidth = mAppWidgetHostViewPreview.getMeasuredWidth();
-                previewHeight = mAppWidgetHostViewPreview.getMeasuredHeight();
+                float previewScale = mAppWidgetHostViewPreview.getScaleX();
+                int widgetWidth = mAppWidgetHostViewPreview.getMeasuredWidth();
+                int widgetHeight = mAppWidgetHostViewPreview.getMeasuredHeight();
+                previewWidth = Math.round(widgetWidth * previewScale);
+                previewHeight = Math.round(widgetHeight * previewScale);
+
+                previewBounds.offset(
+                        Math.round(widgetWidth * (previewScale - 1) / 2),
+                        Math.round(widgetHeight * (previewScale - 1) / 2));
             } else {
                 previewWidth = preview.getIntrinsicWidth();
                 previewHeight = preview.getIntrinsicHeight();
