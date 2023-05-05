@@ -107,8 +107,6 @@ public final class LauncherInstrumentation {
     static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
     static final Pattern EVENT_TOUCH_CANCEL_TIS = getTouchEventPatternTIS("ACTION_CANCEL");
-    static final Pattern EVENT_HOVER_ENTER_TIS = getTouchEventPatternTIS("ACTION_HOVER_ENTER");
-    static final Pattern EVENT_HOVER_EXIT_TIS = getTouchEventPatternTIS("ACTION_HOVER_EXIT");
 
     private static final Pattern EVENT_KEY_BACK_DOWN =
             getKeyEventPattern("ACTION_DOWN", "KEYCODE_BACK");
@@ -142,9 +140,7 @@ public final class LauncherInstrumentation {
      * Represents a point in the code at which a callback can run.
      */
     public enum CALLBACK_RUN_POINT {
-        CALLBACK_HOLD_BEFORE_DROP,
-        CALLBACK_HOVER_ENTER,
-        CALLBACK_HOVER_EXIT,
+        CALLBACK_HOLD_BEFORE_DROP
     }
 
     private Consumer<CALLBACK_RUN_POINT> mCallbackAtRunPoint = null;
@@ -1685,12 +1681,6 @@ public final class LauncherInstrumentation {
                                     || gestureScope == GestureScope.OUTSIDE_WITH_KEYCODE
                                     ? EVENT_TOUCH_CANCEL_TIS : EVENT_TOUCH_UP_TIS);
                 }
-                break;
-            case MotionEvent.ACTION_HOVER_ENTER:
-                expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_HOVER_ENTER_TIS);
-                break;
-            case MotionEvent.ACTION_HOVER_EXIT:
-                expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_HOVER_EXIT_TIS);
                 break;
         }
 
