@@ -202,7 +202,7 @@ public class SimpleWidgetsSearchAlgorithmTest {
 
             WidgetItem widgetItem = new WidgetItem(
                     LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, widgetInfo),
-                    mTestProfile, mIconCache);
+                    mTestProfile, mIconCache, mContext);
             widgetItems.add(widgetItem);
         }
         return widgetItems;
