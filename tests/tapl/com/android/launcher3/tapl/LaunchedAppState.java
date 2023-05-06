@@ -223,6 +223,9 @@ public final class LaunchedAppState extends Background {
                     new Point(taskbarUnstashArea.x, taskbarUnstashArea.y), null);
 
             mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID);
+
+            mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_HOVER_EXIT,
+                    new Point(taskbarUnstashArea.x, taskbarUnstashArea.y), null);
         }
     }
 
