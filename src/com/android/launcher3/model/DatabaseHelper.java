@@ -15,8 +15,8 @@
  */
 package com.android.launcher3.model;
 
-import static com.android.launcher3.LauncherSettings.Favorites.addTableToDb;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
+import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -36,6 +36,9 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.AutoInstallsLayout;
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
+import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherFiles;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
@@ -55,7 +58,6 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Locale;
-import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -74,23 +76,45 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
     private static final boolean LOGD = false;
 
     private static final String DOWNGRADE_SCHEMA_FILE = "downgrade_schema.json";
+    public static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
     private final Context mContext;
-    private final ToLongFunction<UserHandle> mUserSerialProvider;
-    private final Runnable mOnEmptyDbCreateCallback;
-
+    private final boolean mForMigration;
     private int mMaxItemId = -1;
     public boolean mHotseatRestoreTableExists;
+
+    public static DatabaseHelper createDatabaseHelper(Context context, boolean forMigration) {
+        return createDatabaseHelper(context, null, forMigration);
+    }
+
+    public static DatabaseHelper createDatabaseHelper(Context context, String dbName,
+            boolean forMigration) {
+        if (dbName == null) {
+            dbName = InvariantDeviceProfile.INSTANCE.get(context).dbFile;
+        }
+        DatabaseHelper databaseHelper = new DatabaseHelper(context, dbName, forMigration);
+        // Table creation sometimes fails silently, which leads to a crash loop.
+        // This way, we will try to create a table every time after crash, so the device
+        // would eventually be able to recover.
+        if (!tableExists(databaseHelper.getReadableDatabase(), Favorites.TABLE_NAME)) {
+            Log.e(TAG, "Tables are missing after onCreate has been called. Trying to recreate");
+            // This operation is a no-op if the table already exists.
+            databaseHelper.addFavoritesTable(databaseHelper.getWritableDatabase(), true);
+        }
+        databaseHelper.mHotseatRestoreTableExists = tableExists(
+                databaseHelper.getReadableDatabase(), Favorites.HYBRID_HOTSEAT_BACKUP_TABLE);
+
+        databaseHelper.initIds();
+        return databaseHelper;
+    }
 
     /**
      * Constructor used in tests and for restore.
      */
-    public DatabaseHelper(Context context, String dbName,
-            ToLongFunction<UserHandle> userSerialProvider, Runnable onEmptyDbCreateCallback) {
+    public DatabaseHelper(Context context, String dbName, boolean forMigration) {
         super(context, dbName, SCHEMA_VERSION);
         mContext = context;
-        mUserSerialProvider = userSerialProvider;
-        mOnEmptyDbCreateCallback = onEmptyDbCreateCallback;
+        mForMigration = forMigration;
     }
 
     protected void initIds() {
@@ -107,11 +131,13 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
 
         mMaxItemId = 1;
 
-        addTableToDb(db, getDefaultUserSerial(), false /* optional */);
+        addFavoritesTable(db, false);
 
         // Fresh and clean launcher DB.
         mMaxItemId = initializeMaxItemId(db);
-        mOnEmptyDbCreateCallback.run();
+        if (!mForMigration) {
+            onEmptyDbCreated();
+        }
     }
 
     public void onAddOrDeleteOp(SQLiteDatabase db) {
@@ -121,8 +147,38 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
         }
     }
 
-    private long getDefaultUserSerial() {
-        return mUserSerialProvider.applyAsLong(Process.myUserHandle());
+    /**
+     * Re-composite given key in respect to database. If the current db is
+     * {@link LauncherFiles#LAUNCHER_DB}, return the key as-is. Otherwise append the db name to
+     * given key. e.g. consider key="EMPTY_DATABASE_CREATED", dbName="minimal.db", the returning
+     * string will be "EMPTY_DATABASE_CREATED@minimal.db".
+     */
+    public String getKey(final String key) {
+        if (TextUtils.equals(getDatabaseName(), LauncherFiles.LAUNCHER_DB)) {
+            return key;
+        }
+        return key + "@" + getDatabaseName();
+    }
+
+    /**
+     * Overridden in tests.
+     */
+    protected void onEmptyDbCreated() {
+        // Set the flag for empty DB
+        LauncherPrefs.getPrefs(mContext).edit().putBoolean(getKey(EMPTY_DATABASE_CREATED), true)
+                .commit();
+    }
+
+    public long getSerialNumberForUser(UserHandle user) {
+        return UserCache.INSTANCE.get(mContext).getSerialNumberForUser(user);
+    }
+
+    public long getDefaultUserSerial() {
+        return getSerialNumberForUser(Process.myUserHandle());
+    }
+
+    private void addFavoritesTable(SQLiteDatabase db, boolean optional) {
+        Favorites.addTableToDb(db, getDefaultUserSerial(), optional);
     }
 
     @Override
