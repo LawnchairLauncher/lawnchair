@@ -829,9 +829,6 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         HOME_NAVIGATION,
         HOME_NAVIGATION_COMPLETE,
         OVERVIEW_NAVIGATION,
-        OVERVIEW_NAVIGATION_COMPLETE,
-        ASSISTANT,
-        ASSISTANT_COMPLETE,
-        SANDBOX_MODE
+        OVERVIEW_NAVIGATION_COMPLETE
     }
 }

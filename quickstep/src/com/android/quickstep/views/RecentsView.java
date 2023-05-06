@@ -2285,7 +2285,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         }
     }
 
-    public abstract void startHome();
+    public void startHome() {
+        startHome(mActivity.isStarted());
+    }
+
+    public abstract void startHome(boolean animated);
 
     public void reset() {
         setCurrentTask(-1);

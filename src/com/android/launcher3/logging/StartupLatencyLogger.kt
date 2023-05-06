@@ -21,14 +21,13 @@ open class StartupLatencyLogger(val latencyType: LatencyType) {
         const val UNSET_LONG = -1L
     }
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     val startTimeByEvent = SparseLongArray()
-    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     val endTimeByEvent = SparseLongArray()
 
-    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
-    var cardinality: Int = UNSET_INT
-    @VisibleForTesting(otherwise = VisibleForTesting.PACKAGE_PRIVATE)
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED) var cardinality: Int = UNSET_INT
+    @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     var workspaceLoadStartTime: Long = UNSET_LONG
 
     private var isInTest = false

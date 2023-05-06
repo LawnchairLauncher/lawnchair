@@ -17,7 +17,6 @@
 package com.android.launcher3.widget;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
-import static com.android.launcher3.Utilities.ATLEAST_S;
 import static com.android.launcher3.widget.LauncherAppWidgetProviderInfo.fromProviderInfo;
 import static com.android.launcher3.widget.util.WidgetSizes.getWidgetItemSizePx;
 
@@ -25,6 +24,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Process;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Size;
@@ -219,14 +219,11 @@ public class WidgetCell extends LinearLayout {
                 mItem.spanX, mItem.spanY));
         mWidgetDims.setContentDescription(context.getString(
                 R.string.widget_accessible_dims_format, mItem.spanX, mItem.spanY));
-        if (ATLEAST_S && mItem.widgetInfo != null) {
-            CharSequence description = mItem.widgetInfo.loadDescription(context);
-            if (description != null && description.length() > 0) {
-                mWidgetDescription.setText(description);
-                mWidgetDescription.setVisibility(VISIBLE);
-            } else {
-                mWidgetDescription.setVisibility(GONE);
-            }
+        if (!TextUtils.isEmpty(mItem.description)) {
+            mWidgetDescription.setText(mItem.description);
+            mWidgetDescription.setVisibility(VISIBLE);
+        } else {
+            mWidgetDescription.setVisibility(GONE);
         }
 
         if (item.activityInfo != null) {
