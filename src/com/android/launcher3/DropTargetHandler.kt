@@ -6,7 +6,6 @@ import com.android.launcher3.DropTarget.DragObject
 import com.android.launcher3.SecondaryDropTarget.DeferredOnComplete
 import com.android.launcher3.dragndrop.DragLayer
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent
-import com.android.launcher3.model.ModelWriter
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
 import com.android.launcher3.util.IntSet
@@ -21,8 +20,6 @@ import com.android.launcher3.views.Snackbar
  */
 class DropTargetHandler(launcher: Launcher) {
     val mLauncher: Launcher = launcher
-
-    val modelWriter: ModelWriter = mLauncher.modelWriter
 
     fun onDropAnimationComplete() {
         mLauncher.stateManager.goToState(LauncherState.NORMAL)
@@ -87,7 +84,7 @@ class DropTargetHandler(launcher: Launcher) {
             else mLauncher.workspace.currentPageScreenIds
         val onUndoClicked = Runnable {
             mLauncher.setPagesToBindSynchronously(pageIds)
-            modelWriter.abortDelete()
+            mLauncher.modelWriter.abortDelete()
             mLauncher.statsLogManager.logger().log(LauncherEvent.LAUNCHER_UNDO)
         }
 
@@ -95,7 +92,7 @@ class DropTargetHandler(launcher: Launcher) {
             mLauncher,
             R.string.item_removed,
             R.string.undo,
-            modelWriter::commitDelete,
+            mLauncher.modelWriter::commitDelete,
             onUndoClicked
         )
     }
