@@ -34,8 +34,6 @@ import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.TYPE_INPUT_METHOD
 import android.view.WindowManager.LayoutParams.TYPE_VOICE_INTERACTION
 import com.android.internal.policy.GestureNavigationSettingsObserver
-import com.android.launcher3.AbstractFloatingView
-import com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_OVERLAY_PROXY
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.anim.AlphaUpdateListener
@@ -190,7 +188,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
     /**
      * Called to update the touchable insets.
      *
-     * @see InternalInsetsInfo.setTouchableInsets
+     * @see ViewTreeObserver.InternalInsetsInfo.setTouchableInsets
      */
     fun updateInsetsTouchability(insetsInfo: ViewTreeObserver.InternalInsetsInfo) {
         insetsInfo.touchableRegion.setEmpty()
@@ -205,7 +203,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
         } else if (
             controllers.navbarButtonsViewController.isImeVisible &&
-                controllers.taskbarStashController.isStashed()
+                controllers.taskbarStashController.isStashed
         ) {
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
         } else if (!controllers.uiController.isTaskbarTouchable) {
@@ -214,26 +212,16 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         } else if (controllers.taskbarDragController.isSystemDragInProgress) {
             // Let touches pass through us.
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
-        } else if (AbstractFloatingView.hasOpenView(context, TYPE_TASKBAR_OVERLAY_PROXY)) {
-            // Let touches pass through us if icons are hidden.
-            if (controllers.taskbarViewController.areIconsVisible()) {
-                insetsInfo.touchableRegion.set(touchableRegion)
-            }
-            insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
+        } else if (context.isTaskbarWindowFullscreen) {
+            // Intercept entire fullscreen window.
+            insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_FRAME)
+            insetsIsTouchableRegion = false
         } else if (
-            controllers.taskbarViewController.areIconsVisible() ||
-                AbstractFloatingView.hasOpenView(context, AbstractFloatingView.TYPE_ALL) ||
-                context.isNavBarKidsModeActive
+            controllers.taskbarViewController.areIconsVisible() || context.isNavBarKidsModeActive
         ) {
             // Taskbar has some touchable elements, take over the full taskbar area
-            insetsInfo.setTouchableInsets(
-                if (context.isTaskbarWindowFullscreen) {
-                    TOUCHABLE_INSETS_FRAME
-                } else {
-                    insetsInfo.touchableRegion.set(touchableRegion)
-                    TOUCHABLE_INSETS_REGION
-                }
-            )
+            insetsInfo.touchableRegion.set(touchableRegion)
+            insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
             insetsIsTouchableRegion = false
         } else {
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)

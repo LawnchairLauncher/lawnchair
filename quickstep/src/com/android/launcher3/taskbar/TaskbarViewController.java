@@ -639,7 +639,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         public View.OnClickListener getAllAppsButtonClickListener() {
             return v -> {
                 mActivity.getStatsLogManager().logger().log(LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP);
-                mControllers.taskbarAllAppsController.show();
+                mControllers.taskbarAllAppsController.toggle();
             };
         }
 

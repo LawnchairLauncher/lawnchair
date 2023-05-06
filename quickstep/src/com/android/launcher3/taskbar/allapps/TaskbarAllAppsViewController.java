@@ -16,7 +16,6 @@
 package com.android.launcher3.taskbar.allapps;
 
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_STASHED_IN_TASKBAR_ALL_APPS;
-import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -88,8 +87,10 @@ final class TaskbarAllAppsViewController {
     }
 
     private void setUpTaskbarStashing() {
-        mTaskbarStashController.updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, true);
-        mTaskbarStashController.applyState(mOverlayController.getOpenDuration());
+        if (DisplayController.isTransientTaskbar(mContext)) {
+            mTaskbarStashController.updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, true);
+            mTaskbarStashController.applyState(mOverlayController.getOpenDuration());
+        }
 
         mNavbarButtonsViewController.setSlideInViewVisible(true);
         mSlideInView.setOnCloseBeginListener(() -> {
@@ -100,11 +101,6 @@ final class TaskbarAllAppsViewController {
             if (DisplayController.isTransientTaskbar(mContext)) {
                 mTaskbarStashController.updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, false);
                 mTaskbarStashController.applyState(mOverlayController.getCloseDuration());
-            } else {
-                // Post in case view is closing due to gesture navigation. If a gesture is in
-                // progress, wait to unstash until after the gesture is finished.
-                MAIN_EXECUTOR.post(() -> mTaskbarStashController.resetFlagIfNoGestureInProgress(
-                        FLAG_STASHED_IN_TASKBAR_ALL_APPS));
             }
         });
     }
