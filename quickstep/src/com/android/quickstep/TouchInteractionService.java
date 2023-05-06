@@ -112,7 +112,7 @@ import com.android.quickstep.inputconsumers.OverviewWithoutFocusInputConsumer;
 import com.android.quickstep.inputconsumers.ProgressDelegateInputConsumer;
 import com.android.quickstep.inputconsumers.ResetGestureInputConsumer;
 import com.android.quickstep.inputconsumers.ScreenPinnedInputConsumer;
-import com.android.quickstep.inputconsumers.StatusBarInputConsumer;
+import com.android.quickstep.inputconsumers.TrackpadStatusBarInputConsumer;
 import com.android.quickstep.inputconsumers.SysUiOverlayInputConsumer;
 import com.android.quickstep.inputconsumers.TaskbarUnstashInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
@@ -906,8 +906,9 @@ public class TouchInteractionService extends Service
                     && !previousGestureState.isRecentsAnimationRunning()) {
                 reasonString = newCompoundString(reasonPrefix)
                         .append(SUBSTRING_PREFIX)
-                        .append("Trackpad 3-finger gesture, using StatusBarInputConsumer");
-                base = new StatusBarInputConsumer(getBaseContext(), base, mInputMonitorCompat);
+                        .append("Trackpad 3-finger gesture, using TrackpadStatusBarInputConsumer");
+                base = new TrackpadStatusBarInputConsumer(getBaseContext(), base,
+                        mInputMonitorCompat);
             }
 
             if (mDeviceState.isScreenPinningActive()) {
