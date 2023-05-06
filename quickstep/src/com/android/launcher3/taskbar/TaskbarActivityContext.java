@@ -84,6 +84,12 @@ import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.AutohideSuspendFlag;
 import com.android.launcher3.taskbar.TaskbarTranslationController.TransitionCallback;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController;
+import com.android.launcher3.taskbar.bubbles.BubbleBarController;
+import com.android.launcher3.taskbar.bubbles.BubbleBarView;
+import com.android.launcher3.taskbar.bubbles.BubbleBarViewController;
+import com.android.launcher3.taskbar.bubbles.BubbleControllers;
+import com.android.launcher3.taskbar.bubbles.BubbleStashController;
+import com.android.launcher3.taskbar.bubbles.BubbleStashedHandleViewController;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -107,6 +113,7 @@ import com.android.systemui.unfold.updates.RotationChangeProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
 import java.io.PrintWriter;
+import java.util.Optional;
 
 /**
  * The {@link ActivityContext} with which we inflate Taskbar-related Views. This allows UI elements
@@ -196,10 +203,22 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         TaskbarScrimView taskbarScrimView = mDragLayer.findViewById(R.id.taskbar_scrim);
         FrameLayout navButtonsView = mDragLayer.findViewById(R.id.navbuttons_view);
         StashedHandleView stashedHandleView = mDragLayer.findViewById(R.id.stashed_handle);
+        BubbleBarView bubbleBarView = mDragLayer.findViewById(R.id.taskbar_bubbles);
+        StashedHandleView bubbleHandleView = mDragLayer.findViewById(R.id.stashed_bubble_handle);
 
         mAccessibilityDelegate = new TaskbarShortcutMenuAccessibilityDelegate(this);
 
         final boolean isDesktopMode = getPackageManager().hasSystemFeature(FEATURE_PC);
+
+        // If Bubble bar is present, TaskbarControllers depends on it so build it first.
+        Optional<BubbleControllers> bubbleControllersOptional = Optional.empty();
+        if (BubbleBarController.BUBBLE_BAR_ENABLED) {
+            bubbleControllersOptional = Optional.of(new BubbleControllers(
+                    new BubbleBarController(this, bubbleBarView),
+                    new BubbleBarViewController(this, bubbleBarView),
+                    new BubbleStashController(this),
+                    new BubbleStashedHandleViewController(this, bubbleHandleView)));
+        }
 
         // Construct controllers.
         mControllers = new TaskbarControllers(this,
@@ -240,7 +259,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                         : TaskbarRecentAppsController.DEFAULT,
                 new TaskbarEduTooltipController(this),
                 new KeyboardQuickSwitchController(),
-                new TaskbarDividerPopupController(this));
+                new TaskbarDividerPopupController(this),
+                bubbleControllersOptional);
     }
 
     public void init(@NonNull TaskbarSharedState sharedState) {
