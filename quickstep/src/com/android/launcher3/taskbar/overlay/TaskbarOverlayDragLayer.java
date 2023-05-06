@@ -112,7 +112,7 @@ public class TaskbarOverlayDragLayer extends
 
     @Override
     public void onComputeInternalInsets(ViewTreeObserver.InternalInsetsInfo inoutInfo) {
-        if (mActivity.getDragController().isSystemDragInProgress()) {
+        if (mActivity.isAnySystemDragInProgress()) {
             inoutInfo.touchableRegion.setEmpty();
             inoutInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
         }

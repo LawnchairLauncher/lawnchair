@@ -80,6 +80,12 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
         return mOverlayController;
     }
 
+    /** Returns {@code true} if overlay or Taskbar windows are handling a system drag. */
+    boolean isAnySystemDragInProgress() {
+        return mDragController.isSystemDragInProgress()
+                || mTaskbarContext.getDragController().isSystemDragInProgress();
+    }
+
     @Override
     public DeviceProfile getDeviceProfile() {
         return mOverlayController.getLauncherDeviceProfile();
