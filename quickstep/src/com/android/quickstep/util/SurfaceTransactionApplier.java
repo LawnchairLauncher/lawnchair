@@ -22,12 +22,10 @@ import android.os.Message;
 import android.view.SurfaceControl;
 import android.view.SurfaceControl.Transaction;
 import android.view.View;
+import android.view.View.OnAttachStateChangeListener;
 import android.view.ViewRootImpl;
 
 import com.android.quickstep.RemoteAnimationTargets.ReleaseCheck;
-
-import java.util.function.Consumer;
-
 
 /**
  * Helper class to apply surface transactions in sync with RenderThread similar to
@@ -39,9 +37,11 @@ public class SurfaceTransactionApplier extends ReleaseCheck {
 
     private static final int MSG_UPDATE_SEQUENCE_NUMBER = 0;
 
-    private final SurfaceControl mBarrierSurfaceControl;
-    private final ViewRootImpl mTargetViewRootImpl;
     private final Handler mApplyHandler;
+
+    private boolean mInitialized;
+    private SurfaceControl mBarrierSurfaceControl;
+    private ViewRootImpl mTargetViewRootImpl;
 
     private int mLastSequenceNumber = 0;
 
@@ -49,10 +49,33 @@ public class SurfaceTransactionApplier extends ReleaseCheck {
      * @param targetView The view in the surface that acts as synchronization anchor.
      */
     public SurfaceTransactionApplier(View targetView) {
-        mTargetViewRootImpl = targetView.getViewRootImpl();
-        mBarrierSurfaceControl = mTargetViewRootImpl.getSurfaceControl();
+        if (targetView.isAttachedToWindow()) {
+            initialize(targetView);
+        } else {
+            mInitialized = false;
+            targetView.addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View v) {
+                    if (!mInitialized) {
+                        targetView.removeOnAttachStateChangeListener(this);
+                        initialize(targetView);
+                    }
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View v) {
+                    // Do nothing
+                }
+            });
+        }
         mApplyHandler = new Handler(this::onApplyMessage);
         setCanRelease(true);
+    }
+
+    private void initialize(View view) {
+        mTargetViewRootImpl = view.getViewRootImpl();
+        mBarrierSurfaceControl = mTargetViewRootImpl.getSurfaceControl();
+        mInitialized = true;
     }
 
     protected boolean onApplyMessage(Message msg) {
@@ -70,6 +93,10 @@ public class SurfaceTransactionApplier extends ReleaseCheck {
      *               this method to avoid synchronization issues.
      */
     public void scheduleApply(SurfaceTransaction params) {
+        if (!mInitialized) {
+            params.getTransaction().apply();
+            return;
+        }
         View view = mTargetViewRootImpl.getView();
         if (view == null) {
             return;
@@ -92,34 +119,5 @@ public class SurfaceTransactionApplier extends ReleaseCheck {
 
         // Make sure a frame gets scheduled.
         view.invalidate();
-    }
-
-    /**
-     * Creates an instance of SurfaceTransactionApplier, deferring until the target view is
-     * attached if necessary.
-     */
-    public static void create(
-            final View targetView, final Consumer<SurfaceTransactionApplier> callback) {
-        if (targetView == null) {
-            // No target view, no applier
-            callback.accept(null);
-        } else if (targetView.isAttachedToWindow()) {
-            // Already attached, we're good to go
-            callback.accept(new SurfaceTransactionApplier(targetView));
-        } else {
-            // Haven't been attached before we can get the view root
-            targetView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-                @Override
-                public void onViewAttachedToWindow(View v) {
-                    targetView.removeOnAttachStateChangeListener(this);
-                    callback.accept(new SurfaceTransactionApplier(targetView));
-                }
-
-                @Override
-                public void onViewDetachedFromWindow(View v) {
-                    // Do nothing
-                }
-            });
-        }
     }
 }
