@@ -321,7 +321,7 @@ public class DesktopTaskView extends TaskView {
     }
 
     @Override
-    public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
+    public void launchTask(@NonNull Consumer<Boolean> callback, boolean isQuickswitch) {
         launchTasks();
         callback.accept(true);
     }
