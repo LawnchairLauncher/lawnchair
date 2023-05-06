@@ -147,7 +147,7 @@ public final class WidgetsListHeaderViewHolderBinderTest {
 
             widgetItems.add(new WidgetItem(
                     LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, widgetInfo),
-                    mTestProfile, mIconCache));
+                    mTestProfile, mIconCache, mContext));
         }
         return widgetItems;
     }
