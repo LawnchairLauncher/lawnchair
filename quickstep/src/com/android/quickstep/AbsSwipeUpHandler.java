@@ -2114,12 +2114,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     protected void linkRecentsViewScroll() {
-        SurfaceTransactionApplier.create(mRecentsView, applier -> {
-            runActionOnRemoteHandles(remoteTargetHandle -> remoteTargetHandle.getTransformParams()
-                            .setSyncTransactionApplier(applier));
-            runOnRecentsAnimationAndLauncherBound(() ->
-                    mRecentsAnimationTargets.addReleaseCheck(applier));
-        });
+        SurfaceTransactionApplier applier = new SurfaceTransactionApplier(mRecentsView);
+        runActionOnRemoteHandles(remoteTargetHandle -> remoteTargetHandle.getTransformParams()
+                        .setSyncTransactionApplier(applier));
+        runOnRecentsAnimationAndLauncherBound(() ->
+                mRecentsAnimationTargets.addReleaseCheck(applier));
 
         mRecentsView.addOnScrollChangedListener(mOnRecentsScrollListener);
         runOnRecentsAnimationAndLauncherBound(() ->
