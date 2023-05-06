@@ -16,16 +16,16 @@
 
 package com.android.launcher3.model;
 
-import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
-
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.net.Uri;
 import android.os.UserHandle;
 import android.provider.BaseColumns;
 import android.text.TextUtils;
@@ -66,7 +66,9 @@ public class LoaderCursor extends CursorWrapper {
     private final LongSparseArray<UserHandle> allUsers;
 
     private final LauncherAppState mApp;
+    private final Uri mContentUri;
     private final Context mContext;
+    private final PackageManager mPM;
     private final IconCache mIconCache;
     private final InvariantDeviceProfile mIDP;
 
@@ -106,14 +108,17 @@ public class LoaderCursor extends CursorWrapper {
     public int itemType;
     public int restoreFlag;
 
-    public LoaderCursor(Cursor cursor, LauncherAppState app, UserManagerState userManagerState) {
+    public LoaderCursor(Cursor cursor, Uri contentUri, LauncherAppState app,
+            UserManagerState userManagerState) {
         super(cursor);
 
         mApp = app;
         allUsers = userManagerState.allUsers;
+        mContentUri = contentUri;
         mContext = app.getContext();
         mIconCache = app.getIconCache();
         mIDP = app.getInvariantDeviceProfile();
+        mPM = mContext.getPackageManager();
 
         // Init column indices
         mIconIndex = getColumnIndexOrThrow(Favorites.ICON);
@@ -385,7 +390,7 @@ public class LoaderCursor extends CursorWrapper {
      */
     public ContentWriter updater() {
        return new ContentWriter(mContext, new ContentWriter.CommitParams(
-               mApp.getModel().getModelDbController(),
+               mApp.getModel().getModelDbController().getDatabaseHelper(),
                BaseColumns._ID + "= ?", new String[]{Integer.toString(id)}));
     }
 
@@ -404,8 +409,8 @@ public class LoaderCursor extends CursorWrapper {
     public boolean commitDeleted() {
         if (mItemsToRemove.size() > 0) {
             // Remove dead items
-            mApp.getModel().getModelDbController().delete(TABLE_NAME,
-                    Utilities.createDbSelectionQuery(Favorites._ID, mItemsToRemove), null);
+            mContext.getContentResolver().delete(mContentUri, Utilities.createDbSelectionQuery(
+                    Favorites._ID, mItemsToRemove), null);
             return true;
         }
         return false;
@@ -430,8 +435,9 @@ public class LoaderCursor extends CursorWrapper {
             // Update restored items that no longer require special handling
             ContentValues values = new ContentValues();
             values.put(Favorites.RESTORED, 0);
-            mApp.getModel().getModelDbController().update(TABLE_NAME, values,
-                    Utilities.createDbSelectionQuery(Favorites._ID, mRestoredRows), null);
+            mContext.getContentResolver().update(mContentUri, values,
+                    Utilities.createDbSelectionQuery(
+                            Favorites._ID, mRestoredRows), null);
         }
     }
 

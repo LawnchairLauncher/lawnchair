@@ -16,8 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.model.DatabaseHelper;
 import com.android.launcher3.model.LoaderTask;
-import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.pm.UserCache;
@@ -52,7 +52,7 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
      * Updates the app widgets whose id has changed during the restore process.
      */
     @WorkerThread
-    public static void restoreAppWidgetIds(Context context, ModelDbController controller,
+    public static void restoreAppWidgetIds(Context context, DatabaseHelper helper,
             int[] oldWidgetIds, int[] newWidgetIds, @NonNull AppWidgetHost host) {
         if (WidgetsModel.GO_DISABLE_WIDGETS) {
             Log.e(TAG, "Skipping widget ID remap as widgets not supported");
@@ -92,12 +92,12 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
             final String where = "appWidgetId=? and (restored & 1) = 1 and profileId=?";
             final String[] args = new String[] { oldWidgetId, Long.toString(mainProfileId) };
             int result = new ContentWriter(context,
-                            new ContentWriter.CommitParams(controller, where, args))
+                            new ContentWriter.CommitParams(helper, where, args))
                     .put(LauncherSettings.Favorites.APPWIDGET_ID, newWidgetIds[i])
                     .put(LauncherSettings.Favorites.RESTORED, state)
                     .commit();
             if (result == 0) {
-                Cursor cursor = controller.getDb().query(
+                Cursor cursor = helper.getWritableDatabase().query(
                         Favorites.TABLE_NAME,
                         new String[] {Favorites.APPWIDGET_ID},
                         "appWidgetId=?", new String[] { oldWidgetId }, null, null, null);
