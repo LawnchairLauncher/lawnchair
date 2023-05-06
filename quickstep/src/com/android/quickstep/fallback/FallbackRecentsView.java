@@ -79,7 +79,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    public void startHome() {
+    public void startHome(boolean animated) {
         mActivity.startHome();
         AbstractFloatingView.closeAllOpenViews(mActivity, mActivity.isStarted());
     }
