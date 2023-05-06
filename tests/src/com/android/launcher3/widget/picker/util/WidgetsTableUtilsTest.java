@@ -218,19 +218,18 @@ public final class WidgetsTableUtilsTest {
                 new Point(2, 4), new Point(4, 4));
 
         ArrayList<WidgetItem> widgetItems = new ArrayList<>();
-        widgetSizes.stream().forEach(
-                widgetSize -> {
-                    AppWidgetProviderInfo info = createAppWidgetProviderInfo(
-                            ComponentName.createRelative(
-                                    TEST_PACKAGE,
-                                    ".WidgetProvider_" + widgetSize.x + "x" + widgetSize.y));
-                    LauncherAppWidgetProviderInfo widgetInfo =
-                            LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
-                    widgetInfo.spanX = widgetSize.x;
-                    widgetInfo.spanY = widgetSize.y;
-                    widgetItems.add(new WidgetItem(widgetInfo, mTestInvariantProfile, mIconCache));
-                }
-        );
+        widgetSizes.stream().forEach(widgetSize -> {
+            AppWidgetProviderInfo info = createAppWidgetProviderInfo(
+                    ComponentName.createRelative(
+                            TEST_PACKAGE,
+                            ".WidgetProvider_" + widgetSize.x + "x" + widgetSize.y));
+            LauncherAppWidgetProviderInfo widgetInfo =
+                    LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
+            widgetInfo.spanX = widgetSize.x;
+            widgetInfo.spanY = widgetSize.y;
+            widgetItems.add(new WidgetItem(
+                    widgetInfo, mTestInvariantProfile, mIconCache, mContext));
+        });
         mWidget1x1 = widgetItems.get(0);
         mWidget2x2 = widgetItems.get(1);
         mWidget2x3 = widgetItems.get(2);
