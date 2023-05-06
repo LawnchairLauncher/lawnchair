@@ -20,6 +20,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.InputType;
@@ -57,8 +58,6 @@ public abstract class ButtonDropTarget extends TextView
     public static final int TOOLTIP_DEFAULT = 0;
     public static final int TOOLTIP_LEFT = 1;
     public static final int TOOLTIP_RIGHT = 2;
-
-    private final Rect mTempRect = new Rect();
 
     protected final ActivityContext mActivityContext;
     protected final DropTargetHandler mDropTargetHandler;
@@ -417,15 +416,11 @@ public abstract class ButtonDropTarget extends TextView
      */
     @VisibleForTesting
     protected boolean isTextClippedVertically(int availableHeight) {
-        availableHeight -= getPaddingTop() + getPaddingBottom();
-        if (availableHeight <= 0) {
-            return true;
-        }
+        Paint.FontMetricsInt fontMetricsInt = getPaint().getFontMetricsInt();
+        int lineCount = (getLineCount() <= 0) ? 1 : getLineCount();
+        int textHeight = lineCount * (fontMetricsInt.bottom - fontMetricsInt.top);
 
-        getPaint().getTextBounds(mText.toString(), 0, mText.length(), mTempRect);
-        // Add bounds bottom to height, as text bounds height measures from the text baseline and
-        // above, which characters can descend below
-        return mTempRect.bottom + mTempRect.height() >= availableHeight;
+        return textHeight + getPaddingTop() + getPaddingBottom() >= availableHeight;
     }
 
     /**
