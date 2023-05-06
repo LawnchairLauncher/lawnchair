@@ -30,6 +30,7 @@ import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiValueAlpha;
+import com.android.quickstep.SystemUiProxy;
 
 import java.util.List;
 import java.util.Objects;
@@ -42,6 +43,7 @@ public class BubbleBarViewController {
 
     private static final String TAG = BubbleBarViewController.class.getSimpleName();
 
+    private final SystemUiProxy mSystemUiProxy;
     private final TaskbarActivityContext mActivity;
     private final BubbleBarView mBarView;
     private final int mIconSize;
@@ -69,6 +71,7 @@ public class BubbleBarViewController {
     public BubbleBarViewController(TaskbarActivityContext activity, BubbleBarView barView) {
         mActivity = activity;
         mBarView = barView;
+        mSystemUiProxy = SystemUiProxy.INSTANCE.get(mActivity);
         mBubbleBarAlpha = new MultiValueAlpha(mBarView, 1 /* num alpha channels */);
         mBubbleBarAlpha.setUpdateVisibility(true);
         mIconSize = activity.getResources().getDimensionPixelSize(R.dimen.bubblebar_icon_size);
@@ -101,7 +104,8 @@ public class BubbleBarViewController {
             mBubbleStashController.stashBubbleBar();
         } else {
             mBubbleBarController.setSelectedBubble(bubble);
-            // TODO: Tell SysUi to show the expanded view for this bubble.
+            mSystemUiProxy.showBubble(bubble.getKey(),
+                    mBubbleStashController.isBubblesShowingOnHome());
         }
     }
 
@@ -270,11 +274,12 @@ public class BubbleBarViewController {
         if (isExpanded != mBarView.isExpanded()) {
             mBarView.setExpanded(isExpanded);
             if (!isExpanded) {
-                // TODO: Tell SysUi to collapse the bubble
+                mSystemUiProxy.collapseBubbles();
             } else {
                 final String selectedKey = mBubbleBarController.getSelectedBubbleKey();
                 if (selectedKey != null) {
-                    // TODO: Tell SysUi to show the bubble
+                    mSystemUiProxy.showBubble(selectedKey,
+                            mBubbleStashController.isBubblesShowingOnHome());
                 } else {
                     Log.w(TAG, "trying to expand bubbles when there isn't one selected");
                 }
