@@ -237,9 +237,9 @@ public class GroupedTaskView extends TaskView {
     }
 
     @Override
-    public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
+    public void launchTask(@NonNull Consumer<Boolean> callback, boolean isQuickswitch) {
         getRecentsView().getSplitSelectController().launchTasks(mTask.key.id, mSecondaryTask.key.id,
-                SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT, callback, freezeTaskList,
+                SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT, callback, isQuickswitch,
                 getSplitRatio());
     }
 
