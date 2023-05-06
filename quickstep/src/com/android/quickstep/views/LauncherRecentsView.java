@@ -39,6 +39,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
+import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.PendingSplitSelectInfo;
@@ -79,9 +80,11 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     }
 
     @Override
-    public void startHome() {
-        mActivity.getStateManager().goToState(NORMAL);
-        AbstractFloatingView.closeAllOpenViews(mActivity, mActivity.isStarted());
+    public void startHome(boolean animated) {
+        StateManager stateManager = mActivity.getStateManager();
+        animated &= stateManager.shouldAnimateStateChange();
+        stateManager.goToState(NORMAL, animated);
+        AbstractFloatingView.closeAllOpenViews(mActivity, animated);
     }
 
     @Override
