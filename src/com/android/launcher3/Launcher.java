@@ -1621,6 +1621,9 @@ public class Launcher extends StatefulActivity<LauncherState>
         return mModel;
     }
 
+    /**
+     * Returns the ModelWriter writer, make sure to call the function every time you want to use it.
+     */
     public ModelWriter getModelWriter() {
         return mModelWriter;
     }
