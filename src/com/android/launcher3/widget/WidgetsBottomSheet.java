@@ -252,8 +252,11 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
         super.setInsets(insets);
         int bottomPadding = Math.max(insets.bottom, mNavBarScrimHeight);
 
-        mContent.setPadding(mContent.getPaddingStart(),
-                mContent.getPaddingTop(), mContent.getPaddingEnd(),
+        View widgetsTable = findViewById(R.id.widgets_table);
+        widgetsTable.setPadding(
+                widgetsTable.getPaddingLeft(),
+                widgetsTable.getPaddingTop(),
+                widgetsTable.getPaddingRight(),
                 bottomPadding);
         if (bottomPadding > 0) {
             setupNavBarColor();
