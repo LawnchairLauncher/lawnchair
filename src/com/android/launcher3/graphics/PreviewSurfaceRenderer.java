@@ -16,7 +16,6 @@
 
 package com.android.launcher3.graphics;
 
-import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
@@ -53,8 +52,6 @@ import com.android.launcher3.graphics.LauncherPreviewRenderer.PreviewContext;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.GridSizeMigrationUtil;
 import com.android.launcher3.model.LoaderTask;
-import com.android.launcher3.model.ModelDbController;
-import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.Themes;
@@ -148,9 +145,7 @@ public class PreviewSurfaceRenderer {
         final String query = LauncherSettings.Favorites.ITEM_TYPE + " = "
                 + LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
 
-        ModelDbController mainController =
-                LauncherAppState.getInstance(mContext).getModel().getModelDbController();
-        try (Cursor c = mainController.query(TABLE_NAME,
+        try (Cursor c = context.getContentResolver().query(LauncherSettings.Favorites.CONTENT_URI,
                 new String[] {
                         LauncherSettings.Favorites.APPWIDGET_ID,
                         LauncherSettings.Favorites.SPANX,
@@ -195,6 +190,8 @@ public class PreviewSurfaceRenderer {
 
     @WorkerThread
     private void loadModelData() {
+        final boolean migrated = doGridMigrationIfNecessary();
+
         final Context inflationContext;
         if (mWallpaperColors != null) {
             // Create a themed context, without affecting the main application context
@@ -212,20 +209,8 @@ public class PreviewSurfaceRenderer {
                     Themes.getActivityThemeRes(mContext));
         }
 
-        if (GridSizeMigrationUtil.needsToMigrate(inflationContext, mIdp)) {
-            // Start the migration
+        if (migrated) {
             PreviewContext previewContext = new PreviewContext(inflationContext, mIdp);
-            // Copy existing data to preview DB
-            LauncherDbUtils.copyTable(LauncherAppState.getInstance(mContext)
-                    .getModel().getModelDbController().getDb(),
-                    TABLE_NAME,
-                    LauncherAppState.getInstance(previewContext)
-                            .getModel().getModelDbController().getDb(),
-                    TABLE_NAME,
-                    mContext);
-            LauncherAppState.getInstance(previewContext)
-                    .getModel().getModelDbController().clearEmptyDbFlag();
-
             new LoaderTask(
                     LauncherAppState.getInstance(previewContext),
                     /* bgAllAppsList= */ null,
@@ -244,7 +229,8 @@ public class PreviewSurfaceRenderer {
                         query += " or " + LauncherSettings.Favorites.SCREEN + " = "
                                 + Workspace.SECOND_SCREEN_ID;
                     }
-                    loadWorkspace(new ArrayList<>(), query, null);
+                    loadWorkspaceForPreviewSurfaceRenderer(new ArrayList<>(),
+                            LauncherSettings.Favorites.PREVIEW_CONTENT_URI, query);
 
                     final SparseArray<Size> spanInfo =
                             getLoadedLauncherWidgetInfo(previewContext.getBaseContext());
@@ -265,6 +251,14 @@ public class PreviewSurfaceRenderer {
                 }
             });
         }
+    }
+
+    @WorkerThread
+    private boolean doGridMigrationIfNecessary() {
+        if (!GridSizeMigrationUtil.needsToMigrate(mContext, mIdp)) {
+            return false;
+        }
+        return GridSizeMigrationUtil.migrateGridIfNeeded(mContext, mIdp);
     }
 
     @UiThread
