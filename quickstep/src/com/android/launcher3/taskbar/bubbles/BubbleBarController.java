@@ -152,7 +152,9 @@ public class BubbleBarController extends IBubblesListener.Stub {
         mContext = context;
         mBarView = bubbleView; // Need the view for inflating bubble views.
 
-        // TODO: register the listener with SysUiProxu
+        if (BUBBLE_BAR_ENABLED) {
+            SystemUiProxy.INSTANCE.get(context).setBubblesListener(this);
+        }
         mMainExecutor = MAIN_EXECUTOR;
         mLauncherApps = context.getSystemService(LauncherApps.class);
         mIconFactory = new BubbleIconFactory(context,
@@ -164,7 +166,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
     }
 
     public void onDestroy() {
-        // TODO: unregister the listener with SysUiProxy
+        SystemUiProxy.INSTANCE.get(mContext).setBubblesListener(null);
     }
 
     public void init(TaskbarControllers controllers, BubbleControllers bubbleControllers) {
