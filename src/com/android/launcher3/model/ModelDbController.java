@@ -283,6 +283,8 @@ public class ModelDbController {
     /**
      * Migrates the DB if needed, and returns false if the migration failed
      * and DB needs to be cleared.
+     * @return true if migration was success or ignored, false if migration failed
+     * and the DB should be reset.
      */
     public boolean migrateGridIfNeeded() {
         InvariantDeviceProfile idp = LauncherAppState.getIDP(mContext);
@@ -291,8 +293,8 @@ public class ModelDbController {
         }
         String targetDbName = new DeviceGridState(idp).getDbFile();
         if (TextUtils.equals(targetDbName, mOpenHelper.getDatabaseName())) {
-            // DB is same, ignore
-            return true;
+            Log.e(TAG, "migrateGridIfNeeded - target db is same as current: " + targetDbName);
+            return false;
         }
         DatabaseHelper oldHelper = mOpenHelper;
         mOpenHelper = (mContext instanceof SandboxContext) ? oldHelper

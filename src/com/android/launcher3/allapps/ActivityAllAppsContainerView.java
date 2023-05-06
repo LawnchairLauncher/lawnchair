@@ -871,8 +871,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         boolean visible = deviceProfile.isTablet || mForceBottomSheetVisible;
         mBottomSheetBackground.setVisibility(visible ? View.VISIBLE : View.GONE);
         // Note: For tablets, the opaque background and header protection are added in drawOnScrim.
-        // For the taskbar entrypoint, the scrim is drawn differently, so a static background is
-        // added in TaskbarAllAppsContainerView and header protection is not yet supported.
+        // For the taskbar entrypoint, the scrim is drawn by its abstract slide in view container,
+        // so its header protection is derived from this scrim instead.
     }
 
     private void setBottomSheetAlpha(float alpha) {
