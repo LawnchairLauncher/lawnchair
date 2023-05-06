@@ -47,9 +47,7 @@ public class DesktopNavbarButtonsViewController extends NavbarButtonsViewControl
         mStartContextualContainer = mNavButtonsView.findViewById(R.id.start_contextual_buttons);
         mAllAppsButton = LayoutInflater.from(context)
                 .inflate(R.layout.taskbar_all_apps_button, mStartContextualContainer, false);
-        mAllAppsButton.setOnClickListener((View v) -> {
-            mControllers.taskbarAllAppsController.show();
-        });
+        mAllAppsButton.setOnClickListener(v -> mControllers.taskbarAllAppsController.toggle());
     }
 
     /**
