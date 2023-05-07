@@ -346,28 +346,28 @@
     <string name="icon_picker_load_failed">Kunde inte ladda fler ikoner.</string>
     <!-- Misc -->
     <string name="all_apps_search_bar_hint">Sök efter appar</string>
-    <string name="settings_button_text">Inställningar för hem</string>
+    <string name="settings_button_text">Hem-inställningar</string>
     <string name="item_removed">Objektet borttaget.</string>
     <string name="all_apps_no_search_results">Inga appar hittades som matchar ”<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="dt2s_admin_hint_title">Admin permission required</string>
-    <string name="dt2s_admin_hint">För att använda Dubbel-Tryck för att sova, ange Lawnchair som en enhetsadministratörsapp. Tryck på Öppna Inställningar, tryck sedan på ”Aktivera enhetsadministratörsappen”</string>
-    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
-    <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">För att använda Dubbel-Tryck för att sova, slå på Lawnchair tillgänglighetstjänst. Tryck på Öppna inställningar och välj sedan Lawnchair och sätt på Använd Lawnchair.</string>
+    <string name="dt2s_admin_hint_title">Administratörsbehörigheter krävs</string>
+    <string name="dt2s_admin_hint">För att använda dubbeltryck för att vila, ange Lawnchair som en enhetsadministratörsapp. Tryck på Öppna inställningar, tryck sedan på ”Aktivera denna enhetsadministratörsapp”.</string>
+    <string name="dt2s_admin_warning">Dubbeltryck för att vila kommer att inaktiveras.</string>
+    <string name="dt2s_a11y_hint_title">Aktivera tillgänglighetstjänsten</string>
+    <string name="dt2s_a11y_hint">För att använda dubbeltryck för att vila, aktivera Lawnchairs tillgänglighetstjänst. Tryck på Öppna inställningar, välj sedan Lawnchair och aktivera Använd Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Öppna inställningar</string>
-    <string name="loading">Laddar…</string>
+    <string name="loading">Laddar …</string>
     <string name="system">System</string>
     <string name="customize_button_text">Anpassa</string>
     <string name="label">Etikett</string>
     <string name="hide_from_drawer">Dölj från applådan</string>
     <string name="suggestion_pref_screen_title">Förslag</string>
     <!-- Bug reporting -->
-    <string name="lawnchair_bug_report">Lawnchair Bugg Report</string>
-    <string name="crash_report_notif_title">%1$s Kraschade</string>
+    <string name="lawnchair_bug_report">Buggrapport för Lawnchair</string>
+    <string name="crash_report_notif_title">%1$s kraschade</string>
     <string name="action_upload_crash_report">Ladda upp kraschlogg</string>
     <string name="action_copy_link">Kopiera länk</string>
     <string name="action_upload_error">Uppladdningen misslyckades</string>
-    <string name="dogbin_uploading">Laddar upp…</string>
+    <string name="dogbin_uploading">Laddar upp …</string>
     <string name="bugreport_channel_name">Buggrapporter</string>
     <string name="status_channel_name">Uppladdningsstatus</string>
     <string name="bugreport_group_summary">%d nya rapporter.</string>
@@ -375,23 +375,23 @@
     <!-- Search ig -->
     <string name="show_search_result_types">Visa i sökresultat</string>
     <string name="search_pref_result_people_title">Personer</string>
-    <string name="search_pref_result_shortcuts_title">App genvägar</string>
-    <string name="search_pref_result_tips_title">Pixel Tips</string>
+    <string name="search_pref_result_shortcuts_title">Appgenvägar</string>
+    <string name="search_pref_result_tips_title">Pixel-tips</string>
     <string name="all_apps_device_search_hint">Sök</string>
     <string name="search_input_action_clear_results">Rensa sökfält</string>
     <string name="label_search">Sök</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Röstsökning</string>
     <string name="all_apps_search_market_message">Sök efter fler appar</string>
-    <string name="error_no_market_or_browser_installed">Ingen app butik eller webbläsare installerad.</string>
+    <string name="error_no_market_or_browser_installed">Ingen appbutik eller webbläsare installerad.</string>
     <string name="quickstep_incompatible">Inkompatibel systemintegration</string>
-    <string name="quickstep_incompatible_description">Din enhet är konfigurerad att ha systemgester (känd som Quickstep) som tillhandahålls av %1$s, men denna version av %1$s är inte kompatibel med din Android-version. För att fortsätta använda din enhet, vänligen avinstallera %1$s uppdateringar eller inaktivera %1$s som system-gest leverantör.</string>
+    <string name="quickstep_incompatible_description">Din enhet är konfigurerad för att ha systemgester (kända som Quickstep) tillhandahållna av %1$s, men denna version av %1$s är inte kompatibel med din Android-version. För att fortsätta att använda din enhet, vänligen avinstallera uppdateringar till %1$s eller inaktivera %1$s som systemgestsleverantör.</string>
     <string name="delete">Radera</string>
     <!-- Backup -->
     <string name="create_backup">Skapa säkerhetskopia</string>
     <string name="create_backup_action">Skapa</string>
     <string name="what_to_backup">Vad ska säkerhetskopieras</string>
-    <string name="backup_content_layout_and_settings">Layout och inställningar</string>
+    <string name="backup_content_layout_and_settings">Utseende och inställningar</string>
     <string name="backup_content_wallpaper">Bakgrundsbild</string>
     <string name="backup_create_success">Säkerhetskopia skapad.</string>
     <string name="backup_create_error">Kunde inte skapa säkerhetskopia.</string>

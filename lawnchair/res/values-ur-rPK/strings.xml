@@ -44,8 +44,8 @@
     <string name="experimental_features_label">تجرباتی فیچرز</string>
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
-    <string name="font_picker_label">Font Customization</string>
-    <string name="font_picker_description">Some text remains unchanged.</string>
+    <string name="font_picker_label">طرز تحریر</string>
+    <string name="font_picker_description">کچھ طرز تحریر تبدیل نہیں کیے جائیں گے۔.</string>
     <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
     <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
     <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>

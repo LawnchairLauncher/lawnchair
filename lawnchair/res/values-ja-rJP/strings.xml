@@ -50,8 +50,8 @@
     <string name="smartspace_calendar_description">グレゴリオ暦以外の暦で日付を表示できるようにします</string>
     <string name="workspace_increase_max_grid_size_label">ホーム画面のグリッドの最大数を増やす</string>
     <string name="workspace_increase_max_grid_size_description">ホーム画面のグリッド数を 10x10 から 20x20 まで増やします</string>
-    <string name="always_reload_icons_label">常にアイコンを再読み込みする</string>
-    <string name="always_reload_icons_description">アイコンパックからキャッシュされたアイコンを使用しないようにする</string>
+    <string name="always_reload_icons_label">常にアイコンを再読み込みします</string>
+    <string name="always_reload_icons_description">アイコンパックからキャッシュされたアイコンを使用しないようにします</string>
     <string name="transparent_background_icons">透明なテーマアイコン</string>
     <string name="transparent_background_icons_description">テーマごとにアイコンの背景を透明にします</string>
     <string name="smartspace_mode_selection">At a Glance のプロバイダー選択</string>
@@ -65,7 +65,7 @@
     <string name="auto_adaptive_icons_label">自動アダプティブ アイコン</string>
     <string name="auto_adaptive_icons_description">すべての非アダプティブ アイコンを対象</string>
     <string name="background_lightness_label">背景の明るさ</string>
-    <string name="adaptive_icon_background_description">白色の背景の明るさを100%にする</string>
+    <string name="adaptive_icon_background_description">白色の背景の明るさを100%にします</string>
     <string name="notification_dots">通知ドット</string>
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">通知の数を表示</string>
@@ -76,7 +76,7 @@
     <!-- Notification popup -->
     <string name="missing_notification_access_label">通知へのアクセスが必要です</string>
     <string name="missing_notification_access_description">通知へのアクセス権が必要です</string>
-    <string name="msg_missing_notification_access">通知ドットを使用するには、 <xliff:g id="name" example="My App">%1$s</xliff:g> の通知へのアクセス権を許可してください。</string>
+    <string name="msg_missing_notification_access">通知ドットを使用するには、 <xliff:g id="name" example="My App">%1$s</xliff:g> の通知へのアクセスを許可してください</string>
     <string name="title_change_settings">設定を変更</string>
     <string name="colors">色</string>
     <string name="theme_label">テーマ</string>
@@ -172,7 +172,7 @@
     <string name="wallpaper">壁紙</string>
     <string name="wallpaper_scrolling_label">壁紙をスクロール</string>
     <string name="wallpaper_depth_effect_label">壁紙の視差効果</string>
-    <string name="wallpaper_depth_effect_description">ランチャー内で画面を切り替える時に壁紙を拡大/縮小する</string>
+    <string name="wallpaper_depth_effect_description">ランチャー内で画面を切り替える時に壁紙を拡大/縮小します</string>
     <string name="show_sys_ui_scrim">上部の影</string>
     <string name="layout">レイアウト</string>
     <string name="home_screen_grid">ホーム画面のグリッド</string>
@@ -227,12 +227,12 @@
     <string name="smartspace_battery_status">バッテリーの状態</string>
     <string name="smartspace_now_playing">再生中</string>
     <string name="smartspace_requires_setup">タップしてセットアップ</string>
-    <string name="event_provider_missing_notification_dots">使用するには <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>、通知ドットを有効にします。</string>
+    <string name="event_provider_missing_notification_dots">使用するには <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>、通知ドットを有効にします</string>
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">グレゴリオ暦</string>
     <string name="smartspace_calendar_persian">ペルシア暦</string>
     <string name="smartspace_preferences">設定</string>
-    <string name="smartspace_widget_toggle_label">ホーム画面に表示する</string>
+    <string name="smartspace_widget_toggle_label">ホーム画面に表示します</string>
     <string name="smartspace_widget_toggle_description">At a Glance は、「Lawnchair」のウィジェットを配置することで、手動で追加することができます</string>
     <string name="smartspace_mode_label">At a Glance のプロバイダー</string>
     <string name="smartspace_mode_lawnchair">Lawnchair</string>
@@ -300,7 +300,7 @@
     <string name="gesture_home_tap">ホームボタンをタップしたとき</string>
     <string name="gesture_back_tap">戻るボタンをタップしたとき</string>
     <string name="gesture_handler_no_op">何もしない</string>
-    <string name="gesture_handler_sleep">スリープ状態にする</string>
+    <string name="gesture_handler_sleep">スリープ状態にします</string>
     <string name="gesture_handler_open_notifications">通知パネルを開く</string>
     <string name="gesture_handler_open_app_option">アプリを開く</string>
     <string name="gesture_handler_open_app_config">%1$s を開く</string>
@@ -319,7 +319,7 @@
     <string name="recents_clear_all">すべてクリア</string>
     <string name="window_corner_radius_label">画面角の丸み</string>
     <string name="override_window_corner_radius_label">カスタムした画面角の丸み</string>
-    <string name="window_corner_radius_description">上にスワイプして 履歴 を開くと、アプリが指に追従して縮小され、カード状に表示されます。画面の角に合うように、カードの角の丸みを調整できます。</string>
+    <string name="window_corner_radius_description">上にスワイプして 履歴 を開くと、アプリが指に追従して縮小され、カードで表示されます。画面の角に合うように、カードの角の丸みを調整できます。</string>
     <string name="taskbar_label">タスクバー</string>
     <string name="enable_taskbar_experimental">タスクバーを有効化 (実験的)</string>
     <!-- about/About.kt -->
@@ -349,10 +349,10 @@
     <string name="item_removed">アイテムを削除しました</string>
     <string name="all_apps_no_search_results">“<xliff:g example="Android" id="query">%1$s</xliff:g> ”に一致するアプリが見つかりませんでした</string>
     <string name="dt2s_admin_hint_title">管理者権限が必要です</string>
-    <string name="dt2s_admin_hint">ダブルタップでスリープを使用するには、 Lawnchair をデバイス管理アプリとして設定する必要があります。 設定を開く をタップし、 このデバイス管理アプリを有効にする を有効にしてください。</string>
+    <string name="dt2s_admin_hint">ダブルタップでスリープ を使用するには、 Lawnchair をデバイス管理アプリとして設定する必要があります。 設定で このデバイス管理アプリを有効にする を有効にしてください。</string>
     <string name="dt2s_admin_warning">ダブルタップでスリープを解除します</string>
-    <string name="dt2s_a11y_hint_title">アクセシビリティサービスを有効にする</string>
-    <string name="dt2s_a11y_hint">ダブルタップでスリープを使用するには、ユーザー補助 で Lawnchair を有効にする必要があります。 設定を開く をタップし、 Lawnchair を選択して サービスの使用 を有効にしてください。</string>
+    <string name="dt2s_a11y_hint_title">アクセシビリティサービスを有効にします</string>
+    <string name="dt2s_a11y_hint">ダブルタップでスリープを使用するには、 ユーザー補助 で Lawnchair を有効にする必要があります。 Lawnchair を選択して サービスの使用 を有効にしてください。</string>
     <string name="dt2s_warning_open_settings">設定を開く</string>
     <string name="loading">読み込み中…</string>
     <string name="system">システム</string>
