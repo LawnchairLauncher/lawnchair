@@ -1448,7 +1448,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      */
     private Animator getFallbackClosingWindowAnimators(RemoteAnimationTarget[] appTargets) {
         final int rotationChange = getRotationChange(appTargets);
-        SurfaceTransactionApplier surfaceApplier = new SurfaceTransactionApplier(mDragLayer);
         Matrix matrix = new Matrix();
         Point tmpPos = new Point();
         Rect tmpRect = new Rect();
@@ -1504,7 +1503,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                                 .setAlpha(1f);
                     }
                 }
-                surfaceApplier.scheduleApply(transaction);
+                transaction.getTransaction().apply();
             }
         });
 
@@ -1592,7 +1591,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             boolean playFallBackAnimation = (launcherView == null
                     && launcherIsForceInvisibleOrOpening)
                     || mLauncher.getWorkspace().isOverlayShown()
-                    || hasMultipleTargetsWithMode(appTargets, MODE_CLOSING);
+                    || hasMultipleTargetsWithMode(appTargets, MODE_CLOSING)
+                    || mLauncher.isDestroyed();
 
             boolean playWorkspaceReveal = true;
             boolean skipAllAppsScale = false;
