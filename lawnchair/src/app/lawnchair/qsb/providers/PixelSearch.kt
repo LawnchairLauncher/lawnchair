@@ -1,5 +1,6 @@
 package app.lawnchair.qsb.providers
 
+import android.context.Intent
 import app.lawnchair.qsb.ThemingMethod
 import com.android.launcher3.R
 
@@ -13,4 +14,9 @@ object PixelSearch : QsbSearchProvider(
     website = "https://play.google.com/store/apps/details?id=rk.android.app.pixelsearch",
     type = QsbSearchProviderType.APP,
     supportVoiceIntent = true,
-)
+) {
+
+    override fun handleCreateVoiceIntent(): Intent =
+        Intent(Intent.ACTION_VOICE_COMMAND)
+
+}
