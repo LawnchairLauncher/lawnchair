@@ -23,6 +23,7 @@ import app.lawnchair.preferences2.subscribeBlocking
 import app.lawnchair.qsb.providers.AppSearch
 import app.lawnchair.qsb.providers.Google
 import app.lawnchair.qsb.providers.GoogleGo
+import app.lawnchair.qsb.providers.PixelSearch
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.util.pendingIntent
 import app.lawnchair.util.recursiveChildren
@@ -67,8 +68,8 @@ class LawnQsbLayout(context: Context, attrs: AttributeSet?) : FrameLayout(contex
         clipIconRipples()
 
         val searchProvider = getSearchProvider(context, preferenceManager2)
-        val isGoogle = searchProvider == Google || searchProvider == GoogleGo
-        val supportsLens = searchProvider == Google
+        val isGoogle = searchProvider == Google || searchProvider == GoogleGo || searchProvider == PixelSearch
+        val supportsLens = searchProvider == Google || searchProvider == PixelSearch
 
         preferenceManager2.themedHotseatQsb.subscribeBlocking(scope = viewAttachedScope) { themed ->
             setUpBackground(themed)
