@@ -92,6 +92,7 @@ import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
+import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
@@ -801,6 +802,14 @@ public class TaskView extends FrameLayout implements Reusable {
                     RunnableList callbackList = new RunnableList();
                     recentsView.addSideTaskLaunchCallback(callbackList);
                     return callbackList;
+                }
+                if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
+                    // If the recents transition is running (ie. in live tile mode), then the start
+                    // of a new task will merge into the existing transition and it currently will
+                    // not be run independently, so we need to rely on the onTaskAppeared() call
+                    // for the new task to trigger the side launch callback to flush this runnable
+                    // list (which is usually flushed when the app launch animation finishes)
+                    recentsView.addSideTaskLaunchCallback(opts.onEndCallback);
                 }
                 return opts.onEndCallback;
             } else {
