@@ -1,6 +1,6 @@
 package app.lawnchair.qsb.providers
 
-import android.context.Intent
+import android.content.Intent
 import app.lawnchair.qsb.ThemingMethod
 import com.android.launcher3.R
 
