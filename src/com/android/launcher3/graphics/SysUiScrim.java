@@ -36,13 +36,10 @@ import android.view.View;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.testing.shared.ResourceUtils;
-import com.android.launcher3.util.DynamicResource;
 import com.android.launcher3.util.ScreenOnTracker;
 import com.android.launcher3.util.ScreenOnTracker.ScreenOnListener;
 import com.android.launcher3.util.Themes;
-import com.android.systemui.plugins.ResourceProvider;
 
 /**
  * View scrim which draws behind hotseat and workspace
@@ -100,10 +97,8 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
     private static final int ALPHA_MASK_BITMAP_DP = 200;
     private static final int ALPHA_MASK_WIDTH_DP = 2;
 
-    private boolean mDrawTopScrim, mDrawBottomScrim, mDrawWallpaperScrim;
+    private boolean mDrawTopScrim, mDrawBottomScrim;
 
-    private final RectF mWallpaperScrimRect = new RectF();
-    private final Paint mWallpaperScrimPaint = new Paint();
     private final RectF mFinalMaskRect = new RectF();
     private final Paint mBottomMaskPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
     private final Bitmap mBottomMask;
@@ -118,7 +113,6 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
 
     private boolean mAnimateScrimOnNextDraw = false;
     private float mSysUiAnimMultiplier = 1;
-    private int mWallpaperScrimMaxAlpha;
 
     public SysUiScrim(View view) {
         mRoot = view;
@@ -134,14 +128,6 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
             mBottomMask = null;
             mHideSysUiScrim = true;
         }
-
-        mDrawWallpaperScrim = FeatureFlags.ENABLE_WALLPAPER_SCRIM.get()
-                && !Themes.getAttrBoolean(view.getContext(), R.attr.isMainColorDark)
-                && !Themes.getAttrBoolean(view.getContext(), R.attr.isWorkspaceDarkText);
-        ResourceProvider rp = DynamicResource.provider(view.getContext());
-        int wallpaperScrimColor = rp.getColor(R.color.wallpaper_scrim_color);
-        mWallpaperScrimMaxAlpha = Color.alpha(wallpaperScrimColor);
-        mWallpaperScrimPaint.setColor(wallpaperScrimColor);
 
         view.addOnAttachStateChangeListener(this);
     }
@@ -167,9 +153,6 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
                 mAnimateScrimOnNextDraw = false;
             }
 
-            if (mDrawWallpaperScrim) {
-                canvas.drawRect(mWallpaperScrimRect, mWallpaperScrimPaint);
-            }
             if (mDrawTopScrim) {
                 mTopScrim.draw(canvas);
             }
@@ -228,7 +211,6 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
             mTopScrim.setBounds(0, 0, w, h);
             mFinalMaskRect.set(0, h - mMaskHeight, w, h);
         }
-        mWallpaperScrimRect.set(0, 0, w, h);
     }
 
     private void setSysUiProgress(float progress) {
@@ -251,7 +233,6 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
         if (mTopScrim != null) {
             mTopScrim.setAlpha(Math.round(255 * factor));
         }
-        mWallpaperScrimPaint.setAlpha(Math.round(mWallpaperScrimMaxAlpha * factor));
     }
 
     private Bitmap createDitheredAlphaMask() {
