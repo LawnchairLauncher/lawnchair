@@ -326,7 +326,7 @@ public final class FeatureFlags {
             "Enable a grid-only overview without a focused task.");
 
     public static final BooleanFlag ENABLE_CURSOR_HOVER_STATES = getDebugFlag(243191650,
-            "ENABLE_CURSOR_HOVER_STATES", DISABLED,
+            "ENABLE_CURSOR_HOVER_STATES", ENABLED,
             "Enables cursor hover states for certain elements.");
 
     // TODO(Block 24): Clean up flags
