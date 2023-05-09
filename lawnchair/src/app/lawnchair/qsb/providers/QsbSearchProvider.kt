@@ -126,6 +126,7 @@ sealed class QsbSearchProvider(
             Sesame,
             Brave,
             GitHub,
+            PixelSearch,
         )
 
         /**
