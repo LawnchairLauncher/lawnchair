@@ -317,6 +317,14 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     }
 
     /**
+     * Only use this when a gesture is completed, but the feedback shouldn't be shown immediately.
+     * In that case, call this method immediately instead.
+     */
+    public void setGestureCompleted() {
+        mGestureCompleted = true;
+    }
+
+    /**
      * Show feedback reflecting a successful gesture attempt.
      **/
     void showSuccessFeedback() {
@@ -641,13 +649,17 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         }
     }
 
+    void setLauncherViewColor(@ColorRes int backgroundColorRes) {
+        mFakeLauncherView.setBackgroundColor(mContext.getColor(backgroundColorRes));
+    }
+
     private void updateDrawables() {
         if (mContext != null) {
             mTutorialFragment.getRootView().setBackground(AppCompatResources.getDrawable(
                     mContext, getMockWallpaperResId()));
             mTutorialFragment.updateFeedbackAnimation();
-            mFakeLauncherView.setBackgroundColor(
-                    mContext.getColor(R.color.gesture_tutorial_fake_wallpaper_color));
+            setLauncherViewColor(ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                    ? getSwipeActionColorResId() : R.color.gesture_tutorial_fake_wallpaper_color);
             updateFakeViewLayout(mFakeHotseatView, getMockHotseatResId());
             mHotseatIconView = mFakeHotseatView.findViewById(R.id.hotseat_icon_1);
             updateFakeViewLayout(mFakeTaskView, getMockAppTaskLayoutResId());
@@ -657,11 +669,6 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                     getMockPreviousAppTaskThumbnailColorResId()));
             mFakeIconView.setBackground(AppCompatResources.getDrawable(
                     mContext, getMockAppIconResId()));
-
-            if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-                mFakeLauncherView.setBackgroundColor(
-                        mContext.getColor(getSwipeActionColorResId()));
-            }
         }
     }
 
