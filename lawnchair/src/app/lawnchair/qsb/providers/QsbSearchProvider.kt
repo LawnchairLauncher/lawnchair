@@ -119,14 +119,14 @@ sealed class QsbSearchProvider(
             AppSearch,
             Google,
             GoogleGo,
+            PixelSearch,
+            Sesame,
+            Wikipedia,
+            GitHub,
             DuckDuckGo,
             Presearch,
-            Wikipedia,
             Bing,
-            Sesame,
             Brave,
-            GitHub,
-            PixelSearch,
         )
 
         /**
