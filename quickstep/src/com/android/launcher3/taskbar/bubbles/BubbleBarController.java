@@ -360,7 +360,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
         Path dotPath;
         int dotColor;
 
-        boolean isImportantConvo = false; // TODO: (b/269671451) needs to be added to BubbleInfo
+        boolean isImportantConvo = b.isImportantConversation();
 
         ShortcutRequest.QueryResult result = new ShortcutRequest(context,
                 new UserHandle(b.getUserId()))
