@@ -21,7 +21,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="recent_task_option_pin" msgid="7929860679018978258">"ପିନ୍‍"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"ଫ୍ରିଫର୍ମ"</string>
-    <string name="recents_empty_message" msgid="7040467240571714191">"କୌଣସି ସାମ୍ପ୍ରତିକ ଆଇଟମ୍ ନାହିଁ"</string>
+    <string name="recents_empty_message" msgid="7040467240571714191">"ବର୍ତ୍ତମାନର କୌଣସି ଆଇଟମ ନାହିଁ"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ଆପ ବ୍ୟବହାର ସେଟିଂସ"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"ସବୁ ଖାଲି କରନ୍ତୁ"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"ବର୍ତ୍ତମାନର ଆପ୍‌"</string>
