@@ -494,6 +494,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         private long mLatencyInMillis;
         private int mQueryLength = -1;
         private int mSubEventType = 0;
+        private int mCardinality = -1;
 
         @Override
         public StatsLatencyLogger withInstanceId(InstanceId instanceId) {
@@ -532,6 +533,12 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
 
         @Override
+        public StatsLatencyLogger withCardinality(int cardinality) {
+            this.mCardinality = cardinality;
+            return this;
+        }
+
+        @Override
         public void log(EventEnum event) {
             if (IS_VERBOSE) {
                 String name = (event instanceof Enum) ? ((Enum) event).name() :
@@ -549,7 +556,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                     mLatencyInMillis, // latency_in_millis
                     mType.getId(), //type
                     mQueryLength, // query_length
-                    mSubEventType // sub_event_type
+                    mSubEventType, // sub_event_type
+                    mCardinality // cardinality
             );
         }
     }
