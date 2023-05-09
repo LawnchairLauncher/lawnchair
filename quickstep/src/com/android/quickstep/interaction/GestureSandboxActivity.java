@@ -186,7 +186,8 @@ public class GestureSandboxActivity extends FragmentActivity {
     public void launchTutorialMenu() {
         mFragment = new MenuFragment();
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.gesture_tutorial_fragment_container, mFragment)
+                .replace(R.id.gesture_tutorial_fragment_container, mFragment)
+                .runOnCommit(() -> mFragment.onAttachedToWindow())
                 .commit();
     }
 
