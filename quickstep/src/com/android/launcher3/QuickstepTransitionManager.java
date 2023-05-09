@@ -1086,7 +1086,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * Adds remote animations to a {@link RemoteAnimationDefinition}. May be overridden to add
      * additional animations.
      */
-    protected void addRemoteAnimations(RemoteAnimationDefinition definition) {
+    private void addRemoteAnimations(RemoteAnimationDefinition definition) {
         mWallpaperOpenRunner = createWallpaperOpenRunner(false /* fromUnlock */);
         definition.addRemoteAnimation(WindowManager.TRANSIT_OLD_WALLPAPER_OPEN,
                 WindowConfiguration.ACTIVITY_TYPE_STANDARD,
@@ -1151,7 +1151,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         SystemUiProxy.INSTANCE.get(mLauncher).setStartingWindowListener(null);
     }
 
-    protected void unregisterRemoteAnimations() {
+    private void unregisterRemoteAnimations() {
         if (SEPARATE_RECENTS_ACTIVITY.get()) {
             return;
         }
@@ -1165,7 +1165,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
     }
 
-    private void unregisterRemoteTransitions() {
+    protected void unregisterRemoteTransitions() {
         if (ENABLE_SHELL_TRANSITIONS) {
             SystemUiProxy.INSTANCE.get(mLauncher).unshareTransactionQueue();
         }
@@ -1448,7 +1448,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      */
     private Animator getFallbackClosingWindowAnimators(RemoteAnimationTarget[] appTargets) {
         final int rotationChange = getRotationChange(appTargets);
-        SurfaceTransactionApplier surfaceApplier = new SurfaceTransactionApplier(mDragLayer);
         Matrix matrix = new Matrix();
         Point tmpPos = new Point();
         Rect tmpRect = new Rect();
@@ -1504,7 +1503,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                                 .setAlpha(1f);
                     }
                 }
-                surfaceApplier.scheduleApply(transaction);
+                transaction.getTransaction().apply();
             }
         });
 
@@ -1592,7 +1591,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             boolean playFallBackAnimation = (launcherView == null
                     && launcherIsForceInvisibleOrOpening)
                     || mLauncher.getWorkspace().isOverlayShown()
-                    || hasMultipleTargetsWithMode(appTargets, MODE_CLOSING);
+                    || hasMultipleTargetsWithMode(appTargets, MODE_CLOSING)
+                    || mLauncher.isDestroyed();
 
             boolean playWorkspaceReveal = true;
             boolean skipAllAppsScale = false;
