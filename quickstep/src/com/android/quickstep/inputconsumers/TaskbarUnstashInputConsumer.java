@@ -83,6 +83,7 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
             InputMonitorCompat inputMonitor, TaskbarActivityContext taskbarActivityContext) {
         super(delegate, inputMonitor);
         mTaskbarActivityContext = taskbarActivityContext;
+        // TODO(b/270395798): remove this when cleaning up old Persistent Taskbar code.
         mSquaredTouchSlop = Utilities.squaredTouchSlop(context);
         mScreenWidth = taskbarActivityContext.getDeviceProfile().widthPx;
 
