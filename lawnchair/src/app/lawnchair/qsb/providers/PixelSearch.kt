@@ -12,4 +12,5 @@ object PixelSearch : QsbSearchProvider(
     packageName = "rk.android.app.pixelsearch",
     website = "https://play.google.com/store/apps/details?id=rk.android.app.pixelsearch",
     type = QsbSearchProviderType.APP,
+    supportVoiceIntent = true,
 )
