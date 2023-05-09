@@ -33,14 +33,10 @@ import com.android.launcher3.statehandlers.DepthController
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.SplitConfigurationOptions
-import com.android.launcher3.util.SplitConfigurationOptions.StagePosition
-import com.android.launcher3.util.mock
 import com.android.launcher3.util.withArgCaptor
 import com.android.quickstep.RecentsModel
 import com.android.quickstep.SystemUiProxy
 import com.android.systemui.shared.recents.model.Task
-import java.util.ArrayList
-import java.util.function.Consumer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -50,7 +46,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import java.util.function.Consumer
 
 @RunWith(AndroidJUnit4::class)
 class SplitSelectStateControllerTest {
@@ -355,6 +353,7 @@ class SplitSelectStateControllerTest {
     @Test
     fun secondPendingIntentSet() {
         val itemInfo = ItemInfo()
+        `when`(pendingIntent.creatorUserHandle).thenReturn(primaryUserHandle)
         splitSelectStateController.setInitialTaskSelect(null, 0, itemInfo, null, 1)
         splitSelectStateController.setSecondTask(pendingIntent)
         assertTrue(splitSelectStateController.isBothSplitAppsConfirmed)
