@@ -43,7 +43,8 @@ class BubbleBarBackground(context: TaskbarActivityContext, private val backgroun
     private var shadowBlur = 0f
     private var keyShadowDistance = 0f
 
-    private var arrowPositionX: Float = 0f
+    var arrowPositionX: Float = 0f
+        private set
     private var showingArrow: Boolean = false
     private var arrowDrawable: ShapeDrawable
 
