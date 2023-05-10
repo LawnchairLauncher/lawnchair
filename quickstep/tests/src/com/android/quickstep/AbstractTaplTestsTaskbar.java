@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.android.launcher3.tapl.LauncherInstrumentation;
+import com.android.launcher3.tapl.Overview;
 import com.android.launcher3.tapl.Taskbar;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TaplTestsLauncher3;
@@ -57,7 +58,10 @@ public class AbstractTaplTestsTaskbar extends AbstractQuickStepTest {
                 "com.android.launcher3.testcomponent.BaseTestingActivity");
         mLauncherLayout = TestUtil.setLauncherDefaultLayout(mTargetContext, layoutBuilder);
         TaplTestsLauncher3.initialize(this);
-
+        Overview overview = mLauncher.getWorkspace().switchToOverview();
+        if (overview.hasTasks()) {
+            overview.dismissAllTasks();
+        }
         startAppFast(CALCULATOR_APP_PACKAGE);
         mLauncher.enableBlockTimeout(true);
         mLauncher.showTaskbarIfHidden();
@@ -65,7 +69,6 @@ public class AbstractTaplTestsTaskbar extends AbstractQuickStepTest {
 
     @After
     public void tearDown() throws Exception {
-        setTaskbarMode(mLauncher, mTaskbarWasInTransientMode);
         mLauncher.enableBlockTimeout(false);
         if (mLauncherLayout != null) {
             mLauncherLayout.close();
