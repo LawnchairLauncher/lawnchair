@@ -653,7 +653,7 @@ public class TaskView extends FrameLayout implements Reusable {
      *         index 0 will contain the taskId, index 1 will be -1 indicating a null taskID value
      */
     public int[] getTaskIds() {
-        return mTaskIdContainer;
+        return Arrays.copyOf(mTaskIdContainer, mTaskIdContainer.length);
     }
 
     public boolean containsMultipleTasks() {
