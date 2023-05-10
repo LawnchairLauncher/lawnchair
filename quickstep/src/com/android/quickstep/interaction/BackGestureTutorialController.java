@@ -63,6 +63,28 @@ final class BackGestureTutorialController extends TutorialController {
     }
 
     @Override
+    public int getTitleTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_MainTitle_Back;
+    }
+
+    @Override
+    public int getSuccessTitleTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_MainTitle_Success_Back;
+    }
+
+    @Override
+    public int getDoneButtonTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_ButtonLabel_Back;
+    }
+
+    @Override
+    public int getDoneButtonColor() {
+        return Utilities.isDarkTheme(mContext)
+                ? mTutorialFragment.mRootView.mColorOnSurfaceBack
+                : mTutorialFragment.mRootView.mColorSecondaryBack;
+    }
+
+    @Override
     protected int getMockAppTaskLayoutResId() {
         return getMockAppTaskCurrentPageLayoutResId();
     }
@@ -95,8 +117,13 @@ final class BackGestureTutorialController extends TutorialController {
     }
 
     @Override
-    protected int getSwipeActionColorResId() {
-        return R.color.gesture_tutorial_workspace_background;
+    protected int getSwipeActionColor() {
+        return mTutorialFragment.mRootView.mColorSurfaceContainer;
+    }
+
+    @Override
+    protected int getExitingAppColor() {
+        return mTutorialFragment.mRootView.mColorSurfaceBack;
     }
 
     @Override

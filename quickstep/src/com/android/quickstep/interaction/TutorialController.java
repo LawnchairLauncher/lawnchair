@@ -26,7 +26,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.annotation.ColorRes;
 import android.annotation.RawRes;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -47,11 +46,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.CallSuper;
+import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.annotation.StyleRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.content.res.AppCompatResources;
 
@@ -258,15 +259,17 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         return NO_ID;
     }
 
-    @ColorRes
-    protected int getMockPreviousAppTaskThumbnailColorResId() {
-        return R.color.gesture_tutorial_fake_previous_task_view_color;
+    @ColorInt
+    protected int getMockPreviousAppTaskThumbnailColor() {
+        return mContext.getResources().getColor(
+                R.color.gesture_tutorial_fake_previous_task_view_color);
     }
 
-    @ColorRes
-    protected int getSwipeActionColorResId() {
-        return NO_ID;
-    }
+    @ColorInt
+    protected abstract int getSwipeActionColor();
+
+    @ColorInt
+    protected abstract int getExitingAppColor();
 
     @DrawableRes
     public int getMockAppIconResId() {
@@ -303,6 +306,24 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     public int getSuccessFeedbackSubtitle() {
         return NO_ID;
     }
+
+    @StyleRes
+    public int getTitleTextAppearance() {
+        return NO_ID;
+    }
+
+    @StyleRes
+    public int getSuccessTitleTextAppearance() {
+        return NO_ID;
+    }
+
+    @StyleRes
+    public int getDoneButtonTextAppearance() {
+        return NO_ID;
+    }
+
+    @ColorInt
+    public abstract int getDoneButtonColor();
 
     void showFeedback() {
         if (mGestureCompleted) {
@@ -417,9 +438,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     private void showSuccessPage() {
         mCheckmarkAnimation.setVisibility(View.VISIBLE);
         mCheckmarkAnimation.playAnimation();
-        mFeedbackTitleView.setTextAppearance(R.style.TextAppearance_GestureTutorial_SuccessTitle);
-        mFeedbackSubtitleView.setTextAppearance(
-                R.style.TextAppearance_GestureTutorial_SuccessSubtitle);
+        mFeedbackTitleView.setTextAppearance(mContext, getSuccessTitleTextAppearance());
     }
 
     public boolean isGestureCompleted() {
@@ -536,6 +555,9 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         updateLayout();
 
         if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+            mFeedbackTitleView.setTextAppearance(mContext, getTitleTextAppearance());
+            mDoneButton.setTextAppearance(mContext, getDoneButtonTextAppearance());
+            mDoneButton.getBackground().setTint(getDoneButtonColor());
             mCheckmarkAnimation.setAnimation(mTutorialFragment.isAtFinalStep()
                     ? R.raw.checkmark_animation_end
                     : R.raw.checkmark_animation_in_progress);
@@ -560,8 +582,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
     protected void resetViewsForBackGesture() {
         mFakeTaskView.setVisibility(View.VISIBLE);
-        mFakeTaskView.setBackgroundColor(
-                mContext.getColor(R.color.gesture_tutorial_workspace_background));
+        mFakeTaskView.setBackgroundColor(getSwipeActionColor());
         mExitingAppView.setVisibility(View.VISIBLE);
 
         // reset the exiting app's dimensions
@@ -649,26 +670,26 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         }
     }
 
-    void setLauncherViewColor(@ColorRes int backgroundColorRes) {
-        mFakeLauncherView.setBackgroundColor(mContext.getColor(backgroundColorRes));
-    }
-
     private void updateDrawables() {
         if (mContext != null) {
             mTutorialFragment.getRootView().setBackground(AppCompatResources.getDrawable(
                     mContext, getMockWallpaperResId()));
             mTutorialFragment.updateFeedbackAnimation();
-            setLauncherViewColor(ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                    ? getSwipeActionColorResId() : R.color.gesture_tutorial_fake_wallpaper_color);
+            mFakeLauncherView.setBackgroundColor(ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                    ? getSwipeActionColor()
+                    : mContext.getColor(R.color.gesture_tutorial_fake_wallpaper_color));
             updateFakeViewLayout(mFakeHotseatView, getMockHotseatResId());
             mHotseatIconView = mFakeHotseatView.findViewById(R.id.hotseat_icon_1);
             updateFakeViewLayout(mFakeTaskView, getMockAppTaskLayoutResId());
             mFakeTaskView.animate().alpha(1).setListener(
                     AnimatorListeners.forSuccessCallback(() -> mFakeTaskView.animate().cancel()));
-            mFakePreviousTaskView.setFakeTaskViewFillColor(mContext.getResources().getColor(
-                    getMockPreviousAppTaskThumbnailColorResId()));
+            mFakePreviousTaskView.setFakeTaskViewFillColor(getMockPreviousAppTaskThumbnailColor());
             mFakeIconView.setBackground(AppCompatResources.getDrawable(
                     mContext, getMockAppIconResId()));
+
+            if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+                mExitingAppView.setBackgroundColor(getExitingAppColor());
+            }
         }
     }
 
