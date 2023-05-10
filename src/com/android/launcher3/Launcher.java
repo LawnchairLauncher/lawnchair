@@ -214,6 +214,7 @@ import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.ComposeInitializer;
 import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.views.FloatingSurfaceView;
 import com.android.launcher3.views.OptionsPopupView;
@@ -553,6 +554,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
         setContentView(getRootView());
+        ComposeInitializer.initCompose(this);
+
         if (mOnInitialBindListener != null) {
             getRootView().getViewTreeObserver().addOnPreDrawListener(mOnInitialBindListener);
         }
