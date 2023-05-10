@@ -101,6 +101,7 @@ public class DeviceProfile {
     public final float aspectRatio;
 
     public final boolean isScalableGrid;
+    public final boolean isResponsiveGrid;
     private final int mTypeIndex;
 
     /**
@@ -292,6 +293,10 @@ public class DeviceProfile {
         windowY = windowBounds.bounds.top;
         this.rotationHint = windowBounds.rotationHint;
         mInsets.set(windowBounds.insets);
+
+        // TODO(b/241386436):
+        //  for testing that the flag works only, shouldn't change any launcher behaviour
+        isResponsiveGrid = inv.workspaceSpecsId != INVALID_RESOURCE_HANDLE;
 
         isScalableGrid = inv.isScalable && !isVerticalBarLayout() && !isMultiWindowMode;
         // Determine device posture.
@@ -1577,6 +1582,7 @@ public class DeviceProfile {
 
         writer.println(prefix + "\taspectRatio:" + aspectRatio);
 
+        writer.println(prefix + "\tisResponsiveGrid:" + isResponsiveGrid);
         writer.println(prefix + "\tisScalableGrid:" + isScalableGrid);
 
         writer.println(prefix + "\tinv.numRows: " + inv.numRows);
