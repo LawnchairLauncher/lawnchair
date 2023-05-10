@@ -891,6 +891,12 @@ public class StatsLogManager implements ResourceBasedOverride {
             return this;
         }
 
+
+        /** Sets cardinality of the event. */
+        default StatsLatencyLogger withCardinality(int cardinality) {
+            return this;
+        }
+
         /**
          * Sets packageId of log message.
          */
