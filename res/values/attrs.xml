@@ -199,6 +199,9 @@
         <attr name="demoModeLayoutId" format="reference" />
         <attr name="isScalable" format="boolean" />
         <attr name="devicePaddingId" format="reference" />
+        <!-- File that contains the specs for the workspace.
+        Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
+        <attr name="workspaceSpecsId" format="reference" />
         <!-- By default all categories are enabled -->
         <attr name="deviceCategory" format="integer">
             <!-- Enable on phone only -->

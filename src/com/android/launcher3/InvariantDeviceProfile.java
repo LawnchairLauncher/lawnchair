@@ -48,6 +48,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.annotation.XmlRes;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.model.DeviceGridState;
 import com.android.launcher3.provider.RestoreDbTask;
@@ -105,7 +106,7 @@ public class InvariantDeviceProfile {
     static final int INDEX_TWO_PANEL_PORTRAIT = 2;
     static final int INDEX_TWO_PANEL_LANDSCAPE = 3;
 
-    /** These resources are used to override the device profile  */
+    /** These resources are used to override the device profile */
     private static final String RES_GRID_NUM_ROWS = "grid_num_rows";
     private static final String RES_GRID_NUM_COLUMNS = "grid_num_columns";
     private static final String RES_GRID_ICON_SIZE_DP = "grid_icon_size_dp";
@@ -177,6 +178,8 @@ public class InvariantDeviceProfile {
     protected boolean isScalable;
     @XmlRes
     public int devicePaddingId = INVALID_RESOURCE_HANDLE;
+    @XmlRes
+    public int workspaceSpecsId = INVALID_RESOURCE_HANDLE;
 
     public String dbFile;
     public int defaultLayoutId;
@@ -350,6 +353,7 @@ public class InvariantDeviceProfile {
 
         isScalable = closestProfile.isScalable;
         devicePaddingId = closestProfile.devicePaddingId;
+        workspaceSpecsId = closestProfile.mWorkspaceSpecsId;
         this.deviceType = deviceType;
 
         inlineNavButtonsEndSpacing = closestProfile.inlineNavButtonsEndSpacing;
@@ -795,6 +799,7 @@ public class InvariantDeviceProfile {
 
         private final boolean isScalable;
         private final int devicePaddingId;
+        private final int mWorkspaceSpecsId;
 
         public GridOption(Context context, AttributeSet attrs) {
             TypedArray a = context.obtainStyledAttributes(
@@ -836,7 +841,7 @@ public class InvariantDeviceProfile {
 
             inlineNavButtonsEndSpacing =
                     a.getResourceId(R.styleable.GridDisplayOption_inlineNavButtonsEndSpacing,
-                    R.dimen.taskbar_button_margin_default);
+                            R.dimen.taskbar_button_margin_default);
 
             numFolderRows = a.getInt(
                     R.styleable.GridDisplayOption_numFolderRows, numRows);
@@ -855,6 +860,13 @@ public class InvariantDeviceProfile {
                     R.styleable.GridDisplayOption_devicePaddingId, INVALID_RESOURCE_HANDLE);
             deviceCategory = a.getInt(R.styleable.GridDisplayOption_deviceCategory,
                     DEVICE_CATEGORY_ALL);
+
+            if (FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE.get()) {
+                mWorkspaceSpecsId = a.getResourceId(
+                        R.styleable.GridDisplayOption_workspaceSpecsId, INVALID_RESOURCE_HANDLE);
+            } else {
+                mWorkspaceSpecsId = INVALID_RESOURCE_HANDLE;
+            }
 
             int inlineForRotation = a.getInt(R.styleable.GridDisplayOption_inlineQsb,
                     DONT_INLINE_QSB);
