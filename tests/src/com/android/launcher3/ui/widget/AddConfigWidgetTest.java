@@ -36,7 +36,6 @@ import com.android.launcher3.testcomponent.WidgetConfigActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.Wait;
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
@@ -76,7 +75,6 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
-    @ScreenRecord // b/206481237
     public void testConfigCancelled() throws Throwable {
         runTest(false);
     }
