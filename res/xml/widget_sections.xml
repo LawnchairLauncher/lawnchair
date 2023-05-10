@@ -26,6 +26,6 @@
         launcher:category="1"
         launcher:sectionDrawable="@drawable/ic_note_taking_widget_category"
         launcher:sectionTitle="@string/widget_category_note_taking">
-        <widget launcher:provider="com.android.settings/com.android.settings.notetask.shortcut.CreateNoteTaskShortcutActivity" />
+        <widget launcher:provider="com.android.systemui/.notetask.shortcut.CreateNoteTaskShortcutActivity" />
     </section>
 </widget-sections>
