@@ -169,7 +169,7 @@
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Пословне апликације су означене значком и ИТ администратор може да их види"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Важи"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Паузирај пословне апликације"</string>
-    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Опозови паузу"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Поново активирај"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Филтер"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Претражите телефон"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Претражите таблет"</string>
