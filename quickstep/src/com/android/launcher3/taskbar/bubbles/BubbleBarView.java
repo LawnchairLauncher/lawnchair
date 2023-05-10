@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.taskbar.bubbles;
 
+import android.animation.ValueAnimator;
 import android.annotation.Nullable;
 import android.content.Context;
 import android.graphics.Rect;
@@ -41,14 +42,14 @@ import java.util.List;
  * - stashed as a handle
  * - unstashed but collapsed, in this state the bar is showing but the bubbles are stacked within it
  * - unstashed and expanded, in this state the bar is showing and the bubbles are shown in a row
- *   with one of the bubbles being selected. Additionally, WMShell will display the expanded bubble
- *   view above the bar.
+ * with one of the bubbles being selected. Additionally, WMShell will display the expanded bubble
+ * view above the bar.
  * <p>
  * The bubble bar has some behavior related to taskbar:
  * - When taskbar is unstashed, bubble bar will also become unstashed (but in its "collapsed"
- *   state)
+ * state)
  * - When taskbar is stashed, bubble bar will also become stashed (unless bubble bar is in its
- *   "expanded" state)
+ * "expanded" state)
  * - When bubble bar is in its "expanded" state, taskbar becomes stashed
  * <p>
  * If there are no bubbles, the bubble bar and bubble stashed handle are not shown. Additionally
@@ -64,6 +65,7 @@ public class BubbleBarView extends FrameLayout {
     // TODO: (b/273594744) calculate the amount of space we have and base the max on that
     //  if it's smaller than 5.
     private static final int MAX_BUBBLES = 5;
+    private static final int ARROW_POSITION_ANIMATION_DURATION_MS = 200;
 
     private final TaskbarActivityContext mActivityContext;
     private final BubbleBarBackground mBubbleBarBackground;
@@ -209,14 +211,18 @@ public class BubbleBarView extends FrameLayout {
     /**
      * Sets which bubble view should be shown as selected.
      */
-    // TODO: (b/273592694) animate it
     public void setSelectedBubble(BubbleView view) {
         mSelectedBubbleView = view;
-        updateArrowForSelected();
-        invalidate();
+        updateArrowForSelected(/* shouldAnimate= */ true);
     }
 
-    private void updateArrowForSelected() {
+    /**
+     * Update the arrow position to match the selected bubble.
+     *
+     * @param shouldAnimate whether or not to animate the arrow. If the bar was just expanded, this
+     *                      should be set to {@code false}. Otherwise set this to {@code true}.
+     */
+    private void updateArrowForSelected(boolean shouldAnimate) {
         if (mSelectedBubbleView == null) {
             Log.w(TAG, "trying to update selection arrow without a selected view!");
             return;
@@ -224,7 +230,21 @@ public class BubbleBarView extends FrameLayout {
         final int index = indexOfChild(mSelectedBubbleView);
         // Find the center of the bubble when it's expanded, set the arrow position to it.
         final float tx = getPaddingStart() + index * (mIconSize + mIconSpacing) + mIconSize / 2f;
-        mBubbleBarBackground.setArrowPosition(tx);
+
+        if (shouldAnimate) {
+            final float currentArrowPosition = mBubbleBarBackground.getArrowPositionX();
+            ValueAnimator animator = ValueAnimator.ofFloat(currentArrowPosition, tx);
+            animator.setDuration(ARROW_POSITION_ANIMATION_DURATION_MS);
+            animator.addUpdateListener(animation -> {
+                float x = (float) animation.getAnimatedValue();
+                mBubbleBarBackground.setArrowPosition(x);
+                invalidate();
+            });
+            animator.start();
+        } else {
+            mBubbleBarBackground.setArrowPosition(tx);
+            invalidate();
+        }
     }
 
     @Override
@@ -248,7 +268,7 @@ public class BubbleBarView extends FrameLayout {
     public void setExpanded(boolean isBarExpanded) {
         if (mIsBarExpanded != isBarExpanded) {
             mIsBarExpanded = isBarExpanded;
-            updateArrowForSelected();
+            updateArrowForSelected(/* shouldAnimate= */ false);
             setOrUnsetClickListener();
             if (!isBarExpanded && mReorderRunnable != null) {
                 mReorderRunnable.run();
