@@ -372,10 +372,6 @@ public final class FeatureFlags {
             "ENABLE_ENFORCED_ROUNDED_CORNERS", ENABLED,
             "Enforce rounded corners on all App Widgets");
 
-    public static final BooleanFlag ENABLE_WALLPAPER_SCRIM = getDebugFlag(270393604,
-            "ENABLE_WALLPAPER_SCRIM", DISABLED,
-            "Enables scrim over wallpaper for text protection.");
-
     public static final BooleanFlag ENABLE_ICON_LABEL_AUTO_SCALING = getDebugFlag(270393294,
             "ENABLE_ICON_LABEL_AUTO_SCALING", ENABLED,
             "Enables scaling/spacing for icon labels to make more characters visible");
@@ -415,7 +411,7 @@ public final class FeatureFlags {
 
     // TODO(Block 31)
     public static final BooleanFlag ENABLE_SPLIT_LAUNCH_DATA_REFACTOR = getDebugFlag(279494325,
-            "ENABLE_SPLIT_LAUNCH_DATA_REFACTOR", DISABLED,
+            "ENABLE_SPLIT_LAUNCH_DATA_REFACTOR", ENABLED,
             "Use refactored split launching code path");
 
     // TODO(Block 32): Empty block
