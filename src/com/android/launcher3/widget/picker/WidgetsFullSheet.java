@@ -608,6 +608,12 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
     }
 
+    /** b/209579563: "Widgets" header should be focused first. */
+    @Override
+    protected View getAccessibilityInitialFocusView() {
+        return mHeaderTitle;
+    }
+
     protected float getMaxTableHeight(float noWidgetsViewHeight) {
         return (mContent.getMeasuredHeight()
                 - mTabsHeight - getHeaderViewHeight()
