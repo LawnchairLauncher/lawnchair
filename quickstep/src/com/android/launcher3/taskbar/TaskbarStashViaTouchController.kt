@@ -108,7 +108,18 @@ class TaskbarStashViaTouchController(val controllers: TaskbarControllers) : Touc
         }
 
     override fun onControllerInterceptTouchEvent(ev: MotionEvent): Boolean {
-        if (!enabled || controllers.taskbarStashController.isStashed) {
+        val bubbleControllers = controllers.bubbleControllers.orElse(null)
+        if (!enabled || bubbleControllers == null) {
+            return false
+        }
+        if (bubbleControllers.bubbleBarViewController.isExpanded) {
+            // WMShell / bubbles will handle collapsing
+            return false
+        }
+        if (
+            controllers.taskbarStashController.isStashed &&
+                bubbleControllers.bubbleStashController.isStashed
+        ) {
             return false
         }
 
@@ -122,7 +133,12 @@ class TaskbarStashViaTouchController(val controllers: TaskbarControllers) : Touc
                 return true
             }
         } else if (ev.action == MotionEvent.ACTION_DOWN) {
-            if (screenCoordinatesEv.y < gestureHeightYThreshold) {
+            val isDownOnBubbleBar =
+                (bubbleControllers != null &&
+                    bubbleControllers.bubbleBarViewController.isEventOverAnyItem(
+                        screenCoordinatesEv
+                    ))
+            if (!isDownOnBubbleBar && screenCoordinatesEv.y < gestureHeightYThreshold) {
                 controllers.taskbarStashController.updateAndAnimateTransientTaskbar(true)
             }
         }

@@ -29,13 +29,6 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class TaplTestsPersistentTaskbar extends AbstractTaplTestsTaskbar {
 
-    @Override
-    public void setUp() throws Exception {
-        mTaskbarWasInTransientMode = isTaskbarInTransientMode(mTargetContext);
-        setTaskbarMode(mLauncher, false);
-        super.setUp();
-    }
-
     @Test
     @TaskbarModeSwitch(mode = PERSISTENT)
     public void testHideShowTaskbar() {
