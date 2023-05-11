@@ -33,11 +33,13 @@ import android.view.WindowInsets.Type.tappableElement
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.TYPE_INPUT_METHOD
 import android.view.WindowManager.LayoutParams.TYPE_VOICE_INTERACTION
+import androidx.core.graphics.toRegion
 import com.android.internal.policy.GestureNavigationSettingsObserver
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.anim.AlphaUpdateListener
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
+import com.android.launcher3.util.DisplayController
 import java.io.PrintWriter
 
 /** Handles the insets that Taskbar provides to underlying apps and the IME. */
@@ -245,7 +247,16 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                 bubbleBarVisible
         ) {
             // Taskbar has some touchable elements, take over the full taskbar area
-            insetsInfo.touchableRegion.set(touchableRegion)
+            if (
+                controllers.uiController.isInOverview &&
+                    DisplayController.isTransientTaskbar(context)
+            ) {
+                insetsInfo.touchableRegion.set(
+                    controllers.taskbarActivityContext.dragLayer.lastDrawnTransientRect.toRegion()
+                )
+            } else {
+                insetsInfo.touchableRegion.set(touchableRegion)
+            }
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
             insetsIsTouchableRegion = false
         } else {
