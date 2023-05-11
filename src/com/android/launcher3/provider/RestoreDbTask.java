@@ -16,8 +16,6 @@
 
 package com.android.launcher3.provider;
 
-import static android.os.Process.myUserHandle;
-
 import static com.android.launcher3.InvariantDeviceProfile.TYPE_MULTI_DISPLAY;
 import static com.android.launcher3.LauncherPrefs.APP_WIDGET_IDS;
 import static com.android.launcher3.LauncherPrefs.OLD_APP_WIDGET_IDS;
@@ -49,8 +47,8 @@ import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.model.DatabaseHelper;
 import com.android.launcher3.model.DeviceGridState;
-import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -85,12 +83,12 @@ public class RestoreDbTask {
     /**
      * Tries to restore the backup DB if needed
      */
-    public static void restoreIfNeeded(Context context, ModelDbController dbController) {
+    public static void restoreIfNeeded(Context context, DatabaseHelper helper) {
         if (!isPending(context)) {
             return;
         }
-        if (!performRestore(context, dbController)) {
-            dbController.createEmptyDB();
+        if (!performRestore(context, helper)) {
+            helper.createEmptyDB(helper.getWritableDatabase());
         }
 
         // Obtain InvariantDeviceProfile first before setting pending to false, so
@@ -104,12 +102,12 @@ public class RestoreDbTask {
         idp.reinitializeAfterRestore(context);
     }
 
-    private static boolean performRestore(Context context, ModelDbController controller) {
-        SQLiteDatabase db = controller.getDb();
+    private static boolean performRestore(Context context, DatabaseHelper helper) {
+        SQLiteDatabase db = helper.getWritableDatabase();
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             RestoreDbTask task = new RestoreDbTask();
-            task.sanitizeDB(context, controller, db, new BackupManager(context));
-            task.restoreAppWidgetIdsIfExists(context, controller);
+            task.sanitizeDB(context, helper, db, new BackupManager(context));
+            task.restoreAppWidgetIdsIfExists(context, helper);
             t.commit();
             return true;
         } catch (Exception e) {
@@ -131,10 +129,10 @@ public class RestoreDbTask {
      * @return number of items deleted.
      */
     @VisibleForTesting
-    protected int sanitizeDB(Context context, ModelDbController controller, SQLiteDatabase db,
+    protected int sanitizeDB(Context context, DatabaseHelper helper, SQLiteDatabase db,
             BackupManager backupManager) throws Exception {
         // Primary user ids
-        long myProfileId = controller.getSerialNumberForUser(myUserHandle());
+        long myProfileId = helper.getDefaultUserSerial();
         long oldProfileId = getDefaultProfileId(db);
         LongSparseArray<Long> oldManagedProfileIds = getManagedProfileIds(db, oldProfileId);
         LongSparseArray<Long> profileMapping = new LongSparseArray<>(oldManagedProfileIds.size()
@@ -146,7 +144,7 @@ public class RestoreDbTask {
             long oldManagedProfileId = oldManagedProfileIds.keyAt(i);
             UserHandle user = getUserForAncestralSerialNumber(backupManager, oldManagedProfileId);
             if (user != null) {
-                long newManagedProfileId = controller.getSerialNumberForUser(user);
+                long newManagedProfileId = helper.getSerialNumberForUser(user);
                 profileMapping.put(oldManagedProfileId, newManagedProfileId);
             }
         }
@@ -215,7 +213,7 @@ public class RestoreDbTask {
         }
 
         // Override shortcuts
-        maybeOverrideShortcuts(context, controller, db, myProfileId);
+        maybeOverrideShortcuts(context, helper, db, myProfileId);
 
         return itemsDeleted;
     }
@@ -323,11 +321,11 @@ public class RestoreDbTask {
                 .putSync(RESTORE_DEVICE.to(new DeviceGridState(context).getDeviceType()));
     }
 
-    private void restoreAppWidgetIdsIfExists(Context context, ModelDbController controller) {
+    private void restoreAppWidgetIdsIfExists(Context context, DatabaseHelper helper) {
         LauncherPrefs lp = LauncherPrefs.get(context);
         if (lp.has(APP_WIDGET_IDS, OLD_APP_WIDGET_IDS)) {
             AppWidgetHost host = new AppWidgetHost(context, APPWIDGET_HOST_ID);
-            AppWidgetsRestoredReceiver.restoreAppWidgetIds(context, controller,
+            AppWidgetsRestoredReceiver.restoreAppWidgetIds(context, helper,
                     IntArray.fromConcatString(lp.get(OLD_APP_WIDGET_IDS)).toArray(),
                     IntArray.fromConcatString(lp.get(APP_WIDGET_IDS)).toArray(),
                     host);
@@ -345,7 +343,7 @@ public class RestoreDbTask {
                 APP_WIDGET_IDS.to(IntArray.wrap(newIds).toConcatString()));
     }
 
-    protected static void maybeOverrideShortcuts(Context context, ModelDbController controller,
+    protected static void maybeOverrideShortcuts(Context context, DatabaseHelper helper,
             SQLiteDatabase db, long currentUser) {
         Map<String, LauncherActivityInfo> activityOverrides = ApiWrapper.getActivityOverrides(
                 context);
@@ -369,7 +367,7 @@ public class RestoreDbTask {
                 if (override != null) {
                     ContentValues values = new ContentValues();
                     values.put(Favorites.PROFILE_ID,
-                            controller.getSerialNumberForUser(override.getUser()));
+                            helper.getSerialNumberForUser(override.getUser()));
                     values.put(Favorites.INTENT, AppInfo.makeLaunchIntent(override).toUri(0));
                     db.update(Favorites.TABLE_NAME, values, String.format("%s=?", Favorites._ID),
                             new String[]{String.valueOf(c.getInt(idIndex))});
