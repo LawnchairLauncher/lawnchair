@@ -18,7 +18,6 @@ package com.android.quickstep;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_CURSOR_HOVER_STATES;
 import static com.android.quickstep.TaskbarModeSwitchRule.Mode.TRANSIENT;
 
-
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
@@ -60,6 +59,17 @@ public class TaplTestsTransientTaskbar extends AbstractTaplTestsTaskbar {
         try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_CURSOR_HOVER_STATES, true)) {
             getTaskbar().getAppIcon(TEST_APP_NAME).launch(TEST_APP_PACKAGE);
             mLauncher.getLaunchedAppState().hoverBelowHintedTaskbarToUnstash();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    @TaskbarModeSwitch(mode = TRANSIENT)
+    public void testClickHoveredTaskbarToGoHome() {
+        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_CURSOR_HOVER_STATES, true)) {
+            getTaskbar().getAppIcon(TEST_APP_NAME).launch(TEST_APP_PACKAGE);
+            mLauncher.getLaunchedAppState().clickStashedTaskbarToGoHome();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -110,6 +110,9 @@ public final class LauncherInstrumentation {
     static final Pattern EVENT_TOUCH_CANCEL_TIS = getTouchEventPatternTIS("ACTION_CANCEL");
     static final Pattern EVENT_HOVER_ENTER_TIS = getTouchEventPatternTIS("ACTION_HOVER_ENTER");
     static final Pattern EVENT_HOVER_EXIT_TIS = getTouchEventPatternTIS("ACTION_HOVER_EXIT");
+    static final Pattern EVENT_BUTTON_PRESS_TIS = getTouchEventPatternTIS("ACTION_BUTTON_PRESS");
+    static final Pattern EVENT_BUTTON_RELEASE_TIS =
+            getTouchEventPatternTIS("ACTION_BUTTON_RELEASE");
 
     private static final Pattern EVENT_KEY_BACK_DOWN =
             getKeyEventPattern("ACTION_DOWN", "KEYCODE_BACK");
@@ -166,7 +169,7 @@ public final class LauncherInstrumentation {
         void close();
     }
 
-    private static final String WORKSPACE_RES_ID = "workspace";
+    static final String WORKSPACE_RES_ID = "workspace";
     private static final String APPS_RES_ID = "apps_view";
     private static final String OVERVIEW_RES_ID = "overview_panel";
     private static final String WIDGETS_RES_ID = "primary_widgets_list_view";
@@ -1777,12 +1780,22 @@ public final class LauncherInstrumentation {
                 }
                 mPointerCount--;
                 break;
+            case MotionEvent.ACTION_BUTTON_PRESS:
+                expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_BUTTON_PRESS_TIS);
+                break;
+            case MotionEvent.ACTION_BUTTON_RELEASE:
+                expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_BUTTON_RELEASE_TIS);
+                break;
         }
 
         final MotionEvent event = mSwipeFromTrackpad
                 ? getTrackpadThreeFingerMotionEvent(
                         downTime, currentTime, action, point.x, point.y, pointerCount)
                 : getMotionEvent(downTime, currentTime, action, point.x, point.y);
+        if (action == MotionEvent.ACTION_BUTTON_PRESS
+                || action == MotionEvent.ACTION_BUTTON_RELEASE) {
+            event.setActionButton(MotionEvent.BUTTON_PRIMARY);
+        }
         assertTrue("injectInputEvent failed",
                 mInstrumentation.getUiAutomation().injectInputEvent(event, true, false));
         event.recycle();
