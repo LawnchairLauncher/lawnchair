@@ -58,6 +58,7 @@ import android.os.SystemProperties;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.NonNull;
@@ -86,6 +87,10 @@ import java.util.ArrayList;
 public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
     static final String SUPPORT_ONE_HANDED_MODE = "ro.support_one_handed_mode";
+
+    // TODO: Move to quickstep contract
+    private static final float QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON = 9;
+    private static final float QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL = 2;
 
     private final Context mContext;
     private final DisplayController mDisplayController;
@@ -575,6 +580,19 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     public boolean isImeRenderingNavButtons() {
         return mCanImeRenderGesturalNavButtons && mMode == NO_BUTTON
                 && ((mSystemUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0);
+    }
+
+    /**
+     * Returns the touch slop for {@link InputConsumer}s to compare against before pilfering
+     * pointers. Note that this is squared because it expects to be compared against
+     * {@link com.android.launcher3.Utilities#squaredHypot} (to avoid square root on each event).
+     */
+    public float getSquaredTouchSlop() {
+        float slopMultiplier = isFullyGesturalNavMode()
+                ? QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL
+                : QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON;
+        float touchSlop = ViewConfiguration.get(mContext).getScaledTouchSlop();
+        return slopMultiplier * touchSlop * touchSlop;
     }
 
     public String getSystemUiStateString() {
