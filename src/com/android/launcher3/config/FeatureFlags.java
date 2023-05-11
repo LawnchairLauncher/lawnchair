@@ -326,7 +326,7 @@ public final class FeatureFlags {
             "Enable a grid-only overview without a focused task.");
 
     public static final BooleanFlag ENABLE_CURSOR_HOVER_STATES = getDebugFlag(243191650,
-            "ENABLE_CURSOR_HOVER_STATES", DISABLED,
+            "ENABLE_CURSOR_HOVER_STATES", ENABLED,
             "Enables cursor hover states for certain elements.");
 
     // TODO(Block 24): Clean up flags
@@ -372,10 +372,6 @@ public final class FeatureFlags {
             "ENABLE_ENFORCED_ROUNDED_CORNERS", ENABLED,
             "Enforce rounded corners on all App Widgets");
 
-    public static final BooleanFlag ENABLE_WALLPAPER_SCRIM = getDebugFlag(270393604,
-            "ENABLE_WALLPAPER_SCRIM", DISABLED,
-            "Enables scrim over wallpaper for text protection.");
-
     public static final BooleanFlag ENABLE_ICON_LABEL_AUTO_SCALING = getDebugFlag(270393294,
             "ENABLE_ICON_LABEL_AUTO_SCALING", ENABLED,
             "Enables scaling/spacing for icon labels to make more characters visible");
@@ -419,6 +415,10 @@ public final class FeatureFlags {
             "Use refactored split launching code path");
 
     // TODO(Block 32): Empty block
+
+    public static final BooleanFlag ENABLE_RESPONSIVE_WORKSPACE = getDebugFlag(241386436,
+            "ENABLE_RESPONSIVE_WORKSPACE", DISABLED,
+            "Enables new workspace grid calculations method.");
 
     public static class BooleanFlag {
 
