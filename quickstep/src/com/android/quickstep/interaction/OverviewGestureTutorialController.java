@@ -34,8 +34,10 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.quickstep.SwipeUpAnimationLogic;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
+import com.android.quickstep.util.LottieAnimationColorUtils;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /** A {@link TutorialController} for the Overview tutorial. */
 @TargetApi(Build.VERSION_CODES.R)
@@ -44,6 +46,23 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     OverviewGestureTutorialController(OverviewGestureTutorialFragment fragment,
             TutorialType tutorialType) {
         super(fragment, tutorialType);
+
+        // Set the Lottie animation colors specifically for the Overview gesture
+        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+            LottieAnimationColorUtils.updateColors(
+                    mAnimatedGestureDemonstration,
+                    Map.of(".onSurfaceOverview", fragment.mRootView.mColorOnSurfaceOverview,
+                            ".surfaceOverview", fragment.mRootView.mColorSurfaceOverview,
+                            ".secondaryOverview", fragment.mRootView.mColorSecondaryOverview));
+
+            LottieAnimationColorUtils.updateColors(
+                    mCheckmarkAnimation,
+                    Map.of(".checkmark",
+                            Utilities.isDarkTheme(mContext)
+                                    ? fragment.mRootView.mColorOnSurfaceOverview
+                                    : fragment.mRootView.mColorSecondaryOverview,
+                            ".checkmarkBackground", fragment.mRootView.mColorSurfaceOverview));
+        }
     }
     @Override
     public int getIntroductionTitle() {

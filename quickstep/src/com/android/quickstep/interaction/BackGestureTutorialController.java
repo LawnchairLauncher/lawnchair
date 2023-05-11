@@ -28,6 +28,9 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
+import com.android.quickstep.util.LottieAnimationColorUtils;
+
+import java.util.Map;
 
 /** A {@link TutorialController} for the Back tutorial. */
 final class BackGestureTutorialController extends TutorialController {
@@ -36,6 +39,22 @@ final class BackGestureTutorialController extends TutorialController {
 
     BackGestureTutorialController(BackGestureTutorialFragment fragment, TutorialType tutorialType) {
         super(fragment, tutorialType);
+        // Set the Lottie animation colors specifically for the Back gesture
+        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+            LottieAnimationColorUtils.updateColors(
+                    mAnimatedGestureDemonstration,
+                    Map.of(".onSurfaceBack", fragment.mRootView.mColorOnSurfaceBack,
+                            ".surfaceBack", fragment.mRootView.mColorSurfaceBack,
+                            ".secondaryBack", fragment.mRootView.mColorSecondaryBack));
+
+            LottieAnimationColorUtils.updateColors(
+                    mCheckmarkAnimation,
+                    Map.of(".checkmark",
+                            Utilities.isDarkTheme(mContext)
+                                    ? fragment.mRootView.mColorOnSurfaceBack
+                                    : fragment.mRootView.mColorSecondaryBack,
+                            ".checkmarkBackground", fragment.mRootView.mColorSurfaceBack));
+        }
     }
 
     @Override

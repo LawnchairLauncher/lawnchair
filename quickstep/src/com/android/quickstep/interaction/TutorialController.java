@@ -120,7 +120,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
     private boolean mGestureCompleted = false;
     protected LottieAnimationView mAnimatedGestureDemonstration;
-    private LottieAnimationView mCheckmarkAnimation;
+    protected LottieAnimationView mCheckmarkAnimation;
     private RelativeLayout mFullGestureDemonstration;
 
     // These runnables  should be used when posting callbacks to their views and cleared from their

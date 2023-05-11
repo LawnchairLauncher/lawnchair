@@ -26,7 +26,7 @@
         <shape
             android:shape="rectangle">
             <corners android:radius="50dp"/>
-            <solid android:color="?androidprv:attr/materialColorPrimary"/>
+            <solid android:color="@android:color/white"/>
         </shape>
     </item>
 </layer-list>
