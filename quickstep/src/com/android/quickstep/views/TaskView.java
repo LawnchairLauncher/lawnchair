@@ -849,6 +849,13 @@ public class TaskView extends FrameLayout implements Reusable {
                     // QuickstepTransitionManager.createWallpaperOpenAnimations when launcher
                     // shows again
                     getRecentsView().startHome(false /* animated */);
+                    RecentsView rv = getRecentsView();
+                    if (rv != null && rv.mSizeStrategy.getTaskbarController() != null) {
+                        // LauncherTaskbarUIController depends on the launcher state when checking
+                        // whether to handle resume, but that can come in before startHome() changes
+                        // the state, so force-refresh here to ensure the taskbar is updated
+                        rv.mSizeStrategy.getTaskbarController().refreshResumedState();
+                    }
                 });
             }
             // Indicate success once the system has indicated that the transition has started
