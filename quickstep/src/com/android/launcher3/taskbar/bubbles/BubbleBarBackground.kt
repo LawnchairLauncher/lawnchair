@@ -48,6 +48,8 @@ class BubbleBarBackground(context: TaskbarActivityContext, private val backgroun
     private var showingArrow: Boolean = false
     private var arrowDrawable: ShapeDrawable
 
+    var width: Float = 0f
+
     init {
         paint.color = context.getColor(R.color.taskbar_background)
         paint.flags = Paint.ANTI_ALIAS_FLAG
@@ -102,7 +104,7 @@ class BubbleBarBackground(context: TaskbarActivityContext, private val backgroun
         // Draw background.
         val radius = backgroundHeight / 2f
         canvas.drawRoundRect(
-            0f,
+            canvas.width.toFloat() - width,
             0f,
             canvas.width.toFloat(),
             canvas.height.toFloat(),
