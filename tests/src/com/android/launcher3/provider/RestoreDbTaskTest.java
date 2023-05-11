@@ -45,11 +45,8 @@ import androidx.test.filters.SmallTest;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.model.ModelDbController;
-import com.android.launcher3.util.LauncherModelHelper;
+import com.android.launcher3.model.DatabaseHelper;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -64,29 +61,15 @@ public class RestoreDbTaskTest {
 
     private final UserHandle mWorkUser = UserHandle.getUserHandleForUid(PER_USER_RANGE);
 
-    private LauncherModelHelper mModelHelper;
-    private Context mContext;
-
-    @Before
-    public void setup() {
-        mModelHelper = new LauncherModelHelper();
-        mContext = mModelHelper.sandboxContext;
-    }
-
-    @After
-    public void teardown() {
-        mModelHelper.destroy();
-    }
-
     @Test
     public void testGetProfileId() throws Exception {
-        SQLiteDatabase db = new MyModelDbController(23).getDb();
+        SQLiteDatabase db = new MyDatabaseHelper(23).getWritableDatabase();
         assertEquals(23, new RestoreDbTask().getDefaultProfileId(db));
     }
 
     @Test
     public void testMigrateProfileId() throws Exception {
-        SQLiteDatabase db = new MyModelDbController(42).getDb();
+        SQLiteDatabase db = new MyDatabaseHelper(42).getWritableDatabase();
         // Add some mock data
         for (int i = 0; i < 5; i++) {
             ContentValues values = new ContentValues();
@@ -106,7 +89,7 @@ public class RestoreDbTaskTest {
 
     @Test
     public void testChangeDefaultColumn() throws Exception {
-        SQLiteDatabase db = new MyModelDbController(42).getDb();
+        SQLiteDatabase db = new MyDatabaseHelper(42).getWritableDatabase();
         // Add some mock data
         for (int i = 0; i < 5; i++) {
             ContentValues values = new ContentValues();
@@ -129,27 +112,28 @@ public class RestoreDbTaskTest {
 
     @Test
     public void testSanitizeDB_bothProfiles() throws Exception {
+        Context context = getInstrumentation().getTargetContext();
         UserHandle myUser = myUserHandle();
-        long myProfileId = mContext.getSystemService(UserManager.class)
+        long myProfileId = context.getSystemService(UserManager.class)
                 .getSerialNumberForUser(myUser);
         long myProfileId_old = myProfileId + 1;
         long workProfileId = myProfileId + 2;
         long workProfileId_old = myProfileId + 3;
 
-        MyModelDbController controller = new MyModelDbController(myProfileId);
-        SQLiteDatabase db = controller.getDb();
-        BackupManager bm = spy(new BackupManager(mContext));
+        MyDatabaseHelper helper = new MyDatabaseHelper(myProfileId);
+        SQLiteDatabase db = helper.getWritableDatabase();
+        BackupManager bm = spy(new BackupManager(context));
         doReturn(myUserHandle()).when(bm).getUserForAncestralSerialNumber(eq(myProfileId_old));
         doReturn(mWorkUser).when(bm).getUserForAncestralSerialNumber(eq(workProfileId_old));
-        controller.users.put(workProfileId, mWorkUser);
+        helper.users.put(workProfileId, mWorkUser);
 
-        addIconsBulk(controller, 10, 1, myProfileId_old);
-        addIconsBulk(controller, 6, 2, workProfileId_old);
+        addIconsBulk(helper, 10, 1, myProfileId_old);
+        addIconsBulk(helper, 6, 2, workProfileId_old);
         assertEquals(10, getItemCountForProfile(db, myProfileId_old));
         assertEquals(6, getItemCountForProfile(db, workProfileId_old));
 
         RestoreDbTask task = new RestoreDbTask();
-        task.sanitizeDB(mContext, controller, controller.getDb(), bm);
+        task.sanitizeDB(context, helper, helper.getWritableDatabase(), bm);
 
         // All the data has been migrated to the new user ids
         assertEquals(0, getItemCountForProfile(db, myProfileId_old));
@@ -160,26 +144,27 @@ public class RestoreDbTaskTest {
 
     @Test
     public void testSanitizeDB_workItemsRemoved() throws Exception {
+        Context context = getInstrumentation().getTargetContext();
         UserHandle myUser = myUserHandle();
-        long myProfileId = mContext.getSystemService(UserManager.class)
+        long myProfileId = context.getSystemService(UserManager.class)
                 .getSerialNumberForUser(myUser);
         long myProfileId_old = myProfileId + 1;
         long workProfileId_old = myProfileId + 3;
 
-        MyModelDbController controller = new MyModelDbController(myProfileId);
-        SQLiteDatabase db = controller.getDb();
-        BackupManager bm = spy(new BackupManager(mContext));
+        MyDatabaseHelper helper = new MyDatabaseHelper(myProfileId);
+        SQLiteDatabase db = helper.getWritableDatabase();
+        BackupManager bm = spy(new BackupManager(context));
         doReturn(myUserHandle()).when(bm).getUserForAncestralSerialNumber(eq(myProfileId_old));
         // Work profile is not migrated
         doReturn(null).when(bm).getUserForAncestralSerialNumber(eq(workProfileId_old));
 
-        addIconsBulk(controller, 10, 1, myProfileId_old);
-        addIconsBulk(controller, 6, 2, workProfileId_old);
+        addIconsBulk(helper, 10, 1, myProfileId_old);
+        addIconsBulk(helper, 6, 2, workProfileId_old);
         assertEquals(10, getItemCountForProfile(db, myProfileId_old));
         assertEquals(6, getItemCountForProfile(db, workProfileId_old));
 
         RestoreDbTask task = new RestoreDbTask();
-        task.sanitizeDB(mContext, controller, controller.getDb(), bm);
+        task.sanitizeDB(context, helper, helper.getWritableDatabase(), bm);
 
         // All the data has been migrated to the new user ids
         assertEquals(0, getItemCountForProfile(db, myProfileId_old));
@@ -188,13 +173,12 @@ public class RestoreDbTaskTest {
         assertEquals(10, getCount(db, "select * from favorites"));
     }
 
-    private void addIconsBulk(MyModelDbController controller,
-            int count, int screen, long profileId) {
-        int columns = LauncherAppState.getIDP(mContext).numColumns;
+    private void addIconsBulk(DatabaseHelper helper, int count, int screen, long profileId) {
+        int columns = LauncherAppState.getIDP(getInstrumentation().getTargetContext()).numColumns;
         String packageName = getInstrumentation().getContext().getPackageName();
         for (int i = 0; i < count; i++) {
             ContentValues values = new ContentValues();
-            values.put(LauncherSettings.Favorites._ID, controller.generateNewItemId());
+            values.put(LauncherSettings.Favorites._ID, helper.generateNewItemId());
             values.put(LauncherSettings.Favorites.CONTAINER, CONTAINER_DESKTOP);
             values.put(LauncherSettings.Favorites.SCREEN, screen);
             values.put(LauncherSettings.Favorites.CELLX, i % columns);
@@ -205,10 +189,10 @@ public class RestoreDbTaskTest {
             values.put(LauncherSettings.Favorites.ITEM_TYPE, ITEM_TYPE_APPLICATION);
             values.put(LauncherSettings.Favorites.INTENT,
                     new Intent(Intent.ACTION_MAIN).setPackage(packageName).toUri(0));
-
-            controller.insert(TABLE_NAME, values);
+            helper.getWritableDatabase().insert(TABLE_NAME, null, values);
         }
     }
+
 
     @Test
     public void testRemoveScreenIdGaps_firstScreenEmpty() {
@@ -232,7 +216,7 @@ public class RestoreDbTaskTest {
     }
 
     private void runRemoveScreenIdGapsTest(int[] screenIds, int[] expectedScreenIds) {
-        SQLiteDatabase db = new MyModelDbController(42).getDb();
+        SQLiteDatabase db = new MyDatabaseHelper(42).getWritableDatabase();
         // Add some mock data
         for (int i = 0; i < screenIds.length; i++) {
             ContentValues values = new ContentValues();
@@ -270,12 +254,13 @@ public class RestoreDbTaskTest {
         }
     }
 
-    private class MyModelDbController extends ModelDbController {
+    private class MyDatabaseHelper extends DatabaseHelper {
 
-        public final LongSparseArray<UserHandle> users = new LongSparseArray<>();
+        public final LongSparseArray<UserHandle> users;
 
-        MyModelDbController(long profileId) {
-            super(mContext);
+        MyDatabaseHelper(long profileId) {
+            super(getInstrumentation().getTargetContext(), null, false);
+            users = new LongSparseArray<>();
             users.put(profileId, myUserHandle());
         }
 
@@ -284,5 +269,10 @@ public class RestoreDbTaskTest {
             int index = users.indexOfValue(user);
             return index >= 0 ? users.keyAt(index) : -1;
         }
+
+        @Override
+        protected void handleOneTimeDataUpgrade(SQLiteDatabase db) { }
+
+        protected void onEmptyDbCreated() { }
     }
 }
