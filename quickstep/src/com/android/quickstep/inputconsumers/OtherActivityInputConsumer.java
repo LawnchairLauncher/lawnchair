@@ -80,10 +80,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     public static final String DOWN_EVT = "OtherActivityInputConsumer.DOWN";
     private static final String UP_EVT = "OtherActivityInputConsumer.UP";
 
-    // TODO: Move to quickstep contract
-    public static final float QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON = 9;
-    public static final float QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL = 2;
-
     // Minimum angle of a gesture's coordinate where a release goes to overview.
     public static final int OVERVIEW_MIN_DEGREES = 15;
 
@@ -157,11 +153,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         boolean continuingPreviousGesture = mTaskAnimationManager.isRecentsAnimationRunning();
         mIsDeferredDownTarget = !continuingPreviousGesture && isDeferredDownTarget;
 
-        float slopMultiplier = mDeviceState.isFullyGesturalNavMode()
-                ? QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL
-                : QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON;
         mTouchSlop = ViewConfiguration.get(this).getScaledTouchSlop();
-        mSquaredTouchSlop = slopMultiplier * mTouchSlop * mTouchSlop;
+        mSquaredTouchSlop = mDeviceState.getSquaredTouchSlop();
 
         mPassedPilferInputSlop = mPassedWindowMoveSlop = continuingPreviousGesture;
         mDisableHorizontalSwipe = !mPassedPilferInputSlop && disableHorizontalSwipe;
