@@ -148,11 +148,6 @@ public class LauncherSettings {
         public static final String HYBRID_HOTSEAT_BACKUP_TABLE = "hotseat_restore_backup";
 
         /**
-         * Temporary table used specifically for grid migrations during wallpaper preview
-         */
-        public static final String PREVIEW_TABLE_NAME = "favorites_preview";
-
-        /**
          * Temporary table used specifically for multi-db grid migrations
          */
         public static final String TMP_TABLE = "favorites_tmp";
@@ -162,18 +157,6 @@ public class LauncherSettings {
          */
         public static final Uri CONTENT_URI = Uri.parse("content://"
                 + LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
-
-        /**
-         * The content:// style URL for "favorites_preview" table
-         */
-        public static final Uri PREVIEW_CONTENT_URI = Uri.parse("content://"
-                + LauncherProvider.AUTHORITY + "/" + PREVIEW_TABLE_NAME);
-
-        /**
-         * The content:// style URL for "favorites_tmp" table
-         */
-        public static final Uri TMP_CONTENT_URI = Uri.parse("content://"
-                + LauncherProvider.AUTHORITY + "/" + TMP_TABLE);
 
         /**
          * The content:// style URL for a given row, identified by its id.
@@ -376,10 +359,6 @@ public class LauncherSettings {
 
         public static final String METHOD_REFRESH_HOTSEAT_RESTORE_TABLE = "restore_hotseat_table";
 
-        public static final String METHOD_UPDATE_CURRENT_OPEN_HELPER = "update_current_open_helper";
-
-        public static final String METHOD_PREP_FOR_PREVIEW = "prep_for_preview";
-
         public static final String EXTRA_VALUE = "value";
 
         public static final String EXTRA_DB_NAME = "db_name";
@@ -393,11 +372,8 @@ public class LauncherSettings {
         }
 
         public static Bundle call(ContentResolver cr, String method, String arg) {
-            return call(cr, method, arg, null /* extras */);
+            return cr.call(CONTENT_URI, method, arg, null);
         }
 
-        public static Bundle call(ContentResolver cr, String method, String arg, Bundle extras) {
-            return cr.call(CONTENT_URI, method, arg, extras);
-        }
     }
 }
