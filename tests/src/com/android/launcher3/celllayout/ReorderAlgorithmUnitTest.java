@@ -87,15 +87,13 @@ public class ReorderAlgorithmUnitTest {
         // modify the device profile.
         dp.inv.numColumns = width;
         dp.inv.numRows = height;
+        dp.cellLayoutBorderSpacePx = new Point(0, 0);
 
         CellLayout cl = new CellLayout(getWrappedContext(c, dp));
         // I put a very large number for width and height so that all the items can fit, it doesn't
         // need to be exact, just bigger than the sum of cell border
         cl.measure(View.MeasureSpec.makeMeasureSpec(10000, View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(10000, View.MeasureSpec.EXACTLY));
-
-        cl.measure(View.MeasureSpec.makeMeasureSpec(cl.getDesiredWidth(), View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(cl.getDesiredHeight(), View.MeasureSpec.EXACTLY));
         return cl;
     }
 
