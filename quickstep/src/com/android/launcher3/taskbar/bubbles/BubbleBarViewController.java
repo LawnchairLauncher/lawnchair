@@ -28,8 +28,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarControllers;
-import com.android.launcher3.taskbar.TaskbarInsetsController;
-import com.android.launcher3.taskbar.TaskbarStashController;
 import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.quickstep.SystemUiProxy;
@@ -53,8 +51,6 @@ public class BubbleBarViewController {
     // Initialized in init.
     private BubbleStashController mBubbleStashController;
     private BubbleBarController mBubbleBarController;
-    private TaskbarStashController mTaskbarStashController;
-    private TaskbarInsetsController mTaskbarInsetsController;
     private View.OnClickListener mBubbleClickListener;
     private View.OnClickListener mBubbleBarClickListener;
 
@@ -84,8 +80,6 @@ public class BubbleBarViewController {
     public void init(TaskbarControllers controllers, BubbleControllers bubbleControllers) {
         mBubbleStashController = bubbleControllers.bubbleStashController;
         mBubbleBarController = bubbleControllers.bubbleBarController;
-        mTaskbarStashController = controllers.taskbarStashController;
-        mTaskbarInsetsController = controllers.taskbarInsetsController;
 
         mActivity.addOnDeviceProfileChangeListener(dp ->
                 mBarView.getLayoutParams().height = mActivity.getDeviceProfile().taskbarHeight
@@ -95,9 +89,7 @@ public class BubbleBarViewController {
         mBubbleClickListener = v -> onBubbleClicked(v);
         mBubbleBarClickListener = v -> setExpanded(true);
         mBarView.setOnClickListener(mBubbleBarClickListener);
-        mBarView.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) ->
-                mTaskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged()
-        );
+        // TODO: when barView layout changes tell taskbarInsetsController the insets have changed.
     }
 
     private void onBubbleClicked(View v) {
@@ -291,8 +283,7 @@ public class BubbleBarViewController {
                 } else {
                     Log.w(TAG, "trying to expand bubbles when there isn't one selected");
                 }
-                mTaskbarStashController.updateAndAnimateTransientTaskbar(true /* stash */,
-                        false /* shouldBubblesFollow */);
+                // TODO: Tell taskbar stash controller to stash without bubbles following
             }
         }
     }
