@@ -334,6 +334,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private boolean mCanSlowSwipeGoHome = true;
     // Indicates whether the divider is shown, only used when split screen is activated.
     private boolean mIsDividerShown = true;
+    private boolean mStartMovingTasks;
 
     @Nullable
     private RemoteAnimationTargets.ReleaseCheck mSwipePipToHomeReleaseCheck = null;
@@ -1722,12 +1723,19 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         return keepClearArea;
     }
 
+    /**
+     * Notifies to start intercepting touches in the app window and hide the divider bar if needed.
+     * @see RecentsAnimationController#enableInputConsumer()
+     */
     private void startInterceptingTouchesForGesture() {
-        if (mRecentsAnimationController == null) {
+        if (mRecentsAnimationController == null || !mStartMovingTasks) {
             return;
         }
 
         mRecentsAnimationController.enableInputConsumer();
+
+        // Hide the divider as it starts intercepting touches in the app window.
+        setDividerShown(false);
     }
 
     private void computeRecentsScrollIfInvisible() {
@@ -2339,9 +2347,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         boolean setRecentsScroll = mRecentsViewScrollLinked && mRecentsView != null;
         float progress = Math.max(mCurrentShift.value, getScaleProgressDueToScroll());
         int scrollOffset = setRecentsScroll ? mRecentsView.getScrollOffset() : 0;
-        if (progress > 0 || scrollOffset != 0) {
-            // Hide the divider as the tasks start moving.
-            setDividerShown(false);
+        if (!mStartMovingTasks && (progress > 0 || scrollOffset != 0)) {
+            mStartMovingTasks = true;
+            startInterceptingTouchesForGesture();
         }
         for (RemoteTargetHandle remoteHandle : mRemoteTargetHandles) {
             AnimatorControllerWithResistance playbackController =
