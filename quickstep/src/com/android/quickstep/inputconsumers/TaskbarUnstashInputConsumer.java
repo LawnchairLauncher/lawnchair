@@ -37,7 +37,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarTranslationController.TransitionCallback;
-import com.android.launcher3.taskbar.bubbles.BubbleControllers;
 import com.android.launcher3.touch.OverScroll;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.InputConsumer;
@@ -63,7 +62,6 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
     private final int mTaskbarNavThresholdY;
     private final boolean mIsTaskbarAllAppsOpen;
     private boolean mHasPassedTaskbarNavThreshold;
-    private boolean mIsInBubbleBarArea;
 
     private final PointF mDownPos = new PointF();
     private final PointF mLastPos = new PointF();
@@ -137,7 +135,7 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
                         mHasPassedTaskbarNavThreshold = false;
                         mTaskbarActivityContext.setAutohideSuspendFlag(
                                 FLAG_AUTOHIDE_SUSPEND_TOUCHING, true);
-                        if (isInTaskbarArea(x)) {
+                        if (isInArea(x)) {
                             if (!mIsTransientTaskbar) {
                                 mLongPressDownX = x;
                                 mLongPressDownY = y;
@@ -146,11 +144,9 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
                                 mCanceledUnstashHint = false;
                             }
                         }
+
                         if (mTransitionCallback != null && !mIsTaskbarAllAppsOpen) {
                             mTransitionCallback.onActionDown();
-                        }
-                        if (mIsTransientTaskbar && isInBubbleBarArea(x)) {
-                            mIsInBubbleBarArea = true;
                         }
                         break;
                     case MotionEvent.ACTION_POINTER_UP:
@@ -188,11 +184,7 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
 
                             if (!mHasPassedTaskbarNavThreshold && passedTaskbarNavThreshold) {
                                 mHasPassedTaskbarNavThreshold = true;
-                                if (mIsInBubbleBarArea) {
-                                    mTaskbarActivityContext.onSwipeToOpenBubblebar();
-                                } else {
-                                    mTaskbarActivityContext.onSwipeToUnstashTaskbar();
-                                }
+                                mTaskbarActivityContext.onSwipeToUnstashTaskbar();
                             }
 
                             if (dY < 0) {
@@ -215,32 +207,21 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
                             mTransitionCallback.onActionEnd();
                         }
                         mHasPassedTaskbarNavThreshold = false;
-                        mIsInBubbleBarArea = false;
                         break;
                 }
             }
         }
     }
 
-    private boolean isInTaskbarArea(float x) {
+    private boolean isInArea(float x) {
         float areaFromMiddle = mUnstashArea / 2.0f;
         float distFromMiddle = Math.abs(mScreenWidth / 2.0f - x);
         return distFromMiddle < areaFromMiddle;
     }
 
-    private boolean isInBubbleBarArea(float x) {
-        if (mTaskbarActivityContext != null && mIsTransientTaskbar) {
-            BubbleControllers controllers = mTaskbarActivityContext.getBubbleControllers();
-            if (controllers == null) return false;
-            Rect bubbleBarBounds = controllers.bubbleBarViewController.getBubbleBarBounds();
-            return x >= bubbleBarBounds.left && x <= bubbleBarBounds.right;
-        }
-        return false;
-    }
-
     private void onLongPressDetected(MotionEvent motionEvent) {
         if (mTaskbarActivityContext != null
-                && isInTaskbarArea(motionEvent.getRawX())
+                && isInArea(motionEvent.getRawX())
                 && !mIsTransientTaskbar) {
             boolean taskBarPressed = mTaskbarActivityContext.onLongPressToUnstashTaskbar();
             if (taskBarPressed) {
