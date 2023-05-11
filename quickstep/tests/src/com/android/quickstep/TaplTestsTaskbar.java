@@ -20,7 +20,6 @@ import static com.android.quickstep.TaplTestsTaskbar.TaskbarMode.TRANSIENT;
 
 import androidx.test.filters.LargeTest;
 
-import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 
 import org.junit.Test;
@@ -58,14 +57,19 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
         super.setUp();
     }
 
+    @Override
+    public void tearDown() throws Exception {
+        setTaskbarMode(mLauncher, mTaskbarWasInTransientMode);
+        super.tearDown();
+    }
+
     @Test
     public void testLaunchApp() {
         getTaskbar().getAppIcon(TEST_APP_NAME).launch(TEST_APP_PACKAGE);
         // We are using parameterized test runner to share code between different test cases with
         // taskbar variants. But, sometimes we only need to assert things for particular Taskbar
         // variants.
-        if (isTaskbarTestModeTransient() && mLauncher.getNavigationModel()
-                != LauncherInstrumentation.NavigationModel.THREE_BUTTON) {
+        if (isTaskbarTestModeTransient()) {
             mLauncher.getLaunchedAppState().assertTaskbarHidden();
         }
     }
