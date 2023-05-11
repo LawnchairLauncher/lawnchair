@@ -432,6 +432,10 @@ public class TaskbarLauncherStateController {
                 // We're changing state to home, should close open popups e.g. Taskbar AllApps
                 handleOpenFloatingViews = true;
             }
+            if (mLauncherState == LauncherState.OVERVIEW) {
+                // Calling to update the insets in TaskbarInsetController#updateInsetsTouchability
+                mControllers.taskbarActivityContext.notifyUpdateLayoutParams();
+            }
         }
 
         if (hasAnyFlag(changedFlags, FLAGS_LAUNCHER_ACTIVE)) {
