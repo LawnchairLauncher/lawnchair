@@ -255,14 +255,15 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     private boolean mEnableBlockingTimeoutDuringTests = false;
 
     // Evaluate whether the handle should be stashed
+    private final IntPredicate mIsStashedPredicate = flags -> {
+        boolean inApp = hasAnyFlag(flags, FLAGS_IN_APP);
+        boolean stashedInApp = hasAnyFlag(flags, FLAGS_STASHED_IN_APP);
+        boolean stashedLauncherState = hasAnyFlag(flags, FLAG_IN_STASHED_LAUNCHER_STATE);
+        boolean forceStashed = hasAnyFlag(flags, FLAGS_FORCE_STASHED);
+        return (inApp && stashedInApp) || (!inApp && stashedLauncherState) || forceStashed;
+    };
     private final StatePropertyHolder mStatePropertyHolder = new StatePropertyHolder(
-            flags -> {
-                boolean inApp = hasAnyFlag(flags, FLAGS_IN_APP);
-                boolean stashedInApp = hasAnyFlag(flags, FLAGS_STASHED_IN_APP);
-                boolean stashedLauncherState = hasAnyFlag(flags, FLAG_IN_STASHED_LAUNCHER_STATE);
-                boolean forceStashed = hasAnyFlag(flags, FLAGS_FORCE_STASHED);
-                return (inApp && stashedInApp) || (!inApp && stashedLauncherState) || forceStashed;
-            });
+            mIsStashedPredicate);
 
     private boolean mIsTaskbarSystemActionRegistered = false;
     private TaskbarSharedState mTaskbarSharedState;
@@ -502,15 +503,29 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
     /**
      * Stash or unstashes the transient taskbar, using the default TASKBAR_STASH_DURATION.
+     * If bubble bar exists, it will match taskbars stashing behavior.
      */
     public void updateAndAnimateTransientTaskbar(boolean stash) {
-        updateAndAnimateTransientTaskbar(stash, TASKBAR_STASH_DURATION);
+        updateAndAnimateTransientTaskbar(stash, TASKBAR_STASH_DURATION,
+                /* shouldBubblesFollow= */ true);
+    }
+
+    /**
+     * Stash or unstashes the transient taskbar, using the default TASKBAR_STASH_DURATION.
+     * If bubble bar exists, it will match taskbars stashing behavior.
+     */
+    public void updateAndAnimateTransientTaskbar(boolean stash, boolean shouldBubblesFollow) {
+        updateAndAnimateTransientTaskbar(stash, TASKBAR_STASH_DURATION, shouldBubblesFollow);
     }
 
     /**
      * Stash or unstashes the transient taskbar.
+     * @param stash whether transient taskbar should be stashed.
+     * @param duration how long the duration of the stash should take.
+     * @param shouldBubblesFollow whether bubbles should match taskbars behavior.
      */
-    public void updateAndAnimateTransientTaskbar(boolean stash, long duration) {
+    public void updateAndAnimateTransientTaskbar(boolean stash, long duration,
+            boolean shouldBubblesFollow) {
         if (!DisplayController.isTransientTaskbar(mActivity)) {
             return;
         }
@@ -526,6 +541,34 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             updateStateForFlag(FLAG_STASHED_IN_APP_AUTO, stash);
             applyState();
         }
+
+        mControllers.bubbleControllers.ifPresent(controllers -> {
+            if (shouldBubblesFollow) {
+                final boolean willStash = mIsStashedPredicate.test(mState);
+                if (willStash != controllers.bubbleStashController.isStashed()) {
+                    // Typically bubbles gets stashed / unstashed along with Taskbar, however, if
+                    // taskbar is becoming stashed because bubbles is being expanded, we don't want
+                    // to stash bubbles.
+                    if (willStash) {
+                        controllers.bubbleStashController.stashBubbleBar();
+                    } else {
+                        controllers.bubbleStashController.showBubbleBar(false /* expandBubbles */);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Stashes transient taskbar after it has timed out.
+     */
+    private void updateAndAnimateTransientTaskbarForTimeout() {
+        // If bubbles are expanded we shouldn't stash them when taskbar is hidden
+        // for the timeout.
+        boolean bubbleBarExpanded = mControllers.bubbleControllers.isPresent()
+                && mControllers.bubbleControllers.get().bubbleBarViewController.isExpanded();
+        updateAndAnimateTransientTaskbar(/* stash= */ true,
+                /* shouldBubblesFollow= */ !bubbleBarExpanded);
     }
 
     /**
@@ -880,7 +923,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     private void onIsStashedChanged(boolean isStashed) {
         mControllers.runAfterInit(() -> {
             mControllers.stashedHandleViewController.onIsStashedChanged(isStashed);
-            mControllers.taskbarInsetsController.onTaskbarWindowHeightOrInsetsChanged();
+            mControllers.taskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged();
         });
     }
 
@@ -1127,7 +1170,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         if (mControllers.taskbarAutohideSuspendController.isSuspended()) {
             return;
         }
-        updateAndAnimateTransientTaskbar(true);
+        updateAndAnimateTransientTaskbarForTimeout();
     }
 
     @Override
