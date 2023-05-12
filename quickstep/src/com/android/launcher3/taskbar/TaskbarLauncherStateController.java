@@ -207,10 +207,6 @@ public class TaskbarLauncherStateController {
                     com.android.launcher3.taskbar.Utilities.setOverviewDragState(
                             mControllers, finalState.disallowTaskbarGlobalDrag(),
                             disallowLongClick, finalState.allowTaskbarInitialSplitSelection());
-                    // LauncherTaskbarUIController depends on the state when checking whether
-                    // to handle resume, so it should also be poked if current state changes
-                    mLauncher.getTaskbarUIController().onLauncherResumedOrPaused(
-                            mLauncher.hasBeenResumed());
                 }
             };
 
