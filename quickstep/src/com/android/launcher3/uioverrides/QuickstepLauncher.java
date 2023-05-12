@@ -68,6 +68,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.hardware.SensorManager;
@@ -143,6 +144,7 @@ import com.android.launcher3.uioverrides.touchcontrollers.TwoButtonNavbarTouchCo
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.ObjectWrapper;
@@ -343,14 +345,16 @@ public class QuickstepLauncher extends Launcher {
     }
 
     @Override
-    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
+    public RunnableList startActivitySafely(View v, Intent intent, ItemInfo item) {
         // Only pause is taskbar controller is not present
         mHotseatPredictionController.setPauseUIUpdate(getTaskbarUIController() == null);
-        boolean started = super.startActivitySafely(v, intent, item);
-        if (getTaskbarUIController() == null && !started) {
+        RunnableList result = super.startActivitySafely(v, intent, item);
+        if (getTaskbarUIController() == null && result == null) {
             mHotseatPredictionController.setPauseUIUpdate(false);
+        } else {
+            result.add(() -> mHotseatPredictionController.setPauseUIUpdate(false));
         }
-        return started;
+        return result;
     }
 
     @Override
@@ -369,11 +373,6 @@ public class QuickstepLauncher extends Launcher {
         if ((changeBits & (ACTIVITY_STATE_DEFERRED_RESUMED | ACTIVITY_STATE_STARTED
                 | ACTIVITY_STATE_USER_ACTIVE | ACTIVITY_STATE_TRANSITION_ACTIVE)) != 0) {
             onStateOrResumeChanging((getActivityFlags() & ACTIVITY_STATE_TRANSITION_ACTIVE) == 0);
-        }
-
-        if (((changeBits & ACTIVITY_STATE_STARTED) != 0
-                || (changeBits & getActivityFlags() & ACTIVITY_STATE_DEFERRED_RESUMED) != 0)) {
-            mHotseatPredictionController.setPauseUIUpdate(false);
         }
     }
 
@@ -1099,6 +1098,17 @@ public class QuickstepLauncher extends Launcher {
                         : Display.DEFAULT_DISPLAY);
         addLaunchCookie(item, activityOptions.options);
         return activityOptions;
+    }
+
+    @Override
+    public ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
+        RunnableList callbacks = new RunnableList();
+        ActivityOptions options = ActivityOptions.makeCustomAnimation(
+                this, 0, 0, Color.TRANSPARENT,
+                Executors.MAIN_EXECUTOR.getHandler(), null,
+                elapsedRealTime -> callbacks.executeAllAndDestroy());
+        options.setSplashScreenStyle(splashScreenStyle);
+        return new ActivityOptionsWrapper(options, callbacks);
     }
 
     @Override
