@@ -862,7 +862,8 @@ public class TouchInteractionService extends Service
             if (tac != null) {
                 // Present always on large screen or on small screen w/ flag
                 DeviceProfile dp = tac.getDeviceProfile();
-                boolean useTaskbarConsumer = dp.isTaskbarPresent && !TaskbarManager.isPhoneMode(dp);
+                boolean useTaskbarConsumer = dp.isTaskbarPresent && !TaskbarManager.isPhoneMode(dp)
+                        && !tac.isInStashedLauncherState();
                 if (canStartSystemGesture && useTaskbarConsumer) {
                     reasonString.append(NEWLINE_PREFIX)
                             .append(reasonPrefix)
