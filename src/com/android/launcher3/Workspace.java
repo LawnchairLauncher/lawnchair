@@ -1661,17 +1661,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             scale = previewProvider.getScaleAndPosition(contentView, mTempXY);
         }
 
-        int halfPadding = previewProvider.previewPadding / 2;
         int dragLayerX = mTempXY[0];
         int dragLayerY = mTempXY[1];
 
-        Point dragVisualizeOffset = null;
         Rect dragRect = new Rect();
 
         if (draggableView != null) {
             draggableView.getSourceVisualDragBounds(dragRect);
             dragLayerY += dragRect.top;
-            dragVisualizeOffset = new Point(-halfPadding, halfPadding);
         }
 
 
@@ -1689,6 +1686,15 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             }
         }
 
+        if (dragOptions.preDragCondition != null) {
+            int xDragOffSet = dragOptions.preDragCondition.getDragOffset().x;
+            int yDragOffSet = dragOptions.preDragCondition.getDragOffset().y;
+            if (xDragOffSet != 0 || yDragOffSet != 0) {
+                dragLayerX += xDragOffSet;
+                dragLayerY += yDragOffSet;
+            }
+        }
+
         final DragView dv;
         if (contentView instanceof View) {
             if (contentView instanceof LauncherAppWidgetHostView) {
@@ -1701,7 +1707,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     dragLayerY,
                     source,
                     dragObject,
-                    dragVisualizeOffset,
                     dragRect,
                     scale * iconScale,
                     scale,
@@ -1714,7 +1719,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     dragLayerY,
                     source,
                     dragObject,
-                    dragVisualizeOffset,
                     dragRect,
                     scale * iconScale,
                     scale,
