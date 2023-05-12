@@ -1145,6 +1145,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         return mControllers.taskbarStashController.isInApp();
     }
 
+    public boolean isInStashedLauncherState() {
+        return mControllers.taskbarStashController.isInStashedLauncherState();
+    }
+
     protected void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "TaskbarActivityContext:");
 
