@@ -53,7 +53,7 @@ constructor(
     private val activityContext: ActivityContext = ActivityContext.lookupContext(context)
 
     private val backgroundColor =
-        Themes.getAttrColor(context, com.android.internal.R.attr.colorSurface)
+        Themes.getAttrColor(context, com.android.internal.R.attr.materialColorSurfaceBright)
 
     private val tooltipCornerRadius = Themes.getDialogCornerRadius(context)
     private val arrowWidth = resources.getDimension(R.dimen.popup_arrow_width)
