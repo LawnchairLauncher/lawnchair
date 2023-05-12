@@ -143,14 +143,12 @@ public abstract class DragController<T extends ActivityContext>
             int dragLayerY,
             DragSource source,
             ItemInfo dragInfo,
-            Point dragOffset,
             Rect dragRegion,
             float initialDragViewScale,
             float dragViewScaleOnDrop,
             DragOptions options) {
-        return startDrag(drawable, /* view= */ null, originalView, dragLayerX, dragLayerY,
-                source, dragInfo, dragOffset, dragRegion, initialDragViewScale, dragViewScaleOnDrop,
-                options);
+        return startDrag(drawable, /* view= */ null, originalView, dragLayerX, dragLayerY, source,
+                dragInfo, dragRegion, initialDragViewScale, dragViewScaleOnDrop, options);
     }
 
     /**
@@ -180,14 +178,12 @@ public abstract class DragController<T extends ActivityContext>
             int dragLayerY,
             DragSource source,
             ItemInfo dragInfo,
-            Point dragOffset,
             Rect dragRegion,
             float initialDragViewScale,
             float dragViewScaleOnDrop,
             DragOptions options) {
-        return startDrag(/* drawable= */ null, view, originalView, dragLayerX, dragLayerY,
-                source, dragInfo, dragOffset, dragRegion, initialDragViewScale, dragViewScaleOnDrop,
-                options);
+        return startDrag(/* drawable= */ null, view, originalView, dragLayerX, dragLayerY, source,
+                dragInfo, dragRegion, initialDragViewScale, dragViewScaleOnDrop, options);
     }
 
     protected abstract DragView startDrag(
@@ -198,7 +194,6 @@ public abstract class DragController<T extends ActivityContext>
             int dragLayerY,
             DragSource source,
             ItemInfo dragInfo,
-            Point dragOffset,
             Rect dragRegion,
             float initialDragViewScale,
             float dragViewScaleOnDrop,
