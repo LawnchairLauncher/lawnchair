@@ -106,6 +106,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
                     case BACK_CANCELLED_FROM_LEFT:
                     case BACK_CANCELLED_FROM_RIGHT:
                     case BACK_NOT_STARTED_TOO_FAR_FROM_EDGE:
+                        resetTaskView();
                         showFeedback(R.string.home_gesture_feedback_swipe_too_far_from_edge);
                         break;
                 }
@@ -135,6 +136,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
                     }
                     case HOME_NOT_STARTED_TOO_FAR_FROM_EDGE:
                     case OVERVIEW_NOT_STARTED_TOO_FAR_FROM_EDGE:
+                        resetTaskView();
                         showFeedback(R.string.home_gesture_feedback_swipe_too_far_from_edge);
                         break;
                     case OVERVIEW_GESTURE_COMPLETED:
