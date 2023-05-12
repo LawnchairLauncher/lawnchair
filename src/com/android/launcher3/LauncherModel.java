@@ -289,9 +289,10 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
             // If we have changed locale we need to clear out the labels in all apps/workspace.
             forceReload();
-        } else if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action) ||
-                Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action) ||
-                Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)) {
+        } else if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action)
+                || Intent.ACTION_PROFILE_INACCESSIBLE.equals(action)
+                || Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action)
+                || Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)) {
             UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
             if (TestProtocol.sDebugTracing) {
                 Log.d(TestProtocol.WORK_TAB_MISSING, "onBroadcastIntent intentAction: " + action +
@@ -304,10 +305,10 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                             PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE, user));
                 }
 
-                // ACTION_MANAGED_PROFILE_UNAVAILABLE sends the profile back to locked mode, so
+                // ACTION_PROFILE_INACCESSIBLE sends the profile back to locked mode, so
                 // we need to run the state change task again.
-                if (Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action) ||
-                        Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)) {
+                if (Intent.ACTION_PROFILE_INACCESSIBLE.equals(action)
+                        || Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)) {
                     enqueueModelUpdateTask(new UserLockStateChangedTask(
                             user, Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)));
                 }
