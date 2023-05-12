@@ -97,7 +97,11 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
             StatsLogManager statsLogManager) {
         mUserManager = userManager;
         mAllApps = allApps;
-        if (FeatureFlags.ENABLE_APP_CLONING_CHANGES_IN_LAUNCHER.get()) {
+        boolean cloningChanges = FeatureFlags.ENABLE_APP_CLONING_CHANGES_IN_LAUNCHER.get();
+        if (TestProtocol.sDebugTracing) {
+            Log.d(WORK_TAB_MISSING, "matcher flag: " + cloningChanges);
+        }
+        if (cloningChanges) {
             mMatcher = ofWorkProfileUser(userManager);
         } else {
             mMatcher = mAllApps.mPersonalMatcher.negate();

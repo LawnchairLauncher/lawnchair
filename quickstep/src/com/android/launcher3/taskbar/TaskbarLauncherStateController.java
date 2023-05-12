@@ -207,10 +207,6 @@ public class TaskbarLauncherStateController {
                     com.android.launcher3.taskbar.Utilities.setOverviewDragState(
                             mControllers, finalState.disallowTaskbarGlobalDrag(),
                             disallowLongClick, finalState.allowTaskbarInitialSplitSelection());
-                    // LauncherTaskbarUIController depends on the state when checking whether
-                    // to handle resume, so it should also be poked if current state changes
-                    mLauncher.getTaskbarUIController().onLauncherResumedOrPaused(
-                            mLauncher.hasBeenResumed());
                 }
             };
 
@@ -423,6 +419,10 @@ public class TaskbarLauncherStateController {
             if (mLauncherState == LauncherState.NORMAL) {
                 // We're changing state to home, should close open popups e.g. Taskbar AllApps
                 handleOpenFloatingViews = true;
+            }
+            if (mLauncherState == LauncherState.OVERVIEW) {
+                // Calling to update the insets in TaskbarInsetController#updateInsetsTouchability
+                mControllers.taskbarActivityContext.notifyUpdateLayoutParams();
             }
         }
 
