@@ -197,6 +197,10 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         return mTaskbarLauncherStateController.applyState(fromInit ? 0 : duration, startAnimation);
     }
 
+    public void refreshResumedState() {
+        onLauncherResumedOrPaused(mLauncher.hasBeenResumed());
+    }
+
     /**
      * Create Taskbar animation when going from an app to Launcher as part of recents transition.
      * @param toState If known, the state we will end up in when reaching Launcher.

@@ -318,4 +318,9 @@ public class TaskbarUIController {
         }
         return null;
     }
+
+    /**
+     * Refreshes the resumed state of this ui controller.
+     */
+    public void refreshResumedState() {}
 }
