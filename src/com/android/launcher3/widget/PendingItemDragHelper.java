@@ -103,7 +103,6 @@ public class PendingItemDragHelper extends DragPreviewProvider {
         final int previewWidth;
         final int previewHeight;
         final float scale;
-        final Point dragOffset;
         final Rect dragRegion;
 
         mEstimatedCellSize = launcher.getWorkspace().estimateItemSize(mAddInfo);
@@ -173,7 +172,6 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             scale = previewBounds.width() / (float) previewWidth;
             launcher.getDragController().addDragListener(new WidgetHostViewLoader(launcher, mView));
 
-            dragOffset = null;
             dragRegion = null;
             draggableView = DraggableView.ofType(DraggableView.DRAGGABLE_WIDGET);
         } else {
@@ -187,8 +185,6 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             previewHeight = preview.getIntrinsicHeight();
             li.recycle();
             scale = ((float) launcher.getDeviceProfile().iconSizePx) / previewWidth;
-
-            dragOffset = new Point(previewPadding / 2, previewPadding / 2);
 
             // Create a preview same as the workspace cell size and draw the icon at the
             // appropriate position.
@@ -217,11 +213,10 @@ public class PendingItemDragHelper extends DragPreviewProvider {
         // Start the drag
         if (mAppWidgetHostViewPreview != null) {
             launcher.getDragController().startDrag(mAppWidgetHostViewPreview, draggableView,
-                    dragLayerX, dragLayerY, source, mAddInfo, dragOffset, dragRegion, scale, scale,
-                    options);
+                    dragLayerX, dragLayerY, source, mAddInfo, dragRegion, scale, scale, options);
         } else {
             launcher.getDragController().startDrag(preview, draggableView, dragLayerX, dragLayerY,
-                    source, mAddInfo, dragOffset, dragRegion, scale, scale, options);
+                    source, mAddInfo, dragRegion, scale, scale, options);
         }
     }
 
