@@ -24,7 +24,6 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Launcher.INTENT_ACTION_ALL_APPS_TOGGLE;
-import static com.android.launcher3.config.FeatureFlags.ASSISTANT_GIVES_LAUNCHER_FOCUS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TRACKPAD_GESTURE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
@@ -1088,22 +1087,17 @@ public class TouchInteractionService extends Service
         boolean hasWindowFocus = activity.getRootView().hasWindowFocus();
         boolean isPreviousGestureAnimatingToLauncher =
                 previousGestureState.isRunningAnimationToLauncher();
-        boolean forcingOverviewInputConsumer =
-                ASSISTANT_GIVES_LAUNCHER_FOCUS.get() && forceOverviewInputConsumer;
         boolean isInLiveTileMode = gestureState.getActivityInterface().isInLiveTileMode();
         reasonString.append(SUBSTRING_PREFIX)
                 .append(hasWindowFocus
                         ? "activity has window focus"
                         : (isPreviousGestureAnimatingToLauncher
                                 ? "previous gesture is still animating to launcher"
-                                : (forcingOverviewInputConsumer
-                                        ? "assistant gives launcher focus and forcing focus"
-                                        : (isInLiveTileMode
-                                                ? "device is in live mode"
-                                                : "all overview focus conditions failed"))));
+                                : isInLiveTileMode
+                                        ? "device is in live mode"
+                                        : "all overview focus conditions failed"));
         if (hasWindowFocus
                 || isPreviousGestureAnimatingToLauncher
-                || forcingOverviewInputConsumer
                 || isInLiveTileMode) {
             reasonString.append(SUBSTRING_PREFIX)
                     .append("overview should have focus, using OverviewInputConsumer");
