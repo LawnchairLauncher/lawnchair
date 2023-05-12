@@ -198,7 +198,7 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
 
                 @Override
                 public boolean shouldStartDrag(double distanceDragged) {
-                    return mDragView != null && mDragView.isAnimationFinished();
+                    return mDragView != null && mDragView.isScaleAnimationFinished();
                 }
 
                 @Override
@@ -231,7 +231,6 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 dragLayerY,
                 (View target, DropTarget.DragObject d, boolean success) -> {} /* DragSource */,
                 (ItemInfo) btv.getTag(),
-                /* dragVisualizeOffset = */ null,
                 dragRect,
                 scale * iconScale,
                 scale,
@@ -241,7 +240,7 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
     @Override
     protected DragView startDrag(@Nullable Drawable drawable, @Nullable View view,
             DraggableView originalView, int dragLayerX, int dragLayerY, DragSource source,
-            ItemInfo dragInfo, Point dragOffset, Rect dragRegion, float initialDragViewScale,
+            ItemInfo dragInfo, Rect dragRegion, float initialDragViewScale,
             float dragViewScaleOnDrop, DragOptions options) {
         mOptions = options;
 
