@@ -95,7 +95,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         mPackages = packages;
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.WORK_TAB_MISSING, "PackageUpdatedTask mOp: " + mOp +
-                    " packageCount: " + mPackages.length);
+                    " packageCount: " + mPackages.length + " user: " + user);
             DEBUG = true;
         }
     }
