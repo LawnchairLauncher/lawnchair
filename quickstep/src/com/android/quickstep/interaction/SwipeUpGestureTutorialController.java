@@ -64,6 +64,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
     private static final int FAKE_PREVIOUS_TASK_MARGIN = Utilities.dpToPx(24);
 
     protected static final long TASK_VIEW_END_ANIMATION_DURATION_MILLIS = 300;
+    protected static final long TASK_VIEW_FILL_SCREEN_ANIMATION_DELAY_MILLIS = 300;
     private static final long HOME_SWIPE_ANIMATION_DURATION_MILLIS = 625;
     private static final long OVERVIEW_SWIPE_ANIMATION_DURATION_MILLIS = 1000;
 
