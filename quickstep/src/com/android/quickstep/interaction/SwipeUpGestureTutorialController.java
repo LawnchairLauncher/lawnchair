@@ -61,9 +61,10 @@ import com.android.quickstep.util.TransformParams;
 @TargetApi(Build.VERSION_CODES.R)
 abstract class SwipeUpGestureTutorialController extends TutorialController {
 
-    private static final int FAKE_PREVIOUS_TASK_MARGIN = Utilities.dpToPx(12);
+    private static final int FAKE_PREVIOUS_TASK_MARGIN = Utilities.dpToPx(24);
 
     protected static final long TASK_VIEW_END_ANIMATION_DURATION_MILLIS = 300;
+    protected static final long TASK_VIEW_FILL_SCREEN_ANIMATION_DELAY_MILLIS = 300;
     private static final long HOME_SWIPE_ANIMATION_DURATION_MILLIS = 625;
     private static final long OVERVIEW_SWIPE_ANIMATION_DURATION_MILLIS = 1000;
 
@@ -77,23 +78,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
     private final AnimatorListenerAdapter mResetTaskView = new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animation) {
-            mFakeHotseatView.setVisibility(View.INVISIBLE);
-            mFakeIconView.setVisibility(View.INVISIBLE);
-            if (mTutorialFragment.getActivity() != null) {
-                int height = mTutorialFragment.getRootView().getFullscreenHeight();
-                int width = mTutorialFragment.getRootView().getWidth();
-                mFakeTaskViewRect.set(0, 0, width, height);
-            }
-            mFakeTaskViewRadius = 0;
-            mFakeTaskView.invalidateOutline();
-            mFakeTaskView.setVisibility(View.VISIBLE);
-            mFakeTaskView.setAlpha(1);
-            mFakePreviousTaskView.setVisibility(View.INVISIBLE);
-            mFakePreviousTaskView.setAlpha(1);
-            mFakePreviousTaskView.setToSingleRowLayout(false);
-            mShowTasks = false;
-            mShowPreviousTasks = false;
-            mRunningWindowAnim = null;
+            resetTaskView();
         }
     };
 
@@ -134,6 +119,26 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
         if (mRunningWindowAnim != null) {
             mRunningWindowAnim.cancel();
         }
+        mRunningWindowAnim = null;
+    }
+
+    void resetTaskView() {
+        mFakeHotseatView.setVisibility(View.INVISIBLE);
+        mFakeIconView.setVisibility(View.INVISIBLE);
+        if (mTutorialFragment.getActivity() != null) {
+            int height = mTutorialFragment.getRootView().getFullscreenHeight();
+            int width = mTutorialFragment.getRootView().getWidth();
+            mFakeTaskViewRect.set(0, 0, width, height);
+        }
+        mFakeTaskViewRadius = 0;
+        mFakeTaskView.invalidateOutline();
+        mFakeTaskView.setVisibility(View.VISIBLE);
+        mFakeTaskView.setAlpha(1);
+        mFakePreviousTaskView.setVisibility(View.INVISIBLE);
+        mFakePreviousTaskView.setAlpha(1);
+        mFakePreviousTaskView.setToSingleRowLayout(false);
+        mShowTasks = false;
+        mShowPreviousTasks = false;
         mRunningWindowAnim = null;
     }
 

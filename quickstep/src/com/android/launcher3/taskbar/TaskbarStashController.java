@@ -799,6 +799,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         if (isStashed) {
             play(skippable, mControllers.taskbarSpringOnStashController.createSpringToStash(),
                     0, duration, LINEAR);
+        } else {
+            play(skippable, mControllers.taskbarSpringOnStashController.createResetAnimForUnstash(),
+                    0, duration, LINEAR);
         }
 
         mControllers.taskbarViewController.addRevealAnimToIsStashed(skippable, isStashed, duration,
@@ -1217,6 +1220,15 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             boolean transitionTypeChanged = mAnimator != null && mAnimator.isStarted()
                     && mLastStartedTransitionType == TRANSITION_DEFAULT
                     && animationType != TRANSITION_DEFAULT;
+
+            // It is possible for stash=false to be requested by TRANSITION_HOME_TO_APP and
+            // TRANSITION_DEFAULT in quick succession. In this case, we should ignore
+            // transitionTypeChanged because the animations are exactly the same.
+            if (transitionTypeChanged
+                    && (!mIsStashed && !isStashed)
+                    && animationType == TRANSITION_HOME_TO_APP) {
+                transitionTypeChanged = false;
+            }
 
             if (mIsStashed != isStashed || transitionTypeChanged) {
                 mIsStashed = isStashed;

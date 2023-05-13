@@ -21,7 +21,6 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_T
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.annotation.Nullable;
 import android.annotation.TargetApi;
 import android.graphics.PointF;
 import android.os.Build;
@@ -112,6 +111,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                     case BACK_CANCELLED_FROM_LEFT:
                     case BACK_CANCELLED_FROM_RIGHT:
                     case BACK_NOT_STARTED_TOO_FAR_FROM_EDGE:
+                        resetTaskView();
                         showFeedback(R.string.overview_gesture_feedback_swipe_too_far_from_edge);
                         break;
                 }
@@ -142,33 +142,15 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                     }
                     case HOME_NOT_STARTED_TOO_FAR_FROM_EDGE:
                     case OVERVIEW_NOT_STARTED_TOO_FAR_FROM_EDGE:
+                        resetTaskView();
                         showFeedback(R.string.overview_gesture_feedback_swipe_too_far_from_edge);
                         break;
                     case OVERVIEW_GESTURE_COMPLETED:
+                        setGestureCompleted();
                         mTutorialFragment.releaseFeedbackAnimation();
-                        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-                            onMotionPaused(true /*arbitrary value*/);
-                            animateTaskViewToOverview(() -> {
-                                mFakeTaskView.setVisibility(View.INVISIBLE);
-                                if(!mTutorialFragment.isLargeScreen()){
-                                    mFakePreviousTaskView.animateToFillScreen(() -> {
-                                        mFakeLauncherView.setBackgroundColor(
-                                                mContext.getColor(
-                                                        R.color.gesture_overview_tutorial_swipe_rect
-                                                ));
-                                        showSuccessFeedback();
-                                    });
-                                } else {
-                                    mFakeLauncherView.setBackgroundColor(
-                                            mContext.getColor(
-                                                    R.color.gesture_overview_tutorial_swipe_rect
-                                            ));
-                                    showSuccessFeedback();
-                                }
-                            });
-                        } else {
-                            animateTaskViewToOverview(null);
-                            onMotionPaused(true /*arbitrary value*/);
+                        animateTaskViewToOverview(ENABLE_NEW_GESTURE_NAV_TUTORIAL.get());
+                        onMotionPaused(true /*arbitrary value*/);
+                        if (!ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
                             showSuccessFeedback();
                         }
                         break;
@@ -189,21 +171,28 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
 
     /**
      * runnable executed with slight delay to ease the swipe animation after landing on overview
-     * @param runnable
      */
-    public void animateTaskViewToOverview(@Nullable Runnable runnable) {
+    public void animateTaskViewToOverview(boolean animateDelayedSuccessFeedback) {
         PendingAnimation anim = new PendingAnimation(TASK_VIEW_END_ANIMATION_DURATION_MILLIS);
         anim.setFloat(mTaskViewSwipeUpAnimation
                 .getCurrentShift(), AnimatedFloat.VALUE, 1, ACCEL);
 
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                if (runnable != null) {
-                    new Handler().postDelayed(runnable, 300);
+        if (animateDelayedSuccessFeedback) {
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    new Handler().postDelayed(() -> {
+                        mFakeTaskView.setVisibility(View.INVISIBLE);
+                        if (!mTutorialFragment.isLargeScreen()) {
+                            mFakePreviousTaskView.animateToFillScreen(
+                                    () -> onSuccessAnimationComplete());
+                        } else {
+                            onSuccessAnimationComplete();
+                        }
+                    }, TASK_VIEW_FILL_SCREEN_ANIMATION_DELAY_MILLIS);
                 }
-            }
-        });
+            });
+        }
 
         ArrayList<Animator> animators = new ArrayList<>();
 
@@ -221,5 +210,10 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
         animset.playTogether(animators);
         animset.start();
         mRunningWindowAnim = SwipeUpAnimationLogic.RunningWindowAnim.wrap(animset);
+    }
+
+    private void onSuccessAnimationComplete() {
+        setLauncherViewColor(R.color.gesture_overview_tutorial_swipe_rect);
+        showSuccessFeedback();
     }
 }
