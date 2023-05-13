@@ -263,18 +263,6 @@ public class LauncherProvider extends ContentProvider {
                 getModelDbController().refreshHotseatRestoreTable();
                 return null;
             }
-            case LauncherSettings.Settings.METHOD_UPDATE_CURRENT_OPEN_HELPER: {
-                Bundle result = new Bundle();
-                result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                        getModelDbController().updateCurrentOpenHelper(arg /* dbFile */));
-                return result;
-            }
-            case LauncherSettings.Settings.METHOD_PREP_FOR_PREVIEW: {
-                Bundle result = new Bundle();
-                result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                        getModelDbController().prepareForPreview(arg /* dbFile */));
-                return result;
-            }
         }
         return null;
     }
