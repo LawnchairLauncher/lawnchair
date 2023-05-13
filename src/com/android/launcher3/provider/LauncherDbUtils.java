@@ -101,7 +101,7 @@ public class LauncherDbUtils {
         UserManagerState ums = new UserManagerState();
         ums.init(UserCache.INSTANCE.get(context),
                 context.getSystemService(UserManager.class));
-        LoaderCursor lc = new LoaderCursor(c, null, LauncherAppState.getInstance(context), ums);
+        LoaderCursor lc = new LoaderCursor(c, LauncherAppState.getInstance(context), ums);
         IntSet deletedShortcuts = new IntSet();
 
         while (lc.moveToNext()) {
