@@ -372,12 +372,13 @@ public class SplitSelectStateController {
                         shellInstanceId);
             } else {
                 mSystemUiProxy.startIntents(getPendingIntent(intent1, mInitialUser),
-                        getShortcutInfo(intent1, mInitialUser), options1.toBundle(),
-                        hasSecondaryPendingIntent
+                        mInitialUser.getIdentifier(), getShortcutInfo(intent1, mInitialUser),
+                        options1.toBundle(), hasSecondaryPendingIntent
                                 ? mSecondPendingIntent
                                 : getPendingIntent(intent2, mSecondUser),
-                        getShortcutInfo(intent2, mSecondUser), null /* options2 */,
-                        stagePosition, splitRatio, remoteTransition, shellInstanceId);
+                        mSecondUser.getIdentifier(), getShortcutInfo(intent2, mSecondUser),
+                        null /* options2 */, stagePosition, splitRatio, remoteTransition,
+                        shellInstanceId);
             }
         } else {
             final RemoteSplitLaunchAnimationRunner animationRunner =
@@ -399,13 +400,13 @@ public class SplitSelectStateController {
                         shellInstanceId);
             } else {
                 mSystemUiProxy.startIntentsWithLegacyTransition(
-                        getPendingIntent(intent1, mInitialUser),
+                        getPendingIntent(intent1, mInitialUser), mInitialUser.getIdentifier(),
                         getShortcutInfo(intent1, mInitialUser), options1.toBundle(),
                         hasSecondaryPendingIntent
                                 ? mSecondPendingIntent
                                 : getPendingIntent(intent2, mSecondUser),
-                        getShortcutInfo(intent2, mSecondUser), null /* options2 */, stagePosition,
-                        splitRatio, adapter, shellInstanceId);
+                        mSecondUser.getIdentifier(), getShortcutInfo(intent2, mSecondUser),
+                        null /* options2 */, stagePosition, splitRatio, adapter, shellInstanceId);
             }
         }
     }
@@ -425,6 +426,8 @@ public class SplitSelectStateController {
         ShortcutInfo secondShortcut = launchData.getSecondShortcut();
         PendingIntent firstPI = launchData.getInitialPendingIntent();
         PendingIntent secondPI = launchData.getSecondPendingIntent();
+        int firstUserId = launchData.getInitialUserId();
+        int secondUserId = launchData.getSecondUserId();
         int initialStagePosition = launchData.getInitialStagePosition();
         Bundle optionsBundle = options1.toBundle();
 
@@ -441,8 +444,8 @@ public class SplitSelectStateController {
                                 remoteTransition, shellInstanceId);
 
                 case SPLIT_TASK_PENDINGINTENT ->
-                        mSystemUiProxy.startIntentAndTask(secondPI, optionsBundle, firstTaskId,
-                                null /*options2*/, initialStagePosition, splitRatio,
+                        mSystemUiProxy.startIntentAndTask(secondPI, secondUserId, optionsBundle,
+                                firstTaskId, null /*options2*/, initialStagePosition, splitRatio,
                                 remoteTransition, shellInstanceId);
 
                 case SPLIT_TASK_SHORTCUT ->
@@ -451,13 +454,14 @@ public class SplitSelectStateController {
                                 remoteTransition, shellInstanceId);
 
                 case SPLIT_PENDINGINTENT_TASK ->
-                        mSystemUiProxy.startIntentAndTask(firstPI, optionsBundle, secondTaskId,
-                                null /*options2*/, initialStagePosition, splitRatio,
+                        mSystemUiProxy.startIntentAndTask(firstPI, firstUserId, optionsBundle,
+                                secondTaskId, null /*options2*/, initialStagePosition, splitRatio,
                                 remoteTransition, shellInstanceId);
 
                 case SPLIT_PENDINGINTENT_PENDINGINTENT ->
-                        mSystemUiProxy.startIntents(firstPI, firstShortcut, optionsBundle, secondPI,
-                                secondShortcut, null /*options2*/, initialStagePosition, splitRatio,
+                        mSystemUiProxy.startIntents(firstPI, firstUserId, firstShortcut,
+                                optionsBundle, secondPI, secondUserId, secondShortcut,
+                                null /*options2*/, initialStagePosition, splitRatio,
                                 remoteTransition, shellInstanceId);
 
                 case SPLIT_SHORTCUT_TASK ->
@@ -479,8 +483,8 @@ public class SplitSelectStateController {
 
                 case SPLIT_TASK_PENDINGINTENT ->
                         mSystemUiProxy.startIntentAndTaskWithLegacyTransition(secondPI,
-                                optionsBundle, firstTaskId, null /*options2*/, initialStagePosition,
-                                splitRatio, adapter, shellInstanceId);
+                                secondUserId, optionsBundle, firstTaskId, null /*options2*/,
+                                initialStagePosition, splitRatio, adapter, shellInstanceId);
 
                 case SPLIT_TASK_SHORTCUT ->
                         mSystemUiProxy.startShortcutAndTaskWithLegacyTransition(secondShortcut,
@@ -488,14 +492,15 @@ public class SplitSelectStateController {
                                 splitRatio, adapter, shellInstanceId);
 
                 case SPLIT_PENDINGINTENT_TASK ->
-                        mSystemUiProxy.startIntentAndTaskWithLegacyTransition(firstPI,
+                        mSystemUiProxy.startIntentAndTaskWithLegacyTransition(firstPI, firstUserId,
                                 optionsBundle, secondTaskId, null /*options2*/,
                                 initialStagePosition, splitRatio, adapter, shellInstanceId);
 
                 case SPLIT_PENDINGINTENT_PENDINGINTENT ->
-                        mSystemUiProxy.startIntentsWithLegacyTransition(firstPI, firstShortcut,
-                                optionsBundle, secondPI, secondShortcut, null /*options2*/,
-                                initialStagePosition, splitRatio, adapter, shellInstanceId);
+                        mSystemUiProxy.startIntentsWithLegacyTransition(firstPI, firstUserId,
+                                firstShortcut, optionsBundle, secondPI, secondUserId,
+                                secondShortcut, null /*options2*/, initialStagePosition, splitRatio,
+                                adapter, shellInstanceId);
 
                 case SPLIT_SHORTCUT_TASK ->
                         mSystemUiProxy.startShortcutAndTaskWithLegacyTransition(firstShortcut,
@@ -514,7 +519,7 @@ public class SplitSelectStateController {
                     options1.toBundle(), taskId, null /* options2 */, stagePosition,
                     splitRatio, remoteTransition, shellInstanceId);
         } else {
-            mSystemUiProxy.startIntentAndTask(getPendingIntent(intent, user),
+            mSystemUiProxy.startIntentAndTask(getPendingIntent(intent, user), user.getIdentifier(),
                     options1.toBundle(), taskId, null /* options2 */, stagePosition, splitRatio,
                     remoteTransition, shellInstanceId);
         }
@@ -531,8 +536,9 @@ public class SplitSelectStateController {
                     splitRatio, adapter, shellInstanceId);
         } else {
             mSystemUiProxy.startIntentAndTaskWithLegacyTransition(
-                    getPendingIntent(intent, user), options1.toBundle(), taskId,
-                    null /* options2 */, stagePosition, splitRatio, adapter, shellInstanceId);
+                    getPendingIntent(intent, user), user.getIdentifier(), options1.toBundle(),
+                    taskId, null /* options2 */, stagePosition, splitRatio, adapter,
+                    shellInstanceId);
         }
     }
 
