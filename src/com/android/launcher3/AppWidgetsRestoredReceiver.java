@@ -6,7 +6,6 @@ import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,8 +20,10 @@ import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.pm.UserCache;
+import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.ContentWriter;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 
 public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
@@ -69,8 +70,23 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
             }
             return;
         }
-        final ContentResolver cr = context.getContentResolver();
+
         final AppWidgetManager widgets = AppWidgetManager.getInstance(context);
+
+        Log.d(TAG, "restoreAppWidgetIds: "
+                + "oldWidgetIds=" + IntArray.wrap(oldWidgetIds).toConcatString()
+                + ", newWidgetIds=" + IntArray.wrap(newWidgetIds).toConcatString());
+
+        try {
+            IntArray result = LauncherDbUtils.queryIntArray(false, helper.getReadableDatabase(),
+                    Favorites.TABLE_NAME, Favorites.APPWIDGET_ID,
+                    Favorites.APPWIDGET_ID + "!=" + LauncherAppWidgetInfo.NO_ID, null, null);
+            // TODO(b/234700507): Remove the logs after the bug is fixed
+            Log.d(TAG, "restoreAppWidgetIds: all widget ids in database: "
+                    + result.toConcatString());
+        } catch (Exception ex) {
+            Log.e(TAG, "Getting widget ids from the database failed", ex);
+        }
 
         for (int i = 0; i < oldWidgetIds.length; i++) {
             Log.i(TAG, "Widget state restore id " + oldWidgetIds[i] + " => " + newWidgetIds[i]);
@@ -97,17 +113,19 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
                     .put(LauncherSettings.Favorites.RESTORED, state)
                     .commit();
             if (result == 0) {
-                Cursor cursor = helper.getWritableDatabase().query(
+                // TODO(b/234700507): Remove the logs after the bug is fixed
+                Log.e(TAG, "restoreAppWidgetIds: remapping failed since the widget is not in"
+                        + " the database anymore");
+                try (Cursor cursor = helper.getWritableDatabase().query(
                         Favorites.TABLE_NAME,
-                        new String[] {Favorites.APPWIDGET_ID},
-                        "appWidgetId=?", new String[] { oldWidgetId }, null, null, null);
-                try {
+                        new String[]{Favorites.APPWIDGET_ID},
+                        "appWidgetId=?", new String[]{oldWidgetId}, null, null, null)) {
                     if (!cursor.moveToFirst()) {
                         // The widget no long exists.
+                        Log.d(TAG, "Deleting widgetId: " + newWidgetIds[i] + " with old id: "
+                                + oldWidgetId);
                         host.deleteAppWidgetId(newWidgetIds[i]);
                     }
-                } finally {
-                    cursor.close();
                 }
             }
         }

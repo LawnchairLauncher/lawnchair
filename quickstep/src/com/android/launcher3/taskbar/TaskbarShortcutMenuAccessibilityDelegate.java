@@ -111,7 +111,8 @@ public class TaskbarShortcutMenuAccessibilityDelegate
                                 item.getIntent().getComponent(),
                                 /* startActivityOptions= */null,
                                 item.user),
-                        new Intent(), side, null, instanceIds.first);
+                        item.user.getIdentifier(), new Intent(), side, null,
+                        instanceIds.first);
             }
             return true;
         } else if (action == DEEP_SHORTCUTS || action == SHORTCUTS_AND_NOTIFICATIONS) {

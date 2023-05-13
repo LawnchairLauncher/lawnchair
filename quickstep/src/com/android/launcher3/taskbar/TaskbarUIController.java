@@ -30,8 +30,10 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
+import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -41,6 +43,7 @@ import com.android.quickstep.views.TaskView;
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
 
 import java.io.PrintWriter;
+import java.util.stream.Stream;
 
 /**
  * Base class for providing different taskbar UI
@@ -323,4 +326,14 @@ public class TaskbarUIController {
      * Refreshes the resumed state of this ui controller.
      */
     public void refreshResumedState() {}
+
+    /**
+     * Returns a stream of split screen menu options appropriate to the device.
+     */
+    Stream<SystemShortcut.Factory<BaseTaskbarContext>> getSplitMenuOptions() {
+        return Utilities
+                .getSplitPositionOptions(mControllers.taskbarActivityContext.getDeviceProfile())
+                .stream()
+                .map(mControllers.taskbarPopupController::createSplitShortcutFactory);
+    }
 }
