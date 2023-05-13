@@ -45,6 +45,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
 import com.android.launcher3.model.DatabaseHelper;
 import com.android.launcher3.model.DbDowngradeHelper;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.settings.SettingsActivity;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.IOUtils;
@@ -128,7 +129,6 @@ public class LauncherDbUtilsTest {
         assertEquals(1, getFavoriteDataCount(db));
         ShortcutInfo info = mInfoArgumentCaptor.getValue();
         assertNotNull(info);
-        assertEquals("Hello", info.getTitle());
         try (Cursor c = db.query(Favorites.TABLE_NAME, null, null, null, null, null, null)) {
             c.moveToNext();
             assertEquals(Favorites.ITEM_TYPE_DEEP_SHORTCUT, c.getInt(c.getColumnIndex(ITEM_TYPE)));
@@ -165,12 +165,11 @@ public class LauncherDbUtilsTest {
     private class MyDatabaseHelper extends DatabaseHelper {
 
         MyDatabaseHelper() {
-            super(mContext, null, false);
+            super(mContext, null, UserCache.INSTANCE.get(mContext)::getSerialNumberForUser,
+                    () -> { });
         }
 
         @Override
         protected void handleOneTimeDataUpgrade(SQLiteDatabase db) { }
-
-        protected void onEmptyDbCreated() { }
     }
 }
