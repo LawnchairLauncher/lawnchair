@@ -207,10 +207,6 @@ public class TaskbarLauncherStateController {
                     com.android.launcher3.taskbar.Utilities.setOverviewDragState(
                             mControllers, finalState.disallowTaskbarGlobalDrag(),
                             disallowLongClick, finalState.allowTaskbarInitialSplitSelection());
-                    // LauncherTaskbarUIController depends on the state when checking whether
-                    // to handle resume, so it should also be poked if current state changes
-                    mLauncher.getTaskbarUIController().onLauncherResumedOrPaused(
-                            mLauncher.hasBeenResumed());
                 }
             };
 
@@ -408,14 +404,6 @@ public class TaskbarLauncherStateController {
                     + ", mLauncherState: " + mLauncherState
                     + ", toAlignment: " + toAlignment);
         }
-        mControllers.bubbleControllers.ifPresent(controllers -> {
-            // Show the bubble bar when on launcher home or in overview.
-            boolean onHome = isInLauncher && mLauncherState == LauncherState.NORMAL;
-            boolean onOverview = mLauncherState == LauncherState.OVERVIEW;
-            controllers.bubbleStashController.setBubblesShowingOnHome(onHome);
-            controllers.bubbleStashController.setBubblesShowingOnOverview(onOverview);
-        });
-
         AnimatorSet animatorSet = new AnimatorSet();
 
         if (hasAnyFlag(changedFlags, FLAG_LAUNCHER_IN_STATE_TRANSITION)) {
@@ -487,7 +475,7 @@ public class TaskbarLauncherStateController {
                         TaskbarStashController stashController =
                                 mControllers.taskbarStashController;
                         stashController.updateAndAnimateTransientTaskbar(
-                                /* stash */ true, /* duration */ 0, true /* bubblesShouldFollow */);
+                                /* stash */ true, /* duration */ 0);
                     }
                 });
             } else {

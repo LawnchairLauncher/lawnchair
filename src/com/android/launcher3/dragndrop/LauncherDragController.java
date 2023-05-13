@@ -21,7 +21,6 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.res.Resources;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.view.HapticFeedbackConstants;
@@ -60,7 +59,6 @@ public class LauncherDragController extends DragController<Launcher> {
             int dragLayerY,
             DragSource source,
             ItemInfo dragInfo,
-            Point dragOffset,
             Rect dragRegion,
             float initialDragViewScale,
             float dragViewScaleOnDrop,
@@ -129,9 +127,11 @@ public class LauncherDragController extends DragController<Launcher> {
         mDragObject.dragInfo = dragInfo;
         mDragObject.originalDragInfo = mDragObject.dragInfo.makeShallowCopy();
 
-        if (dragOffset != null) {
-            dragView.setDragVisualizeOffset(new Point(dragOffset));
+        if (mOptions.preDragCondition != null) {
+            dragView.setHasDragOffset(mOptions.preDragCondition.getDragOffset().x != 0 ||
+                    mOptions.preDragCondition.getDragOffset().y != 0);
         }
+
         if (dragRegion != null) {
             dragView.setDragRegion(new Rect(dragRegion));
         }
