@@ -325,6 +325,7 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
                                 mItemInfo.getIntent().getComponent(),
                                 null,
                                 mItemInfo.user),
+                        mItemInfo.user.getIdentifier(),
                         new Intent(),
                         getPosition().stagePosition,
                         null,
