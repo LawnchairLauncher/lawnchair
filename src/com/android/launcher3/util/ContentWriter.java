@@ -26,7 +26,7 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.GraphicsUtils;
-import com.android.launcher3.model.DatabaseHelper;
+import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.pm.UserCache;
 
 /**
@@ -106,7 +106,7 @@ public class ContentWriter {
 
     public int commit() {
         if (mCommitParams != null) {
-            mCommitParams.mDatabaseHelper.getWritableDatabase().update(
+            mCommitParams.mDbController.update(
                     Favorites.TABLE_NAME, getValues(mContext),
                     mCommitParams.mWhere, mCommitParams.mSelectionArgs);
         }
@@ -115,12 +115,12 @@ public class ContentWriter {
 
     public static final class CommitParams {
 
-        final DatabaseHelper mDatabaseHelper;
+        final ModelDbController mDbController;
         final String mWhere;
         final String[] mSelectionArgs;
 
-        public CommitParams(DatabaseHelper helper, String where, String[] selectionArgs) {
-            mDatabaseHelper = helper;
+        public CommitParams(ModelDbController controller, String where, String[] selectionArgs) {
+            mDbController = controller;
             mWhere = where;
             mSelectionArgs = selectionArgs;
         }

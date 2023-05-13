@@ -116,7 +116,7 @@ public class IconCacheTest {
             @Nullable ComponentName cn, @Nullable String badgeOverride) throws Exception {
         Builder builder = new Builder(context, "test-shortcut")
                 .setIntent(new Intent(Intent.ACTION_VIEW))
-                .setTitle("Test");
+                .setShortLabel("Test");
         if (cn != null) {
             builder.setActivity(cn);
         }
