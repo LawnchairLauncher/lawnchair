@@ -48,13 +48,13 @@
     <string name="font_picker_description">Niektóre teksty pozostają niezmienione.</string>
     <string name="smartspace_calendar_label">Dostosowanie kalendarza \"W skrócie\"</string>
     <string name="smartspace_calendar_description">Umożliwiaj wyświetlanie daty w systemach kalendarzowych innych niż gregoriański.</string>
-    <string name="workspace_increase_max_grid_size_label">Zwiększony maksymalny rozmiar siatki ekranu głównego</string>
-    <string name="workspace_increase_max_grid_size_description">Zwiększ maksymalny dozwolony rozmiar siatki ekranu głównego z 10 x 10 do 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">Osiągnięto maksymalny rozmiar siatki na ekranie głównym</string>
+    <string name="workspace_increase_max_grid_size_description">Zwiększono maksymalny dozwolony rozmiar siatki ekranu głównego z 10 × 10 na 20 × 20.</string>
     <string name="always_reload_icons_label">Zawsze odświeżaj ikony</string>
-    <string name="always_reload_icons_description">Unikaj używania buforowanych ikon z pakietów ikon</string>
-    <string name="transparent_background_icons">Przezroczysty styl ikon</string>
-    <string name="transparent_background_icons_description">Użyj przezroczystego tła na ikonach tematycznych</string>
-    <string name="smartspace_mode_selection">\"W skrócie\" wybór dostawcy</string>
+    <string name="always_reload_icons_description">Unikaj korzystania z buforowanych ikon z pakietów ikon</string>
+    <string name="transparent_background_icons">Przezroczyste ikony</string>
+    <string name="transparent_background_icons_description">Użyj przezroczystego tła na ikonach motywu</string>
+    <string name="smartspace_mode_selection">Przy wyborze dostawcy</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Obrót Ekranu głównego</string>
     <string name="home_screen_rotaton_description">Po obróceniu urządzenia.</string>
@@ -70,8 +70,8 @@
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">Pokaż liczbę powiadomień</string>
     <string name="notification_dots_color">Kolor plakietek powiadomień</string>
-    <string name="notification_dots_text_color">Kolor liczby powiadomień</string>
-    <string name="notification_dots_color_contrast_warning_always">Ostrzeżenie: Kolory plakietki oraz liczby powiadomień nie różnią się wystarczająco od siebie</string>
+    <string name="notification_dots_text_color">Kolor plakietek powiadomień</string>
+    <string name="notification_dots_color_contrast_warning_always">Ostrzeżenie: Kolory plakietki oraz liczby powiadomień nie zawsze mogą być wystarczająco różne od siebie</string>
     <string name="notification_dots_color_contrast_warning_sometimes">Ostrzeżenie: Kolory plakietki oraz liczby powiadomień nie zawsze mogą być wystarczająco różne od siebie</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Wymagany dostęp do powiadomień</string>
@@ -87,10 +87,10 @@
     <string name="accent_color">Kolor Akcentujący</string>
     <!-- CustomIconShapePreference -->
     <string name="custom_icon_shape">Niestandardowy kształt ikony</string>
-    <string name="custom_icon_shape_create">Stwórz własny kształt ikony</string>
-    <string name="custom_icon_shape_edit">Edytuj własny kształt ikony</string>
-    <string name="icon_shape_corner">Kształt narożnika</string>
-    <string name="icon_shape_corner_round">Zaokrąglony</string>
+    <string name="custom_icon_shape_create">Utwórz niestandardowy kształt ikony</string>
+    <string name="custom_icon_shape_edit">Utwórz niestandardowy kształt ikony</string>
+    <string name="icon_shape_corner">Kształt rogu</string>
+    <string name="icon_shape_corner_round">Zaokrąglij</string>
     <string name="icon_shape_corner_squircle">Gładki</string>
     <string name="icon_shape_corner_cut">Wycięty</string>
     <string name="icon_shape_top_left">Lewy górny</string>
@@ -101,11 +101,11 @@
     <string name="clipboard">Schowek</string>
     <string name="export_to_clipboard">Eksportuj do schowka</string>
     <string name="import_from_clipboard">Importuj ze schowka</string>
-    <string name="icon_shape_clipboard_import_error">Schowek nie zawiera prawidłowego kształtu ikony</string>
+    <string name="icon_shape_clipboard_import_error">Schowek nie zawiera poprawnego kształtu ikony</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Paczka ikon</string>
-    <string name="themed_icon_pack">Źródło ikon tematycznych</string>
+    <string name="themed_icon_pack">Źródło paczki ikon</string>
     <string name="system_icons">Ikony systemowe</string>
     <string name="themed_icon_title">Ikony tematyczne</string>
     <string name="themed_icons_off_label">Wyłączono</string>
@@ -121,7 +121,7 @@
     <string name="icon_shape_diamond">Diament</string>
     <string name="icon_shape_egg">Jajko</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Ośmiagon</string>
+    <string name="icon_shape_octagon">Ośmiokątny</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Zaokrąglony kwadrat</string>
     <string name="icon_shape_sharp_square">Ostry kwadrat</string>
@@ -145,7 +145,7 @@
     <string name="reset_font">Reset</string>
     <!-- colorpreference/* -->
     <string name="dynamic">Dynamiczne</string>
-    <string name="swatches">Oglądarki</string>
+    <string name="swatches">Paleta kolorów</string>
     <string name="presets">Ustawienia</string>
     <string name="custom">Własny</string>
     <string name="rgb">RGB</string>
@@ -172,17 +172,17 @@
     <string name="wallpaper">Tapeta</string>
     <string name="wallpaper_scrolling_label">Przewiń tapetę</string>
     <string name="wallpaper_depth_effect_label">Efekt głębi tapety</string>
-    <string name="wallpaper_depth_effect_description">Przybliżanie i oddalanie tapety podczas przechodzenia między stanami.</string>
+    <string name="wallpaper_depth_effect_description">Powiększanie i pomniejszanie tapety podczas przejść między obszarami pulpitu.</string>
     <string name="show_sys_ui_scrim">Górny cień</string>
     <string name="layout">Układ</string>
     <string name="home_screen_grid">Siatka ekranu głównego</string>
     <string name="home_screen_lock">Zablokuj ekran główny</string>
-    <string name="home_screen_lock_description">Zapobiega zmianie układu ekranu głównego.</string>
+    <string name="home_screen_lock_description">Zapobiega zmianom w układzie ekranu głównego.</string>
     <string name="home_screen_unlock">Odblokuj ekran główny</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">Ekran główny jest zablokowany.</string>
     <string name="popup_menu">Wyskakujące menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Pokaż Przycisk Blokady</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Pokaż przycisk blokady</string>
     <string name="show_system_settings_entry">Pokaż Wpis Ustawień Systemu</string>
     <string name="status_bar_label">Pasek stanu</string>
     <string name="show_status_bar">Pokaż pasek stanu</string>

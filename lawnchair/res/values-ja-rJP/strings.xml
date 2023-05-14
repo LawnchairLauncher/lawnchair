@@ -349,7 +349,7 @@
     <string name="item_removed">アイテムを削除しました</string>
     <string name="all_apps_no_search_results">“<xliff:g example="Android" id="query">%1$s</xliff:g> ”に一致するアプリが見つかりませんでした</string>
     <string name="dt2s_admin_hint_title">管理者権限が必要です</string>
-    <string name="dt2s_admin_hint">ダブルタップでスリープ を使用するには、 Lawnchair をデバイス管理アプリとして設定する必要があります。 設定で このデバイス管理アプリを有効にする を有効にしてください。</string>
+    <string name="dt2s_admin_hint">ダブルタップでスリープ を使用するには、 Lawnchair をデバイス管理アプリとして設定する必要があります。 端末のデバイス管理アプリでLawnchair を選択してください。</string>
     <string name="dt2s_admin_warning">ダブルタップでスリープを解除します</string>
     <string name="dt2s_a11y_hint_title">アクセシビリティサービスを有効にします</string>
     <string name="dt2s_a11y_hint">ダブルタップでスリープを使用するには、 ユーザー補助 で Lawnchair を有効にする必要があります。 Lawnchair を選択して サービスの使用 を有効にしてください。</string>
