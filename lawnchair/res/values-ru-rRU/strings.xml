@@ -165,7 +165,7 @@
     <string name="launcher_default_color">Управляется Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
-    <string name="auto_add_shortcuts_label">Добавлять новые приложения на домашний экран</string>
+    <string name="auto_add_shortcuts_label">Добавлять новые приложения на Домашний экран</string>
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Лента Google</string>
     <string name="minus_one_unavailable">Лента новостей не установлена.</string>

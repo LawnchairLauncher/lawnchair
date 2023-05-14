@@ -399,9 +399,9 @@
     <string name="restore_backup_action">Återställ</string>
     <string name="what_to_restore">Vad ska återställas</string>
     <string name="backup_restore_success">Säkerhetskopia återställd.</string>
-    <string name="backup_restore_error">Det gick inte att återställa säkerhetskopian.</string>
-    <string name="invalid_backup_file">Ogiltig backupfil.</string>
-    <string name="x_by_y">%1$d, %2$d</string>
+    <string name="backup_restore_error">Kunde inte återställa säkerhetskopian.</string>
+    <string name="invalid_backup_file">Ogiltig säkerhetskopia.</string>
+    <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
     <string name="system_settings">Systeminställningar</string>
 </resources>
