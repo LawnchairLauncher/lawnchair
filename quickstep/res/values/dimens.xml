@@ -269,6 +269,9 @@
     <dimen name="floating_rotation_button_taskbar_left_margin">20dp</dimen>
     <dimen name="floating_rotation_button_taskbar_bottom_margin">10dp</dimen>
 
+    <!-- Copied from frameworks/base/packages/SystemUI -->
+    <dimen name="navigation_home_handle_width">108dp</dimen>
+
     <!-- Taskbar -->
     <dimen name="taskbar_size">@*android:dimen/taskbar_frame_height</dimen>
     <dimen name="taskbar_ime_size">48dp</dimen>
