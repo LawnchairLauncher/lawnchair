@@ -51,6 +51,7 @@ filegroup {
       "src/com/android/launcher3/util/WidgetUtils.java",
       "src/com/android/launcher3/util/rule/FailureWatcher.java",
       "src/com/android/launcher3/util/rule/LauncherActivityRule.java",
+      "src/com/android/launcher3/util/rule/ViewCaptureRule.kt",
       "src/com/android/launcher3/util/rule/SamplerRule.java",
       "src/com/android/launcher3/util/rule/ScreenRecordRule.java",
       "src/com/android/launcher3/util/rule/ShellCommandRule.java",
