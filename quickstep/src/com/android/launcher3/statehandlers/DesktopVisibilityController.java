@@ -17,11 +17,9 @@ package com.android.launcher3.statehandlers;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
-import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -30,6 +28,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.views.DesktopAppSelectView;
 import com.android.wm.shell.desktopmode.IDesktopTaskListener;
 
 /**
@@ -49,6 +48,7 @@ public class DesktopVisibilityController {
 
     @Nullable
     private IDesktopTaskListener mDesktopTaskListener;
+    private DesktopAppSelectView mSelectAppToast;
 
     public DesktopVisibilityController(Launcher launcher) {
         mLauncher = launcher;
@@ -60,17 +60,22 @@ public class DesktopVisibilityController {
     public void registerSystemUiListener() {
         mDesktopTaskListener = new IDesktopTaskListener.Stub() {
             @Override
-            public void onVisibilityChanged(int displayId, boolean visible) throws RemoteException {
+            public void onVisibilityChanged(int displayId, boolean visible) {
                 // TODO(b/261234402): move visibility from sysui state to listener
             }
 
             @Override
-            public void onStashedChanged(int displayId, boolean stashed) throws RemoteException {
-                // TODO(b/261234402): show a persistent toast
+            public void onStashedChanged(int displayId, boolean stashed) {
                 MAIN_EXECUTOR.execute(() -> {
-                    if (stashed && displayId == mLauncher.getDisplayId()) {
-                        Toast.makeText(mLauncher, "Adding app to Desktop",
-                                Toast.LENGTH_SHORT).show();
+                    if (displayId == mLauncher.getDisplayId()) {
+                        if (DEBUG) {
+                            Log.d(TAG, "desktop stashed changed value=" + stashed);
+                        }
+                        if (stashed) {
+                            showSelectAppToast();
+                        } else {
+                            hideSelectAppToast();
+                        }
                     }
                 });
             }
@@ -110,6 +115,7 @@ public class DesktopVisibilityController {
         if (!isDesktopModeSupported()) {
             return;
         }
+
         if (freeformTasksVisible != mFreeformTasksVisible) {
             mFreeformTasksVisible = freeformTasksVisible;
             if (mFreeformTasksVisible) {
@@ -218,5 +224,29 @@ public class DesktopVisibilityController {
         if (activity != null && activity.isResumed()) {
             activity.setResumed();
         }
+    }
+
+    private void showSelectAppToast() {
+        if (mSelectAppToast != null) {
+            return;
+        }
+        if (DEBUG) {
+            Log.d(TAG, "show toast to select desktop apps");
+        }
+        Runnable onCloseCallback = () -> {
+            SystemUiProxy.INSTANCE.get(mLauncher).hideStashedDesktopApps(mLauncher.getDisplayId());
+        };
+        mSelectAppToast = DesktopAppSelectView.show(mLauncher, onCloseCallback);
+    }
+
+    private void hideSelectAppToast() {
+        if (mSelectAppToast == null) {
+            return;
+        }
+        if (DEBUG) {
+            Log.d(TAG, "hide toast to select desktop apps");
+        }
+        mSelectAppToast.hide();
+        mSelectAppToast = null;
     }
 }

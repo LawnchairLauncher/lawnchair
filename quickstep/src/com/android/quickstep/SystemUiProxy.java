@@ -1161,6 +1161,17 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
+    /** Call shell to hide desktop apps that may be stashed */
+    public void hideStashedDesktopApps(int displayId) {
+        if (mDesktopMode != null) {
+            try {
+                mDesktopMode.hideStashedDesktopApps(displayId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call hideStashedDesktopApps", e);
+            }
+        }
+    }
+
     /** Call shell to get number of visible freeform tasks */
     public int getVisibleDesktopTaskCount(int displayId) {
         if (mDesktopMode != null) {
