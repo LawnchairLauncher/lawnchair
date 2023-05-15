@@ -281,7 +281,7 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         if (!TextUtils.isEmpty(pickerPackage)) {
             intent.setPackage(pickerPackage);
         }
-        return launcher.startActivitySafely(v, intent, placeholderInfo(intent));
+        return launcher.startActivitySafely(v, intent, placeholderInfo(intent)) != null;
     }
 
     static WorkspaceItemInfo placeholderInfo(Intent intent) {
