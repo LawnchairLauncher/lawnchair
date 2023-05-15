@@ -314,6 +314,10 @@ public final class FeatureFlags {
             "Enables receiving unfold animation events from sysui instead of calculating "
                     + "them in launcher process using hinge sensor values.");
 
+    public static final BooleanFlag ENABLE_WIDGET_TRANSITION_FOR_RESIZING = getDebugFlag(268553314,
+            "ENABLE_WIDGET_TRANSITION_FOR_RESIZING", DISABLED,
+            "Enable widget transition animation when resizing the widgets");
+
     public static final BooleanFlag PREEMPTIVE_UNFOLD_ANIMATION_START = getDebugFlag(270397209,
             "PREEMPTIVE_UNFOLD_ANIMATION_START", ENABLED,
             "Enables starting the unfold animation preemptively when unfolding, without"
