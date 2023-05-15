@@ -558,7 +558,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 .inflate(R.layout.user_folder_icon_normalized, null);
     }
 
-    private void startAnimation(final AnimatorSet a) {
+    private void addAnimationStartListeners(AnimatorSet a) {
         mLauncherDelegate.forEachVisibleWorkspacePage(
                 visiblePage -> addAnimatorListenerForPage(a, (CellLayout) visiblePage));
 
@@ -574,7 +574,6 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 mCurrentAnimator = null;
             }
         });
-        a.start();
     }
 
     private void addAnimatorListenerForPage(AnimatorSet a, CellLayout currentCellLayout) {
@@ -734,10 +733,14 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
 
         mPageIndicator.stopAllAnimations();
 
+        // b/282158620 because setCurrentPlayTime() below will start animator, we need to register
+        // {@link AnimatorListener} before it so that {@link AnimatorListener#onAnimationStart} can
+        // be called to register mCurrentAnimator, which will be used to cancel animator
+        addAnimationStartListeners(anim);
         // Because t=0 has the folder match the folder icon, we can skip the
         // first frame and have the same movement one frame earlier.
         anim.setCurrentPlayTime(Math.min(getSingleFrameMs(getContext()), anim.getTotalDuration()));
-        startAnimation(anim);
+        anim.start();
 
         // Make sure the folder picks up the last drag move even if the finger doesn't move.
         if (mDragController.isDragging()) {
@@ -815,7 +818,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                 mIsAnimatingClosed = false;
             }
         });
-        startAnimation(a);
+        addAnimationStartListeners(a);
+        a.start();
     }
 
     @Override
