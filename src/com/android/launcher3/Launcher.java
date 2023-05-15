@@ -2154,30 +2154,38 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     @Override
-    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
+    public RunnableList startActivitySafely(View v, Intent intent, ItemInfo item) {
         if (!hasBeenResumed()) {
+            RunnableList result = new RunnableList();
             // Workaround an issue where the WM launch animation is clobbered when finishing the
             // recents animation into launcher. Defer launching the activity until Launcher is
             // next resumed.
-            addOnResumeCallback(() -> startActivitySafely(v, intent, item));
+            addOnResumeCallback(() -> {
+                RunnableList actualResult = startActivitySafely(v, intent, item);
+                if (actualResult != null) {
+                    actualResult.add(result::executeAllAndDestroy);
+                } else {
+                    result.executeAllAndDestroy();
+                }
+            });
             if (mOnDeferredActivityLaunchCallback != null) {
                 mOnDeferredActivityLaunchCallback.run();
                 mOnDeferredActivityLaunchCallback = null;
             }
-            return true;
+            return result;
         }
 
-        boolean success = super.startActivitySafely(v, intent, item);
-        if (success && v instanceof BubbleTextView) {
+        RunnableList result = super.startActivitySafely(v, intent, item);
+        if (result != null && v instanceof BubbleTextView) {
             // This is set to the view that launched the activity that navigated the user away
             // from launcher. Since there is no callback for when the activity has finished
             // launching, enable the press state and keep this reference to reset the press
             // state when we return to launcher.
             BubbleTextView btv = (BubbleTextView) v;
             btv.setStayPressed(true);
-            addOnResumeCallback(() -> btv.setStayPressed(false));
+            result.add(() -> btv.setStayPressed(false));
         }
-        return success;
+        return result;
     }
 
     boolean isHotseatLayout(View layout) {
