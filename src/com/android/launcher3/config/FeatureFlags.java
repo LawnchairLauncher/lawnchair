@@ -211,16 +211,8 @@ public final class FeatureFlags {
             "Allows on device search in all apps logging");
 
     // TODO(Block 14): Cleanup flags
-    public static final BooleanFlag ASSISTANT_GIVES_LAUNCHER_FOCUS = getDebugFlag(270391641,
-            "ASSISTANT_GIVES_LAUNCHER_FOCUS", DISABLED,
-            "Allow Launcher to handle nav bar gestures while Assistant is running over it");
-
     public static final BooleanFlag NOTIFY_CRASHES = getDebugFlag(270393108, "NOTIFY_CRASHES",
             DISABLED, "Sends a notification whenever launcher encounters an uncaught exception.");
-
-    public static final BooleanFlag FORCE_PERSISTENT_TASKBAR = getDebugFlag(270395077,
-            "FORCE_PERSISTENT_TASKBAR", DISABLED, "Forces taskbar to be persistent, even in gesture"
-                    + " nav mode and when transient taskbar is enabled.");
 
     public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(270395798,
             "ENABLE_TRANSIENT_TASKBAR", ENABLED, "Enables transient taskbar.");
