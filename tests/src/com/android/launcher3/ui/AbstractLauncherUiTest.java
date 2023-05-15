@@ -72,6 +72,7 @@ import com.android.launcher3.util.rule.SamplerRule;
 import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.util.rule.TestStabilityRule;
+import com.android.launcher3.util.rule.ViewCaptureRule;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -215,14 +216,15 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected TestRule getRulesInsideActivityMonitor() {
+        final ViewCaptureRule viewCaptureRule = new ViewCaptureRule();
         final RuleChain inner = RuleChain
                 .outerRule(new PortraitLandscapeRunner(this))
-                .around(new FailureWatcher(mDevice, mLauncher));
+                .around(viewCaptureRule)
+                .around(new FailureWatcher(mDevice, mLauncher, viewCaptureRule.getViewCapture()));
 
         return TestHelpers.isInLauncherProcess()
-                ? RuleChain.outerRule(ShellCommandRule.setDefaultLauncher())
-                .around(inner) :
-                inner;
+                ? RuleChain.outerRule(ShellCommandRule.setDefaultLauncher()).around(inner)
+                : inner;
     }
 
     @Rule
