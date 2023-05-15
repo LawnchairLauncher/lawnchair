@@ -142,10 +142,6 @@ public final class FeatureFlags {
             "Enables haptics opening/closing All apps");
 
     // TODO(Block 6): Clean up flags
-    public static final BooleanFlag WIDGETS_IN_LAUNCHER_PREVIEW = getDebugFlag(270393268,
-            "WIDGETS_IN_LAUNCHER_PREVIEW", ENABLED,
-            "Enables widgets in Launcher preview for the Wallpaper app.");
-
     public static final BooleanFlag ENABLE_ALL_APPS_SEARCH_IN_TASKBAR = getDebugFlag(270393900,
             "ENABLE_ALL_APPS_SEARCH_IN_TASKBAR", DISABLED,
             "Enables Search box in Taskbar All Apps.");
