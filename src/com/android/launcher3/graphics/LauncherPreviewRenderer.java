@@ -105,7 +105,6 @@ import com.android.launcher3.widget.BaseLauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 import com.android.launcher3.widget.LocalColorExtractor;
-import com.android.launcher3.widget.NavigableAppWidgetHostView;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 import com.android.launcher3.widget.util.WidgetSizes;
 
@@ -281,9 +280,7 @@ public class LauncherPreviewRenderer extends ContextWrapper
         } else {
             mWallpaperColorResources = null;
         }
-        mAppWidgetHost = FeatureFlags.WIDGETS_IN_LAUNCHER_PREVIEW.get()
-                ? new LauncherPreviewAppWidgetHost(context)
-                : null;
+        mAppWidgetHost = new LauncherPreviewAppWidgetHost(context);
     }
 
     /** Populate preview and render it. */
@@ -416,19 +413,8 @@ public class LauncherPreviewRenderer extends ContextWrapper
 
     private void inflateAndAddWidgets(
             LauncherAppWidgetInfo info, LauncherAppWidgetProviderInfo providerInfo) {
-        AppWidgetHostView view;
-        if (FeatureFlags.WIDGETS_IN_LAUNCHER_PREVIEW.get()) {
-            view = mAppWidgetHost.createView(mContext, info.appWidgetId, providerInfo);
-        } else {
-            view = new NavigableAppWidgetHostView(this) {
-                @Override
-                protected boolean shouldAllowDirectClick() {
-                    return false;
-                }
-            };
-            view.setAppWidget(-1, providerInfo);
-            view.updateAppWidget(null);
-        }
+        AppWidgetHostView view = mAppWidgetHost.createView(
+                mContext, info.appWidgetId, providerInfo);
 
         if (mWallpaperColorResources != null) {
             view.setColorResources(mWallpaperColorResources);
