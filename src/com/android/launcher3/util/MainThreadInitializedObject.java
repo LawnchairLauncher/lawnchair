@@ -131,7 +131,8 @@ public class MainThreadInitializedObject<T> {
          * Find a cached object from mObjectMap if we have already created one. If not, generate
          * an object using the provider.
          */
-        private <T> T getObject(MainThreadInitializedObject<T> object, ObjectProvider<T> provider) {
+        protected <T> T getObject(MainThreadInitializedObject<T> object,
+                ObjectProvider<T> provider) {
             synchronized (mDestroyLock) {
                 if (mDestroyed) {
                     Log.e(TAG, "Static object access with a destroyed context");
