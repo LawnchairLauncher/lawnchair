@@ -84,6 +84,7 @@ import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.StatefulActivity;
@@ -206,7 +207,15 @@ public class TouchInteractionService extends Service
         @BinderThread
         @Override
         public void onTaskbarToggled() {
-            // To be implemented.
+            if (!FeatureFlags.ENABLE_KEYBOARD_TASKBAR_TOGGLE.get()) return;
+            MAIN_EXECUTOR.execute(() -> {
+                TaskbarActivityContext activityContext =
+                        mTaskbarManager.getCurrentActivityContext();
+
+                if (activityContext != null) {
+                    activityContext.toggleTaskbarStash();
+                }
+            });
         }
 
         @BinderThread
