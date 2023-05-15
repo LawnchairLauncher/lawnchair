@@ -115,6 +115,12 @@ public abstract class ButtonDropTarget extends TextView
         setContentDescription(mText);
     }
 
+    protected void updateText(CharSequence text) {
+        setText(text);
+        mText = getText();
+        setContentDescription(mText);
+    }
+
     protected void setDrawable(int resId) {
         // We do not set the drawable in the xml as that inflates two drawables corresponding to
         // drawableLeft and drawableStart.
