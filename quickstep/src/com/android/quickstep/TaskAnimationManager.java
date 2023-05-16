@@ -236,6 +236,9 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                     homeIsOnTop = true;
                 }
             }
+            if (activityInterface.allowAllAppsFromOverview()) {
+                homeIsOnTop = true;
+            }
             if (!homeIsOnTop) {
                 options.setTransientLaunch();
             }
