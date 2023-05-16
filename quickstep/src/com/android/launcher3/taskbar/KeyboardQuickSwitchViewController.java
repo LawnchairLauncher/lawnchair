@@ -169,7 +169,7 @@ public class KeyboardQuickSwitchViewController {
 
     class ViewCallbacks {
 
-        boolean onKeyUp(int keyCode, KeyEvent event, boolean isRTL) {
+        boolean onKeyUp(int keyCode, KeyEvent event, boolean isRTL, boolean allowTraversal) {
             if (keyCode != KeyEvent.KEYCODE_TAB
                     && keyCode != KeyEvent.KEYCODE_DPAD_RIGHT
                     && keyCode != KeyEvent.KEYCODE_DPAD_LEFT
@@ -180,6 +180,9 @@ public class KeyboardQuickSwitchViewController {
             if (keyCode == KeyEvent.KEYCODE_GRAVE || keyCode == KeyEvent.KEYCODE_ESCAPE) {
                 closeQuickSwitchView(true);
                 return true;
+            }
+            if (!allowTraversal) {
+                return false;
             }
             boolean traverseBackwards = (keyCode == KeyEvent.KEYCODE_TAB && event.isShiftPressed())
                     || (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && !isRTL)
