@@ -29,12 +29,15 @@ import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.views.DesktopTaskView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Glues together the necessary components to animate a remote target using a
  * {@link TaskViewSimulator}
  */
 public class RemoteTargetGluer {
+    private static final int DEFAULT_NUM_HANDLES = 2;
+
     private RemoteTargetHandle[] mRemoteTargetHandles;
     private SplitBounds mSplitBounds;
 
@@ -62,8 +65,9 @@ public class RemoteTargetGluer {
             }
         }
 
-        int[] splitIds = TopTaskTracker.INSTANCE.get(context).getRunningSplitTaskIds();
-        init(context, sizingStrategy, splitIds.length == 2 ? 2 : 1, false /* forDesktop */);
+        // Assume 2 handles needed for split, scale down as needed later on when we actually
+        // get remote targets
+        init(context, sizingStrategy, DEFAULT_NUM_HANDLES, false /* forDesktop */);
     }
 
     private void init(Context context, BaseActivityInterface sizingStrategy, int numHandles,
@@ -108,6 +112,17 @@ public class RemoteTargetGluer {
      * the left/top task, index 1 right/bottom.
      */
     public RemoteTargetHandle[] assignTargetsForSplitScreen(RemoteAnimationTargets targets) {
+        // Resize the mRemoteTargetHandles array since we started assuming split screen, but
+        // targets.apps is the ultimate source of truth here
+        long appCount = Arrays.stream(targets.apps)
+                .filter(app -> app.mode == targets.targetMode)
+                .count();
+        if (appCount < mRemoteTargetHandles.length) {
+            RemoteTargetHandle[] newHandles = new RemoteTargetHandle[(int) appCount];
+            System.arraycopy(mRemoteTargetHandles, 0/*src*/, newHandles, 0/*dst*/, (int) appCount);
+            mRemoteTargetHandles = newHandles;
+        }
+
         if (mRemoteTargetHandles.length == 1) {
             // If we're not in split screen, the splitIds count doesn't really matter since we
             // should always hit this case.
@@ -233,6 +248,14 @@ public class RemoteTargetGluer {
                 targets.targetMode);
     }
 
+    /**
+     * The object returned by this is may be modified in
+     * {@link #assignTargetsForSplitScreen(RemoteAnimationTargets)}, specifically the length of the
+     * array may be shortened based on the number of RemoteAnimationTargets present.
+     * <p>
+     * This can be accessed at any time, however the count will be more accurate if accessed after
+     * calling one of the respective assignTargets*() methods
+     */
     public RemoteTargetHandle[] getRemoteTargetHandles() {
         return mRemoteTargetHandles;
     }
