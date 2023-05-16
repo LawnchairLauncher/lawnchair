@@ -213,11 +213,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(270395798,
             "ENABLE_TRANSIENT_TASKBAR", ENABLED, "Enables transient taskbar.");
 
-    // TODO(Block 15): Clean up flags
-    public static final BooleanFlag ENABLE_APP_CLONING_CHANGES_IN_LAUNCHER = getDebugFlag(266177840,
-            "ENABLE_APP_CLONING_CHANGES_IN_LAUNCHER", DISABLED,
-            "Removes clone apps from the work profile tab.");
-
     // TODO(Block 16): Clean up flags
     // When enabled the promise icon is visible in all apps while installation an app.
     public static final BooleanFlag PROMISE_APPS_IN_ALL_APPS = getDebugFlag(270390012,
