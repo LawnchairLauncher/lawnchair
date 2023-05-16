@@ -215,11 +215,15 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="KeyboardQuickSwitchOverview">
+    <style name="KeyboardQuickSwitchText">
         <item name="fontFamily">google-sans-text</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">?androidprv:attr/materialColorOnSurface</item>
         <item name="lineHeight">20sp</item>
+    </style>
+
+    <style name="KeyboardQuickSwitchText.OnBackground" parent="KeyboardQuickSwitchText">
+        <item name="android:textColor">?androidprv:attr/materialColorOnSurfaceInverse</item>
     </style>
 
     <style name="GestureTutorialActivity"
