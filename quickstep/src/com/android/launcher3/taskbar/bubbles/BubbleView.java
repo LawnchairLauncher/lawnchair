@@ -32,6 +32,7 @@ import com.android.launcher3.icons.IconNormalizer;
 
 // TODO: (b/276978250) This is will be similar to WMShell's BadgedImageView, it'd be nice to share.
 // TODO: (b/269670235) currently this doesn't show the 'update dot'
+
 /**
  * View that displays a bubble icon, along with an app badge on either the left or
  * right side of the view.
@@ -48,7 +49,7 @@ public class BubbleView extends ConstraintLayout {
     // TODO: (b/273310265) handle RTL
     private boolean mOnLeft = false;
 
-    private BubbleBarBubble mBubble;
+    private BubbleBarItem mBubble;
 
     public BubbleView(Context context) {
         this(context, null);
@@ -97,15 +98,27 @@ public class BubbleView extends ConstraintLayout {
         mAppIcon.setImageBitmap(bubble.getBadge());
     }
 
+    void setOverflow(BubbleBarOverflow overflow, Bitmap bitmap) {
+        mBubble = overflow;
+        mBubbleIcon.setImageBitmap(bitmap);
+        hideBadge();
+    }
+
     /** Returns the bubble being rendered in this view. */
     @Nullable
-    BubbleBarBubble getBubble() {
+    BubbleBarItem getBubble() {
         return mBubble;
     }
 
     /** Shows the app badge on this bubble. */
     void showBadge() {
-        Bitmap appBadgeBitmap = mBubble.getBadge();
+        if (mBubble instanceof BubbleBarOverflow) {
+            // The overflow bubble does not have a badge, so just bail.
+            return;
+        }
+        BubbleBarBubble bubble = (BubbleBarBubble) mBubble;
+
+        Bitmap appBadgeBitmap = bubble.getBadge();
         if (appBadgeBitmap == null) {
             mAppIcon.setVisibility(GONE);
             return;
@@ -113,7 +126,7 @@ public class BubbleView extends ConstraintLayout {
 
         int translationX;
         if (mOnLeft) {
-            translationX = -(mBubble.getIcon().getWidth() - appBadgeBitmap.getWidth());
+            translationX = -(bubble.getIcon().getWidth() - appBadgeBitmap.getWidth());
         } else {
             translationX = 0;
         }

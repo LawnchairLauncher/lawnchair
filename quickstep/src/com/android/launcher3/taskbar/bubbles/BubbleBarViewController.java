@@ -93,7 +93,7 @@ public class BubbleBarViewController {
     }
 
     private void onBubbleClicked(View v) {
-        BubbleBarBubble bubble = ((BubbleView) v).getBubble();
+        BubbleBarItem bubble = ((BubbleView) v).getBubble();
         if (bubble == null) {
             Log.e(TAG, "bubble click listener, bubble was null");
         }
@@ -228,7 +228,7 @@ public class BubbleBarViewController {
     /**
      * Removes the provided bubble from the bubble bar.
      */
-    public void removeBubble(BubbleBarBubble b) {
+    public void removeBubble(BubbleBarItem b) {
         if (b != null) {
             mBarView.removeView(b.getView());
         } else {
@@ -239,7 +239,7 @@ public class BubbleBarViewController {
     /**
      * Adds the provided bubble to the bubble bar.
      */
-    public void addBubble(BubbleBarBubble b) {
+    public void addBubble(BubbleBarItem b) {
         if (b != null) {
             mBarView.addView(b.getView(), 0, new FrameLayout.LayoutParams(mIconSize, mIconSize));
             b.getView().setOnClickListener(mBubbleClickListener);
@@ -260,7 +260,7 @@ public class BubbleBarViewController {
     /**
      * Updates the selected bubble.
      */
-    public void updateSelectedBubble(BubbleBarBubble newlySelected) {
+    public void updateSelectedBubble(BubbleBarItem newlySelected) {
         mBarView.setSelectedBubble(newlySelected.getView());
     }
 
