@@ -181,7 +181,7 @@ public final class KeyboardQuickSwitchController implements
             mModel.getThumbnailCache().updateThumbnailInBackground(task, callback);
         }
 
-        void updateTitleInBackground(Task task, Consumer<Task> callback) {
+        void updateIconInBackground(Task task, Consumer<Task> callback) {
             mModel.getIconCache().updateIconInBackground(task, callback);
         }
 
