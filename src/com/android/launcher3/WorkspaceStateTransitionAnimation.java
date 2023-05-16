@@ -59,6 +59,7 @@ import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.launcher3.graphics.Scrim;
 import com.android.launcher3.graphics.SysUiScrim;
+import com.android.launcher3.states.EditModeState;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.util.DynamicResource;
@@ -212,8 +213,8 @@ public class WorkspaceStateTransitionAnimation {
             PageAlphaProvider pageAlphaProvider, PropertySetter propertySetter,
             StateAnimationConfig config) {
         float pageAlpha = pageAlphaProvider.getPageAlpha(childIndex);
-        float springLoadedProgress = (state instanceof SpringLoadedState) ? 1.0f : 0f;
-
+        float springLoadedProgress =
+                (state instanceof  SpringLoadedState || state instanceof EditModeState) ? 1f : 0f;
         propertySetter.setFloat(cl,
                 CellLayout.SPRING_LOADED_PROGRESS, springLoadedProgress, ZOOM_OUT);
         Interpolator fadeInterpolator = config.getInterpolator(ANIM_WORKSPACE_FADE,
