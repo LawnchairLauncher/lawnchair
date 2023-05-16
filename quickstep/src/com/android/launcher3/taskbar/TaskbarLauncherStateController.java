@@ -474,8 +474,7 @@ public class TaskbarLauncherStateController {
                     public void onAnimationEnd(Animator animation) {
                         TaskbarStashController stashController =
                                 mControllers.taskbarStashController;
-                        stashController.updateAndAnimateTransientTaskbar(
-                                /* stash */ true, /* duration */ 0);
+                        stashController.updateAndAnimateTransientTaskbar(/* stash */ true);
                     }
                 });
             } else {
