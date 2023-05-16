@@ -381,4 +381,6 @@
     <dimen name="keyboard_quick_switch_split_view_spacing">2dp</dimen>
     <dimen name="keyboard_quick_switch_view_radius">28dp</dimen>
     <dimen name="keyboard_quick_switch_task_view_radius">16dp</dimen>
+    <dimen name="keyboard_quick_switch_no_recent_items_icon_size">24dp</dimen>
+    <dimen name="keyboard_quick_switch_no_recent_items_icon_margin">8dp</dimen>
 </resources>
