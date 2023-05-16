@@ -195,6 +195,9 @@ public class KeyboardQuickSwitchViewController {
                             // focus a less recent app or loop back to the opposite end
                             : ((mCurrentFocusIndex + 1) % taskCount));
 
+            if (mCurrentFocusIndex == toIndex) {
+                return true;
+            }
             mKeyboardQuickSwitchView.animateFocusMove(mCurrentFocusIndex, toIndex);
 
             return true;
