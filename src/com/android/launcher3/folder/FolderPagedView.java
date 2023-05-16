@@ -46,7 +46,6 @@ import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
-import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewCache;
@@ -421,10 +420,15 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
      * Sets the focus on the first visible child.
      */
     public void setFocusOnFirstChild() {
-        View firstChild = getCurrentCellLayout().getChildAt(0, 0);
-        if (firstChild != null) {
-            firstChild.requestFocus();
+        CellLayout currentCellLayout = getCurrentCellLayout();
+        if (currentCellLayout == null) {
+            return;
         }
+        View firstChild = currentCellLayout.getChildAt(0, 0);
+        if (firstChild == null) {
+            return;
+        }
+        firstChild.requestFocus();
     }
 
     @Override
