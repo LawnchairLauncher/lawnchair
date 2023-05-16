@@ -501,16 +501,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     /**
-     * Stash or unstashes the transient taskbar, using the default TASKBAR_STASH_DURATION.
-     */
-    public void updateAndAnimateTransientTaskbar(boolean stash) {
-        updateAndAnimateTransientTaskbar(stash, TASKBAR_STASH_DURATION);
-    }
-
-    /**
      * Stash or unstashes the transient taskbar.
      */
-    public void updateAndAnimateTransientTaskbar(boolean stash, long duration) {
+    public void updateAndAnimateTransientTaskbar(boolean stash) {
         if (!DisplayController.isTransientTaskbar(mActivity)) {
             return;
         }
@@ -573,6 +566,12 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             return true;
         }
         return false;
+    }
+
+    /** Toggles the Taskbar's stash state. */
+    public void toggleTaskbarStash() {
+        if (!DisplayController.isTransientTaskbar(mActivity) || !hasAnyFlag(FLAGS_IN_APP)) return;
+        updateAndAnimateTransientTaskbar(!hasAnyFlag(FLAG_STASHED_IN_APP_AUTO));
     }
 
     /**
