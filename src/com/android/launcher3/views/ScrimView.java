@@ -21,7 +21,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -63,18 +62,16 @@ public class ScrimView extends View implements Insettable {
     }
 
     @Override
-    protected boolean onSetAlpha(int alpha) {
-        updateSysUiColors();
-        dispatchVisibilityListenersIfNeeded();
-        return super.onSetAlpha(alpha);
-    }
-
-    @Override
     public void setBackgroundColor(int color) {
         mBackgroundColor = color;
-        updateSysUiColors();
         dispatchVisibilityListenersIfNeeded();
-        super.setBackgroundColor(color);
+        if (Color.alpha(color) == 0) {
+            setAlpha(0);
+        } else {
+            setAlpha(1);
+            super.setBackgroundColor(color);
+        }
+        updateSysUiColors();
     }
 
     public int getBackgroundColor() {
@@ -89,7 +86,7 @@ public class ScrimView extends View implements Insettable {
     }
 
     public boolean isFullyOpaque() {
-        return mIsVisible && getAlpha() == 1 && Color.alpha(mBackgroundColor) == 255;
+        return mIsVisible && getAlpha() == 1;
     }
 
     @Override
@@ -120,8 +117,7 @@ public class ScrimView extends View implements Insettable {
         // status bar.
         final float threshold = STATUS_BAR_COLOR_FORCE_UPDATE_THRESHOLD;
         boolean forceChange = getVisibility() == VISIBLE
-                && getAlpha() > threshold
-                && (Color.alpha(mBackgroundColor) / 255f) > threshold;
+                && getAlpha() > threshold;
         if (forceChange) {
             getSystemUiController().updateUiState(UI_STATE_SCRIM_VIEW, !isScrimDark());
         } else {
@@ -148,13 +144,7 @@ public class ScrimView extends View implements Insettable {
     }
 
     private boolean isScrimDark() {
-        if (!(getBackground() instanceof ColorDrawable)) {
-            throw new IllegalStateException(
-                    "ScrimView must have a ColorDrawable background, this one has: "
-                            + getBackground());
-        }
-        return ColorUtils.calculateLuminance(
-                ((ColorDrawable) getBackground()).getColor()) < 0.5f;
+        return ColorUtils.calculateLuminance(mBackgroundColor) < 0.5f;
     }
 
     /**
