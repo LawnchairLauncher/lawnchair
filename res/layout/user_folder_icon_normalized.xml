@@ -51,7 +51,7 @@
             android:singleLine="true"
             android:textColor="?attr/folderTextColor"
             android:textColorHighlight="?android:attr/colorControlHighlight"
-            android:textColorHint="?attr/folderHintColor"/>
+            android:textColorHint="?attr/folderHintTextColor"/>
 
         <com.android.launcher3.pageindicators.PageIndicatorDots
             android:id="@+id/folder_page_indicator"
