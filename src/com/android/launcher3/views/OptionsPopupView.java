@@ -17,6 +17,7 @@ package com.android.launcher3.views;
 
 import static androidx.core.content.ContextCompat.getColorStateList;
 
+import static com.android.launcher3.LauncherState.EDIT_MODE;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
@@ -222,6 +223,8 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
     }
 
     private static boolean enterHomeGardening(View view) {
+        Launcher launcher = Launcher.getLauncher(view.getContext());
+        launcher.getStateManager().goToState(EDIT_MODE);
         return true;
     }
 
