@@ -51,7 +51,9 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.graphics.LauncherPreviewRenderer.PreviewContext;
 import com.android.launcher3.model.BgDataModel;
+import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.GridSizeMigrationUtil;
+import com.android.launcher3.model.LauncherBinder;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.provider.LauncherDbUtils;
@@ -226,12 +228,14 @@ public class PreviewSurfaceRenderer {
             LauncherAppState.getInstance(previewContext)
                     .getModel().getModelDbController().clearEmptyDbFlag();
 
+            BgDataModel bgModel = new BgDataModel();
             new LoaderTask(
                     LauncherAppState.getInstance(previewContext),
                     /* bgAllAppsList= */ null,
-                    new BgDataModel(),
+                    bgModel,
                     LauncherAppState.getInstance(previewContext).getModel().getModelDelegate(),
-                    /* results= */ null) {
+                    new LauncherBinder(LauncherAppState.getInstance(previewContext), bgModel,
+                            /* bgAllAppsList= */ null, new Callbacks[0])) {
 
                 @Override
                 public void run() {

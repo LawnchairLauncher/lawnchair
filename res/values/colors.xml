@@ -54,6 +54,9 @@
     <color name="popup_notification_dot_light">#FFF</color>
     <color name="popup_notification_dot_dark">#757575</color>
 
+    <color name="notification_dot_color_light">#6DD58C</color>
+    <color name="notification_dot_color_dark">#C4EED0</color>
+
     <color name="workspace_text_color_light">#FFF</color>
     <color name="workspace_text_color_dark">#FF000000</color>
 
@@ -66,7 +69,6 @@
     <color name="folder_preview_light">#F9F9F9</color>
     <color name="folder_preview_dark">#464746</color>
 
-    <color name="folder_dot_color">?attr/colorPrimary</color>
     <color name="folder_pagination_color_light">#ff006c5f</color>
     <color name="folder_pagination_color_dark">#ffbfebe3</color>
 

@@ -156,6 +156,13 @@ public abstract class BaseDraggingActivity extends BaseActivity
     }
 
     @Override
+    public ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
+        ActivityOptionsWrapper wrapper = super.makeDefaultActivityOptions(splashScreenStyle);
+        addOnResumeCallback(wrapper.onEndCallback::executeAllAndDestroy);
+        return wrapper;
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
 
