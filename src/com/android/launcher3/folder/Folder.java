@@ -19,6 +19,7 @@ package com.android.launcher3.folder;
 import static android.text.TextUtils.isEmpty;
 
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
+import static com.android.launcher3.LauncherState.EDIT_MODE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 import static com.android.launcher3.config.FeatureFlags.ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS;
@@ -1339,7 +1340,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                     mLauncherDelegate.getModelWriter());
         }
 
-        launcher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
+        if (!launcher.isInState(EDIT_MODE)) {
+            launcher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
+        }
+
         if (d.stateAnnouncer != null) {
             d.stateAnnouncer.completeAction(R.string.item_moved);
         }
