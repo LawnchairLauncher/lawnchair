@@ -145,20 +145,20 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
         taskView.setOnClickListener(v -> mViewCallbacks.launchTappedTask(index));
 
         LayoutParams lp = new LayoutParams(width, mTaskViewHeight);
-        // Create a right-to-left ordering of views (or left-to-right in RTL locales)
+        // Create a left-to-right ordering of views (or right-to-left in RTL locales)
         if (previousView != null) {
-            lp.endToStart = previousView.getId();
+            lp.startToEnd = previousView.getId();
         } else {
-            lp.endToEnd = PARENT_ID;
+            lp.startToStart = PARENT_ID;
         }
         lp.topToTop = PARENT_ID;
         lp.bottomToBottom = PARENT_ID;
         // Add spacing between views
-        lp.setMarginEnd(mSpacing);
+        lp.setMarginStart(mSpacing);
         if (isFinalView) {
-            // Add spacing to the start of the final view so that scrolling ends with some padding.
-            lp.startToStart = PARENT_ID;
-            lp.setMarginStart(mSpacing);
+            // Add spacing to the end of the final view so that scrolling ends with some padding.
+            lp.endToEnd = PARENT_ID;
+            lp.setMarginEnd(mSpacing);
             lp.horizontalBias = 1f;
         }
 
@@ -167,7 +167,7 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
                 groupTask.task1,
                 groupTask.task2,
                 updateTasks ? mViewCallbacks::updateThumbnailInBackground : null,
-                updateTasks ? mViewCallbacks::updateTitleInBackground : null);
+                updateTasks ? mViewCallbacks::updateIconInBackground : null);
 
         mContent.addView(taskView, lp);
         return taskView;
@@ -187,8 +187,8 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
 
         ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
                 width, mTaskViewHeight);
-        lp.startToStart = PARENT_ID;
-        lp.endToStart = previousView.getId();
+        lp.endToEnd = PARENT_ID;
+        lp.startToEnd = previousView.getId();
         lp.topToTop = PARENT_ID;
         lp.bottomToBottom = PARENT_ID;
         lp.setMarginEnd(mSpacing);
@@ -402,16 +402,16 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
                 } else if (toIndex > fromIndex || toIndex == 0) {
                     // Scrolling to next task view
                     if (mIsRtl) {
-                        scrollRightTo(focusedTask);
-                    } else {
                         scrollLeftTo(focusedTask);
+                    } else {
+                        scrollRightTo(focusedTask);
                     }
                 } else {
                     // Scrolling to previous task view
                     if (mIsRtl) {
-                        scrollLeftTo(focusedTask);
-                    } else {
                         scrollRightTo(focusedTask);
+                    } else {
+                        scrollLeftTo(focusedTask);
                     }
                 }
                 if (mViewCallbacks != null) {
