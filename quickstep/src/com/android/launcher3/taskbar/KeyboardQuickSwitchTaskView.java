@@ -20,6 +20,7 @@ import static com.android.quickstep.util.BorderAnimator.DEFAULT_BORDER_COLOR;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
@@ -67,6 +68,9 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
             int defStyleAttr,
             int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        TypedArray ta = context.obtainStyledAttributes(
+                attrs, R.styleable.TaskView, defStyleAttr, defStyleRes);
+
         setWillNotDraw(false);
         Resources resources = context.getResources();
         mBorderAnimator = new BorderAnimator(
@@ -75,17 +79,8 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
                         R.dimen.keyboard_quick_switch_border_width),
                 /* borderRadiusPx= */ resources.getDimensionPixelSize(
                         R.dimen.keyboard_quick_switch_task_view_radius),
-                /* borderColor= */ attrs == null
-                        ? DEFAULT_BORDER_COLOR
-                        : context.getTheme()
-                                .obtainStyledAttributes(
-                                        attrs,
-                                        R.styleable.TaskView,
-                                        defStyleAttr,
-                                        defStyleRes)
-                                .getColor(
-                                        R.styleable.TaskView_borderColor,
-                                        DEFAULT_BORDER_COLOR),
+                /* borderColor= */ ta.getColor(
+                        R.styleable.TaskView_borderColor, DEFAULT_BORDER_COLOR),
                 /* invalidateViewCallback= */ KeyboardQuickSwitchTaskView.this::invalidate,
                 /* viewScaleTargetProvider= */ new BorderAnimator.ViewScaleTargetProvider() {
                     @NonNull
@@ -100,6 +95,7 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
                         return mContent;
                     }
                 });
+        ta.recycle();
     }
 
     @Override
