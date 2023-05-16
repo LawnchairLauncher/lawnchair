@@ -51,6 +51,7 @@ import android.util.ArrayMap;
 import android.util.Log;
 import android.util.LongSparseArray;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
@@ -118,6 +119,7 @@ public class LoaderTask implements Runnable {
 
     private static final boolean DEBUG = true;
 
+    @NonNull
     protected final LauncherAppState mApp;
     private final AllAppsList mBgAllAppsList;
     protected final BgDataModel mBgDataModel;
@@ -125,6 +127,7 @@ public class LoaderTask implements Runnable {
 
     private FirstScreenBroadcast mFirstScreenBroadcast;
 
+    @NonNull
     private final LauncherBinder mLauncherBinder;
 
     private final LauncherApps mLauncherApps;
@@ -145,11 +148,11 @@ public class LoaderTask implements Runnable {
     private boolean mItemsDeleted = false;
     private String mDbName;
 
-    public LoaderTask(LauncherAppState app, AllAppsList bgAllAppsList, BgDataModel dataModel,
-            ModelDelegate modelDelegate, LauncherBinder launcherBinder) {
+    public LoaderTask(@NonNull LauncherAppState app, AllAppsList bgAllAppsList, BgDataModel bgModel,
+            ModelDelegate modelDelegate, @NonNull LauncherBinder launcherBinder) {
         mApp = app;
         mBgAllAppsList = bgAllAppsList;
-        mBgDataModel = dataModel;
+        mBgDataModel = bgModel;
         mModelDelegate = modelDelegate;
         mLauncherBinder = launcherBinder;
 
