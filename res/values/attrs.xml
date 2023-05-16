@@ -51,7 +51,9 @@
     <attr name="folderHintColor" format="color" />
     <attr name="isFolderDarkText" format="boolean" />
     <attr name="workspaceAccentColor" format="color" />
+    <attr name="workspaceSurfaceColor" format="color" />
     <attr name="dropTargetHoverTextColor" format="color" />
+    <attr name="dropTargetHoverButtonColor" format="color" />
     <attr name="preloadIconAccentColor" format="color" />
     <attr name="preloadIconBackgroundColor" format="color" />
     <attr name="widgetPickerTitleColor" format="color"/>

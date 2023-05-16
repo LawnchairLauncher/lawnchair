@@ -78,8 +78,13 @@
 
     <color name="wallpaper_popup_scrim">?android:attr/colorAccent</color>
 
-    <color name="workspace_accent_color_light">#ff8df5e3</color>
-    <color name="workspace_accent_color_dark">#ff3d665f</color>
+    <color name="workspace_accent_color_light">#D3E3FD</color>
+    <color name="workspace_accent_color_dark">#041E49</color>
+    <color name="workspace_surface_color">#D3E3FD</color>
+    <color name="drop_target_hover_text_color_light">#041E49</color>
+    <color name="drop_target_hover_text_color_dark">#D3E3FD</color>
+    <color name="drop_target_hover_button_color_light">#D3E3FD</color>
+    <color name="drop_target_hover_button_color_dark">#0842A0</color>
 
     <color name="all_apps_button_color">#40484B</color>
 

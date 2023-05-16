@@ -61,7 +61,9 @@
         <item name="iconOnlyShortcutColor">?android:attr/textColorSecondary</item>
         <item name="eduHalfSheetBGColor">?android:attr/colorAccent</item>
         <item name="workspaceAccentColor">@color/workspace_accent_color_light</item>
-        <item name="dropTargetHoverTextColor">@color/workspace_text_color_dark</item>
+        <item name="workspaceSurfaceColor">@color/workspace_surface_color</item>
+        <item name="dropTargetHoverTextColor">@color/drop_target_hover_text_color_light</item>
+        <item name="dropTargetHoverButtonColor">@color/drop_target_hover_button_color_light</item>
         <item name="overviewScrimColor">@color/overview_scrim</item>
         <item name="preloadIconAccentColor">@color/preload_icon_accent_color_light</item>
         <item name="preloadIconBackgroundColor">@color/preload_icon_background_color_light</item>
@@ -90,7 +92,8 @@
         <item name="isWorkspaceDarkText">true</item>
         <item name="workspaceStatusBarScrim">@null</item>
         <item name="workspaceAccentColor">@color/workspace_accent_color_dark</item>
-        <item name="dropTargetHoverTextColor">@color/workspace_text_color_light</item>
+        <item name="dropTargetHoverTextColor">@color/drop_target_hover_text_color_dark</item>
+        <item name="dropTargetHoverButtonColor">@color/drop_target_hover_button_color_dark</item>
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/LauncherTheme">
@@ -137,7 +140,8 @@
         <item name="isWorkspaceDarkText">true</item>
         <item name="workspaceStatusBarScrim">@null</item>
         <item name="workspaceAccentColor">@color/workspace_accent_color_dark</item>
-        <item name="dropTargetHoverTextColor">@color/workspace_text_color_light</item>
+        <item name="dropTargetHoverTextColor">@color/drop_target_hover_text_color_dark</item>
+        <item name="dropTargetHoverButtonColor">@color/drop_target_hover_button_color_dark</item>
     </style>
 
     <!-- A derivative project can extend these themes to customize the application theme without
