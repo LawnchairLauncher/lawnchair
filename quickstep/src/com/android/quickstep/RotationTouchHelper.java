@@ -19,6 +19,7 @@ import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.Surface.ROTATION_0;
 
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
+import static com.android.launcher3.MotionEventsUtils.isTrackpadScroll;
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
@@ -232,16 +233,18 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
     /**
      * @return whether the coordinates of the {@param event} is in the swipe up gesture region.
      */
-    public boolean isInSwipeUpTouchRegion(MotionEvent event, BaseActivityInterface activity) {
-        return isInSwipeUpTouchRegion(event, 0, activity);
+    public boolean isInSwipeUpTouchRegion(MotionEvent event) {
+        return isInSwipeUpTouchRegion(event, 0);
     }
 
     /**
      * @return whether the coordinates of the {@param event} with the given {@param pointerIndex}
      *         is in the swipe up gesture region.
      */
-    public boolean isInSwipeUpTouchRegion(MotionEvent event, int pointerIndex,
-            BaseActivityInterface activity) {
+    public boolean isInSwipeUpTouchRegion(MotionEvent event, int pointerIndex) {
+        if (isTrackpadScroll(event)) {
+            return false;
+        }
         if (isTrackpadMultiFingerSwipe(event)) {
             return true;
         }
