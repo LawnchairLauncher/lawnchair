@@ -196,7 +196,7 @@ abstract class AbstractDeviceProfileTest {
         isGestureMode: Boolean,
         naturalX: Int,
         naturalY: Int
-    ): Array<WindowBounds> {
+    ): List<WindowBounds> {
         val buttonsNavHeight = Utilities.dpToPx(48f, deviceSpec.densityDpi)
 
         val rotation0Insets =
@@ -231,7 +231,7 @@ abstract class AbstractDeviceProfileTest {
                 if (isGestureMode) deviceSpec.gesturePx else 0
             )
 
-        return arrayOf(
+        return listOf(
             WindowBounds(Rect(0, 0, naturalX, naturalY), rotation0Insets, Surface.ROTATION_0),
             WindowBounds(Rect(0, 0, naturalY, naturalX), rotation90Insets, Surface.ROTATION_90),
             WindowBounds(Rect(0, 0, naturalX, naturalY), rotation180Insets, Surface.ROTATION_180),
@@ -243,11 +243,11 @@ abstract class AbstractDeviceProfileTest {
         deviceSpec: DeviceSpec,
         naturalX: Int,
         naturalY: Int
-    ): Array<WindowBounds> {
+    ): List<WindowBounds> {
         val naturalInsets = Rect(0, deviceSpec.statusBarNaturalPx, 0, 0)
         val rotatedInsets = Rect(0, deviceSpec.statusBarRotatedPx, 0, 0)
 
-        return arrayOf(
+        return listOf(
             WindowBounds(Rect(0, 0, naturalX, naturalY), naturalInsets, Surface.ROTATION_0),
             WindowBounds(Rect(0, 0, naturalY, naturalX), rotatedInsets, Surface.ROTATION_90),
             WindowBounds(Rect(0, 0, naturalX, naturalY), naturalInsets, Surface.ROTATION_180),
@@ -256,7 +256,7 @@ abstract class AbstractDeviceProfileTest {
     }
 
     private fun initializeCommonVars(
-        perDisplayBoundsCache: Map<CachedDisplayInfo, Array<WindowBounds>>,
+        perDisplayBoundsCache: Map<CachedDisplayInfo, List<WindowBounds>>,
         displayInfo: CachedDisplayInfo,
         rotation: Int,
         isGestureMode: Boolean = true,

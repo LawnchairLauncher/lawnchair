@@ -53,6 +53,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 
+import java.util.List;
+
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class OrientationTouchTransformerTest {
@@ -296,7 +298,7 @@ public class OrientationTouchTransformerTest {
         WindowManagerProxy wmProxy = mock(WindowManagerProxy.class);
         doReturn(cachedDisplayInfo).when(wmProxy).getDisplayInfo(any());
         doReturn(windowBounds).when(wmProxy).getRealBounds(any(), any());
-        ArrayMap<CachedDisplayInfo, WindowBounds[]> internalDisplayBounds = new ArrayMap<>();
+        ArrayMap<CachedDisplayInfo, List<WindowBounds>> internalDisplayBounds = new ArrayMap<>();
         doReturn(internalDisplayBounds).when(wmProxy).estimateInternalDisplayBounds(any());
         return new DisplayController.Info(
                 getApplicationContext(), wmProxy, new ArrayMap<>());

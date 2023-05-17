@@ -50,6 +50,9 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class TaskViewSimulatorTest {
@@ -150,7 +153,7 @@ public class TaskViewSimulatorTest {
                 WindowBounds wm = new WindowBounds(
                         new Rect(0, 0, mDisplaySize.x, mDisplaySize.y),
                         mDisplayInsets);
-                WindowBounds[] allBounds = new WindowBounds[4];
+                List<WindowBounds> allBounds = new ArrayList<>(4);
                 for (int i = 0; i < 4; i++) {
                     Rect boundsR = new Rect(wm.bounds);
                     Rect insetsR = new Rect(wm.insets);
@@ -158,7 +161,7 @@ public class TaskViewSimulatorTest {
                     RotationUtils.rotateRect(insetsR, RotationUtils.deltaRotation(rotation, i));
                     RotationUtils.rotateRect(boundsR, RotationUtils.deltaRotation(rotation, i));
                     boundsR.set(0, 0, Math.abs(boundsR.width()), Math.abs(boundsR.height()));
-                    allBounds[i] = new WindowBounds(boundsR, insetsR);
+                    allBounds.add(new WindowBounds(boundsR, insetsR));
                 }
 
                 WindowManagerProxy wmProxy = mock(WindowManagerProxy.class);
@@ -166,7 +169,7 @@ public class TaskViewSimulatorTest {
                 doReturn(wm).when(wmProxy).getRealBounds(any(), any());
                 doReturn(NavigationMode.NO_BUTTON).when(wmProxy).getNavigationMode(any());
 
-                ArrayMap<CachedDisplayInfo, WindowBounds[]> perDisplayBoundsCache =
+                ArrayMap<CachedDisplayInfo, List<WindowBounds>> perDisplayBoundsCache =
                         new ArrayMap<>();
                 perDisplayBoundsCache.put(cdi.normalize(), allBounds);
 
