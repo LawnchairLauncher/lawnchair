@@ -259,6 +259,9 @@ public class QuickstepLauncher extends Launcher {
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
         mDepthController = new DepthController(this);
         mDesktopVisibilityController = new DesktopVisibilityController(this);
+        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+            mDesktopVisibilityController.registerSystemUiListener();
+        }
         mHotseatPredictionController = new HotseatPredictionController(this);
 
         mEnableWidgetDepth = SystemProperties.getBoolean("ro.launcher.depth.widget", true);
@@ -481,6 +484,10 @@ public class QuickstepLauncher extends Launcher {
 
         if (mLauncherUnfoldAnimationController != null) {
             mLauncherUnfoldAnimationController.onDestroy();
+        }
+
+        if (mDesktopVisibilityController != null) {
+            mDesktopVisibilityController.unregisterSystemUiListener();
         }
 
         super.onDestroy();

@@ -15,14 +15,22 @@
  */
 package com.android.launcher3.statehandlers;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
+import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.quickstep.SystemUiProxy;
+import com.android.wm.shell.desktopmode.IDesktopTaskListener;
 
 /**
  * Controls the visibility of the workspace and the resumed / paused state when desktop mode
@@ -39,8 +47,42 @@ public class DesktopVisibilityController {
     private boolean mInOverviewState;
     private boolean mGestureInProgress;
 
+    @Nullable
+    private IDesktopTaskListener mDesktopTaskListener;
+
     public DesktopVisibilityController(Launcher launcher) {
         mLauncher = launcher;
+    }
+
+    /**
+     * Register a listener with System UI to receive updates about desktop tasks state
+     */
+    public void registerSystemUiListener() {
+        mDesktopTaskListener = new IDesktopTaskListener.Stub() {
+            @Override
+            public void onVisibilityChanged(int displayId, boolean visible) throws RemoteException {
+                // TODO(b/261234402): move visibility from sysui state to listener
+            }
+
+            @Override
+            public void onStashedChanged(int displayId, boolean stashed) throws RemoteException {
+                // TODO(b/261234402): show a persistent toast
+                MAIN_EXECUTOR.execute(() -> {
+                    if (stashed && displayId == mLauncher.getDisplayId()) {
+                        Toast.makeText(mLauncher, "Adding app to Desktop",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        };
+        SystemUiProxy.INSTANCE.get(mLauncher).setDesktopTaskListener(mDesktopTaskListener);
+    }
+
+    /**
+     * Clear listener from System UI that was set with {@link #registerSystemUiListener()}
+     */
+    public void unregisterSystemUiListener() {
+        SystemUiProxy.INSTANCE.get(mLauncher).setDesktopTaskListener(null);
     }
 
     /**
@@ -127,6 +169,15 @@ public class DesktopVisibilityController {
         }
         if (gestureInProgress != mGestureInProgress) {
             mGestureInProgress = gestureInProgress;
+        }
+    }
+
+    /**
+     * Handle launcher moving to home due to home gesture or home button press.
+     */
+    public void onHomeActionTriggered() {
+        if (areFreeformTasksVisible()) {
+            SystemUiProxy.INSTANCE.get(mLauncher).stashDesktopApps(mLauncher.getDisplayId());
         }
     }
 
