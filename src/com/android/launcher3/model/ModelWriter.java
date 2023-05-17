@@ -498,7 +498,6 @@ public class ModelWriter {
                                 modelItem.container == Favorites.CONTAINER_HOTSEAT)) {
                     switch (modelItem.itemType) {
                         case Favorites.ITEM_TYPE_APPLICATION:
-                        case Favorites.ITEM_TYPE_SHORTCUT:
                         case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                         case Favorites.ITEM_TYPE_FOLDER:
                             if (!mBgDataModel.workspaceItems.contains(modelItem)) {

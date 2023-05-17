@@ -24,7 +24,6 @@ import android.graphics.Point
 import android.os.Process
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherPrefs.Companion.WORKSPACE_SIZE
@@ -108,8 +107,8 @@ class GridSizeMigrationUtilTest {
     fun testMigration() {
         // Src Hotseat icons
         addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_HOTSEAT, 0, 0, testPackage1, 1, TMP_TABLE)
-        addItem(ITEM_TYPE_SHORTCUT, 1, CONTAINER_HOTSEAT, 0, 0, testPackage2, 2, TMP_TABLE)
-        addItem(ITEM_TYPE_SHORTCUT, 3, CONTAINER_HOTSEAT, 0, 0, testPackage3, 3, TMP_TABLE)
+        addItem(ITEM_TYPE_DEEP_SHORTCUT, 1, CONTAINER_HOTSEAT, 0, 0, testPackage2, 2, TMP_TABLE)
+        addItem(ITEM_TYPE_DEEP_SHORTCUT, 3, CONTAINER_HOTSEAT, 0, 0, testPackage3, 3, TMP_TABLE)
         addItem(ITEM_TYPE_APPLICATION, 4, CONTAINER_HOTSEAT, 0, 0, testPackage4, 4, TMP_TABLE)
         // Src grid icons
         // _ _ _ _ _
@@ -124,7 +123,7 @@ class GridSizeMigrationUtilTest {
         addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 4, 3, testPackage9, 9, TMP_TABLE)
 
         // Dest hotseat icons
-        addItem(ITEM_TYPE_SHORTCUT, 1, CONTAINER_HOTSEAT, 0, 0, testPackage2)
+        addItem(ITEM_TYPE_DEEP_SHORTCUT, 1, CONTAINER_HOTSEAT, 0, 0, testPackage2)
         // Dest grid icons
         addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_DESKTOP, 2, 2, testPackage10)
 
@@ -219,8 +218,8 @@ class GridSizeMigrationUtilTest {
         // Hotseat items in grid A
         // 1 2 _ 3 4
         addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_HOTSEAT, 0, 0, testPackage1, 1, TMP_TABLE)
-        addItem(ITEM_TYPE_SHORTCUT, 1, CONTAINER_HOTSEAT, 0, 0, testPackage2, 2, TMP_TABLE)
-        addItem(ITEM_TYPE_SHORTCUT, 3, CONTAINER_HOTSEAT, 0, 0, testPackage3, 3, TMP_TABLE)
+        addItem(ITEM_TYPE_DEEP_SHORTCUT, 1, CONTAINER_HOTSEAT, 0, 0, testPackage2, 2, TMP_TABLE)
+        addItem(ITEM_TYPE_DEEP_SHORTCUT, 3, CONTAINER_HOTSEAT, 0, 0, testPackage3, 3, TMP_TABLE)
         addItem(ITEM_TYPE_APPLICATION, 4, CONTAINER_HOTSEAT, 0, 0, testPackage4, 4, TMP_TABLE)
         // Workspace items in grid A
         // _ _ _ _ _
@@ -235,7 +234,7 @@ class GridSizeMigrationUtilTest {
 
         // Hotseat items in grid B
         // 2 _ _ _
-        addItem(ITEM_TYPE_SHORTCUT, 0, CONTAINER_HOTSEAT, 0, 0, testPackage2)
+        addItem(ITEM_TYPE_DEEP_SHORTCUT, 0, CONTAINER_HOTSEAT, 0, 0, testPackage2)
         // Workspace items in grid B
         // _ _ _ _
         // _ _ _ 10
@@ -291,7 +290,7 @@ class GridSizeMigrationUtilTest {
                 null
             )
                 ?: throw IllegalStateException()
-        var locMap = parseLocMap(context, c)
+        var locMap = parseLocMap(c)
         // Expected items in grid B
         // _ _ _ _
         // 5 6 7 8
@@ -348,7 +347,7 @@ class GridSizeMigrationUtilTest {
                 null
             )
                 ?: throw IllegalStateException()
-        locMap = parseLocMap(context, c)
+        locMap = parseLocMap(c)
         // Expected workspace items in grid A
         // _ _ _ _ _
         // _ _ _ _ 5
@@ -410,7 +409,7 @@ class GridSizeMigrationUtilTest {
                 null
             )
                 ?: throw IllegalStateException()
-        locMap = parseLocMap(context, c)
+        locMap = parseLocMap(c)
         // Expected workspace items in grid B
         // _ _ _ _
         // 5 6 _ 8
@@ -436,7 +435,7 @@ class GridSizeMigrationUtilTest {
         c.close()
     }
 
-    private fun parseLocMap(context: Context, c: Cursor): Map<String, Triple<Int, Int, Int>> {
+    private fun parseLocMap(c: Cursor): Map<String, Triple<Int, Int, Int>> {
         // Check workspace items
         val intentIndex = c.getColumnIndex(INTENT)
         val screenIndex = c.getColumnIndex(SCREEN)
@@ -465,7 +464,16 @@ class GridSizeMigrationUtilTest {
                     1,
                     TMP_TABLE
                 ),
-                addItem(ITEM_TYPE_SHORTCUT, 1, CONTAINER_HOTSEAT, 0, 0, testPackage2, 2, TMP_TABLE),
+                addItem(
+                    ITEM_TYPE_DEEP_SHORTCUT,
+                    1,
+                    CONTAINER_HOTSEAT,
+                    0,
+                    0,
+                    testPackage2,
+                    2,
+                    TMP_TABLE
+                ),
                 addItem(
                     ITEM_TYPE_APPLICATION,
                     2,
@@ -476,7 +484,16 @@ class GridSizeMigrationUtilTest {
                     3,
                     TMP_TABLE
                 ),
-                addItem(ITEM_TYPE_SHORTCUT, 3, CONTAINER_HOTSEAT, 0, 0, testPackage4, 4, TMP_TABLE)
+                addItem(
+                    ITEM_TYPE_DEEP_SHORTCUT,
+                    3,
+                    CONTAINER_HOTSEAT,
+                    0,
+                    0,
+                    testPackage4,
+                    4,
+                    TMP_TABLE
+                )
             )
         val numSrcDatabaseHotseatIcons = srcHotseatItems.size
         idp.numDatabaseHotseatIcons = 6
@@ -532,9 +549,9 @@ class GridSizeMigrationUtilTest {
     @Test
     fun migrateFromLargerHotseat() {
         addItem(ITEM_TYPE_APPLICATION, 0, CONTAINER_HOTSEAT, 0, 0, testPackage1, 1, TMP_TABLE)
-        addItem(ITEM_TYPE_SHORTCUT, 2, CONTAINER_HOTSEAT, 0, 0, testPackage2, 2, TMP_TABLE)
+        addItem(ITEM_TYPE_DEEP_SHORTCUT, 2, CONTAINER_HOTSEAT, 0, 0, testPackage2, 2, TMP_TABLE)
         addItem(ITEM_TYPE_APPLICATION, 3, CONTAINER_HOTSEAT, 0, 0, testPackage3, 3, TMP_TABLE)
-        addItem(ITEM_TYPE_SHORTCUT, 4, CONTAINER_HOTSEAT, 0, 0, testPackage4, 4, TMP_TABLE)
+        addItem(ITEM_TYPE_DEEP_SHORTCUT, 4, CONTAINER_HOTSEAT, 0, 0, testPackage4, 4, TMP_TABLE)
         addItem(ITEM_TYPE_APPLICATION, 5, CONTAINER_HOTSEAT, 0, 0, testPackage5, 5, TMP_TABLE)
 
         idp.numDatabaseHotseatIcons = 4

@@ -72,7 +72,7 @@ public abstract class ShortcutConfigActivityInfo implements ComponentWithLabelAn
     }
 
     public int getItemType() {
-        return LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        return LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
     }
 
     @Override

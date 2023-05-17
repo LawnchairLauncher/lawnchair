@@ -34,13 +34,9 @@ import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.ContextWrapper;
-import android.content.Intent;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
-import android.graphics.drawable.AdaptiveIconDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -78,8 +74,6 @@ import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.icons.BaseIconFactory;
-import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
@@ -183,7 +177,6 @@ public class LauncherPreviewRenderer extends ContextWrapper
     private final DeviceProfile mDp;
     private final DeviceProfile mDpOrig;
     private final Rect mInsets;
-    private final WorkspaceItemInfo mWorkspaceItemInfo;
     private final LayoutInflater mHomeElementInflater;
     private final InsettableFrameLayout mRootView;
     private final Hotseat mHotseat;
@@ -220,19 +213,6 @@ public class LauncherPreviewRenderer extends ContextWrapper
                 currentWindowInsets.getSystemWindowInsetRight(),
                 mDp.isTaskbarPresent ? 0 : currentWindowInsets.getSystemWindowInsetBottom());
         mDp.updateInsets(mInsets);
-
-        BaseIconFactory iconFactory =
-                new BaseIconFactory(context, mIdp.fillResIconDpi, mIdp.iconBitmapSize) { };
-        BitmapInfo iconInfo = iconFactory.createBadgedIconBitmap(
-                new AdaptiveIconDrawable(
-                        new ColorDrawable(Color.WHITE),
-                        new ColorDrawable(Color.WHITE)));
-
-        mWorkspaceItemInfo = new WorkspaceItemInfo();
-        mWorkspaceItemInfo.bitmap = iconInfo;
-        mWorkspaceItemInfo.intent = new Intent();
-        mWorkspaceItemInfo.contentDescription = mWorkspaceItemInfo.title =
-                context.getString(R.string.label_application);
 
         mHomeElementInflater = LayoutInflater.from(
                 new ContextThemeWrapper(this, R.style.HomeScreenElementTheme));
@@ -483,7 +463,6 @@ public class LauncherPreviewRenderer extends ContextWrapper
         for (ItemInfo itemInfo : currentWorkspaceItems) {
             switch (itemInfo.itemType) {
                 case Favorites.ITEM_TYPE_APPLICATION:
-                case Favorites.ITEM_TYPE_SHORTCUT:
                 case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                     inflateAndAddIcon((WorkspaceItemInfo) itemInfo);
                     break;
