@@ -66,7 +66,7 @@ abstract class AbstractDeviceProfileTest {
 
     class DeviceSpec(
         val naturalSize: Pair<Int, Int>,
-        val densityDpi: Int,
+        var densityDpi: Int,
         val statusBarNaturalPx: Int,
         val statusBarRotatedPx: Int,
         val gesturePx: Int,
