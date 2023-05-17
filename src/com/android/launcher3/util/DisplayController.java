@@ -53,8 +53,8 @@ import com.android.launcher3.util.window.WindowManagerProxy;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -105,7 +105,8 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
     private final LauncherPrefs mPrefs;
 
-    private DisplayController(Context context) {
+    @VisibleForTesting
+    protected DisplayController(Context context) {
         mContext = context;
         mDM = context.getSystemService(DisplayManager.class);
         mPrefs = LauncherPrefs.get(context);
@@ -323,7 +324,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         // WindowBounds
         public final WindowBounds realBounds;
         public final Set<WindowBounds> supportedBounds = new ArraySet<>();
-        private final ArrayMap<CachedDisplayInfo, WindowBounds[]> mPerDisplayBounds =
+        private final ArrayMap<CachedDisplayInfo, List<WindowBounds>> mPerDisplayBounds =
                 new ArrayMap<>();
 
         public Info(Context displayInfoContext) {
@@ -334,7 +335,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         // Used for testing
         public Info(Context displayInfoContext,
                 WindowManagerProxy wmProxy,
-                Map<CachedDisplayInfo, WindowBounds[]> perDisplayBoundsCache) {
+                Map<CachedDisplayInfo, List<WindowBounds>> perDisplayBoundsCache) {
             CachedDisplayInfo displayInfo = wmProxy.getDisplayInfo(displayInfoContext);
             normalizedDisplayInfo = displayInfo.normalize();
             rotation = displayInfo.rotation;
@@ -348,7 +349,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
             navigationMode = wmProxy.getNavigationMode(displayInfoContext);
 
             mPerDisplayBounds.putAll(perDisplayBoundsCache);
-            WindowBounds[] cachedValue = mPerDisplayBounds.get(normalizedDisplayInfo);
+            List<WindowBounds> cachedValue = mPerDisplayBounds.get(normalizedDisplayInfo);
 
             realBounds = wmProxy.getRealBounds(displayInfoContext, displayInfo);
             if (cachedValue == null) {
@@ -366,22 +367,20 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
 
             if (cachedValue != null) {
                 // Verify that the real bounds are a match
-                WindowBounds expectedBounds = cachedValue[displayInfo.rotation];
+                WindowBounds expectedBounds = cachedValue.get(displayInfo.rotation);
                 if (!realBounds.equals(expectedBounds)) {
-                    WindowBounds[] clone = new WindowBounds[4];
-                    System.arraycopy(cachedValue, 0, clone, 0, 4);
-                    clone[displayInfo.rotation] = realBounds;
+                    List<WindowBounds> clone = new ArrayList<>(cachedValue);
+                    clone.set(displayInfo.rotation, realBounds);
                     mPerDisplayBounds.put(normalizedDisplayInfo, clone);
                 }
             }
-            mPerDisplayBounds.values().forEach(
-                    windowBounds -> Collections.addAll(supportedBounds, windowBounds));
+            mPerDisplayBounds.values().forEach(supportedBounds::addAll);
             if (DEBUG) {
                 Log.d(TAG, "displayInfo: " + displayInfo);
                 Log.d(TAG, "realBounds: " + realBounds);
                 Log.d(TAG, "normalizedDisplayInfo: " + normalizedDisplayInfo);
                 mPerDisplayBounds.forEach((key, value) -> Log.d(TAG,
-                        "perDisplayBounds - " + key + ": " + Arrays.deepToString(value)));
+                        "perDisplayBounds - " + key + ": " + value));
             }
         }
 
@@ -438,7 +437,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         pw.println("  navigationMode=" + info.navigationMode.name());
         pw.println("  currentSize=" + info.currentSize);
         info.mPerDisplayBounds.forEach((key, value) -> pw.println(
-                "  perDisplayBounds - " + key + ": " + Arrays.deepToString(value)));
+                "  perDisplayBounds - " + key + ": " + value));
     }
 
     /**
