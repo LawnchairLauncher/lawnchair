@@ -31,7 +31,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.testing.shared.TestProtocol;
 
@@ -189,10 +189,11 @@ public class DebugTestInformationHandler extends TestInformationHandler {
             case TestProtocol.REQUEST_CLEAR_DATA: {
                 final long identity = Binder.clearCallingIdentity();
                 try {
-                    LauncherSettings.Settings.call(mContext.getContentResolver(),
-                            LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
-                    MAIN_EXECUTOR.submit(() ->
-                            LauncherAppState.getInstance(mContext).getModel().forceReload());
+                    MODEL_EXECUTOR.execute(() -> {
+                        LauncherModel model = LauncherAppState.getInstance(mContext).getModel();
+                        model.getModelDbController().createEmptyDB();
+                        MAIN_EXECUTOR.execute(model::forceReload);
+                    });
                     return response;
                 } finally {
                     Binder.restoreCallingIdentity(identity);
