@@ -83,7 +83,7 @@
     <string name="permlab_write_settings" msgid="4820028712156303762">"да пишува поставки и кратенки на почетна страница"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"Овозможува апликацијата да ги менува поставките и кратенките на почетната страница."</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Не може да се вчита виџетот"</string>
-    <string name="gadget_setup_text" msgid="8348374825537681407">"Поставки за виџет"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Поставки за виџетот"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Допрете за да го завршите поставувањето"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ова е системска апликација и не може да се деинсталира."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Изменете го името"</string>
