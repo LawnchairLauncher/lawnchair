@@ -1928,7 +1928,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
                 addAppWidgetFromDrop((PendingAddWidgetInfo) info);
                 break;
-            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
+            case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                 processShortcutFromDrop((PendingAddShortcutInfo) info);
                 break;
             default:
@@ -2435,7 +2435,6 @@ public class Launcher extends StatefulActivity<LauncherState>
             final View view;
             switch (item.itemType) {
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
-                case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                 case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
                     WorkspaceItemInfo info = (WorkspaceItemInfo) item;
                     view = createShortcut(info);

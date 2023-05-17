@@ -87,9 +87,8 @@ class DisplayControllerTest {
     @Before
     fun setUp() {
         MockitoAnnotations.initMocks(this)
-        whenever(context.getObject(eq(WindowManagerProxy.INSTANCE), any()))
-            .thenReturn(windowManagerProxy)
-        whenever(context.getObject(eq(LauncherPrefs.INSTANCE), any())).thenReturn(launcherPrefs)
+        whenever(context.getObject(eq(WindowManagerProxy.INSTANCE))).thenReturn(windowManagerProxy)
+        whenever(context.getObject(eq(LauncherPrefs.INSTANCE))).thenReturn(launcherPrefs)
 
         // Mock WindowManagerProxy
         val displayInfo =
