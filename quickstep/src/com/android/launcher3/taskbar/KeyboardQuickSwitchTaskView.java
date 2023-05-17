@@ -20,6 +20,7 @@ import static com.android.quickstep.util.BorderAnimator.DEFAULT_BORDER_COLOR;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
@@ -46,6 +47,8 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
 
     @Nullable private ImageView mThumbnailView1;
     @Nullable private ImageView mThumbnailView2;
+    @Nullable private ImageView mIcon1;
+    @Nullable private ImageView mIcon2;
     @Nullable private View mContent;
 
     public KeyboardQuickSwitchTaskView(@NonNull Context context) {
@@ -67,6 +70,9 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
             int defStyleAttr,
             int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        TypedArray ta = context.obtainStyledAttributes(
+                attrs, R.styleable.TaskView, defStyleAttr, defStyleRes);
+
         setWillNotDraw(false);
         Resources resources = context.getResources();
         mBorderAnimator = new BorderAnimator(
@@ -75,17 +81,8 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
                         R.dimen.keyboard_quick_switch_border_width),
                 /* borderRadiusPx= */ resources.getDimensionPixelSize(
                         R.dimen.keyboard_quick_switch_task_view_radius),
-                /* borderColor= */ attrs == null
-                        ? DEFAULT_BORDER_COLOR
-                        : context.getTheme()
-                                .obtainStyledAttributes(
-                                        attrs,
-                                        R.styleable.TaskView,
-                                        defStyleAttr,
-                                        defStyleRes)
-                                .getColor(
-                                        R.styleable.TaskView_borderColor,
-                                        DEFAULT_BORDER_COLOR),
+                /* borderColor= */ ta.getColor(
+                        R.styleable.TaskView_borderColor, DEFAULT_BORDER_COLOR),
                 /* invalidateViewCallback= */ KeyboardQuickSwitchTaskView.this::invalidate,
                 /* viewScaleTargetProvider= */ new BorderAnimator.ViewScaleTargetProvider() {
                     @NonNull
@@ -100,14 +97,16 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
                         return mContent;
                     }
                 });
+        ta.recycle();
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-
         mThumbnailView1 = findViewById(R.id.thumbnail1);
         mThumbnailView2 = findViewById(R.id.thumbnail2);
+        mIcon1 = findViewById(R.id.icon1);
+        mIcon2 = findViewById(R.id.icon2);
         mContent = findViewById(R.id.content);
     }
 
@@ -126,11 +125,11 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
             @NonNull Task task1,
             @Nullable Task task2,
             @Nullable ThumbnailUpdateFunction thumbnailUpdateFunction,
-            @Nullable TitleUpdateFunction titleUpdateFunction) {
+            @Nullable IconUpdateFunction iconUpdateFunction) {
         applyThumbnail(mThumbnailView1, task1, thumbnailUpdateFunction);
         applyThumbnail(mThumbnailView2, task2, thumbnailUpdateFunction);
 
-        if (titleUpdateFunction == null) {
+        if (iconUpdateFunction == null) {
             setContentDescription(task2 == null
                     ? task1.titleDescription
                     : getContext().getString(
@@ -139,16 +138,23 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
                             task2.titleDescription));
             return;
         }
-        titleUpdateFunction.updateTitleInBackground(task1, t ->
-                setContentDescription(task1.titleDescription));
+        iconUpdateFunction.updateIconInBackground(task1, t -> {
+            applyIcon(mIcon1, task1);
+            if (task2 != null) {
+                return;
+            }
+            setContentDescription(task1.titleDescription);
+        });
         if (task2 == null) {
             return;
         }
-        titleUpdateFunction.updateTitleInBackground(task2, t ->
-                setContentDescription(getContext().getString(
-                        R.string.quick_switch_split_task,
-                        task1.titleDescription,
-                        task2.titleDescription)));
+        iconUpdateFunction.updateIconInBackground(task2, t -> {
+            applyIcon(mIcon2, task2);
+            setContentDescription(getContext().getString(
+                    R.string.quick_switch_split_task,
+                    task1.titleDescription,
+                    task2.titleDescription));
+        });
     }
 
     private void applyThumbnail(
@@ -177,13 +183,21 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
         thumbnailView.setImageBitmap(bm);
     }
 
+    private void applyIcon(@Nullable ImageView iconView, @NonNull Task task) {
+        if (iconView == null) {
+            return;
+        }
+        iconView.setVisibility(VISIBLE);
+        iconView.setImageDrawable(task.icon);
+    }
+
     protected interface ThumbnailUpdateFunction {
 
         void updateThumbnailInBackground(Task task, Consumer<ThumbnailData> callback);
     }
 
-    protected interface TitleUpdateFunction {
+    protected interface IconUpdateFunction {
 
-        void updateTitleInBackground(Task task, Consumer<Task> callback);
+        void updateIconInBackground(Task task, Consumer<Task> callback);
     }
 }

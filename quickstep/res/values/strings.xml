@@ -295,6 +295,7 @@
             =1{Show # more app.}
             other{Show # more apps.}
         }</string>
+
     <!-- Accessibility label for quick switch tiles showing split tasks [CHAR LIMIT=NONE] -->
     <string name="quick_switch_split_task"><xliff:g id="app_name_1" example="Chrome">%1$s</xliff:g> and <xliff:g id="app_name_2" example="Gmail">%2$s</xliff:g></string>
 </resources>

@@ -77,6 +77,7 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.ShortcutUtil;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.IconLabelDotView;
 
@@ -387,8 +388,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         }
         FastBitmapDrawable iconDrawable = info.newIcon(getContext(), flags);
         mDotParams.appColor = iconDrawable.getIconColor();
-        mDotParams.dotColor = getContext().getResources()
-                .getColor(android.R.color.system_accent3_200, getContext().getTheme());
+        mDotParams.dotColor = Themes.getAttrColor(getContext(), R.attr.notificationDotColor);
         setIcon(iconDrawable);
         applyLabel(info);
     }

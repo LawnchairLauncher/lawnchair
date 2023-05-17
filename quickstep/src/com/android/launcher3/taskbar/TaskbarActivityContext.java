@@ -21,6 +21,7 @@ import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
+import static android.window.SplashScreen.SPLASH_SCREEN_STYLE_UNDEFINED;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
@@ -43,6 +44,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo.Config;
 import android.content.pm.LauncherApps;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.hardware.display.DisplayManager;
@@ -95,10 +97,13 @@ import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemClickHandler.ItemClickProxy;
+import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource;
 import com.android.launcher3.util.TraceHelper;
@@ -567,6 +572,22 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
     }
 
+    @Override
+    public ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
+        RunnableList callbacks = new RunnableList();
+        ActivityOptions options = ActivityOptions.makeCustomAnimation(
+                this, 0, 0, Color.TRANSPARENT,
+                Executors.MAIN_EXECUTOR.getHandler(), null,
+                elapsedRealTime -> callbacks.executeAllAndDestroy());
+        options.setSplashScreenStyle(splashScreenStyle);
+        return new ActivityOptionsWrapper(options, callbacks);
+    }
+
+    @Override
+    public ActivityOptionsWrapper getActivityLaunchOptions(View v, @Nullable ItemInfo item) {
+        return makeDefaultActivityOptions(SPLASH_SCREEN_STYLE_UNDEFINED);
+    }
+
     /**
      * Sets a new data-source for this taskbar instance
      */
@@ -979,9 +1000,14 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mControllers.taskbarEduTooltipController.hide();
     }
 
-    /** Returns {@code true} if taskbar All Apps is open. */
+    /** Returns {@code true} if Taskbar All Apps is open. */
     public boolean isTaskbarAllAppsOpen() {
         return mControllers.taskbarAllAppsController.isOpen();
+    }
+
+    /** Toggles the Taskbar's stash state. */
+    public void toggleTaskbarStash() {
+        mControllers.taskbarStashController.toggleTaskbarStash();
     }
 
     /**
