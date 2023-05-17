@@ -455,7 +455,6 @@ public class GridSizeMigrationUtil {
                 try {
                     // calculate weight
                     switch (entry.itemType) {
-                        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                         case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                         case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION: {
                             entry.mIntent = c.getString(indexIntent);
@@ -531,7 +530,6 @@ public class GridSizeMigrationUtil {
                 try {
                     // calculate weight
                     switch (entry.itemType) {
-                        case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
                         case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                         case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION: {
                             entry.mIntent = c.getString(indexIntent);
