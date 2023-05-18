@@ -101,7 +101,8 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
      */
     public Rect getFolderBoundingBox() {
         Rect boundingBox = new Rect(0, 0, mTaskbarDragLayer.getWidth(),
-                mTaskbarDragLayer.getHeight() - mActivity.getDeviceProfile().taskbarHeight);
+                mTaskbarDragLayer.getHeight() - mActivity.getDeviceProfile().taskbarHeight
+                        - mActivity.getDeviceProfile().taskbarBottomMargin);
         boundingBox.inset(mFolderMargin, mFolderMargin);
         return boundingBox;
     }
