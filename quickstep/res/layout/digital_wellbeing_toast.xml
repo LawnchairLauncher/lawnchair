@@ -16,7 +16,7 @@
 -->
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:priv-android="http://schemas.android.com/apk/prv/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     style="@style/TextTitle"
     android:layout_width="match_parent"
     android:layout_height="48dp"
@@ -24,7 +24,7 @@
     android:forceHasOverlappingRendering="false"
     android:gravity="center"
     android:importantForAccessibility="noHideDescendants"
-    android:textColor="?priv-android:attr/textColorOnAccent"
+    android:textColor="?androidprv:attr/materialColorOnSecondaryFixed"
     android:textSize="14sp"
     android:autoSizeTextType="uniform"
     android:autoSizeMaxTextSize="14sp"/>
