@@ -17,6 +17,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
+import static com.android.quickstep.TaskbarModeSwitchRule.Mode.PERSISTENT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -44,6 +45,7 @@ import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
+import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 import com.android.quickstep.views.RecentsView;
 
 import org.junit.After;
@@ -359,9 +361,9 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
     }
 
-    @Ignore
     @Test
     @PortraitLandscape
+    @TaskbarModeSwitch(mode = PERSISTENT)
     public void testOverviewForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
 
