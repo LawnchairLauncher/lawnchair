@@ -130,6 +130,8 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
         applyThumbnail(mThumbnailView2, task2, thumbnailUpdateFunction);
 
         if (iconUpdateFunction == null) {
+            applyIcon(mIcon1, task1);
+            applyIcon(mIcon2, task2);
             setContentDescription(task2 == null
                     ? task1.titleDescription
                     : getContext().getString(
@@ -183,8 +185,8 @@ public class KeyboardQuickSwitchTaskView extends ConstraintLayout {
         thumbnailView.setImageBitmap(bm);
     }
 
-    private void applyIcon(@Nullable ImageView iconView, @NonNull Task task) {
-        if (iconView == null) {
+    private void applyIcon(@Nullable ImageView iconView, @Nullable Task task) {
+        if (iconView == null || task == null) {
             return;
         }
         iconView.setVisibility(VISIBLE);
