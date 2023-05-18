@@ -28,13 +28,16 @@ import android.os.Handler;
 import android.view.View;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.quickstep.SwipeUpAnimationLogic;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
+import com.android.quickstep.util.LottieAnimationColorUtils;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /** A {@link TutorialController} for the Overview tutorial. */
 @TargetApi(Build.VERSION_CODES.R)
@@ -43,6 +46,23 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     OverviewGestureTutorialController(OverviewGestureTutorialFragment fragment,
             TutorialType tutorialType) {
         super(fragment, tutorialType);
+
+        // Set the Lottie animation colors specifically for the Overview gesture
+        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+            LottieAnimationColorUtils.updateColors(
+                    mAnimatedGestureDemonstration,
+                    Map.of(".onSurfaceOverview", fragment.mRootView.mColorOnSurfaceOverview,
+                            ".surfaceOverview", fragment.mRootView.mColorSurfaceOverview,
+                            ".secondaryOverview", fragment.mRootView.mColorSecondaryOverview));
+
+            LottieAnimationColorUtils.updateColors(
+                    mCheckmarkAnimation,
+                    Map.of(".checkmark",
+                            Utilities.isDarkTheme(mContext)
+                                    ? fragment.mRootView.mColorOnSurfaceOverview
+                                    : fragment.mRootView.mColorSecondaryOverview,
+                            ".checkmarkBackground", fragment.mRootView.mColorSurfaceOverview));
+        }
     }
     @Override
     public int getIntroductionTitle() {
@@ -69,6 +89,28 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     }
 
     @Override
+    public int getTitleTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_MainTitle_Overview;
+    }
+
+    @Override
+    public int getSuccessTitleTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_MainTitle_Success_Overview;
+    }
+
+    @Override
+    public int getDoneButtonTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_ButtonLabel_Overview;
+    }
+
+    @Override
+    public int getDoneButtonColor() {
+        return Utilities.isDarkTheme(mContext)
+                ? mTutorialFragment.mRootView.mColorOnSurfaceOverview
+                : mTutorialFragment.mRootView.mColorSecondaryOverview;
+    }
+
+    @Override
     protected int getMockAppTaskLayoutResId() {
         return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
                 ? R.layout.gesture_tutorial_mock_task_view
@@ -87,15 +129,21 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     }
 
     @Override
-    protected int getSwipeActionColorResId() {
-        return R.color.gesture_overview_background;
+    protected int getSwipeActionColor() {
+        return mTutorialFragment.mRootView.mColorSurfaceOverview;
     }
 
     @Override
-    protected int getMockPreviousAppTaskThumbnailColorResId() {
+    protected int getExitingAppColor() {
+        return mTutorialFragment.mRootView.mColorOnSurfaceOverview;
+    }
+
+    @Override
+    protected int getMockPreviousAppTaskThumbnailColor() {
         return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-            ? R.color.gesture_overview_tutorial_swipe_rect
-            : R.color.gesture_tutorial_fake_previous_task_view_color;
+                ? mTutorialFragment.mRootView.mColorSurfaceContainer
+                : mContext.getResources().getColor(
+                        R.color.gesture_tutorial_fake_previous_task_view_color);
     }
 
     @Override
@@ -213,7 +261,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     }
 
     private void onSuccessAnimationComplete() {
-        setLauncherViewColor(R.color.gesture_overview_tutorial_swipe_rect);
+        mFakeLauncherView.setBackgroundColor(getMockPreviousAppTaskThumbnailColor());
         showSuccessFeedback();
     }
 }
