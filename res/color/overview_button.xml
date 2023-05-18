@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<selector xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
     <item
         android:alpha="1"
-        android:color="?android:attr/textColorPrimary"
+        android:color="?androidprv:attr/materialColorOnSurface"
         android:state_enabled="true" />
     <item
         android:alpha="?android:disabledAlpha"
-        android:color="?android:attr/textColorPrimary"
+        android:color="?androidprv:attr/materialColorOnSurface"
         android:state_enabled="false" />
 </selector>
