@@ -25,7 +25,6 @@ import static com.android.launcher3.LauncherSettings.Animation.VIEW_BACKGROUND;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
-import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.NO_OFFSET;
@@ -259,6 +258,9 @@ public class QuickstepLauncher extends Launcher {
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
         mDepthController = new DepthController(this);
         mDesktopVisibilityController = new DesktopVisibilityController(this);
+        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+            mDesktopVisibilityController.registerSystemUiListener();
+        }
         mHotseatPredictionController = new HotseatPredictionController(this);
 
         mEnableWidgetDepth = SystemProperties.getBoolean("ro.launcher.depth.widget", true);
@@ -280,7 +282,6 @@ public class QuickstepLauncher extends Launcher {
 
         if (mAllAppsPredictions != null
                 && (info.itemType == ITEM_TYPE_APPLICATION
-                || info.itemType == ITEM_TYPE_SHORTCUT
                 || info.itemType == ITEM_TYPE_DEEP_SHORTCUT)) {
             int count = mAllAppsPredictions.items.size();
             for (int i = 0; i < count; i++) {
@@ -481,6 +482,10 @@ public class QuickstepLauncher extends Launcher {
 
         if (mLauncherUnfoldAnimationController != null) {
             mLauncherUnfoldAnimationController.onDestroy();
+        }
+
+        if (mDesktopVisibilityController != null) {
+            mDesktopVisibilityController.unregisterSystemUiListener();
         }
 
         super.onDestroy();
@@ -1155,7 +1160,6 @@ public class QuickstepLauncher extends Launcher {
         }
         switch (info.itemType) {
             case Favorites.ITEM_TYPE_APPLICATION:
-            case Favorites.ITEM_TYPE_SHORTCUT:
             case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
             case Favorites.ITEM_TYPE_APPWIDGET:
                 // Fall through and continue if it's an app, shortcut, or widget

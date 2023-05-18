@@ -53,6 +53,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
@@ -153,6 +154,30 @@ public class TestUtil {
         return () ->
             Settings.Secure.putString(context.getContentResolver(), LAYOUT_DIGEST_KEY, null);
     }
+
+    /**
+     * Utility method to run a task synchronously which converts any exceptions to RuntimeException
+     */
+    public static void runOnExecutorSync(ExecutorService executor, UncheckedRunnable task) {
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }).get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /** Interface to indicate a runnable which can throw any exception. */
+    public interface UncheckedRunnable {
+        /** Method to run the task */
+        void run() throws Exception;
+    }
+
 
     private static class PackageInstallCheck extends LauncherApps.Callback
             implements AutoCloseable {

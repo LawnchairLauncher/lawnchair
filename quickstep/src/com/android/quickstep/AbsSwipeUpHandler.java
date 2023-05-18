@@ -101,6 +101,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarUIController;
@@ -1133,6 +1134,14 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
                 // Notify the SysUI to use fade-in animation when entering PiP
                 SystemUiProxy.INSTANCE.get(mContext).setPipAnimationTypeToAlpha();
+                if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+                    // Notify the SysUI to stash desktop apps if they are visible
+                    DesktopVisibilityController desktopVisibilityController =
+                            mActivityInterface.getDesktopVisibilityController();
+                    if (desktopVisibilityController != null) {
+                        desktopVisibilityController.onHomeActionTriggered();
+                    }
+                }
                 break;
             case RECENTS:
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_RECENTS | STATE_CAPTURE_SCREENSHOT

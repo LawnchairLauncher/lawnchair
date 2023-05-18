@@ -89,7 +89,9 @@ public class LauncherSettings {
 
         /**
          * The gesture is an application created shortcut
+         * @deprecated This is no longer supported. Use {@link #ITEM_TYPE_DEEP_SHORTCUT} instead
          */
+        @Deprecated
         public static final int ITEM_TYPE_SHORTCUT = 1;
 
         /**
@@ -213,7 +215,6 @@ public class LauncherSettings {
         public static final String itemTypeToString(int type) {
             switch(type) {
                 case ITEM_TYPE_APPLICATION: return "APP";
-                case ITEM_TYPE_SHORTCUT: return "SHORTCUT";
                 case ITEM_TYPE_FOLDER: return "FOLDER";
                 case ITEM_TYPE_APPWIDGET: return "WIDGET";
                 case ITEM_TYPE_CUSTOM_APPWIDGET: return "CUSTOMWIDGET";

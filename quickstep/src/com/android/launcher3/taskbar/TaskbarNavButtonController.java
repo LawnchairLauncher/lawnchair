@@ -43,12 +43,15 @@ import androidx.annotation.StringRes;
 
 import com.android.launcher3.R;
 import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.quickstep.LauncherActivityInterface;
 import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TouchInteractionService;
+import com.android.quickstep.views.DesktopTaskView;
 
 import java.io.PrintWriter;
 import java.lang.annotation.Retention;
@@ -267,6 +270,15 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
 
     private void navigateHome() {
         TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY);
+
+        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+            DesktopVisibilityController desktopVisibilityController =
+                    LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
+            if (desktopVisibilityController != null) {
+                desktopVisibilityController.onHomeActionTriggered();
+            }
+        }
+
         mService.getOverviewCommandHelper().addCommand(OverviewCommandHelper.TYPE_HOME);
     }
 
