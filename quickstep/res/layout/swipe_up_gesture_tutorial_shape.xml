@@ -13,7 +13,8 @@
 -->
 <View
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/GestureTutorialActivity"
     android:id="@+id/swipe_up_gesture_tutorial_shape"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gesture_home_tutorial_background" />
+    android:background="?attr/surfaceHome" />
