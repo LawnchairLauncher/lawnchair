@@ -34,6 +34,7 @@ import static com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_F
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.EDIT_MODE;
 import static com.android.launcher3.LauncherState.FLAG_MULTI_PAGE;
 import static com.android.launcher3.LauncherState.FLAG_NON_INTERACTIVE;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -44,6 +45,7 @@ import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
+import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
 import static com.android.launcher3.config.FeatureFlags.SHOW_DOT_PAGINATION;
 import static com.android.launcher3.logging.StatsLogManager.EventEnum;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
@@ -901,12 +903,8 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         final int pendingAddWidgetId = requestArgs.getWidgetId();
 
-        Runnable exitSpringLoaded = new Runnable() {
-            @Override
-            public void run() {
-                mStateManager.goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
-            }
-        };
+        Runnable exitSpringLoaded = MULTI_SELECT_EDIT_MODE.get() ? null
+                : () -> mStateManager.goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
 
         if (requestCode == REQUEST_BIND_APPWIDGET) {
             // This is called only if the user did not previously have permissions to bind widgets
@@ -1040,10 +1038,9 @@ public class Launcher extends StatefulActivity<LauncherState>
             final AppWidgetHostView layout = mAppWidgetHolder.createView(this, appWidgetId,
                     requestArgs.getWidgetHandler().getProviderInfo(this));
             boundWidget = layout;
-            onCompleteRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    completeAddAppWidget(appWidgetId, requestArgs, layout, null);
+            onCompleteRunnable = () -> {
+                completeAddAppWidget(appWidgetId, requestArgs, layout, null);
+                if (!isInState(EDIT_MODE)) {
                     mStateManager.goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
                 }
             };
@@ -1178,7 +1175,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
         addActivityFlags(ACTIVITY_STATE_TRANSITION_ACTIVE);
 
-        if (state == SPRING_LOADED) {
+        if (state == SPRING_LOADED || state == EDIT_MODE) {
             // Prevent any Un/InstallShortcutReceivers from updating the db while we are
             // not on homescreen
             ItemInstallQueue.INSTANCE.get(this).pauseModelPush(FLAG_DRAG_AND_DROP);
@@ -1532,7 +1529,8 @@ public class Launcher extends StatefulActivity<LauncherState>
                 mStateManager.addStateListener(new StateManager.StateListener<LauncherState>() {
                     @Override
                     public void onStateTransitionComplete(LauncherState finalState) {
-                        if (mPrevLauncherState == SPRING_LOADED && finalState == NORMAL) {
+                        if ((mPrevLauncherState == SPRING_LOADED || mPrevLauncherState == EDIT_MODE)
+                                && finalState == NORMAL) {
                             AppWidgetResizeFrame.showForWidget(launcherHostView, cellLayout);
                             mStateManager.removeStateListener(this);
                         }
@@ -1900,13 +1898,9 @@ public class Launcher extends StatefulActivity<LauncherState>
                 REQUEST_CREATE_APPWIDGET)) {
             // If the configuration flow was not started, add the widget
 
-            Runnable onComplete = new Runnable() {
-                @Override
-                public void run() {
-                    // Exit spring loaded mode if necessary after adding the widget
-                    mStateManager.goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
-                }
-            };
+            // Exit spring loaded mode if necessary after adding the widget
+            Runnable onComplete = MULTI_SELECT_EDIT_MODE.get() ? null
+                    : () -> mStateManager.goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
             completeAddAppWidget(appWidgetId, info, boundWidget,
                     addFlowHandler.getProviderInfo(this));
             mWorkspace.removeExtraEmptyScreenDelayed(delay, false, onComplete);
