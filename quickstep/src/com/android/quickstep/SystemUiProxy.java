@@ -568,6 +568,20 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     /**
+     * Notifies WM Shell that launcher has aborted all the animation for swipe to home. WM Shell
+     * can use this callback to clean up its internal states.
+     */
+    public void abortSwipePipToHome(int taskId, ComponentName componentName) {
+        if (mPip != null) {
+            try {
+                mPip.abortSwipePipToHome(taskId, componentName);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call abortSwipePipToHome");
+            }
+        }
+    }
+
+    /**
      * Sets the next pip animation type to be the alpha animation.
      */
     public void setPipAnimationTypeToAlpha() {
