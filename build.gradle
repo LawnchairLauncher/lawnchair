@@ -366,7 +366,7 @@ dependencies {
 
     implementation 'com.airbnb.android:lottie:6.0.0'
 
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:2.10"
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:2.11"
 }
 
 ksp {
