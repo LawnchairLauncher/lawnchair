@@ -13,8 +13,8 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-    <solid android:color="?attr/popupColorBackground"/>
-    <corners android:radius="@dimen/dialogCornerRadius"/>
-</shape>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:color="@android:color/system_neutral1_900"
+        android:lStar="12" />
+</selector>
