@@ -31,6 +31,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewDebug;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
@@ -230,11 +232,13 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         return textView;
     }
 
+    @Nullable
     @Override
     public CellLayout getPageAt(int index) {
         return (CellLayout) getChildAt(index);
     }
 
+    @Nullable
     public CellLayout getCurrentCellLayout() {
         return getPageAt(getNextPage());
     }
@@ -381,7 +385,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     }
 
     private View getViewInCurrentPage(ToIntFunction<ShortcutAndWidgetContainer> rankProvider) {
-        if (getChildCount() < 1) {
+        if (getChildCount() < 1 || getCurrentCellLayout() == null) {
             return null;
         }
         ShortcutAndWidgetContainer container = getCurrentCellLayout().getShortcutsAndWidgets();
