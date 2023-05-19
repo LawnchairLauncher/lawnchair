@@ -2050,8 +2050,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         if (!hasTargets() || mRecentsAnimationController == null) {
             // If there are no targets or the animation not started, then there is nothing to finish
             mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED);
+            maybeAbortSwipePipToHome();
         } else {
-            maybeFinishSwipeToHome();
+            maybeFinishSwipePipToHome();
             finishRecentsControllerToHome(
                     () -> mStateCallback.setStateOnUiThread(STATE_CURRENT_TASK_FINISHED));
         }
@@ -2063,11 +2064,24 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     }
 
     /**
+     * Notifies SysUI that transition is aborted if applicable and also pass leash transactions
+     * from Launcher to WM.
+     */
+    private void maybeAbortSwipePipToHome() {
+        if (mIsSwipingPipToHome && mSwipePipToHomeAnimators[0] != null) {
+            SystemUiProxy.INSTANCE.get(mContext).abortSwipePipToHome(
+                    mSwipePipToHomeAnimator.getTaskId(),
+                    mSwipePipToHomeAnimator.getComponentName());
+            mIsSwipingPipToHome = false;
+        }
+    }
+
+    /**
      * Notifies SysUI that transition is finished if applicable and also pass leash transactions
      * from Launcher to WM.
      * This should happen before {@link #finishRecentsControllerToHome(Runnable)}.
      */
-    private void maybeFinishSwipeToHome() {
+    private void maybeFinishSwipePipToHome() {
         if (mIsSwipingPipToHome && mSwipePipToHomeAnimators[0] != null) {
             SystemUiProxy.INSTANCE.get(mContext).stopSwipePipToHome(
                     mSwipePipToHomeAnimator.getTaskId(),
