@@ -298,36 +298,6 @@ public class SplitSelectStateController {
     }
 
     /**
-     * To be called when we want to launch split pairs from an existing GroupedTaskView.
-     */
-    public void launchTasks(GroupedTaskView groupedTaskView, Consumer<Boolean> callback,
-            boolean freezeTaskList) {
-        mLaunchingTaskView = groupedTaskView;
-        TaskView.TaskIdAttributeContainer[] taskIdAttributeContainers =
-                groupedTaskView.getTaskIdAttributeContainers();
-        launchTasks(taskIdAttributeContainers[0].getTask().key.id,
-                taskIdAttributeContainers[1].getTask().key.id,
-                taskIdAttributeContainers[0].getStagePosition(), callback, freezeTaskList,
-                groupedTaskView.getSplitRatio());
-    }
-
-    /**
-     * To be called when we want to launch split pairs from Overview when split is initiated from
-     * Overview.
-     */
-    public void launchTasks(int taskId1, int taskId2, @StagePosition int stagePosition,
-            Consumer<Boolean> callback, boolean freezeTaskList, float splitRatio) {
-        if (FeatureFlags.ENABLE_SPLIT_LAUNCH_DATA_REFACTOR.get()) {
-            mSplitSelectDataHolder.setInitialTaskSelect(null /*intent*/,
-                    stagePosition, null /*itemInfo*/, null /*splitEvent*/,
-                    taskId1);
-            mSplitSelectDataHolder.setSecondTask(taskId2);
-        }
-        launchTasks(taskId1, null /* intent1 */, taskId2, null /* intent2 */, stagePosition,
-                callback, freezeTaskList, splitRatio, null);
-    }
-
-    /**
      * To be called when we want to launch split pairs from Overview. Split can be initiated from
      * either Overview or home, or all apps. Either both taskIds are set, or a pending intent + a
      * fill in intent with a taskId2 are set.
@@ -507,6 +477,47 @@ public class SplitSelectStateController {
                                 optionsBundle, secondTaskId, null /*options2*/,
                                 initialStagePosition, splitRatio, adapter, shellInstanceId);
             }
+        }
+    }
+
+    /**
+     * Used to launch split screen from a split pair that already exists (usually accessible through
+     * Overview). This is different than
+     * {@link #launchTasks(int, Intent, int, Intent, int, Consumer, boolean, float, InstanceId)} in
+     * that this only launches split screen that are existing tasks. This doesn't determine which
+     * API should be used (i.e. launching split with existing tasks vs intents vs shortcuts, etc).
+     *
+     * <p/>
+     * NOTE: This is not to be used to launch AppPairs.
+     */
+    public void launchExistingSplitPair(@Nullable GroupedTaskView groupedTaskView,
+            int firstTaskId, int secondTaskId, @StagePosition int stagePosition,
+            Consumer<Boolean> callback, boolean freezeTaskList, float splitRatio) {
+        mLaunchingTaskView = groupedTaskView;
+        final ActivityOptions options1 = ActivityOptions.makeBasic();
+        if (freezeTaskList) {
+            options1.setFreezeRecentTasksReordering();
+        }
+        Bundle optionsBundle = options1.toBundle();
+
+        if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
+            final RemoteSplitLaunchTransitionRunner animationRunner =
+                    new RemoteSplitLaunchTransitionRunner(firstTaskId, secondTaskId, callback);
+            final RemoteTransition remoteTransition = new RemoteTransition(animationRunner,
+                    ActivityThread.currentActivityThread().getApplicationThread(),
+                    "LaunchSplitPair");
+            mSystemUiProxy.startTasks(firstTaskId, optionsBundle, secondTaskId,
+                    null /* options2 */, stagePosition, splitRatio,
+                    remoteTransition, null /*shellInstanceId*/);
+        } else {
+            final RemoteSplitLaunchAnimationRunner animationRunner =
+                    new RemoteSplitLaunchAnimationRunner(firstTaskId, secondTaskId, callback);
+            final RemoteAnimationAdapter adapter = new RemoteAnimationAdapter(
+                    animationRunner, 300, 150,
+                    ActivityThread.currentActivityThread().getApplicationThread());
+            mSystemUiProxy.startTasksWithLegacyTransition(firstTaskId, optionsBundle,
+                    secondTaskId, null /* options2 */, stagePosition,
+                    splitRatio, adapter, null /*shellInstanceId*/);
         }
     }
 
