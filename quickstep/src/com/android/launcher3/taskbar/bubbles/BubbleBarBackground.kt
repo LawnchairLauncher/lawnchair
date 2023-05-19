@@ -61,8 +61,11 @@ class BubbleBarBackground(context: TaskbarActivityContext, private val backgroun
         pointerSize = res.getDimension(R.dimen.bubblebar_pointer_size)
 
         shadowAlpha =
-            if (Utilities.isDarkTheme(context)) DARK_THEME_SHADOW_ALPHA
-            else LIGHT_THEME_SHADOW_ALPHA
+            if (Utilities.isDarkTheme(context)) {
+                DARK_THEME_SHADOW_ALPHA
+            } else {
+                LIGHT_THEME_SHADOW_ALPHA
+            }
 
         arrowDrawable =
             ShapeDrawable(TriangleShape.create(pointerSize, pointerSize, /* pointUp= */ true))
@@ -133,5 +136,9 @@ class BubbleBarBackground(context: TaskbarActivityContext, private val backgroun
 
     override fun setColorFilter(colorFilter: ColorFilter?) {
         paint.colorFilter = colorFilter
+    }
+
+    fun setArrowAlpha(alpha: Int) {
+        arrowDrawable.paint.alpha = alpha
     }
 }

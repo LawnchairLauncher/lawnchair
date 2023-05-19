@@ -262,6 +262,7 @@ public class BubbleBarView extends FrameLayout {
             mBubbleBarBackground.setArrowPosition(arrowPosition);
         }
 
+        mBubbleBarBackground.setArrowAlpha((int) (255 * widthState));
         mBubbleBarBackground.setWidth(interpolatedWidth);
     }
 
