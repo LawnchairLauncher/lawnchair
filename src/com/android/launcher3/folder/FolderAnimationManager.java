@@ -273,6 +273,8 @@ public class FolderAnimationManager {
         // {@link #onAnimationEnd} before B reads new UI state from {@link #onAnimationStart}.
         a.addListener(new AnimatorListenerAdapter() {
             private CellLayout mCellLayout;
+
+            private boolean mFolderClipChildren;
             private boolean mFolderClipToPadding;
             private boolean mContentClipChildren;
             private boolean mContentClipToPadding;
@@ -283,12 +285,14 @@ public class FolderAnimationManager {
             public void onAnimationStart(Animator animator) {
                 super.onAnimationStart(animator);
                 mCellLayout = mContent.getCurrentCellLayout();
+                mFolderClipChildren = mFolder.getClipChildren();
                 mFolderClipToPadding = mFolder.getClipToPadding();
                 mContentClipChildren = mContent.getClipChildren();
                 mContentClipToPadding = mContent.getClipToPadding();
                 mCellLayoutClipChildren = mCellLayout.getClipChildren();
                 mCellLayoutClipPadding = mCellLayout.getClipToPadding();
 
+                mFolder.setClipChildren(false);
                 mFolder.setClipToPadding(false);
                 mContent.setClipChildren(false);
                 mContent.setClipToPadding(false);
@@ -309,6 +313,7 @@ public class FolderAnimationManager {
                 mFolder.mFooter.setTranslationX(0f);
                 mFolder.mFolderName.setAlpha(1f);
 
+                mFolder.setClipChildren(mFolderClipChildren);
                 mFolder.setClipToPadding(mFolderClipToPadding);
                 mContent.setClipChildren(mContentClipChildren);
                 mContent.setClipToPadding(mContentClipToPadding);
