@@ -1286,7 +1286,8 @@ public class QuickstepLauncher extends Launcher {
                             getActivityLaunchOptions(taskView, null).options));
             return;
         }
-        mSplitSelectStateController.launchTasks(
+        mSplitSelectStateController.launchExistingSplitPair(
+                null /* launchingTaskView */,
                 groupTask.task1.key.id,
                 groupTask.task2.key.id,
                 SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT,
