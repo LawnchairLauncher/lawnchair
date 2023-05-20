@@ -585,10 +585,14 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      *                            actually be used since this animation tracks a swipe progress.
      */
     protected void addUnstashToHotseatAnimation(AnimatorSet animation, int placeholderDuration) {
+        // Defer any UI updates now to avoid the UI becoming stale when the animation plays.
+        mControllers.taskbarViewController.setDeferUpdatesForSUW(true);
         createAnimToIsStashed(
                 /* isStashed= */ false,
                 placeholderDuration,
                 TRANSITION_UNSTASH_SUW_MANUAL);
+        animation.addListener(AnimatorListeners.forEndCallback(
+                () -> mControllers.taskbarViewController.setDeferUpdatesForSUW(false)));
         animation.play(mAnimator);
     }
 
@@ -804,7 +808,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         }
 
         mControllers.taskbarViewController.addRevealAnimToIsStashed(skippable, isStashed, duration,
-                EMPHASIZED);
+                EMPHASIZED, animationType == TRANSITION_UNSTASH_SUW_MANUAL);
 
         play(skippable, mControllers.stashedHandleViewController
                 .createRevealAnimToIsStashed(isStashed), 0, duration, EMPHASIZED);
