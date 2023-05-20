@@ -59,8 +59,13 @@ import java.util.function.ToIntFunction;
 
 public class TestUtil {
     public static final String DUMMY_PACKAGE = "com.example.android.aardwolf";
+    public static final int DEFAULT_USER_ID = 0;
 
     public static void installDummyApp() throws IOException {
+        installDummyAppForUser(DEFAULT_USER_ID);
+    }
+
+    public static void installDummyAppForUser(int userId) throws IOException {
         // Copy apk from resources to a local file and install from there.
         final Resources resources = getContext().getResources();
         final InputStream in = resources.openRawResource(
@@ -81,7 +86,7 @@ public class TestUtil {
             out.close();
 
             final String result = UiDevice.getInstance(getInstrumentation())
-                    .executeShellCommand("pm install " + apkFilename);
+                    .executeShellCommand("pm install --user " + userId + " " + apkFilename);
             Assert.assertTrue(
                     "Failed to install wellbeing test apk; make sure the device is rooted",
                     "Success".equals(result.replaceAll("\\s+", "")));
