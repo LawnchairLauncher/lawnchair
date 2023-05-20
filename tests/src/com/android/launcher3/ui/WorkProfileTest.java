@@ -19,6 +19,7 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
+import static com.android.launcher3.util.TestUtil.installDummyAppForUser;
 import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
 import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
@@ -39,6 +40,7 @@ import com.android.launcher3.allapps.WorkPausedCard;
 import com.android.launcher3.allapps.WorkProfileManager;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.rule.TestStabilityRule.Stability;
 
 import org.junit.After;
@@ -69,11 +71,11 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
 
         String[] tokens = output.split("\\s+");
         mProfileUserId = Integer.parseInt(tokens[tokens.length - 1]);
-        output = mDevice.executeShellCommand("am start-user " + mProfileUserId);
         StringBuilder logStr = new StringBuilder().append("profileId: ").append(mProfileUserId);
         for (String str : tokens) {
             logStr.append(str).append("\n");
         }
+        installDummyAppForUser(mProfileUserId);
         updateWorkProfileSetupSuccessful("am start-user", output);
 
         Log.d(WORK_TAB_MISSING, "workProfileSuccessful? " + mWorkProfileSetupSuccessful +
@@ -101,6 +103,7 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
             }
             launcher.getAppsView().getAppsStore().disableDeferUpdates(DEFER_UPDATES_TEST);
         });
+        TestUtil.uninstallDummyApp();
         mDevice.executeShellCommand("pm remove-user " + mProfileUserId);
     }
 
