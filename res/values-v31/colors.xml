@@ -20,10 +20,12 @@
     <color name="popup_color_primary_light">@android:color/system_accent2_50</color>
     <color name="popup_color_secondary_light">@android:color/system_neutral2_100</color>
     <color name="popup_color_tertiary_light">@android:color/system_neutral2_300</color>
+    <color name="popup_text_color_light">@android:color/system_neutral1_900</color>
     <color name="popup_color_neutral_dark">@android:color/system_neutral1_1000</color>
     <color name="popup_color_primary_dark">@android:color/system_neutral2_800</color>
     <color name="popup_color_secondary_dark">@android:color/system_neutral1_900</color>
     <color name="popup_color_tertiary_dark">@android:color/system_neutral2_700</color>
+    <color name="popup_text_color_dark">@android:color/system_neutral1_100</color>
 
     <color name="popup_notification_dot_light">@android:color/system_accent1_100</color>
     <color name="popup_notification_dot_dark">@android:color/system_accent2_600</color>
@@ -59,7 +61,12 @@
     <color name="home_settings_track_off_color">@android:color/system_neutral2_600</color>
 
     <color name="workspace_accent_color_light">@android:color/system_accent1_100</color>
-    <color name="workspace_accent_color_dark">@android:color/system_accent2_600</color>
+    <color name="workspace_accent_color_dark">@android:color/system_accent1_900</color>
+    <color name="workspace_surface_color">@android:color/system_accent1_100</color>
+    <color name="drop_target_hover_text_color_light">@android:color/system_accent1_900</color>
+    <color name="drop_target_hover_text_color_dark">@android:color/system_accent1_100</color>
+    <color name="drop_target_hover_button_color_light">@android:color/system_accent1_100</color>
+    <color name="drop_target_hover_button_color_dark">@android:color/system_accent1_700</color>
 
     <color name="preload_icon_accent_color_light">@android:color/system_accent1_600</color>
     <color name="preload_icon_background_color_light">@android:color/system_accent2_200</color>

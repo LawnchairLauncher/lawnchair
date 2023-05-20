@@ -25,6 +25,8 @@
     <attr name="popupColorPrimary" format="color" />
     <attr name="popupColorSecondary" format="color" />
     <attr name="popupColorTertiary" format="color" />
+    <attr name="popupColorBackground" format="color" />
+    <attr name="popupTextColor" format="color" />
     <attr name="popupShadeFirst" format="color" />
     <attr name="popupShadeSecond" format="color" />
     <attr name="popupShadeThird" format="color" />
@@ -51,7 +53,9 @@
     <attr name="folderHintTextColor" format="color" />
     <attr name="isFolderDarkText" format="boolean" />
     <attr name="workspaceAccentColor" format="color" />
+    <attr name="workspaceSurfaceColor" format="color" />
     <attr name="dropTargetHoverTextColor" format="color" />
+    <attr name="dropTargetHoverButtonColor" format="color" />
     <attr name="preloadIconAccentColor" format="color" />
     <attr name="preloadIconBackgroundColor" format="color" />
     <attr name="widgetPickerTitleColor" format="color"/>

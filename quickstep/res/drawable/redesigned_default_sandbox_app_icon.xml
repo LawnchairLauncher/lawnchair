@@ -13,5 +13,5 @@
 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
-    <solid android:color="@color/gesture_home_tutorial_background" />
+    <solid android:color="?attr/surfaceHome" />
 </shape>

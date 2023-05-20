@@ -39,10 +39,12 @@
     <color name="popup_color_primary_light">#FFF</color>
     <color name="popup_color_secondary_light">#F1F3F4</color>
     <color name="popup_color_tertiary_light">#E0E0E0</color> <!-- Gray 300 -->
+    <color name="popup_text_color_light">#1F1F1F</color>
     <color name="popup_color_neutral_dark">#3C4043</color> <!-- Gray 800 -->
     <color name="popup_color_primary_dark">#3C4043</color> <!-- Gray 800 -->
     <color name="popup_color_secondary_dark">#202124</color>
     <color name="popup_color_tertiary_dark">#757575</color> <!-- Gray 600 -->
+    <color name="popup_text_color_dark">#E3E3E3</color>
 
     <color name="popup_shade_first_light">#F9F9F9</color>
     <color name="popup_shade_second_light">#F1F1F1</color>
@@ -80,8 +82,13 @@
 
     <color name="wallpaper_popup_scrim">?android:attr/colorAccent</color>
 
-    <color name="workspace_accent_color_light">#ff8df5e3</color>
-    <color name="workspace_accent_color_dark">#ff3d665f</color>
+    <color name="workspace_accent_color_light">#D3E3FD</color>
+    <color name="workspace_accent_color_dark">#041E49</color>
+    <color name="workspace_surface_color">#D3E3FD</color>
+    <color name="drop_target_hover_text_color_light">#041E49</color>
+    <color name="drop_target_hover_text_color_dark">#D3E3FD</color>
+    <color name="drop_target_hover_button_color_light">#D3E3FD</color>
+    <color name="drop_target_hover_button_color_dark">#0842A0</color>
 
     <color name="all_apps_button_color">#40484B</color>
 

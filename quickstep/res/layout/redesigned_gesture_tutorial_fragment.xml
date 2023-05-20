@@ -61,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="@dimen/gesture_tutorial_multi_row_task_view_spacing"
-            android:background="@drawable/top_task_view"
+            android:background="@drawable/redesigned_top_task_view"
             android:clipToOutline="true"
             android:visibility="invisible"
 
@@ -74,7 +74,7 @@
             android:id="@+id/bottom_task_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@drawable/top_task_view"
+            android:background="@drawable/redesigned_top_task_view"
             android:clipToOutline="true"
             android:visibility="invisible"
 
@@ -121,7 +121,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
-        android:background="@color/gesture_back_tutorial_exiting_app"
         android:visibility="gone" />
 
     <RelativeLayout
@@ -216,7 +215,6 @@
 
         <Button
             android:id="@+id/gesture_tutorial_fragment_action_button"
-            style="@style/TextAppearance.GestureTutorial.ButtonLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/gesture_tutorial_action_button_background"

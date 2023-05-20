@@ -15,6 +15,6 @@
 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="?attr/popupColorPrimary"/>
+    <solid android:color="?attr/popupColorBackground"/>
     <corners android:radius="@dimen/dialogCornerRadius"/>
 </shape>
