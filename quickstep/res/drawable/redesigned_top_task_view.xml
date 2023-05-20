@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!-- Copyright (C) 2023 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,5 +16,6 @@
 <shape
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <corners android:radius="@dimen/gesture_tutorial_menu_button_radius" />
+    <solid android:color="?attr/surfaceContainer" />
+    <corners android:radius="@dimen/gesture_tutorial_small_task_view_corner_radius" />
 </shape>
