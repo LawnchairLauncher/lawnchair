@@ -38,6 +38,11 @@ class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
             level <= 15 -> context.getString(R.string.smartspace_battery_low)
             else -> return null
         }
+        val score = if (level <= 15) {
+            SmartspaceScores.SCORE_LOW_BATTERY
+        } else {
+            SmartspaceScores.SCORE_BATTERY
+        }
         val chargingTimeRemaining = computeChargeTimeRemaining()
         val subtitle = if (charging && chargingTimeRemaining > 0) {
             val chargingTime = formatShortElapsedTimeRoundingUpToMinutes(context, chargingTimeRemaining)
@@ -55,7 +60,7 @@ class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
                 title = title,
                 subtitle = subtitle
             ),
-            score = SmartspaceScores.SCORE_BATTERY,
+            score = score,
             featureType = SmartspaceTarget.FeatureType.FEATURE_CALENDAR
         )
     }
