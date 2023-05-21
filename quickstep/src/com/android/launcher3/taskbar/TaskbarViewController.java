@@ -30,6 +30,7 @@ import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VAL
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_TASKBAR_ALIGNMENT_ANIM;
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_TASKBAR_REVEAL_ANIM;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -286,7 +287,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     }
 
     private ValueAnimator createRevealAnimForView(View view, boolean isStashed, float newWidth,
-            boolean isQsb) {
+            boolean isQsb, boolean dispatchOnAnimationStart) {
         Rect viewBounds = new Rect(0, 0, view.getWidth(), view.getHeight());
         int centerY = viewBounds.centerY();
         int halfHandleHeight = mStashedHandleHeight / 2;
@@ -318,8 +319,24 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 : 0f;
         float stashedRadius = stashedRect.height() / 2f;
 
-        return new RoundedRectRevealOutlineProvider(radius, stashedRadius, viewBounds, stashedRect)
+        ValueAnimator reveal = new RoundedRectRevealOutlineProvider(radius,
+                stashedRadius, viewBounds, stashedRect)
                 .createRevealAnimator(view, !isStashed, 0);
+        // SUW animation does not dispatch animation start until *after* the animation is complete.
+        // In order to work properly, the reveal animation start needs to be called immediately.
+        if (dispatchOnAnimationStart) {
+            for (Animator.AnimatorListener listener : reveal.getListeners()) {
+                listener.onAnimationStart(reveal);
+            }
+        }
+        return reveal;
+    }
+
+    /**
+     * Defers any updates to the UI for the setup wizard animation.
+     */
+    public void setDeferUpdatesForSUW(boolean defer) {
+        mModelCallbacks.setDeferUpdatesForSUW(defer);
     }
 
     /**
@@ -332,7 +349,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      * @param interpolator The interpolator to use for all animations.
      */
     public void addRevealAnimToIsStashed(AnimatorSet as, boolean isStashed, long duration,
-            Interpolator interpolator) {
+            Interpolator interpolator, boolean dispatchOnAnimationStart) {
         AnimatorSet reveal = new AnimatorSet();
 
         Rect stashedBounds = new Rect();
@@ -349,8 +366,8 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             boolean isQsb = child == mTaskbarView.getQsb();
 
             // Crop the icons to/from the nav handle shape.
-            reveal.play(createRevealAnimForView(child, isStashed, newChildWidth, isQsb)
-                    .setDuration(duration));
+            reveal.play(createRevealAnimForView(child, isStashed, newChildWidth, isQsb,
+                    dispatchOnAnimationStart).setDuration(duration));
 
             // Translate the icons to/from their locations as the "nav handle."
 
