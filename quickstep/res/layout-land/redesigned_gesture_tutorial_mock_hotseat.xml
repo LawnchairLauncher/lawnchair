@@ -40,28 +40,28 @@
         android:id="@+id/hotseat_icon_1"
         android:layout_width="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_height="@dimen/gesture_tutorial_hotseat_icon_size"
-        android:background="@drawable/hotseat_icon_home"
+        android:background="@drawable/redesigned_hotseat_icon"
         android:clipToOutline="true" />
 
     <View
         android:id="@+id/hotseat_icon_2"
         android:layout_width="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_height="@dimen/gesture_tutorial_hotseat_icon_size"
-        android:background="@drawable/hotseat_icon_home"
+        android:background="@drawable/redesigned_hotseat_icon"
         android:clipToOutline="true" />
 
     <View
         android:id="@+id/hotseat_icon_3"
         android:layout_width="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_height="@dimen/gesture_tutorial_hotseat_icon_size"
-        android:background="@drawable/hotseat_icon_home"
+        android:background="@drawable/redesigned_hotseat_icon"
         android:clipToOutline="true" />
 
     <View
         android:id="@+id/hotseat_icon_4"
         android:layout_width="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_height="@dimen/gesture_tutorial_hotseat_icon_size"
-        android:background="@drawable/hotseat_icon_home"
+        android:background="@drawable/redesigned_hotseat_icon"
         android:clipToOutline="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
