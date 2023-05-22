@@ -21,6 +21,7 @@ import android.media.permission.SafeCloseable
 import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
 import com.android.app.viewcapture.SimpleViewCapture
+import com.android.app.viewcapture.ViewCapture.MAIN_EXECUTOR
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter
 import org.junit.rules.TestRule
 import org.junit.runner.Description
@@ -69,7 +70,9 @@ class ViewCaptureRule : TestRule {
                     // Clean up ViewCapture references here rather than in onActivityDestroyed so
                     // test code can access view hierarchy capture. onActivityDestroyed would delete
                     // view capture data before FailureWatcher could output it as a test artifact.
-                    windowListenerCloseables.onEach(SafeCloseable::close)
+                    // This is on the main thread to avoid a race condition where the onDrawListener
+                    // is removed while onDraw is running, resulting in an IllegalStateException.
+                    MAIN_EXECUTOR.execute { windowListenerCloseables.onEach(SafeCloseable::close) }
                 }
             }
         }
