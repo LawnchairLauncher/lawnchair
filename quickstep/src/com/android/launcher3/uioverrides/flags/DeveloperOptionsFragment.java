@@ -23,6 +23,7 @@ import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import static com.android.launcher3.LauncherPrefs.ALL_APPS_OVERVIEW_THRESHOLD;
 import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.PLUGIN_CHANGED;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.pluginEnabledKey;
@@ -59,6 +60,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.PreferenceViewHolder;
+import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreference;
 
 import com.android.launcher3.LauncherPrefs;
@@ -106,6 +108,9 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         loadPluginPrefs();
         maybeAddSandboxCategory();
         addOnboardingPrefsCatergory();
+        if (FeatureFlags.ENABLE_ALL_APPS_FROM_OVERVIEW.get()) {
+            addAllAppsFromOverviewCatergory();
+        }
 
         if (getActivity() != null) {
             getActivity().setTitle("Developer Options");
@@ -391,6 +396,33 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
             });
             onboardingCategory.addPreference(onboardingPref);
         }
+    }
+
+    private void addAllAppsFromOverviewCatergory() {
+        PreferenceCategory category = newCategory("All Apps from Overview Config");
+
+        SeekBarPreference thresholdPref = new SeekBarPreference(getContext());
+        thresholdPref.setTitle("Threshold to open All Apps from Overview");
+        thresholdPref.setSingleLineTitle(false);
+
+        // These values are 100x swipe up shift value (100 = where overview sits).
+        thresholdPref.setMax(500);
+        thresholdPref.setMin(105);
+        thresholdPref.setUpdatesContinuously(true);
+        thresholdPref.setIconSpaceReserved(false);
+        // Don't directly save to shared prefs, use LauncherPrefs instead.
+        thresholdPref.setPersistent(false);
+        thresholdPref.setOnPreferenceChangeListener((preference, newValue) -> {
+            LauncherPrefs.get(getContext()).put(ALL_APPS_OVERVIEW_THRESHOLD, newValue);
+            preference.setSummary(String.valueOf((int) newValue / 100f));
+            return true;
+        });
+        int value = LauncherPrefs.get(getContext()).get(ALL_APPS_OVERVIEW_THRESHOLD);
+        thresholdPref.setValue(value);
+        // For some reason the initial value is not triggering the summary update, so call manually.
+        thresholdPref.getOnPreferenceChangeListener().onPreferenceChange(thresholdPref, value);
+
+        category.addPreference(thresholdPref);
     }
 
     private String toName(String action) {
