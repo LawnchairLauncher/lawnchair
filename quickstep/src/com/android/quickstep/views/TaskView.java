@@ -445,13 +445,14 @@ public class TaskView extends FrameLayout implements Reusable {
         mBorderAnimator = !keyboardFocusHighlightEnabled
                 ? null
                 : new BorderAnimator(
-                        /* borderBoundsBuilder= */ this::updateBorderBounds,
-                        /* borderWidthPx= */ context.getResources().getDimensionPixelSize(
-                                R.dimen.keyboard_quick_switch_border_width),
                         /* borderRadiusPx= */ (int) mCurrentFullscreenParams.mCornerRadius,
                         /* borderColor= */ ta.getColor(
                                 R.styleable.TaskView_borderColor, DEFAULT_BORDER_COLOR),
-                        /* invalidateViewCallback= */ TaskView.this::invalidate);
+                        /* borderAnimationParams= */ new BorderAnimator.SimpleParams(
+                                /* borderWidthPx= */ context.getResources().getDimensionPixelSize(
+                                        R.dimen.keyboard_quick_switch_border_width),
+                                /* boundsBuilder= */ this::updateBorderBounds,
+                                /* targetView= */ this));
         ta.recycle();
     }
 
