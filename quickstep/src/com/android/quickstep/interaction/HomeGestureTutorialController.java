@@ -131,6 +131,11 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
     }
 
     @Override
+    protected int getHotseatIconColor() {
+        return getExitingAppColor();
+    }
+
+    @Override
     public void onBackGestureAttempted(BackGestureResult result) {
         if (isGestureCompleted()) {
             return;
