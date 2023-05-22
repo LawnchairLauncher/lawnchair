@@ -559,8 +559,14 @@ public class QuickstepLauncher extends Launcher {
                 list.add(new PortraitStatesTouchController(this));
                 break;
             case THREE_BUTTONS:
+                list.add(new NoButtonQuickSwitchTouchController(this));
+                list.add(new NavBarToHomeTouchController(this));
+                list.add(new NoButtonNavbarToOverviewTouchController(this));
+                list.add(new PortraitStatesTouchController(this));
+                break;
             default:
                 list.add(new PortraitStatesTouchController(this));
+                break;
         }
 
         if (!getDeviceProfile().isMultiWindowMode) {
