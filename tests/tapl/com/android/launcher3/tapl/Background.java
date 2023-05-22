@@ -18,6 +18,8 @@ package com.android.launcher3.tapl;
 
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
+import static com.android.launcher3.tapl.LauncherInstrumentation.EVENT_TOUCH_DOWN_TIS;
+import static com.android.launcher3.tapl.LauncherInstrumentation.EVENT_TOUCH_UP_TIS;
 import static com.android.launcher3.tapl.OverviewTask.TASK_START_EVENT;
 import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
 
@@ -137,6 +139,10 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                             LauncherInstrumentation.EVENT_TOUCH_DOWN);
                     mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
                             LauncherInstrumentation.EVENT_TOUCH_UP);
+                }
+                if (mLauncher.isTrackpadGestureEnabled()) {
+                    mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
+                    mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
                 }
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
                 mLauncher.runToState(
@@ -280,6 +286,10 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                         mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
                                 LauncherInstrumentation.EVENT_TOUCH_UP);
                     }
+                    if (mLauncher.isTrackpadGestureEnabled()) {
+                        mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
+                        mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
+                    }
                     mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
                     mLauncher.runToState(() -> recentsButton.click(), OVERVIEW_STATE_ORDINAL,
                             "clicking Recents button for the first time");
@@ -289,6 +299,10 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                                 LauncherInstrumentation.EVENT_TOUCH_DOWN);
                         mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
                                 LauncherInstrumentation.EVENT_TOUCH_UP);
+                    }
+                    if (mLauncher.isTrackpadGestureEnabled()) {
+                        mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
+                        mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
                     }
                     mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
                     mLauncher.executeAndWaitForEvent(
