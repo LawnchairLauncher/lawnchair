@@ -134,7 +134,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     }
 
     @Override
-    protected int getExitingAppColor() {
+    protected int getHotseatIconColor() {
         return mTutorialFragment.mRootView.mColorOnSurfaceOverview;
     }
 
