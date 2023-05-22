@@ -217,7 +217,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
         // If Bubble bar is present, TaskbarControllers depends on it so build it first.
         Optional<BubbleControllers> bubbleControllersOptional = Optional.empty();
-        if (BubbleBarController.BUBBLE_BAR_ENABLED) {
+        if (BubbleBarController.BUBBLE_BAR_ENABLED && bubbleBarView != null) {
             bubbleControllersOptional = Optional.of(new BubbleControllers(
                     new BubbleBarController(this, bubbleBarView),
                     new BubbleBarViewController(this, bubbleBarView),
