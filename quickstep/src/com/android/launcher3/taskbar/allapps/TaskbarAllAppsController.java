@@ -54,6 +54,7 @@ public final class TaskbarAllAppsController {
     private AppInfo[] mApps;
     private int mAppsModelFlags;
     private List<ItemInfo> mPredictedApps;
+    private @Nullable List<ItemInfo> mZeroStateSearchSuggestions;
     private boolean mDisallowGlobalDrag;
     private boolean mDisallowLongClick;
 
@@ -108,6 +109,14 @@ public final class TaskbarAllAppsController {
         }
     }
 
+    /** Updates the current search suggestions. */
+    public void setZeroStateSearchSuggestions(List<ItemInfo> zeroStateSearchSuggestions) {
+        mZeroStateSearchSuggestions = zeroStateSearchSuggestions;
+        if (mSearchSessionController != null) {
+            mSearchSessionController.setZeroStateSearchSuggestions(zeroStateSearchSuggestions);
+        }
+    }
+
     /** Updates the current notification dots. */
     public void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         if (mAppsView != null) {
@@ -143,6 +152,9 @@ public final class TaskbarAllAppsController {
         mSearchSessionController = TaskbarSearchSessionController.newInstance(mOverlayContext);
         mOverlayContext.setSearchSessionController(mSearchSessionController);
         mSearchSessionController.setZeroStatePredictedItems(mPredictedApps);
+        if (mZeroStateSearchSuggestions != null) {
+            mSearchSessionController.setZeroStateSearchSuggestions(mZeroStateSearchSuggestions);
+        }
         mSearchSessionController.startLifecycle();
 
         mSlideInView = (TaskbarAllAppsSlideInView) mOverlayContext.getLayoutInflater().inflate(
