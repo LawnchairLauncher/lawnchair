@@ -98,7 +98,7 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Ротирајте го екранот"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Обука за лентата со задачи"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Повлечете апликација настрана за да користите 2 апликации"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Полека повлечете нагоре за да се прикаже „Лентата со задачи“"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Полека повлечете нагоре за да се прикаже лентата со задачи"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Добивајте предлози за апликации според вашата рутина"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Вклучете навигација со движење во „Поставки“ за автоматско сокривање на „Лентата со задачи“"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Правете повеќе со една лента со задачи"</string>
@@ -122,4 +122,8 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Премести долу десно"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Прикажи уште # апликација.}one{Прикажи уште # апликација.}other{Прикажи уште # апликации.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> и <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
+    <!-- no translation found for desktop_select_app_toast (2306057322833956910) -->
+    <skip />
+    <!-- no translation found for desktop_button_close_app_toast (5283096349579408560) -->
+    <skip />
 </resources>
