@@ -1065,6 +1065,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     new SurfaceControl.Transaction().remove(dimLayer).apply()));
         }
 
+        backgroundRadiusAnim.addListener(
+                AnimatorListeners.forEndCallback(depthController::dispose));
+
         return backgroundRadiusAnim;
     }
 
