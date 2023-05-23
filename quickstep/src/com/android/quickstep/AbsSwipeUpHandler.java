@@ -23,6 +23,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
+import static com.android.launcher3.LauncherPrefs.ALL_APPS_OVERVIEW_THRESHOLD;
 import static com.android.launcher3.PagedView.INVALID_PAGE;
 import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.anim.Interpolators.DEACCEL;
@@ -94,6 +95,7 @@ import androidx.annotation.UiThread;
 import com.android.internal.util.LatencyTracker;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
@@ -162,9 +164,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private static final String TAG = "AbsSwipeUpHandler";
 
     private static final ArrayList<String> STATE_NAMES = new ArrayList<>();
-
-    /** Shift distance to transition to All Apps if ENABLE_ALL_APPS_FROM_OVERVIEW. */
-    public static final float ALL_APPS_SHIFT_THRESHOLD = 2f;
 
     protected final BaseActivityInterface<S, T> mActivityInterface;
     protected final InputConsumerProxy mInputConsumerProxy;
@@ -864,7 +863,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     @UiThread
     @Override
     public void onCurrentShiftUpdated() {
-        setIsInAllAppsRegion(mCurrentShift.value >= ALL_APPS_SHIFT_THRESHOLD);
+        float threshold = LauncherPrefs.get(mContext).get(ALL_APPS_OVERVIEW_THRESHOLD) / 100f;
+        setIsInAllAppsRegion(mCurrentShift.value >= threshold);
         updateSysUiFlags(mCurrentShift.value);
         applyScrollAndTransform();
 

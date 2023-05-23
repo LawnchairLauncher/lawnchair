@@ -62,6 +62,7 @@ public class LauncherAppState implements SafeCloseable {
 
     public static final String ACTION_FORCE_ROLOAD = "force-reload-launcher";
     public static final String KEY_ICON_STATE = "pref_icon_shape_path";
+    public static final String KEY_ALL_APPS_OVERVIEW_THRESHOLD = "pref_all_apps_overview_threshold";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<LauncherAppState> INSTANCE =
