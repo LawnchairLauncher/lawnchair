@@ -21,6 +21,7 @@ import android.os.Binder
 import android.os.IBinder
 import android.view.InsetsFrameProvider
 import android.view.InsetsFrameProvider.SOURCE_DISPLAY
+import android.view.InsetsSource.FLAG_INSETS_ROUNDED_CORNER
 import android.view.InsetsSource.FLAG_SUPPRESS_SCRIM
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_FRAME
@@ -83,11 +84,23 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
     }
 
     fun onTaskbarWindowHeightOrInsetsChanged() {
+        val tappableHeight = controllers.taskbarStashController.tappableHeightToReportToApps
+        // We only report tappableElement height for unstashed, persistent taskbar,
+        // which is also when we draw the rounded corners above taskbar.
+        val insetsRoundedCornerFlag =
+            if (tappableHeight > 0) {
+                FLAG_INSETS_ROUNDED_CORNER
+            } else {
+                0
+            }
         if (context.isGestureNav) {
             windowLayoutParams.providedInsets =
                 arrayOf(
                     InsetsFrameProvider(insetsOwner, 0, navigationBars())
-                        .setFlags(FLAG_SUPPRESS_SCRIM, FLAG_SUPPRESS_SCRIM),
+                        .setFlags(
+                            FLAG_SUPPRESS_SCRIM or insetsRoundedCornerFlag,
+                            FLAG_SUPPRESS_SCRIM or FLAG_INSETS_ROUNDED_CORNER
+                        ),
                     InsetsFrameProvider(insetsOwner, 0, tappableElement()),
                     InsetsFrameProvider(insetsOwner, 0, mandatorySystemGestures()),
                     InsetsFrameProvider(insetsOwner, INDEX_LEFT, systemGestures())
@@ -98,7 +111,11 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         } else {
             windowLayoutParams.providedInsets =
                 arrayOf(
-                    InsetsFrameProvider(insetsOwner, 0, navigationBars()),
+                    InsetsFrameProvider(insetsOwner, 0, navigationBars())
+                        .setFlags(
+                            insetsRoundedCornerFlag,
+                            (FLAG_SUPPRESS_SCRIM or FLAG_INSETS_ROUNDED_CORNER)
+                        ),
                     InsetsFrameProvider(insetsOwner, 0, tappableElement()),
                     InsetsFrameProvider(insetsOwner, 0, mandatorySystemGestures())
                 )
@@ -112,7 +129,6 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             windowLayoutParams.height
         )
         val contentHeight = controllers.taskbarStashController.contentHeightToReportToApps
-        val tappableHeight = controllers.taskbarStashController.tappableHeightToReportToApps
         val res = context.resources
         for (provider in windowLayoutParams.providedInsets) {
             if (provider.type == navigationBars() || provider.type == mandatorySystemGestures()) {
@@ -161,10 +177,6 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                 provider.insetsSizeOverrides = insetsSizeOverride
             }
         }
-
-        // We only report tappableElement height for unstashed, persistent taskbar,
-        // which is also when we draw the rounded corners above taskbar.
-        windowLayoutParams.insetsRoundedCornerFrame = tappableHeight > 0
 
         context.notifyUpdateLayoutParams()
     }
