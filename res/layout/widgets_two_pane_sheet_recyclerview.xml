@@ -13,8 +13,7 @@
      limitations under the License.
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:launcher="http://schemas.android.com/apk/res-auto">
 
     <FrameLayout
         android:id="@+id/widgets_two_pane_sheet_recyclerview"
