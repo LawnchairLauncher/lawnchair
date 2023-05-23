@@ -136,6 +136,7 @@ public class RestoreDbTask {
         // Primary user ids
         long myProfileId = controller.getSerialNumberForUser(myUserHandle());
         long oldProfileId = getDefaultProfileId(db);
+        Log.d(TAG, "sanitizeDB: myProfileId=" + myProfileId + " oldProfileId=" + oldProfileId);
         LongSparseArray<Long> oldManagedProfileIds = getManagedProfileIds(db, oldProfileId);
         LongSparseArray<Long> profileMapping = new LongSparseArray<>(oldManagedProfileIds.size()
                 + 1);
@@ -148,6 +149,8 @@ public class RestoreDbTask {
             if (user != null) {
                 long newManagedProfileId = controller.getSerialNumberForUser(user);
                 profileMapping.put(oldManagedProfileId, newManagedProfileId);
+                Log.d(TAG, "sanitizeDB: managed profile id=" + oldManagedProfileId
+                        + " should be mapped to new id=" + newManagedProfileId);
             }
         }
 
