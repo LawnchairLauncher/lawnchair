@@ -13,14 +13,14 @@
      limitations under the License.
 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:launcher="http://schemas.android.com/apk/res-auto">
 
     <FrameLayout
         android:id="@+id/widgets_two_pane_sheet_paged_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="start"
+        android:paddingHorizontal="@dimen/widget_list_horizontal_margin_two_pane"
         android:layout_gravity="start"
         android:layout_alignParentStart="true">
         <com.android.launcher3.widget.picker.WidgetPagedView
@@ -29,7 +29,6 @@
             android:layout_height="match_parent"
             android:clipToPadding="false"
             android:descendantFocusability="afterDescendants"
-            android:paddingHorizontal="@dimen/widget_list_horizontal_margin_two_pane"
             launcher:pageIndicator="@+id/tabs" >
 
             <com.android.launcher3.widget.picker.WidgetsRecyclerView
@@ -62,7 +61,6 @@
                 android:clipToPadding="false"
                 android:elevation="0.1dp"
                 android:paddingBottom="8dp"
-                android:paddingHorizontal="@dimen/widget_list_horizontal_margin_two_pane"
                 launcher:layout_sticky="true">
 
                 <include layout="@layout/widgets_search_bar" />
@@ -73,7 +71,6 @@
                 android:layout_height="match_parent"
                 android:id="@+id/suggestions_header"
                 android:layout_marginTop="8dp"
-                android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin_two_pane"
                 android:orientation="horizontal"
                 android:background="?attr/widgetPickerPrimarySurfaceColor"
                 launcher:layout_sticky="true">
@@ -86,7 +83,6 @@
                 android:gravity="center_horizontal"
                 android:orientation="horizontal"
                 android:paddingVertical="8dp"
-                android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin_two_pane"
                 android:background="?attr/widgetPickerPrimarySurfaceColor"
                 style="@style/TextHeadline"
                 launcher:layout_sticky="true">
