@@ -428,6 +428,55 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     }
 
     @Test
+    @PortraitLandscape
+    public void testOverviewDeadzones() throws Exception {
+        startTestAppsWithCheck();
+
+        Overview overview = mLauncher.goHome().switchToOverview();
+        assertTrue("Launcher internal state should be Overview",
+                isInState(() -> LauncherState.OVERVIEW));
+        executeOnLauncher(
+                launcher -> assertTrue("Should have at least 3 tasks",
+                        getTaskCount(launcher) >= 3));
+
+        // It should not dismiss overview when tapping between tasks
+        overview.touchBetweenTasks();
+        overview = mLauncher.getOverview();
+        assertTrue("Launcher internal state should be Overview",
+                isInState(() -> LauncherState.OVERVIEW));
+
+        // Dismiss when tapping to the right of the focused task
+        overview.touchOutsideFirstTask();
+        assertTrue("Launcher internal state should be Home",
+                isInState(() -> LauncherState.NORMAL));
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testTaskbarDeadzonesForTablet() throws Exception {
+        assumeTrue(mLauncher.isTablet());
+
+        startTestAppsWithCheck();
+
+        Overview overview = mLauncher.goHome().switchToOverview();
+        assertTrue("Launcher internal state should be Overview",
+                isInState(() -> LauncherState.OVERVIEW));
+        executeOnLauncher(
+                launcher -> assertTrue("Should have at least 3 tasks",
+                        getTaskCount(launcher) >= 3));
+
+        // On persistent taskbar, it should not dismiss when tapping the taskbar
+        overview.touchTaskbarBottomCorner(/* tapRight= */ false);
+        assertTrue("Launcher internal state should be Overview",
+                isInState(() -> LauncherState.OVERVIEW));
+
+        // On persistent taskbar, it should not dismiss when tapping the taskbar
+        overview.touchTaskbarBottomCorner(/* tapRight= */ true);
+        assertTrue("Launcher internal state should be Overview",
+                isInState(() -> LauncherState.OVERVIEW));
+    }
+
+    @Test
     @ScreenRecord // b/242163205
     public void testDisableRotationCheckForPhone() throws Exception {
         assumeFalse(mLauncher.isTablet());
