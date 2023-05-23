@@ -20,6 +20,7 @@ import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_DISABLE_
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_ENABLE_MANUAL_TASKBAR_STASHING;
 
 import android.graphics.Point;
+import android.graphics.Rect;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.MotionEvent;
@@ -121,5 +122,34 @@ public final class Taskbar {
     private static BySelector getAllAppsButtonSelector() {
         // Look for an icon with no text
         return By.clazz(TextView.class).text("");
+    }
+
+    private Rect getVisibleBounds() {
+        return mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID).getVisibleBounds();
+    }
+
+    /**
+     * Touch either on the right or the left corner of the screen, 1 pixel from the bottom and
+     * from the sides.
+     */
+    void touchBottomCorner(boolean tapRight) {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to tap bottom corner on the " + (tapRight ? "right" : "left"))) {
+            final long downTime = SystemClock.uptimeMillis();
+            final Point tapTarget = new Point(
+                    tapRight
+                            ?
+                            getVisibleBounds().right
+                                    - mLauncher.getTargetInsets().right
+                                    - 1
+                            : getVisibleBounds().left
+                                    + 1,
+                    mLauncher.getRealDisplaySize().y - 1);
+
+            mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, tapTarget,
+                    LauncherInstrumentation.GestureScope.INSIDE);
+            mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_UP, tapTarget,
+                    LauncherInstrumentation.GestureScope.INSIDE);
+        }
     }
 }
