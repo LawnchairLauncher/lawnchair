@@ -71,6 +71,10 @@ public final class OverviewTask {
         return mTask.getVisibleBounds().exactCenterX();
     }
 
+    UiObject2 getUiObject() {
+        return mTask;
+    }
+
     /**
      * Dismisses the task by swiping up.
      */
