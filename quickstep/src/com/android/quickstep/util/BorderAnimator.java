@@ -20,6 +20,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.ColorInt;
 import android.annotation.Nullable;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.view.View;
@@ -37,8 +38,8 @@ import com.android.launcher3.anim.Interpolators;
  * <p>
  * To use this class:
  * 1. Create an instance in the target view. NOTE: The border will animate outwards from the
- *      provided border bounds. If the border will not be visible outside of those bounds, then a
- *      {@link ViewScaleTargetProvider} must be provided in the constructor.
+ *      provided border bounds. See {@link SimpleParams} and {@link ScalingParams} to determine
+ *      which would be best for your target view.
  * 2. Override the target view's {@link android.view.View#draw(Canvas)} method and call
  *      {@link BorderAnimator#drawBorder(Canvas)} after {@code super.draw(canvas)}.
  * 3. Call {@link BorderAnimator#buildAnimator(boolean)} and start the animation or call
@@ -46,7 +47,7 @@ import com.android.launcher3.anim.Interpolators;
  */
 public final class BorderAnimator {
 
-    public static final int DEFAULT_BORDER_COLOR = 0xffffffff;
+    public static final int DEFAULT_BORDER_COLOR = Color.WHITE;
 
     private static final long DEFAULT_APPEARANCE_ANIMATION_DURATION_MS = 300;
     private static final long DEFAULT_DISAPPEARANCE_ANIMATION_DURATION_MS = 133;
@@ -54,68 +55,44 @@ public final class BorderAnimator {
 
     @NonNull private final AnimatedFloat mBorderAnimationProgress = new AnimatedFloat(
             this::updateOutline);
-    @NonNull private final Rect mBorderBounds = new Rect();
-    @NonNull private final BorderBoundsBuilder mBorderBoundsBuilder;
-    @Px private final int mBorderWidthPx;
     @Px private final int mBorderRadiusPx;
-    @NonNull private final Runnable mInvalidateViewCallback;
-    @Nullable private final ViewScaleTargetProvider mViewScaleTargetProvider;
+    @NonNull private final BorderAnimationParams mBorderAnimationParams;
     private final long mAppearanceDurationMs;
     private final long mDisappearanceDurationMs;
     @NonNull private final Interpolator mInterpolator;
     @NonNull private final Paint mBorderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
-    private float mAlignmentAdjustment;
-
     @Nullable private Animator mRunningBorderAnimation;
 
     public BorderAnimator(
-            @NonNull BorderBoundsBuilder borderBoundsBuilder,
-            int borderWidthPx,
-            int borderRadiusPx,
+            @Px int borderRadiusPx,
             @ColorInt int borderColor,
-            @NonNull Runnable invalidateViewCallback) {
-        this(borderBoundsBuilder,
-                borderWidthPx,
-                borderRadiusPx,
+            @NonNull BorderAnimationParams borderAnimationParams) {
+        this(borderRadiusPx,
                 borderColor,
-                invalidateViewCallback,
-                /* viewScaleTargetProvider= */ null);
-    }
-
-    public BorderAnimator(
-            @NonNull BorderBoundsBuilder borderBoundsBuilder,
-            int borderWidthPx,
-            int borderRadiusPx,
-            @ColorInt int borderColor,
-            @NonNull Runnable invalidateViewCallback,
-            @Nullable ViewScaleTargetProvider viewScaleTargetProvider) {
-        this(borderBoundsBuilder,
-                borderWidthPx,
-                borderRadiusPx,
-                borderColor,
-                invalidateViewCallback,
-                viewScaleTargetProvider,
+                borderAnimationParams,
                 DEFAULT_APPEARANCE_ANIMATION_DURATION_MS,
                 DEFAULT_DISAPPEARANCE_ANIMATION_DURATION_MS,
                 DEFAULT_INTERPOLATOR);
     }
 
+    /**
+     * @param borderRadiusPx the radius of the border's corners, in pixels
+     * @param borderColor the border's color
+     * @param borderAnimationParams params for handling different target view layout situation.
+     * @param appearanceDurationMs appearance animation duration, in milliseconds
+     * @param disappearanceDurationMs disappearance animation duration, in milliseconds
+     * @param interpolator animation interpolator
+     */
     public BorderAnimator(
-            @NonNull BorderBoundsBuilder borderBoundsBuilder,
-            int borderWidthPx,
-            int borderRadiusPx,
+            @Px int borderRadiusPx,
             @ColorInt int borderColor,
-            @NonNull Runnable invalidateViewCallback,
-            @Nullable ViewScaleTargetProvider viewScaleTargetProvider,
+            @NonNull BorderAnimationParams borderAnimationParams,
             long appearanceDurationMs,
             long disappearanceDurationMs,
             @NonNull Interpolator interpolator) {
-        mBorderBoundsBuilder = borderBoundsBuilder;
-        mBorderWidthPx = borderWidthPx;
         mBorderRadiusPx = borderRadiusPx;
-        mInvalidateViewCallback = invalidateViewCallback;
-        mViewScaleTargetProvider = viewScaleTargetProvider;
+        mBorderAnimationParams = borderAnimationParams;
         mAppearanceDurationMs = appearanceDurationMs;
         mDisappearanceDurationMs = disappearanceDurationMs;
         mInterpolator = interpolator;
@@ -128,15 +105,11 @@ public final class BorderAnimator {
     private void updateOutline() {
         float interpolatedProgress = mInterpolator.getInterpolation(
                 mBorderAnimationProgress.value);
-        float borderWidth = mBorderWidthPx * interpolatedProgress;
-        // Outset the border by half the width to create an outwards-growth animation
-        mAlignmentAdjustment = (-borderWidth / 2f)
-                // Inset the border if we are scaling the container up
-                + (mViewScaleTargetProvider == null ? 0 : mBorderWidthPx);
 
+        mBorderAnimationParams.setProgress(interpolatedProgress);
         mBorderPaint.setAlpha(Math.round(255 * interpolatedProgress));
-        mBorderPaint.setStrokeWidth(borderWidth);
-        mInvalidateViewCallback.run();
+        mBorderPaint.setStrokeWidth(mBorderAnimationParams.getBorderWidth());
+        mBorderAnimationParams.mTargetView.invalidate();
     }
 
     /**
@@ -146,16 +119,14 @@ public final class BorderAnimator {
      * calling super.
      */
     public void drawBorder(Canvas canvas) {
-        // Increase the radius if we are scaling the container up
-        float radiusAdjustment = mViewScaleTargetProvider == null
-                ? -mAlignmentAdjustment : mAlignmentAdjustment;
+        float alignmentAdjustment = mBorderAnimationParams.getAlignmentAdjustment();
         canvas.drawRoundRect(
-                /* left= */ mBorderBounds.left + mAlignmentAdjustment,
-                /* top= */ mBorderBounds.top + mAlignmentAdjustment,
-                /* right= */ mBorderBounds.right - mAlignmentAdjustment,
-                /* bottom= */ mBorderBounds.bottom - mAlignmentAdjustment,
-                /* rx= */ mBorderRadiusPx + radiusAdjustment,
-                /* ry= */ mBorderRadiusPx + radiusAdjustment,
+                /* left= */ mBorderAnimationParams.mBorderBounds.left + alignmentAdjustment,
+                /* top= */ mBorderAnimationParams.mBorderBounds.top + alignmentAdjustment,
+                /* right= */ mBorderAnimationParams.mBorderBounds.right - alignmentAdjustment,
+                /* bottom= */ mBorderAnimationParams.mBorderBounds.bottom - alignmentAdjustment,
+                /* rx= */ mBorderRadiusPx + mBorderAnimationParams.getRadiusAdjustment(),
+                /* ry= */ mBorderRadiusPx + mBorderAnimationParams.getRadiusAdjustment(),
                 /* paint= */ mBorderPaint);
     }
 
@@ -164,7 +135,6 @@ public final class BorderAnimator {
      */
     @NonNull
     public Animator buildAnimator(boolean isAppearing) {
-        mBorderBoundsBuilder.updateBorderBounds(mBorderBounds);
         mRunningBorderAnimation = mBorderAnimationProgress.animateToValue(isAppearing ? 1f : 0f);
         mRunningBorderAnimation.setDuration(
                 isAppearing ? mAppearanceDurationMs : mDisappearanceDurationMs);
@@ -172,7 +142,7 @@ public final class BorderAnimator {
         mRunningBorderAnimation.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                setViewScales();
+                mBorderAnimationParams.onShowBorder();
             }
         });
         mRunningBorderAnimation.addListener(
@@ -181,7 +151,7 @@ public final class BorderAnimator {
                     if (isAppearing) {
                         return;
                     }
-                    resetViewScales();
+                    mBorderAnimationParams.onHideBorder();
                 }));
 
         return mRunningBorderAnimation;
@@ -196,54 +166,13 @@ public final class BorderAnimator {
         if (mRunningBorderAnimation != null) {
             mRunningBorderAnimation.end();
         }
-        mBorderBoundsBuilder.updateBorderBounds(mBorderBounds);
         if (visible) {
-            setViewScales();
+            mBorderAnimationParams.onShowBorder();
         }
         mBorderAnimationProgress.updateValue(visible ? 1f : 0f);
         if (!visible) {
-            resetViewScales();
+            mBorderAnimationParams.onHideBorder();
         }
-    }
-
-    private void setViewScales() {
-        if (mViewScaleTargetProvider == null) {
-            return;
-        }
-        View container = mViewScaleTargetProvider.getContainerView();
-        float width = container.getWidth();
-        float height = container.getHeight();
-        // scale up just enough to make room for the border
-        float scaleX = 1f + ((2 * mBorderWidthPx) / width);
-        float scaleY = 1f + ((2 * mBorderWidthPx) / height);
-
-        container.setPivotX(width / 2);
-        container.setPivotY(height / 2);
-        container.setScaleX(scaleX);
-        container.setScaleY(scaleY);
-
-        View contentView = mViewScaleTargetProvider.getContentView();
-        contentView.setPivotX(contentView.getWidth() / 2f);
-        contentView.setPivotY(contentView.getHeight() / 2f);
-        contentView.setScaleX(1f / scaleX);
-        contentView.setScaleY(1f / scaleY);
-    }
-
-    private void resetViewScales() {
-        if (mViewScaleTargetProvider == null) {
-            return;
-        }
-        View container = mViewScaleTargetProvider.getContainerView();
-        container.setPivotX(container.getWidth());
-        container.setPivotY(container.getHeight());
-        container.setScaleX(1f);
-        container.setScaleY(1f);
-
-        View contentView = mViewScaleTargetProvider.getContentView();
-        contentView.setPivotX(contentView.getWidth() / 2f);
-        contentView.setPivotY(contentView.getHeight() / 2f);
-        contentView.setScaleX(1f);
-        contentView.setScaleY(1f);
     }
 
     /**
@@ -258,23 +187,166 @@ public final class BorderAnimator {
     }
 
     /**
-     * Provider for scaling target views for the beginning and end of this animation.
+     * Params for handling different target view layout situation.
      */
-    public interface ViewScaleTargetProvider {
+    private abstract static class BorderAnimationParams {
+
+        @NonNull private final Rect mBorderBounds = new Rect();
+        @NonNull private final BorderBoundsBuilder mBoundsBuilder;
+
+        @NonNull final View mTargetView;
+        @Px final int mBorderWidthPx;
+
+        private float mAnimationProgress = 0f;
+        @Nullable private View.OnLayoutChangeListener mLayoutChangeListener;
 
         /**
-         * Returns the content view's container. This view will be scaled up to make room for the
-         * border.
+         * @param borderWidthPx the width of the border, in pixels
+         * @param boundsBuilder callback to update the border bounds
+         * @param targetView the view that will be drawing the border
          */
-        @NonNull
-        View getContainerView();
+        private BorderAnimationParams(
+                @Px int borderWidthPx,
+                @NonNull BorderBoundsBuilder boundsBuilder,
+                @NonNull View targetView) {
+            mBorderWidthPx = borderWidthPx;
+            mBoundsBuilder = boundsBuilder;
+            mTargetView = targetView;
+        }
+
+        private void setProgress(float progress) {
+            mAnimationProgress = progress;
+        }
+
+        private float getBorderWidth() {
+            return mBorderWidthPx * mAnimationProgress;
+        }
+
+        float getAlignmentAdjustment() {
+            // Outset the border by half the width to create an outwards-growth animation
+            return (-getBorderWidth() / 2f) + getAlignmentAdjustmentInset();
+        }
+
+
+        void onShowBorder() {
+            if (mLayoutChangeListener == null) {
+                mLayoutChangeListener =
+                        (v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+                            onShowBorder();
+                            mTargetView.invalidate();
+                        };
+                mTargetView.addOnLayoutChangeListener(mLayoutChangeListener);
+            }
+            mBoundsBuilder.updateBorderBounds(mBorderBounds);
+        }
+
+        void onHideBorder() {
+            if (mLayoutChangeListener != null) {
+                mTargetView.removeOnLayoutChangeListener(mLayoutChangeListener);
+                mLayoutChangeListener = null;
+            }
+        }
+
+        abstract int getAlignmentAdjustmentInset();
+
+        abstract float getRadiusAdjustment();
+    }
+
+    /**
+     * Use an instance of this {@link BorderAnimationParams} if the border can be drawn outside the
+     * target view's bounds without any additional logic.
+     */
+    public static final class SimpleParams extends BorderAnimationParams {
+
+        public SimpleParams(
+                @Px int borderWidthPx,
+                @NonNull BorderBoundsBuilder boundsBuilder,
+                @NonNull View targetView) {
+            super(borderWidthPx, boundsBuilder, targetView);
+        }
+
+        @Override
+        int getAlignmentAdjustmentInset() {
+            return 0;
+        }
+
+        @Override
+        float getRadiusAdjustment() {
+            return -getAlignmentAdjustment();
+        }
+    }
+
+    /**
+     * Use an instance of this {@link BorderAnimationParams} if the border would other be clipped by
+     * the target view's bound.
+     * <p>
+     * Note: using these params will set the scales and pivots of the
+     * container and content views, however will only reset the scales back to 1.
+     */
+    public static final class ScalingParams extends BorderAnimationParams {
+
+        @NonNull private final View mContentView;
 
         /**
-         * Returns the content view. This view will be scaled down reciprocally to the container's
-         * up-scaling to maintain its original size. This should be the view containing all of the
-         * content being surrounded by the border.
+         * @param targetView the view that will be drawing the border. this view will be scaled up
+         *                   to make room for the border
+         * @param contentView the view around which the border will be drawn. this view will be
+         *                    scaled down reciprocally to keep its original size and location.
          */
-        @NonNull
-        View getContentView();
+        public ScalingParams(
+                @Px int borderWidthPx,
+                @NonNull BorderBoundsBuilder boundsBuilder,
+                @NonNull View targetView,
+                @NonNull View contentView) {
+            super(borderWidthPx, boundsBuilder, targetView);
+            mContentView = contentView;
+        }
+
+        @Override
+        void onShowBorder() {
+            super.onShowBorder();
+            float width = mTargetView.getWidth();
+            float height = mTargetView.getHeight();
+            // Scale up just enough to make room for the border. Fail fast and fix the scaling
+            // onLayout.
+            float scaleX = width == 0 ? 1f : 1f + ((2 * mBorderWidthPx) / width);
+            float scaleY = height == 0 ? 1f : 1f + ((2 * mBorderWidthPx) / height);
+
+            mTargetView.setPivotX(width / 2);
+            mTargetView.setPivotY(height / 2);
+            mTargetView.setScaleX(scaleX);
+            mTargetView.setScaleY(scaleY);
+
+            mContentView.setPivotX(mContentView.getWidth() / 2f);
+            mContentView.setPivotY(mContentView.getHeight() / 2f);
+            mContentView.setScaleX(1f / scaleX);
+            mContentView.setScaleY(1f / scaleY);
+        }
+
+        @Override
+        void onHideBorder() {
+            super.onHideBorder();
+            mTargetView.setPivotX(mTargetView.getWidth());
+            mTargetView.setPivotY(mTargetView.getHeight());
+            mTargetView.setScaleX(1f);
+            mTargetView.setScaleY(1f);
+
+            mContentView.setPivotX(mContentView.getWidth() / 2f);
+            mContentView.setPivotY(mContentView.getHeight() / 2f);
+            mContentView.setScaleX(1f);
+            mContentView.setScaleY(1f);
+        }
+
+        @Override
+        int getAlignmentAdjustmentInset() {
+            // Inset the border since we are scaling the container up
+            return mBorderWidthPx;
+        }
+
+        @Override
+        float getRadiusAdjustment() {
+            // Increase the radius since we are scaling the container up
+            return getAlignmentAdjustment();
+        }
     }
 }
