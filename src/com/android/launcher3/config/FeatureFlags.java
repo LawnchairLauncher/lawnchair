@@ -253,6 +253,10 @@ public final class FeatureFlags {
             "INJECT_FALLBACK_APP_CORPUS_RESULTS", DISABLED,
             "Inject fallback app corpus result when AiAi fails to return it.");
 
+    public static final BooleanFlag ENABLE_LONG_PRESS_NAV_HANDLE =
+            getDebugFlag(282993230, "ENABLE_LONG_PRESS_NAV_HANDLE", DISABLED,
+                    "Enables long pressing on the bottom bar nav handle to trigger events.");
+
     // TODO(Block 17): Clean up flags
     public static final BooleanFlag ENABLE_TASKBAR_PINNING = getDebugFlag(270396583,
             "ENABLE_TASKBAR_PINNING", DISABLED,

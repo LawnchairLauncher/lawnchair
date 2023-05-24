@@ -105,6 +105,7 @@ import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantInputConsumer;
 import com.android.quickstep.inputconsumers.DeviceLockedInputConsumer;
+import com.android.quickstep.inputconsumers.NavHandleLongPressInputConsumer;
 import com.android.quickstep.inputconsumers.OneHandedModeInputConsumer;
 import com.android.quickstep.inputconsumers.OtherActivityInputConsumer;
 import com.android.quickstep.inputconsumers.OverviewInputConsumer;
@@ -884,6 +885,8 @@ public class TouchInteractionService extends Service
                                     + "using TaskbarUnstashInputConsumer");
                     base = new TaskbarUnstashInputConsumer(this, base, mInputMonitorCompat, tac);
                 }
+            } else if (canStartSystemGesture && FeatureFlags.ENABLE_LONG_PRESS_NAV_HANDLE.get()) {
+                base = new NavHandleLongPressInputConsumer(this, base, mInputMonitorCompat);
             }
 
             if (mDeviceState.isBubblesExpanded()) {
