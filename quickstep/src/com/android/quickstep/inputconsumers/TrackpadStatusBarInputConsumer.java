@@ -27,15 +27,15 @@ import com.android.quickstep.InputConsumer;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
-/** Allows the status bar to be pull down for notification shade */
-public class StatusBarInputConsumer extends DelegateInputConsumer {
+/** Allows the status bar to be pull down for notification shade using the trackpad. */
+public class TrackpadStatusBarInputConsumer extends DelegateInputConsumer {
 
     private final SystemUiProxy mSystemUiProxy;
     private final float mTouchSlop;
     private final PointF mDown = new PointF();
     private boolean mHasPassedTouchSlop;
 
-    public StatusBarInputConsumer(Context context, InputConsumer delegate,
+    public TrackpadStatusBarInputConsumer(Context context, InputConsumer delegate,
             InputMonitorCompat inputMonitor) {
         super(delegate, inputMonitor);
 
@@ -79,7 +79,7 @@ public class StatusBarInputConsumer extends DelegateInputConsumer {
 
     private void dispatchTouchEvent(MotionEvent ev) {
         if (mSystemUiProxy.isActive()) {
-            mSystemUiProxy.onStatusBarMotionEvent(ev);
+            mSystemUiProxy.onStatusBarTrackpadEvent(ev);
         }
     }
 }
