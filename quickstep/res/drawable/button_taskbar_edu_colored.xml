@@ -15,14 +15,13 @@
 -->
 
 <inset
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <ripple
         android:color="?android:attr/colorControlHighlight">
         <item>
             <shape android:shape="rectangle">
                 <corners android:radius="16dp"/>
-                <solid android:color="?androidprv:attr/colorAccentPrimary"/>
+                <solid android:color="@color/taskbar_edu_button_color"/>
             </shape>
         </item>
     </ripple>

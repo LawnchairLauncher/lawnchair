@@ -19,6 +19,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
+import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.MotionEvent
@@ -138,7 +139,27 @@ constructor(
 
     private fun populateForView(view: View): TaskbarDividerPopupView<*> {
         dividerView = view
+        tryUpdateBackground()
         return this
+    }
+
+    /** Updates the text background to match the shape of this background (when applicable). */
+    private fun tryUpdateBackground() {
+        if (background !is GradientDrawable) {
+            return
+        }
+        val background = background as GradientDrawable
+        val color = context.getColor(R.color.popup_shade_first)
+        val backgroundMask = GradientDrawable()
+        backgroundMask.setColor(color)
+        backgroundMask.shape = GradientDrawable.RECTANGLE
+        if (background.cornerRadii != null) {
+            backgroundMask.cornerRadii = background.cornerRadii
+        } else {
+            backgroundMask.cornerRadius = background.cornerRadius
+        }
+
+        setBackground(backgroundMask)
     }
 
     override fun addArrow() {
@@ -161,7 +182,7 @@ constructor(
                     0f, // arrowOffsetY
                     false, // isPointingUp
                     true, // leftAligned
-                    Themes.getAttrColor(context, R.attr.popupColorPrimary),
+                    context.getColor(R.color.popup_shade_first),
                 )
             elevation = mElevation
             mArrow.elevation = mElevation
