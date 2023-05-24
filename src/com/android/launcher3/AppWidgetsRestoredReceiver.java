@@ -20,7 +20,6 @@ import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.model.WidgetsModel;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.pm.UserCache;
-import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.IntArray;
@@ -77,16 +76,8 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
                 + "oldWidgetIds=" + IntArray.wrap(oldWidgetIds).toConcatString()
                 + ", newWidgetIds=" + IntArray.wrap(newWidgetIds).toConcatString());
 
-        try {
-            IntArray result = LauncherDbUtils.queryIntArray(false, controller.getDb(),
-                    Favorites.TABLE_NAME, Favorites.APPWIDGET_ID,
-                    Favorites.APPWIDGET_ID + "!=" + LauncherAppWidgetInfo.NO_ID, null, null);
-            // TODO(b/234700507): Remove the logs after the bug is fixed
-            Log.d(TAG, "restoreAppWidgetIds: all widget ids in database: "
-                    + result.toConcatString());
-        } catch (Exception ex) {
-            Log.e(TAG, "Getting widget ids from the database failed", ex);
-        }
+        // TODO(b/234700507): Remove the logs after the bug is fixed
+        logDatabaseWidgetInfo(controller);
 
         for (int i = 0; i < oldWidgetIds.length; i++) {
             Log.i(TAG, "Widget state restore id " + oldWidgetIds[i] + " => " + newWidgetIds[i]);
@@ -104,9 +95,13 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
             // recreate the widget during loading with the correct host provider.
             long mainProfileId = UserCache.INSTANCE.get(context)
                     .getSerialNumberForUser(myUserHandle());
+            long controllerProfileId = controller.getSerialNumberForUser(myUserHandle());
             String oldWidgetId = Integer.toString(oldWidgetIds[i]);
             final String where = "appWidgetId=? and (restored & 1) = 1 and profileId=?";
-            final String[] args = new String[] { oldWidgetId, Long.toString(mainProfileId) };
+            String profileId = Long.toString(mainProfileId);
+            final String[] args = new String[] { oldWidgetId, profileId };
+            Log.d(TAG, "restoreAppWidgetIds: querying profile id=" + profileId
+                    + " with controller profile ID=" + controllerProfileId);
             int result = new ContentWriter(context,
                             new ContentWriter.CommitParams(controller, where, args))
                     .put(LauncherSettings.Favorites.APPWIDGET_ID, newWidgetIds[i])
@@ -133,6 +128,50 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
         LauncherAppState app = LauncherAppState.getInstanceNoCreate();
         if (app != null) {
             app.getModel().forceReload();
+        }
+    }
+
+    private static void logDatabaseWidgetInfo(ModelDbController controller) {
+        try (Cursor cursor = controller.getDb().query(Favorites.TABLE_NAME,
+                new String[]{Favorites.APPWIDGET_ID, Favorites.RESTORED, Favorites.PROFILE_ID},
+                Favorites.APPWIDGET_ID + "!=" + LauncherAppWidgetInfo.NO_ID, null,
+                null, null, null)) {
+            IntArray widgetIdList = new IntArray();
+            IntArray widgetRestoreList = new IntArray();
+            IntArray widgetProfileIdList = new IntArray();
+
+            if (cursor.moveToFirst()) {
+                final int widgetIdColumnIndex = cursor.getColumnIndex(Favorites.APPWIDGET_ID);
+                final int widgetRestoredColumnIndex = cursor.getColumnIndex(Favorites.RESTORED);
+                final int widgetProfileIdIndex = cursor.getColumnIndex(Favorites.PROFILE_ID);
+                while (!cursor.isAfterLast()) {
+                    int widgetId = cursor.getInt(widgetIdColumnIndex);
+                    int widgetRestoredFlag = cursor.getInt(widgetRestoredColumnIndex);
+                    int widgetProfileId = cursor.getInt(widgetProfileIdIndex);
+
+                    widgetIdList.add(widgetId);
+                    widgetRestoreList.add(widgetRestoredFlag);
+                    widgetProfileIdList.add(widgetProfileId);
+                    cursor.moveToNext();
+                }
+            }
+
+            StringBuilder builder = new StringBuilder();
+            builder.append("[");
+            for (int i = 0; i < widgetIdList.size(); i++) {
+                builder.append("[")
+                        .append(widgetIdList.get(i))
+                        .append(", ")
+                        .append(widgetRestoreList.get(i))
+                        .append(", ")
+                        .append(widgetProfileIdList.get(i))
+                        .append("]");
+            }
+            builder.append("]");
+            Log.d(TAG, "restoreAppWidgetIds: all widget ids in database: "
+                    + builder.toString());
+        } catch (Exception ex) {
+            Log.e(TAG, "Getting widget ids from the database failed", ex);
         }
     }
 }
