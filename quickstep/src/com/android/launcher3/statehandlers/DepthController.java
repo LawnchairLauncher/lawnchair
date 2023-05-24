@@ -84,14 +84,34 @@ public class DepthController extends BaseDepthController implements StateHandler
 
                 @Override
                 public void onViewDetachedFromWindow(View view) {
-                    CrossWindowBlurListeners.getInstance().removeListener(mCrossWindowBlurListener);
-                    mLauncher.getScrimView().removeOpaquenessListener(mOpaquenessListener);
+                    removeSecondaryListeners();
                 }
             };
             rootView.addOnAttachStateChangeListener(mOnAttachListener);
             if (rootView.isAttachedToWindow()) {
                 mOnAttachListener.onViewAttachedToWindow(rootView);
             }
+        }
+    }
+
+    /**
+     * Cleans up after this controller so it can be garbage collected without leaving traces.
+     */
+    public void dispose() {
+        removeSecondaryListeners();
+
+        if (mLauncher.getRootView() != null && mOnAttachListener != null) {
+            mLauncher.getRootView().removeOnAttachStateChangeListener(mOnAttachListener);
+            mOnAttachListener = null;
+        }
+    }
+
+    private void removeSecondaryListeners() {
+        if (mCrossWindowBlurListener != null) {
+            CrossWindowBlurListeners.getInstance().removeListener(mCrossWindowBlurListener);
+        }
+        if (mOpaquenessListener != null) {
+            mLauncher.getScrimView().removeOpaquenessListener(mOpaquenessListener);
         }
     }
 
