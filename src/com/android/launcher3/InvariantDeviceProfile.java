@@ -179,6 +179,8 @@ public class InvariantDeviceProfile {
     public int devicePaddingId = INVALID_RESOURCE_HANDLE;
     @XmlRes
     public int workspaceSpecsId = INVALID_RESOURCE_HANDLE;
+    @XmlRes
+    public int allAppsSpecsId = INVALID_RESOURCE_HANDLE;
 
     public String dbFile;
     public int defaultLayoutId;
@@ -353,6 +355,7 @@ public class InvariantDeviceProfile {
         isScalable = closestProfile.isScalable;
         devicePaddingId = closestProfile.devicePaddingId;
         workspaceSpecsId = closestProfile.mWorkspaceSpecsId;
+        allAppsSpecsId = closestProfile.mAllAppsSpecsId;
         this.deviceType = deviceType;
 
         inlineNavButtonsEndSpacing = closestProfile.inlineNavButtonsEndSpacing;
@@ -799,6 +802,7 @@ public class InvariantDeviceProfile {
         private final boolean isScalable;
         private final int devicePaddingId;
         private final int mWorkspaceSpecsId;
+        private final int mAllAppsSpecsId;
 
         public GridOption(Context context, AttributeSet attrs) {
             TypedArray a = context.obtainStyledAttributes(
@@ -863,8 +867,11 @@ public class InvariantDeviceProfile {
             if (FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE.get()) {
                 mWorkspaceSpecsId = a.getResourceId(
                         R.styleable.GridDisplayOption_workspaceSpecsId, INVALID_RESOURCE_HANDLE);
+                mAllAppsSpecsId = a.getResourceId(
+                        R.styleable.GridDisplayOption_allAppsSpecsId, INVALID_RESOURCE_HANDLE);
             } else {
                 mWorkspaceSpecsId = INVALID_RESOURCE_HANDLE;
+                mAllAppsSpecsId = INVALID_RESOURCE_HANDLE;
             }
 
             int inlineForRotation = a.getInt(R.styleable.GridDisplayOption_inlineQsb,
