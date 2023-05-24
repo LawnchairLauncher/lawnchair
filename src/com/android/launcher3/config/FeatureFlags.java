@@ -82,9 +82,6 @@ public final class FeatureFlags {
      * <p>
      */
     // TODO(Block 1): Clean up flags
-    public static final BooleanFlag ENABLE_ONE_SEARCH_MOTION = getReleaseFlag(270394223,
-            "ENABLE_ONE_SEARCH_MOTION", ENABLED, "Enables animations in OneSearch.");
-
     public static final BooleanFlag ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES = getReleaseFlag(
             270394041, "ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES", DISABLED,
             "Enable option to replace decorator-based search result backgrounds with drawables");
