@@ -35,11 +35,11 @@ import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.core.content.ContextCompat;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.graphics.TriangleShape;
 
@@ -95,7 +95,7 @@ public class ArrowTipView extends AbstractFloatingView {
                         .withLayer()
                         .setStartDelay(0)
                         .setDuration(HIDE_DURATION_MS)
-                        .setInterpolator(Interpolators.ACCEL)
+                        .setInterpolator(Interpolators.ACCELERATE)
                         .withEndAction(() -> mActivity.getDragLayer().removeView(this))
                         .start();
             } else {
@@ -191,7 +191,7 @@ public class ArrowTipView extends AbstractFloatingView {
                 .withLayer()
                 .setStartDelay(SHOW_DELAY_MS)
                 .setDuration(SHOW_DURATION_MS)
-                .setInterpolator(Interpolators.DEACCEL)
+                .setInterpolator(Interpolators.DECELERATE)
                 .start();
         return this;
     }
@@ -339,7 +339,7 @@ public class ArrowTipView extends AbstractFloatingView {
                 .withLayer()
                 .setStartDelay(SHOW_DELAY_MS)
                 .setDuration(SHOW_DURATION_MS)
-                .setInterpolator(Interpolators.DEACCEL)
+                .setInterpolator(Interpolators.DECELERATE)
                 .start();
         return this;
     }

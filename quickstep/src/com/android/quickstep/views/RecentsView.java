@@ -21,6 +21,16 @@ import static android.view.Surface.ROTATION_0;
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
+import static com.android.app.animation.Interpolators.ACCELERATE;
+import static com.android.app.animation.Interpolators.ACCELERATE_0_75;
+import static com.android.app.animation.Interpolators.ACCELERATE_DECELERATE;
+import static com.android.app.animation.Interpolators.DECELERATE_2;
+import static com.android.app.animation.Interpolators.EMPHASIZED_DECELERATE;
+import static com.android.app.animation.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.app.animation.Interpolators.FINAL_FRAME;
+import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.OVERSHOOT_0_75;
+import static com.android.app.animation.Interpolators.clampToProgress;
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
 import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
@@ -32,16 +42,6 @@ import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
-import static com.android.launcher3.anim.Interpolators.ACCEL;
-import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
-import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED_DECELERATE;
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
-import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.OVERSHOOT_0_75;
-import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_LAUNCH_FROM_STAGED_APP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_ACTIONS_SPLIT;
@@ -1180,7 +1180,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     new SurfaceTransactionApplier(mActivity.getDragLayer());
             ValueAnimator appAnimator = ValueAnimator.ofFloat(0, 1);
             appAnimator.setDuration(RECENTS_LAUNCH_DURATION);
-            appAnimator.setInterpolator(ACCEL_DEACCEL);
+            appAnimator.setInterpolator(ACCELERATE_DECELERATE);
             appAnimator.addUpdateListener(valueAnimator -> {
                 float percent = valueAnimator.getAnimatedFraction();
                 SurfaceTransaction transaction = new SurfaceTransaction();
@@ -3132,7 +3132,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // Use setFloat instead of setViewAlpha as we want to keep the view visible even when it's
         // alpha is set to 0 so that it can be recycled in the view pool properly
         anim.setFloat(taskView, VIEW_ALPHA, 0,
-                clampToProgress(isOnGridBottomRow(taskView) ? ACCEL : FINAL_FRAME, 0, 0.5f));
+                clampToProgress(isOnGridBottomRow(taskView) ? ACCELERATE : FINAL_FRAME, 0, 0.5f));
         FloatProperty<TaskView> secondaryViewTranslate =
                 taskView.getSecondaryDismissTranslationProperty();
         int secondaryTaskDimension = mOrientationHandler.getSecondaryDimension(taskView);
@@ -4285,7 +4285,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private void updatePageOffsets() {
         float offset = mAdjacentPageHorizontalOffset;
-        float modalOffset = ACCEL_0_75.getInterpolation(mTaskModalness);
+        float modalOffset = ACCELERATE_0_75.getInterpolation(mTaskModalness);
         int count = getChildCount();
         boolean showAsGrid = showAsGrid();
 
@@ -4718,7 +4718,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         // Fade out all other views underneath placeholders
         ObjectAnimator tvFade = ObjectAnimator.ofFloat(this, RecentsView.CONTENT_ALPHA,1, 0);
-        pendingAnimation.add(tvFade, DEACCEL_2, SpringProperty.DEFAULT);
+        pendingAnimation.add(tvFade, DECELERATE_2, SpringProperty.DEFAULT);
         pendingAnimation.buildAnim().start();
         return true;
     }

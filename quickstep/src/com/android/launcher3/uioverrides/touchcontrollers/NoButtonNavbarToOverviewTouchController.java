@@ -16,6 +16,7 @@
 
 package com.android.launcher3.uioverrides.touchcontrollers;
 
+import static com.android.app.animation.Interpolators.ACCELERATE_DECELERATE;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
 import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
 import static com.android.launcher3.LauncherState.ALL_APPS;
@@ -25,7 +26,6 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
-import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
 import static com.android.launcher3.util.VibratorWrapper.OVERVIEW_HAPTIC;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ONE_HANDED_ACTIVE;
@@ -280,7 +280,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             mRecentsView.animate()
                     .translationX(0)
                     .translationY(0)
-                    .setInterpolator(ACCEL_DEACCEL)
+                    .setInterpolator(ACCELERATE_DECELERATE)
                     .setDuration(duration)
                     .withEndAction(goToHomeInsteadOfOverview
                             ? null

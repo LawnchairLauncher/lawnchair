@@ -21,6 +21,9 @@ import static android.view.WindowManager.LayoutParams.TYPE_DOCK_DIVIDER;
 import static android.view.WindowManager.TRANSIT_OPEN;
 import static android.view.WindowManager.TRANSIT_TO_FRONT;
 
+import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.TOUCH_RESPONSE;
+import static com.android.app.animation.Interpolators.clampToProgress;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
@@ -35,9 +38,6 @@ import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DU
 import static com.android.launcher3.QuickstepTransitionManager.SPLIT_DIVIDER_ANIM_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.SPLIT_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
-import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 import static com.android.quickstep.views.DesktopTaskView.DESKTOP_MODE_SUPPORTED;
 
@@ -61,12 +61,12 @@ import android.window.TransitionInfo;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
@@ -237,12 +237,12 @@ public final class TaskViewUtils {
         for (RemoteTargetHandle targetHandle : remoteTargetHandles) {
             TaskViewSimulator tvsLocal = targetHandle.getTaskViewSimulator();
             out.setFloat(tvsLocal.fullScreenProgress,
-                    AnimatedFloat.VALUE, 1, TOUCH_RESPONSE_INTERPOLATOR);
+                    AnimatedFloat.VALUE, 1, TOUCH_RESPONSE);
             out.setFloat(tvsLocal.recentsViewScale,
                     AnimatedFloat.VALUE, tvsLocal.getFullScreenScale(),
-                    TOUCH_RESPONSE_INTERPOLATOR);
+                    TOUCH_RESPONSE);
             out.setFloat(tvsLocal.recentsViewScroll, AnimatedFloat.VALUE, 0,
-                    TOUCH_RESPONSE_INTERPOLATOR);
+                    TOUCH_RESPONSE);
             out.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -355,9 +355,9 @@ public final class TaskViewUtils {
                 float fullScreenScale =
                         topMostSimulators[i].getTaskViewSimulator().getFullScreenScale();
                 out.addFloat(ttv, VIEW_TRANSLATE_Y, translationY,
-                        translationY / fullScreenScale, TOUCH_RESPONSE_INTERPOLATOR);
+                        translationY / fullScreenScale, TOUCH_RESPONSE);
                 out.addFloat(ttv, VIEW_TRANSLATE_X, translationX,
-                         translationX / fullScreenScale, TOUCH_RESPONSE_INTERPOLATOR);
+                         translationX / fullScreenScale, TOUCH_RESPONSE);
             }
 
             Matrix[] k0i = new Matrix[matrixSize];
@@ -405,7 +405,7 @@ public final class TaskViewUtils {
 
         if (depthController != null) {
             out.setFloat(depthController.stateDepth, MULTI_PROPERTY_VALUE,
-                    BACKGROUND_APP.getDepth(baseActivity), TOUCH_RESPONSE_INTERPOLATOR);
+                    BACKGROUND_APP.getDepth(baseActivity), TOUCH_RESPONSE);
         }
     }
 
@@ -639,7 +639,7 @@ public final class TaskViewUtils {
                 raController.setWillFinishToHome(false);
             }
             launcherAnim = recentsView.createAdjacentPageAnimForTaskLaunch(taskView);
-            launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
+            launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE);
             launcherAnim.setDuration(RECENTS_LAUNCH_DURATION);
 
             windowAnimEndListener = new AnimatorListenerAdapter() {

@@ -24,11 +24,11 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 
 import android.view.MotionEvent;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.AllAppsSwipeController;

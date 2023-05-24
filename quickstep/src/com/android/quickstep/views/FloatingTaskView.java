@@ -1,8 +1,8 @@
 package com.android.quickstep.views;
 
+import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.clampToProgress;
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.clampToProgress;
 
 import android.animation.ValueAnimator;
 import android.content.Context;

@@ -16,13 +16,13 @@
 
 package com.android.launcher3;
 
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.InvariantDeviceProfile.INDEX_DEFAULT;
 import static com.android.launcher3.InvariantDeviceProfile.INDEX_LANDSCAPE;
 import static com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_LANDSCAPE;
 import static com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_PORTRAIT;
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.Utilities.pxFromSp;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_MULTI_DISPLAY_PARTIAL_DEPTH;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
 import static com.android.launcher3.icons.GraphicsUtils.getShapePath;

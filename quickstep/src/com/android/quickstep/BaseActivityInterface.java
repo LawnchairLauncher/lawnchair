@@ -15,11 +15,11 @@
  */
 package com.android.quickstep;
 
+import static com.android.app.animation.Interpolators.ACCELERATE_2;
+import static com.android.app.animation.Interpolators.INSTANT;
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_BACKGROUND_COLOR;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
-import static com.android.launcher3.anim.Interpolators.ACCEL_2;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.AbsSwipeUpHandler.RECENTS_ATTACH_DURATION;
 import static com.android.quickstep.GestureState.GestureEndTarget.LAST_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
@@ -553,7 +553,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             long animationDuration = animate ? RECENTS_ATTACH_DURATION : 0;
             Animator fadeAnim = mActivity.getStateManager()
                     .createStateElementAnimation(INDEX_RECENTS_FADE_ANIM, attached ? 1 : 0);
-            fadeAnim.setInterpolator(attached ? INSTANT : ACCEL_2);
+            fadeAnim.setInterpolator(attached ? INSTANT : ACCELERATE_2);
             fadeAnim.setDuration(animationDuration);
             animatorSet.play(fadeAnim);
 

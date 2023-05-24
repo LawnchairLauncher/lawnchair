@@ -21,6 +21,7 @@ import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 import static android.content.pm.ActivityInfo.CONFIG_UI_MODE;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
+import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_FOLDER;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ICON_SURFACE;
@@ -43,7 +44,6 @@ import static com.android.launcher3.LauncherState.NO_SCALE;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
 import static com.android.launcher3.config.FeatureFlags.SHOW_DOT_PAGINATION;

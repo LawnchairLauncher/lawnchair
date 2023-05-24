@@ -16,8 +16,8 @@
 
 package com.android.launcher3.widget;
 
+import static com.android.app.animation.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_BOTTOM_WIDGETS_TRAY;
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 
 import android.animation.PropertyValuesHolder;
 import android.content.Context;

@@ -18,6 +18,9 @@ package com.android.launcher3;
 
 import static androidx.dynamicanimation.animation.DynamicAnimation.MIN_VISIBLE_CHANGE_SCALE;
 
+import static com.android.app.animation.Interpolators.ACCELERATE_2;
+import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.ZOOM_OUT;
 import static com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_WORKSPACE_STATE;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
@@ -30,9 +33,6 @@ import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.WORKSPACE_PAGE_INDICATOR;
-import static com.android.launcher3.anim.Interpolators.ACCEL_2;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.ZOOM_OUT;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.graphics.Scrim.SCRIM_PROGRESS;
 import static com.android.launcher3.graphics.SysUiScrim.SYSUI_PROGRESS;
@@ -201,7 +201,7 @@ public class WorkspaceStateTransitionAnimation {
 
         propertySetter.setViewBackgroundColor(mLauncher.getScrimView(),
                 state.getWorkspaceScrimColor(mLauncher),
-                config.getInterpolator(ANIM_SCRIM_FADE, ACCEL_2));
+                config.getInterpolator(ANIM_SCRIM_FADE, ACCELERATE_2));
     }
 
     public void applyChildState(LauncherState state, CellLayout cl, int childIndex) {

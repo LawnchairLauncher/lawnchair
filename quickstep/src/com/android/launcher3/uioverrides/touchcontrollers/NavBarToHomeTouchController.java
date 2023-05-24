@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
+import static com.android.app.animation.Interpolators.DECELERATE_3;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL_APPS_EDU;
 import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
@@ -25,7 +26,6 @@ import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PULL_BACK_ALPHA;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PULL_BACK_TRANSLATION;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
 import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
@@ -57,7 +57,7 @@ import com.android.quickstep.views.RecentsView;
 public class NavBarToHomeTouchController implements TouchController,
         SingleAxisSwipeDetector.Listener {
 
-    private static final Interpolator PULLBACK_INTERPOLATOR = DEACCEL_3;
+    private static final Interpolator PULLBACK_INTERPOLATOR = DECELERATE_3;
     // The min amount of overview scrim we keep during the transition.
     private static final float OVERVIEW_TO_HOME_SCRIM_MULTIPLIER = 0.5f;
 

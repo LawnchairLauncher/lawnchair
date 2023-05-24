@@ -15,9 +15,9 @@
  */
 package com.android.quickstep.fallback;
 
-import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.FINAL_FRAME;
+import static com.android.app.animation.Interpolators.INSTANT;
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_MODAL;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TRANSLATE_X;

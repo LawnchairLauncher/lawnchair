@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.notification;
 
-import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
+import static com.android.app.animation.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
 
 import android.animation.Animator;

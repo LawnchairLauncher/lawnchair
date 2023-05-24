@@ -30,6 +30,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
@@ -37,7 +38,6 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.uioverrides.PredictedAppIcon;

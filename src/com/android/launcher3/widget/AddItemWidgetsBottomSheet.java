@@ -16,8 +16,8 @@
 
 package com.android.launcher3.widget;
 
+import static com.android.app.animation.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.Utilities.ATLEAST_R;
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
 
 import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
