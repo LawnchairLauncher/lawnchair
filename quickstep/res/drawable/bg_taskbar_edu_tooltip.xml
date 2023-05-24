@@ -18,5 +18,5 @@
     android:shape="rectangle">
 
     <corners android:radius="@dimen/dialogCornerRadius" />
-    <solid android:color="?androidprv:attr/colorSurface" />
+    <solid android:color="?androidprv:attr/materialColorSurfaceBright"/>
 </shape>
