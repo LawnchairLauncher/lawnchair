@@ -314,13 +314,24 @@ public class SystemUiProxy implements ISystemUiProxy {
 
     @MainThread
     @Override
-    public void onStatusBarMotionEvent(MotionEvent event) {
+    public void onStatusBarTouchEvent(MotionEvent event) {
         Preconditions.assertUIThread();
         if (mSystemUiProxy != null) {
             try {
-                mSystemUiProxy.onStatusBarMotionEvent(event);
+                mSystemUiProxy.onStatusBarTouchEvent(event);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call onStatusBarMotionEvent", e);
+                Log.w(TAG, "Failed call onStatusBarTouchEvent with arg: " + event, e);
+            }
+        }
+    }
+
+    @Override
+    public void onStatusBarTrackpadEvent(MotionEvent event) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.onStatusBarTrackpadEvent(event);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call onStatusBarTrackpadEvent with arg: " + event, e);
             }
         }
     }
