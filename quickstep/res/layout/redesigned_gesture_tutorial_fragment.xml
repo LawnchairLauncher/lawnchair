@@ -96,15 +96,6 @@
         android:layout_height="match_parent"
         android:background="@drawable/gesture_tutorial_ripple" />
 
-    <include
-        android:id="@+id/gesture_tutorial_fake_taskbar_view"
-        layout="@layout/gesture_tutorial_tablet_mock_taskbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/gesture_tutorial_taskbar_margin_bottom" />
-
     <ImageView
         android:id="@+id/gesture_tutorial_edge_gesture_video"
         android:layout_width="match_parent"

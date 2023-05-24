@@ -120,6 +120,7 @@ public final class TestProtocol {
             "get-activities-created-count";
     public static final String REQUEST_GET_ACTIVITIES = "get-activities";
     public static final String REQUEST_HAS_TIS = "has-touch-interaction-service";
+    public static final String REQUEST_IS_TRACKPAD_GESTURE_ENABLED = "is-trackpad-gesture-enabled";
     public static final String REQUEST_TASKBAR_ALL_APPS_TOP_PADDING =
             "taskbar-all-apps-top-padding";
     public static final String REQUEST_ALL_APPS_TOP_PADDING = "all-apps-top-padding";
@@ -154,6 +155,7 @@ public final class TestProtocol {
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
     public static final String VIEW_AND_ACTIVITY_LEAKS = "b/260260325";
     public static final String WORK_TAB_MISSING = "b/243688989";
+    public static final String TWO_TASKBAR_LONG_CLICKS = "b/262282528";
 
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
     public static final String REQUEST_STOP_EMULATE_DISPLAY = "stop-emulate-display";

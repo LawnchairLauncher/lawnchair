@@ -722,7 +722,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      * @param moveRunningTask whether to move running task to front when attaching
      */
     private void maybeUpdateRecentsAttachedState(boolean animate, boolean moveRunningTask) {
-        if (!mDeviceState.isFullyGesturalNavMode() || mRecentsView == null) {
+        if ((!mDeviceState.isFullyGesturalNavMode() && !mGestureState.isTrackpadGesture())
+                || mRecentsView == null) {
             return;
         }
         RemoteAnimationTarget runningTaskTarget = mRecentsAnimationTargets != null

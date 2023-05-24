@@ -21,11 +21,13 @@ import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRES
 import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PULL_BACK_ALPHA;
 import static com.android.launcher3.allapps.AllAppsTransitionController.ALL_APPS_PULL_BACK_TRANSLATION;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
+import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
 import android.animation.ValueAnimator;
@@ -42,6 +44,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TouchController;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
@@ -95,6 +98,10 @@ public class NavBarToHomeTouchController implements TouchController,
     }
 
     private boolean canInterceptTouch(MotionEvent ev) {
+        if (!isTrackpadMotionEvent(ev) && DisplayController.getNavigationMode(mLauncher)
+                == THREE_BUTTONS) {
+            return false;
+        }
         boolean cameFromNavBar = (ev.getEdgeFlags() & Utilities.EDGE_NAV_BAR) != 0;
         if (!cameFromNavBar) {
             return false;

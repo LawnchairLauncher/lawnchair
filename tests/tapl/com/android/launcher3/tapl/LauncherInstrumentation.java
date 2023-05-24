@@ -1035,6 +1035,10 @@ public final class LauncherInstrumentation {
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_UP);
                 }
+                if (isTrackpadGestureEnabled()) {
+                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
+                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
+                }
 
                 runToState(
                         waitForNavigationUiObject("home")::click,
@@ -1073,6 +1077,10 @@ public final class LauncherInstrumentation {
                 if (isTablet()) {
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_UP);
+                }
+                if (isTrackpadGestureEnabled()) {
+                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
+                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
                 }
             }
             if (launcherVisible) {
@@ -1646,9 +1654,14 @@ public final class LauncherInstrumentation {
     }
 
     private boolean hasTIS() {
-        return getTestInfo(TestProtocol.REQUEST_HAS_TIS).getBoolean(TestProtocol.REQUEST_HAS_TIS);
+        return getTestInfo(TestProtocol.REQUEST_HAS_TIS).getBoolean(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    boolean isTrackpadGestureEnabled() {
+        return getTestInfo(TestProtocol.REQUEST_IS_TRACKPAD_GESTURE_ENABLED).getBoolean(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
 
     public void sendPointer(long downTime, long currentTime, int action, Point point,
             GestureScope gestureScope) {
@@ -1660,7 +1673,8 @@ public final class LauncherInstrumentation {
                         && gestureScope != GestureScope.OUTSIDE_WITH_KEYCODE) {
                     expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
                 }
-                if (hasTIS && getNavigationModel() != NavigationModel.THREE_BUTTON) {
+                if (hasTIS && (isTrackpadGestureEnabled()
+                        || getNavigationModel() != NavigationModel.THREE_BUTTON)) {
                     expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
                 }
                 break;
@@ -1679,7 +1693,8 @@ public final class LauncherInstrumentation {
                                     || gestureScope == GestureScope.OUTSIDE_WITHOUT_PILFER
                                     ? EVENT_TOUCH_UP : EVENT_TOUCH_CANCEL);
                 }
-                if (hasTIS && getNavigationModel() != NavigationModel.THREE_BUTTON) {
+                if (hasTIS && (isTrackpadGestureEnabled()
+                        || getNavigationModel() != NavigationModel.THREE_BUTTON)) {
                     expectEvent(TestProtocol.SEQUENCE_TIS,
                             gestureScope == GestureScope.INSIDE_TO_OUTSIDE_WITH_KEYCODE
                                     || gestureScope == GestureScope.OUTSIDE_WITH_KEYCODE

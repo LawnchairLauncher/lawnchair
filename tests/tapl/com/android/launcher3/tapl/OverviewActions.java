@@ -51,7 +51,7 @@ public class OverviewActions {
                     "clicked screenshot button")) {
                 UiObject2 closeScreenshot = mLauncher.waitForSystemUiObject(
                         "screenshot_dismiss_image");
-                if (mLauncher.getNavigationModel()
+                if (mLauncher.isTrackpadGestureEnabled() || mLauncher.getNavigationModel()
                         != LauncherInstrumentation.NavigationModel.THREE_BUTTON) {
                     mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS,
                             LauncherInstrumentation.EVENT_TOUCH_DOWN_TIS);
