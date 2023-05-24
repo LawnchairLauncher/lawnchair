@@ -1,5 +1,4 @@
 import com.android.build.gradle.BasePlugin
-import com.google.protobuf.gradle.GenerateProtoTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
