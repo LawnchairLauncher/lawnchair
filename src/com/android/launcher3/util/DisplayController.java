@@ -48,6 +48,7 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.window.CachedDisplayInfo;
 import com.android.launcher3.util.window.WindowManagerProxy;
 
@@ -127,6 +128,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         Context displayInfoContext = getDisplayInfoContext(display);
         mInfo = new Info(displayInfoContext, wmProxy,
                 wmProxy.estimateInternalDisplayBounds(displayInfoContext));
+        FileLog.i(TAG, "(CTOR) perDisplayBounds: " + mInfo.mPerDisplayBounds);
     }
 
     /**
@@ -284,6 +286,8 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         if (!newInfo.supportedBounds.equals(oldInfo.supportedBounds)
                 || !newInfo.mPerDisplayBounds.equals(oldInfo.mPerDisplayBounds)) {
             change |= CHANGE_SUPPORTED_BOUNDS;
+            FileLog.w(TAG,
+                    "(CHANGE_SUPPORTED_BOUNDS) perDisplayBounds: " + newInfo.mPerDisplayBounds);
         }
         if (DEBUG) {
             Log.d(TAG, "handleInfoChange - change: " + getChangeFlagsString(change));
@@ -354,12 +358,14 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
             realBounds = wmProxy.getRealBounds(displayInfoContext, displayInfo);
             if (cachedValue == null) {
                 // Unexpected normalizedDisplayInfo is found, recreate the cache
-                Log.e(TAG, "Unexpected normalizedDisplayInfo found, invalidating cache");
+                FileLog.e(TAG, "Unexpected normalizedDisplayInfo found, invalidating cache: "
+                        + normalizedDisplayInfo);
+                FileLog.e(TAG, "(Invalid Cache) perDisplayBounds : " + mPerDisplayBounds);
                 mPerDisplayBounds.clear();
                 mPerDisplayBounds.putAll(wmProxy.estimateInternalDisplayBounds(displayInfoContext));
                 cachedValue = mPerDisplayBounds.get(normalizedDisplayInfo);
                 if (cachedValue == null) {
-                    Log.e(TAG, "normalizedDisplayInfo not found in estimation: "
+                    FileLog.e(TAG, "normalizedDisplayInfo not found in estimation: "
                             + normalizedDisplayInfo);
                     supportedBounds.add(realBounds);
                 }
@@ -379,8 +385,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
                 Log.d(TAG, "displayInfo: " + displayInfo);
                 Log.d(TAG, "realBounds: " + realBounds);
                 Log.d(TAG, "normalizedDisplayInfo: " + normalizedDisplayInfo);
-                mPerDisplayBounds.forEach((key, value) -> Log.d(TAG,
-                        "perDisplayBounds - " + key + ": " + value));
+                Log.d(TAG, "perDisplayBounds: " + mPerDisplayBounds);
             }
         }
 
