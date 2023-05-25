@@ -26,4 +26,6 @@
 
     <!-- Turn on work apps button -->
     <color name="work_turn_on_stroke">?androidprv:attr/colorAccentSecondaryVariant</color>
+    <color name="work_fab_bg_color">?androidprv:attr/materialColorPrimaryFixedDim</color>
+    <color name="work_fab_icon_color">?androidprv:attr/materialColorOnPrimaryFixed</color>
 </resources>
