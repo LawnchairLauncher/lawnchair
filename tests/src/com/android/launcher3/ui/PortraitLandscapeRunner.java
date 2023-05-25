@@ -9,9 +9,20 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
-class PortraitLandscapeRunner implements TestRule {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+public class PortraitLandscapeRunner implements TestRule {
     private static final String TAG = "PortraitLandscapeRunner";
     private AbstractLauncherUiTest mTest;
+
+    // Annotation for tests that need to be run in portrait and landscape modes.
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public @interface PortraitLandscape {
+    }
 
     public PortraitLandscapeRunner(AbstractLauncherUiTest test) {
         mTest = test;
@@ -20,7 +31,7 @@ class PortraitLandscapeRunner implements TestRule {
     @Override
     public Statement apply(Statement base, Description description) {
         if (!TestHelpers.isInLauncherProcess() ||
-                description.getAnnotation(AbstractLauncherUiTest.PortraitLandscape.class) == null) {
+                description.getAnnotation(PortraitLandscape.class) == null) {
             return base;
         }
 

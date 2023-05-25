@@ -82,10 +82,6 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 
 import java.io.IOException;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -207,12 +203,6 @@ public abstract class AbstractLauncherUiTest {
         mDevice.executeShellCommand("pm clear " + pkg);
         assertTrue(pkg + " didn't restart", count.await(10, TimeUnit.SECONDS));
         mTargetContext.unregisterReceiver(broadcastReceiver);
-    }
-
-    // Annotation for tests that need to be run in portrait and landscape modes.
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
-    protected @interface PortraitLandscape {
     }
 
     protected TestRule getRulesInsideActivityMonitor() {
