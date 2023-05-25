@@ -47,4 +47,8 @@
     <color name="widget_picker_collapse_handle_color_dark">
         @android:color/system_neutral2_700</color>
 
+    <color name="work_fab_bg_color">
+        @android:color/system_accent1_200</color>
+    <color name="work_fab_icon_color">
+        @android:color/system_accent1_900</color>
 </resources>
