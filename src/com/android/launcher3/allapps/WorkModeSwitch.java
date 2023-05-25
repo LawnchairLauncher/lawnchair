@@ -97,7 +97,6 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
             mTextView.setText(cache.workProfilePauseButton);
         }
 
-        mIcon.setColorFilter(mTextView.getCurrentTextColor());
         getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
     }
 
