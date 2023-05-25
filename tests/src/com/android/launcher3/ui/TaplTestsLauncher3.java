@@ -238,6 +238,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 false /* tapRight */);
     }
 
+    @PlatinumTest(focusArea = "launcher")
     @IwTest(focusArea = "launcher")
     @Test
     @ScreenRecord // b/202433017
@@ -372,6 +373,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         }
     }
 
+    @PlatinumTest(focusArea = "launcher")
     @IwTest(focusArea = "launcher")
     @Test
     @PortraitLandscape
