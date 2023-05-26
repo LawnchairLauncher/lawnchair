@@ -60,6 +60,8 @@ public class LauncherUnfoldAnimationController implements OnDeviceProfileChangeL
     private final NaturalRotationUnfoldProgressProvider mNaturalOrientationProgressProvider;
     private final UnfoldMoveFromCenterHotseatAnimator mUnfoldMoveFromCenterHotseatAnimator;
     private final UnfoldMoveFromCenterWorkspaceAnimator mUnfoldMoveFromCenterWorkspaceAnimator;
+    private final TransitionStatusProvider mExternalTransitionStatusProvider =
+            new TransitionStatusProvider();
     private PreemptiveUnfoldTransitionProgressProvider mPreemptiveProgressProvider = null;
     private Boolean mIsTablet = null;
 
@@ -87,6 +89,8 @@ public class LauncherUnfoldAnimationController implements OnDeviceProfileChangeL
             mProgressProvider = new ScopedUnfoldTransitionProgressProvider(
                     unfoldTransitionProgressProvider);
         }
+
+        unfoldTransitionProgressProvider.addCallback(mExternalTransitionStatusProvider);
 
         mUnfoldMoveFromCenterHotseatAnimator = new UnfoldMoveFromCenterHotseatAnimator(launcher,
                 windowManager, rotationChangeProvider);
@@ -166,10 +170,25 @@ public class LauncherUnfoldAnimationController implements OnDeviceProfileChangeL
         }
 
         if (mIsTablet != null && dp.isTablet != mIsTablet) {
-            if (dp.isTablet && SystemUiProxy.INSTANCE.get(mLauncher).isActive()) {
+            // We should preemptively start the animation only if:
+            // - We changed to the unfolded screen
+            // - SystemUI IPC connection is alive, so we won't end up in a situation that we won't
+            //   receive transition progress events from SystemUI later because there was no
+            //   IPC connection established (e.g. because of SystemUI crash)
+            // - SystemUI has not already sent unfold animation progress events. This might happen
+            //   if Launcher was not open during unfold, in this case we receive the configuration
+            //   change only after we went back to home screen and we don't want to start the
+            //   animation in this case.
+            if (dp.isTablet
+                    && SystemUiProxy.INSTANCE.get(mLauncher).isActive()
+                    && !mExternalTransitionStatusProvider.hasRun()) {
                 // Preemptively start the unfold animation to make sure that we have drawn
                 // the first frame of the animation before the screen gets unblocked
                 preemptivelyStartAnimationOnNextFrame();
+            }
+
+            if (!dp.isTablet) {
+                mExternalTransitionStatusProvider.onFolded();
             }
         }
 
@@ -220,6 +239,50 @@ public class LauncherUnfoldAnimationController implements OnDeviceProfileChangeL
         private void setScale(float value) {
             WORKSPACE_SCALE_PROPERTY.setValue(mLauncher.getWorkspace(), value);
             HOTSEAT_SCALE_PROPERTY.setValue(mLauncher.getHotseat(), value);
+        }
+    }
+
+    /**
+     * Class to track the current status of the external transition provider (the events are coming
+     * from the SystemUI side through IPC), it allows to check if the transition has already
+     * finished or currently running on the SystemUI side since last unfold.
+     */
+    private static class TransitionStatusProvider implements TransitionProgressListener {
+
+        private boolean mHasRun = false;
+
+        @Override
+        public void onTransitionStarted() {
+            markAsRun();
+        }
+
+        @Override
+        public void onTransitionProgress(float progress) {
+            markAsRun();
+        }
+
+        @Override
+        public void onTransitionFinished() {
+            markAsRun();
+        }
+
+        /**
+         * Called when the device is folded, so we can reset the status of the animation
+         */
+        public void onFolded() {
+            mHasRun = false;
+        }
+
+        /**
+         * Returns true if there was an animation already (or it is currently running) after
+         * unfolding the device
+         */
+        public boolean hasRun() {
+            return mHasRun;
+        }
+
+        private void markAsRun() {
+            mHasRun = true;
         }
     }
 }
