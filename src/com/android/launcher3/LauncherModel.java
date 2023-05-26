@@ -20,6 +20,8 @@ import static android.app.admin.DevicePolicyManager.ACTION_DEVICE_POLICY_RESOURC
 
 import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
 import static com.android.launcher3.config.FeatureFlags.IS_STUDIO_BUILD;
+import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
@@ -560,6 +562,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
             synchronized (mLock) {
                 // Everything loaded bind the data.
                 mModelLoaded = true;
+                testLogD(WORK_TAB_MISSING, "launcher model loaded");
             }
         }
 
