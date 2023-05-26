@@ -185,8 +185,8 @@ public class KeyboardQuickSwitchViewController {
                 return false;
             }
             boolean traverseBackwards = (keyCode == KeyEvent.KEYCODE_TAB && event.isShiftPressed())
-                    || (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && !isRTL)
-                    || (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && isRTL);
+                    || (keyCode == KeyEvent.KEYCODE_DPAD_RIGHT && isRTL)
+                    || (keyCode == KeyEvent.KEYCODE_DPAD_LEFT && !isRTL);
             int taskCount = mControllerCallbacks.getTaskCount();
             int toIndex = mCurrentFocusIndex == -1
                     // Focus the second-most recent app if possible
