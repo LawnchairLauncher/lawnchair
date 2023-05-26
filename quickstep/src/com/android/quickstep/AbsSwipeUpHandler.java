@@ -2270,6 +2270,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                                         targetCompat.taskId == mGestureState.getLastStartedTaskId())
                                 .findFirst();
                 if (!taskTargetOptional.isPresent()) {
+                    ActiveGestureLog.INSTANCE.addLog("No appeared task matching started task id");
                     finishRecentsAnimationOnTasksAppeared(null /* onFinishComplete */);
                     return;
                 }
@@ -2277,6 +2278,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 TaskView taskView = mRecentsView == null
                         ? null : mRecentsView.getTaskViewByTaskId(taskTarget.taskId);
                 if (taskView == null || !taskView.getThumbnail().shouldShowSplashView()) {
+                    ActiveGestureLog.INSTANCE.addLog("Invalid task view splash state");
                     finishRecentsAnimationOnTasksAppeared(null /* onFinishComplete */);
                     return;
                 }
