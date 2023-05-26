@@ -15,62 +15,80 @@
  */
 package com.android.launcher3.celllayout;
 
+import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+import static com.android.launcher3.util.TestUtil.runOnExecutorSync;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.model.BgDataModel.Callbacks;
+import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.function.Supplier;
 
 public class FavoriteItemsTransaction {
-    private ArrayList<ItemInfo> mItemsToSubmit;
+    private ArrayList<Supplier<ItemInfo>> mItemsToSubmit;
     private Context mContext;
-    private ContentResolver mResolver;
-    public AbstractLauncherUiTest mTest;
 
-    public FavoriteItemsTransaction(Context context, AbstractLauncherUiTest test) {
+    public FavoriteItemsTransaction(Context context) {
         mItemsToSubmit = new ArrayList<>();
         mContext = context;
-        mResolver = mContext.getContentResolver();
-        mTest = test;
     }
 
-    public FavoriteItemsTransaction addItem(ItemInfo itemInfo) {
+    public FavoriteItemsTransaction addItem(Supplier<ItemInfo> itemInfo) {
         this.mItemsToSubmit.add(itemInfo);
-        return this;
-    }
-
-    public FavoriteItemsTransaction removeLast() {
-        this.mItemsToSubmit.remove(this.mItemsToSubmit.size() - 1);
         return this;
     }
 
     /**
      * Commits all the ItemInfo into the database of Favorites
      **/
-    public void commit() throws ExecutionException, InterruptedException {
-        List<ContentValues> values = new ArrayList<>();
-        for (ItemInfo item : this.mItemsToSubmit) {
-            ContentWriter writer = new ContentWriter(mContext);
-            item.onAddToDatabase(writer);
-            writer.put(LauncherSettings.Favorites._ID, item.id);
-            values.add(writer.getValues(mContext));
-        }
-        // Submit the icons to the database in the model thread to prevent race conditions
-        MODEL_EXECUTOR.submit(() -> mResolver.bulkInsert(LauncherSettings.Favorites.CONTENT_URI,
-                values.toArray(new ContentValues[0]))).get();
-        // Reload the state of the Launcher
-        MAIN_EXECUTOR.submit(() -> LauncherAppState.getInstance(
-                mContext).getModel().forceReload()).get();
+    public void commit() {
+        LauncherModel model = LauncherAppState.getInstance(mContext).getModel();
+        // Load the model once so that there is no pending migration:
+        loadModelSync(model);
+
+        runOnExecutorSync(MODEL_EXECUTOR, () -> {
+            ModelDbController controller = model.getModelDbController();
+            // Migrate any previous data so that the DB state is correct
+            controller.tryMigrateDB();
+
+            // Create DB again to load fresh data
+            controller.createEmptyDB();
+            controller.clearEmptyDbFlag();
+
+            // Add new data
+            List<ContentValues> values = new ArrayList<>();
+            int count = mItemsToSubmit.size();
+            for (int i = 0; i < count; i++) {
+                ContentWriter writer = new ContentWriter(mContext);
+                mItemsToSubmit.get(i).get().onAddToDatabase(writer);
+                writer.put(LauncherSettings.Favorites._ID, i);
+                values.add(writer.getValues(mContext));
+            }
+            controller.bulkInsert(TABLE_NAME, values.toArray(new ContentValues[0]));
+        });
+
+        // Reload model
+        runOnExecutorSync(MAIN_EXECUTOR, model::forceReload);
+        loadModelSync(model);
+    }
+
+    private void loadModelSync(LauncherModel model) {
+        Callbacks mockCb = new Callbacks() { };
+        runOnExecutorSync(MAIN_EXECUTOR, () -> model.addCallbacksAndLoad(mockCb));
+        runOnExecutorSync(MODEL_EXECUTOR, () -> { });
+
+        runOnExecutorSync(MAIN_EXECUTOR, () -> { });
+        runOnExecutorSync(MAIN_EXECUTOR, () -> model.removeCallbacks(mockCb));
     }
 }

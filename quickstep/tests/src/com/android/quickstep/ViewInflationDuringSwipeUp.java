@@ -187,7 +187,7 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
                     LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
             LauncherSettings.Settings.call(mResolver,
                     LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
-            LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
+            LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(false);
             // Make sure the widget is big enough to show a list of items
             info.minSpanX = 2;
             info.minSpanY = 2;

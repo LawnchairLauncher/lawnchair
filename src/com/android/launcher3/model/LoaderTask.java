@@ -367,18 +367,9 @@ public class LoaderTask implements Runnable {
         final boolean isSdCardReady = Utilities.isBootCompleted();
         final WidgetManagerHelper widgetHelper = new WidgetManagerHelper(context);
 
-        boolean clearDb = false;
-        if (!mApp.getModel().getModelDbController().migrateGridIfNeeded()) {
-            // Migration failed. Clear workspace.
-            clearDb = true;
-        }
-
-        if (clearDb) {
-            Log.d(TAG, "loadWorkspace: resetting launcher database");
-            Settings.call(contentResolver, Settings.METHOD_CREATE_EMPTY_DB);
-        }
-
+        mApp.getModel().getModelDbController().tryMigrateDB();
         Log.d(TAG, "loadWorkspace: loading default favorites");
+        mApp.getModel().getModelDbController().loadDefaultFavoritesIfNecessary();
         Settings.call(contentResolver, Settings.METHOD_LOAD_DEFAULT_FAVORITES);
 
         synchronized (mBgDataModel) {

@@ -280,13 +280,29 @@ public class ModelDbController {
                 mOpenHelper.getReadableDatabase(), Favorites.HYBRID_HOTSEAT_BACKUP_TABLE);
     }
 
+
+    /**
+     * Migrates the DB if needed. If the migration failed, it clears the DB.
+     */
+    public void tryMigrateDB() {
+        if (!migrateGridIfNeeded()) {
+            Log.d(TAG, "Migration failed: resetting launcher database");
+            createEmptyDB();
+            LauncherPrefs.get(mContext).putSync(
+                    getEmptyDbCreatedKey(mOpenHelper.getDatabaseName()).to(true));
+
+            // Write the grid state to avoid another migration
+            new DeviceGridState(LauncherAppState.getIDP(mContext)).writeToPrefs(mContext);
+        }
+    }
+
     /**
      * Migrates the DB if needed, and returns false if the migration failed
      * and DB needs to be cleared.
      * @return true if migration was success or ignored, false if migration failed
      * and the DB should be reset.
      */
-    public boolean migrateGridIfNeeded() {
+    private boolean migrateGridIfNeeded() {
         createDbIfNotExists();
         InvariantDeviceProfile idp = LauncherAppState.getIDP(mContext);
         if (!GridSizeMigrationUtil.needsToMigrate(mContext, idp)) {

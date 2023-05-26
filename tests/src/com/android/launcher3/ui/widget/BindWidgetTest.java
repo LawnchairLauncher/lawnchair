@@ -17,6 +17,7 @@ package com.android.launcher3.ui.widget;
 
 import static androidx.test.InstrumentationRegistry.getTargetContext;
 
+import static com.android.launcher3.util.TestUtil.getOnUiThread;
 import static com.android.launcher3.util.WidgetUtils.createWidgetInfo;
 
 import static org.junit.Assert.assertEquals;
@@ -103,7 +104,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
     @Test
     public void testBindNormalWidget_withConfig() {
-        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, true);
+        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(true);
         LauncherAppWidgetInfo item = createWidgetInfo(info, getTargetContext(), true);
 
         addItemToScreen(item);
@@ -112,7 +113,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
     @Test
     public void testBindNormalWidget_withoutConfig() {
-        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
+        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(false);
         LauncherAppWidgetInfo item = createWidgetInfo(info, getTargetContext(), true);
 
         addItemToScreen(item);
@@ -121,7 +122,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
     @Test
     public void testUnboundWidget_removed() {
-        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
+        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(false);
         LauncherAppWidgetInfo item = createWidgetInfo(info, getTargetContext(), false);
         item.appWidgetId = -33;
 
@@ -140,7 +141,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
     @Test
     public void testPendingWidget_autoRestored() {
         // A non-restored widget with no config screen gets restored automatically.
-        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
+        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(false);
 
         // Do not bind the widget
         LauncherAppWidgetInfo item = createWidgetInfo(info, getTargetContext(), false);
@@ -153,7 +154,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
     @Test
     public void testPendingWidget_withConfigScreen() {
         // A non-restored widget with config screen get bound and shows a 'Click to setup' UI.
-        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, true);
+        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(true);
 
         // Do not bind the widget
         LauncherAppWidgetInfo item = createWidgetInfo(info, getTargetContext(), false);

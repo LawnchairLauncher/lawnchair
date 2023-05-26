@@ -18,7 +18,6 @@ package com.android.launcher3.tapl;
 
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_SCROLLED;
 
-import static com.android.launcher3.tapl.LauncherInstrumentation.CALLBACK_RUN_POINT.CALLBACK_HOLD_BEFORE_DROP;
 import static com.android.launcher3.testing.shared.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
@@ -553,7 +552,6 @@ public final class Workspace extends Home {
             launcher.movePointer(dragStart, targetDest, DEFAULT_DRAG_STEPS, isDecelerating,
                     downTime, SystemClock.uptimeMillis(), false,
                     LauncherInstrumentation.GestureScope.INSIDE);
-            launcher.runCallbackIfActive(CALLBACK_HOLD_BEFORE_DROP);
             dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents);
         }
     }
@@ -587,7 +585,6 @@ public final class Workspace extends Home {
             launcher.movePointer(dragStart, targetDest, DEFAULT_DRAG_STEPS, isDecelerating,
                     downTime, SystemClock.uptimeMillis(), false,
                     LauncherInstrumentation.GestureScope.INSIDE);
-            launcher.runCallbackIfActive(CALLBACK_HOLD_BEFORE_DROP);
             dropDraggedIcon(launcher, targetDest, downTime, expectDropEvents);
         }
     }
