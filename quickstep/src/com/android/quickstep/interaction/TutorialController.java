@@ -268,7 +268,12 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     }
 
     @ColorInt
-    protected abstract int getSwipeActionColor();
+    protected int getFakeTaskViewColor() {
+        return Color.TRANSPARENT;
+    }
+
+    @ColorInt
+    protected abstract int getFakeLauncherColor();
 
     @ColorInt
     protected int getExitingAppColor() {
@@ -445,6 +450,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     }
 
     private void showSuccessPage() {
+        pauseAndHideLottieAnimation();
         mCheckmarkAnimation.setVisibility(View.VISIBLE);
         mCheckmarkAnimation.playAnimation();
         mFeedbackTitleView.setTextAppearance(mContext, getSuccessTitleTextAppearance());
@@ -591,7 +597,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
     protected void resetViewsForBackGesture() {
         mFakeTaskView.setVisibility(View.VISIBLE);
-        mFakeTaskView.setBackgroundColor(getSwipeActionColor());
+        mFakeTaskView.setBackgroundColor(getFakeTaskViewColor());
         mExitingAppView.setVisibility(View.VISIBLE);
 
         // reset the exiting app's dimensions
@@ -690,11 +696,10 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                     mContext, getMockWallpaperResId()));
             mTutorialFragment.updateFeedbackAnimation();
             mFakeLauncherView.setBackgroundColor(ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                    ? getSwipeActionColor()
+                    ? getFakeLauncherColor()
                     : mContext.getColor(R.color.gesture_tutorial_fake_wallpaper_color));
             updateFakeViewLayout(mFakeHotseatView, getMockHotseatResId());
             mHotseatIconView = mFakeHotseatView.findViewById(R.id.hotseat_icon_1);
-            updateFakeViewLayout(mFakeTaskView, getMockAppTaskLayoutResId());
             mFakeTaskView.animate().alpha(1).setListener(
                     AnimatorListeners.forSuccessCallback(() -> mFakeTaskView.animate().cancel()));
             mFakePreviousTaskView.setFakeTaskViewFillColor(getMockPreviousAppTaskThumbnailColor());
@@ -703,12 +708,15 @@ abstract class TutorialController implements BackGestureAttemptCallback,
 
             if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
                 mExitingAppView.setBackgroundColor(getExitingAppColor());
+                mFakeTaskView.setBackgroundColor(getFakeTaskViewColor());
                 updateHotseatChildViewColor(mFakeIconView);
                 updateHotseatChildViewColor(mFakeHotseatView.findViewById(R.id.hotseat_icon_2));
                 updateHotseatChildViewColor(mFakeHotseatView.findViewById(R.id.hotseat_icon_3));
                 updateHotseatChildViewColor(mFakeHotseatView.findViewById(R.id.hotseat_icon_4));
                 updateHotseatChildViewColor(mFakeHotseatView.findViewById(R.id.hotseat_icon_5));
                 updateHotseatChildViewColor(mFakeHotseatView.findViewById(R.id.hotseat_search_bar));
+            } else {
+                updateFakeViewLayout(mFakeTaskView, getMockAppTaskLayoutResId());
             }
         }
     }
