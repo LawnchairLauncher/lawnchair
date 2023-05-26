@@ -580,7 +580,6 @@ public class TaskView extends FrameLayout implements Reusable {
                 mIconView, STAGE_POSITION_UNDEFINED);
         mSnapshotView.bind(task);
         setOrientationState(orientedState);
-        mDigitalWellBeingToast.initialize(mTask);
     }
 
     /**

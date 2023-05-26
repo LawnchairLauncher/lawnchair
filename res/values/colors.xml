@@ -96,6 +96,8 @@
     <color name="preload_icon_background_color_dark">#40484D</color>
 
     <color name="work_turn_on_stroke">?android:attr/colorAccent</color>
+    <color name="work_fab_bg_color">#A8C7FA</color>
+    <color name="work_fab_icon_color">#041E49</color>
 
     <color name="widget_picker_primary_surface_color_light">#EFEDED</color>
     <color name="widget_picker_secondary_surface_color_light">#FAF9F8</color>

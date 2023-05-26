@@ -1631,6 +1631,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         int[] runningTaskId = getTaskIdsForTaskViewId(mRunningTaskViewId);
         int[] focusedTaskId = getTaskIdsForTaskViewId(mFocusedTaskViewId);
 
+        // Reset the focused task to avoiding initializing TaskViews layout as focused task during
+        // binding. The focused task view will be updated after all the TaskViews are bound.
+        mFocusedTaskViewId = INVALID_TASK_ID;
+
         // Removing views sets the currentPage to 0, so we save this and restore it after
         // the new set of views are added
         int previousCurrentPage = mCurrentPage;
@@ -1737,7 +1741,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mFocusedTaskViewId = newFocusedTaskView != null && !ENABLE_GRID_ONLY_OVERVIEW.get()
                 ? newFocusedTaskView.getTaskViewId() : INVALID_TASK_ID;
         updateTaskSize();
-        updateChildTaskOrientations();
+        if (newFocusedTaskView != null) {
+            newFocusedTaskView.setOrientationState(mOrientationState);
+        }
 
         TaskView newRunningTaskView = null;
         if (hasAnyValidTaskIds(runningTaskId)) {
