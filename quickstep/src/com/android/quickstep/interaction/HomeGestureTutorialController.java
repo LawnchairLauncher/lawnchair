@@ -104,11 +104,9 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     @Override
     protected int getMockAppTaskLayoutResId() {
-        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                ? R.layout.swipe_up_gesture_tutorial_shape
-                : mTutorialFragment.isLargeScreen()
-                    ? R.layout.gesture_tutorial_tablet_mock_webpage
-                    : R.layout.gesture_tutorial_mock_webpage;
+        return mTutorialFragment.isLargeScreen()
+                ? R.layout.gesture_tutorial_tablet_mock_webpage
+                : R.layout.gesture_tutorial_mock_webpage;
     }
 
     @Override
@@ -121,7 +119,12 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
     }
 
     @Override
-    protected int getSwipeActionColor() {
+    protected int getFakeTaskViewColor() {
+        return isGestureCompleted() ? getFakeLauncherColor() : getExitingAppColor();
+    }
+
+    @Override
+    protected int getFakeLauncherColor() {
         return mTutorialFragment.mRootView.mColorSurfaceContainer;
     }
 
@@ -148,7 +151,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
                     case BACK_CANCELLED_FROM_LEFT:
                     case BACK_CANCELLED_FROM_RIGHT:
                     case BACK_NOT_STARTED_TOO_FAR_FROM_EDGE:
-                        resetTaskView();
+                        resetTaskViews();
                         showFeedback(R.string.home_gesture_feedback_swipe_too_far_from_edge);
                         break;
                 }
@@ -178,18 +181,18 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
                     }
                     case HOME_NOT_STARTED_TOO_FAR_FROM_EDGE:
                     case OVERVIEW_NOT_STARTED_TOO_FAR_FROM_EDGE:
-                        resetTaskView();
+                        resetTaskViews();
                         showFeedback(R.string.home_gesture_feedback_swipe_too_far_from_edge);
                         break;
                     case OVERVIEW_GESTURE_COMPLETED:
-                        fadeOutFakeTaskView(true, true, () -> {
+                        fadeOutFakeTaskView(true, () -> {
                             showFeedback(R.string.home_gesture_feedback_overview_detected);
                             showFakeTaskbar(/* animateFromHotseat= */ false);
                         });
                         break;
                     case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
                     case HOME_OR_OVERVIEW_CANCELLED:
-                        fadeOutFakeTaskView(false, true, null);
+                        fadeOutFakeTaskView(false, null);
                         showFeedback(R.string.home_gesture_feedback_wrong_swipe_direction);
                         break;
                 }
