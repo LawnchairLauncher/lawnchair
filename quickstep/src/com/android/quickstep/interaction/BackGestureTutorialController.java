@@ -136,7 +136,7 @@ final class BackGestureTutorialController extends TutorialController {
     }
 
     @Override
-    protected int getSwipeActionColor() {
+    protected int getFakeLauncherColor() {
         return mTutorialFragment.mRootView.mColorSurfaceContainer;
     }
 
