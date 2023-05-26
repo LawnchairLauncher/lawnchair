@@ -3266,7 +3266,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 true /* isStagedTask */);
 
         pendingAnimation.addEndListener(animationSuccess ->
-                mSplitSelectStateController.launchSplitTasks(launchSuccess ->
+                mSplitSelectStateController.launchInitialAppFullscreen(launchSuccess ->
                         resetFromSplitSelectionState()));
 
         pendingAnimation.buildAnim().start();
