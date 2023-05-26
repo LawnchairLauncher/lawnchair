@@ -143,6 +143,7 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
         return null;
     }
 
+    @NonNull
     abstract TutorialController createController(TutorialType type);
 
     abstract Class<? extends TutorialController> getControllerClass();
@@ -374,9 +375,15 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
     void changeController(TutorialType tutorialType) {
         if (getControllerClass().isInstance(mTutorialController)) {
             mTutorialController.setTutorialType(tutorialType);
+            if (isGestureComplete()) {
+                mTutorialController.setGestureCompleted();
+            }
             mTutorialController.fadeTaskViewAndRun(mTutorialController::transitToController);
         } else {
             mTutorialController = createController(tutorialType);
+            if (isGestureComplete()) {
+                mTutorialController.setGestureCompleted();
+            }
             mTutorialController.transitToController();
         }
         mEdgeBackGestureHandler.registerBackGestureAttemptCallback(mTutorialController);
