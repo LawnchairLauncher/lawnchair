@@ -308,7 +308,6 @@ public class RecentTasksList {
             task.setLastSnapshotData(taskInfo);
             task.positionInParent = taskInfo.positionInParent;
             task.appBounds = taskInfo.configuration.windowConfiguration.getAppBounds();
-            // TODO(b/244348395): tasks should be sorted from oldest to most recently used
             tasks.add(task);
         }
         return new DesktopTask(tasks);

@@ -37,6 +37,10 @@ public class GroupTask {
     @TaskView.Type
     public final int taskViewType;
 
+    public GroupTask(@NonNull Task task) {
+        this(task, null, null);
+    }
+
     public GroupTask(@NonNull Task t1, @Nullable Task t2, @Nullable SplitBounds splitBounds) {
         this(t1, t2, splitBounds, t2 != null ? TaskView.Type.GROUPED : TaskView.Type.SINGLE);
     }

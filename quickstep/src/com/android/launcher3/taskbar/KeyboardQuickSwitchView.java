@@ -190,8 +190,12 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
 
         ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
                 width, mTaskViewHeight);
-        lp.endToEnd = PARENT_ID;
-        lp.startToEnd = previousView.getId();
+        if (previousView == null) {
+            lp.startToStart = PARENT_ID;
+        } else {
+            lp.endToEnd = PARENT_ID;
+            lp.startToEnd = previousView.getId();
+        }
         lp.topToTop = PARENT_ID;
         lp.bottomToBottom = PARENT_ID;
         lp.setMarginEnd(mSpacing);

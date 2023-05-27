@@ -223,6 +223,8 @@
 
     <style name="OverviewActionButton"
         parent="@android:style/Widget.DeviceDefault.Button.Borderless">
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
         <item name="android:textColor">@color/overview_button</item>
         <item name="android:drawableTint">@color/overview_button</item>
         <item name="android:tint">?android:attr/textColorPrimary</item>
