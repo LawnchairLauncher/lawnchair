@@ -1197,6 +1197,19 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
     }
 
+    /**
+     * If task with the given id is on the desktop, bring it to front
+     */
+    public void showDesktopApp(int taskId) {
+        if (mDesktopMode != null) {
+            try {
+                mDesktopMode.showDesktopApp(taskId);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call showDesktopApp", e);
+            }
+        }
+    }
+
     /** Call shell to get number of visible freeform tasks */
     public int getVisibleDesktopTaskCount(int displayId) {
         if (mDesktopMode != null) {
