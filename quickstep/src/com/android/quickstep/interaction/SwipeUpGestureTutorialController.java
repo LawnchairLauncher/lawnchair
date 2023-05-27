@@ -78,7 +78,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
     private final AnimatorListenerAdapter mResetTaskView = new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animation) {
-            resetTaskView();
+            resetTaskViews();
         }
     };
 
@@ -122,7 +122,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
         mRunningWindowAnim = null;
     }
 
-    void resetTaskView() {
+    void resetTaskViews() {
         mFakeHotseatView.setVisibility(View.INVISIBLE);
         mFakeIconView.setVisibility(View.INVISIBLE);
         if (mTutorialFragment.getActivity() != null) {
@@ -141,10 +141,21 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
         mShowPreviousTasks = false;
         mRunningWindowAnim = null;
     }
+    void fadeOutFakeTaskView(boolean toOverviewFirst, @Nullable Runnable onEndRunnable) {
+        fadeOutFakeTaskView(
+                toOverviewFirst,
+                /* animatePreviousTask= */ true,
+                /* resetViews= */ true,
+                /* updateListener= */ null,
+                onEndRunnable);
+    }
 
     /** Fades the task view, optionally after animating to a fake Overview. */
-    void fadeOutFakeTaskView(boolean toOverviewFirst, boolean reset,
-                             @Nullable Runnable onEndRunnable) {
+    void fadeOutFakeTaskView(boolean toOverviewFirst,
+            boolean animatePreviousTask,
+            boolean resetViews,
+            @Nullable ValueAnimator.AnimatorUpdateListener updateListener,
+            @Nullable Runnable onEndRunnable) {
         cancelRunningAnimation();
         PendingAnimation anim = new PendingAnimation(300);
         if (toOverviewFirst) {
@@ -155,20 +166,20 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                 public void onAnimationEnd(Animator animation, boolean isReverse) {
                     PendingAnimation fadeAnim =
                             new PendingAnimation(TASK_VIEW_END_ANIMATION_DURATION_MILLIS);
-                    if (reset) {
-                        fadeAnim.setFloat(mTaskViewSwipeUpAnimation
-                                .getCurrentShift(), AnimatedFloat.VALUE, 0, ACCEL);
+                    fadeAnim.setFloat(mTaskViewSwipeUpAnimation
+                            .getCurrentShift(), AnimatedFloat.VALUE, 0, ACCEL);
+                    if (resetViews) {
                         fadeAnim.addListener(mResetTaskView);
-                    } else {
-                        fadeAnim.setViewAlpha(mFakeTaskView, 0, ACCEL);
-                        fadeAnim.setViewAlpha(mFakePreviousTaskView, 0, ACCEL);
                     }
                     if (onEndRunnable != null) {
                         fadeAnim.addListener(AnimatorListeners.forSuccessCallback(onEndRunnable));
                     }
+                    if (updateListener != null) {
+                        fadeAnim.addOnFrameListener(updateListener);
+                    }
                     AnimatorSet animset = fadeAnim.buildAnim();
 
-                    if (reset && mTutorialFragment.isLargeScreen()) {
+                    if (animatePreviousTask && mTutorialFragment.isLargeScreen()) {
                         animset.addListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationStart(Animator animation) {
@@ -190,13 +201,10 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                 }
             });
         } else {
-            if (reset) {
-                anim.setFloat(mTaskViewSwipeUpAnimation
-                        .getCurrentShift(), AnimatedFloat.VALUE, 0, ACCEL);
+            anim.setFloat(mTaskViewSwipeUpAnimation
+                    .getCurrentShift(), AnimatedFloat.VALUE, 0, ACCEL);
+            if (resetViews) {
                 anim.addListener(mResetTaskView);
-            } else {
-                anim.setViewAlpha(mFakeTaskView, 0, ACCEL);
-                anim.setViewAlpha(mFakePreviousTaskView, 0, ACCEL);
             }
             if (onEndRunnable != null) {
                 anim.addListener(AnimatorListeners.forSuccessCallback(onEndRunnable));
