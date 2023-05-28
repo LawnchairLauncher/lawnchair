@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Нажмите на эту карту, чтобы установить Lawnchair в качестве лаунчера по умолчанию.</string>
+    <string name="set_default_launcher_tip">Нажмите здесь, чтобы установить Lawnchair в качестве стандартного лончера.</string>
     <string name="settings">Настройки</string>
     <string name="general_label">Общие</string>
     <string name="general_description">Значки уведомлений, Набор иконок</string>
@@ -165,15 +165,15 @@
     <string name="launcher_default_color">Управляется Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
-    <string name="auto_add_shortcuts_label">Добавлять новые приложения на Домашний экран</string>
+    <string name="auto_add_shortcuts_label">Добавлять новые приложения сразу на Домашний экран</string>
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">Лента Google</string>
-    <string name="minus_one_unavailable">Лента новостей не установлена.</string>
+    <string name="minus_one_unavailable">Лент новостей не установлено.</string>
     <string name="wallpaper">Обои</string>
     <string name="wallpaper_scrolling_label">Прокрутка обоев</string>
     <string name="wallpaper_depth_effect_label">Эффект глубины обоев</string>
     <string name="wallpaper_depth_effect_description">Приближать и отдалять обои при переключении между приложениями.</string>
-    <string name="show_sys_ui_scrim">Тень под строкой состояния</string>
+    <string name="show_sys_ui_scrim">Тень под треем</string>
     <string name="layout">Макет</string>
     <string name="home_screen_grid">Сетка главного экрана</string>
     <string name="home_screen_lock">Блокировка домашнего экрана</string>
@@ -234,7 +234,7 @@
     <string name="smartspace_preferences">Настройки</string>
     <string name="smartspace_widget_toggle_label">Показать на домашнем экране</string>
     <string name="smartspace_widget_toggle_description">At a Glance можно добавить вручную, поместив виджет \"Lawnchair\".</string>
-    <string name="smartspace_mode_label">Поставщик \"At a Glance\"</string>
+    <string name="smartspace_mode_label">Провайдер \"At a Glance\"</string>
     <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Поиск Google</string>
@@ -243,8 +243,8 @@
     <string name="hotseat_mode_label">Виджет поиска</string>
     <string name="hotseat_mode_disabled">Отключено</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
-    <string name="hotseat_mode_google_search">Поиск Google</string>
-    <string name="search_bar_label">Панель поиска</string>
+    <string name="hotseat_mode_google_search">Поисковая строка Google</string>
+    <string name="search_bar_label">Строка поиска</string>
     <string name="corner_radius_label">Радиус скругления углов</string>
     <string name="apply_accent_color_label">Применить цвет акцента</string>
     <string name="search_provider">Поисковик</string>
@@ -266,7 +266,7 @@
     <string name="hide_hidden_apps_search">Скрывать в результатах поиска</string>
     <string name="pref_category_search">Поиск</string>
     <string name="show_app_search_bar">Показать строку поиска</string>
-    <string name="pref_search_auto_show_keyboard">Автоматически Показывать Клавиатуру</string>
+    <string name="pref_search_auto_show_keyboard">Автоматически выдвигать клавиатуру</string>
     <string name="fuzzy_search_title">Поиск по сходству</string>
     <string name="fuzzy_search_desc">Поиск приложений по похожему запросу.</string>
     <string name="max_search_result_count_title">Максимальное число результатов поиска</string>

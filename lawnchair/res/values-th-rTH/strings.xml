@@ -209,7 +209,7 @@
     <string name="smartspace_battery_charging">กำลังชาร์จ</string>
     <string name="smartspace_battery_full">ชาร์จแล้ว</string>
     <string name="smartspace_battery_low">แบตเตอร์รี่ต่ำ</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d% — จะเต็มในอีก %2$s"</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% — จะเต็มในอีก %2$s"</string>
     <string name="accessibility_smartspace_page">หน้าที่ %1$d จากทั้งหมด %2$d หน้า</string>
     <string name="smartspace_widget">ข้อมูลโดยย่อ</string>
     <string name="smartspace_widget_description">สิ่งที่อยากให้แสดง</string>
