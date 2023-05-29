@@ -117,7 +117,7 @@
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Брзи поставки"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Лента со задачи"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Лентата со задачи е прикажана"</string>
-    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Лентата со задачи е сокриена"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Лентата со задачи е скриена"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Лента за навигација"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Премести горе лево"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Премести долу десно"</string>
