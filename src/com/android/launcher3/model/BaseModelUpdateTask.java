@@ -16,6 +16,7 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 
 import android.util.Log;
 
@@ -72,7 +73,9 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
 
     @Override
     public final void run() {
-        if (!Objects.requireNonNull(mModel).isModelLoaded()) {
+        boolean isModelLoaded = Objects.requireNonNull(mModel).isModelLoaded();
+        testLogD(WORK_TAB_MISSING, "modelLoaded: " + isModelLoaded + " forTask: " + this);
+        if (!isModelLoaded) {
             if (DEBUG_TASKS) {
                 Log.d(TAG, "Ignoring model task since loader is pending=" + this);
             }
