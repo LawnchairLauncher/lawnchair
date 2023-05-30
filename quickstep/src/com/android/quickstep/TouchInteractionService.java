@@ -741,9 +741,6 @@ public class TouchInteractionService extends Service
         if (mGestureState.isTrackpadGesture() && (action == ACTION_POINTER_DOWN
                 || action == ACTION_POINTER_UP)) {
             // Skip ACTION_POINTER_DOWN and ACTION_POINTER_UP events from trackpad.
-            if (action == ACTION_POINTER_DOWN) {
-                mGestureState.setTrackpadGestureType(getTrackpadGestureType(event));
-            }
         } else if (event.isHoverEvent()) {
             mUncheckedConsumer.onHoverEvent(event);
         } else {
