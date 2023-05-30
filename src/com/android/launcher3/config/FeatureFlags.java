@@ -381,7 +381,7 @@ public final class FeatureFlags {
             "Enable initiating split screen from workspace to workspace.");
 
     public static final BooleanFlag ENABLE_TRACKPAD_GESTURE = getDebugFlag(271010401,
-            "ENABLE_TRACKPAD_GESTURE", DISABLED, "Enables trackpad gesture.");
+            "ENABLE_TRACKPAD_GESTURE", ENABLED, "Enables trackpad gesture.");
 
     // TODO(Block 29): Clean up flags
     public static final BooleanFlag ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT = getDebugFlag(270393897,
