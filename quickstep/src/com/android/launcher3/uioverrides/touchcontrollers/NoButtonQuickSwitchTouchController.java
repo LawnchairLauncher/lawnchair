@@ -113,7 +113,6 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             newCancelListener(this::clearState);
 
     private boolean mNoIntercept;
-    private Boolean mIsTrackpadFourFingerSwipe;
     private LauncherState mStartState;
 
     private boolean mIsHomeScreenVisible = true;
@@ -139,9 +138,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        int action = ev.getActionMasked();
-        if (action == ACTION_DOWN) {
-            mIsTrackpadFourFingerSwipe = null;
+        if (ev.getActionMasked() == ACTION_DOWN) {
             mNoIntercept = !canInterceptTouch(ev);
             if (mNoIntercept) {
                 return false;
@@ -150,13 +147,6 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             // Only detect horizontal swipe for intercept, then we will allow swipe up as well.
             mSwipeDetector.setDetectableScrollConditions(DIRECTION_RIGHT,
                     false /* ignoreSlopWhenSettling */);
-        } else if (isTrackpadMultiFingerSwipe(ev) && mIsTrackpadFourFingerSwipe == null
-                && action == ACTION_MOVE) {
-            mIsTrackpadFourFingerSwipe = isTrackpadFourFingerSwipe(ev);
-            mNoIntercept = !mIsTrackpadFourFingerSwipe;
-            if (mNoIntercept) {
-                return false;
-            }
         }
 
         if (mNoIntercept) {
@@ -190,6 +180,9 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
             // TODO(b/268075592): add support for quickswitch to/from desktop
             return false;
+        }
+        if (isTrackpadMultiFingerSwipe(ev)) {
+            return isTrackpadFourFingerSwipe(ev);
         }
         return true;
     }
