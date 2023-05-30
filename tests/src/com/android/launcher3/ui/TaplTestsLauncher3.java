@@ -55,6 +55,7 @@ import com.android.launcher3.tapl.HomeAppIcon;
 import com.android.launcher3.tapl.HomeAppIconMenuItem;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
+import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;

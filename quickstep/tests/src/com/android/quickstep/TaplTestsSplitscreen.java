@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
@@ -22,6 +23,7 @@ import static org.junit.Assume.assumeTrue;
 import android.content.Intent;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 
