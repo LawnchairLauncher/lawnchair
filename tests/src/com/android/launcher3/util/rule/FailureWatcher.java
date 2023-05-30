@@ -6,8 +6,12 @@ import android.os.FileUtils;
 import android.os.ParcelFileDescriptor.AutoCloseInputStream;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.uiautomator.UiDevice;
 
+import com.android.app.viewcapture.ViewCapture;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 
@@ -28,10 +32,14 @@ public class FailureWatcher extends TestWatcher {
     private static boolean sSavedBugreport = false;
     final private UiDevice mDevice;
     private final LauncherInstrumentation mLauncher;
+    @NonNull
+    private final ViewCapture mViewCapture;
 
-    public FailureWatcher(UiDevice device, LauncherInstrumentation launcher) {
+    public FailureWatcher(UiDevice device, LauncherInstrumentation launcher,
+            @NonNull ViewCapture viewCapture) {
         mDevice = device;
         mLauncher = launcher;
+        mViewCapture = viewCapture;
     }
 
     @Override
@@ -63,7 +71,7 @@ public class FailureWatcher extends TestWatcher {
 
     @Override
     protected void failed(Throwable e, Description description) {
-        onError(mLauncher, description, e);
+        onError(mLauncher, description, e, mViewCapture);
     }
 
     static File diagFile(Description description, String prefix, String ext) {
@@ -74,6 +82,12 @@ public class FailureWatcher extends TestWatcher {
 
     public static void onError(LauncherInstrumentation launcher, Description description,
             Throwable e) {
+        onError(launcher, description, e, null);
+    }
+
+    private static void onError(LauncherInstrumentation launcher, Description description,
+            Throwable e, @Nullable ViewCapture viewCapture) {
+
         final File sceenshot = diagFile(description, "TestScreenshot", "png");
         final File hierarchy = diagFile(description, "Hierarchy", "zip");
 
@@ -88,6 +102,12 @@ public class FailureWatcher extends TestWatcher {
             out.putNextEntry(new ZipEntry("visible_windows.zip"));
             dumpCommand("cmd window dump-visible-window-views", out);
             out.closeEntry();
+
+            if (viewCapture != null) {
+                out.putNextEntry(new ZipEntry("FS/data/misc/wmtrace/failed_test.vc"));
+                viewCapture.dumpTo(out, ApplicationProvider.getApplicationContext());
+                out.closeEntry();
+            }
         } catch (Exception ignored) {
         }
 
