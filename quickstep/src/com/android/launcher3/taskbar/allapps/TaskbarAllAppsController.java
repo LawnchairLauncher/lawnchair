@@ -169,6 +169,13 @@ public final class TaskbarAllAppsController {
     }
 
     private void cleanUpOverlay() {
+        // Floating search bar is added to the drag layer in ActivityAllAppsContainerView onAttach;
+        // removed here as this is a special case that we remove the all apps panel.
+        if (mAppsView != null && mOverlayContext != null
+                && mAppsView.getSearchUiDelegate().isSearchBarFloating()) {
+            mOverlayContext.getDragLayer().removeView(mAppsView.getSearchView());
+            mAppsView.getSearchUiDelegate().onDestroySearchBar();
+        }
         if (mSearchSessionController != null) {
             mSearchSessionController.onDestroy();
             mSearchSessionController = null;

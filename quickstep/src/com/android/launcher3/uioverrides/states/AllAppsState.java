@@ -20,6 +20,7 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_ALLAP
 
 import android.content.Context;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
@@ -104,9 +105,23 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public int getVisibleElements(Launcher launcher) {
-        // Don't add HOTSEAT_ICONS for non-tablets in ALL_APPS state.
-        return launcher.getDeviceProfile().isTablet ? ALL_APPS_CONTENT | HOTSEAT_ICONS
-                : ALL_APPS_CONTENT;
+        int elements = ALL_APPS_CONTENT | FLOATING_SEARCH_BAR;
+        // Only add HOTSEAT_ICONS for tablets in ALL_APPS state.
+        if (launcher.getDeviceProfile().isTablet) {
+            elements |= HOTSEAT_ICONS;
+        }
+        return elements;
+    }
+
+    @Override
+    public int getFloatingSearchBarRestingMarginBottom(Launcher launcher) {
+        return 0;
+    }
+
+    @Override
+    public boolean shouldFloatingSearchBarUsePillWhenUnfocused(Launcher launcher) {
+        DeviceProfile dp = launcher.getDeviceProfile();
+        return dp.isPhone && !dp.isLandscape;
     }
 
     @Override

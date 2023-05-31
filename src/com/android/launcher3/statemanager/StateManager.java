@@ -76,6 +76,10 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
         return mState;
     }
 
+    public STATE_TYPE getTargetState() {
+        return (STATE_TYPE) mConfig.targetState;
+    }
+
     public STATE_TYPE getCurrentStableState() {
         return mCurrentStableState;
     }
