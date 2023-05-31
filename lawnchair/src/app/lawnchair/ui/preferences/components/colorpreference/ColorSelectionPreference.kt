@@ -27,7 +27,6 @@ import app.lawnchair.ui.preferences.components.colorpreference.pickers.SwatchGri
 import app.lawnchair.ui.preferences.preferenceGraph
 import com.android.launcher3.R
 import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.patrykmichalik.opto.domain.Preference
