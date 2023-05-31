@@ -10,7 +10,6 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.8.21"
     id "com.google.devtools.ksp" version "1.8.21-1.0.11"
     id 'com.google.protobuf' version "0.9.3"
-    id 'com.google.android.gms.oss-licenses-plugin' version "0.10.6"
     id 'app.cash.licensee' version "1.7.0"
     id 'dev.rikka.tools.refine' version "4.3.0"
 }
@@ -369,7 +368,6 @@ dependencies {
     implementation "com.github.topjohnwu.libsu:service:$libsu_version"
 
     implementation "com.google.protobuf:protobuf-javalite:$protocVersion"
-    implementation 'com.github.LawnchairLauncher:oss-notices:1.0.2'
 
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.6.1'
