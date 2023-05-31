@@ -29,7 +29,7 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun LoadingScreen(isLoading: Boolean, content: @Composable () -> Unit) {
-    Crossfade(targetState = isLoading) {
+    Crossfade(targetState = isLoading, label = "") {
         if (it) {
             Column(
                 modifier = Modifier.fillMaxSize(),

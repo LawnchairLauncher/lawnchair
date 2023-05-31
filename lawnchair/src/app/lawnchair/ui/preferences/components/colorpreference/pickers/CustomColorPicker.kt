@@ -228,7 +228,7 @@ private fun HexColorPicker(
                 },
             ),
             trailingIcon = {
-                Crossfade(targetState = invalidString) {
+                Crossfade(targetState = invalidString, label = "") {
                     if (it) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_warning),

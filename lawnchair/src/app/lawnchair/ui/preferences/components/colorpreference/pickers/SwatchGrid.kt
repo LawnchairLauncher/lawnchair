@@ -98,7 +98,7 @@ fun <T> ColorSwatch(
             .background(Color(color))
             .clickable(onClick = onClick)
     ) {
-        Crossfade(targetState = selected) {
+        Crossfade(targetState = selected, label = "") {
             if (it) {
                 Icon(
                     imageVector = Icons.Rounded.Done,

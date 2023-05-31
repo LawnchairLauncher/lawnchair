@@ -27,7 +27,7 @@ fun ClickableIcon(
         enabled = enabled,
     ) {
         val contentAlpha = if (enabled) tint.alpha else ContentAlpha.disabled
-        val alpha by animateFloatAsState(targetValue = contentAlpha)
+        val alpha by animateFloatAsState(targetValue = contentAlpha, label = "")
         Icon(
             painter = painter,
             contentDescription = null,

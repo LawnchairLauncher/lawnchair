@@ -41,7 +41,7 @@ fun PickAppForGesture() {
     PreferenceScaffold(
         label = stringResource(id = R.string.pick_app_for_gesture),
     ) {
-        Crossfade(targetState = apps.isNotEmpty()) { present ->
+        Crossfade(targetState = apps.isNotEmpty(), label = "") { present ->
             if (present) {
                 PreferenceLazyColumn(state = state) {
                     preferenceGroupItems(

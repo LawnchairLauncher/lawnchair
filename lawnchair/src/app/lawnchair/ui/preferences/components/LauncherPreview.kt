@@ -50,7 +50,7 @@ fun DummyLauncherLayout(
     modifier: Modifier = Modifier,
 ) {
     val previewView = createPreviewView(idp)
-    Crossfade(targetState = previewView) {
+    Crossfade(targetState = previewView, label = "") {
         val view = it
         AndroidView(
             factory = { context ->
