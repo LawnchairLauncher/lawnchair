@@ -22,17 +22,17 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
-import app.lawnchair.ossnotices.OssLibrary
-import app.lawnchair.ossnotices.getOssLibraries
+import app.lawnchair.ui.preferences.about.acknowledgements.OssLibrary
+import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
+import app.lawnchair.util.getPackageVersionCode
 import com.android.launcher3.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import app.lawnchair.util.getPackageVersionCode
-import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.serialization.json.Json
 
 private val iconPackIntents = listOf(
     Intent("com.novalauncher.THEME"),
@@ -109,10 +109,15 @@ class PreferenceViewModel(private val app: Application) : AndroidViewModel(app),
         .stateIn(viewModelScope, SharingStarted.Lazily, listOf())
 
     override val ossLibraries: StateFlow<List<OssLibrary>> = flow {
-        val ossLibraries = app.getOssLibraries(R.raw.third_party_license_metadata)
-            .distinctBy { it.name }
+        val jsonString = app.resources.assets.open("artifacts.json")
+            .bufferedReader().use { it.readText() }
+        val ossLibraries = Json.decodeFromString<List<OssLibrary>>(jsonString)
+            .asSequence()
+            .distinctBy { "${it.groupId}:${it.artifactId}" }
+            .sortedBy { it.name }
+            .toList()
         emit(ossLibraries)
     }
-        .flowOn(Dispatchers.Default)
+        .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 }

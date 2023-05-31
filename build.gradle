@@ -10,7 +10,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.8.21"
     id "com.google.devtools.ksp" version "1.8.21-1.0.11"
     id 'com.google.protobuf' version "0.9.3"
-    id 'com.google.android.gms.oss-licenses-plugin' version "0.10.6"
+    id 'app.cash.licensee' version "1.7.0"
     id 'dev.rikka.tools.refine' version "4.3.0"
 }
 
@@ -106,6 +106,15 @@ android {
     }
 
     applicationVariants.configureEach { variant ->
+        def copyArtifactList = tasks.register("copy${variant.name.capitalize()}ArtifactList", Copy) {
+            dependsOn tasks.named("licensee${variant.name.capitalize()}")
+            from project.extensions.getByType(ReportingExtension).file("licensee/${variant.name}/artifacts.json")
+            into layout.buildDirectory.dir("generated/dependencyAssets/")
+        }
+        tasks.named("merge${variant.name.capitalize()}Assets").configure {
+            dependsOn copyArtifactList
+        }
+
         variant.outputs.configureEach {
             outputFileName = "Lawnchair ${variant.versionName}.apk"
         }
@@ -279,6 +288,7 @@ android {
 
         lawnWithQuickstep {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+            assets.srcDir layout.buildDirectory.dir("generated/dependencyAssets/")
         }
 
         withoutQuickstep {
@@ -358,7 +368,6 @@ dependencies {
     implementation "com.github.topjohnwu.libsu:service:$libsu_version"
 
     implementation "com.google.protobuf:protobuf-javalite:$protocVersion"
-    implementation 'com.github.LawnchairLauncher:oss-notices:1.0.2'
 
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.6.1'
@@ -388,4 +397,15 @@ protobuf {
             }
         }
     }
+}
+
+licensee {
+    allow("Apache-2.0")
+    allow("BSD-3-Clause")
+    allowUrl("https://api.github.com/licenses/apache-2.0")
+    allowUrl("https://api.github.com/licenses/bsd-3-clause")
+    allowUrl("https://github.com/patrykmichalik/opto/blob/master/LICENSE")
+    allowUrl("https://github.com/RikkaApps/HiddenApiRefinePlugin/blob/main/LICENSE")
+    allowUrl("https://github.com/stleary/JSON-java/blob/master/LICENSE")
+    allowUrl("https://www.gnu.org/licenses/old-licenses/gpl-2.0.html")
 }

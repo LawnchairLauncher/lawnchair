@@ -16,7 +16,7 @@
 
 package app.lawnchair.ui.preferences
 
-import app.lawnchair.ossnotices.OssLibrary
+import app.lawnchair.ui.preferences.about.acknowledgements.OssLibrary
 import kotlinx.coroutines.flow.StateFlow
 
 sealed interface PreferenceInteractor {

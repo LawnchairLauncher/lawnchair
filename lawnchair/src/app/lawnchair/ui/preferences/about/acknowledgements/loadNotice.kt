@@ -20,22 +20,24 @@ import android.text.SpannableString
 import android.text.style.URLSpan
 import android.text.util.Linkify
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
-import app.lawnchair.ossnotices.OssLibrary
-import com.android.launcher3.R
+import kotlinx.serialization.Serializable
 
 @Composable
 fun loadNotice(ossLibrary: OssLibrary): State<OssLibraryWithNotice?> {
-    val context = LocalContext.current
     val noticeStringState = remember { mutableStateOf<OssLibraryWithNotice?>(null) }
     val accentColor = MaterialTheme.colorScheme.primary
     DisposableEffect(Unit) {
-        val string = ossLibrary.getNotice(context = context, thirdPartyLicensesId = R.raw.third_party_licenses)
+        val string = (ossLibrary.spdxLicenses ?: ossLibrary.unknownLicenses)
+            ?.firstOrNull()?.url.orEmpty()
         val spannable = SpannableString(string)
         Linkify.addLinks(spannable, Linkify.WEB_URLS)
         val spans = spannable.getSpans(0, string.length, URLSpan::class.java)
@@ -64,6 +66,27 @@ fun loadNotice(ossLibrary: OssLibrary): State<OssLibraryWithNotice?> {
         onDispose { }
     }
     return noticeStringState
+}
+
+@Serializable
+data class OssLibrary(
+    val groupId: String,
+    val artifactId: String,
+    val version: String,
+    val name: String,
+    val scm: Scm? = null,
+    val spdxLicenses: List<License>? = null,
+    val unknownLicenses: List<License>? = null,
+) {
+    @Serializable
+    data class License(
+        val identifier: String? = null,
+        val name: String,
+        val url: String,
+    )
+
+    @Serializable
+    data class Scm(val url: String)
 }
 
 data class OssLibraryWithNotice(
