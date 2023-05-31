@@ -29,6 +29,7 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ComponentCallbacks;
 import android.content.Context;
@@ -56,6 +57,7 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.unfold.NonDestroyableScopedUnfoldTransitionProgressProvider;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.SettingsCache;
@@ -141,6 +143,25 @@ public class TaskbarManager {
             mTaskbarPinningPreferenceChangeListener = (sharedPreferences, key) -> {
                 if (TASKBAR_PINNING_KEY.equals(key)) {
                     recreateTaskbar();
+                }
+            };
+
+    private final ActivityLifecycleCallbacksAdapter mLifecycleCallbacks =
+            new ActivityLifecycleCallbacksAdapter() {
+                @Override
+                public void onActivityDestroyed(Activity activity) {
+                    if (mActivity != activity) return;
+                    if (mActivity != null) {
+                        mActivity.removeOnDeviceProfileChangeListener(
+                                mDebugActivityDeviceProfileChanged);
+                        mActivity.unregisterActivityLifecycleCallbacks(this);
+                    }
+                    mActivity = null;
+                    debugWhyTaskbarNotDestroyed("clearActivity");
+                    if (mTaskbarActivityContext != null) {
+                        mTaskbarActivityContext.setUIController(TaskbarUIController.DEFAULT);
+                    }
+                    mUnfoldProgressProvider.setSourceProvider(null);
                 }
             };
 
@@ -306,10 +327,12 @@ public class TaskbarManager {
         }
         if (mActivity != null) {
             mActivity.removeOnDeviceProfileChangeListener(mDebugActivityDeviceProfileChanged);
+            mActivity.unregisterActivityLifecycleCallbacks(mLifecycleCallbacks);
         }
         mActivity = activity;
         debugWhyTaskbarNotDestroyed("Set mActivity=" + mActivity);
         mActivity.addOnDeviceProfileChangeListener(mDebugActivityDeviceProfileChanged);
+        mActivity.registerActivityLifecycleCallbacks(mLifecycleCallbacks);
         UnfoldTransitionProgressProvider unfoldTransitionProgressProvider =
                 getUnfoldTransitionProgressProviderForActivity(activity);
         mUnfoldProgressProvider.setSourceProvider(unfoldTransitionProgressProvider);
@@ -346,21 +369,6 @@ public class TaskbarManager {
             return new FallbackTaskbarUIController((RecentsActivity) activity);
         }
         return TaskbarUIController.DEFAULT;
-    }
-
-    /**
-     * Clears a previously set {@link StatefulActivity}
-     */
-    public void clearActivity(@NonNull StatefulActivity activity) {
-        if (mActivity == activity) {
-            mActivity.removeOnDeviceProfileChangeListener(mDebugActivityDeviceProfileChanged);
-            mActivity = null;
-            debugWhyTaskbarNotDestroyed("clearActivity");
-            if (mTaskbarActivityContext != null) {
-                mTaskbarActivityContext.setUIController(TaskbarUIController.DEFAULT);
-            }
-            mUnfoldProgressProvider.setSourceProvider(null);
-        }
     }
 
     /**
