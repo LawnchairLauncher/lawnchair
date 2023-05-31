@@ -122,8 +122,6 @@
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"கீழே/வலதுபுறம் நகர்த்தும்"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{மேலும் # ஆப்ஸைக் காட்டு.}other{மேலும் # ஆப்ஸைக் காட்டு.}}"</string>
     <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> மற்றும் <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
-    <!-- no translation found for desktop_select_app_toast (2306057322833956910) -->
-    <skip />
-    <!-- no translation found for desktop_button_close_app_toast (5283096349579408560) -->
-    <skip />
+    <string name="desktop_select_app_toast" msgid="2306057322833956910">"ஆப்ஸை டெஸ்க்டாப்பில் சேர்க்கிறது"</string>
+    <string name="desktop_button_close_app_toast" msgid="5283096349579408560">"ரத்துசெய்"</string>
 </resources>
