@@ -20,6 +20,7 @@ import static android.os.Trace.TRACE_TAG_APP;
 import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_OPTIMIZE_MEASURE;
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
 
+import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.LauncherSettings.Animation.DEFAULT_NO_ICON;
 import static com.android.launcher3.LauncherSettings.Animation.VIEW_BACKGROUND;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT;
@@ -31,7 +32,6 @@ import static com.android.launcher3.LauncherState.NO_OFFSET;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE;

@@ -15,8 +15,8 @@
  */
 package com.android.launcher3;
 
-import static com.android.launcher3.anim.Interpolators.ACCEL_2;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
+import static com.android.app.animation.Interpolators.ACCELERATE_2;
+import static com.android.app.animation.Interpolators.DECELERATE_2;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.launcher3.testing.shared.TestProtocol.ALL_APPS_STATE_ORDINAL;
@@ -90,7 +90,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final float NO_SCALE = 1;
 
     protected static final PageAlphaProvider DEFAULT_ALPHA_PROVIDER =
-            new PageAlphaProvider(ACCEL_2) {
+            new PageAlphaProvider(ACCELERATE_2) {
                 @Override
                 public float getPageAlpha(int pageIndex) {
                     return 1;
@@ -98,7 +98,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
             };
 
     protected static final PageTranslationProvider DEFAULT_PAGE_TRANSLATION_PROVIDER =
-            new PageTranslationProvider(DEACCEL_2) {
+            new PageTranslationProvider(DECELERATE_2) {
                 @Override
                 public float getPageTranslation(int pageIndex) {
                     return 0;
@@ -319,7 +319,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
             return DEFAULT_ALPHA_PROVIDER;
         }
         final int centerPage = launcher.getWorkspace().getNextPage();
-        return new PageAlphaProvider(ACCEL_2) {
+        return new PageAlphaProvider(ACCELERATE_2) {
             @Override
             public float getPageAlpha(int pageIndex) {
                 return pageIndex != centerPage ? 0 : 1f;
@@ -337,7 +337,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
             return DEFAULT_PAGE_TRANSLATION_PROVIDER;
         }
         final float quarterPageSpacing = launcher.getWorkspace().getPageSpacing() / 4f;
-        return new PageTranslationProvider(DEACCEL_2) {
+        return new PageTranslationProvider(DECELERATE_2) {
             @Override
             public float getPageTranslation(int pageIndex) {
                 boolean isRtl = launcher.getWorkspace().mIsRtl;

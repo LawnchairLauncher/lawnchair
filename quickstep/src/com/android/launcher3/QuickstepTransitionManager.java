@@ -30,6 +30,12 @@ import static android.window.StartingWindowInfo.STARTING_WINDOW_TYPE_NONE;
 import static android.window.StartingWindowInfo.STARTING_WINDOW_TYPE_SPLASH_SCREEN;
 import static android.window.TransitionFilter.CONTAINER_ORDER_TOP;
 
+import static com.android.app.animation.Interpolators.ACCELERATE_1_5;
+import static com.android.app.animation.Interpolators.AGGRESSIVE_EASE;
+import static com.android.app.animation.Interpolators.DECELERATE_1_5;
+import static com.android.app.animation.Interpolators.DECELERATE_1_7;
+import static com.android.app.animation.Interpolators.EXAGGERATED_EASE;
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_PENDING_FLAGS;
@@ -41,12 +47,6 @@ import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.Utilities.mapBoundToRange;
-import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
-import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
-import static com.android.launcher3.anim.Interpolators.EXAGGERATED_EASE;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_BACK_SWIPE_HOME_ANIMATION;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SCRIM_FOR_APP_LAUNCH;
 import static com.android.launcher3.config.FeatureFlags.KEYGUARD_ANIMATION;
@@ -553,7 +553,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
                 ObjectAnimator scaleAnim = ObjectAnimator.ofFloat(view, SCALE_PROPERTY, scales)
                         .setDuration(CONTENT_SCALE_DURATION);
-                scaleAnim.setInterpolator(DEACCEL_1_5);
+                scaleAnim.setInterpolator(DECELERATE_1_5);
                 launcherAnimator.play(scaleAnim);
             });
 
@@ -571,7 +571,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     ObjectAnimator scrim = ObjectAnimator.ofArgb(scrimView, VIEW_BACKGROUND_COLOR,
                             colors);
                     scrim.setDuration(CONTENT_SCRIM_DURATION);
-                    scrim.setInterpolator(DEACCEL_1_5);
+                    scrim.setInterpolator(DECELERATE_1_5);
 
                     launcherAnimator.play(scrim);
                 }
@@ -1462,11 +1462,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         float startShadowRadius = areAllTargetsTranslucent(appTargets) ? 0 : mMaxShadowRadius;
         closingAnimator.setDuration(duration);
         closingAnimator.addUpdateListener(new MultiValueUpdateListener() {
-            FloatProp mDy = new FloatProp(0, mClosingWindowTransY, 0, duration, DEACCEL_1_7);
-            FloatProp mScale = new FloatProp(1f, 1f, 0, duration, DEACCEL_1_7);
+            FloatProp mDy = new FloatProp(0, mClosingWindowTransY, 0, duration, DECELERATE_1_7);
+            FloatProp mScale = new FloatProp(1f, 1f, 0, duration, DECELERATE_1_7);
             FloatProp mAlpha = new FloatProp(1f, 0f, 25, 125, LINEAR);
             FloatProp mShadowRadius = new FloatProp(startShadowRadius, 0, 0, duration,
-                    DEACCEL_1_7);
+                    DECELERATE_1_7);
 
             @Override
             public void onUpdate(float percent, boolean initOnly) {
@@ -2032,7 +2032,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             if (progress >= end) {
                 return 0f;
             }
-            return Utilities.mapToRange(progress, start, end, 1, 0, ACCEL_1_5);
+            return Utilities.mapToRange(progress, start, end, 1, 0, ACCELERATE_1_5);
         }
     }
 

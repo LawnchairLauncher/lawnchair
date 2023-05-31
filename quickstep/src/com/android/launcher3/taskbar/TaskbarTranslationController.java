@@ -26,8 +26,8 @@ import android.animation.ValueAnimator;
 import androidx.annotation.Nullable;
 import androidx.dynamicanimation.animation.SpringForce;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.anim.AnimatedFloat;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.SpringAnimationBuilder;
 import com.android.launcher3.util.DisplayController;
 

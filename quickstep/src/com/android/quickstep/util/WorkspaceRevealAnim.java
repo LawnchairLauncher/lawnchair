@@ -32,11 +32,11 @@ import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
 import android.view.View;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.states.StateAnimationConfig;

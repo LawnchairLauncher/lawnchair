@@ -17,10 +17,10 @@ package com.android.launcher3.views;
 
 import static android.view.Gravity.LEFT;
 
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.Utilities.getBadge;
 import static com.android.launcher3.Utilities.getFullDrawable;
 import static com.android.launcher3.Utilities.mapToRange;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.views.IconLabelDotView.setIconAndDotVisible;
 

@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.anim;
 
-import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.LINEAR;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
