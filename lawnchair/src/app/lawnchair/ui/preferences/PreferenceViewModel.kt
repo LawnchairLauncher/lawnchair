@@ -41,11 +41,9 @@ private val iconPackIntents = listOf(
     Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME")
 )
 
-class PreferenceViewModel(private val app: Application) : AndroidViewModel(app),
-    PreferenceInteractor {
+class PreferenceViewModel(private val app: Application) : AndroidViewModel(app), PreferenceInteractor {
 
-    private val themedIconPackIntents =
-        listOf(Intent(app.getString(R.string.icon_packs_intent_name)))
+    private val themedIconPackIntents = listOf(Intent(app.getString(R.string.icon_packs_intent_name)))
     override val iconPacks = flow {
         val pm = app.packageManager
         val iconPacks = iconPackIntents
@@ -113,12 +111,12 @@ class PreferenceViewModel(private val app: Application) : AndroidViewModel(app),
     override val ossLibraries: StateFlow<List<OssLibrary>> = flow {
         val jsonString = app.resources.assets.open("artifacts.json")
             .bufferedReader().use { it.readText() }
-        val artifacts = Json.decodeFromString<List<OssLibrary>>(jsonString)
+        val ossLibraries = Json.decodeFromString<List<OssLibrary>>(jsonString)
             .asSequence()
             .distinctBy { "${it.groupId}:${it.artifactId}" }
             .sortedBy { it.name }
             .toList()
-        emit(artifacts)
+        emit(ossLibraries)
     }
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())

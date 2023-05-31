@@ -100,35 +100,34 @@ fun NoticePage(index: Int) {
         label = ossLibrary?.name ?: stringResource(id = R.string.loading)
     ) {
         Crossfade(targetState = data, label = "") { it ->
-            if (it != null) {
-                val uriHandler = LocalUriHandler.current
-                val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
-                val pressIndicator = Modifier.pointerInput(Unit) {
-                    detectTapGestures { pos ->
-                        layoutResult.value?.let { layoutResult ->
-                            val position = layoutResult.getOffsetForPosition(pos)
-                            val annotation =
-                                it.notice.getStringAnnotations(position, position).firstOrNull()
-                            if (annotation?.tag == "URL") {
-                                uriHandler.openUri(annotation.item)
-                            }
+            it ?: return@Crossfade
+            val uriHandler = LocalUriHandler.current
+            val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
+            val pressIndicator = Modifier.pointerInput(Unit) {
+                detectTapGestures { pos ->
+                    layoutResult.value?.let { layoutResult ->
+                        val position = layoutResult.getOffsetForPosition(pos)
+                        val annotation =
+                            it.notice.getStringAnnotations(position, position).firstOrNull()
+                        if (annotation?.tag == "URL") {
+                            uriHandler.openUri(annotation.item)
                         }
                     }
                 }
-
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
-                        .then(pressIndicator),
-                    text = it.notice,
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 14.sp,
-                    onTextLayout = {
-                        layoutResult.value = it
-                    }
-                )
             }
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
+                    .then(pressIndicator),
+                text = it.notice,
+                fontFamily = FontFamily.Monospace,
+                fontSize = 14.sp,
+                onTextLayout = {
+                    layoutResult.value = it
+                }
+            )
         }
     }
 }

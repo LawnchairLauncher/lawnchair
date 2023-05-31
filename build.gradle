@@ -107,7 +107,7 @@ android {
 
     applicationVariants.configureEach { variant ->
         def copyArtifactList = tasks.register("copy${variant.name.capitalize()}ArtifactList", Copy) {
-            dependsOn "licensee${variant.name.capitalize()}"
+            dependsOn tasks.named("licensee${variant.name.capitalize()}")
             from project.extensions.getByType(ReportingExtension).file("licensee/${variant.name}/artifacts.json")
             into layout.buildDirectory.dir("generated/dependencyAssets/")
         }

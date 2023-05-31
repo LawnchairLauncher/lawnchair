@@ -74,9 +74,9 @@ data class OssLibrary(
     val artifactId: String,
     val version: String,
     val name: String,
+    val scm: Scm? = null,
     val spdxLicenses: List<License>? = null,
     val unknownLicenses: List<License>? = null,
-    val scm: Scm? = null,
 ) {
     @Serializable
     data class License(
