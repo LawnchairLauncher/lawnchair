@@ -144,7 +144,9 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
     private void onTISConnected(TouchInteractionService.TISBinder binder) {
         mTaskbarManager = binder.getTaskbarManager();
-        mTaskbarManager.setActivity(this);
+        if (mTaskbarManager != null) {
+            mTaskbarManager.setActivity(this);
+        }
     }
 
     @Override

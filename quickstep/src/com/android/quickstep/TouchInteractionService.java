@@ -139,8 +139,10 @@ import com.android.wm.shell.transition.IShellTransitions;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -157,14 +159,20 @@ public class TouchInteractionService extends Service
 
     private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
 
-    private final TISBinder mTISBinder = new TISBinder();
+    private final TISBinder mTISBinder = new TISBinder(this);
 
     /**
      * Local IOverviewProxy implementation with some methods for local components
      */
-    public class TISBinder extends IOverviewProxy.Stub {
+    public static class TISBinder extends IOverviewProxy.Stub {
+
+        private final WeakReference<TouchInteractionService> mTis;
 
         @Nullable private Runnable mOnOverviewTargetChangeListener = null;
+
+        private TISBinder(TouchInteractionService tis) {
+            mTis = new WeakReference<>(tis);
+        }
 
         @BinderThread
         public void onInitialize(Bundle bundle) {
@@ -193,14 +201,14 @@ public class TouchInteractionService extends Service
                     bundle.getBinder(KEY_EXTRA_UNFOLD_ANIMATION_FORWARDER));
             IDragAndDrop dragAndDrop = IDragAndDrop.Stub.asInterface(
                     bundle.getBinder(KEY_EXTRA_SHELL_DRAG_AND_DROP));
-            MAIN_EXECUTOR.execute(() -> {
-                SystemUiProxy.INSTANCE.get(TouchInteractionService.this).setProxy(proxy, pip,
+            MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
+                SystemUiProxy.INSTANCE.get(tis).setProxy(proxy, pip,
                         bubbles, splitscreen, onehanded, shellTransitions, startingWindow,
                         recentTasks, launcherUnlockAnimationController, backAnimation, desktopMode,
                         unfoldTransition, dragAndDrop);
-                TouchInteractionService.this.initInputMonitor("TISBinder#onInitialize()");
-                preloadOverview(true /* fromInit */);
-            });
+                tis.initInputMonitor("TISBinder#onInitialize()");
+                tis.preloadOverview(true /* fromInit */);
+            }));
             sIsInitialized = true;
         }
 
@@ -208,65 +216,72 @@ public class TouchInteractionService extends Service
         @Override
         public void onTaskbarToggled() {
             if (!FeatureFlags.ENABLE_KEYBOARD_TASKBAR_TOGGLE.get()) return;
-            MAIN_EXECUTOR.execute(() -> {
+            MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
                 TaskbarActivityContext activityContext =
-                        mTaskbarManager.getCurrentActivityContext();
+                        tis.mTaskbarManager.getCurrentActivityContext();
 
                 if (activityContext != null) {
                     activityContext.toggleTaskbarStash();
                 }
-            });
+            }));
         }
 
         @BinderThread
         public void onOverviewToggle() {
             TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onOverviewToggle");
-            // If currently screen pinning, do not enter overview
-            if (mDeviceState.isScreenPinningActive()) {
-                return;
-            }
-            TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-            mOverviewCommandHelper.addCommand(OverviewCommandHelper.TYPE_TOGGLE);
+            executeForTouchInteractionService(tis -> {
+                // If currently screen pinning, do not enter overview
+                if (tis.mDeviceState.isScreenPinningActive()) {
+                    return;
+                }
+                TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+                tis.mOverviewCommandHelper.addCommand(OverviewCommandHelper.TYPE_TOGGLE);
+            });
         }
 
         @BinderThread
         @Override
         public void onOverviewShown(boolean triggeredFromAltTab) {
-            if (triggeredFromAltTab) {
-                TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
-                mOverviewCommandHelper.addCommand(OverviewCommandHelper.TYPE_KEYBOARD_INPUT);
-            } else {
-                mOverviewCommandHelper.addCommand(OverviewCommandHelper.TYPE_SHOW);
-            }
+            executeForTouchInteractionService(tis -> {
+                if (triggeredFromAltTab) {
+                    TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_RECENTS);
+                    tis.mOverviewCommandHelper.addCommand(
+                            OverviewCommandHelper.TYPE_KEYBOARD_INPUT);
+                } else {
+                    tis.mOverviewCommandHelper.addCommand(OverviewCommandHelper.TYPE_SHOW);
+                }
+            });
         }
 
         @BinderThread
         @Override
         public void onOverviewHidden(boolean triggeredFromAltTab, boolean triggeredFromHomeKey) {
-            if (triggeredFromAltTab && !triggeredFromHomeKey) {
-                // onOverviewShownFromAltTab hides the overview and ends at the target app
-                mOverviewCommandHelper.addCommand(OverviewCommandHelper.TYPE_HIDE);
-            }
+            executeForTouchInteractionService(tis -> {
+                if (triggeredFromAltTab && !triggeredFromHomeKey) {
+                    // onOverviewShownFromAltTab hides the overview and ends at the target app
+                    tis.mOverviewCommandHelper.addCommand(OverviewCommandHelper.TYPE_HIDE);
+                }
+            });
         }
 
         @BinderThread
         @Override
         public void onAssistantAvailable(boolean available, boolean longPressHomeEnabled) {
-            MAIN_EXECUTOR.execute(() -> {
-                mDeviceState.setAssistantAvailable(available);
-                TouchInteractionService.this.onAssistantVisibilityChanged();
-                executeForTaskbarManager(() -> mTaskbarManager
+            MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
+                tis.mDeviceState.setAssistantAvailable(available);
+                tis.onAssistantVisibilityChanged();
+                executeForTaskbarManager(taskbarManager -> taskbarManager
                         .onLongPressHomeEnabled(longPressHomeEnabled));
-            });
+            }));
         }
 
         @BinderThread
         @Override
         public void onAssistantVisibilityChanged(float visibility) {
-            MAIN_EXECUTOR.execute(() -> {
-                mDeviceState.setAssistantVisibility(visibility);
-                TouchInteractionService.this.onAssistantVisibilityChanged();
-            });
+            MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
+                tis.mDeviceState.setAssistantVisibility(visibility);
+                tis.onAssistantVisibilityChanged();
+            }));
         }
 
         @Override
@@ -276,16 +291,17 @@ public class TouchInteractionService extends Service
 
         @BinderThread
         public void onSystemUiStateChanged(int stateFlags) {
-            MAIN_EXECUTOR.execute(() -> {
-                int lastFlags = mDeviceState.getSystemUiStateFlags();
-                mDeviceState.setSystemUiFlags(stateFlags);
-                TouchInteractionService.this.onSystemUiFlagsChanged(lastFlags);
-            });
+            MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
+                int lastFlags = tis.mDeviceState.getSystemUiStateFlags();
+                tis.mDeviceState.setSystemUiFlags(stateFlags);
+                tis.onSystemUiFlagsChanged(lastFlags);
+            }));
         }
 
         @BinderThread
         public void onActiveNavBarRegionChanges(Region region) {
-            MAIN_EXECUTOR.execute(() -> mDeviceState.setDeferredGestureRegion(region));
+            MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(
+                    tis -> tis.mDeviceState.setDeferredGestureRegion(region)));
         }
 
         @BinderThread
@@ -309,75 +325,105 @@ public class TouchInteractionService extends Service
         @BinderThread
         @Override
         public void enterStageSplitFromRunningApp(boolean leftOrTop) {
-            StatefulActivity activity =
-                    mOverviewComponentObserver.getActivityInterface().getCreatedActivity();
-            if (activity != null) {
-                activity.enterStageSplitFromRunningApp(leftOrTop);
-            }
+            executeForTouchInteractionService(tis -> {
+                StatefulActivity activity =
+                        tis.mOverviewComponentObserver.getActivityInterface().getCreatedActivity();
+                if (activity != null) {
+                    activity.enterStageSplitFromRunningApp(leftOrTop);
+                }
+            });
         }
 
         /**
          * Preloads the Overview activity.
-         *
+         * <p>
          * This method should only be used when the All Set page of the SUW is reached to safely
          * preload the Launcher for the SUW first reveal.
          */
         public void preloadOverviewForSUWAllSet() {
-            preloadOverview(false, true);
+            executeForTouchInteractionService(tis -> tis.preloadOverview(false, true));
         }
 
         @Override
         public void onRotationProposal(int rotation, boolean isValid) {
-            executeForTaskbarManager(() -> mTaskbarManager.onRotationProposal(rotation, isValid));
+            executeForTaskbarManager(taskbarManager ->
+                    taskbarManager.onRotationProposal(rotation, isValid));
         }
 
         @Override
         public void disable(int displayId, int state1, int state2, boolean animate) {
-            executeForTaskbarManager(() -> mTaskbarManager
-                    .disableNavBarElements(displayId, state1, state2, animate));
+            executeForTaskbarManager(taskbarManager ->
+                    taskbarManager.disableNavBarElements(displayId, state1, state2, animate));
         }
 
         @Override
         public void onSystemBarAttributesChanged(int displayId, int behavior) {
-            executeForTaskbarManager(() -> mTaskbarManager
-                    .onSystemBarAttributesChanged(displayId, behavior));
+            executeForTaskbarManager(taskbarManager ->
+                    taskbarManager.onSystemBarAttributesChanged(displayId, behavior));
         }
 
         @Override
         public void onNavButtonsDarkIntensityChanged(float darkIntensity) {
-            executeForTaskbarManager(() -> mTaskbarManager
-                    .onNavButtonsDarkIntensityChanged(darkIntensity));
+            executeForTaskbarManager(taskbarManager ->
+                    taskbarManager.onNavButtonsDarkIntensityChanged(darkIntensity));
         }
 
-        private void executeForTaskbarManager(final Runnable r) {
-            MAIN_EXECUTOR.execute(() -> {
-                if (mTaskbarManager == null) {
-                    return;
-                }
-                r.run();
-            });
+        private void executeForTouchInteractionService(
+                @NonNull Consumer<TouchInteractionService> tisConsumer) {
+            TouchInteractionService tis = mTis.get();
+            if (tis == null) return;
+            tisConsumer.accept(tis);
         }
 
+        private void executeForTaskbarManager(
+                @NonNull Consumer<TaskbarManager> taskbarManagerConsumer) {
+            MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(tis -> {
+                TaskbarManager taskbarManager = tis.mTaskbarManager;
+                if (taskbarManager == null) return;
+                taskbarManagerConsumer.accept(taskbarManager);
+            }));
+        }
+
+        /**
+         * Returns the {@link TaskbarManager}.
+         * <p>
+         * Returns {@code null} if TouchInteractionService is not connected
+         */
+        @Nullable
         public TaskbarManager getTaskbarManager() {
-            return mTaskbarManager;
+            TouchInteractionService tis = mTis.get();
+            if (tis == null) return null;
+            return tis.mTaskbarManager;
         }
 
+        /**
+         * Returns the {@link OverviewCommandHelper}.
+         * <p>
+         * Returns {@code null} if TouchInteractionService is not connected
+         */
+        @Nullable
         public OverviewCommandHelper getOverviewCommandHelper() {
-            return mOverviewCommandHelper;
+            TouchInteractionService tis = mTis.get();
+            if (tis == null) return null;
+            return tis.mOverviewCommandHelper;
         }
 
         /**
          * Sets a proxy to bypass swipe up behavior
          */
         public void setSwipeUpProxy(Function<GestureState, AnimatedFloat> proxy) {
-            mSwipeUpProxyProvider = proxy != null ? proxy : (i -> null);
+            TouchInteractionService tis = mTis.get();
+            if (tis == null) return;
+            tis.mSwipeUpProxyProvider = proxy != null ? proxy : (i -> null);
         }
 
         /**
          * Sets the task id where gestures should be blocked
          */
         public void setGestureBlockedTaskId(int taskId) {
-            mDeviceState.setGestureBlockingTaskId(taskId);
+            TouchInteractionService tis = mTis.get();
+            if (tis == null) return;
+            tis.mDeviceState.setGestureBlockingTaskId(taskId);
         }
 
         /** Sets a listener to be run on Overview Target updates. */
