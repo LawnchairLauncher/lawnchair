@@ -54,7 +54,6 @@ import kotlinx.coroutines.launch
  * @see HsvColorPicker
  * @see RgbColorPicker
  */
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun CustomColorPicker(
     modifier: Modifier = Modifier,
@@ -187,7 +186,6 @@ fun CustomColorPicker(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HexColorPicker(
     modifier: Modifier = Modifier,

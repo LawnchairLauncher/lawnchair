@@ -56,7 +56,6 @@ fun NavGraphBuilder.colorSelectionGraph(route: String) {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun ColorSelection(
     label: String,
