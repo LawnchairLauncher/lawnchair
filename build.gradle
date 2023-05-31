@@ -107,6 +107,15 @@ android {
     }
 
     applicationVariants.configureEach { variant ->
+        def copyArtifactList = tasks.register("copy${variant.name.capitalize()}ArtifactList", Copy) {
+            dependsOn "licensee${variant.name.capitalize()}"
+            from project.extensions.getByType(ReportingExtension).file("licensee/${variant.name}/artifacts.json")
+            into layout.buildDirectory.dir("generated/dependencyAssets/")
+        }
+        tasks.named("merge${variant.name.capitalize()}Assets").configure {
+            dependsOn copyArtifactList
+        }
+
         variant.outputs.configureEach {
             outputFileName = "Lawnchair ${variant.versionName}.apk"
         }
@@ -280,6 +289,7 @@ android {
 
         lawnWithQuickstep {
             manifest.srcFile "quickstep/AndroidManifest-launcher.xml"
+            assets.srcDir layout.buildDirectory.dir("generated/dependencyAssets/")
         }
 
         withoutQuickstep {
