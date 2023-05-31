@@ -67,9 +67,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.CellPosMapper;
@@ -562,9 +562,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // Change the interpolators such that the fade animation plays before the move animation.
         // This prevents empty adjacent pages to overlay during animation
         mLayoutTransition.setInterpolator(LayoutTransition.DISAPPEARING,
-                Interpolators.clampToProgress(Interpolators.ACCEL_DEACCEL, 0, 0.5f));
+                Interpolators.clampToProgress(Interpolators.ACCELERATE_DECELERATE, 0, 0.5f));
         mLayoutTransition.setInterpolator(LayoutTransition.CHANGE_DISAPPEARING,
-                Interpolators.clampToProgress(Interpolators.ACCEL_DEACCEL, 0.5f, 1));
+                Interpolators.clampToProgress(Interpolators.ACCELERATE_DECELERATE, 0.5f, 1));
 
         mLayoutTransition.disableTransitionType(LayoutTransition.APPEARING);
         mLayoutTransition.disableTransitionType(LayoutTransition.CHANGE_APPEARING);

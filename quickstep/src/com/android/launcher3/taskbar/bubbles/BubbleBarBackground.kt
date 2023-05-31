@@ -21,10 +21,10 @@ import android.graphics.ColorFilter
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.ShapeDrawable
+import com.android.app.animation.Interpolators
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.Utilities.mapToRange
-import com.android.launcher3.anim.Interpolators
 import com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound
 import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.wm.shell.common.TriangleShape

@@ -36,12 +36,12 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.touch.PagedOrientationHandler;
@@ -256,7 +256,7 @@ public class TaskMenuView extends AbstractFloatingView {
 
         final Animator revealAnimator = createOpenCloseOutlineProvider()
                 .createRevealAnimator(this, closing);
-        revealAnimator.setInterpolator(Interpolators.DEACCEL);
+        revealAnimator.setInterpolator(Interpolators.DECELERATE);
         mOpenCloseAnimator.playTogether(revealAnimator,
                 ObjectAnimator.ofFloat(
                         mTaskContainer.getThumbnailView(), DIM_ALPHA,

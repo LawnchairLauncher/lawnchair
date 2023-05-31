@@ -55,9 +55,9 @@ import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.ItemInfo;
@@ -371,7 +371,7 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         AnimatorSet anim = new AnimatorSet();
         anim.play(ObjectAnimator.ofFloat(newContent, VIEW_ALPHA, 0, 1));
         anim.play(ObjectAnimator.ofFloat(mContent, VIEW_ALPHA, 0));
-        anim.setDuration(duration).setInterpolator(Interpolators.DEACCEL_1_5);
+        anim.setDuration(duration).setInterpolator(Interpolators.DECELERATE_1_5);
         anim.start();
     }
 

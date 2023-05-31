@@ -20,12 +20,12 @@ import static android.view.View.VISIBLE;
 
 import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
 
+import static com.android.app.animation.Interpolators.DECELERATE_1_7;
+import static com.android.app.animation.Interpolators.INSTANT;
+import static com.android.app.animation.Interpolators.clampToProgress;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
-import static com.android.launcher3.anim.Interpolators.clampToProgress;
 
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
@@ -48,7 +48,7 @@ public class SearchTransitionController {
     private static final String LOG_TAG = "SearchTransitionCtrl";
 
     // Interpolator when the user taps the QSB while already in All Apps.
-    private static final Interpolator INTERPOLATOR_WITHIN_ALL_APPS = DEACCEL_1_7;
+    private static final Interpolator INTERPOLATOR_WITHIN_ALL_APPS = DECELERATE_1_7;
     // Interpolator when the user taps the QSB from home screen, so transition to all apps is
     // happening simultaneously.
     private static final Interpolator INTERPOLATOR_TRANSITIONING_TO_ALL_APPS = INSTANT;

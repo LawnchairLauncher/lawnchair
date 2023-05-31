@@ -23,9 +23,9 @@ import android.annotation.LayoutRes;
 import android.graphics.PointF;
 import android.view.View;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
 import com.android.quickstep.util.LottieAnimationColorUtils;
@@ -176,7 +176,7 @@ final class BackGestureTutorialController extends TutorialController {
                 /* upperBound = */ 1f,
                 /* toMin = */ 1f,
                 /* toMax = */ EXITING_APP_MIN_SIZE_PERCENTAGE,
-                Interpolators.DEACCEL);
+                Interpolators.DECELERATE);
 
         // shrink the exiting app as we progress through the back gesture
         mExitingAppView.setPivotX(isLeftGesture ? mScreenWidth : 0);
@@ -190,7 +190,7 @@ final class BackGestureTutorialController extends TutorialController {
                 /* upperBound = */ 1f,
                 /* toMin = */ 0,
                 /* toMax = */ mExitingAppMargin,
-                Interpolators.DEACCEL)
+                Interpolators.DECELERATE)
                 * (isLeftGesture ? -1 : 1));
 
         // round the corners of the exiting app as we progress through the back gesture
