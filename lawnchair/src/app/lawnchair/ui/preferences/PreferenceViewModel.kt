@@ -23,15 +23,15 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.ui.preferences.about.acknowledgements.OssLibrary
+import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
+import app.lawnchair.util.getPackageVersionCode
 import com.android.launcher3.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import app.lawnchair.util.getPackageVersionCode
-import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.serialization.json.Json
 
 private val iconPackIntents = listOf(
@@ -41,9 +41,11 @@ private val iconPackIntents = listOf(
     Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME")
 )
 
-class PreferenceViewModel(private val app: Application) : AndroidViewModel(app), PreferenceInteractor {
+class PreferenceViewModel(private val app: Application) : AndroidViewModel(app),
+    PreferenceInteractor {
 
-    private val themedIconPackIntents = listOf(Intent(app.getString(R.string.icon_packs_intent_name)))
+    private val themedIconPackIntents =
+        listOf(Intent(app.getString(R.string.icon_packs_intent_name)))
     override val iconPacks = flow {
         val pm = app.packageManager
         val iconPacks = iconPackIntents
@@ -111,7 +113,11 @@ class PreferenceViewModel(private val app: Application) : AndroidViewModel(app),
     override val ossLibraries: StateFlow<List<OssLibrary>> = flow {
         val jsonString = app.resources.assets.open("artifacts.json")
             .bufferedReader().use { it.readText() }
-        val artifacts: List<OssLibrary> = Json.decodeFromString(jsonString)
+        val artifacts = Json.decodeFromString<List<OssLibrary>>(jsonString)
+            .asSequence()
+            .distinctBy { "${it.groupId}:${it.artifactId}" }
+            .sortedBy { it.name }
+            .toList()
         emit(artifacts)
     }
         .flowOn(Dispatchers.IO)
