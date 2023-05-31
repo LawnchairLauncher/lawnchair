@@ -105,6 +105,7 @@ public abstract class BaseLauncherAppWidgetHostView extends NavigableAppWidgetHo
                 mEnforcedRectangle);
         setOutlineProvider(mCornerRadiusEnforcementOutline);
         setClipToOutline(true);
+        invalidateOutline();
     }
 
     /** Returns the corner radius currently enforced, in pixels. */
