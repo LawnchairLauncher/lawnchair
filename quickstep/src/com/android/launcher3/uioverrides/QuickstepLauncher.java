@@ -889,7 +889,9 @@ public class QuickstepLauncher extends Launcher {
 
     private void onTISConnected(TISBinder binder) {
         mTaskbarManager = binder.getTaskbarManager();
-        mTaskbarManager.setActivity(this);
+        if (mTaskbarManager != null) {
+            mTaskbarManager.setActivity(this);
+        }
         mOverviewCommandHelper = binder.getOverviewCommandHelper();
     }
 
