@@ -16,7 +16,7 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.anim.Interpolators.SCROLL;
+import static com.android.app.animation.Interpolators.SCROLL;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isObservedEventType;
 import static com.android.launcher3.touch.OverScroll.OVERSCROLL_DAMP_FACTOR;

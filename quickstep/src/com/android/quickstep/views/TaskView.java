@@ -20,11 +20,11 @@ import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.widget.Toast.LENGTH_SHORT;
 
+import static com.android.app.animation.Interpolators.ACCELERATE_DECELERATE;
+import static com.android.app.animation.Interpolators.FAST_OUT_SLOW_IN;
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
-import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
-import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -71,11 +71,11 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
@@ -163,7 +163,7 @@ public class TaskView extends FrameLayout implements Reusable {
     public static final long SCALE_ICON_DURATION = 120;
     private static final long DIM_ANIM_DURATION = 700;
 
-    private static final Interpolator GRID_INTERPOLATOR = ACCEL_DEACCEL;
+    private static final Interpolator GRID_INTERPOLATOR = ACCELERATE_DECELERATE;
 
     /**
      * This technically can be a vanilla {@link TouchDelegate} class, however that class requires

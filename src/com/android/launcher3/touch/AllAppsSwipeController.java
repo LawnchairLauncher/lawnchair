@@ -15,15 +15,15 @@
  */
 package com.android.launcher3.touch;
 
+import static com.android.app.animation.Interpolators.EMPHASIZED;
+import static com.android.app.animation.Interpolators.EMPHASIZED_ACCELERATE;
+import static com.android.app.animation.Interpolators.EMPHASIZED_DECELERATE;
+import static com.android.app.animation.Interpolators.FINAL_FRAME;
+import static com.android.app.animation.Interpolators.INSTANT;
+import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.clampToProgress;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED_ACCELERATE;
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED_DECELERATE;
-import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_BOTTOM_SHEET_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
@@ -40,11 +40,11 @@ import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.states.StateAnimationConfig;
 
 /**

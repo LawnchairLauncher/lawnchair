@@ -19,11 +19,11 @@ package com.android.launcher3.dragndrop;
 
 import static android.animation.ObjectAnimator.ofFloat;
 
+import static com.android.app.animation.Interpolators.DECELERATE_1_5;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.Utilities.mapRange;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_1_5;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 
 import android.animation.Animator;
@@ -42,6 +42,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DropTargetBar;
 import com.android.launcher3.Launcher;
@@ -49,7 +50,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
@@ -340,14 +340,14 @@ public class DragLayer extends BaseDragLayer<Launcher> implements LauncherOverla
         if (duration < 0) {
             duration = res.getInteger(R.integer.config_dropAnimMaxDuration);
             if (dist < maxDist) {
-                duration *= DEACCEL_1_5.getInterpolation(dist / maxDist);
+                duration *= DECELERATE_1_5.getInterpolation(dist / maxDist);
             }
             duration = Math.max(duration, res.getInteger(R.integer.config_dropAnimMinDuration));
         }
 
         // Fall back to cubic ease out interpolator for the animation if none is specified
         TimeInterpolator interpolator =
-                motionInterpolator == null ? DEACCEL_1_5 : motionInterpolator;
+                motionInterpolator == null ? DECELERATE_1_5 : motionInterpolator;
 
         // Animate the view
         PendingAnimation anim = new PendingAnimation(duration);
@@ -475,7 +475,7 @@ public class DragLayer extends BaseDragLayer<Launcher> implements LauncherOverla
 
     @Override
     public void onOverlayScrollChanged(float progress) {
-        float alpha = 1 - Interpolators.DEACCEL_3.getInterpolation(progress);
+        float alpha = 1 - Interpolators.DECELERATE_3.getInterpolation(progress);
         float transX = getMeasuredWidth() * progress;
 
         if (mIsRtl) {

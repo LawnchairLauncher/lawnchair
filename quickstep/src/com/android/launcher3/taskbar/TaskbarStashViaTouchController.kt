@@ -16,9 +16,9 @@
 package com.android.launcher3.taskbar
 
 import android.view.MotionEvent
+import com.android.app.animation.Interpolators.LINEAR
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.anim.Interpolators.LINEAR
 import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.touch.SingleAxisSwipeDetector
 import com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_NEGATIVE

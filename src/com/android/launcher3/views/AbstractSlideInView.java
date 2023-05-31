@@ -17,11 +17,11 @@ package com.android.launcher3.views;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
+import static com.android.app.animation.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.LauncherAnimUtils.TABLET_BOTTOM_SHEET_SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.allapps.AllAppsTransitionController.REVERT_SWIPE_ALL_APPS_TO_HOME_ANIMATION_DURATION_MS;
-import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.util.ScrollableLayoutManager.PREDICTIVE_BACK_MIN_SCALE;
 
 import android.animation.Animator;
@@ -47,10 +47,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.annotation.RequiresApi;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.touch.BaseSwipeDetector;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 
@@ -310,7 +310,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
                     TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
             mOpenCloseAnimator.setDuration(
                     BaseSwipeDetector.calculateDuration(velocity, mTranslationShift))
-                    .setInterpolator(Interpolators.DEACCEL);
+                    .setInterpolator(Interpolators.DECELERATE);
             mOpenCloseAnimator.start();
         }
     }
@@ -357,7 +357,7 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     }
 
     protected Interpolator getIdleInterpolator() {
-        return Interpolators.ACCEL;
+        return Interpolators.ACCELERATE;
     }
 
     protected void onCloseComplete() {

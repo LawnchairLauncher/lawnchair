@@ -16,8 +16,8 @@
 
 package com.android.launcher3.notification;
 
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.Utilities.mapToRange;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_DISMISSED;
 
 import android.animation.AnimatorSet;

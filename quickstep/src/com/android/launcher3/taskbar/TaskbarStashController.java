@@ -18,11 +18,11 @@ package com.android.launcher3.taskbar;
 import static android.view.HapticFeedbackConstants.LONG_PRESS;
 import static android.view.accessibility.AccessibilityManager.FLAG_CONTENT_CONTROLS;
 
+import static com.android.app.animation.Interpolators.EMPHASIZED;
+import static com.android.app.animation.Interpolators.FINAL_FRAME;
+import static com.android.app.animation.Interpolators.INSTANT;
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING_KEY;
-import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
-import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_PINNING;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;

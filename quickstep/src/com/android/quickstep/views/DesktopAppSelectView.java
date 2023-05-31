@@ -15,7 +15,7 @@
  */
 package com.android.quickstep.views;
 
-import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.LINEAR;
 
 import android.content.Context;
 import android.util.AttributeSet;
