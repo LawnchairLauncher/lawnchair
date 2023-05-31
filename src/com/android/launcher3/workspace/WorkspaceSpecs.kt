@@ -231,6 +231,13 @@ class CalculatedWorkspaceSpec(
         if (workspaceSpec.cellSize.ofRemainderSpace > 0)
             cellSizePx = (workspaceSpec.cellSize.ofRemainderSpace * remainderSpace).roundToInt()
     }
+
+    override fun toString(): String {
+        return "CalculatedWorkspaceSpec(availableSpace=$availableSpace, " +
+            "cells=$cells, startPaddingPx=$startPaddingPx, endPaddingPx=$endPaddingPx, " +
+            "gutterPx=$gutterPx, cellSizePx=$cellSizePx, " +
+            "workspaceSpec.maxAvailableSize=${workspaceSpec.maxAvailableSize})"
+    }
 }
 
 data class WorkspaceSpec(
