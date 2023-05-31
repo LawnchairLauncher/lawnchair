@@ -20,6 +20,7 @@ import static android.window.SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR;
 import static com.android.launcher3.LauncherSettings.Animation.DEFAULT_NO_ICON;
 import static com.android.launcher3.logging.KeyboardStateManager.KeyboardState.HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_KEYBOARD_CLOSED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_PENDING_INTENT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -305,6 +306,11 @@ public interface ActivityContext {
         ActivityOptionsWrapper options = getActivityLaunchOptions(v, item);
         try {
             intent.send(null, 0, null, null, null, null, options.toBundle());
+            if (item != null) {
+                InstanceId instanceId = new InstanceIdSequence().newInstanceId();
+                getStatsLogManager().logger().withItemInfo(item).withInstanceId(instanceId)
+                        .log(LAUNCHER_APP_LAUNCH_PENDING_INTENT);
+            }
             return options.onEndCallback;
         } catch (PendingIntent.CanceledException e) {
             Toast.makeText(v.getContext(),
