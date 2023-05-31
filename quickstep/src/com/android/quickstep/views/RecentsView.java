@@ -211,6 +211,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -992,16 +993,34 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     /**
-     * Update the thumbnail of the task.
+     * Update the thumbnail(s) of the relevant TaskView.
      * @param refreshNow Refresh immediately if it's true.
      */
     @Nullable
-    public TaskView updateThumbnail(int taskId, ThumbnailData thumbnailData, boolean refreshNow) {
-        TaskView taskView = getTaskViewByTaskId(taskId);
-        if (taskView != null) {
-            taskView.getThumbnail().setThumbnail(taskView.getTask(), thumbnailData, refreshNow);
+    public TaskView updateThumbnail(
+            HashMap<Integer, ThumbnailData> thumbnailData, boolean refreshNow) {
+        TaskView updatedTaskView = null;
+        for (Map.Entry<Integer, ThumbnailData> entry : thumbnailData.entrySet()) {
+            Integer id = entry.getKey();
+            ThumbnailData thumbnail = entry.getValue();
+            TaskView taskView = getTaskViewByTaskId(id);
+            if (taskView == null) {
+                continue;
+            }
+            // taskView could be a GroupedTaskView, so select the relevant task by ID
+            TaskIdAttributeContainer taskAttributes = taskView.getTaskAttributesById(id);
+            if (taskAttributes == null) {
+                continue;
+            }
+            Task task = taskAttributes.getTask();
+            TaskThumbnailView taskThumbnailView = taskAttributes.getThumbnailView();
+            taskThumbnailView.setThumbnail(task, thumbnail, refreshNow);
+            // thumbnailData can contain 1-2 ids, but they should correspond to the same
+            // TaskView, so overwriting is ok
+            updatedTaskView = taskView;
         }
-        return taskView;
+
+        return updatedTaskView;
     }
 
     @Override
