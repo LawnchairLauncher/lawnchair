@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
-import app.lawnchair.ossnotices.OssLibrary
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
 import app.lawnchair.ui.preferences.components.*
@@ -44,9 +43,6 @@ import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.preferences.subRoute
 import com.android.launcher3.R
 import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.placeholder.PlaceholderHighlight
-import com.google.accompanist.placeholder.material.fade
-import com.google.accompanist.placeholder.material.placeholder
 
 @OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.licensesGraph(route: String) {
@@ -103,7 +99,7 @@ fun NoticePage(index: Int) {
     PreferenceLayout(
         label = ossLibrary?.name ?: stringResource(id = R.string.loading)
     ) {
-        Crossfade(targetState = data) { it ->
+        Crossfade(targetState = data, label = "") { it ->
             if (it != null) {
                 val uriHandler = LocalUriHandler.current
                 val layoutResult = remember { mutableStateOf<TextLayoutResult?>(null) }
@@ -131,18 +127,6 @@ fun NoticePage(index: Int) {
                     onTextLayout = {
                         layoutResult.value = it
                     }
-                )
-            } else {
-                Text(
-                    modifier = Modifier
-                        .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 16.dp)
-                        .placeholder(
-                            visible = true,
-                            highlight = PlaceholderHighlight.fade(),
-                        ),
-                    text = "a".repeat(ossLibrary?.noticeLength ?: 20),
-                    fontFamily = FontFamily.Monospace,
-                    fontSize = 14.sp
                 )
             }
         }
