@@ -66,8 +66,10 @@ fun ColorSelection(
     val appliedColor = adapter.state.value
     val context = LocalContext.current
     val selectedColor = remember { mutableStateOf(appliedColor.forCustomPicker(context)) }
-    val selectedColorApplied = derivedStateOf {
-        appliedColor is ColorOption.CustomColor && appliedColor.color == selectedColor.value
+    val selectedColorApplied = remember {
+        derivedStateOf {
+            appliedColor is ColorOption.CustomColor && appliedColor.color == selectedColor.value
+        }
     }
     val defaultTabIndex = when {
         dynamicEntries.any { it.value == appliedColor } -> 0
