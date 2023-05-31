@@ -61,6 +61,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.taskbar.TaskbarManager;
 import com.android.launcher3.util.Executors;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.TouchInteractionService.TISBinder;
@@ -100,6 +101,7 @@ public class AllSetActivity extends Activity {
 
     private TISBindHelper mTISBindHelper;
     private TISBinder mBinder;
+    @Nullable private TaskbarManager mTaskbarManager = null;
 
     private final AnimatedFloat mSwipeProgress = new AnimatedFloat(this::onSwipeProgressUpdate);
     private BgDrawable mBackground;
@@ -262,19 +264,25 @@ public class AllSetActivity extends Activity {
         mAnimatedBackground.playAnimation();
     }
 
+    private void setSetupUIVisible(boolean visible) {
+        if (mBinder == null || mTaskbarManager == null) return;
+        mTaskbarManager.setSetupUIVisible(visible);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         maybeResumeOrPauseBackgroundAnimation();
         if (mBinder != null) {
-            mBinder.getTaskbarManager().setSetupUIVisible(true);
+            setSetupUIVisible(true);
             mBinder.setSwipeUpProxy(this::createSwipeUpProxy);
         }
     }
 
     private void onTISConnected(TISBinder binder) {
         mBinder = binder;
-        mBinder.getTaskbarManager().setSetupUIVisible(isResumed());
+        mTaskbarManager = mBinder.getTaskbarManager();
+        setSetupUIVisible(isResumed());
         mBinder.setSwipeUpProxy(isResumed() ? this::createSwipeUpProxy : null);
         mBinder.setOverviewTargetChangeListener(mBinder::preloadOverviewForSUWAllSet);
         mBinder.preloadOverviewForSUWAllSet();
@@ -293,7 +301,7 @@ public class AllSetActivity extends Activity {
 
     private void clearBinderOverride() {
         if (mBinder != null) {
-            mBinder.getTaskbarManager().setSetupUIVisible(false);
+            setSetupUIVisible(false);
             mBinder.setSwipeUpProxy(null);
             mBinder.setOverviewTargetChangeListener(null);
         }
@@ -352,9 +360,8 @@ public class AllSetActivity extends Activity {
         mContentView.setAlpha(alpha);
         mContentView.setTranslationY((alpha - 1) * mSwipeUpShift);
 
-        if (mLauncherStartAnim == null) {
-            mLauncherStartAnim = mBinder.getTaskbarManager().createLauncherStartFromSuwAnim(
-                    MAX_SWIPE_DURATION);
+        if (mLauncherStartAnim == null && mTaskbarManager != null) {
+            mLauncherStartAnim = mTaskbarManager.createLauncherStartFromSuwAnim(MAX_SWIPE_DURATION);
         }
         if (mLauncherStartAnim != null) {
             mLauncherStartAnim.setPlayFraction(Utilities.mapBoundToRange(
