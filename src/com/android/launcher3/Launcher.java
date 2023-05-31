@@ -518,11 +518,12 @@ public class Launcher extends StatefulActivity<LauncherState>
         // TODO: move the SearchConfig to SearchState when new LauncherState is created.
         mBaseSearchConfig = new BaseSearchConfig();
 
+        setupViews();
+
         mAppWidgetManager = new WidgetManagerHelper(this);
         mAppWidgetHolder = createAppWidgetHolder();
         mAppWidgetHolder.startListening();
 
-        setupViews();
         mPopupDataProvider = new PopupDataProvider(this::updateNotificationDots);
 
         boolean internalStateHandled = ACTIVITY_TRACKER.handleCreate(this);
