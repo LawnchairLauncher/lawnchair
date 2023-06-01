@@ -444,6 +444,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             // Animate to A-Z with 0 time to reset the animation with proper state management.
             animateToSearchState(false, 0);
         }
+        if (isSearching()) {
+            mWorkManager.reset();
+        }
     }
 
     @Override
