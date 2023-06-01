@@ -105,8 +105,6 @@ public final class TestProtocol {
     public static final String REQUEST_WINDOW_INSETS = "window-insets";
     public static final String REQUEST_PID = "pid";
     public static final String REQUEST_FORCE_GC = "gc";
-    public static final String REQUEST_VIEW_LEAK = "view-leak";
-    public static final String PRINT_VIEW_LEAK = "print-leak";
     public static final String REQUEST_RECENT_TASKS_LIST = "recent-tasks-list";
     public static final String REQUEST_START_EVENT_LOGGING = "start-event-logging";
     public static final String REQUEST_GET_TEST_EVENTS = "get-test-events";
@@ -155,7 +153,6 @@ public final class TestProtocol {
     public static final String REQUEST_MOCK_SENSOR_ROTATION = "mock-sensor-rotation";
 
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
-    public static final String VIEW_AND_ACTIVITY_LEAKS = "b/260260325";
     public static final String WORK_TAB_MISSING = "b/243688989";
     public static final String TWO_TASKBAR_LONG_CLICKS = "b/262282528";
     public static final String WORKSPACE_LOADS_FOREVER = "b/267200150";
