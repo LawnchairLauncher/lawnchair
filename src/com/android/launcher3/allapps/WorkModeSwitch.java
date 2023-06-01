@@ -166,7 +166,7 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         return super.onApplyWindowInsets(insets);
     }
 
-    private void updateTranslationY() {
+    void updateTranslationY() {
         setTranslationY(-mImeInsets.bottom);
     }
 
@@ -178,6 +178,10 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
 
     private void setInsets(Rect rect, Insets insets) {
         rect.set(insets.left, insets.top, insets.right, insets.bottom);
+    }
+
+    public Rect getImeInsets() {
+        return mImeInsets;
     }
 
     @Override
