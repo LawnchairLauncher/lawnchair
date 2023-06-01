@@ -68,7 +68,10 @@ fun SmartspacePreferences(fromWidget: Boolean) {
                 }
             }
         }
-        Crossfade(targetState = (smartspaceAdapter.state.value || fromWidget) && modeIsLawnchair) { targetState ->
+        Crossfade(
+            targetState = (smartspaceAdapter.state.value || fromWidget) && modeIsLawnchair,
+            label = "",
+        ) { targetState ->
             if (targetState) {
                 Column {
                     SmartspacePreview()

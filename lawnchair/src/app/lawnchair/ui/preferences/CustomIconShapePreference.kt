@@ -232,7 +232,7 @@ private fun ClipboardButton(
         startWidget = {
             val tint = LocalContentColor.current
             val contentAlpha = if (enabled) tint.alpha else ContentAlpha.disabled
-            val alpha by animateFloatAsState(targetValue = contentAlpha)
+            val alpha by animateFloatAsState(targetValue = contentAlpha, label = "")
             Icon(
                 imageVector = imageVector,
                 contentDescription = null,

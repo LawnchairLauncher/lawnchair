@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -27,9 +28,8 @@ import app.lawnchair.ui.preferences.components.colorpreference.pickers.SwatchGri
 import app.lawnchair.ui.preferences.preferenceGraph
 import com.android.launcher3.R
 import com.google.accompanist.navigation.animation.composable
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import com.patrykmichalik.opto.domain.Preference
 import kotlinx.coroutines.launch
 
@@ -56,7 +56,7 @@ fun NavGraphBuilder.colorSelectionGraph(route: String) {
     }
 }
 
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ColorSelection(
     label: String,
@@ -68,8 +68,10 @@ fun ColorSelection(
     val appliedColor = adapter.state.value
     val context = LocalContext.current
     val selectedColor = remember { mutableStateOf(appliedColor.forCustomPicker(context)) }
-    val selectedColorApplied = derivedStateOf {
-        appliedColor is ColorOption.CustomColor && appliedColor.color == selectedColor.value
+    val selectedColorApplied = remember {
+        derivedStateOf {
+            appliedColor is ColorOption.CustomColor && appliedColor.color == selectedColor.value
+        }
     }
     val defaultTabIndex = when {
         dynamicEntries.any { it.value == appliedColor } -> 0
@@ -82,7 +84,7 @@ fun ColorSelection(
         adapter.onChange(newValue = option)
     }
 
-    val pagerState = rememberPagerState(defaultTabIndex)
+    val pagerState = rememberPagerState(initialPage = defaultTabIndex)
     PreferenceLayout(
         label = label,
         bottomBar = {
@@ -119,18 +121,18 @@ fun ColorSelection(
                 Chip(
                     label = stringResource(id = R.string.presets),
                     onClick = { scrollToPage(0) },
-                    currentOffset = pagerState.currentPage + pagerState.currentPageOffset,
+                    currentOffset = pagerState.currentPage + pagerState.currentPageOffsetFraction,
                     page = 0,
                 )
                 Chip(
                     label = stringResource(id = R.string.custom),
                     onClick = { scrollToPage(1) },
-                    currentOffset = pagerState.currentPage + pagerState.currentPageOffset,
+                    currentOffset = pagerState.currentPage + pagerState.currentPageOffsetFraction,
                     page = 1,
                 )
             }
             HorizontalPager(
-                count = 2,
+                pageCount = 2,
                 state = pagerState,
                 verticalAlignment = Alignment.Top,
                 modifier = Modifier.animateContentSize(),

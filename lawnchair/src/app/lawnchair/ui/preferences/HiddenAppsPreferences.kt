@@ -53,7 +53,7 @@ fun HiddenAppsPreferences() {
     PreferenceScaffold(
         label = pageTitle,
     ) {
-        Crossfade(targetState = apps.isNotEmpty()) { present ->
+        Crossfade(targetState = apps.isNotEmpty(), label = "") { present ->
             if (present) {
                 PreferenceLazyColumn(state = state) {
                     val toggleHiddenApp = { app: App ->

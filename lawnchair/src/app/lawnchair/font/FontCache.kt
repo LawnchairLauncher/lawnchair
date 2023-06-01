@@ -304,7 +304,6 @@ class FontCache private constructor(private val context: Context) {
         private val hashCode = "AssetFont|$name".hashCode()
 
         override val fullDisplayName = name
-        @OptIn(ExperimentalTextApi::class)
         override val composeFontFamily = FontFamily(ComposeFont("$name.ttf", assets))
 
         override fun equals(other: Any?): Boolean {
@@ -336,7 +335,6 @@ class FontCache private constructor(private val context: Context) {
         }
     }
 
-    @OptIn(ExperimentalTextApi::class)
     class GoogleFont(
         private val context: Context,
         private val family: String,
@@ -477,7 +475,6 @@ class FontCache private constructor(private val context: Context) {
             Pair("900", R.string.font_weight_extra_black)
         )
 
-        @OptIn(ExperimentalTextApi::class)
         val provider = ComposeGoogleFont.Provider(
             providerAuthority = "com.google.android.gms.fonts",
             providerPackage = "com.google.android.gms",

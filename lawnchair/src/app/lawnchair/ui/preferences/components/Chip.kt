@@ -40,7 +40,7 @@ fun Chip(
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    val selectedProgress by animateFloatAsState(targetValue = if (selected) 1f else 0f)
+    val selectedProgress by animateFloatAsState(targetValue = if (selected) 1f else 0f, label = "")
     Chip(
         label = label,
         selectedProgress = selectedProgress,

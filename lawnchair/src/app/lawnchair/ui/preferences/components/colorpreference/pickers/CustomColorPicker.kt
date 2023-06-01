@@ -2,11 +2,11 @@ package app.lawnchair.ui.preferences.components.colorpreference.pickers
 
 import android.content.ClipData
 import android.content.ClipboardManager
-import android.graphics.Color as AndroidColor
 import android.graphics.Color.argb
 import android.widget.Toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -42,9 +42,8 @@ import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.colorpreference.*
 import app.lawnchair.util.requireSystemService
 import com.android.launcher3.R
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
 /**
@@ -54,7 +53,7 @@ import kotlinx.coroutines.launch
  * @see HsvColorPicker
  * @see RgbColorPicker
  */
-@OptIn(ExperimentalPagerApi::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun CustomColorPicker(
     modifier: Modifier = Modifier,
@@ -130,20 +129,20 @@ fun CustomColorPicker(
                     Chip(
                         label = stringResource(id = R.string.hsb),
                         onClick = { scrollToPage(0) },
-                        currentOffset = pagerState.currentPage + pagerState.currentPageOffset,
+                        currentOffset = pagerState.currentPage + pagerState.currentPageOffsetFraction,
                         page = 0,
                     )
                     Chip(
                         label = stringResource(id = R.string.rgb),
                         onClick = { scrollToPage(1) },
-                        currentOffset = pagerState.currentPage + pagerState.currentPageOffset,
+                        currentOffset = pagerState.currentPage + pagerState.currentPageOffsetFraction,
                         page = 1,
                     )
                 }
 
                 HorizontalPager(
                     modifier = Modifier.animateContentSize(),
-                    count = 2,
+                    pageCount = 2,
                     state = pagerState,
                     verticalAlignment = Alignment.Top,
                 ) { page ->
@@ -187,7 +186,6 @@ fun CustomColorPicker(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HexColorPicker(
     modifier: Modifier = Modifier,
@@ -228,7 +226,7 @@ private fun HexColorPicker(
                 },
             ),
             trailingIcon = {
-                Crossfade(targetState = invalidString) {
+                Crossfade(targetState = invalidString, label = "") {
                     if (it) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_warning),
