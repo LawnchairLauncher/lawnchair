@@ -79,13 +79,6 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 return response;
             }
 
-            case TestProtocol.REQUEST_GET_OVERVIEW_TASK_BORDER_WIDTH: {
-                Resources res = mContext.getResources();
-                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        res.getDimensionPixelSize(R.dimen.keyboard_quick_switch_border_width));
-                return response;
-            }
-
             case TestProtocol.REQUEST_HAS_TIS: {
                 response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, true);
                 return response;
