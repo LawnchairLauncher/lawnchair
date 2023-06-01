@@ -28,6 +28,7 @@ import android.view.animation.Interpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Px;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.anim.AnimatedFloat;
@@ -173,6 +174,12 @@ public final class BorderAnimator {
         if (!visible) {
             mBorderAnimationParams.onHideBorder();
         }
+    }
+
+    @NonNull
+    @VisibleForTesting
+    public AnimatedFloat getBorderAnimationProgress() {
+        return mBorderAnimationProgress;
     }
 
     /**
