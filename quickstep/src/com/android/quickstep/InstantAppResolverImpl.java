@@ -16,10 +16,13 @@
 
 package com.android.quickstep;
 
+import android.app.ActivityThread;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.RemoteException;
+import android.util.Log;
 
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.util.InstantAppResolver;
@@ -48,5 +51,15 @@ public class InstantAppResolverImpl extends InstantAppResolver {
     public boolean isInstantApp(AppInfo info) {
         ComponentName cn = info.getTargetComponent();
         return cn != null && cn.getClassName().equals(COMPONENT_CLASS_MARKER);
+    }
+
+    @Override
+    public boolean isInstantApp(String packageName, int userId) {
+        try {
+            return ActivityThread.getPackageManager().isInstantApp(packageName, userId);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to determine whether package is instant app " + packageName, e);
+            return false;
+        }
     }
 }

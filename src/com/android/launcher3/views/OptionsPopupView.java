@@ -55,7 +55,6 @@ import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 
 import java.util.ArrayList;
@@ -190,14 +189,9 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
      */
     public static ArrayList<OptionItem> getOptions(Launcher launcher) {
         ArrayList<OptionItem> options = new ArrayList<>();
-        boolean styleWallpaperExists = styleWallpapersExists(launcher);
-        int resString = styleWallpaperExists
-                ? R.string.styles_wallpaper_button_text : R.string.wallpaper_button_text;
-        int resDrawable = styleWallpaperExists
-                ? R.drawable.ic_palette : R.drawable.ic_wallpaper;
         options.add(new OptionItem(launcher,
-                resString,
-                resDrawable,
+                R.string.styles_wallpaper_button_text,
+                R.drawable.ic_palette,
                 IGNORE,
                 OptionsPopupView::startWallpaperPicker));
         if (!WidgetsModel.GO_DISABLE_WIDGETS) {
@@ -274,12 +268,8 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .putExtra(EXTRA_WALLPAPER_OFFSET,
                         launcher.getWorkspace().getWallpaperOffsetForCenterPage())
-                .putExtra(EXTRA_WALLPAPER_LAUNCH_SOURCE, "app_launched_launcher");
-        if (!styleWallpapersExists(launcher)) {
-            intent.putExtra(EXTRA_WALLPAPER_FLAVOR, "wallpaper_only");
-        } else {
-            intent.putExtra(EXTRA_WALLPAPER_FLAVOR, "focus_wallpaper");
-        }
+                .putExtra(EXTRA_WALLPAPER_LAUNCH_SOURCE, "app_launched_launcher")
+                .putExtra(EXTRA_WALLPAPER_FLAVOR, "focus_wallpaper");
         String pickerPackage = launcher.getString(R.string.wallpaper_picker_package);
         if (!TextUtils.isEmpty(pickerPackage)) {
             intent.setPackage(pickerPackage);
@@ -321,10 +311,5 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
             this.eventId = eventId;
             this.clickListener = clickListener;
         }
-    }
-
-    private static boolean styleWallpapersExists(Context context) {
-        return context.getPackageManager().resolveActivity(
-                PackageManagerHelper.getStyleWallpapersIntent(context), 0) != null;
     }
 }
