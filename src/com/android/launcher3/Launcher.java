@@ -442,8 +442,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             Trace.beginAsyncSection(DISPLAY_ALL_APPS_TRACE_METHOD_NAME,
                     DISPLAY_ALL_APPS_TRACE_COOKIE);
         }
-        Object traceToken = TraceHelper.INSTANCE.beginSection(ON_CREATE_EVT,
-                TraceHelper.FLAG_UI_EVENT);
+        TraceHelper.INSTANCE.beginSection(ON_CREATE_EVT);
         if (DEBUG_STRICT_MODE) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectDiskReads()
@@ -577,7 +576,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 LauncherOverlayPlugin.class, false /* allowedMultiple */);
 
         mRotationHelper.initialize();
-        TraceHelper.INSTANCE.endSection(traceToken);
+        TraceHelper.INSTANCE.endSection();
 
         mUserChangedCallbackCloseable = UserCache.INSTANCE.get(this).addUserChangeListener(
                 () -> getStateManager().goToState(NORMAL));
@@ -1075,15 +1074,14 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     protected void onStart() {
-        Object traceToken = TraceHelper.INSTANCE.beginSection(ON_START_EVT,
-                TraceHelper.FLAG_UI_EVENT);
+        TraceHelper.INSTANCE.beginSection(ON_START_EVT);
         super.onStart();
         if (!mDeferOverlayCallbacks) {
             mOverlayManager.onActivityStarted(this);
         }
 
         mAppWidgetHolder.setActivityStarted(true);
-        TraceHelper.INSTANCE.endSection(traceToken);
+        TraceHelper.INSTANCE.endSection();
     }
 
     @Override
@@ -1254,8 +1252,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     protected void onResume() {
-        Object traceToken = TraceHelper.INSTANCE.beginSection(ON_RESUME_EVT,
-                TraceHelper.FLAG_UI_EVENT);
+        TraceHelper.INSTANCE.beginSection(ON_RESUME_EVT);
         super.onResume();
 
         if (mDeferOverlayCallbacks) {
@@ -1265,7 +1262,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
 
         DragView.removeAllViews(this);
-        TraceHelper.INSTANCE.endSection(traceToken);
+        TraceHelper.INSTANCE.endSection();
     }
 
     @Override
@@ -1653,7 +1650,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (Utilities.isRunningInTestHarness()) {
             Log.d(TestProtocol.PERMANENT_DIAG_TAG, "Launcher.onNewIntent: " + intent);
         }
-        Object traceToken = TraceHelper.INSTANCE.beginSection(ON_NEW_INTENT_EVT);
+        TraceHelper.INSTANCE.beginSection(ON_NEW_INTENT_EVT);
         super.onNewIntent(intent);
 
         boolean alreadyOnHome = hasWindowFocus() && ((intent.getFlags() &
@@ -1700,7 +1697,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             showAllAppsWorkTabFromIntent(alreadyOnHome);
         }
 
-        TraceHelper.INSTANCE.endSection(traceToken);
+        TraceHelper.INSTANCE.endSection();
     }
 
     protected void toggleAllAppsFromIntent(boolean alreadyOnHome) {
@@ -2299,7 +2296,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void startBinding() {
-        Object traceToken = TraceHelper.INSTANCE.beginSection("startBinding");
+        TraceHelper.INSTANCE.beginSection("startBinding");
         // Floating panels (except the full widget sheet) are associated with individual icons. If
         // we are starting a fresh bind, close all such panels as all the icons are about
         // to go away.
@@ -2317,7 +2314,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (mHotseat != null) {
             mHotseat.resetLayout(getDeviceProfile().isVerticalBarLayout());
         }
-        TraceHelper.INSTANCE.endSection(traceToken);
+        TraceHelper.INSTANCE.endSection();
     }
 
     @Override
@@ -2570,7 +2567,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             return view;
         }
 
-        Object traceToken = TraceHelper.INSTANCE.beginSection("BIND_WIDGET_id=" + item.appWidgetId);
+        TraceHelper.INSTANCE.beginSection("BIND_WIDGET_id=" + item.appWidgetId);
 
         try {
             final LauncherAppWidgetProviderInfo appWidgetInfo;
@@ -2700,7 +2697,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             }
             prepareAppWidget(view, item);
         } finally {
-            TraceHelper.INSTANCE.endSection(traceToken);
+            TraceHelper.INSTANCE.endSection();
         }
 
         return view;
@@ -2793,7 +2790,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      * Implementation of the method from LauncherModel.Callbacks.
      */
     public void finishBindingItems(IntSet pagesBoundFirst) {
-        Object traceToken = TraceHelper.INSTANCE.beginSection("finishBindingItems");
+        TraceHelper.INSTANCE.beginSection("finishBindingItems");
         mWorkspace.restoreInstanceStateForRemainingPages();
 
         setWorkspaceLoading(false);
@@ -2818,7 +2815,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 mDeviceProfile.inv.numFolderColumns * mDeviceProfile.inv.numFolderRows);
         getViewCache().setCacheSize(R.layout.folder_page, 2);
 
-        TraceHelper.INSTANCE.endSection(traceToken);
+        TraceHelper.INSTANCE.endSection();
 
         mWorkspace.removeExtraEmptyScreen(true);
     }

@@ -112,6 +112,7 @@ import com.android.launcher3.tracing.SwipeHandlerProto;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.util.WindowBounds;
@@ -587,7 +588,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         if (mWasLauncherAlreadyVisible) {
             mStateCallback.setState(STATE_LAUNCHER_DRAWN);
         } else {
-            Object traceToken = TraceHelper.INSTANCE.beginSection("WTS-init");
+            SafeCloseable traceToken = TraceHelper.INSTANCE.beginAsyncSection("WTS-init");
             View dragLayer = activity.getDragLayer();
             dragLayer.getViewTreeObserver().addOnDrawListener(new OnDrawListener() {
                 boolean mHandled = false;
@@ -599,7 +600,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     }
                     mHandled = true;
 
-                    TraceHelper.INSTANCE.endSection(traceToken);
+                    traceToken.close();
                     dragLayer.post(() ->
                             dragLayer.getViewTreeObserver().removeOnDrawListener(this));
                     if (activity != mActivity) {
@@ -681,11 +682,10 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private void initializeLauncherAnimationController() {
         buildAnimationController();
 
-        Object traceToken = TraceHelper.INSTANCE.beginSection("logToggleRecents",
-                TraceHelper.FLAG_IGNORE_BINDERS);
-        LatencyTracker.getInstance(mContext).logAction(LatencyTracker.ACTION_TOGGLE_RECENTS,
-                (int) (mLauncherFrameDrawnTime - mTouchTimeMs));
-        TraceHelper.INSTANCE.endSection(traceToken);
+        try (SafeCloseable c = TraceHelper.INSTANCE.allowIpcs("logToggleRecents")) {
+            LatencyTracker.getInstance(mContext).logAction(LatencyTracker.ACTION_TOGGLE_RECENTS,
+                    (int) (mLauncherFrameDrawnTime - mTouchTimeMs));
+        }
 
         // This method is only called when STATE_GESTURE_STARTED is set, so we can enable the
         // high-res thumbnail loader here once we are sure that we will end up in an overview state
@@ -2039,10 +2039,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     private void setScreenshotCapturedState() {
         // If we haven't posted a draw callback, set the state immediately.
-        Object traceToken = TraceHelper.INSTANCE.beginSection(SCREENSHOT_CAPTURED_EVT,
-                TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS);
+        TraceHelper.INSTANCE.beginSection(SCREENSHOT_CAPTURED_EVT);
         mStateCallback.setStateOnUiThread(STATE_SCREENSHOT_CAPTURED);
-        TraceHelper.INSTANCE.endSection(traceToken);
+        TraceHelper.INSTANCE.endSection();
     }
 
     private void finishCurrentTransitionToRecents() {
