@@ -59,6 +59,7 @@ public class ViewOnDrawExecutor implements OnDrawListener, Runnable,
     private void attachObserver() {
         if (!mCompleted) {
             mAttachedView.getViewTreeObserver().addOnDrawListener(this);
+            mAttachedView.getRootView().invalidate();
         }
     }
 
