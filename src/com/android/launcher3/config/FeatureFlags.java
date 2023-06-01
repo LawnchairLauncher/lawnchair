@@ -310,7 +310,7 @@ public final class FeatureFlags {
 
     // TODO(Block 23): Clean up flags
     public static final BooleanFlag ENABLE_GRID_ONLY_OVERVIEW = getDebugFlag(270397206,
-            "ENABLE_GRID_ONLY_OVERVIEW", DISABLED,
+            "ENABLE_GRID_ONLY_OVERVIEW", TEAMFOOD,
             "Enable a grid-only overview without a focused task.");
 
     public static final BooleanFlag ENABLE_CURSOR_HOVER_STATES = getDebugFlag(243191650,
