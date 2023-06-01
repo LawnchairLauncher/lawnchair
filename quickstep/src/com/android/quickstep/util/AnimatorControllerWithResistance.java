@@ -15,9 +15,9 @@
  */
 package com.android.quickstep.util;
 
+import static com.android.app.animation.Interpolators.DECELERATE;
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.LauncherPrefs.ALL_APPS_OVERVIEW_THRESHOLD;
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
 
@@ -92,7 +92,7 @@ public class AnimatorControllerWithResistance {
         public final boolean stopScalingAtTop;
     }
 
-    private static final TimeInterpolator RECENTS_SCALE_RESIST_INTERPOLATOR = DEACCEL;
+    private static final TimeInterpolator RECENTS_SCALE_RESIST_INTERPOLATOR = DECELERATE;
     private static final TimeInterpolator RECENTS_TRANSLATE_RESIST_INTERPOLATOR = LINEAR;
 
     private static final Rect TEMP_RECT = new Rect();

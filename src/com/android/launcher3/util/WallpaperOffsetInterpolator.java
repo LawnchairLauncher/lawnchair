@@ -15,9 +15,9 @@ import android.view.animation.Interpolator;
 
 import androidx.annotation.AnyThread;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.anim.Interpolators;
 
 /**
  * Utility class to handle wallpaper scrolling along with workspace.
@@ -237,7 +237,7 @@ public class WallpaperOffsetInterpolator {
 
         public OffsetHandler(Context context) {
             super(UI_HELPER_EXECUTOR.getLooper());
-            mInterpolator = Interpolators.DEACCEL_1_5;
+            mInterpolator = Interpolators.DECELERATE_1_5;
             mWM = WallpaperManager.getInstance(context);
         }
 

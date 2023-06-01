@@ -21,13 +21,13 @@ import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 import static android.widget.Toast.LENGTH_SHORT;
 
+import static com.android.app.animation.Interpolators.ACCELERATE_DECELERATE;
+import static com.android.app.animation.Interpolators.DECELERATE;
+import static com.android.app.animation.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.LauncherPrefs.ALL_APPS_OVERVIEW_THRESHOLD;
 import static com.android.launcher3.PagedView.INVALID_PAGE;
-import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
-import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_GESTURE;
@@ -150,6 +150,7 @@ import com.android.wm.shell.startingsurface.SplashScreenExitAnimationUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -662,6 +663,14 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         } else {
             runningTasks = mGestureState.getRunningTask().getPlaceholderTasks();
         }
+
+        // Safeguard against any null tasks being sent to recents view, happens when quickswitching
+        // very quickly w/ split tasks because TopTaskTracker provides stale information compared to
+        // actual running tasks in the recents animation.
+        // TODO(b/236226779), Proper fix (ag/22237143)
+        if (Arrays.stream(runningTasks).anyMatch(Objects::isNull)) {
+            return;
+        }
         mRecentsView.onGestureAnimationStart(runningTasks, mDeviceState.getRotationTouchHelper());
     }
 
@@ -917,7 +926,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         if (DesktopTaskView.DESKTOP_MODE_SUPPORTED && targets.hasDesktopTasks()) {
             mRemoteTargetHandles = mTargetGluer.assignTargetsForDesktop(targets);
         } else {
+            int untrimmedAppCount = mRemoteTargetHandles.length;
             mRemoteTargetHandles = mTargetGluer.assignTargetsForSplitScreen(targets);
+            if (mRemoteTargetHandles.length < untrimmedAppCount && mIsSwipeForSplit) {
+                updateIsGestureForSplit(mRemoteTargetHandles.length);
+                setupRecentsViewUi();
+            }
         }
         mRecentsAnimationController = controller;
         mRecentsAnimationTargets = targets;
@@ -1319,11 +1333,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         Interpolator interpolator;
         S state = mActivityInterface.stateFromGestureEndTarget(endTarget);
         if (state.displayOverviewTasksAsGrid(mDp)) {
-            interpolator = ACCEL_DEACCEL;
+            interpolator = ACCELERATE_DECELERATE;
         } else if (endTarget == RECENTS) {
             interpolator = OVERSHOOT_1_2;
         } else {
-            interpolator = DEACCEL;
+            interpolator = DECELERATE;
         }
 
         if (endTarget.isLauncher) {
@@ -2414,11 +2428,11 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
         if (scrollOffset < mQuickSwitchScaleScrollThreshold) {
             scaleProgress = Utilities.mapToRange(scrollOffset, 0, mQuickSwitchScaleScrollThreshold,
-                    0, maxScaleProgress, ACCEL_DEACCEL);
+                    0, maxScaleProgress, ACCELERATE_DECELERATE);
         } else if (scrollOffset > (maxScrollOffset - mQuickSwitchScaleScrollThreshold)) {
             scaleProgress = Utilities.mapToRange(scrollOffset,
                     (maxScrollOffset - mQuickSwitchScaleScrollThreshold), maxScrollOffset,
-                    maxScaleProgress, 0, ACCEL_DEACCEL);
+                    maxScaleProgress, 0, ACCELERATE_DECELERATE);
         }
 
         return scaleProgress;
@@ -2447,7 +2461,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // "Catch up" with the displacement at mTaskbarCatchUpThreshold.
         if (displacement < mTaskbarCatchUpThreshold) {
             return Utilities.mapToRange(displacement, mTaskbarAppWindowThreshold,
-                    mTaskbarCatchUpThreshold, 0, mTaskbarCatchUpThreshold, ACCEL_DEACCEL);
+                    mTaskbarCatchUpThreshold, 0, mTaskbarCatchUpThreshold, ACCELERATE_DECELERATE);
         }
 
         return displacement;

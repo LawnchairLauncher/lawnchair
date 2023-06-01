@@ -16,11 +16,11 @@
 
 package com.android.launcher3.uioverrides;
 
+import static com.android.app.animation.Interpolators.AGGRESSIVE_EASE_IN_OUT;
+import static com.android.app.animation.Interpolators.FINAL_FRAME;
+import static com.android.app.animation.Interpolators.INSTANT;
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.LauncherState.QUICK_SWITCH_FROM_HOME;
-import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
-import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_MODAL;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_SCALE;

@@ -150,15 +150,10 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
 
     public enum TrackpadGestureType {
         NONE,
-        // Assigned before we know whether it's a 3-finger or 4-finger gesture.
-        MULTI_FINGER,
         THREE_FINGER,
         FOUR_FINGER;
 
         public static TrackpadGestureType getTrackpadGestureType(MotionEvent event) {
-            if (!isTrackpadMultiFingerSwipe(event)) {
-                return TrackpadGestureType.NONE;
-            }
             if (isTrackpadThreeFingerSwipe(event)) {
                 return TrackpadGestureType.THREE_FINGER;
             }
@@ -166,7 +161,7 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
                 return TrackpadGestureType.FOUR_FINGER;
             }
 
-            return TrackpadGestureType.MULTI_FINGER;
+            return TrackpadGestureType.NONE;
         }
     }
 

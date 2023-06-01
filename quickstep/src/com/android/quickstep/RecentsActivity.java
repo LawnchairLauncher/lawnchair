@@ -48,6 +48,7 @@ import android.window.SplashScreen;
 
 import androidx.annotation.Nullable;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -56,7 +57,6 @@ import com.android.launcher3.LauncherAnimationRunner.AnimationResult;
 import com.android.launcher3.LauncherAnimationRunner.RemoteAnimationFactory;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.model.data.ItemInfo;
@@ -297,7 +297,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         if (activityClosing) {
             Animator adjacentAnimation = mFallbackRecentsView
                     .createAdjacentPageAnimForTaskLaunch(taskView);
-            adjacentAnimation.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
+            adjacentAnimation.setInterpolator(Interpolators.TOUCH_RESPONSE);
             adjacentAnimation.setDuration(RECENTS_LAUNCH_DURATION);
             adjacentAnimation.addListener(resetStateListener());
             target.play(adjacentAnimation);

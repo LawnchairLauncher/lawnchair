@@ -21,8 +21,8 @@ import static android.app.WindowConfiguration.ACTIVITY_TYPE_HOME;
 import android.util.FloatProperty;
 import android.view.RemoteAnimationTarget;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 
@@ -153,7 +153,8 @@ public class TransformParams {
                     // Fade out Assistant overlay.
                     if (activityType == ACTIVITY_TYPE_ASSISTANT && app.isNotInRecents) {
                         float progress = Utilities.boundToRange(getProgress(), 0, 1);
-                        builder.setAlpha(1 - Interpolators.DEACCEL_2_5.getInterpolation(progress));
+                        builder.setAlpha(1 - Interpolators.DECELERATE_QUINT
+                                .getInterpolation(progress));
                     } else {
                         builder.setAlpha(getTargetAlpha());
                     }

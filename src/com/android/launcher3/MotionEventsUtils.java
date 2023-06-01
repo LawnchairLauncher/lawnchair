@@ -30,6 +30,9 @@ public class MotionEventsUtils {
     /** {@link MotionEvent#CLASSIFICATION_MULTI_FINGER_SWIPE} is hidden. */
     public static final int CLASSIFICATION_MULTI_FINGER_SWIPE = 4;
 
+    /** {@link MotionEvent#AXIS_GESTURE_SWIPE_FINGER_COUNT} is hidden. */
+    private static final int AXIS_GESTURE_SWIPE_FINGER_COUNT = 53;
+
     @TargetApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     public static boolean isTrackpadScroll(MotionEvent event) {
         return ENABLE_TRACKPAD_GESTURE.get()
@@ -43,11 +46,13 @@ public class MotionEventsUtils {
     }
 
     public static boolean isTrackpadThreeFingerSwipe(MotionEvent event) {
-        return isTrackpadMultiFingerSwipe(event) && event.getPointerCount() == 3;
+        return isTrackpadMultiFingerSwipe(event) && event.getAxisValue(
+                AXIS_GESTURE_SWIPE_FINGER_COUNT) == 3;
     }
 
     public static boolean isTrackpadFourFingerSwipe(MotionEvent event) {
-        return isTrackpadMultiFingerSwipe(event) && event.getPointerCount() == 4;
+        return isTrackpadMultiFingerSwipe(event) && event.getAxisValue(
+                AXIS_GESTURE_SWIPE_FINGER_COUNT) == 4;
     }
 
     public static boolean isTrackpadMotionEvent(MotionEvent event) {

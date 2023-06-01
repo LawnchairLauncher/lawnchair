@@ -18,6 +18,10 @@ package com.android.launcher3.uioverrides.touchcontrollers;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 
+import static com.android.app.animation.Interpolators.ACCELERATE_0_75;
+import static com.android.app.animation.Interpolators.DECELERATE_3;
+import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -28,10 +32,6 @@ import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
 import static com.android.launcher3.anim.AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
-import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_3;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.scrollInterpolatorForVelocity;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_RIGHT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_UNKNOWN_SWIPEDOWN;
@@ -96,8 +96,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         BothAxesSwipeDetector.Listener {
 
     private static final float Y_ANIM_MIN_PROGRESS = 0.25f;
-    private static final Interpolator FADE_OUT_INTERPOLATOR = DEACCEL_3;
-    private static final Interpolator TRANSLATE_OUT_INTERPOLATOR = ACCEL_0_75;
+    private static final Interpolator FADE_OUT_INTERPOLATOR = DECELERATE_3;
+    private static final Interpolator TRANSLATE_OUT_INTERPOLATOR = ACCELERATE_0_75;
     private static final Interpolator SCALE_DOWN_INTERPOLATOR = LINEAR;
     private static final long ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW = 300;
 
@@ -113,7 +113,6 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             newCancelListener(this::clearState);
 
     private boolean mNoIntercept;
-    private Boolean mIsTrackpadFourFingerSwipe;
     private LauncherState mStartState;
 
     private boolean mIsHomeScreenVisible = true;
@@ -139,9 +138,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        int action = ev.getActionMasked();
-        if (action == ACTION_DOWN) {
-            mIsTrackpadFourFingerSwipe = null;
+        if (ev.getActionMasked() == ACTION_DOWN) {
             mNoIntercept = !canInterceptTouch(ev);
             if (mNoIntercept) {
                 return false;
@@ -150,13 +147,6 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             // Only detect horizontal swipe for intercept, then we will allow swipe up as well.
             mSwipeDetector.setDetectableScrollConditions(DIRECTION_RIGHT,
                     false /* ignoreSlopWhenSettling */);
-        } else if (isTrackpadMultiFingerSwipe(ev) && mIsTrackpadFourFingerSwipe == null
-                && action == ACTION_MOVE) {
-            mIsTrackpadFourFingerSwipe = isTrackpadFourFingerSwipe(ev);
-            mNoIntercept = !mIsTrackpadFourFingerSwipe;
-            if (mNoIntercept) {
-                return false;
-            }
         }
 
         if (mNoIntercept) {
@@ -190,6 +180,9 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
             // TODO(b/268075592): add support for quickswitch to/from desktop
             return false;
+        }
+        if (isTrackpadMultiFingerSwipe(ev)) {
+            return isTrackpadFourFingerSwipe(ev);
         }
         return true;
     }

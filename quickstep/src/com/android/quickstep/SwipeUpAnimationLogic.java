@@ -15,8 +15,8 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.ACCELERATE_1_5;
+import static com.android.app.animation.Interpolators.LINEAR;
 
 import android.animation.Animator;
 import android.content.Context;
@@ -82,7 +82,8 @@ public abstract class SwipeUpAnimationLogic implements
         mContext = context;
         mDeviceState = deviceState;
         mGestureState = gestureState;
-        mIsSwipeForSplit = TopTaskTracker.INSTANCE.get(context).getRunningSplitTaskIds().length > 1;
+        updateIsGestureForSplit(TopTaskTracker.INSTANCE.get(context)
+                .getRunningSplitTaskIds().length);
 
         mTargetGluer = new RemoteTargetGluer(mContext, mGestureState.getActivityInterface());
         mRemoteTargetHandles = mTargetGluer.getRemoteTargetHandles();
@@ -217,7 +218,7 @@ public abstract class SwipeUpAnimationLogic implements
             if (progress >= end) {
                 return 0f;
             }
-            return Utilities.mapToRange(progress, start, end, 1, 0, ACCEL_1_5);
+            return Utilities.mapToRange(progress, start, end, 1, 0, ACCELERATE_1_5);
         }
     }
 
@@ -278,6 +279,10 @@ public abstract class SwipeUpAnimationLogic implements
                     remoteHandle.getTaskViewSimulator(), startRects[i], homeToWindowPositionMap[i]);
         }
         return out;
+    }
+
+    protected void updateIsGestureForSplit(int targetCount) {
+        mIsSwipeForSplit = targetCount > 1;
     }
 
     private RectFSpringAnim getWindowAnimationToHomeInternal(

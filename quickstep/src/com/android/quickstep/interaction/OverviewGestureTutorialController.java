@@ -15,7 +15,7 @@
  */
 package com.android.quickstep.interaction;
 
-import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.app.animation.Interpolators.ACCELERATE;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL;
 
 import android.animation.Animator;
@@ -245,7 +245,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     public void animateTaskViewToOverview(boolean animateDelayedSuccessFeedback) {
         PendingAnimation anim = new PendingAnimation(TASK_VIEW_END_ANIMATION_DURATION_MILLIS);
         anim.setFloat(mTaskViewSwipeUpAnimation
-                .getCurrentShift(), AnimatedFloat.VALUE, 1, ACCEL);
+                .getCurrentShift(), AnimatedFloat.VALUE, 1, ACCELERATE);
 
         if (animateDelayedSuccessFeedback) {
             anim.addListener(new AnimatorListenerAdapter() {
