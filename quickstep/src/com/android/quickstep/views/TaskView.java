@@ -32,6 +32,7 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 import static com.android.launcher3.util.SplitConfigurationOptions.getLogEventForPosition;
+import static com.android.quickstep.TaskOverlayFactory.getEnabledShortcuts;
 import static com.android.quickstep.util.BorderAnimator.DEFAULT_BORDER_COLOR;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
@@ -89,6 +90,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.launcher3.util.ViewPool.Reusable;
 import com.android.quickstep.RecentsModel;
@@ -1632,8 +1634,8 @@ public class TaskView extends FrameLayout implements Reusable {
             if (taskContainer == null) {
                 continue;
             }
-            for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this,
-                    taskContainer)) {
+            for (SystemShortcut s : TraceHelper.allowIpcs(
+                    "TV.a11yInfo", () -> getEnabledShortcuts(this, taskContainer))) {
                 info.addAction(s.createAccessibilityAction(context));
             }
         }
@@ -1670,7 +1672,7 @@ public class TaskView extends FrameLayout implements Reusable {
             if (taskContainer == null) {
                 continue;
             }
-            for (SystemShortcut s : TaskOverlayFactory.getEnabledShortcuts(this,
+            for (SystemShortcut s : getEnabledShortcuts(this,
                     taskContainer)) {
                 if (s.hasHandlerForAction(action)) {
                     s.onClick(this);
