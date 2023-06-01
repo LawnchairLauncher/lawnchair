@@ -136,6 +136,11 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     public void reset() {
         boolean isEnabled = !mAllApps.getAppsStore().hasModelFlag(FLAG_QUIET_MODE_ENABLED);
         updateCurrentState(isEnabled ? STATE_ENABLED : STATE_DISABLED);
+        if (mWorkModeSwitch != null) {
+            // reset the position of the button and clear IME insets.
+            mWorkModeSwitch.getImeInsets().setEmpty();
+            mWorkModeSwitch.updateTranslationY();
+        }
     }
 
     private void updateCurrentState(@WorkProfileState int currentState) {
