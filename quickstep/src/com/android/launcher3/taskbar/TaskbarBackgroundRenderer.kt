@@ -34,6 +34,7 @@ import com.android.launcher3.util.DisplayController
 /** Helps draw the taskbar background, made up of a rectangle plus two inverted rounded corners. */
 class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
 
+    private val isInSetup: Boolean = !context.isUserSetupComplete
     private val DARK_THEME_SHADOW_ALPHA = 51f
     private val LIGHT_THEME_SHADOW_ALPHA = 25f
 
@@ -137,7 +138,7 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
             canvas.translate(0f, leftCornerRadius)
             canvas.translate(canvas.width - rightCornerRadius, -rightCornerRadius)
             canvas.drawPath(invertedRightCornerPath, paint)
-        } else {
+        } else if (!isInSetup) {
             // backgroundHeight is a value from [0...maxBackgroundHeight], so we can use it as a
             // proxy to figure out the animation progress of the stash/unstash animation.
             val progress = backgroundHeight / maxBackgroundHeight
