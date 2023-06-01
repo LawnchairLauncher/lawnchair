@@ -1856,14 +1856,6 @@ public final class LauncherInstrumentation {
         return testInfo != null ? testInfo.getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD) : null;
     }
 
-    public void produceViewLeak() {
-        getTestInfo(TestProtocol.REQUEST_VIEW_LEAK);
-    }
-
-    public void printViewLeak() {
-        getTestInfo(TestProtocol.PRINT_VIEW_LEAK);
-    }
-
     public ArrayList<ComponentName> getRecentTasks() {
         ArrayList<ComponentName> tasks = new ArrayList<>();
         ArrayList<String> components = getTestInfo(TestProtocol.REQUEST_RECENT_TASKS_LIST)
