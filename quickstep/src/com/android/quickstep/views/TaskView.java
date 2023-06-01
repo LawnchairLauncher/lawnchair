@@ -70,6 +70,7 @@ import android.widget.Toast;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.DeviceProfile;
@@ -411,7 +412,11 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private boolean mIsClickableAsLiveTile = true;
 
-    @Nullable private final BorderAnimator mBorderAnimator;
+    @Nullable private BorderAnimator mBorderAnimator;
+
+    private final boolean mCursorHoverStatesEnabled;
+
+    private final boolean mKeyboardFocusHighlightEnabled;
 
     public TaskView(Context context) {
         this(context, null);
@@ -434,26 +439,29 @@ public class TaskView extends FrameLayout implements Reusable {
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
         mDigitalWellBeingToast = new DigitalWellBeingToast(mActivity, this);
 
-        boolean keyboardFocusHighlightEnabled = FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH.get()
+        mKeyboardFocusHighlightEnabled = FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH.get()
                 || DesktopTaskView.DESKTOP_MODE_SUPPORTED;
+        mCursorHoverStatesEnabled = FeatureFlags.ENABLE_CURSOR_HOVER_STATES.get();
+        if (mCursorHoverStatesEnabled) {
+            setOnHoverListener(this::onHover);
+        }
 
-        setWillNotDraw(!keyboardFocusHighlightEnabled);
+        setWillNotDraw(!mKeyboardFocusHighlightEnabled && !mCursorHoverStatesEnabled);
 
-        TypedArray ta = context.obtainStyledAttributes(
-                attrs, R.styleable.TaskView, defStyleAttr, defStyleRes);
-
-        mBorderAnimator = !keyboardFocusHighlightEnabled
-                ? null
-                : new BorderAnimator(
-                        /* borderRadiusPx= */ (int) mCurrentFullscreenParams.mCornerRadius,
-                        /* borderColor= */ ta.getColor(
-                                R.styleable.TaskView_borderColor, DEFAULT_BORDER_COLOR),
-                        /* borderAnimationParams= */ new BorderAnimator.SimpleParams(
-                                /* borderWidthPx= */ context.getResources().getDimensionPixelSize(
-                                        R.dimen.keyboard_quick_switch_border_width),
-                                /* boundsBuilder= */ this::updateBorderBounds,
-                                /* targetView= */ this));
-        ta.recycle();
+        if (mKeyboardFocusHighlightEnabled || mCursorHoverStatesEnabled) {
+            TypedArray ta = context.obtainStyledAttributes(
+                    attrs, R.styleable.TaskView, defStyleAttr, defStyleRes);
+            mBorderAnimator = new BorderAnimator(
+                    /* borderRadiusPx= */ (int) mCurrentFullscreenParams.mCornerRadius,
+                    /* borderColor= */ ta.getColor(
+                    R.styleable.TaskView_borderColor, DEFAULT_BORDER_COLOR),
+                    /* borderAnimationParams= */ new BorderAnimator.SimpleParams(
+                    /* borderWidthPx= */ context.getResources().getDimensionPixelSize(
+                    R.dimen.keyboard_quick_switch_border_width),
+                    /* boundsBuilder= */ this::updateBorderBounds,
+                    /* targetView= */ this));
+            ta.recycle();
+        }
     }
 
     protected void updateBorderBounds(Rect bounds) {
@@ -496,6 +504,12 @@ public class TaskView extends FrameLayout implements Reusable {
         return stubInfo;
     }
 
+    @Nullable
+    @VisibleForTesting
+    public BorderAnimator getBorderAnimator() {
+        return mBorderAnimator;
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -507,8 +521,19 @@ public class TaskView extends FrameLayout implements Reusable {
     @Override
     protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
-        if (mBorderAnimator != null) {
+        if (mKeyboardFocusHighlightEnabled) {
             mBorderAnimator.buildAnimator(gainFocus).start();
+        }
+    }
+
+    @Override
+    public boolean onInterceptHoverEvent(MotionEvent event) {
+        if (mCursorHoverStatesEnabled) {
+            // avoid triggering hover event on child elements which would cause HOVER_EXIT for this
+            // task view
+            return true;
+        } else {
+            return super.onInterceptHoverEvent(event);
         }
     }
 
@@ -748,6 +773,57 @@ public class TaskView extends FrameLayout implements Reusable {
         launchTasks();
         mActivity.getStatsLogManager().logger().withItemInfo(getItemInfo())
                 .log(LAUNCHER_TASK_LAUNCH_TAP);
+    }
+
+    private boolean onHover(View v, MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_HOVER_MOVE:
+                if (mKeyboardFocusHighlightEnabled && !isFocused()) {
+                    // existing focus is on another task selected by keyboard,
+                    // cursor then moves inside this task thumbnail and steals the focus
+                    requestFocusAndExitTouchMode(v);
+                }
+                return true;
+            case MotionEvent.ACTION_HOVER_ENTER:
+                if (mKeyboardFocusHighlightEnabled) {
+                    if (isFocused()) {
+                        // the task is already focused with border, no action is needed
+                        return true;
+                    } else {
+                        requestFocusAndExitTouchMode(v);
+                    }
+                } else {
+                    // mKeyboardFocusHighlightEnabled is turned off so it only shows hover
+                    // state animation but not steals the focus
+                    mBorderAnimator.buildAnimator(true).start();
+                }
+                return true;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                if (mKeyboardFocusHighlightEnabled) {
+                    // clearFocus() does not work here because parent element is not focusable
+                    // so it changes to touch mode to clear focus
+                    v.getViewRootImpl().touchModeChanged(true);
+                } else {
+                    // just show the disappearing animation but not change the focus when
+                    // mKeyboardFocusHighlightEnabled is off
+                    mBorderAnimator.buildAnimator(false).start();
+                }
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void requestFocusAndExitTouchMode(View v) {
+        if (isInTouchMode()) {
+            // Tasks are not focusable in touch mode by default. As hover state would steal focus
+            // when both mKeyboardFocusHighlightEnabled and mCursorHoverStatesEnabled are on,
+            // touch mode needs to be set to false when hovering so it can steal focus to current
+            // task and show border animation as hover state
+            v.getViewRootImpl().touchModeChanged(false);
+        }
+
+        requestFocus();
     }
 
     /**
