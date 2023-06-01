@@ -312,6 +312,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @ScreenRecord // b/242163205
     @PlatinumTest(focusArea = "launcher")
+    @TaskbarModeSwitch(mode = PERSISTENT)
     public void testQuickSwitchToPreviousAppForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
         startTestActivity(2);
