@@ -60,10 +60,5 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
         // Elevate GPU priority for Quickstep and Remote animations.
         ThreadedRenderer.setContextPriority(
                 ThreadedRenderer.EGL_CONTEXT_PRIORITY_HIGH_IMG);
-
-        if (BuildConfig.IS_STUDIO_BUILD) {
-            BinderTracker.startTracking(call ->  Log.e("BinderCall",
-                    call.descriptor + " called on mainthread under " + call.activeTrace));
-        }
     }
 }

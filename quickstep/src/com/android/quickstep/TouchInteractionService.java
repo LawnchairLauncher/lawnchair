@@ -102,7 +102,6 @@ import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.LockedUserState;
 import com.android.launcher3.util.OnboardingPrefs;
-import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantInputConsumer;
@@ -655,7 +654,8 @@ public class TouchInteractionService extends Service
             return;
         }
 
-        SafeCloseable traceToken = TraceHelper.INSTANCE.allowIpcs("TIS.onInputEvent");
+        Object traceToken = TraceHelper.INSTANCE.beginFlagsOverride(
+                TraceHelper.FLAG_ALLOW_BINDER_TRACKING);
 
         final int action = event.getActionMasked();
         // Note this will create a new consumer every mouse click, as after ACTION_UP from the click
@@ -751,7 +751,7 @@ public class TouchInteractionService extends Service
         if (cleanUpConsumer) {
             reset();
         }
-        traceToken.close();
+        TraceHelper.INSTANCE.endFlagsOverride(traceToken);
         ProtoTracer.INSTANCE.get(this).scheduleFrameUpdate();
     }
 
