@@ -26,7 +26,9 @@ import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.launcher3.util.PackageUserKey;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 /**
@@ -53,6 +55,8 @@ public final class TaskbarAllAppsController {
     private boolean mDisallowGlobalDrag;
     private boolean mDisallowLongClick;
 
+    private Map<PackageUserKey, Integer> mPackageUserKeytoUidMap = Collections.emptyMap();
+
     /** Initialize the controller. */
     public void init(TaskbarControllers controllers, boolean allAppsVisible) {
         mControllers = controllers;
@@ -67,11 +71,12 @@ public final class TaskbarAllAppsController {
     }
 
     /** Updates the current {@link AppInfo} instances. */
-    public void setApps(AppInfo[] apps, int flags) {
+    public void setApps(AppInfo[] apps, int flags, Map<PackageUserKey, Integer> map) {
         mApps = apps;
         mAppsModelFlags = flags;
+        mPackageUserKeytoUidMap = map;
         if (mAppsView != null) {
-            mAppsView.getAppsStore().setApps(mApps, mAppsModelFlags);
+            mAppsView.getAppsStore().setApps(mApps, mAppsModelFlags, mPackageUserKeytoUidMap);
         }
     }
 
@@ -136,7 +141,7 @@ public final class TaskbarAllAppsController {
 
         viewController.show(animate);
         mAppsView = overlayContext.getAppsView();
-        mAppsView.getAppsStore().setApps(mApps, mAppsModelFlags);
+        mAppsView.getAppsStore().setApps(mApps, mAppsModelFlags, mPackageUserKeytoUidMap);
         mAppsView.getFloatingHeaderView()
                 .findFixedRowByType(PredictionRowView.class)
                 .setPredictedApps(mPredictedApps);
