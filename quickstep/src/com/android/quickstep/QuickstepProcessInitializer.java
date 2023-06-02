@@ -66,5 +66,10 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
         // Enable Looper trace points.
         // This allows us to see Handler callbacks on traces.
         Looper.getMainLooper().setTraceTag(Trace.TRACE_TAG_APP);
+
+        if (BuildConfig.IS_STUDIO_BUILD) {
+            BinderTracker.startTracking(call ->  Log.e("BinderCall",
+                    call.descriptor + " called on mainthread under " + call.activeTrace));
+        }
     }
 }

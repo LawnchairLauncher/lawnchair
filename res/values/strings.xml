@@ -250,8 +250,6 @@
 
     <!-- Strings for the customization mode -->
     <!-- Text for wallpaper change button [CHAR LIMIT=30]-->
-    <string name="wallpaper_button_text">Wallpapers</string>
-    <!-- Text for wallpaper change button [CHAR LIMIT=30]-->
     <string name="styles_wallpaper_button_text">Wallpaper &amp; style</string>
     <!-- Text for edit home screen button [CHAR LIMIT=30]-->
     <string name="edit_home_screen">Edit Home Screen</string>
