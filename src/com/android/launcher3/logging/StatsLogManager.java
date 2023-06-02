@@ -979,6 +979,14 @@ public class StatsLogManager implements ResourceBasedOverride {
         }
 
         /**
+         * Sets list of uid for each of {@link com.android.app.search.ResultType} that indicates
+         * package name for the impression event.
+         */
+        default StatsImpressionLogger withUids(IntArray uid) {
+            return this;
+        }
+
+        /**
          * Builds the final message and logs it as {@link EventEnum}.
          */
         default void log(EventEnum event) {
