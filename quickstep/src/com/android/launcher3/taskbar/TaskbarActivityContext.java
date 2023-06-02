@@ -449,6 +449,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         return mControllers.taskbarDragController;
     }
 
+    @Nullable
+    public BubbleControllers getBubbleControllers() {
+        return mControllers.bubbleControllers.orElse(null);
+    }
+
     @Override
     public ViewCache getViewCache() {
         return mViewCache;
@@ -641,8 +646,12 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mControllers.taskbarForceVisibleImmersiveController.updateSysuiFlags(systemUiStateFlags);
         mControllers.voiceInteractionWindowController.setIsVoiceInteractionWindowVisible(
                 (systemUiStateFlags & SYSUI_STATE_VOICE_INTERACTION_WINDOW_SHOWING) != 0, fromInit);
-
         mControllers.uiController.updateStateForSysuiFlags(systemUiStateFlags);
+        mControllers.bubbleControllers.ifPresent(controllers -> {
+            controllers.bubbleBarController.updateStateForSysuiFlags(systemUiStateFlags);
+            controllers.bubbleStashedHandleViewController.setIsHomeButtonDisabled(
+                    mControllers.navbarButtonsViewController.isHomeDisabled());
+        });
     }
 
     /**
@@ -738,7 +747,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             }
         }
         mWindowLayoutParams.height = height;
-        mControllers.taskbarInsetsController.onTaskbarWindowHeightOrInsetsChanged();
+        mControllers.taskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged();
         mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
     }
 
@@ -996,8 +1005,17 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * Called when we want to unstash taskbar when user performs swipes up gesture.
      */
     public void onSwipeToUnstashTaskbar() {
-        mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(false);
+        mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(/* stash= */ false);
         mControllers.taskbarEduTooltipController.hide();
+    }
+
+    /**
+     * Called when we want to open bubblebar when user performs swipes up gesture.
+     */
+    public void onSwipeToOpenBubblebar() {
+        mControllers.bubbleControllers.ifPresent(controllers -> {
+            controllers.bubbleStashController.showBubbleBar(/* expandBubbles= */ true);
+        });
     }
 
     /** Returns {@code true} if Taskbar All Apps is open. */
