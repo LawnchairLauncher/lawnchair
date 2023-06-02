@@ -412,10 +412,12 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         }
 
         mFeedbackTitleView.setText(titleResId);
-        mFeedbackSubtitleView.setText(spokenSubtitleResId == NO_ID
-                ? mContext.getText(subtitleResId)
-                : Utilities.wrapForTts(
-                        mContext.getText(subtitleResId), mContext.getString(spokenSubtitleResId)));
+        mFeedbackSubtitleView.setText(
+                ENABLE_NEW_GESTURE_NAV_TUTORIAL.get() || spokenSubtitleResId == NO_ID
+                        ? mContext.getText(subtitleResId)
+                        : Utilities.wrapForTts(
+                                mContext.getText(subtitleResId),
+                                mContext.getString(spokenSubtitleResId)));
         if (isGestureSuccessful) {
             if (mTutorialFragment.isAtFinalStep()) {
                 showActionButton();
