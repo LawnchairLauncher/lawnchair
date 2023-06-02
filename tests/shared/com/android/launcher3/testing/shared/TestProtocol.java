@@ -155,7 +155,6 @@ public final class TestProtocol {
     public static final String VIEW_AND_ACTIVITY_LEAKS = "b/260260325";
     public static final String WORK_TAB_MISSING = "b/243688989";
     public static final String TWO_TASKBAR_LONG_CLICKS = "b/262282528";
-    public static final String WORKSPACE_LOADS_FOREVER = "b/267200150";
 
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
     public static final String REQUEST_STOP_EMULATE_DISPLAY = "stop-emulate-display";
