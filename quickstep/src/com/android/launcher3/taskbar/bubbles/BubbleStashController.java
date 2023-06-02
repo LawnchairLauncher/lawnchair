@@ -25,6 +25,7 @@ import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.taskbar.StashedHandleViewController;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarControllers;
+import com.android.launcher3.taskbar.TaskbarInsetsController;
 import com.android.launcher3.taskbar.TaskbarStashController;
 import com.android.launcher3.util.MultiPropertyFactory;
 
@@ -50,6 +51,7 @@ public class BubbleStashController {
 
     // Initialized in init.
     private TaskbarControllers mControllers;
+    private TaskbarInsetsController mTaskbarInsetsController;
     private BubbleBarViewController mBarViewController;
     private BubbleStashedHandleViewController mHandleViewController;
     private TaskbarStashController mTaskbarStashController;
@@ -77,6 +79,7 @@ public class BubbleStashController {
 
     public void init(TaskbarControllers controllers, BubbleControllers bubbleControllers) {
         mControllers = controllers;
+        mTaskbarInsetsController = controllers.taskbarInsetsController;
         mBarViewController = bubbleControllers.bubbleBarViewController;
         mHandleViewController = bubbleControllers.bubbleStashedHandleViewController;
         mTaskbarStashController = controllers.taskbarStashController;
@@ -271,7 +274,7 @@ public class BubbleStashController {
     private void onIsStashedChanged() {
         mControllers.runAfterInit(() -> {
             mHandleViewController.onIsStashedChanged();
-            // TODO: when stash changes tell taskbarInsetsController the insets have changed.
+            mTaskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged();
         });
     }
 }
