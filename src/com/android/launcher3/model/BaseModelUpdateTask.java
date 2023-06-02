@@ -22,6 +22,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
@@ -35,11 +36,15 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.Executor;
 import java.util.function.Predicate;
@@ -153,7 +158,9 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
         scheduleCallbackTask(c -> c.bindWorkspaceComponentsRemoved(matcher));
     }
 
+    @WorkerThread
     public void bindApplicationsIfNeeded() {
+        Preconditions.assertWorkerThread();
         boolean changeFlag = mAllAppsList.getAndResetChangeFlag();
         if (TestProtocol.sDebugTracing) {
             Log.d(WORK_TAB_MISSING, "bindApplicationsIfNeeded changeFlag? " +
@@ -162,7 +169,11 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
         if (changeFlag) {
             AppInfo[] apps = mAllAppsList.copyData();
             int flags = mAllAppsList.getFlags();
-            scheduleCallbackTask(c -> c.bindAllApplications(apps, flags));
+            Map<PackageUserKey, Integer> packageUserKeytoUidMap = Arrays.stream(apps).collect(
+                    Collectors.toMap(
+                            appInfo -> new PackageUserKey(appInfo.componentName.getPackageName(),
+                                    appInfo.user), appInfo -> appInfo.uid, (a, b) -> a));
+            scheduleCallbackTask(c -> c.bindAllApplications(apps, flags, packageUserKeytoUidMap));
         }
     }
 }

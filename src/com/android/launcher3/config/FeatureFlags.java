@@ -303,14 +303,14 @@ public final class FeatureFlags {
             "Enable widget transition animation when resizing the widgets");
 
     public static final BooleanFlag PREEMPTIVE_UNFOLD_ANIMATION_START = getDebugFlag(270397209,
-            "PREEMPTIVE_UNFOLD_ANIMATION_START", DISABLED,
+            "PREEMPTIVE_UNFOLD_ANIMATION_START", ENABLED,
             "Enables starting the unfold animation preemptively when unfolding, without"
                     + "waiting for SystemUI and then merging the SystemUI progress whenever we "
                     + "start receiving the events");
 
     // TODO(Block 23): Clean up flags
     public static final BooleanFlag ENABLE_GRID_ONLY_OVERVIEW = getDebugFlag(270397206,
-            "ENABLE_GRID_ONLY_OVERVIEW", DISABLED,
+            "ENABLE_GRID_ONLY_OVERVIEW", TEAMFOOD,
             "Enable a grid-only overview without a focused task.");
 
     public static final BooleanFlag ENABLE_CURSOR_HOVER_STATES = getDebugFlag(243191650,

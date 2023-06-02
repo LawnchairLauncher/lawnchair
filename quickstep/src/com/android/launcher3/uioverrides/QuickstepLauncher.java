@@ -472,6 +472,10 @@ public class QuickstepLauncher extends Launcher {
     public void onDestroy() {
         mAppTransitionManager.onActivityDestroyed();
         if (mUnfoldTransitionProgressProvider != null) {
+            if (FeatureFlags.RECEIVE_UNFOLD_EVENTS_FROM_SYSUI.get()) {
+                SystemUiProxy.INSTANCE.get(this).setUnfoldAnimationListener(null);
+            }
+
             mUnfoldTransitionProgressProvider.destroy();
         }
 
@@ -889,7 +893,9 @@ public class QuickstepLauncher extends Launcher {
 
     private void onTISConnected(TISBinder binder) {
         mTaskbarManager = binder.getTaskbarManager();
-        mTaskbarManager.setActivity(this);
+        if (mTaskbarManager != null) {
+            mTaskbarManager.setActivity(this);
+        }
         mOverviewCommandHelper = binder.getOverviewCommandHelper();
     }
 
