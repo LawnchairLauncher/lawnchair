@@ -36,7 +36,6 @@ import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LooperExecutor;
@@ -282,33 +281,18 @@ public abstract class BaseLauncherBinder {
             sortWorkspaceItemsSpatially(idp, currentWorkspaceItems);
             sortWorkspaceItemsSpatially(idp, otherWorkspaceItems);
 
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.WORKSPACE_LOADS_FOREVER, "Before posting startBinding");
-            }
             // Tell the workspace that we're about to start binding items
             executeCallbacksTask(c -> {
                 c.clearPendingBinds();
                 c.startBinding();
             }, mUiExecutor);
 
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.WORKSPACE_LOADS_FOREVER, "1");
-            }
             // Bind workspace screens
             executeCallbacksTask(c -> c.bindScreens(mOrderedScreenIds), mUiExecutor);
 
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.WORKSPACE_LOADS_FOREVER, "2");
-            }
             // Load items on the current page.
             bindWorkspaceItems(currentWorkspaceItems, mUiExecutor);
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.WORKSPACE_LOADS_FOREVER, "3");
-            }
             bindAppWidgets(currentAppWidgets, mUiExecutor);
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.WORKSPACE_LOADS_FOREVER, "4");
-            }
             if (!FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
                 mExtraItems.forEach(item ->
                         executeCallbacksTask(c -> c.bindExtraContainerItems(item), mUiExecutor));
@@ -317,18 +301,8 @@ public abstract class BaseLauncherBinder {
             RunnableList pendingTasks = new RunnableList();
             Executor pendingExecutor = pendingTasks::add;
             bindWorkspaceItems(otherWorkspaceItems, pendingExecutor);
-
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.WORKSPACE_LOADS_FOREVER, "5");
-            }
             bindAppWidgets(otherAppWidgets, pendingExecutor);
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.WORKSPACE_LOADS_FOREVER, "6");
-            }
             executeCallbacksTask(c -> c.finishBindingItems(currentScreenIds), pendingExecutor);
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.WORKSPACE_LOADS_FOREVER, "After posting finishBindingItems");
-            }
             pendingExecutor.execute(
                     () -> {
                         MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
