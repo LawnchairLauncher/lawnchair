@@ -51,6 +51,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.IntSparseArrayMap;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
@@ -497,7 +498,9 @@ public class BgDataModel {
          */
         default void bindExtraContainerItems(FixedContainerItems item) { }
 
-        default void bindAllApplications(AppInfo[] apps, int flags) { }
+        default void bindAllApplications(AppInfo[] apps, int flags,
+                Map<PackageUserKey, Integer> packageUserKeytoUidMap) {
+        }
 
         /**
          * Binds the cache of string resources
