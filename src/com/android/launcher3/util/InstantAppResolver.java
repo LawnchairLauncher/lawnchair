@@ -42,7 +42,14 @@ public class InstantAppResolver implements ResourceBasedOverride {
         return false;
     }
 
-    public boolean isInstantApp(String packageName, int userId) {
+    public boolean isInstantApp(Context context, String packageName) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            return isInstantApp(packageManager.getPackageInfo(packageName, 0).applicationInfo);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e("InstantAppResolver", "Failed to determine whether package is instant app "
+                    + packageName, e);
+        }
         return false;
     }
 }

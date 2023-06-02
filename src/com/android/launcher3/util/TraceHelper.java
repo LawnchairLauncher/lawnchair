@@ -21,8 +21,6 @@ import androidx.annotation.MainThread;
 
 import java.util.function.Supplier;
 
-import kotlin.random.Random;
-
 /**
  * A wrapper around {@link Trace} to allow better testing.
  *
@@ -38,53 +36,54 @@ public class TraceHelper {
     // Temporarily ignore blocking binder calls for this trace.
     public static final int FLAG_IGNORE_BINDERS = 1 << 1;
 
+    public static final int FLAG_CHECK_FOR_RACE_CONDITIONS = 1 << 2;
+
+    public static final int FLAG_UI_EVENT =
+            FLAG_ALLOW_BINDER_TRACKING | FLAG_CHECK_FOR_RACE_CONDITIONS;
+
     /**
      * Static instance of Trace helper, overridden in tests.
      */
     public static TraceHelper INSTANCE = new TraceHelper();
 
     /**
-     * @see Trace#beginSection(String)
+     * @return a token to pass into {@link #endSection(Object)}.
      */
-    public void beginSection(String sectionName) {
+    public Object beginSection(String sectionName) {
+        return beginSection(sectionName, 0);
+    }
+
+    public Object beginSection(String sectionName, int flags) {
         Trace.beginSection(sectionName);
+        return null;
     }
 
     /**
-     * @see Trace#endSection()
+     * @param token the token returned from {@link #beginSection(String, int)}
      */
-    public void endSection() {
+    public void endSection(Object token) {
         Trace.endSection();
     }
 
     /**
-     * @see Trace#beginAsyncSection(String, int)
-     * @return a SafeCloseable that can be used to end the session
+     * Similar to {@link #beginSection} but doesn't add a trace section.
      */
-    public SafeCloseable beginAsyncSection(String sectionName) {
-        int cookie = Random.Default.nextInt();
-        Trace.beginAsyncSection(sectionName, cookie);
-        return () -> Trace.endAsyncSection(sectionName, cookie);
+    public Object beginFlagsOverride(int flags) {
+        return null;
     }
 
-    /**
-     * Returns a SafeCloseable to temporarily ignore blocking binder calls.
-     */
-    public SafeCloseable allowIpcs(String rpcName) {
-        int cookie = Random.Default.nextInt();
-        Trace.beginAsyncSection(rpcName, cookie);
-        return () -> Trace.endAsyncSection(rpcName, cookie);
-    }
+    public void endFlagsOverride(Object token) { }
 
     /**
      * Temporarily ignore blocking binder calls for the duration of this {@link Supplier}.
-     *
-     * Note, new features should be designed to not rely on mainThread RPCs.
      */
     @MainThread
     public static <T> T allowIpcs(String rpcName, Supplier<T> supplier) {
-        try (SafeCloseable c = INSTANCE.allowIpcs(rpcName)) {
+        Object traceToken = INSTANCE.beginSection(rpcName, FLAG_IGNORE_BINDERS);
+        try {
             return supplier.get();
+        } finally {
+            INSTANCE.endSection(traceToken);
         }
     }
 }
