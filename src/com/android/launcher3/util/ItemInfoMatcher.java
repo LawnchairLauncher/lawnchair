@@ -18,7 +18,6 @@ package com.android.launcher3.util;
 
 import android.content.ComponentName;
 import android.os.UserHandle;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -26,7 +25,6 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
-import com.android.launcher3.testing.shared.TestProtocol;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -44,14 +42,7 @@ public abstract class ItemInfoMatcher {
     private static final ComponentName EMPTY_COMPONENT = new ComponentName("", "");
 
     public static Predicate<ItemInfo> ofUser(UserHandle user) {
-        return info -> {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.WORK_TAB_MISSING, "userHandle: " + user
-                        + ", itemUserHandle: " + info.user
-                        + " package: " + info.getTargetPackage());
-            }
-            return info != null && info.user.equals(user);
-        };
+        return info -> info != null && info.user.equals(user);
     }
 
     public static Predicate<ItemInfo> ofComponents(
