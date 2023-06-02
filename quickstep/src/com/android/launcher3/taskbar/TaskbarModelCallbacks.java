@@ -18,6 +18,8 @@ package com.android.launcher3.taskbar;
 import android.util.SparseArray;
 import android.view.View;
 
+import androidx.annotation.UiThread;
+
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
@@ -29,6 +31,8 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
+import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.RecentsModel;
 
 import java.io.PrintWriter;
@@ -37,6 +41,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 /**
@@ -250,9 +255,12 @@ public class TaskbarModelCallbacks implements
         mControllers.taskbarPopupController.setDeepShortcutMap(deepShortcutMapCopy);
     }
 
+    @UiThread
     @Override
-    public void bindAllApplications(AppInfo[] apps, int flags) {
-        mControllers.taskbarAllAppsController.setApps(apps, flags);
+    public void bindAllApplications(AppInfo[] apps, int flags,
+            Map<PackageUserKey, Integer> packageUserKeytoUidMap) {
+        Preconditions.assertUIThread();
+        mControllers.taskbarAllAppsController.setApps(apps, flags, packageUserKeytoUidMap);
         mControllers.taskbarRecentAppsController.setApps(apps);
     }
 
