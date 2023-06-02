@@ -21,6 +21,7 @@ import static android.app.admin.DevicePolicyManager.ACTION_DEVICE_POLICY_RESOURC
 import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
 import static com.android.launcher3.config.FeatureFlags.IS_STUDIO_BUILD;
 import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
+import static com.android.launcher3.testing.shared.TestProtocol.sDebugTracing;
 import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -295,7 +296,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     }
 
     public void onBroadcastIntent(@NonNull final Intent intent) {
-        if (DEBUG_RECEIVER) Log.d(TAG, "onReceive intent=" + intent);
+        if (DEBUG_RECEIVER || sDebugTracing) Log.d(TAG, "onReceive intent=" + intent);
         final String action = intent.getAction();
         if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
             // If we have changed locale we need to clear out the labels in all apps/workspace.

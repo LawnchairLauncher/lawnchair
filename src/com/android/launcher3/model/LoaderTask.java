@@ -24,6 +24,8 @@ import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
+import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.PackageManagerHelper.hasShortcutsPermission;
 import static com.android.launcher3.util.PackageManagerHelper.isSystemApp;
@@ -947,6 +949,7 @@ public class LoaderTask implements Runnable {
     }
 
     private List<LauncherActivityInfo> loadAllApps() {
+        testLogD(WORK_TAB_MISSING, "loadingAllApps");
         final List<UserHandle> profiles = mUserCache.getUserProfiles();
         List<LauncherActivityInfo> allActivityList = new ArrayList<>();
         // Clear the list of apps

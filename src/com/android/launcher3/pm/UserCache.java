@@ -16,6 +16,9 @@
 
 package com.android.launcher3.pm;
 
+import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.UserHandle;
@@ -56,6 +59,7 @@ public class UserCache {
     }
 
     private void onUsersChanged(Intent intent) {
+        testLogD(WORK_TAB_MISSING, "onUsersChanged intent: " + intent);
         enableAndResetCache();
         mUserChangeListeners.forEach(Runnable::run);
     }
@@ -84,6 +88,7 @@ public class UserCache {
             List<UserHandle> users = mUserManager.getUserProfiles();
             if (users != null) {
                 for (UserHandle user : users) {
+                    testLogD(WORK_TAB_MISSING, "caching user: " + user);
                     long serial = mUserManager.getSerialNumberForUser(user);
                     mUsers.put(serial, user);
                     mUserToSerialMap.put(user, serial);
@@ -134,13 +139,24 @@ public class UserCache {
      * @see UserManager#getUserProfiles()
      */
     public List<UserHandle> getUserProfiles() {
+        StringBuilder usersToReturn = new StringBuilder();
         synchronized (this) {
             if (mUsers != null) {
+                for (UserHandle u : mUserToSerialMap.keySet()) {
+                    usersToReturn.append(u).append(" && ");
+                }
+                testLogD(WORK_TAB_MISSING, "users from cache: " + usersToReturn);
                 return new ArrayList<>(mUserToSerialMap.keySet());
+            } else {
+                testLogD(WORK_TAB_MISSING, "users from cache null");
             }
         }
 
         List<UserHandle> users = mUserManager.getUserProfiles();
+        for (UserHandle u : users) {
+            usersToReturn.append(u).append(" && ");
+        }
+        testLogD(WORK_TAB_MISSING, "users from userManager: " + usersToReturn);
         return users == null ? Collections.emptyList() : users;
     }
 }
