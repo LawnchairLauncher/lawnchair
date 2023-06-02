@@ -112,7 +112,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mContext = context;
         mSizeStrategy = sizeStrategy;
 
-        mOrientationState = TraceHelper.allowIpcs("TaskViewSimulator.init",
+        // TODO(b/187074722): Don't create this per-TaskViewSimulator
+        mOrientationState = TraceHelper.allowIpcs("",
                 () -> new RecentsOrientedState(context, sizeStrategy, i -> { }));
         mOrientationState.setGestureActive(true);
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
