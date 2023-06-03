@@ -70,7 +70,7 @@ import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
-import com.android.launcher3.allapps.search.DefaultSearchAdapterProvider;
+import com.android.launcher3.allapps.search.AllAppsSearchUiDelegate;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
@@ -132,6 +132,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     protected final Point mFastScrollerOffset = new Point();
     protected final int mScrimColor;
     protected final float mHeaderThreshold;
+    protected final AllAppsSearchUiDelegate mSearchUiDelegate;
 
     // Used to animate Search results out and A-Z apps in, or vice-versa.
     private final SearchTransitionController mSearchTransitionController;
@@ -217,9 +218,15 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 getActiveRecyclerView().requestFocus();
             }
         });
+        mSearchUiDelegate = createSearchUiDelegate();
         initContent();
 
         mSearchTransitionController = new SearchTransitionController(this);
+    }
+
+    /** Creates the delegate for initializing search. */
+    protected AllAppsSearchUiDelegate createSearchUiDelegate() {
+        return new AllAppsSearchUiDelegate(this);
     }
 
     /**
@@ -231,7 +238,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      *   onFinishInflate -> onPostCreate
      */
     protected void initContent() {
-        mMainAdapterProvider = createMainAdapterProvider();
+        mMainAdapterProvider = mSearchUiDelegate.createMainAdapterProvider();
 
         mAH.set(AdapterHolder.MAIN, new AdapterHolder(AdapterHolder.MAIN,
                 new AlphabeticalAppsList<>(mActivityContext, mAllAppsStore, null)));
@@ -252,6 +259,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mSearchContainer = inflateSearchBox();
         addView(mSearchContainer);
         mSearchUiManager = (SearchUiManager) mSearchContainer;
+        mSearchUiDelegate.onInitializeSearchBox();
     }
 
     @Override
@@ -341,6 +349,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      */
     public void setSearchResults(ArrayList<AdapterItem> results, int searchResultCode) {
         setSearchResults(results);
+        mSearchUiDelegate.onSearchResultsChanged(results, searchResultCode);
     }
 
     private void animateToSearchState(boolean goingToSearch) {
@@ -788,12 +797,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      * Inflates the search box
      */
     protected View inflateSearchBox() {
-        return getLayoutInflater().inflate(R.layout.search_container_all_apps, this, false);
-    }
-
-    /** Creates the adapter provider for the main section. */
-    protected SearchAdapterProvider<?> createMainAdapterProvider() {
-        return new DefaultSearchAdapterProvider(mActivityContext);
+        return mSearchUiDelegate.inflateSearchBox();
     }
 
     /** The adapter provider for the main section. */
@@ -998,7 +1002,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     public LayoutInflater getLayoutInflater() {
-        return LayoutInflater.from(getContext());
+        return mSearchUiDelegate.getLayoutInflater();
     }
 
     @Override
@@ -1306,6 +1310,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     protected void onInitializeRecyclerView(RecyclerView rv) {
         rv.addOnScrollListener(mScrollListener);
+        mSearchUiDelegate.onInitializeRecyclerView(rv);
     }
 
     /** Returns the instance of @{code SearchTransitionController}. */
