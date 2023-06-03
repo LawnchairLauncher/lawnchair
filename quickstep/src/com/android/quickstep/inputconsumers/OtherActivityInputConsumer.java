@@ -28,6 +28,7 @@ import static com.android.launcher3.PagedView.DEBUG_FAILED_QUICKSWITCH;
 import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.TraceHelper.FLAG_CHECK_FOR_RACE_CONDITIONS;
 import static com.android.launcher3.util.VelocityUtils.PX_PER_MS;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 
@@ -228,7 +229,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 // Until we detect the gesture, handle events as we receive them
                 mInputEventReceiver.setBatchingEnabled(false);
 
-                TraceHelper.INSTANCE.beginSection(DOWN_EVT);
+                Object traceToken = TraceHelper.INSTANCE.beginSection(DOWN_EVT,
+                        FLAG_CHECK_FOR_RACE_CONDITIONS);
                 mActivePointerId = ev.getPointerId(0);
                 mDownPos.set(ev.getX(), ev.getY());
                 mLastPos.set(mDownPos);
@@ -239,7 +241,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                     startTouchTrackingForWindowAnimation(ev.getEventTime());
                 }
 
-                TraceHelper.INSTANCE.endSection();
+                TraceHelper.INSTANCE.endSection(traceToken);
                 break;
             }
             case ACTION_POINTER_DOWN: {
@@ -415,7 +417,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
      * the animation can still be running.
      */
     private void finishTouchTracking(MotionEvent ev) {
-        TraceHelper.INSTANCE.beginSection(UP_EVT);
+        Object traceToken = TraceHelper.INSTANCE.beginSection(UP_EVT,
+                FLAG_CHECK_FOR_RACE_CONDITIONS);
 
         if (mPassedWindowMoveSlop && mInteractionHandler != null) {
             if (ev.getActionMasked() == ACTION_CANCEL) {
@@ -452,7 +455,7 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             onInteractionGestureFinished();
         }
         cleanupAfterGesture();
-        TraceHelper.INSTANCE.endSection();
+        TraceHelper.INSTANCE.endSection(traceToken);
     }
 
     private void cleanupAfterGesture() {
