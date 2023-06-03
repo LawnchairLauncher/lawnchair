@@ -45,8 +45,10 @@ import java.util.function.Predicate;
 public final class TaskbarAllAppsController {
 
     private TaskbarControllers mControllers;
+    private @Nullable TaskbarOverlayContext mOverlayContext;
     private @Nullable TaskbarAllAppsSlideInView mSlideInView;
     private @Nullable TaskbarAllAppsContainerView mAppsView;
+    private @Nullable TaskbarSearchSessionController mSearchSessionController;
 
     // Application data models.
     private AppInfo[] mApps;
@@ -68,6 +70,11 @@ public final class TaskbarAllAppsController {
         if (allAppsVisible) {
             show(false);
         }
+    }
+
+    /** Clean up the controller. */
+    public void onDestroy() {
+        cleanUpOverlay();
     }
 
     /** Updates the current {@link AppInfo} instances. */
@@ -95,6 +102,9 @@ public final class TaskbarAllAppsController {
             mAppsView.getFloatingHeaderView()
                     .findFixedRowByType(PredictionRowView.class)
                     .setPredictedApps(mPredictedApps);
+        }
+        if (mSearchSessionController != null) {
+            mSearchSessionController.setZeroStatePredictedItems(predictedApps);
         }
     }
 
@@ -127,20 +137,25 @@ public final class TaskbarAllAppsController {
         // to catch invalid states.
         mControllers.getSharedState().allAppsVisible = true;
 
-        TaskbarOverlayContext overlayContext =
-                mControllers.taskbarOverlayController.requestWindow();
-        mSlideInView = (TaskbarAllAppsSlideInView) overlayContext.getLayoutInflater().inflate(
-                R.layout.taskbar_all_apps, overlayContext.getDragLayer(), false);
+        mOverlayContext = mControllers.taskbarOverlayController.requestWindow();
+
+        // Initialize search session for All Apps.
+        mSearchSessionController = TaskbarSearchSessionController.newInstance(mOverlayContext);
+        mOverlayContext.setSearchSessionController(mSearchSessionController);
+        mSearchSessionController.setZeroStatePredictedItems(mPredictedApps);
+        mSearchSessionController.startLifecycle();
+
+        mSlideInView = (TaskbarAllAppsSlideInView) mOverlayContext.getLayoutInflater().inflate(
+                R.layout.taskbar_all_apps_sheet, mOverlayContext.getDragLayer(), false);
         mSlideInView.addOnCloseListener(() -> {
             mControllers.getSharedState().allAppsVisible = false;
-            mSlideInView = null;
-            mAppsView = null;
+            cleanUpOverlay();
         });
         TaskbarAllAppsViewController viewController = new TaskbarAllAppsViewController(
-                overlayContext, mSlideInView, mControllers);
+                mOverlayContext, mSlideInView, mControllers);
 
         viewController.show(animate);
-        mAppsView = overlayContext.getAppsView();
+        mAppsView = mOverlayContext.getAppsView();
         mAppsView.getAppsStore().setApps(mApps, mAppsModelFlags, mPackageUserKeytoUidMap);
         mAppsView.getFloatingHeaderView()
                 .findFixedRowByType(PredictionRowView.class)
@@ -149,8 +164,21 @@ public final class TaskbarAllAppsController {
         // Create a shared drag layer between taskbar and taskbarAllApps so that when dragging
         // starts and taskbarAllApps can close, but the drag layer that the view is being dragged in
         // doesn't also close
-        overlayContext.getDragController().setDisallowGlobalDrag(mDisallowGlobalDrag);
-        overlayContext.getDragController().setDisallowLongClick(mDisallowLongClick);
+        mOverlayContext.getDragController().setDisallowGlobalDrag(mDisallowGlobalDrag);
+        mOverlayContext.getDragController().setDisallowLongClick(mDisallowLongClick);
+    }
+
+    private void cleanUpOverlay() {
+        if (mSearchSessionController != null) {
+            mSearchSessionController.onDestroy();
+            mSearchSessionController = null;
+        }
+        if (mOverlayContext != null) {
+            mOverlayContext.setSearchSessionController(null);
+            mOverlayContext = null;
+        }
+        mSlideInView = null;
+        mAppsView = null;
     }
 
     @VisibleForTesting
