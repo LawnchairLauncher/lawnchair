@@ -831,6 +831,10 @@ public class StatsLogManager implements ResourceBasedOverride {
      */
     public interface StatsLatencyLogger {
 
+        /**
+         * Should be in sync with:
+         * google3/wireless/android/sysui/aster/asterstats/launcher_event_processed.proto
+         */
         enum LatencyType {
             UNKNOWN(0),
             // example: launcher restart that happens via daily backup and restore
