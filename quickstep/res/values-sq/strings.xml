@@ -78,7 +78,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Plotësisht gati!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Rrëshqit shpejt lart për të shkuar tek \"Ekrani bazë\""</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Trokit te butoni \"kreu\" për të shkuar tek ekrani bazë"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"Je gati që të fillosh të përdorësh <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Je gati që të fillosh ta përdorësh këtë <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"pajisje"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Cilësimet e navigimit të sistemit"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Ndaj"</string>

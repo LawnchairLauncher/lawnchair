@@ -96,7 +96,7 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Riquadro Formazione barra delle applicazioni visualizzato"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Riquadro Formazione barra delle applicazioni chiuso"</string>
     <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"Trascina di lato per usare 2 app contemporaneamente"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Scorri verso l\'alto per mostrare la barra delle applicazioni"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Scorri verso l\'alto per mostrare la barra delle app"</string>
     <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Barra delle applicazioni suggerisce app in base alla routine"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Avanti"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Indietro"</string>

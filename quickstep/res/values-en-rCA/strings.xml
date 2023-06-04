@@ -78,7 +78,7 @@
     <string name="allset_title" msgid="5021126669778966707">"All set!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Swipe up to go Home"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Tap the home button to go to your home screen"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"You’re ready to start using your <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"You\'re ready to start using your <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"device"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"System navigation settings"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Share"</string>

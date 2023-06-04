@@ -64,7 +64,7 @@
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"画面の下端から上にスワイプしてください。"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"ウィンドウをもう少し長く押してから指を離すようにしてみましょう。"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"まっすぐ上にスワイプしてから、いったん指を止めてください。"</string>
-    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"主な操作方法を覚えました。操作を OFF にするには、設定に移動してください。"</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"主なジェスチャーについて学びました。ジェスチャーを OFF にするには、設定に移動してください。"</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"「アプリを切り替える」操作を完了しました。"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"スワイプでアプリを切り替える"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"アプリを切り替えるには、画面を下から上にスワイプして長押しし、指を離します。"</string>
@@ -73,7 +73,7 @@
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"完了"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"設定"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"もう一度"</string>
-    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"成功しました"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"その調子です！"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"チュートリアル <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"設定完了"</string>
     <string name="allset_hint" msgid="2384632994739392447">"ホームに移動するには上にスワイプします"</string>

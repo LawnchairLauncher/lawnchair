@@ -51,7 +51,7 @@
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Pazite da ne prijeđete prstom preblizu dnu zaslona."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Osjetljivost pokreta povratka promijenite u postavkama"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Prijeđite prstom da biste se vratili"</string>
-    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Za povratak na zadnji zaslon prijeđite prstom od lijevog ili desnog ruba do sredine zaslona."</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Za povratak na prethodni zaslon prijeđite prstom od lijevog ili desnog ruba do sredine zaslona."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Da biste se vratili na posljednji zaslon, prijeđite s dva prsta od lijevog ili desnog ruba do sredine zaslona."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pazite da prijeđete prstom prema gore od donjeg ruba zaslona."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pazite da ne zastanete prije podizanja prsta."</string>

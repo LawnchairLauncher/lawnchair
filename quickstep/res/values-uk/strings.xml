@@ -75,10 +75,10 @@
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Спробуйте ще"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Чудово!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Навчальний посібник <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
-    <string name="allset_title" msgid="5021126669778966707">"Готово."</string>
+    <string name="allset_title" msgid="5021126669778966707">"Готово!"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Щоб перейти на головний екран, проведіть пальцем угору"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Натисніть кнопку головного екрана, щоб відкрити його"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"Тепер ви можете користуватися цим пристроєм: <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Тепер ви можете використовувати <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"пристрій"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Системні налаштування навігації"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Поділитися"</string>
@@ -103,7 +103,7 @@
     <string name="taskbar_edu_close" msgid="887022990168191073">"Закрити"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Готово"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Головний екран"</string>
-    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Спеціальні можливості"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Доступність"</string>
     <string name="taskbar_button_back" msgid="8558862226461164514">"Назад"</string>
     <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Перемикач IME"</string>
     <string name="taskbar_button_recents" msgid="7273376136216613134">"Нещодавні"</string>
