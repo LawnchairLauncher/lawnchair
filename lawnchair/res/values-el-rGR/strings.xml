@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Πατήστε αυτή την κάρτα για να ορίσετε τον Lawnchair ως τον προεπιλεγμένο σας εκκινητή.</string>
+    <string name="set_default_launcher_tip">Πατήστε αυτή την κάρτα για να ορίσετε το Lawnchair ως τον προεπιλεγμένο σας πρόγραμμα εκκίνησης.</string>
     <string name="settings">Ρυθμίσεις</string>
     <string name="general_label">Γενικά</string>
     <string name="general_description">Κουκκκίδες Ειδοποιήσεων, Πακέτο Εικονιδίων</string>

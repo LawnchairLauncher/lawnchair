@@ -16,7 +16,9 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">Key: set_default_launcher_tip
+set_default_launcher_tip
+PreferenceDashboard</string>
     <string name="settings">Beállítások</string>
     <string name="general_label">Általános</string>
     <string name="general_description">Színek, ikoncsomag, értesítési pöttyök</string>
