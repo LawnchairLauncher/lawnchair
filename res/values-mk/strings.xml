@@ -84,7 +84,7 @@
     <string name="permdesc_write_settings" msgid="726859348127868466">"Овозможува апликацијата да ги менува поставките и кратенките на почетната страница."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> нема дозвола за телефонски повици"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Не може да се вчита виџетот"</string>
-    <string name="gadget_setup_text" msgid="8348374825537681407">"Поставки за виџет"</string>
+    <string name="gadget_setup_text" msgid="8348374825537681407">"Поставки за виџетот"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Допрете за да го завршите поставувањето"</string>
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Ова е системска апликација и не може да се деинсталира."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Изменете го името"</string>
@@ -170,7 +170,7 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Паузирај ги работните апликации"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Вклучете ги работните апликации"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Филтер"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"Пребарувајте на телефонот"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Пребарувајте на таблетот"</string>
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"Пребарување низ телефонот"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Пребарување низ таблетот"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Не успеа: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

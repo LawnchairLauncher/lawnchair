@@ -102,7 +102,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"फ़ोल्डर: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> या इससे ज़्यादा आइटम"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"वॉलपेपर"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"वॉलपेपर और स्टाइल"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"होम पेज की सेटिंग"</string>
+    <string name="settings_button_text" msgid="8873672322605444408">"होम स्क्रीन की सेटिंग"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपके एडमिन ने बंद किया हुआ है"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"होम स्क्रीन घुमाने की अनुमति दें"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फ़ोन घुुमाए जाने पर"</string>
@@ -157,10 +157,10 @@
     <string name="action_dismiss_notification" msgid="5909461085055959187">"खारिज करें"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"बंद करें"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"सूचना को खारिज किया गया"</string>
-    <string name="all_apps_personal_tab" msgid="4190252696685155002">"निजी ऐप"</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"निजी ऐप्लिकेशन"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"वर्क ऐप्लिकेशन"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"वर्क प्रोफ़ाइल"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"वर्क ऐप्लिकेशन बैज किए गए हैं और आईटी एडमिन को दिख रहे हैं"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"वर्क ऐप्लिकेशन बैज किए गए हैं. आईटी एडमिन इन्हें देख सकता है"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ठीक है"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"वर्क ऐप्लिकेशन रोके गए"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"आपके वर्क ऐप्लिकेशन, आपको सूचनाएं नहीं भेज सकते. साथ ही, आपकी बैटरी का इस्तेमाल या आपकी जगह की जानकारी को ऐक्सेस भी नहीं कर सकते"</string>

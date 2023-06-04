@@ -107,7 +107,7 @@
     <string name="allow_rotation_title" msgid="7222049633713050106">"Permitir a rotação da tela inicial"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Quando o smartphone for girado"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Pontos de notificação"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Ativado"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Ativados"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Desativado"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Acesso a notificações necessário"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Para mostrar pontos de notificação, ative as notificações de app para <xliff:g id="NAME">%1$s</xliff:g>"</string>

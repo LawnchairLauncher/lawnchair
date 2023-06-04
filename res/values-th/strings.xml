@@ -27,7 +27,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"มีการปิดใช้งานวิดเจ็ตในเซฟโหมด"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"ทางลัดไม่พร้อมใช้งาน"</string>
     <string name="home_screen" msgid="5629429142036709174">"หน้าแรก"</string>
-    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"แบ่งหน้าจอ"</string>
+    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"แยกหน้าจอ"</string>
     <string name="split_screen_position_top" msgid="1504965011158689649">"แยกไปด้านบน"</string>
     <string name="split_screen_position_left" msgid="7537793098851830883">"แยกไปทางซ้าย"</string>
     <string name="split_screen_position_right" msgid="1569377524925193369">"แยกไปทางขวา"</string>
@@ -162,7 +162,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"โปรไฟล์งาน"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"แอปงานจะติดป้ายไว้และผู้ดูแลระบบไอทีจะมองเห็น"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"รับทราบ"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"แอปงานปิดอยู่"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"แอปงานหยุดชั่วคราว"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"แอปงานจะส่งการแจ้งเตือน ใช้แบตเตอรี่ หรือเข้าถึงตำแหน่งของคุณไม่ได้"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"แอปงานปิดอยู่ แอปงานจะส่งการแจ้งเตือน ใช้แบตเตอรี่ หรือเข้าถึงตำแหน่งของคุณไม่ได้"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"แอปงานจะติดป้ายไว้และผู้ดูแลระบบไอทีจะมองเห็น"</string>

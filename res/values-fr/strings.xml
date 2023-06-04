@@ -107,8 +107,8 @@
     <string name="allow_rotation_title" msgid="7222049633713050106">"Autoriser la rotation de l\'écran d\'accueil"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Lorsque vous faites pivoter le téléphone"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Pastilles de notification"</string>
-    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Activées"</string>
-    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Désactivées"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"Activé"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Désactivé"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Accès aux notifications requis"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Pour afficher les pastilles de notification, activez les notifications de l\'application <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Modifier les paramètres"</string>
@@ -162,7 +162,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Profil professionnel"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Les applis professionnelles sont identifiées par un badge et votre administrateur informatique peut les voir"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"Applications professionnelles en veille"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Applis professionnelles en pause"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Vos applis professionnelles ne peuvent pas vous envoyer de notifications, utiliser votre batterie ni accéder à votre position"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Vos applis professionnelles sont désactivées. Elles ne peuvent pas vous envoyer de notifications, utiliser votre batterie ni accéder à votre position."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Les applis professionnelles sont identifiées par un badge et votre administrateur informatique peut les voir"</string>

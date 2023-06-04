@@ -162,7 +162,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Laneko profila"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Laneko aplikazioek bereizgarriak dituzte, eta IKT saileko administratzaileak ikus ditzake"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Ados"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"Pausatu egin dira laneko aplikazioak"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"Pausatuta daude laneko aplikazioak"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Laneko aplikazioek ezin dute jakinarazpenik bidali, bateria erabili edo kokapena atzitu"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Laneko aplikazioak desaktibatuta daude. Hori dela eta, ezin dute jakinarazpenik bidali, bateria erabili edo kokapena atzitu."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Laneko aplikazioek bereizgarriak dituzte, eta IKT saileko administratzaileak ikus ditzake"</string>

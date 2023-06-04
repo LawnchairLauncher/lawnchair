@@ -160,12 +160,12 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ব্যক্তিগত"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"অফিস"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"অফিসের প্রোফাইল"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"অফিসের অ্যাপে ব্যাজ যোগ করা হয়েছে এবং আপনার আইটি অ্যাডমিন সেটি দেখতে পাবেন"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"অফিস অ্যাপে ব্যাজ যোগ করা হয়েছে এবং আপনার আইটি অ্যাডমিন সেগুলি দেখতে পাবেন"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"বুঝেছি"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"অফিস অ্যাপ বন্ধ করা আছে"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"অফিসের অ্যাপ আপনাকে নোটিফিকেশন পাঠাতে পারবে না। এছাড়া, ব্যাটারি ব্যবহার করতে বা লোকেশন অ্যাক্সেস করতে পারবে না"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"অফিসের অ্যাপ বন্ধ আছে। আপনার অফিসের অ্যাপ আপনাকে বিজ্ঞপ্তি পাঠাতে, ব্যাটারি ব্যবহার করতে বা লোকেশন অ্যাক্সেস করতে পারবে না"</string>
-    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"অফিসের অ্যাপে ব্যাজ যোগ করা হয়েছে এবং আপনার আইটি অ্যাডমিন সেটি দেখতে পাবেন"</string>
+    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"অফিসের অ্যাপে ব্যাজ যোগ করা হয়েছে এবং আপনার আইটি অ্যাডমিন সেগুলি দেখতে পাবেন"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"বুঝেছি"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"অফিসের অ্যাপ পজ করুন"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"অফিস অ্যাপ চালু করুন"</string>

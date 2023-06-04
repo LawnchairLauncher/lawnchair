@@ -152,7 +152,7 @@
     <string name="action_decrease_width" msgid="1374549771083094654">"Енін азайту"</string>
     <string name="action_decrease_height" msgid="282377193880900022">"Биіктігін азайту"</string>
     <string name="widget_resized" msgid="9130327887929620">"Виджет өлшемінің ені <xliff:g id="NUMBER_0">%1$s</xliff:g>, биіктігі <xliff:g id="NUMBER_1">%2$s</xliff:g> болып өзгертілді"</string>
-    <string name="action_deep_shortcut" msgid="2864038805849372848">"Таңбашалар"</string>
+    <string name="action_deep_shortcut" msgid="2864038805849372848">"Жылдам пәрмендер"</string>
     <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Таңбашалар мен хабарландырулар"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Бас тарту"</string>
     <string name="accessibility_close" msgid="2277148124685870734">"Жабу"</string>
@@ -167,7 +167,7 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Жұмыс қолданбалары өшірулі. Олар сізге хабарландырулар жібере, батареяңызды немесе локацияңызды пайдалана алмайды."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Жұмыс қолданбаларының танымбелгілері бар және олар әкімшіңізге көрінеді."</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Түсінікті"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Жұмыс қолданбаларын тоқтата тұру"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Жұмыс қолданбаларын кідірту"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Жұмыс қолданбаларын қосу"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Сүзгі"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Телефоннан іздеу"</string>
