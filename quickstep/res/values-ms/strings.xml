@@ -47,7 +47,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Pastikan anda meleret dari hujung sebelah kanan atau sebelah kiri."</string>
     <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Pastikan anda meleret dari tepi sebelah kanan atau kiri ke tengah skrin dan lepaskan."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Anda belajar cara meleret dari kanan untuk kembali. Seterusnya, ketahui cara menukar apl."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Anda telah melengkapkan gerak isyarat undur."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Anda telah melengkapkan gerak isyarat kembali."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Pastikan anda tidak meleret terlalu dekat dengan bahagian bawah skrin."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Utk mengubah kepekaan gerak isyarat undur, pergi ke Tetapan"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Leret untuk kembali"</string>
