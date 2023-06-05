@@ -45,7 +45,6 @@ import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
-import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetManagerHelper;
 
@@ -133,10 +132,8 @@ public class GridSizeMigrationUtil {
             Log.v(TAG, "Workspace migration completed in "
                     + (System.currentTimeMillis() - migrationStartTime));
 
-            if (!(context instanceof SandboxContext)) {
-                // Save current configuration, so that the migration does not run again.
-                destDeviceState.writeToPrefs(context);
-            }
+            // Save current configuration, so that the migration does not run again.
+            destDeviceState.writeToPrefs(context);
         }
     }
 

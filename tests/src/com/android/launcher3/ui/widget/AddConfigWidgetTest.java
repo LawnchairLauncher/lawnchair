@@ -64,7 +64,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
     @Before
     public void setUp() throws Exception {
         super.setUp();
-        mWidgetInfo = TestViewHelpers.findWidgetProvider(this, true /* hasConfigureScreen */);
+        mWidgetInfo = TestViewHelpers.findWidgetProvider(true /* hasConfigureScreen */);
         mAppWidgetManager = AppWidgetManager.getInstance(mTargetContext);
     }
 

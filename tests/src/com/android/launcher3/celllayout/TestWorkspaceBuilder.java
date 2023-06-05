@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.celllayout;
 
+import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+
+import static com.android.launcher3.ui.TestViewHelpers.findWidgetProvider;
 import static com.android.launcher3.util.WidgetUtils.createWidgetInfo;
 
 import android.content.ComponentName;
@@ -25,17 +28,16 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 
-import androidx.test.core.app.ApplicationProvider;
-
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.ui.AbstractLauncherUiTest;
-import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
+
+import java.util.function.Supplier;
+import java.util.stream.IntStream;
 
 public class TestWorkspaceBuilder {
 
@@ -43,15 +45,12 @@ public class TestWorkspaceBuilder {
     private static final ComponentName APP_COMPONENT_NAME = new ComponentName(
             "com.google.android.calculator", "com.android.calculator2.Calculator");
 
-    public AbstractLauncherUiTest mTest;
-
     private UserHandle mMyUser;
 
     private Context mContext;
     private ContentResolver mResolver;
 
-    public TestWorkspaceBuilder(AbstractLauncherUiTest test, Context context) {
-        mTest = test;
+    public TestWorkspaceBuilder(Context context) {
         mMyUser = Process.myUserHandle();
         mContext = context;
         mResolver = mContext.getContentResolver();
@@ -68,10 +67,9 @@ public class TestWorkspaceBuilder {
             for (int y = initY; y < initY + widgetRect.getSpanY(); y++) {
                 try {
                     // this widgets are filling, we don't care if we can't place them
-                    ItemInfo item = createWidgetInCell(
+                    transaction.addItem(createWidgetInCell(
                             new CellLayoutBoard.WidgetRect(CellLayoutBoard.CellType.IGNORE,
-                                    new Rect(x, y, x, y)), screenId);
-                    transaction.addItem(item);
+                                    new Rect(x, y, x, y)), screenId));
                 } catch (Exception e) {
                     Log.d(TAG, "Unable to place filling widget at " + x + "," + y);
                 }
@@ -108,7 +106,7 @@ public class TestWorkspaceBuilder {
         board.getWidgets().forEach(
                 (widgetRect) -> addCorrespondingWidgetRect(widgetRect, transaction, screenId));
         board.getIcons().forEach((iconPoint) ->
-                transaction.addItem(createIconInCell(iconPoint, screenId))
+                transaction.addItem(() -> createIconInCell(iconPoint, screenId))
         );
         return transaction;
     }
@@ -118,24 +116,25 @@ public class TestWorkspaceBuilder {
      * be clean otherwise this doesn't overrides the existing icons.
      */
     public FavoriteItemsTransaction fillHotseatIcons(FavoriteItemsTransaction transaction) {
-        int hotseatCount = InvariantDeviceProfile.INSTANCE.get(mContext).numDatabaseHotseatIcons;
-        for (int i = 0; i < hotseatCount; i++) {
-            transaction.addItem(getHotseatValues(i));
-        }
+        IntStream.range(0, InvariantDeviceProfile.INSTANCE.get(mContext).numDatabaseHotseatIcons)
+                .forEach(i -> transaction.addItem(() -> getHotseatValues(i)));
         return transaction;
     }
 
-    private ItemInfo createWidgetInCell(CellLayoutBoard.WidgetRect widgetRect, int screenId) {
-        LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(mTest, false);
-        LauncherAppWidgetInfo item = createWidgetInfo(info,
-                ApplicationProvider.getApplicationContext(), true);
-        item.id = getID();
-        item.cellX = widgetRect.getCellX();
-        item.cellY = widgetRect.getCellY();
-        item.spanX = widgetRect.getSpanX();
-        item.spanY = widgetRect.getSpanY();
-        item.screenId = screenId;
-        return item;
+    private Supplier<ItemInfo> createWidgetInCell(
+            CellLayoutBoard.WidgetRect widgetRect, int screenId) {
+        // Create the widget lazily since the appWidgetId can get lost during setup
+        return () -> {
+            LauncherAppWidgetProviderInfo info = findWidgetProvider(false);
+            LauncherAppWidgetInfo item = createWidgetInfo(info, getApplicationContext(), true);
+            item.id = getID();
+            item.cellX = widgetRect.getCellX();
+            item.cellY = widgetRect.getCellY();
+            item.spanX = widgetRect.getSpanX();
+            item.spanY = widgetRect.getSpanY();
+            item.screenId = screenId;
+            return item;
+        };
     }
 
     private ItemInfo createIconInCell(CellLayoutBoard.IconPoint iconPoint, int screenId) {
