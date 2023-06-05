@@ -20,7 +20,6 @@ import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.ui.TaplTestsLauncher3;
-import com.android.launcher3.util.RaceConditionReproducer;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 
 import org.junit.Before;
@@ -43,18 +42,6 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
         mLauncher.goHome();
         // Start an activity where the gestures start.
         startTestActivity(2);
-    }
-
-    private void runTest(String... eventSequence) {
-        final RaceConditionReproducer eventProcessor = new RaceConditionReproducer(eventSequence);
-
-        // Destroy Launcher activity.
-        closeLauncherActivity();
-
-        // The test action.
-        eventProcessor.startIteration();
-        mLauncher.goHome();
-        eventProcessor.finishIteration();
     }
 
     @Ignore
