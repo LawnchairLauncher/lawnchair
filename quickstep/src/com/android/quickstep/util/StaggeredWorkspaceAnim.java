@@ -177,8 +177,8 @@ public class StaggeredWorkspaceAnim {
 
         addDepthAnimationForState(launcher, NORMAL, duration);
 
-        mAnimators.play(launcher.getRootView().getSysUiScrim().createSysuiMultiplierAnim(0f, 1f)
-                .setDuration(duration));
+        mAnimators.play(launcher.getRootView().getSysUiScrim().getSysUIMultiplier()
+                .animateToValue(0f, 1f).setDuration(duration));
     }
 
     private void addAnimationForPage(CellLayout page, int totalRows, long duration) {

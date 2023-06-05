@@ -384,8 +384,8 @@ public abstract class AbstractStateChangeTouchController
         } else {
             logReachedState(targetState);
         }
-        mLauncher.getRootView().getSysUiScrim().createSysuiMultiplierAnim(
-                1f).setDuration(0).start();
+        mLauncher.getRootView().getSysUiScrim().getSysUIMultiplier().animateToValue(1f)
+                .setDuration(0).start();
     }
 
     private void logReachedState(LauncherState targetState) {
