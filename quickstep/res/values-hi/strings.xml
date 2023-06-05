@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_pin" msgid="7929860679018978258">"पिन करना"</string>
+    <string name="recent_task_option_pin" msgid="7929860679018978258">"पिन करें"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"फ़्रीफ़ॉर्म"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"हाल ही में इस्तेमाल किया गया कोई ऐप्लिकेशन नहीं है"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"ऐप्लिकेशन इस्तेमाल की सेटिंग"</string>
