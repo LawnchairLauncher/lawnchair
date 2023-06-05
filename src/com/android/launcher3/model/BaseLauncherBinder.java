@@ -23,8 +23,6 @@ import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import android.os.Process;
 import android.util.Log;
 
-import androidx.annotation.WorkerThread;
-
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel.CallbackTask;
@@ -41,7 +39,6 @@ import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RunnableList;
 
 import java.util.ArrayList;
@@ -149,9 +146,7 @@ public abstract class BaseLauncherBinder {
     /**
      * Binds the all apps results from LoaderTask to the callbacks UX.
      */
-    @WorkerThread
     public void bindAllApps() {
-        Preconditions.assertWorkerThread();
         // shallow copy
         AppInfo[] apps = mBgAllAppsList.copyData();
         int flags = mBgAllAppsList.getFlags();
