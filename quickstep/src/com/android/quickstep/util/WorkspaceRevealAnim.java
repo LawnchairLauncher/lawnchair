@@ -92,7 +92,8 @@ public class WorkspaceRevealAnim {
         }
 
         // Add sysui scrim animation.
-        mAnimators.play(launcher.getRootView().getSysUiScrim().createSysuiMultiplierAnim(0f, 1f));
+        mAnimators.play(launcher.getRootView().getSysUiScrim()
+                .getSysUIMultiplier().animateToValue(0f, 1f));
 
         mAnimators.setDuration(DURATION_MS);
         mAnimators.setInterpolator(Interpolators.DECELERATED_EASE);
