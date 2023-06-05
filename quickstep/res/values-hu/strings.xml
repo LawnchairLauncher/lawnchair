@@ -100,7 +100,7 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Az eszköztár használatát ismertető panel megjelent"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Az eszköztár használatát ismertető panel bezárult"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Húzzon egy appot oldalra, ha kettőt használna egyidejűleg"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Csúsztassa ujját lassan fel a Feladatsáv megjelenítéséhez"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Lassan csúsztassa fel az ujját a Feladatsáv megjelenítéséhez"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Alkalmazásjavaslatokat kaphat a rutinja alapján"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"A Feladatsáv automatikus elrejtéséhez aktiválja a navigációs kézmozdulatokat a beállításokban"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Jobban kihasználhatja a Feladatsávot"</string>

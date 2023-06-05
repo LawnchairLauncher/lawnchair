@@ -63,7 +63,7 @@
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"从屏幕底部向上滑动，即可随时回到主屏幕。"</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"用两根手指从屏幕底部向上滑动，这个手势会一律使您回到主屏幕。"</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"前往主屏幕"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"若要随时前往主屏幕，请从屏幕的底部向上滑动"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"从屏幕的底部向上滑动，即可随时前往主屏幕"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"请确保从屏幕底部边缘向上滑动。"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"请尝试按住窗口较长时间，然后再松开手指。"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"请确保直接向上滑动，然后停住。"</string>
@@ -99,7 +99,7 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"任务栏教程"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"任务栏教程已显示"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"任务栏教程已关闭"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"将一个应用拖动到一侧，即可一次使用两个应用"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"将一个应用拖到一侧，即可一次使用两个应用"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"缓慢向上滑动即可显示任务栏"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"根据您的日常安排获取应用建议"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"在设置中开启手势导航后，任务栏会自动隐藏"</string>

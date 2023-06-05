@@ -100,7 +100,7 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Edukativno okno iz trake zadataka se pojavilo"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Edukativno okno iz trake zadataka je zatvoreno"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Prevucite na stranu da biste koristili 2 aplikacije odjednom"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Nakratko prevucite nagore da biste prikazali traku zadataka"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Sporo prevucite nagore da biste prikazali traku zadataka"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Dobijajte predloge aplikacija na osnovu rutine"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Uključite navigaciju pomoću pokreta u Podešavanjima radi automatskog skrivanja trake zadataka"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Uradite više pomoću trake zadataka"</string>
