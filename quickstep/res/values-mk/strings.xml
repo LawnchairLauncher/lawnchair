@@ -53,7 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Повлечете за да се вратите назад"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"За да се вратите на последниот екран, повлечете од левиот или десниот раб кон средината на екранот."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"За да се вратите на последниот екран на кој бевте, повлечете со два прста од левиот или десниот раб кон средината на екранот."</string>
-    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Назад"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Враќање назад"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Повлечете нагоре од долниот раб на екранот."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Не правете пауза пред да пуштите."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Повлечете право нагоре."</string>
@@ -62,8 +62,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Повлечете за да одите на почетниот екран"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Повлечете нагоре од долниот раб на екранот. Ова движење секогаш ќе ве одведе на почетниот екран."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Повлечете нагоре со два прста од долниот раб на екранот. Движењево секогаш ве носи на почетниот екран."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Одете на почетниот екран"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"За да одите на вашиот почетен екран во кое било време, повлечете нагоре од дното на екранот"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Отворање на почетниот екран"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"За да го отворите почетниот екран, повлечете нагоре од дното на екранот"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Повлечете нагоре од долниот раб на екранот."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Задржете го прозорецот подолго пред да го пуштите."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Повлечете право нагоре, а потоа застанете."</string>
@@ -76,7 +76,7 @@
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Готово"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Готово"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Поставки"</string>
-    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Обиди се пак"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Обидете се повторно"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Одлично!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Упатство <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Готово!"</string>

@@ -51,7 +51,7 @@
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"మీరు స్క్రీన్ దిగువకు చాలా దగ్గరగా స్వైప్ చేయలేదని నిర్ధారించుకోండి."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"వెనుక సంజ్ఞ సున్నితత్వం మార్చడానికి, సెట్టింగ్‌లకు వెళ్లండి"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"వెనుకకు వెళ్ళడం కోసం స్వైప్ చేయండి"</string>
-    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"మునుపటి స్క్రీన్‌కు తిరిగి వెళ్లడానికి, ఎడమ లేదా కుడి అంచు నుండి స్క్రీన్ మధ్యలోకి స్వైప్ చేయండి."</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"మునుపటి స్క్రీన్‌కు తిరిగి వెళ్లడానికి, ఎడమ లేదా కుడి అంచు నుండి స్క్రీన్ మధ్యలోకి స్వయిప్ చేయండి."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"గత స్క్రీన్‌కు తిరిగి వెళ్లడానికి, ఎడమ లేదా కుడి అంచు నుండి స్క్రీన్ మధ్యలోకి 2 వేళ్లతో స్వైప్ చేయండి."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"వెనుకకు వెళ్లండి"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"మీరు స్క్రీన్ దిగువ అంచు నుండి పైకి స్వయిప్ చేస్తున్నారని నిర్ధారించుకోండి."</string>
