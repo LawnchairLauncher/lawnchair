@@ -203,7 +203,7 @@ public class LoaderTask implements Runnable {
             }
         }
 
-        Object traceToken = TraceHelper.INSTANCE.beginSection(TAG);
+        TraceHelper.INSTANCE.beginSection(TAG);
         LoaderMemoryLogger memoryLogger = new LoaderMemoryLogger();
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
@@ -327,7 +327,7 @@ public class LoaderTask implements Runnable {
             memoryLogger.printLogs();
             throw e;
         }
-        TraceHelper.INSTANCE.endSection(traceToken);
+        TraceHelper.INSTANCE.endSection();
     }
 
     public synchronized void stopLocked() {
