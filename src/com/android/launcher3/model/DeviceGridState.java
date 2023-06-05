@@ -33,6 +33,7 @@ import android.text.TextUtils;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
+import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext;
 
 import java.util.Locale;
 import java.util.Objects;
@@ -92,6 +93,9 @@ public class DeviceGridState implements Comparable<DeviceGridState> {
      * Stores the device state to shared preferences
      */
     public void writeToPrefs(Context context) {
+        if (context instanceof SandboxContext) {
+            return;
+        }
         LauncherPrefs.get(context).put(
                 WORKSPACE_SIZE.to(mGridSizeString),
                 HOTSEAT_COUNT.to(mNumHotseat),

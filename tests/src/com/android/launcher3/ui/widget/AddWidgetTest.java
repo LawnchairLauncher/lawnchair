@@ -61,7 +61,7 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
         waitForLauncherCondition("Workspace didn't finish loading", l -> !l.isWorkspaceLoading());
 
         final LauncherAppWidgetProviderInfo widgetInfo =
-                TestViewHelpers.findWidgetProvider(this, false /* hasConfigureScreen */);
+                TestViewHelpers.findWidgetProvider(false /* hasConfigureScreen */);
 
         WidgetResizeFrame resizeFrame = mLauncher
                 .getWorkspace()

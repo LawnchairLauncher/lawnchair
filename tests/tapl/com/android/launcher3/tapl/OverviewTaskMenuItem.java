@@ -15,13 +15,7 @@
  */
 package com.android.launcher3.tapl;
 
-import static com.android.launcher3.tapl.LauncherInstrumentation.CALLBACK_RUN_POINT.CALLBACK_HOVER_ENTER;
-import static com.android.launcher3.tapl.LauncherInstrumentation.CALLBACK_RUN_POINT.CALLBACK_HOVER_EXIT;
-
-import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.SystemClock;
-import android.view.MotionEvent;
 
 import androidx.test.uiautomator.UiObject2;
 
@@ -41,29 +35,5 @@ public class OverviewTaskMenuItem {
      */
     public Rect getVisibleBounds() {
         return mMenuItem.getVisibleBounds();
-    }
-
-    /**
-     * Emulate the cursor entering and exiting a hover over this menu item.
-     */
-    public void hoverCursor() {
-        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
-             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                     "cursor hover entering menu item")) {
-            long downTime = SystemClock.uptimeMillis();
-            mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_HOVER_ENTER,
-                    new Point(mMenuItem.getVisibleCenter().x, mMenuItem.getVisibleCenter().y),
-                    null);
-            mLauncher.runCallbackIfActive(CALLBACK_HOVER_ENTER);
-
-            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
-                    "cursor hover exiting menu item")) {
-                downTime = SystemClock.uptimeMillis();
-                mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_HOVER_EXIT,
-                        new Point(mMenuItem.getVisibleCenter().x, mMenuItem.getVisibleCenter().y),
-                        null);
-                mLauncher.runCallbackIfActive(CALLBACK_HOVER_EXIT);
-            }
-        }
     }
 }

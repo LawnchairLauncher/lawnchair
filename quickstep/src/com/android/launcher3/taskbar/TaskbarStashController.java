@@ -858,8 +858,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 .setDuration(isStashed ? duration / 2 : duration));
     }
 
-    private static void play(AnimatorSet as, Animator a, long startDelay, long duration,
+    private static void play(AnimatorSet as, @Nullable Animator a, long startDelay, long duration,
             Interpolator interpolator) {
+        if (a == null) {
+            return;
+        }
         a.setDuration(duration);
         a.setStartDelay(startDelay);
         a.setInterpolator(interpolator);
