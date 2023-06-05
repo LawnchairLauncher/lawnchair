@@ -61,7 +61,14 @@ public class DesktopVisibilityController {
         mDesktopTaskListener = new IDesktopTaskListener.Stub() {
             @Override
             public void onVisibilityChanged(int displayId, boolean visible) {
-                // TODO(b/261234402): move visibility from sysui state to listener
+                MAIN_EXECUTOR.execute(() -> {
+                    if (displayId == mLauncher.getDisplayId()) {
+                        if (DEBUG) {
+                            Log.d(TAG, "desktop visibility changed value=" + visible);
+                        }
+                        setFreeformTasksVisible(visible);
+                    }
+                });
             }
 
             @Override
