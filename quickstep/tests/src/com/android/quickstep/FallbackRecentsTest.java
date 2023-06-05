@@ -62,6 +62,7 @@ import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.SamplerRule;
 import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.launcher3.util.rule.TestStabilityRule;
+import com.android.launcher3.util.rule.ViewCaptureAnalysisRule;
 import com.android.launcher3.util.rule.ViewCaptureRule;
 import com.android.quickstep.views.RecentsView;
 
@@ -121,7 +122,8 @@ public class FallbackRecentsTest {
                 .outerRule(new SamplerRule())
                 .around(new NavigationModeSwitchRule(mLauncher))
                 .around(viewCaptureRule)
-                .around(new FailureWatcher(mDevice, mLauncher, viewCaptureRule.getViewCapture()));
+                .around(new FailureWatcher(mDevice, mLauncher, viewCaptureRule.getViewCapture()))
+                .around(new ViewCaptureAnalysisRule(viewCaptureRule.getViewCapture()));
 
         mOtherLauncherActivity = context.getPackageManager().queryIntentActivities(
                 getHomeIntentInPackage(context),
