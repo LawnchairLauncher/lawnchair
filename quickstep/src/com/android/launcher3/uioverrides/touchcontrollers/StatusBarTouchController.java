@@ -30,6 +30,8 @@ import android.view.ViewConfiguration;
 import android.view.Window;
 import android.view.WindowManager;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -50,12 +52,13 @@ public class StatusBarTouchController implements TouchController {
 
     private final Launcher mLauncher;
     private final SystemUiProxy mSystemUiProxy;
-    private final float mTouchSlop;
+    @VisibleForTesting final float mTouchSlop;
     private int mLastAction;
     private final SparseArray<PointF> mDownEvents;
 
     /* If {@code false}, this controller should not handle the input {@link MotionEvent}.*/
-    private boolean mCanIntercept;
+    @VisibleForTesting
+    boolean mCanIntercept;
 
     public StatusBarTouchController(Launcher l) {
         mLauncher = l;
@@ -82,9 +85,9 @@ public class StatusBarTouchController implements TouchController {
 
     @Override
     public final boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        int action = ev.getActionMasked();
-        int idx = ev.getActionIndex();
-        int pid = ev.getPointerId(idx);
+        final int action = ev.getActionMasked();
+        final int idx = ev.getActionIndex();
+        final int pid = ev.getPointerId(idx);
         if (action == ACTION_DOWN) {
             mCanIntercept = canInterceptTouch(ev);
             if (!mCanIntercept) {
@@ -92,14 +95,14 @@ public class StatusBarTouchController implements TouchController {
             }
             mDownEvents.clear();
             mDownEvents.put(pid, new PointF(ev.getX(), ev.getY()));
-        } else if (ev.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
+        } else if (action == MotionEvent.ACTION_POINTER_DOWN) {
             // Check!! should only set it only when threshold is not entered.
             mDownEvents.put(pid, new PointF(ev.getX(idx), ev.getY(idx)));
         }
         if (!mCanIntercept) {
             return false;
         }
-        if (action == ACTION_MOVE) {
+        if (action == ACTION_MOVE && mDownEvents.contains(pid)) {
             float dy = ev.getY(idx) - mDownEvents.get(pid).y;
             float dx = ev.getX(idx) - mDownEvents.get(pid).x;
             // Currently input dispatcher will not do touch transfer if there are more than
@@ -126,7 +129,6 @@ public class StatusBarTouchController implements TouchController {
             mLauncher.getStatsLogManager().logger()
                     .log(LAUNCHER_SWIPE_DOWN_WORKSPACE_NOTISHADE_OPEN);
             setWindowSlippery(false);
-            return true;
         }
         return true;
     }
@@ -140,7 +142,8 @@ public class StatusBarTouchController implements TouchController {
      * Touches can slide out of the window but they cannot necessarily slide
      * back in (unless the other window with touch focus permits it).
      */
-    private void setWindowSlippery(boolean enable) {
+    @VisibleForTesting
+    void setWindowSlippery(boolean enable) {
         Window w = mLauncher.getWindow();
         WindowManager.LayoutParams wlp = w.getAttributes();
         if (enable) {
