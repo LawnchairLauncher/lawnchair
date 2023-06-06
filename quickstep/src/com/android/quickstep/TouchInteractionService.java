@@ -911,9 +911,9 @@ public class TouchInteractionService extends Service
                 base = tryCreateAssistantInputConsumer(base, newGestureState, event, reasonString);
             }
 
-            // If Taskbar is present, we listen for long press or cursor hover events to unstash it.
+            // If Taskbar is present, we listen for swipe or cursor hover events to unstash it.
             TaskbarActivityContext tac = mTaskbarManager.getCurrentActivityContext();
-            if (tac != null) {
+            if (tac != null && !(base instanceof AssistantInputConsumer)) {
                 // Present always on large screen or on small screen w/ flag
                 DeviceProfile dp = tac.getDeviceProfile();
                 boolean useTaskbarConsumer = dp.isTaskbarPresent && !TaskbarManager.isPhoneMode(dp)
