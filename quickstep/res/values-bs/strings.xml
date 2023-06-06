@@ -51,9 +51,9 @@
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Obratite pažnju da ne prevučete preblizu donjem dijelu ekrana."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Promijenite osjetljivost pokreta za povratak u Postavkama"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Prevucite da se vratite"</string>
-    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Da se vratite na posljednji ekran, prevucite s lijevog ili desnog ruba prema sredini ekrana."</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Da se vratite na prethodni ekran, prevucite s lijevog ili desnog ruba prema sredini ekrana."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Da se vratite na posljednji ekran, prevucite s 2 prsta od lijevog ili desnog ruba do sredine ekrana."</string>
-    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Nazad"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Vratite se nazad"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Trebate prevući prema gore s donjeg ruba ekrana."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Obratite pažnju da ne zastanete prije puštanja."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Trebate prevući ravno prema gore."</string>
@@ -62,15 +62,15 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Prevucite da odete na početni ekran"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Prevucite s dna ekrana prema gore. Tim pokretom uvijek idete na početni ekran."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Prevucite s 2 prsta od dna ekrana. Tim pokretom uvijek idete na početni ekran"</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Odlazak na početni ekran"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Idite na početni ekran u bilo kojem trenutku, prevucite s donjeg dijela ekrana nagore"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Idite na početni ekran"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Da u bilo kojem trenutku odete na početni ekran, prevucite s donjeg dijela ekrana nagore"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Trebate prevući prema gore s donjeg ruba ekrana."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Pokušajte zadržati prozor duže prije puštanja."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Trebate prevući ravno prema gore, a zatim zastati."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Naučili ste kako koristiti pokrete. Idite u Postavke da isključite pokrete."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Savladali ste pokret za prebacivanje između aplikacija."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Prevucite da prebacujete između aplikacija"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Da prebacujete između aplikacija, prevucite s dna ekrana prema gore, zadržite, a zatim pustite."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Da se prebacujete između aplikacija, prevucite s dna ekrana prema gore, zadržite, a zatim pustite."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Da se prebacujete između aplikacija, prevucite s 2 prsta od dna ekrana, zadržite, a zatim pustite."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Prebacujte se između aplikacija"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Sve je spremno"</string>

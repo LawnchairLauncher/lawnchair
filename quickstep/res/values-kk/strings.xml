@@ -70,7 +70,7 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Қимылдарды қолдануды үйрендіңіз. Қимылдарды өшіру үшін \"Параметрлер\" бөліміне өтіңіз."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Қолданбаларды ауыстыру қимылын аяқтадыңыз."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Қолданбаларды ауыстыру үшін сырғытыңыз"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Бір қолданбадан екіншісіне ауысу үшін экранның төменгі жағынан жоғары қарай сырғытып, ұстап тұрып жіберіңіз."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Бір қолданбадан екіншісіне ауысу үшін экранның төменгі жағынан жоғары қарай сырғытып, ұстап тұрыңыз, кейін жіберіңіз."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Бір қолданбадан екіншісіне ауысу үшін екі саусақпен экранның төменгі жағынан жоғары қарай сырғытып, ұстап тұрып жіберіңіз."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Қолданбалар арасында ауысу"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Бәрі дайын"</string>
