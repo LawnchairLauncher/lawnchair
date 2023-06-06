@@ -63,7 +63,7 @@
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Swipe up from the bottom of your screen. This gesture always takes you to the home screen."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Swipe up with two fingers from the bottom of the screen. This gesture always takes you to the home screen."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Go home"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"To go to your home screen at any time, swipe up from the bottom of your screen"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"To go to your home screen at any time, swipe up from the bottom of your screen."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Make sure that you swipe up from the bottom edge of the screen."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Try holding the window for longer before releasing."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Make sure that you swipe straight up, then pause."</string>
