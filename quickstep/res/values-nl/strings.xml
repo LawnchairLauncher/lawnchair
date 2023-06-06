@@ -77,7 +77,7 @@
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Klaar"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Instellingen"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Probeer opnieuw"</string>
-    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Dat gaat lekker."</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Dat gaat lekker"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutorial <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Klaar"</string>
     <string name="allset_hint" msgid="459504134589971527">"Swipe omhoog om naar het startscherm te gaan"</string>
