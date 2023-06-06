@@ -39,7 +39,6 @@ import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SY
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_SYSUI_PROXY;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_UNFOLD_ANIMATION_FORWARDER;
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_UNLOCK_ANIMATION_CONTROLLER;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_FREEFORM_ACTIVE_IN_DESKTOP_MODE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
@@ -88,7 +87,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.provider.RestoreDbTask;
-import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarManager;
@@ -102,6 +100,7 @@ import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.LockedUserState;
 import com.android.launcher3.util.OnboardingPrefs;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.inputconsumers.AccessibilityInputConsumer;
 import com.android.quickstep.inputconsumers.AssistantInputConsumer;
@@ -612,18 +611,6 @@ public class TouchInteractionService extends Service
             mOverviewComponentObserver.onSystemUiStateChanged();
             mTaskbarManager.onSystemUiFlagsChanged(systemUiStateFlags);
 
-            boolean wasFreeformActive =
-                    (lastSysUIFlags & SYSUI_STATE_FREEFORM_ACTIVE_IN_DESKTOP_MODE) != 0;
-            boolean isFreeformActive =
-                    (systemUiStateFlags & SYSUI_STATE_FREEFORM_ACTIVE_IN_DESKTOP_MODE) != 0;
-            if (wasFreeformActive != isFreeformActive) {
-                DesktopVisibilityController controller =
-                        LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
-                if (controller != null) {
-                    controller.setFreeformTasksVisible(isFreeformActive);
-                }
-            }
-
             int isShadeExpandedFlag =
                     SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED | SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
             boolean wasExpanded = (lastSysUIFlags & isShadeExpandedFlag) != 0;
@@ -700,8 +687,7 @@ public class TouchInteractionService extends Service
             return;
         }
 
-        Object traceToken = TraceHelper.INSTANCE.beginFlagsOverride(
-                TraceHelper.FLAG_ALLOW_BINDER_TRACKING);
+        SafeCloseable traceToken = TraceHelper.INSTANCE.allowIpcs("TIS.onInputEvent");
 
         final int action = event.getActionMasked();
         // Note this will create a new consumer every mouse click, as after ACTION_UP from the click
@@ -797,7 +783,7 @@ public class TouchInteractionService extends Service
         if (cleanUpConsumer) {
             reset();
         }
-        TraceHelper.INSTANCE.endFlagsOverride(traceToken);
+        traceToken.close();
         ProtoTracer.INSTANCE.get(this).scheduleFrameUpdate();
     }
 

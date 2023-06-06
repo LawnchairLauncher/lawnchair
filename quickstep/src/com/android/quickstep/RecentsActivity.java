@@ -22,7 +22,6 @@ import static android.view.RemoteAnimationTarget.MODE_OPENING;
 import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_PRE_DELAY;
-import static com.android.launcher3.graphics.SysUiScrim.SYSUI_PROGRESS;
 import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.quickstep.OverviewComponentObserver.startHomeIntentSafely;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
@@ -130,7 +129,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         mScrimView = findViewById(R.id.scrim_view);
         mFallbackRecentsView = findViewById(R.id.overview_panel);
         mActionsView = findViewById(R.id.overview_actions_view);
-        SYSUI_PROGRESS.set(getRootView().getSysUiScrim(), 0f);
+        getRootView().getSysUiScrim().getSysUIProgress().updateValue(0);
 
         SplitSelectStateController controller =
                 new SplitSelectStateController(this, mHandler, getStateManager(),
