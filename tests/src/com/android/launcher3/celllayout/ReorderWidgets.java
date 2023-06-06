@@ -59,7 +59,7 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
 
     @Before
     public void setup() throws Throwable {
-        mWorkspaceBuilder = new TestWorkspaceBuilder(this, mTargetContext);
+        mWorkspaceBuilder = new TestWorkspaceBuilder(mTargetContext);
         TaplTestsLauncher3.initialize(this);
         clearHomescreen();
     }
@@ -108,7 +108,7 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
                 testCase.mStart);
 
         FavoriteItemsTransaction transaction =
-                new FavoriteItemsTransaction(mTargetContext, this);
+                new FavoriteItemsTransaction(mTargetContext);
         transaction = buildWorkspaceFromBoards(testCase.mStart, transaction);
         transaction.commit();
         // resetLoaderState triggers the launcher to start loading the workspace which allows
