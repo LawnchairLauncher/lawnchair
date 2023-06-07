@@ -438,4 +438,8 @@
     <!--  Folder spaces  -->
     <dimen name="folder_top_padding_default">24dp</dimen>
     <dimen name="folder_footer_horiz_padding">20dp</dimen>
+
+    <!-- Default Ime height. Used only for logging purposes.
+    Assume this is default keyboard height in EN locale in case the keyboard height is not known when queried.-->
+    <dimen name="default_ime_height">300dp</dimen>
 </resources>
