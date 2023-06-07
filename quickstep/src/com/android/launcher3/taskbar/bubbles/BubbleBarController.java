@@ -38,11 +38,15 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Path;
+import android.graphics.drawable.AdaptiveIconDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.InsetDrawable;
 import android.os.Bundle;
 import android.os.SystemProperties;
 import android.os.UserHandle;
@@ -50,6 +54,8 @@ import android.util.ArrayMap;
 import android.util.Log;
 import android.util.PathParser;
 import android.view.LayoutInflater;
+
+import androidx.appcompat.content.res.AppCompatResources;
 
 import com.android.internal.graphics.ColorUtils;
 import com.android.launcher3.R;
@@ -113,7 +119,8 @@ public class BubbleBarController extends IBubblesListener.Stub {
     private final LauncherApps mLauncherApps;
     private final BubbleIconFactory mIconFactory;
 
-    private BubbleBarBubble mSelectedBubble;
+    private BubbleBarItem mSelectedBubble;
+    private BubbleBarOverflow mOverflowBubble;
 
     private BubbleBarViewController mBubbleBarViewController;
     private BubbleStashController mBubbleStashController;
@@ -177,6 +184,16 @@ public class BubbleBarController extends IBubblesListener.Stub {
         bubbleControllers.runAfterInit(() -> {
             mBubbleBarViewController.setHiddenForBubbles(!BUBBLE_BAR_ENABLED);
             mBubbleStashedHandleViewController.setHiddenForBubbles(!BUBBLE_BAR_ENABLED);
+        });
+
+        BUBBLE_STATE_EXECUTOR.execute(() -> {
+            if (mOverflowBubble == null) {
+                BubbleBarOverflow overflow = createOverflow(mContext);
+                mMainExecutor.execute(() -> {
+                    mBubbleBarViewController.addBubble(overflow);
+                    mOverflowBubble = overflow;
+                });
+            }
         });
     }
 
@@ -329,7 +346,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
      * WMShell that the selection has changed, that should go through
      * {@link SystemUiProxy#showBubble}.
      */
-    public void setSelectedBubble(BubbleBarBubble b) {
+    public void setSelectedBubble(BubbleBarItem b) {
         if (!Objects.equals(b, mSelectedBubble)) {
             if (DEBUG) Log.w(TAG, "selectingBubble: " + b.getKey());
             mSelectedBubble = b;
@@ -424,7 +441,6 @@ public class BubbleBarController extends IBubblesListener.Stub {
         dotColor = ColorUtils.blendARGB(badgeBitmapInfo.color,
                 Color.WHITE, WHITE_SCRIM_ALPHA);
 
-
         LayoutInflater inflater = LayoutInflater.from(context);
         BubbleView bubbleView = (BubbleView) inflater.inflate(
                 R.layout.bubblebar_item_view, bbv, false /* attachToRoot */);
@@ -433,5 +449,38 @@ public class BubbleBarController extends IBubblesListener.Stub {
                 badgeBitmap, bubbleBitmap, dotColor, dotPath, appName);
         bubbleView.setBubble(bubble);
         return bubble;
+    }
+
+    private BubbleBarOverflow createOverflow(Context context) {
+        Bitmap bitmap = createOverflowBitmap(context);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        BubbleView bubbleView = (BubbleView) inflater.inflate(
+                R.layout.bubblebar_item_view, mBarView, false /* attachToRoot */);
+        BubbleBarOverflow overflow = new BubbleBarOverflow(bubbleView);
+        bubbleView.setOverflow(overflow, bitmap);
+        return overflow;
+    }
+
+    private Bitmap createOverflowBitmap(Context context) {
+        Drawable iconDrawable = AppCompatResources.getDrawable(mContext,
+                R.drawable.bubble_ic_overflow_button);
+
+        final TypedArray ta = mContext.obtainStyledAttributes(
+                new int[]{
+                        com.android.internal.R.attr.materialColorOnPrimaryFixed,
+                        com.android.internal.R.attr.materialColorPrimaryFixed
+                });
+        int overflowIconColor = ta.getColor(0, Color.WHITE);
+        int overflowBackgroundColor = ta.getColor(1, Color.BLACK);
+        ta.recycle();
+
+        iconDrawable.setTint(overflowIconColor);
+
+        int inset = context.getResources().getDimensionPixelSize(R.dimen.bubblebar_overflow_inset);
+        Drawable foreground = new InsetDrawable(iconDrawable, inset);
+        Drawable drawable = new AdaptiveIconDrawable(new ColorDrawable(overflowBackgroundColor),
+                foreground);
+
+        return mIconFactory.createBadgedIconBitmap(drawable).icon;
     }
 }
