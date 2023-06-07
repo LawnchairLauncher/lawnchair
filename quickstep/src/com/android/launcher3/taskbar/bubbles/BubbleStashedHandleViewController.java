@@ -203,12 +203,14 @@ public class BubbleStashedHandleViewController {
     private void updateRegionSampling() {
         boolean handleVisible = mStashedHandleView.getVisibility() == VISIBLE
                 && mBubbleStashController.isStashed();
-        mRegionSamplingHelper.setWindowVisible(handleVisible);
-        if (handleVisible) {
-            mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
-            mRegionSamplingHelper.start(mStashedHandleView.getSampledRegion());
-        } else {
-            mRegionSamplingHelper.stop();
+        if (mRegionSamplingHelper != null) {
+            mRegionSamplingHelper.setWindowVisible(handleVisible);
+            if (handleVisible) {
+                mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
+                mRegionSamplingHelper.start(mStashedHandleView.getSampledRegion());
+            } else {
+                mRegionSamplingHelper.stop();
+            }
         }
     }
 
