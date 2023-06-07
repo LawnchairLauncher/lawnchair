@@ -17,6 +17,7 @@
 package com.android.quickstep;
 
 import static android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM;
+import static android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP;
 
@@ -274,6 +275,7 @@ public interface TaskShortcutFactory {
                 TaskIdAttributeContainer taskContainer) {
             DeviceProfile deviceProfile = activity.getDeviceProfile();
             final Task task  = taskContainer.getTask();
+            final int intentFlags = task.key.baseIntent.getFlags();
             final TaskView taskView = taskContainer.getTaskView();
             final RecentsView recentsView = taskView.getRecentsView();
             final PagedOrientationHandler orientationHandler =
@@ -283,7 +285,8 @@ public interface TaskShortcutFactory {
             boolean isFocusedTask = deviceProfile.isTablet && taskView.isFocusedTask();
             boolean isTaskInExpectedScrollPosition =
                     recentsView.isTaskInExpectedScrollPosition(recentsView.indexOfChild(taskView));
-            boolean isTaskSplitNotSupported = !task.isDockable;
+            boolean isTaskSplitNotSupported = !task.isDockable ||
+                    (intentFlags & FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS) != 0;
             boolean hideForExistingMultiWindow = activity.getDeviceProfile().isMultiWindowMode;
 
             if (taskView.containsMultipleTasks()

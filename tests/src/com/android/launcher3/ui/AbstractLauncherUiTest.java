@@ -19,6 +19,7 @@ import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.TestUtil.getOnUiThread;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -39,7 +40,6 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.UserManager;
-import android.system.OsConstants;
 import android.util.Log;
 
 import androidx.test.InstrumentationRegistry;
@@ -64,6 +64,7 @@ import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
+import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.WidgetUtils;
 import com.android.launcher3.util.rule.FailureWatcher;
@@ -82,10 +83,8 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 
 import java.io.IOException;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -98,7 +97,7 @@ public abstract class AbstractLauncherUiTest {
     public static final long DEFAULT_ACTIVITY_TIMEOUT = TimeUnit.SECONDS.toMillis(10);
     public static final long DEFAULT_BROADCAST_TIMEOUT_SECS = 5;
 
-    public static final long DEFAULT_UI_TIMEOUT = 10000;
+    public static final long DEFAULT_UI_TIMEOUT = TestUtil.DEFAULT_UI_TIMEOUT;
     private static final String TAG = "AbstractLauncherUiTest";
 
     private static boolean sDumpWasGenerated = false;
@@ -330,22 +329,6 @@ public abstract class AbstractLauncherUiTest {
         // Launch the home activity
         mDevice.pressHome();
         mLauncher.waitForLauncherInitialized();
-    }
-
-    /**
-     * Runs the callback on the UI thread and returns the result.
-     */
-    protected <T> T getOnUiThread(final Callable<T> callback) {
-        try {
-            return mMainThreadExecutor.submit(callback).get(DEFAULT_UI_TIMEOUT,
-                    TimeUnit.MILLISECONDS);
-        } catch (TimeoutException e) {
-            Log.e(TAG, "Timeout in getOnUiThread, sending SIGABRT", e);
-            Process.sendSignal(Process.myPid(), OsConstants.SIGABRT);
-            throw new RuntimeException(e);
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
     }
 
     protected <T> T getFromLauncher(Function<Launcher, T> f) {

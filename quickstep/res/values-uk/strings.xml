@@ -62,8 +62,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Проведіть пальцем, щоб перейти на головний екран"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Проведіть пальцем по екрану знизу вгору. Цей жест завжди повертатиме вас на головний екран."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Проведіть двома пальцями вгору від низу екрана. Цей жест завжди спрямовує вас на головний екран."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Перейти на головний екран"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Щоб будь-коли перейти на головний екран, проведіть пальцем вгору від низу екрана"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Перехід на головний екран"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Щоб будь-коли перейти на головний екран, проведіть пальцем угору від низу екрана"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Проведіть пальцем угору від нижнього краю екрана."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Спробуйте втримувати вікно довше, перш ніж відпустити."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Проведіть пальцем вертикально вгору, а тоді зробіть паузу."</string>
@@ -79,10 +79,10 @@
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Спробуйте ще"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Чудово!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Навчальний посібник <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
-    <string name="allset_title" msgid="5021126669778966707">"Готово."</string>
+    <string name="allset_title" msgid="5021126669778966707">"Готово!"</string>
     <string name="allset_hint" msgid="459504134589971527">"Щоб перейти на головний екран, проведіть пальцем угору"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Натисніть кнопку головного екрана, щоб відкрити його"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"Тепер ви можете користуватися цим пристроєм: <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Тепер ви можете використовувати <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"пристрій"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Системні налаштування навігації"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Поділитися"</string>

@@ -62,7 +62,7 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Perbraukite, kad pereitumėte į pagrindinį ekraną"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Perbraukite aukštyn nuo ekrano apačios. Atlikus šį gestą, visada nukreipiama į pagrindinį ekraną."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Perbraukite dviem pirštais nuo ekrano apačios. Šis gestas visada nukreipia į pagrindinį ekraną."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Eikite į pagrindinį ekraną"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Eiti į pagrindinį ekraną"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Jei norite bet kada pasiekti pagrindinį ekraną, perbraukite aukštyn iš ekrano apačios"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Turite perbraukti aukštyn nuo apatinio ekrano krašto."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Pabandykite palaikyti langą ilgiau prieš pakeldami pirštą."</string>
