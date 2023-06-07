@@ -202,13 +202,17 @@ public class SplitSelectStateController {
      * Pulls the list of active Tasks from RecentsModel, and finds the most recently active Task
      * matching a given ComponentName. Then uses that Task (which could be null) with the given
      * callback.
-     *
+     * <p>
      * Used in various task-switching or splitscreen operations when we need to check if there is a
      * currently running Task of a certain type and use the most recent one.
      */
-    public void findLastActiveTaskAndRunCallback(ComponentKey componentKey,
-            Consumer<Task> callback) {
+    public void findLastActiveTaskAndRunCallback(
+            @Nullable ComponentKey componentKey, Consumer<Task> callback) {
         mRecentTasksModel.getTasks(taskGroups -> {
+            if (componentKey == null) {
+                callback.accept(null);
+                return;
+            }
             Task lastActiveTask = null;
             // Loop through tasks in reverse, since they are ordered with most-recent tasks last.
             for (int i = taskGroups.size() - 1; i >= 0; i--) {
@@ -233,7 +237,7 @@ public class SplitSelectStateController {
      * Checks if a given Task is the most recently-active Task of type componentName. Used for
      * selecting already-running Tasks for splitscreen.
      */
-    public boolean isInstanceOfComponent(@Nullable Task task, ComponentKey componentKey) {
+    public boolean isInstanceOfComponent(@Nullable Task task, @NonNull ComponentKey componentKey) {
         // Exclude the task that is already staged
         if (task == null || task.key.id == mInitialTaskId) {
             return false;

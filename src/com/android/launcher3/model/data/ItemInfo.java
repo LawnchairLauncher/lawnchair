@@ -61,6 +61,7 @@ import com.android.launcher3.logger.LauncherAtom.TaskSwitcherContainer;
 import com.android.launcher3.logger.LauncherAtom.WallpapersContainer;
 import com.android.launcher3.logger.LauncherAtomExtensions.ExtendedContainers;
 import com.android.launcher3.model.ModelWriter;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.SettingsCache;
 
@@ -207,6 +208,12 @@ public class ItemInfo {
     @Nullable
     public ComponentName getTargetComponent() {
         return Optional.ofNullable(getIntent()).map(Intent::getComponent).orElse(mComponentName);
+    }
+
+    @Nullable
+    public final ComponentKey getComponentKey() {
+        ComponentName targetComponent = getTargetComponent();
+        return targetComponent == null ? null : new ComponentKey(targetComponent, user);
     }
 
     /**
