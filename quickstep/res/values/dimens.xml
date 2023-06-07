@@ -363,6 +363,7 @@
     <dimen name="bubblebar_icon_size">50dp</dimen>
     <dimen name="bubblebar_badge_size">24dp</dimen>
     <dimen name="bubblebar_icon_overlap">12dp</dimen>
+    <dimen name="bubblebar_overflow_inset">24dp</dimen>
     <dimen name="bubblebar_icon_spacing">3dp</dimen>
     <dimen name="bubblebar_icon_elevation">1dp</dimen>
 
