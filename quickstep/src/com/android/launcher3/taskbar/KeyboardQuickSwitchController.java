@@ -137,7 +137,6 @@ public final class KeyboardQuickSwitchController implements
         // Hide all desktop tasks and show them on the hidden tile
         int hiddenDesktopTasks = 0;
         if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
-            // TODO(b/280468885): show desktop task as a grouped desktop tile
             DesktopTask desktopTask = findDesktopTask(tasks);
             if (desktopTask != null) {
                 hiddenDesktopTasks = desktopTask.tasks.size();
