@@ -3960,13 +3960,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     private void removeTaskInternal(int dismissedTaskViewId) {
         int[] taskIds = getTaskIdsForTaskViewId(dismissedTaskViewId);
-        int primaryTaskId = taskIds[0];
-        int secondaryTaskId = taskIds[1];
         UI_HELPER_EXECUTOR.getHandler().post(
                 () -> {
-                    ActivityManagerWrapper.getInstance().removeTask(primaryTaskId);
-                    if (secondaryTaskId != -1) {
-                        ActivityManagerWrapper.getInstance().removeTask(secondaryTaskId);
+                    for (int taskId : taskIds) {
+                        if (taskId != -1) {
+                            ActivityManagerWrapper.getInstance().removeTask(taskId);
+                        }
                     }
                 });
     }
