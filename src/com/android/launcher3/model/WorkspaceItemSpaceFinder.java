@@ -82,9 +82,7 @@ public class WorkspaceItemSpaceFinder {
 
         if (!found) {
             // Still no position found. Add a new screen to the end.
-            screenId = LauncherSettings.Settings.call(app.getContext().getContentResolver(),
-                    LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
-                    .getInt(LauncherSettings.Settings.EXTRA_VALUE);
+            screenId = app.getModel().getModelDbController().getNewScreenId();
 
             // Save the screen id for binding in the workspace
             workspaceScreens.add(screenId);

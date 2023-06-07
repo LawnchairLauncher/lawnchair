@@ -126,6 +126,11 @@ public class BgDataModel {
     public int lastBindId = 0;
 
     /**
+     * Load id for which the callbacks were successfully bound
+     */
+    public int lastLoadId = -1;
+
+    /**
      * Clears all the data
      */
     public synchronized void clear() {
