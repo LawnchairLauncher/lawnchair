@@ -34,7 +34,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.popup.SystemShortcut;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.util.GroupTask;
@@ -205,11 +204,8 @@ public class TaskbarUIController {
             return;
         }
 
-        ComponentKey componentToBeStaged = new ComponentKey(
-                splitSelectSource.itemInfo.getTargetComponent(),
-                splitSelectSource.itemInfo.user);
         recentsView.getSplitSelectController().findLastActiveTaskAndRunCallback(
-                componentToBeStaged,
+                splitSelectSource.itemInfo.getComponentKey(),
                 foundTask -> {
                     splitSelectSource.alreadyRunningTaskId = foundTask == null
                             ? INVALID_TASK_ID
@@ -225,9 +221,8 @@ public class TaskbarUIController {
      */
     public void triggerSecondAppForSplit(ItemInfoWithIcon info, Intent intent, View startingView) {
         RecentsView recents = getRecentsView();
-        ComponentKey secondAppComponent = new ComponentKey(info.getTargetComponent(), info.user);
         recents.getSplitSelectController().findLastActiveTaskAndRunCallback(
-                secondAppComponent,
+                info.getComponentKey(),
                 foundTask -> {
                     if (foundTask != null) {
                         TaskView foundTaskView = recents.getTaskViewByTaskId(foundTask.key.id);
