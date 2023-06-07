@@ -106,6 +106,7 @@ public abstract class BaseLauncherBinder {
         synchronized (mBgDataModel) {
             if (incrementBindId) {
                 mBgDataModel.lastBindId++;
+                mBgDataModel.lastLoadId = mApp.getModel().getLastLoadId();
             }
             mMyBindingId = mBgDataModel.lastBindId;
             return new DisjointWorkspaceBinder(workspacePages);
@@ -126,6 +127,7 @@ public abstract class BaseLauncherBinder {
             mBgDataModel.extraItems.forEach(extraItems::add);
             if (incrementBindId) {
                 mBgDataModel.lastBindId++;
+                mBgDataModel.lastLoadId = mApp.getModel().getLastLoadId();
             }
             mMyBindingId = mBgDataModel.lastBindId;
             workspaceItemCount = mBgDataModel.itemsIdMap.size();

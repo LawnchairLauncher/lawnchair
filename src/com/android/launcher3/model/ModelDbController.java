@@ -37,7 +37,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.os.Process;
@@ -85,6 +84,7 @@ public class ModelDbController {
     private static final String TAG = "LauncherProvider";
 
     private static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
+    public static final String EXTRA_DB_NAME = "db_name";
 
     protected DatabaseHelper mOpenHelper;
 
@@ -140,7 +140,7 @@ public class ModelDbController {
                 table, projection, selection, selectionArgs, null, null, sortOrder);
 
         final Bundle extra = new Bundle();
-        extra.putString(LauncherSettings.Settings.EXTRA_DB_NAME, mOpenHelper.getDatabaseName());
+        extra.putString(EXTRA_DB_NAME, mOpenHelper.getDatabaseName());
         result.setExtras(extra);
         return result;
     }
@@ -162,28 +162,6 @@ public class ModelDbController {
     }
 
     /**
-     * Similar to insert but for adding multiple values in a transaction.
-     */
-    @WorkerThread
-    public int bulkInsert(String table, ContentValues[] values) {
-        createDbIfNotExists();
-
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-            int numValues = values.length;
-            for (int i = 0; i < numValues; i++) {
-                addModifiedTime(values[i]);
-                if (mOpenHelper.dbInsertAndCheck(db, table, values[i]) < 0) {
-                    return 0;
-                }
-            }
-            onAddOrDeleteOp(db);
-            t.commit();
-        }
-        return values.length;
-    }
-
-    /**
      * Refer {@link SQLiteDatabase#delete(String, String, String[])}
      */
     @WorkerThread
@@ -191,10 +169,6 @@ public class ModelDbController {
         createDbIfNotExists();
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
 
-        if (Binder.getCallingPid() != Process.myPid()
-                && Favorites.TABLE_NAME.equalsIgnoreCase(table)) {
-            mOpenHelper.removeGhostWidgets(mOpenHelper.getWritableDatabase());
-        }
         int count = db.delete(table, selection, selectionArgs);
         if (count > 0) {
             onAddOrDeleteOp(db);
@@ -250,6 +224,7 @@ public class ModelDbController {
     public void createEmptyDB() {
         createDbIfNotExists();
         mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
+        LauncherPrefs.get(mContext).putSync(getEmptyDbCreatedKey().to(true));
     }
 
     /**
@@ -304,6 +279,10 @@ public class ModelDbController {
      */
     private boolean migrateGridIfNeeded() {
         createDbIfNotExists();
+        if (LauncherPrefs.get(mContext).get(getEmptyDbCreatedKey())) {
+            // If we have already create a new DB, ignore migration
+            return false;
+        }
         InvariantDeviceProfile idp = LauncherAppState.getIDP(mContext);
         if (!GridSizeMigrationUtil.needsToMigrate(mContext, idp)) {
             return true;
@@ -374,7 +353,7 @@ public class ModelDbController {
     }
 
     private void clearFlagEmptyDbCreated() {
-        LauncherPrefs.get(mContext).removeSync(getEmptyDbCreatedKey(mOpenHelper.getDatabaseName()));
+        LauncherPrefs.get(mContext).removeSync(getEmptyDbCreatedKey());
     }
 
     /**
@@ -388,7 +367,7 @@ public class ModelDbController {
     public synchronized void loadDefaultFavoritesIfNecessary() {
         createDbIfNotExists();
 
-        if (LauncherPrefs.get(mContext).get(getEmptyDbCreatedKey(mOpenHelper.getDatabaseName()))) {
+        if (LauncherPrefs.get(mContext).get(getEmptyDbCreatedKey())) {
             Log.d(TAG, "loading default workspace");
 
             LauncherWidgetHolder widgetHolder = mOpenHelper.newLauncherWidgetHolder();
@@ -505,6 +484,10 @@ public class ModelDbController {
 
         return new DefaultLayoutParser(mContext, widgetHolder,
                 mOpenHelper, mContext.getResources(), defaultLayout);
+    }
+
+    private ConstantItem<Boolean> getEmptyDbCreatedKey() {
+        return getEmptyDbCreatedKey(mOpenHelper.getDatabaseName());
     }
 
     /**
