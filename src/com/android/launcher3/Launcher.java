@@ -183,7 +183,6 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.pm.PinRequestHelper;
-import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
@@ -208,7 +207,6 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RunnableList;
-import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.ScreenOnTracker;
 import com.android.launcher3.util.ScreenOnTracker.ScreenOnListener;
 import com.android.launcher3.util.SystemUiController;
@@ -411,8 +409,6 @@ public class Launcher extends StatefulActivity<LauncherState>
     protected long mLastTouchUpTime = -1;
     private boolean mTouchInProgress;
 
-    private SafeCloseable mUserChangedCallbackCloseable;
-
     // New InstanceId is assigned to mAllAppsSessionLogId for each AllApps sessions.
     // When Launcher is not in AllApps state mAllAppsSessionLogId will be null.
     // User actions within AllApps state are logged with this InstanceId, to recreate AllApps
@@ -580,9 +576,6 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         mRotationHelper.initialize();
         TraceHelper.INSTANCE.endSection();
-
-        mUserChangedCallbackCloseable = UserCache.INSTANCE.get(this).addUserChangeListener(
-                () -> getStateManager().goToState(NORMAL));
 
         if (Utilities.ATLEAST_R) {
             getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
@@ -1804,7 +1797,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         LauncherAppState.getIDP(this).removeOnChangeListener(this);
 
         mOverlayManager.onActivityDestroyed(this);
-        mUserChangedCallbackCloseable.close();
     }
 
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
@@ -2974,9 +2966,14 @@ public class Launcher extends StatefulActivity<LauncherState>
     public void bindAllApplications(AppInfo[] apps, int flags,
             Map<PackageUserKey, Integer> packageUserKeytoUidMap) {
         Preconditions.assertUIThread();
+        boolean hadWorkApps = mAppsView.shouldShowTabs();
         AllAppsStore appsStore = mAppsView.getAppsStore();
         appsStore.setApps(apps, flags, packageUserKeytoUidMap);
         PopupContainerWithArrow.dismissInvalidPopup(this);
+        if (hadWorkApps != mAppsView.shouldShowTabs()) {
+            getStateManager().goToState(NORMAL);
+        }
+
         if (Utilities.ATLEAST_S) {
             Trace.endAsyncSection(DISPLAY_ALL_APPS_TRACE_METHOD_NAME,
                     DISPLAY_ALL_APPS_TRACE_COOKIE);
