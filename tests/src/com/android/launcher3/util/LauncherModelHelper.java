@@ -53,7 +53,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherPrefs;
-import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
@@ -241,12 +240,6 @@ public class LauncherModelHelper {
 
             mPm = spy(getBaseContext().getPackageManager());
             mDbDir = new File(getCacheDir(), UUID.randomUUID().toString());
-            setupProvider(LauncherProvider.AUTHORITY, new LauncherProvider() {
-                @Override
-                public boolean onCreate() {
-                    return true;
-                }
-            });
         }
 
         @Override

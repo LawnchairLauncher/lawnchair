@@ -143,6 +143,8 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     @NonNull
     private final ModelDelegate mModelDelegate;
 
+    private int mLastLoadId = -1;
+
     // Runnable to check if the shortcuts permission has changed.
     @NonNull
     private final Runnable mDataValidationCheck = new Runnable() {
@@ -553,6 +555,7 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                 if (mLoaderTask != task) {
                     throw new CancellationException("Loader already stopped");
                 }
+                mLastLoadId++;
                 mTask = task;
                 mIsLoaderTaskRunning = true;
                 mModelLoaded = false;
@@ -721,5 +724,13 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         synchronized (mCallbacksList) {
             return mCallbacksList.toArray(new Callbacks[mCallbacksList.size()]);
         }
+    }
+
+    /**
+     * Returns the ID for the last model load. If the load ID doesn't match for a transaction, the
+     * transaction should be ignored.
+     */
+    public int getLastLoadId() {
+        return mLastLoadId;
     }
 }

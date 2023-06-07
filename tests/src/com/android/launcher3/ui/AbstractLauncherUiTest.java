@@ -19,7 +19,6 @@ import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-import static com.android.launcher3.util.TestUtil.getOnUiThread;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -40,6 +39,7 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.system.OsConstants;
 import android.util.Log;
 
 import androidx.test.InstrumentationRegistry;
@@ -49,11 +49,8 @@ import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.Until;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.tapl.HomeAppIcon;
@@ -66,7 +63,6 @@ import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.Wait;
-import com.android.launcher3.util.WidgetUtils;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.LauncherActivityRule;
 import com.android.launcher3.util.rule.SamplerRule;
@@ -83,8 +79,10 @@ import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 
 import java.io.IOException;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -298,37 +296,19 @@ public abstract class AbstractLauncherUiTest {
     }
 
     /**
-     * Removes all icons from homescreen and hotseat.
+     * Runs the callback on the UI thread and returns the result.
      */
-    public void clearHomescreen() {
-        LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
-        LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
-        resetLoaderState();
-    }
-
-    protected void resetLoaderState() {
+    protected <T> T getOnUiThread(final Callable<T> callback) {
         try {
-            mMainThreadExecutor.execute(
-                    () -> LauncherAppState.getInstance(
-                            mTargetContext).getModel().forceReload());
-        } catch (Throwable t) {
-            throw new IllegalArgumentException(t);
+            return mMainThreadExecutor.submit(callback).get(DEFAULT_UI_TIMEOUT,
+                    TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            Log.e(TAG, "Timeout in getOnUiThread, sending SIGABRT", e);
+            Process.sendSignal(Process.myPid(), OsConstants.SIGABRT);
+            throw new RuntimeException(e);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
         }
-        mLauncher.waitForLauncherInitialized();
-    }
-
-    /**
-     * Adds {@param item} on the homescreen on the 0th screen
-     */
-    public void addItemToScreen(ItemInfo item) {
-        WidgetUtils.addItemToScreen(item, mTargetContext);
-        resetLoaderState();
-
-        // Launch the home activity
-        mDevice.pressHome();
-        mLauncher.waitForLauncherInitialized();
     }
 
     protected <T> T getFromLauncher(Function<Launcher, T> f) {

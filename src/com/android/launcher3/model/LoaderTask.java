@@ -33,7 +33,6 @@ import static com.android.launcher3.util.PackageManagerHelper.isSystemApp;
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -61,7 +60,6 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
@@ -361,16 +359,15 @@ public class LoaderTask implements Runnable {
             String selection,
             @Nullable LoaderMemoryLogger memoryLogger) {
         final Context context = mApp.getContext();
-        final ContentResolver contentResolver = context.getContentResolver();
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
         final boolean isSafeMode = pmHelper.isSafeMode();
         final boolean isSdCardReady = Utilities.isBootCompleted();
         final WidgetManagerHelper widgetHelper = new WidgetManagerHelper(context);
 
-        mApp.getModel().getModelDbController().tryMigrateDB();
+        ModelDbController dbController = mApp.getModel().getModelDbController();
+        dbController.tryMigrateDB();
         Log.d(TAG, "loadWorkspace: loading default favorites");
-        mApp.getModel().getModelDbController().loadDefaultFavoritesIfNecessary();
-        Settings.call(contentResolver, Settings.METHOD_LOAD_DEFAULT_FAVORITES);
+        dbController.loadDefaultFavoritesIfNecessary();
 
         synchronized (mBgDataModel) {
             mBgDataModel.clear();
@@ -384,12 +381,11 @@ public class LoaderTask implements Runnable {
             mFirstScreenBroadcast = new FirstScreenBroadcast(installingPkgs);
 
             mShortcutKeyToPinnedShortcuts = new HashMap<>();
-            ModelDbController dbController = mApp.getModel().getModelDbController();
             final LoaderCursor c = new LoaderCursor(
                     dbController.query(TABLE_NAME, null, selection, null, null),
                     mApp, mUserManagerState);
             final Bundle extras = c.getExtras();
-            mDbName = extras == null ? null : extras.getString(Settings.EXTRA_DB_NAME);
+            mDbName = extras == null ? null : extras.getString(ModelDbController.EXTRA_DB_NAME);
             try {
                 final LongSparseArray<Boolean> unlockedUsers = new LongSparseArray<>();
 
@@ -906,9 +902,7 @@ public class LoaderTask implements Runnable {
     private void sanitizeFolders(boolean itemsDeleted) {
         if (itemsDeleted) {
             // Remove any empty folder
-            int[] deletedFolderIds = Settings.call(mApp.getContext().getContentResolver(),
-                            Settings.METHOD_DELETE_EMPTY_FOLDERS)
-                    .getIntArray(Settings.EXTRA_VALUE);
+            IntArray deletedFolderIds = mApp.getModel().getModelDbController().deleteEmptyFolders();
             synchronized (mBgDataModel) {
                 for (int folderId : deletedFolderIds) {
                     mBgDataModel.workspaceItems.remove(mBgDataModel.folders.get(folderId));
@@ -921,11 +915,9 @@ public class LoaderTask implements Runnable {
 
     private void sanitizeWidgetsShortcutsAndPackages() {
         Context context = mApp.getContext();
-        ContentResolver contentResolver = context.getContentResolver();
 
         // Remove any ghost widgets
-        Settings.call(contentResolver,
-                Settings.METHOD_REMOVE_GHOST_WIDGETS);
+        mApp.getModel().getModelDbController().removeGhostWidgets();
 
         // Update pinned state of model shortcuts
         mBgDataModel.updateShortcutPinnedState(context);
