@@ -119,6 +119,18 @@ public class AllAppsState extends LauncherState {
     }
 
     @Override
+    public int getFloatingSearchBarRestingMarginStart(Launcher launcher) {
+        DeviceProfile dp = launcher.getDeviceProfile();
+        return dp.allAppsLeftRightMargin + dp.getAllAppsIconStartMargin();
+    }
+
+    @Override
+    public int getFloatingSearchBarRestingMarginEnd(Launcher launcher) {
+        DeviceProfile dp = launcher.getDeviceProfile();
+        return dp.allAppsLeftRightMargin + dp.getAllAppsIconStartMargin();
+    }
+
+    @Override
     public boolean shouldFloatingSearchBarUsePillWhenUnfocused(Launcher launcher) {
         DeviceProfile dp = launcher.getDeviceProfile();
         return dp.isPhone && !dp.isLandscape;

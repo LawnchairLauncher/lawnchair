@@ -1436,6 +1436,25 @@ public class DeviceProfile {
         return hotseatBarPadding;
     }
 
+    /** The margin between the edge of all apps and the edge of the first icon. */
+    public int getAllAppsIconStartMargin() {
+        int allAppsSpacing;
+        if (isVerticalBarLayout()) {
+            // On phones, the landscape layout uses a different setup.
+            allAppsSpacing = workspacePadding.left + workspacePadding.right;
+        } else {
+            allAppsSpacing = allAppsLeftRightPadding * 2 + allAppsLeftRightMargin * 2;
+        }
+
+        int cellWidth = DeviceProfile.calculateCellWidth(
+                availableWidthPx - allAppsSpacing,
+                0 /* borderSpace */,
+                numShownAllAppsColumns);
+        int iconVisibleSize = Math.round(ICON_VISIBLE_AREA_FACTOR * allAppsIconSizePx);
+        int iconAlignmentMargin = (cellWidth - iconVisibleSize) / 2;
+        return allAppsLeftRightPadding + iconAlignmentMargin;
+    }
+
     private int getAdditionalQsbSpace() {
         return isQsbInline ? hotseatQsbWidth + hotseatBorderSpace : 0;
     }
