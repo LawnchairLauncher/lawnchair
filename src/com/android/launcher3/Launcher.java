@@ -3048,6 +3048,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Override
     public void bindStringCache(StringCache cache) {
         mStringCache = cache;
+        mAppsView.updateWorkUI();
     }
 
     @Override
