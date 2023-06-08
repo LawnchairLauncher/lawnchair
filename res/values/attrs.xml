@@ -518,4 +518,8 @@
         <!-- The icon drawable of a widget category. -->
         <attr name="sectionDrawable" format="reference" />
     </declare-styleable>
+
+    <declare-styleable name="ArrowTipView">
+        <attr name="arrowTipBackground" format="color" />
+    </declare-styleable>
 </resources>
