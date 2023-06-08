@@ -23,7 +23,6 @@ import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -44,7 +43,6 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
         startTestActivity(2);
     }
 
-    @Ignore
     @Test
     @NavigationModeSwitch
     public void testStressPressHome() {
@@ -57,7 +55,6 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
         }
     }
 
-    @Ignore
     @Test
     @NavigationModeSwitch
     public void testStressSwipeToOverview() {
