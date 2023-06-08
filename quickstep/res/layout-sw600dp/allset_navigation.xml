@@ -16,41 +16,18 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/navigation_settings_guideline_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.83" />
-
     <TextView
         android:id="@+id/navigation_settings"
         style="@style/TextAppearance.GestureTutorial.LinkText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:background="?android:attr/selectableItemBackground"
         android:minHeight="48dp"
         android:text="@string/allset_navigation_settings"
-        app:layout_constraintBottom_toBottomOf="@id/navigation_settings_guideline_bottom"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:gravity="center_horizontal"
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/hint_guideline_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.94" />
-
-    <TextView
-        android:id="@+id/hint"
-        style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/allset_hint"
-        android:textSize="@dimen/allset_page_swipe_up_text_size"
-        app:layout_constraintBottom_toBottomOf="@id/hint_guideline_bottom"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/subtitle"
         app:layout_constraintStart_toStartOf="parent" />
 
 </merge>
