@@ -51,9 +51,9 @@
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"ನೀವು ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಭಾಗಕ್ಕೆ ಹೆಚ್ಚು ಹತ್ತಿರ ಸ್ವೈಪ್ ಮಾಡದಂತೆ ನೋಡಿಕೊಳ್ಳಿ."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ಬ್ಯಾಕ್ ಗೆಸ್ಚರ್‌ನ ಸೂಕ್ಷ್ಮತೆ ಬದಲಾಯಿಸಲು, ಸೆಟ್ಟಿಂಗ್‌ಗಳಿಗೆ ಹೋಗಿ"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"ಹಿಂದಕ್ಕೆ ಹೋಗಲು ಸ್ವೈಪ್ ಮಾಡಿ"</string>
-    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"ಕೊನೆಯ ಸ್ಕ್ರೀನ್‌ಗೆ ಹಿಂತಿರುಗಲು, ಎಡ ಅಥವಾ ಬಲ ಅಂಚಿನಿಂದ ಸ್ಕ್ರೀನ್ ಮಧ್ಯಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ."</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"ಹಿಂದಿನ ಸ್ಕ್ರೀನ್‌ಗೆ ಮರಳಲು, ಎಡ ಅಥವಾ ಬಲ ಅಂಚಿನಿಂದ ಸ್ಕ್ರೀನ್ ಮಧ್ಯದವರೆಗೆ ಸ್ವೈಪ್ ಮಾಡಿ."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"ಹಿಂದಿನ ಸ್ಕ್ರೀನ್‌ಗೆ ಹೋಗಲು, 2 ಬೆರಳುಗಳಿಂದ ಎಡ ಅಥವಾ ಬಲ ಅಂಚಿನಿಂದ ಸ್ಕ್ರೀನ್ ಮಧ್ಯಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ."</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಗಿನ ಅಂಚಿನಿಂದ ನೀವು ಸ್ವೈಪ್ ಮಾಡುತ್ತಿದ್ದೀರಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ನೀವು ಸ್ಕ್ರೀನ್‌ನ ಕೆಳ ಅಂಚಿನಿಂದ ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡುತ್ತಿದ್ದೀರಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"ವಿರಾಮಗೊಳಿಸದೆ ನಿಮ್ಮ ಬೆರಳನ್ನು ಸ್ಕ್ರೀನ್‌ನಿಂದ ಮೇಲೆತ್ತಿ."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ನೀವು ನೇರವಾಗಿ ಸ್ವೈಪ್ ಮಾಡುತ್ತಿದ್ದೀರಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"ನೀವು ಗೋ ಹೋಮ್ ಗೆಸ್ಚರ್ ಅನ್ನು ಪೂರ್ಣಗೊಳಿಸಿದ್ದೀರಿ. ಮುಂದೆ, ಹಿಂದಕ್ಕೆ ಹೋಗುವುದು ಹೇಗೆ ಎಂದು ತಿಳಿಯಿರಿ."</string>
@@ -61,7 +61,7 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗೆ ಹಿಂತಿರುಗಲು ಸ್ವೈಪ್ ಮಾಡಿ"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಗಿನಿಂದ ಮೇಲೆ ಸ್ವೈಪ್ ಮಾಡಿ. ಈ ಗೆಸ್ಚರ್ ಯಾವಾಗಲೂ ನಿಮ್ಮನ್ನು ಹೋಮ್‌ ಸ್ಕ್ರೀನ್‌ಗೆ ಕರೆದೊಯ್ಯುತ್ತದೆ."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2 ಬೆರಳುಗಳಿಂದ ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಗಿನಿಂದ ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡಿ. ಈ ಗೆಸ್ಚರ್ ಯಾವಾಗಲೂ ನಿಮ್ಮನ್ನು ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗೆ ಕರೆದೊಯ್ಯುತ್ತದೆ."</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ಸ್ಕ್ರೀನ್‌ನ ಕೆಳಗಿನ ಅಂಚಿನಿಂದ ನೀವು ಸ್ವೈಪ್ ಮಾಡುತ್ತಿದ್ದೀರಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ನೀವು ಸ್ಕ್ರೀನ್‌ನ ಕೆಳ ಅಂಚಿನಿಂದ ಮೇಲಕ್ಕೆ ಸ್ವೈಪ್ ಮಾಡುತ್ತಿದ್ದೀರಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"ಬೆರಳನ್ನು ಮೇಲೆತ್ತುವ ಮೊದಲು ವಿಂಡೋವನ್ನು ಹೆಚ್ಚು ಸಮಯ ಹಿಡಿದಿಡಲು ಪ್ರಯತ್ನಿಸಿ."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"ನೀವು ನೇರವಾಗಿ ಸ್ವೈಪ್ ಮಾಡಿ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ, ನಂತರ ವಿರಾಮಗೊಳಿಸಿ."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"ಗೆಶ್ಚರ್‌ಗಳನ್ನು ಬಳಸುವುದು ಹೇಗೆಂದು ನೀವು ತಿಳಿದುಕೊಂಡಿರುವಿರಿ. ಗೆಶ್ಚರ್‌ಗಳನ್ನು ಆಫ್ ಮಾಡಲು, ಸೆಟ್ಟಿಂಗ್‌ಗಳಿಗೆ ಹೋಗಿ."</string>
@@ -103,7 +103,7 @@
     <string name="taskbar_edu_close" msgid="887022990168191073">"ಮುಚ್ಚಿರಿ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ಮುಗಿದಿದೆ"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ಮುಖಪುಟ"</string>
-    <string name="taskbar_button_a11y" msgid="5241161324875094465">"ಪ್ರವೇಶಿಸುವಿಕೆ"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"ಆ್ಯಕ್ಸೆಸಿಬಿಲಿಟಿ"</string>
     <string name="taskbar_button_back" msgid="8558862226461164514">"ಹಿಂದೆ"</string>
     <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME ಪರಿವರ್ತಕ"</string>
     <string name="taskbar_button_recents" msgid="7273376136216613134">"ಇತ್ತೀಚಿನವು"</string>

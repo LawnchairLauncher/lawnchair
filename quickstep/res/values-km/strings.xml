@@ -51,7 +51,7 @@
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"ត្រូវប្រាកដថា​អ្នកមិនអូស​ទៅជិត​ផ្នែកខាងក្រោម​នៃអេក្រង់ពេក​។"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ដើម្បីប្ដូរកម្រិត​រំញោចនឹង​ចលនាថយក្រោយ សូមចូលទៅកាន់​ការកំណត់"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"អូស​ដើម្បី​ថយក្រោយ"</string>
-    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"ដើម្បី​ត្រឡប់ទៅ​អេក្រង់​ចុងក្រោយវិញ សូមអូស​ពីគែម​ខាងឆ្វេង ឬខាងស្ដាំ​ទៅផ្នែកកណ្ដាល​នៃអេក្រង់​។"</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"ដើម្បី​ត្រឡប់ទៅ​អេក្រង់​មុនវិញ សូមអូស​ពីគែម​ខាងឆ្វេង ឬខាងស្ដាំ​ទៅផ្នែកកណ្ដាល​នៃអេក្រង់​។"</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"ដើម្បី​ត្រឡប់​ទៅ​អេក្រង់​ចុងក្រោយ​វិញ អូស​ដោយ​ប្រើ​ម្រាមដៃពីរ​ពី​គែម​ខាង​ឆ្វេង ឬ​ខាង​ស្ដាំ​ទៅផ្នែក​​កណ្ដាលនៃ​អេក្រង់។"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ត្រូវប្រាកដថា​អ្នកអូសឡើងលើ​ពីគែមខាងក្រោម​នៃអេក្រង់​។"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"ត្រូវប្រាកដថា​អ្នកមិនផ្អាក មុនពេល​ដកដៃ​។"</string>

@@ -96,7 +96,7 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Показва се урокът за лентата на задачите"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Урокът за лентата на задачите бе затворен"</string>
     <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"Плъзнете встрани, за да използвате едновременно 2 приложения"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Прекарайте пръст нагоре, за да видите лентата на задачите"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Плъзнете пръст нагоре, за да видите лентата на задачите"</string>
     <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Лентата на задачите предлага приложения според навиците ви"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Напред"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Назад"</string>

@@ -73,7 +73,7 @@
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Klaar"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Instellingen"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Probeer opnieuw"</string>
-    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Dat gaat lekker."</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Dat gaat lekker"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutorial <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Klaar"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Swipe omhoog om naar het startscherm te gaan"</string>
@@ -96,7 +96,7 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Uitleg van taakbalk geopend"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Uitleg van taakbalk gesloten"</string>
     <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"Sleep naar de zijkant om 2 apps tegelijk te gebruiken"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Swipe kort omhoog om de taakbalk te bekijken"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Swipe kort omhoog om de taakbalk te tonen"</string>
     <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"De taakbalk stelt apps voor op basis van je routine"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Volgende"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Terug"</string>

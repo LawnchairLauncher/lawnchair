@@ -51,7 +51,7 @@
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Φροντίστε να μην σύρετε υπερβολικά κοντά στο κάτω μέρος της οθόνης."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Μεταβείτε στις Ρυθμίσεις για αλλαγή ευαισθ. κίνησης επιστρ."</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Σύρετε για επιστροφή"</string>
-    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Για να επιστρέψετε στην τελευτ. οθόνη, σύρετε από το αριστ. ή το δεξί άκρο προς το μέσο της οθόνης."</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Για να επιστρέψετε στην τελευταία οθόνη, σύρετε από το αριστερό ή το δεξί άκρο προς το μέσο της οθόνης."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Για να επιστρέψετε στην προηγούμενη οθόνη, σύρετε με 2 δάχτυλα από την αριστερή ή δεξιά άκρη προς τη μέση της οθόνης."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Φροντίστε να σύρετε προς τα επάνω από το κάτω άκρο της οθόνης."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Φροντίστε να μην κάνετε παύση προτού απομακρύνετε τα δάχτυλά σας."</string>

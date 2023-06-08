@@ -53,7 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"스와이프하여 돌아가기"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"이전 화면으로 돌아가려면 왼쪽 또는 오른쪽 가장자리에서 화면 중앙으로 스와이프하세요."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"마지막 화면으로 돌아가려면 두 손가락을 사용해 왼쪽 또는 오른쪽 가장자리에서 화면 중앙으로 스와이프하세요"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"화면 하단 가장자리에서 위로 스와이프하세요."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"화면 아래쪽 끝에서 위로 스와이프하세요."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"손가락을 떼기 전에 멈추지 않아야 합니다."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"위로 곧게 스와이프하세요."</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"홈으로 이동 동작을 완료했습니다. 이번에는 뒤로 돌아가는 방법을 알아보겠습니다."</string>
@@ -61,7 +61,7 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"스와이프하여 홈으로 이동"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"화면 하단에서 위로 스와이프합니다. 이 동작을 사용하면 언제든지 홈 화면으로 이동할 수 있습니다."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"두 손가락을 사용해 화면 하단에서 위로 스와이프하세요. 이 동작을 사용하면 언제든지 홈 화면으로 이동할 수 있습니다"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"화면 하단 가장자리에서 위로 스와이프하세요."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"화면 아래쪽 끝에서 위로 스와이프하세요."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"창을 더 오래 누르고 있다가 손가락을 떼 보세요."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"위로 곧게 스와이프한 후 잠시 멈추세요."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"동작 사용 방법을 알아봤습니다. 동작을 사용 중지하려면 설정으로 이동하세요."</string>
@@ -78,7 +78,7 @@
     <string name="allset_title" msgid="5021126669778966707">"설정 완료"</string>
     <string name="allset_hint" msgid="2384632994739392447">"위로 스와이프하여 홈으로 이동"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"홈 화면으로 이동하려면 홈 버튼을 탭하세요."</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g> 기기를 사용할 준비가 되었습니다."</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g>을(를) 사용할 준비가 되었습니다."</string>
     <string name="default_device_name" msgid="6660656727127422487">"기기"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"시스템 탐색 설정"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"공유"</string>
@@ -96,7 +96,7 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"작업 표시줄 튜토리얼 패널 표시됨"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"작업 표시줄 튜토리얼 패널 닫힘"</string>
     <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"옆으로 드래그하여 2개의 앱을 동시에 사용합니다."</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"위로 짧게 스와이프하여 태스크 바를 표시합니다."</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"위로 짧게 스와이프하면 태스크 바가 표시됩니다."</string>
     <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"태스크 바에서 루틴에 따라 앱을 제안합니다."</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"다음"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"뒤로"</string>

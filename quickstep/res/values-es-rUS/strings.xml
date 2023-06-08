@@ -78,7 +78,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Todo listo"</string>
     <string name="allset_hint" msgid="2384632994739392447">"Desliza el dedo hacia arriba para ir a la pantalla principal"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Presiona el botón de inicio para ir a la pantalla principal"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"Ya puedes comenzar a usar <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Ya puedes comenzar a usar tu <xliff:g id="DEVICE">%1$s</xliff:g>."</string>
     <string name="default_device_name" msgid="6660656727127422487">"dispositivo"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Configuración de navegación del sistema"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Compartir"</string>

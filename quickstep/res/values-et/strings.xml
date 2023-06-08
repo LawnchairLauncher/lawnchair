@@ -96,7 +96,7 @@
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Tegumiriba juhised kuvati"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Tegumiriba juhised on suletud"</string>
     <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"Kahe rakenduse korraga kasutamiseks lohistage külje poole"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Tegumiriba kuvamiseks pühkige korraks"</string>
+    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Tegumiriba kuvamiseks pühkige lühidalt üles"</string>
     <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Tegumiribal soovitatakse rakendusi teie rutiinide põhjal"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Järgmine"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Tagasi"</string>
