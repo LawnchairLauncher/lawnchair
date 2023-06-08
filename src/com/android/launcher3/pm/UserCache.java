@@ -17,6 +17,7 @@
 package com.android.launcher3.pm;
 
 import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
+import static com.android.launcher3.testing.shared.TestProtocol.sDebugTracing;
 import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 
 import android.content.Context;
@@ -140,8 +141,18 @@ public class UserCache {
      */
     public List<UserHandle> getUserProfiles() {
         StringBuilder usersToReturn = new StringBuilder();
+        List<UserHandle> users;
+        if (sDebugTracing) {
+            users = mUserManager.getUserProfiles();
+            for (UserHandle u : users) {
+                usersToReturn.append(u).append(" && ");
+            }
+            testLogD(WORK_TAB_MISSING, "users from userManager: " + usersToReturn);
+        }
+
         synchronized (this) {
             if (mUsers != null) {
+                usersToReturn = new StringBuilder();
                 for (UserHandle u : mUserToSerialMap.keySet()) {
                     usersToReturn.append(u).append(" && ");
                 }
@@ -152,11 +163,7 @@ public class UserCache {
             }
         }
 
-        List<UserHandle> users = mUserManager.getUserProfiles();
-        for (UserHandle u : users) {
-            usersToReturn.append(u).append(" && ");
-        }
-        testLogD(WORK_TAB_MISSING, "users from userManager: " + usersToReturn);
+        users = mUserManager.getUserProfiles();
         return users == null ? Collections.emptyList() : users;
     }
 }
