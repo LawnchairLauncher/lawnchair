@@ -162,7 +162,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"仕事用プロファイル"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"仕事用アプリはバッジ付きで表示され、IT 管理者に公開されます"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"仕事用アプリの一時停止"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"仕事用アプリは一時停止されています"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"仕事用アプリでは、通知の送信、バッテリーの使用、位置情報の取得が無効になっています"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"仕事用アプリは OFF になっています。仕事用アプリでは、通知の送信、バッテリーの使用、位置情報の取得が無効になっています"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"仕事用アプリはバッジが付き、IT 管理者に公開されます"</string>

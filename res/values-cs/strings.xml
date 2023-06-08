@@ -27,7 +27,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"V nouzovém režimu jsou widgety zakázány."</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"Zkratka není k dispozici"</string>
     <string name="home_screen" msgid="5629429142036709174">"Domů"</string>
-    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Rozdělená obrazovka"</string>
+    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Rozdělit obrazovku"</string>
     <string name="split_screen_position_top" msgid="1504965011158689649">"Rozdělit nahoře"</string>
     <string name="split_screen_position_left" msgid="7537793098851830883">"Rozdělit vlevo"</string>
     <string name="split_screen_position_right" msgid="1569377524925193369">"Rozdělit vpravo"</string>
@@ -171,6 +171,6 @@
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Zapnout pracovní aplikace"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtr"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Prohledávání telefonu"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Vyhledávat na tabletu"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Vyhledávání na tabletu"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Selhalo: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

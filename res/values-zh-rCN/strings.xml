@@ -101,7 +101,7 @@
     <string name="folder_name_format_exact" msgid="8626242716117004803">"文件夹：<xliff:g id="NAME">%1$s</xliff:g>，<xliff:g id="SIZE">%2$d</xliff:g> 个项目"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"文件夹：<xliff:g id="NAME">%1$s</xliff:g>，<xliff:g id="SIZE">%2$d</xliff:g> 个或更多项目"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"壁纸"</string>
-    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"壁纸和样式"</string>
+    <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"壁纸与个性化"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"主屏幕设置"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"已被您的管理员停用"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"允许旋转主屏幕"</string>
@@ -160,12 +160,12 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"个人"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"工作"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"工作资料"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"工作应用带有标志，您的 IT 管理员可以看到此类应用"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"工作应用都有相应的标志，且您的 IT 管理员可以看到它们"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"知道了"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"工作应用已暂停"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"工作应用无法向您发送通知、不能耗用电池电量，也无法获取您的位置信息"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"工作应用已关闭。工作应用无法向您发送通知、不能耗用电池电量，也无法获取您的位置信息"</string>
-    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"工作应用带有标志，您的 IT 管理员可以看到工作应用"</string>
+    <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"工作应用都有相应的标志，且您的 IT 管理员可以看到它们"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"知道了"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"暂停工作应用"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"开启工作应用"</string>
