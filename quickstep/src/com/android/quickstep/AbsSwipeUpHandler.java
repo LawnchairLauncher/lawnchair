@@ -830,7 +830,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      * @return Whether we can create the launcher controller or update its progress.
      */
     private boolean canCreateNewOrUpdateExistingLauncherTransitionController() {
-        return mGestureState.getEndTarget() != HOME && !mHasEndedLauncherTransition;
+        return mGestureState.getEndTarget() != HOME
+                && !mHasEndedLauncherTransition && mActivity != null;
     }
 
     @Override
