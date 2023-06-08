@@ -44,7 +44,6 @@ import static com.android.launcher3.LauncherState.NO_SCALE;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
-import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
 import static com.android.launcher3.config.FeatureFlags.SHOW_DOT_PAGINATION;
 import static com.android.launcher3.logging.StatsLogManager.EventEnum;
@@ -767,7 +766,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
 
         onDeviceProfileInitiated();
-        if (FOLDABLE_SINGLE_PAGE.get() && mDeviceProfile.isTwoPanels) {
+        if (mDeviceProfile.isTwoPanels) {
             mCellPosMapper = new TwoPanelCellPosMapper(mDeviceProfile.inv.numColumns);
         } else {
             mCellPosMapper = CellPosMapper.DEFAULT;
