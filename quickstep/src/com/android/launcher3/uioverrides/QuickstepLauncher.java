@@ -519,7 +519,7 @@ public class QuickstepLauncher extends Launcher {
             }
             case QUICK_SWITCH_STATE_ORDINAL: {
                 RecentsView rv = getOverviewPanel();
-                TaskView tasktolaunch = rv.getTaskViewAt(0);
+                TaskView tasktolaunch = rv.getCurrentPageTaskView();
                 if (tasktolaunch != null) {
                     tasktolaunch.launchTask(success -> {
                         if (!success) {
