@@ -320,7 +320,7 @@ class SplitSelectDataHolder(
             return SPLIT_SINGLE_SHORTCUT_FULLSCREEN
         }
 
-        if (initialIntent != null) {
+        if (initialPendingIntent != null) {
             return SPLIT_SINGLE_INTENT_FULLSCREEN
         }
         throw IllegalStateException("Unidentified fullscreen launch type")
