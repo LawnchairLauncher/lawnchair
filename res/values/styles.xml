@@ -378,4 +378,7 @@
         <item name="horizontalPadding">16dp</item>
     </style>
 
+    <style name="ArrowTipStyle">
+        <item name="arrowTipBackground">@color/arrow_tip_view_bg</item>
+    </style>
 </resources>
