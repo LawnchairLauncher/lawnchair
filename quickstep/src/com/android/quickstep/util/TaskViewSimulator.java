@@ -411,7 +411,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             // transitions, the animation leashes are reparented to an animation container so we
             // can bump layers as needed.
             builder.setLayer(mDrawsBelowRecents
-                    ? Integer.MIN_VALUE + 1
+                    ? Integer.MIN_VALUE + app.prefixOrderIndex
                     : ENABLE_SHELL_TRANSITIONS ? Integer.MAX_VALUE : 0);
         }
     }
