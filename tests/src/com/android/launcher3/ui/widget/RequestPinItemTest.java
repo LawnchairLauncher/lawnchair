@@ -33,6 +33,7 @@ import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.celllayout.FavoriteItemsTransaction;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -134,8 +135,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
     private void runTest(String activityMethod, boolean isWidget, ItemOperator itemMatcher,
             Intent... commandIntents) throws Throwable {
-        clearHomescreen();
-        mDevice.pressHome();
+        new FavoriteItemsTransaction(mTargetContext).commitAndLoadHome(mLauncher);
 
         // Open Pin item activity
         BlockingBroadcastReceiver openMonitor = new BlockingBroadcastReceiver(

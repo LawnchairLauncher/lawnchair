@@ -29,6 +29,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.allapps.AllAppsTransitionController;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.AllAppsSwipeController;
@@ -92,7 +93,9 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
     @Override
     protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
         if (fromState == ALL_APPS && !isDragTowardPositive) {
-            return NORMAL;
+            return FeatureFlags.ENABLE_ALL_APPS_FROM_OVERVIEW.get()
+                    ? mLauncher.getStateManager().getLastState()
+                    : NORMAL;
         } else if (fromState == OVERVIEW) {
             return isDragTowardPositive ? OVERVIEW : NORMAL;
         } else if (fromState == NORMAL && isDragTowardPositive) {

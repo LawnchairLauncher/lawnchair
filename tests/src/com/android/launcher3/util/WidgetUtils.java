@@ -18,18 +18,14 @@ package com.android.launcher3.util;
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
-import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
-
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Process;
 
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.LauncherWidgetHolder;
@@ -86,33 +82,6 @@ public class WidgetUtils {
         }
         return item;
     }
-
-    /**
-     * Adds {@param item} on the homescreen on the 0th screen
-     */
-    public static void addItemToScreen(ItemInfo item, Context targetContext) {
-        ContentResolver resolver = targetContext.getContentResolver();
-        int screenId = FIRST_SCREEN_ID;
-        // Update the screen id counter for the provider.
-        LauncherSettings.Settings.call(resolver,
-                LauncherSettings.Settings.METHOD_NEW_SCREEN_ID);
-
-        if (screenId > FIRST_SCREEN_ID) {
-            screenId = FIRST_SCREEN_ID;
-        }
-
-        // Insert the item
-        ContentWriter writer = new ContentWriter(targetContext);
-        item.id = LauncherSettings.Settings.call(
-                resolver, LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
-                .getInt(LauncherSettings.Settings.EXTRA_VALUE);
-        item.screenId = screenId;
-        item.onAddToDatabase(writer);
-        writer.put(LauncherSettings.Favorites._ID, item.id);
-        resolver.insert(LauncherSettings.Favorites.CONTENT_URI,
-                writer.getValues(targetContext));
-    }
-
 
     /**
      * Creates a {@link AppWidgetProviderInfo} for the provided component name

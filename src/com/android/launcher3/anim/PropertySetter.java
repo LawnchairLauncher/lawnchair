@@ -25,6 +25,8 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.views.ScrimView;
+
 import java.util.function.Consumer;
 
 /**
@@ -62,7 +64,8 @@ public abstract class PropertySetter {
      * Sets the background color of the provided view using the provided interpolator.
      */
     @NonNull
-    public Animator setViewBackgroundColor(View view, int color, TimeInterpolator interpolator) {
+    public Animator setScrimViewBackgroundColor(ScrimView view, int color,
+            TimeInterpolator interpolator) {
         if (view != null) {
             view.setBackgroundColor(color);
         }

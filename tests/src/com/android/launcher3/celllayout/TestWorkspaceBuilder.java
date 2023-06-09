@@ -78,12 +78,6 @@ public class TestWorkspaceBuilder {
         return transaction;
     }
 
-    private int getID() {
-        return LauncherSettings.Settings.call(
-                        mResolver, LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
-                .getInt(LauncherSettings.Settings.EXTRA_VALUE);
-    }
-
     private AppInfo getApp() {
         return new AppInfo(APP_COMPONENT_NAME, "test icon", mMyUser,
                 AppInfo.makeLaunchIntent(APP_COMPONENT_NAME));
@@ -127,7 +121,6 @@ public class TestWorkspaceBuilder {
         return () -> {
             LauncherAppWidgetProviderInfo info = findWidgetProvider(false);
             LauncherAppWidgetInfo item = createWidgetInfo(info, getApplicationContext(), true);
-            item.id = getID();
             item.cellX = widgetRect.getCellX();
             item.cellY = widgetRect.getCellY();
             item.spanX = widgetRect.getSpanX();
@@ -139,7 +132,6 @@ public class TestWorkspaceBuilder {
 
     private ItemInfo createIconInCell(CellLayoutBoard.IconPoint iconPoint, int screenId) {
         WorkspaceItemInfo item = new WorkspaceItemInfo(getApp());
-        item.id = getID();
         item.screenId = screenId;
         item.cellX = iconPoint.getCoord().x;
         item.cellY = iconPoint.getCoord().y;
@@ -150,7 +142,6 @@ public class TestWorkspaceBuilder {
 
     private ItemInfo getHotseatValues(int x) {
         WorkspaceItemInfo item = new WorkspaceItemInfo(getApp());
-        item.id = getID();
         item.cellX = x;
         item.cellY = 0;
         item.minSpanY = item.minSpanX = item.spanX = item.spanY = 1;

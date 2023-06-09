@@ -114,7 +114,7 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
         setter.setFloat(mRecentsView, TASK_THUMBNAIL_SPLASH_ALPHA,
                 state.showTaskThumbnailSplash() ? 1f : 0f, INSTANT);
 
-        setter.setViewBackgroundColor(mActivity.getScrimView(), state.getScrimColor(mActivity),
+        setter.setScrimViewBackgroundColor(mActivity.getScrimView(), state.getScrimColor(mActivity),
                 config.getInterpolator(ANIM_SCRIM_FADE, LINEAR));
 
         RecentsState currentState = mActivity.getStateManager().getState();

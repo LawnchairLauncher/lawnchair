@@ -15,13 +15,16 @@
  */
 package com.android.launcher3.celllayout;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.TestUtil.runOnExecutorSync;
 
-import android.content.ContentValues;
 import android.content.Context;
+
+import androidx.test.uiautomator.UiDevice;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
@@ -29,10 +32,11 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ModelDbController;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
+import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.util.ContentWriter;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 
 public class FavoriteItemsTransaction {
@@ -67,15 +71,16 @@ public class FavoriteItemsTransaction {
             controller.clearEmptyDbFlag();
 
             // Add new data
-            List<ContentValues> values = new ArrayList<>();
-            int count = mItemsToSubmit.size();
-            for (int i = 0; i < count; i++) {
-                ContentWriter writer = new ContentWriter(mContext);
-                mItemsToSubmit.get(i).get().onAddToDatabase(writer);
-                writer.put(LauncherSettings.Favorites._ID, i);
-                values.add(writer.getValues(mContext));
+            try (SQLiteTransaction transaction = controller.newTransaction()) {
+                int count = mItemsToSubmit.size();
+                for (int i = 0; i < count; i++) {
+                    ContentWriter writer = new ContentWriter(mContext);
+                    mItemsToSubmit.get(i).get().onAddToDatabase(writer);
+                    writer.put(LauncherSettings.Favorites._ID, i);
+                    controller.insert(TABLE_NAME, writer.getValues(mContext));
+                }
+                transaction.commit();
             }
-            controller.bulkInsert(TABLE_NAME, values.toArray(new ContentValues[0]));
         });
 
         // Reload model
@@ -90,5 +95,16 @@ public class FavoriteItemsTransaction {
 
         runOnExecutorSync(MAIN_EXECUTOR, () -> { });
         runOnExecutorSync(MAIN_EXECUTOR, () -> model.removeCallbacks(mockCb));
+    }
+
+    /**
+     * Commits the transaction and waits for home load
+     */
+    public void commitAndLoadHome(LauncherInstrumentation inst) {
+        commit();
+
+        // Launch the home activity
+        UiDevice.getInstance(getInstrumentation()).pressHome();
+        inst.waitForLauncherInitialized();
     }
 }
