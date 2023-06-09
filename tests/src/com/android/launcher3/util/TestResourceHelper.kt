@@ -27,7 +27,7 @@ class TestResourceHelper(private val context: Context, private val specsFileId: 
     ResourceHelper(context, specsFileId) {
     override fun obtainStyledAttributes(attrs: AttributeSet, styleId: IntArray): TypedArray {
         var clone = styleId.clone()
-        if (styleId == R.styleable.SpecSize) clone = TestR.styleable.SpecSize
+        if (styleId == R.styleable.SizeSpec) clone = TestR.styleable.SizeSpec
         else if (styleId == R.styleable.WorkspaceSpec) clone = TestR.styleable.WorkspaceSpec
         return context.obtainStyledAttributes(attrs, clone)
     }

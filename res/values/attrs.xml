@@ -204,6 +204,7 @@
         <!-- File that contains the specs for the workspace.
         Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
         <attr name="workspaceSpecsId" format="reference" />
+
         <!-- By default all categories are enabled -->
         <attr name="deviceCategory" format="integer">
             <!-- Enable on phone only -->
@@ -251,10 +252,11 @@
         <attr name="maxAvailableSize" format="dimension" />
     </declare-styleable>
 
-    <declare-styleable name="SpecSize">
+    <declare-styleable name="SizeSpec">
         <attr name="fixedSize" format="dimension" />
         <attr name="ofAvailableSpace" format="float" />
         <attr name="ofRemainderSpace" format="float" />
+        <attr name="matchWorkspace" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="ProfileDisplayOption">
