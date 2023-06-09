@@ -372,7 +372,7 @@ dependencies {
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.6.1'
 
-    implementation 'com.airbnb.android:lottie:6.0.0'
+    implementation 'com.airbnb.android:lottie:6.0.1'
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:2.11"
 }
