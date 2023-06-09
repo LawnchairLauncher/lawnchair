@@ -16,13 +16,12 @@
 
 package com.android.launcher3.workspace
 
-import android.content.res.TypedArray
 import android.content.res.XmlResourceParser
 import android.util.AttributeSet
 import android.util.Log
-import android.util.TypedValue
 import android.util.Xml
 import com.android.launcher3.R
+import com.android.launcher3.responsive.SizeSpec
 import com.android.launcher3.util.ResourceHelper
 import java.io.IOException
 import kotlin.math.roundToInt
@@ -95,16 +94,16 @@ class WorkspaceSpecs(resourceHelper: ResourceHelper) {
                                 if (type == XmlPullParser.START_TAG) {
                                     when (parser.name) {
                                         XmlTags.START_PADDING -> {
-                                            startPadding = SizeSpec(resourceHelper, attr)
+                                            startPadding = SizeSpec.create(resourceHelper, attr)
                                         }
                                         XmlTags.END_PADDING -> {
-                                            endPadding = SizeSpec(resourceHelper, attr)
+                                            endPadding = SizeSpec.create(resourceHelper, attr)
                                         }
                                         XmlTags.GUTTER -> {
-                                            gutter = SizeSpec(resourceHelper, attr)
+                                            gutter = SizeSpec.create(resourceHelper, attr)
                                         }
                                         XmlTags.CELL_SIZE -> {
-                                            cellSize = SizeSpec(resourceHelper, attr)
+                                            cellSize = SizeSpec.create(resourceHelper, attr)
                                         }
                                     }
                                 }
@@ -270,61 +269,12 @@ data class WorkspaceSpec(
     }
 
     private fun allSpecsAreValid(): Boolean =
-        startPadding.isValid() && endPadding.isValid() && gutter.isValid() && cellSize.isValid()
-}
-
-class SizeSpec(resourceHelper: ResourceHelper, attrs: AttributeSet) {
-    val fixedSize: Float
-    val ofAvailableSpace: Float
-    val ofRemainderSpace: Float
-
-    init {
-        val styledAttrs = resourceHelper.obtainStyledAttributes(attrs, R.styleable.SpecSize)
-
-        fixedSize = getValue(styledAttrs, R.styleable.SpecSize_fixedSize)
-        ofAvailableSpace = getValue(styledAttrs, R.styleable.SpecSize_ofAvailableSpace)
-        ofRemainderSpace = getValue(styledAttrs, R.styleable.SpecSize_ofRemainderSpace)
-
-        styledAttrs.recycle()
-    }
-
-    private fun getValue(a: TypedArray, index: Int): Float {
-        if (a.getType(index) == TypedValue.TYPE_DIMENSION) {
-            return a.getDimensionPixelSize(index, 0).toFloat()
-        } else if (a.getType(index) == TypedValue.TYPE_FLOAT) {
-            return a.getFloat(index, 0f)
-        }
-        return 0f
-    }
-
-    fun isValid(): Boolean {
-        // All attributes are empty
-        if (fixedSize < 0f && ofAvailableSpace <= 0f && ofRemainderSpace <= 0f) {
-            Log.e(TAG, "SizeSpec#isValid - all attributes are empty")
-            return false
-        }
-
-        // More than one attribute is filled
-        val attrCount =
-            (if (fixedSize > 0) 1 else 0) +
-                (if (ofAvailableSpace > 0) 1 else 0) +
-                (if (ofRemainderSpace > 0) 1 else 0)
-        if (attrCount > 1) {
-            Log.e(TAG, "SizeSpec#isValid - more than one attribute is filled")
-            return false
-        }
-
-        // Values should be between 0 and 1
-        if (ofAvailableSpace !in 0f..1f || ofRemainderSpace !in 0f..1f) {
-            Log.e(TAG, "SizeSpec#isValid - values should be between 0 and 1")
-            return false
-        }
-
-        return true
-    }
-
-    override fun toString(): String {
-        return "SizeSpec(fixedSize=$fixedSize, ofAvailableSpace=$ofAvailableSpace, " +
-            "ofRemainderSpace=$ofRemainderSpace)"
-    }
+        startPadding.isValid() &&
+            endPadding.isValid() &&
+            gutter.isValid() &&
+            cellSize.isValid() &&
+            !startPadding.matchWorkspace &&
+            !endPadding.matchWorkspace &&
+            !gutter.matchWorkspace &&
+            !cellSize.matchWorkspace
 }
