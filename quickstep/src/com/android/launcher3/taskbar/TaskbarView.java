@@ -211,6 +211,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     }
 
     protected void init(TaskbarViewController.TaskbarViewCallbacks callbacks) {
+        // set taskbar pane title so that accessibility service know it window and focuses.
+        setAccessibilityPaneTitle(getContext().getString(R.string.taskbar_a11y_title));
         mControllerCallbacks = callbacks;
         mIconClickListener = mControllerCallbacks.getIconOnClickListener();
         mIconLongClickListener = mControllerCallbacks.getIconOnLongClickListener();
