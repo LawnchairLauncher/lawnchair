@@ -18,6 +18,8 @@ package com.android.launcher3.taskbar;
 import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
 
+import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -128,12 +130,13 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
         int actualMargin = resources.getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
         int actualIconSize = mActivityContext.getDeviceProfile().taskbarIconSize;
+        int visualIconSize = (int) (actualIconSize * ICON_VISIBLE_AREA_FACTOR);
 
         mIconTouchSize = Math.max(actualIconSize,
                 resources.getDimensionPixelSize(R.dimen.taskbar_icon_min_touch_size));
 
         // We layout the icons to be of mIconTouchSize in width and height
-        mItemMarginLeftRight = actualMargin - (mIconTouchSize - actualIconSize) / 2;
+        mItemMarginLeftRight = actualMargin - (mIconTouchSize - visualIconSize) / 2;
         mItemPadding = (mIconTouchSize - actualIconSize) / 2;
 
         mFolderLeaveBehindColor = Themes.getAttrColor(mActivityContext,
