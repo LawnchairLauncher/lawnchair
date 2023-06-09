@@ -159,6 +159,12 @@ public class DepthController extends BaseDepthController implements StateHandler
     }
 
     @Override
+    protected void onInvalidSurface() {
+        // Lets wait for surface to become valid again
+        mLauncher.getDragLayer().getViewTreeObserver().addOnDrawListener(mOnDrawListener);
+    }
+
+    @Override
     public void onMultiWindowModeChanged(boolean isInMultiWindowMode) {
         mIgnoreStateChangesDuringMultiWindowAnimation = true;
 

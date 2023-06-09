@@ -88,6 +88,8 @@ public class BaseDepthController {
      */
     protected boolean mInEarlyWakeUp;
 
+    private boolean mWaitingOnSurfaceValidity;
+
     public BaseDepthController(Launcher activity) {
         mLauncher = activity;
         mMaxBlurRadius = activity.getResources().getInteger(R.integer.max_depth_blur_radius);
@@ -115,6 +117,8 @@ public class BaseDepthController {
         }
     }
 
+    protected void onInvalidSurface() { }
+
     protected void applyDepthAndBlur() {
         float depth = mDepth;
         IBinder windowToken = mLauncher.getRootView().getWindowToken();
@@ -128,9 +132,15 @@ public class BaseDepthController {
         if (!BlurUtils.supportsBlursOnWindows()) {
             return;
         }
-        if (mSurface == null || !mSurface.isValid()) {
+        if (mSurface == null) {
             return;
         }
+        if (!mSurface.isValid()) {
+            mWaitingOnSurfaceValidity = true;
+            onInvalidSurface();
+            return;
+        }
+        mWaitingOnSurfaceValidity = false;
         boolean hasOpaqueBg = mLauncher.getScrimView().isFullyOpaque();
         boolean isSurfaceOpaque = !mHasContentBehindLauncher && hasOpaqueBg && !mPauseBlurs;
 
@@ -174,7 +184,7 @@ public class BaseDepthController {
      * Sets the specified app target surface to apply the blur to.
      */
     protected void setSurface(SurfaceControl surface) {
-        if (mSurface != surface) {
+        if (mSurface != surface || mWaitingOnSurfaceValidity) {
             mSurface = surface;
             applyDepthAndBlur();
         }
