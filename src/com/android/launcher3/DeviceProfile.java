@@ -26,6 +26,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_MULTI_DISPLAY_PARTIAL_DEPTH;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
 import static com.android.launcher3.icons.GraphicsUtils.getShapePath;
+import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 import static com.android.launcher3.testing.shared.ResourceUtils.INVALID_RESOURCE_HANDLE;
 import static com.android.launcher3.testing.shared.ResourceUtils.pxFromDp;
 import static com.android.launcher3.testing.shared.ResourceUtils.roundPxValueFromFloat;
@@ -353,8 +354,8 @@ public class DeviceProfile {
         if (DisplayController.isTransientTaskbar(context)) {
             float invTransientIconSizeDp = inv.transientTaskbarIconSize[mTypeIndex];
             taskbarIconSize = pxFromDp(invTransientIconSizeDp, mMetrics);
-            taskbarHeight = taskbarIconSize
-                    + (2 * res.getDimensionPixelSize(R.dimen.transient_taskbar_padding));
+            taskbarHeight = Math.round((taskbarIconSize * ICON_VISIBLE_AREA_FACTOR)
+                    + (2 * res.getDimensionPixelSize(R.dimen.transient_taskbar_padding)));
             stashedTaskbarHeight =
                     res.getDimensionPixelSize(R.dimen.transient_taskbar_stashed_height);
             taskbarBottomMargin =
