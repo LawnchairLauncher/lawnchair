@@ -774,7 +774,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         super.onCloseComplete();
         removeCallbacks(mShowEducationTipTask);
         if (mLatestEducationalTip != null) {
-            mLatestEducationalTip.close(false);
+            mLatestEducationalTip.close(true);
         }
         AccessibilityManagerCompat.sendStateEventToTest(getContext(), NORMAL_STATE_ORDINAL);
     }
