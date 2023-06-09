@@ -1342,6 +1342,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     protected void refreshTaskThumbnailSplash() {
         mSnapshotView.refreshSplashView();
+        setContentDescription(mDigitalWellBeingToast.getContentDescription());
     }
 
     private void setSplitSelectTranslationX(float x) {
