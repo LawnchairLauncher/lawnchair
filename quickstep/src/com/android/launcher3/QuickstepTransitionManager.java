@@ -2042,10 +2042,5 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             setCrossWindowBlursEnabled(
                     CrossWindowBlurListeners.getInstance().isCrossWindowBlurEnabled());
         }
-
-        @Override
-        public void setSurface(SurfaceControl surface) {
-            super.setSurface(surface);
-        }
     }
 }
