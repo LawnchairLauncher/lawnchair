@@ -936,7 +936,7 @@ public class TouchInteractionService extends Service
             }
 
             if (ENABLE_TRACKPAD_GESTURE.get() && mGestureState.isTrackpadGesture()
-                    && !previousGestureState.isRecentsAnimationRunning()) {
+                    && canStartSystemGesture && !previousGestureState.isRecentsAnimationRunning()) {
                 reasonString = newCompoundString(reasonPrefix)
                         .append(SUBSTRING_PREFIX)
                         .append("Trackpad 3-finger gesture, using TrackpadStatusBarInputConsumer");
