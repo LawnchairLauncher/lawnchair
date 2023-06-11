@@ -462,6 +462,10 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         return mGestureCompleted;
     }
 
+    public boolean skipGestureAttempt() {
+        return isGestureCompleted() || mTutorialFragment.isRotationPromptShowing();
+    }
+
     void hideFeedback() {
         if (mFeedbackView.getVisibility() != View.VISIBLE) {
             return;
