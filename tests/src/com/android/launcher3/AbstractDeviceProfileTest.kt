@@ -27,6 +27,10 @@ import com.android.launcher3.util.NavigationMode
 import com.android.launcher3.util.WindowBounds
 import com.android.launcher3.util.window.CachedDisplayInfo
 import com.android.launcher3.util.window.WindowManagerProxy
+import java.io.BufferedReader
+import java.io.File
+import java.io.PrintWriter
+import java.io.StringWriter
 import kotlin.math.max
 import kotlin.math.min
 import org.junit.After
@@ -286,5 +290,20 @@ abstract class AbstractDeviceProfileTest {
         val info = DisplayController.Info(context, windowManagerProxy, perDisplayBoundsCache)
         whenever(displayController.info).thenReturn(info)
         whenever(displayController.isTransientTaskbar).thenReturn(isGestureMode)
+    }
+
+    /** Create a new dump of DeviceProfile, saves to a file in the device and returns it */
+    protected fun dump(context: Context, dp: DeviceProfile, fileName: String): String {
+        val stringWriter = StringWriter()
+        PrintWriter(stringWriter).use { dp.dump(context, "", it) }
+        return stringWriter.toString().also { content -> writeToDevice(context, fileName, content) }
+    }
+
+    /** Read a file from assets/ and return it as a string */
+    protected fun readDumpFromAssets(context: Context, fileName: String): String =
+        context.assets.open("dumpTests/$fileName").bufferedReader().use(BufferedReader::readText)
+
+    private fun writeToDevice(context: Context, fileName: String, content: String) {
+        File(context.getDir("dumpTests", Context.MODE_PRIVATE), fileName).writeText(content)
     }
 }
