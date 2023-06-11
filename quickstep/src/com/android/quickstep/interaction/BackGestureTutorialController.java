@@ -147,7 +147,7 @@ final class BackGestureTutorialController extends TutorialController {
 
     @Override
     public void onBackGestureAttempted(BackGestureResult result) {
-        if (isGestureCompleted()) {
+        if (skipGestureAttempt()) {
             return;
         }
         switch (mTutorialType) {
@@ -165,7 +165,7 @@ final class BackGestureTutorialController extends TutorialController {
 
     @Override
     public void onBackGestureProgress(float diffx, float diffy, boolean isLeftGesture) {
-        if (isGestureCompleted()) {
+        if (skipGestureAttempt()) {
             return;
         }
 
@@ -234,7 +234,7 @@ final class BackGestureTutorialController extends TutorialController {
 
     @Override
     public void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity) {
-        if (isGestureCompleted()) {
+        if (skipGestureAttempt()) {
             return;
         }
         if (mTutorialType == BACK_NAVIGATION_COMPLETE) {
