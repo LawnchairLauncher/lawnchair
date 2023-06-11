@@ -290,4 +290,12 @@
         <item name="surfaceOverview">@android:color/system_accent2_300</item>
         <item name="secondaryOverview">?androidprv:attr/materialColorOnSecondaryFixedVariant</item>
     </style>
+
+    <style name="rotate_prompt_title" parent="TextAppearance.GestureTutorial.Dialog.Title">
+        <item name="android:textColor">?androidprv:attr/materialColorOnSurface</item>
+    </style>
+
+    <style name="rotate_prompt_subtitle" parent="TextAppearance.GestureTutorial.Dialog.Subtitle">
+        <item name="android:textColor">?androidprv:attr/materialColorOnSurfaceVariant</item>
+    </style>
 </resources>
