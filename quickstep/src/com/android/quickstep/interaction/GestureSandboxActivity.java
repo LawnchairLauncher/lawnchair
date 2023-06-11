@@ -16,6 +16,8 @@
 package com.android.quickstep.interaction;
 
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -29,6 +31,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
@@ -53,10 +57,12 @@ public class GestureSandboxActivity extends FragmentActivity {
 
     private int mCurrentStep;
     private int mNumSteps;
+    private boolean mShowRotationPrompt;
 
     private SharedPreferences mSharedPrefs;
     private StatsLogManager mStatsLogManager;
 
+    private View mRotationPrompt;
     private TISBindHelper mTISBindHelper;
 
     @Override
@@ -93,7 +99,47 @@ public class GestureSandboxActivity extends FragmentActivity {
                 .add(R.id.gesture_tutorial_fragment_container, mFragment)
                 .commit();
 
+        mRotationPrompt = findViewById(R.id.rotation_prompt);
+        if (FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+            correctUserOrientation();
+        }
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        // Ensure the prompt to rotate the screen is updated
+        if (FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+            correctUserOrientation();
+        }
+    }
+
+    /**
+     * Gesture animations are only in landscape for large screens and portrait for mobile. This
+     * method enforces the following flows:
+     *     1) phone / two-panel closed -> lock to portrait
+     *     2) two-panel open / tablet + portrait -> prompt the user to rotate the screen
+     *     3) two-panel open / tablet + landscape -> hide potential rotating prompt
+     */
+    private void correctUserOrientation() {
+        DeviceProfile deviceProfile = InvariantDeviceProfile.INSTANCE.get(
+                getApplicationContext()).getDeviceProfile(this);
+        if (deviceProfile.isTablet) {
+            mShowRotationPrompt = getResources().getConfiguration().orientation
+                    == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+            updateVisibility(mRotationPrompt, mShowRotationPrompt ? View.VISIBLE : View.GONE);
+        } else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    }
+
+    void updateVisibility(View view, int visibility) {
+        if (view == null || view.getVisibility() == visibility) {
+            return;
+        }
+        view.setVisibility(visibility);
     }
 
     @Override
@@ -125,6 +171,10 @@ public class GestureSandboxActivity extends FragmentActivity {
         savedInstanceState.putInt(KEY_CURRENT_STEP, mCurrentStep);
         mFragment.onSaveInstanceState(savedInstanceState);
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    protected boolean isRotationPromptShowing() {
+        return mShowRotationPrompt;
     }
 
     protected SharedPreferences getSharedPrefs() {
