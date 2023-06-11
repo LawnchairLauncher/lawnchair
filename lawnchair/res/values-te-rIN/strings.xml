@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">లాన్‌చైర్‌ను మీ డిఫాల్ట్ లాంచర్‌గా సెట్ చేయడానికి ఈ కార్డ్‌ని నొక్కండి.</string>
     <string name="settings">సెట్టింగ్స్</string>
     <string name="general_label">జనరల్</string>
     <string name="general_description">నోటిఫికేషన్ చుక్కలు, ఐకాన్ ప్యాక్</string>
