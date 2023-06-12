@@ -140,7 +140,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     @Override
     public void onBackGestureAttempted(BackGestureResult result) {
-        if (isGestureCompleted()) {
+        if (skipGestureAttempt()) {
             return;
         }
         switch (mTutorialType) {
@@ -167,7 +167,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     @Override
     public void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity) {
-        if (isGestureCompleted()) {
+        if (skipGestureAttempt()) {
             return;
         }
         switch (mTutorialType) {
