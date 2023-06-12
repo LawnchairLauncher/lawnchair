@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Фолдерын нэр <xliff:g id="NAME">%1$s</xliff:g> болов"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Фолдер: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> зүйл"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Фолдер: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> эсвэл үүнээс олон зүйл"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"Дэлгэцийн зураг"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Дэлгэцийн зураг, загвар"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Үндсэн нүүрийг засах"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Нүүр хуудасны тохиргоо"</string>
