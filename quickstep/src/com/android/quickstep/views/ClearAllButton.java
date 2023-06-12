@@ -16,6 +16,8 @@
 
 package com.android.quickstep.views;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
@@ -248,8 +250,15 @@ public class ClearAllButton extends Button {
      */
     private float getOriginalTranslationY() {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        return deviceProfile.isTablet
-                ? deviceProfile.overviewRowSpacing
-                : deviceProfile.overviewTaskThumbnailTopMarginPx / 2.0f;
+        if (deviceProfile.isTablet) {
+            if (ENABLE_GRID_ONLY_OVERVIEW.get()) {
+                return (getRecentsView().getLastComputedTaskSize().height()
+                        + deviceProfile.overviewTaskThumbnailTopMarginPx) / 2.0f
+                        + deviceProfile.overviewRowSpacing;
+            } else {
+                return deviceProfile.overviewRowSpacing;
+            }
+        }
+        return deviceProfile.overviewTaskThumbnailTopMarginPx / 2.0f;
     }
 }
