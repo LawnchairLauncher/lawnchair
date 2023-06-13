@@ -321,6 +321,11 @@ abstract class TutorialController implements BackGestureAttemptCallback,
         return NO_ID;
     }
 
+    @StringRes
+    public int getSuccessFeedbackTitle() {
+        return NO_ID;
+    }
+
     @StyleRes
     public int getTitleTextAppearance() {
         return NO_ID;
@@ -392,7 +397,7 @@ abstract class TutorialController implements BackGestureAttemptCallback,
     void showFeedback(int subtitleResId, boolean isGestureSuccessful) {
         showFeedback(
                 isGestureSuccessful
-                        ? R.string.gesture_tutorial_nice : R.string.gesture_tutorial_try_again,
+                        ? getSuccessFeedbackTitle() : R.string.gesture_tutorial_try_again,
                 subtitleResId,
                 NO_ID,
                 isGestureSuccessful,
