@@ -742,11 +742,12 @@ abstract class TutorialController implements BackGestureAttemptCallback,
             if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
                 mExitingAppView.setBackgroundColor(getExitingAppColor());
                 mFakeTaskView.setBackgroundColor(getFakeTaskViewColor());
-                updateHotseatChildViewColor(mFakeIconView);
+                updateHotseatChildViewColor(mHotseatIconView);
                 updateHotseatChildViewColor(mFakeHotseatView.findViewById(R.id.hotseat_icon_2));
                 updateHotseatChildViewColor(mFakeHotseatView.findViewById(R.id.hotseat_icon_3));
                 updateHotseatChildViewColor(mFakeHotseatView.findViewById(R.id.hotseat_icon_4));
                 updateHotseatChildViewColor(mFakeHotseatView.findViewById(R.id.hotseat_icon_5));
+                updateHotseatChildViewColor(mFakeHotseatView.findViewById(R.id.hotseat_icon_6));
                 updateHotseatChildViewColor(mFakeHotseatView.findViewById(R.id.hotseat_search_bar));
             } else {
                 updateFakeViewLayout(mFakeTaskView, getMockAppTaskLayoutResId());
