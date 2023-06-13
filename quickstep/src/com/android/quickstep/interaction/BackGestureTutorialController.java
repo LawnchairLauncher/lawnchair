@@ -66,12 +66,19 @@ final class BackGestureTutorialController extends TutorialController {
 
     @Override
     public int getIntroductionSubtitle() {
-        return R.string.back_gesture_intro_subtitle;
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? R.string.back_gesture_tutorial_subtitle
+                : R.string.back_gesture_intro_subtitle;
     }
 
     @Override
     public int getSpokenIntroductionSubtitle() {
         return R.string.back_gesture_spoken_intro_subtitle;
+    }
+
+    @Override
+    public int getSuccessFeedbackTitle() {
+        return R.string.gesture_tutorial_nice;
     }
 
     @Override
