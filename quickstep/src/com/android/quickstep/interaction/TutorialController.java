@@ -30,6 +30,7 @@ import android.annotation.RawRes;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Outline;
 import android.graphics.Rect;
 import android.graphics.drawable.AnimatedVectorDrawable;
@@ -67,6 +68,7 @@ import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureAttem
 import com.android.systemui.shared.system.QuickStepContract;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieComposition;
 
 import java.util.ArrayList;
 
@@ -175,6 +177,8 @@ abstract class TutorialController implements BackGestureAttemptCallback,
             mExitingAppStartingCornerRadius = QuickStepContract.getWindowCornerRadius(mContext);
             mExitingAppEndingCornerRadius = mContext.getResources().getDimensionPixelSize(
                     R.dimen.gesture_tutorial_back_gesture_end_corner_radius);
+            mAnimatedGestureDemonstration.addLottieOnCompositionLoadedListener(
+                    this::createScalingMatrix);
 
             mFeedbackTitleView.setText(getIntroductionTitle());
             mFeedbackSubtitleView.setText(getIntroductionSubtitle());
@@ -212,6 +216,24 @@ abstract class TutorialController implements BackGestureAttemptCallback,
                     .start();
             mFeedbackTitleView.postDelayed(mTitleViewCallback, FEEDBACK_ANIMATION_MS);
         };
+    }
+
+    /** Scale the Lottie gesture animation to fit the device based on device dimensions */
+    private void createScalingMatrix(LottieComposition composition) {
+        Rect animationBoundsRect = composition.getBounds();
+        if (animationBoundsRect == null) {
+            mAnimatedGestureDemonstration.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            return;
+        }
+        Matrix scaleMatrix = new Matrix();
+        float pivotX = mScreenWidth / 2f;
+        float pivotY = mScreenHeight;
+        float scaleFactor = mScreenWidth / animationBoundsRect.width();
+
+        scaleMatrix.postScale(scaleFactor, scaleFactor, pivotX, pivotY);
+        scaleMatrix.postTranslate(0,
+                mTutorialFragment.getDeviceProfile().heightPx - animationBoundsRect.height());
+        mAnimatedGestureDemonstration.setImageMatrix(scaleMatrix);
     }
 
     private void showSkipTutorialDialog() {
