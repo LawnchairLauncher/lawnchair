@@ -54,7 +54,7 @@
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"برای برگشتن به صفحه آخر، از لبه سمت چپ یا راست تند به وسط صفحه بکشید."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"برای برگشتن به صفحه قبلی، با ۲ انگشت از لبه سمت چپ یا راست تند به‌وسط صفحه بکشید."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"برگشتن"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"دقت کنید که از لبه پایینی صفحه تند به بالا بکشید."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"دقت کنید که از لبه پایین صفحه تند به‌بالا بکشید."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"دقت کنید که تا قبل‌از رها کردن، کشیدن را متوقف نکنید."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"دقت کنید که مستقیماً تند به بالا بکشید."</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"اشاره رفتن به «صفحه اصلی» را تکمیل کردید. مورد بعدی، با نحوه برگشتن به عقب آشنا شوید."</string>
@@ -64,7 +64,7 @@
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"با ۲ انگشت از پایین صفحه تند به‌بالا بکشید. این اشاره همیشه شما را به صفحه اصلی می‌برد."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"رفتن به صفحه اصلی"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"برای رفتن به صفحه اصلی در هر زمانی، از پایین صفحه تند به‌بالا بکشید"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"دقت کنید که از لبه پایینی صفحه تند به بالا بکشید."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"دقت کنید که از لبه پایین صفحه تند به‌بالا بکشید."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"سعی کنید قبل‌از رها کردن، پنجره را برای مدت طولانی‌تری نگه دارید."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"دقت کنید که مستقیماً تند به بالا بکشید و سپس توقف کنید."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"با نحوه استفاده از اشاره‌ها آشنا شدید. برای خاموش کردن اشاره‌ها، به «تنظیمات» بروید."</string>

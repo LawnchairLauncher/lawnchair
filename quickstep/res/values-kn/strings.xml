@@ -107,7 +107,7 @@
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ಮುಂದೆ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ಹಿಂದೆ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ಮುಚ್ಚಿರಿ"</string>
-    <string name="taskbar_edu_done" msgid="6880178093977704569">"ಮುಗಿದಿದೆ"</string>
+    <string name="taskbar_edu_done" msgid="6880178093977704569">"ಆಯಿತು"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ಮುಖಪುಟ"</string>
     <string name="taskbar_button_a11y" msgid="5241161324875094465">"ಆ್ಯಕ್ಸೆಸಿಬಿಲಿಟಿ"</string>
     <string name="taskbar_button_back" msgid="8558862226461164514">"ಹಿಂದೆ"</string>

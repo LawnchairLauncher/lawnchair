@@ -82,7 +82,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Tayari!"</string>
     <string name="allset_hint" msgid="459504134589971527">"Telezesha kidole juu ili uende kwenye skrini ya kwanza"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Gusa kitufe cha ukurasa wa mwanzo ili uende kwenye skrini ya kwanza"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"Uko tayari kuanza kutumia <xliff:g id="DEVICE">%1$s</xliff:g> yako"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Uko tayari kuanza kutumia <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"kifaa"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Mipangilio ya usogezaji kwenye mfumo"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Shiriki"</string>

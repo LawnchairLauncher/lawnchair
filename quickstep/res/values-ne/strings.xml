@@ -53,7 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"पछाडि जान स्वाइप गर्नुहोस्"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"यसअघिको स्क्रिनमा फर्कन स्क्रिनको बायाँ वा दायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस्।"</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"तपाईं यसअघि जुन स्क्रिनमा हुनुहुन्थ्यो त्यही स्क्रिनमा फर्कन चाहनुहुन्छ भने २ वटा औँला प्रयोग गरी स्क्रिनको बायाँ वा दायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस्।"</string>
-    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"पछाडि जानुहोस्"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"पछाडि जाने तरिका"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्।"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"औँला उठाउनुअघि नरोकिनुहोस्।"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"सीधै माथितिर स्वाइप गर्नुहोस्।"</string>
@@ -94,7 +94,7 @@
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"नेभिगेसन ट्युटोरियल स्किप गर्ने हो?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"तपाईं पछि <xliff:g id="NAME">%1$s</xliff:g> नामक एपमा गई यो ट्युटोरियल भेट्टाउन सक्नुहुन्छ"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"रद्द गर्नुहोस्"</string>
-    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"स्किप गर्नु…"</string>
+    <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"स्किप गर्नुहोस्"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"स्क्रिन घुमाउनुहोस्"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"टास्कबार एजुकेसन"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"टास्कबार एजुकेसन देखिएको छ"</string>
