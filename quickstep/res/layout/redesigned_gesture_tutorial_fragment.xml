@@ -124,7 +124,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:scaleType="centerCrop"
+            android:scaleType="matrix"
             app:lottie_loop="true" />
 
     </RelativeLayout>
