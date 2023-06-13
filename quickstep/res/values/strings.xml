@@ -94,6 +94,10 @@
     <!-- content description for hotseat items -->
     <string name="hotseat_prediction_content_description">Predicted app: <xliff:g id="title" example="Chrome">%1$s</xliff:g></string>
 
+    <!-- Title of prompt shown before the gesture navigation tutorial to users who need to rotate their screen. [CHAR LIMIT=100] -->
+    <string name="gesture_tutorial_rotation_prompt_title">Rotate your device</string>
+    <!-- Prompt shown before the gesture navigation tutorial to users who need to rotate their screen to begin. [CHAR LIMIT=100] -->
+    <string name="gesture_tutorial_rotation_prompt">Please rotate your device to complete the gesture navigation tutorial</string>
     <!-- Feedback shown during interactive parts of Back gesture tutorial for right edge when the gesture is too far from the edge. [CHAR LIMIT=100] -->
     <string name="back_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe from the far-right or far-left edge.</string>
     <!-- Feedback shown during interactive parts of Back gesture tutorial for right edge when the gesture is cancelled. [CHAR LIMIT=100] -->
