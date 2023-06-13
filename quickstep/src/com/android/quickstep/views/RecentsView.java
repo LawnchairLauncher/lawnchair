@@ -4105,14 +4105,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         alpha = Utilities.boundToRange(alpha, 0, 1);
         mContentAlpha = alpha;
 
-        runActionOnRemoteHandles(remoteTargetHandle -> {
-            TransformParams params = remoteTargetHandle.getTransformParams();
-            params.setTargetAlpha(mContentAlpha);
-            if (params.getTargetSet() != null) {
-                remoteTargetHandle.getTaskViewSimulator().apply(params);
-            }
-        });
-
         int runningTaskId = getTaskIdsForRunningTaskView()[0];
         for (int i = getTaskViewCount() - 1; i >= 0; i--) {
             TaskView child = requireTaskViewAt(i);
