@@ -105,7 +105,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tallAppsBorderSpacePxX: 42.0px (16.0dp)\n" +
                     "\tallAppsBorderSpacePxY: 42.0px (16.0dp)\n" +
                     "\tnumShownAllAppsColumns: 5\n" +
-                    "\tallAppsLeftRightPadding: 21.0px (8.0dp)\n" +
+                    "\tallAppsLeftRightPadding: 0.0px (0.0dp)\n" +
                     "\tallAppsLeftRightMargin: 0.0px (0.0dp)\n" +
                     "\thotseatBarSizePx: 294.0px (112.0dp)\n" +
                     "\tinv.hotseatColumnSpan: 5\n" +
@@ -241,7 +241,7 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tallAppsBorderSpacePxX: 42.0px (16.0dp)\n" +
                     "\tallAppsBorderSpacePxY: 42.0px (16.0dp)\n" +
                     "\tnumShownAllAppsColumns: 5\n" +
-                    "\tallAppsLeftRightPadding: 21.0px (8.0dp)\n" +
+                    "\tallAppsLeftRightPadding: 0.0px (0.0dp)\n" +
                     "\tallAppsLeftRightMargin: 0.0px (0.0dp)\n" +
                     "\thotseatBarSizePx: 273.0px (104.0dp)\n" +
                     "\tinv.hotseatColumnSpan: 5\n" +
