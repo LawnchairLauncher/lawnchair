@@ -382,8 +382,7 @@ public class CellLayout extends ViewGroup {
     private void resetCellSizeInternal(DeviceProfile deviceProfile) {
         switch (mContainerType) {
             case FOLDER:
-                mBorderSpace = new Point(deviceProfile.folderCellLayoutBorderSpacePx,
-                        deviceProfile.folderCellLayoutBorderSpacePx);
+                mBorderSpace = new Point(deviceProfile.folderCellLayoutBorderSpacePx);
                 break;
             case HOTSEAT:
                 mBorderSpace = new Point(deviceProfile.hotseatBorderSpace,

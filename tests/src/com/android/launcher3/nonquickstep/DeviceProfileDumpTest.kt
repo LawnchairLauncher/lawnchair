@@ -84,7 +84,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tfolderChildIconSizePx: 147.0px (56.0dp)\n" +
                     "\tfolderChildTextSizePx: 38.0px (14.476191dp)\n" +
                     "\tfolderChildDrawablePaddingPx: 10.0px (3.8095238dp)\n" +
-                    "\tfolderCellLayoutBorderSpacePx: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.x: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.y: 0.0px (0.0dp)\n" +
                     "\tfolderContentPaddingLeftRight: 21.0px (8.0dp)\n" +
                     "\tfolderTopPadding: 63.0px (24.0dp)\n" +
                     "\tfolderFooterHeight: 147.0px (56.0dp)\n" +
@@ -220,7 +221,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tfolderChildIconSizePx: 147.0px (56.0dp)\n" +
                     "\tfolderChildTextSizePx: 38.0px (14.476191dp)\n" +
                     "\tfolderChildDrawablePaddingPx: 10.0px (3.8095238dp)\n" +
-                    "\tfolderCellLayoutBorderSpacePx: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.x: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.y: 0.0px (0.0dp)\n" +
                     "\tfolderContentPaddingLeftRight: 21.0px (8.0dp)\n" +
                     "\tfolderTopPadding: 63.0px (24.0dp)\n" +
                     "\tfolderFooterHeight: 147.0px (56.0dp)\n" +
@@ -356,7 +358,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tfolderChildIconSizePx: 131.0px (49.904762dp)\n" +
                     "\tfolderChildTextSizePx: 34.0px (12.952381dp)\n" +
                     "\tfolderChildDrawablePaddingPx: 9.0px (3.4285715dp)\n" +
-                    "\tfolderCellLayoutBorderSpacePx: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.x: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.y: 0.0px (0.0dp)\n" +
                     "\tfolderContentPaddingLeftRight: 21.0px (8.0dp)\n" +
                     "\tfolderTopPadding: 56.0px (21.333334dp)\n" +
                     "\tfolderFooterHeight: 131.0px (49.904762dp)\n" +
@@ -492,7 +495,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tfolderChildIconSizePx: 123.0px (46.857143dp)\n" +
                     "\tfolderChildTextSizePx: 32.0px (12.190476dp)\n" +
                     "\tfolderChildDrawablePaddingPx: 8.0px (3.047619dp)\n" +
-                    "\tfolderCellLayoutBorderSpacePx: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.x: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.y: 0.0px (0.0dp)\n" +
                     "\tfolderContentPaddingLeftRight: 21.0px (8.0dp)\n" +
                     "\tfolderTopPadding: 53.0px (20.190475dp)\n" +
                     "\tfolderFooterHeight: 123.0px (46.857143dp)\n" +
@@ -629,7 +633,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tfolderChildIconSizePx: 120.0px (60.0dp)\n" +
                     "\tfolderChildTextSizePx: 28.0px (14.0dp)\n" +
                     "\tfolderChildDrawablePaddingPx: 16.0px (8.0dp)\n" +
-                    "\tfolderCellLayoutBorderSpacePx: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.x: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.y: 0.0px (0.0dp)\n" +
                     "\tfolderContentPaddingLeftRight: 0.0px (0.0dp)\n" +
                     "\tfolderTopPadding: 48.0px (24.0dp)\n" +
                     "\tfolderFooterHeight: 112.0px (56.0dp)\n" +
@@ -766,7 +771,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tfolderChildIconSizePx: 120.0px (60.0dp)\n" +
                     "\tfolderChildTextSizePx: 28.0px (14.0dp)\n" +
                     "\tfolderChildDrawablePaddingPx: 16.0px (8.0dp)\n" +
-                    "\tfolderCellLayoutBorderSpacePx: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.x: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.y: 0.0px (0.0dp)\n" +
                     "\tfolderContentPaddingLeftRight: 0.0px (0.0dp)\n" +
                     "\tfolderTopPadding: 48.0px (24.0dp)\n" +
                     "\tfolderFooterHeight: 112.0px (56.0dp)\n" +
@@ -903,7 +909,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tfolderChildIconSizePx: 120.0px (60.0dp)\n" +
                     "\tfolderChildTextSizePx: 28.0px (14.0dp)\n" +
                     "\tfolderChildDrawablePaddingPx: 27.0px (13.5dp)\n" +
-                    "\tfolderCellLayoutBorderSpacePx: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.x: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.y: 0.0px (0.0dp)\n" +
                     "\tfolderContentPaddingLeftRight: 0.0px (0.0dp)\n" +
                     "\tfolderTopPadding: 48.0px (24.0dp)\n" +
                     "\tfolderFooterHeight: 112.0px (56.0dp)\n" +
@@ -1040,7 +1047,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tfolderChildIconSizePx: 120.0px (60.0dp)\n" +
                     "\tfolderChildTextSizePx: 28.0px (14.0dp)\n" +
                     "\tfolderChildDrawablePaddingPx: 27.0px (13.5dp)\n" +
-                    "\tfolderCellLayoutBorderSpacePx: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.x: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.y: 0.0px (0.0dp)\n" +
                     "\tfolderContentPaddingLeftRight: 0.0px (0.0dp)\n" +
                     "\tfolderTopPadding: 48.0px (24.0dp)\n" +
                     "\tfolderFooterHeight: 112.0px (56.0dp)\n" +
@@ -1182,7 +1190,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tfolderChildIconSizePx: 141.0px (53.714287dp)\n" +
                     "\tfolderChildTextSizePx: 34.0px (12.952381dp)\n" +
                     "\tfolderChildDrawablePaddingPx: 10.0px (3.8095238dp)\n" +
-                    "\tfolderCellLayoutBorderSpacePx: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.x: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.y: 0.0px (0.0dp)\n" +
                     "\tfolderContentPaddingLeftRight: 21.0px (8.0dp)\n" +
                     "\tfolderTopPadding: 63.0px (24.0dp)\n" +
                     "\tfolderFooterHeight: 147.0px (56.0dp)\n" +
@@ -1323,7 +1332,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tfolderChildIconSizePx: 141.0px (53.714287dp)\n" +
                     "\tfolderChildTextSizePx: 34.0px (12.952381dp)\n" +
                     "\tfolderChildDrawablePaddingPx: 10.0px (3.8095238dp)\n" +
-                    "\tfolderCellLayoutBorderSpacePx: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.x: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.y: 0.0px (0.0dp)\n" +
                     "\tfolderContentPaddingLeftRight: 21.0px (8.0dp)\n" +
                     "\tfolderTopPadding: 63.0px (24.0dp)\n" +
                     "\tfolderFooterHeight: 147.0px (56.0dp)\n" +
@@ -1464,7 +1474,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tfolderChildIconSizePx: 141.0px (53.714287dp)\n" +
                     "\tfolderChildTextSizePx: 34.0px (12.952381dp)\n" +
                     "\tfolderChildDrawablePaddingPx: 10.0px (3.8095238dp)\n" +
-                    "\tfolderCellLayoutBorderSpacePx: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.x: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.y: 0.0px (0.0dp)\n" +
                     "\tfolderContentPaddingLeftRight: 21.0px (8.0dp)\n" +
                     "\tfolderTopPadding: 63.0px (24.0dp)\n" +
                     "\tfolderFooterHeight: 147.0px (56.0dp)\n" +
@@ -1601,7 +1612,8 @@ class DeviceProfileDumpTest : AbstractDeviceProfileTest() {
                     "\tfolderChildIconSizePx: 141.0px (53.714287dp)\n" +
                     "\tfolderChildTextSizePx: 34.0px (12.952381dp)\n" +
                     "\tfolderChildDrawablePaddingPx: 10.0px (3.8095238dp)\n" +
-                    "\tfolderCellLayoutBorderSpacePx: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.x: 0.0px (0.0dp)\n" +
+                    "\tfolderCellLayoutBorderSpacePx.y: 0.0px (0.0dp)\n" +
                     "\tfolderContentPaddingLeftRight: 21.0px (8.0dp)\n" +
                     "\tfolderTopPadding: 63.0px (24.0dp)\n" +
                     "\tfolderFooterHeight: 147.0px (56.0dp)\n" +
