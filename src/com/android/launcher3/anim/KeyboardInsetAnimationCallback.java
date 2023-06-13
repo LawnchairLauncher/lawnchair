@@ -44,14 +44,30 @@ public class KeyboardInsetAnimationCallback extends WindowInsetsAnimation.Callba
 
     private float mInitialTranslation;
     private float mTerminalTranslation;
+    private KeyboardTranslationState mKeyboardTranslationState = KeyboardTranslationState.SYSTEM;
+
+    /** Current state of the keyboard. */
+    public enum KeyboardTranslationState {
+        // We are not controlling the keyboard, and it may or may not be translating.
+        SYSTEM,
+        // We are about to gain control of the keyboard, but the current state may be transient.
+        MANUAL_PREPARED,
+        // We are manually translating the keyboard.
+        MANUAL_ONGOING
+    }
 
     public KeyboardInsetAnimationCallback(View view) {
         super(DISPATCH_MODE_STOP);
         mView = view;
     }
 
+    public KeyboardTranslationState getKeyboardTranslationState() {
+        return mKeyboardTranslationState;
+    }
+
     @Override
     public void onPrepare(WindowInsetsAnimation animation) {
+        mKeyboardTranslationState = KeyboardTranslationState.MANUAL_PREPARED;
         mInitialTranslation = mView.getTranslationY();
     }
 
@@ -62,6 +78,7 @@ public class KeyboardInsetAnimationCallback extends WindowInsetsAnimation.Callba
         mTerminalTranslation = mView.getTranslationY();
         // Reset the translation in case the view is drawn before onProgress gets called.
         mView.setTranslationY(mInitialTranslation);
+        mKeyboardTranslationState = KeyboardTranslationState.MANUAL_ONGOING;
         if (mView instanceof KeyboardInsetListener) {
             ((KeyboardInsetListener) mView).onTranslationStart();
         }
@@ -90,6 +107,10 @@ public class KeyboardInsetAnimationCallback extends WindowInsetsAnimation.Callba
             mView.setTranslationY(translationY);
         }
 
+        if (mView instanceof KeyboardInsetListener) {
+            ((KeyboardInsetListener) mView).onKeyboardAlphaChanged(animation.getAlpha());
+        }
+
         return windowInsets;
     }
 
@@ -98,7 +119,7 @@ public class KeyboardInsetAnimationCallback extends WindowInsetsAnimation.Callba
         if (mView instanceof KeyboardInsetListener) {
             ((KeyboardInsetListener) mView).onTranslationEnd();
         }
-        super.onEnd(animation);
+        mKeyboardTranslationState = KeyboardTranslationState.SYSTEM;
     }
 
     /**
@@ -109,6 +130,13 @@ public class KeyboardInsetAnimationCallback extends WindowInsetsAnimation.Callba
          * Called from {@link KeyboardInsetAnimationCallback#onStart}
          */
         void onTranslationStart();
+
+        /**
+         * Called from {@link KeyboardInsetAnimationCallback#onProgress}
+         *
+         * @param alpha the current IME alpha
+         */
+        default void onKeyboardAlphaChanged(float alpha) {}
 
         /**
          * Called from {@link KeyboardInsetAnimationCallback#onEnd}
