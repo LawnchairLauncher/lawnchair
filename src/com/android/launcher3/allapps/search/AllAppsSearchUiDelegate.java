@@ -49,8 +49,13 @@ public class AllAppsSearchUiDelegate {
         // Do nothing.
     }
 
-    /** Invoked when the search box has been added to All Apps. */
-    public void onInitializeSearchBox() {
+    /** Invoked when the search bar has been added to All Apps. */
+    public void onInitializeSearchBar() {
+        // Do nothing.
+    }
+
+    /** Invoked when the search bar has been removed from All Apps. */
+    public void onDestroySearchBar() {
         // Do nothing.
     }
 
@@ -59,9 +64,14 @@ public class AllAppsSearchUiDelegate {
         return LayoutInflater.from(mAppsView.getContext());
     }
 
-    /** Inflate the search box for All Apps. */
-    public View inflateSearchBox() {
+    /** Inflate the search bar for All Apps. */
+    public View inflateSearchBar() {
         return getLayoutInflater().inflate(R.layout.search_container_all_apps, mAppsView, false);
+    }
+
+    /** Whether the search box is floating above the apps surface (inset by the IME). */
+    public boolean isSearchBarFloating() {
+        return false;
     }
 
     /** Creates the adapter provider for the main section. */
