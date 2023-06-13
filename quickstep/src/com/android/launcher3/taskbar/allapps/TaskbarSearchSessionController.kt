@@ -35,6 +35,9 @@ open class TaskbarSearchSessionController : ResourceBasedOverride {
     /** Updates the predicted items shown in the zero-state. */
     open fun setZeroStatePredictedItems(items: List<ItemInfo>) {}
 
+    /** Updates the search suggestions shown in the zero-state. */
+    open fun setZeroStateSearchSuggestions(items: List<ItemInfo>) {}
+
     companion object {
         @JvmStatic
         fun newInstance(context: Context): TaskbarSearchSessionController {
