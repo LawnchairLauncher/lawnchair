@@ -77,12 +77,21 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
 
     @Override
     public int getIntroductionSubtitle() {
-        return R.string.overview_gesture_intro_subtitle;
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? R.string.overview_gesture_tutorial_subtitle
+                : R.string.overview_gesture_intro_subtitle;
     }
 
     @Override
     public int getSpokenIntroductionSubtitle() {
         return R.string.overview_gesture_spoken_intro_subtitle;
+    }
+
+    @Override
+    public int getSuccessFeedbackTitle() {
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? R.string.overview_gesture_tutorial_success
+                : R.string.gesture_tutorial_nice;
     }
 
     @Override
