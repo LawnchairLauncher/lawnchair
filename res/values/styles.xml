@@ -31,7 +31,7 @@
 
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
         <item name="android:textColorSecondary">#DE000000</item>
-        <item name="allAppsScrimColor">?android:attr/colorBackgroundFloating</item>
+        <item name="allAppsScrimColor">?attr/materialColorSurfaceDim</item>
         <item name="allappsHeaderProtectionColor">@color/popup_color_tertiary_light</item>
         <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
         <item name="popupColorPrimary">@color/popup_color_primary_light</item>
@@ -74,6 +74,51 @@
         <item name="android:statusBarColor">#00000000</item>
         <item name="android:navigationBarColor">#00000000</item>
         <item name="android:switchStyle">@style/SwitchStyle</item>
+
+        <item name="materialColorOnSecondaryFixedVariant">@color/material_color_on_secondary_fixed_variant</item>
+        <item name="materialColorOnTertiaryFixedVariant">@color/material_color_on_tertiary_fixed_variant</item>
+        <item name="materialColorSurfaceContainerLowest">@color/material_color_surface_container_lowest</item>
+        <item name="materialColorOnPrimaryFixedVariant">@color/material_color_on_primary_fixed_variant</item>
+        <item name="materialColorOnSecondaryContainer">@color/material_color_on_secondary_container</item>
+        <item name="materialColorOnTertiaryContainer">@color/material_color_on_tertiary_container</item>
+        <item name="materialColorSurfaceContainerLow">@color/material_color_surface_container_low</item>
+        <item name="materialColorOnPrimaryContainer">@color/material_color_on_primary_container</item>
+        <item name="materialColorSecondaryFixedDim">@color/material_color_secondary_fixed_dim</item>
+        <item name="materialColorOnErrorContainer">@color/material_color_on_error_container</item>
+        <item name="materialColorOnSecondaryFixed">@color/material_color_on_secondary_fixed</item>
+        <item name="materialColorOnSurfaceInverse">@color/material_color_on_surface_inverse</item>
+        <item name="materialColorTertiaryFixedDim">@color/material_color_tertiary_fixed_dim</item>
+        <item name="materialColorOnTertiaryFixed">@color/material_color_on_tertiary_fixed</item>
+        <item name="materialColorPrimaryFixedDim">@color/material_color_primary_fixed_dim</item>
+        <item name="materialColorSecondaryContainer">@color/material_color_secondary_container</item>
+        <item name="materialColorErrorContainer">@color/material_color_error_container</item>
+        <item name="materialColorOnPrimaryFixed">@color/material_color_on_primary_fixed</item>
+        <item name="materialColorPrimaryInverse">@color/material_color_primary_inverse</item>
+        <item name="materialColorSecondaryFixed">@color/material_color_secondary_fixed</item>
+        <item name="materialColorSurfaceInverse">@color/material_color_surface_inverse</item>
+        <item name="materialColorSurfaceVariant">@color/material_color_surface_variant</item>
+        <item name="materialColorTertiaryContainer">@color/material_color_tertiary_container</item>
+        <item name="materialColorTertiaryFixed">@color/material_color_tertiary_fixed</item>
+        <item name="materialColorPrimaryContainer">@color/material_color_primary_container</item>
+        <item name="materialColorOnBackground">@color/material_color_on_background</item>
+        <item name="materialColorPrimaryFixed">@color/material_color_primary_fixed</item>
+        <item name="materialColorOnSecondary">@color/material_color_on_secondary</item>
+        <item name="materialColorOnTertiary">@color/material_color_on_tertiary</item>
+        <item name="materialColorSurfaceDim">@color/material_color_surface_dim</item>
+        <item name="materialColorSurfaceBright">@color/material_color_surface_bright</item>
+        <item name="materialColorOnError">@color/material_color_on_error</item>
+        <item name="materialColorSurface">@color/material_color_surface</item>
+        <item name="materialColorSurfaceContainerHigh">@color/material_color_surface_container_high</item>
+        <item name="materialColorSurfaceContainerHighest">@color/material_color_surface_container_highest</item>
+        <item name="materialColorOnSurfaceVariant">@color/material_color_on_surface_variant</item>
+        <item name="materialColorOutline">@color/material_color_outline</item>
+        <item name="materialColorOutlineVariant">@color/material_color_outline_variant</item>
+        <item name="materialColorOnPrimary">@color/material_color_on_primary</item>
+        <item name="materialColorOnSurface">@color/material_color_on_surface</item>
+        <item name="materialColorSurfaceContainer">@color/material_color_surface_container</item>
+        <item name="materialColorPrimary">@color/material_color_primary</item>
+        <item name="materialColorSecondary">@color/material_color_secondary</item>
+        <item name="materialColorTertiary">@color/material_color_tertiary</item>
     </style>
 
     <style name="SwitchStyle"
@@ -103,7 +148,7 @@
         <item name="android:textColorHint">#A0FFFFFF</item>
         <item name="android:colorControlHighlight">#19FFFFFF</item>
         <item name="android:colorPrimary">#FF212121</item>
-        <item name="allAppsScrimColor">?android:attr/colorBackgroundFloating</item>
+        <item name="allAppsScrimColor">?attr/materialColorSurfaceDim</item>
         <item name="allAppsNavBarScrimColor">#80000000</item>
         <item name="popupColorPrimary">@color/popup_color_primary_dark</item>
         <item name="popupColorSecondary">@color/popup_color_secondary_dark</item>
