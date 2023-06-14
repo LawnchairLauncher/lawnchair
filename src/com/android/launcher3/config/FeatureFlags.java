@@ -277,7 +277,7 @@ public final class FeatureFlags {
                     + " is enabled or in prefix state");
 
     public static final BooleanFlag ENABLE_SEARCH_UNINSTALLED_APPS = getReleaseFlag(270395269,
-            "ENABLE_SEARCH_UNINSTALLED_APPS", DISABLED, "Search uninstalled app results.");
+            "ENABLE_SEARCH_UNINSTALLED_APPS", ENABLED, "Search uninstalled app results.");
 
     // TODO(Block 20): Clean up flags
     public static final BooleanFlag ENABLE_SCRIM_FOR_APP_LAUNCH = getDebugFlag(270393276,
