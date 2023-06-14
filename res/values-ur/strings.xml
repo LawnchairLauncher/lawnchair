@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"فولڈر کا نام تبدیل کر کے <xliff:g id="NAME">%1$s</xliff:g> کر دیا گیا"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"فولڈر: <xliff:g id="NAME">%1$s</xliff:g>، <xliff:g id="SIZE">%2$d</xliff:g> آئٹمز"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"فولڈر: <xliff:g id="NAME">%1$s</xliff:g>، <xliff:g id="SIZE">%2$d</xliff:g> یا مزید آئٹمز"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"وال پیپرز"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"وال پیپر اور طرز"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"ہوم اسکرین میں ترمیم کریں"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ہوم ترتیبات"</string>
