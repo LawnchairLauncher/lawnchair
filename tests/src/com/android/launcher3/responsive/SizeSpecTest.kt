@@ -22,6 +22,7 @@ import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.AbstractDeviceProfileTest
 import com.google.common.truth.Truth.assertThat
+import kotlin.math.roundToInt
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,6 +50,42 @@ class SizeSpecTest : AbstractDeviceProfileTest() {
 
         for (instance in combinations) {
             assertThat(instance.isValid()).isEqualTo(true)
+        }
+    }
+
+    @Test
+    fun validate_getCalculatedValue() {
+        val availableSpace = 100
+        val matchWorkspaceValue = 101
+        val combinations =
+            listOf(
+                SizeSpec(100f) to 100,
+                SizeSpec(ofAvailableSpace = .5f) to (availableSpace * .5f).roundToInt(),
+                SizeSpec(ofRemainderSpace = .5f) to 0,
+                SizeSpec(matchWorkspace = true) to matchWorkspaceValue
+            )
+
+        for ((sizeSpec, expectedValue) in combinations) {
+            val value = sizeSpec.getCalculatedValue(availableSpace, matchWorkspaceValue)
+            assertThat(value).isEqualTo(expectedValue)
+        }
+    }
+
+    @Test
+    fun validate_getRemainderSpaceValue() {
+        val remainderSpace = 100
+        val defaultValue = 10
+        val combinations =
+            listOf(
+                SizeSpec(100f) to defaultValue,
+                SizeSpec(ofAvailableSpace = .5f) to defaultValue,
+                SizeSpec(ofRemainderSpace = .5f) to (remainderSpace * .5f).roundToInt(),
+                SizeSpec(matchWorkspace = true) to defaultValue
+            )
+
+        for ((sizeSpec, expectedValue) in combinations) {
+            val value = sizeSpec.getRemainderSpaceValue(remainderSpace, defaultValue)
+            assertThat(value).isEqualTo(expectedValue)
         }
     }
 

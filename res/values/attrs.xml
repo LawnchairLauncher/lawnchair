@@ -259,6 +259,11 @@
         <attr name="matchWorkspace" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="FolderSpec">
+        <attr name="specType" />
+        <attr name="maxAvailableSize" />
+    </declare-styleable>
+
     <declare-styleable name="ProfileDisplayOption">
         <attr name="name" />
         <attr name="minWidthDps" format="float" />

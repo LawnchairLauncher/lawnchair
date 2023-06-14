@@ -44,6 +44,7 @@ class WorkspaceSpecs(resourceHelper: ResourceHelper) {
     val workspaceHeightSpecList = mutableListOf<WorkspaceSpec>()
     val workspaceWidthSpecList = mutableListOf<WorkspaceSpec>()
 
+    // TODO(b/286538013) Remove this init after a more generic or reusable parser is created
     init {
         try {
             val parser: XmlResourceParser = resourceHelper.getXml()
