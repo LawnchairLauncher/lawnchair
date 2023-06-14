@@ -16,6 +16,8 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.SEARCH;
+import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_WORK_DISABLED_CARD;
+import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_WORK_EDU_CARD;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_COUNT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB;
@@ -77,6 +79,7 @@ import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
@@ -1165,6 +1168,30 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         if (!view.isShown()) return false;
 
         return view.getGlobalVisibleRect(new Rect());
+    }
+
+    /** Called in Launcher#bindStringCache() to update the UI when cache is updated. */
+    public void updateWorkUI() {
+        setDeviceManagementResources();
+        if (mWorkManager.getWorkModeSwitch() != null) {
+            mWorkManager.getWorkModeSwitch().updateStringFromCache();
+        }
+        inflateWorkCardsIfNeeded();
+    }
+
+    private void inflateWorkCardsIfNeeded() {
+        AllAppsRecyclerView workRV = mAH.get(AdapterHolder.WORK).mRecyclerView;
+        if (workRV != null) {
+            for (int i = 0; i < workRV.getChildCount(); i++) {
+                View currentView  = workRV.getChildAt(i);
+                int currentItemViewType = workRV.getChildViewHolder(currentView).getItemViewType();
+                if (currentItemViewType == VIEW_TYPE_WORK_EDU_CARD) {
+                    ((WorkEduCard) currentView).updateStringFromCache();
+                } else if (currentItemViewType == VIEW_TYPE_WORK_DISABLED_CARD) {
+                    ((WorkPausedCard) currentView).updateStringFromCache();
+                }
+            }
+        }
     }
 
     @VisibleForTesting
