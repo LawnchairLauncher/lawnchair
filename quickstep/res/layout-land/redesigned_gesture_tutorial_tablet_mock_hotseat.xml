@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
 
         app:constraint_referenced_ids="hotseat_search_bar, hotseat_icon_1, hotseat_icon_2,
-            hotseat_icon_3, hotseat_icon_4, hotseat_icon_5"
+            hotseat_icon_3, hotseat_icon_4, hotseat_icon_5, hotseat_icon_6"
         app:flow_horizontalStyle="spread"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,6 +72,13 @@
 
     <View
         android:id="@+id/hotseat_icon_5"
+        android:layout_width="@dimen/gesture_tutorial_hotseat_icon_size"
+        android:layout_height="@dimen/gesture_tutorial_hotseat_icon_size"
+        android:background="@drawable/redesigned_hotseat_icon"
+        android:clipToOutline="true" />
+
+    <View
+        android:id="@+id/hotseat_icon_6"
         android:layout_width="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_height="@dimen/gesture_tutorial_hotseat_icon_size"
         android:background="@drawable/redesigned_hotseat_icon"
