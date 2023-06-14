@@ -32,4 +32,10 @@
         <attr name="ofRemainderSpace" format="float" />
         <attr name="matchWorkspace" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="FolderSpec">
+        <attr name="specType" />
+        <attr name="maxAvailableSize" />
+    </declare-styleable>
+
 </resources>

@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
+import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_BOTTOM_SHEET_FADE;
@@ -234,7 +235,11 @@ public class AllAppsTransitionController
      */
     public void setProgress(float progress) {
         mProgress = progress;
-        getAppsViewProgressTranslationY().setValue(mProgress * mShiftRange);
+        boolean fromBackground =
+                mLauncher.getStateManager().getCurrentStableState() == BACKGROUND_APP;
+        // Allow apps panel to shift the full screen if coming from another app.
+        float shiftRange = fromBackground ? mLauncher.getDeviceProfile().heightPx : mShiftRange;
+        getAppsViewProgressTranslationY().setValue(mProgress * shiftRange);
         mLauncher.onAllAppsTransition(1 - progress);
 
         boolean hasScrim = progress < NAV_BAR_COLOR_FORCE_UPDATE_THRESHOLD

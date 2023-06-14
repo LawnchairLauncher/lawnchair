@@ -6,13 +6,44 @@ import android.util.Log
 import android.util.TypedValue
 import com.android.launcher3.R
 import com.android.launcher3.util.ResourceHelper
+import kotlin.math.roundToInt
 
+/**
+ * [SizeSpec] is an attribute used to represent a property in the responsive grid specs.
+ *
+ * @param fixedSize a fixed size in dp to be used
+ * @param ofAvailableSpace a percentage of the available space
+ * @param ofRemainderSpace a percentage of the remaining space (available space minus used space)
+ * @param matchWorkspace indicates whether the workspace value will be used or not.
+ */
 data class SizeSpec(
-    val fixedSize: Float,
-    val ofAvailableSpace: Float,
-    val ofRemainderSpace: Float,
-    val matchWorkspace: Boolean
+    val fixedSize: Float = 0f,
+    val ofAvailableSpace: Float = 0f,
+    val ofRemainderSpace: Float = 0f,
+    val matchWorkspace: Boolean = false
 ) {
+
+    /** Retrieves the correct value for [SizeSpec]. */
+    fun getCalculatedValue(availableSpace: Int, workspaceValue: Int): Int {
+        return when {
+            fixedSize > 0 -> fixedSize.roundToInt()
+            ofAvailableSpace > 0 -> (ofAvailableSpace * availableSpace).roundToInt()
+            matchWorkspace -> workspaceValue
+            else -> 0
+        }
+    }
+
+    /**
+     * Calculates the [SizeSpec] value when remainder space value is defined. If no remainderSpace
+     * is 0, returns a default value.
+     */
+    fun getRemainderSpaceValue(remainderSpace: Int, defaultValue: Int): Int {
+        return if (ofRemainderSpace > 0) {
+            (ofRemainderSpace * remainderSpace).roundToInt()
+        } else {
+            defaultValue
+        }
+    }
 
     fun isValid(): Boolean {
         // All attributes are empty
@@ -48,7 +79,8 @@ data class SizeSpec(
     }
 
     companion object {
-        private const val TAG = "WorkspaceSpecs::SizeSpec"
+        private const val TAG = "SizeSpec"
+
         private fun getValue(a: TypedArray, index: Int): Float {
             return when (a.getType(index)) {
                 TypedValue.TYPE_DIMENSION -> a.getDimensionPixelSize(index, 0).toFloat()

@@ -94,8 +94,12 @@ public class QuickstepAtomicAnimationFactory extends
     @Override
     public void prepareForAtomicAnimation(LauncherState fromState, LauncherState toState,
             StateAnimationConfig config) {
+
         RecentsView overview = mActivity.getOverviewPanel();
         if ((fromState == OVERVIEW || fromState == OVERVIEW_SPLIT_SELECT) && toState == NORMAL) {
+            overview.switchToScreenshot(() ->
+                    overview.finishRecentsAnimation(true /* toRecents */, null));
+
             if (fromState == OVERVIEW_SPLIT_SELECT) {
                 config.setInterpolator(ANIM_OVERVIEW_SPLIT_SELECT_FLOATING_TASK_TRANSLATE_OFFSCREEN,
                         clampToProgress(EMPHASIZED_ACCELERATE, 0, 0.4f));
