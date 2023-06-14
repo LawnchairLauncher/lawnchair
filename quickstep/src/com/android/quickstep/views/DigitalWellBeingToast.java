@@ -280,10 +280,6 @@ public final class DigitalWellBeingToast {
         }
     }
 
-    public String getContentDescription() {
-            return getContentDescriptionForTask(mTask, mAppUsageLimitTimeMs, mAppRemainingTimeMs);
-    }
-
     private String getContentDescriptionForTask(
             Task task, long appUsageLimitTimeMs, long appRemainingTimeMs) {
         return appUsageLimitTimeMs >= 0 && appRemainingTimeMs >= 0 ?
