@@ -23,7 +23,6 @@ import static com.google.common.truth.Truth.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
@@ -58,6 +57,7 @@ import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.TestUtil;
+import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.TISBindRule;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
@@ -507,13 +507,9 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     private void verifyAppUninstalledFromAllApps(Workspace workspace, String appName) {
         final HomeAllApps allApps = workspace.switchToAllApps();
-        allApps.freeze();
-        try {
-            assertNull(appName + " app was found on all apps after being uninstalled",
-                    allApps.tryGetAppIcon(appName));
-        } finally {
-            allApps.unfreeze();
-        }
+        Wait.atMost(appName + " app was found on all apps after being uninstalled",
+                () -> allApps.tryGetAppIcon(appName) == null,
+                DEFAULT_UI_TIMEOUT, mLauncher);
     }
 
     @Ignore("b/256615483")
@@ -540,7 +536,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             Workspace workspace = mLauncher.getWorkspace();
             final HomeAllApps allApps = workspace.switchToAllApps();
             workspace = allApps.getAppIcon(DUMMY_APP_NAME).uninstall();
-            waitForLauncherUIUpdate();
             verifyAppUninstalledFromAllApps(workspace, DUMMY_APP_NAME);
         } finally {
             TestUtil.uninstallDummyApp();
