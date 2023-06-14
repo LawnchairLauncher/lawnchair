@@ -811,10 +811,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         VibratorWrapper.INSTANCE.get(mContext).vibrate(OVERVIEW_HAPTIC);
         maybeUpdateRecentsAttachedState(true);
 
-        if (mActivity != null) {
-            mActivity.getAppsView().getSearchUiManager().prepareToFocusEditText(mIsInAllAppsRegion);
-        }
-
         // Draw active task below Launcher so that All Apps can appear over it.
         runActionOnRemoteHandles(remoteTargetHandle ->
                 remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(isInAllAppsRegion));

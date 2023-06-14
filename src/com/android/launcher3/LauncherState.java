@@ -66,7 +66,6 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final int CLEAR_ALL_BUTTON = 1 << 4;
     public static final int WORKSPACE_PAGE_INDICATOR = 1 << 5;
     public static final int SPLIT_PLACHOLDER_VIEW = 1 << 6;
-    public static final int FLOATING_SEARCH_BAR = 1 << 7;
 
     // Flag indicating workspace has multiple pages visible.
     public static final int FLAG_MULTI_PAGE = BaseState.getFlag(0);
@@ -203,33 +202,8 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return 0;
     }
 
-    /**
-     * How far from the bottom of the screen the <em>floating</em> search bar should rest in this
-     * state when the IME is not present.
-     * <p>
-     * To hide offscreen, use a negative value.
-     * <p>
-     * Note: if the provided value is non-negative but less than the current bottom insets, the
-     * insets will be applied. As such, you can use 0 to default to this.
-     */
-    public int getFloatingSearchBarRestingMarginBottom(Launcher launcher) {
-        DeviceProfile dp = launcher.getDeviceProfile();
-        return areElementsVisible(launcher, FLOATING_SEARCH_BAR) ? dp.getQsbOffsetY()
-                : -dp.hotseatQsbHeight;
-    }
-
-    /** Whether the <em>floating</em> search bar should use the pill UI when not focused. */
-    public boolean shouldFloatingSearchBarUsePillWhenUnfocused(Launcher launcher) {
-        return false;
-    }
-
     public int getVisibleElements(Launcher launcher) {
-        int elements = HOTSEAT_ICONS | WORKSPACE_PAGE_INDICATOR | VERTICAL_SWIPE_INDICATOR;
-        // Floating search bar is visible in normal state except in landscape on phones.
-        if (!(launcher.getDeviceProfile().isPhone && launcher.getDeviceProfile().isLandscape)) {
-            elements |= FLOATING_SEARCH_BAR;
-        }
-        return elements;
+        return HOTSEAT_ICONS | WORKSPACE_PAGE_INDICATOR | VERTICAL_SWIPE_INDICATOR;
     }
 
     /**
