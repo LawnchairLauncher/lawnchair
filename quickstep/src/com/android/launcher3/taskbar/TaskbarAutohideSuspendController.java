@@ -41,10 +41,8 @@ public class TaskbarAutohideSuspendController implements
     public static final int FLAG_AUTOHIDE_SUSPEND_TOUCHING = 1 << 2;
     // Taskbar EDU overlay is open above the Taskbar. */
     public static final int FLAG_AUTOHIDE_SUSPEND_EDU_OPEN = 1 << 3;
-    // Taskbar is in immersive mode in overview.
+    // Taskbar in immersive mode in overview
     public static final int FLAG_AUTOHIDE_SUSPEND_IN_LAUNCHER = 1 << 4;
-    // Transient Taskbar is temporarily unstashed (pending a timeout).
-    public static final int FLAG_AUTOHIDE_SUSPEND_TRANSIENT_TASKBAR = 1 << 5;
 
     @IntDef(flag = true, value = {
             FLAG_AUTOHIDE_SUSPEND_FULLSCREEN,
@@ -52,7 +50,6 @@ public class TaskbarAutohideSuspendController implements
             FLAG_AUTOHIDE_SUSPEND_TOUCHING,
             FLAG_AUTOHIDE_SUSPEND_EDU_OPEN,
             FLAG_AUTOHIDE_SUSPEND_IN_LAUNCHER,
-            FLAG_AUTOHIDE_SUSPEND_TRANSIENT_TASKBAR,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface AutohideSuspendFlag {}
@@ -88,21 +85,18 @@ public class TaskbarAutohideSuspendController implements
 
         boolean isSuspended = isSuspended();
         mSystemUiProxy.notifyTaskbarAutohideSuspend(isSuspended);
-        mActivity.onTransientAutohideSuspendFlagChanged(isTransientTaskbarStashingSuspended());
+        mActivity.onTransientAutohideSuspendFlagChanged(isSuspended);
     }
 
     /**
-     * Returns true iff taskbar autohide is currently suspended for immersive mode.
+     * Returns true iff taskbar autohide is currently suspended.
      */
-    private boolean isSuspended() {
+    public boolean isSuspended() {
         return mAutohideSuspendFlags != 0;
     }
 
-    /**
-     * Returns whether Transient Taskbar should avoid auto-stashing.
-     */
-    public boolean isTransientTaskbarStashingSuspended() {
-        return (mAutohideSuspendFlags & ~FLAG_AUTOHIDE_SUSPEND_TRANSIENT_TASKBAR) != 0;
+    public boolean isSuspendedForTransientTaskbarInOverview() {
+        return (mAutohideSuspendFlags & FLAG_AUTOHIDE_SUSPEND_IN_LAUNCHER) != 0;
     }
 
     @Override
@@ -121,8 +115,6 @@ public class TaskbarAutohideSuspendController implements
         appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_EDU_OPEN, "FLAG_AUTOHIDE_SUSPEND_EDU_OPEN");
         appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_IN_LAUNCHER,
                 "FLAG_AUTOHIDE_SUSPEND_IN_LAUNCHER");
-        appendFlag(str, flags, FLAG_AUTOHIDE_SUSPEND_TRANSIENT_TASKBAR,
-                "FLAG_AUTOHIDE_SUSPEND_TRANSIENT_TASKBAR");
         return str.toString();
     }
 }
