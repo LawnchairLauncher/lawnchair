@@ -314,7 +314,8 @@ public abstract class BaseLauncherBinder {
                                 currentScreenIds, pendingTasks, workspaceItemCount, isBindSync);
                     }, mUiExecutor);
 
-            mCallbacks.bindStringCache(mBgDataModel.stringCache.clone());
+            StringCache cacheClone = mBgDataModel.stringCache.clone();
+            executeCallbacksTask(c -> c.bindStringCache(cacheClone), pendingExecutor);
         }
 
         private void bindWorkspaceItems(
@@ -442,9 +443,8 @@ public abstract class BaseLauncherBinder {
                         .resumeModelPush(FLAG_LOADER_RUNNING);
             });
 
-            for (Callbacks cb : mCallbacksList) {
-                cb.bindStringCache(mBgDataModel.stringCache.clone());
-            }
+            StringCache cacheClone = mBgDataModel.stringCache.clone();
+            executeCallbacksTask(c -> c.bindStringCache(cacheClone), mUiExecutor);
         }
 
         private void bindWorkspaceItems(final ArrayList<ItemInfo> workspaceItems) {
