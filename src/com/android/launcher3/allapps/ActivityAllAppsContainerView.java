@@ -748,32 +748,6 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         return 0;
     }
 
-    /**
-     * How far from the start of the screen the <em>floating</em> search bar should rest.
-     * <p>
-     * To use original margin, return a negative value.
-     * <p>
-     * Note: This method mirrors one in LauncherState. For subclasses that use Launcher, it likely
-     * makes sense to use that method to derive an appropriate value for the current/target state.
-     */
-    public int getFloatingSearchBarRestingMarginStart() {
-        DeviceProfile dp = mActivityContext.getDeviceProfile();
-        return dp.allAppsLeftRightMargin + dp.getAllAppsIconStartMargin();
-    }
-
-    /**
-     * How far from the end of the screen the <em>floating</em> search bar should rest.
-     * <p>
-     * To use original margin, return a negative value.
-     * <p>
-     * Note: This method mirrors one in LauncherState. For subclasses that use Launcher, it likely
-     * makes sense to use that method to derive an appropriate value for the current/target state.
-     */
-    public int getFloatingSearchBarRestingMarginEnd() {
-        DeviceProfile dp = mActivityContext.getDeviceProfile();
-        return dp.allAppsLeftRightMargin + dp.getAllAppsIconStartMargin();
-    }
-
     private void layoutBelowSearchContainer(View v, boolean includeTabsMargin) {
         if (!(v.getLayoutParams() instanceof RelativeLayout.LayoutParams)) {
             return;
