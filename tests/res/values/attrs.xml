@@ -39,4 +39,8 @@
         <attr name="maxAvailableSize" />
     </declare-styleable>
 
+    <declare-styleable name="AllAppsSpec">
+        <attr name="specType" />
+        <attr name="maxAvailableSize" />
+    </declare-styleable>
 </resources>
