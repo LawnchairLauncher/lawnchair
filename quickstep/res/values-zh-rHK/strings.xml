@@ -44,6 +44,10 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"已啟用應用程式建議"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"已停用應用程式建議"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"預測應用程式：<xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <!-- no translation found for gesture_tutorial_rotation_prompt_title (7537946781362766964) -->
+    <skip />
+    <!-- no translation found for gesture_tutorial_rotation_prompt (1664493449851960691) -->
+    <skip />
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"請從螢幕最右側或最左側邊緣開始滑動。"</string>
     <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"請從螢幕右側或左側邊緣往中央滑動，然後放開手指。"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"你已瞭解如何透過「由右向左滑動」手勢返回。接下來一起瞭解如何切換應用程式。"</string>
@@ -82,7 +86,7 @@
     <string name="allset_title" msgid="5021126669778966707">"設定完成！"</string>
     <string name="allset_hint" msgid="459504134589971527">"向上滑動即可前往主畫面"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"輕按主按鈕即可前往主畫面"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"你可以開始使用 <xliff:g id="DEVICE">%1$s</xliff:g> 了"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"你可以開始使用<xliff:g id="DEVICE">%1$s</xliff:g>了"</string>
     <string name="default_device_name" msgid="6660656727127422487">"裝置"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"系統導覽設定"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"分享"</string>
