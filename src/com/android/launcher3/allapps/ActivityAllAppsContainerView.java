@@ -1150,7 +1150,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         }
     }
 
-    protected boolean shouldShowTabs() {
+    /**
+     * Returns true if the container has work apps.
+     */
+    public boolean shouldShowTabs() {
         return mHasWorkApps;
     }
 
