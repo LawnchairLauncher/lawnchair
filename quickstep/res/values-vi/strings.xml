@@ -64,7 +64,7 @@
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Vuốt 2 ngón tay lên từ cuối màn hình. Cử chỉ này luôn đưa bạn về Màn hình chính."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Chuyển đến màn hình chính"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Để chuyển đến màn hình chính bất cứ lúc nào, hãy vuốt lên từ cuối màn hình"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Hãy vuốt lên từ mép dưới cùng của màn hình."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Hãy vuốt lên từ mép dưới màn hình."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Hãy thử giữ cửa sổ lâu hơn trước khi thả tay ra."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Hãy vuốt thẳng lên, sau đó tạm dừng."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Bạn đã tìm hiểu cách sử dụng cử chỉ. Để tắt cử chỉ, hãy chuyển đến phần Cài đặt."</string>

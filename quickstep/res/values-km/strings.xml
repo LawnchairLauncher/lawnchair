@@ -57,7 +57,7 @@
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ត្រូវប្រាកដថា​អ្នកអូសឡើងលើ​ពីគែមខាងក្រោម​នៃអេក្រង់​។"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"ត្រូវប្រាកដថា​អ្នកមិនផ្អាក មុនពេល​ដកដៃ​។"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ត្រូវប្រាកដថា​អ្នកអូស​ត្រង់ឡើងលើ​។"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"អ្នក​បានបញ្ចប់​ចលនា​ចូលទៅកាន់​ទំព័រដើម​ហើយ។ បន្ទាប់​មកទៀត សូមស្វែងយល់​ពីរបៀប​ថយក្រោយ​។"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"អ្នក​បានបញ្ចប់​ចលនា​ចូលទៅកាន់​អេក្រង់ដើម​ហើយ។ បន្ទាប់​មកទៀត សូមស្វែងយល់​ពីរបៀប​ថយក្រោយ​។"</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"អ្នក​បានបញ្ចប់​ចលនា​ចូលទៅកាន់​ទំព័រដើម​ហើយ។"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"អូស​ដើម្បីចូល​ទៅកាន់​អេក្រង់ដើម"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"អូស​ឡើងលើ​ពីផ្នែកខាងក្រោម​នៃ​អេក្រង់របស់អ្នក។ ចលនា​នេះ​នាំ​អ្នក​ទៅ​អេក្រង់ដើម​ជានិច្ច។"</string>
@@ -82,7 +82,7 @@
     <string name="allset_title" msgid="5021126669778966707">"រួចហើយ!"</string>
     <string name="allset_hint" msgid="459504134589971527">"អូស​ឡើង​លើ ​ដើម្បី​ចូលទៅកាន់អេក្រង់ដើម"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"ចុចប៊ូតុងដើម ដើម្បីចូលទៅកាន់អេក្រង់ដើមរបស់អ្នក"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"អ្នកអាចចាប់ផ្ដើមប្រើ <xliff:g id="DEVICE">%1$s</xliff:g> របស់អ្នកបានហើយ"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"អ្នកអាចចាប់ផ្ដើមប្រើ<xliff:g id="DEVICE">%1$s</xliff:g>របស់អ្នកបានហើយ"</string>
     <string name="default_device_name" msgid="6660656727127422487">"ឧបករណ៍"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"ការកំណត់​ការរុករក​ប្រព័ន្ធ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"ចែករំលែក"</string>

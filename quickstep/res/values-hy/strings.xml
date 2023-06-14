@@ -82,7 +82,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Պատրաստ է"</string>
     <string name="allset_hint" msgid="459504134589971527">"Մատը սահեցրեք վերև՝ հիմնական էկրան անցնելու համար"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Հիմնական էկրան վերադառնալու համար սեղմեք գլխավոր էկրանի կոճակը"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"Դուք արդեն կարող եք օգտագործել ձեր <xliff:g id="DEVICE">%1$s</xliff:g> սարքը"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Դուք արդեն կարող եք օգտագործել ձեր <xliff:g id="DEVICE">%1$s</xliff:g>ը"</string>
     <string name="default_device_name" msgid="6660656727127422487">"սարք"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Նավիգացիայի համակարգային կարգավորումներ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Կիսվել"</string>
