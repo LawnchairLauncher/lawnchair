@@ -810,6 +810,7 @@ public class SplitSelectStateController {
         mAnimateCurrentTaskDismissal = false;
         mDismissingFromSplitPair = false;
         mSecondPendingIntent = null;
+        mFirstFloatingTaskView = null;
     }
 
     /**
