@@ -509,8 +509,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             return;
         }
 
-        if (stash && mControllers.taskbarAutohideSuspendController
-                .isTransientTaskbarStashingSuspended()) {
+        if (stash && mControllers.taskbarAutohideSuspendController.isSuspended()
+                && !mControllers.taskbarAutohideSuspendController
+                .isSuspendedForTransientTaskbarInOverview()) {
+            // Avoid stashing if autohide is currently suspended.
             return;
         }
 
@@ -1037,9 +1039,6 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
             mActivity.getStatsLogManager().logger().log(hasAnyFlag(FLAG_STASHED_IN_APP_AUTO)
                     ? LAUNCHER_TRANSIENT_TASKBAR_HIDE
                     : LAUNCHER_TRANSIENT_TASKBAR_SHOW);
-            mControllers.taskbarAutohideSuspendController.updateFlag(
-                    TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_TRANSIENT_TASKBAR,
-                    !hasAnyFlag(FLAG_STASHED_IN_APP_AUTO));
         }
     }
 
@@ -1132,7 +1131,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     }
 
     private void onTaskbarTimeout(Alarm alarm) {
-        if (mControllers.taskbarAutohideSuspendController.isTransientTaskbarStashingSuspended()) {
+        if (mControllers.taskbarAutohideSuspendController.isSuspended()) {
             return;
         }
         updateAndAnimateTransientTaskbar(true);
