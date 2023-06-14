@@ -257,6 +257,7 @@
         <attr name="ofAvailableSpace" format="float" />
         <attr name="ofRemainderSpace" format="float" />
         <attr name="matchWorkspace" format="boolean" />
+        <attr name="maxSize" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="FolderSpec">
