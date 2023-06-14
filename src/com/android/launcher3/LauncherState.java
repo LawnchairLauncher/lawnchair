@@ -33,7 +33,6 @@ import static com.android.launcher3.testing.shared.TestProtocol.SPRING_LOADED_ST
 
 import android.content.Context;
 import android.graphics.Color;
-import android.view.View;
 import android.view.animation.Interpolator;
 
 import androidx.annotation.FloatRange;
@@ -217,34 +216,6 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         DeviceProfile dp = launcher.getDeviceProfile();
         return areElementsVisible(launcher, FLOATING_SEARCH_BAR) ? dp.getQsbOffsetY()
                 : -dp.hotseatQsbHeight;
-    }
-
-    /**
-     * How far from the start of the screen the <em>floating</em> search bar should rest.
-     * <p>
-     * To use original margin, return a negative value.
-     */
-    public int getFloatingSearchBarRestingMarginStart(Launcher launcher) {
-        boolean isRtl = Utilities.isRtl(launcher.getResources());
-        View qsb = launcher.getHotseat().getQsb();
-        return isRtl ? launcher.getHotseat().getRight() - qsb.getRight() : qsb.getLeft();
-    }
-
-    /**
-     * How far from the end of the screen the <em>floating</em> search bar should rest.
-     * <p>
-     * To use original margin, return a negative value.
-     */
-    public int getFloatingSearchBarRestingMarginEnd(Launcher launcher) {
-        DeviceProfile dp = launcher.getDeviceProfile();
-        if (dp.isQsbInline) {
-            int marginStart = getFloatingSearchBarRestingMarginStart(launcher);
-            return dp.widthPx - marginStart - dp.hotseatQsbWidth;
-        }
-
-        boolean isRtl = Utilities.isRtl(launcher.getResources());
-        View qsb = launcher.getHotseat().getQsb();
-        return isRtl ? qsb.getLeft() : launcher.getHotseat().getRight() - qsb.getRight();
     }
 
     /** Whether the <em>floating</em> search bar should use the pill UI when not focused. */

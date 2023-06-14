@@ -93,36 +93,4 @@ public class LauncherAllAppsContainerView extends ActivityAllAppsContainerView<L
         }
         return Math.max(targetStateMarginBottom, currentStateMarginBottom);
     }
-
-    @Override
-    public int getFloatingSearchBarRestingMarginStart() {
-        if (!isSearchBarFloating()) {
-            return super.getFloatingSearchBarRestingMarginStart();
-        }
-
-        StateManager<LauncherState> stateManager = mActivityContext.getStateManager();
-
-        if (stateManager.isInTransition() && stateManager.getTargetState() != null) {
-            return stateManager.getTargetState()
-                    .getFloatingSearchBarRestingMarginStart(mActivityContext);
-        }
-        return stateManager.getCurrentStableState()
-                .getFloatingSearchBarRestingMarginStart(mActivityContext);
-    }
-
-    @Override
-    public int getFloatingSearchBarRestingMarginEnd() {
-        if (!isSearchBarFloating()) {
-            return super.getFloatingSearchBarRestingMarginEnd();
-        }
-
-        StateManager<LauncherState> stateManager = mActivityContext.getStateManager();
-
-        if (stateManager.isInTransition() && stateManager.getTargetState() != null) {
-            return stateManager.getTargetState()
-                    .getFloatingSearchBarRestingMarginEnd(mActivityContext);
-        }
-        return stateManager.getCurrentStableState()
-                .getFloatingSearchBarRestingMarginEnd(mActivityContext);
-    }
 }
