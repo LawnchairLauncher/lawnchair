@@ -44,6 +44,10 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Ieteicamās lietotnes ir iespējotas"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Ieteicamās lietotnes ir atspējotas"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Prognozētā lietotne: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <!-- no translation found for gesture_tutorial_rotation_prompt_title (7537946781362766964) -->
+    <skip />
+    <!-- no translation found for gesture_tutorial_rotation_prompt (1664493449851960691) -->
+    <skip />
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Velciet no pašas labās vai kreisās malas."</string>
     <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Velciet no ekrāna labās vai kreisās malas uz vidu un atlaidiet."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Jūs esat apguvis, kā vilkt no labās malas, lai pārietu atpakaļ. Tagad mācieties pārslēgt lietotnes."</string>
