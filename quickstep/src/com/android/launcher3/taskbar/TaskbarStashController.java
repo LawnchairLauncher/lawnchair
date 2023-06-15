@@ -232,6 +232,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     // Taskbar background properties.
     private AnimatedFloat mTaskbarBackgroundOffset;
     private AnimatedFloat mTaskbarImeBgAlpha;
+    private MultiProperty mTaskbarBackgroundAlphaForStash;
     // TaskbarView icon properties.
     private MultiProperty mIconAlphaForStash;
     private AnimatedFloat mIconScaleForStash;
@@ -304,6 +305,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         TaskbarDragLayerController dragLayerController = controllers.taskbarDragLayerController;
         mTaskbarBackgroundOffset = dragLayerController.getTaskbarBackgroundOffset();
         mTaskbarImeBgAlpha = dragLayerController.getImeBgTaskbar();
+        mTaskbarBackgroundAlphaForStash = dragLayerController.getBackgroundRendererAlphaForStash();
 
         TaskbarViewController taskbarViewController = controllers.taskbarViewController;
         mIconAlphaForStash = taskbarViewController.getTaskbarIconAlpha().get(
@@ -786,37 +788,42 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         final float backgroundOffsetTarget = isStashed ? 1 : 0;
         final float iconAlphaTarget = isStashed ? 0 : 1;
         final float stashedHandleAlphaTarget = isStashed ? 1 : 0;
+        final float backgroundAlphaTarget = isStashed ? 0 : 1;
 
         // Timing for the alpha values depend on the animation played
-        long iconAlphaStartDelay = 0, iconAlphaDuration = 0, stashedHandleAlphaDelay = 0,
-                stashedHandleAlphaDuration = 0;
+        long iconAlphaStartDelay = 0, iconAlphaDuration = 0, backgroundAndHandleAlphaStartDelay = 0,
+                backgroundAndHandleAlphaDuration = 0;
         if (duration > 0) {
             if (animationType == TRANSITION_HANDLE_FADE) {
                 // When fading, the handle fades in/out at the beginning of the transition with
                 // TASKBAR_STASH_ALPHA_DURATION.
-                stashedHandleAlphaDuration = TASKBAR_STASH_ALPHA_DURATION;
+                backgroundAndHandleAlphaDuration = TASKBAR_STASH_ALPHA_DURATION;
                 // The iconAlphaDuration must be set to duration for the skippable interpolators
                 // below to work.
                 iconAlphaDuration = duration;
             } else {
                 iconAlphaStartDelay = TASKBAR_STASH_ALPHA_START_DELAY;
                 iconAlphaDuration = TASKBAR_STASH_ALPHA_DURATION;
-                stashedHandleAlphaDuration = TASKBAR_STASH_ALPHA_DURATION;
+                backgroundAndHandleAlphaDuration = TASKBAR_STASH_ALPHA_DURATION;
 
                 if (isStashed) {
                     if (animationType == TRANSITION_HOME_TO_APP) {
                         iconAlphaStartDelay = TASKBAR_STASH_ICON_ALPHA_HOME_TO_APP_START_DELAY;
                     }
-                    stashedHandleAlphaDelay = iconAlphaStartDelay;
-                    stashedHandleAlphaDuration = Math.max(0, duration - iconAlphaStartDelay);
+                    backgroundAndHandleAlphaStartDelay = iconAlphaStartDelay;
+                    backgroundAndHandleAlphaDuration = Math.max(0, duration - iconAlphaStartDelay);
                 }
 
             }
         }
 
         play(as, mTaskbarStashedHandleAlpha.animateToValue(stashedHandleAlphaTarget),
-                stashedHandleAlphaDelay,
-                stashedHandleAlphaDuration, LINEAR);
+                backgroundAndHandleAlphaStartDelay,
+                backgroundAndHandleAlphaDuration, LINEAR);
+
+        play(as, mTaskbarBackgroundAlphaForStash.animateToValue(backgroundAlphaTarget),
+                backgroundAndHandleAlphaStartDelay,
+                backgroundAndHandleAlphaDuration, LINEAR);
 
         // The rest of the animations might be "skipped" in TRANSITION_HANDLE_FADE transitions.
         AnimatorSet skippable = as;
