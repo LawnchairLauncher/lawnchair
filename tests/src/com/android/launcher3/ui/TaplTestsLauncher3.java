@@ -512,7 +512,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 DEFAULT_UI_TIMEOUT, mLauncher);
     }
 
-    @Ignore("b/256615483")
     @Test
     @PortraitLandscape
     @PlatinumTest(focusArea = "launcher")
