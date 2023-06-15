@@ -47,9 +47,9 @@ public class TaskbarAllAppsContainerView extends
     }
 
     @Override
-    protected View inflateSearchBox() {
+    protected View inflateSearchBar() {
         if (isSearchSupported()) {
-            return super.inflateSearchBox();
+            return super.inflateSearchBar();
         }
 
         // Remove top padding of header, since we do not have any search

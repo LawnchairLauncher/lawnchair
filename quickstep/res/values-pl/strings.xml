@@ -44,6 +44,10 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Włączono sugestie aplikacji"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Sugestie aplikacji są wyłączone"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Przewidywana aplikacja: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
+    <!-- no translation found for gesture_tutorial_rotation_prompt_title (7537946781362766964) -->
+    <skip />
+    <!-- no translation found for gesture_tutorial_rotation_prompt (1664493449851960691) -->
+    <skip />
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Pamiętaj, aby przesuwać palcem od samej krawędzi (prawej lub lewej)."</string>
     <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Pamiętaj, aby przesuwać palcem od prawej lub lewej krawędzi do środka ekranu i podnieść palec."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Wiesz już, jak przesuwać palcem, aby przejść wstecz. Poćwicz teraz przełączanie aplikacji."</string>
@@ -53,7 +57,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Przesuń palcem, aby przejść wstecz"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Aby wrócić do poprzedniego ekranu, przesuń palcem od lewej lub prawej krawędzi do środka ekranu."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Aby wrócić do poprzedniego ekranu, przesuń 2 palcami od lewej lub prawej krawędzi do środka ekranu."</string>
-    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Przejście wstecz"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Przejdź wstecz"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pamiętaj, aby przesuwać palcem w górę od dolnej krawędzi ekranu."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pamiętaj, aby przed podniesieniem palca nie było przerwy."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Pamiętaj, aby przesuwać palcem prosto do góry."</string>

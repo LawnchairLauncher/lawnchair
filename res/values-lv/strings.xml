@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Mape pārdēvēta par: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Mape <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> vienumi"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Mape <xliff:g id="NAME">%1$s</xliff:g>, vienumu skaits mapē: vismaz <xliff:g id="SIZE">%2$d</xliff:g>"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"Fona tapetes"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Fona tapete un stils"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Rediģēt sākuma ekrānu"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Sākumlapas iestatījumi"</string>

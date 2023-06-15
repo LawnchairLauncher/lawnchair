@@ -95,15 +95,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
 
     static final String TAG = "Launcher.Model";
 
-    // Broadcast intent to track when the profile gets locked:
-    // ACTION_MANAGED_PROFILE_UNAVAILABLE can be used until Android U where profile no longer gets
-    // locked when paused.
-    // ACTION_PROFILE_INACCESSIBLE always means that the profile is getting locked but it only
-    // appeared in Android S.
-    private static final String ACTION_PROFILE_LOCKED = Utilities.ATLEAST_U
-            ? Intent.ACTION_PROFILE_INACCESSIBLE
-            : Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE;
-
     @NonNull
     private final LauncherAppState mApp;
     @NonNull
@@ -303,28 +294,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
         if (Intent.ACTION_LOCALE_CHANGED.equals(action)) {
             // If we have changed locale we need to clear out the labels in all apps/workspace.
             forceReload();
-        } else if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action)
-                || Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action)
-                || Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)
-                || Intent.ACTION_PROFILE_INACCESSIBLE.equals(action)) {
-            UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.WORK_TAB_MISSING, "onBroadcastIntent intentAction: " + action +
-                        " user: " + user);
-            }
-            if (user != null) {
-                if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action) ||
-                        Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action)) {
-                    enqueueModelUpdateTask(new PackageUpdatedTask(
-                            PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE, user));
-                }
-
-                if (ACTION_PROFILE_LOCKED.equals(action)
-                        || Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)) {
-                    enqueueModelUpdateTask(new UserLockStateChangedTask(
-                            user, Intent.ACTION_MANAGED_PROFILE_UNLOCKED.equals(action)));
-                }
-            }
         } else if (ACTION_DEVICE_POLICY_RESOURCE_UPDATED.equals(action)) {
             enqueueModelUpdateTask(new ReloadStringCacheTask(mModelDelegate));
         } else if (IS_STUDIO_BUILD && ACTION_FORCE_ROLOAD.equals(action)) {
@@ -333,6 +302,33 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
                     ((Launcher) cb).recreate();
                 }
             }
+        }
+    }
+
+    /**
+     * Called then there use a user event
+     * @see UserCache#addUserEventListener
+     */
+    public void onUserEvent(UserHandle user, String action) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.WORK_TAB_MISSING, "onBroadcastIntent intentAction: "
+                    + action + " user: " + user);
+        }
+
+        if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action)
+                || Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action)) {
+            enqueueModelUpdateTask(new PackageUpdatedTask(
+                    PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE, user));
+        }
+
+        if (UserCache.ACTION_PROFILE_LOCKED.equals(action)
+                || UserCache.ACTION_PROFILE_UNLOCKED.equals(action)) {
+            enqueueModelUpdateTask(new UserLockStateChangedTask(
+                    user, UserCache.ACTION_PROFILE_UNLOCKED.equals(action)));
+        }
+        if (UserCache.ACTION_PROFILE_ADDED.equals(action)
+                || UserCache.ACTION_PROFILE_REMOVED.equals(action)) {
+            forceReload();
         }
     }
 

@@ -56,7 +56,7 @@ public class AnimatorControllerWithResistance {
 
     private enum RecentsResistanceParams {
         FROM_APP(0.75f, 0.5f, 1f, false),
-        FROM_APP_TO_ALL_APPS(0.75f, 0.5f, 0.8f, false),
+        FROM_APP_TO_ALL_APPS(1f, 0.6f, 0.8f, false),
         FROM_APP_TABLET(1f, 0.7f, 1f, true),
         FROM_APP_TO_ALL_APPS_TABLET(1f, 0.5f, 0.5f, false),
         FROM_OVERVIEW(1f, 0.75f, 0.5f, false);

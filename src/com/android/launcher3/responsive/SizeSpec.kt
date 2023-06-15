@@ -15,22 +15,27 @@ import kotlin.math.roundToInt
  * @param ofAvailableSpace a percentage of the available space
  * @param ofRemainderSpace a percentage of the remaining space (available space minus used space)
  * @param matchWorkspace indicates whether the workspace value will be used or not.
+ * @param maxSize restricts the maximum value allowed for the [SizeSpec].
  */
 data class SizeSpec(
     val fixedSize: Float = 0f,
     val ofAvailableSpace: Float = 0f,
     val ofRemainderSpace: Float = 0f,
-    val matchWorkspace: Boolean = false
+    val matchWorkspace: Boolean = false,
+    val maxSize: Int = Int.MAX_VALUE
 ) {
 
     /** Retrieves the correct value for [SizeSpec]. */
     fun getCalculatedValue(availableSpace: Int, workspaceValue: Int): Int {
-        return when {
-            fixedSize > 0 -> fixedSize.roundToInt()
-            ofAvailableSpace > 0 -> (ofAvailableSpace * availableSpace).roundToInt()
-            matchWorkspace -> workspaceValue
-            else -> 0
-        }
+        val calculatedValue =
+            when {
+                fixedSize > 0 -> fixedSize.roundToInt()
+                matchWorkspace -> workspaceValue
+                ofAvailableSpace > 0 -> (ofAvailableSpace * availableSpace).roundToInt()
+                else -> 0
+            }
+
+        return calculatedValue.coerceAtMost(maxSize)
     }
 
     /**
@@ -38,11 +43,14 @@ data class SizeSpec(
      * is 0, returns a default value.
      */
     fun getRemainderSpaceValue(remainderSpace: Int, defaultValue: Int): Int {
-        return if (ofRemainderSpace > 0) {
-            (ofRemainderSpace * remainderSpace).roundToInt()
-        } else {
-            defaultValue
-        }
+        val remainderSpaceValue =
+            if (ofRemainderSpace > 0) {
+                (ofRemainderSpace * remainderSpace).roundToInt()
+            } else {
+                defaultValue
+            }
+
+        return remainderSpaceValue.coerceAtMost(maxSize)
     }
 
     fun isValid(): Boolean {
@@ -69,9 +77,14 @@ data class SizeSpec(
             return false
         }
 
-        // Invalid fixed size
-        if (fixedSize < 0f) {
+        // Invalid fixed or max size
+        if (fixedSize < 0f || maxSize < 0f) {
             Log.e(TAG, "SizeSpec#isValid - values should be bigger or equal to zero.")
+            return false
+        }
+
+        if (fixedSize > 0f && fixedSize > maxSize) {
+            Log.e(TAG, "SizeSpec#isValid - fixed size should be smaller than the max size.")
             return false
         }
 
@@ -96,10 +109,12 @@ data class SizeSpec(
             val ofAvailableSpace = getValue(styledAttrs, R.styleable.SizeSpec_ofAvailableSpace)
             val ofRemainderSpace = getValue(styledAttrs, R.styleable.SizeSpec_ofRemainderSpace)
             val matchWorkspace = styledAttrs.getBoolean(R.styleable.SizeSpec_matchWorkspace, false)
+            val maxSize =
+                styledAttrs.getDimensionPixelSize(R.styleable.SizeSpec_maxSize, Int.MAX_VALUE)
 
             styledAttrs.recycle()
 
-            return SizeSpec(fixedSize, ofAvailableSpace, ofRemainderSpace, matchWorkspace)
+            return SizeSpec(fixedSize, ofAvailableSpace, ofRemainderSpace, matchWorkspace, maxSize)
         }
     }
 }

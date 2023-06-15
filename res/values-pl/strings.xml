@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Nazwa folderu zmieniona na <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> elementy"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, liczba elementów: <xliff:g id="SIZE">%2$d</xliff:g> lub więcej"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"Tapety"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Tapeta i styl"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Edytuj ekran główny"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Ustawienia ekranu głównego"</string>

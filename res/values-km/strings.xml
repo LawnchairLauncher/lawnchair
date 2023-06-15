@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"បាន​ប្ដូរ​ឈ្មោះ​ថត​ជា <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ថត៖ <xliff:g id="NAME">%1$s</xliff:g>, ធាតុ <xliff:g id="SIZE">%2$d</xliff:g>"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ថត៖ <xliff:g id="NAME">%1$s</xliff:g>, ធាតុ <xliff:g id="SIZE">%2$d</xliff:g> ឬច្រើនជាងនេះ"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"ផ្ទាំង​រូបភាព"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ផ្ទាំងរូបភាព និងរចនាប័ទ្ម"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"កែអេក្រង់ដើម"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ការកំណត់​ទំព័រដើម"</string>

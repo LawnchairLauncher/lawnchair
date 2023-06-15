@@ -99,7 +99,6 @@
     <string name="folder_renamed" msgid="1794088362165669656">"ఫోల్డర్ పేరు <xliff:g id="NAME">%1$s</xliff:g>గా మార్చబడింది"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ఫోల్డర్: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ఐటెమ్‌లు"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ఫోల్డర్: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> లేదా అంతకంటే ఎక్కువ ఐటెమ్‌లు"</string>
-    <string name="wallpaper_button_text" msgid="8404103075899945851">"వాల్‌పేపర్‌లు"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"వాల్‌పేపర్ &amp; స్టయిల్"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"మొదటి స్క్రీన్‌ను ఎడిట్ చేయండి"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"మొదటి స్క్రీన్ సెట్టింగ్‌లు"</string>

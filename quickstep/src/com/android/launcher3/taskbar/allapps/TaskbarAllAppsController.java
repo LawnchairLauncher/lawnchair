@@ -54,6 +54,7 @@ public final class TaskbarAllAppsController {
     private AppInfo[] mApps;
     private int mAppsModelFlags;
     private List<ItemInfo> mPredictedApps;
+    private @Nullable List<ItemInfo> mZeroStateSearchSuggestions;
     private boolean mDisallowGlobalDrag;
     private boolean mDisallowLongClick;
 
@@ -108,6 +109,14 @@ public final class TaskbarAllAppsController {
         }
     }
 
+    /** Updates the current search suggestions. */
+    public void setZeroStateSearchSuggestions(List<ItemInfo> zeroStateSearchSuggestions) {
+        mZeroStateSearchSuggestions = zeroStateSearchSuggestions;
+        if (mSearchSessionController != null) {
+            mSearchSessionController.setZeroStateSearchSuggestions(zeroStateSearchSuggestions);
+        }
+    }
+
     /** Updates the current notification dots. */
     public void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         if (mAppsView != null) {
@@ -143,6 +152,9 @@ public final class TaskbarAllAppsController {
         mSearchSessionController = TaskbarSearchSessionController.newInstance(mOverlayContext);
         mOverlayContext.setSearchSessionController(mSearchSessionController);
         mSearchSessionController.setZeroStatePredictedItems(mPredictedApps);
+        if (mZeroStateSearchSuggestions != null) {
+            mSearchSessionController.setZeroStateSearchSuggestions(mZeroStateSearchSuggestions);
+        }
         mSearchSessionController.startLifecycle();
 
         mSlideInView = (TaskbarAllAppsSlideInView) mOverlayContext.getLayoutInflater().inflate(
@@ -169,6 +181,13 @@ public final class TaskbarAllAppsController {
     }
 
     private void cleanUpOverlay() {
+        // Floating search bar is added to the drag layer in ActivityAllAppsContainerView onAttach;
+        // removed here as this is a special case that we remove the all apps panel.
+        if (mAppsView != null && mOverlayContext != null
+                && mAppsView.getSearchUiDelegate().isSearchBarFloating()) {
+            mOverlayContext.getDragLayer().removeView(mAppsView.getSearchView());
+            mAppsView.getSearchUiDelegate().onDestroySearchBar();
+        }
         if (mSearchSessionController != null) {
             mSearchSessionController.onDestroy();
             mSearchSessionController = null;
