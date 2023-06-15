@@ -22,12 +22,10 @@ import static com.android.app.animation.Interpolators.FINAL_FRAME;
 import static com.android.app.animation.Interpolators.INSTANT;
 import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.app.animation.Interpolators.clampToProgress;
-import static com.android.app.animation.Interpolators.mapToProgress;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_BOTTOM_SHEET_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_FADE;
-import static com.android.launcher3.states.StateAnimationConfig.ANIM_ALL_APPS_KEYBOARD_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_DEPTH;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCALE;
@@ -295,15 +293,20 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
             config.setInterpolator(ANIM_WORKSPACE_SCALE, INSTANT);
             config.setInterpolator(ANIM_WORKSPACE_TRANSLATE, INSTANT);
         } else {
-            // Pop the background panel, keyboard, and content in at full opacity at the threshold.
+            // Remove scrim for this transition.
+            config.setInterpolator(ANIM_SCRIM_FADE, progress -> 0);
+
+            // For now, pop the background panel in at full opacity at the threshold.
             config.setInterpolator(ANIM_ALL_APPS_BOTTOM_SHEET_FADE,
                     thresholdInterpolator(threshold, INSTANT));
-            config.setInterpolator(ANIM_ALL_APPS_KEYBOARD_FADE,
-                    thresholdInterpolator(threshold, INSTANT));
-            config.setInterpolator(ANIM_ALL_APPS_FADE, thresholdInterpolator(threshold, INSTANT));
+
+            // Fade the apps in when the scrim normally does, so it's apparent sooner what is
+            // happening (in this case we are fading them on top of the background panel).
+            config.setInterpolator(ANIM_ALL_APPS_FADE,
+                    thresholdInterpolator(threshold, SCRIM_FADE_MANUAL));
 
             config.setInterpolator(ANIM_VERTICAL_PROGRESS,
-                    thresholdInterpolator(threshold, mapToProgress(LINEAR, threshold, 1f)));
+                    thresholdInterpolator(threshold, ALL_APPS_VERTICAL_PROGRESS_MANUAL));
         }
     }
 
