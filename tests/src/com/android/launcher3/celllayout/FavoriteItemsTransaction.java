@@ -31,6 +31,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ModelDbController;
+import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.tapl.LauncherInstrumentation;
@@ -73,10 +74,29 @@ public class FavoriteItemsTransaction {
             // Add new data
             try (SQLiteTransaction transaction = controller.newTransaction()) {
                 int count = mItemsToSubmit.size();
+                ArrayList<ItemInfo> containerItems = new ArrayList<>();
                 for (int i = 0; i < count; i++) {
                     ContentWriter writer = new ContentWriter(mContext);
-                    mItemsToSubmit.get(i).get().onAddToDatabase(writer);
+                    ItemInfo item = mItemsToSubmit.get(i).get();
+
+                    if (item.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+                        FolderInfo folderInfo = (FolderInfo) item;
+                        for (ItemInfo itemInfo : folderInfo.contents) {
+                            itemInfo.container = i;
+                            containerItems.add(itemInfo);
+                        }
+                    }
+
+                    item.onAddToDatabase(writer);
                     writer.put(LauncherSettings.Favorites._ID, i);
+                    controller.insert(TABLE_NAME, writer.getValues(mContext));
+                }
+
+                for (int i = 0; i < containerItems.size(); i++) {
+                    ContentWriter writer = new ContentWriter(mContext);
+                    ItemInfo item = containerItems.get(i);
+                    item.onAddToDatabase(writer);
+                    writer.put(LauncherSettings.Favorites._ID, count + i);
                     controller.insert(TABLE_NAME, writer.getValues(mContext));
                 }
                 transaction.commit();
