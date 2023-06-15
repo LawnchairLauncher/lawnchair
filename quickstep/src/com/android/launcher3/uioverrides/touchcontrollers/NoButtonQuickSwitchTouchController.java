@@ -16,6 +16,7 @@
 package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_MOVE;
 
 import static com.android.app.animation.Interpolators.ACCELERATE_0_75;
 import static com.android.app.animation.Interpolators.DECELERATE_3;
@@ -261,7 +262,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         xAnim.setFloat(mRecentsView, ADJACENT_PAGE_HORIZONTAL_OFFSET, scaleAndOffset[1], LINEAR);
         // Use QuickSwitchState instead of OverviewState to determine scrim color,
         // since we need to take potential taskbar into account.
-        xAnim.setScrimViewBackgroundColor(mLauncher.getScrimView(),
+        xAnim.setViewBackgroundColor(mLauncher.getScrimView(),
                 QUICK_SWITCH_FROM_HOME.getWorkspaceScrimColor(mLauncher), LINEAR);
         if (mRecentsView.getTaskViewCount() == 0) {
             xAnim.addFloat(mRecentsView, CONTENT_ALPHA, 0f, 1f, LINEAR);

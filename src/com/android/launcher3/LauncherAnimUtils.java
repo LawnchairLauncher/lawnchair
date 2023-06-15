@@ -30,7 +30,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.launcher3.util.MultiScalePropertyFactory;
-import com.android.launcher3.views.ScrimView;
 
 public class LauncherAnimUtils {
     /**
@@ -195,10 +194,6 @@ public class LauncherAnimUtils {
 
                 @Override
                 public Integer get(View view) {
-                    if (view instanceof ScrimView) {
-                        return ((ScrimView) view).getBackgroundColor();
-                    }
-
                     if (!(view.getBackground() instanceof ColorDrawable)) {
                         return Color.TRANSPARENT;
                     }
