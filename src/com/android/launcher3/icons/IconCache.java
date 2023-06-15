@@ -100,6 +100,7 @@ public class IconCache extends BaseIconCache {
     private final UserCache mUserManager;
     private final InstantAppResolver mInstantAppResolver;
     private final IconProvider mIconProvider;
+    private final HandlerRunnable mCancelledRunnable;
 
     private final SparseArray<BitmapInfo> mWidgetCategoryBitmapInfos;
 
@@ -121,6 +122,10 @@ public class IconCache extends BaseIconCache {
         mInstantAppResolver = InstantAppResolver.newInstance(mContext);
         mIconProvider = iconProvider;
         mWidgetCategoryBitmapInfos = new SparseArray<>();
+
+        mCancelledRunnable = new HandlerRunnable(
+                mWorkerHandler, () -> null, MAIN_EXECUTOR, c -> { });
+        mCancelledRunnable.cancel();
     }
 
     @Override
@@ -176,23 +181,30 @@ public class IconCache extends BaseIconCache {
     public HandlerRunnable updateIconInBackground(final ItemInfoUpdateReceiver caller,
             final ItemInfoWithIcon info) {
         Preconditions.assertUIThread();
+        Supplier<ItemInfoWithIcon> task;
+        if (info instanceof AppInfo || info instanceof WorkspaceItemInfo) {
+            task = () -> {
+                getTitleAndIcon(info, false);
+                return info;
+            };
+        } else if (info instanceof PackageItemInfo) {
+            task = () -> {
+                getTitleAndIconForApp((PackageItemInfo) info, false);
+                return info;
+            };
+        } else {
+            Log.i(TAG, "Icon update not supported for "
+                    + info == null ? "null" : info.getClass().getName());
+            return mCancelledRunnable;
+        }
+
         if (mPendingIconRequestCount <= 0) {
             MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
         }
         mPendingIconRequestCount++;
 
         HandlerRunnable<ItemInfoWithIcon> request = new HandlerRunnable<>(mWorkerHandler,
-                () -> {
-                    if (info instanceof AppInfo || info instanceof WorkspaceItemInfo) {
-                        getTitleAndIcon(info, false);
-                    } else if (info instanceof PackageItemInfo) {
-                        getTitleAndIconForApp((PackageItemInfo) info, false);
-                    }
-                    return info;
-                },
-                MAIN_EXECUTOR,
-                caller::reapplyItemInfo,
-                this::onIconRequestEnd);
+                task, MAIN_EXECUTOR, caller::reapplyItemInfo, this::onIconRequestEnd);
         Utilities.postAsyncCallback(mWorkerHandler, request);
         return request;
     }
