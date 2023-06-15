@@ -24,6 +24,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.util.DimensionUtils;
+import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.TouchController;
 
 import java.io.PrintWriter;
@@ -62,12 +63,14 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
     private TaskbarStashViaTouchController mTaskbarStashViaTouchController;
     private AnimatedFloat mOnBackgroundNavButtonColorIntensity;
 
+    private MultiProperty mBackgroundRendererAlpha;
     private float mLastSetBackgroundAlpha;
 
     public TaskbarDragLayerController(TaskbarActivityContext activity,
             TaskbarDragLayer taskbarDragLayer) {
         mActivity = activity;
         mTaskbarDragLayer = taskbarDragLayer;
+        mBackgroundRendererAlpha = mTaskbarDragLayer.getBackgroundRendererAlpha();
         final Resources resources = mTaskbarDragLayer.getResources();
         mFolderMargin = resources.getDimensionPixelSize(R.dimen.taskbar_folder_margin);
     }
@@ -152,9 +155,13 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
                 * mNotificationShadeBgTaskbar.value * mImeBgTaskbar.value
                 * mAssistantBgTaskbar.value;
         mLastSetBackgroundAlpha = mBgOverride.value * Math.max(bgNavbar, bgTaskbar);
-        mTaskbarDragLayer.setTaskbarBackgroundAlpha(mLastSetBackgroundAlpha);
+        mBackgroundRendererAlpha.setValue(mLastSetBackgroundAlpha);
 
         updateOnBackgroundNavButtonColorIntensity();
+    }
+
+    public MultiProperty getBackgroundRendererAlphaForStash() {
+        return mTaskbarDragLayer.getBackgroundRendererAlphaForStash();
     }
 
     /**
