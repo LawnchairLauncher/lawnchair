@@ -23,6 +23,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.android.app.viewcapture.SimpleViewCapture
 import com.android.app.viewcapture.ViewCapture.MAIN_EXECUTOR
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter
+import java.util.function.Supplier
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
@@ -33,7 +34,7 @@ import org.junit.runners.model.Statement
  *
  * This rule will not work in OOP tests that don't have access to the activity under test.
  */
-class ViewCaptureRule : TestRule {
+class ViewCaptureRule(var alreadyOpenActivitySupplier: Supplier<Activity?>) : TestRule {
     val viewCapture = SimpleViewCapture("test-view-capture")
 
     override fun apply(base: Statement, description: Description): Statement {
@@ -41,16 +42,16 @@ class ViewCaptureRule : TestRule {
             override fun evaluate() {
                 val windowListenerCloseables = mutableListOf<SafeCloseable>()
 
+                val alreadyOpenActivity = alreadyOpenActivitySupplier.get()
+                if (alreadyOpenActivity != null) {
+                    startCapture(windowListenerCloseables, alreadyOpenActivity)
+                }
+
                 val lifecycleCallbacks =
                     object : ActivityLifecycleCallbacksAdapter {
                         override fun onActivityCreated(activity: Activity, bundle: Bundle?) {
                             super.onActivityCreated(activity, bundle)
-                            windowListenerCloseables.add(
-                                viewCapture.startCapture(
-                                    activity.window.decorView,
-                                    "${description.testClass?.simpleName}.${description.methodName}"
-                                )
-                            )
+                            startCapture(windowListenerCloseables, activity)
                         }
 
                         override fun onActivityDestroyed(activity: Activity) {
@@ -74,6 +75,18 @@ class ViewCaptureRule : TestRule {
                     // is removed while onDraw is running, resulting in an IllegalStateException.
                     MAIN_EXECUTOR.execute { windowListenerCloseables.onEach(SafeCloseable::close) }
                 }
+            }
+
+            private fun startCapture(
+                windowListenerCloseables: MutableCollection<SafeCloseable>,
+                activity: Activity
+            ) {
+                windowListenerCloseables.add(
+                    viewCapture.startCapture(
+                        activity.window.decorView,
+                        "${description.testClass?.simpleName}.${description.methodName}"
+                    )
+                )
             }
         }
     }

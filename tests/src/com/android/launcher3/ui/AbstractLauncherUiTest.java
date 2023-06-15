@@ -204,11 +204,11 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected TestRule getRulesInsideActivityMonitor() {
-        final ViewCaptureRule viewCaptureRule = new ViewCaptureRule();
+        final ViewCaptureRule viewCaptureRule = new ViewCaptureRule(mActivityMonitor::getActivity);
         final RuleChain inner = RuleChain
                 .outerRule(new PortraitLandscapeRunner(this))
-                .around(viewCaptureRule)
                 .around(new FailureWatcher(mDevice, mLauncher, viewCaptureRule.getViewCapture()))
+                .around(viewCaptureRule)
                 .around(new ViewCaptureAnalysisRule(viewCaptureRule.getViewCapture()));
 
         return TestHelpers.isInLauncherProcess()
