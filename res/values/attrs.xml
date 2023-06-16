@@ -204,6 +204,9 @@
         <!-- File that contains the specs for the workspace.
         Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
         <attr name="workspaceSpecsId" format="reference" />
+        <!-- File that contains the specs for all apps.
+        Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
+        <attr name="allAppsSpecsId" format="reference" />
 
         <!-- By default all categories are enabled -->
         <attr name="deviceCategory" format="integer">
