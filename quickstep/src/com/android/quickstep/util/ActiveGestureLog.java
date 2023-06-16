@@ -18,12 +18,9 @@ package com.android.quickstep.util;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.config.FeatureFlags;
-
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -148,10 +145,6 @@ public class ActiveGestureLog {
 
         eventEntry.update(type, event, extras, compoundString, gestureEvent);
         lastEventEntries.add(eventEntry);
-    }
-
-    public void clear() {
-        Arrays.fill(logs, null);
     }
 
     public void dump(String prefix, PrintWriter writer) {
