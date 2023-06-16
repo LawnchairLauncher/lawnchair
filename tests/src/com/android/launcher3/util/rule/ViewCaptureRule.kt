@@ -22,6 +22,7 @@ import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
 import com.android.app.viewcapture.SimpleViewCapture
 import com.android.app.viewcapture.ViewCapture.MAIN_EXECUTOR
+import com.android.app.viewcapture.data.ExportedData
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter
 import java.util.function.Supplier
 import org.junit.rules.TestRule
@@ -36,10 +37,13 @@ import org.junit.runners.model.Statement
  */
 class ViewCaptureRule(var alreadyOpenActivitySupplier: Supplier<Activity?>) : TestRule {
     val viewCapture = SimpleViewCapture("test-view-capture")
+    var viewCaptureData: ExportedData? = null
+        private set
 
     override fun apply(base: Statement, description: Description): Statement {
         return object : Statement() {
             override fun evaluate() {
+                viewCaptureData = null
                 val windowListenerCloseables = mutableListOf<SafeCloseable>()
 
                 val alreadyOpenActivity = alreadyOpenActivitySupplier.get()
@@ -67,6 +71,9 @@ class ViewCaptureRule(var alreadyOpenActivitySupplier: Supplier<Activity?>) : Te
                     base.evaluate()
                 } finally {
                     application.unregisterActivityLifecycleCallbacks(lifecycleCallbacks)
+
+                    viewCaptureData =
+                        viewCapture.getExportedData(ApplicationProvider.getApplicationContext())
 
                     // Clean up ViewCapture references here rather than in onActivityDestroyed so
                     // test code can access view hierarchy capture. onActivityDestroyed would delete
