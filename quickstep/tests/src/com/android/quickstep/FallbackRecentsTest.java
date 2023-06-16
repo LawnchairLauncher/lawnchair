@@ -122,7 +122,7 @@ public class FallbackRecentsTest {
         mOrderSensitiveRules = RuleChain
                 .outerRule(new SamplerRule())
                 .around(new NavigationModeSwitchRule(mLauncher))
-                .around(new FailureWatcher(mDevice, mLauncher, viewCaptureRule.getViewCapture()))
+                .around(new FailureWatcher(mLauncher, viewCaptureRule::getViewCaptureData))
                 .around(viewCaptureRule)
                 .around(new ViewCaptureAnalysisRule(viewCaptureRule.getViewCapture()));
 
