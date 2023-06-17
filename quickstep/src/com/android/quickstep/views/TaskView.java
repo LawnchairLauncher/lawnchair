@@ -1021,7 +1021,10 @@ public class TaskView extends FrameLayout implements Reusable {
             }
             if (needsUpdate(changes, FLAG_UPDATE_ICON)) {
                 mIconLoadRequest = iconCache.updateIconInBackground(mTask,
-                        (task) -> setIcon(mIconView, task.icon));
+                        (task) -> {
+                            setIcon(mIconView, task.icon);
+                            mDigitalWellBeingToast.initialize(task);
+                        });
             }
         } else {
             if (needsUpdate(changes, FLAG_UPDATE_THUMBNAIL)) {
@@ -1343,7 +1346,6 @@ public class TaskView extends FrameLayout implements Reusable {
 
     protected void refreshTaskThumbnailSplash() {
         mSnapshotView.refreshSplashView();
-        setContentDescription(mDigitalWellBeingToast.getContentDescription());
     }
 
     private void setSplitSelectTranslationX(float x) {
