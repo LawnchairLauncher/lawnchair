@@ -31,6 +31,7 @@ import android.util.Log;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.AppInfo;
+import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -102,6 +103,9 @@ public class TestWorkspaceBuilder {
         board.getIcons().forEach((iconPoint) ->
                 transaction.addItem(() -> createIconInCell(iconPoint, screenId))
         );
+        board.getFolders().forEach((folderPoint) ->
+                transaction.addItem(() -> createFolderInCell(folderPoint, screenId))
+        );
         return transaction;
     }
 
@@ -128,6 +132,30 @@ public class TestWorkspaceBuilder {
             item.screenId = screenId;
             return item;
         };
+    }
+
+    public FolderInfo createFolderInCell(CellLayoutBoard.FolderPoint folderPoint, int screenId) {
+        FolderInfo folderInfo = new FolderInfo();
+        folderInfo.screenId = screenId;
+        folderInfo.container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
+        folderInfo.cellX = folderPoint.coord.x;
+        folderInfo.cellY = folderPoint.coord.y;
+        folderInfo.minSpanY = folderInfo.minSpanX = folderInfo.spanX = folderInfo.spanY = 1;
+        folderInfo.setOption(FolderInfo.FLAG_MULTI_PAGE_ANIMATION, true, null);
+
+        for (int i = 0; i < folderPoint.getNumberIconsInside(); i++) {
+            folderInfo.add(getDefaultWorkspaceItem(screenId), false);
+        }
+
+        return folderInfo;
+    }
+
+    private WorkspaceItemInfo getDefaultWorkspaceItem(int screenId) {
+        WorkspaceItemInfo item = new WorkspaceItemInfo(getApp());
+        item.screenId = screenId;
+        item.minSpanY = item.minSpanX = item.spanX = item.spanY = 1;
+        item.container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
+        return item;
     }
 
     private ItemInfo createIconInCell(CellLayoutBoard.IconPoint iconPoint, int screenId) {

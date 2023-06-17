@@ -83,7 +83,6 @@ import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.provider.RestoreDbTask;
@@ -143,8 +142,6 @@ import com.android.wm.shell.transition.IShellTransitions;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -1274,80 +1271,41 @@ public class TouchInteractionService extends Service
 
     @Override
     protected void dump(FileDescriptor fd, PrintWriter pw, String[] rawArgs) {
-        if (rawArgs.length > 0 && Utilities.IS_DEBUG_DEVICE) {
-            LinkedList<String> args = new LinkedList(Arrays.asList(rawArgs));
-            switch (args.pollFirst()) {
-                case "cmd":
-                    if (args.peekFirst() == null) {
-                        printAvailableCommands(pw);
-                    } else {
-                        onCommand(pw, args);
-                    }
-                    break;
-            }
-        } else {
-            // Dump everything
-            FlagsFactory.dump(pw);
-            if (LockedUserState.get(this).isUserUnlocked()) {
-                PluginManagerWrapper.INSTANCE.get(getBaseContext()).dump(pw);
-            }
-            mDeviceState.dump(pw);
-            if (mOverviewComponentObserver != null) {
-                mOverviewComponentObserver.dump(pw);
-            }
-            if (mOverviewCommandHelper != null) {
-                mOverviewCommandHelper.dump(pw);
-            }
-            if (mGestureState != null) {
-                mGestureState.dump(pw);
-            }
-            pw.println("Input state:");
-            pw.println("  mInputMonitorCompat=" + mInputMonitorCompat);
-            pw.println("  mInputEventReceiver=" + mInputEventReceiver);
-            DisplayController.INSTANCE.get(this).dump(pw);
-            pw.println("TouchState:");
-            BaseDraggingActivity createdOverviewActivity = mOverviewComponentObserver == null ? null
-                    : mOverviewComponentObserver.getActivityInterface().getCreatedActivity();
-            boolean resumed = mOverviewComponentObserver != null
-                    && mOverviewComponentObserver.getActivityInterface().isResumed();
-            pw.println("  createdOverviewActivity=" + createdOverviewActivity);
-            pw.println("  resumed=" + resumed);
-            pw.println("  mConsumer=" + mConsumer.getName());
-            ActiveGestureLog.INSTANCE.dump("", pw);
-            RecentsModel.INSTANCE.get(this).dump("", pw);
-            pw.println("ProtoTrace:");
-            pw.println("  file=" + ProtoTracer.INSTANCE.get(this).getTraceFile());
-            if (createdOverviewActivity != null) {
-                createdOverviewActivity.getDeviceProfile().dump(this, "", pw);
-            }
-            mTaskbarManager.dumpLogs("", pw);
+        // Dump everything
+        FlagsFactory.dump(pw);
+        if (LockedUserState.get(this).isUserUnlocked()) {
+            PluginManagerWrapper.INSTANCE.get(getBaseContext()).dump(pw);
         }
-    }
-
-    private void printAvailableCommands(PrintWriter pw) {
-        pw.println("Available commands:");
-        pw.println("  clear-touch-log: Clears the touch interaction log");
-        pw.println("  print-gesture-log: only prints the ActiveGestureLog dump");
-    }
-
-    private void onCommand(PrintWriter pw, LinkedList<String> args) {
-        String cmd = args.pollFirst();
-        if (cmd == null) {
-            pw.println("Command missing");
-            printAvailableCommands(pw);
-            return;
+        mDeviceState.dump(pw);
+        if (mOverviewComponentObserver != null) {
+            mOverviewComponentObserver.dump(pw);
         }
-        switch (cmd) {
-            case "clear-touch-log":
-                ActiveGestureLog.INSTANCE.clear();
-                break;
-            case "print-gesture-log":
-                ActiveGestureLog.INSTANCE.dump("", pw);
-                break;
-            default:
-                pw.println("Command does not exist: " + cmd);
-                printAvailableCommands(pw);
+        if (mOverviewCommandHelper != null) {
+            mOverviewCommandHelper.dump(pw);
         }
+        if (mGestureState != null) {
+            mGestureState.dump(pw);
+        }
+        pw.println("Input state:");
+        pw.println("  mInputMonitorCompat=" + mInputMonitorCompat);
+        pw.println("  mInputEventReceiver=" + mInputEventReceiver);
+        DisplayController.INSTANCE.get(this).dump(pw);
+        pw.println("TouchState:");
+        BaseDraggingActivity createdOverviewActivity = mOverviewComponentObserver == null ? null
+                : mOverviewComponentObserver.getActivityInterface().getCreatedActivity();
+        boolean resumed = mOverviewComponentObserver != null
+                && mOverviewComponentObserver.getActivityInterface().isResumed();
+        pw.println("  createdOverviewActivity=" + createdOverviewActivity);
+        pw.println("  resumed=" + resumed);
+        pw.println("  mConsumer=" + mConsumer.getName());
+        ActiveGestureLog.INSTANCE.dump("", pw);
+        RecentsModel.INSTANCE.get(this).dump("", pw);
+        pw.println("ProtoTrace:");
+        pw.println("  file=" + ProtoTracer.INSTANCE.get(this).getTraceFile());
+        if (createdOverviewActivity != null) {
+            createdOverviewActivity.getDeviceProfile().dump(this, "", pw);
+        }
+        mTaskbarManager.dumpLogs("", pw);
     }
 
     private AbsSwipeUpHandler createLauncherSwipeHandler(
