@@ -150,7 +150,9 @@ public class BubbleBarView extends FrameLayout {
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
         if (getChildCount() + 1 > MAX_BUBBLES) {
-            removeViewInLayout(getChildAt(getChildCount() - 1));
+            // the last child view is the overflow bubble and we shouldn't remove that. remove the
+            // second to last child view.
+            removeViewInLayout(getChildAt(getChildCount() - 2));
         }
         super.addView(child, index, params);
     }

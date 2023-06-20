@@ -34,4 +34,4 @@ data class BubbleBarBubble(
 ) : BubbleBarItem(info.key, view)
 
 /** Represents the overflow bubble in the bubble bar. */
-data class BubbleBarOverflow(override val view: BubbleView) : BubbleBarItem("overflow", view)
+data class BubbleBarOverflow(override val view: BubbleView) : BubbleBarItem("Overflow", view)
