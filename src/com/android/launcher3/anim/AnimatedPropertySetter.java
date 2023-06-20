@@ -24,13 +24,12 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
+import android.graphics.drawable.ColorDrawable;
 import android.util.FloatProperty;
 import android.util.IntProperty;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-
-import com.android.launcher3.views.ScrimView;
 
 import java.util.function.Consumer;
 
@@ -63,9 +62,9 @@ public class AnimatedPropertySetter extends PropertySetter {
     }
 
     @Override
-    public Animator setScrimViewBackgroundColor(ScrimView view, int color,
-            TimeInterpolator interpolator) {
-        if (view == null || view.getBackgroundColor() == color) {
+    public Animator setViewBackgroundColor(View view, int color, TimeInterpolator interpolator) {
+        if (view == null || (view.getBackground() instanceof ColorDrawable
+                && ((ColorDrawable) view.getBackground()).getColor() == color)) {
             return NO_OP;
         }
         ObjectAnimator anim = ObjectAnimator.ofArgb(view, VIEW_BACKGROUND_COLOR, color);
