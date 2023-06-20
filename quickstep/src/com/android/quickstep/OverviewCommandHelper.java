@@ -140,6 +140,11 @@ public class OverviewCommandHelper {
         mPendingCommands.clear();
     }
 
+    @UiThread
+    public boolean isCommandQueueEmpty() {
+        return mPendingCommands.isEmpty();
+    }
+
     @Nullable
     private TaskView getNextTask(RecentsView view) {
         final TaskView runningTaskView = view.getRunningTaskView();

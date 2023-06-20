@@ -81,11 +81,16 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     }
 
     @Override
-    public void startHome(boolean animated) {
+    protected void handleStartHome(boolean animated) {
         StateManager stateManager = mActivity.getStateManager();
         animated &= stateManager.shouldAnimateStateChange();
         stateManager.goToState(NORMAL, animated);
         AbstractFloatingView.closeAllOpenViews(mActivity, animated);
+    }
+
+    @Override
+    public boolean isCommandQueueEmpty() {
+        return mActivity.isCommandQueueEmpty();
     }
 
     @Override
