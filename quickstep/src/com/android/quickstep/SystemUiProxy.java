@@ -19,6 +19,7 @@ import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.quickstep.util.LogUtils.splitFailureMessage;
 
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
@@ -706,7 +707,7 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSplitScreen.startTasks(taskId1, options1, taskId2, options2, splitPosition,
                         splitRatio, remoteTransition, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startTasks");
+                Log.w(TAG, splitFailureMessage("startTasks", "RemoteException"), e);
             }
         }
     }
@@ -719,7 +720,7 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSplitScreen.startIntentAndTask(pendingIntent, userId1, options1, taskId, options2,
                         splitPosition, splitRatio, remoteTransition, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startIntentAndTask");
+                Log.w(TAG, splitFailureMessage("startIntentAndTask", "RemoteException"), e);
             }
         }
     }
@@ -735,7 +736,7 @@ public class SystemUiProxy implements ISystemUiProxy {
                         pendingIntent2, userId2, shortcutInfo2, options2, splitPosition, splitRatio,
                         remoteTransition, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startIntents");
+                Log.w(TAG, splitFailureMessage("startIntents", "RemoteException"), e);
             }
         }
     }
@@ -748,7 +749,7 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSplitScreen.startShortcutAndTask(shortcutInfo, options1, taskId, options2,
                         splitPosition, splitRatio, remoteTransition, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startShortcutAndTask");
+                Log.w(TAG, splitFailureMessage("startShortcutAndTask", "RemoteException"), e);
             }
         }
     }
@@ -764,7 +765,8 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSplitScreen.startTasksWithLegacyTransition(taskId1, options1, taskId2, options2,
                         splitPosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startTasksWithLegacyTransition");
+                Log.w(TAG, splitFailureMessage(
+                        "startTasksWithLegacyTransition", "RemoteException"), e);
             }
         }
     }
@@ -778,7 +780,8 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSplitScreen.startIntentAndTaskWithLegacyTransition(pendingIntent, userId1,
                         options1, taskId, options2, splitPosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startIntentAndTaskWithLegacyTransition");
+                Log.w(TAG, splitFailureMessage(
+                        "startIntentAndTaskWithLegacyTransition", "RemoteException"), e);
             }
         }
     }
@@ -791,7 +794,8 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSplitScreen.startShortcutAndTaskWithLegacyTransition(shortcutInfo, options1,
                         taskId, options2, splitPosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startShortcutAndTaskWithLegacyTransition");
+                Log.w(TAG, splitFailureMessage(
+                        "startShortcutAndTaskWithLegacyTransition", "RemoteException"), e);
             }
         }
     }
@@ -811,7 +815,8 @@ public class SystemUiProxy implements ISystemUiProxy {
                         shortcutInfo1, options1, pendingIntent2, userId2, shortcutInfo2, options2,
                         sidePosition, splitRatio, adapter, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startIntentsWithLegacyTransition");
+                Log.w(TAG, splitFailureMessage(
+                        "startIntentsWithLegacyTransition", "RemoteException"), e);
             }
         }
     }
@@ -823,7 +828,7 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSplitScreen.startShortcut(packageName, shortcutId, position, options,
                         user, instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startShortcut");
+                Log.w(TAG, splitFailureMessage("startShortcut", "RemoteException"), e);
             }
         }
     }
@@ -835,7 +840,7 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSplitScreen.startIntent(intent, userId, fillInIntent, position, options,
                         instanceId);
             } catch (RemoteException e) {
-                Log.w(TAG, "Failed call startIntent");
+                Log.w(TAG, splitFailureMessage("startIntent", "RemoteException"), e);
             }
         }
     }
