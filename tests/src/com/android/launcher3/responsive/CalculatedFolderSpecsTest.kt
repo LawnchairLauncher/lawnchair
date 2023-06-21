@@ -24,7 +24,6 @@ import com.android.launcher3.AbstractDeviceProfileTest
 import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.tests.R
 import com.android.launcher3.util.TestResourceHelper
-import com.android.launcher3.workspace.WorkspaceSpecs
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -48,11 +47,11 @@ class CalculatedFolderSpecsTest : AbstractDeviceProfileTest() {
 
         // Loading workspace specs
         val resourceHelperWorkspace = TestResourceHelper(context!!, R.xml.valid_workspace_file)
-        val workspaceSpecs = WorkspaceSpecs(resourceHelperWorkspace)
+        val workspaceSpecs = WorkspaceSpecs.create(resourceHelperWorkspace)
 
         // Loading folders specs
         val resourceHelperFolder = TestResourceHelper(context!!, R.xml.valid_folders_specs)
-        val folderSpecs = FolderSpecs(resourceHelperFolder)
+        val folderSpecs = FolderSpecs.create(resourceHelperFolder)
 
         assertThat(folderSpecs.widthSpecs.size).isEqualTo(2)
         assertThat(folderSpecs.widthSpecs[0].cellSize.matchWorkspace).isEqualTo(true)
@@ -62,7 +61,7 @@ class CalculatedFolderSpecsTest : AbstractDeviceProfileTest() {
         var availableWidth = deviceSpec.naturalSize.first
         var calculatedWorkspace = workspaceSpecs.getCalculatedWidthSpec(columns, availableWidth)
         var calculatedWidthFolderSpec =
-            folderSpecs.getWidthSpec(columns, availableWidth, calculatedWorkspace)
+            folderSpecs.getCalculatedWidthSpec(columns, availableWidth, calculatedWorkspace)
         with(calculatedWidthFolderSpec) {
             assertThat(availableSpace).isEqualTo(availableWidth)
             assertThat(cells).isEqualTo(columns)
@@ -76,7 +75,7 @@ class CalculatedFolderSpecsTest : AbstractDeviceProfileTest() {
         availableWidth = 2000.dpToPx()
         calculatedWorkspace = workspaceSpecs.getCalculatedWidthSpec(columns, availableWidth)
         calculatedWidthFolderSpec =
-            folderSpecs.getWidthSpec(columns, availableWidth, calculatedWorkspace)
+            folderSpecs.getCalculatedWidthSpec(columns, availableWidth, calculatedWorkspace)
         with(calculatedWidthFolderSpec) {
             assertThat(availableSpace).isEqualTo(availableWidth)
             assertThat(cells).isEqualTo(columns)
@@ -97,11 +96,11 @@ class CalculatedFolderSpecsTest : AbstractDeviceProfileTest() {
 
         // Loading workspace specs
         val resourceHelperWorkspace = TestResourceHelper(context!!, R.xml.valid_workspace_file)
-        val workspaceSpecs = WorkspaceSpecs(resourceHelperWorkspace)
+        val workspaceSpecs = WorkspaceSpecs.create(resourceHelperWorkspace)
 
         // Loading folders specs
         val resourceHelperFolder = TestResourceHelper(context!!, R.xml.valid_folders_specs)
-        val folderSpecs = FolderSpecs(resourceHelperFolder)
+        val folderSpecs = FolderSpecs.create(resourceHelperFolder)
 
         assertThat(folderSpecs.heightSpecs.size).isEqualTo(1)
         assertThat(folderSpecs.heightSpecs[0].cellSize.matchWorkspace).isEqualTo(true)
@@ -109,7 +108,7 @@ class CalculatedFolderSpecsTest : AbstractDeviceProfileTest() {
         // Validate height spec
         val calculatedWorkspace = workspaceSpecs.getCalculatedHeightSpec(rows, availableHeight)
         val calculatedFolderSpec =
-            folderSpecs.getHeightSpec(rows, availableHeight, calculatedWorkspace)
+            folderSpecs.getCalculatedHeightSpec(rows, availableHeight, calculatedWorkspace)
         with(calculatedFolderSpec) {
             assertThat(availableSpace).isEqualTo(availableHeight)
             assertThat(cells).isEqualTo(rows)

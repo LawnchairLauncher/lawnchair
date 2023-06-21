@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2023 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.android.launcher3.responsive
 
 import android.content.res.TypedArray
@@ -26,7 +42,7 @@ data class SizeSpec(
 ) {
 
     /** Retrieves the correct value for [SizeSpec]. */
-    fun getCalculatedValue(availableSpace: Int, workspaceValue: Int): Int {
+    fun getCalculatedValue(availableSpace: Int, workspaceValue: Int = 0): Int {
         val calculatedValue =
             when {
                 fixedSize > 0 -> fixedSize.roundToInt()
@@ -89,6 +105,13 @@ data class SizeSpec(
         }
 
         return true
+    }
+
+    object XmlTags {
+        const val START_PADDING = "startPadding"
+        const val END_PADDING = "endPadding"
+        const val GUTTER = "gutter"
+        const val CELL_SIZE = "cellSize"
     }
 
     companion object {
