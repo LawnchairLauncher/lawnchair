@@ -30,7 +30,6 @@ import static org.junit.Assume.assumeTrue;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.SystemClock;
-import android.platform.test.annotations.IwTest;
 import android.platform.test.annotations.PlatinumTest;
 import android.util.Log;
 
@@ -240,7 +239,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @PlatinumTest(focusArea = "launcher")
-    @IwTest(focusArea = "launcher")
     @Test
     @ScreenRecord // b/202433017
     public void testWorkspace() throws Exception {
@@ -375,7 +373,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @PlatinumTest(focusArea = "launcher")
-    @IwTest(focusArea = "launcher")
     @Test
     @PortraitLandscape
     @ScreenRecord // b/256898879

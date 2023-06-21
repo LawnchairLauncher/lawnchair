@@ -148,8 +148,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     // Used for IME+A11Y buttons
     private final ViewGroup mEndContextualContainer;
     private final ViewGroup mStartContextualContainer;
-    private final int mLightIconColor;
-    private final int mDarkIconColor;
+    private final int mLightIconColorOnHome;
+    private final int mDarkIconColorOnHome;
     /** Color to use for navigation bar buttons, if they are on on a Taskbar surface background. */
     private final int mOnBackgroundIconColor;
 
@@ -205,9 +205,11 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         mEndContextualContainer = mNavButtonsView.findViewById(R.id.end_contextual_buttons);
         mStartContextualContainer = mNavButtonsView.findViewById(R.id.start_contextual_buttons);
 
-        mLightIconColor = context.getColor(R.color.taskbar_nav_icon_light_color);
-        mDarkIconColor = context.getColor(R.color.taskbar_nav_icon_dark_color);
-        mOnBackgroundIconColor = Utilities.isDarkTheme(context) ? mLightIconColor : mDarkIconColor;
+        mLightIconColorOnHome = context.getColor(R.color.taskbar_nav_icon_light_color_on_home);
+        mDarkIconColorOnHome = context.getColor(R.color.taskbar_nav_icon_dark_color_on_home);
+        mOnBackgroundIconColor = Utilities.isDarkTheme(context)
+                ? context.getColor(R.color.taskbar_nav_icon_light_color)
+                : context.getColor(R.color.taskbar_nav_icon_dark_color);
     }
 
     /**
@@ -630,18 +632,20 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
 
     private void updateNavButtonColor() {
         final ArgbEvaluator argbEvaluator = ArgbEvaluator.getInstance();
-        final int sysUiNavButtonIconColor = (int) argbEvaluator.evaluate(
+        final int sysUiNavButtonIconColorOnHome = (int) argbEvaluator.evaluate(
                 mTaskbarNavButtonDarkIntensity.value,
-                mLightIconColor,
-                mDarkIconColor);
+                mLightIconColorOnHome,
+                mDarkIconColorOnHome);
+
         // Override the color from framework if nav buttons are over an opaque Taskbar surface.
         final int iconColor = (int) argbEvaluator.evaluate(
                 mOnBackgroundNavButtonColorOverrideMultiplier.value
                         * Math.max(
                                 mOnTaskbarBackgroundNavButtonColorOverride.value,
                                 mSlideInViewVisibleNavButtonColorOverride.value),
-                sysUiNavButtonIconColor,
+                sysUiNavButtonIconColorOnHome,
                 mOnBackgroundIconColor);
+
         for (ImageView button : mAllButtons) {
             button.setImageTintList(ColorStateList.valueOf(iconColor));
         }
@@ -928,8 +932,6 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         pw.println(prefix + "NavbarButtonsViewController:");
 
         pw.println(prefix + "\tmState=" + getStateString(mState));
-        pw.println(prefix + "\tmLightIconColor=" + Integer.toHexString(mLightIconColor));
-        pw.println(prefix + "\tmDarkIconColor=" + Integer.toHexString(mDarkIconColor));
         pw.println(prefix + "\tmFloatingRotationButtonBounds=" + mFloatingRotationButtonBounds);
         pw.println(prefix + "\tmSysuiStateFlags=" + QuickStepContract.getSystemUiStateString(
                 mSysuiStateFlags));
@@ -940,6 +942,14 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                 + mTaskbarNavButtonTranslationYForInAppDisplay.value);
         pw.println(prefix + "\t\tmTaskbarNavButtonTranslationYForIme="
                 + mTaskbarNavButtonTranslationYForIme.value);
+        pw.println(prefix + "\t\tmTaskbarNavButtonDarkIntensity="
+                + mTaskbarNavButtonDarkIntensity.value);
+        pw.println(prefix + "\t\tmSlideInViewVisibleNavButtonColorOverride="
+                + mSlideInViewVisibleNavButtonColorOverride.value);
+        pw.println(prefix + "\t\tmOnTaskbarBackgroundNavButtonColorOverride="
+                + mOnTaskbarBackgroundNavButtonColorOverride.value);
+        pw.println(prefix + "\t\tmOnBackgroundNavButtonColorOverrideMultiplier="
+                + mOnBackgroundNavButtonColorOverrideMultiplier.value);
     }
 
     private static String getStateString(int flags) {
