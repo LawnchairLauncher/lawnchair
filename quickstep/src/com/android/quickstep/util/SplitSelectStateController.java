@@ -73,16 +73,18 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.quickstep.RecentsModel;
+import com.android.quickstep.SplitSelectionListener;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.GroupedTaskView;
-import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -137,6 +139,8 @@ public class SplitSelectStateController {
     private StatsLogManager.EventEnum mSplitEvent;
 
     private FloatingTaskView mFirstFloatingTaskView;
+
+    private final List<SplitSelectionListener> mSplitSelectionListeners = new ArrayList<>();
 
     public SplitSelectStateController(Context context, Handler handler, StateManager stateManager,
             DepthController depthController, StatsLogManager statsLogManager,
@@ -245,6 +249,27 @@ public class SplitSelectStateController {
 
         return task.key.baseIntent.getComponent().equals(componentKey.componentName)
                 && task.key.userId == componentKey.user.getIdentifier();
+    }
+
+    /**
+     * Listener will only get callbacks going forward from the point of registration. No
+     * methods will be fired upon registering.
+     */
+    public void registerSplitListener(@NonNull SplitSelectionListener listener) {
+        if (mSplitSelectionListeners.contains(listener)) {
+            return;
+        }
+        mSplitSelectionListeners.add(listener);
+    }
+
+    public void unregisterSplitListener(@NonNull SplitSelectionListener listener) {
+        mSplitSelectionListeners.remove(listener);
+    }
+
+    private void dispatchOnSplitSelectionExit() {
+        for (SplitSelectionListener listener : mSplitSelectionListeners) {
+            listener.onSplitSelectionExit(false);
+        }
     }
 
     /**
@@ -790,12 +815,16 @@ public class SplitSelectStateController {
     }
 
     /**
-     * To be called if split select was cancelled
+     * To be called whenever we exit split selection state. If
+     * {@link FeatureFlags#ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE} is set, this should be the
+     * central way split is getting reset, which should then go through the callbacks to reset
+     * other state.
      */
     public void resetState() {
         if (FeatureFlags.ENABLE_SPLIT_LAUNCH_DATA_REFACTOR.get()) {
             mSplitSelectDataHolder.resetState();
         }
+        dispatchOnSplitSelectionExit();
         mInitialTaskId = INVALID_TASK_ID;
         mInitialTaskIntent = null;
         mSecondTaskId = INVALID_TASK_ID;
