@@ -3742,19 +3742,33 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                         taskViewIdArray.removeValue(
                                                 finalNextFocusedTaskView.getTaskViewId());
                                     }
-                                    if (snappedIndex < taskViewIdArray.size()) {
-                                        taskViewIdToSnapTo = taskViewIdArray.get(snappedIndex);
-                                    } else if (snappedIndex == taskViewIdArray.size()) {
-                                        // If the snapped task is the last item from the
-                                        // dismissed row,
-                                        // snap to the same column in the other grid row
-                                        IntArray inverseRowTaskViewIdArray =
-                                                isSnappedTaskInTopRow ? getBottomRowIdArray()
-                                                        : getTopRowIdArray();
-                                        if (snappedIndex < inverseRowTaskViewIdArray.size()) {
-                                            taskViewIdToSnapTo = inverseRowTaskViewIdArray.get(
-                                                    snappedIndex);
+                                    try {
+                                        if (snappedIndex < taskViewIdArray.size()) {
+                                            taskViewIdToSnapTo = taskViewIdArray.get(snappedIndex);
+                                        } else if (snappedIndex == taskViewIdArray.size()) {
+                                            // If the snapped task is the last item from the
+                                            // dismissed row,
+                                            // snap to the same column in the other grid row
+                                            IntArray inverseRowTaskViewIdArray =
+                                                    isSnappedTaskInTopRow ? getBottomRowIdArray()
+                                                            : getTopRowIdArray();
+                                            if (snappedIndex < inverseRowTaskViewIdArray.size()) {
+                                                taskViewIdToSnapTo = inverseRowTaskViewIdArray.get(
+                                                        snappedIndex);
+                                            }
                                         }
+                                    } catch (ArrayIndexOutOfBoundsException e) {
+                                        throw new IllegalStateException(
+                                                "b/269956477 invalid snappedIndex"
+                                                        + "\nsnappedTaskViewId: "
+                                                        + snappedTaskViewId
+                                                        + "\nfocusedTaskViewId: "
+                                                        + mFocusedTaskViewId
+                                                        + "\ntopRowIdArray: "
+                                                        + getTopRowIdArray().toConcatString()
+                                                        + "\nbottomRowIdArray: "
+                                                        + getBottomRowIdArray().toConcatString(),
+                                                e);
                                     }
                                 }
                             }
