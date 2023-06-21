@@ -181,6 +181,8 @@ public class InvariantDeviceProfile {
     public int workspaceSpecsId = INVALID_RESOURCE_HANDLE;
     @XmlRes
     public int allAppsSpecsId = INVALID_RESOURCE_HANDLE;
+    @XmlRes
+    public int folderSpecsId = INVALID_RESOURCE_HANDLE;
 
     public String dbFile;
     public int defaultLayoutId;
@@ -356,6 +358,7 @@ public class InvariantDeviceProfile {
         devicePaddingId = closestProfile.devicePaddingId;
         workspaceSpecsId = closestProfile.mWorkspaceSpecsId;
         allAppsSpecsId = closestProfile.mAllAppsSpecsId;
+        folderSpecsId = closestProfile.mFolderSpecsId;
         this.deviceType = deviceType;
 
         inlineNavButtonsEndSpacing = closestProfile.inlineNavButtonsEndSpacing;
@@ -803,6 +806,7 @@ public class InvariantDeviceProfile {
         private final int devicePaddingId;
         private final int mWorkspaceSpecsId;
         private final int mAllAppsSpecsId;
+        private final int mFolderSpecsId;
 
         public GridOption(Context context, AttributeSet attrs) {
             TypedArray a = context.obtainStyledAttributes(
@@ -869,9 +873,12 @@ public class InvariantDeviceProfile {
                         R.styleable.GridDisplayOption_workspaceSpecsId, INVALID_RESOURCE_HANDLE);
                 mAllAppsSpecsId = a.getResourceId(
                         R.styleable.GridDisplayOption_allAppsSpecsId, INVALID_RESOURCE_HANDLE);
+                mFolderSpecsId = a.getResourceId(
+                        R.styleable.GridDisplayOption_folderSpecsId, INVALID_RESOURCE_HANDLE);
             } else {
                 mWorkspaceSpecsId = INVALID_RESOURCE_HANDLE;
                 mAllAppsSpecsId = INVALID_RESOURCE_HANDLE;
+                mFolderSpecsId = INVALID_RESOURCE_HANDLE;
             }
 
             int inlineForRotation = a.getInt(R.styleable.GridDisplayOption_inlineQsb,

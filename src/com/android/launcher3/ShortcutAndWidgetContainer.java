@@ -162,7 +162,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
             // No need to add padding when cell layout border spacing is present.
             boolean noPaddingX =
                     (dp.cellLayoutBorderSpacePx.x > 0 && mContainerType == WORKSPACE)
-                            || (dp.folderCellLayoutBorderSpacePx > 0 && mContainerType == FOLDER)
+                            || (dp.folderCellLayoutBorderSpacePx.x > 0 && mContainerType == FOLDER)
                             || (dp.hotseatBorderSpace > 0 && mContainerType == HOTSEAT);
             int cellPaddingX = noPaddingX
                     ? 0

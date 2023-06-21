@@ -188,12 +188,12 @@ class FolderSpecs(resourceHelper: ResourceHelper) {
 }
 
 data class CalculatedFolderSpec(
+    val availableSpace: Int,
+    val cells: Int,
     val startPaddingPx: Int,
     val endPaddingPx: Int,
     val gutterPx: Int,
-    val cellSizePx: Int,
-    val availableSpace: Int,
-    val cells: Int
+    val cellSizePx: Int
 )
 
 /**
@@ -270,11 +270,11 @@ private fun convertToCalculatedFolderSpec(
     cellSizePx = folderSpec.cellSize.getRemainderSpaceValue(remainderSpace, cellSizePx)
 
     return CalculatedFolderSpec(
+        availableSpace = availableSpace,
+        cells = cells,
         startPaddingPx = startPaddingPx,
         endPaddingPx = endPaddingPx,
         gutterPx = gutterPx,
-        cellSizePx = cellSizePx,
-        availableSpace = availableSpace,
-        cells = cells
+        cellSizePx = cellSizePx
     )
 }
