@@ -53,6 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Pasatu hatza atzera egiteko"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Aurreko pantailara itzultzeko, pasatu hatza pantailaren ezkerreko edo eskuineko ertzetik erdialdera."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Aurreko pantailara itzultzeko, pasatu bi hatz pantailaren ezkerreko edo eskuineko ertzetik erdialdera."</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Egin atzera"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Ziurtatu hatza pantailaren beheko ertzetik gora pasatzen duzula."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Ziurtatu askatu aurretik ez duzula hatza gelditzen."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Ziurtatu hatza zuzen pasatzen duzula gora."</string>
@@ -61,6 +62,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Pasatu hatza hasierako pantailara joateko"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Pasatu hatza pantailaren behealdetik gora. Keinu horrek hasierako pantailara eramango zaitu beti."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Pasatu bi hatz pantailaren behealdetik gora. Hasierako pantailara eramango zaitu beti keinu horrek."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Joan hasierako pantailara"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Hasierako pantailara joateko, pasatu hatza pantailaren behealdetik gora"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Ziurtatu hatza pantailaren beheko ertzetik gora pasatzen duzula."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Hatza jaso aurretik, eduki leihoa luzaroago sakatuta."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Ziurtatu hatza zuzen pasatzen duzula gora; ondoren, gelditu."</string>
@@ -69,6 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Pasatu hatza aplikazioa aldatzeko"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Aplikazio batetik bestera joateko, pasatu hatza pantailaren behealdetik gora, eduki pantaila sakatuta eta altxatu hatza."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Aplikazio batetik bestera joateko, pasatu bi hatz pantailaren behealdetik gora, eduki pantaila sakatuta eta altxatu hatza."</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Aldatu aplikazioa"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Dena prest"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Eginda"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Ezarpenak"</string>
@@ -76,7 +80,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Ederki!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutoriala: <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Dena prest!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Pasatu hatza gora hasierako pantailara joateko"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Pasatu hatza gora hasierako pantailara joateko"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Hasierako pantailara joateko, sakatu Hasiera botoia"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Prest zaude <xliff:g id="DEVICE">%1$s</xliff:g> erabiltzen hasteko"</string>
     <string name="default_device_name" msgid="6660656727127422487">"gailua"</string>
@@ -84,7 +88,7 @@
     <string name="action_share" msgid="2648470652637092375">"Partekatu"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Atera pantaila-argazki bat"</string>
     <string name="action_split" msgid="2098009717623550676">"Zatitu"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"Sakatu beste aplikazio bat pantaila zatitzeko"</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"Sakatu beste aplikazio bat pantaila zatitzeko"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Pantaila zatitua ikusteko, aukeratu beste aplikazio bat"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Aplikazioak edo erakundeak ez du eman ekintza hori gauzatzeko baimena"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Nabigazio-tutoriala saltatu nahi duzu?"</string>
@@ -95,9 +99,11 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Zereginen barra erabiltzeko argibideak"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Agertu egin da zereginen barraren tutoriala"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Itxi egin da zereginen barraren tutoriala"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"Bi aplikazio batera erabiltzeko, arrastatu hatza albo batera"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Ataza-barra ikusteko, pasatu hatza bizkor gora"</string>
-    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Ataza-barran erabileran oinarritutako aplikazioak iradokitzen dira"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Bi aplikazio batera erabiltzeko, arrastatu bat albo batera"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Zereginen barra ikusteko, pasatu hatza gora poliki"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Jaso aplikazioen iradokizunak erabileran oinarrituta"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Zereginen barra automatikoki ezkutatzeko, aktibatu keinu bidezko nabigazioa ezarpenetan"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Egin gauza gehiago zereginen barrarekin"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Hurrengoa"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Atzera"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Itxi"</string>
@@ -110,7 +116,11 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Jakinarazpenak"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Ezarpen bizkorrak"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Zereginen barra"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Zereginen barra ikusgai dago"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Zereginen barra itxita dago"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Nabigazio-barra"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Eraman gora, ezkerretara"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Eraman behera, eskuinetara"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Erakutsi beste # aplikazio.}other{Erakutsi beste # aplikazio.}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> eta <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

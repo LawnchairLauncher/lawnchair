@@ -22,6 +22,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
 import static com.android.launcher3.Utilities.ATLEAST_S;
+import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_WIDGET_CENTERING;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -314,7 +315,7 @@ public class WidgetCell extends LinearLayout {
                 setScaleToFit(1.0f);
             }
             // When the drag start, translations need to be set to zero to center the view
-            setTranslationForCentering(0f, 0f);
+            getTranslateDelegate().setTranslation(INDEX_WIDGET_CENTERING, 0f, 0f);
         }
     }
 
@@ -464,7 +465,8 @@ public class WidgetCell extends LinearLayout {
             } else {
                 mAppWidgetHostViewPreview.setScaleToFit(mAppWidgetHostViewScale);
             }
-            mAppWidgetHostViewPreview.setTranslationForCentering(
+            mAppWidgetHostViewPreview.getTranslateDelegate().setTranslation(
+                    INDEX_WIDGET_CENTERING,
                     -(params.width - (params.width * mPreviewContainerScale)) / 2.0f,
                     -(params.height - (params.height * mPreviewContainerScale)) / 2.0f);
             mWidgetImageContainer.addView(mAppWidgetHostViewPreview, /* index= */ 0);

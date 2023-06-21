@@ -25,5 +25,5 @@
     <color name="home_settings_track_on_color">@android:color/system_accent2_700</color>
     <color name="home_settings_track_off_color">@android:color/system_neutral1_700</color>
 
-    <color name="all_apps_button_color">?android:attr/textColorSecondary</color>
+    <color name="all_apps_button_color">@android:color/system_neutral2_200</color>
 </resources>

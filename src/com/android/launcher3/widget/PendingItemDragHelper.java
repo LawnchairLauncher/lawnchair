@@ -180,7 +180,8 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             draggableView = DraggableView.ofType(DraggableView.DRAGGABLE_WIDGET);
         } else {
             PendingAddShortcutInfo createShortcutInfo = (PendingAddShortcutInfo) mAddInfo;
-            Drawable icon = createShortcutInfo.activityInfo.getFullResIcon(app.getIconCache());
+            Drawable icon = createShortcutInfo.getActivityInfo(launcher)
+                    .getFullResIcon(app.getIconCache());
             LauncherIcons li = LauncherIcons.obtain(launcher);
             preview = new FastBitmapDrawable(
                     li.createScaledBitmap(icon, BaseIconFactory.MODE_DEFAULT));

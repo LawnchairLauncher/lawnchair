@@ -80,10 +80,29 @@ public class ModelDelegate implements ResourceBasedOverride {
     }
 
     /**
-     * Load delegate items if any in the data model
+     * Load hot seat items if any in the data model
      */
     @WorkerThread
-    public void loadItems(UserManagerState ums, Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) { }
+    public void loadHotseatItems(UserManagerState ums,
+            Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) { }
+
+    /**
+     * Load all apps items if any in the data model
+     */
+    @WorkerThread
+    public void loadAllAppsItems(UserManagerState ums,
+            Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) { }
+
+    /**
+     * Load widget recommendation items if any in the data model
+     */
+    @WorkerThread
+    public void loadWidgetsRecommendationItems() { }
+
+    /**
+     * Marks the ModelDelegate as active
+     */
+    public void markActive() { }
 
     /**
      * Load String cache

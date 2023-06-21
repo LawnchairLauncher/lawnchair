@@ -147,6 +147,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:${ANDROID_X_VERSION}"
     implementation "androidx.preference:preference:${ANDROID_X_VERSION}"
     implementation project(':IconLoader')
+    implementation project(':UiTestsLibLauncher')
     withQuickstepImplementation project(':SharedLibWrapper')
 
     // Recents lib dependency

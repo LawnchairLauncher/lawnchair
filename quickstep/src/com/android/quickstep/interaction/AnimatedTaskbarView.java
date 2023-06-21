@@ -43,12 +43,12 @@ public class AnimatedTaskbarView extends ConstraintLayout {
 
     private View mBackground;
     private View mIconContainer;
+    private View mAllAppsButton;
     private View mIcon1;
     private View mIcon2;
     private View mIcon3;
     private View mIcon4;
     private View mIcon5;
-    private View mIcon6;
 
     @Nullable private Animator mRunningAnimator;
 
@@ -78,12 +78,12 @@ public class AnimatedTaskbarView extends ConstraintLayout {
 
         mBackground = findViewById(R.id.taskbar_background);
         mIconContainer = findViewById(R.id.icon_container);
+        mAllAppsButton = findViewById(R.id.taskbar_all_apps);
         mIcon1 = findViewById(R.id.taskbar_icon_1);
         mIcon2 = findViewById(R.id.taskbar_icon_2);
         mIcon3 = findViewById(R.id.taskbar_icon_3);
         mIcon4 = findViewById(R.id.taskbar_icon_4);
         mIcon5 = findViewById(R.id.taskbar_icon_5);
-        mIcon6 = findViewById(R.id.taskbar_icon_6);
     }
 
     /**
@@ -92,22 +92,20 @@ public class AnimatedTaskbarView extends ConstraintLayout {
     public void animateDisappearanceToHotseat(ViewGroup hotseat) {
         ArrayList<Animator> animators = new ArrayList<>();
         int hotseatTop = hotseat.getTop();
+        int hotseatLeft = hotseat.getLeft();
 
-        animators.add(ObjectAnimator.ofFloat(
-                mBackground, View.TRANSLATION_Y, 0, mBackground.getHeight()));
         animators.add(ObjectAnimator.ofFloat(mBackground, View.ALPHA, 1f, 0f));
+        animators.add(ObjectAnimator.ofFloat(mAllAppsButton, View.ALPHA, 1f, 0f));
         animators.add(createIconDisappearanceToHotseatAnimator(
-                mIcon1, hotseat.findViewById(R.id.hotseat_icon_1), hotseatTop));
+                mIcon1, hotseat.findViewById(R.id.hotseat_icon_1), hotseatTop, hotseatLeft));
         animators.add(createIconDisappearanceToHotseatAnimator(
-                mIcon2, hotseat.findViewById(R.id.hotseat_icon_2), hotseatTop));
+                mIcon2, hotseat.findViewById(R.id.hotseat_icon_2), hotseatTop, hotseatLeft));
         animators.add(createIconDisappearanceToHotseatAnimator(
-                mIcon3, hotseat.findViewById(R.id.hotseat_icon_3), hotseatTop));
+                mIcon3, hotseat.findViewById(R.id.hotseat_icon_3), hotseatTop, hotseatLeft));
         animators.add(createIconDisappearanceToHotseatAnimator(
-                mIcon4, hotseat.findViewById(R.id.hotseat_icon_4), hotseatTop));
+                mIcon4, hotseat.findViewById(R.id.hotseat_icon_4), hotseatTop, hotseatLeft));
         animators.add(createIconDisappearanceToHotseatAnimator(
-                mIcon5, hotseat.findViewById(R.id.hotseat_icon_5), hotseatTop));
-        animators.add(createIconDisappearanceToHotseatAnimator(
-                mIcon6, hotseat.findViewById(R.id.hotseat_icon_6), hotseatTop));
+                mIcon5, hotseat.findViewById(R.id.hotseat_icon_5), hotseatTop, hotseatLeft));
 
         AnimatorSet animatorSet = new AnimatorSet();
 
@@ -135,22 +133,20 @@ public class AnimatedTaskbarView extends ConstraintLayout {
     public void animateAppearanceFromHotseat(ViewGroup hotseat) {
         ArrayList<Animator> animators = new ArrayList<>();
         int hotseatTop = hotseat.getTop();
+        int hotseatLeft = hotseat.getLeft();
 
-        animators.add(ObjectAnimator.ofFloat(
-                mBackground, View.TRANSLATION_Y, mBackground.getHeight(), 0));
         animators.add(ObjectAnimator.ofFloat(mBackground, View.ALPHA, 0f, 1f));
+        animators.add(ObjectAnimator.ofFloat(mAllAppsButton, View.ALPHA, 0f, 1f));
         animators.add(createIconAppearanceFromHotseatAnimator(
-                mIcon1, hotseat.findViewById(R.id.hotseat_icon_1), hotseatTop));
+                mIcon1, hotseat.findViewById(R.id.hotseat_icon_1), hotseatTop, hotseatLeft));
         animators.add(createIconAppearanceFromHotseatAnimator(
-                mIcon2, hotseat.findViewById(R.id.hotseat_icon_2), hotseatTop));
+                mIcon2, hotseat.findViewById(R.id.hotseat_icon_2), hotseatTop, hotseatLeft));
         animators.add(createIconAppearanceFromHotseatAnimator(
-                mIcon3, hotseat.findViewById(R.id.hotseat_icon_3), hotseatTop));
+                mIcon3, hotseat.findViewById(R.id.hotseat_icon_3), hotseatTop, hotseatLeft));
         animators.add(createIconAppearanceFromHotseatAnimator(
-                mIcon4, hotseat.findViewById(R.id.hotseat_icon_4), hotseatTop));
+                mIcon4, hotseat.findViewById(R.id.hotseat_icon_4), hotseatTop, hotseatLeft));
         animators.add(createIconAppearanceFromHotseatAnimator(
-                mIcon5, hotseat.findViewById(R.id.hotseat_icon_5), hotseatTop));
-        animators.add(createIconAppearanceFromHotseatAnimator(
-                mIcon6, hotseat.findViewById(R.id.hotseat_icon_6), hotseatTop));
+                mIcon5, hotseat.findViewById(R.id.hotseat_icon_5), hotseatTop, hotseatLeft));
 
         AnimatorSet animatorSet = new AnimatorSet();
 
@@ -164,98 +160,6 @@ public class AnimatedTaskbarView extends ConstraintLayout {
         });
 
         start(animatorSet);
-    }
-
-    /**
-     * Animates this fake taskbar's disappearance to the bottom of the screen.
-     */
-    public void animateDisappearanceToBottom() {
-        ArrayList<Animator> animators = new ArrayList<>();
-
-        animators.add(ObjectAnimator.ofFloat(
-                mBackground, View.TRANSLATION_Y, 0, mBackground.getHeight()));
-        animators.add(ObjectAnimator.ofFloat(mBackground, View.ALPHA, 1f, 0f));
-        animators.add(ObjectAnimator.ofFloat(mIconContainer, View.SCALE_X, 1f, 0f));
-        animators.add(ObjectAnimator.ofFloat(mIconContainer, View.SCALE_Y, 1f, 0f));
-
-        initializeIconContainerPivot();
-
-        AnimatorSet animatorSet = new AnimatorSet();
-
-        animatorSet.playTogether(animators);
-        animatorSet.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                setVisibility(INVISIBLE);
-                resetIconContainerPivot();
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                super.onAnimationCancel(animation);
-                resetIconContainerPivot();
-            }
-
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                setVisibility(VISIBLE);
-            }
-        });
-
-        start(animatorSet);
-    }
-
-    /**
-     * Animates this fake taskbar's appearance from the bottom of the screen.
-     */
-    public void animateAppearanceFromBottom() {
-        ArrayList<Animator> animators = new ArrayList<>();
-
-        animators.add(ObjectAnimator.ofFloat(
-                mBackground, View.TRANSLATION_Y, mBackground.getHeight(), 0));
-        animators.add(ObjectAnimator.ofFloat(mBackground, View.ALPHA, 0f, 1f));
-        animators.add(ObjectAnimator.ofFloat(mIconContainer, View.SCALE_X, 0f, 1f));
-        animators.add(ObjectAnimator.ofFloat(mIconContainer, View.SCALE_Y, 0f, 1f));
-
-        initializeIconContainerPivot();
-
-        AnimatorSet animatorSet = new AnimatorSet();
-
-        animatorSet.playTogether(animators);
-        animatorSet.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                setVisibility(VISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                resetIconContainerPivot();
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                super.onAnimationCancel(animation);
-                resetIconContainerPivot();
-            }
-        });
-
-        start(animatorSet);
-    }
-
-    private void initializeIconContainerPivot() {
-        mIconContainer.setPivotX(getWidth() / 2f);
-        mIconContainer.setPivotY(getHeight() * 0.8f);
-    }
-
-    private void resetIconContainerPivot() {
-        mIconContainer.resetPivot();
-        mIconContainer.setScaleX(1f);
-        mIconContainer.setScaleY(1f);
     }
 
     private void start(Animator animator) {
@@ -287,7 +191,7 @@ public class AnimatedTaskbarView extends ConstraintLayout {
     }
 
     private Animator createIconDisappearanceToHotseatAnimator(
-            View taskbarIcon, View hotseatIcon, int hotseatTop) {
+            View taskbarIcon, View hotseatIcon, int hotseatTop, int hotseatLeft) {
         ArrayList<Animator> animators = new ArrayList<>();
 
         animators.add(ObjectAnimator.ofFloat(
@@ -296,7 +200,10 @@ public class AnimatedTaskbarView extends ConstraintLayout {
                 0,
                 (hotseatTop + hotseatIcon.getTop()) - (getTop() + taskbarIcon.getTop())));
         animators.add(ObjectAnimator.ofFloat(
-                taskbarIcon, View.TRANSLATION_X, 0, hotseatIcon.getLeft() - taskbarIcon.getLeft()));
+                taskbarIcon,
+                View.TRANSLATION_X,
+                0,
+                (hotseatLeft + hotseatIcon.getLeft()) - (getLeft() + taskbarIcon.getLeft())));
         animators.add(ObjectAnimator.ofFloat(
                 taskbarIcon,
                 View.SCALE_X,
@@ -330,7 +237,7 @@ public class AnimatedTaskbarView extends ConstraintLayout {
     }
 
     private Animator createIconAppearanceFromHotseatAnimator(
-            View taskbarIcon, View hotseatIcon, int hotseatTop) {
+            View taskbarIcon, View hotseatIcon, int hotseatTop, int hotseatLeft) {
         ArrayList<Animator> animators = new ArrayList<>();
 
         animators.add(ObjectAnimator.ofFloat(
@@ -339,7 +246,10 @@ public class AnimatedTaskbarView extends ConstraintLayout {
                 (hotseatTop + hotseatIcon.getTop()) - (getTop() + taskbarIcon.getTop()),
                 0));
         animators.add(ObjectAnimator.ofFloat(
-                taskbarIcon, View.TRANSLATION_X, hotseatIcon.getLeft() - taskbarIcon.getLeft(), 0));
+                taskbarIcon,
+                View.TRANSLATION_X,
+                (hotseatLeft + hotseatIcon.getLeft()) - (getLeft() + taskbarIcon.getLeft()),
+                0));
         animators.add(ObjectAnimator.ofFloat(
                 taskbarIcon,
                 View.SCALE_X,

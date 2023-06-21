@@ -30,18 +30,18 @@ class MultiPropertyFactoryTest {
 
     private val received = mutableListOf<Float>()
 
-    private val receiveProperty: FloatProperty<Any> = object : FloatProperty<Any>("receive") {
-        override fun setValue(obj: Any?, value: Float) {
-            received.add(value)
+    private val receiveProperty: FloatProperty<Any> =
+        object : FloatProperty<Any>("receive") {
+            override fun setValue(obj: Any?, value: Float) {
+                received.add(value)
+            }
+            override fun get(o: Any): Float {
+                return 0f
+            }
         }
-        override fun get(o: Any): Float {
-            return 0f
-        }
-    }
 
-    private val factory = MultiPropertyFactory(null, receiveProperty, 3) {
-        x: Float, y: Float -> x + y
-    }
+    private val factory =
+        MultiPropertyFactory(null, receiveProperty, 3) { x: Float, y: Float -> x + y }
 
     private val p1 = factory.get(0)
     private val p2 = factory.get(1)

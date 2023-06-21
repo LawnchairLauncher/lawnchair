@@ -128,10 +128,17 @@ message TaskBarContainer {
 
   // Bit encoded value to capture pinned and predicted taskbar positions.
   optional int32 cardinality = 2;
+
+  // Container where taskbar was invoked.
+  oneof ParentContainer {
+    TaskSwitcherContainer task_switcher_container = 3;
+  }
 }
 
-// Next value 41
+// Next value 44
 enum Attribute {
+  option allow_alias = true;
+
   UNKNOWN = 0;
   DEFAULT_LAYOUT = 1;       // icon automatically placed in workspace, folder, hotseat
   BACKUP_RESTORE = 2;       // icon layout restored from backup
@@ -166,7 +173,8 @@ enum Attribute {
   ALL_APPS_SEARCH_RESULT_SLICE = 19;
   ALL_APPS_SEARCH_RESULT_WIDGETS = 20;
   ALL_APPS_SEARCH_RESULT_PLAY = 21;
-  ALL_APPS_SEARCH_RESULT_SUGGEST = 22;
+  ALL_APPS_SEARCH_RESULT_FALLBACK = 22;
+  ALL_APPS_SEARCH_RESULT_SUGGEST = 22 [deprecated = true];
   ALL_APPS_SEARCH_RESULT_ASSISTANT = 23;
   ALL_APPS_SEARCH_RESULT_CHROMETAB = 24;
   ALL_APPS_SEARCH_RESULT_NAVVYSITE = 25;
@@ -174,6 +182,9 @@ enum Attribute {
   ALL_APPS_SEARCH_RESULT_PEOPLE_TILE = 27;
   ALL_APPS_SEARCH_RESULT_LEGACY_SHORTCUT = 30;
   ALL_APPS_SEARCH_RESULT_ASSISTANT_MEMORY = 31;
+  ALL_APPS_SEARCH_RESULT_VIDEO = 41;
+  ALL_APPS_SEARCH_RESULT_SYSTEM_POINTER = 42;
+  ALL_APPS_SEARCH_RESULT_EDUCARD = 43;
 
   // Web suggestions provided by AGA
   ALL_APPS_SEARCH_RESULT_WEB_SUGGEST = 39;

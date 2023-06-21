@@ -18,6 +18,7 @@ package com.android.launcher3.ui;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
+import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -65,8 +66,14 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
         String[] tokens = output.split("\\s+");
         mProfileUserId = Integer.parseInt(tokens[tokens.length - 1]);
         output = mDevice.executeShellCommand("am start-user " + mProfileUserId);
+        StringBuilder logStr = new StringBuilder().append("profileId: ").append(mProfileUserId);
+        for (String str : tokens) {
+            logStr.append(str).append("\n");
+        }
         updateWorkProfileSetupSuccessful("am start-user", output);
 
+        Log.d(WORK_TAB_MISSING, "workProfileSuccessful? " + mWorkProfileSetupSuccessful +
+                " shellCmd: " + logStr);
         if (!mWorkProfileSetupSuccessful) {
             return; // no need to setup launcher since all tests will skip.
         }
@@ -99,6 +106,7 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     private void waitForWorkTabSetup() {
         waitForLauncherCondition("Work tab not setup", launcher -> {
             if (launcher.getAppsView().getContentView() instanceof AllAppsPagedView) {
+                Log.d(WORK_TAB_MISSING, "Deferring AppsStore updates");
                 launcher.getAppsView().getAppsStore().enableDeferUpdates(DEFER_UPDATES_TEST);
                 return true;
             }

@@ -24,6 +24,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.UserHandle;
 import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
@@ -66,21 +67,24 @@ public class SplitToWorkspaceController {
         }
         Object tag = view.getTag();
         Intent intent;
+        UserHandle user;
         BitmapInfo bitmapInfo;
         if (tag instanceof WorkspaceItemInfo) {
             final WorkspaceItemInfo workspaceItemInfo = (WorkspaceItemInfo) tag;
             intent = workspaceItemInfo.intent;
+            user = workspaceItemInfo.user;
             bitmapInfo = workspaceItemInfo.bitmap;
         } else if (tag instanceof com.android.launcher3.model.data.AppInfo) {
             final com.android.launcher3.model.data.AppInfo appInfo =
                     (com.android.launcher3.model.data.AppInfo) tag;
             intent = appInfo.intent;
+            user = appInfo.user;
             bitmapInfo = appInfo.bitmap;
         } else {
             return false;
         }
 
-        mController.setSecondTask(intent);
+        mController.setSecondTask(intent, user);
 
         boolean isTablet = mLauncher.getDeviceProfile().isTablet;
         SplitAnimationTimings timings = AnimUtils.getDeviceSplitToConfirmTimings(isTablet);

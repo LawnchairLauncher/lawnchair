@@ -36,6 +36,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
@@ -55,10 +56,10 @@ import java.util.function.IntConsumer;
 public class LauncherWidgetHolder {
     public static final int APPWIDGET_HOST_ID = 1024;
 
-    private static final int FLAG_LISTENING = 1;
-    private static final int FLAG_STATE_IS_NORMAL = 1 << 1;
-    private static final int FLAG_ACTIVITY_STARTED = 1 << 2;
-    private static final int FLAG_ACTIVITY_RESUMED = 1 << 3;
+    protected static final int FLAG_LISTENING = 1;
+    protected static final int FLAG_STATE_IS_NORMAL = 1 << 1;
+    protected static final int FLAG_ACTIVITY_STARTED = 1 << 2;
+    protected static final int FLAG_ACTIVITY_RESUMED = 1 << 3;
     private static final int FLAGS_SHOULD_LISTEN =
             FLAG_STATE_IS_NORMAL | FLAG_ACTIVITY_STARTED | FLAG_ACTIVITY_RESUMED;
 
@@ -74,10 +75,8 @@ public class LauncherWidgetHolder {
     private final SparseArray<PendingAppWidgetHostView> mPendingViews = new SparseArray<>();
     @NonNull
     private final SparseArray<LauncherAppWidgetHostView> mDeferredViews = new SparseArray<>();
-    @NonNull
-    private final SparseArray<RemoteViews> mCachedRemoteViews = new SparseArray<>();
 
-    private int mFlags = FLAG_STATE_IS_NORMAL;
+    protected int mFlags = FLAG_STATE_IS_NORMAL;
 
     // TODO(b/191735836): Replace with ActivityOptions.KEY_SPLASH_SCREEN_STYLE when un-hidden
     private static final String KEY_SPLASH_SCREEN_STYLE = "android.activity.splashScreenStyle";
@@ -115,6 +114,13 @@ public class LauncherWidgetHolder {
             // widgets upon bind anyway. See issue 14255011 for more context.
         }
 
+        updateDeferredView();
+    }
+
+    /**
+     * Update any views which have been deferred because the host was not listening.
+     */
+    protected void updateDeferredView() {
         // We go in reverse order and inflate any deferred or cached widget
         for (int i = mViews.size() - 1; i >= 0; i--) {
             LauncherAppWidgetHostView view = mViews.valueAt(i);
@@ -167,6 +173,12 @@ public class LauncherWidgetHolder {
     public void deleteAppWidgetId(int appWidgetId) {
         mWidgetHost.deleteAppWidgetId(appWidgetId);
         mViews.remove(appWidgetId);
+        if (FeatureFlags.ENABLE_CACHED_WIDGET.get()) {
+            final LauncherAppState state = LauncherAppState.getInstance(mContext);
+            synchronized (state.mCachedRemoteViews) {
+                state.mCachedRemoteViews.delete(appWidgetId);
+            }
+        }
     }
 
     /**
@@ -301,7 +313,17 @@ public class LauncherWidgetHolder {
         if (WidgetsModel.GO_DISABLE_WIDGETS) {
             return;
         }
-
+        if (FeatureFlags.ENABLE_CACHED_WIDGET.get()) {
+            // Cache the content from the widgets when Launcher stops listening to widget updates
+            final LauncherAppState state = LauncherAppState.getInstance(mContext);
+            synchronized (state.mCachedRemoteViews) {
+                for (int i = 0; i < mViews.size(); i++) {
+                    final int appWidgetId = mViews.keyAt(i);
+                    final LauncherAppWidgetHostView view = mViews.get(appWidgetId);
+                    state.mCachedRemoteViews.put(appWidgetId, view.mLastRemoteViews);
+                }
+            }
+        }
         mWidgetHost.stopListening();
         setListeningFlag(false);
     }
@@ -312,13 +334,6 @@ public class LauncherWidgetHolder {
             return;
         }
         mFlags &= ~FLAG_LISTENING;
-    }
-
-    /**
-     * Delete the host
-     */
-    public void deleteHost() {
-        mWidgetHost.deleteHost();
     }
 
     /**
@@ -350,23 +365,24 @@ public class LauncherWidgetHolder {
             // RemoteViews from system process.
             // TODO: have launcher always listens to widget updates in background so that this
             //  check can be removed altogether.
-            if (FeatureFlags.ENABLE_CACHED_WIDGET.get()
-                    && mCachedRemoteViews.get(appWidgetId) != null) {
-                // We've found RemoteViews from cache for this widget, so we will instantiate a
-                // widget host view and populate it with the cached RemoteViews.
-                final LauncherAppWidgetHostView view = new LauncherAppWidgetHostView(context);
-                view.setAppWidget(appWidgetId, appWidget);
-                view.updateAppWidget(mCachedRemoteViews.get(appWidgetId));
-                mDeferredViews.put(appWidgetId, view);
-                mViews.put(appWidgetId, view);
-                return view;
-            } else {
-                // When cache misses, a placeholder for the widget will be returned instead.
-                DeferredAppWidgetHostView view = new DeferredAppWidgetHostView(context);
-                view.setAppWidget(appWidgetId, appWidget);
-                mViews.put(appWidgetId, view);
-                return view;
+            if (FeatureFlags.ENABLE_CACHED_WIDGET.get()) {
+                final RemoteViews cachedRemoteViews = getCachedRemoteViews(appWidgetId);
+                if (cachedRemoteViews != null) {
+                    // We've found RemoteViews from cache for this widget, so we will instantiate a
+                    // widget host view and populate it with the cached RemoteViews.
+                    final LauncherAppWidgetHostView view = new LauncherAppWidgetHostView(context);
+                    view.setAppWidget(appWidgetId, appWidget);
+                    view.updateAppWidget(cachedRemoteViews);
+                    mDeferredViews.put(appWidgetId, view);
+                    mViews.put(appWidgetId, view);
+                    return view;
+                }
             }
+            // If cache misses or not enabled, a placeholder for the widget will be returned.
+            DeferredAppWidgetHostView view = new DeferredAppWidgetHostView(context);
+            view.setAppWidget(appWidgetId, appWidget);
+            mViews.put(appWidgetId, view);
+            return view;
         } else {
             try {
                 return mWidgetHost.createView(context, appWidgetId, appWidget);
@@ -432,15 +448,8 @@ public class LauncherWidgetHolder {
         LauncherAppWidgetHost tempHost = (LauncherAppWidgetHost) mWidgetHost;
         tempHost.clearViews();
         if (FeatureFlags.ENABLE_CACHED_WIDGET.get()) {
-            // First, we clear any previously cached content from existing widgets
-            mCachedRemoteViews.clear();
+            // Clear previously cached content from existing widgets
             mDeferredViews.clear();
-            // Then we proceed to cache the content from the widgets
-            for (int i = 0; i < mViews.size(); i++) {
-                final int appWidgetId = mViews.keyAt(i);
-                final LauncherAppWidgetHostView view = mViews.get(appWidgetId);
-                mCachedRemoteViews.put(appWidgetId, view.mLastRemoteViews);
-            }
         }
         mViews.clear();
     }
@@ -464,12 +473,28 @@ public class LauncherWidgetHolder {
         }
 
         final boolean listening = isListening();
-        if (!listening && (mFlags & FLAGS_SHOULD_LISTEN) == FLAGS_SHOULD_LISTEN) {
+        if (!listening && shouldListen(mFlags)) {
             // Postpone starting listening until all flags are on.
             startListening();
         } else if (listening && (mFlags & FLAG_ACTIVITY_STARTED) == 0) {
             // Postpone stopping listening until the activity is stopped.
             stopListening();
+        }
+    }
+
+    /**
+     * Returns true if the holder should be listening for widget updates based
+     * on the provided state flags.
+     */
+    protected boolean shouldListen(int flags) {
+        return (flags & FLAGS_SHOULD_LISTEN) == FLAGS_SHOULD_LISTEN;
+    }
+
+    @Nullable
+    private RemoteViews getCachedRemoteViews(int appWidgetId) {
+        final LauncherAppState state = LauncherAppState.getInstance(mContext);
+        synchronized (state.mCachedRemoteViews) {
+            return state.mCachedRemoteViews.get(appWidgetId);
         }
     }
 

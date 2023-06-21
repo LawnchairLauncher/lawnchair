@@ -59,6 +59,7 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
         // Pre verifying the screens
         executeOnLauncher(launcher -> {
+            launcher.enableHotseatEdu(false);
             assertPagesExist(launcher, 0, 1);
             assertItemsOnPage(launcher, 0, "Play Store", "Maps");
             assertPageEmpty(launcher, 1);
@@ -67,6 +68,7 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
     @After
     public void tearDown() {
+        executeOnLauncher(launcher -> launcher.enableHotseatEdu(true));
         mLauncher.useDefaultWorkspaceLayoutOnReload();
     }
 

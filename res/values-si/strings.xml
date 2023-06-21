@@ -28,9 +28,6 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"කෙටි මග ලබා ගත නොහැකිය"</string>
     <string name="home_screen" msgid="5629429142036709174">"මුල් පිටුව"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"බෙදුම් තිරය"</string>
-    <string name="split_screen_position_top" msgid="1504965011158689649">"ඉහළ බෙදන්න"</string>
-    <string name="split_screen_position_left" msgid="7537793098851830883">"වම බෙදන්න"</string>
-    <string name="split_screen_position_right" msgid="1569377524925193369">"දකුණ බෙදන්න"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s සඳහා යෙදුම් තතු"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"විජට් එකක් ගෙන යාමට ස්පර්ශ කර අල්ලා ගෙන සිටින්න."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"විජට් එකක් ගෙන යාමට හෝ අභිරුචි ක්‍රියා භාවිත කිරීමට දෙවරක් තට්ටු කර අල්ලා ගෙන සිටින්න."</string>
@@ -40,6 +37,7 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"විජට් එක මුල් පිටු තිරය වටා ගෙන යාමට විජට් එක ස්පර්ශ කර අල්ලාගෙන සිටින්න"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"මුල් තිරය වෙත එක් කරන්න"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> විජට්ටුව මුල් පිටු තිරය වෙත එක් කරන ලදි"</string>
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"යෝජනා"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{විජට් #}one{විජට් #}other{විජට් #}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{කෙටි මං #}one{කෙටි මං #}other{කෙටි මං #}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>

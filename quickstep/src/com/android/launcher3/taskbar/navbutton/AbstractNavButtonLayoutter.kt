@@ -30,20 +30,17 @@ import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.NavButtonL
  * [navButtonContainer]
  *
  * @property navButtonContainer ViewGroup that holds the 3 navigation buttons.
- * @property endContextualContainer ViewGroup that holds the end contextual button (ex, IME dismiss).
+ * @property endContextualContainer ViewGroup that holds the end contextual button (ex, IME
+ *   dismiss).
  * @property startContextualContainer ViewGroup that holds the start contextual button (ex, A11y).
  */
 abstract class AbstractNavButtonLayoutter(
-        val resources: Resources,
-        val navButtonContainer: LinearLayout,
-        protected val endContextualContainer: ViewGroup,
-        protected val startContextualContainer: ViewGroup
+    val resources: Resources,
+    val navButtonContainer: LinearLayout,
+    protected val endContextualContainer: ViewGroup,
+    protected val startContextualContainer: ViewGroup
 ) : NavButtonLayoutter {
-    protected val homeButton: ImageView = navButtonContainer
-            .findViewById(R.id.home)
-    protected val recentsButton: ImageView = navButtonContainer
-            .findViewById(R.id.recent_apps)
-    protected val backButton: ImageView = navButtonContainer
-            .findViewById(R.id.back)
+    protected val homeButton: ImageView = navButtonContainer.findViewById(R.id.home)
+    protected val recentsButton: ImageView = navButtonContainer.findViewById(R.id.recent_apps)
+    protected val backButton: ImageView = navButtonContainer.findViewById(R.id.back)
 }
-

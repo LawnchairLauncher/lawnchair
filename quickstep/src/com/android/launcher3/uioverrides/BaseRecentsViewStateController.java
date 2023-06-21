@@ -16,6 +16,7 @@
 
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.LauncherState.QUICK_SWITCH_FROM_HOME;
 import static com.android.launcher3.anim.Interpolators.AGGRESSIVE_EASE_IN_OUT;
 import static com.android.launcher3.anim.Interpolators.FINAL_FRAME;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
@@ -167,12 +168,12 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
         LauncherState fromState = mLauncher.getStateManager().getState();
         setter.setFloat(mRecentsView, TASK_THUMBNAIL_SPLASH_ALPHA,
                 toState.showTaskThumbnailSplash() ? 1f : 0f,
-                !toState.showTaskThumbnailSplash() && fromState == LauncherState.QUICK_SWITCH
+                !toState.showTaskThumbnailSplash() && fromState == QUICK_SWITCH_FROM_HOME
                         ? LINEAR : INSTANT);
 
         boolean showAsGrid = toState.displayOverviewTasksAsGrid(mLauncher.getDeviceProfile());
         Interpolator gridProgressInterpolator = showAsGrid
-                ? fromState == LauncherState.QUICK_SWITCH ? LINEAR : INSTANT
+                ? fromState == QUICK_SWITCH_FROM_HOME ? LINEAR : INSTANT
                 : FINAL_FRAME;
         setter.setFloat(mRecentsView, RECENTS_GRID_PROGRESS, showAsGrid ? 1f : 0f,
                 gridProgressInterpolator);

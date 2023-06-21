@@ -21,7 +21,7 @@
 
     <TextView
         style="@style/PrimaryHeadline"
-        android:textColor="?attr/workProfileOverlayTextColor"
+        android:textColor="?android:attr/textColorPrimary"
         android:id="@+id/work_apps_paused_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/rounded_button_height"
         android:id="@+id/enable_work_apps"
-        android:textColor="?attr/workProfileOverlayTextColor"
+        android:textColor="?android:attr/textColorPrimary"
         android:text="@string/work_apps_enable_btn_text"
         android:textAlignment="center"
         android:background="@drawable/bg_work_apps_paused_action_button"

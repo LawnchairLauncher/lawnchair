@@ -23,6 +23,7 @@
     android:layout_gravity="center_horizontal|top"
     android:layout_marginTop="@dimen/all_apps_header_pill_height"
     android:clipChildren="true"
+    android:clipToOutline="true"
     android:clipToPadding="false"
     android:descendantFocusability="afterDescendants"
     android:paddingTop="@dimen/all_apps_paged_view_top_padding"

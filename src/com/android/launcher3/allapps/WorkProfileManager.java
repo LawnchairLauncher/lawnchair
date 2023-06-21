@@ -15,18 +15,19 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.LauncherPrefs.WORK_EDU_STEP;
+import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.MAIN;
+import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.SEARCH;
+import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.WORK;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_WORK_DISABLED_CARD;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_WORK_EDU_CARD;
-import static com.android.launcher3.allapps.BaseAllAppsContainerView.AdapterHolder.MAIN;
-import static com.android.launcher3.allapps.BaseAllAppsContainerView.AdapterHolder.SEARCH;
-import static com.android.launcher3.allapps.BaseAllAppsContainerView.AdapterHolder.WORK;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TURN_OFF_WORK_APPS_TAP;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
+import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
@@ -40,11 +41,13 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
 
 import java.lang.annotation.Retention;
@@ -53,7 +56,7 @@ import java.util.ArrayList;
 import java.util.function.Predicate;
 
 /**
- * Companion class for {@link BaseAllAppsContainerView} to manage work tab and personal tab
+ * Companion class for {@link ActivityAllAppsContainerView} to manage work tab and personal tab
  * related
  * logic based on {@link WorkProfileState}?
  */
@@ -78,7 +81,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     public @interface WorkProfileState { }
 
     private final UserManager mUserManager;
-    private final BaseAllAppsContainerView<?> mAllApps;
+    private final ActivityAllAppsContainerView<?> mAllApps;
     private final Predicate<ItemInfo> mMatcher;
     private final StatsLogManager mStatsLogManager;
 
@@ -86,14 +89,12 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
 
     @WorkProfileState
     private int mCurrentState;
-    private SharedPreferences mPreferences;
 
     public WorkProfileManager(
-            UserManager userManager, BaseAllAppsContainerView<?> allApps, SharedPreferences prefs,
+            UserManager userManager, ActivityAllAppsContainerView allApps,
             StatsLogManager statsLogManager) {
         mUserManager = userManager;
         mAllApps = allApps;
-        mPreferences = prefs;
         mMatcher = mAllApps.mPersonalMatcher.negate();
         mStatsLogManager = statsLogManager;
     }
@@ -138,6 +139,10 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     }
 
     private void updateCurrentState(@WorkProfileState int currentState) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(WORK_TAB_MISSING, "WorkProfileManager#updateCurrentState: " +
+                    currentState, new Throwable());
+        }
         mCurrentState = currentState;
         if (getAH() != null) {
             getAH().mAppsList.updateAdapterItems();
@@ -153,9 +158,13 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     }
 
     /**
-     * Creates and attaches for profile toggle button to {@link BaseAllAppsContainerView}
+     * Creates and attaches for profile toggle button to {@link ActivityAllAppsContainerView}
      */
     public boolean attachWorkModeSwitch() {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(WORK_TAB_MISSING, "ActivityAllAppsContainerView#attachWorkModeSwitch "
+                    + "mWorkModeSwitch: " + mWorkModeSwitch);
+        }
         if (!mAllApps.getAppsStore().hasModelFlag(
                 FLAG_HAS_SHORTCUT_PERMISSION | FLAG_QUIET_MODE_CHANGE_PERMISSION)) {
             Log.e(TAG, "unable to attach work mode switch; Missing required permissions");
@@ -178,7 +187,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
         return true;
     }
     /**
-     * Removes work profile toggle button from {@link BaseAllAppsContainerView}
+     * Removes work profile toggle button from {@link ActivityAllAppsContainerView}
      */
     public void detachWorkModeSwitch() {
         if (mWorkModeSwitch != null && mWorkModeSwitch.getParent() == mAllApps) {
@@ -196,7 +205,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
         return mWorkModeSwitch;
     }
 
-    private BaseAllAppsContainerView<?>.AdapterHolder getAH() {
+    private ActivityAllAppsContainerView.AdapterHolder getAH() {
         return mAllApps.mAH.get(WORK);
     }
 
@@ -225,7 +234,7 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     }
 
     private boolean isEduSeen() {
-        return mPreferences.getInt(KEY_WORK_EDU_STEP, 0) != 0;
+        return LauncherPrefs.get(mAllApps.getContext()).get(WORK_EDU_STEP) != 0;
     }
 
     private void onWorkFabClicked(View view) {

@@ -39,6 +39,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.taskbar.LauncherTaskbarUIController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
@@ -62,6 +63,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     private static final long TRANSLATION_ANIM_MIN_DURATION_MS = 80;
     private static final float TRANSLATION_ANIM_VELOCITY_DP_PER_MS = 0.8f;
 
+    private final VibratorWrapper mVibratorWrapper;
     private final RecentsView mRecentsView;
     private final MotionPauseDetector mMotionPauseDetector;
     private final float mMotionPauseMinDisplacement;
@@ -82,6 +84,7 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
         mRecentsView = l.getOverviewPanel();
         mMotionPauseDetector = new MotionPauseDetector(l);
         mMotionPauseMinDisplacement = ViewConfiguration.get(l).getScaledTouchSlop();
+        mVibratorWrapper = VibratorWrapper.INSTANCE.get(l.getApplicationContext());
     }
 
     @Override
@@ -187,6 +190,11 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
             // state, but since the hint state tracks the entire screen without a clear endpoint, we
             // need to manually set the duration to a reasonable value.
             animator.setDuration(HINT_STATE.getTransitionDuration(mLauncher, true /* isToState */));
+        }
+        if (FeatureFlags.ENABLE_PREMIUM_HAPTICS_ALL_APPS.get() &&
+                ((mFromState == NORMAL && mToState == ALL_APPS)
+                        || (mFromState == ALL_APPS && mToState == NORMAL)) && isFling) {
+            mVibratorWrapper.vibrateForDragBump();
         }
     }
 

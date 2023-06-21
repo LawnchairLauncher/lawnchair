@@ -44,6 +44,7 @@ filegroup {
     srcs: [
       "src/com/android/launcher3/ui/AbstractLauncherUiTest.java",
       "src/com/android/launcher3/ui/PortraitLandscapeRunner.java",
+      "src/com/android/launcher3/ui/TaplTestsLauncher3.java",
       "src/com/android/launcher3/util/TestUtil.java",
       "src/com/android/launcher3/util/Wait.java",
       "src/com/android/launcher3/util/WidgetUtils.java",
@@ -54,7 +55,7 @@ filegroup {
       "src/com/android/launcher3/util/rule/ShellCommandRule.java",
       "src/com/android/launcher3/util/rule/SimpleActivityRule.java",
       "src/com/android/launcher3/util/rule/TestStabilityRule.java",
-      "src/com/android/launcher3/ui/TaplTestsLauncher3.java",
+      "src/com/android/launcher3/util/rule/TISBindRule.java",
       "src/com/android/launcher3/testcomponent/BaseTestingActivity.java",
       "src/com/android/launcher3/testcomponent/OtherBaseTestingActivity.java",
       "src/com/android/launcher3/testcomponent/CustomShortcutConfigActivity.java",
@@ -115,5 +116,18 @@ android_test {
     manifest: "AndroidManifest.xml",
     platform_apis: true,
     test_config: "Launcher3Tests.xml",
-    data: [":Launcher3"]
+    data: [":Launcher3"],
+    test_suites: ["general-tests"],
 }
+
+// Shared between tests and launcher
+android_library {
+    name: "launcher-testing-shared",
+    srcs: [
+        "shared/com/android/launcher3/testing/shared/**/*.java"
+    ],
+    resource_dirs: [ ],
+    manifest: "shared/AndroidManifest.xml",
+    sdk_version: "current",
+    min_sdk_version: min_launcher3_sdk_version,
+ }

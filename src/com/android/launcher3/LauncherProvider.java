@@ -107,6 +107,7 @@ public class LauncherProvider extends ContentProvider {
 
     private static final int TEST_WORKSPACE_LAYOUT_RES_XML = R.xml.default_test_workspace;
     private static final int TEST2_WORKSPACE_LAYOUT_RES_XML = R.xml.default_test2_workspace;
+    private static final int TAPL_WORKSPACE_LAYOUT_RES_XML = R.xml.default_tapl_test_workspace;
 
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
@@ -410,6 +411,9 @@ public class LauncherProvider extends ContentProvider {
                     case LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TEST2:
                         mDefaultWorkspaceLayoutOverride = TEST2_WORKSPACE_LAYOUT_RES_XML;
                         break;
+                    case LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TAPL:
+                        mDefaultWorkspaceLayoutOverride = TAPL_WORKSPACE_LAYOUT_RES_XML;
+                        break;
                     default:
                         mDefaultWorkspaceLayoutOverride = 0;
                         break;
@@ -550,39 +554,42 @@ public class LauncherProvider extends ContentProvider {
             Log.d(TAG, "loading default workspace");
 
             LauncherWidgetHolder widgetHolder = mOpenHelper.newLauncherWidgetHolder();
-            AutoInstallsLayout loader = createWorkspaceLoaderFromAppRestriction(widgetHolder);
-            if (loader == null) {
-                loader = AutoInstallsLayout.get(getContext(), widgetHolder, mOpenHelper);
-            }
-            if (loader == null) {
-                final Partner partner = Partner.get(getContext().getPackageManager());
-                if (partner != null) {
-                    int workspaceResId = partner.getXmlResId(RES_PARTNER_DEFAULT_LAYOUT);
-                    if (workspaceResId != 0) {
-                        loader = new DefaultLayoutParser(getContext(), widgetHolder,
-                                mOpenHelper, partner.getResources(), workspaceResId);
+            try {
+                AutoInstallsLayout loader = createWorkspaceLoaderFromAppRestriction(widgetHolder);
+                if (loader == null) {
+                    loader = AutoInstallsLayout.get(getContext(), widgetHolder, mOpenHelper);
+                }
+                if (loader == null) {
+                    final Partner partner = Partner.get(getContext().getPackageManager());
+                    if (partner != null) {
+                        int workspaceResId = partner.getXmlResId(RES_PARTNER_DEFAULT_LAYOUT);
+                        if (workspaceResId != 0) {
+                            loader = new DefaultLayoutParser(getContext(), widgetHolder,
+                                    mOpenHelper, partner.getResources(), workspaceResId);
+                        }
                     }
                 }
-            }
 
-            final boolean usingExternallyProvidedLayout = loader != null;
-            if (loader == null) {
-                loader = getDefaultLayoutParser(widgetHolder);
-            }
+                final boolean usingExternallyProvidedLayout = loader != null;
+                if (loader == null) {
+                    loader = getDefaultLayoutParser(widgetHolder);
+                }
 
-            // There might be some partially restored DB items, due to buggy restore logic in
-            // previous versions of launcher.
-            mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
-            // Populate favorites table with initial favorites
-            if ((mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), loader) <= 0)
-                    && usingExternallyProvidedLayout) {
-                // Unable to load external layout. Cleanup and load the internal layout.
+                // There might be some partially restored DB items, due to buggy restore logic in
+                // previous versions of launcher.
                 mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
-                mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(),
-                        getDefaultLayoutParser(widgetHolder));
+                // Populate favorites table with initial favorites
+                if ((mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), loader) <= 0)
+                        && usingExternallyProvidedLayout) {
+                    // Unable to load external layout. Cleanup and load the internal layout.
+                    mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
+                    mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(),
+                            getDefaultLayoutParser(widgetHolder));
+                }
+                clearFlagEmptyDbCreated();
+            } finally {
+                widgetHolder.destroy();
             }
-            clearFlagEmptyDbCreated();
-            widgetHolder.destroy();
         }
     }
 
@@ -957,8 +964,6 @@ public class LauncherProvider extends ContentProvider {
                     allWidgets = holder.getAppWidgetIds();
                 } catch (IncompatibleClassChangeError e) {
                     Log.e(TAG, "getAppWidgetIds not supported", e);
-                    // Necessary to destroy the holder to free up possible activity context
-                    holder.destroy();
                     return;
                 }
                 final IntSet validWidgets = IntSet.wrap(LauncherDbUtils.queryIntArray(false, db,

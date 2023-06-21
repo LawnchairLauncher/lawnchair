@@ -20,6 +20,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
+import com.android.launcher3.celllayout.CellPosMapper;
+import com.android.launcher3.celllayout.CellPosMapper.CellPos;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.ItemInfo;
@@ -48,15 +50,16 @@ public interface WorkspaceLayoutManager {
      * See {@link #addInScreen}.
      */
     default void addInScreenFromBind(View child, ItemInfo info) {
-        int x = info.cellX;
-        int y = info.cellY;
+        CellPos presenterPos = getCellPosMapper().mapModelToPresenter(info);
+        int x = presenterPos.cellX;
+        int y = presenterPos.cellY;
         if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
                 || info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
-            int screenId = info.screenId;
+            int screenId = presenterPos.screenId;
             x = getHotseat().getCellXFromOrder(screenId);
             y = getHotseat().getCellYFromOrder(screenId);
         }
-        addInScreen(child, info.container, info.screenId, x, y, info.spanX, info.spanY);
+        addInScreen(child, info.container, presenterPos.screenId, x, y, info.spanX, info.spanY);
     }
 
     /**
@@ -64,7 +67,9 @@ public interface WorkspaceLayoutManager {
      * See {@link #addInScreen(View, int, int, int, int, int, int)}.
      */
     default void addInScreen(View child, ItemInfo info) {
-        addInScreen(child, info.container, info.screenId, info.cellX, info.cellY,
+        CellPos presenterPos = getCellPosMapper().mapModelToPresenter(info);
+        addInScreen(child, info.container,
+                presenterPos.screenId, presenterPos.cellX, presenterPos.cellY,
                 info.spanX, info.spanY);
     }
 
@@ -114,11 +119,11 @@ public interface WorkspaceLayoutManager {
         ViewGroup.LayoutParams genericLp = child.getLayoutParams();
         CellLayoutLayoutParams lp;
         if (genericLp == null || !(genericLp instanceof CellLayoutLayoutParams)) {
-            lp = new CellLayoutLayoutParams(x, y, spanX, spanY, screenId);
+            lp = new CellLayoutLayoutParams(x, y, spanX, spanY);
         } else {
             lp = (CellLayoutLayoutParams) genericLp;
-            lp.cellX = x;
-            lp.cellY = y;
+            lp.setCellX(x);
+            lp.setCellY(y);
             lp.cellHSpan = spanX;
             lp.cellVSpan = spanY;
         }
@@ -136,7 +141,8 @@ public interface WorkspaceLayoutManager {
             // TODO: This branch occurs when the workspace is adding views
             // outside of the defined grid
             // maybe we should be deleting these items from the LauncherModel?
-            Log.e(TAG, "Failed to add to item at (" + lp.cellX + "," + lp.cellY + ") to CellLayout");
+            Log.e(TAG, "Failed to add to item at (" + lp.getCellX() + "," + lp.getCellY()
+                    + ") to CellLayout");
         }
 
         child.setHapticFeedbackEnabled(false);
@@ -149,6 +155,11 @@ public interface WorkspaceLayoutManager {
     default View.OnLongClickListener getWorkspaceChildOnLongClickListener() {
         return ItemLongClickListener.INSTANCE_WORKSPACE;
     }
+
+    /**
+     * Returns the mapper for converting between model and presenter
+     */
+    CellPosMapper getCellPosMapper();
 
     Hotseat getHotseat();
 

@@ -30,10 +30,9 @@ import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.NavButtonL
 /**
  * Select the correct layout for nav buttons
  *
- * Since layouts are done dynamically for the nav buttons on Taskbar, this
- * class returns a corresponding [NavButtonLayoutter] via
- * [Companion.getUiLayoutter]
- * that can help position the buttons based on the current [DeviceProfile]
+ * Since layouts are done dynamically for the nav buttons on Taskbar, this class returns a
+ * corresponding [NavButtonLayoutter] via [Companion.getUiLayoutter] that can help position the
+ * buttons based on the current [DeviceProfile]
  */
 class NavButtonLayoutFactory {
     companion object {
@@ -41,11 +40,10 @@ class NavButtonLayoutFactory {
          * Get the correct instance of [NavButtonLayoutter]
          *
          * No layouts supported for configurations where:
-         *  * taskbar isn't showing AND
-         *  * the device is not in [phoneMode]
-         * OR
-         *  * phone is showing
-         *  * device is using gesture navigation
+         * * taskbar isn't showing AND
+         * * the device is not in [phoneMode] OR
+         * * phone is showing
+         * * device is using gesture navigation
          *
          * @param navButtonsView ViewGroup that contains start, end, nav button ViewGroups
          * @param isKidsMode no-op when taskbar is hidden/not showing
@@ -53,44 +51,64 @@ class NavButtonLayoutFactory {
          * @param phoneMode refers to the device using the taskbar window on phones
          * @param isThreeButtonNav are no-ops when taskbar is present/showing
          */
-        fun getUiLayoutter(deviceProfile: DeviceProfile,
-                           navButtonsView: FrameLayout,
-                           resources: Resources,
-                           isKidsMode: Boolean,
-                           isInSetup: Boolean,
-                           isThreeButtonNav: Boolean,
-                           phoneMode: Boolean):
-                NavButtonLayoutter {
-            val navButtonContainer =
-                    navButtonsView.findViewById<LinearLayout>(ID_END_NAV_BUTTONS)
+        fun getUiLayoutter(
+            deviceProfile: DeviceProfile,
+            navButtonsView: FrameLayout,
+            resources: Resources,
+            isKidsMode: Boolean,
+            isInSetup: Boolean,
+            isThreeButtonNav: Boolean,
+            phoneMode: Boolean
+        ): NavButtonLayoutter {
+            val navButtonContainer = navButtonsView.findViewById<LinearLayout>(ID_END_NAV_BUTTONS)
             val endContextualContainer =
-                    navButtonsView.findViewById<ViewGroup>(ID_END_CONTEXTUAL_BUTTONS)
+                navButtonsView.findViewById<ViewGroup>(ID_END_CONTEXTUAL_BUTTONS)
             val startContextualContainer =
-                    navButtonsView.findViewById<ViewGroup>(ID_START_CONTEXTUAL_BUTTONS)
+                navButtonsView.findViewById<ViewGroup>(ID_START_CONTEXTUAL_BUTTONS)
             val isPhoneNavMode = phoneMode && isThreeButtonNav
             return when {
                 isPhoneNavMode -> {
                     if (!deviceProfile.isLandscape) {
-                        PhonePortraitNavLayoutter(resources, navButtonContainer,
-                                endContextualContainer, startContextualContainer)
+                        PhonePortraitNavLayoutter(
+                            resources,
+                            navButtonContainer,
+                            endContextualContainer,
+                            startContextualContainer
+                        )
                     } else {
-                        PhoneLandscapeNavLayoutter(resources, navButtonContainer,
-                                endContextualContainer, startContextualContainer)
+                        PhoneLandscapeNavLayoutter(
+                            resources,
+                            navButtonContainer,
+                            endContextualContainer,
+                            startContextualContainer
+                        )
                     }
                 }
                 deviceProfile.isTaskbarPresent -> {
                     return when {
                         isInSetup -> {
-                            SetupNavLayoutter(resources, navButtonContainer, endContextualContainer,
-                                    startContextualContainer)
+                            SetupNavLayoutter(
+                                resources,
+                                navButtonContainer,
+                                endContextualContainer,
+                                startContextualContainer
+                            )
                         }
                         isKidsMode -> {
-                            KidsNavLayoutter(resources, navButtonContainer, endContextualContainer,
-                                    startContextualContainer)
+                            KidsNavLayoutter(
+                                resources,
+                                navButtonContainer,
+                                endContextualContainer,
+                                startContextualContainer
+                            )
                         }
                         else ->
-                            TaskbarNavLayoutter(resources, navButtonContainer, endContextualContainer,
-                                    startContextualContainer)
+                            TaskbarNavLayoutter(
+                                resources,
+                                navButtonContainer,
+                                endContextualContainer,
+                                startContextualContainer
+                            )
                     }
                 }
                 else -> error("No layoutter found")
@@ -98,7 +116,7 @@ class NavButtonLayoutFactory {
         }
     }
 
-    /** Lays out and provides access to the home, recents, and back buttons for various mischief  */
+    /** Lays out and provides access to the home, recents, and back buttons for various mischief */
     interface NavButtonLayoutter {
         fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean)
     }

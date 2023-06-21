@@ -104,6 +104,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private SplitBounds mSplitBounds;
     private Boolean mDrawsBelowRecents = null;
     private boolean mIsGridTask;
+    private boolean mIsDesktopTask;
     private int mTaskRectTranslationX;
     private int mTaskRectTranslationY;
 
@@ -145,11 +146,19 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         if (mDp == null) {
             return 1;
         }
+
+        if (mIsDesktopTask) {
+            mTaskRect.set(mThumbnailPosition);
+            mPivot.set(mTaskRect.centerX(), mTaskRect.centerY());
+            return 1;
+        }
+
         if (mIsGridTask) {
             mSizeStrategy.calculateGridTaskSize(mContext, mDp, mTaskRect,
                     mOrientationState.getOrientationHandler());
         } else {
-            mSizeStrategy.calculateTaskSize(mContext, mDp, mTaskRect);
+            mSizeStrategy.calculateTaskSize(mContext, mDp, mTaskRect,
+                    mOrientationState.getOrientationHandler());
         }
 
         Rect fullTaskSize;
@@ -228,6 +237,13 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     }
 
     /**
+     * Sets whether this task is part of desktop tasks in overview.
+     */
+    public void setIsDesktopTask(boolean desktop) {
+        mIsDesktopTask = desktop;
+    }
+
+    /**
      * Apply translations on TaskRect's starting location.
      */
     public void setTaskRectTranslation(int taskRectTranslationX, int taskRectTranslationY) {
@@ -256,9 +272,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      */
     public RectF getCurrentCropRect() {
         // Crop rect is the inverse of thumbnail matrix
-        RectF insets = mCurrentFullscreenParams.mCurrentDrawnInsets;
-        mTempRectF.set(-insets.left, -insets.top,
-                mTaskRect.width() + insets.right, mTaskRect.height() + insets.bottom);
+        mTempRectF.set(0, 0, mTaskRect.width(), mTaskRect.height());
         mInversePositionMatrix.mapRect(mTempRectF);
         return mTempRectF;
     }
@@ -322,7 +336,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             boolean isRtlEnabled = !mIsRecentsRtl;
             mPositionHelper.updateThumbnailMatrix(
                     mThumbnailPosition, mThumbnailData, mTaskRect.width(), mTaskRect.height(),
-                    mDp.widthPx, mDp.heightPx, mDp.taskbarSize, mDp.isTablet,
+                    mDp.widthPx, mDp.heightPx, mDp.taskbarHeight, mDp.isTablet,
                     mOrientationState.getRecentsActivityRotation(), isRtlEnabled);
             mPositionHelper.getMatrix().invert(mInversePositionMatrix);
             if (DEBUG) {
@@ -335,14 +349,10 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 /* taskViewScale= */1f, mTaskRect.width(), mDp, mPositionHelper);
 
         // Apply thumbnail matrix
-        RectF insets = mCurrentFullscreenParams.mCurrentDrawnInsets;
-        float scale = mCurrentFullscreenParams.mScale;
         float taskWidth = mTaskRect.width();
         float taskHeight = mTaskRect.height();
 
         mMatrix.set(mPositionHelper.getMatrix());
-        mMatrix.postTranslate(insets.left, insets.top);
-        mMatrix.postScale(scale, scale);
 
         // Apply TaskView matrix: taskRect, translate
         mMatrix.postTranslate(mTaskRect.left, mTaskRect.top);
@@ -362,8 +372,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         applyWindowToHomeRotation(mMatrix);
 
         // Crop rect is the inverse of thumbnail matrix
-        mTempRectF.set(-insets.left, -insets.top,
-                taskWidth + insets.right, taskHeight + insets.bottom);
+        mTempRectF.set(0, 0, taskWidth, taskHeight);
         mInversePositionMatrix.mapRect(mTempRectF);
         mTempRectF.roundOut(mTmpCropRect);
 
@@ -373,7 +382,6 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             return;
         }
         Log.d(TAG, "progress: " + fullScreenProgress
-                + " scale: " + scale
                 + " recentsViewScale: " + recentsViewScale.value
                 + " crop: " + mTmpCropRect
                 + " radius: " + getCurrentCornerRadius()

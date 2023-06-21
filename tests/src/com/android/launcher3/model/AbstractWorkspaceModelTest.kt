@@ -30,9 +30,7 @@ import com.android.launcher3.util.IntSparseArrayMap
 import com.android.launcher3.util.LauncherModelHelper
 import java.util.UUID
 
-/**
- * Base class for workspace related tests.
- */
+/** Base class for workspace related tests. */
 abstract class AbstractWorkspaceModelTest {
     companion object {
         val emptyScreenSpaces = listOf(Rect(0, 0, 5, 5))
@@ -64,10 +62,7 @@ abstract class AbstractWorkspaceModelTest {
         mModelHelper.destroy()
     }
 
-
-    /**
-     * Sets up workspaces with the given screen IDs with some items and a 2x2 space.
-     */
+    /** Sets up workspaces with the given screen IDs with some items and a 2x2 space. */
     fun setupWorkspaces(screenIdsWithItems: List<Int>) {
         var nextItemId = 1
         screenIdsWithItems.forEach { screenId ->
@@ -83,8 +78,7 @@ abstract class AbstractWorkspaceModelTest {
         screen1: List<Rect>? = null,
         screen2: List<Rect>? = null,
         screen3: List<Rect>? = null,
-    ) = listOf(screen0, screen1, screen2, screen3)
-        .let(this::setupWithSpaces)
+    ) = listOf(screen0, screen1, screen2, screen3).let(this::setupWithSpaces)
 
     private fun setupWithSpaces(workspaceSpaces: List<List<Rect>?>) {
         var nextItemId = 1
@@ -110,9 +104,7 @@ abstract class AbstractWorkspaceModelTest {
         var itemId = itemStartId
         val occupancy = GridOccupancy(mIdp.numColumns, mIdp.numRows)
         occupancy.markCells(0, 0, mIdp.numColumns, mIdp.numRows, true)
-        spaces.forEach { spaceRect ->
-            occupancy.markCells(spaceRect, false)
-        }
+        spaces.forEach { spaceRect -> occupancy.markCells(spaceRect, false) }
         mExistingScreens.add(screenId)
         mScreenOccupancy.append(screenId, occupancy)
         for (x in 0 until mIdp.numColumns) {
@@ -139,21 +131,18 @@ abstract class AbstractWorkspaceModelTest {
         return itemId
     }
 
-    fun getExistingItem() = WorkspaceItemInfo()
-        .apply { intent = Intent().setComponent(ComponentName("a", "b")) }
+    fun getExistingItem() =
+        WorkspaceItemInfo().apply { intent = Intent().setComponent(ComponentName("a", "b")) }
 
     fun getNewItem(): WorkspaceItemInfo {
         val itemPackage = UUID.randomUUID().toString()
-        return WorkspaceItemInfo()
-            .apply { intent = Intent().setComponent(ComponentName(itemPackage, itemPackage)) }
+        return WorkspaceItemInfo().apply {
+            intent = Intent().setComponent(ComponentName(itemPackage, itemPackage))
+        }
     }
 }
 
-data class NewItemSpace(
-    val screenId: Int,
-    val cellX: Int,
-    val cellY: Int
-) {
+data class NewItemSpace(val screenId: Int, val cellX: Int, val cellY: Int) {
     fun toIntArray() = intArrayOf(screenId, cellX, cellY)
 
     companion object {

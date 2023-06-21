@@ -121,6 +121,20 @@
     <dimen name="gesture_tutorial_multi_row_task_view_spacing">72dp</dimen>
     <dimen name="gesture_tutorial_small_task_view_corner_radius">18dp</dimen>
     <dimen name="gesture_tutorial_mock_taskbar_height">80dp</dimen>
+    <dimen name="gesture_tutorial_back_gesture_exiting_app_margin">8dp</dimen>
+    <dimen name="gesture_tutorial_back_gesture_end_corner_radius">36dp</dimen>
+
+    <!-- Gesture Tutorial menu page -->
+    <dimen name="gesture_tutorial_menu_padding_horizontal">24dp</dimen>
+    <dimen name="gesture_tutorial_menu_padding_top">31dp</dimen>
+    <dimen name="gesture_tutorial_menu_padding_bottom">24dp</dimen>
+    <dimen name="gesture_tutorial_menu_button_height">0dp</dimen>
+    <dimen name="gesture_tutorial_menu_button_spacing">16dp</dimen>
+    <dimen name="gesture_tutorial_menu_button_radius">28dp</dimen>
+    <dimen name="gesture_tutorial_menu_done_button_top_spacing">0dp</dimen>
+    <dimen name="gesture_tutorial_menu_back_shape_bottom_margin">0dp</dimen>
+    <dimen name="gesture_tutorial_menu_done_button_spacing">72dp</dimen>
+    <dimen name="gesture_tutorial_menu_done_button_margin">0dp</dimen>
 
     <!-- Gesture Tutorial mock conversations -->
     <dimen name="gesture_tutorial_message_icon_size">44dp</dimen>
@@ -196,9 +210,13 @@
     <integer name="gesture_tutorial_webpage_extra_lines_visibility">0</integer> <!-- VISIBLE -->
 
     <!-- Gesture Tutorial mock taskbar -->
-    <dimen name="gesture_tutorial_taskbar_icon_size">44dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_icon_size">52dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_all_apps_mini_size">7dp</dimen>
     <dimen name="gesture_tutorial_taskbar_icon_corner_radius">100dp</dimen>
-    <dimen name="gesture_tutorial_taskbar_padding_start_end">52dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_corner_radius">100dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_padding">12dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_icon_spacing">24dp</dimen>
+    <dimen name="gesture_tutorial_taskbar_margin_bottom">24dp</dimen>
 
     <!-- All Set page -->
     <dimen name="allset_page_margin_horizontal">40dp</dimen>
@@ -255,7 +273,6 @@
     <!-- Taskbar -->
     <dimen name="taskbar_size">@*android:dimen/taskbar_frame_height</dimen>
     <dimen name="taskbar_ime_size">48dp</dimen>
-    <dimen name="taskbar_icon_size">44dp</dimen>
     <dimen name="taskbar_icon_min_touch_size">48dp</dimen>
     <!-- Note that this applies to both sides of all icons, so visible space is double this. -->
     <dimen name="taskbar_icon_spacing">12dp</dimen>
@@ -282,25 +299,28 @@
     <dimen name="taskbar_back_button_left_margin_kids">48dp</dimen>
     <dimen name="taskbar_home_button_left_margin_kids">48dp</dimen>
     <dimen name="taskbar_icon_size_kids">32dp</dimen>
+    <dimen name="taskbar_all_apps_button_translation_x_offset">6dp</dimen>
+
 
     <!-- Transient taskbar -->
-    <dimen name="transient_taskbar_size">72dp</dimen>
-    <dimen name="transient_taskbar_icon_size">48dp</dimen>
-    <dimen name="transient_taskbar_margin">24dp</dimen>
+    <dimen name="transient_taskbar_padding">12dp</dimen>
+    <dimen name="transient_taskbar_min_width">150dp</dimen>
+    <dimen name="transient_taskbar_bottom_margin">24dp</dimen>
     <dimen name="transient_taskbar_shadow_blur">40dp</dimen>
     <dimen name="transient_taskbar_key_shadow_distance">10dp</dimen>
-    <dimen name="transient_taskbar_stashed_size">32dp</dimen>
+    <dimen name="transient_taskbar_stashed_height">32dp</dimen>
+    <dimen name="transient_taskbar_all_apps_button_translation_x_offset">4dp</dimen>
+    <dimen name="transient_taskbar_stash_spring_velocity_dp_per_s">400dp</dimen>
+
     <!-- An additional touch slop to prevent x-axis movement during the swipe up to show taskbar -->
     <dimen name="transient_taskbar_clamped_offset_bound">16dp</dimen>
     <!-- Taskbar swipe up thresholds -->
-    <dimen name="taskbar_nav_threshold">40dp</dimen>
-    <dimen name="taskbar_app_window_threshold">150dp</dimen>
-    <dimen name="taskbar_home_overview_threshold">225dp</dimen>
-    <dimen name="taskbar_catch_up_threshold">300dp</dimen>
-
-    <dimen name="taskbar_nav_threshold_v2">30dp</dimen>
-    <dimen name="taskbar_app_window_threshold_v2">100dp</dimen>
-    <dimen name="taskbar_home_overview_threshold_v2">200dp</dimen>
+    <dimen name="taskbar_from_nav_threshold">40dp</dimen>
+    <dimen name="taskbar_app_window_threshold">88dp</dimen>
+    <dimen name="taskbar_home_overview_threshold">156dp</dimen>
+    <dimen name="taskbar_catch_up_threshold">264dp</dimen>
+    <!-- Taskbar swipe down threshold -->
+    <dimen name="taskbar_to_nav_threshold">24dp</dimen>
 
     <!--  Taskbar 3 button spacing  -->
     <dimen name="taskbar_button_space_inbetween">24dp</dimen>
@@ -309,6 +329,18 @@
     <dimen name="taskbar_button_margin_6_5">75dp</dimen>
     <dimen name="taskbar_button_margin_default">48dp</dimen>
 
+    <!-- Taskbar education tooltip -->
+    <dimen name="taskbar_edu_tooltip_elevation">14dp</dimen>
+    <dimen name="taskbar_edu_tooltip_horizontal_margin">32dp</dimen>
+    <dimen name="taskbar_edu_tooltip_vertical_margin">24dp</dimen>
+    <dimen name="taskbar_edu_tooltip_enter_y_delta">20dp</dimen>
+    <dimen name="taskbar_edu_tooltip_exit_y_delta">-10dp</dimen>
+    <dimen name="taskbar_edu_swipe_lottie_width">348dp</dimen>
+    <dimen name="taskbar_edu_swipe_lottie_height">217dp</dimen>
+    <dimen name="taskbar_edu_features_lottie_width">170dp</dimen>
+    <dimen name="taskbar_edu_features_lottie_height">106dp</dimen>
+    <dimen name="taskbar_edu_features_horizontal_spacing">24dp</dimen>
+
     <!-- Recents overview -->
     <dimen name="recents_filter_icon_size">30dp</dimen>
 
@@ -316,4 +348,16 @@
     <!-- Note: keep this value in sync with the WindowManager/Shell dimens.xml -->
     <!--     starting_surface_exit_animation_window_shift_length -->
     <dimen name="starting_surface_exit_animation_window_shift_length">20dp</dimen>
+
+    <!-- Keyboard Quick Switch -->
+    <dimen name="keyboard_quick_switch_border_width">4dp</dimen>
+    <dimen name="keyboard_quick_switch_taskview_width">104dp</dimen>
+    <dimen name="keyboard_quick_switch_taskview_height">134dp</dimen>
+    <dimen name="keyboard_quick_switch_recents_icon_size">20dp</dimen>
+    <dimen name="keyboard_quick_switch_margin_top">56dp</dimen>
+    <dimen name="keyboard_quick_switch_margin_ends">16dp</dimen>
+    <dimen name="keyboard_quick_switch_view_spacing">16dp</dimen>
+    <dimen name="keyboard_quick_switch_split_view_spacing">2dp</dimen>
+    <dimen name="keyboard_quick_switch_view_radius">28dp</dimen>
+    <dimen name="keyboard_quick_switch_task_view_radius">16dp</dimen>
 </resources>

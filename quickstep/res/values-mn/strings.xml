@@ -53,6 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Буцахын тулд шудрах"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Сүүлийн дэлгэц рүү буцахын тулд дэлгэцийн зүүн эсвэл баруун булангаас дунд хэсэг рүү шударна уу."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Сүүлийн дэлгэц рүү буцахын тулд 2 хуруугаараа дэлгэцийн голоос зүүн эсвэл баруун ирмэг рүү шударна уу."</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Буцах"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Та дэлгэцийн доод булангаас дээш шударна уу."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Та суллахаасаа өмнө түр зогсоож болохгүй."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Та чигээрээ шударна уу."</string>
@@ -61,6 +62,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Нүүр лүү очихын тулд шудрах"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Дэлгэцийнхээ доороос дээш шударна уу. Энэ зангаа таныг тогтмол Үндсэн нүүрэнд аваачна."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2 хуруугаараа дэлгэцийн доороос дээш шударна уу. Энэ зангаа таныг тогтмол Үндсэн нүүрэнд аваачна."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Үндсэн нүүр лүү очих"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Үндсэн нүүр лүүгээ хүссэн үедээ очихын тулд дэлгэцийн доороос дээш шударна уу"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Та дэлгэцийн доод булангаас дээш шударна уу."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Суллахаасаа өмнө цонхыг илүү удаан дарж үзнэ үү."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Та чигээрээ шударч, дараа нь түр зогсооно уу."</string>
@@ -69,6 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Аппуудыг сэлгэхийн тулд шудрах"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Аппуудын хооронд сэлгэхийн тулд дэлгэцийнхээ доод хэсгээс дээш шударч, удаан дараад, суллана уу."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Аппуудын хооронд сэлгэхийн тулд 2 хуруугаараа дэлгэцийнхээ доод хэсгээс дээш шударч, удаан дараад, суллана уу."</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Аппуудыг сэлгэх"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Бүгдийг тохируулсан"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Дууссан"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Тохиргоо"</string>
@@ -76,7 +80,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Янзтай!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"<xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g> практик хичээл"</string>
     <string name="allset_title" msgid="5021126669778966707">"Тохируулж дууслаа!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Нүүр хуудас руу очихын тулд дээш шударна уу"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Нүүр хуудас руу очихын тулд дээш шударна уу"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Үндсэн нүүр лүүгээ очихын тулд нүүр хуудасны товчлуурыг товшино уу"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Та <xliff:g id="DEVICE">%1$s</xliff:g>-г ашиглаж эхлэхэд бэлэн боллоо"</string>
     <string name="default_device_name" msgid="6660656727127422487">"төхөөрөмж"</string>
@@ -84,7 +88,7 @@
     <string name="action_share" msgid="2648470652637092375">"Хуваалцах"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Дэлгэцийн агшин дарах"</string>
     <string name="action_split" msgid="2098009717623550676">"Хуваах"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"Дэлгэц хуваахыг ашиглах бол өөр аппыг товшино уу"</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"Дэлгэцийг хуваахыг ашиглахын тулд өөр аппыг товш"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Дэлгэцийг хуваах горим ашиглах өөр апп сонгоно уу"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Энэ үйлдлийг апп эсвэл танай байгууллага зөвшөөрдөггүй"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Навигацын практик хичээлийг алгасах уу?"</string>
@@ -95,9 +99,11 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Ажлын хэсгийн боловсрол"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Боловсролын ажлын талбар гарч ирсэн"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Боловсролын ажлын талбарыг хаасан"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"2 аппыг зэрэг ашиглахын тулд хажуу тийш чирнэ үү"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Ажлын хэсгийг харуулахын тулд бага зэрэг дээш шударна уу"</string>
-    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Ажлын хэсэг таны хэвшилд тулгуурлан аппууд санал болгодог"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"2 аппыг зэрэг ашиглахын тулд аппыг хажуу тийш чирнэ үү"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Ажлын хэсгийг харуулахын тулд аажмаар дээш шударна уу"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Таны хэвшилд тулгуурлан санал болгож буй аппуудыг аваарай"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Ажлын хэсгийг автоматаар хаахын тулд Тохиргоонд зангааны навигацыг асаана уу"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Ажлын хэсгийн тусламжтай илүү ихийг хийгээрэй"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Дараах"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Буцах"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Хаах"</string>
@@ -110,7 +116,11 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Мэдэгдэл"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Шуурхай тохиргоо"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Ажлын хэсэг"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Ажлын хэсгийг харуулсан"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Ажлын хэсгийг нуусан"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Навигацын самбар"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Зүүн дээд хэсэг рүү зөөх"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Баруун доод хэсэг рүү зөөх"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Өөр # аппыг харуулна уу.}other{Өөр # аппыг харуулна уу.}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> болон <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

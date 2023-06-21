@@ -53,6 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"பின்செல்ல ஸ்வைப் செய்யுங்கள்"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"முந்தைய திரைக்கு மீண்டும் செல்ல, இடது/வலது ஓரத்திலிருந்து திரையின் மையப் பகுதிக்கு ஸ்வைப் செய்க."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"முந்தைய திரைக்கு மீண்டும் செல்ல, 2 விரல்களால் இடது அல்லது வலது ஓரத்திலிருந்து திரையின் மையப் பகுதிக்கு ஸ்வைப் செய்யுங்கள்."</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"பின்செல்லுதல்"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"திரையின் கீழ் ஓரத்திலிருந்து மேல்நோக்கி ஸ்வைப் செய்வதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"விடுவிப்பதற்கு முன்பாக இடைநிறுத்தவில்லை என்பதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"மேல்நோக்கி நேராக ஸ்வைப் செய்வதை உறுதிசெய்துகொள்ளுங்கள்."</string>
@@ -61,6 +62,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"முகப்புக்குச் செல்ல ஸ்வைப் செய்யுங்கள்"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"திரையின் கீழிருந்து மேலாக ஸ்வைப் செய்க. இந்தச் சைகை எப்போதும் முகப்புத் திரைக்கு அழைத்துச் செல்லும்."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2 விரலால் திரையின் கீழிருந்து மேலாக ஸ்வைப் செய்க. இந்தச் சைகை முகப்புத் திரைக்கு அழைத்துச் செல்லும்."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"முகப்புக்குச் செல்லுதல்"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"எந்தத் திரையிலிருந்தும் முகப்புத் திரைக்குச் செல்ல திரையின் கீழிருந்து மேல்நோக்கி ஸ்வைப் செய்யுங்கள்"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"திரையின் கீழ் ஓரத்திலிருந்து மேல்நோக்கி ஸ்வைப் செய்வதை உறுதிசெய்துகொள்ளுங்கள்."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"விடுவிப்பதற்கு முன்பாக நீண்டநேரம் சாளரத்தை அழுத்திப் பிடித்திருங்கள்."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"மேல்நோக்கி நேராக ஸ்வைப் செய்தபிறகு இடைநிறுத்துவதை உறுதிசெய்துகொள்ளுங்கள்."</string>
@@ -69,6 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ஆப்ஸுக்கிடையே மாற ஸ்வைப் செய்யுங்கள்"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ஆப்ஸுக்கு இடையே மாற, திரையின் கீழிலிருந்து மேலாக ஸ்வைப் செய்து, பிடித்திருந்து, பிறகு விடுவிக்கவும்."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"ஆப்ஸுக்கிடையே மாற, திரையின் கீழிருந்து மேலாக 2 விரலால் ஸ்வைப் செய்து, பிடித்து, பிறகு விடுவிக்கவும்."</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"ஆப்ஸுக்கிடையே மாறுதல்"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"எல்லாம் தயார்"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"முடிந்தது"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"அமைப்புகள்"</string>
@@ -76,7 +80,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"அருமை!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"பயிற்சி <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"அனைத்தையும் அமைத்துவிட்டீர்கள்!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"முகப்புத் திரைக்குச் செல்ல மேல்நோக்கி ஸ்வைப் செய்யுங்கள்"</string>
+    <string name="allset_hint" msgid="459504134589971527">"முகப்புக்குச் செல்ல மேல்நோக்கி ஸ்வைப் செய்யுங்கள்"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"முகப்புத் திரைக்குச் செல்வதற்கு முகப்பு பட்டனைத் தட்டவும்"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"உங்கள் <xliff:g id="DEVICE">%1$s</xliff:g> சாதனத்தைப் பயன்படுத்தத் தயாராகிவிட்டீர்கள்"</string>
     <string name="default_device_name" msgid="6660656727127422487">"சாதனம்"</string>
@@ -84,7 +88,7 @@
     <string name="action_share" msgid="2648470652637092375">"பகிர்"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ஸ்கிரீன்ஷாட்"</string>
     <string name="action_split" msgid="2098009717623550676">"பிரி"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"ஸ்பிளிட் ஸ்கிரீனுக்கு மற்றொரு ஆப்ஸைத் தட்டவும்"</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"திரைப் பிரிப்பைப் பயன்படுத்த வேறு ஆப்ஸைத் தட்டவும்"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"திரைப் பிரிப்பை பயன்படுத்த வேறு ஆப்ஸை தேர்வுசெய்க"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ஆப்ஸோ உங்கள் நிறுவனமோ இந்த செயலை அனுமதிப்பதில்லை"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"வழிகாட்டுதல் பயிற்சியைத் தவிர்க்கவா?"</string>
@@ -95,9 +99,11 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"செயல் பட்டியைப் பயன்படுத்தும் விதம்"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"பணிப்பட்டியை எவ்வாறு பயன்படுத்துவது என்பது பற்றிய பலகம் காட்டப்படுகிறது"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"பணிப்பட்டியை எவ்வாறு பயன்படுத்துவது என்பது பற்றிய பலகம் மூடப்பட்டது"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"ஒரே நேரத்தில் 2 ஆப்ஸை உபயோகிக்க பக்கவாட்டிற்கு இழுக்கவும்"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"செயல் பட்டியைக் காட்டுவதற்கு மேலே சிறிது ஸ்வைப் செய்யவும்"</string>
-    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"உங்கள் வழக்கத்திற்கேற்ப ஆப்ஸை செயல் பட்டி பரிந்துரைக்கும்"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ஒரே நேரத்தில் 2 ஆப்ஸைப் பயன்படுத்தப் பக்கவாட்டில் இழுக்கவும்"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"செயல் பட்டியைக் காட்ட மேல்நோக்கி மெதுவாக ஸ்வைப் செய்யவும்"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"உங்கள் வழக்கத்திற்கேற்ப ஆப்ஸ் பரிந்துரைகளைப் பெறலாம்"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"செயல் பட்டியைத் தானாக மறைக்க அமைப்புகளில் சைகை வழிசெலுத்தலை இயக்கவும்"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"செயல் பட்டி மூலம் மேலும் பலவற்றைச் செய்யுங்கள்"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"அடுத்து"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"பின்செல்"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"மூடுக"</string>
@@ -110,7 +116,11 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"அறிவிப்புகள்"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"விரைவு அமைப்புகள்"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"செயல் பட்டி"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"செயல் பட்டி காட்டப்படுகிறது"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"செயல் பட்டி மறைக்கப்பட்டுள்ளது"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"வழிசெலுத்தல் பட்டி"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"மேலே/இடதுபுறம் நகர்த்தும்"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"கீழே/வலதுபுறம் நகர்த்தும்"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{மேலும் # ஆப்ஸைக் காட்டு.}other{மேலும் # ஆப்ஸைக் காட்டு.}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> மற்றும் <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

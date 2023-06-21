@@ -56,6 +56,8 @@ public class Interpolators {
 
     public static final Interpolator DECELERATED_EASE = new PathInterpolator(0, 0, .2f, 1f);
     public static final Interpolator ACCELERATED_EASE = new PathInterpolator(0.4f, 0, 1f, 1f);
+    public static final Interpolator PREDICTIVE_BACK_DECELERATED_EASE =
+            new PathInterpolator(0, 0, 0, 1f);
 
     /**
      * The default emphasized interpolator. Used for hero / emphasized movement of content.

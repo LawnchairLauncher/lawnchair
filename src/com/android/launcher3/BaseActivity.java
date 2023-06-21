@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
+import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_FULLSCREEN_TASK;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
@@ -26,6 +28,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.util.Log;
 import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.IntDef;
@@ -43,6 +46,7 @@ import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * Launcher BaseActivity
@@ -50,6 +54,7 @@ import java.util.List;
 public abstract class BaseActivity extends Activity implements ActivityContext {
 
     private static final String TAG = "BaseActivity";
+    static final boolean DEBUG = false;
 
     public static final int INVISIBLE_BY_STATE_HANDLER = 1 << 0;
     public static final int INVISIBLE_BY_APP_TRANSITIONS = 1 << 1;
@@ -72,7 +77,8 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
             flag = true,
             value = {INVISIBLE_BY_STATE_HANDLER, INVISIBLE_BY_APP_TRANSITIONS,
                     INVISIBLE_BY_PENDING_FLAGS, PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION})
-    public @interface InvisibilityFlags{}
+    public @interface InvisibilityFlags {
+    }
 
     private final ArrayList<OnDeviceProfileChangeListener> mDPChangeListeners = new ArrayList<>();
     private final ArrayList<MultiWindowModeChangedListener> mMultiWindowModeChangedListeners =
@@ -97,6 +103,7 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
     /**
      * State flag indicating if the user is active or the activity when to background as a result
      * of user action.
+     *
      * @see #isUserActive()
      */
     public static final int ACTIVITY_STATE_USER_ACTIVE = 1 << 4;
@@ -120,14 +127,28 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
                     ACTIVITY_STATE_WINDOW_FOCUSED,
                     ACTIVITY_STATE_USER_ACTIVE,
                     ACTIVITY_STATE_TRANSITION_ACTIVE})
-    public @interface ActivityFlags{}
+    public @interface ActivityFlags {
+    }
+
+    /** Returns a human-readable string for the specified {@link ActivityFlags}. */
+    public static String getActivityStateString(@ActivityFlags int flags) {
+        StringJoiner result = new StringJoiner("|");
+        appendFlag(result, flags, ACTIVITY_STATE_STARTED, "state_started");
+        appendFlag(result, flags, ACTIVITY_STATE_RESUMED, "state_resumed");
+        appendFlag(result, flags, ACTIVITY_STATE_DEFERRED_RESUMED, "state_deferred_resumed");
+        appendFlag(result, flags, ACTIVITY_STATE_WINDOW_FOCUSED, "state_window_focused");
+        appendFlag(result, flags, ACTIVITY_STATE_USER_ACTIVE, "state_user_active");
+        appendFlag(result, flags, ACTIVITY_STATE_TRANSITION_ACTIVE, "state_transition_active");
+        return result.toString();
+    }
 
     @ActivityFlags
     private int mActivityFlags;
 
     // When the recents animation is running, the visibility of the Launcher is managed by the
     // animation
-    @InvisibilityFlags private int mForceInvisible;
+    @InvisibilityFlags
+    private int mForceInvisible;
 
     private final ViewCache mViewCache = new ViewCache();
 
@@ -176,14 +197,7 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (Utilities.ATLEAST_T) {
-            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
-                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
-                    () -> {
-                        onBackPressed();
-                        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onBackInvoked");
-                    });
-        }
+        registerBackDispatcher();
     }
 
     @Override
@@ -246,6 +260,17 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
 
     }
 
+    protected void registerBackDispatcher() {
+        if (Utilities.ATLEAST_T) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    () -> {
+                        onBackPressed();
+                        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onBackInvoked");
+                    });
+        }
+    }
+
     public boolean isStarted() {
         return (mActivityFlags & ACTIVITY_STATE_STARTED) != 0;
     }
@@ -280,17 +305,29 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
         return mActivityFlags;
     }
 
-    protected void addActivityFlags(int flags) {
-        mActivityFlags |= flags;
-        onActivityFlagsChanged(flags);
+    protected void addActivityFlags(int toAdd) {
+        final int oldFlags = mActivityFlags;
+        mActivityFlags |= toAdd;
+        if (DEBUG) {
+            Log.d(TAG, "Launcher flags updated: " + formatFlagChange(mActivityFlags, oldFlags,
+                    BaseActivity::getActivityStateString));
+        }
+        onActivityFlagsChanged(toAdd);
     }
 
-    protected void removeActivityFlags(int flags) {
-        mActivityFlags &= ~flags;
-        onActivityFlagsChanged(flags);
+    protected void removeActivityFlags(int toRemove) {
+        final int oldFlags = mActivityFlags;
+        mActivityFlags &= ~toRemove;
+        if (DEBUG) {
+            Log.d(TAG, "Launcher flags updated: " + formatFlagChange(mActivityFlags, oldFlags,
+                    BaseActivity::getActivityStateString));
+        }
+
+        onActivityFlagsChanged(toRemove);
     }
 
-    protected void onActivityFlagsChanged(int changeBits) { }
+    protected void onActivityFlagsChanged(int changeBits) {
+    }
 
     public void addMultiWindowModeChangedListener(MultiWindowModeChangedListener listener) {
         mMultiWindowModeChangedListeners.add(listener);
@@ -303,6 +340,7 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
     /**
      * Used to set the override visibility state, used only to handle the transition home with the
      * recents animation.
+     *
      * @see QuickstepTransitionManager#createWallpaperOpenRunner
      */
     public void addForceInvisibleFlag(@InvisibilityFlags int flag) {
@@ -333,7 +371,7 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
                 + getDeviceProfile().isVerticalBarLayout());
         writer.println(prefix + "orientation=" + getResources().getConfiguration().orientation);
         writer.println(prefix + "mSystemUiController: " + mSystemUiController);
-        writer.println(prefix + "mActivityFlags: " + mActivityFlags);
+        writer.println(prefix + "mActivityFlags: " + getActivityStateString(mActivityFlags));
         writer.println(prefix + "mForceInvisible: " + mForceInvisible);
     }
 

@@ -37,6 +37,8 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.celllayout.CellPosMapper;
+import com.android.launcher3.celllayout.CellPosMapper.CellPos;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.BgDataModel.Callbacks;
@@ -81,9 +83,10 @@ public class ModelWriter {
     // Keep track of delete operations that occur when an Undo option is present; we may not commit.
     private final List<Runnable> mDeleteRunnables = new ArrayList<>();
     private boolean mPreparingToUndo;
+    private final CellPosMapper mCellPosMapper;
 
     public ModelWriter(Context context, LauncherModel model, BgDataModel dataModel,
-            boolean hasVerticalHotseat, boolean verifyChanges,
+            boolean hasVerticalHotseat, boolean verifyChanges, CellPosMapper cellPosMapper,
             @Nullable Callbacks owner) {
         mContext = context;
         mModel = model;
@@ -91,21 +94,24 @@ public class ModelWriter {
         mHasVerticalHotseat = hasVerticalHotseat;
         mVerifyChanges = verifyChanges;
         mOwner = owner;
+        mCellPosMapper = cellPosMapper;
         mUiExecutor = Executors.MAIN_EXECUTOR;
     }
 
     private void updateItemInfoProps(
             ItemInfo item, int container, int screenId, int cellX, int cellY) {
+        CellPos modelPos = mCellPosMapper.mapPresenterToModel(cellX, cellY, screenId, container);
+
         item.container = container;
-        item.cellX = cellX;
-        item.cellY = cellY;
+        item.cellX = modelPos.cellX;
+        item.cellY = modelPos.cellY;
         // We store hotseat items in canonical form which is this orientation invariant position
         // in the hotseat
         if (container == Favorites.CONTAINER_HOTSEAT) {
             item.screenId = mHasVerticalHotseat
                     ? LauncherAppState.getIDP(mContext).numDatabaseHotseatIcons - cellY - 1 : cellX;
         } else {
-            item.screenId = screenId;
+            item.screenId = modelPos.screenId;
         }
     }
 

@@ -53,6 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Vuốt để quay lại"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Để quay lại màn hình gần đây nhất, hãy vuốt từ mép trái hoặc mép phải tới chính giữa màn hình."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Để quay lại màn hình trước đó, hãy vuốt 2 ngón tay từ cạnh trái hoặc phải vào giữa màn hình."</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Quay lại"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Hãy vuốt lên từ mép dưới cùng của màn hình."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Hãy nhớ không được tạm dừng trước khi nhấc ngón tay."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Hãy vuốt thẳng lên."</string>
@@ -61,6 +62,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Vuốt để chuyển đến Màn hình chính"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Vuốt lên từ cuối màn hình. Cử chỉ này luôn đưa bạn đến Màn hình chính."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Vuốt 2 ngón tay lên từ cuối màn hình. Cử chỉ này luôn đưa bạn về Màn hình chính."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Chuyển đến màn hình chính"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Để chuyển đến màn hình chính bất cứ lúc nào, hãy vuốt lên từ cuối màn hình"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Hãy vuốt lên từ mép dưới cùng của màn hình."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Hãy thử giữ cửa sổ lâu hơn trước khi thả tay ra."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Hãy vuốt thẳng lên, sau đó tạm dừng."</string>
@@ -69,6 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Vuốt để chuyển đổi ứng dụng"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Để chuyển đổi ứng dụng, hãy vuốt lên từ cuối màn hình, giữ rồi thả ra."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Để chuyển đổi giữa các ứng dụng, hãy vuốt 2 ngón tay lên từ cuối màn hình, giữ rồi thả ra."</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Chuyển đổi ứng dụng"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Đã hoàn tất"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Xong"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Cài đặt"</string>
@@ -76,7 +80,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Tuyệt vời!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Hướng dẫn <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Đã hoàn tất!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Vuốt lên để chuyển đến Màn hình chính"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Vuốt lên để chuyển đến màn hình chính"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Nhấn vào nút màn hình chính để chuyển đến màn hình chính"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Bạn có thể bắt đầu sử dụng <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"thiết bị"</string>
@@ -84,7 +88,7 @@
     <string name="action_share" msgid="2648470652637092375">"Chia sẻ"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Chụp ảnh màn hình"</string>
     <string name="action_split" msgid="2098009717623550676">"Chia đôi màn hình"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"Nhấn vào một ứng dụng khác để dùng màn hình chia đôi"</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"Nhấn vào ứng dụng khác để chia đôi màn hình"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Chọn một ứng dụng khác để dùng chế độ chia đôi màn hình"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Ứng dụng hoặc tổ chức của bạn không cho phép thực hiện hành động này"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Bỏ qua phần hướng dẫn thao tác?"</string>
@@ -95,9 +99,11 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Cách sử dụng thanh tác vụ"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Đã hiện bảng hướng dẫn trên thanh tác vụ"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Đã đóng bảng hướng dẫn trên thanh tác vụ"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"Kéo sang bên để dùng 2 ứng dụng cùng một lúc"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Vuốt lên một chút để hiển thị thanh tác vụ"</string>
-    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Thanh tác vụ đề xuất các ứng dụng dựa trên thói quen của bạn"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Kéo một ứng dụng sang bên để dùng 2 ứng dụng cùng lúc"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Từ từ vuốt lên để Thanh tác vụ xuất hiện"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Nhận ứng dụng đề xuất dựa trên thói quen của bạn"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Bật tính năng thao tác bằng cử chỉ trong phần Cài đặt để tự động ẩn Thanh tác vụ"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Làm nhiều việc hơn qua Thanh tác vụ"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Tiếp theo"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Quay lại"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Đóng"</string>
@@ -110,7 +116,11 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Thông báo"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Cài đặt nhanh"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Thanh tác vụ"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Đã hiện thanh thao tác"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Đã ẩn thanh thao tác"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Thanh điều hướng"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Chuyển lên trên cùng/sang bên trái"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Chuyển xuống dưới cùng/sang bên phải"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Hiện thêm # ứng dụng.}other{Hiện thêm # ứng dụng.}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> và <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

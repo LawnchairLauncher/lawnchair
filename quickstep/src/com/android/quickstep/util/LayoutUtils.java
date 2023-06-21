@@ -43,7 +43,8 @@ public class LayoutUtils {
             PagedOrientationHandler orientationHandler) {
         // Track the bottom of the window.
         Rect taskSize = new Rect();
-        LauncherActivityInterface.INSTANCE.calculateTaskSize(context, dp, taskSize);
+        LauncherActivityInterface.INSTANCE.calculateTaskSize(context, dp, taskSize,
+                orientationHandler);
         return orientationHandler.getDistanceToBottomOfRect(dp, taskSize);
     }
 

@@ -53,6 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"ປັດເພື່ອກັບຄືນ"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"ເພື່ອກັບໄປໜ້າຈໍຫຼ້າສຸດ, ໃຫ້ປັດຈາກຂອບຊ້າຍ ຫຼື ຂວາໄປຫາທາງກາງຂອງໜ້າຈໍ."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"ເພື່ອກັບໄປໜ້າຈໍຫຼ້າສຸດ, ໃຫ້ປັດດ້ວຍ 2 ນິ້ວຈາກຂອບຊ້າຍ ຫຼື ຂວາໄປຫາທາງກາງຂອງໜ້າຈໍ."</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"ກັບຄືນ"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນຈາກຂອບລຸ່ມສຸດຂອງໜ້າຈໍ."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"ກະລຸນາກວດສອບວ່າທ່ານບໍ່ຢຸດຊົ່ວຄາວກ່ອນປ່ອຍນິ້ວ."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນໄປຊື່ໆ."</string>
@@ -61,6 +62,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"ປັດເພື່ອໄປໜ້າຫຼັກ"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"ປັດຂຶ້ນມາຈາກລຸ່ມສຸດຂອງໜ້າຈໍທ່ານ. ທ່າທາງນີ້ຈະພາທ່ານໄປໂຮມສະກຣີນສະເໝີ."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"ປັດຂຶ້ນດ້ວຍ 2 ນິ້ວຈາກລຸ່ມສຸດຂອງໜ້າຈໍ. ທ່າທາງນີ້ຈະພາທ່ານໄປໂຮມສະກຣີນສະເໝີ."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"ໄປໜ້າຫຼັກ"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"ປັດຂຶ້ນຈາກລຸ່ມສຸດຂອງໜ້າຈໍຂອງທ່ານເພື່ອກັບໄປໂຮມສະກຣີນຂອງທ່ານໄດ້ທຸກເວລາ"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນຈາກຂອບລຸ່ມສຸດຂອງໜ້າຈໍ."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"ລອງກົດໃສ່ໜ້າຈໍຄ້າງໄວ້ດົນຂຶ້ນກ່ອນປ່ອຍນິ້ວ."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນຊື່ໆ, ຈາກນັ້ນຢຸດຊົ່ວຄາວ."</string>
@@ -69,6 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ປັດເພື່ອສະຫຼັບແອັບ"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ເພື່ອສະຫຼັບລະຫວ່າງແອັບ, ໃຫ້ປັດຂຶ້ນຈາກລຸ່ມສຸດຂອງໜ້າຈໍທ່ານ, ກົດຄ້າງໄວ້, ຈາກນັ້ນປ່ອຍ."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"ເພື່ອສະຫຼັບລະຫວ່າງແອັບ, ໃຫ້ປັດຂຶ້ນດ້ວຍ 2 ນິ້ວຈາກລຸ່ມສຸດຂອງໜ້າຈໍທ່ານ, ກົດຄ້າງໄວ້ແລ້ວປ່ອຍ."</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"ສະຫຼັບແອັບ"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"ທຸກຢ່າງພ້ອມແລ້ວ"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"ແລ້ວໆ"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ການຕັ້ງຄ່າ"</string>
@@ -76,7 +80,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"ດີ!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ການສອນການນຳໃຊ້ທີ <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"ຮຽບຮ້ອຍໝົດແລ້ວ!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"ປັດຂຶ້ນເພື່ອໄປຫາໜ້າຫຼັກ"</string>
+    <string name="allset_hint" msgid="459504134589971527">"ປັດຂຶ້ນເພື່ອໄປຫາໜ້າຫຼັກ"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"ແຕະປຸ່ມໜ້າທຳອິດເພື່ອໄປຫາໂຮມສະກຣີນຂອງທ່ານ"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"ທ່ານເລີ່ມໃຊ້ແທັບເລັດ <xliff:g id="DEVICE">%1$s</xliff:g> ຂອງທ່ານໄດ້ແລ້ວ"</string>
     <string name="default_device_name" msgid="6660656727127422487">"ອຸປະກອນ"</string>
@@ -84,7 +88,7 @@
     <string name="action_share" msgid="2648470652637092375">"ແບ່ງປັນ"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ຮູບໜ້າຈໍ"</string>
     <string name="action_split" msgid="2098009717623550676">"ແບ່ງ"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"ແຕະແອັບອື່ນເພື່ອໃຊ້ການແຍກໜ້າຈໍ"</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"ແຕະແອັບອື່ນເພື່ອໃຊ້ໜ້າຈໍແຍກ"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"ເລືອກແອັບອື່ນເພື່ອໃຊ້ການແບ່ງໜ້າຈໍ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ແອັບ ຫຼື ອົງການຂອງທ່ານບໍ່ອະນຸຍາດໃຫ້ໃຊ້ຄຳສັ່ງນີ້"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"ຂ້າມການສອນການນຳໃຊ້ການນຳທາງບໍ?"</string>
@@ -95,9 +99,11 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"ແຖບໜ້າວຽກ Education"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ສະແດງການສຶກສາແຖບໜ້າວຽກແລ້ວ"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ປິດການສຶກສາແຖບໜ້າວຽກແລ້ວ"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"ລາກໄປທາງຂ້າງເພື່ອໃຊ້ 2 ແອັບພ້ອມກັນ"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"ປັດຂຶ້ນສັ້ນໆເພື່ອສະແດງແຖບໜ້າວຽກ"</string>
-    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"ແຖບໜ້າວຽກຈະແນະນຳແອັບໂດຍອີງຕາມສິ່ງທີ່ເຮັດປະຈຳຂອງທ່ານ"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ລາກແອັບໄປດ້ານຂ້າງເພື່ອໃຊ້ 2 ແອັບໃນເວລາດຽວກັນ"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ປັດຂຶ້ນຊ້າໆເພື່ອສະແດງແຖບໜ້າວຽກ"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ຮັບການແນະນຳແອັບໂດຍອີງໃສ່ສິ່ງທີ່ເຮັດປະຈຳຂອງທ່ານ"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"ເປີດການນຳທາງແບບທ່າທາງໃນການຕັ້ງຄ່າເພື່ອເຊື່ອງແຖບໜ້າວຽກໄວ້ໂດຍອັດຕະໂນມັດ"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"ເຮັດສິ່ງຕ່າງໆໄດ້ຫຼາຍຂຶ້ນດ້ວຍແຖບໜ້າວຽກ"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ຕໍ່ໄປ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ກັບຄືນ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ປິດ"</string>
@@ -110,7 +116,11 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"ການແຈ້ງເຕືອນ"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"ການຕັ້ງຄ່າດ່ວນ"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"ແຖບໜ້າວຽກ"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"ແຖບໜ້າວຽກທີ່ສະແດງຢູ່"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"ແຖບໜ້າວຽກທີ່ເຊື່ອງໄວ້ຢູ່"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"ແຖບການນຳທາງ"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ຍ້າຍໄປຊ້າຍ/ເທິງ"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ຍ້າຍໄປຂວາ/ລຸ່ມ"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{ສະແດງອີກ # ແອັບ.}other{ສະແດງອີກ # ແອັບ.}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> ແລະ <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

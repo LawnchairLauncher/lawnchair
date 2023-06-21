@@ -70,4 +70,12 @@ public interface BaseState<T extends BaseState> {
     default boolean showTaskThumbnailSplash() {
         return false;
     }
+
+    /**
+     * For this state, whether member variables and other forms of data state should be preserved
+     * or wiped when the state is reapplied. (See {@link StateManager#reapplyState()})
+     */
+    default boolean shouldPreserveDataStateOnReapply() {
+        return false;
+    }
 }

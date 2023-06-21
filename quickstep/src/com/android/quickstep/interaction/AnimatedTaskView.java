@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.interaction;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -22,15 +24,19 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.ColorInt;
 import android.content.Context;
+import android.graphics.Matrix;
 import android.graphics.Outline;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewOutlineProvider;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
+import android.widget.ViewAnimator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.android.launcher3.R;
@@ -46,8 +52,8 @@ import java.util.ArrayList;
 public class AnimatedTaskView extends ConstraintLayout {
 
     private View mFullTaskView;
-    private CardView mTopTaskView;
-    private CardView mBottomTaskView;
+    private View mTopTaskView;
+    private View mBottomTaskView;
 
     private ViewOutlineProvider mTaskViewOutlineProvider = null;
     private final Rect mTaskViewAnimatedRect = new Rect();
@@ -84,6 +90,45 @@ public class AnimatedTaskView extends ConstraintLayout {
         mBottomTaskView = findViewById(R.id.bottom_task_view);
 
         setToSingleRowLayout(false);
+    }
+
+    void animateToFillScreen(@Nullable  Runnable onAnimationEndCallback) {
+
+        AnimatorSet set = new AnimatorSet();
+        ArrayList<Animator> animations = new ArrayList<>();
+
+        // center view
+        animations.add(ObjectAnimator.ofFloat(this, TRANSLATION_X, 0));
+
+        // calculate full screen scaling, scale should be 1:1 for x and y
+        Matrix matrix = getAnimationMatrix();
+        float[] matrixValues = new float[9];
+        matrix.getValues(matrixValues);
+        float scaleX = matrixValues[Matrix.MSCALE_X];
+        float scaleToFullScreen = 1 / scaleX;
+
+        // scale view to full screen
+        ValueAnimator scale = ValueAnimator.ofFloat(1f, scaleToFullScreen);
+        scale.addUpdateListener(animation -> {
+            float value = (float) animation.getAnimatedValue();
+            mFullTaskView.setScaleX(value);
+            mFullTaskView.setScaleY(value);
+        });
+
+        animations.add(scale);
+        set.playSequentially(animations);
+
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (onAnimationEndCallback != null) {
+                    onAnimationEndCallback.run();
+                }
+            }
+        });
+
+        set.start();
     }
 
     AnimatorSet createAnimationToMultiRowLayout() {
@@ -185,8 +230,11 @@ public class AnimatedTaskView extends ConstraintLayout {
 
     void setFakeTaskViewFillColor(@ColorInt int colorResId) {
         mFullTaskView.setBackgroundColor(colorResId);
-        mTopTaskView.setCardBackgroundColor(colorResId);
-        mBottomTaskView.setCardBackgroundColor(colorResId);
+
+        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()){
+            mTopTaskView.getBackground().setTint(colorResId);
+            mBottomTaskView.getBackground().setTint(colorResId);
+        }
     }
 
     @Override

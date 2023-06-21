@@ -53,6 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"पछाडि जान स्वाइप गर्नुहोस्"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"यसअघिको स्क्रिनमा फर्कन स्क्रिनको बायाँ वा दायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस्।"</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"तपाईं यसअघि जुन स्क्रिनमा हुनुहुन्थ्यो त्यही स्क्रिनमा फर्कन चाहनुहुन्छ भने २ वटा औँला प्रयोग गरी स्क्रिनको बायाँ वा दायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस्।"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"पछाडि जानुहोस्"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्।"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"औँला उठाउनुअघि नरोकिनुहोस्।"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"सीधै माथितिर स्वाइप गर्नुहोस्।"</string>
@@ -61,6 +62,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"होम स्क्रिनमा जान स्वाइप गर्नुहोस्"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्। यो इसारा प्रयोग गर्दा सधैँ होम स्क्रिन खुल्छ।"</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"२ वटा औँला प्रयोग गरी स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्। यो जेस्चर प्रयोग गर्दा सधैँ होम स्क्रिन खुल्छ।"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"होम स्क्रिनमा जाने तरिका"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"जुनसुकै बेला होम स्क्रिनमा जान स्क्रिनको पुछारबाट माथितिर स्वाइप गर्नुहोस्"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्।"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"स्क्रिनबाट औँला उठाउनुअघि एपको विन्डोमा केही बेर छोइराख्नुहोस्।"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"सीधै माथितिर स्वाइप गर्नुहोस् अनि रोकिनुहोस्।"</string>
@@ -69,6 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"एउटा एपबाट अर्को एपमा जान स्वाइप गर्नुहोस्"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"एउटा एपबाट अर्कोमा जान स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्, छोइराख्नुहोस् अनि औँला उठाउनुहोस्।"</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"एउटा एपबाट अर्कोमा जान २ वटा औँला प्रयोग गरी स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्, छोइराख्नुहोस् अनि औँला उठाउनुहोस्।"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"एउटा एपबाट अर्को एपमा जाने तरिका"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"सबै तयार छ"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"सम्पन्न भयो"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"सेटिङ"</string>
@@ -76,7 +80,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"राम्रो!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ट्युटोरियल <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"सबै तयार भयो!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"होममा जान माथितिर स्वाइप गर्नुहोस्"</string>
+    <string name="allset_hint" msgid="459504134589971527">"होममा जान माथितिर स्वाइप गर्नुहोस्"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"आफ्नो होम स्क्रिनमा जान होम बटनमा ट्याप गर्नुहोस्"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"तपाईं अब आफ्नो <xliff:g id="DEVICE">%1$s</xliff:g> चलाउन थाल्न सक्नुहुन्छ"</string>
     <string name="default_device_name" msgid="6660656727127422487">"डिभाइस"</string>
@@ -84,7 +88,7 @@
     <string name="action_share" msgid="2648470652637092375">"सेयर गर्नुहोस्"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"स्क्रिनसट"</string>
     <string name="action_split" msgid="2098009717623550676">"स्प्लिट गर्नुहोस्"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"स्प्लिटक्रिन प्रयोग गर्न अर्को एपमा ट्याप गर्नुहोस्"</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"स्प्लिटस्क्रिन प्रयोग गर्न अर्को एपमा ट्याप गर्नु…"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"स्प्लिट स्क्रिन प्रयोग गर्न अर्को एप रोज्नुहोस्"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"यो एप वा तपाईंको सङ्गठनले यो कारबाही गर्ने अनुमति दिँदैन"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"नेभिगेसन ट्युटोरियल स्किप गर्ने हो?"</string>
@@ -95,9 +99,11 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"टास्कबार एजुकेसन"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"टास्कबार एजुकेसन देखिएको छ"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"टास्कबार एजुकेसन बन्द गरिएको छ"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"टास्कबार छेउतिर ड्र्याग गरेर एकै पटक २ वटा एप चलाउनुहोस्"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"टास्कबार देखाउन माथितिर थोरै स्वाइप गर्नुहोस्"</string>
-    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"टास्कबारले तपाईंको रुटिनका आधारमा एपसम्बन्धी सुझाव देखाउँछ"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"एपलाई छेउतिर ड्र्याग गरेर एकै पटक २ वटा एप चलाउनुहोस्"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"टास्कबार देखाउन माथितिर बिस्तारै स्वाइप गर्नुहोस्"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"आफ्नो रुटिनका आधारमा एपसम्बन्धी सुझावहरू प्राप्त गर्नुहोस्"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"टास्कबार स्वतः लुकाउन सेटिङमा गई इसारामार्फत गरिने नेभिगेसन अन गर्नुहोस्"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"टास्कबार प्रयोग गरेर अझ धेरै कार्य गर्नुहोस्"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"अर्को"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"पछाडि"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"बन्द गर्नुहोस्"</string>
@@ -110,7 +116,11 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"सूचनाहरू"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"द्रुत सेटिङ"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"टास्कबार"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"टास्कबार देखाइएको छ"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"टास्कबार लुकाइएको छ"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"नेभिगेसन बार"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"सिरान/बायाँतिर सार्नुहोस्"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"फेद/दायाँतिर सार्नुहोस्"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{थप # एप देखाइयोस्।}other{थप # वटा एप देखाइयोस्।}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> र <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

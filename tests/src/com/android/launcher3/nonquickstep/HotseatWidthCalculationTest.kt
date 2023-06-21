@@ -18,7 +18,7 @@ package com.android.launcher3.nonquickstep
 import android.graphics.Rect
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import com.android.launcher3.DeviceProfileBaseTest
+import com.android.launcher3.FakeInvariantDeviceProfileTest
 import com.android.launcher3.util.WindowBounds
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -26,11 +26,11 @@ import org.junit.runner.RunWith
 
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-class HotseatWidthCalculationTest : DeviceProfileBaseTest() {
+class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
 
     /**
-     * This is a case when after setting the hotseat, the space needs to be recalculated
-     * but it doesn't need to change QSB width or remove icons
+     * This is a case when after setting the hotseat, the space needs to be recalculated but it
+     * doesn't need to change QSB width or remove icons
      */
     @Test
     fun distribute_border_space_when_space_is_enough_portrait() {
@@ -51,8 +51,8 @@ class HotseatWidthCalculationTest : DeviceProfileBaseTest() {
     }
 
     /**
-     * This is a case when after setting the hotseat, and recalculating spaces
-     * it still needs to remove icons for everything to fit
+     * This is a case when after setting the hotseat, and recalculating spaces it still needs to
+     * remove icons for everything to fit
      */
     @Test
     fun decrease_num_of_icons_when_not_enough_space_portrait() {
@@ -73,8 +73,8 @@ class HotseatWidthCalculationTest : DeviceProfileBaseTest() {
     }
 
     /**
-     * This is a case when after setting the hotseat, the space needs to be recalculated
-     * but it doesn't need to change QSB width or remove icons
+     * This is a case when after setting the hotseat, the space needs to be recalculated but it
+     * doesn't need to change QSB width or remove icons
      */
     @Test
     fun distribute_border_space_when_space_is_enough_landscape() {
@@ -94,8 +94,8 @@ class HotseatWidthCalculationTest : DeviceProfileBaseTest() {
     }
 
     /**
-     * This is a case when the hotseat spans a certain amount of columns
-     * and the nav buttons push the hotseat to the side, but not enough to change the border space.
+     * This is a case when the hotseat spans a certain amount of columns and the nav buttons push
+     * the hotseat to the side, but not enough to change the border space.
      */
     @Test
     fun nav_buttons_dont_interfere_with_required_hotseat_width() {
@@ -118,9 +118,7 @@ class HotseatWidthCalculationTest : DeviceProfileBaseTest() {
         assertThat(dp.hotseatQsbWidth).isEqualTo(1224)
     }
 
-    /**
-     * This is a case when after setting the hotseat, the QSB width needs to be changed to fit
-     */
+    /** This is a case when after setting the hotseat, the QSB width needs to be changed to fit */
     @Test
     fun decrease_qsb_when_not_enough_space_landscape() {
         initializeVarsForTablet(isGestureMode = false, isLandscape = true)

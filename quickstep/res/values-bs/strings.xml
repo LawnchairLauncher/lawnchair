@@ -53,6 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Prevucite da se vratite"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Da se vratite na prethodni ekran, prevucite s lijevog ili desnog ruba prema sredini ekrana."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Da se vratite na posljednji ekran, prevucite s 2 prsta od lijevog ili desnog ruba do sredine ekrana."</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Vratite se nazad"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Trebate prevući prema gore s donjeg ruba ekrana."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Obratite pažnju da ne zastanete prije puštanja."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Trebate prevući ravno prema gore."</string>
@@ -61,6 +62,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Prevucite da odete na početni ekran"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Prevucite s dna ekrana prema gore. Tim pokretom uvijek idete na početni ekran."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Prevucite s 2 prsta od dna ekrana. Tim pokretom uvijek idete na početni ekran"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Idite na početni ekran"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Da u bilo kojem trenutku odete na početni ekran, prevucite s donjeg dijela ekrana nagore"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Trebate prevući prema gore s donjeg ruba ekrana."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Pokušajte zadržati prozor duže prije puštanja."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Trebate prevući ravno prema gore, a zatim zastati."</string>
@@ -69,6 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Prevucite da prebacujete između aplikacija"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Da se prebacujete između aplikacija, prevucite s dna ekrana prema gore, zadržite, a zatim pustite."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Da se prebacujete između aplikacija, prevucite s 2 prsta od dna ekrana, zadržite, a zatim pustite."</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Prebacujte se između aplikacija"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Sve je spremno"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Gotovo"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Postavke"</string>
@@ -76,7 +80,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Odlično!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Vodič <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Sve je spremno!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Prevucite prema gore da odete na početni ekran"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Prevucite prema gore da odete na početni ekran"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Dodirnite dugme za početni ekran da odete napočetni ekran"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Sve je spremno da počnete koristiti uređaj <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"uređaj"</string>
@@ -84,7 +88,7 @@
     <string name="action_share" msgid="2648470652637092375">"Dijeli"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Snimak ekrana"</string>
     <string name="action_split" msgid="2098009717623550676">"Podijeli"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"Dodirnite drugu apl. da koristite podijeljeni ekran"</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"Dodirnite drugu apl. da koristite podijeljeni ekran"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Odaberite drugu apl. da koristite podijeljeni ekran"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Ovu radnju ne dozvoljava aplikacija ili vaša organizacija"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Preskočiti vodič za navigiranje?"</string>
@@ -95,9 +99,11 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Edukacija o traci zadataka"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Edukacija o programskoj traci je prikazana"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Edukacija o programskoj traci je zatvorena"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"Prevucite u stranu da istovremeno koristite 2 aplikacije"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Nakratko prevucite nagore da vidite traku zadataka"</string>
-    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Traka zadataka predlaže aplikacije na osnovu vaše rutine"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Prevucite aplikaciju ustranu da odjednom koristite 2 aplikacije"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Sporo prevucite nagore da vidite traku zadataka"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Dobijajte prijedloge aplikacija zasnovane na vašoj rutini"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Uključite navigaciju pokretima u Postavkama da automatski sakrijete traku zadataka"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Uradite više pomoću trake zadataka"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Naprijed"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Nazad"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zatvori"</string>
@@ -110,7 +116,11 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Obavještenja"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Brze postavke"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Traka zadataka"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Traka zadataka je prikazana"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Traka zadataka je sakrivena"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigaciona traka"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Premjesti gore lijevo"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Premjesti dolje desno"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Prikaži još # aplikaciju.}one{Prikaži još # aplikaciju.}few{Prikaži još # aplikacije.}other{Prikaži još # aplikacija.}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> i <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

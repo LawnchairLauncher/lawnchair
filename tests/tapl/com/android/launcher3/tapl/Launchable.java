@@ -76,6 +76,27 @@ public abstract class Launchable {
         }
     }
 
+    /**
+     * Clicks a launcher object to initiate splitscreen, where the selected app will be one of two
+     * apps running on the screen. Should be called when Launcher is in a "split staging" state
+     * and is waiting for the user's selection of a second app. Expects a SPLIT_START_EVENT to be
+     * fired when the click is executed.
+     */
+    public LaunchedAppState launchIntoSplitScreen() {
+        try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                "want to launch split tasks from " + launchableType())) {
+            LauncherInstrumentation.log("Launchable.launch before click "
+                    + mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(mObject));
+
+            mLauncher.clickLauncherObject(mObject);
+
+            try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("clicked")) {
+                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, OverviewTask.SPLIT_START_EVENT);
+                return new LaunchedAppState(mLauncher);
+            }
+        }
+    }
+
     protected LaunchedAppState assertAppLaunched(BySelector selector) {
         mLauncher.assertTrue(
                 "App didn't start: (" + selector + ")",

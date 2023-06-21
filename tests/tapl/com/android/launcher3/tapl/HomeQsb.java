@@ -15,69 +15,23 @@
  */
 package com.android.launcher3.tapl;
 
-import androidx.annotation.NonNull;
-import androidx.test.uiautomator.By;
-import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
-import androidx.test.uiautomator.Until;
 
 /**
- * Operations on home screen qsb.
+ * Operations on Home screen qsb.
  */
-public class HomeQsb {
+class HomeQsb extends Qsb {
 
-    private final LauncherInstrumentation mLauncher;
-    private static final String ASSISTANT_APP_PACKAGE = "com.google.android.googlequicksearchbox";
-    private static final String ASSISTANT_ICON_RES_ID = "mic_icon";
+    private final UiObject2 mHotSeat;
 
-
-    HomeQsb(LauncherInstrumentation launcher) {
-        mLauncher = launcher;
-        mLauncher.waitForLauncherObject("search_container_hotseat");
+    HomeQsb(LauncherInstrumentation launcher, UiObject2 hotseat) {
+        super(launcher);
+        mHotSeat = hotseat;
+        waitForQsbObject();
     }
 
-    /**
-     * Launch assistant app by tapping mic icon on qsb.
-     */
-    @NonNull
-    public LaunchedAppState launchAssistant() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to click assistant mic icon button");
-             LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            UiObject2 assistantIcon = mLauncher.waitForLauncherObject(ASSISTANT_ICON_RES_ID);
-
-            LauncherInstrumentation.log("HomeQsb.launchAssistant before click "
-                    + assistantIcon.getVisibleCenter() + " in "
-                    + mLauncher.getVisibleBounds(assistantIcon));
-
-            mLauncher.clickLauncherObject(assistantIcon);
-
-            try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("clicked")) {
-                // assert Assistant App Launched
-                BySelector selector = By.pkg(ASSISTANT_APP_PACKAGE);
-                mLauncher.assertTrue(
-                        "assistant app didn't start: (" + selector + ")",
-                        mLauncher.getDevice().wait(Until.hasObject(selector),
-                                LauncherInstrumentation.WAIT_TIME_MS)
-                );
-                return new LaunchedAppState(mLauncher);
-            }
-        }
-    }
-
-    /**
-     * Show search result page from tapping qsb.
-     */
-    public SearchResultFromQsb showSearchResult() {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to open search result page");
-             LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            mLauncher.clickLauncherObject(
-                    mLauncher.waitForLauncherObject("search_container_hotseat"));
-            try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
-                    "clicked qsb to open search result page")) {
-                return new SearchResultFromQsb(mLauncher);
-            }
-        }
+    @Override
+    protected UiObject2 waitForQsbObject() {
+        return mLauncher.waitForObjectInContainer(mHotSeat, "search_container_hotseat");
     }
 }

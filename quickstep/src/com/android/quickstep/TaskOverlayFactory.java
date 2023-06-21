@@ -36,6 +36,7 @@ import androidx.annotation.RequiresApi;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
@@ -77,9 +78,12 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         RecentsOrientedState orientedState = taskView.getRecentsView().getPagedViewOrientedState();
         boolean canLauncherRotate = orientedState.isRecentsActivityRotationAllowed();
         boolean isInLandscape = orientedState.getTouchRotation() != ROTATION_0;
+        boolean isTablet = activity.getDeviceProfile().isTablet;
 
-        // Add overview actions to the menu when in in-place rotate landscape mode.
-        if (!canLauncherRotate && isInLandscape) {
+        boolean isGridOnlyOverview = isTablet && FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get();
+        // Add overview actions to the menu when in in-place rotate landscape mode, or in
+        // grid-only overview.
+        if ((!canLauncherRotate && isInLandscape) || isGridOnlyOverview) {
             // Add screenshot action to task menu.
             List<SystemShortcut> screenshotShortcuts = TaskShortcutFactory.SCREENSHOT
                     .getShortcuts(activity, taskContainer);
@@ -87,8 +91,9 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
                 shortcuts.addAll(screenshotShortcuts);
             }
 
-            // Add modal action only if display orientation is the same as the device orientation.
-            if (orientedState.getDisplayRotation() == ROTATION_0) {
+            // Add modal action only if display orientation is the same as the device orientation,
+            // or in grid-only overview.
+            if (orientedState.getDisplayRotation() == ROTATION_0 || isGridOnlyOverview) {
                 List<SystemShortcut> modalShortcuts = TaskShortcutFactory.MODAL
                         .getShortcuts(activity, taskContainer);
                 if (modalShortcuts != null) {

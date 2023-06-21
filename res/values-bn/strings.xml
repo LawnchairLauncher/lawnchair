@@ -28,9 +28,6 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"শর্টকাটগুলি অনুপলব্ধ"</string>
     <string name="home_screen" msgid="5629429142036709174">"হোম"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"স্প্লিট স্ক্রিন"</string>
-    <string name="split_screen_position_top" msgid="1504965011158689649">"স্ক্রিনের উপরের দিকে স্প্লিট করুন"</string>
-    <string name="split_screen_position_left" msgid="7537793098851830883">"স্ক্রিনের বাঁদিকে স্প্লিট করুন"</string>
-    <string name="split_screen_position_right" msgid="1569377524925193369">"স্ক্রিনের ডানদিকে স্প্লিট করুন"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s-এর জন্য অ্যাপ সম্পর্কিত তথ্য"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"কোনও উইজেট সরাতে সেটি টাচ করে ধরে রাখুন।"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"একটি উইজেট সরাতে বা কাস্টম অ্যাকশন ব্যবহার করতে ডবল ট্যাপ করে ধরে রাখুন।"</string>
@@ -40,6 +37,7 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"হোম স্ক্রিনের যেকোনও জায়গায় নিয়ে যেতে, উইজেট টাচ করে ধরে থাকুন"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"হোম স্ক্রিনে যোগ করুন"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> উইজেট হোম স্ক্রিনে যোগ করা হয়েছে"</string>
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"সাজেশন"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{#টি উইজেট}one{#টি উইজেট}other{#টি উইজেট}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{#টি শর্টকাট}one{#টি শর্টকাট}other{#টি শর্টকাট}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>

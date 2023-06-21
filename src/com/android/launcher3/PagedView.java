@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import static androidx.annotation.VisibleForTesting.PACKAGE_PRIVATE;
-
 import static com.android.launcher3.anim.Interpolators.SCROLL;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isObservedEventType;
@@ -52,7 +50,6 @@ import android.widget.OverScroller;
 import android.widget.ScrollView;
 
 import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
@@ -319,7 +316,6 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     /**
      * Returns an IntSet with the indices of the currently visible pages
      */
-    @VisibleForTesting(otherwise = PACKAGE_PRIVATE)
     public IntSet getVisiblePageIndices() {
         return getPageIndices(mCurrentPage);
     }
@@ -773,7 +769,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         if (mScroller.isFinished() && pageScrollChanged) {
             // TODO(b/246283207): Remove logging once root cause of flake detected.
-            if (Utilities.IS_RUNNING_IN_TEST_HARNESS && !(this instanceof Workspace)) {
+            if (Utilities.isRunningInTestHarness() && !(this instanceof Workspace)) {
                 Log.d("b/246283207", this.getClass().getSimpleName() + "#onLayout() -> "
                         + "if(mScroller.isFinished() && pageScrollChanged) -> getNextPage(): "
                         + getNextPage() + ", getScrollForPage(getNextPage()): "
@@ -1370,8 +1366,14 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                 int velocity = (int) mOrientationHandler.getPrimaryVelocity(velocityTracker,
                         mActivePointerId);
                 float delta = primaryDirection - mDownMotionPrimary;
-                int pageOrientedSize = (int) (mOrientationHandler.getMeasuredSize(
-                        getPageAt(mCurrentPage))
+
+                View current = getPageAt(mCurrentPage);
+                if (current == null) {
+                    Log.e(TAG, "current page was null. this should not happen.");
+                    return true;
+                }
+
+                int pageOrientedSize = (int) (mOrientationHandler.getMeasuredSize(current)
                         * mOrientationHandler.getPrimaryScale(this));
                 boolean isSignificantMove = isSignificantMove(Math.abs(delta), pageOrientedSize);
 
@@ -1404,15 +1406,17 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
                             (isFling && !isVelocityLeft)) && mCurrentPage > 0) {
                         finalPage = returnToOriginalPage
                                 ? mCurrentPage : mCurrentPage - getPanelCount();
-                        snapToPageWithVelocity(finalPage, velocity);
+                        runOnPageScrollsInitialized(
+                                () -> snapToPageWithVelocity(finalPage, velocity));
                     } else if (((isSignificantMove && isDeltaLeft && !isFling) ||
                             (isFling && isVelocityLeft)) &&
                             mCurrentPage < getChildCount() - 1) {
                         finalPage = returnToOriginalPage
                                 ? mCurrentPage : mCurrentPage + getPanelCount();
-                        snapToPageWithVelocity(finalPage, velocity);
+                        runOnPageScrollsInitialized(
+                                () -> snapToPageWithVelocity(finalPage, velocity));
                     } else {
-                        snapToDestination();
+                        runOnPageScrollsInitialized(this::snapToDestination);
                     }
                 } else {
                     if (!mScroller.isFinished()) {
@@ -1435,7 +1439,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
                         int finalPos = mScroller.getFinalX();
                         mNextPage = getDestinationPage(finalPos);
-                        onNotSnappingToPageInFreeScroll();
+                        runOnPageScrollsInitialized(this::onNotSnappingToPageInFreeScroll);
                     }
                     invalidate();
                 }
@@ -1449,7 +1453,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
 
         case MotionEvent.ACTION_CANCEL:
             if (mIsBeingDragged) {
-                snapToDestination();
+                runOnPageScrollsInitialized(this::snapToDestination);
             }
             mEdgeGlowLeft.onRelease();
             mEdgeGlowRight.onRelease();
@@ -1711,7 +1715,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
             return false;
         }
 
-        if (FeatureFlags.IS_STUDIO_BUILD && !Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+        if (FeatureFlags.IS_STUDIO_BUILD && !Utilities.isRunningInTestHarness()) {
             duration *= Settings.Global.getFloat(getContext().getContentResolver(),
                     Settings.Global.WINDOW_ANIMATION_SCALE, 1);
         }

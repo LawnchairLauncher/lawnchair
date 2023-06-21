@@ -97,11 +97,6 @@ public final class DigitalWellBeingToast {
     private View mBanner;
     private ViewOutlineProvider mOldBannerOutlineProvider;
     private float mBannerOffsetPercentage;
-    /**
-     * Clips rect provided by {@link #mOldBannerOutlineProvider} when in the model state to
-     * hide this banner as the taskView scales up and down
-     */
-    private float mModalOffset = 0f;
     @Nullable
     private SplitBounds mSplitBounds;
     private int mSplitBannerConfig = SPLIT_BANNER_FULLSCREEN;
@@ -331,22 +326,24 @@ public final class DigitalWellBeingToast {
     }
 
     private void setBannerOutline() {
-        mOldBannerOutlineProvider = mBanner.getOutlineProvider();
+        // TODO(b\273367585) to investigate why mBanner.getOutlineProvider() can be null
+        mOldBannerOutlineProvider = mBanner.getOutlineProvider() != null
+                ? mBanner.getOutlineProvider()
+                : ViewOutlineProvider.BACKGROUND;
+
         mBanner.setOutlineProvider(new ViewOutlineProvider() {
             @Override
             public void getOutline(View view, Outline outline) {
                 mOldBannerOutlineProvider.getOutline(view, outline);
-                float verticalTranslation = -view.getTranslationY() + mModalOffset
-                        + mSplitOffsetTranslationY;
+                float verticalTranslation = -view.getTranslationY() + mSplitOffsetTranslationY;
                 outline.offset(0, Math.round(verticalTranslation));
             }
         });
         mBanner.setClipToOutline(true);
     }
 
-    void updateBannerOffset(float offsetPercentage, float verticalOffset) {
+    void updateBannerOffset(float offsetPercentage) {
         if (mBanner != null && mBannerOffsetPercentage != offsetPercentage) {
-            mModalOffset = verticalOffset;
             mBannerOffsetPercentage = offsetPercentage;
             updateTranslationY();
             mBanner.invalidateOutline();
@@ -359,10 +356,7 @@ public final class DigitalWellBeingToast {
         }
 
         mBanner.setTranslationY(
-                (mBannerOffsetPercentage * mBanner.getHeight()) +
-                        mModalOffset +
-                        mSplitOffsetTranslationY
-        );
+                (mBannerOffsetPercentage * mBanner.getHeight()) + mSplitOffsetTranslationY);
     }
 
     private void updateTranslationX() {

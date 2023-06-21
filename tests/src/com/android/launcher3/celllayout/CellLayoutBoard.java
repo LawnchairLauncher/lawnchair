@@ -26,9 +26,76 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 
-public class CellLayoutBoard {
+public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
+
+    private boolean intersects(Rect r1, Rect r2) {
+        // If one rectangle is on left side of other
+        if (r1.left > r2.right || r2.left > r1.right) {
+            return false;
+        }
+
+        // If one rectangle is above other
+        if (r1.bottom > r2.top || r2.bottom > r1.top) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean overlapsWithIgnored(Set<Rect> ignoredRectangles, Rect rect) {
+        for (Rect ignoredRect : ignoredRectangles) {
+            // Using the built in intersects doesn't work because it doesn't account for area 0
+            if (intersects(ignoredRect, rect)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int compareTo(CellLayoutBoard cellLayoutBoard) {
+        // to be equal they need to have the same number of widgets and the same dimensions
+        // their order can be different
+        Set<Rect> widgetsSet = new HashSet<>();
+        Set<Rect> ignoredRectangles = new HashSet<>();
+        for (WidgetRect rect : mWidgetsRects) {
+            if (rect.shouldIgnore()) {
+                ignoredRectangles.add(rect.mBounds);
+            } else {
+                widgetsSet.add(rect.mBounds);
+            }
+        }
+        for (WidgetRect rect : cellLayoutBoard.mWidgetsRects) {
+            // ignore rectangles overlapping with the area marked by x
+            if (overlapsWithIgnored(ignoredRectangles, rect.mBounds)) {
+                continue;
+            }
+            if (!widgetsSet.contains(rect.mBounds)) {
+                return -1;
+            }
+            widgetsSet.remove(rect.mBounds);
+        }
+        if (!widgetsSet.isEmpty()) {
+            return 1;
+        }
+
+        // to be equal they need to have the same number of icons their order can be different
+        Set<Point> iconsSet = new HashSet<>();
+        mIconPoints.forEach(icon -> iconsSet.add(icon.getCoord()));
+        for (IconPoint icon : cellLayoutBoard.mIconPoints) {
+            if (!iconsSet.contains(icon.getCoord())) {
+                return -1;
+            }
+            iconsSet.remove(icon.getCoord());
+        }
+        if (!iconsSet.isEmpty()) {
+            return 1;
+        }
+        return 0;
+    }
 
     public static class CellType {
         // The cells marked by this will be filled by 1x1 widgets and will be ignored when
@@ -114,7 +181,7 @@ public class CellLayoutBoard {
     List<IconPoint> mIconPoints = new ArrayList<>();
     Map<Character, IconPoint> mIconsMap = new HashMap<>();
 
-    Point mMain = new Point();
+    WidgetRect mMain = null;
 
     CellLayoutBoard() {
         for (int x = 0; x < mWidget.length; x++) {
@@ -132,12 +199,79 @@ public class CellLayoutBoard {
         return mIconPoints;
     }
 
-    public Point getMain() {
+    public WidgetRect getMain() {
         return mMain;
     }
 
     public WidgetRect getWidgetRect(char c) {
         return mWidgetsMap.get(c);
+    }
+
+    private void removeWidgetFromBoard(WidgetRect widget) {
+        for (int xi = widget.mBounds.left; xi < widget.mBounds.right; xi++) {
+            for (int yi = widget.mBounds.top; yi < widget.mBounds.bottom; yi++) {
+                mWidget[xi][yi] = '-';
+            }
+        }
+    }
+
+    private void removeOverlappingItems(Rect rect) {
+        // Remove overlapping widgets and remove them from the board
+        mWidgetsRects = mWidgetsRects.stream().filter(widget -> {
+            if (rect.intersect(widget.mBounds)) {
+                removeWidgetFromBoard(widget);
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
+        // Remove overlapping icons and remove them from the board
+        mIconPoints = mIconPoints.stream().filter(iconPoint -> {
+            int x = iconPoint.coord.x;
+            int y = iconPoint.coord.y;
+            if (rect.contains(x, y)) {
+                mWidget[x][y] = '-';
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
+    }
+
+    private void removeOverlappingItems(Point p) {
+        // Remove overlapping widgets and remove them from the board
+        mWidgetsRects = mWidgetsRects.stream().filter(widget -> {
+            if (widget.mBounds.contains(p.x, p.y)) {
+                removeWidgetFromBoard(widget);
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
+        // Remove overlapping icons and remove them from the board
+        mIconPoints = mIconPoints.stream().filter(iconPoint -> {
+            int x = iconPoint.coord.x;
+            int y = iconPoint.coord.y;
+            if (p.x == x && p.y == y) {
+                mWidget[x][y] = '-';
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
+    }
+
+    public void addWidget(int x, int y, int spanX, int spanY, char type) {
+        Rect rect = new Rect(x, y + spanY - 1, x + spanX - 1, y);
+        removeOverlappingItems(rect);
+        WidgetRect widgetRect = new WidgetRect(type, rect);
+        mWidgetsRects.add(widgetRect);
+        for (int xi = rect.left; xi < rect.right + 1; xi++) {
+            for (int yi = rect.bottom; yi < rect.top + 1; yi++) {
+                mWidget[xi][yi] = type;
+            }
+        }
+    }
+
+    public void addIcon(int x, int y) {
+        removeOverlappingItems(new Point(x, y));
+        mWidget[x][y] = 'i';
     }
 
     public static WidgetRect getWidgetRect(int x, int y, Set<Point> used, char[][] board) {
@@ -205,6 +339,16 @@ public class CellLayoutBoard {
         return iconPoints;
     }
 
+    public static WidgetRect getMainFromList(List<CellLayoutBoard> boards) {
+        for (CellLayoutBoard board : boards) {
+            WidgetRect main = board.getMain();
+            if (main != null) {
+                return main;
+            }
+        }
+        return null;
+    }
+
     public static CellLayoutBoard boardFromString(String boardStr) {
         String[] lines = boardStr.split("\n");
         CellLayoutBoard board = new CellLayoutBoard();
@@ -213,18 +357,52 @@ public class CellLayoutBoard {
             String line = lines[y];
             for (int x = 0; x < line.length(); x++) {
                 char c = line.charAt(x);
-                if (c == CellType.MAIN_WIDGET) {
-                    board.mMain = new Point(x, y);
-                }
                 if (c != CellType.EMPTY) {
                     board.mWidget[x][y] = line.charAt(x);
                 }
             }
         }
         board.mWidgetsRects = getRects(board.mWidget);
-        board.mWidgetsRects.forEach(
-                widgetRect -> board.mWidgetsMap.put(widgetRect.mType, widgetRect));
+        board.mWidgetsRects.forEach(widgetRect -> {
+            if (widgetRect.mType == CellType.MAIN_WIDGET) {
+                board.mMain = widgetRect;
+            }
+            board.mWidgetsMap.put(widgetRect.mType, widgetRect);
+        });
         board.mIconPoints = getIconPoints(board.mWidget);
         return board;
+    }
+
+    public String toString(int maxX, int maxY) {
+        StringBuilder s = new StringBuilder();
+        maxX = Math.min(maxX, mWidget.length);
+        maxY = Math.min(maxY, mWidget[0].length);
+        for (int y = 0; y < maxY; y++) {
+            for (int x = 0; x < maxX; x++) {
+                s.append(mWidget[x][y]);
+            }
+            s.append('\n');
+        }
+        return s.toString();
+    }
+
+    public static List<CellLayoutBoard> boardListFromString(String boardsStr) {
+        String[] lines = boardsStr.split("\n");
+        ArrayList<String> individualBoards = new ArrayList<>();
+        ArrayList<CellLayoutBoard> boards = new ArrayList<>();
+        for (String line : lines) {
+            String[] boardSegment = line.split("\\|");
+            for (int i = 0; i < boardSegment.length; i++) {
+                if (i >= individualBoards.size()) {
+                    individualBoards.add(boardSegment[i]);
+                } else {
+                    individualBoards.set(i, individualBoards.get(i) + "\n" + boardSegment[i]);
+                }
+            }
+        }
+        for (String board : individualBoards) {
+            boards.add(CellLayoutBoard.boardFromString(board));
+        }
+        return boards;
     }
 }

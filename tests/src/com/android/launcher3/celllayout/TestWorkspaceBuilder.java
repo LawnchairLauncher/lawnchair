@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.celllayout;
 
-import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
 import static com.android.launcher3.util.WidgetUtils.createWidgetInfo;
 
 import android.content.ComponentName;
@@ -62,7 +61,7 @@ public class TestWorkspaceBuilder {
      * Fills the given rect in WidgetRect with 1x1 widgets. This is useful to equalize cases.
      */
     private FavoriteItemsTransaction fillWithWidgets(CellLayoutBoard.WidgetRect widgetRect,
-            FavoriteItemsTransaction transaction) {
+            FavoriteItemsTransaction transaction, int screenId) {
         int initX = widgetRect.getCellX();
         int initY = widgetRect.getCellY();
         for (int x = initX; x < initX + widgetRect.getSpanX(); x++) {
@@ -71,8 +70,7 @@ public class TestWorkspaceBuilder {
                     // this widgets are filling, we don't care if we can't place them
                     ItemInfo item = createWidgetInCell(
                             new CellLayoutBoard.WidgetRect(CellLayoutBoard.CellType.IGNORE,
-                                    new Rect(x, y, x, y))
-                    );
+                                    new Rect(x, y, x, y)), screenId);
                     transaction.addItem(item);
                 } catch (Exception e) {
                     Log.d(TAG, "Unable to place filling widget at " + x + "," + y);
@@ -94,11 +92,11 @@ public class TestWorkspaceBuilder {
     }
 
     private void addCorrespondingWidgetRect(CellLayoutBoard.WidgetRect widgetRect,
-            FavoriteItemsTransaction transaction) {
+            FavoriteItemsTransaction transaction, int screenId) {
         if (widgetRect.mType == 'x') {
-            fillWithWidgets(widgetRect, transaction);
+            fillWithWidgets(widgetRect, transaction, screenId);
         } else {
-            transaction.addItem(createWidgetInCell(widgetRect));
+            transaction.addItem(createWidgetInCell(widgetRect, screenId));
         }
     }
 
@@ -106,11 +104,11 @@ public class TestWorkspaceBuilder {
      * Builds the given board into the transaction
      */
     public FavoriteItemsTransaction buildFromBoard(CellLayoutBoard board,
-            FavoriteItemsTransaction transaction) {
+            FavoriteItemsTransaction transaction, final int screenId) {
         board.getWidgets().forEach(
-                (widgetRect) -> addCorrespondingWidgetRect(widgetRect, transaction));
+                (widgetRect) -> addCorrespondingWidgetRect(widgetRect, transaction, screenId));
         board.getIcons().forEach((iconPoint) ->
-                transaction.addItem(createIconInCell(iconPoint))
+                transaction.addItem(createIconInCell(iconPoint, screenId))
         );
         return transaction;
     }
@@ -120,14 +118,14 @@ public class TestWorkspaceBuilder {
      * be clean otherwise this doesn't overrides the existing icons.
      */
     public FavoriteItemsTransaction fillHotseatIcons(FavoriteItemsTransaction transaction) {
-        int hotseatCount = InvariantDeviceProfile.INSTANCE.get(mContext).numShownHotseatIcons;
+        int hotseatCount = InvariantDeviceProfile.INSTANCE.get(mContext).numDatabaseHotseatIcons;
         for (int i = 0; i < hotseatCount; i++) {
             transaction.addItem(getHotseatValues(i));
         }
         return transaction;
     }
 
-    private ItemInfo createWidgetInCell(CellLayoutBoard.WidgetRect widgetRect) {
+    private ItemInfo createWidgetInCell(CellLayoutBoard.WidgetRect widgetRect, int screenId) {
         LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(mTest, false);
         LauncherAppWidgetInfo item = createWidgetInfo(info,
                 ApplicationProvider.getApplicationContext(), true);
@@ -136,14 +134,14 @@ public class TestWorkspaceBuilder {
         item.cellY = widgetRect.getCellY();
         item.spanX = widgetRect.getSpanX();
         item.spanY = widgetRect.getSpanY();
-        item.screenId = FIRST_SCREEN_ID;
+        item.screenId = screenId;
         return item;
     }
 
-    private ItemInfo createIconInCell(CellLayoutBoard.IconPoint iconPoint) {
+    private ItemInfo createIconInCell(CellLayoutBoard.IconPoint iconPoint, int screenId) {
         WorkspaceItemInfo item = new WorkspaceItemInfo(getApp());
         item.id = getID();
-        item.screenId = FIRST_SCREEN_ID;
+        item.screenId = screenId;
         item.cellX = iconPoint.getCoord().x;
         item.cellY = iconPoint.getCoord().y;
         item.minSpanY = item.minSpanX = item.spanX = item.spanY = 1;

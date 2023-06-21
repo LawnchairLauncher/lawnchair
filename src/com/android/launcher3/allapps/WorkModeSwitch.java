@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORK_FAB_BUTTON_COLLAPSE;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORK_FAB_BUTTON_EXTEND;
 import static com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.getTabWidth;
 
 import android.animation.LayoutTransition;
@@ -116,7 +114,7 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
             }
 
             if (!dp.isGestureMode && dp.isTaskbarPresent) {
-                bottomMargin += dp.taskbarSize;
+                bottomMargin += dp.taskbarHeight;
             }
 
             lp.bottomMargin = bottomMargin;
@@ -203,12 +201,10 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
 
     public void extend() {
         mTextView.setVisibility(VISIBLE);
-        mStatsLogManager.logger().log(LAUNCHER_WORK_FAB_BUTTON_EXTEND);
     }
 
     public void shrink(){
         mTextView.setVisibility(GONE);
-        mStatsLogManager.logger().log(LAUNCHER_WORK_FAB_BUTTON_COLLAPSE);
     }
 
     public int getScrollThreshold() {

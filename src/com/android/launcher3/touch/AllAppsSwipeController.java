@@ -17,7 +17,6 @@ package com.android.launcher3.touch;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.anim.Interpolators.DECELERATED_EASE;
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED_ACCELERATE;
 import static com.android.launcher3.anim.Interpolators.EMPHASIZED_DECELERATE;
@@ -64,11 +63,14 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
 
     // ---- Custom interpolators for NORMAL -> ALL_APPS on phones only. ----
 
-    private static final float WORKSPACE_MOTION_START_ATOMIC = 0.1667f;
-    private static final float ALL_APPS_STATE_TRANSITION_ATOMIC = 0.305f;
-    private static final float ALL_APPS_STATE_TRANSITION_MANUAL = 0.4f;
-    private static final float ALL_APPS_FADE_END_ATOMIC = 0.4717f;
+    public static final float ALL_APPS_STATE_TRANSITION_ATOMIC = 0.3333f;
+    public static final float ALL_APPS_STATE_TRANSITION_MANUAL = 0.4f;
+    private static final float ALL_APPS_FADE_END_ATOMIC = 0.8333f;
+    private static final float ALL_APPS_FADE_END_MANUAL = 0.8f;
     private static final float ALL_APPS_FULL_DEPTH_PROGRESS = 0.5f;
+    private static final float SCRIM_FADE_START_ATOMIC = 0.2642f;
+    private static final float SCRIM_FADE_START_MANUAL = 0.117f;
+    private static final float WORKSPACE_MOTION_START_ATOMIC = 0.1667f;
 
     private static final Interpolator LINEAR_EARLY_MANUAL =
             Interpolators.clampToProgress(LINEAR, 0f, ALL_APPS_STATE_TRANSITION_MANUAL);
@@ -98,36 +100,36 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
     public static final Interpolator HOTSEAT_FADE_ATOMIC = STEP_TRANSITION_ATOMIC;
     public static final Interpolator HOTSEAT_FADE_MANUAL = STEP_TRANSITION_MANUAL;
 
-    public static final Interpolator HOTSEAT_SCALE_ATOMIC = STEP_TRANSITION_ATOMIC;
-    public static final Interpolator HOTSEAT_SCALE_MANUAL = LINEAR_EARLY_MANUAL;
-
-    public static final Interpolator HOTSEAT_TRANSLATE_ATOMIC =
+    public static final Interpolator HOTSEAT_SCALE_ATOMIC =
             Interpolators.clampToProgress(
                     EMPHASIZED_ACCELERATE, WORKSPACE_MOTION_START_ATOMIC,
                     ALL_APPS_STATE_TRANSITION_ATOMIC);
+    public static final Interpolator HOTSEAT_SCALE_MANUAL = LINEAR_EARLY_MANUAL;
+
+    public static final Interpolator HOTSEAT_TRANSLATE_ATOMIC = STEP_TRANSITION_ATOMIC;
     public static final Interpolator HOTSEAT_TRANSLATE_MANUAL = STEP_TRANSITION_MANUAL;
 
     public static final Interpolator SCRIM_FADE_ATOMIC =
             Interpolators.clampToProgress(
                     Interpolators.mapToProgress(LINEAR, 0f, 0.8f),
-                    WORKSPACE_MOTION_START_ATOMIC, ALL_APPS_STATE_TRANSITION_ATOMIC);
-    public static final Interpolator SCRIM_FADE_MANUAL = LINEAR_EARLY_MANUAL;
+                    SCRIM_FADE_START_ATOMIC, ALL_APPS_STATE_TRANSITION_ATOMIC);
+    public static final Interpolator SCRIM_FADE_MANUAL =
+            Interpolators.clampToProgress(
+                    LINEAR, SCRIM_FADE_START_MANUAL, ALL_APPS_STATE_TRANSITION_MANUAL);
 
     public static final Interpolator ALL_APPS_FADE_ATOMIC =
             Interpolators.clampToProgress(
-                    Interpolators.mapToProgress(DECELERATED_EASE, 0.2f, 1f),
+                    Interpolators.mapToProgress(EMPHASIZED_DECELERATE, 0.2f, 1f),
                     ALL_APPS_STATE_TRANSITION_ATOMIC, ALL_APPS_FADE_END_ATOMIC);
     public static final Interpolator ALL_APPS_FADE_MANUAL =
-            Interpolators.clampToProgress(LINEAR, ALL_APPS_STATE_TRANSITION_MANUAL, 1f);
+            Interpolators.clampToProgress(
+                    LINEAR, ALL_APPS_STATE_TRANSITION_MANUAL, ALL_APPS_FADE_END_MANUAL);
 
     public static final Interpolator ALL_APPS_VERTICAL_PROGRESS_ATOMIC =
             Interpolators.clampToProgress(
                     Interpolators.mapToProgress(EMPHASIZED_DECELERATE, 0.4f, 1f),
                     ALL_APPS_STATE_TRANSITION_ATOMIC, 1f);
-    public static final Interpolator ALL_APPS_VERTICAL_PROGRESS_MANUAL =
-            Interpolators.clampToProgress(
-                    Interpolators.mapToProgress(LINEAR, ALL_APPS_STATE_TRANSITION_MANUAL, 1f),
-                    ALL_APPS_STATE_TRANSITION_MANUAL, 1f);
+    public static final Interpolator ALL_APPS_VERTICAL_PROGRESS_MANUAL = LINEAR;
 
     // --------
 

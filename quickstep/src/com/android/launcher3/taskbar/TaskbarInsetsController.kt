@@ -18,16 +18,21 @@ package com.android.launcher3.taskbar
 import android.graphics.Insets
 import android.graphics.Region
 import android.view.InsetsFrameProvider
+import android.view.InsetsFrameProvider.SOURCE_DISPLAY
+import android.view.InsetsFrameProvider.SOURCE_FRAME
 import android.view.InsetsState
 import android.view.InsetsState.ITYPE_BOTTOM_MANDATORY_GESTURES
 import android.view.InsetsState.ITYPE_BOTTOM_TAPPABLE_ELEMENT
 import android.view.InsetsState.ITYPE_EXTRA_NAVIGATION_BAR
+import android.view.InsetsState.ITYPE_LEFT_GESTURES
+import android.view.InsetsState.ITYPE_RIGHT_GESTURES
 import android.view.ViewTreeObserver
 import android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_FRAME
 import android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_REGION
 import android.view.WindowManager
 import android.view.WindowManager.LayoutParams.TYPE_INPUT_METHOD
 import android.view.WindowManager.LayoutParams.TYPE_VOICE_INTERACTION
+import com.android.internal.policy.GestureNavigationSettingsObserver
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_OVERLAY_PROXY
 import com.android.launcher3.DeviceProfile
@@ -36,10 +41,8 @@ import com.android.launcher3.anim.AlphaUpdateListener
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
 import java.io.PrintWriter
 
-/**
- * Handles the insets that Taskbar provides to underlying apps and the IME.
- */
-class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTaskbarController {
+/** Handles the insets that Taskbar provides to underlying apps and the IME. */
+class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTaskbarController {
 
     /** The bottom insets taskbar provides to the IME when IME is visible. */
     val taskbarHeightForIme: Int = context.resources.getDimensionPixelSize(R.dimen.taskbar_ime_size)
@@ -47,6 +50,12 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
     private val deviceProfileChangeListener = { _: DeviceProfile ->
         onTaskbarWindowHeightOrInsetsChanged()
     }
+    private val gestureNavSettingsObserver =
+        GestureNavigationSettingsObserver(
+            context.mainThreadHandler,
+            context,
+            this::onTaskbarWindowHeightOrInsetsChanged
+        )
 
     // Initialized in init.
     private lateinit var controllers: TaskbarControllers
@@ -55,74 +64,126 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
     fun init(controllers: TaskbarControllers) {
         this.controllers = controllers
         windowLayoutParams = context.windowLayoutParams
-
-        setProvidesInsetsTypes(
-            windowLayoutParams,
-            intArrayOf(
-                ITYPE_EXTRA_NAVIGATION_BAR,
-                ITYPE_BOTTOM_TAPPABLE_ELEMENT,
-                ITYPE_BOTTOM_MANDATORY_GESTURES
-            )
-        )
-
+        windowLayoutParams.insetsRoundedCornerFrame = true
         onTaskbarWindowHeightOrInsetsChanged()
 
-        windowLayoutParams.insetsRoundedCornerFrame = true
         context.addOnDeviceProfileChangeListener(deviceProfileChangeListener)
+        gestureNavSettingsObserver.registerForCallingUser()
     }
 
     fun onDestroy() {
         context.removeOnDeviceProfileChangeListener(deviceProfileChangeListener)
+        gestureNavSettingsObserver.unregister()
     }
 
     fun onTaskbarWindowHeightOrInsetsChanged() {
+        if (context.isGestureNav) {
+            setProvidesInsetsTypes(
+                    windowLayoutParams,
+                    intArrayOf(
+                            ITYPE_EXTRA_NAVIGATION_BAR,
+                            ITYPE_BOTTOM_TAPPABLE_ELEMENT,
+                            ITYPE_BOTTOM_MANDATORY_GESTURES,
+                            ITYPE_LEFT_GESTURES,
+                            ITYPE_RIGHT_GESTURES,
+                    ),
+                    intArrayOf(
+                            SOURCE_FRAME,
+                            SOURCE_FRAME,
+                            SOURCE_FRAME,
+                            SOURCE_DISPLAY,
+                            SOURCE_DISPLAY
+                    )
+            )
+        } else {
+            setProvidesInsetsTypes(
+                    windowLayoutParams,
+                    intArrayOf(
+                            ITYPE_EXTRA_NAVIGATION_BAR,
+                            ITYPE_BOTTOM_TAPPABLE_ELEMENT,
+                            ITYPE_BOTTOM_MANDATORY_GESTURES
+                    ),
+                    intArrayOf(
+                            SOURCE_FRAME,
+                            SOURCE_FRAME,
+                            SOURCE_FRAME
+                    )
+            )
+        }
+
         val touchableHeight = controllers.taskbarStashController.touchableHeight
-        touchableRegion.set(0, windowLayoutParams.height - touchableHeight,
-            context.deviceProfile.widthPx, windowLayoutParams.height)
+        touchableRegion.set(
+            0,
+            windowLayoutParams.height - touchableHeight,
+            context.deviceProfile.widthPx,
+            windowLayoutParams.height
+        )
         val contentHeight = controllers.taskbarStashController.contentHeightToReportToApps
         val tappableHeight = controllers.taskbarStashController.tappableHeightToReportToApps
+        val res = context.resources
+
         for (provider in windowLayoutParams.providedInsets) {
-            if (provider.type == ITYPE_EXTRA_NAVIGATION_BAR
-                    || provider.type == ITYPE_BOTTOM_MANDATORY_GESTURES) {
+            if (
+                provider.type == ITYPE_EXTRA_NAVIGATION_BAR ||
+                    provider.type == ITYPE_BOTTOM_MANDATORY_GESTURES
+            ) {
                 provider.insetsSize = getInsetsByNavMode(contentHeight)
             } else if (provider.type == ITYPE_BOTTOM_TAPPABLE_ELEMENT) {
                 provider.insetsSize = getInsetsByNavMode(tappableHeight)
+            } else if (provider.type == ITYPE_LEFT_GESTURES) {
+                provider.insetsSize =
+                    Insets.of(
+                        gestureNavSettingsObserver.getLeftSensitivityForCallingUser(res),
+                        0,
+                        0,
+                        0
+                    )
+            } else if (provider.type == ITYPE_RIGHT_GESTURES) {
+                provider.insetsSize =
+                    Insets.of(
+                        0,
+                        0,
+                        gestureNavSettingsObserver.getRightSensitivityForCallingUser(res),
+                        0
+                    )
             }
         }
 
         val imeInsetsSize = getInsetsByNavMode(taskbarHeightForIme)
-        val insetsSizeOverride = arrayOf(
-            InsetsFrameProvider.InsetsSizeOverride(
-                TYPE_INPUT_METHOD,
-                imeInsetsSize
-            ),
-        )
+        val insetsSizeOverride =
+            arrayOf(
+                InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
+            )
         // Use 0 tappableElement insets for the VoiceInteractionWindow when gesture nav is enabled.
         val visInsetsSizeForGestureNavTappableElement = getInsetsByNavMode(0)
-        val insetsSizeOverrideForGestureNavTappableElement = arrayOf(
-            InsetsFrameProvider.InsetsSizeOverride(
-                TYPE_INPUT_METHOD,
-                imeInsetsSize
-            ),
-            InsetsFrameProvider.InsetsSizeOverride(
-                TYPE_VOICE_INTERACTION,
-                visInsetsSizeForGestureNavTappableElement
-            ),
-        )
+        val insetsSizeOverrideForGestureNavTappableElement =
+            arrayOf(
+                InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
+                InsetsFrameProvider.InsetsSizeOverride(
+                    TYPE_VOICE_INTERACTION,
+                    visInsetsSizeForGestureNavTappableElement
+                ),
+            )
         for (provider in windowLayoutParams.providedInsets) {
             if (context.isGestureNav && provider.type == ITYPE_BOTTOM_TAPPABLE_ELEMENT) {
                 provider.insetsSizeOverrides = insetsSizeOverrideForGestureNavTappableElement
-            } else {
+            } else if (provider.type != ITYPE_LEFT_GESTURES
+                    && provider.type != ITYPE_RIGHT_GESTURES) {
+                // We only override insets at the bottom of the screen
                 provider.insetsSizeOverrides = insetsSizeOverride
             }
         }
+        context.notifyUpdateLayoutParams()
     }
 
     /**
      * @return [Insets] where the [bottomInset] is either used as a bottom inset or
+     *
+     * ```
      *         right/left inset if using 3 button nav
+     * ```
      */
-    private fun getInsetsByNavMode(bottomInset: Int) : Insets {
+    private fun getInsetsByNavMode(bottomInset: Int): Insets {
         val devicePortrait = !context.deviceProfile.isLandscape
         if (!TaskbarManager.isPhoneButtonNavMode(context) || devicePortrait) {
             // Taskbar or portrait phone mode
@@ -135,32 +196,42 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
 
     /**
      * Sets {@param providesInsetsTypes} as the inset types provided by {@param params}.
+     *
      * @param params The window layout params.
      * @param providesInsetsTypes The inset types we would like this layout params to provide.
      */
-    fun setProvidesInsetsTypes(params: WindowManager.LayoutParams, providesInsetsTypes: IntArray) {
-        params.providedInsets = arrayOfNulls<InsetsFrameProvider>(providesInsetsTypes.size);
+    fun setProvidesInsetsTypes(
+        params: WindowManager.LayoutParams,
+        providesInsetsTypes: IntArray,
+        providesInsetsSources: IntArray
+    ) {
+        params.providedInsets = arrayOfNulls<InsetsFrameProvider>(providesInsetsTypes.size)
         for (i in providesInsetsTypes.indices) {
-            params.providedInsets[i] = InsetsFrameProvider(providesInsetsTypes[i]);
+            params.providedInsets[i] =
+                InsetsFrameProvider(providesInsetsTypes[i], providesInsetsSources[i], null, null)
         }
     }
 
     /**
      * Called to update the touchable insets.
+     *
      * @see InternalInsetsInfo.setTouchableInsets
      */
     fun updateInsetsTouchability(insetsInfo: ViewTreeObserver.InternalInsetsInfo) {
         insetsInfo.touchableRegion.setEmpty()
         // Always have nav buttons be touchable
         controllers.navbarButtonsViewController.addVisibleButtonsRegion(
-            context.dragLayer, insetsInfo.touchableRegion
+            context.dragLayer,
+            insetsInfo.touchableRegion
         )
         var insetsIsTouchableRegion = true
         if (context.dragLayer.alpha < AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD) {
             // Let touches pass through us.
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
-        } else if (controllers.navbarButtonsViewController.isImeVisible
-                && controllers.taskbarStashController.isStashed()) {
+        } else if (
+            controllers.navbarButtonsViewController.isImeVisible &&
+                controllers.taskbarStashController.isStashed()
+        ) {
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
         } else if (!controllers.uiController.isTaskbarTouchable) {
             // Let touches pass through us.
@@ -174,9 +245,10 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
                 insetsInfo.touchableRegion.set(touchableRegion)
             }
             insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION)
-        } else if (controllers.taskbarViewController.areIconsVisible()
-            || AbstractFloatingView.hasOpenView(context, AbstractFloatingView.TYPE_ALL)
-            || context.isNavBarKidsModeActive
+        } else if (
+            controllers.taskbarViewController.areIconsVisible() ||
+                AbstractFloatingView.hasOpenView(context, AbstractFloatingView.TYPE_ALL) ||
+                context.isNavBarKidsModeActive
         ) {
             // Taskbar has some touchable elements, take over the full taskbar area
             insetsInfo.setTouchableInsets(
@@ -198,8 +270,12 @@ class TaskbarInsetsController(val context: TaskbarActivityContext): LoggableTask
         pw.println(prefix + "TaskbarInsetsController:")
         pw.println("$prefix\twindowHeight=${windowLayoutParams.height}")
         for (provider in windowLayoutParams.providedInsets) {
-            pw.print("$prefix\tprovidedInsets: (type=" + InsetsState.typeToString(provider.type)
-                    + " insetsSize=" + provider.insetsSize)
+            pw.print(
+                "$prefix\tprovidedInsets: (type=" +
+                    InsetsState.typeToString(provider.type) +
+                    " insetsSize=" +
+                    provider.insetsSize
+            )
             if (provider.insetsSizeOverrides != null) {
                 pw.print(" insetsSizeOverrides={")
                 for ((i, overrideSize) in provider.insetsSizeOverrides.withIndex()) {

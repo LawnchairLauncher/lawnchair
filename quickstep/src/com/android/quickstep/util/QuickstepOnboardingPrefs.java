@@ -64,7 +64,7 @@ public class QuickstepOnboardingPrefs extends OnboardingPrefs<QuickstepLauncher>
             });
         }
 
-        if (!Utilities.IS_RUNNING_IN_TEST_HARNESS
+        if (!Utilities.isRunningInTestHarness()
                 && !hasReachedMaxCount(HOTSEAT_DISCOVERY_TIP_COUNT)) {
             stateManager.addStateListener(new StateListener<LauncherState>() {
                 boolean mFromAllApps = false;

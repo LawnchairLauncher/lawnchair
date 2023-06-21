@@ -50,11 +50,12 @@
     <attr name="folderTextColor" format="color" />
     <attr name="folderHintColor" format="color" />
     <attr name="isFolderDarkText" format="boolean" />
-    <attr name="workProfileOverlayTextColor" format="color" />
     <attr name="workspaceAccentColor" format="color" />
     <attr name="dropTargetHoverTextColor" format="color" />
     <attr name="preloadIconAccentColor" format="color" />
     <attr name="preloadIconBackgroundColor" format="color" />
+    <attr name="widgetPickerHeaderAppTitleColor" format="color"/>
+    <attr name="widgetPickerHeaderAppSubtitleColor" format="color"/>
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
@@ -142,10 +143,17 @@
         <!--  numSearchContainerColumns defaults to numColumns, if not specified -->
         <attr name="numSearchContainerColumns" format="integer" />
 
+        <!-- Support attributes in CellStyle. defaults to CellStyleDefault -->
+        <attr name="cellStyle" format="reference" />
+
         <!-- numFolderRows & numFolderColumns defaults to numRows & numColumns, if not specified -->
         <attr name="numFolderRows" format="integer" />
         <attr name="numFolderColumns" format="integer" />
+        <!-- Support attributes in FolderStyle -->
         <attr name="folderStyle" format="reference" />
+
+        <!-- Support attributes in AllAppsStyle. Defaults to AllAppsStyleDefault -->
+        <attr name="allAppsStyle" format="reference" />
 
         <!-- numAllAppsColumns defaults to numColumns, if not specified -->
         <attr name="numAllAppsColumns" format="integer" />
@@ -215,6 +223,21 @@
 
     <declare-styleable name="PersonalWorkSlidingTabStrip">
         <attr name="alignOnIcon" format="boolean" />
+    </declare-styleable>
+
+    <!--  Responsive grids attributes  -->
+    <declare-styleable name="WorkspaceSpec">
+        <attr name="specType" format="integer">
+            <enum name="height" value="0" />
+            <enum name="width" value="1" />
+        </attr>
+        <attr name="maxAvailableSize" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="SpecSize">
+        <attr name="fixedSize" format="dimension" />
+        <attr name="ofAvailableSpace" format="float" />
+        <attr name="ofRemainderSpace" format="float" />
     </declare-styleable>
 
     <declare-styleable name="ProfileDisplayOption">
@@ -357,6 +380,15 @@
         <!-- defaults to hotseatQsbSpace, if not specified -->
         <attr name="hotseatQsbSpaceTwoPanelPortrait" format="float" />
 
+        <!-- defaults to res.taskbar_icon_size, if not specified -->
+        <attr name="transientTaskbarIconSize" format="float" />
+        <!-- defaults to transientTaskbarIconSize, if not specified -->
+        <attr name="transientTaskbarIconSizeLandscape" format="float" />
+        <!-- defaults to transientTaskbarIconSize, if not specified -->
+        <attr name="transientTaskbarIconSizeTwoPanelLandscape" format="float" />
+        <!-- defaults to transientTaskbarIconSize, if not specified -->
+        <attr name="transientTaskbarIconSizeTwoPanelPortrait" format="float" />
+
         <attr name="iconImageSize" format="float" />
         <!-- defaults to iconImageSize, if not specified -->
         <attr name="iconSizeLandscape" format="float" />
@@ -373,6 +405,16 @@
         <!-- defaults to iconTextSize, if not specified -->
         <attr name="iconTextSizeTwoPanelLandscape" format="float" />
 
+        <!-- If true, used to layout taskbar in 3 button navigation mode. -->
+        <!-- defaults to false if not specified -->
+        <attr name="startAlignTaskbar" format="boolean" />
+        <!-- defaults to startAlignTaskbar, if not specified -->
+        <attr name="startAlignTaskbarLandscape" format="boolean" />
+        <!-- defaults to startAlignTaskbarLandscape, if not specified -->
+        <attr name="startAlignTaskbarTwoPanelLandscape" format="boolean" />
+        <!-- defaults to startAlignTaskbar, if not specified -->
+        <attr name="startAlignTaskbarTwoPanelPortrait" format="boolean" />
+
         <!-- If set, this display option is used to determine the default grid -->
         <attr name="canBeDefault" format="boolean" />
 
@@ -387,7 +429,7 @@
 
     </declare-styleable>
 
-    <declare-styleable name="FolderDisplayStyle">
+    <declare-styleable name="FolderStyle">
         <!-- defaults to minCellHeight if not specified
         when GridDisplayOption#isScalable is true. -->
         <attr name="folderCellHeight" format="dimension" />
@@ -402,13 +444,20 @@
         <attr name="folderTopPadding" format="dimension" />
     </declare-styleable>
 
-
     <declare-styleable name="CellLayout">
         <attr name="containerType" format="integer">
             <enum name="workspace" value="0" />
             <enum name="hotseat" value="1" />
             <enum name="folder" value="2" />
         </attr>
+    </declare-styleable>
+
+    <declare-styleable name="CellStyle">
+        <attr name="iconDrawablePadding" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="AllAppsStyle">
+        <attr name="horizontalPadding" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="ShadowDrawable">

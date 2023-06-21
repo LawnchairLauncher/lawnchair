@@ -15,18 +15,24 @@
  */
 package com.android.quickstep.interaction;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL;
 import static com.android.quickstep.interaction.TutorialController.TutorialType.BACK_NAVIGATION;
 import static com.android.quickstep.interaction.TutorialController.TutorialType.BACK_NAVIGATION_COMPLETE;
 
 import android.annotation.LayoutRes;
 import android.graphics.PointF;
+import android.view.View;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
 
 /** A {@link TutorialController} for the Back tutorial. */
 final class BackGestureTutorialController extends TutorialController {
+    private static final float Y_TRANSLATION_SMOOTHENING_FACTOR = .2f;
+    private static final float EXITING_APP_MIN_SIZE_PERCENTAGE = .8f;
 
     BackGestureTutorialController(BackGestureTutorialFragment fragment, TutorialType tutorialType) {
         super(fragment, tutorialType);
@@ -34,7 +40,9 @@ final class BackGestureTutorialController extends TutorialController {
 
     @Override
     public int getIntroductionTitle() {
-        return R.string.back_gesture_intro_title;
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? R.string.back_gesture_tutorial_title
+                : R.string.back_gesture_intro_title;
     }
 
     @Override
@@ -59,18 +67,34 @@ final class BackGestureTutorialController extends TutorialController {
         return getMockAppTaskCurrentPageLayoutResId();
     }
 
+    @Override
+    protected int getGestureLottieAnimationId() {
+        return mTutorialFragment.isLargeScreen()
+                ? R.raw.back_gesture_tutorial_tablet_animation
+                : R.raw.back_gesture_tutorial_animation;
+    }
+
     @LayoutRes
     int getMockAppTaskCurrentPageLayoutResId() {
-        return mTutorialFragment.isLargeScreen()
-                ? R.layout.gesture_tutorial_tablet_mock_conversation
-                : R.layout.gesture_tutorial_mock_conversation;
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? R.layout.back_gesture_tutorial_background
+                : mTutorialFragment.isLargeScreen()
+                        ? R.layout.gesture_tutorial_tablet_mock_conversation
+                        : R.layout.gesture_tutorial_mock_conversation;
     }
 
     @LayoutRes
     int getMockAppTaskPreviousPageLayoutResId() {
-        return mTutorialFragment.isLargeScreen()
-                ? R.layout.gesture_tutorial_tablet_mock_conversation_list
-                : R.layout.gesture_tutorial_mock_conversation_list;
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? R.layout.back_gesture_tutorial_background
+                : mTutorialFragment.isLargeScreen()
+                        ? R.layout.gesture_tutorial_tablet_mock_conversation_list
+                        : R.layout.gesture_tutorial_mock_conversation_list;
+    }
+
+    @Override
+    protected int getSwipeActionColorResId() {
+        return R.color.gesture_back_tutorial_background;
     }
 
     @Override
@@ -85,17 +109,65 @@ final class BackGestureTutorialController extends TutorialController {
             case BACK_NAVIGATION_COMPLETE:
                 if (result == BackGestureResult.BACK_COMPLETED_FROM_LEFT
                         || result == BackGestureResult.BACK_COMPLETED_FROM_RIGHT) {
-                    mTutorialFragment.closeTutorial();
+                    mTutorialFragment.close();
                 }
                 break;
         }
     }
 
+    @Override
+    public void onBackGestureProgress(float diffx, float diffy, boolean isLeftGesture) {
+        if (isGestureCompleted()) {
+            return;
+        }
+
+        float normalizedSwipeProgress = Math.abs(diffx / mScreenWidth);
+        float smoothedExitingAppScale = Utilities.mapBoundToRange(
+                normalizedSwipeProgress,
+                /* lowerBound = */ 0f,
+                /* upperBound = */ 1f,
+                /* toMin = */ 1f,
+                /* toMax = */ EXITING_APP_MIN_SIZE_PERCENTAGE,
+                Interpolators.DEACCEL);
+
+        // shrink the exiting app as we progress through the back gesture
+        mExitingAppView.setPivotX(isLeftGesture ? mScreenWidth : 0);
+        mExitingAppView.setPivotY(mScreenHeight / 2f);
+        mExitingAppView.setScaleX(smoothedExitingAppScale);
+        mExitingAppView.setScaleY(smoothedExitingAppScale);
+        mExitingAppView.setTranslationY(diffy * Y_TRANSLATION_SMOOTHENING_FACTOR);
+        mExitingAppView.setTranslationX(Utilities.mapBoundToRange(
+                normalizedSwipeProgress,
+                /* lowerBound = */ 0f,
+                /* upperBound = */ 1f,
+                /* toMin = */ 0,
+                /* toMax = */ mExitingAppMargin,
+                Interpolators.DEACCEL)
+                * (isLeftGesture ? -1 : 1));
+
+        // round the corners of the exiting app as we progress through the back gesture
+        mExitingAppRadius = (int) Utilities.mapBoundToRange(
+                normalizedSwipeProgress,
+                /* lowerBound = */ 0f,
+                /* upperBound = */ 1f,
+                /* toMin = */ mExitingAppStartingCornerRadius,
+                /* toMax = */ mExitingAppEndingCornerRadius,
+                Interpolators.EMPHASIZED_DECELERATE);
+        mExitingAppView.invalidateOutline();
+    }
+
     private void handleBackAttempt(BackGestureResult result) {
+        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+            resetViewsForBackGesture();
+        }
+
         switch (result) {
             case BACK_COMPLETED_FROM_LEFT:
             case BACK_COMPLETED_FROM_RIGHT:
                 mTutorialFragment.releaseFeedbackAnimation();
+                if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+                    mExitingAppView.setVisibility(View.GONE);
+                }
                 updateFakeAppTaskViewLayout(getMockAppTaskPreviousPageLayoutResId());
                 showSuccessFeedback();
                 break;
@@ -119,7 +191,7 @@ final class BackGestureTutorialController extends TutorialController {
         }
         if (mTutorialType == BACK_NAVIGATION_COMPLETE) {
             if (result == NavBarGestureResult.HOME_GESTURE_COMPLETED) {
-                mTutorialFragment.closeTutorial();
+                mTutorialFragment.close();
             }
         } else if (mTutorialType == BACK_NAVIGATION) {
             switch (result) {

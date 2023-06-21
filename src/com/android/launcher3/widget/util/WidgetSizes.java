@@ -24,6 +24,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Size;
 import android.util.SizeF;
 
@@ -162,6 +163,8 @@ public final class WidgetSizes {
         options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH, rect.right);
         options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT, rect.bottom);
         options.putParcelableArrayList(AppWidgetManager.OPTION_APPWIDGET_SIZES, paddedSizes);
+        Log.d("b/267448330", "provider: " + provider + ", paddedSizes: " + paddedSizes
+                + ", getMinMaxSizes: " + rect);
         return options;
     }
 

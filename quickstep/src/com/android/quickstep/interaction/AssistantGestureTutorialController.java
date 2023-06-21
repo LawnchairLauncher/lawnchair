@@ -15,8 +15,6 @@
  */
 package com.android.quickstep.interaction;
 
-import static com.android.quickstep.interaction.TutorialController.TutorialType.ASSISTANT_COMPLETE;
-
 import android.graphics.PointF;
 
 import com.android.launcher3.R;
@@ -47,7 +45,7 @@ final class AssistantGestureTutorialController extends TutorialController {
             case ASSISTANT_COMPLETE:
                 if (result == BackGestureResult.BACK_COMPLETED_FROM_LEFT
                         || result == BackGestureResult.BACK_COMPLETED_FROM_RIGHT) {
-                    mTutorialFragment.closeTutorial();
+                    mTutorialFragment.close();
                 }
                 break;
         }
@@ -81,7 +79,7 @@ final class AssistantGestureTutorialController extends TutorialController {
                 break;
             case ASSISTANT_COMPLETE:
                 if (result == NavBarGestureResult.HOME_GESTURE_COMPLETED) {
-                    mTutorialFragment.closeTutorial();
+                    mTutorialFragment.close();
                 }
                 break;
         }

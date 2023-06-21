@@ -22,11 +22,14 @@
 
 <com.android.quickstep.views.GroupedTaskView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="false"
     android:defaultFocusHighlightEnabled="false"
-    android:focusable="true">
+    android:focusable="true"
+    launcher:borderColor="?androidprv:attr/colorAccentSecondaryVariant">
 
     <com.android.quickstep.views.TaskThumbnailView
         android:id="@+id/snapshot"

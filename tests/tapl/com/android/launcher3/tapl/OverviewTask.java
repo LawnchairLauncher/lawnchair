@@ -37,10 +37,9 @@ import java.util.stream.Collectors;
 public final class OverviewTask {
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
-    static final Pattern TASK_START_EVENT =
-            Pattern.compile("startActivityFromRecentsAsync");
-    static final Pattern SPLIT_START_EVENT =
-            Pattern.compile("launchSplitTasks");
+    static final Pattern TASK_START_EVENT = Pattern.compile("startActivityFromRecentsAsync");
+    static final Pattern SPLIT_SELECT_EVENT = Pattern.compile("enterSplitSelect");
+    static final Pattern SPLIT_START_EVENT = Pattern.compile("launchSplitTasks");
     private final LauncherInstrumentation mLauncher;
     private final UiObject2 mTask;
     private final BaseOverview mOverview;
