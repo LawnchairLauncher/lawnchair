@@ -189,7 +189,7 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
         } else {
             float[] hctPlateColor = new float[3];
             ColorUtils.colorToM3HCT(mDotParams.appColor, hctPlateColor);
-            newPlateColor = ColorUtils.M3HCTtoColor(hctPlateColor[0], 36, 85);
+            newPlateColor = ColorUtils.M3HCTToColor(hctPlateColor[0], 36, 85);
         }
 
         if (!animate) {
