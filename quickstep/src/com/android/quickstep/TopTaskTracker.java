@@ -210,7 +210,7 @@ public class TopTaskTracker extends ISplitScreenListener.Stub implements TaskSta
 
         @Nullable
         private final RunningTaskInfo mTopTask;
-        private final List<RunningTaskInfo> mAllCachedTasks;
+        public final List<RunningTaskInfo> mAllCachedTasks;
 
         CachedTaskInfo(List<RunningTaskInfo> allCachedTasks) {
             mAllCachedTasks = allCachedTasks;
