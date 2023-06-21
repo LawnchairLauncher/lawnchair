@@ -232,8 +232,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                         ? new DesktopNavbarButtonsViewController(this, navButtonsView)
                         : new NavbarButtonsViewController(this, navButtonsView),
                 new RotationButtonController(this,
-                        c.getColor(R.color.taskbar_nav_icon_light_color),
-                        c.getColor(R.color.taskbar_nav_icon_dark_color),
+                        c.getColor(R.color.floating_rotation_button_light_color),
+                        c.getColor(R.color.floating_rotation_button_dark_color),
                         R.drawable.ic_sysbar_rotate_button_ccw_start_0,
                         R.drawable.ic_sysbar_rotate_button_ccw_start_90,
                         R.drawable.ic_sysbar_rotate_button_cw_start_0,
