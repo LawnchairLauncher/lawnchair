@@ -58,6 +58,7 @@ import com.android.launcher3.responsive.CalculatedAllAppsSpec;
 import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
+import com.android.launcher3.util.IconSizeSteps;
 import com.android.launcher3.util.ResourceHelper;
 import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.workspace.CalculatedWorkspaceSpec;
@@ -83,6 +84,7 @@ public class DeviceProfile {
     public final InvariantDeviceProfile inv;
     private final Info mInfo;
     private final DisplayMetrics mMetrics;
+    private final IconSizeSteps mIconSizeSteps;
 
     // Device properties
     public final boolean isTablet;
@@ -330,6 +332,8 @@ public class DeviceProfile {
         final Resources res = context.getResources();
         mMetrics = res.getDisplayMetrics();
 
+        mIconSizeSteps = mIsResponsiveGrid ? new IconSizeSteps(res) : null;
+
         // Determine sizes.
         widthPx = windowBounds.bounds.width();
         heightPx = windowBounds.bounds.height();
@@ -535,12 +539,16 @@ public class DeviceProfile {
         // for the available height to be correct
         if (mIsResponsiveGrid) {
             mWorkspaceSpecs = new WorkspaceSpecs(new ResourceHelper(context, inv.workspaceSpecsId));
+            int availableResponsiveWidth =
+                    availableWidthPx - (isVerticalBarLayout() ? hotseatBarSizePx : 0);
+            // don't use availableHeightPx because it subtracts bottom padding,
+            // but the workspace go behind it
+            int availableResponsiveHeight =
+                    heightPx - mInsets.top - (isVerticalBarLayout() ? 0 : hotseatBarSizePx);
             mResponsiveWidthSpec = mWorkspaceSpecs.getCalculatedWidthSpec(inv.numColumns,
-                    availableWidthPx);
+                    availableResponsiveWidth);
             mResponsiveHeightSpec = mWorkspaceSpecs.getCalculatedHeightSpec(inv.numRows,
-                    // don't use availableHeightPx because it subtracts bottom padding,
-                    // but the hotseat go behind it
-                    heightPx - mInsets.top - hotseatBarSizePx);
+                    availableResponsiveHeight);
 
             mAllAppsSpecs = new AllAppsSpecs(new ResourceHelper(context, inv.allAppsSpecsId));
             mAllAppsResponsiveWidthSpec = mAllAppsSpecs.getCalculatedWidthSpec(inv.numColumns,
@@ -926,9 +934,32 @@ public class DeviceProfile {
 
             cellWidthPx = mResponsiveWidthSpec.getCellSizePx();
             cellHeightPx = mResponsiveHeightSpec.getCellSizePx();
-            cellYPaddingPx = Math.max(0, cellHeightPx - cellContentHeight) / 2;
 
-            // TODO(b/283929701): decrease icon size if content doesn't fit on cell
+            if (cellWidthPx < iconSizePx) {
+                // get a smaller icon size
+                iconSizePx = mIconSizeSteps.getIconSmallerThan(cellWidthPx);
+                // calculate new cellContentHeight
+                cellContentHeight = iconSizePx + cellTextAndPaddingHeight;
+            }
+
+            while (iconSizePx > mIconSizeSteps.minimumIconSize()
+                    && cellContentHeight > cellHeightPx) {
+                int extraHeightRequired = cellContentHeight - cellHeightPx;
+                int newPadding = iconDrawablePaddingPx - extraHeightRequired;
+                if (newPadding >= 0) {
+                    // Responsive uses the padding without scaling
+                    iconDrawablePaddingPx = iconDrawablePaddingOriginalPx = newPadding;
+                    cellTextAndPaddingHeight =
+                            iconDrawablePaddingPx + Utilities.calculateTextHeight(iconTextSizePx);
+                } else {
+                    // get a smaller icon size
+                    iconSizePx = mIconSizeSteps.getNextLowerIconSize(iconSizePx);
+                }
+                // calculate new cellContentHeight
+                cellContentHeight = iconSizePx + cellTextAndPaddingHeight;
+            }
+
+            cellYPaddingPx = Math.max(0, cellHeightPx - cellContentHeight) / 2;
         } else if (mIsScalableGrid) {
             cellWidthPx = pxFromDp(inv.minCellSize[mTypeIndex].x, mMetrics, scale);
             cellHeightPx = pxFromDp(inv.minCellSize[mTypeIndex].y, mMetrics, scale);
