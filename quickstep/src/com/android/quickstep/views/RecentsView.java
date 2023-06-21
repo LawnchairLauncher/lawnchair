@@ -2366,7 +2366,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         startHome(mActivity.isStarted());
     }
 
-    public abstract void startHome(boolean animated);
+    public void startHome(boolean animated) {
+        if (!isCommandQueueEmpty()) return;
+        handleStartHome(animated);
+    }
+
+    protected abstract void handleStartHome(boolean animated);
+
+    /** Returns whether the overview command helper queue is empty. */
+    public abstract boolean isCommandQueueEmpty();
 
     public void reset() {
         setCurrentTask(-1);
