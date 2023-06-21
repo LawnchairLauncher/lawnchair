@@ -28,6 +28,10 @@
     <color name="taskbar_stashed_handle_light_color">#EBffffff</color>
     <color name="taskbar_stashed_handle_dark_color">#99000000</color>
 
+    <!-- Floating rotation button -->
+    <color name="floating_rotation_button_light_color">#ffffff</color>
+    <color name="floating_rotation_button_dark_color">#99000000</color>
+
     <!-- Gesture navigation tutorial -->
     <color name="gesture_tutorial_back_arrow_color">#FFFFFFFF</color>
 
