@@ -549,9 +549,9 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     /**
-     * Notifies WM Shell that launcher has finished all the animation for swipe to home. WM Shell
-     * can choose to fade out the overlay when entering PIP is finished, and WM Shell should be
-     * responsible for cleaning up the overlay.
+     * Notifies WM Shell that launcher has finished the preparation of the animation for swipe to
+     * home. WM Shell can choose to fade out the overlay when entering PIP is finished, and WM Shell
+     * should be responsible for cleaning up the overlay.
      */
     public void stopSwipePipToHome(int taskId, ComponentName componentName, Rect destinationBounds,
             SurfaceControl overlay) {
