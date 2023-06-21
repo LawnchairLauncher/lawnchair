@@ -466,4 +466,11 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
             }
         };
     }
+
+    @Override
+    public boolean isCommandQueueEmpty() {
+        OverviewCommandHelper overviewCommandHelper = mTISBindHelper.getOverviewCommandHelper();
+        return super.isCommandQueueEmpty()
+                && (overviewCommandHelper == null || overviewCommandHelper.isCommandQueueEmpty());
+    }
 }
