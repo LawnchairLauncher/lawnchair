@@ -224,11 +224,11 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         // Load the adaptive icon on a background thread and add the view in ui thread.
         MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(() -> {
             Object[] outObj = new Object[1];
+            boolean[] outIsIconThemed = new boolean[1];
             int w = mWidth;
             int h = mHeight;
             Drawable dr = Utilities.getFullDrawable(mActivity, info, w, h,
-                    true /* shouldThemeIcon */, outObj);
-
+                    true /* shouldThemeIcon */, outObj, outIsIconThemed);
             if (dr instanceof AdaptiveIconDrawable) {
                 int blurMargin = (int) mActivity.getResources()
                         .getDimension(R.dimen.blur_size_medium_outline) / 2;
@@ -237,7 +237,7 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
                 bounds.inset(blurMargin, blurMargin);
                 // Badge is applied after icon normalization so the bounds for badge should not
                 // be scaled down due to icon normalization.
-                mBadge = getBadge(mActivity, info, outObj[0]);
+                mBadge = getBadge(mActivity, info, outObj[0], outIsIconThemed[0]);
                 FastBitmapDrawable.setBadgeBounds(mBadge, bounds);
 
                 // Do not draw the background in case of folder as its translucent
