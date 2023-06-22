@@ -173,6 +173,7 @@ import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.RemoteTargetGluer;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
 import com.android.quickstep.RotationTouchHelper;
+import com.android.quickstep.SplitSelectionListener;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
@@ -662,7 +663,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     /**
      * Placeholder view indicating where the first split screen selected app will be placed
      */
-    private SplitSelectStateController mSplitSelectStateController;
+    protected SplitSelectStateController mSplitSelectStateController;
+
     /**
      * The first task that split screen selection was initiated with. When split select state is
      * initialized, we create a
@@ -684,6 +686,19 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     @Nullable
     private SplitSelectSource mSplitSelectSource;
+
+    private final SplitSelectionListener mSplitSelectionListener = new SplitSelectionListener() {
+        @Override
+        public void onSplitSelectionConfirmed() { }
+
+        @Override
+        public void onSplitSelectionActive() { }
+
+        @Override
+        public void onSplitSelectionExit(boolean launchedSplit) {
+            resetFromSplitSelectionState();
+        }
+    };
 
     /**
      * Keeps track of the index of the TaskView that split screen was initialized with so we know
@@ -1065,6 +1080,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mIPipAnimationListener);
         mOrientationState.initListeners();
         mTaskOverlayFactory.initListeners();
+        if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+            mSplitSelectStateController.registerSplitListener(mSplitSelectionListener);
+        }
     }
 
     @Override
@@ -1083,6 +1101,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mIPipAnimationListener.setActivityAndRecentsView(null, null);
         mOrientationState.destroyListeners();
         mTaskOverlayFactory.removeListeners();
+        if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+            mSplitSelectStateController.unregisterSplitListener(mSplitSelectionListener);
+        }
     }
 
     @Override
@@ -1660,8 +1681,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         // If we are entering Overview as a result of initiating a split from somewhere else
         // (e.g. split from Home), we need to make sure the staged app is not drawn as a thumbnail.
         int stagedTaskIdToBeRemovedFromGrid;
-        if (mSplitSelectSource != null) {
-            stagedTaskIdToBeRemovedFromGrid = mSplitSelectSource.alreadyRunningTaskId;
+        if (isSplitSelectionActive()) {
+            stagedTaskIdToBeRemovedFromGrid = mSplitSelectStateController.getInitialTaskId();
             updateCurrentTaskActionsVisibility();
         } else {
             stagedTaskIdToBeRemovedFromGrid = INVALID_TASK_ID;
@@ -2345,7 +2366,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         startHome(mActivity.isStarted());
     }
 
-    public abstract void startHome(boolean animated);
+    public void startHome(boolean animated) {
+        if (!isCommandQueueEmpty()) return;
+        handleStartHome(animated);
+    }
+
+    protected abstract void handleStartHome(boolean animated);
+
+    /** Returns whether the overview command helper queue is empty. */
+    public abstract boolean isCommandQueueEmpty();
 
     public void reset() {
         setCurrentTask(-1);
@@ -2367,7 +2396,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             remoteTargetHandle.getTransformParams().setTargetSet(null);
             remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(false);
         });
-        resetFromSplitSelectionState();
+        if (!FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+            resetFromSplitSelectionState();
+        }
 
         // These are relatively expensive and don't need to be done this frame (RecentsView isn't
         // visible anyway), so defer by a frame to get off the critical path, e.g. app to home.
@@ -3251,7 +3282,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
             } else {
                 // If transition to split select was interrupted, clean up to prevent glitches
-                resetFromSplitSelectionState();
+                if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+                    mSplitSelectStateController.resetState();
+                } else {
+                    resetFromSplitSelectionState();
+                }
                 InteractionJankMonitorWrapper.cancel(
                         InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
             }
@@ -3284,8 +3319,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 true /* isStagedTask */);
 
         pendingAnimation.addEndListener(animationSuccess ->
-                mSplitSelectStateController.launchInitialAppFullscreen(launchSuccess ->
-                        resetFromSplitSelectionState()));
+                mSplitSelectStateController.launchInitialAppFullscreen(launchSuccess -> {
+                    if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+                        mSplitSelectStateController.resetState();
+                    } else {
+                        resetFromSplitSelectionState();
+                    }
+                }));
 
         pendingAnimation.buildAnim().start();
     }
@@ -3766,19 +3806,33 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                                         taskViewIdArray.removeValue(
                                                 finalNextFocusedTaskView.getTaskViewId());
                                     }
-                                    if (snappedIndex < taskViewIdArray.size()) {
-                                        taskViewIdToSnapTo = taskViewIdArray.get(snappedIndex);
-                                    } else if (snappedIndex == taskViewIdArray.size()) {
-                                        // If the snapped task is the last item from the
-                                        // dismissed row,
-                                        // snap to the same column in the other grid row
-                                        IntArray inverseRowTaskViewIdArray =
-                                                isSnappedTaskInTopRow ? getBottomRowIdArray()
-                                                        : getTopRowIdArray();
-                                        if (snappedIndex < inverseRowTaskViewIdArray.size()) {
-                                            taskViewIdToSnapTo = inverseRowTaskViewIdArray.get(
-                                                    snappedIndex);
+                                    try {
+                                        if (snappedIndex < taskViewIdArray.size()) {
+                                            taskViewIdToSnapTo = taskViewIdArray.get(snappedIndex);
+                                        } else if (snappedIndex == taskViewIdArray.size()) {
+                                            // If the snapped task is the last item from the
+                                            // dismissed row,
+                                            // snap to the same column in the other grid row
+                                            IntArray inverseRowTaskViewIdArray =
+                                                    isSnappedTaskInTopRow ? getBottomRowIdArray()
+                                                            : getTopRowIdArray();
+                                            if (snappedIndex < inverseRowTaskViewIdArray.size()) {
+                                                taskViewIdToSnapTo = inverseRowTaskViewIdArray.get(
+                                                        snappedIndex);
+                                            }
                                         }
+                                    } catch (ArrayIndexOutOfBoundsException e) {
+                                        throw new IllegalStateException(
+                                                "b/269956477 invalid snappedIndex"
+                                                        + "\nsnappedTaskViewId: "
+                                                        + snappedTaskViewId
+                                                        + "\nfocusedTaskViewId: "
+                                                        + mFocusedTaskViewId
+                                                        + "\ntopRowIdArray: "
+                                                        + getTopRowIdArray().toConcatString()
+                                                        + "\nbottomRowIdArray: "
+                                                        + getBottomRowIdArray().toConcatString(),
+                                                e);
                                     }
                                 }
                             }
@@ -4723,7 +4777,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
         pendingAnimation.addEndListener(aBoolean -> {
             mSplitSelectStateController.launchSplitTasks(
-                    aBoolean1 -> RecentsView.this.resetFromSplitSelectionState());
+                    aBoolean1 -> {
+                        if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+                            mSplitSelectStateController.resetState();
+                        } else {
+                            resetFromSplitSelectionState();
+                        }
+                    });
             InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
         });
 
@@ -4745,7 +4805,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     @SuppressLint("WrongCall")
     protected void resetFromSplitSelectionState() {
-        if (mSplitSelectSource != null || mSplitHiddenTaskViewIndex != -1) {
+        if (mSplitSelectSource != null || mSplitHiddenTaskViewIndex != -1 ||
+                FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
             safeRemoveDragLayerView(mSplitSelectStateController.getFirstFloatingTaskView());
             safeRemoveDragLayerView(mSecondFloatingTaskView);
             safeRemoveDragLayerView(mSplitInstructionsView);
@@ -4764,7 +4825,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setTaskViewsPrimarySplitTranslation(0);
         setTaskViewsSecondarySplitTranslation(0);
 
-        mSplitSelectStateController.resetState();
+        if (!FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+            // When flag is on, this method gets called from resetState() call below, let's avoid
+            // infinite recursion today
+            mSplitSelectStateController.resetState();
+        }
         if (mSplitHiddenTaskViewIndex == -1) {
             return;
         }

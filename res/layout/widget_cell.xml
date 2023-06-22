@@ -19,7 +19,6 @@
     android:layout_height="wrap_content"
     android:paddingHorizontal="@dimen/widget_cell_horizontal_padding"
     android:paddingVertical="@dimen/widget_cell_vertical_padding"
-    android:layout_marginHorizontal="@dimen/widget_cell_horizontal_padding"
     android:layout_weight="1"
     android:orientation="vertical"
     android:focusable="true"

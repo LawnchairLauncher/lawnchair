@@ -37,6 +37,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
@@ -81,11 +82,16 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     }
 
     @Override
-    public void startHome(boolean animated) {
+    protected void handleStartHome(boolean animated) {
         StateManager stateManager = mActivity.getStateManager();
         animated &= stateManager.shouldAnimateStateChange();
         stateManager.goToState(NORMAL, animated);
         AbstractFloatingView.closeAllOpenViews(mActivity, animated);
+    }
+
+    @Override
+    public boolean isCommandQueueEmpty() {
+        return mActivity.isCommandQueueEmpty();
     }
 
     @Override
@@ -218,7 +224,11 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
 
     @Override
     protected boolean canLaunchFullscreenTask() {
-        return !mActivity.isInState(OVERVIEW_SPLIT_SELECT);
+        if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+            return !mSplitSelectStateController.isSplitSelectActive();
+        } else {
+            return !mActivity.isInState(OVERVIEW_SPLIT_SELECT);
+        }
     }
 
     @Override
