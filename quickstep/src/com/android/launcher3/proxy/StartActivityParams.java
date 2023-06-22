@@ -20,7 +20,10 @@ import static android.app.PendingIntent.FLAG_MUTABLE;
 import static android.app.PendingIntent.FLAG_ONE_SHOT;
 import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
 
+import static com.android.launcher3.Utilities.allowBGLaunch;
+
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.app.PendingIntent;
 import android.app.PendingIntent.CanceledException;
 import android.content.Context;
@@ -91,9 +94,10 @@ public class StartActivityParams implements Parcelable {
     }
 
     public void deliverResult(Context context, int resultCode, Intent data) {
+        ActivityOptions options = allowBGLaunch(ActivityOptions.makeBasic());
         try {
             if (mPICallback != null) {
-                mPICallback.send(context, resultCode, data);
+                mPICallback.send(context, resultCode, data, null, null, null, options.toBundle());
             }
         } catch (CanceledException e) {
             Log.e(TAG, "Unable to send back result", e);
