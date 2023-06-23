@@ -185,16 +185,26 @@ public class BubbleBarController extends IBubblesListener.Stub {
             mBubbleBarViewController.setHiddenForBubbles(!BUBBLE_BAR_ENABLED);
             mBubbleStashedHandleViewController.setHiddenForBubbles(!BUBBLE_BAR_ENABLED);
         });
+    }
 
-        BUBBLE_STATE_EXECUTOR.execute(() -> {
-            if (mOverflowBubble == null) {
-                BubbleBarOverflow overflow = createOverflow(mContext);
-                mMainExecutor.execute(() -> {
+    /**
+     * Creates and adds the overflow bubble to the bubble bar if it hasn't been created yet.
+     *
+     * <p>This should be called on the {@link #BUBBLE_STATE_EXECUTOR} executor to avoid inflating
+     * the overflow multiple times.
+     */
+    private void createAndAddOverflowIfNeeded() {
+        if (mOverflowBubble == null) {
+            BubbleBarOverflow overflow = createOverflow(mContext);
+            mMainExecutor.execute(() -> {
+                // we're on the main executor now, so check that the overflow hasn't been created
+                // again to avoid races.
+                if (mOverflowBubble == null) {
                     mBubbleBarViewController.addBubble(overflow);
                     mOverflowBubble = overflow;
-                });
-            }
-        });
+                }
+            });
+        }
     }
 
     /**
@@ -226,6 +236,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
                 || !update.currentBubbleList.isEmpty()) {
             // We have bubbles to load
             BUBBLE_STATE_EXECUTOR.execute(() -> {
+                createAndAddOverflowIfNeeded();
                 if (update.addedBubble != null) {
                     viewUpdate.addedBubble = populateBubble(update.addedBubble, mContext, mBarView);
                 }
