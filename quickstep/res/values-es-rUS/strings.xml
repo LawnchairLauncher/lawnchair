@@ -65,7 +65,7 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Desliza para ir a la página principal"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Desliza hacia arriba desde la parte inferior de la pantalla. Este gesto te llevará a la pantalla principal."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Desliza hacia arriba desde la parte inferior. Este gesto te llevará siempre a la pantalla principal."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Ir a la pantalla principal"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Ve a la pantalla principal"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Desliza hacia arriba desde la parte inferior de la pantalla"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"¡Bien hecho!"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Asegúrate de deslizar hacia arriba desde el borde inferior de la pantalla"</string>
@@ -76,7 +76,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Desliza para cambiar de app"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Desliza el dedo hacia arriba desde la parte inferior, mantenlo presionado y suéltalo."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Para alternar entre apps, desliza el dedo hacia arriba, mantén presionado y, luego, suelta."</string>
-    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Cambiar de app"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Cambia de app"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Desliza hacia arriba desde la parte inferior de la pantalla, mantenla presionada y, luego, suelta"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"¡Bien hecho!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Listo"</string>
