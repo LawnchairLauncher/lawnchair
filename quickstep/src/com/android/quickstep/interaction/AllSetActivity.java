@@ -254,6 +254,9 @@ public class AllSetActivity extends Activity {
         mBinder.setSwipeUpProxy(isResumed() ? this::createSwipeUpProxy : null);
         mBinder.setOverviewTargetChangeListener(mBinder::preloadOverviewForSUWAllSet);
         mBinder.preloadOverviewForSUWAllSet();
+        if (mTaskbarManager != null) {
+            mLauncherStartAnim = mTaskbarManager.createLauncherStartFromSuwAnim(MAX_SWIPE_DURATION);
+        }
     }
 
     @Override
@@ -328,12 +331,9 @@ public class AllSetActivity extends Activity {
         mRootView.setAlpha(alpha);
         mRootView.setTranslationY((alpha - 1) * mSwipeUpShift);
 
-        if (mLauncherStartAnim == null && mTaskbarManager != null) {
-            mLauncherStartAnim = mTaskbarManager.createLauncherStartFromSuwAnim(MAX_SWIPE_DURATION);
-        }
         if (mLauncherStartAnim != null) {
-            mLauncherStartAnim.setPlayFraction(Utilities.mapBoundToRange(
-                    mSwipeProgress.value, 0, 1, 0, 1, FAST_OUT_SLOW_IN));
+            mLauncherStartAnim.setPlayFraction(
+                    FAST_OUT_SLOW_IN.getInterpolation(mSwipeProgress.value));
         }
         maybeResumeOrPauseBackgroundAnimation();
     }
