@@ -62,7 +62,7 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"ပင်မစာမျက်နှာသို့သွားရန် ပွတ်ဆွဲပါ"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"သင့်ဖန်သားပြင် အောက်ခြေမှ အပေါ်သို့ပွတ်ဆွဲပါ။ ဤလက်ဟန်ဖြင့် ပင်မစာမျက်နှာသို့ အမြဲပြန်သွားနိုင်သည်။"</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"ဖန်သားပြင်အောက်မှ အပေါ်သို့ လက် ၂ ချောင်းဖြင့် ပွတ်ဆွဲပါ။ ဤလက်ဟန်က ပင်မစာမျက်နှာသို့ အမြဲပို့ပေးမည်။"</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"ပင်မစာမျက်နှာသို့ သွားပါ"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"ပင်မစာမျက်နှာသွားရန်"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"ပင်မစာမျက်နှာသို့ အချိန်မရွေး ပြန်သွားရန် စခရင်အောက်ခြေမှ အပေါ်သို့ ပွတ်ဆွဲပါ"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ဖန်သားပြင် အောက်ခြေအစွန်မှ အပေါ်သို့ ပွတ်ဆွဲကြောင်း သေချာပါစေ။"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"မလွှတ်ခင် ဝင်းဒိုးကို အချိန်ကြာကြာ ဖိထားကြည့်ပါ။"</string>

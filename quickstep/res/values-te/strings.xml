@@ -72,7 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"యాప్‌ల మధ్య మార్చడం కోసం స్వైప్ చేయండి"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"యాప్‌ల మధ్య మారడానికి, మీ స్క్రీన్ కింది వైపు నుండి పైకి స్వైప్ చేసి, పట్టుకుని, తర్వాత వదలండి."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"యాప్‌ల మధ్య మారడానికి, మీ స్క్రీన్ కింది నుండి 2 వేళ్లతో పైకి స్వైప్ చేసి, నొక్కి పట్టి, వదలండి."</string>
-    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"యాప్‌ల మధ్య మారండి"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"యాప్‌ల మధ్య స్విచ్ అవ్వండి"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"అంతా సిద్ధంగా ఉంది"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"పూర్తయింది"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"సెట్టింగ్‌లు"</string>

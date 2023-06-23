@@ -72,7 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Přepínání aplikací přejetím prstem"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Přejeďte nahoru z dolního okraje obrazovky, podržte obrazovku a uvolněte."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Přepínání mezi aplikacemi: Přejeďte dvěma prsty nahoru z dolního okraje obrazovky, podržte obrazovku a uvolněte."</string>
-    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Přepnout aplikace"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Přepínání aplikací"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Vše je nastaveno"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Hotovo"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Nastavení"</string>

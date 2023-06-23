@@ -48,14 +48,14 @@
     <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Обавезно превуците од десне или леве ивице до средине екрана и отпустите."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Научили сте како да превлачите здесна да бисте се вратили уназад. Сада научите да замените апликације."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Довршили сте покрет за повратак."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Никако не превлачите превише близу дна екрана."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Немојте да превлачите превише близу дна екрана."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Осетљивост пок. за назад можете да промените у Подешавањима"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Превуците да бисте се вратили уназад"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Да бисте се вратили на последњи екран, превуците од леве или десне ивице до средине екрана."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Да бисте се вратили на последњи екран, превуците помоћу два прста од леве или десне ивице до средине екрана."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Назад"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Обавезно превуците нагоре од доње ивице екрана."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Никако не стајте пре отпуштања."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Немојте да стајете пре отпуштања."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Обавезно превуците право нагоре."</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Довршили сте покрет за повратак на почетну страницу. Сада сазнајте како да се вратите."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Довршили сте покрет за повратак на почетну страницу."</string>

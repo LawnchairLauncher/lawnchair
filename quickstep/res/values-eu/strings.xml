@@ -55,7 +55,7 @@
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Aurreko pantailara itzultzeko, pasatu bi hatz pantailaren ezkerreko edo eskuineko ertzetik erdialdera."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Egin atzera"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Ziurtatu hatza pantailaren beheko ertzetik gora pasatzen duzula."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Ziurtatu askatu aurretik ez duzula hatza gelditzen."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Ziurtatu ez duzula mugimendua gelditzen askatu arte."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Ziurtatu hatza zuzen pasatzen duzula gora."</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Ikasi duzu hasierako pantailara joateko keinua. Jarraian, ikasi atzera egiten."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Ikasi duzu hasierako pantailara joateko keinua."</string>

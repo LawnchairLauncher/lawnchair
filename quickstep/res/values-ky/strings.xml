@@ -68,11 +68,11 @@
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Манжаңызды экранда бир азга кармап туруп көтөрүңүз."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Экранды өйдө карай сүрүп, токтоп туруңуз."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Жаңсоолорду колдонгонду үйрөндүңүз. Жаңсоолорду өчүрүү үчүн параметрлерге өтүңүз."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"\"Колдонмолорду которуштуруу\" жаңсоосун үйрөндүңүз."</string>
-    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Колдонмолорду которуштуруу үчүн сүрүңүз"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"\"Башка колдонмого которулуу\" жаңсоосун үйрөндүңүз."</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Башка колдонмого которулуу үчүн сүрүңүз"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Бир колдонмодон экинчисине өтүү үчүн экранды ылдыйдан өйдө карай сүрүп, бир аз коё бербей туруңуз."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Бир колдонмодон экинчисине өтүү үчүн экранды 2 манжа менен ылдыйдан өйдө сүрүп, коё бербей туруңуз."</string>
-    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Колдонмолорду которуштуруу"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Башка колдонмого которулуу"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Дапдаяр!"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Бүттү"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Параметрлер"</string>

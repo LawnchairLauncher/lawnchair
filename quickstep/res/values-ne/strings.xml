@@ -47,7 +47,7 @@
     <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"स्क्रिनको सबैभन्दा दायाँ किनारा वा सबैभन्दा बायाँ किनाराबाट स्वाइप गर्नुहोस्।"</string>
     <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"स्क्रिनको दायाँ वा बायाँ किनाराबाट मध्य भागसम्म स्वाइप गर्नुहोस् अनि औँला उठाउनुहोस्।"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"तपाईंले स्क्रिनको दायाँ किनाराबाट स्वाइप गरेर अघिल्लो स्क्रिनमा फर्कने तरिका सिक्नुभयो। अब एउटा एपबाट अर्को एपमा जाने तरिका सिक्नुहोस्।"</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"तपाईंले \'पछाडि जानुहोस्\' नामक इसारा प्रयोग गर्ने तरिका सिक्नुभयो।"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"तपाईंले इसारा प्रयोग गरेर पछाडि जाने तरिका सिक्नुभयो।"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"स्क्रिनको फेदको धेरै नजिकसम्म स्वाइप नगर्नुहोस्।"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"\'पछाडि\' नामक इसाराको संवेदनशीलता बदल्न सेटिङमा जानुहोस्"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"पछाडि जान स्वाइप गर्नुहोस्"</string>
@@ -68,7 +68,7 @@
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"स्क्रिनबाट औँला उठाउनुअघि एपको विन्डोमा केही बेर छोइराख्नुहोस्।"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"सीधै माथितिर स्वाइप गर्नुहोस् अनि रोकिनुहोस्।"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"तपाईंले इसाराहरू प्रयोग गर्ने तरिका सिक्नुभयो। इसारा अफ गर्न सेटिङमा जानुहोस्।"</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"तपाईंले \'एउटा एपबाट अर्को एपमा जानुहोस्\' नामक इसारा प्रयोग गर्ने तरिका सिक्नुभयो।"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"तपाईंले इसारा प्रयोग गरेर एउटा एपबाट अर्को एपमा जाने तरिका सिक्नुभयो।"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"एउटा एपबाट अर्को एपमा जान स्वाइप गर्नुहोस्"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"एउटा एपबाट अर्कोमा जान स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्, छोइराख्नुहोस् अनि औँला उठाउनुहोस्।"</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"एउटा एपबाट अर्कोमा जान २ वटा औँला प्रयोग गरी स्क्रिनको फेदबाट माथितिर स्वाइप गर्नुहोस्, छोइराख्नुहोस् अनि औँला उठाउनुहोस्।"</string>

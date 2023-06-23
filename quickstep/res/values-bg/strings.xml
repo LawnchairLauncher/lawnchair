@@ -70,7 +70,7 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Научихте как да използвате жестовете. За да ги изключите, отворете настройките."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Изпълнихте жеста за превключване между приложения."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Жест за превключване между приложенията"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"За превключване плъзнете пръст нагоре от долната част на екрана, задръжте и освободете"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"За превключване плъзнете пръст нагоре от долната част на екрана, задръжте и освободете."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"За превключване на прил. плъзнете 2 пръста нагоре от долната част на екрана, задръжте и освободете."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Превключване на приложенията"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Готово"</string>

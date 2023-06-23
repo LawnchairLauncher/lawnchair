@@ -70,7 +70,7 @@
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Hai imparato a usare i gesti. Per disattivarli, vai alle Impostazioni."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Hai completato il gesto Cambia app."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Scorri per passare da un\'app all\'altra"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Per spostarti tra le app, scorri verso l\'alto dal fondo dello schermo, tieni premuto e rilascia."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Per spostarti tra le app, scorri dal basso verso l\'alto sullo schermo, tieni premuto e rilascia."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Per spostarti tra le app, scorri verso l\'alto con 2 dita, tieni premuto e rilascia."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Cambia app"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Fatto"</string>
