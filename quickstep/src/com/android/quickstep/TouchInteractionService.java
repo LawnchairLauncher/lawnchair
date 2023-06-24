@@ -847,7 +847,9 @@ public class TouchInteractionService extends Service
             return consumer;
         }
 
-        boolean canStartSystemGesture = mDeviceState.canStartSystemGesture();
+        boolean canStartSystemGesture =
+                mGestureState.isTrackpadGesture() ? mDeviceState.canStartTrackpadGesture()
+                        : mDeviceState.canStartSystemGesture();
 
         if (!LockedUserState.get(this).isUserUnlocked()) {
             CompoundString reasonString = newCompoundString("device locked");

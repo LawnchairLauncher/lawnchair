@@ -338,8 +338,16 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
         boolean canStartWithNavHidden = (mSystemUiStateFlags & SYSUI_STATE_NAV_BAR_HIDDEN) == 0
                 || (mSystemUiStateFlags & SYSUI_STATE_ALLOW_GESTURE_IGNORING_BAR_VISIBILITY) != 0
                 || mRotationTouchHelper.isTaskListFrozen();
-        return canStartWithNavHidden
-                && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0
+        return canStartWithNavHidden && canStartTrackpadGesture();
+    }
+
+    /**
+     * @return whether SystemUI is in a state where we can start a system gesture from the trackpad.
+     * Trackpad gestures can start even when the nav bar / task bar is hidden in sticky immersive
+     * mode.
+     */
+    public boolean canStartTrackpadGesture() {
+        return (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0
                 && (mSystemUiStateFlags & SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING) == 0
                 && (mSystemUiStateFlags & SYSUI_STATE_QUICK_SETTINGS_EXPANDED) == 0
                 && (mSystemUiStateFlags & SYSUI_STATE_MAGNIFICATION_OVERLAP) == 0
