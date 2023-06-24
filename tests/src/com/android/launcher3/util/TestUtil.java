@@ -67,11 +67,11 @@ public class TestUtil {
     private static final String TAG = "TestUtil";
 
     public static final String DUMMY_PACKAGE = "com.example.android.aardwolf";
-    public static final int DEFAULT_USER_ID = 0;
     public static final long DEFAULT_UI_TIMEOUT = 10000;
 
     public static void installDummyApp() throws IOException {
-        installDummyAppForUser(DEFAULT_USER_ID);
+        final int defaultUserId = getMainUserId();
+        installDummyAppForUser(defaultUserId);
     }
 
     public static void installDummyAppForUser(int userId) throws IOException {
@@ -103,6 +103,23 @@ public class TestUtil {
             pic.mAddWait.await();
         } catch (InterruptedException e) {
             throw new IOException(e);
+        }
+    }
+
+    /**
+     * Returns the main user ID. NOTE: For headless system it is NOT 0. Returns 0 by default, if
+     * there is no main user.
+     *
+     * @return a main user ID
+     */
+    public static int getMainUserId() throws IOException {
+        Instrumentation instrumentation = getInstrumentation();
+        final String result = UiDevice.getInstance(instrumentation)
+                .executeShellCommand("cmd user get-main-user");
+        try {
+            return Integer.parseInt(result.trim());
+        } catch (NumberFormatException e) {
+            return 0;
         }
     }
 
