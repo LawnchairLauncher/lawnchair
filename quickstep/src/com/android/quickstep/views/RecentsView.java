@@ -2374,7 +2374,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     protected abstract void handleStartHome(boolean animated);
 
     /** Returns whether the overview command helper queue is empty. */
-    public abstract boolean isCommandQueueEmpty();
+    protected abstract boolean isCommandQueueEmpty();
 
     public void reset() {
         setCurrentTask(-1);

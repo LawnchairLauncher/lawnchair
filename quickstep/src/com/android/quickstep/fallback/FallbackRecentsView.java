@@ -86,7 +86,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    public boolean isCommandQueueEmpty() {
+    protected boolean isCommandQueueEmpty() {
         return mActivity.isCommandQueueEmpty();
     }
 

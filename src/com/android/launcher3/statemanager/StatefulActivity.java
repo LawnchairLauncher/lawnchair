@@ -237,10 +237,4 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
      * @param leftOrTop if the staged split will be positioned left or top.
      */
     public void enterStageSplitFromRunningApp(boolean leftOrTop) { }
-
-
-    /** Returns whether the overview command helper queue is empty. */
-    public boolean isCommandQueueEmpty() {
-        return true;
-    }
 }
