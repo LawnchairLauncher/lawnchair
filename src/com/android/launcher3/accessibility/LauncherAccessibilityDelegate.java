@@ -7,6 +7,7 @@ import static android.view.accessibility.AccessibilityNodeInfo.ACTION_LONG_CLICK
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
+import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_NOT_PINNABLE;
 
 import android.appwidget.AppWidgetProviderInfo;
 import android.graphics.Point;
@@ -124,10 +125,17 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             }
         }
 
-        if ((item instanceof WorkspaceItemFactory) || (item instanceof WorkspaceItemInfo)
-                || (item instanceof PendingAddItemInfo)) {
+        if (supportAddToWorkSpace(item)) {
             out.add(mActions.get(ADD_TO_WORKSPACE));
         }
+    }
+
+    private boolean supportAddToWorkSpace(ItemInfo item) {
+        return (item instanceof WorkspaceItemFactory)
+                || ((item instanceof WorkspaceItemInfo)
+                    && (((WorkspaceItemInfo) item).runtimeStatusFlags & FLAG_NOT_PINNABLE) == 0)
+                || ((item instanceof PendingAddItemInfo)
+                    && (((PendingAddItemInfo) item).runtimeStatusFlags & FLAG_NOT_PINNABLE) == 0);
     }
 
     /**
