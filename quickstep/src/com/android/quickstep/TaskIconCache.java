@@ -15,7 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.uioverrides.QuickstepLauncher.GO_LOW_RAM_RECENTS_ENABLED;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 
 import android.annotation.Nullable;
@@ -182,17 +181,14 @@ public class TaskIconCache implements DisplayInfoChangeListener {
             }
         }
 
-        // Loading content descriptions if accessibility or low RAM recents is enabled.
-        if (GO_LOW_RAM_RECENTS_ENABLED || mAccessibilityManager.isEnabled()) {
-            // Skip loading the content description if the activity no longer exists
-            if (activityInfo == null) {
-                activityInfo = PackageManagerWrapper.getInstance().getActivityInfo(
-                        key.getComponent(), key.userId);
-            }
-            if (activityInfo != null) {
-                entry.contentDescription = getBadgedContentDescription(
-                        activityInfo, task.key.userId, task.taskDescription);
-            }
+        // Skip loading the content description if the activity no longer exists
+        if (activityInfo == null) {
+            activityInfo = PackageManagerWrapper.getInstance().getActivityInfo(
+                    key.getComponent(), key.userId);
+        }
+        if (activityInfo != null) {
+            entry.contentDescription = getBadgedContentDescription(
+                    activityInfo, task.key.userId, task.taskDescription);
         }
 
         mIconCache.put(task.key, entry);
