@@ -119,6 +119,11 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
             | FLAG_DISABLED_VERSION_LOWER;
 
     /**
+     * Flag indicating this item can't be pinned to home screen.
+     */
+    public static final int FLAG_NOT_PINNABLE = 1 << 13;
+
+    /**
      * Status associated with the system state of the underlying item. This is calculated every
      * time a new info is created and not persisted on the disk.
      */
