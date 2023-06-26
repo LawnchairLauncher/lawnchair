@@ -90,7 +90,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     }
 
     @Override
-    public boolean isCommandQueueEmpty() {
+    protected boolean isCommandQueueEmpty() {
         return mActivity.isCommandQueueEmpty();
     }
 

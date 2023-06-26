@@ -1305,11 +1305,9 @@ public class QuickstepLauncher extends Launcher {
                                 : groupTask.mSplitBounds.leftTaskPercent);
     }
 
-    @Override
     public boolean isCommandQueueEmpty() {
         OverviewCommandHelper overviewCommandHelper = mTISBindHelper.getOverviewCommandHelper();
-        return super.isCommandQueueEmpty()
-                && (overviewCommandHelper == null || overviewCommandHelper.isCommandQueueEmpty());
+        return overviewCommandHelper == null || overviewCommandHelper.isCommandQueueEmpty();
     }
 
     private static final class LauncherTaskViewController extends
