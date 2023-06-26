@@ -13,154 +13,161 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<androidx.constraintlayout.widget.ConstraintLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:theme="@style/GestureTutorialActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="@dimen/gesture_tutorial_menu_padding_top"
-    android:paddingBottom="@dimen/gesture_tutorial_menu_padding_bottom"
-    android:paddingHorizontal="@dimen/gesture_tutorial_menu_padding_horizontal"
     android:background="?androidprv:attr/materialColorSurfaceContainer"
-    android:clipToPadding="false">
+    android:fitsSystemWindows="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/gesture_tutorial_menu_home_button"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/gesture_tutorial_menu_button_height"
-        android:background="@drawable/gesture_tutorial_menu_home_button_background"
-        android:clipToOutline="true"
-        app:layout_constraintVertical_chainStyle="packed"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/gesture_tutorial_menu_padding_top"
+        android:paddingBottom="@dimen/gesture_tutorial_menu_padding_bottom"
+        android:paddingHorizontal="@dimen/gesture_tutorial_menu_padding_horizontal"
+        android:clipToPadding="false">
 
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/gesture_tutorial_menu_back_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/gesture_tutorial_home_step_shape"
-            android:scaleType="fitXY"
-            android:adjustViewBounds="true"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <TextView
-            style="@style/TextAppearance.GestureTutorial.MenuButton.Home"
-            android:id="@+id/gesture_tutorial_menu_home_button_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/home_gesture_tutorial_title"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/gesture_tutorial_menu_home_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/gesture_tutorial_menu_button_height"
+            android:background="@drawable/gesture_tutorial_menu_home_button_background"
+            android:clipToOutline="true"
+            app:layout_constraintVertical_chainStyle="packed"
 
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/gesture_tutorial_menu_back_button"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/gesture_tutorial_home_step_shape"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                style="@style/TextAppearance.GestureTutorial.MenuButton.Home"
+                android:id="@+id/gesture_tutorial_menu_home_button_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/home_gesture_tutorial_title"
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/gesture_tutorial_menu_back_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/gesture_tutorial_menu_button_height"
+            android:layout_marginTop="@dimen/gesture_tutorial_menu_button_spacing"
+            android:background="@drawable/gesture_tutorial_menu_back_button_background"
+            android:clipToOutline="true"
+
+            app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_menu_home_button"
+            app:layout_constraintBottom_toTopOf="@id/gesture_tutorial_menu_overview_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/gesture_tutorial_back_step_shape"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                style="@style/TextAppearance.GestureTutorial.MenuButton.Back"
+                android:id="@+id/gesture_tutorial_menu_back_button_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/back_gesture_tutorial_title"
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/gesture_tutorial_menu_overview_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/gesture_tutorial_menu_button_height"
+            android:layout_marginTop="@dimen/gesture_tutorial_menu_button_spacing"
+            android:background="@drawable/gesture_tutorial_menu_overview_button_background"
+            android:clipToOutline="true"
+
+            app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_menu_back_button"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/gesture_tutorial_overview_step_shape"
+                android:scaleType="fitXY"
+                android:adjustViewBounds="true"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                style="@style/TextAppearance.GestureTutorial.MenuButton.Overview"
+                android:id="@+id/gesture_tutorial_menu_overview_button_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/overview_gesture_tutorial_title"
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+
+            app:layout_constraintGuide_end="@dimen/gesture_tutorial_menu_done_button_spacing"/>
+
+        <Button
+            style="@style/TextAppearance.GestureTutorial.ButtonLabel"
+            android:id="@+id/gesture_tutorial_menu_done_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginVertical="16dp"
+            android:text="@string/gesture_tutorial_action_button_label"
+            android:background="@drawable/gesture_tutorial_action_button_background"
+            android:backgroundTint="?androidprv:attr/materialColorPrimary"
+            android:stateListAnimator="@null"
+
+            app:layout_constraintTop_toBottomOf="@id/guideline"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/gesture_tutorial_menu_back_button"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/gesture_tutorial_menu_button_height"
-        android:layout_marginTop="@dimen/gesture_tutorial_menu_button_spacing"
-        android:background="@drawable/gesture_tutorial_menu_back_button_background"
-        android:clipToOutline="true"
-
-        app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_menu_home_button"
-        app:layout_constraintBottom_toTopOf="@id/gesture_tutorial_menu_overview_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/gesture_tutorial_back_step_shape"
-            android:scaleType="fitXY"
-            android:adjustViewBounds="true"
-
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-        <TextView
-            style="@style/TextAppearance.GestureTutorial.MenuButton.Back"
-            android:id="@+id/gesture_tutorial_menu_back_button_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/back_gesture_tutorial_title"
-
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/gesture_tutorial_menu_overview_button"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/gesture_tutorial_menu_button_height"
-        android:layout_marginTop="@dimen/gesture_tutorial_menu_button_spacing"
-        android:background="@drawable/gesture_tutorial_menu_overview_button_background"
-        android:clipToOutline="true"
-
-        app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_menu_back_button"
-        app:layout_constraintBottom_toTopOf="@id/guideline"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/gesture_tutorial_overview_step_shape"
-            android:scaleType="fitXY"
-            android:adjustViewBounds="true"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <TextView
-            style="@style/TextAppearance.GestureTutorial.MenuButton.Overview"
-            android:id="@+id/gesture_tutorial_menu_overview_button_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/overview_gesture_tutorial_title"
-
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-
-        app:layout_constraintGuide_end="@dimen/gesture_tutorial_menu_done_button_spacing"/>
-
-    <Button
-        style="@style/TextAppearance.GestureTutorial.ButtonLabel"
-        android:id="@+id/gesture_tutorial_menu_done_button"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_marginVertical="16dp"
-        android:text="@string/gesture_tutorial_action_button_label"
-        android:background="@drawable/gesture_tutorial_action_button_background"
-        android:backgroundTint="?androidprv:attr/materialColorPrimary"
-        android:stateListAnimator="@null"
-
-        app:layout_constraintTop_toBottomOf="@id/guideline"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
