@@ -17,12 +17,20 @@
 
 <com.android.quickstep.views.DesktopTaskView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipChildren="true"
     android:clipToOutline="true"
     android:defaultFocusHighlightEnabled="false"
-    android:focusable="true">
+    android:focusable="true"
+    launcher:borderColor="?androidprv:attr/colorAccentSecondaryVariant">
+
+    <View
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <!--
          TODO(b249371338): DesktopTaskView extends from TaskView. TaskView expects TaskThumbnailView
@@ -33,14 +41,14 @@
     <com.android.quickstep.views.TaskThumbnailView
         android:id="@+id/snapshot"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
     <com.android.quickstep.views.IconView
         android:id="@+id/icon"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/task_thumbnail_icon_size"
+        android:layout_height="@dimen/task_thumbnail_icon_size"
         android:focusable="false"
-        android:importantForAccessibility="no"
-        android:visibility="gone" />
+        android:importantForAccessibility="no" />
 
 </com.android.quickstep.views.DesktopTaskView>

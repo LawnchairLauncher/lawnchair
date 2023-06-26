@@ -13,7 +13,7 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
 
     <color name="gesture_tutorial_back_arrow_color">#99000000</color>
 
@@ -24,4 +24,6 @@
 
     <color name="all_set_page_background">#FF000000</color>
 
+    <!-- Turn on work apps button -->
+    <color name="work_turn_on_stroke">?androidprv:attr/colorAccentSecondaryVariant</color>
 </resources>

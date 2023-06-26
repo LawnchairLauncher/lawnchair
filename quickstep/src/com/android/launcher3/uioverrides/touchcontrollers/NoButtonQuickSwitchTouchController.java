@@ -19,7 +19,7 @@ import static com.android.launcher3.LauncherAnimUtils.newCancelListener;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_ACTIONS;
-import static com.android.launcher3.LauncherState.QUICK_SWITCH;
+import static com.android.launcher3.LauncherState.QUICK_SWITCH_FROM_HOME;
 import static com.android.launcher3.anim.AlphaUpdateListener.ALPHA_CUTOFF_THRESHOLD;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.anim.Interpolators.ACCEL_0_75;
@@ -76,6 +76,7 @@ import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.util.MotionPauseDetector;
 import com.android.quickstep.util.WorkspaceRevealAnim;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
 
@@ -164,6 +165,10 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         if ((stateFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0) {
             return false;
         }
+        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+            // TODO(b/268075592): add support for quickswitch to/from desktop
+            return false;
+        }
         return true;
     }
 
@@ -195,7 +200,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         nonOverviewBuilder.setInterpolator(ANIM_WORKSPACE_SCALE, FADE_OUT_INTERPOLATOR);
         nonOverviewBuilder.setInterpolator(ANIM_DEPTH, FADE_OUT_INTERPOLATOR);
         nonOverviewBuilder.setInterpolator(ANIM_VERTICAL_PROGRESS, TRANSLATE_OUT_INTERPOLATOR);
-        updateNonOverviewAnim(QUICK_SWITCH, nonOverviewBuilder);
+        updateNonOverviewAnim(QUICK_SWITCH_FROM_HOME, nonOverviewBuilder);
         mNonOverviewAnim.dispatchOnStart();
 
         if (mRecentsView.getTaskViewCount() == 0) {
@@ -220,7 +225,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     }
 
     private void setupOverviewAnimators() {
-        final LauncherState fromState = QUICK_SWITCH;
+        final LauncherState fromState = QUICK_SWITCH_FROM_HOME;
         final LauncherState toState = OVERVIEW;
 
         // Set RecentView's initial properties.
@@ -243,7 +248,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         // Use QuickSwitchState instead of OverviewState to determine scrim color,
         // since we need to take potential taskbar into account.
         xAnim.setViewBackgroundColor(mLauncher.getScrimView(),
-                QUICK_SWITCH.getWorkspaceScrimColor(mLauncher), LINEAR);
+                QUICK_SWITCH_FROM_HOME.getWorkspaceScrimColor(mLauncher), LINEAR);
         if (mRecentsView.getTaskViewCount() == 0) {
             xAnim.addFloat(mRecentsView, CONTENT_ALPHA, 0f, 1f, LINEAR);
         }
@@ -335,24 +340,24 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             } else {
                 if (velocity.y > 0) {
                     // Flinging right and down goes to quick switch.
-                    targetState = QUICK_SWITCH;
+                    targetState = QUICK_SWITCH_FROM_HOME;
                 } else {
                     // Flinging up and right could go either home or to quick switch.
                     // Determine the target based on the higher velocity.
                     targetState = Math.abs(velocity.x) > Math.abs(velocity.y)
-                        ? QUICK_SWITCH : NORMAL;
+                        ? QUICK_SWITCH_FROM_HOME : NORMAL;
                 }
             }
         } else if (horizontalFling) {
-            targetState = velocity.x > 0 ? QUICK_SWITCH : NORMAL;
+            targetState = velocity.x > 0 ? QUICK_SWITCH_FROM_HOME : NORMAL;
         } else if (verticalFling) {
-            targetState = velocity.y > 0 ? QUICK_SWITCH : NORMAL;
+            targetState = velocity.y > 0 ? QUICK_SWITCH_FROM_HOME : NORMAL;
         } else {
             // If user isn't flinging, just snap to the closest state.
             boolean passedHorizontalThreshold = mXOverviewAnim.getInterpolatedProgress() > 0.5f;
             boolean passedVerticalThreshold = mYOverviewAnim.value > 1f;
             targetState = passedHorizontalThreshold && !passedVerticalThreshold
-                    ? QUICK_SWITCH : NORMAL;
+                    ? QUICK_SWITCH_FROM_HOME : NORMAL;
         }
 
         // Animate the various components to the target state.
@@ -414,7 +419,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
             nonOverviewAnim.setFloatValues(startProgress, endProgress);
             mNonOverviewAnim.dispatchOnStart();
         }
-        if (targetState == QUICK_SWITCH) {
+        if (targetState == QUICK_SWITCH_FROM_HOME) {
             // Navigating to quick switch, add scroll feedback since the first time is not
             // considered a scroll by the RecentsView.
             VibratorWrapper.INSTANCE.get(mLauncher).vibrate(
@@ -437,7 +442,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                 .withSrcState(LAUNCHER_STATE_HOME)
                 .withDstState(targetState.statsLogOrdinal)
                 .log(getLauncherAtomEvent(mStartState.statsLogOrdinal, targetState.statsLogOrdinal,
-                        targetState == QUICK_SWITCH
+                        targetState == QUICK_SWITCH_FROM_HOME
                                 ? LAUNCHER_QUICKSWITCH_RIGHT
                                 : targetState.ordinal > mStartState.ordinal
                                         ? LAUNCHER_UNKNOWN_SWIPEUP

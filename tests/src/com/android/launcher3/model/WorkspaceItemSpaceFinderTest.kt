@@ -24,9 +24,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
-/**
- * Tests for [WorkspaceItemSpaceFinder]
- */
+/** Tests for [WorkspaceItemSpaceFinder] */
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class WorkspaceItemSpaceFinderTest : AbstractWorkspaceModelTest() {
@@ -44,17 +42,27 @@ class WorkspaceItemSpaceFinderTest : AbstractWorkspaceModelTest() {
     }
 
     private fun findSpace(spanX: Int, spanY: Int): NewItemSpace =
-        mItemSpaceFinder.findSpaceForItem(
-            mAppState, mModelHelper.bgDataModel,
-            mExistingScreens, mNewScreens, spanX, spanY
-        )
+        mItemSpaceFinder
+            .findSpaceForItem(
+                mAppState,
+                mModelHelper.bgDataModel,
+                mExistingScreens,
+                mNewScreens,
+                spanX,
+                spanY
+            )
             .let { NewItemSpace.fromIntArray(it) }
 
     private fun assertRegionVacant(newItemSpace: NewItemSpace, spanX: Int, spanY: Int) {
         assertThat(
-            mScreenOccupancy[newItemSpace.screenId]
-                .isRegionVacant(newItemSpace.cellX, newItemSpace.cellY, spanX, spanY)
-        ).isTrue()
+                mScreenOccupancy[newItemSpace.screenId].isRegionVacant(
+                    newItemSpace.cellX,
+                    newItemSpace.cellY,
+                    spanX,
+                    spanY
+                )
+            )
+            .isTrue()
     }
 
     @Test

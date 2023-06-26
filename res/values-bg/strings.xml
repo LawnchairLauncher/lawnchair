@@ -28,9 +28,6 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"Няма достъп до прекия път"</string>
     <string name="home_screen" msgid="5629429142036709174">"Начален екран"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Разделен екран"</string>
-    <string name="split_screen_position_top" msgid="1504965011158689649">"Разделяне в горната част"</string>
-    <string name="split_screen_position_left" msgid="7537793098851830883">"Разделяне в лявата част"</string>
-    <string name="split_screen_position_right" msgid="1569377524925193369">"Разделяне в дясната част"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Информация за приложението за %1$s"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Докоснете и задръжте за преместване на приспособление"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Докоснете двукратно и задръжте за преместване на приспособление или използвайте персонал. действия."</string>
@@ -40,6 +37,7 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Докоснете приспособлението и го задръжте, за да го местите на началния екран"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"Добавяне към началния екран"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Приспособлението <xliff:g id="WIDGET_NAME">%1$s</xliff:g> е добавено към началния екран"</string>
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Предложения"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# приспособление}other{# приспособления}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# пряк път}other{# преки пътя}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>

@@ -69,6 +69,10 @@ public class StashedHandleView extends View {
      */
     public void updateSampledRegion(Rect stashedHandleBounds) {
         getLocationOnScreen(mTmpArr);
+        // Translations are temporary due to animations, remove them for the purpose of determining
+        // the final region we want sampled.
+        mTmpArr[0] -= Math.round(getTranslationX());
+        mTmpArr[1] -= Math.round(getTranslationY());
         mSampledRegion.set(stashedHandleBounds);
         mSampledRegion.offset(mTmpArr[0], mTmpArr[1]);
     }

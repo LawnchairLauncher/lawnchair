@@ -24,14 +24,20 @@ import android.graphics.PointF;
 import android.os.Build;
 import android.os.SystemClock;
 import android.os.Trace;
+import android.view.View;
 
 import androidx.annotation.BinderThread;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.util.RunnableList;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -48,7 +54,7 @@ import java.util.HashMap;
 public class OverviewCommandHelper {
 
     public static final int TYPE_SHOW = 1;
-    public static final int TYPE_SHOW_NEXT_FOCUS = 2;
+    public static final int TYPE_KEYBOARD_INPUT = 2;
     public static final int TYPE_HIDE = 3;
     public static final int TYPE_TOGGLE = 4;
     public static final int TYPE_HOME = 5;
@@ -65,6 +71,13 @@ public class OverviewCommandHelper {
     private final OverviewComponentObserver mOverviewComponentObserver;
     private final TaskAnimationManager mTaskAnimationManager;
     private final ArrayList<CommandInfo> mPendingCommands = new ArrayList<>();
+
+    /**
+     * Index of the TaskView that should be focused when launching Overview. Persisted so that we
+     * do not lose the focus across multiple calls of
+     * {@link OverviewCommandHelper#executeCommand(CommandInfo)} for the same command
+     */
+    private int mTaskFocusIndexOverride = -1;
 
     public OverviewCommandHelper(TouchInteractionService service,
             OverviewComponentObserver observer,
@@ -165,8 +178,30 @@ public class OverviewCommandHelper {
                 mOverviewComponentObserver.getActivityInterface();
         RecentsView recents = activityInterface.getVisibleRecentsView();
         if (recents == null) {
+            T activity = activityInterface.getCreatedActivity();
+            DeviceProfile dp = activity == null ? null : activity.getDeviceProfile();
+            TaskbarUIController uiController = activityInterface.getTaskbarController();
+            boolean allowQuickSwitch = FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH.get()
+                    && uiController != null
+                    && dp != null
+                    && (dp.isTablet || dp.isTwoPanels);
+
+            if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+                // TODO(b/268075592): add support for quickswitch to/from desktop
+                allowQuickSwitch = false;
+            }
+
             if (cmd.type == TYPE_HIDE) {
-                // already hidden
+                if (!allowQuickSwitch) {
+                    return true;
+                }
+                mTaskFocusIndexOverride = uiController.launchFocusedTask();
+                if (mTaskFocusIndexOverride == -1) {
+                    return true;
+                }
+            }
+            if (cmd.type == TYPE_KEYBOARD_INPUT && allowQuickSwitch) {
+                uiController.openQuickSwitchView();
                 return true;
             }
             if (cmd.type == TYPE_HOME) {
@@ -179,6 +214,7 @@ public class OverviewCommandHelper {
                     // already visible
                     return true;
                 case TYPE_HIDE: {
+                    mTaskFocusIndexOverride = -1;
                     int currentPage = recents.getNextPage();
                     TaskView tv = (currentPage >= 0 && currentPage < recents.getTaskViewCount())
                             ? (TaskView) recents.getPageAt(currentPage)
@@ -194,15 +230,9 @@ public class OverviewCommandHelper {
         }
 
         final Runnable completeCallback = () -> {
-            if (cmd.type == TYPE_SHOW_NEXT_FOCUS) {
-                RecentsView rv = activityInterface.getVisibleRecentsView();
-                // When the overview is launched via alt tab (cmd type is TYPE_SHOW_NEXT_FOCUS),
-                // the touch mode somehow is not change to false by the Android framework.
-                // The subsequent tab to go through tasks in overview can only be dispatched to
-                // focuses views, while focus can only be requested in
-                // {@link View#requestFocusNoSearch(int, Rect)} when touch mode is false. To note,
-                // here we launch overview from home.
-                rv.getViewRootImpl().touchModeChanged(false);
+            RecentsView rv = activityInterface.getVisibleRecentsView();
+            if (rv != null && (cmd.type == TYPE_KEYBOARD_INPUT || cmd.type == TYPE_HIDE)) {
+                updateRecentsViewFocus(rv);
             }
             scheduleNextTask(cmd);
         };
@@ -253,7 +283,7 @@ public class OverviewCommandHelper {
 
         RecentsView<?, ?> visibleRecentsView = activityInterface.getVisibleRecentsView();
         if (visibleRecentsView != null) {
-            visibleRecentsView.moveFocusedTaskToFront();
+            visibleRecentsView.moveRunningTaskToFront();
         }
         if (mTaskAnimationManager.isRecentsAnimationRunning()) {
             cmd.mActiveCallbacks = mTaskAnimationManager.continueRecentsAnimation(gestureState);
@@ -280,32 +310,46 @@ public class OverviewCommandHelper {
         cmd.removeListener(handler);
         Trace.endAsyncSection(TRANSITION_NAME, 0);
 
-        if (cmd.type == TYPE_SHOW_NEXT_FOCUS) {
-            RecentsView rv =
-                    mOverviewComponentObserver.getActivityInterface().getVisibleRecentsView();
-            if (rv != null) {
-                // When the overview is launched via alt tab (cmd type is TYPE_SHOW_NEXT_FOCUS),
-                // the touch mode somehow is not change to false by the Android framework.
-                // The subsequent tab to go through tasks in overview can only be dispatched to
-                // focuses views, while focus can only be requested in
-                // {@link View#requestFocusNoSearch(int, Rect)} when touch mode is false. To note,
-                // here we launch overview with live tile.
-                rv.getViewRootImpl().touchModeChanged(false);
-                // Ensure that recents view has focus so that it receives the followup key inputs
-                TaskView taskView = rv.getNextTaskView();
-                if (taskView == null) {
-                    taskView = rv.getTaskViewAt(0);
-                    if (taskView != null) {
-                        taskView.requestFocus();
-                    } else {
-                        rv.requestFocus();
-                    }
-                } else {
-                    taskView.requestFocus();
-                }
-            }
+        RecentsView rv =
+                mOverviewComponentObserver.getActivityInterface().getVisibleRecentsView();
+        if (rv != null && (cmd.type == TYPE_KEYBOARD_INPUT || cmd.type == TYPE_HIDE)) {
+            updateRecentsViewFocus(rv);
         }
         scheduleNextTask(cmd);
+    }
+
+    private void updateRecentsViewFocus(@NonNull RecentsView rv) {
+        // When the overview is launched via alt tab (cmd type is TYPE_KEYBOARD_INPUT),
+        // the touch mode somehow is not change to false by the Android framework.
+        // The subsequent tab to go through tasks in overview can only be dispatched to
+        // focuses views, while focus can only be requested in
+        // {@link View#requestFocusNoSearch(int, Rect)} when touch mode is false. To note,
+        // here we launch overview with live tile.
+        rv.getViewRootImpl().touchModeChanged(false);
+        // Ensure that recents view has focus so that it receives the followup key inputs
+        TaskView taskView = rv.getTaskViewAt(mTaskFocusIndexOverride);
+        if (taskView != null) {
+            requestFocus(taskView);
+            return;
+        }
+        taskView = rv.getNextTaskView();
+        if (taskView != null) {
+            requestFocus(taskView);
+            return;
+        }
+        taskView = rv.getTaskViewAt(0);
+        if (taskView != null) {
+            requestFocus(taskView);
+            return;
+        }
+        requestFocus(rv);
+    }
+
+    private void requestFocus(@NonNull View view) {
+        view.post(() -> {
+            view.requestFocus();
+            view.requestAccessibilityFocus();
+        });
     }
 
     public void dump(PrintWriter pw) {
@@ -314,6 +358,7 @@ public class OverviewCommandHelper {
         if (!mPendingCommands.isEmpty()) {
             pw.println("    pendingCommandType=" + mPendingCommands.get(0).type);
         }
+        pw.println("  mTaskFocusIndexOverride=" + mTaskFocusIndexOverride);
     }
 
     private static class CommandInfo {

@@ -46,6 +46,7 @@ public class ScrimView extends View implements Insettable {
     private int mBackgroundColor;
     private boolean mIsVisible = true;
     private boolean mLastDispatchedOpaqueness;
+    private float mHeaderScale = 1f;
 
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -76,6 +77,10 @@ public class ScrimView extends View implements Insettable {
         super.setBackgroundColor(color);
     }
 
+    public int getBackgroundColor() {
+        return mBackgroundColor;
+    }
+
     @Override
     public void onVisibilityAggregated(boolean isVisible) {
         super.onVisibilityAggregated(isVisible);
@@ -91,7 +96,16 @@ public class ScrimView extends View implements Insettable {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (mDrawingController != null) {
-            mDrawingController.drawOnScrim(canvas);
+            mDrawingController.drawOnScrimWithScale(canvas, mHeaderScale);
+        }
+    }
+
+    /** Set scrim header's scale and bottom offset. */
+    public void setScrimHeaderScale(float scale) {
+        boolean hasChanged = mHeaderScale != scale;
+        mHeaderScale = scale;
+        if (hasChanged) {
+            invalidate();
         }
     }
 
@@ -176,6 +190,6 @@ public class ScrimView extends View implements Insettable {
         /**
          * Called inside ScrimView#OnDraw
          */
-        void drawOnScrim(Canvas canvas);
+        void drawOnScrimWithScale(Canvas canvas, float scale);
     }
 }

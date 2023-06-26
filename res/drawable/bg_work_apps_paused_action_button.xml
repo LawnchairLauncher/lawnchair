@@ -21,11 +21,12 @@
             <solid android:color="@android:color/white" />
         </shape>
     </item>
-
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
-            <solid android:color="?android:attr/colorControlHighlight" />
             <corners android:radius="@dimen/rounded_button_radius" />
+            <stroke
+                android:width="@dimen/work_apps_paused_button_stroke"
+                android:color="@color/work_turn_on_stroke" />
         </shape>
     </item>
 </ripple>

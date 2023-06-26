@@ -80,10 +80,10 @@ android_library {
         "androidx.preference_preference",
         "SystemUISharedLib",
         "SystemUIAnimationLib",
+        "launcher-testing-shared",
     ],
     srcs: [
         "tests/tapl/**/*.java",
-        "src/com/android/launcher3/testing/shared/**/*.java",
     ],
     resource_dirs: [ ],
     manifest: "tests/tapl/AndroidManifest.xml",
@@ -169,7 +169,10 @@ android_library {
 android_library {
     name: "Launcher3CommonDepsLib",
     srcs: ["src_build_config/**/*.java"],
-    static_libs: ["Launcher3ResLib"],
+    static_libs: [
+        "Launcher3ResLib",
+        "launcher-testing-shared",
+    ],
     sdk_version: "current",
     min_sdk_version: min_launcher3_sdk_version,
     manifest: "AndroidManifest-common.xml",

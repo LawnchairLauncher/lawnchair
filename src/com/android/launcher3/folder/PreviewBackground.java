@@ -333,12 +333,15 @@ public class PreviewBackground extends CellLayout.DelegatedCellDrawing {
                 getOffsetX() + inset, getOffsetY() + inset, getScaledRadius() - inset, mPaint);
     }
 
-    public void drawLeaveBehind(Canvas canvas) {
+    /**
+     * Draws the leave-behind circle on the given canvas and in the given color.
+     */
+    public void drawLeaveBehind(Canvas canvas, int color) {
         float originalScale = mScale;
         mScale = 0.5f;
 
         mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setColor(Color.argb(160, 245, 245, 245));
+        mPaint.setColor(color);
         getShape().drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
 
         mScale = originalScale;

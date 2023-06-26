@@ -32,22 +32,23 @@ public final class WidgetsListHeaderViewHolderBinder implements
         ViewHolderBinder<WidgetsListHeaderEntry, WidgetsListHeaderHolder> {
     private final LayoutInflater mLayoutInflater;
     private final OnHeaderClickListener mOnHeaderClickListener;
-    private final WidgetsListDrawableFactory mListDrawableFactory;
+    private final boolean mIsTwoPane;
 
     public WidgetsListHeaderViewHolderBinder(LayoutInflater layoutInflater,
-            OnHeaderClickListener onHeaderClickListener,
-            WidgetsListDrawableFactory listDrawableFactory) {
+            OnHeaderClickListener onHeaderClickListener, boolean isTwoPane) {
         mLayoutInflater = layoutInflater;
         mOnHeaderClickListener = onHeaderClickListener;
-        mListDrawableFactory = listDrawableFactory;
+        mIsTwoPane = isTwoPane;
     }
 
     @Override
     public WidgetsListHeaderHolder newViewHolder(ViewGroup parent) {
-        WidgetsListHeader header = (WidgetsListHeader) mLayoutInflater.inflate(
-                R.layout.widgets_list_row_header, parent, false);
-        header.setBackground(mListDrawableFactory.createHeaderBackgroundDrawable());
-        return new WidgetsListHeaderHolder(header);
+        return new WidgetsListHeaderHolder((WidgetsListHeader) mLayoutInflater.inflate(
+                mIsTwoPane
+                        ? R.layout.widgets_list_row_header_two_pane
+                        : R.layout.widgets_list_row_header,
+                parent,
+                false));
     }
 
     @Override
@@ -59,10 +60,11 @@ public final class WidgetsListHeaderViewHolderBinder implements
         widgetsListHeader.setListDrawableState(
                 WidgetsListDrawableState.obtain(
                         (position & POSITION_FIRST) != 0,
-                        (position & POSITION_LAST) != 0,
-                        /* isExpanded= */ data.isWidgetListShown()));
-        widgetsListHeader.setOnExpandChangeListener(isExpanded ->
-                mOnHeaderClickListener.onHeaderClicked(isExpanded,
-                        PackageUserKey.fromPackageItemInfo(data.mPkgItem)));
+                        (position & POSITION_LAST) != 0));
+        widgetsListHeader.setOnClickListener(view -> {
+            widgetsListHeader.setExpanded(mIsTwoPane || !widgetsListHeader.isExpanded());
+            mOnHeaderClickListener.onHeaderClicked(widgetsListHeader.isExpanded(),
+                    PackageUserKey.fromPackageItemInfo(data.mPkgItem));
+        });
     }
 }

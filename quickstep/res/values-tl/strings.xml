@@ -53,6 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Mag-swipe para bumalik"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Para bumalik sa nakaraang screen, mag-swipe mula sa kaliwa o kanang gilid patungo sa gitna ng screen."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Para bumalik sa huling screen, mag-swipe gamit ang 2 daliri mula sa kaliwa o kanang gilid hanggang sa gitna ng screen."</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Bumalik"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Tiyaking magsa-swipe ka pataas mula sa pinakaibaba ng screen."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Tiyaking hindi ka magpo-pause bago iangat ang iyong daliri."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Tiyaking magsa-swipe ka nang diretso pataas."</string>
@@ -61,6 +62,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Mag-swipe para pumunta sa home"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Mag-swipe pataas mula sa ibaba ng iyong screen. Dadalhin ka palagi ng galaw na ito sa Home screen."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Mag-swipe pataas gamit ang 2 daliri mula sa ibaba ng screen. Dadalhin ka palagi nito sa Home screen."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Pumunta sa home"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Para pumunta sa iyong home screen anumang oras, mag-swipe pataas mula sa ibaba ng screen mo"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Tiyaking magsa-swipe ka pataas mula sa pinakaibaba ng screen."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Subukang pindutin nang mas matagal ang window bago ito bitawan."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Tiyaking magsa-swipe ka nang diretso pataas, pagkatapos ay mag-pause."</string>
@@ -69,6 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Mag-swipe para lumipat ng app"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Para lumipat ng app, mag-swipe pataas mula sa ibaba ng iyong screen, mag-hold, at iangat ang daliri."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Para lumipat ng app, mag-swipe pataas gamit ang 2 daliri mula sa ibaba, mag-hold, at bumitaw."</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Lumipat ng app"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Handa na ang lahat"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Tapos na"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Mga Setting"</string>
@@ -76,7 +80,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Magaling!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutorial <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Handa na ang lahat!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Mag-swipe pataas para pumunta sa Home"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Mag-swipe pataas para pumunta sa home"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"I-tap ang button ng home para pumunta sa iyong home screen"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Handa mo nang simulan ang paggamit sa iyong <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"device"</string>
@@ -84,7 +88,7 @@
     <string name="action_share" msgid="2648470652637092375">"Ibahagi"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Screenshot"</string>
     <string name="action_split" msgid="2098009717623550676">"Split"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"Mag-tap ng ibang app para gamitin ang splitscreen"</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"Mag-tap ng ibang app para gamitin ang split screen"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Pumili ng ibang app para gamitin ang split screen"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Hindi pinapayagan ng app o ng iyong organisasyon ang pagkilos na ito"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Laktawan ang tutorial sa pag-navigate?"</string>
@@ -95,9 +99,11 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Impormasyon sa taskbar"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Lumabas ang edukasyon sa taskbar"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Sarado ang edukasyon sa taskbar"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"I-drag sa gilid para makagamit ng 2 app nang sabay"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Mag-swipe nang bahagya pataas para ipakita ang taskbar"</string>
-    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Nagmumungkahi ang taskbar ng mga app batay sa iyong routine"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Mag-drag ng app sa gilid para makagamit ng 2 app nang sabay"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Mag-swipe nang mabagal pataas para ipakita ang Taskbar"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Makakuha ng mga iminumungkahing app batay sa iyong routine"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"I-on ang navigation gamit ang galaw sa Mga Setting para i-auto hide ang Taskbar"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Mas maraming magawa gamit ang Taskbar"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Susunod"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Bumalik"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Isara"</string>
@@ -110,7 +116,11 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Mga Notification"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Quick Settings"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Taskbar"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Ipinapakita ang taskbar"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Nakatago ang taskbar"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigation bar"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Ilipat sa itaas/kaliwa"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Ilipat sa ibaba/kanan"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Magpakita ng # pang app.}one{Magpakita ng # pang app.}other{Magpakita ng # pang app.}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> at <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

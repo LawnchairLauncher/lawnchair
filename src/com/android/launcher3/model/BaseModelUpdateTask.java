@@ -24,6 +24,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
+import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.data.AppInfo;
@@ -96,7 +97,8 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     public ModelWriter getModelWriter() {
         // Updates from model task, do not deal with icon position in hotseat. Also no need to
         // verify changes as the ModelTasks always push the changes to callbacks
-        return mModel.getWriter(false /* hasVerticalHotseat */, false /* verifyChanges */, null);
+        return mModel.getWriter(false /* hasVerticalHotseat */, false /* verifyChanges */,
+                CellPosMapper.DEFAULT, null);
     }
 
     public void bindUpdatedWorkspaceItems(@NonNull final List<WorkspaceItemInfo> allUpdates) {

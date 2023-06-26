@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.fallback;
 
+import static android.app.ActivityTaskManager.INVALID_TASK_ID;
+
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.fallback.RecentsState.DEFAULT;
 import static com.android.quickstep.fallback.RecentsState.HOME;
@@ -34,9 +36,9 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.logging.StatsLogManager;
-import com.android.launcher3.popup.QuickstepSystemShortcut;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource;
 import com.android.quickstep.FallbackActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.RecentsActivity;
@@ -200,8 +202,9 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    public void setModalStateEnabled(boolean isModalState, boolean animate) {
-        if (isModalState) {
+    public void setModalStateEnabled(int taskId, boolean animate) {
+        if (taskId != INVALID_TASK_ID) {
+            setSelectedTask(taskId);
             mActivity.getStateManager().goToState(RecentsState.MODAL_TASK, animate);
         } else {
             if (mActivity.isInState(RecentsState.MODAL_TASK)) {
@@ -269,7 +272,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    public void initiateSplitSelect(QuickstepSystemShortcut.SplitSelectSource splitSelectSource) {
+    public void initiateSplitSelect(SplitSelectSource splitSelectSource) {
         super.initiateSplitSelect(splitSelectSource);
         mActivity.getStateManager().goToState(OVERVIEW_SPLIT_SELECT);
     }

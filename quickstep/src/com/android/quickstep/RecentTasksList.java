@@ -17,7 +17,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
-import static com.android.quickstep.views.DesktopTaskView.DESKTOP_MODE_SUPPORTED;
+import static com.android.quickstep.views.DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED;
 import static com.android.wm.shell.util.GroupedRecentTaskInfo.TYPE_FREEFORM;
 
 import android.annotation.TargetApi;
@@ -270,7 +270,7 @@ public class RecentTasksList {
         TaskLoadResult allTasks = new TaskLoadResult(requestId, loadKeysOnly, rawTasks.size());
 
         for (GroupedRecentTaskInfo rawTask : rawTasks) {
-            if (DESKTOP_MODE_SUPPORTED && rawTask.getType() == TYPE_FREEFORM) {
+            if (DESKTOP_IS_PROTO2_ENABLED && rawTask.getType() == TYPE_FREEFORM) {
                 GroupTask desktopTask = createDesktopTask(rawTask);
                 allTasks.add(desktopTask);
                 continue;

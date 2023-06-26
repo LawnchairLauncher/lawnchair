@@ -1,0 +1,242 @@
+<!--
+    Copyright (C) 2023 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<com.android.quickstep.interaction.RootSandboxLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false">
+
+    <RelativeLayout
+        android:id="@+id/gesture_tutorial_fake_launcher_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/gesture_tutorial_fake_hotseat_view"
+            android:layout_width="@dimen/gesture_tutorial_hotseat_width"
+            android:layout_height="@dimen/gesture_tutorial_hotseat_height" />
+
+    </RelativeLayout>
+
+    <com.android.launcher3.views.ClipIconView
+        android:id="@+id/gesture_tutorial_fake_icon_view"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:visibility="invisible" />
+
+    <com.android.quickstep.interaction.AnimatedTaskView
+        android:id="@+id/gesture_tutorial_fake_previous_task_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleX="0.98"
+        android:scaleY="0.98"
+        android:visibility="invisible">
+
+        <View
+            android:id="@+id/full_task_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <View
+            android:id="@+id/top_task_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginBottom="@dimen/gesture_tutorial_multi_row_task_view_spacing"
+            android:background="@drawable/top_task_view"
+            android:clipToOutline="true"
+            android:visibility="invisible"
+
+            app:layout_constraintBottom_toTopOf="@id/bottom_task_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/full_task_view" />
+
+        <View
+            android:id="@+id/bottom_task_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@drawable/top_task_view"
+            android:clipToOutline="true"
+            android:visibility="invisible"
+
+            app:layout_constraintBottom_toBottomOf="@id/full_task_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/top_task_view" />
+
+    </com.android.quickstep.interaction.AnimatedTaskView>
+
+    <FrameLayout
+        android:id="@+id/gesture_tutorial_fake_task_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <View
+        android:id="@+id/gesture_tutorial_ripple_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/gesture_tutorial_ripple" />
+
+    <include
+        android:id="@+id/gesture_tutorial_fake_taskbar_view"
+        layout="@layout/gesture_tutorial_tablet_mock_taskbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/gesture_tutorial_taskbar_margin_bottom" />
+
+    <ImageView
+        android:id="@+id/gesture_tutorial_edge_gesture_video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="fitXY"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/exiting_app_back"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:background="@color/gesture_back_tutorial_exiting_app"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:id="@+id/full_gesture_demonstration"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/gesture_demonstration_animations"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            app:lottie_loop="true" />
+
+    </RelativeLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/gesture_tutorial_fragment_feedback_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/transparent"
+        android:paddingEnd="24dp"
+        android:paddingStart="24dp"
+        android:paddingTop="24dp">
+
+        <TextView
+            android:id="@+id/gesture_tutorial_fragment_feedback_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="104dp"
+            android:accessibilityHeading="true"
+            android:gravity="top"
+            android:lineSpacingExtra="-1sp"
+            android:textAppearance="@style/TextAppearance.GestureTutorial.MainTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/gesture_tutorial_fragment_feedback_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="24dp"
+            android:lineSpacingExtra="4sp"
+            android:textAppearance="@style/TextAppearance.GestureTutorial.MainSubtitle"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_title" />
+
+        <com.android.quickstep.interaction.TutorialStepIndicator
+            android:id="@+id/gesture_tutorial_fragment_feedback_tutorial_step"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_constraintBottom_toBottomOf="@id/gesture_tutorial_fragment_action_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/gesture_tutorial_fragment_close_button"
+            style="@style/TextAppearance.GestureTutorial.Feedback.Subtext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:paddingBottom="16dp"
+            android:paddingTop="16dp"
+            android:text="@string/gesture_tutorial_action_button_label_skip"
+            android:visibility="gone"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_subtitle" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/checkmark_animation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:scaleType="centerCrop"
+            app:lottie_loop="false"
+            android:visibility="gone"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_subtitle" />
+
+        <Button
+            android:id="@+id/gesture_tutorial_fragment_action_button"
+            style="@style/TextAppearance.GestureTutorial.ButtonLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/gesture_tutorial_action_button_background"
+            android:stateListAnimator="@null"
+            android:text="@string/gesture_tutorial_action_button_label"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/checkmark_animation" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ImageView
+        android:id="@+id/gesture_tutorial_finger_dot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/gesture_tutorial_finger_dot"
+        android:visibility="gone" />
+
+</com.android.quickstep.interaction.RootSandboxLayout>

@@ -16,12 +16,19 @@
 
 package com.android.launcher3.search;
 
+import android.text.TextUtils;
+
+import com.android.launcher3.util.IntArray;
+
 import java.text.Collator;
+import java.util.stream.IntStream;
 
 /**
  * Utilities for matching query string to target string.
  */
 public class StringMatcherUtility {
+
+    private static final Character SPACE = ' ';
 
     /**
      * Returns {@code true} if {@code query} is a prefix of a substring in {@code target}. How to
@@ -56,6 +63,41 @@ public class StringMatcherUtility {
             }
         }
         return false;
+    }
+
+    /**
+     * Returns a list of breakpoints wherever the string contains a break. For example:
+     * "t-mobile" would have breakpoints at [0, 1]
+     * "Agar.io" would have breakpoints at [3, 4]
+     * "LEGO®Builder" would have a breakpoint at [4]
+     */
+    public static IntArray getListOfBreakpoints(CharSequence input, StringMatcher matcher) {
+        int inputLength = input.length();
+        if ((inputLength <= 2) || TextUtils.indexOf(input, SPACE) != -1) {
+            // when there is a space in the string, return a list where the elements are the
+            // position of the spaces - 1. This is to make the logic consistent where breakpoints
+            // are placed
+            return IntArray.wrap(IntStream.range(0, inputLength)
+                    .filter(i -> input.charAt(i) == SPACE)
+                    .map(i -> i - 1)
+                    .toArray());
+        }
+        IntArray listOfBreakPoints = new IntArray();
+        int prevType;
+        int thisType = Character.getType(Character.codePointAt(input, 0));
+        int nextType = Character.getType(Character.codePointAt(input, 1));
+        for (int i = 1; i < inputLength; i++) {
+            prevType = thisType;
+            thisType = nextType;
+            nextType = i < (inputLength - 1)
+                    ? Character.getType(Character.codePointAt(input, i + 1))
+                    : Character.UNASSIGNED;
+            if (matcher.isBreak(thisType, prevType, nextType)) {
+                // breakpoint is at previous
+                listOfBreakPoints.add(i-1);
+            }
+        }
+        return listOfBreakPoints;
     }
 
     /**
@@ -118,7 +160,11 @@ public class StringMatcherUtility {
             }
             switch (thisType) {
                 case Character.UPPERCASE_LETTER:
-                    if (nextType == Character.UPPERCASE_LETTER) {
+                    // takes care of the case where there are consistent uppercase letters as well
+                    // as a special symbol following the capitalize letters for example: LEGO®
+                    if (nextType != Character.UPPERCASE_LETTER && nextType != Character.OTHER_SYMBOL
+                            && nextType != Character.DECIMAL_DIGIT_NUMBER
+                            && nextType != Character.UNASSIGNED) {
                         return true;
                     }
                     // Follow through

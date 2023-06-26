@@ -53,4 +53,9 @@ public class SplitScreenSelectState extends OverviewState {
             return SplitAnimationTimings.ABORT_DURATION;
         }
     }
+
+    @Override
+    public boolean shouldPreserveDataStateOnReapply() {
+        return true;
+    }
 }

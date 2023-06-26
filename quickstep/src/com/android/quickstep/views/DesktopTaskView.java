@@ -18,11 +18,14 @@ package com.android.quickstep.views;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
+import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.SystemProperties;
@@ -30,13 +33,16 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
+import android.view.View;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.RunnableList;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SystemUiProxy;
@@ -59,20 +65,24 @@ import java.util.function.Consumer;
 // TODO(b/249371338): TaskView needs to be refactored to have better support for N tasks.
 public class DesktopTaskView extends TaskView {
 
+    /** Flag to indicate whether desktop windowing proto 1 is enabled */
+    private static final boolean DESKTOP_IS_PROTO1_ENABLED = SystemProperties.getBoolean(
+            "persist.wm.debug.desktop_mode", false);
+
     /** Flag to indicate whether desktop windowing proto 2 is enabled */
     public static final boolean DESKTOP_IS_PROTO2_ENABLED = SystemProperties.getBoolean(
             "persist.wm.debug.desktop_mode_2", false);
 
     /** Flags to indicate whether desktop mode is available on the device */
     public static final boolean DESKTOP_MODE_SUPPORTED =
-            SystemProperties.getBoolean("persist.wm.debug.desktop_mode", false)
-                    || DESKTOP_IS_PROTO2_ENABLED;
+            DESKTOP_IS_PROTO1_ENABLED || DESKTOP_IS_PROTO2_ENABLED;
 
     private static final String TAG = DesktopTaskView.class.getSimpleName();
 
     private static final boolean DEBUG = true;
 
-    private List<Task> mTasks;
+    @NonNull
+    private List<Task> mTasks = new ArrayList<>();
 
     private final ArrayList<TaskThumbnailView> mSnapshotViews = new ArrayList<>();
 
@@ -80,6 +90,8 @@ public class DesktopTaskView extends TaskView {
     private final SparseArray<TaskThumbnailView> mSnapshotViewMap = new SparseArray<>();
 
     private final ArrayList<CancellableTask<?>> mPendingThumbnailRequests = new ArrayList<>();
+
+    private View mBackgroundView;
 
     public DesktopTaskView(Context context) {
         this(context, null);
@@ -96,15 +108,34 @@ public class DesktopTaskView extends TaskView {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+
+        mBackgroundView = findViewById(R.id.background);
+
+        int topMarginPx =
+                mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
+        FrameLayout.LayoutParams params = (LayoutParams) mBackgroundView.getLayoutParams();
+        params.topMargin = topMarginPx;
+        mBackgroundView.setLayoutParams(params);
+
         float[] outerRadii = new float[8];
         Arrays.fill(outerRadii, getTaskCornerRadius());
         RoundRectShape shape = new RoundRectShape(outerRadii, null, null);
         ShapeDrawable background = new ShapeDrawable(shape);
-        background.setTint(getResources().getColor(android.R.color.system_neutral2_300));
+        background.setTint(getResources().getColor(android.R.color.system_neutral2_300,
+                getContext().getTheme()));
         // TODO(b/244348395): this should be wallpaper
-        setBackground(background);
+        mBackgroundView.setBackground(background);
 
-        mSnapshotViews.add(mSnapshotView);
+        Drawable icon = getResources().getDrawable(R.drawable.ic_desktop, getContext().getTheme());
+        Drawable iconBackground = getResources().getDrawable(R.drawable.bg_circle,
+                getContext().getTheme());
+        mIconView.setDrawable(new LayerDrawable(new Drawable[]{iconBackground, icon}));
+    }
+
+    @Override
+    protected void updateBorderBounds(Rect bounds) {
+        bounds.set(mBackgroundView.getLeft(), mBackgroundView.getTop(), mBackgroundView.getRight(),
+                mBackgroundView.getBottom());
     }
 
     @Override
@@ -124,12 +155,9 @@ public class DesktopTaskView extends TaskView {
             }
             Log.d(TAG, sb.toString());
         }
-        if (tasks.isEmpty()) {
-            return;
-        }
         cancelPendingLoadTasks();
 
-        mTasks = tasks;
+        mTasks = new ArrayList<>(tasks);
         mSnapshotViewMap.clear();
 
         // Ensure there are equal number of snapshot views and tasks.
@@ -202,7 +230,8 @@ public class DesktopTaskView extends TaskView {
         if (task != null) {
             return mSnapshotViewMap.get(task.key.id);
         }
-        return null;
+        // Return the place holder snapshot views. Callers expect this to be non-null
+        return mSnapshotView;
     }
 
     @Override
@@ -247,20 +276,9 @@ public class DesktopTaskView extends TaskView {
     }
 
     @Override
-    public void setOrientationState(RecentsOrientedState orientationState) {
-        // TODO(b/249371338): this copies logic from TaskView
-        PagedOrientationHandler orientationHandler = orientationState.getOrientationHandler();
-        boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+    protected void setThumbnailOrientation(RecentsOrientedState orientationState) {
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-
-        LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
-
         int thumbnailTopMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
-        int taskIconHeight = deviceProfile.overviewTaskIconSizePx;
-        int taskMargin = deviceProfile.overviewTaskMarginPx;
-
-        orientationHandler.setTaskIconParams(iconParams, taskMargin, taskIconHeight,
-                thumbnailTopMargin, isRtl);
 
         LayoutParams snapshotParams = (LayoutParams) mSnapshotView.getLayoutParams();
         snapshotParams.topMargin = thumbnailTopMargin;
@@ -292,7 +310,7 @@ public class DesktopTaskView extends TaskView {
     @Override
     public RunnableList launchTasks() {
         SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps();
-        getRecentsView().startHome();
+        Launcher.getLauncher(mActivity).getStateManager().goToState(NORMAL, false /* animated */);
         return null;
     }
 
@@ -306,6 +324,11 @@ public class DesktopTaskView extends TaskView {
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
         launchTasks();
         callback.accept(true);
+    }
+
+    @Override
+    public boolean isDesktopTask() {
+        return true;
     }
 
     @Override
@@ -354,6 +377,7 @@ public class DesktopTaskView extends TaskView {
         }
         setOverlayEnabled(false);
         onTaskListVisibilityChanged(false);
+        setVisibility(VISIBLE);
     }
 
     @Override
@@ -363,6 +387,9 @@ public class DesktopTaskView extends TaskView {
         int containerHeight = MeasureSpec.getSize(heightMeasureSpec);
 
         setMeasuredDimension(containerWidth, containerHeight);
+
+        int thumbnailTopMarginPx = mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx;
+        containerHeight -= thumbnailTopMarginPx;
 
         int thumbnails = mSnapshotViewMap.size();
         if (thumbnails == 0) {
@@ -406,6 +433,8 @@ public class DesktopTaskView extends TaskView {
                 }
                 int taskX = (int) (positionInParent.x * scaleWidth);
                 int taskY = (int) (positionInParent.y * scaleHeight);
+                // move task down by margin size
+                taskY += thumbnailTopMarginPx;
                 thumbnailView.setX(taskX);
                 thumbnailView.setY(taskY);
 
@@ -427,6 +456,12 @@ public class DesktopTaskView extends TaskView {
         // TODO(b/249371338): this copies parent implementation and makes it work for N thumbs
         progress = Utilities.boundToRange(progress, 0, 1);
         mFullscreenProgress = progress;
+        if (mFullscreenProgress > 0) {
+            // Don't show background while we are transitioning to/from fullscreen
+            mBackgroundView.setVisibility(INVISIBLE);
+        } else {
+            mBackgroundView.setVisibility(VISIBLE);
+        }
         for (int i = 0; i < mSnapshotViewMap.size(); i++) {
             TaskThumbnailView thumbnailView = mSnapshotViewMap.valueAt(i);
             thumbnailView.getTaskOverlay().setFullscreenProgress(progress);
@@ -461,7 +496,7 @@ public class DesktopTaskView extends TaskView {
     }
 
     @Override
-    void setThumbnailVisibility(int visibility) {
+    void setThumbnailVisibility(int visibility, int taskId) {
         for (int i = 0; i < mSnapshotViewMap.size(); i++) {
             mSnapshotViewMap.valueAt(i).setVisibility(visibility);
         }

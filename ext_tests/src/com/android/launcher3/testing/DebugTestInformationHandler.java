@@ -16,6 +16,7 @@
 
 package com.android.launcher3.testing;
 
+import static com.android.launcher3.testing.shared.TestProtocol.VIEW_AND_ACTIVITY_LEAKS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
@@ -24,7 +25,9 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Binder;
 import android.os.Bundle;
+import android.os.Process;
 import android.system.Os;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.Keep;
@@ -157,8 +160,14 @@ public class DebugTestInformationHandler extends TestInformationHandler {
 
             case TestProtocol.REQUEST_VIEW_LEAK: {
                 if (sLeaks == null) sLeaks = new LinkedList();
+                Log.d(VIEW_AND_ACTIVITY_LEAKS, "forcefully leaking 2 views");
                 sLeaks.add(new View(mContext));
                 sLeaks.add(new View(mContext));
+                return response;
+            }
+
+            case TestProtocol.PRINT_VIEW_LEAK: {
+                Log.d(VIEW_AND_ACTIVITY_LEAKS, "(pid=" + Process.myPid() + ") sLeaks=" + sLeaks);
                 return response;
             }
 
@@ -218,6 +227,12 @@ public class DebugTestInformationHandler extends TestInformationHandler {
             case TestProtocol.REQUEST_USE_TEST2_WORKSPACE_LAYOUT: {
                 useTestWorkspaceLayout(
                         LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TEST2);
+                return response;
+            }
+
+            case TestProtocol.REQUEST_USE_TAPL_WORKSPACE_LAYOUT: {
+                useTestWorkspaceLayout(
+                        LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TAPL);
                 return response;
             }
 

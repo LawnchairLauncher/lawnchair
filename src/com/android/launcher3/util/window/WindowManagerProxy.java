@@ -161,12 +161,10 @@ public class WindowManagerProxy implements ResourceBasedOverride {
         insetsBuilder.setInsetsIgnoringVisibility(WindowInsets.Type.navigationBars(), newNavInsets);
 
         Insets statusBarInsets = oldInsets.getInsets(WindowInsets.Type.statusBars());
-        int statusBarHeight = getDimenByName(systemRes,
-                (isPortrait) ? STATUS_BAR_HEIGHT_PORTRAIT : STATUS_BAR_HEIGHT_LANDSCAPE,
-                STATUS_BAR_HEIGHT);
+
         Insets newStatusBarInsets = Insets.of(
                 statusBarInsets.left,
-                Math.max(statusBarInsets.top, statusBarHeight),
+                getStatusBarHeight(context, isPortrait, statusBarInsets.top),
                 statusBarInsets.right,
                 statusBarInsets.bottom);
         insetsBuilder.setInsets(WindowInsets.Type.statusBars(), newStatusBarInsets);
@@ -188,6 +186,15 @@ public class WindowManagerProxy implements ResourceBasedOverride {
         outInsets.set(systemWindowInsets.left, systemWindowInsets.top, systemWindowInsets.right,
                 systemWindowInsets.bottom);
         return result;
+    }
+
+    protected int getStatusBarHeight(Context context, boolean isPortrait, int statusBarInset) {
+        Resources systemRes = context.getResources();
+        int statusBarHeight = getDimenByName(systemRes,
+                isPortrait ? STATUS_BAR_HEIGHT_PORTRAIT : STATUS_BAR_HEIGHT_LANDSCAPE,
+                STATUS_BAR_HEIGHT);
+
+        return Math.max(statusBarInset, statusBarHeight);
     }
 
     /**
@@ -212,6 +219,9 @@ public class WindowManagerProxy implements ResourceBasedOverride {
         boolean isTabletOrGesture = isTablet
                 || (Utilities.ATLEAST_R && isGestureNav(context));
 
+        // Use the status bar height resources because current system API to get the status bar
+        // height doesn't allow to do this for an arbitrary display, it returns value only
+        // for the current active display (see com.android.internal.policy.StatusBarUtils)
         int statusBarHeightPortrait = getDimenByName(systemRes,
                 STATUS_BAR_HEIGHT_PORTRAIT, STATUS_BAR_HEIGHT);
         int statusBarHeightLandscape = getDimenByName(systemRes,

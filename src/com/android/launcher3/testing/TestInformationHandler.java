@@ -176,7 +176,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 MAIN_EXECUTOR.submit(() ->
                         Launcher.ACTIVITY_TRACKER.getCreatedActivity().getRotationHelper()
                                 .forceAllowRotationForTesting(Boolean.parseBoolean(arg)));
-                return null;
+                return response;
 
             case TestProtocol.REQUEST_WORKSPACE_CELL_LAYOUT_SIZE:
                 return getLauncherUIProperty(Bundle::putIntArray, launcher -> {
@@ -201,6 +201,18 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 });
             }
 
+            case TestProtocol.REQUEST_WORKSPACE_COLUMNS_ROWS: {
+                return getLauncherUIProperty(Bundle::putParcelable, launcher -> new Point(
+                        InvariantDeviceProfile.INSTANCE.get(mContext).numColumns,
+                        InvariantDeviceProfile.INSTANCE.get(mContext).numRows)
+                );
+            }
+
+            case TestProtocol.REQUEST_WORKSPACE_CURRENT_PAGE_INDEX: {
+                return getLauncherUIProperty(Bundle::putInt,
+                        launcher -> launcher.getWorkspace().getCurrentPage());
+            }
+
             case TestProtocol.REQUEST_HOTSEAT_CELL_CENTER: {
                 final HotseatCellCenterRequest request = extra.getParcelable(
                         TestProtocol.TEST_INFO_REQUEST_FIELD);
@@ -223,6 +235,13 @@ public class TestInformationHandler implements ResourceBasedOverride {
             case TestProtocol.REQUEST_ALL_APPS_TOP_PADDING: {
                 return getLauncherUIProperty(Bundle::putInt,
                         l -> l.getAppsView().getActiveRecyclerView().getClipBounds().top);
+            }
+
+            case TestProtocol.REQUEST_ALL_APPS_BOTTOM_PADDING: {
+                return getLauncherUIProperty(Bundle::putInt,
+                        l -> l.getAppsView().getBottom()
+                                - l.getAppsView().getActiveRecyclerView().getBottom()
+                                + l.getAppsView().getActiveRecyclerView().getPaddingBottom());
             }
 
             default:

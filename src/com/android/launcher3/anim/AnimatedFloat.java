@@ -55,6 +55,11 @@ public class AnimatedFloat {
         mUpdateCallback = updateCallback;
     }
 
+    public AnimatedFloat(Runnable updateCallback, float initialValue) {
+        this(updateCallback);
+        value = initialValue;
+    }
+
     /**
      * Returns an animation from the current value to the given value.
      */
@@ -125,6 +130,15 @@ public class AnimatedFloat {
      */
     public boolean isAnimatingToValue(float endValue) {
         return isAnimating() && mEndValue != null && mEndValue == endValue;
+    }
+
+    /**
+     * Returns the remaining time of the existing animation (if any).
+     */
+    public long getRemainingTime() {
+        return isAnimating() && mValueAnimator.isRunning()
+                ? Math.max(0, mValueAnimator.getDuration() - mValueAnimator.getCurrentPlayTime())
+                : 0;
     }
 
     /**

@@ -23,14 +23,14 @@ import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_LO
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_QUIET_USER;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.pm.PackageInstaller.SessionInfo;
-import android.os.Process;
-import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -66,6 +66,8 @@ import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetManagerHelper;
 
 import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 /**
  * Class for handling clicks on workspace and all-apps items
@@ -156,32 +158,18 @@ public class ItemClickHandler {
 
     private static void onClickPendingAppItem(View v, Launcher launcher, String packageName,
             boolean downloadStarted) {
-        if (downloadStarted) {
-            // If the download has started, simply direct to the market app.
-            startMarketIntentForPackage(v, launcher, packageName);
-            return;
-        }
-        UserHandle user = v.getTag() instanceof ItemInfo
-                ? ((ItemInfo) v.getTag()).user : Process.myUserHandle();
-        new AlertDialog.Builder(launcher)
-                .setTitle(R.string.abandoned_promises_title)
-                .setMessage(R.string.abandoned_promise_explanation)
-                .setPositiveButton(R.string.abandoned_search,
-                        (d, i) -> startMarketIntentForPackage(v, launcher, packageName))
-                .setNeutralButton(R.string.abandoned_clean_this,
-                        (d, i) -> launcher.getWorkspace()
-                                .persistRemoveItemsByMatcher(ItemInfoMatcher.ofPackages(
-                                        Collections.singleton(packageName), user),
-                                        "user explicitly removes the promise app icon"))
-                .create().show();
-    }
-
-    private static void startMarketIntentForPackage(View v, Launcher launcher, String packageName) {
         ItemInfo item = (ItemInfo) v.getTag();
+        CompletableFuture<SessionInfo> siFuture;
         if (Utilities.ATLEAST_Q) {
-            SessionInfo sessionInfo = InstallSessionHelper.INSTANCE.get(launcher)
-                    .getActiveSessionInfo(item.user, packageName);
-            if (sessionInfo != null) {
+            siFuture = CompletableFuture.supplyAsync(() ->
+                    InstallSessionHelper.INSTANCE.get(launcher)
+                            .getActiveSessionInfo(item.user, packageName),
+                    UI_HELPER_EXECUTOR);
+        } else {
+            siFuture = CompletableFuture.completedFuture(null);
+        }
+        Consumer<SessionInfo> marketLaunchAction = sessionInfo -> {
+            if (sessionInfo != null && Utilities.ATLEAST_Q) {
                 LauncherApps launcherApps = launcher.getSystemService(LauncherApps.class);
                 try {
                     launcherApps.startPackageInstallerSessionDetailsActivity(sessionInfo, null,
@@ -191,11 +179,27 @@ public class ItemClickHandler {
                     Log.e(TAG, "Unable to launch market intent for package=" + packageName, e);
                 }
             }
-        }
+            // Fallback to using custom market intent.
+            Intent intent = new PackageManagerHelper(launcher).getMarketIntent(packageName);
+            launcher.startActivitySafely(v, intent, item);
+        };
 
-        // Fallback to using custom market intent.
-        Intent intent = new PackageManagerHelper(launcher).getMarketIntent(packageName);
-        launcher.startActivitySafely(v, intent, item);
+        if (downloadStarted) {
+            // If the download has started, simply direct to the market app.
+            siFuture.thenAcceptAsync(marketLaunchAction, MAIN_EXECUTOR);
+            return;
+        }
+        new AlertDialog.Builder(launcher)
+                .setTitle(R.string.abandoned_promises_title)
+                .setMessage(R.string.abandoned_promise_explanation)
+                .setPositiveButton(R.string.abandoned_search,
+                        (d, i) -> siFuture.thenAcceptAsync(marketLaunchAction, MAIN_EXECUTOR))
+                .setNeutralButton(R.string.abandoned_clean_this,
+                        (d, i) -> launcher.getWorkspace()
+                                .persistRemoveItemsByMatcher(ItemInfoMatcher.ofPackages(
+                                        Collections.singleton(packageName), item.user),
+                                        "user explicitly removes the promise app icon"))
+                .create().show();
     }
 
     /**
@@ -339,7 +343,8 @@ public class ItemClickHandler {
                 return;
             }
         }
-        if (v != null && launcher.supportsAdaptiveIconAnimation(v)) {
+        if (v != null && launcher.supportsAdaptiveIconAnimation(v)
+                && !item.shouldUseBackgroundAnimation()) {
             // Preload the icon to reduce latency b/w swapping the floating view with the original.
             FloatingIconView.fetchIcon(launcher, v, item, true /* isOpening */);
         }

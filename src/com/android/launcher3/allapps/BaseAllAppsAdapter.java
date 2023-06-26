@@ -27,17 +27,16 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
+import com.android.launcher3.allapps.search.SearchAdapterProvider;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.views.ActivityContext;
-
-import java.util.Arrays;
 
 /**
  * Adapter for all the apps.
@@ -65,8 +64,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
 
-
-    protected final BaseAdapterProvider[] mAdapterProviders;
+    protected final SearchAdapterProvider<?> mAdapterProvider;
 
     /**
      * ViewHolder for each icon.
@@ -143,10 +141,10 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
     protected final OnClickListener mOnIconClickListener;
     protected OnLongClickListener mOnIconLongClickListener = INSTANCE_ALL_APPS;
     protected OnFocusChangeListener mIconFocusListener;
-    private final int mExtraHeight;
+    private final int mExtraTextHeight;
 
     public BaseAllAppsAdapter(T activityContext, LayoutInflater inflater,
-            AlphabeticalAppsList<T> apps, BaseAdapterProvider[] adapterProviders) {
+            AlphabeticalAppsList<T> apps, SearchAdapterProvider<?> adapterProvider) {
         Resources res = activityContext.getResources();
         mActivityContext = activityContext;
         mApps = apps;
@@ -154,8 +152,9 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
 
         mOnIconClickListener = mActivityContext.getItemOnClickListener();
 
-        mAdapterProviders = adapterProviders;
-        mExtraHeight = res.getDimensionPixelSize(R.dimen.all_apps_height_extra);
+        mAdapterProvider = adapterProvider;
+        mExtraTextHeight = Utilities.calculateTextHeight(
+                mActivityContext.getDeviceProfile().allAppsIconTextSizePx);
     }
 
     /**
@@ -200,7 +199,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 icon.getLayoutParams().height =
                         mActivityContext.getDeviceProfile().allAppsCellHeightPx;
                 if (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get()) {
-                    icon.getLayoutParams().height += mExtraHeight;
+                    icon.getLayoutParams().height += mExtraTextHeight;
                 }
                 return new ViewHolder(icon);
             case VIEW_TYPE_EMPTY_SEARCH:
@@ -216,9 +215,8 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.work_apps_paused, parent, false));
             default:
-                BaseAdapterProvider adapterProvider = getAdapterProvider(viewType);
-                if (adapterProvider != null) {
-                    return adapterProvider.onCreateViewHolder(mLayoutInflater, parent, viewType);
+                if (mAdapterProvider.isViewSupported(viewType)) {
+                    return mAdapterProvider.onCreateViewHolder(mLayoutInflater, parent, viewType);
                 }
                 throw new RuntimeException("Unexpected view type" + viewType);
         }
@@ -250,16 +248,10 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 ((WorkEduCard) holder.itemView).setPosition(position);
                 break;
             default:
-                BaseAdapterProvider adapterProvider = getAdapterProvider(holder.getItemViewType());
-                if (adapterProvider != null) {
-                    adapterProvider.onBindView(holder, position);
+                if (mAdapterProvider.isViewSupported(holder.getItemViewType())) {
+                    mAdapterProvider.onBindView(holder, position);
                 }
         }
-    }
-
-    @Override
-    public void onViewRecycled(@NonNull ViewHolder holder) {
-        super.onViewRecycled(holder);
     }
 
     @Override
@@ -283,10 +275,4 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         return (viewType & viewTypeMask) != 0;
     }
 
-    @Nullable
-    protected BaseAdapterProvider getAdapterProvider(int viewType) {
-        return Arrays.stream(mAdapterProviders).filter(
-                adapterProvider -> adapterProvider.isViewSupported(viewType)).findFirst().orElse(
-                null);
-    }
 }

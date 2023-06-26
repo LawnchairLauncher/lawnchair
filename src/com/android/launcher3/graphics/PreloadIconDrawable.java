@@ -28,6 +28,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -41,6 +42,7 @@ import android.util.Property;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
+import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.GraphicsUtils;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -53,7 +55,7 @@ import java.util.function.Function;
 /**
  * Extension of {@link FastBitmapDrawable} which shows a progress bar around the icon.
  */
-public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable {
+public class PreloadIconDrawable extends FastBitmapDrawable {
 
     private static final Property<PreloadIconDrawable, Float> INTERNAL_STATE =
             new Property<PreloadIconDrawable, Float>(Float.TYPE, "internalStateProgress") {
@@ -78,16 +80,19 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
 
     // The smaller the number, the faster the animation would be.
     // Duration = COMPLETE_ANIM_FRACTION * DURATION_SCALE
-    private static final float COMPLETE_ANIM_FRACTION = 0.3f;
+    private static final float COMPLETE_ANIM_FRACTION = 1f;
 
-    private static final float SMALL_SCALE = ENABLE_DOWNLOAD_APP_UX_V2.get() ? 0.867f : 0.7f;
-    private static final float PROGRESS_STROKE_SCALE = 0.075f;
+    private static final float SMALL_SCALE = 0.7f;
+    private static final float PROGRESS_STROKE_SCALE = ENABLE_DOWNLOAD_APP_UX_V2.get()
+            ? 0.0655f
+            : 0.075f;
+    private static final float PROGRESS_BOUNDS_SCALE = 0.075f;
 
     private static final int PRELOAD_ACCENT_COLOR_INDEX = 0;
     private static final int PRELOAD_BACKGROUND_COLOR_INDEX = 1;
 
     private static final int ALPHA_DURATION_MILLIS = 3000;
-    private static final float OVERLAY_ALPHA_RANGE = 127.5f;
+    private static final int OVERLAY_ALPHA_RANGE = 191;
     private static final long WAVE_MOTION_DELAY_FACTOR_MILLIS = 100;
     private static final WeakHashMap<Integer, PorterDuffColorFilter> COLOR_FILTER_MAP =
             new WeakHashMap<>();
@@ -111,19 +116,17 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
     private final int mSystemBackgroundColor;
     private final boolean mIsDarkMode;
 
-    private int mTrackAlpha;
     private float mTrackLength;
 
     private boolean mRanFinishAnimation;
-
     private final int mRefreshRateMillis;
-    private final AnimatedFloat mIconScale = new AnimatedFloat(this::invalidateSelf);
-    private final AnimatedFloat mOverlayAlpha = new AnimatedFloat(this::updateOverlayAlpha);
-    private boolean mShouldAnimateScaleAndAlpha;
 
     // Progress of the internal state. [0, 1] indicates the fraction of completed progress,
     // [1, (1 + COMPLETE_ANIM_FRACTION)] indicates the progress of zoom animation.
     private float mInternalStateProgress;
+    // This multiplier is used to animate scale when going from 0 to non-zero and expanding
+    private final Runnable mInvalidateRunnable = this::invalidateSelf;
+    private final AnimatedFloat mIconScaleMultiplier = new AnimatedFloat(mInvalidateRunnable);
 
     private ObjectAnimator mCurrentAnim;
 
@@ -135,7 +138,8 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
                 IconPalette.getPreloadProgressColor(context, info.bitmap.color),
                 getPreloadColors(context),
                 Utilities.isDarkTheme(context),
-                getRefreshRateMillis(context));
+                getRefreshRateMillis(context),
+                GraphicsUtils.getShapePath(context, DEFAULT_PATH_SIZE));
     }
 
     public PreloadIconDrawable(
@@ -143,10 +147,11 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
             int indicatorColor,
             int[] preloadColors,
             boolean isDarkMode,
-            int refreshRateMillis) {
+            int refreshRateMillis,
+            Path shapePath) {
         super(info.bitmap);
         mItem = info;
-        mShapePath = GraphicsUtils.getShapePath(DEFAULT_PATH_SIZE);
+        mShapePath = shapePath;
         mScaledTrackPath = new Path();
         mScaledProgressPath = new Path();
 
@@ -160,10 +165,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
         mRefreshRateMillis = refreshRateMillis;
 
         // If it's a pending app we will animate scale and alpha when it's no longer pending.
-        if (ENABLE_DOWNLOAD_APP_UX_V2.get() && info.getProgressLevel() == 0) {
-            mShouldAnimateScaleAndAlpha = true;
-            mOverlayAlpha.updateValue(127);
-        }
+        mIconScaleMultiplier.updateValue(info.getProgressLevel() == 0 ? 0 : 1);
 
         setLevel(info.getProgressLevel());
         setIsStartable(info.isAppStartable());
@@ -173,14 +175,17 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
 
-        float progressWidth = PROGRESS_STROKE_SCALE * bounds.width();
+
+        float progressWidth = bounds.width() * (ENABLE_DOWNLOAD_APP_UX_V2.get()
+                ? PROGRESS_BOUNDS_SCALE
+                : PROGRESS_STROKE_SCALE);
         mTmpMatrix.setScale(
                 (bounds.width() - 2 * progressWidth) / DEFAULT_PATH_SIZE,
                 (bounds.height() - 2 * progressWidth) / DEFAULT_PATH_SIZE);
         mTmpMatrix.postTranslate(bounds.left + progressWidth, bounds.top + progressWidth);
 
         mShapePath.transform(mTmpMatrix, mScaledTrackPath);
-        mProgressPaint.setStrokeWidth(progressWidth);
+        mProgressPaint.setStrokeWidth(PROGRESS_STROKE_SCALE * bounds.width());
 
         mPathMeasure.setPath(mScaledTrackPath, true);
         mTrackLength = mPathMeasure.getLength();
@@ -195,26 +200,35 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
             return;
         }
 
-        // Draw background.
-        mProgressPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        mProgressPaint.setColor(mSystemBackgroundColor);
-        canvas.drawPath(mScaledTrackPath, mProgressPaint);
+        if (!ENABLE_DOWNLOAD_APP_UX_V2.get() && mInternalStateProgress > 0) {
+            // Draw background.
+            mProgressPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            mProgressPaint.setColor(mSystemBackgroundColor);
+            canvas.drawPath(mScaledTrackPath, mProgressPaint);
+        }
 
-        // Draw track and progress.
-        mProgressPaint.setStyle(Paint.Style.STROKE);
-        mProgressPaint.setColor(mIsStartable ? mIndicatorColor : mSystemAccentColor);
-        mProgressPaint.setAlpha(TRACK_ALPHA);
-        canvas.drawPath(mScaledTrackPath, mProgressPaint);
-        mProgressPaint.setAlpha(mTrackAlpha);
-        canvas.drawPath(mScaledProgressPath, mProgressPaint);
+        if (!ENABLE_DOWNLOAD_APP_UX_V2.get() || mInternalStateProgress > 0) {
+            // Draw track and progress.
+            mProgressPaint.setStyle(Paint.Style.STROKE);
+            mProgressPaint.setColor(mSystemAccentColor);
+            mProgressPaint.setAlpha(TRACK_ALPHA);
+            canvas.drawPath(mScaledTrackPath, mProgressPaint);
+            mProgressPaint.setAlpha(MAX_PAINT_ALPHA);
+            canvas.drawPath(mScaledProgressPath, mProgressPaint);
+        }
 
         int saveCount = canvas.save();
-        canvas.scale(
-                mIconScale.value, mIconScale.value, bounds.exactCenterX(), bounds.exactCenterY());
+        float scale = ENABLE_DOWNLOAD_APP_UX_V2.get()
+                ? 1 - mIconScaleMultiplier.value * (1 - SMALL_SCALE)
+                : SMALL_SCALE;
+        canvas.scale(scale, scale, bounds.exactCenterX(), bounds.exactCenterY());
+
+        ColorFilter filter = getOverlayFilter();
+        mPaint.setColorFilter(filter);
         super.drawInternal(canvas, bounds);
         canvas.restoreToCount(saveCount);
 
-        if (ENABLE_DOWNLOAD_APP_UX_V2.get() && mInternalStateProgress == 0) {
+        if (ENABLE_DOWNLOAD_APP_UX_V2.get() && filter != null) {
             reschedule();
         }
     }
@@ -232,7 +246,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
     @Override
     protected boolean onLevelChange(int level) {
         // Run the animation if we have already been bound.
-        updateInternalState(level * 0.01f,  getBounds().width() > 0, false);
+        updateInternalState(level * 0.01f, false, null);
         return true;
     }
 
@@ -240,12 +254,18 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
      * Runs the finish animation if it is has not been run after last call to
      * {@link #onLevelChange}
      */
-    public void maybePerformFinishedAnimation() {
+    public void maybePerformFinishedAnimation(
+            PreloadIconDrawable oldIcon, Runnable onFinishCallback) {
+
+        if (oldIcon.mInternalStateProgress >= 1) {
+            mInternalStateProgress = oldIcon.mInternalStateProgress;
+        }
+
         // If the drawable was recently initialized, skip the progress animation.
         if (mInternalStateProgress == 0) {
             mInternalStateProgress = 1;
         }
-        updateInternalState(1 + COMPLETE_ANIM_FRACTION, true, true);
+        updateInternalState(1 + COMPLETE_ANIM_FRACTION, true, onFinishCallback);
     }
 
     public boolean hasNotCompleted() {
@@ -260,26 +280,29 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
         }
     }
 
-    private void updateInternalState(float finalProgress, boolean shouldAnimate, boolean isFinish) {
+    private void updateInternalState(
+            float finalProgress, boolean isFinish, Runnable onFinishCallback) {
         if (mCurrentAnim != null) {
             mCurrentAnim.cancel();
             mCurrentAnim = null;
         }
 
-        if (Float.compare(finalProgress, mInternalStateProgress) == 0) {
-            return;
-        }
-        if (finalProgress < mInternalStateProgress) {
-            shouldAnimate = false;
-        }
-        if (!shouldAnimate || mRanFinishAnimation) {
+        boolean animateProgress =
+                finalProgress >= mInternalStateProgress && getBounds().width() > 0;
+        if (!animateProgress || mRanFinishAnimation) {
             setInternalProgress(finalProgress);
+            if (isFinish && onFinishCallback != null) {
+                onFinishCallback.run();
+            }
         } else {
             mCurrentAnim = ObjectAnimator.ofFloat(this, INTERNAL_STATE, finalProgress);
             mCurrentAnim.setDuration(
                     (long) ((finalProgress - mInternalStateProgress) * DURATION_SCALE));
             mCurrentAnim.setInterpolator(LINEAR);
             if (isFinish) {
+                if (onFinishCallback != null) {
+                    mCurrentAnim.addListener(AnimatorListeners.forEndCallback(onFinishCallback));
+                }
                 mCurrentAnim.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -297,62 +320,38 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
      *     - icon with pending motion
      *     - progress track is not visible
      *     - progress bar is not visible
-     *   for progress < 1
+     *   for progress < 1:
      *     - icon without pending motion
      *     - progress track is visible
      *     - progress bar is visible. Progress bar is drawn as a fraction of
      *       {@link #mScaledTrackPath}.
      *       @see PathMeasure#getSegment(float, float, Path, boolean)
-     *   for 1 <= progress < (1 + COMPLETE_ANIM_FRACTION)
-     *     - we calculate fraction of progress in the above range
-     *     - progress track is drawn with alpha based on fraction
-     *     - progress bar is drawn at 100% with alpha based on fraction
-     *     - icon is scaled up based on fraction and is drawn in enabled state
-     *   for progress >= (1 + COMPLETE_ANIM_FRACTION)
-     *     - only icon is drawn in normal state
+     *   for progress > 1:
+     *     - scale the icon back to full size
      */
     private void setInternalProgress(float progress) {
         // Animate scale and alpha from pending to downloading state.
-        if (ENABLE_DOWNLOAD_APP_UX_V2.get()
-                && mShouldAnimateScaleAndAlpha && mInternalStateProgress == 0 && progress > 0) {
-            Animator iconScaleAnimator = mIconScale.animateToValue(SMALL_SCALE);
+        if (ENABLE_DOWNLOAD_APP_UX_V2.get() && progress > 0 && mInternalStateProgress == 0) {
+            // Progress is changing for the first time, animate the icon scale
+            Animator iconScaleAnimator = mIconScaleMultiplier.animateToValue(1);
             iconScaleAnimator.setDuration(SCALE_AND_ALPHA_ANIM_DURATION);
             iconScaleAnimator.setInterpolator(EMPHASIZED);
             iconScaleAnimator.start();
-
-            Animator overlayAlphaAnimator = mOverlayAlpha.animateToValue(0);
-            overlayAlphaAnimator.setDuration(SCALE_AND_ALPHA_ANIM_DURATION);
-            overlayAlphaAnimator.setInterpolator(EMPHASIZED);
-            overlayAlphaAnimator.start();
         }
 
         mInternalStateProgress = progress;
         if (progress <= 0) {
-            mIconScale.updateValue(ENABLE_DOWNLOAD_APP_UX_V2.get() ? 1 : SMALL_SCALE);
-            mScaledTrackPath.reset();
-            mTrackAlpha = MAX_PAINT_ALPHA;
-        } else if (progress < 1) {
-            mPathMeasure.getSegment(0, progress * mTrackLength, mScaledProgressPath, true);
-            if (ENABLE_DOWNLOAD_APP_UX_V2.get()) {
-                mPathMeasure.getSegment(0, mTrackLength, mScaledTrackPath, true);
+            if (!ENABLE_DOWNLOAD_APP_UX_V2.get()) {
+                mScaledTrackPath.reset();
             }
-
-            if (!ENABLE_DOWNLOAD_APP_UX_V2.get() || !mShouldAnimateScaleAndAlpha) {
-                mIconScale.updateValue(SMALL_SCALE);
-            }
-            mTrackAlpha = MAX_PAINT_ALPHA;
+            mIconScaleMultiplier.updateValue(0);
         } else {
-            setIsDisabled(mItem.isDisabled());
-            mScaledTrackPath.set(mScaledProgressPath);
-            float fraction = (progress - 1) / COMPLETE_ANIM_FRACTION;
-
-            if (fraction >= 1) {
-                // Animation has completed
-                mIconScale.updateValue(1);
-                mTrackAlpha = 0;
-            } else {
-                mTrackAlpha = Math.round((1 - fraction) * MAX_PAINT_ALPHA);
-                mIconScale.updateValue(SMALL_SCALE + (1 - SMALL_SCALE) * fraction);
+            mPathMeasure.getSegment(
+                    0, Math.min(progress, 1) * mTrackLength, mScaledProgressPath, true);
+            if (progress > 1 && ENABLE_DOWNLOAD_APP_UX_V2.get()) {
+                // map the scale back to original value
+                mIconScaleMultiplier.updateValue(Utilities.mapBoundToRange(
+                        progress - 1, 0, COMPLETE_ANIM_FRACTION, 1, 0, EMPHASIZED));
             }
         }
         invalidateSelf();
@@ -389,75 +388,53 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
                 mIndicatorColor,
                 new int[] {mSystemAccentColor, mSystemBackgroundColor},
                 mIsDarkMode,
-                mRefreshRateMillis);
-    }
-
-    @Override
-    public void run() {
-        if (!ENABLE_DOWNLOAD_APP_UX_V2.get() || mInternalStateProgress > 0) {
-            return;
-        }
-        if (!applyPendingIconOverlay()) {
-            reschedule();
-        }
+                mRefreshRateMillis,
+                mShapePath);
     }
 
     @Override
     public boolean setVisible(boolean visible, boolean restart) {
-        boolean result = super.setVisible(visible, restart);
-        if (visible) {
-            reschedule();
-        } else {
-            unscheduleSelf(this);
+        if (!visible) {
+            unscheduleSelf(mInvalidateRunnable);
         }
-        return result;
+        return super.setVisible(visible, restart);
     }
 
     private void reschedule() {
-        unscheduleSelf(this);
-
+        unscheduleSelf(mInvalidateRunnable);
         if (!isVisible()) {
             return;
         }
-
         final long upTime = SystemClock.uptimeMillis();
-        scheduleSelf(this, upTime - ((upTime % mRefreshRateMillis)) + mRefreshRateMillis);
+        scheduleSelf(mInvalidateRunnable,
+                upTime - ((upTime % mRefreshRateMillis)) + mRefreshRateMillis);
     }
 
-
     /**
-     * Apply an overlay on the pending icon with cascading motion based on its position.
-     * Returns {@code true} if the icon alpha is updated, so that we re-draw.
+     * Returns a color filter to be used as an overlay on the pending icon with cascading motion
+     * based on its position.
      */
-    private boolean applyPendingIconOverlay() {
+    private ColorFilter getOverlayFilter() {
+        if (!ENABLE_DOWNLOAD_APP_UX_V2.get() || mInternalStateProgress > 0) {
+            // If the download has started, we do no need to animate
+            return null;
+        }
         long waveMotionDelay = (mItem.cellX * WAVE_MOTION_DELAY_FACTOR_MILLIS)
                 + (mItem.cellY * WAVE_MOTION_DELAY_FACTOR_MILLIS);
         long time = SystemClock.uptimeMillis();
-        float newAlpha = Utilities.mapBoundToRange(
-                (float) (time + waveMotionDelay) % ALPHA_DURATION_MILLIS,
+        int alpha = (int) Utilities.mapBoundToRange(
+                (int) ((time + waveMotionDelay) % ALPHA_DURATION_MILLIS),
                 0,
                 ALPHA_DURATION_MILLIS,
                 0,
-                MAX_PAINT_ALPHA,
+                OVERLAY_ALPHA_RANGE * 2,
                 LINEAR);
-        if (newAlpha > OVERLAY_ALPHA_RANGE) {
-            newAlpha = (OVERLAY_ALPHA_RANGE - (newAlpha % OVERLAY_ALPHA_RANGE));
+        if (alpha > OVERLAY_ALPHA_RANGE) {
+            alpha = (OVERLAY_ALPHA_RANGE - (alpha % OVERLAY_ALPHA_RANGE));
         }
-
-        boolean invalidate = false;
-        if ((int) mOverlayAlpha.value != newAlpha) {
-            mOverlayAlpha.updateValue(newAlpha);
-            invalidate = true;
-        }
-        return invalidate;
-    }
-
-    private void updateOverlayAlpha() {
         int overlayColor = mIsDarkMode ? 0 : 255;
-        int currArgb =
-                Color.argb((int) mOverlayAlpha.value, overlayColor, overlayColor, overlayColor);
-        mPaint.setColorFilter(COLOR_FILTER_MAP.computeIfAbsent(currArgb, FILTER_FACTORY));
-        invalidateSelf();
+        int currArgb = Color.argb(alpha, overlayColor, overlayColor, overlayColor);
+        return COLOR_FILTER_MAP.computeIfAbsent(currArgb, FILTER_FACTORY);
     }
 
     protected static class PreloadIconConstantState extends FastBitmapConstantState {
@@ -468,6 +445,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
         protected final boolean mIsDarkMode;
         protected final int mLevel;
         protected final int mRefreshRateMillis;
+        private final Path mShapePath;
 
         public PreloadIconConstantState(
                 Bitmap bitmap,
@@ -476,7 +454,8 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
                 int indicatorColor,
                 int[] preloadColors,
                 boolean isDarkMode,
-                int refreshRateMillis) {
+                int refreshRateMillis,
+                Path shapePath) {
             super(bitmap, iconColor);
             mInfo = info;
             mIndicatorColor = indicatorColor;
@@ -484,6 +463,7 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
             mIsDarkMode = isDarkMode;
             mLevel = info.getProgressLevel();
             mRefreshRateMillis = refreshRateMillis;
+            mShapePath = shapePath;
         }
 
         @Override
@@ -493,7 +473,8 @@ public class PreloadIconDrawable extends FastBitmapDrawable implements Runnable 
                     mIndicatorColor,
                     mPreloadColors,
                     mIsDarkMode,
-                    mRefreshRateMillis);
+                    mRefreshRateMillis,
+                    mShapePath);
         }
     }
 }

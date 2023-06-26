@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import static android.os.Trace.TRACE_TAG_APP;
 import static android.view.RemoteAnimationTarget.MODE_CLOSING;
 import static android.view.RemoteAnimationTarget.MODE_OPENING;
 
@@ -36,6 +37,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Trace;
 import android.view.Display;
 import android.view.RemoteAnimationAdapter;
 import android.view.RemoteAnimationTarget;
@@ -132,7 +134,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
         SplitSelectStateController controller =
                 new SplitSelectStateController(this, mHandler, getStateManager(),
-                        /* depthController */ null, getStatsLogManager());
+                         null /* depthController */, getStatsLogManager(),
+                        SystemUiProxy.INSTANCE.get(this), RecentsModel.INSTANCE.get(this));
         mDragLayer.recreateControllers();
         mFallbackRecentsView.init(mActionsView, controller);
 
@@ -240,7 +243,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
         mActivityLaunchAnimationRunner = new RemoteAnimationFactory() {
             @Override
-            public void onCreateAnimation(int transit, RemoteAnimationTarget[] appTargets,
+            public void onAnimationStart(int transit, RemoteAnimationTarget[] appTargets,
                     RemoteAnimationTarget[] wallpaperTargets,
                     RemoteAnimationTarget[] nonAppTargets, AnimationResult result) {
                 mHandler.removeCallbacks(mAnimationStartTimeoutRunnable);
@@ -407,28 +410,24 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     }
 
     private final RemoteAnimationFactory mAnimationToHomeFactory =
-            new RemoteAnimationFactory() {
-        @Override
-        public void onCreateAnimation(int transit, RemoteAnimationTarget[] appTargets,
-                RemoteAnimationTarget[] wallpaperTargets,
-                RemoteAnimationTarget[] nonAppTargets, AnimationResult result) {
-            AnimatorPlaybackController controller = getStateManager()
-                    .createAnimationToNewWorkspace(RecentsState.BG_LAUNCHER, HOME_APPEAR_DURATION);
-            controller.dispatchOnStart();
+            (transit, appTargets, wallpaperTargets, nonAppTargets, result) -> {
+                AnimatorPlaybackController controller =
+                        getStateManager().createAnimationToNewWorkspace(
+                                RecentsState.BG_LAUNCHER, HOME_APPEAR_DURATION);
+                controller.dispatchOnStart();
 
-            RemoteAnimationTargets targets = new RemoteAnimationTargets(
-                    appTargets, wallpaperTargets, nonAppTargets, MODE_OPENING);
-            for (RemoteAnimationTarget app : targets.apps) {
-                new Transaction().setAlpha(app.leash, 1).apply();
-            }
-            AnimatorSet anim = new AnimatorSet();
-            anim.play(controller.getAnimationPlayer());
-            anim.setDuration(HOME_APPEAR_DURATION);
-            result.setAnimation(anim, RecentsActivity.this,
-                    () -> getStateManager().goToState(RecentsState.HOME, false),
-                    true /* skipFirstFrame */);
-        }
-    };
+                RemoteAnimationTargets targets = new RemoteAnimationTargets(
+                        appTargets, wallpaperTargets, nonAppTargets, MODE_OPENING);
+                for (RemoteAnimationTarget app : targets.apps) {
+                    new Transaction().setAlpha(app.leash, 1).apply();
+                }
+                AnimatorSet anim = new AnimatorSet();
+                anim.play(controller.getAnimationPlayer());
+                anim.setDuration(HOME_APPEAR_DURATION);
+                result.setAnimation(anim, RecentsActivity.this,
+                        () -> getStateManager().goToState(RecentsState.HOME, false),
+                        true /* skipFirstFrame */);
+            };
 
     @Override
     protected void collectStateHandlers(List<StateHandler> out) {
@@ -450,6 +449,13 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     @Override
     public AtomicAnimationFactory<RecentsState> createAtomicAnimationFactory() {
         return new RecentsAtomicAnimationFactory<>(this);
+    }
+
+    @Override
+    public void dispatchDeviceProfileChanged() {
+        super.dispatchDeviceProfileChanged();
+        Trace.instantForTrack(TRACE_TAG_APP, "RecentsActivity#DeviceProfileChanged",
+                getDeviceProfile().toSmallString());
     }
 
     private AnimatorListenerAdapter resetStateListener() {

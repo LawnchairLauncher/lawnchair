@@ -16,6 +16,7 @@
 package com.android.launcher3.statehandlers;
 
 import android.os.SystemProperties;
+import android.util.Log;
 import android.view.View;
 
 import com.android.launcher3.Launcher;
@@ -29,10 +30,14 @@ import com.android.launcher3.uioverrides.QuickstepLauncher;
  */
 public class DesktopVisibilityController {
 
+    private static final String TAG = "DesktopVisController";
+    private static final boolean DEBUG = false;
+
     private final Launcher mLauncher;
 
     private boolean mFreeformTasksVisible;
     private boolean mInOverviewState;
+    private boolean mGestureInProgress;
 
     public DesktopVisibilityController(Launcher launcher) {
         mLauncher = launcher;
@@ -57,9 +62,27 @@ public class DesktopVisibilityController {
      * Sets whether freeform windows are visible and updates launcher visibility based on that.
      */
     public void setFreeformTasksVisible(boolean freeformTasksVisible) {
+        if (DEBUG) {
+            Log.d(TAG, "setFreeformTasksVisible: visible=" + freeformTasksVisible);
+        }
+        if (!isDesktopModeSupported()) {
+            return;
+        }
         if (freeformTasksVisible != mFreeformTasksVisible) {
             mFreeformTasksVisible = freeformTasksVisible;
-            updateLauncherVisibility();
+            if (mFreeformTasksVisible) {
+                setLauncherViewsVisibility(View.INVISIBLE);
+                if (!mInOverviewState) {
+                    // When freeform is visible & we're not in overview, we want launcher to appear
+                    // paused, this ensures that taskbar displays.
+                    markLauncherPaused();
+                }
+            } else {
+                setLauncherViewsVisibility(View.VISIBLE);
+                // If freeform isn't visible ensure that launcher appears resumed to behave
+                // normally.
+                markLauncherResumed();
+            }
         }
     }
 
@@ -67,40 +90,82 @@ public class DesktopVisibilityController {
      * Sets whether the overview is visible and updates launcher visibility based on that.
      */
     public void setOverviewStateEnabled(boolean overviewStateEnabled) {
+        if (DEBUG) {
+            Log.d(TAG, "setOverviewStateEnabled: enabled=" + overviewStateEnabled);
+        }
+        if (!isDesktopModeSupported()) {
+            return;
+        }
         if (overviewStateEnabled != mInOverviewState) {
             mInOverviewState = overviewStateEnabled;
-            updateLauncherVisibility();
+            if (mInOverviewState) {
+                setLauncherViewsVisibility(View.VISIBLE);
+                markLauncherResumed();
+            } else if (mFreeformTasksVisible) {
+                setLauncherViewsVisibility(View.INVISIBLE);
+                markLauncherPaused();
+            }
         }
     }
 
     /**
-     * Updates launcher visibility and state to look like it is paused or resumed depending on
-     * whether freeform windows are showing in desktop mode.
+     * Whether recents gesture is currently in progress.
      */
-    private void updateLauncherVisibility() {
-        StatefulActivity<LauncherState> activity =
-                QuickstepLauncher.ACTIVITY_TRACKER.getCreatedActivity();
-        View workspaceView = mLauncher.getWorkspace();
-        if (activity == null || workspaceView == null || !isDesktopModeSupported()) {
+    public boolean isGestureInProgress() {
+        return mGestureInProgress;
+    }
+
+    /**
+     * Sets whether recents gesture is in progress.
+     */
+    public void setGestureInProgress(boolean gestureInProgress) {
+        if (DEBUG) {
+            Log.d(TAG, "setGestureInProgress: inProgress=" + gestureInProgress);
+        }
+        if (!isDesktopModeSupported()) {
             return;
         }
+        if (gestureInProgress != mGestureInProgress) {
+            mGestureInProgress = gestureInProgress;
+        }
+    }
 
-        if (mFreeformTasksVisible) {
-            workspaceView.setVisibility(View.INVISIBLE);
-            if (!mInOverviewState) {
-                // When freeform is visible & we're not in overview, we want launcher to appear
-                // paused, this ensures that taskbar displays.
-                activity.setPaused();
-            }
-        } else {
-            workspaceView.setVisibility(View.VISIBLE);
-            // If freeform isn't visible ensure that launcher appears resumed to behave normally.
-            // Check activity state before calling setResumed(). Launcher may have been actually
-            // paused (eg fullscreen task moved to front).
-            // In this case we should not mark the activity as resumed.
-            if (activity.isResumed()) {
-                activity.setResumed();
-            }
+    private void setLauncherViewsVisibility(int visibility) {
+        if (DEBUG) {
+            Log.d(TAG, "setLauncherViewsVisibility: visibility=" + visibility);
+        }
+        View workspaceView = mLauncher.getWorkspace();
+        if (workspaceView != null) {
+            workspaceView.setVisibility(visibility);
+        }
+        View dragLayer = mLauncher.getDragLayer();
+        if (dragLayer != null) {
+            dragLayer.setVisibility(visibility);
+        }
+    }
+
+    private void markLauncherPaused() {
+        if (DEBUG) {
+            Log.d(TAG, "markLauncherPaused");
+        }
+        StatefulActivity<LauncherState> activity =
+                QuickstepLauncher.ACTIVITY_TRACKER.getCreatedActivity();
+        if (activity != null) {
+            activity.setPaused();
+        }
+    }
+
+    private void markLauncherResumed() {
+        if (DEBUG) {
+            Log.d(TAG, "markLauncherResumed");
+        }
+        StatefulActivity<LauncherState> activity =
+                QuickstepLauncher.ACTIVITY_TRACKER.getCreatedActivity();
+        // Check activity state before calling setResumed(). Launcher may have been actually
+        // paused (eg fullscreen task moved to front).
+        // In this case we should not mark the activity as resumed.
+        if (activity != null && activity.isResumed()) {
+            activity.setResumed();
         }
     }
 }

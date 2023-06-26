@@ -23,19 +23,20 @@
         android:clipToPadding="false"
         android:layout_below="@id/collapse_handle"
         android:descendantFocusability="afterDescendants"
-        android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
         launcher:pageIndicator="@+id/tabs" >
 
         <com.android.launcher3.widget.picker.WidgetsRecyclerView
             android:id="@+id/primary_widgets_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
             android:clipToPadding="false" />
 
         <com.android.launcher3.widget.picker.WidgetsRecyclerView
             android:id="@+id/work_widgets_list_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
             android:clipToPadding="false" />
 
     </com.android.launcher3.widget.picker.WidgetPagedView>
@@ -47,6 +48,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/collapse_handle"
         android:paddingBottom="0dp"
+        android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
+        android:clipToOutline="true"
         android:orientation="vertical">
 
         <TextView
@@ -56,7 +59,6 @@
             android:gravity="center_horizontal"
             android:textSize="24sp"
             android:layout_marginTop="24dp"
-            android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
             android:textColor="?android:attr/textColorSecondary"
             android:text="@string/widget_button_text"/>
 
@@ -67,7 +69,6 @@
             android:elevation="0.1dp"
             android:background="?android:attr/colorBackground"
             android:paddingBottom="8dp"
-            android:paddingHorizontal="@dimen/widget_list_horizontal_margin"
             launcher:layout_sticky="true">
             <include layout="@layout/widgets_search_bar" />
         </FrameLayout>
@@ -77,9 +78,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/widgets_recommendation_background"
+            android:background="@drawable/widgets_surface_background"
             android:paddingVertical="@dimen/recommended_widgets_table_vertical_padding"
-            android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
             android:visibility="gone" />
 
         <com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip
@@ -89,7 +89,6 @@
             android:gravity="center_horizontal"
             android:orientation="horizontal"
             android:paddingVertical="8dp"
-            android:layout_marginHorizontal="@dimen/widget_list_horizontal_margin"
             android:background="?android:attr/colorBackground"
             style="@style/TextHeadline"
             launcher:layout_sticky="true">

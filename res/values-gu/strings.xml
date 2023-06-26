@@ -28,9 +28,6 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"શૉર્ટકટ ઉપલબ્ધ નથી"</string>
     <string name="home_screen" msgid="5629429142036709174">"હોમ સ્ક્રીન"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"સ્ક્રીનને વિભાજિત કરો"</string>
-    <string name="split_screen_position_top" msgid="1504965011158689649">"ઉપર વિભાજિત કરો"</string>
-    <string name="split_screen_position_left" msgid="7537793098851830883">"ડાબે વિભાજિત કરો"</string>
-    <string name="split_screen_position_right" msgid="1569377524925193369">"જમણે વિભાજિત કરો"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s માટે ઍપ માહિતી"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"વિજેટ ખસેડવા ટચ કરીને થોડી વાર દબાવી રાખો."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"વિજેટ ખસેડવા બે વાર ટૅપ કરીને દબાવી રાખો અથવા કસ્ટમ ક્રિયાઓનો ઉપયોગ કરો."</string>
@@ -40,6 +37,7 @@
     <string name="add_item_request_drag_hint" msgid="8730547755622776606">"વિજેટને હોમ સ્ક્રીનની આજુબાજુ ખસેડવા માટે, તેને ટચ કરીને થોડીવાર દબાવી રાખો"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"હોમ સ્ક્રીનમાં ઉમેરો"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"હોમ સ્ક્રીન પર <xliff:g id="WIDGET_NAME">%1$s</xliff:g> વિજેટ ઉમેર્યુ"</string>
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"સૂચનો"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# વિજેટ}one{# વિજેટ}other{# વિજેટ}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# શૉર્ટકટ}one{# શૉર્ટકટ}other{# શૉર્ટકટ}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>

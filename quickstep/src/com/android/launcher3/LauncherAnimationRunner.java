@@ -28,12 +28,15 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
+import android.os.RemoteException;
+import android.view.IRemoteAnimationFinishedCallback;
 import android.view.RemoteAnimationTarget;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.systemui.animation.RemoteAnimationDelegate;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 
 import java.lang.ref.WeakReference;
@@ -89,7 +92,7 @@ public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
         Runnable r = () -> {
             finishExistingAnimation();
             mAnimationResult = new AnimationResult(() -> mAnimationResult = null, runnable);
-            getFactory().onCreateAnimation(transit, appTargets, wallpaperTargets, nonAppTargets,
+            getFactory().onAnimationStart(transit, appTargets, wallpaperTargets, nonAppTargets,
                     mAnimationResult);
         };
         if (mStartAtFrontOfQueue) {
@@ -124,7 +127,11 @@ public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
         });
     }
 
-    public static final class AnimationResult {
+    /**
+     * Used by RemoteAnimationFactory implementations to run the actual animation and its lifecycle
+     * callbacks.
+     */
+    public static final class AnimationResult extends IRemoteAnimationFinishedCallback.Stub {
 
         private final Runnable mSyncFinishRunnable;
         private final Runnable mASyncFinishRunnable;
@@ -199,24 +206,40 @@ public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
                 }
             }
         }
+
+        /**
+         * When used as a simple IRemoteAnimationFinishedCallback, this method is used to run the
+         * animation finished runnable.
+         */
+        @Override
+        public void onAnimationFinished() throws RemoteException {
+            mASyncFinishRunnable.run();
+        }
     }
 
     /**
      * Used with LauncherAnimationRunner as an interface for the runner to call back to the
      * implementation.
      */
-    @FunctionalInterface
-    public interface RemoteAnimationFactory {
+    public interface RemoteAnimationFactory extends RemoteAnimationDelegate<AnimationResult> {
 
         /**
          * Called on the UI thread when the animation targets are received. The implementation must
          * call {@link AnimationResult#setAnimation} with the target animation to be run.
          */
-        void onCreateAnimation(int transit,
+        @Override
+        @UiThread
+        void onAnimationStart(int transit,
                 RemoteAnimationTarget[] appTargets,
                 RemoteAnimationTarget[] wallpaperTargets,
                 RemoteAnimationTarget[] nonAppTargets,
                 LauncherAnimationRunner.AnimationResult result);
+
+        @Override
+        @UiThread
+        default void onAnimationCancelled(boolean isKeyguardOccluded) {
+            onAnimationCancelled();
+        }
 
         /**
          * Called when the animation is cancelled. This can happen with or without

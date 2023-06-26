@@ -53,6 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Sveip for å gå tilbake"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"For å gå tilbake til forrige skjerm, sveip fra venstre eller høyre kant til midten av skjermen."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"For å gå tilbake til den forrige skjermen, sveip med to fingre fra den venstre eller høyre kanten til midten av skjermen."</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Gå tilbake"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Sørg for at du sveiper opp fra den nederste kanten av skjermen."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Sørg for at du ikke setter på pause før du slipper."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Sørg for at du sveiper rett opp."</string>
@@ -61,6 +62,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Sveip for å gå til startskjermen"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Sveip opp fra bunnen av skjermen. Denne bevegelsen tar deg alltid til startskjermen."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Sveip opp med to fingre fra bunnen av skjermen. Denne bevegelsen tar deg alltid til startskjermen."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Gå til startskjermen"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"For å gå til startskjermen, sveip opp fra bunnen av skjermen når som helst"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Sørg for at du sveiper opp fra den nederste kanten av skjermen."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Prøv å holde vinduet lenger før du slipper."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Sørg for at du sveiper rett opp, og så stopper du."</string>
@@ -69,6 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Sveip for å bytte app"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"For å bytte mellom apper, sveip opp fra bunnen av skjermen, hold, og slipp"</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"For å bytte mellom apper, sveip opp med to fingre fra bunnen av skjermen, hold, og slipp."</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Bytt app"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Ferdig"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Ferdig"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Innstillinger"</string>
@@ -76,7 +80,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Bra!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Veiledning <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Alt er klart!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Sveip opp for å gå til startskjermen"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Sveip opp for å gå til startskjermen"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Trykk på hjemknappen for å gå til startskjermen"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Nå kan du bruke <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"enheten"</string>
@@ -84,7 +88,7 @@
     <string name="action_share" msgid="2648470652637092375">"Del"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Skjermdump"</string>
     <string name="action_split" msgid="2098009717623550676">"Del opp"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"Trykk på en annen app for å bruke delt skjerm"</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"Trykk på en annen app for å bruke delt skjerm"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Velg en annen app for å bruke delt skjerm"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Appen eller organisasjonen din tillater ikke denne handlingen"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Vil du hoppe over navigeringsveiledningen?"</string>
@@ -95,9 +99,11 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Veiledning for oppgavelinjen"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Opplæringen for oppgavelinjen vises"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Opplæringen for oppgavelinjen er lukket"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"Dra til siden for å bruke to apper samtidig"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Kort sveip opp for å vise oppgavelinjen"</string>
-    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Oppgavelinjen foreslår apper basert på rutinene dine"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Dra en app til siden for å bruke 2 apper samtidig"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Sveip langsomt opp for å vise oppgavelinjen"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Få appforslag som er basert på rutinene dine"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Slå på navigasjon med bevegelser i innstillingene for å skjule oppgavelinjen automatisk"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Gjør mer med oppgavelinjen"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Neste"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Tilbake"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Lukk"</string>
@@ -110,7 +116,11 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Varsler"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Hurtiginnst."</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Oppgavelinje"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Oppgavelinjen vises"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Oppgavelinjen er skjult"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigasjonsrad"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Flytt til øverst/venstre"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Flytt til nederst/høyre"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Vis # app til.}other{Vis # apper til.}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> og <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

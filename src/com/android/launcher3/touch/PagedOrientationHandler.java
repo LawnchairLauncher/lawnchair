@@ -142,7 +142,7 @@ public interface PagedOrientationHandler {
      * @param splitInstructionsWidth  The SplitInstructionView's width.
      */
     void setSplitInstructionsParams(View out, DeviceProfile dp, int splitInstructionsHeight,
-            int splitInstructionsWidth, int threeButtonNavShift);
+            int splitInstructionsWidth);
 
     /**
      * @param splitDividerSize height of split screen drag handle in portrait, width in landscape

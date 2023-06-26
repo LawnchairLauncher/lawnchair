@@ -53,6 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"ปัดเพื่อย้อนกลับ"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"หากต้องการย้อนกลับไปที่หน้าจอล่าสุด ให้ปัดจากขอบด้านซ้ายหรือขวาไปตรงกลางหน้าจอ"</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"หากต้องการย้อนกลับไปที่หน้าจอล่าสุด ให้ใช้ 2 นิ้วปัดจากขอบด้านซ้ายหรือขวาไปตรงกลางหน้าจอ"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"กลับ"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ปัดขึ้นจากขอบด้านล่างของหน้าจอ"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"ตรวจสอบว่าไม่มีการหยุดชั่วคราวก่อนยกนิ้วขึ้น"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ตรวจสอบว่าปัดขึ้นในแนวตรง"</string>
@@ -61,6 +62,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"ปัดเพื่อไปที่หน้าแรก"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"ปัดขึ้นจากด้านล่างของหน้าจอ ท่าทางสัมผัสนี้จะนำคุณไปที่หน้าจอหลักเสมอ"</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"ใช้ 2 นิ้วปัดขึ้นจากด้านล่างของหน้าจอ ท่าทางสัมผัสนี้จะนำคุณไปที่หน้าจอหลักเสมอ"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"ไปที่หน้าแรก"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"ปัดขึ้นจากด้านล่างของหน้าจอเพื่อไปที่หน้าจอหลักได้ทุกเมื่อ"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ปัดขึ้นจากขอบด้านล่างของหน้าจอ"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"ลองแตะหน้าต่างค้างไว้นานขึ้นก่อนปล่อยนิ้ว"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"ตรวจสอบว่าปัดขึ้นในแนวตรง แล้วหยุดชั่วคราว"</string>
@@ -69,6 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ปัดเพื่อสลับแอป"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"หากต้องการสลับระหว่างแอปต่างๆ ให้ปัดขึ้นจากด้านล่างของหน้าจอ ค้างไว้ แล้วปล่อย"</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"หากต้องการสลับระหว่างแอป ให้ใช้ 2 นิ้วปัดขึ้นจากด้านล่างของหน้าจอค้างไว้แล้วปล่อย"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"เปลี่ยนแอป"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"เรียบร้อย"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"เสร็จสิ้น"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"การตั้งค่า"</string>
@@ -76,7 +80,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"ดีมาก"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"บทแนะนำ <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"เรียบร้อยแล้ว"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"ปัดขึ้นเพื่อไปที่หน้าแรก"</string>
+    <string name="allset_hint" msgid="459504134589971527">"ปัดขึ้นเพื่อไปที่หน้าแรก"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"แตะปุ่มหน้าแรกเพื่อไปที่หน้าจอหลัก"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"คุณเริ่มใช้<xliff:g id="DEVICE">%1$s</xliff:g>ได้แล้ว"</string>
     <string name="default_device_name" msgid="6660656727127422487">"อุปกรณ์"</string>
@@ -84,7 +88,7 @@
     <string name="action_share" msgid="2648470652637092375">"แชร์"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ภาพหน้าจอ"</string>
     <string name="action_split" msgid="2098009717623550676">"แยก"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"แตะที่แอปอื่นเพื่อใช้แบ่งหน้าจอ"</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"แตะแอปอื่นเพื่อใช้การแยกหน้าจอ"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"เลือกแอปอื่นเพื่อใช้การแยกหน้าจอ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"แอปหรือองค์กรของคุณไม่อนุญาตการดำเนินการนี้"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"ข้ามบทแนะนำการนำทางไหม"</string>
@@ -95,9 +99,11 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"แถบงาน Education"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"แถบงาน Education ปรากฎขึ้น"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ปิดแถบงาน Education แล้ว"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"ลากไปด้านข้างเพื่อใช้ 2 แอปพร้อมกัน"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"ปัดขึ้นสั้นๆ เพื่อแสดงแถบงาน"</string>
-    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"แถบงานจะแนะนำแอปโดยอิงตามกิจวัตรของคุณ"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ลากแอปไปด้านข้างเพื่อใช้ 2 แอปพร้อมกัน"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ปัดขึ้นช้าๆ เพื่อแสดงแถบงาน"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"รับคำแนะนำเกี่ยวกับแอปตามกิจวัตรของคุณ"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"เปิดการนำทางด้วยท่าทางสัมผัสในการตั้งค่าเพื่อซ่อนแถบงานโดยอัตโนมัติ"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"ทำสิ่งต่างๆ ได้มากขึ้นด้วยแถบงาน"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ถัดไป"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"กลับ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ปิด"</string>
@@ -110,7 +116,11 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"การแจ้งเตือน"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"การตั้งค่าด่วน"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"แถบงาน"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"แถบงานแสดงอยู่"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"แถบงานซ่อนอยู่"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"แถบนำทาง"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ย้ายไปที่ด้านบนหรือด้านซ้าย"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ย้ายไปที่ด้านล่างหรือด้านขวา"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{แสดงเพิ่มเติมอีก # แอป}other{แสดงเพิ่มเติมอีก # แอป}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> และ <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

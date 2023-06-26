@@ -26,7 +26,6 @@
 
 <!-- AllApps -->
     <dimen name="all_apps_search_bar_content_overlap">0dp</dimen>
-    <dimen name="all_apps_bottom_sheet_horizontal_padding">48dp</dimen>
 
 <!-- Fast scroll -->
     <dimen name="fastscroll_popup_width">75dp</dimen>
@@ -36,7 +35,6 @@
 
 <!-- Dynamic grid -->
     <dimen name="dynamic_grid_edge_margin">9dp</dimen>
-    <dimen name="dynamic_grid_icon_drawable_padding">7dp</dimen>
     <dimen name="cell_layout_padding">9dp</dimen>
 
 <!-- Hotseat -->

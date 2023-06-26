@@ -15,12 +15,10 @@
  */
 package com.android.launcher3.allapps.search;
 
-import android.graphics.Canvas;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.BubbleTextView;
@@ -38,13 +36,7 @@ public class DefaultSearchAdapterProvider extends SearchAdapterProvider<Activity
 
     public DefaultSearchAdapterProvider(ActivityContext launcher) {
         super(launcher);
-        mDecoration = new RecyclerView.ItemDecoration() {
-            @Override
-            public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent,
-                    @NonNull RecyclerView.State state) {
-                super.onDraw(c, parent, state);
-            }
-        };
+        mDecoration = new RecyclerView.ItemDecoration() { };
     }
 
     @Override

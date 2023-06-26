@@ -16,8 +16,6 @@
 
 package com.android.launcher3.pm;
 
-import static com.android.launcher3.LauncherPrefs.getPrefs;
-
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherApps;
@@ -34,6 +32,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.WorkerThread;
 
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
@@ -65,7 +64,7 @@ public class InstallSessionHelper {
     // Set<String> of session ids of promise icons that have been added to the home screen
     // as FLAG_PROMISE_NEW_INSTALLS.
     @NonNull
-    protected static final String PROMISE_ICON_IDS = "promise_icon_ids";
+    public static final String PROMISE_ICON_IDS = "promise_icon_ids";
 
     private static final boolean DEBUG = false;
 
@@ -102,7 +101,7 @@ public class InstallSessionHelper {
             return mPromiseIconIds;
         }
         mPromiseIconIds = IntSet.wrap(IntArray.fromConcatString(
-                getPrefs(mAppContext).getString(PROMISE_ICON_IDS, "")));
+                LauncherPrefs.get(mAppContext).get(LauncherPrefs.PROMISE_ICON_IDS)));
 
         IntArray existingIds = new IntArray();
         for (SessionInfo info : getActiveSessions().values()) {
@@ -146,9 +145,8 @@ public class InstallSessionHelper {
     }
 
     private void updatePromiseIconPrefs() {
-        getPrefs(mAppContext).edit()
-                .putString(PROMISE_ICON_IDS, getPromiseIconIds().getArray().toConcatString())
-                .apply();
+        LauncherPrefs.get(mAppContext).put(LauncherPrefs.PROMISE_ICON_IDS,
+                getPromiseIconIds().getArray().toConcatString());
     }
 
     @Nullable
@@ -173,15 +171,22 @@ public class InstallSessionHelper {
             }
             return null;
         }
-        String pkg = sessionInfo.getInstallerPackageName();
+        return isTrustedPackage(sessionInfo.getInstallerPackageName(), getUserHandle(sessionInfo))
+                ? sessionInfo : null;
+    }
+
+    /**
+     * Returns true if the provided packageName can be trusted for user configurations
+     */
+    public boolean isTrustedPackage(String pkg, UserHandle user) {
         synchronized (mSessionVerifiedMap) {
             if (!mSessionVerifiedMap.containsKey(pkg)) {
                 boolean hasSystemFlag = new PackageManagerHelper(mAppContext).getApplicationInfo(
-                        pkg, getUserHandle(sessionInfo), ApplicationInfo.FLAG_SYSTEM) != null;
+                        pkg, user, ApplicationInfo.FLAG_SYSTEM) != null;
                 mSessionVerifiedMap.put(pkg, DEBUG || hasSystemFlag);
             }
         }
-        return mSessionVerifiedMap.get(pkg) ? sessionInfo : null;
+        return mSessionVerifiedMap.get(pkg);
     }
 
     @NonNull

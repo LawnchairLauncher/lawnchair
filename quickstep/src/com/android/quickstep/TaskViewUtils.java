@@ -39,6 +39,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
 import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
+import static com.android.quickstep.views.DesktopTaskView.DESKTOP_MODE_SUPPORTED;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -78,6 +79,7 @@ import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
@@ -182,10 +184,13 @@ public final class TaskViewUtils {
             // Re-use existing handles
             remoteTargetHandles = recentsViewHandles;
         } else {
+            boolean forDesktop = DESKTOP_MODE_SUPPORTED && v instanceof DesktopTaskView;
             RemoteTargetGluer gluer = new RemoteTargetGluer(v.getContext(),
-                    recentsView.getSizeStrategy(), targets);
-            if (v.containsMultipleTasks()) {
-                remoteTargetHandles = gluer.assignTargetsForSplitScreen(targets, v.getTaskIds());
+                    recentsView.getSizeStrategy(), targets, forDesktop);
+            if (forDesktop) {
+                remoteTargetHandles = gluer.assignTargetsForDesktop(targets);
+            } else if (v.containsMultipleTasks()) {
+                remoteTargetHandles = gluer.assignTargetsForSplitScreen(targets);
             } else {
                 remoteTargetHandles = gluer.assignTargets(targets);
             }
@@ -674,28 +679,36 @@ public final class TaskViewUtils {
     /**
      * Creates an animation to show/hide the auxiliary surfaces (aka. divider bar), only calling
      * {@param animatorHandler} if there are valid surfaces to animate.
+     * Passing null handler to apply the visibility immediately.
      *
      * @return the animator animating the surfaces
      */
     public static ValueAnimator createSplitAuxiliarySurfacesAnimator(
-            RemoteAnimationTarget[] nonApps, boolean shown,
-            Consumer<ValueAnimator> animatorHandler) {
+            @Nullable RemoteAnimationTarget[] nonApps, boolean shown,
+            @Nullable Consumer<ValueAnimator> animatorHandler) {
         if (nonApps == null || nonApps.length == 0) {
             return null;
         }
 
-        SurfaceControl.Transaction t = new SurfaceControl.Transaction();
-        List<SurfaceControl> auxiliarySurfaces = new ArrayList<>(nonApps.length);
-        boolean hasSurfaceToAnimate = false;
-        for (int i = 0; i < nonApps.length; ++i) {
-            final RemoteAnimationTarget targ = nonApps[i];
-            final SurfaceControl leash = targ.leash;
-            if (targ.windowType == TYPE_DOCK_DIVIDER && leash != null && leash.isValid()) {
+        List<SurfaceControl> auxiliarySurfaces = new ArrayList<>();
+        for (RemoteAnimationTarget target : nonApps) {
+            final SurfaceControl leash = target.leash;
+            if (target.windowType == TYPE_DOCK_DIVIDER && leash != null && leash.isValid()) {
                 auxiliarySurfaces.add(leash);
-                hasSurfaceToAnimate = true;
             }
         }
-        if (!hasSurfaceToAnimate) {
+        if (auxiliarySurfaces.isEmpty()) {
+            return null;
+        }
+
+        SurfaceControl.Transaction t = new SurfaceControl.Transaction();
+        if (animatorHandler == null) {
+            // Apply the visibility directly without fade animation.
+            for (SurfaceControl leash : auxiliarySurfaces) {
+                t.setVisibility(leash, shown);
+            }
+            t.apply();
+            t.close();
             return null;
         }
 

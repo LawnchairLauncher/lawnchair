@@ -17,7 +17,7 @@
 <com.android.launcher3.notification.NotificationMainView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/notification_container_height"
     android:orientation="vertical">
 
     <!-- header -->
@@ -25,14 +25,14 @@
         android:id="@+id/header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingEnd="@dimen/notification_padding"
-        android:paddingStart="@dimen/notification_padding">
+        android:paddingEnd="@dimen/notification_padding_end"
+        android:paddingTop="@dimen/notification_padding_header_top"
+        android:paddingStart="@dimen/notification_header_padding_start">
         <TextView
             android:id="@+id/notification_text"
-            android:paddingTop="@dimen/notification_padding"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|start"
+            android:layout_gravity="top|start"
             android:text="@string/notifications_header"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/notification_header_text_size"
@@ -42,7 +42,7 @@
             android:layout_width="@dimen/notification_circle_icon_size"
             android:layout_height="@dimen/notification_circle_icon_size"
             android:background="@drawable/notification_circle"
-            android:layout_gravity="bottom|end"
+            android:layout_gravity="top|end"
             android:gravity="center"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/notification_header_count_text_size"
@@ -54,6 +54,8 @@
         android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/notification_padding_top"
+        android:paddingBottom="@dimen/notification_padding_bottom"
         android:focusable="true" >
 
         <LinearLayout
@@ -62,9 +64,7 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            android:paddingTop="@dimen/notification_padding"
-            android:paddingBottom="@dimen/notification_padding"
-            android:paddingEnd="@dimen/notification_padding"
+            android:paddingEnd="@dimen/notification_padding_end"
             android:paddingStart="@dimen/notification_main_text_padding_start">
             <TextView
                 android:id="@+id/title"
@@ -91,9 +91,8 @@
             android:id="@+id/popup_item_icon"
             android:layout_width="@dimen/notification_icon_size"
             android:layout_height="@dimen/notification_icon_size"
-            android:layout_gravity="start"
-            android:layout_marginTop="@dimen/notification_padding"
-            android:layout_marginStart="@dimen/notification_icon_padding" />
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="@dimen/notification_icon_padding_start"/>
 
     </FrameLayout>
 </com.android.launcher3.notification.NotificationMainView>

@@ -41,7 +41,8 @@ public class UnfoldMoveFromCenterHotseatAnimator extends BaseUnfoldMoveFromCente
         Hotseat hotseat = mLauncher.getHotseat();
 
         ViewGroup hotseatIcons = hotseat.getShortcutsAndWidgets();
-        disableClipping(hotseat);
+        setClipChildren(hotseat, false);
+        setClipToPadding(hotseat, false);
 
         for (int i = 0; i < hotseatIcons.getChildCount(); i++) {
             View child = hotseatIcons.getChildAt(i);
@@ -51,7 +52,7 @@ public class UnfoldMoveFromCenterHotseatAnimator extends BaseUnfoldMoveFromCente
 
     @Override
     public void onTransitionFinished() {
-        restoreClipping(mLauncher.getHotseat());
+        restoreClippings();
         super.onTransitionFinished();
     }
 }

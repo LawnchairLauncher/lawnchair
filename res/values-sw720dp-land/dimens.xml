@@ -22,9 +22,6 @@
     <dimen name="dynamic_grid_edge_margin">21.93dp</dimen>
     <dimen name="cell_layout_padding">29.33dp</dimen>
 
-<!-- AllApps -->
-    <dimen name="all_apps_bottom_sheet_horizontal_padding">32dp</dimen>
-
 <!-- Dragging-->
     <dimen name="drop_target_top_margin">0dp</dimen>
     <dimen name="drop_target_bottom_margin">32dp</dimen>
@@ -34,6 +31,7 @@
 
 <!-- Widget picker-->
     <dimen name="widget_list_horizontal_margin">49dp</dimen>
+    <dimen name="widget_list_horizontal_margin_large_screen">24dp</dimen>
 
 <!-- Bottom sheet-->
     <dimen name="bottom_sheet_extra_top_padding">0dp</dimen>

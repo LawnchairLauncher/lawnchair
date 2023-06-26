@@ -36,6 +36,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import androidx.annotation.Px;
+
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.model.WidgetItem;
@@ -69,8 +71,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
     private static final long EDUCATION_TIP_DELAY_MS = 300;
 
     private ItemInfo mOriginalItemInfo;
-    private int mMaxHorizontalSpan = DEFAULT_MAX_HORIZONTAL_SPANS;
-    private final int mWidgetCellHorizontalPadding;
+    @Px private int mMaxHorizontalSpan;
 
     private final OnLayoutChangeListener mLayoutChangeListenerToShowTips =
             new OnLayoutChangeListener() {
@@ -111,8 +112,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
         if (!hasSeenEducationTip()) {
             addOnLayoutChangeListener(mLayoutChangeListenerToShowTips);
         }
-        mWidgetCellHorizontalPadding = getResources().getDimensionPixelSize(
-                R.dimen.widget_cell_horizontal_padding);
+        setContentBackground(getContext().getDrawable(R.drawable.bg_rounded_corner_bottom_sheet));
     }
 
     @Override
@@ -133,7 +133,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
     private boolean updateMaxSpansPerRow() {
         if (getMeasuredWidth() == 0) return false;
 
-        int maxHorizontalSpan = computeMaxHorizontalSpans(mContent, mWidgetCellHorizontalPadding);
+        @Px int maxHorizontalSpan = mContent.getMeasuredWidth() - (2 * mContentHorizontalMargin);
         if (mMaxHorizontalSpan != maxHorizontalSpan) {
             // Ensure the table layout is showing widgets in the right column after measure.
             mMaxHorizontalSpan = maxHorizontalSpan;
@@ -183,7 +183,9 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
         TableLayout widgetsTable = findViewById(R.id.widgets_table);
         widgetsTable.removeAllViews();
 
-        WidgetsTableUtils.groupWidgetItemsIntoTableWithReordering(widgets, mMaxHorizontalSpan)
+        WidgetsTableUtils.groupWidgetItemsUsingRowPxWithReordering(widgets, mActivityContext,
+                mActivityContext.getDeviceProfile(), mMaxHorizontalSpan,
+                mWidgetCellHorizontalPadding)
                 .forEach(row -> {
                     TableRow tableRow = new TableRow(getContext());
                     tableRow.setGravity(Gravity.TOP);

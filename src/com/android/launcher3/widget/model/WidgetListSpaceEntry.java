@@ -33,9 +33,4 @@ public class WidgetListSpaceEntry extends WidgetsListBaseEntry {
                 Collections.EMPTY_LIST);
         mPkgItem.title = "";
     }
-
-    @Override
-    public int getRank() {
-        return RANK_WIDGETS_TOP_SPACE;
-    }
 }

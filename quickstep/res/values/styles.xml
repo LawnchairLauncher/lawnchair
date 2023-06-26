@@ -47,6 +47,13 @@
         <item name="android:lineHeight">44sp</item>
     </style>
 
+    <style name="TextAppearance.GestureTutorial.MenuButton"
+        parent="TextAppearance.GestureTutorial.Feedback.Title">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="fontWeight">400</item>
+    </style>
+
     <style name="TextAppearance.GestureTutorial.Feedback.Title.AllSet"
         parent="TextAppearance.GestureTutorial.Feedback.Title">
         <item name="android:letterSpacing">0.03</item>
@@ -124,6 +131,31 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="TextAppearance.GestureTutorial.MainTitle"
+        parent="TextAppearance.GestureTutorial">
+        <item name="android:textSize">36sp</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:fontFamily">google-sans</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MainSubtitle"
+        parent="TextAppearance.GestureTutorial.Subtitle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:letterSpacing">0.02</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:fontFamily">google-sans-text</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.SuccessTitle"
+        parent="TextAppearance.GestureTutorial.MainTitle">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.SuccessSubtitle"
+        parent="TextAppearance.GestureTutorial.MainSubtitle">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
     <style name="AllSetTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
@@ -185,5 +217,29 @@
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">24sp</item>
         <item name="android:lines">2</item>
+    </style>
+
+    <style name="TextAppearance.TaskbarEduTooltip.Title" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:fontFamily">google-sans</item>
+        <item name="android:textSize">24sp</item>
+    </style>
+
+    <style name="TextAppearance.TaskbarEduTooltip.Subtext" parent="android:TextAppearance.Material.Body1">
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:fontFamily">google-sans-text</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="KeyboardQuickSwitchOverview">
+        <item name="fontFamily">google-sans-text</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="lineHeight">20sp</item>
+    </style>
+
+    <style name="GestureTutorialActivity"
+        parent="@style/AppTheme">
+        <item name="background">@android:color/transparent</item>
     </style>
 </resources>

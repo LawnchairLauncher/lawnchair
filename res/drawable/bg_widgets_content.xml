@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2023 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+       L -> large radius
+       s -> small radius
+       0 -> no radius
+    -->
+
+    <!-- SINGLE : L L L L -->
+    <item android:state_single="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/surface" />
+            <corners android:radius="@dimen/widget_list_top_bottom_corner_radius"/>
+        </shape>
+    </item>
+
+    <!-- FIRST : 0 0 s s -->
+    <item android:state_first="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/surface" />
+            <corners
+                android:bottomLeftRadius="@dimen/widget_list_content_corner_radius"
+                android:bottomRightRadius="@dimen/widget_list_content_corner_radius" />
+        </shape>
+    </item>
+
+    <!-- MIDDLE : 0 0 s s -->
+    <item android:state_middle="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/surface" />
+            <corners
+                android:bottomLeftRadius="@dimen/widget_list_content_corner_radius"
+                android:bottomRightRadius="@dimen/widget_list_content_corner_radius" />
+        </shape>
+    </item>
+
+    <!-- LAST : 0 0 L L -->
+    <item android:state_last="true">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/surface" />
+            <corners
+                android:bottomLeftRadius="@dimen/widget_list_top_bottom_corner_radius"
+                android:bottomRightRadius="@dimen/widget_list_top_bottom_corner_radius" />
+        </shape>
+    </item>
+</selector>

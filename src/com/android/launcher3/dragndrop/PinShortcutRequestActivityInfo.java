@@ -39,26 +39,32 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.pm.ShortcutConfigActivityInfo;
 
+import java.util.function.Supplier;
+
 /**
  * Extension of ShortcutConfigActivityInfo to be used in the confirmation prompt for pin item
  * request.
  */
 @TargetApi(Build.VERSION_CODES.O)
-class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
+public class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
 
     // Class name used in the target component, such that it will never represent an
     // actual existing class.
     private static final String STUB_COMPONENT_CLASS = "pinned-shortcut";
 
-    private final PinItemRequest mRequest;
+    private final Supplier<PinItemRequest> mRequestSupplier;
     private final ShortcutInfo mInfo;
     private final Context mContext;
 
     public PinShortcutRequestActivityInfo(PinItemRequest request, Context context) {
-        super(new ComponentName(request.getShortcutInfo().getPackage(), STUB_COMPONENT_CLASS),
-                request.getShortcutInfo().getUserHandle());
-        mRequest = request;
-        mInfo = request.getShortcutInfo();
+        this(request.getShortcutInfo(), () -> request, context);
+    }
+
+    public PinShortcutRequestActivityInfo(
+            ShortcutInfo si, Supplier<PinItemRequest> requestSupplier, Context context) {
+        super(new ComponentName(si.getPackage(), STUB_COMPONENT_CLASS), si.getUserHandle());
+        mRequestSupplier = requestSupplier;
+        mInfo = si;
         mContext = context;
     }
 
@@ -91,7 +97,7 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
                         true /* isToState */);
         // Delay the actual accept() call until the drop animation is complete.
         return PinRequestHelper.createWorkspaceItemFromPinItemRequest(
-                mContext, mRequest, duration);
+                mContext, mRequestSupplier.get(), duration);
     }
 
     @Override

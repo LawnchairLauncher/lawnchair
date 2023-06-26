@@ -24,10 +24,9 @@ import android.graphics.Color;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.RecentsView;
 
 /**
@@ -91,15 +90,17 @@ public class BackgroundAppState extends OverviewState {
 
     @Override
     protected float getDepthUnchecked(Context context) {
+        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+            if (Launcher.getLauncher(context).areFreeformTasksVisible()) {
+                // Don't blur the background while freeform tasks are visible
+                return 0;
+            }
+        }
         return 1;
     }
 
     @Override
     public int getWorkspaceScrimColor(Launcher launcher) {
-        DeviceProfile dp = launcher.getDeviceProfile();
-        if (dp.isTaskbarPresentInApps && !FeatureFlags.ENABLE_TASKBAR_IN_OVERVIEW.get()) {
-            return launcher.getColor(R.color.taskbar_background);
-        }
         return Color.TRANSPARENT;
     }
 
@@ -107,6 +108,18 @@ public class BackgroundAppState extends OverviewState {
     public boolean isTaskbarAlignedWithHotseat(Launcher launcher) {
         if (ENABLE_SHELL_TRANSITIONS) return false;
         return super.isTaskbarAlignedWithHotseat(launcher);
+    }
+
+    @Override
+    public boolean disallowTaskbarGlobalDrag() {
+        // Enable global drag in overview
+        return false;
+    }
+
+    @Override
+    public boolean allowTaskbarInitialSplitSelection() {
+        // Disallow split select from taskbar items in overview
+        return false;
     }
 
     public static float[] getOverviewScaleAndOffsetForBackgroundState(

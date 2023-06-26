@@ -8,38 +8,29 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.test.runner.AndroidJUnit4
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.R
 import com.android.launcher3.taskbar.TaskbarManager
+import java.lang.IllegalStateException
+import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
-import com.android.launcher3.R
-import org.junit.Assume.assumeTrue
 import org.mockito.Mockito.`when` as whenever
 import org.mockito.MockitoAnnotations
-import java.lang.IllegalStateException
 
 @RunWith(AndroidJUnit4::class)
 class NavButtonLayoutFactoryTest {
 
-    @Mock
-    lateinit var mockDeviceProfile: DeviceProfile
-    @Mock
-    lateinit var mockParentButtonContainer: FrameLayout
-    @Mock
-    lateinit var mockNavLayout: LinearLayout
-    @Mock
-    lateinit var mockStartContextualLayout: ViewGroup
-    @Mock
-    lateinit var mockEndContextualLayout: ViewGroup
-    @Mock
-    lateinit var mockResources: Resources
-    @Mock
-    lateinit var mockBackButton: ImageView
-    @Mock
-    lateinit var mockRecentsButton: ImageView
-    @Mock
-    lateinit var mockHomeButton: ImageView
+    @Mock lateinit var mockDeviceProfile: DeviceProfile
+    @Mock lateinit var mockParentButtonContainer: FrameLayout
+    @Mock lateinit var mockNavLayout: LinearLayout
+    @Mock lateinit var mockStartContextualLayout: ViewGroup
+    @Mock lateinit var mockEndContextualLayout: ViewGroup
+    @Mock lateinit var mockResources: Resources
+    @Mock lateinit var mockBackButton: ImageView
+    @Mock lateinit var mockRecentsButton: ImageView
+    @Mock lateinit var mockHomeButton: ImageView
 
     @Before
     fun setup() {
@@ -53,11 +44,11 @@ class NavButtonLayoutFactoryTest {
 
         // Init top level layout
         whenever(mockParentButtonContainer.findViewById<LinearLayout>(R.id.end_nav_buttons))
-                .thenReturn(mockNavLayout)
+            .thenReturn(mockNavLayout)
         whenever(mockParentButtonContainer.findViewById<ViewGroup>(R.id.end_contextual_buttons))
-                .thenReturn(mockEndContextualLayout)
+            .thenReturn(mockEndContextualLayout)
         whenever(mockParentButtonContainer.findViewById<ViewGroup>(R.id.start_contextual_buttons))
-                .thenReturn(mockStartContextualLayout)
+            .thenReturn(mockStartContextualLayout)
     }
 
     @Test
@@ -65,8 +56,12 @@ class NavButtonLayoutFactoryTest {
         assumeTrue(TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
         mockDeviceProfile.isTaskbarPresent = true
         val layoutter: NavButtonLayoutFactory.NavButtonLayoutter =
-                getLayoutter(isKidsMode = true, isInSetup = false, isThreeButtonNav = false,
-                        phoneMode = false)
+            getLayoutter(
+                isKidsMode = true,
+                isInSetup = false,
+                isThreeButtonNav = false,
+                phoneMode = false
+            )
         assert(layoutter is KidsNavLayoutter)
     }
 
@@ -75,8 +70,12 @@ class NavButtonLayoutFactoryTest {
         assumeTrue(TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
         mockDeviceProfile.isTaskbarPresent = true
         val layoutter: NavButtonLayoutFactory.NavButtonLayoutter =
-                getLayoutter(isKidsMode = false, isInSetup = true, isThreeButtonNav = false,
-                        phoneMode = false)
+            getLayoutter(
+                isKidsMode = false,
+                isInSetup = true,
+                isThreeButtonNav = false,
+                phoneMode = false
+            )
         assert(layoutter is SetupNavLayoutter)
     }
 
@@ -85,8 +84,12 @@ class NavButtonLayoutFactoryTest {
         assumeTrue(TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
         mockDeviceProfile.isTaskbarPresent = true
         val layoutter: NavButtonLayoutFactory.NavButtonLayoutter =
-                getLayoutter(isKidsMode = false, isInSetup = false, isThreeButtonNav = false,
-                        phoneMode = false)
+            getLayoutter(
+                isKidsMode = false,
+                isInSetup = false,
+                isThreeButtonNav = false,
+                phoneMode = false
+            )
         assert(layoutter is TaskbarNavLayoutter)
     }
 
@@ -94,8 +97,12 @@ class NavButtonLayoutFactoryTest {
     fun noValidLayoutForLargeScreenTaskbarNotPresent() {
         assumeTrue(TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
         mockDeviceProfile.isTaskbarPresent = false
-        getLayoutter(isKidsMode = false, isInSetup = false, isThreeButtonNav = false,
-                        phoneMode = false)
+        getLayoutter(
+            isKidsMode = false,
+            isInSetup = false,
+            isThreeButtonNav = false,
+            phoneMode = false
+        )
     }
 
     @Test
@@ -103,8 +110,12 @@ class NavButtonLayoutFactoryTest {
         assumeTrue(TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
         mockDeviceProfile.isTaskbarPresent = false
         val layoutter: NavButtonLayoutFactory.NavButtonLayoutter =
-                getLayoutter(isKidsMode = false, isInSetup = false, isThreeButtonNav = true,
-                        phoneMode = true)
+            getLayoutter(
+                isKidsMode = false,
+                isInSetup = false,
+                isThreeButtonNav = true,
+                phoneMode = true
+            )
         assert(layoutter is PhonePortraitNavLayoutter)
     }
 
@@ -114,8 +125,12 @@ class NavButtonLayoutFactoryTest {
         mockDeviceProfile.isTaskbarPresent = false
         setDeviceProfileLandscape()
         val layoutter: NavButtonLayoutFactory.NavButtonLayoutter =
-                getLayoutter(isKidsMode = false, isInSetup = false, isThreeButtonNav = true,
-                        phoneMode = true)
+            getLayoutter(
+                isKidsMode = false,
+                isInSetup = false,
+                isThreeButtonNav = true,
+                phoneMode = true
+            )
         assert(layoutter is PhoneLandscapeNavLayoutter)
     }
 
@@ -123,8 +138,12 @@ class NavButtonLayoutFactoryTest {
     fun noValidLayoutForPhoneGestureNav() {
         assumeTrue(TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
         mockDeviceProfile.isTaskbarPresent = false
-        getLayoutter(isKidsMode = false, isInSetup = false, isThreeButtonNav = false,
-                phoneMode = true)
+        getLayoutter(
+            isKidsMode = false,
+            isInSetup = false,
+            isThreeButtonNav = false,
+            phoneMode = true
+        )
     }
 
     private fun setDeviceProfileLandscape() {
@@ -134,15 +153,20 @@ class NavButtonLayoutFactoryTest {
         landscapeField.set(mockDeviceProfile, true)
     }
 
-    private fun getLayoutter(isKidsMode: Boolean, isInSetup: Boolean,
-                             isThreeButtonNav: Boolean, phoneMode: Boolean):
-            NavButtonLayoutFactory.NavButtonLayoutter {
+    private fun getLayoutter(
+        isKidsMode: Boolean,
+        isInSetup: Boolean,
+        isThreeButtonNav: Boolean,
+        phoneMode: Boolean
+    ): NavButtonLayoutFactory.NavButtonLayoutter {
         return NavButtonLayoutFactory.getUiLayoutter(
-                deviceProfile = mockDeviceProfile,
-                navButtonsView = mockParentButtonContainer,
-                resources = mockResources,
-                isKidsMode = isKidsMode, isInSetup = isInSetup,
-                isThreeButtonNav = isThreeButtonNav, phoneMode = phoneMode
+            deviceProfile = mockDeviceProfile,
+            navButtonsView = mockParentButtonContainer,
+            resources = mockResources,
+            isKidsMode = isKidsMode,
+            isInSetup = isInSetup,
+            isThreeButtonNav = isThreeButtonNav,
+            phoneMode = phoneMode
         )
     }
 }

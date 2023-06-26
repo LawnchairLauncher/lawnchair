@@ -174,7 +174,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             mContext.getDragLayer().getDescendantRectRelativeToSelf(host, pos);
             ArrowPopup popup = OptionsPopupView.show(mContext, new RectF(pos), actions, false);
             popup.requestFocus();
-            popup.setOnCloseCallback(() -> {
+            popup.addOnCloseCallback(() -> {
                 host.requestFocus();
                 host.sendAccessibilityEvent(TYPE_VIEW_FOCUSED);
                 host.performAccessibilityAction(ACTION_ACCESSIBILITY_FOCUS, null);
@@ -259,7 +259,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             if (((host.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL)
                     && layout.isRegionVacant(info.cellX - 1, info.cellY, 1, info.spanY))
                     || !layout.isRegionVacant(info.cellX + info.spanX, info.cellY, 1, info.spanY)) {
-                lp.cellX --;
+                lp.setCellX(lp.getCellX() - 1);
                 info.cellX --;
             }
             lp.cellHSpan ++;
@@ -269,7 +269,7 @@ public class LauncherAccessibilityDelegate extends BaseAccessibilityDelegate<Lau
             info.spanX --;
         } else if (action == R.string.action_increase_height) {
             if (!layout.isRegionVacant(info.cellX, info.cellY + info.spanY, info.spanX, 1)) {
-                lp.cellY --;
+                lp.setCellY(lp.getCellY() - 1);
                 info.cellY --;
             }
             lp.cellVSpan ++;

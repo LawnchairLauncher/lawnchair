@@ -24,20 +24,19 @@ import android.widget.LinearLayout
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 
-/**
- * Layoutter for showing 3 button navigation on large screen
- */
+/** Layoutter for showing 3 button navigation on large screen */
 class TaskbarNavLayoutter(
-        resources: Resources,
-        navBarContainer: LinearLayout,
-        endContextualContainer: ViewGroup,
-        startContextualContainer: ViewGroup
-) : AbstractNavButtonLayoutter(
+    resources: Resources,
+    navBarContainer: LinearLayout,
+    endContextualContainer: ViewGroup,
+    startContextualContainer: ViewGroup
+) :
+    AbstractNavButtonLayoutter(
         resources,
         navBarContainer,
         endContextualContainer,
         startContextualContainer
-) {
+    ) {
 
     override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
         // Add spacing after the end of the last nav button

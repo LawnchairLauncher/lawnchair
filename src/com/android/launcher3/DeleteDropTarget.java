@@ -121,7 +121,6 @@ public class DeleteDropTarget extends ButtonDropTarget {
     public void onDrop(DragObject d, DragOptions options) {
         if (canRemove(d.dragInfo)) {
             mLauncher.getModelWriter().prepareToUndoDelete();
-            d.dragInfo.container = NO_ID;
         }
         super.onDrop(d, options);
         mStatsLogManager.logger().withInstanceId(d.logInstanceId)

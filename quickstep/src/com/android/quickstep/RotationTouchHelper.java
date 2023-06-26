@@ -321,9 +321,9 @@ public class RotationTouchHelper implements DisplayInfoChangeListener {
         if (enable && !mInOverview && !TestProtocol.sDisableSensorRotation) {
             // Clear any previous state from sensor manager
             mSensorRotation = mCurrentAppRotation;
-            mOrientationListener.enable();
+            UI_HELPER_EXECUTOR.execute(mOrientationListener::enable);
         } else {
-            mOrientationListener.disable();
+            UI_HELPER_EXECUTOR.execute(mOrientationListener::disable);
         }
     }
 

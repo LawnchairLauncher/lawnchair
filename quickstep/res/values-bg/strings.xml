@@ -53,6 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Жест за връщане назад"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"За да се върнете на предишния екран, прекарайте пръст от левия или десния край на екрана до средата."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"За да се върнете към последния екран, прекарайте два пръста от левия или десния край на екрана до средата."</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Връщане назад"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Трябва да прекарате пръст нагоре от долния край на екрана."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Не задържайте, преди да вдигнете пръста си."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Трябва да прекарате пръст право нагоре."</string>
@@ -61,6 +62,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Жест за преминаване към началния екран"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Прекарайте пръст нагоре от долната част на екрана. Този жест винаги ще ви отвежда до началния екран."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Прекарайте два пръста нагоре от долната част на екрана. Този жест винаги води до началния екран."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Отваряне на началния екран"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"За да отворите началния си екран по всяко време, прекарайте пръст нагоре от долната част на екрана"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Трябва да прекарате пръст нагоре от долния край на екрана."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Задръжте прозореца по-дълго, преди да вдигнете пръста си."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Прекарайте пръст право нагоре, след което задръжте."</string>
@@ -69,6 +72,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Жест за превключване между приложенията"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"За превключване прекарайте пръст нагоре от долната част на екрана, задръжте и освободете"</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"За превключване на прил. плъзнете 2 пръста нагоре от долната част на екрана, задръжте и освободете."</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Превключване на приложенията"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Готово"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Готово"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Настройки"</string>
@@ -76,7 +80,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Чудесно!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Урок <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Готово!"</string>
-    <string name="allset_hint" msgid="2384632994739392447">"Прекарайте пръст нагоре, за да отворите началния екран"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Прекарайте пръст нагоре, за да отворите началния екран"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Докоснете бутона „Начало“, за да преминете към началния екран"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Можете да започнете да използвате <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"устройството"</string>
@@ -84,7 +88,7 @@
     <string name="action_share" msgid="2648470652637092375">"Споделяне"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Екранна снимка"</string>
     <string name="action_split" msgid="2098009717623550676">"Разделяне на екрана"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"Докоснете друго прил., за да ползвате разд. екран"</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"Докоснете друго прил., за да ползвате разд. екран"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"За разделен екран изберете още едно приложение"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Това действие не е разрешено от приложението или организацията ви"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Пропускане на урока за навигиране?"</string>
@@ -95,9 +99,11 @@
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Урок за лентата на задачите"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Показва се урокът за лентата на задачите"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Урокът за лентата на задачите бе затворен"</string>
-    <string name="taskbar_edu_splitscreen" msgid="5563823414110661454">"Плъзнете встрани, за да използвате едновременно 2 приложения"</string>
-    <string name="taskbar_edu_stashing" msgid="2805035263048176462">"Плъзнете пръст нагоре, за да видите лентата на задачите"</string>
-    <string name="taskbar_edu_suggestions" msgid="1416699696825090402">"Лентата на задачите предлага приложения според навиците ви"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Плъзнете приложение встрани, за да използвате едновременно 2"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Плъзнете бавно нагоре, за да видите лентата на задачите"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Получавайте предложения за приложения според навиците си"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Включете навигирането с жестове от настройките с цел авт. скриване на лентата на задачите"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Правете повече неща с лентата на задачите"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Напред"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Назад"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Затваряне"</string>
@@ -110,7 +116,11 @@
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Известия"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Бързи настройки"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Лента на задачите"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Лентата на задачите се показва"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Лентата на задачите е скрита"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Лента за навигация"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Преместване горе/вляво"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Преместване долу/вдясно"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Показване на още # приложение.}other{Показване на още # приложения.}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> и <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

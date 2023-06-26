@@ -17,11 +17,15 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import static com.android.launcher3.logger.LauncherAtom.SearchResultContainer;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SCROLLED_DOWN;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_PERSONAL_SCROLLED_DOWN;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_PERSONAL_SCROLLED_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SCROLLED_UNKNOWN_DIRECTION;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SCROLLED_UP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SEARCH_SCROLLED_DOWN;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_SEARCH_SCROLLED_UP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_VERTICAL_SWIPE_BEGIN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_VERTICAL_SWIPE_END;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORK_FAB_BUTTON_COLLAPSE;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORK_FAB_BUTTON_EXTEND;
 import static com.android.launcher3.util.LogConfig.SEARCH_LOGGING;
 
 import android.content.Context;
@@ -39,7 +43,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.views.ActivityContext;
-import com.android.launcher3.views.RecyclerViewFastScroller;
 
 import java.util.List;
 
@@ -257,14 +260,17 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
         }
     }
 
+    @Override
     public int getScrollBarTop() {
         return ActivityContext.lookupContext(getContext()).getAppsView().isSearchSupported()
                 ? getResources().getDimensionPixelOffset(R.dimen.all_apps_header_top_padding)
                 : 0;
     }
 
-    public RecyclerViewFastScroller getScrollbar() {
-        return mScrollbar;
+    @Override
+    public int getScrollBarMarginBottom() {
+        return getRootWindowInsets() == null ? 0
+                : getRootWindowInsets().getSystemWindowInsetBottom();
     }
 
     @Override
@@ -275,17 +281,37 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
     private void logCumulativeVerticalScroll() {
         ActivityContext context = ActivityContext.lookupContext(getContext());
         StatsLogManager mgr = context.getStatsLogManager();
-        ExtendedEditText editText = context.getAppsView().getSearchUiManager().getEditText();
+        ActivityAllAppsContainerView<?> appsView = context.getAppsView();
+        ExtendedEditText editText = appsView.getSearchUiManager().getEditText();
         ContainerInfo containerInfo = ContainerInfo.newBuilder().setSearchResultContainer(
                 SearchResultContainer
                         .newBuilder()
                         .setQueryLength((editText == null) ? -1 : editText.length())).build();
-
-        // mCumulativeVerticalScroll == 0 when user comes back to original position, we don't
-        // know the direction of scrolling.
-        mgr.logger().withContainerInfo(containerInfo).log(
-                mCumulativeVerticalScroll == 0 ? LAUNCHER_ALLAPPS_SCROLLED_UNKNOWN_DIRECTION
-                        : (mCumulativeVerticalScroll > 0) ? LAUNCHER_ALLAPPS_SCROLLED_DOWN
-                                : LAUNCHER_ALLAPPS_SCROLLED_UP);
+        if (mCumulativeVerticalScroll == 0) {
+            // mCumulativeVerticalScroll == 0 when user comes back to original position, we
+            // don't know the direction of scrolling.
+            mgr.logger().withContainerInfo(containerInfo).log(
+                    LAUNCHER_ALLAPPS_SCROLLED_UNKNOWN_DIRECTION);
+            return;
+        } else if (appsView.isSearching()) {
+            // In search results page
+            mgr.logger().withContainerInfo(containerInfo).log((mCumulativeVerticalScroll > 0)
+                    ? LAUNCHER_ALLAPPS_SEARCH_SCROLLED_DOWN
+                    : LAUNCHER_ALLAPPS_SEARCH_SCROLLED_UP);
+            return;
+        } else if (appsView.mViewPager != null) {
+            int currentPage = appsView.mViewPager.getCurrentPage();
+            if (currentPage == ActivityAllAppsContainerView.AdapterHolder.WORK) {
+                // In work A-Z list
+                mgr.logger().withContainerInfo(containerInfo).log((mCumulativeVerticalScroll > 0)
+                        ? LAUNCHER_WORK_FAB_BUTTON_COLLAPSE
+                        : LAUNCHER_WORK_FAB_BUTTON_EXTEND);
+                return;
+            }
+        }
+        // In personal A-Z list
+        mgr.logger().withContainerInfo(containerInfo).log((mCumulativeVerticalScroll > 0)
+                ? LAUNCHER_ALLAPPS_PERSONAL_SCROLLED_DOWN
+                : LAUNCHER_ALLAPPS_PERSONAL_SCROLLED_UP);
     }
 }

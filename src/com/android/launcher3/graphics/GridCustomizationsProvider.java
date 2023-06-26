@@ -1,8 +1,7 @@
 package com.android.launcher3.graphics;
 
-import static com.android.launcher3.LauncherPrefs.getPrefs;
+import static com.android.launcher3.LauncherPrefs.THEMED_ICONS;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
-import static com.android.launcher3.util.Themes.KEY_THEMED_ICONS;
 import static com.android.launcher3.util.Themes.isThemedIconEnabled;
 
 import android.annotation.TargetApi;
@@ -25,6 +24,7 @@ import android.util.Log;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile.GridOption;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.Executors;
 
@@ -66,6 +66,9 @@ public class GridCustomizationsProvider extends ContentProvider {
 
     private static final String KEY_SURFACE_PACKAGE = "surface_package";
     private static final String KEY_CALLBACK = "callback";
+    public static final String KEY_HIDE_BOTTOM_ROW = "hide_bottom_row";
+
+    private static final int MESSAGE_ID_UPDATE_PREVIEW = 1337;
 
     private final ArrayMap<IBinder, PreviewLifecycleObserver> mActivePreviews = new ArrayMap<>();
 
@@ -79,7 +82,7 @@ public class GridCustomizationsProvider extends ContentProvider {
             String[] selectionArgs, String sortOrder) {
         switch (uri.getPath()) {
             case KEY_LIST_OPTIONS: {
-                MatrixCursor cursor = new MatrixCursor(new String[] {
+                MatrixCursor cursor = new MatrixCursor(new String[]{
                         KEY_NAME, KEY_ROWS, KEY_COLS, KEY_PREVIEW_COUNT, KEY_IS_DEFAULT});
                 InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(getContext());
                 for (GridOption gridOption : idp.parseAllGridOptions(getContext())) {
@@ -95,7 +98,7 @@ public class GridCustomizationsProvider extends ContentProvider {
             }
             case GET_ICON_THEMED:
             case ICON_THEMED: {
-                MatrixCursor cursor = new MatrixCursor(new String[] {BOOLEAN_VALUE});
+                MatrixCursor cursor = new MatrixCursor(new String[]{BOOLEAN_VALUE});
                 cursor.newRow().add(BOOLEAN_VALUE, isThemedIconEnabled(getContext()) ? 1 : 0);
                 return cursor;
             }
@@ -138,13 +141,14 @@ public class GridCustomizationsProvider extends ContentProvider {
                 }
 
                 idp.setCurrentGrid(getContext(), gridName);
+                getContext().getContentResolver().notifyChange(uri, null);
                 return 1;
             }
             case ICON_THEMED:
             case SET_ICON_THEMED: {
-                getPrefs(getContext()).edit()
-                        .putBoolean(KEY_THEMED_ICONS, values.getAsBoolean(BOOLEAN_VALUE))
-                        .apply();
+                LauncherPrefs.get(getContext())
+                        .put(THEMED_ICONS, values.getAsBoolean(BOOLEAN_VALUE));
+                getContext().getContentResolver().notifyChange(uri, null);
                 return 1;
             }
             default:
@@ -223,7 +227,14 @@ public class GridCustomizationsProvider extends ContentProvider {
 
         @Override
         public boolean handleMessage(Message message) {
-            destroyObserver(this);
+            if (destroyed) {
+                return true;
+            }
+            if (message.what == MESSAGE_ID_UPDATE_PREVIEW) {
+                renderer.hideBottomRow(message.getData().getBoolean(KEY_HIDE_BOTTOM_ROW));
+            } else {
+                destroyObserver(this);
+            }
             return true;
         }
 
