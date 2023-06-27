@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.taskbar.bubbles;
 
+import static java.lang.Math.abs;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -125,6 +127,10 @@ public class BubbleStashController {
             mBubblesShowingOnHome = onHome;
             if (mBubblesShowingOnHome) {
                 showBubbleBar(/* expanded= */ false);
+                // If the bubble bar is already unstashed, the taskbar touchable region won't be
+                // updated correctly, so force an update here.
+                mControllers.runAfterInit(() ->
+                        mTaskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged());
             } else if (!mBarViewController.isExpanded()) {
                 stashBubbleBar();
             }
@@ -234,8 +240,14 @@ public class BubbleStashController {
             secondHalfDurationScale = 0.75f;
 
             // If we're on home, adjust the translation so the bubble bar aligns with hotseat.
-            final float hotseatTransY = mActivity.getDeviceProfile().getTaskbarOffsetY();
-            final float translationY = mBubblesShowingOnHome ? hotseatTransY : 0;
+            // TODO(b/286247080): Update the offset for overview.
+            final float hotseatBottomSpace = mActivity.getDeviceProfile().hotseatBarBottomSpacePx;
+            final float hotseatCellHeight = mActivity.getDeviceProfile().hotseatCellHeightPx;
+
+            final float translationY =
+                    -hotseatBottomSpace - hotseatCellHeight + mUnstashedHeight - abs(
+                            hotseatCellHeight - mUnstashedHeight) / 2;
+
             fullLengthAnimatorSet.playTogether(
                     mIconScaleForStash.animateToValue(1),
                     mIconTranslationYForStash.animateToValue(translationY));
@@ -265,6 +277,7 @@ public class BubbleStashController {
                     if (isStashed) {
                         mBarViewController.setExpanded(false);
                     }
+                    mTaskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged();
                 });
             }
         });

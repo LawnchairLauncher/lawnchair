@@ -123,9 +123,11 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
 
         val taskbarTouchableHeight = controllers.taskbarStashController.touchableHeight
         val bubblesTouchableHeight =
-            if (controllers.bubbleControllers.isPresent)
+            if (controllers.bubbleControllers.isPresent) {
                 controllers.bubbleControllers.get().bubbleStashController.touchableHeight
-            else 0
+            } else {
+                0
+            }
         val touchableHeight = Math.max(taskbarTouchableHeight, bubblesTouchableHeight)
 
         if (
