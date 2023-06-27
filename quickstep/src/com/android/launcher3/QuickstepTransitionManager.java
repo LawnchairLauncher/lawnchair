@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_HOME;
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_STANDARD;
+import static android.app.WindowConfiguration.WINDOWING_MODE_MULTI_WINDOW;
 import static android.provider.Settings.Secure.LAUNCHER_TASKBAR_EDUCATION_SHOWING;
 import static android.view.RemoteAnimationTarget.MODE_CLOSING;
 import static android.view.RemoteAnimationTarget.MODE_OPENING;
@@ -1201,14 +1202,15 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         return false;
     }
 
-    private boolean hasMultipleTargetsWithMode(RemoteAnimationTarget[] targets, int mode) {
+    private boolean shouldPlayFallbackClosingAnimation(RemoteAnimationTarget[] targets) {
         int numTargets = 0;
         for (RemoteAnimationTarget target : targets) {
-            if (target.mode == mode) {
+            if (target.mode == MODE_CLOSING) {
                 numTargets++;
-            }
-            if (numTargets > 1) {
-                return true;
+                if (numTargets > 1 || target.windowConfiguration.getWindowingMode()
+                        == WINDOWING_MODE_MULTI_WINDOW) {
+                    return true;
+                }
             }
         }
         return false;
@@ -1595,7 +1597,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             boolean playFallBackAnimation = (launcherView == null
                     && launcherIsForceInvisibleOrOpening)
                     || mLauncher.getWorkspace().isOverlayShown()
-                    || hasMultipleTargetsWithMode(appTargets, MODE_CLOSING);
+                    || shouldPlayFallbackClosingAnimation(appTargets);
 
             boolean playWorkspaceReveal = true;
             boolean skipAllAppsScale = false;
