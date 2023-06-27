@@ -229,6 +229,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private RemoteAnimationProvider mRemoteAnimationProvider;
     // Strong refs to runners which are cleared when the launcher activity is destroyed
     private RemoteAnimationFactory mWallpaperOpenRunner;
+    private RemoteAnimationFactory mAppLaunchRunner;
     private RemoteAnimationFactory mKeyguardGoingAwayRunner;
 
     private RemoteAnimationFactory mWallpaperOpenTransitionRunner;
@@ -298,17 +299,17 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         boolean fromRecents = isLaunchingFromRecents(v, null /* targets */);
         RunnableList onEndCallback = new RunnableList();
 
-        RemoteAnimationFactory delegateRunner = new AppLaunchAnimationRunner(v, onEndCallback);
+        mAppLaunchRunner = new AppLaunchAnimationRunner(v, onEndCallback);
         ItemInfo tag = (ItemInfo) v.getTag();
         if (tag != null && tag.shouldUseBackgroundAnimation()) {
             ContainerAnimationRunner containerAnimationRunner =
                     ContainerAnimationRunner.from(v, mStartingWindowListener, onEndCallback);
             if (containerAnimationRunner != null) {
-                delegateRunner = containerAnimationRunner;
+                mAppLaunchRunner = containerAnimationRunner;
             }
         }
         RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(
-                mHandler, delegateRunner, true /* startAtFrontOfQueue */);
+                mHandler, mAppLaunchRunner, true /* startAtFrontOfQueue */);
 
         // Note that this duration is a guess as we do not know if the animation will be a
         // recents launch or not for sure until we know the opening app targets.
@@ -1164,6 +1165,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             // Also clear strong references to the runners registered with the remote animation
             // definition so we don't have to wait for the system gc
             mWallpaperOpenRunner = null;
+            mAppLaunchRunner = null;
             mKeyguardGoingAwayRunner = null;
         }
     }
