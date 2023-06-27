@@ -18,6 +18,8 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import static com.android.launcher3.testing.shared.TestProtocol.ICON_MISSING;
+
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertEquals;
@@ -579,6 +581,11 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @PlatinumTest(focusArea = "launcher")
     public void getIconsPosition_afterIconRemoved_notContained() throws IOException {
         Point[] gridPositions = getCornersAndCenterPositions();
+        StringBuilder sb = new StringBuilder();
+        for (Point p : gridPositions) {
+            sb.append(p).append(", ");
+        }
+        Log.d(ICON_MISSING, "allGridPositions: " + sb);
         createShortcutIfNotExist(STORE_APP_NAME, gridPositions[0]);
         createShortcutIfNotExist(MAPS_APP_NAME, gridPositions[1]);
         installDummyAppAndWaitForUIUpdate();
