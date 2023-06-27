@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static android.app.admin.DevicePolicyManager.ACTION_DEVICE_POLICY_RESOURCE_UPDATED;
+import static android.content.Context.RECEIVER_EXPORTED;
 
 import static com.android.launcher3.LauncherPrefs.ICON_STATE;
 import static com.android.launcher3.LauncherPrefs.THEMED_ICONS;
@@ -26,6 +27,7 @@ import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.LauncherApps;
@@ -38,7 +40,6 @@ import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconProvider;
@@ -112,8 +113,9 @@ public class LauncherAppState implements SafeCloseable {
                 new SimpleBroadcastReceiver(mModel::onBroadcastIntent);
         modelChangeReceiver.register(mContext, Intent.ACTION_LOCALE_CHANGED,
                 ACTION_DEVICE_POLICY_RESOURCE_UPDATED);
-        if (FeatureFlags.IS_STUDIO_BUILD) {
-            modelChangeReceiver.register(mContext, ACTION_FORCE_ROLOAD);
+        if (BuildConfig.IS_STUDIO_BUILD) {
+            mContext.registerReceiver(modelChangeReceiver, new IntentFilter(ACTION_FORCE_ROLOAD),
+                    RECEIVER_EXPORTED);
         }
         mOnTerminateCallback.add(() -> mContext.unregisterReceiver(modelChangeReceiver));
 

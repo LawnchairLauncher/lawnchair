@@ -275,9 +275,15 @@ public class LauncherWidgetHolder {
     protected Bundle getConfigurationActivityOptions(@NonNull BaseDraggingActivity activity,
             int widgetId) {
         LauncherAppWidgetHostView view = mViews.get(widgetId);
-        if (view == null) return null;
+        if (view == null) {
+            return activity.makeDefaultActivityOptions(
+                    -1 /* SPLASH_SCREEN_STYLE_UNDEFINED */).toBundle();
+        }
         Object tag = view.getTag();
-        if (!(tag instanceof ItemInfo)) return null;
+        if (!(tag instanceof ItemInfo)) {
+            return activity.makeDefaultActivityOptions(
+                    -1 /* SPLASH_SCREEN_STYLE_UNDEFINED */).toBundle();
+        }
         Bundle bundle = activity.getActivityLaunchOptions(view, (ItemInfo) tag).toBundle();
         bundle.putInt(KEY_SPLASH_SCREEN_STYLE, SPLASH_SCREEN_STYLE_EMPTY);
         return bundle;

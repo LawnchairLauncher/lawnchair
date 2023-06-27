@@ -18,6 +18,7 @@ package com.android.launcher3.views;
 import static android.window.SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR;
 
 import static com.android.launcher3.LauncherSettings.Animation.DEFAULT_NO_ICON;
+import static com.android.launcher3.Utilities.allowBGLaunch;
 import static com.android.launcher3.logging.KeyboardStateManager.KeyboardState.HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_KEYBOARD_CLOSED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_PENDING_INTENT;
@@ -38,7 +39,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Process;
-import android.os.StrictMode;
 import android.os.UserHandle;
 import android.util.Log;
 import android.view.Display;
@@ -414,8 +414,7 @@ public interface ActivityContext {
             }
         }
         ActivityOptions options =
-                ActivityOptions.makeClipRevealAnimation(v, left, top, width, height);
-
+                allowBGLaunch(ActivityOptions.makeClipRevealAnimation(v, left, top, width, height));
         options.setLaunchDisplayId(
                 (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
                         : Display.DEFAULT_DISPLAY);
@@ -427,7 +426,7 @@ public interface ActivityContext {
      * Creates a default activity option and we do not want association with any launcher element.
      */
     default ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
-        ActivityOptions options = ActivityOptions.makeBasic();
+        ActivityOptions options = allowBGLaunch(ActivityOptions.makeBasic());
         if (Utilities.ATLEAST_T) {
             options.setSplashScreenStyle(splashScreenStyle);
         }
