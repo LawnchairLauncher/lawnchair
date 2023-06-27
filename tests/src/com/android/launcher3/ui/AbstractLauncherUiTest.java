@@ -17,6 +17,7 @@ package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
+import static com.android.launcher3.testing.shared.TestProtocol.ICON_MISSING;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
@@ -603,6 +604,8 @@ public abstract class AbstractLauncherUiTest {
 
     protected HomeAppIcon createShortcutIfNotExist(String name, int cellX, int cellY) {
         HomeAppIcon homeAppIcon = mLauncher.getWorkspace().tryGetWorkspaceAppIcon(name);
+        Log.d(ICON_MISSING, "homeAppIcon: " + homeAppIcon + " name: " + name +
+                " cell: " + cellX + ", " + cellY);
         if (homeAppIcon == null) {
             HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
             allApps.freeze();
