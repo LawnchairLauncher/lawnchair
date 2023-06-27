@@ -293,8 +293,16 @@ public abstract class AbstractLauncherUiTest {
         }
     }
 
-    protected void clearLauncherData() {
-        mLauncher.clearLauncherData();
+    protected void reinitializeLauncherData() {
+        reinitializeLauncherData(false);
+    }
+
+    protected void reinitializeLauncherData(boolean clearWorkspace) {
+        if (clearWorkspace) {
+            mLauncher.clearLauncherData();
+        } else {
+            mLauncher.reinitializeLauncherData();
+        }
         mLauncher.waitForLauncherInitialized();
     }
 
