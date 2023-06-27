@@ -36,7 +36,7 @@ import org.junit.runners.model.Statement
  * This rule will not work in OOP tests that don't have access to the activity under test.
  */
 class ViewCaptureRule(var alreadyOpenActivitySupplier: Supplier<Activity?>) : TestRule {
-    val viewCapture = SimpleViewCapture("test-view-capture")
+    private val viewCapture = SimpleViewCapture("test-view-capture")
     var viewCaptureData: ExportedData? = null
         private set
 

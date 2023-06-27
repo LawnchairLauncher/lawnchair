@@ -69,7 +69,6 @@ import com.android.launcher3.util.rule.SamplerRule;
 import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.util.rule.TestStabilityRule;
-import com.android.launcher3.util.rule.ViewCaptureAnalysisRule;
 import com.android.launcher3.util.rule.ViewCaptureRule;
 
 import org.junit.After;
@@ -208,8 +207,7 @@ public abstract class AbstractLauncherUiTest {
         final RuleChain inner = RuleChain
                 .outerRule(new PortraitLandscapeRunner(this))
                 .around(new FailureWatcher(mLauncher, viewCaptureRule::getViewCaptureData))
-                .around(viewCaptureRule)
-                .around(new ViewCaptureAnalysisRule(viewCaptureRule.getViewCapture()));
+                .around(viewCaptureRule);
 
         return TestHelpers.isInLauncherProcess()
                 ? RuleChain.outerRule(ShellCommandRule.setDefaultLauncher()).around(inner)
