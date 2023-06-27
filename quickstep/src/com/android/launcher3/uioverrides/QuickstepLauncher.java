@@ -1105,6 +1105,8 @@ public class QuickstepLauncher extends Launcher {
         activityOptions.options.setLaunchDisplayId(
                 (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
                         : Display.DEFAULT_DISPLAY);
+        activityOptions.options.setPendingIntentBackgroundActivityStartMode(
+                ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED);
         addLaunchCookie(item, activityOptions.options);
         return activityOptions;
     }
@@ -1117,6 +1119,8 @@ public class QuickstepLauncher extends Launcher {
                 Executors.MAIN_EXECUTOR.getHandler(), null,
                 elapsedRealTime -> callbacks.executeAllAndDestroy());
         options.setSplashScreenStyle(splashScreenStyle);
+        options.setPendingIntentBackgroundActivityStartMode(
+                ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED);
         return new ActivityOptionsWrapper(options, callbacks);
     }
 
