@@ -58,7 +58,6 @@ filegroup {
       "src/com/android/launcher3/util/rule/SimpleActivityRule.java",
       "src/com/android/launcher3/util/rule/TestStabilityRule.java",
       "src/com/android/launcher3/util/rule/TISBindRule.java",
-      "src/com/android/launcher3/util/rule/ViewCaptureAnalysisRule.java",
       "src/com/android/launcher3/testcomponent/BaseTestingActivity.java",
       "src/com/android/launcher3/testcomponent/OtherBaseTestingActivity.java",
       "src/com/android/launcher3/testcomponent/CustomShortcutConfigActivity.java",
