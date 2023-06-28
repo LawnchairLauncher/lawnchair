@@ -164,7 +164,7 @@ public class DeviceProfile {
     public int iconSizePx;
     public int iconTextSizePx;
     public int iconDrawablePaddingPx;
-    public int iconDrawablePaddingOriginalPx;
+    private final int mIconDrawablePaddingOriginalPx;
     public boolean iconCenterVertically;
 
     public float cellScaleToFit;
@@ -456,7 +456,7 @@ public class DeviceProfile {
             cellStyle = context.obtainStyledAttributes(R.style.CellStyleDefault,
                     R.styleable.CellStyle);
         }
-        iconDrawablePaddingOriginalPx = cellStyle.getDimensionPixelSize(
+        mIconDrawablePaddingOriginalPx = cellStyle.getDimensionPixelSize(
                 R.styleable.CellStyle_iconDrawablePadding, 0);
         cellStyle.recycle();
 
@@ -883,7 +883,6 @@ public class DeviceProfile {
         iconCenterVertically = mIsScalableGrid || mIsResponsiveGrid;
 
         updateIconSize(1f, res);
-
         updateWorkspacePadding();
 
         // Check to see if the icons fit within the available height.
@@ -925,6 +924,25 @@ public class DeviceProfile {
                 + cellLayoutPaddingPx.left + cellLayoutPaddingPx.right;
     }
 
+    private int getNormalizedIconDrawablePadding() {
+        // TODO(b/235886078): workaround needed because of this bug
+        // Icons are 10% larger on XML than their visual size,
+        // so remove that extra space to get labels closer to the correct padding
+        int iconVisibleSizePx = (int) Math.round(ICON_VISIBLE_AREA_FACTOR * iconSizePx);
+        return Math.max(0, mIconDrawablePaddingOriginalPx - ((iconSizePx - iconVisibleSizePx) / 2));
+    }
+
+    private int getNormalizedFolderChildDrawablePaddingPx(int textHeight) {
+        // TODO(b/235886078): workaround needed because of this bug
+        // Icons are 10% larger on XML than their visual size,
+        // so remove that extra space to get labels closer to the correct padding
+        int drawablePadding = (folderCellHeightPx - folderChildIconSizePx - textHeight) / 3;
+
+        int iconVisibleSizePx = Math.round(ICON_VISIBLE_AREA_FACTOR * folderChildIconSizePx);
+        int iconSizeDiff = folderChildIconSizePx - iconVisibleSizePx;
+        return Math.max(0, drawablePadding - iconSizeDiff / 2);
+    }
+
     /**
      * Updating the iconSize affects many aspects of the launcher layout, such as: iconSizePx,
      * iconTextSizePx, iconDrawablePaddingPx, cellWidth/Height, allApps* variants,
@@ -937,43 +955,36 @@ public class DeviceProfile {
 
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
-        iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * iconScale);
         cellLayoutBorderSpacePx = getCellLayoutBorderSpace(inv, scale);
-        int cellTextAndPaddingHeight =
-                iconDrawablePaddingPx + Utilities.calculateTextHeight(iconTextSizePx);
 
         if (mIsResponsiveGrid) {
-            int cellContentHeight = iconSizePx + cellTextAndPaddingHeight;
-
             cellWidthPx = mResponsiveWidthSpec.getCellSizePx();
             cellHeightPx = mResponsiveHeightSpec.getCellSizePx();
 
             if (cellWidthPx < iconSizePx) {
                 // get a smaller icon size
                 iconSizePx = mIconSizeSteps.getIconSmallerThan(cellWidthPx);
-                // calculate new cellContentHeight
-                cellContentHeight = iconSizePx + cellTextAndPaddingHeight;
             }
+
+            iconDrawablePaddingPx = getNormalizedIconDrawablePadding();
+            int iconTextHeight = Utilities.calculateTextHeight(iconTextSizePx);
+            int cellContentHeight = iconSizePx + iconDrawablePaddingPx + iconTextHeight;
 
             while (iconSizePx > mIconSizeSteps.minimumIconSize()
                     && cellContentHeight > cellHeightPx) {
-                int extraHeightRequired = cellContentHeight - cellHeightPx;
-                int newPadding = iconDrawablePaddingPx - extraHeightRequired;
-                if (newPadding >= 0) {
-                    // Responsive uses the padding without scaling
-                    iconDrawablePaddingPx = iconDrawablePaddingOriginalPx = newPadding;
-                    cellTextAndPaddingHeight =
-                            iconDrawablePaddingPx + Utilities.calculateTextHeight(iconTextSizePx);
-                } else {
+                iconDrawablePaddingPx -= cellContentHeight - cellHeightPx;
+                if (iconDrawablePaddingPx < 0) {
                     // get a smaller icon size
                     iconSizePx = mIconSizeSteps.getNextLowerIconSize(iconSizePx);
+                    iconDrawablePaddingPx = getNormalizedIconDrawablePadding();
                 }
                 // calculate new cellContentHeight
-                cellContentHeight = iconSizePx + cellTextAndPaddingHeight;
+                cellContentHeight = iconSizePx + iconDrawablePaddingPx + iconTextHeight;
             }
 
             cellYPaddingPx = Math.max(0, cellHeightPx - cellContentHeight) / 2;
         } else if (mIsScalableGrid) {
+            iconDrawablePaddingPx = (int) (getNormalizedIconDrawablePadding() * iconScale);
             cellWidthPx = pxFromDp(inv.minCellSize[mTypeIndex].x, mMetrics, scale);
             cellHeightPx = pxFromDp(inv.minCellSize[mTypeIndex].y, mMetrics, scale);
 
@@ -995,6 +1006,8 @@ public class DeviceProfile {
                 }
             }
 
+            int cellTextAndPaddingHeight =
+                    iconDrawablePaddingPx + Utilities.calculateTextHeight(iconTextSizePx);
             int cellContentHeight = iconSizePx + cellTextAndPaddingHeight;
             if (cellHeightPx < cellContentHeight) {
                 // If cellHeight no longer fit iconSize, reduce borderSpace to make cellHeight
@@ -1030,6 +1043,7 @@ public class DeviceProfile {
             desiredWorkspaceHorizontalMarginPx =
                     (int) (desiredWorkspaceHorizontalMarginOriginalPx * scale);
         } else {
+            iconDrawablePaddingPx = (int) (getNormalizedIconDrawablePadding() * iconScale);
             cellWidthPx = iconSizePx + iconDrawablePaddingPx;
             cellHeightPx = (int) Math.ceil(iconSizePx * ICON_OVERLAP_FACTOR)
                     + iconDrawablePaddingPx
@@ -1103,7 +1117,7 @@ public class DeviceProfile {
         if (mIsScalableGrid) {
             allAppsIconSizePx = pxFromDp(inv.allAppsIconSize[mTypeIndex], mMetrics);
             allAppsIconTextSizePx = pxFromSp(inv.allAppsIconTextSize[mTypeIndex], mMetrics);
-            allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
+            allAppsIconDrawablePaddingPx = getNormalizedIconDrawablePadding();
             allAppsCellWidthPx = pxFromDp(inv.allAppsCellSize[mTypeIndex].x, mMetrics, scale);
 
             if (allAppsCellWidthPx < allAppsIconSizePx) {
@@ -1145,7 +1159,7 @@ public class DeviceProfile {
     private void updateAllAppsWithResponsiveMeasures() {
         allAppsIconSizePx = iconSizePx;
         allAppsIconTextSizePx = iconTextSizePx;
-        allAppsIconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
+        allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
 
         allAppsBorderSpacePx = new Point(
                 mAllAppsResponsiveWidthSpec.getGutterPx(),
@@ -1279,8 +1293,7 @@ public class DeviceProfile {
 
         }
 
-        folderChildDrawablePaddingPx = Math.max(0,
-                (folderCellHeightPx - folderChildIconSizePx - textHeight) / 3);
+        folderChildDrawablePaddingPx = getNormalizedFolderChildDrawablePaddingPx(textHeight);
     }
 
     public void updateInsets(Rect insets) {
