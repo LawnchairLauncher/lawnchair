@@ -164,7 +164,7 @@ public class ReorderAlgorithmUnitTest {
         Context c = new ActivityContextWrapper(getApplicationContext());
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(c).getDeviceProfile(c).copy(c);
         mPrevNumColumns = dp.inv.numColumns;
-        mPrevNumRows = dp.inv.numColumns;
+        mPrevNumRows = dp.inv.numRows;
     }
 
     @After
