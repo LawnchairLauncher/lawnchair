@@ -423,6 +423,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Override
     @TargetApi(Build.VERSION_CODES.S)
     protected void onCreate(Bundle savedInstanceState) {
+        TestProtocol.testLogD(TestProtocol.ACTIVITY_LIFECYCLE_RULE, "Launcher.onCreate 1");
         mStartupLatencyLogger = createStartupLatencyLogger(
                 sIsNewProcess
                         ? LockedUserState.get(this).isUserUnlockedAtLauncherStartup()
@@ -581,6 +582,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
         setTitle(R.string.home_screen);
         mStartupLatencyLogger.logEnd(LAUNCHER_LATENCY_STARTUP_ACTIVITY_ON_CREATE);
+        TestProtocol.testLogD(TestProtocol.ACTIVITY_LIFECYCLE_RULE, "Launcher.onCreate 2");
     }
 
     /**
@@ -1055,6 +1057,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     protected void onStop() {
+        TestProtocol.testLogD(TestProtocol.ACTIVITY_LIFECYCLE_RULE, "Launcher.onStop 1");
         super.onStop();
         if (mDeferOverlayCallbacks) {
             checkIfOverlayStillDeferred();
@@ -1066,10 +1069,12 @@ public class Launcher extends StatefulActivity<LauncherState>
         mAppWidgetHolder.setActivityStarted(false);
         NotificationListener.removeNotificationsChangedListener(getPopupDataProvider());
         FloatingIconView.resetIconLoadResult();
+        TestProtocol.testLogD(TestProtocol.ACTIVITY_LIFECYCLE_RULE, "Launcher.onStop 2");
     }
 
     @Override
     protected void onStart() {
+        TestProtocol.testLogD(TestProtocol.ACTIVITY_LIFECYCLE_RULE, "Launcher.onStart 1");
         TraceHelper.INSTANCE.beginSection(ON_START_EVT);
         super.onStart();
         if (!mDeferOverlayCallbacks) {
@@ -1078,6 +1083,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         mAppWidgetHolder.setActivityStarted(true);
         TraceHelper.INSTANCE.endSection();
+        TestProtocol.testLogD(TestProtocol.ACTIVITY_LIFECYCLE_RULE, "Launcher.onStart 2");
     }
 
     @Override
@@ -1248,6 +1254,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     protected void onResume() {
+        TestProtocol.testLogD(TestProtocol.ACTIVITY_LIFECYCLE_RULE, "Launcher.onResume 1");
         TraceHelper.INSTANCE.beginSection(ON_RESUME_EVT);
         super.onResume();
 
@@ -1259,10 +1266,12 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         DragView.removeAllViews(this);
         TraceHelper.INSTANCE.endSection();
+        TestProtocol.testLogD(TestProtocol.ACTIVITY_LIFECYCLE_RULE, "Launcher.onResume 2");
     }
 
     @Override
     protected void onPause() {
+        TestProtocol.testLogD(TestProtocol.ACTIVITY_LIFECYCLE_RULE, "Launcher.onPause 1");
         // Ensure that items added to Launcher are queued until Launcher returns
         ItemInstallQueue.INSTANCE.get(this).pauseModelPush(FLAG_ACTIVITY_PAUSED);
 
@@ -1275,6 +1284,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             mOverlayManager.onActivityPaused(this);
         }
         mAppWidgetHolder.setActivityResumed(false);
+        TestProtocol.testLogD(TestProtocol.ACTIVITY_LIFECYCLE_RULE, "Launcher.onPause 2");
     }
 
     /**
@@ -1740,6 +1750,8 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
+        TestProtocol.testLogD(
+                TestProtocol.ACTIVITY_LIFECYCLE_RULE, "Launcher.onSaveInstanceState 1");
         outState.putIntArray(RUNTIME_STATE_CURRENT_SCREEN_IDS,
                 mWorkspace.getCurrentPageScreenIds().getArray().toArray());
         outState.putInt(RUNTIME_STATE, mStateManager.getState().ordinal);
@@ -1771,10 +1783,13 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         super.onSaveInstanceState(outState);
         mOverlayManager.onActivitySaveInstanceState(this, outState);
+        TestProtocol.testLogD(
+                TestProtocol.ACTIVITY_LIFECYCLE_RULE, "Launcher.onSaveInstanceState 2");
     }
 
     @Override
     public void onDestroy() {
+        TestProtocol.testLogD(TestProtocol.ACTIVITY_LIFECYCLE_RULE, "Launcher.onDestroy 1");
         super.onDestroy();
         ACTIVITY_TRACKER.onActivityDestroyed(this);
 
@@ -1797,6 +1812,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         LauncherAppState.getIDP(this).removeOnChangeListener(this);
 
         mOverlayManager.onActivityDestroyed(this);
+        TestProtocol.testLogD(TestProtocol.ACTIVITY_LIFECYCLE_RULE, "Launcher.onDestroy 2");
     }
 
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
