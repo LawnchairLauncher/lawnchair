@@ -24,6 +24,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_TYPE_MA
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.app.ActivityOptions;
 import android.app.Person;
 import android.app.WallpaperManager;
 import android.content.Context;
@@ -558,6 +559,17 @@ public final class Utilities {
         Message msg = Message.obtain(handler, callback);
         msg.setAsynchronous(true);
         handler.sendMessage(msg);
+    }
+
+    /**
+     * Utility method to allow background activity launch for the provided activity options
+     */
+    public static ActivityOptions allowBGLaunch(ActivityOptions options) {
+        if (ATLEAST_U) {
+            options.setPendingIntentBackgroundActivityStartMode(
+                    ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED);
+        }
+        return options;
     }
 
     /**
