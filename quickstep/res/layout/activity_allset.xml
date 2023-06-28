@@ -41,6 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
+        android:fitsSystemWindows="true"
 
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -95,7 +96,6 @@
                 style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
                 android:text="@string/allset_hint"
                 android:textSize="@dimen/allset_page_swipe_up_text_size"
                 android:gravity="center_horizontal"
