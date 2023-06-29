@@ -94,11 +94,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         IconLabelDotView, DraggableView, Reorderable {
 
     private static final int DISPLAY_WORKSPACE = 0;
-    private static final int DISPLAY_ALL_APPS = 1;
+    public static final int DISPLAY_ALL_APPS = 1;
     private static final int DISPLAY_FOLDER = 2;
     protected static final int DISPLAY_TASKBAR = 5;
     private static final int DISPLAY_SEARCH_RESULT = 6;
     private static final int DISPLAY_SEARCH_RESULT_SMALL = 7;
+    public static final int DISPLAY_PREDICTION_ROW = 8;
 
     private static final float MIN_LETTER_SPACING = -0.05f;
     private static final int MAX_SEARCH_LOOP_COUNT = 20;
@@ -211,7 +212,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
             defaultIconSize = grid.iconSizePx;
             setCenterVertically(grid.iconCenterVertically);
-        } else if (mDisplay == DISPLAY_ALL_APPS) {
+        } else if (mDisplay == DISPLAY_ALL_APPS || mDisplay == DISPLAY_PREDICTION_ROW) {
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
@@ -402,7 +403,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
      *  Only if actual text can be displayed in two line, the {@code true} value will be effective.
      */
     protected boolean shouldUseTwoLine() {
-        return (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() && mDisplay == DISPLAY_ALL_APPS)
+        return  (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() && mDisplay == DISPLAY_ALL_APPS)
                 || (FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()
                 && mDisplay == DISPLAY_SEARCH_RESULT);
     }
@@ -424,10 +425,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         }
     }
 
-    /** This is used for testing to forcefully set the display to ALL_APPS */
+    /** This is used for testing to forcefully set the display. */
     @VisibleForTesting
-    public void setDisplayAllApps() {
-        mDisplay = DISPLAY_ALL_APPS;
+    public void setDisplay(int display) {
+        mDisplay = display;
     }
 
     /**
