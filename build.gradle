@@ -67,7 +67,7 @@ ext {
     accompanist_version = '0.30.1'
     libsu_version = '5.1.0'
     protocVersion = '3.23.2'
-    room_version = '2.5.1'
+    room_version = '2.5.2'
     optoVersion = "1.0.18"
 }
 
@@ -326,7 +326,7 @@ dependencies {
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.3.0'
 
-    implementation platform("androidx.compose:compose-bom:2023.06.00")
+    implementation platform("androidx.compose:compose-bom:2023.06.01")
     implementation "androidx.compose.ui:ui"
     debugImplementation "androidx.compose.ui:ui-tooling"
     implementation "androidx.compose.ui:ui-text-google-fonts"
@@ -334,7 +334,7 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended"
     implementation "androidx.compose.material:material"
     implementation "androidx.compose.runtime:runtime-livedata"
-    implementation 'androidx.compose.material3:material3:1.1.0'
+    implementation 'androidx.compose.material3:material3'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.activity:activity-compose:1.7.2"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
@@ -372,7 +372,7 @@ dependencies {
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.6.1'
 
-    implementation 'com.airbnb.android:lottie:6.0.0'
+    implementation 'com.airbnb.android:lottie:6.0.1'
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:2.11"
 }
@@ -406,6 +406,5 @@ licensee {
     allowUrl("https://api.github.com/licenses/bsd-3-clause")
     allowUrl("https://github.com/patrykmichalik/opto/blob/master/LICENSE")
     allowUrl("https://github.com/RikkaApps/HiddenApiRefinePlugin/blob/main/LICENSE")
-    allowUrl("https://github.com/stleary/JSON-java/blob/master/LICENSE")
     allowUrl("https://www.gnu.org/licenses/old-licenses/gpl-2.0.html")
 }

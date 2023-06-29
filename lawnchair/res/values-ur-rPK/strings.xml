@@ -32,7 +32,7 @@
     <string name="app_drawer_description">چھپے ہوئے ایپس، کالم کی گنتی، آئکنس</string>
     <string name="folders_label">فولڈرز</string>
     <string name="folders_description">قطار اور کالم کی گنتی</string>
-    <string name="gestures_label">Gestures</string>
+    <string name="gestures_label">اشارے</string>
     <string name="gestures_description">ٹیپ اور سوائپس</string>
     <string name="quickstep_label">حالیہ</string>
     <string name="quickstep_description">سب کلہئر کرنے والا بٹن ، کونے کا رداس</string>
@@ -46,13 +46,13 @@
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">طرز تحریر</string>
     <string name="font_picker_description">کچھ طرز تحریر تبدیل نہیں کیے جائیں گے۔.</string>
-    <string name="smartspace_calendar_label">At a Glance Calendar Customization</string>
-    <string name="smartspace_calendar_description">Allow showing date in non-Gregorian calendar systems.</string>
-    <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Increase the max allowed Home Screen grid size from 10 x 10 to 20 x 20.</string>
-    <string name="always_reload_icons_label">Always Reload Icons</string>
-    <string name="always_reload_icons_description">Avoid using cached icons from icon packs</string>
-    <string name="transparent_background_icons">Transparent Themed Icons</string>
+    <string name="smartspace_calendar_label">حسبِ ضرورت تبدیلیاں</string>
+    <string name="smartspace_calendar_description">غیر عیسوی کیلنڈر سسٹم میں تاریخ دکھانے کی اجازت دیں۔.</string>
+    <string name="workspace_increase_max_grid_size_label">ہوم اسکرین گرڈ سائز میں اضافہ</string>
+    <string name="workspace_increase_max_grid_size_description">زیادہ سے زیادہ اجازت شدہ ہوم اسکرین گرڈ سائز کو 10 x 10 سے 20 x 20 تک بڑھا دیں۔.</string>
+    <string name="always_reload_icons_label">آیکون ہمیشہ دوبارہ لوڈ کریں۔</string>
+    <string name="always_reload_icons_description">آئیکن پیک سے کیشڈ آئیکنز استعمال کرنے سے گریز کریں۔</string>
+    <string name="transparent_background_icons">شفاف تھیم والے آئیکن</string>
     <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
     <string name="smartspace_mode_selection">At a Glance Provider selection</string>
     <!-- GeneralPreferences -->
