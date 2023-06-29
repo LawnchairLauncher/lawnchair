@@ -128,7 +128,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.7"
+        kotlinCompilerExtensionVersion = "1.4.8"
     }
 
     final def keystorePropertiesFile = rootProject.file("keystore.properties")
