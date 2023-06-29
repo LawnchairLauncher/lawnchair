@@ -16,9 +16,7 @@
 package com.android.quickstep.util;
 
 import static com.android.launcher3.util.NavigationMode.NO_BUTTON;
-import static com.android.systemui.shared.recents.utilities.Utilities.isLargeScreen;
 
-import android.content.Context;
 import android.view.Surface;
 
 import com.android.launcher3.util.DisplayController.Info;
@@ -29,26 +27,22 @@ import com.android.launcher3.util.NavigationMode;
  */
 public class NavBarPosition {
 
-    private final boolean mIsLargeScreen;
+    private final boolean mIsTablet;
     private final NavigationMode mMode;
     private final int mDisplayRotation;
 
-    public NavBarPosition(Context context, NavigationMode mode, Info info) {
-        this(context, mode, info.rotation);
-    }
-
-    public NavBarPosition(Context context, NavigationMode mode, int displayRotation) {
-        mIsLargeScreen = isLargeScreen(context);
+    public NavBarPosition(NavigationMode mode, Info info) {
+        mIsTablet = info.isTablet(info.realBounds);
         mMode = mode;
-        mDisplayRotation = displayRotation;
+        mDisplayRotation = info.rotation;
     }
 
     public boolean isRightEdge() {
-        return mMode != NO_BUTTON && mDisplayRotation == Surface.ROTATION_90 && !mIsLargeScreen;
+        return mMode != NO_BUTTON && mDisplayRotation == Surface.ROTATION_90 && !mIsTablet;
     }
 
     public boolean isLeftEdge() {
-        return mMode != NO_BUTTON && mDisplayRotation == Surface.ROTATION_270 && !mIsLargeScreen;
+        return mMode != NO_BUTTON && mDisplayRotation == Surface.ROTATION_270 && !mIsTablet;
     }
 
     public float getRotation() {
