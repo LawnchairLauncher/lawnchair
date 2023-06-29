@@ -16,6 +16,8 @@
 
 package com.android.launcher3.appprediction;
 
+import static com.android.launcher3.BubbleTextView.DISPLAY_PREDICTION_ROW;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -36,7 +38,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.FloatingHeaderRow;
 import com.android.launcher3.allapps.FloatingHeaderView;
 import com.android.launcher3.anim.AlphaUpdateListener;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusIndicatorHelper;
 import com.android.launcher3.keyboard.FocusIndicatorHelper.SimpleFocusIndicatorHelper;
 import com.android.launcher3.model.data.ItemInfo;
@@ -106,22 +107,12 @@ public class PredictionRowView<T extends Context & ActivityContext>
                 mActivityContext.getAppsView().getAppsStore().unregisterIconContainer(this);
             }
         }
-
-        // Set the predicted row in All Apps' text line to 1.
-        if (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get()
-                || FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()) {
-            for (int i = 0; i < getChildCount(); i++) {
-                BubbleTextView icon = (BubbleTextView) getChildAt(i);
-                icon.setMaxLines(1);
-            }
-        }
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(getExpectedHeight(),
                 MeasureSpec.EXACTLY));
-        updateVisibility();
     }
 
     @Override
@@ -231,6 +222,7 @@ public class PredictionRowView<T extends Context & ActivityContext>
             icon.reset();
             if (predictionCount > i) {
                 icon.setVisibility(View.VISIBLE);
+                icon.setDisplay(DISPLAY_PREDICTION_ROW);
                 icon.applyFromWorkspaceItem(mPredictedApps.get(i));
             } else {
                 icon.setVisibility(predictionCount == 0 ? GONE : INVISIBLE);
