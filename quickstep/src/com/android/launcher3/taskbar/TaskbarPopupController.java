@@ -177,7 +177,6 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
                     systemShortcuts);
         }
 
-        icon.clearAccessibilityFocus();
         container.addOnAttachStateChangeListener(
                 new PopupLiveUpdateHandler<BaseTaskbarContext>(context, container) {
                     @Override
