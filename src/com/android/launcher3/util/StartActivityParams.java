@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.proxy;
+package com.android.launcher3.util;
 
 import static android.app.PendingIntent.FLAG_MUTABLE;
 import static android.app.PendingIntent.FLAG_ONE_SHOT;
@@ -34,6 +34,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
+/**
+ * Wrapper class for parameters to start an activity.
+ */
 public class StartActivityParams implements Parcelable {
 
     private static final String TAG = "StartActivityParams";
@@ -93,6 +96,7 @@ public class StartActivityParams implements Parcelable {
         parcel.writeBundle(options);
     }
 
+    /** Perform the operation on the pendingIntent. */
     public void deliverResult(Context context, int resultCode, Intent data) {
         ActivityOptions options = allowBGLaunch(ActivityOptions.makeBasic());
         try {
@@ -105,7 +109,7 @@ public class StartActivityParams implements Parcelable {
     }
 
     public static final Parcelable.Creator<StartActivityParams> CREATOR =
-            new Parcelable.Creator<StartActivityParams>() {
+            new Parcelable.Creator<>() {
                 public StartActivityParams createFromParcel(Parcel source) {
                     return new StartActivityParams(source);
                 }
