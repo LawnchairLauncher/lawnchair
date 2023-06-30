@@ -125,6 +125,14 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         this(context, null, 0);
     }
 
+    @Override
+    protected View getAccessibilityInitialFocusView() {
+        if (mSystemShortcutContainer != null) {
+            return mSystemShortcutContainer.getChildAt(0);
+        }
+        return super.getAccessibilityInitialFocusView();
+    }
+
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
         return mAccessibilityDelegate;
     }
@@ -242,7 +250,6 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
                     popupDataProvider.getNotificationKeysForItem(item),
                     systemShortcuts);
         }
-        launcher.tryClearAccessibilityFocus(icon);
         launcher.refreshAndBindWidgetsForPackageUser(PackageUserKey.fromItemInfo(item));
         container.requestFocus();
         return container;
