@@ -188,12 +188,27 @@ public class DebugTestInformationHandler extends TestInformationHandler {
                 return response;
             }
 
+            case TestProtocol.REQUEST_REINITIALIZE_DATA: {
+                final long identity = Binder.clearCallingIdentity();
+                try {
+                    MODEL_EXECUTOR.execute(() -> {
+                        LauncherModel model = LauncherAppState.getInstance(mContext).getModel();
+                        model.getModelDbController().createEmptyDB();
+                        MAIN_EXECUTOR.execute(model::forceReload);
+                    });
+                    return response;
+                } finally {
+                    Binder.restoreCallingIdentity(identity);
+                }
+            }
+
             case TestProtocol.REQUEST_CLEAR_DATA: {
                 final long identity = Binder.clearCallingIdentity();
                 try {
                     MODEL_EXECUTOR.execute(() -> {
                         LauncherModel model = LauncherAppState.getInstance(mContext).getModel();
                         model.getModelDbController().createEmptyDB();
+                        model.getModelDbController().clearEmptyDbFlag();
                         MAIN_EXECUTOR.execute(model::forceReload);
                     });
                     return response;

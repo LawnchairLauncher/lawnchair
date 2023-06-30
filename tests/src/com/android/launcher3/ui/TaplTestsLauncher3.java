@@ -97,7 +97,12 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     public static void initialize(AbstractLauncherUiTest test) throws Exception {
-        test.clearLauncherData();
+        initialize(test, false);
+    }
+
+    public static void initialize(
+            AbstractLauncherUiTest test, boolean clearWorkspace) throws Exception {
+        test.reinitializeLauncherData(clearWorkspace);
         test.mDevice.pressHome();
         test.waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
         test.waitForState("Launcher internal state didn't switch to Home",
@@ -248,7 +253,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         LauncherLayoutBuilder builder = new LauncherLayoutBuilder()
                 .atHotseat(0).putApp("com.android.chrome", "com.google.android.apps.chrome.Main");
         mLauncherLayout = TestUtil.setLauncherDefaultLayout(mTargetContext, builder);
-        clearLauncherData();
+        reinitializeLauncherData();
 
         final Workspace workspace = mLauncher.getWorkspace();
 
@@ -557,7 +562,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 allApps.unfreeze();
             }
             // Reset the workspace for the next shortcut creation.
-            initialize(this);
+            initialize(this, true);
             endTime = SystemClock.uptimeMillis();
             elapsedTime = endTime - startTime;
             Log.d("testDragAppIconToWorkspaceCellTime",
