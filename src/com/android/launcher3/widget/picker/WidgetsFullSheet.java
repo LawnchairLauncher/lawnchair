@@ -891,6 +891,19 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         return false;
     }
 
+    /** Gets the sheet for widget picker, which is used for testing. */
+    @VisibleForTesting
+    public View getSheet() {
+        return mContent;
+    }
+
+    /** Opens the first header in widget picker and scrolls to the top of the RecyclerView. */
+    @VisibleForTesting
+    public void openFirstHeader() {
+        mAdapters.get(AdapterHolder.PRIMARY).mWidgetsListAdapter.selectFirstHeaderEntry();
+        mAdapters.get(AdapterHolder.PRIMARY).mWidgetsRecyclerView.scrollToTop();
+    }
+
     /** A holder class for holding adapters & their corresponding recycler view. */
     final class AdapterHolder {
         static final int PRIMARY = 0;
