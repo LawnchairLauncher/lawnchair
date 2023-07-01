@@ -1855,6 +1855,12 @@ public final class LauncherInstrumentation {
         return tasks;
     }
 
+    /** Reinitializes the workspace to its default layout. */
+    public void reinitializeLauncherData() {
+        getTestInfo(TestProtocol.REQUEST_REINITIALIZE_DATA);
+    }
+
+    /** Clears the workspace, leaving it empty. */
     public void clearLauncherData() {
         getTestInfo(TestProtocol.REQUEST_CLEAR_DATA);
     }

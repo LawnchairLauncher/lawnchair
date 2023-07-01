@@ -1258,6 +1258,32 @@ public class DeviceProfile {
                     mResponsiveHeightSpec.getGutterPx());
 
             folderContentPaddingLeftRight = mResponsiveFolderWidthSpec.getStartPaddingPx();
+
+            // Reduce icon width if it's wider than the expected folder cell width
+            if (folderCellWidthPx < folderChildIconSizePx) {
+                folderChildIconSizePx = mIconSizeSteps.getIconSmallerThan(folderCellWidthPx);
+            }
+
+            // Recalculating padding and cell height
+            folderChildDrawablePaddingPx = getNormalizedFolderChildDrawablePaddingPx(textHeight);
+            int folderCellContentHeight = folderChildIconSizePx + folderChildDrawablePaddingPx
+                    + textHeight;
+
+            // Reduce the icon in height when it's taller than the expected cell height
+            while (folderChildIconSizePx > mIconSizeSteps.minimumIconSize()
+                    && folderCellContentHeight > folderCellHeightPx) {
+                folderChildDrawablePaddingPx -= folderCellContentHeight - folderCellHeightPx;
+                if (folderChildDrawablePaddingPx < 0) {
+                    // get a smaller icon size
+                    folderChildIconSizePx = mIconSizeSteps.getNextLowerIconSize(
+                            folderChildIconSizePx);
+                    folderChildDrawablePaddingPx =
+                            getNormalizedFolderChildDrawablePaddingPx(textHeight);
+                }
+                // calculate new cellContentHeight
+                folderCellContentHeight = folderChildIconSizePx + folderChildDrawablePaddingPx
+                        + textHeight;
+            }
         } else if (mIsScalableGrid) {
             if (inv.folderStyle == INVALID_RESOURCE_HANDLE) {
                 folderCellWidthPx = roundPxValueFromFloat(getCellSize().x * scale);
@@ -1275,6 +1301,8 @@ public class DeviceProfile {
             folderFooterHeightPx = roundPxValueFromFloat(folderFooterHeightPx * scale);
 
             folderContentPaddingLeftRight = folderCellLayoutBorderSpacePx.x;
+
+            folderChildDrawablePaddingPx = getNormalizedFolderChildDrawablePaddingPx(textHeight);
         } else {
             int cellPaddingX = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_x_padding)
                     * scale);
@@ -1291,9 +1319,8 @@ public class DeviceProfile {
                             res.getDimensionPixelSize(R.dimen.folder_footer_height_default)
                                     * scale);
 
+            folderChildDrawablePaddingPx = getNormalizedFolderChildDrawablePaddingPx(textHeight);
         }
-
-        folderChildDrawablePaddingPx = getNormalizedFolderChildDrawablePaddingPx(textHeight);
     }
 
     public void updateInsets(Rect insets) {
