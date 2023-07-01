@@ -58,6 +58,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
@@ -117,6 +118,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     // animation callback
     private final Handler mHandler = new Handler();
     private final Runnable mAnimationStartTimeoutRunnable = this::onAnimationStartTimeout;
+    private SplitSelectStateController mSplitSelectStateController;
 
     /**
      * Init drag layer and overview panel views.
@@ -129,13 +131,12 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         mFallbackRecentsView = findViewById(R.id.overview_panel);
         mActionsView = findViewById(R.id.overview_actions_view);
         getRootView().getSysUiScrim().getSysUIProgress().updateValue(0);
-
-        SplitSelectStateController controller =
+        mSplitSelectStateController =
                 new SplitSelectStateController(this, mHandler, getStateManager(),
-                         null /* depthController */, getStatsLogManager(),
+                        null /* depthController */, getStatsLogManager(),
                         SystemUiProxy.INSTANCE.get(this), RecentsModel.INSTANCE.get(this));
         mDragLayer.recreateControllers();
-        mFallbackRecentsView.init(mActionsView, controller);
+        mFallbackRecentsView.init(mActionsView, mSplitSelectStateController);
 
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
     }
