@@ -49,7 +49,7 @@
     <string name="smartspace_calendar_label">At a Glance-kalenterin mukauttaminen</string>
     <string name="smartspace_calendar_description">Salli päivämäärän näyttäminen ei-Gregoriaanisissa kalenterijärjestelmissä.</string>
     <string name="workspace_increase_max_grid_size_label">Suurempi aloitusnäytön ruudukon enimmäiskoko</string>
-    <string name="workspace_increase_max_grid_size_description">Suurempi aloitusnäytön ruudukon enimmäiskoko.</string>
+    <string name="workspace_increase_max_grid_size_description">Suurenna aloitusnäytön ruudukon enimmäiskokoa koosta 10 x 10 kokoon 20 x 20.</string>
     <string name="always_reload_icons_label">Päivitä kuvakkeet aina</string>
     <string name="always_reload_icons_description">Vältä välimuistissa olevien kuvakkeiden käyttöä kuvakepakkauksissa</string>
     <string name="transparent_background_icons">Läpinäkyvät teemakuvakkeet</string>
@@ -71,8 +71,8 @@
     <string name="show_notification_count">Näytä ilmoitusten määrä</string>
     <string name="notification_dots_color">Ilmoituspisteiden väri</string>
     <string name="notification_dots_text_color">Ilmoituspisteiden väri</string>
-    <string name="notification_dots_color_contrast_warning_always">Warning: Notification Dot &amp; Counter colors do not have enough contrast with each other</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Warning: Notification Dot &amp; Counter colors might not always have enough contrast with each other</string>
+    <string name="notification_dots_color_contrast_warning_always">Varoitus: Ilmoituspisteillä- ja laskurilla ei ole tarpeeksi kontrastia toisiinsa verrattuna</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Varoitus: Ilmoituspisteillä- ja laskurilla ei aina ole tarpeeksi kontrastia toisiinsa verrattuna</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Ilmoitusten käyttöoikeus vaaditaan</string>
     <string name="missing_notification_access_description">Ilmoitusten käyttöoikeus vaaditaan.</string>
@@ -350,7 +350,7 @@
     <string name="item_removed">Kohde poistettu.</string>
     <string name="all_apps_no_search_results">Yhtään sovellusta ei löytynyt haulle “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="dt2s_admin_hint_title">Admin permission required</string>
-    <string name="dt2s_admin_hint">To use Double-Tap to Sleep, set Lawnchair as a device admin app. Tap Open Settings, then tap “Activate this device admin app.”</string>
+    <string name="dt2s_admin_hint">Jotta voit käyttää \"Kaksoisnapauta lepotilaan\"-toimintoa, lisää Lawnchair laitteen hallintasovellukseksi. Paina \"Avaa asetukset\", ja sitten \"Aktivoi\"</string>
     <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
     <string name="dt2s_a11y_hint_title">Accessibility service required</string>
     <string name="dt2s_a11y_hint">Ota Lawnchairin esteettömyyspalvelu käyttöön kaksoisnapauttamalla Open Settingsia, valitse Lawnchair ja valitse Lawnchair ja ota käyttöön Lawnchair.</string>
