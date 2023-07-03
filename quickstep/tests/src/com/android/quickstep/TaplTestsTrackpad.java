@@ -16,11 +16,13 @@
 
 package com.android.quickstep;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assume.assumeTrue;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.android.launcher3.tapl.LauncherInstrumentation.TrackpadGestureType;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
@@ -38,12 +40,11 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
     public void setUp() throws Exception {
         super.setUp();
         TaplTestsLauncher3.initialize(this);
-        mLauncher.setSwipeFromTrackpad(true);
     }
 
     @After
     public void tearDown() {
-        mLauncher.setSwipeFromTrackpad(false);
+        mLauncher.setTrackpadGestureType(TrackpadGestureType.NONE);
     }
 
     @Test
@@ -52,7 +53,30 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
     public void goHome() throws Exception {
         assumeTrue(mLauncher.isTablet());
 
+        mLauncher.setTrackpadGestureType(TrackpadGestureType.THREE_FINGER);
         startTestActivity(2);
         mLauncher.goHome();
+    }
+
+    @Test
+    @PortraitLandscape
+    @NavigationModeSwitch
+    public void switchToOverview() throws Exception {
+        assumeTrue(mLauncher.isTablet());
+
+        mLauncher.setTrackpadGestureType(TrackpadGestureType.THREE_FINGER);
+        startTestActivity(2);
+        mLauncher.goHome().switchToOverview();
+    }
+
+    @Test
+    @PortraitLandscape
+    @NavigationModeSwitch
+    public void testAllAppsFromHome() throws Exception {
+        assumeTrue(mLauncher.isTablet());
+
+        mLauncher.setTrackpadGestureType(TrackpadGestureType.TWO_FINGER);
+        assertNotNull("switchToAllApps() returned null",
+                mLauncher.getWorkspace().switchToAllApps());
     }
 }
