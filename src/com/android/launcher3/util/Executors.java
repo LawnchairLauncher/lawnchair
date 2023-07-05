@@ -21,6 +21,7 @@ import android.os.Process;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -57,6 +58,11 @@ public class Executors {
     public static final LooperExecutor UI_HELPER_EXECUTOR =
             new LooperExecutor(
                     createAndStartNewLooper("UiThreadHelper", Process.THREAD_PRIORITY_FOREGROUND));
+
+
+    /** A background executor to preinflate views. */
+    public static final ExecutorService VIEW_PREINFLATION_EXECUTOR =
+            java.util.concurrent.Executors.newSingleThreadExecutor();
 
     /**
      * Utility method to get a started handler thread statically
