@@ -16,6 +16,8 @@
 
 package com.android.quickstep.views;
 
+import static com.android.app.animation.Interpolators.EMPHASIZED;
+import static com.android.launcher3.config.FeatureFlags.enableOverviewIconMenu;
 import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA;
 
 import android.animation.Animator;
@@ -24,6 +26,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Outline;
 import android.graphics.Rect;
+import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.util.AttributeSet;
@@ -58,16 +61,19 @@ public class TaskMenuView extends AbstractFloatingView {
 
     private static final Rect sTempRect = new Rect();
 
-    private static final int REVEAL_OPEN_DURATION = 150;
-    private static final int REVEAL_CLOSE_DURATION = 100;
+    private static final int REVEAL_OPEN_DURATION = enableOverviewIconMenu() ? 417 : 150;
+    private static final int REVEAL_CLOSE_DURATION = enableOverviewIconMenu() ? 333 : 100;
 
     private BaseDraggingActivity mActivity;
     private TextView mTaskName;
     @Nullable
     private AnimatorSet mOpenCloseAnimator;
+    @Nullable private Runnable mOnClosingStartCallback;
     private TaskView mTaskView;
     private TaskIdAttributeContainer mTaskContainer;
     private LinearLayout mOptionLayout;
+    private float mMenuTranslationYBeforeOpen;
+    private float mIconViewTranslationYBeforeOpen;
 
     public TaskMenuView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -137,12 +143,18 @@ public class TaskMenuView extends AbstractFloatingView {
         }
     }
 
-    public static boolean showForTask(TaskIdAttributeContainer taskContainer) {
+    public static boolean showForTask(TaskIdAttributeContainer taskContainer,
+            @Nullable Runnable onClosingStartCallback) {
         BaseDraggingActivity activity = BaseDraggingActivity.fromContext(
                 taskContainer.getTaskView().getContext());
         final TaskMenuView taskMenuView = (TaskMenuView) activity.getLayoutInflater().inflate(
                         R.layout.task_menu, activity.getDragLayer(), false);
+        taskMenuView.setOnClosingStartCallback(onClosingStartCallback);
         return taskMenuView.populateAndShowForTask(taskContainer);
+    }
+
+    public static boolean showForTask(TaskIdAttributeContainer taskContainer) {
+        return showForTask(taskContainer, null);
     }
 
     private boolean populateAndShowForTask(TaskIdAttributeContainer taskContainer) {
@@ -171,8 +183,12 @@ public class TaskMenuView extends AbstractFloatingView {
     }
 
     private void addMenuOptions(TaskIdAttributeContainer taskContainer) {
-        mTaskName.setText(TaskUtils.getTitle(getContext(), taskContainer.getTask()));
-        mTaskName.setOnClickListener(v -> close(true));
+        if (enableOverviewIconMenu()) {
+            removeView(mTaskName);
+        } else {
+            mTaskName.setText(TaskUtils.getTitle(getContext(), taskContainer.getTask()));
+            mTaskName.setOnClickListener(v -> close(true));
+        }
         TaskOverlayFactory.getEnabledShortcuts(mTaskView, taskContainer)
                 .forEach(this::addMenuOption);
     }
@@ -180,6 +196,9 @@ public class TaskMenuView extends AbstractFloatingView {
     private void addMenuOption(SystemShortcut menuOption) {
         LinearLayout menuOptionView = (LinearLayout) mActivity.getLayoutInflater().inflate(
                 R.layout.task_view_menu_option, this, false);
+        if (enableOverviewIconMenu()) {
+            ((GradientDrawable) menuOptionView.getBackground()).setCornerRadius(0);
+        }
         menuOption.setIconAndLabelFor(
                 menuOptionView.findViewById(R.id.icon), menuOptionView.findViewById(R.id.text));
         LayoutParams lp = (LayoutParams) menuOptionView.getLayoutParams();
@@ -198,8 +217,9 @@ public class TaskMenuView extends AbstractFloatingView {
 
         // Get Position
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        mActivity.getDragLayer().getDescendantRectRelativeToSelf(taskContainer.getThumbnailView(),
-                sTempRect);
+        mActivity.getDragLayer().getDescendantRectRelativeToSelf(
+                enableOverviewIconMenu() ? taskContainer.getIconView().asView()
+                        : taskContainer.getThumbnailView(), sTempRect);
         Rect insets = mActivity.getDragLayer().getInsets();
         BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) getLayoutParams();
         int padding = getResources()
@@ -217,12 +237,17 @@ public class TaskMenuView extends AbstractFloatingView {
         ShapeDrawable divider = new ShapeDrawable(new RectShape());
         divider.getPaint().setColor(getResources().getColor(android.R.color.transparent));
         int dividerSpacing = (int) getResources().getDimension(R.dimen.task_menu_spacing);
-        mOptionLayout.setShowDividers(SHOW_DIVIDER_MIDDLE);
+        mOptionLayout.setShowDividers(
+                enableOverviewIconMenu() ? SHOW_DIVIDER_NONE : SHOW_DIVIDER_MIDDLE);
 
         orientationHandler.setTaskOptionsMenuLayoutOrientation(
                 deviceProfile, mOptionLayout, dividerSpacing, divider);
-        float thumbnailAlignedX = sTempRect.left - insets.left;
-        float thumbnailAlignedY = sTempRect.top - insets.top;
+        float thumbnailAlignedX = sTempRect.left - insets.left + (enableOverviewIconMenu()
+                ? -getResources().getDimensionPixelSize(
+                R.dimen.task_thumbnail_icon_menu_touch_max_margin) : 0);
+        float thumbnailAlignedY = sTempRect.top - insets.top + (enableOverviewIconMenu()
+                ? getResources().getDimensionPixelSize(R.dimen.task_thumbnail_icon_menu_max_height)
+                - 2 * dividerSpacing : 0);
         // Changing pivot to make computations easier
         // NOTE: Changing the pivots means the rotated view gets rotated about the new pivots set,
         // which would render the X and Y position set here incorrect
@@ -231,15 +256,22 @@ public class TaskMenuView extends AbstractFloatingView {
         setRotation(orientationHandler.getDegreesRotated());
 
         // Margin that insets the menuView inside the taskView
-        float taskInsetMargin = getResources().getDimension(R.dimen.task_card_margin);
+        float taskInsetMargin =
+                enableOverviewIconMenu() ? getResources().getDimension(
+                        R.dimen.task_thumbnail_icon_menu_margin) : getResources().getDimension(
+                        R.dimen.task_card_margin);
         setTranslationX(orientationHandler.getTaskMenuX(thumbnailAlignedX,
-                mTaskContainer.getThumbnailView(), deviceProfile, taskInsetMargin));
+                mTaskContainer.getThumbnailView(), deviceProfile, taskInsetMargin,
+                mTaskContainer.getIconView().asView()));
         setTranslationY(orientationHandler.getTaskMenuY(
                 thumbnailAlignedY, mTaskContainer.getThumbnailView(),
-                mTaskContainer.getStagePosition(), this, taskInsetMargin));
+                mTaskContainer.getStagePosition(), this, taskInsetMargin,
+                mTaskContainer.getIconView().asView()));
     }
 
     private void animateOpen() {
+        mMenuTranslationYBeforeOpen = getTranslationY();
+        mIconViewTranslationYBeforeOpen = mTaskContainer.getIconView().asView().getTranslationY();
         animateOpenOrClosed(false);
         mIsOpen = true;
     }
@@ -256,7 +288,29 @@ public class TaskMenuView extends AbstractFloatingView {
 
         final Animator revealAnimator = createOpenCloseOutlineProvider()
                 .createRevealAnimator(this, closing);
-        revealAnimator.setInterpolator(Interpolators.DECELERATE);
+        revealAnimator.setInterpolator(enableOverviewIconMenu() ? Interpolators.EMPHASIZED
+                : Interpolators.DECELERATE);
+
+        if (enableOverviewIconMenu()
+                && ((RecentsView) mActivity.getOverviewPanel()).isOnGridBottomRow(mTaskView)) {
+            float taskBottom = mTaskView.getHeight() + mTaskView.getPersistentTranslationY();
+            float menuBottom = getHeight() + mMenuTranslationYBeforeOpen;
+            float additionalTranslationY = Math.max(menuBottom - taskBottom, 0);
+
+            ObjectAnimator translationYAnim = ObjectAnimator.ofFloat(this, TRANSLATION_Y,
+                    closing ? mMenuTranslationYBeforeOpen
+                            : mMenuTranslationYBeforeOpen - additionalTranslationY);
+            translationYAnim.setInterpolator(EMPHASIZED);
+
+            ObjectAnimator menuTranslationYAnim = ObjectAnimator.ofFloat(
+                    mTaskContainer.getIconView().asView(), TRANSLATION_Y,
+                    closing ? mIconViewTranslationYBeforeOpen
+                            : mIconViewTranslationYBeforeOpen - additionalTranslationY);
+            menuTranslationYAnim.setInterpolator(EMPHASIZED);
+
+            mOpenCloseAnimator.playTogether(translationYAnim, menuTranslationYAnim);
+        }
+
         mOpenCloseAnimator.playTogether(revealAnimator,
                 ObjectAnimator.ofFloat(
                         mTaskContainer.getThumbnailView(), DIM_ALPHA,
@@ -266,6 +320,9 @@ public class TaskMenuView extends AbstractFloatingView {
             @Override
             public void onAnimationStart(Animator animation) {
                 setVisibility(VISIBLE);
+                if (closing && mOnClosingStartCallback != null) {
+                    mOnClosingStartCallback.run();
+                }
             }
 
             @Override
@@ -286,9 +343,16 @@ public class TaskMenuView extends AbstractFloatingView {
 
     private RoundedRectRevealOutlineProvider createOpenCloseOutlineProvider() {
         float radius = TaskCornerRadius.get(mContext);
-        Rect fromRect = new Rect(0, 0, getWidth(), 0);
+        Rect fromRect = new Rect(
+                enableOverviewIconMenu() && isLayoutRtl() ? getWidth() : 0,
+                0,
+                enableOverviewIconMenu() && !isLayoutRtl() ? 0 : getWidth(),
+                0);
         Rect toRect = new Rect(0, 0, getWidth(), getHeight());
         return new RoundedRectRevealOutlineProvider(radius, radius, fromRect, toRect);
     }
 
+    private void setOnClosingStartCallback(Runnable onClosingStartCallback) {
+        mOnClosingStartCallback = onClosingStartCallback;
+    }
 }

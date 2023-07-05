@@ -2202,6 +2202,8 @@ public final class LauncherInstrumentation {
                     containerBounds.bottom,
                     getRealDisplaySize().y - getImeInsets().bottom);
             int y = (bottomBound - containerBounds.top) / 2;
+            // Do not tap in the status bar.
+            y = Math.max(y, getWindowInsets().top);
 
             final long downTime = SystemClock.uptimeMillis();
             final Point tapTarget = new Point(x, y);

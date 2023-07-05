@@ -22,6 +22,7 @@ import static android.view.Gravity.END;
 import static android.view.Gravity.RIGHT;
 import static android.view.Gravity.START;
 
+import static com.android.launcher3.config.FeatureFlags.enableOverviewIconMenu;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
@@ -86,13 +87,19 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
 
     @Override
     public float getTaskMenuX(float x, View thumbnailView,
-            DeviceProfile deviceProfile, float taskInsetMargin) {
+            DeviceProfile deviceProfile, float taskInsetMargin, View taskViewIcon) {
+        if (enableOverviewIconMenu()) {
+            return x + taskViewIcon.getHeight() + taskInsetMargin * 2;
+        }
         return x + taskInsetMargin;
     }
 
     @Override
     public float getTaskMenuY(float y, View thumbnailView, int stagePosition,
-            View taskMenuView, float taskInsetMargin) {
+            View taskMenuView, float taskInsetMargin, View taskViewIcon) {
+        if (enableOverviewIconMenu()) {
+            return y + taskViewIcon.getWidth() - taskViewIcon.getHeight();
+        }
         BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) taskMenuView.getLayoutParams();
         int taskMenuWidth = lp.width;
         if (stagePosition == STAGE_POSITION_UNDEFINED) {
@@ -208,10 +215,21 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
     public void setTaskIconParams(FrameLayout.LayoutParams iconParams,
             int taskIconMargin, int taskIconHeight, int thumbnailTopMargin, boolean isRtl) {
         iconParams.gravity = (isRtl ? END : START) | CENTER_VERTICAL;
-        iconParams.leftMargin = -taskIconHeight - taskIconMargin / 2;
+        iconParams.leftMargin =
+                enableOverviewIconMenu() ? 0 : -taskIconHeight - taskIconMargin / 2;
         iconParams.rightMargin = 0;
-        iconParams.topMargin = thumbnailTopMargin / 2;
+        iconParams.topMargin = enableOverviewIconMenu() ? 0 : thumbnailTopMargin / 2;
         iconParams.bottomMargin = 0;
+    }
+
+    @Override
+    public void setTaskIconMenuParams(FrameLayout.LayoutParams iconMenuParams, int iconMenuMargin,
+            int thumbnailTopMargin) {
+        iconMenuParams.gravity = BOTTOM | START;
+        iconMenuParams.setMarginStart(0);
+        iconMenuParams.topMargin = 0;
+        iconMenuParams.bottomMargin = 0;
+        iconMenuParams.setMarginEnd(0);
     }
 
     @Override
@@ -245,7 +263,11 @@ public class SeascapePagedViewHandler extends LandscapePagedViewHandler {
         secondaryIconParams.gravity = BOTTOM | (isRtl ? END : START);
         primaryIconView.setTranslationX(0);
         secondaryIconView.setTranslationX(0);
-        if (splitConfig.initiatedFromSeascape) {
+        if (enableOverviewIconMenu()) {
+            int dividerThickness = Math.min(splitConfig.visualDividerBounds.width(),
+                    splitConfig.visualDividerBounds.height());
+            secondaryIconView.setTranslationY(-primarySnapshotHeight - dividerThickness);
+        } else if (splitConfig.initiatedFromSeascape) {
             // if the split was initiated from seascape,
             // the task on the right (secondary) is slightly larger
             primaryIconView.setTranslationY(-bottomToMidpointOffset - insetOffset

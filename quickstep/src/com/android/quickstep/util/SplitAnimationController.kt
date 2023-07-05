@@ -34,12 +34,12 @@ import com.android.launcher3.statemanager.StatefulActivity
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource
 import com.android.launcher3.views.BaseDragLayer
 import com.android.quickstep.views.FloatingTaskView
-import com.android.quickstep.views.IconView
 import com.android.quickstep.views.RecentsView
 import com.android.quickstep.views.SplitInstructionsView
 import com.android.quickstep.views.TaskThumbnailView
 import com.android.quickstep.views.TaskView
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer
+import com.android.quickstep.views.TaskViewIcon
 import java.util.function.Supplier
 
 /**
@@ -82,7 +82,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                     return SplitAnimInitProps(container.thumbnailView,
                             container.thumbnailView.thumbnail, drawable!!,
                             fadeWithThumbnail = true, isStagedTask = true,
-                            iconView = container.iconView
+                            iconView = container.iconView.asView()
                     )
                 }
             }
@@ -94,7 +94,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             val drawable = getDrawable(taskView.iconView, splitSelectSource)
             return SplitAnimInitProps(taskView.thumbnail, taskView.thumbnail.thumbnail,
                     drawable!!, fadeWithThumbnail = true, isStagedTask = true,
-                    taskView.iconView
+                    taskView.iconView.asView()
             )
         }
     }
@@ -105,7 +105,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
      * TaskView's icon drawable can be null if the TaskView is scrolled far enough off screen
      * @return [Drawable]
      */
-    fun getDrawable(iconView: IconView, splitSelectSource: SplitSelectSource?) : Drawable? {
+    fun getDrawable(iconView: TaskViewIcon, splitSelectSource: SplitSelectSource?) : Drawable? {
         if (iconView.drawable == null && splitSelectSource != null) {
             return splitSelectSource.drawable
         }
@@ -129,7 +129,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                                 taskViewWidth: Int, taskViewHeight: Int,
                                 isPrimaryTaskSplitting: Boolean) {
         val thumbnail = taskIdAttributeContainer.thumbnailView
-        val iconView: View = taskIdAttributeContainer.iconView
+        val iconView: View = taskIdAttributeContainer.iconView.asView()
         builder.add(ObjectAnimator.ofFloat(thumbnail, TaskThumbnailView.SPLASH_ALPHA, 1f))
         thumbnail.setShowSplashForSplitSelection(true)
         if (deviceProfile.isLandscape) {

@@ -91,4 +91,11 @@ public class OverviewTaskMenu {
         return new OverviewTaskMenuItem(mLauncher,
                 mLauncher.waitForObjectInContainer(mMenu, By.text(menuItemName)));
     }
+
+    /**
+     * Taps outside task menu to dismiss it.
+     */
+    public void touchOutsideTaskMenuToDismiss() {
+        mLauncher.touchOutsideContainer(mMenu, false);
+    }
 }
