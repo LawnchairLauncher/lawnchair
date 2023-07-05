@@ -20,6 +20,11 @@ import com.android.internal.logging.InstanceIdSequence
 import com.android.launcher3.logging.InstanceId
 
 object LogUtils {
+    @JvmStatic
+    fun splitFailureMessage(caller: String, reason: String): String {
+        return "($caller) Splitscreen aborted: $reason"
+    }
+
     /**
      * @return a [Pair] of two InstanceIds but with different types, one that can be used by
      *   framework (if needing to pass through an intent or such) and one used in Launcher
