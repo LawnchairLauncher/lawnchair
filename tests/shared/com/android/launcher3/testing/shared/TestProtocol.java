@@ -156,6 +156,7 @@ public final class TestProtocol {
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
     public static final String TWO_TASKBAR_LONG_CLICKS = "b/262282528";
     public static final String FLAKY_ACTIVITY_COUNT = "b/260260325";
+    public static final String FLAKY_QUICK_SWITCH_TO_PREVIOUS_APP = "b/286084688";
     public static final String ICON_MISSING = "b/282963545";
 
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
