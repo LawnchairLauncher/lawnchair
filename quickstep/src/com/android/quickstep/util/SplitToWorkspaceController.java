@@ -16,6 +16,7 @@
 
 package com.android.quickstep.util;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_DESKTOP_TO_WORKSPACE;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_FULLSCREEN_WITH_KEYBOARD_SHORTCUTS;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE;
 
@@ -178,7 +179,8 @@ public class SplitToWorkspaceController {
 
     private boolean shouldIgnoreSecondSplitLaunch() {
         return (!ENABLE_SPLIT_FROM_FULLSCREEN_WITH_KEYBOARD_SHORTCUTS.get()
-                && !ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get())
+                && !ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()
+                && !ENABLE_SPLIT_FROM_DESKTOP_TO_WORKSPACE.get())
                 || !mController.isSplitSelectActive();
     }
 }

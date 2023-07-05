@@ -84,6 +84,7 @@ import com.android.wm.shell.recents.IRecentTasks;
 import com.android.wm.shell.recents.IRecentTasksListener;
 import com.android.wm.shell.splitscreen.ISplitScreen;
 import com.android.wm.shell.splitscreen.ISplitScreenListener;
+import com.android.wm.shell.splitscreen.ISplitSelectListener;
 import com.android.wm.shell.startingsurface.IStartingWindow;
 import com.android.wm.shell.startingsurface.IStartingWindowListener;
 import com.android.wm.shell.transition.IShellTransitions;
@@ -128,6 +129,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     private IPipAnimationListener mPipAnimationListener;
     private IBubblesListener mBubblesListener;
     private ISplitScreenListener mSplitScreenListener;
+    private ISplitSelectListener mSplitSelectListener;
     private IStartingWindowListener mStartingWindowListener;
     private ILauncherUnlockAnimationController mLauncherUnlockAnimationController;
     private IRecentTasksListener mRecentTasksListener;
@@ -239,6 +241,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         setPipAnimationListener(mPipAnimationListener);
         setBubblesListener(mBubblesListener);
         registerSplitScreenListener(mSplitScreenListener);
+        registerSplitSelectListener(mSplitSelectListener);
         setStartingWindowListener(mStartingWindowListener);
         setLauncherUnlockAnimationController(mLauncherUnlockAnimationController);
         new LinkedHashMap<>(mRemoteTransitions).forEach(this::registerRemoteTransition);
@@ -738,6 +741,28 @@ public class SystemUiProxy implements ISystemUiProxy {
             }
         }
         mSplitScreenListener = null;
+    }
+
+    public void registerSplitSelectListener(ISplitSelectListener listener) {
+        if (mSplitScreen != null) {
+            try {
+                mSplitScreen.registerSplitSelectListener(listener);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call registerSplitSelectListener");
+            }
+        }
+        mSplitSelectListener = listener;
+    }
+
+    public void unregisterSplitSelectListener(ISplitSelectListener listener) {
+        if (mSplitScreen != null) {
+            try {
+                mSplitScreen.unregisterSplitSelectListener(listener);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call unregisterSplitSelectListener");
+            }
+        }
+        mSplitSelectListener = null;
     }
 
     /** Start multiple tasks in split-screen simultaneously. */
@@ -1277,6 +1302,17 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mDesktopMode.setTaskListener(listener);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call setDesktopTaskListener", e);
+            }
+        }
+    }
+
+    /** Perform cleanup transactions after animation to split select is complete */
+    public void onDesktopSplitSelectAnimComplete(ActivityManager.RunningTaskInfo taskInfo) {
+        if (mDesktopMode != null) {
+            try {
+                mDesktopMode.onDesktopSplitSelectAnimComplete(taskInfo);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call onDesktopSplitSelectAnimComplete", e);
             }
         }
     }
