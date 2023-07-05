@@ -32,6 +32,7 @@ import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * The view that holds all the bubble views. Modifying this view should happen through
@@ -101,6 +102,9 @@ public class BubbleBarView extends FrameLayout {
     @Nullable
     private Runnable mReorderRunnable;
 
+    @Nullable
+    private Consumer<String> mUpdateSelectedBubbleAfterCollapse;
+
     public BubbleBarView(Context context) {
         this(context, null);
     }
@@ -143,6 +147,13 @@ public class BubbleBarView extends FrameLayout {
                 if (!mIsBarExpanded && mReorderRunnable != null) {
                     mReorderRunnable.run();
                     mReorderRunnable = null;
+                }
+                // If the bar was just collapsed and the overflow was the last bubble that was
+                // selected, set the first bubble as selected.
+                if (!mIsBarExpanded && mUpdateSelectedBubbleAfterCollapse != null
+                        && mSelectedBubbleView.getBubble() instanceof BubbleBarOverflow) {
+                    BubbleView firstBubble = (BubbleView) getChildAt(0);
+                    mUpdateSelectedBubbleAfterCollapse.accept(firstBubble.getBubble().getKey());
                 }
                 updateWidth();
             }
@@ -291,6 +302,11 @@ public class BubbleBarView extends FrameLayout {
             }
             updateChildrenRenderNodeProperties();
         }
+    }
+
+    public void setUpdateSelectedBubbleAfterCollapse(
+            Consumer<String> updateSelectedBubbleAfterCollapse) {
+        mUpdateSelectedBubbleAfterCollapse = updateSelectedBubbleAfterCollapse;
     }
 
     /**
