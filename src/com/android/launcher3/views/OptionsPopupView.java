@@ -18,7 +18,6 @@ package com.android.launcher3.views;
 import static androidx.core.content.ContextCompat.getColorStateList;
 
 import static com.android.launcher3.LauncherState.EDIT_MODE;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS;
@@ -26,7 +25,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -149,12 +147,8 @@ public class OptionsPopupView<T extends Context & ActivityContext> extends Arrow
 
     @Override
     public void assignMarginsAndBackgrounds(ViewGroup viewGroup) {
-        if (ENABLE_MATERIAL_U_POPUP.get()) {
-            assignMarginsAndBackgrounds(viewGroup,
-                    getColorStateList(getContext(), mColorIds[0]).getDefaultColor());
-        } else {
-            assignMarginsAndBackgrounds(viewGroup, Color.TRANSPARENT);
-        }
+        assignMarginsAndBackgrounds(viewGroup,
+                getColorStateList(getContext(), mColorIds[0]).getDefaultColor());
     }
 
     public static <T extends Context & ActivityContext> OptionsPopupView<T> show(
