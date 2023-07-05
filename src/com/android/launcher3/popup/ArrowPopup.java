@@ -673,10 +673,6 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         }
         mIsOpen = false;
 
-        mOpenCloseAnimator = getOpenCloseAnimator(false, mCloseDuration, mCloseFadeStartDelay,
-                mCloseFadeDuration, mCloseChildFadeStartDelay, mCloseChildFadeDuration,
-                ACCELERATED_EASE);
-
         mOpenCloseAnimator = ENABLE_MATERIAL_U_POPUP.get()
                 ? getMaterialUOpenCloseAnimator(
                         false,
