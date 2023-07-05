@@ -250,11 +250,6 @@ public final class FeatureFlags {
                     + "taskbar flavors");
 
     // TODO(Block 18): Clean up flags
-    public static final BooleanFlag ENABLE_LAUNCH_FROM_STAGED_APP = getDebugFlag(270395567,
-            "ENABLE_LAUNCH_FROM_STAGED_APP", ENABLED,
-            "Enable the ability to tap a staged app during split select to launch it in full "
-                    + "screen");
-
     public static final BooleanFlag ENABLE_APP_PAIRS = getDebugFlag(274189428,
             "ENABLE_APP_PAIRS", DISABLED,
             "Enables the ability to create and save app pairs on the Home screen for easy"
