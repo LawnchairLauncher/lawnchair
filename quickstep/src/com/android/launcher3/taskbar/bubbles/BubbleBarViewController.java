@@ -36,6 +36,7 @@ import com.android.quickstep.SystemUiProxy;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Controller for {@link BubbleBarView}. Manages the visibility of the bubble bar as well as
@@ -182,6 +183,12 @@ public class BubbleBarViewController {
             mHiddenForNoBubbles = hidden;
             updateVisibilityForStateChange();
         }
+    }
+
+    /** Sets a callback that updates the selected bubble after the bubble bar collapses. */
+    public void setUpdateSelectedBubbleAfterCollapse(
+            Consumer<String> updateSelectedBubbleAfterCollapse) {
+        mBarView.setUpdateSelectedBubbleAfterCollapse(updateSelectedBubbleAfterCollapse);
     }
 
     /**
