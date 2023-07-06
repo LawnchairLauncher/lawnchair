@@ -17,10 +17,12 @@
 package com.android.launcher3.taskbar.navbutton
 
 import android.content.res.Resources
+import android.graphics.drawable.RotateDrawable
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.NavButtonLayoutter
 
 /**
@@ -40,7 +42,18 @@ abstract class AbstractNavButtonLayoutter(
     protected val endContextualContainer: ViewGroup,
     protected val startContextualContainer: ViewGroup
 ) : NavButtonLayoutter {
-    protected val homeButton: ImageView = navButtonContainer.findViewById(R.id.home)
-    protected val recentsButton: ImageView = navButtonContainer.findViewById(R.id.recent_apps)
-    protected val backButton: ImageView = navButtonContainer.findViewById(R.id.back)
+    protected val homeButton: ImageView? = navButtonContainer.findViewById(R.id.home)
+    protected val recentsButton: ImageView? = navButtonContainer.findViewById(R.id.recent_apps)
+    protected val backButton: ImageView? = navButtonContainer.findViewById(R.id.back)
+
+    init {
+        // setup back button drawable
+        if (backButton != null) {
+            val rotateDrawable = RotateDrawable()
+            rotateDrawable.drawable = backButton.context?.getDrawable(R.drawable.ic_sysbar_back)
+            rotateDrawable.fromDegrees = 0f
+            rotateDrawable.toDegrees = if (Utilities.isRtl(backButton.resources)) 90f else -90f
+            backButton.setImageDrawable(rotateDrawable)
+        }
+    }
 }
