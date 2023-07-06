@@ -334,14 +334,12 @@ public final class Utilities {
 
     public static void scaleRectAboutCenter(Rect r, float scale) {
         if (scale != 1.0f) {
-            int cx = r.centerX();
-            int cy = r.centerY();
-            r.offset(-cx, -cy);
-            r.left = (int) (r.left * scale + 0.5f);
-            r.top = (int) (r.top * scale + 0.5f);
-            r.right = (int) (r.right * scale + 0.5f);
-            r.bottom = (int) (r.bottom * scale + 0.5f);
-            r.offset(cx, cy);
+            float cx = r.exactCenterX();
+            float cy = r.exactCenterY();
+            r.left = Math.round(cx + (r.left - cx) * scale);
+            r.top = Math.round(cy + (r.top - cy) * scale);
+            r.right = Math.round(cx + (r.right - cx) * scale);
+            r.bottom = Math.round(cy + (r.bottom - cy) * scale);
         }
     }
 
