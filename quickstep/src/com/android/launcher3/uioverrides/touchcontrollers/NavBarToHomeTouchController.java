@@ -30,6 +30,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
+import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
@@ -43,6 +44,7 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TouchController;
@@ -50,6 +52,8 @@ import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.OverviewToHomeAnim;
 import com.android.quickstep.views.RecentsView;
+
+import java.util.function.Consumer;
 
 /**
  * Handles swiping up on the nav bar to go home from launcher, e.g. overview or all apps.
@@ -62,6 +66,7 @@ public class NavBarToHomeTouchController implements TouchController,
     private static final float OVERVIEW_TO_HOME_SCRIM_MULTIPLIER = 0.5f;
 
     private final Launcher mLauncher;
+    private final Consumer<AnimatorSet> mCancelSplitRunnable;
     private final SingleAxisSwipeDetector mSwipeDetector;
     private final float mPullbackDistance;
 
@@ -70,8 +75,14 @@ public class NavBarToHomeTouchController implements TouchController,
     private LauncherState mEndState = NORMAL;
     private AnimatorPlaybackController mCurrentAnimation;
 
-    public NavBarToHomeTouchController(Launcher launcher) {
+    /**
+     * @param cancelSplitRunnable Called when split placeholder view needs to be cancelled.
+     *                            Animation should be added to the provided AnimatorSet
+     */
+    public NavBarToHomeTouchController(Launcher launcher,
+            Consumer<AnimatorSet> cancelSplitRunnable) {
         mLauncher = launcher;
+        mCancelSplitRunnable = cancelSplitRunnable;
         mSwipeDetector = new SingleAxisSwipeDetector(mLauncher, this,
                 SingleAxisSwipeDetector.VERTICAL);
         mPullbackDistance = mLauncher.getResources().getDimension(R.dimen.home_pullback_distance);
@@ -183,7 +194,10 @@ public class NavBarToHomeTouchController implements TouchController,
             recentsView.switchToScreenshot(null,
                     () -> recentsView.finishRecentsAnimation(true /* toRecents */, null));
             if (mStartState.overviewUi) {
-                new OverviewToHomeAnim(mLauncher, () -> onSwipeInteractionCompleted(mEndState))
+                new OverviewToHomeAnim(mLauncher, () -> onSwipeInteractionCompleted(mEndState),
+                        FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()
+                                ? mCancelSplitRunnable
+                                : null)
                         .animateWithVelocity(velocity);
             } else {
                 mLauncher.getStateManager().goToState(mEndState, true,

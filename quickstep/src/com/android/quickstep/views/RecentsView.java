@@ -6023,11 +6023,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     @Nullable
-    public FloatingTaskView getFirstFloatingTaskView() {
-        return mSplitSelectStateController.getFirstFloatingTaskView();
-    }
-
-    @Nullable
     public SplitInstructionsView getSplitInstructionsView() {
         return mSplitInstructionsView;
     }
