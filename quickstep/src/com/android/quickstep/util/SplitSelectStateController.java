@@ -561,7 +561,7 @@ public class SplitSelectStateController {
                 new RemoteSplitLaunchTransitionRunner(firstTaskId, secondTaskId, callback);
         final RemoteTransition remoteTransition = new RemoteTransition(animationRunner,
                 ActivityThread.currentActivityThread().getApplicationThread(),
-                "LaunchSplitPair");
+                "LaunchAppFullscreen");
         InstanceId instanceId = LogUtils.getShellShareableInstanceId().first;
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
             switch (launchData.getSplitLaunchType()) {
