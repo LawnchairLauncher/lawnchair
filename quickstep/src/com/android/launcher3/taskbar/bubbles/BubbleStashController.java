@@ -127,6 +127,12 @@ public class BubbleStashController {
             mBubblesShowingOnHome = onHome;
             if (mBubblesShowingOnHome) {
                 showBubbleBar(/* expanded= */ false);
+                // When transitioning from app to home the stash animator may already have been
+                // created, so we need to animate the bubble bar here to align with hotseat.
+                if (!mIsStashed) {
+                    mIconTranslationYForStash.animateToValue(getBubbleBarTranslationYForHotseat())
+                            .start();
+                }
                 // If the bubble bar is already unstashed, the taskbar touchable region won't be
                 // updated correctly, so force an update here.
                 mControllers.runAfterInit(() ->
@@ -149,6 +155,11 @@ public class BubbleStashController {
             mBubblesShowingOnOverview = onOverview;
             if (!mBubblesShowingOnOverview && !mBarViewController.isExpanded()) {
                 stashBubbleBar();
+            } else {
+                // When transitioning to overview the stash animator may already have been
+                // created, so we need to animate the bubble bar here to align with taskbar.
+                mIconTranslationYForStash.animateToValue(getBubbleBarTranslationYForTaskbar())
+                        .start();
             }
         }
     }
@@ -240,13 +251,10 @@ public class BubbleStashController {
             secondHalfDurationScale = 0.75f;
 
             // If we're on home, adjust the translation so the bubble bar aligns with hotseat.
-            // TODO(b/286247080): Update the offset for overview.
-            final float hotseatBottomSpace = mActivity.getDeviceProfile().hotseatBarBottomSpacePx;
-            final float hotseatCellHeight = mActivity.getDeviceProfile().hotseatCellHeightPx;
-
-            final float translationY =
-                    -hotseatBottomSpace - hotseatCellHeight + mUnstashedHeight - abs(
-                            hotseatCellHeight - mUnstashedHeight) / 2;
+            // Otherwise we're either showing in an app or in overview. In either case adjust it so
+            // the bubble bar aligns with the taskbar.
+            final float translationY = mBubblesShowingOnHome ? getBubbleBarTranslationYForHotseat()
+                    : getBubbleBarTranslationYForTaskbar();
 
             fullLengthAnimatorSet.playTogether(
                     mIconScaleForStash.animateToValue(1),
@@ -289,5 +297,16 @@ public class BubbleStashController {
             mHandleViewController.onIsStashedChanged();
             mTaskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged();
         });
+    }
+
+    private float getBubbleBarTranslationYForTaskbar() {
+        return -mActivity.getDeviceProfile().taskbarBottomMargin;
+    }
+
+    private float getBubbleBarTranslationYForHotseat() {
+        final float hotseatBottomSpace = mActivity.getDeviceProfile().hotseatBarBottomSpacePx;
+        final float hotseatCellHeight = mActivity.getDeviceProfile().hotseatCellHeightPx;
+        return -hotseatBottomSpace - hotseatCellHeight + mUnstashedHeight - abs(
+                hotseatCellHeight - mUnstashedHeight) / 2;
     }
 }
