@@ -193,6 +193,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -406,7 +407,8 @@ public class QuickstepLauncher extends Launcher {
 
     private List<SystemShortcut.Factory<QuickstepLauncher>> getSplitShortcuts() {
 
-        if (!ENABLE_SPLIT_FROM_WORKSPACE.get() || !mDeviceProfile.isTablet) {
+        if (!ENABLE_SPLIT_FROM_WORKSPACE.get() || !mDeviceProfile.isTablet ||
+                mSplitSelectStateController.isSplitSelectActive()) {
             return Collections.emptyList();
         }
         RecentsView recentsView = getOverviewPanel();
@@ -545,11 +547,22 @@ public class QuickstepLauncher extends Launcher {
 
         ArrayList<TouchController> list = new ArrayList<>();
         list.add(getDragController());
+        Consumer<AnimatorSet> splitAnimator = animatorSet -> {
+            AnimatorSet anim = mSplitSelectStateController.getSplitAnimationController()
+                    .animateAwayPlaceholder(QuickstepLauncher.this);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mSplitSelectStateController.resetState();
+                }
+            });
+            animatorSet.play(anim);
+        };
         switch (mode) {
             case NO_BUTTON:
                 list.add(new NoButtonQuickSwitchTouchController(this));
-                list.add(new NavBarToHomeTouchController(this));
-                list.add(new NoButtonNavbarToOverviewTouchController(this));
+                list.add(new NavBarToHomeTouchController(this, splitAnimator));
+                list.add(new NoButtonNavbarToOverviewTouchController(this, splitAnimator));
                 break;
             case TWO_BUTTONS:
                 list.add(new TwoButtonNavbarTouchController(this));
@@ -560,8 +573,8 @@ public class QuickstepLauncher extends Launcher {
                 break;
             case THREE_BUTTONS:
                 list.add(new NoButtonQuickSwitchTouchController(this));
-                list.add(new NavBarToHomeTouchController(this));
-                list.add(new NoButtonNavbarToOverviewTouchController(this));
+                list.add(new NavBarToHomeTouchController(this, splitAnimator));
+                list.add(new NoButtonNavbarToOverviewTouchController(this, splitAnimator));
                 list.add(new PortraitStatesTouchController(this));
                 break;
             default:

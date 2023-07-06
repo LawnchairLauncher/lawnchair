@@ -895,6 +895,7 @@ public class SplitSelectStateController {
         mFirstFloatingTaskView = floatingTaskView;
     }
 
+    @Nullable
     public FloatingTaskView getFirstFloatingTaskView() {
         return mFirstFloatingTaskView;
     }
