@@ -923,6 +923,15 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
     }
 
+    /**
+     * Called whenever a new ui controller is set, and should update anything that depends on the
+     * ui controller.
+     */
+    public void onUiControllerChanged() {
+        updateNavButtonInAppDisplayProgressForSysui();
+        updateNavButtonTranslationY();
+    }
+
     @Override
     public void dumpLogs(String prefix, PrintWriter pw) {
         pw.println(prefix + "NavbarButtonsViewController:");
