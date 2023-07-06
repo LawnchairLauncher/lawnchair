@@ -54,6 +54,7 @@ import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_FULLSCREEN_TASK;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
+import static com.android.quickstep.util.LogUtils.splitFailureMessage;
 import static com.android.quickstep.views.ClearAllButton.DISMISS_ALPHA;
 import static com.android.quickstep.views.DesktopTaskView.DESKTOP_MODE_SUPPORTED;
 import static com.android.quickstep.views.OverviewActionsView.FLAG_IS_NOT_TABLET;
@@ -4725,6 +4726,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return false;
         }
         if (mSplitSelectStateController.isBothSplitAppsConfirmed()) {
+            Log.w(TAG, splitFailureMessage(
+                    "confirmSplitSelect", "both apps have already been set"));
             return true;
         }
         // Second task is selected either as an already-running Task or an Intent
@@ -4732,6 +4735,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             if (!task.isDockable) {
                 // Task does not support split screen
                 mSplitUnsupportedToast.show();
+                Log.w(TAG, splitFailureMessage("confirmSplitSelect",
+                        "selected Task (" + task.key.getPackageName()
+                                + ") is not dockable / does not support splitscreen"));
                 return true;
             }
             mSplitSelectStateController.setSecondTask(task);
