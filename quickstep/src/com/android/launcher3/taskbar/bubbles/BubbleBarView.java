@@ -32,6 +32,7 @@ import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * The view that holds all the bubble views. Modifying this view should happen through
@@ -71,7 +72,11 @@ public class BubbleBarView extends FrameLayout {
 
     private final BubbleBarBackground mBubbleBarBackground;
 
-    // The current bounds of all the bubble bar.
+    /**
+     * The current bounds of all the bubble bar. Note that these bounds may not account for
+     * translation. The bounds should be retrieved using {@link #getBubbleBarBounds()} which
+     * updates the bounds and accounts for translation.
+     */
     private final Rect mBubbleBarBounds = new Rect();
     // The amount the bubbles overlap when they are stacked in the bubble bar
     private final float mIconOverlapAmount;
@@ -100,6 +105,9 @@ public class BubbleBarView extends FrameLayout {
     // once they are collapsed.
     @Nullable
     private Runnable mReorderRunnable;
+
+    @Nullable
+    private Consumer<String> mUpdateSelectedBubbleAfterCollapse;
 
     public BubbleBarView(Context context) {
         this(context, null);
@@ -144,6 +152,13 @@ public class BubbleBarView extends FrameLayout {
                     mReorderRunnable.run();
                     mReorderRunnable = null;
                 }
+                // If the bar was just collapsed and the overflow was the last bubble that was
+                // selected, set the first bubble as selected.
+                if (!mIsBarExpanded && mUpdateSelectedBubbleAfterCollapse != null
+                        && mSelectedBubbleView.getBubble() instanceof BubbleBarOverflow) {
+                    BubbleView firstBubble = (BubbleView) getChildAt(0);
+                    mUpdateSelectedBubbleAfterCollapse.accept(firstBubble.getBubble().getKey());
+                }
                 updateWidth();
             }
 
@@ -175,9 +190,11 @@ public class BubbleBarView extends FrameLayout {
     }
 
     /**
-     * Returns the bounds of the bubble bar.
+     * Updates the bounds with translation that may have been applied and returns the result.
      */
     public Rect getBubbleBarBounds() {
+        mBubbleBarBounds.top = getTop() + (int) getTranslationY();
+        mBubbleBarBounds.bottom = getBottom() + (int) getTranslationY();
         return mBubbleBarBounds;
     }
 
@@ -291,6 +308,11 @@ public class BubbleBarView extends FrameLayout {
             }
             updateChildrenRenderNodeProperties();
         }
+    }
+
+    public void setUpdateSelectedBubbleAfterCollapse(
+            Consumer<String> updateSelectedBubbleAfterCollapse) {
+        mUpdateSelectedBubbleAfterCollapse = updateSelectedBubbleAfterCollapse;
     }
 
     /**

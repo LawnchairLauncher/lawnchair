@@ -112,9 +112,6 @@ public final class TaskbarAllAppsController {
     /** Updates the current search suggestions. */
     public void setZeroStateSearchSuggestions(List<ItemInfo> zeroStateSearchSuggestions) {
         mZeroStateSearchSuggestions = zeroStateSearchSuggestions;
-        if (mSearchSessionController != null) {
-            mSearchSessionController.setZeroStateSearchSuggestions(zeroStateSearchSuggestions);
-        }
     }
 
     /** Updates the current notification dots. */
