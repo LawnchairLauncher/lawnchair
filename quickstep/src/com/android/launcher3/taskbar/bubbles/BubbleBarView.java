@@ -72,7 +72,11 @@ public class BubbleBarView extends FrameLayout {
 
     private final BubbleBarBackground mBubbleBarBackground;
 
-    // The current bounds of all the bubble bar.
+    /**
+     * The current bounds of all the bubble bar. Note that these bounds may not account for
+     * translation. The bounds should be retrieved using {@link #getBubbleBarBounds()} which
+     * updates the bounds and accounts for translation.
+     */
     private final Rect mBubbleBarBounds = new Rect();
     // The amount the bubbles overlap when they are stacked in the bubble bar
     private final float mIconOverlapAmount;
@@ -186,9 +190,11 @@ public class BubbleBarView extends FrameLayout {
     }
 
     /**
-     * Returns the bounds of the bubble bar.
+     * Updates the bounds with translation that may have been applied and returns the result.
      */
     public Rect getBubbleBarBounds() {
+        mBubbleBarBounds.top = getTop() + (int) getTranslationY();
+        mBubbleBarBounds.bottom = getBottom() + (int) getTranslationY();
         return mBubbleBarBounds;
     }
 
