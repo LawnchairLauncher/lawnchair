@@ -2977,7 +2977,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             Map<PackageUserKey, Integer> packageUserKeytoUidMap) {
         Preconditions.assertUIThread();
         boolean hadWorkApps = mAppsView.shouldShowTabs();
-        AllAppsStore appsStore = mAppsView.getAppsStore();
+        AllAppsStore<Launcher> appsStore = mAppsView.getAppsStore();
         appsStore.setApps(apps, flags, packageUserKeytoUidMap);
         PopupContainerWithArrow.dismissInvalidPopup(this);
         if (hadWorkApps != mAppsView.shouldShowTabs()) {
