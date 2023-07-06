@@ -396,6 +396,12 @@ public final class FeatureFlags {
             "ENABLE_RESPONSIVE_WORKSPACE", DISABLED,
             "Enables new workspace grid calculations method.");
 
+    // TODO(Block 33): Clean up flags
+
+    public static final BooleanFlag ENABLE_ALL_APPS_RV_PREINFLATION = getDebugFlag(288161355,
+            "ENABLE_ALL_APPS_RV_PREINFLATION", DISABLED,
+            "Enables preinflating all apps icons to avoid scrolling jank.");
+
     public static class BooleanFlag {
 
         private final boolean mCurrentValue;
