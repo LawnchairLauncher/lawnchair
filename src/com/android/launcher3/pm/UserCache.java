@@ -17,8 +17,6 @@
 package com.android.launcher3.pm;
 
 import static com.android.launcher3.Utilities.ATLEAST_U;
-import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
-import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.Context;
@@ -94,8 +92,6 @@ public class UserCache implements SafeCloseable {
 
     @AnyThread
     private void onUsersChanged(Intent intent) {
-        testLogD(WORK_TAB_MISSING, "onUsersChanged intent: " + intent);
-
         MODEL_EXECUTOR.execute(this::updateCache);
         UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
         if (user == null) {

@@ -20,9 +20,7 @@ import static android.app.admin.DevicePolicyManager.ACTION_DEVICE_POLICY_RESOURC
 
 import static com.android.launcher3.LauncherAppState.ACTION_FORCE_ROLOAD;
 import static com.android.launcher3.config.FeatureFlags.IS_STUDIO_BUILD;
-import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
 import static com.android.launcher3.testing.shared.TestProtocol.sDebugTracing;
-import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
@@ -69,7 +67,6 @@ import com.android.launcher3.pm.InstallSessionTracker;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageUserKey;
@@ -310,11 +307,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
      * @see UserCache#addUserEventListener
      */
     public void onUserEvent(UserHandle user, String action) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.WORK_TAB_MISSING, "onBroadcastIntent intentAction: "
-                    + action + " user: " + user);
-        }
-
         if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action)
                 || Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action)) {
             enqueueModelUpdateTask(new PackageUpdatedTask(
@@ -562,7 +554,6 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
             synchronized (mLock) {
                 // Everything loaded bind the data.
                 mModelLoaded = true;
-                testLogD(WORK_TAB_MISSING, "launcher model loaded");
             }
         }
 
