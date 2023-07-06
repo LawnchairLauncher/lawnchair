@@ -223,11 +223,12 @@ public class GroupedTaskView extends TaskView {
         // Callbacks run from remote animation when recents animation not currently running
         InteractionJankMonitorWrapper.begin(this,
                 InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "Enter form GroupedTaskView");
-        launchTask(success -> {
+        launchTaskInternal(success -> {
             endCallback.executeAllAndDestroy();
             InteractionJankMonitorWrapper.end(
                     InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
-        }, false /* freezeTaskList */);
+        }, false /* freezeTaskList */, true /*launchingExistingTaskview*/);
+
 
         // Callbacks get run from recentsView for case when recents animation already running
         recentsView.addSideTaskLaunchCallback(endCallback);
@@ -236,7 +237,19 @@ public class GroupedTaskView extends TaskView {
 
     @Override
     public void launchTask(@NonNull Consumer<Boolean> callback, boolean isQuickswitch) {
-        getRecentsView().getSplitSelectController().launchExistingSplitPair(this, mTask.key.id,
+        launchTaskInternal(callback, isQuickswitch, false /*launchingExistingTaskview*/);
+    }
+
+    /**
+     * @param launchingExistingTaskView {@link SplitSelectStateController#launchExistingSplitPair}
+     * uses existence of GroupedTaskView as control flow of how to animate in the incoming task. If
+     * we're launching from overview (from overview thumbnails) then pass in {@code true},
+     * otherwise pass in {@code false} for case like quickswitching from home to task
+     */
+    private void launchTaskInternal(@NonNull Consumer<Boolean> callback, boolean isQuickswitch,
+            boolean launchingExistingTaskView) {
+        getRecentsView().getSplitSelectController().launchExistingSplitPair(
+                launchingExistingTaskView ? this : null, mTask.key.id,
                 mSecondaryTask.key.id, SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT,
                 callback, isQuickswitch, getSplitRatio());
     }
