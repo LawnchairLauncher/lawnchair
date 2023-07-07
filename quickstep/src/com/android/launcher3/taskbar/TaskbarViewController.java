@@ -25,6 +25,7 @@ import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.anim.AnimatedFloat.VALUE;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP;
+import static com.android.launcher3.taskbar.TaskbarManager.isPhoneButtonNavMode;
 import static com.android.launcher3.taskbar.TaskbarManager.isPhoneMode;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_TASKBAR_ALIGNMENT_ANIM;
@@ -171,6 +172,13 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 .getTaskbarNavButtonTranslationYForInAppDisplay();
 
         mActivity.addOnDeviceProfileChangeListener(mDeviceProfileChangeListener);
+
+        if (TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW) {
+            // This gets modified in NavbarButtonsViewController, but the initial value it reads
+            // may be incorrect since it's state gets destroyed on taskbar recreate, so reset here
+            mTaskbarIconAlpha.get(ALPHA_INDEX_SMALL_SCREEN)
+                    .animateToValue(isPhoneButtonNavMode(mActivity) ? 0 : 1).start();
+        }
     }
 
     /**
@@ -444,8 +452,13 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      * Creates an animation for aligning the Taskbar icons with the provided Launcher device profile
      */
     private AnimatorPlaybackController createIconAlignmentController(DeviceProfile launcherDp) {
-        mOnControllerPreCreateCallback.run();
         PendingAnimation setter = new PendingAnimation(100);
+        if (TaskbarManager.isPhoneButtonNavMode(mActivity)) {
+            // No animation for icons in small-screen
+            return setter.createPlaybackController();
+        }
+
+        mOnControllerPreCreateCallback.run();
         DeviceProfile taskbarDp = mActivity.getDeviceProfile();
         Rect hotseatPadding = launcherDp.getHotseatLayoutPadding(mActivity);
         float scaleUp = ((float) launcherDp.iconSizePx) / taskbarDp.taskbarIconSize;

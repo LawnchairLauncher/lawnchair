@@ -55,6 +55,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.RoundedCorner;
+import android.view.Surface;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -295,8 +296,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     public void init(@NonNull TaskbarSharedState sharedState) {
         mLastRequestedNonFullscreenHeight = getDefaultTaskbarWindowHeight();
-        mWindowLayoutParams =
-                createDefaultWindowLayoutParams(TYPE_NAVIGATION_BAR_PANEL, WINDOW_TITLE);
+        mWindowLayoutParams = createAllWindowParams();
 
         // Initialize controllers after all are constructed.
         mControllers.init(sharedState);
@@ -360,11 +360,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * @param title The window title to pass to the created WindowManager.LayoutParams.
      */
     public WindowManager.LayoutParams createDefaultWindowLayoutParams(int type, String title) {
-        DeviceProfile deviceProfile = getDeviceProfile();
-        // Taskbar is on the logical bottom of the screen
-        boolean isVerticalBarLayout = TaskbarManager.isPhoneButtonNavMode(this) &&
-                deviceProfile.isLandscape;
-
         int windowFlags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                 | WindowManager.LayoutParams.FLAG_SLIPPERY
                 | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH;
@@ -373,17 +368,14 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                     | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH;
         }
         WindowManager.LayoutParams windowLayoutParams = new WindowManager.LayoutParams(
-                isVerticalBarLayout ? mLastRequestedNonFullscreenHeight : MATCH_PARENT,
-                isVerticalBarLayout ? MATCH_PARENT : mLastRequestedNonFullscreenHeight,
+                MATCH_PARENT,
+                mLastRequestedNonFullscreenHeight,
                 type,
                 windowFlags,
                 PixelFormat.TRANSLUCENT);
         windowLayoutParams.setTitle(title);
         windowLayoutParams.packageName = getPackageName();
-        windowLayoutParams.gravity = !isVerticalBarLayout ?
-                Gravity.BOTTOM :
-                Gravity.END; // TODO(b/230394142): seascape
-
+        windowLayoutParams.gravity = Gravity.BOTTOM;
         windowLayoutParams.setFitInsetsTypes(0);
         windowLayoutParams.receiveInsetsIgnoringZOrder = true;
         windowLayoutParams.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
@@ -394,6 +386,64 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 TaskbarManager.isPhoneMode(mDeviceProfile)
                         ? R.string.taskbar_phone_a11y_title
                         : R.string.taskbar_a11y_title);
+
+        return windowLayoutParams;
+    }
+
+    /**
+     * Creates {@link WindowManager.LayoutParams} for Taskbar, and also sets LP.paramsForRotation
+     * for taskbar showing as navigation bar
+     */
+    private WindowManager.LayoutParams createAllWindowParams() {
+        WindowManager.LayoutParams windowLayoutParams =
+                createDefaultWindowLayoutParams(TYPE_NAVIGATION_BAR_PANEL,
+                        TaskbarActivityContext.WINDOW_TITLE);
+        boolean isPhoneNavMode = TaskbarManager.isPhoneButtonNavMode(this);
+        if (!isPhoneNavMode) {
+            return windowLayoutParams;
+        }
+
+        // Provide WM layout params for all rotations to cache, see NavigationBar#getBarLayoutParams
+        int width = WindowManager.LayoutParams.MATCH_PARENT;
+        int height = WindowManager.LayoutParams.MATCH_PARENT;
+        int gravity = Gravity.BOTTOM;
+        windowLayoutParams.paramsForRotation = new WindowManager.LayoutParams[4];
+        for (int rot = Surface.ROTATION_0; rot <= Surface.ROTATION_270; rot++) {
+            WindowManager.LayoutParams lp =
+                    createDefaultWindowLayoutParams(TYPE_NAVIGATION_BAR_PANEL,
+                            TaskbarActivityContext.WINDOW_TITLE);
+            switch (rot) {
+                case Surface.ROTATION_0, Surface.ROTATION_180 -> {
+                    // Defaults are fine
+                    width = WindowManager.LayoutParams.MATCH_PARENT;
+                    height = mLastRequestedNonFullscreenHeight;
+                    gravity = Gravity.BOTTOM;
+                }
+                case Surface.ROTATION_90 -> {
+                    width = mLastRequestedNonFullscreenHeight;
+                    height = WindowManager.LayoutParams.MATCH_PARENT;
+                    gravity = Gravity.END;
+                }
+                case Surface.ROTATION_270 -> {
+                    width = mLastRequestedNonFullscreenHeight;
+                    height = WindowManager.LayoutParams.MATCH_PARENT;
+                    gravity = Gravity.START;
+                }
+
+            }
+            lp.width = width;
+            lp.height = height;
+            lp.gravity = gravity;
+            windowLayoutParams.paramsForRotation[rot] = lp;
+        }
+
+        // Override current layout params
+        WindowManager.LayoutParams currentParams =
+                windowLayoutParams.paramsForRotation[getDisplay().getRotation()];
+        windowLayoutParams.width = currentParams.width;
+        windowLayoutParams.height = currentParams.height;
+        windowLayoutParams.gravity = currentParams.gravity;
+
         return windowLayoutParams;
     }
 

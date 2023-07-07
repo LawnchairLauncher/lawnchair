@@ -51,10 +51,10 @@ class KidsNavLayoutter(
         val paddingTop = (buttonHeight - iconSize) / 2
 
         // Update icons
-        backButton.setImageDrawable(backButton.context.getDrawable(DRAWABLE_SYSBAR_BACK_KIDS))
+        backButton!!.setImageDrawable(backButton.context.getDrawable(DRAWABLE_SYSBAR_BACK_KIDS))
         backButton.scaleType = ImageView.ScaleType.FIT_CENTER
         backButton.setPadding(paddingLeft, paddingTop, paddingLeft, paddingTop)
-        homeButton.setImageDrawable(homeButton.getContext().getDrawable(DRAWABLE_SYSBAR_HOME_KIDS))
+        homeButton!!.setImageDrawable(homeButton.context.getDrawable(DRAWABLE_SYSBAR_HOME_KIDS))
         homeButton.scaleType = ImageView.ScaleType.FIT_CENTER
         homeButton.setPadding(paddingLeft, paddingTop, paddingLeft, paddingTop)
 

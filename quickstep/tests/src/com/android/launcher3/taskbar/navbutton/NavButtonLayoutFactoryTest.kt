@@ -1,6 +1,9 @@
 package com.android.launcher3.taskbar.navbutton
 
 import android.content.res.Resources
+import android.view.Surface
+import android.view.Surface.ROTATION_270
+import android.view.Surface.Rotation
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -32,6 +35,8 @@ class NavButtonLayoutFactoryTest {
     @Mock lateinit var mockRecentsButton: ImageView
     @Mock lateinit var mockHomeButton: ImageView
 
+    private var surfaceRotation = Surface.ROTATION_0
+
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
@@ -60,7 +65,8 @@ class NavButtonLayoutFactoryTest {
                 isKidsMode = true,
                 isInSetup = false,
                 isThreeButtonNav = false,
-                phoneMode = false
+                phoneMode = false,
+                surfaceRotation = surfaceRotation
             )
         assert(layoutter is KidsNavLayoutter)
     }
@@ -74,7 +80,8 @@ class NavButtonLayoutFactoryTest {
                 isKidsMode = false,
                 isInSetup = true,
                 isThreeButtonNav = false,
-                phoneMode = false
+                phoneMode = false,
+                surfaceRotation = surfaceRotation
             )
         assert(layoutter is SetupNavLayoutter)
     }
@@ -88,7 +95,8 @@ class NavButtonLayoutFactoryTest {
                 isKidsMode = false,
                 isInSetup = false,
                 isThreeButtonNav = false,
-                phoneMode = false
+                phoneMode = false,
+                surfaceRotation = surfaceRotation
             )
         assert(layoutter is TaskbarNavLayoutter)
     }
@@ -101,7 +109,8 @@ class NavButtonLayoutFactoryTest {
             isKidsMode = false,
             isInSetup = false,
             isThreeButtonNav = false,
-            phoneMode = false
+            phoneMode = false,
+            surfaceRotation = surfaceRotation
         )
     }
 
@@ -114,7 +123,8 @@ class NavButtonLayoutFactoryTest {
                 isKidsMode = false,
                 isInSetup = false,
                 isThreeButtonNav = true,
-                phoneMode = true
+                phoneMode = true,
+                surfaceRotation = surfaceRotation
             )
         assert(layoutter is PhonePortraitNavLayoutter)
     }
@@ -129,9 +139,26 @@ class NavButtonLayoutFactoryTest {
                 isKidsMode = false,
                 isInSetup = false,
                 isThreeButtonNav = true,
-                phoneMode = true
+                phoneMode = true,
+                surfaceRotation = surfaceRotation
             )
         assert(layoutter is PhoneLandscapeNavLayoutter)
+    }
+
+    @Test
+    fun getTaskbarSeascapeLayoutter() {
+        assumeTrue(TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
+        mockDeviceProfile.isTaskbarPresent = false
+        setDeviceProfileLandscape()
+        val layoutter: NavButtonLayoutFactory.NavButtonLayoutter =
+                getLayoutter(
+                        isKidsMode = false,
+                        isInSetup = false,
+                        isThreeButtonNav = true,
+                        phoneMode = true,
+                        surfaceRotation = ROTATION_270
+                )
+        assert(layoutter is PhoneSeascapeNavLayoutter)
     }
 
     @Test(expected = IllegalStateException::class)
@@ -142,7 +169,8 @@ class NavButtonLayoutFactoryTest {
             isKidsMode = false,
             isInSetup = false,
             isThreeButtonNav = false,
-            phoneMode = true
+            phoneMode = true,
+            surfaceRotation = surfaceRotation
         )
     }
 
@@ -157,7 +185,8 @@ class NavButtonLayoutFactoryTest {
         isKidsMode: Boolean,
         isInSetup: Boolean,
         isThreeButtonNav: Boolean,
-        phoneMode: Boolean
+        phoneMode: Boolean,
+        @Rotation surfaceRotation: Int
     ): NavButtonLayoutFactory.NavButtonLayoutter {
         return NavButtonLayoutFactory.getUiLayoutter(
             deviceProfile = mockDeviceProfile,
@@ -166,7 +195,8 @@ class NavButtonLayoutFactoryTest {
             isKidsMode = isKidsMode,
             isInSetup = isInSetup,
             isThreeButtonNav = isThreeButtonNav,
-            phoneMode = phoneMode
+            phoneMode = phoneMode,
+            surfaceRotation = surfaceRotation
         )
     }
 }

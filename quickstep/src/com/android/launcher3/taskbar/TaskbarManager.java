@@ -206,7 +206,14 @@ public class TaskbarManager {
                         destroyExistingTaskbar();
                     } else {
                         if (dp != null && isTaskbarPresent(dp)) {
-                            mTaskbarActivityContext.updateDeviceProfile(dp);
+                            if (FLAG_HIDE_NAVBAR_WINDOW) {
+                                // Re-initialize for screen size change? Should this be done
+                                // by looking at screen-size change flag in configDiff in the
+                                // block above?
+                                recreateTaskbar();
+                            } else {
+                                mTaskbarActivityContext.updateDeviceProfile(dp);
+                            }
                         }
                         mTaskbarActivityContext.onConfigurationChanged(configDiff);
                     }
