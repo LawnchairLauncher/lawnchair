@@ -86,6 +86,10 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
         StateManager stateManager = mActivity.getStateManager();
         animated &= stateManager.shouldAnimateStateChange();
         stateManager.goToState(NORMAL, animated);
+        if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+            mSplitSelectStateController.getSplitAnimationController()
+                    .playPlaceholderDismissAnim(mActivity);
+        }
         AbstractFloatingView.closeAllOpenViews(mActivity, animated);
     }
 

@@ -1682,6 +1682,9 @@ public class Launcher extends StatefulActivity<LauncherState>
             if (mLauncherCallbacks != null) {
                 mLauncherCallbacks.onHomeIntent(internalStateHandled);
             }
+            if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+                handleSplitAnimationGoingToHome();
+            }
             mOverlayManager.hideOverlay(isStarted() && !isForceInvisible());
             handleGestureContract(intent);
         } else if (Intent.ACTION_ALL_APPS.equals(intent.getAction())) {
@@ -1693,6 +1696,11 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
 
         TraceHelper.INSTANCE.endSection();
+    }
+
+    /** Handle animating away split placeholder view when user taps on home button */
+    protected void handleSplitAnimationGoingToHome() {
+        // Overridden
     }
 
     protected void toggleAllAppsFromIntent(boolean alreadyOnHome) {

@@ -17,6 +17,8 @@
 
 package com.android.quickstep.util
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.graphics.Bitmap
@@ -185,17 +187,32 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         }
     }
 
+    /** Does not play any animation if user is not currently in split selection state. */
+    fun playPlaceholderDismissAnim(launcher: Launcher) {
+        if (!splitSelectStateController.isSplitSelectActive) {
+            return
+        }
 
-    fun animateAwayPlaceholder(mLauncher: Launcher) : AnimatorSet {
+        val anim = createPlaceholderDismissAnim(launcher)
+        anim.addListener(object : AnimatorListenerAdapter() {
+            override fun onAnimationEnd(animation: Animator) {
+                splitSelectStateController.resetState()
+            }
+        })
+        anim.start()
+    }
+
+    /** Returns [AnimatorSet] which slides initial split placeholder view offscreen. */
+    fun createPlaceholderDismissAnim(launcher: Launcher) : AnimatorSet {
         val animatorSet = AnimatorSet()
-        val recentsView : RecentsView<*, *> = mLauncher.getOverviewPanel()
+        val recentsView : RecentsView<*, *> = launcher.getOverviewPanel()
         val floatingTask: FloatingTaskView = splitSelectStateController.firstFloatingTaskView
                 ?: return animatorSet
 
         // We are in split selection state currently, transitioning to another state
-        val dragLayer: DragLayer = mLauncher.dragLayer
+        val dragLayer: DragLayer = launcher.dragLayer
         val onScreenRectF = RectF()
-        Utilities.getBoundsForViewInDragLayer(mLauncher.dragLayer, floatingTask,
+        Utilities.getBoundsForViewInDragLayer(launcher.dragLayer, floatingTask,
                 Rect(0, 0, floatingTask.width, floatingTask.height),
                 false, null, onScreenRectF)
         // Get the part of the floatingTask that intersects with the DragLayer (i.e. the
@@ -214,7 +231,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                                 floatingTask,
                                 onScreenRectF,
                                 floatingTask.stagePosition,
-                                mLauncher.deviceProfile
+                                launcher.deviceProfile
                         )))
         return animatorSet
     }
