@@ -25,7 +25,7 @@
                     android:topRightRadius="12dp"
                     android:bottomLeftRadius="4dp"
                     android:bottomRightRadius="4dp"  />
-                <solid android:color="@color/surface"/>
+                <solid android:color="@color/material_color_surface_container_highest"/>
                 <stroke
                     android:width="2dp"
                     android:color="@color/button_bg"/>
