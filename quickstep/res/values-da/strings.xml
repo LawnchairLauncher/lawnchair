@@ -84,7 +84,7 @@
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Indstillinger"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Prøv igen"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Sådan!"</string>
-    <string name="gesture_tutorial_step" msgid="1279786122817620968">"Selvstudie <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <string name="gesture_tutorial_step" msgid="1279786122817620968">"Vejledning <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Alt er parat!"</string>
     <string name="allset_hint" msgid="459504134589971527">"Stryg opad for at gå til startsiden"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Tryk på knappen Hjem for at gå til din startskærm"</string>
@@ -97,7 +97,7 @@
     <string name="toast_split_select_app" msgid="8464310533320556058">"Tryk på en anden app for at bruge opdelt skærm"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Vælg en anden app for at bruge opdelt skærm"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Appen eller din organisation tillader ikke denne handling"</string>
-    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Vil du springe selvstudiet for navigation over?"</string>
+    <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Vil du springe vejledningen for navigation over?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Du kan finde dette senere i appen <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Annuller"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Spring over"</string>
