@@ -20,7 +20,6 @@ import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.appprediction.AppsDividerView;
-import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.taskbar.NavbarButtonsViewController;
 import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.taskbar.TaskbarStashController;
@@ -54,7 +53,6 @@ final class TaskbarAllAppsViewController {
         mOverlayController = taskbarControllers.taskbarOverlayController;
 
         mSlideInView.init(new TaskbarAllAppsCallbacks());
-        setUpIconLongClick();
         setUpAppDivider();
         setUpTaskbarStashing();
     }
@@ -67,15 +65,6 @@ final class TaskbarAllAppsViewController {
     /** Closes the {@link TaskbarAllAppsSlideInView}. */
     void close(boolean animate) {
         mSlideInView.close(animate);
-    }
-
-    private void setUpIconLongClick() {
-        mAppsView.setOnIconLongClickListener(
-                mContext.getDragController()::startDragOnLongClick);
-        mAppsView.getFloatingHeaderView()
-                .findFixedRowByType(PredictionRowView.class)
-                .setOnIconLongClickListener(
-                        mContext.getDragController()::startDragOnLongClick);
     }
 
     private void setUpAppDivider() {
