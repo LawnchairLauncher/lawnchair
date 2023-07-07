@@ -196,6 +196,19 @@ public class TaskbarControllers {
         mPostInitCallbacks.clear();
     }
 
+    /**
+     * Sets the ui controller.
+     */
+    public void setUiController(@NonNull TaskbarUIController newUiController) {
+        uiController.onDestroy();
+        uiController = newUiController;
+        uiController.init(this);
+        uiController.updateStateForSysuiFlags(mSharedState.sysuiStateFlags);
+
+        // Notify that the ui controller has changed
+        navbarButtonsViewController.onUiControllerChanged();
+    }
+
     @Nullable
     public TaskbarSharedState getSharedState() {
         // This should only be null if called before init() and after destroy().
