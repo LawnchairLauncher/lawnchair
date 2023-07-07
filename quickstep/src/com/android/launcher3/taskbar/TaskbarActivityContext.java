@@ -591,9 +591,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * Sets a new data-source for this taskbar instance
      */
     public void setUIController(@NonNull TaskbarUIController uiController) {
-        mControllers.uiController.onDestroy();
-        mControllers.uiController = uiController;
-        mControllers.uiController.init(mControllers);
+        mControllers.setUiController(uiController);
     }
 
     /**
