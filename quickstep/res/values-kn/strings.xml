@@ -81,7 +81,7 @@
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ಟ್ಯುಟೋರಿಯಲ್ <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"ಎಲ್ಲವೂ ಸಿದ್ಧವಾಗಿದೆ!"</string>
     <string name="allset_hint" msgid="459504134589971527">"ಮುಖಪುಟಕ್ಕೆ ಹೋಗಲು ಮೇಲೆ ಸ್ವೈಪ್ ಮಾಡಿ"</string>
-    <string name="allset_button_hint" msgid="2395219947744706291">"ನಿಮ್ಮ ಮುಖಪುಟದ ಪರದೆಗೆ ಹೋಗಲು ಮುಖಪುಟ ಬಟನ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"ನಿಮ್ಮ ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗೆ ಹೋಗಲು ಹೋಮ್ ಬಟನ್ ಅನ್ನು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"ನಿಮ್ಮ <xliff:g id="DEVICE">%1$s</xliff:g> ಬಳಸುವುದನ್ನು ಪ್ರಾರಂಭಿಸಲು ನೀವು ಸಿದ್ಧರಾಗಿರುವಿರಿ"</string>
     <string name="default_device_name" msgid="6660656727127422487">"ಸಾಧನ"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"ಸಿಸ್ಟಂ ನ್ಯಾವಿಗೇಶನ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</annotation></string>

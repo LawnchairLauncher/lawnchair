@@ -80,7 +80,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"ବଢ଼ିଆ!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ଟ୍ୟୁଟୋରିଆଲ୍ <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"ସମ୍ପୂର୍ଣ୍ଣ ଭାବେ ପ୍ରସ୍ତୁତ!"</string>
-    <string name="allset_hint" msgid="459504134589971527">"ମୂଳପୃଷ୍ଠାକୁ ଯିବା ପାଇଁ ଉପରକୁ ସ୍ୱାଇପ୍ କରନ୍ତୁ"</string>
+    <string name="allset_hint" msgid="459504134589971527">"ହୋମକୁ ଯିବା ପାଇଁ ଉପରକୁ ସ୍ୱାଇପ କରନ୍ତୁ"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"ଆପଣଙ୍କ ହୋମ ସ୍କ୍ରିନକୁ ଯିବା ପାଇଁ ହୋମ ବଟନରେ ଟାପ କରନ୍ତୁ"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"ଆପଣ ଆପଣଙ୍କ <xliff:g id="DEVICE">%1$s</xliff:g> ବ୍ୟବହାର କରିବା ଆରମ୍ଭ କରିବାକୁ ପ୍ରସ୍ତୁତ ଅଛନ୍ତି"</string>
     <string name="default_device_name" msgid="6660656727127422487">"ଡିଭାଇସ"</string>
