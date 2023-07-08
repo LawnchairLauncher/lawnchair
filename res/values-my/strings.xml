@@ -169,7 +169,7 @@
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"အလုပ်သုံးအက်ပ်များကို တံဆိပ်တပ်ထားပြီး သင်၏ IT စီမံခန့်ခွဲသူက မြင်နိုင်ပါသည်"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"နားလည်ပြီ"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"အလုပ်သုံးအက်ပ်များကို ခဏရပ်ရန်"</string>
-    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"ပြန်စရန်"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"ပြန်ဖွင့်ရန်"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"စစ်ထုတ်ရန်"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"သင့်ဖုန်းတွင် ရှာခြင်း"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"သင့်တက်ဘလက်ကို ရှာခြင်း"</string>
