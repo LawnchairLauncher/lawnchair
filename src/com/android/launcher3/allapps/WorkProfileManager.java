@@ -25,7 +25,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
-import static com.android.launcher3.testing.shared.TestProtocol.WORK_TAB_MISSING;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.os.Build;
@@ -47,7 +46,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
 
 import java.lang.annotation.Retention;
@@ -144,10 +142,6 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     }
 
     private void updateCurrentState(@WorkProfileState int currentState) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(WORK_TAB_MISSING, "WorkProfileManager#updateCurrentState: " +
-                    currentState, new Throwable());
-        }
         mCurrentState = currentState;
         if (getAH() != null) {
             getAH().mAppsList.updateAdapterItems();
@@ -166,10 +160,6 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
      * Creates and attaches for profile toggle button to {@link ActivityAllAppsContainerView}
      */
     public boolean attachWorkModeSwitch() {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(WORK_TAB_MISSING, "ActivityAllAppsContainerView#attachWorkModeSwitch "
-                    + "mWorkModeSwitch: " + mWorkModeSwitch);
-        }
         if (!mAllApps.getAppsStore().hasModelFlag(
                 FLAG_HAS_SHORTCUT_PERMISSION | FLAG_QUIET_MODE_CHANGE_PERMISSION)) {
             Log.e(TAG, "unable to attach work mode switch; Missing required permissions");

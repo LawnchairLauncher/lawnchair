@@ -17,6 +17,8 @@
 package com.android.launcher3.taskbar.navbutton
 
 import android.content.res.Resources
+import android.view.Surface.ROTATION_90
+import android.view.Surface.Rotation
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -56,7 +58,8 @@ class NavButtonLayoutFactory {
             isKidsMode: Boolean,
             isInSetup: Boolean,
             isThreeButtonNav: Boolean,
-            phoneMode: Boolean
+            phoneMode: Boolean,
+            @Rotation surfaceRotation: Int
         ): NavButtonLayoutter {
             val navButtonContainer = navButtonsView.findViewById<LinearLayout>(ID_END_NAV_BUTTONS)
             val endContextualContainer =
@@ -73,12 +76,19 @@ class NavButtonLayoutFactory {
                             endContextualContainer,
                             startContextualContainer
                         )
-                    } else {
+                    } else if (surfaceRotation == ROTATION_90) {
                         PhoneLandscapeNavLayoutter(
                             resources,
                             navButtonContainer,
                             endContextualContainer,
                             startContextualContainer
+                        )
+                    } else {
+                        PhoneSeascapeNavLayoutter(
+                                resources,
+                                navButtonContainer,
+                                endContextualContainer,
+                                startContextualContainer
                         )
                     }
                 }

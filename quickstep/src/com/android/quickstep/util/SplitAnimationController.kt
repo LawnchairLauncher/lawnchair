@@ -17,14 +17,22 @@
 
 package com.android.quickstep.util
 
+import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.graphics.Bitmap
+import android.graphics.Rect
+import android.graphics.RectF
 import android.graphics.drawable.Drawable
 import android.view.View
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.Launcher
+import com.android.launcher3.Utilities
 import com.android.launcher3.anim.PendingAnimation
+import com.android.launcher3.dragndrop.DragLayer
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource
+import com.android.quickstep.views.FloatingTaskView
 import com.android.quickstep.views.IconView
+import com.android.quickstep.views.RecentsView
 import com.android.quickstep.views.TaskThumbnailView
 import com.android.quickstep.views.TaskView
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer
@@ -175,5 +183,39 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
             builder.add(ObjectAnimator.ofFloat(thumbnail,
                     TaskThumbnailView.SPLIT_SELECT_TRANSLATE_X, 0f))
         }
+    }
+
+
+    fun animateAwayPlaceholder(mLauncher: Launcher) : AnimatorSet {
+        val animatorSet = AnimatorSet()
+        val recentsView : RecentsView<*, *> = mLauncher.getOverviewPanel()
+        val floatingTask: FloatingTaskView = splitSelectStateController.firstFloatingTaskView
+                ?: return animatorSet
+
+        // We are in split selection state currently, transitioning to another state
+        val dragLayer: DragLayer = mLauncher.dragLayer
+        val onScreenRectF = RectF()
+        Utilities.getBoundsForViewInDragLayer(mLauncher.dragLayer, floatingTask,
+                Rect(0, 0, floatingTask.width, floatingTask.height),
+                false, null, onScreenRectF)
+        // Get the part of the floatingTask that intersects with the DragLayer (i.e. the
+        // on-screen portion)
+        onScreenRectF.intersect(
+                dragLayer.left.toFloat(),
+                dragLayer.top.toFloat(),
+                dragLayer.right.toFloat(),
+                dragLayer.bottom
+                        .toFloat()
+        )
+        animatorSet.play(ObjectAnimator.ofFloat(floatingTask,
+                FloatingTaskView.PRIMARY_TRANSLATE_OFFSCREEN,
+                recentsView.pagedOrientationHandler
+                        .getFloatingTaskOffscreenTranslationTarget(
+                                floatingTask,
+                                onScreenRectF,
+                                floatingTask.stagePosition,
+                                mLauncher.deviceProfile
+                        )))
+        return animatorSet
     }
 }

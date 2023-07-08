@@ -93,11 +93,6 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         mOp = op;
         mUser = user;
         mPackages = packages;
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.WORK_TAB_MISSING, "PackageUpdatedTask mOp: " + mOp +
-                    " packageCount: " + mPackages.length + " user: " + user);
-            DEBUG = true;
-        }
     }
 
     @Override
@@ -142,9 +137,6 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         // The update may have changed which shortcuts/widgets are available.
                         // Refresh the widgets for the package if we have an activity running.
                         Launcher launcher = Launcher.ACTIVITY_TRACKER.getCreatedActivity();
-                        if (TestProtocol.sDebugTracing) {
-                            Log.d(TestProtocol.WORK_TAB_MISSING, "launcher: " + launcher);
-                        }
                         if (launcher != null) {
                             launcher.refreshAndBindWidgetsForPackageUser(
                                     new PackageUserKey(packages[i], mUser));

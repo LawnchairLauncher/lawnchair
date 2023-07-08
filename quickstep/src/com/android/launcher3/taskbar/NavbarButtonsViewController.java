@@ -88,6 +88,7 @@ import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarButton;
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory;
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.NavButtonLayoutter;
 import com.android.launcher3.util.DimensionUtils;
+import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.TouchController;
@@ -197,6 +198,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             this::onComputeInsetsForSeparateWindow;
     private final RecentsHitboxExtender mHitboxExtender = new RecentsHitboxExtender();
     private ImageView mRecentsButton;
+    private DisplayController mDisplayController;
 
     public NavbarButtonsViewController(TaskbarActivityContext context, FrameLayout navButtonsView) {
         mContext = context;
@@ -225,6 +227,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                 : DimensionUtils.getTaskbarPhoneDimensions(deviceProfile, resources,
                         TaskbarManager.isPhoneMode(deviceProfile));
         mNavButtonsView.getLayoutParams().height = p.y;
+
+        mDisplayController = DisplayController.INSTANCE.get(mContext);
 
         mIsImeRenderingNavButtons =
                 InputMethodService.canImeRenderGesturalNavButtons() && mContext.imeDrawsImeNavBar();
@@ -727,14 +731,10 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         boolean isInKidsMode = mContext.isNavBarKidsModeActive();
 
         if (TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW) {
-            if (!isThreeButtonNav) {
-                return;
-            }
-
             NavButtonLayoutter navButtonLayoutter =
                     NavButtonLayoutFactory.Companion.getUiLayoutter(
                             dp, mNavButtonsView, res, isInKidsMode, isInSetup, isThreeButtonNav,
-                            TaskbarManager.isPhoneMode(dp));
+                            TaskbarManager.isPhoneMode(dp), mDisplayController.getInfo().rotation);
             navButtonLayoutter.layoutButtons(dp, isContextualButtonShowing());
             return;
         }
@@ -925,6 +925,15 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     private void onComputeInsetsForSeparateWindow(ViewTreeObserver.InternalInsetsInfo insetsInfo) {
         addVisibleButtonsRegion(mSeparateWindowParent, insetsInfo.touchableRegion);
         insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
+    }
+
+    /**
+     * Called whenever a new ui controller is set, and should update anything that depends on the
+     * ui controller.
+     */
+    public void onUiControllerChanged() {
+        updateNavButtonInAppDisplayProgressForSysui();
+        updateNavButtonTranslationY();
     }
 
     @Override
