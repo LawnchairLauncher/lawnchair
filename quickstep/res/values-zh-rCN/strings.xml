@@ -86,7 +86,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"很好！"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"教程 <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"大功告成！"</string>
-    <string name="allset_hint" msgid="459504134589971527">"向上滑动可转到主屏幕"</string>
+    <string name="allset_hint" msgid="459504134589971527">"向上滑动可前往主屏幕"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"点按主屏幕按钮即可前往主屏幕"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"您可以开始使用<xliff:g id="DEVICE">%1$s</xliff:g>了"</string>
     <string name="default_device_name" msgid="6660656727127422487">"设备"</string>

@@ -88,7 +88,7 @@
     <string name="allset_title" msgid="5021126669778966707">"हो गया!"</string>
     <string name="allset_hint" msgid="459504134589971527">"होम पेज पर जाने के लिए, ऊपर की ओर स्वाइप करें"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"होम स्क्रीन पर जाने के लिए, होम बटन पर टैप करें"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"अब <xliff:g id="DEVICE">%1$s</xliff:g> इस्तेमाल के लिए तैयार हैं"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"अब <xliff:g id="DEVICE">%1$s</xliff:g> इस्तेमाल के लिए तैयार है"</string>
     <string name="default_device_name" msgid="6660656727127422487">"डिवाइस"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"सिस्टम नेविगेशन सेटिंग"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"शेयर करें"</string>
