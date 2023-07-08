@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.touch;
 
+import static com.android.app.animation.Interpolators.DECELERATED_EASE;
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.app.animation.Interpolators.EMPHASIZED_ACCELERATE;
 import static com.android.app.animation.Interpolators.EMPHASIZED_DECELERATE;
@@ -211,8 +212,8 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
             if (!config.userControlled) {
                 config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED);
             }
-            config.setInterpolator(ANIM_WORKSPACE_SCALE, EMPHASIZED);
-            config.setInterpolator(ANIM_DEPTH, EMPHASIZED);
+            config.setInterpolator(ANIM_WORKSPACE_SCALE, DECELERATED_EASE);
+            config.setInterpolator(ANIM_DEPTH, DECELERATED_EASE);
         } else {
             if (config.userControlled) {
                 config.setInterpolator(ANIM_DEPTH, Interpolators.reverse(BLUR_MANUAL));
@@ -252,8 +253,8 @@ public class AllAppsSwipeController extends AbstractStateChangeTouchController {
             if (!config.userControlled) {
                 config.setInterpolator(ANIM_VERTICAL_PROGRESS, EMPHASIZED);
             }
-            config.setInterpolator(ANIM_WORKSPACE_SCALE, EMPHASIZED);
-            config.setInterpolator(ANIM_DEPTH, EMPHASIZED);
+            config.setInterpolator(ANIM_WORKSPACE_SCALE, DECELERATED_EASE);
+            config.setInterpolator(ANIM_DEPTH, DECELERATED_EASE);
         } else {
             config.setInterpolator(ANIM_DEPTH, config.userControlled ? BLUR_MANUAL : BLUR_ATOMIC);
             config.setInterpolator(ANIM_WORKSPACE_FADE,
