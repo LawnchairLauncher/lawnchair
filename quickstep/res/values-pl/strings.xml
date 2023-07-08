@@ -55,7 +55,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Przesuń palcem, aby przejść wstecz"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Aby wrócić do poprzedniego ekranu, przesuń palcem od lewej lub prawej krawędzi do środka ekranu."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Aby wrócić do poprzedniego ekranu, przesuń 2 palcami od lewej lub prawej krawędzi do środka ekranu."</string>
-    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Przejdź wstecz"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Przejście wstecz"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Przesuń palcem od lewej lub prawej krawędzi do środka ekranu"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Pamiętaj, aby przesuwać palcem od dolnej krawędzi ekranu"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Pamiętaj, aby przed podniesieniem palca nie było przerwy"</string>
