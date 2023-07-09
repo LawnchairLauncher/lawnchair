@@ -49,11 +49,11 @@
     <string name="smartspace_calendar_label">At a Glance naptár testreszabása</string>
     <string name="smartspace_calendar_description">A dátum nem gregorián naptárban történő megjelenítésének engedélyezése.</string>
     <string name="workspace_increase_max_grid_size_label">A kezdőképernyő maximális rácsmérete megnövelve</string>
-    <string name="workspace_increase_max_grid_size_description">Növelje a kezdőképernyő maximális megengedett méretét 10 x 10-ről 20 x 20-ra.</string>
+    <string name="workspace_increase_max_grid_size_description">A kezdőképernyő maximális megengedett rácsméretének megnövelése 10×10-esről 20×20-asra.</string>
     <string name="always_reload_icons_label">Mindig töltse újra az ikonokat</string>
-    <string name="always_reload_icons_description">Kerülje a gyorsítótárazott ikonok használatát</string>
-    <string name="transparent_background_icons">Áttetsző témájú ikonok</string>
-    <string name="transparent_background_icons_description">Áttetsző háttér használata téma ikonok esetén</string>
+    <string name="always_reload_icons_description">A gyorsítótárazott ikonok használatának elkerülése</string>
+    <string name="transparent_background_icons">Áttetsző témázott ikonok</string>
+    <string name="transparent_background_icons_description">Áttetsző háttér használata témázott ikonok esetén</string>
     <string name="smartspace_mode_selection">At a Glance szolgáltató kiválasztása</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Kezdőképernyő tájolása</string>
@@ -71,8 +71,8 @@
     <string name="show_notification_count">Értesítések számának megjelenítése</string>
     <string name="notification_dots_color">Értesítési pöttyök színe</string>
     <string name="notification_dots_text_color">Értesítési pöttyök színe</string>
-    <string name="notification_dots_color_contrast_warning_always">Figyelmeztetés: Értesítési pötty: A pult színeinek nincs elég kontrasztja egymással</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">Figyelem: Értesítési pöttynek &amp; Számláló színeknek nem biztos, hogy mindig elég kontrasztjuk lesz egymáshoz képest</string>
+    <string name="notification_dots_color_contrast_warning_always">Figyelmeztetés: Az értesítési pötty és a pult színeinek nincs elég kontrasztja egymáshoz képest</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">Figyelmeztetés: Az értesítési pötty és a pult színeinek lehet, hogy nincs mindig elég kontrasztja egymáshoz képest</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">Értesítés hozzáférés szükséges</string>
     <string name="missing_notification_access_description">Értesítés hozzáférés szükséges.</string>
@@ -86,26 +86,26 @@
     <string name="theme_follow_wallpaper">Háttérkép szerinti téma</string>
     <string name="accent_color">Kiemelő szín</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">Egyéni ikon alak</string>
-    <string name="custom_icon_shape_create">Egyéni ikon alak létrehozása</string>
-    <string name="custom_icon_shape_edit">Egyéni ikon alak személyre szabása</string>
-    <string name="icon_shape_corner">Sarok alak</string>
+    <string name="custom_icon_shape">Egyéni ikonalak</string>
+    <string name="custom_icon_shape_create">Egyéni ikonalak létrehozása</string>
+    <string name="custom_icon_shape_edit">Egyéni ikonalak szerkesztése</string>
+    <string name="icon_shape_corner">Sarok alakja</string>
     <string name="icon_shape_corner_round">Kerek</string>
     <string name="icon_shape_corner_squircle">Lágy</string>
     <string name="icon_shape_corner_cut">Vágott</string>
-    <string name="icon_shape_top_left">Bal felül</string>
-    <string name="icon_shape_top_right">Jobb felül</string>
-    <string name="icon_shape_bottom_left">Bal lenn</string>
-    <string name="icon_shape_bottom_right">Jobb lenn</string>
+    <string name="icon_shape_top_left">Bal fent</string>
+    <string name="icon_shape_top_right">Jobb fent</string>
+    <string name="icon_shape_bottom_left">Bal lent</string>
+    <string name="icon_shape_bottom_right">Jobb lent</string>
     <string name="create">Létrehoz</string>
     <string name="clipboard">Vágólap</string>
     <string name="export_to_clipboard">Exportálás vágólapra</string>
     <string name="import_from_clipboard">Importálás vágólapról</string>
-    <string name="icon_shape_clipboard_import_error">A vágólap nem tartalmaz megfelelő ikon alakot</string>
+    <string name="icon_shape_clipboard_import_error">A vágólap nem tartalmaz érvényes ikonalakot</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Ikoncsomag</string>
-    <string name="themed_icon_pack">Tematikus ikon forrás</string>
+    <string name="themed_icon_pack">Témázott ikon forrása</string>
     <string name="system_icons">Rendszerikonok</string>
     <string name="themed_icon_title">Témázott ikonok</string>
     <string name="themed_icons_off_label">Kikapcsolás</string>
@@ -118,13 +118,13 @@
     <string name="icon_shape_system">Rendszer</string>
     <string name="icon_shape_circle">Kör</string>
     <string name="icon_shape_cylinder">Henger</string>
-    <string name="icon_shape_diamond">Gyémánt</string>
+    <string name="icon_shape_diamond">Rombusz</string>
     <string name="icon_shape_egg">Tojás</string>
     <string name="icon_shape_cupertino">iOS</string>
     <string name="icon_shape_octagon">Nyolcszög</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Lekerekített négyszög</string>
-    <string name="icon_shape_sharp_square">Éles négyzet</string>
+    <string name="icon_shape_sharp_square">Hegyes négyzet</string>
     <string name="icon_shape_square">Négyzet</string>
     <string name="icon_shape_squircle">Lekerekített négyzet</string>
     <string name="icon_shape_teardrop">Könycsepp</string>
@@ -158,11 +158,11 @@
     <string name="hsb_brightness">Fényerősség</string>
     <string name="hex">Hexa</string>
     <string name="color_sliders">Csúszkák</string>
-    <string name="action_copy">Másol</string>
-    <string name="action_paste">Beilleszt</string>
+    <string name="action_copy">Másolás</string>
+    <string name="action_paste">Beillesztés</string>
     <string name="copied_toast">Vágólapra másolva.</string>
     <string name="invalid_color">Érvénytelen szín</string>
-    <string name="launcher_default_color">Lawnchair által kezelve</string>
+    <string name="launcher_default_color">A Lawnchair által kezelve</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Új alkalmazások hozzáadása a kezdőképernyőhöz</string>
@@ -172,15 +172,15 @@
     <string name="wallpaper">Háttérkép</string>
     <string name="wallpaper_scrolling_label">Háttérkép görgetése</string>
     <string name="wallpaper_depth_effect_label">Háttérkép mélységhatása</string>
-    <string name="wallpaper_depth_effect_description">Zoom into and out of the wallpaper when transitioning between states.</string>
+    <string name="wallpaper_depth_effect_description">A háttérkép nagyítása és kicsinyítése az indító területei közti váltások során.</string>
     <string name="show_sys_ui_scrim">Felső árnyék</string>
     <string name="layout">Elrendezés</string>
-    <string name="home_screen_grid">Kezdőképernyő rács</string>
+    <string name="home_screen_grid">Kezdőképernyő rácsa</string>
     <string name="home_screen_lock">Kezdőképernyő zárolása</string>
-    <string name="home_screen_lock_description">A kezdőlap elrendezés megváltoztatásának megakadályozása.</string>
+    <string name="home_screen_lock_description">Megakadályozza a kezdőlap elrendezésének megváltoztatását.</string>
     <string name="home_screen_unlock">Kezdőképernyő feloldása</string>
     <!-- used in popup menu-->
-    <string name="home_screen_locked">Kezdő képernyő lezárva.</string>
+    <string name="home_screen_locked">A kezdőképernyő zárolt.</string>
     <string name="popup_menu">Felugró menü</string>
     <string name="home_screen_lock_toggle_from_home_popup">Zárolási gomb megjelenítése</string>
     <string name="show_system_settings_entry">Rendszerbeállítások elem megjelenítése</string>
@@ -193,7 +193,7 @@
     <string name="label_size">Címkeméret</string>
     <string name="reset_custom_icons">Egyéni ikonok alaphelyzetbe állítása</string>
     <string name="reset_custom_icons_confirmation">Az összes egyéni ikon alaphelyzetbe lesz állítva. Folytatja?</string>
-    <string name="home_screen_text_color">Szöveg szín</string>
+    <string name="home_screen_text_color">Szövegszín</string>
     <string name="color_light">Világos</string>
     <string name="color_dark">Sötét</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
@@ -208,51 +208,51 @@
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
     <string name="smartspace_battery_charging">Töltés</string>
     <string name="smartspace_battery_full">Feltöltve</string>
-    <string name="smartspace_battery_low">Akku alacsony</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — tele %2$s"</string>
-    <string name="accessibility_smartspace_page">Oldal %1$d a %2$d-ból</string>
+    <string name="smartspace_battery_low">Alacsony töltöttség</string>
+    <string name="battery_charging_percentage_charging_time">"%1$d%% – Feltöltve %2$s múlva"</string>
+    <string name="accessibility_smartspace_page">%1$d. / %2$d oldal</string>
     <string name="smartspace_widget">At a Glance</string>
-    <string name="smartspace_widget_description">Mit mutasson</string>
-    <string name="smartspace_widget_placeholder_date">Péntek, március 3.</string>
+    <string name="smartspace_widget_description">Mi jelenjen meg</string>
+    <string name="smartspace_widget_placeholder_date">már. 3., P</string>
     <string name="preview_label">Előnézet</string>
     <string name="smartspace_calendar">Naptár</string>
-    <string name="smartspace_date_and_time">Dátum &amp; Idő</string>
+    <string name="smartspace_date_and_time">Dátum és idő</string>
     <string name="smartspace_date">Dátum</string>
     <string name="smartspace_time">Idő</string>
-    <string name="smartspace_time_format">Idő formátum</string>
+    <string name="smartspace_time_format">Időformátum</string>
     <string name="smartspace_time_follow_system">Rendszer szerinti téma követése</string>
     <string name="smartspace_time_12_hour_format">12 órás formátum</string>
     <string name="smartspace_time_24_hour_format">24 órás formátum</string>
     <string name="smartspace_weather">Időjárás</string>
-    <string name="smartspace_battery_status">Akku állapot</string>
-    <string name="smartspace_now_playing">Most lejátszva</string>
-    <string name="smartspace_requires_setup">Kopints a beállításhoz</string>
+    <string name="smartspace_battery_status">Akkumulátor állapota</string>
+    <string name="smartspace_now_playing">Most játszott</string>
+    <string name="smartspace_requires_setup">Koppintás a beállításhoz</string>
     <string name="event_provider_missing_notification_dots">A <xliff:g example="My Provider" id="providerName">%1$s</xliff:g> használatához engedélyezze az értesítési pöttyöket.</string>
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Gregorián</string>
     <string name="smartspace_calendar_persian">Perzsa</string>
     <string name="smartspace_preferences">Beállítások</string>
-    <string name="smartspace_widget_toggle_label">Mutatás kezdőlapon</string>
-    <string name="smartspace_widget_toggle_description">Az At a Glance manuálisan is hozzáadható a kezdőlaphoz a \"Lawnchair\" widgettel.</string>
-    <string name="smartspace_mode_label">At a Glance szolgáltató kiválasztása</string>
+    <string name="smartspace_widget_toggle_label">Megjelenítés a kezdőképernyőn</string>
+    <string name="smartspace_widget_toggle_description">Az At a Glance kézzel is hozzáadható a „Lawnchair” modul elhelyezésével.</string>
+    <string name="smartspace_mode_label">At a Glance szolgáltató</string>
     <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Google Keresés</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="hotseat_mode_label">Keresősáv widget</string>
+    <string name="hotseat_mode_label">Keresősáv modul</string>
     <string name="hotseat_mode_disabled">Letiltva</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
-    <string name="hotseat_mode_google_search">Google Keresősáv</string>
-    <string name="search_bar_label">Kereső sáv</string>
-    <string name="corner_radius_label">Sarok sugár</string>
+    <string name="hotseat_mode_google_search">Google keresősáv</string>
+    <string name="search_bar_label">Keresősáv</string>
+    <string name="corner_radius_label">Sarok sugara</string>
     <string name="apply_accent_color_label">Kiemelő szín alkalmazása</string>
-    <string name="search_provider">Kereső szolgáltató</string>
+    <string name="search_provider">Keresőszolgáltató</string>
     <string name="grid">Rács</string>
-    <string name="dock_icons">Dokk ikonok</string>
+    <string name="dock_icons">Dokkikonok</string>
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
-    <string name="search_provider_app_search">Alkalmazás keresés</string>
+    <string name="search_provider_app_search">Alkalmazáskeresés</string>
     <string name="app_label">Alkalmazás</string>
     <string name="website_label">Weboldal</string>
     <string name="qsb_search_provider_app_required">Alkalmazás szükséges.</string>
@@ -262,17 +262,17 @@
     <string name="background_opacity">Háttér átlátszósága</string>
     <!-- hiddenApps_label -->
     <string name="hidden_apps_label">Elrejtett alkalmazások</string>
-    <string name="show_enable_smart_hide">Mutatás amikor a teljes név ki van írva</string>
+    <string name="show_enable_smart_hide">Megjelenítés, ha a teljes név ki van írva</string>
     <string name="hide_hidden_apps_search">Elrejtés a keresési találatokban</string>
     <string name="pref_category_search">Keresés</string>
     <string name="show_app_search_bar">Keresősáv megjelenítése</string>
-    <string name="pref_search_auto_show_keyboard">Billentyűzet automatikus mutatása</string>
+    <string name="pref_search_auto_show_keyboard">Billentyűzet automatikus megjelenítése</string>
     <string name="fuzzy_search_title">Közelítő keresés</string>
-    <string name="fuzzy_search_desc">Hozzávetőleges egyezés az alkalmazások kereséséhez.</string>
-    <string name="max_search_result_count_title">Max keresési eredmények száma</string>
+    <string name="fuzzy_search_desc">Hozzávetőleges egyezés az alkalmazások keresésénél.</string>
+    <string name="max_search_result_count_title">Találatok legnagyobb száma</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Alkalmazástár oszlopai</string>
-    <string name="row_height_label">Sor magasság</string>
+    <string name="row_height_label">Sormagasság</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -288,11 +288,11 @@
     <!-- FolderPreferences -->
     <!-- <string name="folders_label" /> -->
     <!-- <string name="general_label" /> -->
-    <string name="folder_preview_bg_opacity_label">Ikon háttér átlátszósága</string>
-    <string name="folder_preview_bg_color_label">Ikon háttérszín</string>
+    <string name="folder_preview_bg_opacity_label">Ikonháttér átlátszatlansága</string>
+    <string name="folder_preview_bg_color_label">Ikon háttérszíne</string>
     <!-- <string name="grid" /> -->
-    <string name="max_folder_columns">Mappa oszlopok legnagyobb száma</string>
-    <string name="max_folder_rows">Mappa sorok legnagyobb száma</string>
+    <string name="max_folder_columns">Mappaoszlopok legnagyobb száma</string>
+    <string name="max_folder_rows">Mappasorok legnagyobb száma</string>
     <!-- GesturePreference -->
     <!-- <string name="gestures_label" /> -->
     <string name="gesture_double_tap">Dupla koppintás</string>
@@ -301,7 +301,7 @@
     <string name="gesture_home_tap">Kezdőképernyő gomb koppintása</string>
     <string name="gesture_back_tap">Vissza gomb koppintása</string>
     <string name="gesture_handler_no_op">Nincs teendő</string>
-    <string name="gesture_handler_sleep">Alvó</string>
+    <string name="gesture_handler_sleep">Alvás</string>
     <string name="gesture_handler_open_notifications">Értesítési panel megnyitása</string>
     <string name="gesture_handler_open_app_option">Alkalmazás megnyitása</string>
     <string name="gesture_handler_open_app_config">%1$s megnyitása</string>
@@ -315,11 +315,11 @@
     <string name="translucent_background">Áttetsző háttér</string>
     <string name="recents_actions_label">Gyors műveletek</string>
     <!-- <string name="screenshot" /> (unknown source) -->
-    <string name="action_share">Megoszt</string>
+    <string name="action_share">Megosztás</string>
     <string name="action_lens">Lencse</string>
     <string name="recents_clear_all">Összes törlése</string>
-    <string name="window_corner_radius_label">Képernyő Sarok Sugár</string>
-    <string name="override_window_corner_radius_label">Egyedi Képernyő Sarok Sugár</string>
+    <string name="window_corner_radius_label">Képernyő sarkának sugara</string>
+    <string name="override_window_corner_radius_label">Egyéni sugár a képernyő sarkához</string>
     <string name="window_corner_radius_description">Ha lefelé legyint a Nemrég használt alkalmazások megtekintéséhez, akkor a jelenlegi alkalmás követi az ujját és egy kártyává zsugorodik. Használja ezt a csúszkát, hogy megadja a kártya sarkának sugarát, ha majdnem teljes képernyős látszódik, hogy illeszkedjen a képernyője sarkaihoz.</string>
     <string name="taskbar_label">Tálca</string>
     <string name="enable_taskbar_experimental">Tálca engedélyezése (kísérleti)</string>
@@ -331,7 +331,7 @@
     <string name="development">Fejlesztés</string>
     <string name="quickswitch_maintenance">QuickSwitch karbantartás</string>
     <string name="devops">DevOps</string>
-    <string name="support_and_pr">Támogatás &amp; PR</string>
+    <string name="support_and_pr">Támogatás és PR</string>
     <!--
       <string name="support" />
       <string name="support_and_pr" />
@@ -346,9 +346,9 @@
     <string name="icon_picker_load_failed">Nem tölthető be több ikon.</string>
     <!-- Misc -->
     <string name="all_apps_search_bar_hint">Alkalmazások keresése</string>
-    <string name="settings_button_text">Kezdőképernyő beállítások</string>
+    <string name="settings_button_text">Kezdőképernyő beállításai</string>
     <string name="item_removed">Elem eltávolítva.</string>
-    <string name="all_apps_no_search_results">Nincs megfelelő alkalmazás erre \"<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
+    <string name="all_apps_no_search_results">Nincs megfelelő alkalmazás ehhez: „<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
     <string name="dt2s_admin_hint_title">Rendszergazdai jogosultság szükséges</string>
     <string name="dt2s_admin_hint">A dupla koppintásos altatáshoz állítsa be a Lawnchairt rendszergadai alkalmazásként. Koppintson a Beállítások megnyitására, majd koppintson a „Rendszergazdai alkalmazás aktiválása” lehetőségre.</string>
     <string name="dt2s_admin_warning">A dupla koppintásos alvás ki lesz kapcsolva.</string>
@@ -363,45 +363,45 @@
     <string name="suggestion_pref_screen_title">Javaslatok</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair hibajelentés</string>
-    <string name="crash_report_notif_title">%1$s összeomlott</string>
+    <string name="crash_report_notif_title">A %1$s összeomlott</string>
     <string name="action_upload_crash_report">Összeomlási napló feltöltése</string>
-    <string name="action_copy_link">Link másolása</string>
+    <string name="action_copy_link">Hivatkozás másolása</string>
     <string name="action_upload_error">Feltöltési hiba</string>
     <string name="dogbin_uploading">Feltöltés…</string>
     <string name="bugreport_channel_name">Hibajelentések</string>
     <string name="status_channel_name">Feltöltés állapota</string>
-    <string name="bugreport_group_summary">%d új riportok.</string>
-    <string name="bugreport_group_summary_multiple">Több új riport.</string>
+    <string name="bugreport_group_summary">%d új jelentés.</string>
+    <string name="bugreport_group_summary_multiple">Több új jelentés.</string>
     <!-- Search ig -->
-    <string name="show_search_result_types">Mutassa a keresési találatok között</string>
+    <string name="show_search_result_types">Megjelenítés a keresési találatok között</string>
     <string name="search_pref_result_people_title">Emberek</string>
-    <string name="search_pref_result_shortcuts_title">Alkalmazás parancsikonok</string>
+    <string name="search_pref_result_shortcuts_title">Indítóikonok</string>
     <string name="search_pref_result_tips_title">Pixel tippek</string>
     <string name="all_apps_device_search_hint">Keresés</string>
-    <string name="search_input_action_clear_results">Kereső doboz törlése</string>
+    <string name="search_input_action_clear_results">Keresőmező törlése</string>
     <string name="label_search">Keresés</string>
-    <string name="label_lens">Google Nagyító</string>
-    <string name="label_voice_search">Hang keresés</string>
-    <string name="all_apps_search_market_message">További Applikációk keresése</string>
+    <string name="label_lens">Google Lens</string>
+    <string name="label_voice_search">Hangalapú keresés</string>
+    <string name="all_apps_search_market_message">További alkalmazások keresése</string>
     <string name="error_no_market_or_browser_installed">Nincs alkalmazásbolt vagy böngésző telepítve.</string>
     <string name="quickstep_incompatible">Inkompatibilis rendszerintegráció</string>
     <string name="quickstep_incompatible_description">Az eszköze úgy van beállítva, hogy a(z) %1$s által biztosított rendszergesztusokat (más néven ez a Quickstep) tartalmazza, de a(z) %1$s ezen verziója nem kompatibilis az Android verziójával. Az eszköze használatának folytatásához távolítsa el a(z) %1$s frissítéseit vagy tiltsa le a(z) %1$s alkalmazást a rendszergesztusok szolgáltatójaként.</string>
     <string name="delete">Törlés</string>
     <!-- Backup -->
-    <string name="create_backup">Biztonásgi mentés létrehozása</string>
-    <string name="create_backup_action">Létrehoz</string>
+    <string name="create_backup">Biztonsági mentés létrehozása</string>
+    <string name="create_backup_action">Létrehozás</string>
     <string name="what_to_backup">Miről legyen biztonsági mentés</string>
     <string name="backup_content_layout_and_settings">Elrendezés és beállítások</string>
     <string name="backup_content_wallpaper">Háttérkép</string>
     <string name="backup_create_success">Biztonsági mentés elkészítve.</string>
-    <string name="backup_create_error">Biztonsági mentés nem sikerült.</string>
-    <string name="restore_backup">Biztonsági mentés visszaállítása</string>
-    <string name="restore_backup_action">Visszaállítás</string>
-    <string name="what_to_restore">Mi legyen visszaállítva?</string>
-    <string name="backup_restore_success">Biztonsági mentés visszaállítva.</string>
-    <string name="backup_restore_error">Biztonsági mentés visszaállítása nem sikerült.</string>
-    <string name="invalid_backup_file">Biztonsági mentés fájl érvénytelen.</string>
-    <string name="x_by_y">%1$d x %2$d</string>
+    <string name="backup_create_error">A biztonsági mentés nem sikerült.</string>
+    <string name="restore_backup">Biztonsági mentés helyreállítása</string>
+    <string name="restore_backup_action">Helyreállítás</string>
+    <string name="what_to_restore">Mi legyen helyreállítva?</string>
+    <string name="backup_restore_success">Biztonsági mentés helyreállítva.</string>
+    <string name="backup_restore_error">A biztonsági mentés helyreállítása nem sikerült.</string>
+    <string name="invalid_backup_file">A biztonsági mentési fájl érvénytelen.</string>
+    <string name="x_by_y">%1$d×%2$d</string>
     <string name="x_and_y">%s és %s</string>
     <string name="system_settings">Rendszerbeállítások</string>
 </resources>
