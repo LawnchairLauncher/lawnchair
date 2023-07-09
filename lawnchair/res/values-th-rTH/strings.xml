@@ -29,7 +29,7 @@
     <string name="dock_label">แถบรายการโปรด</string>
     <string name="dock_description">แถบค้นหา, จำนวนไอคอน</string>
     <string name="app_drawer_label">รายการแอป</string>
-    <string name="app_drawer_description">การซ่อนแอป, ไอคอน</string>
+    <string name="app_drawer_description">แอปที่ซ่อนไว้, ไอคอน</string>
     <string name="folders_label">โฟลเดอร์</string>
     <string name="folders_description">จำนวนไอคอน</string>
     <string name="gestures_label">ท่าทาง</string>
