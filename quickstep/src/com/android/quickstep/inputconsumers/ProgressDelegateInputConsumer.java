@@ -103,7 +103,8 @@ public class ProgressDelegateInputConsumer implements InputConsumer,
         mStateCallback = new MultiStateCallback(STATE_NAMES);
         mStateCallback.runOnceAtState(STATE_TARGET_RECEIVED | STATE_HANDLER_INVALIDATED,
                 this::endRemoteAnimation);
-        mStateCallback.runOnceAtState(STATE_FLING_FINISHED, this::onFlingFinished);
+        mStateCallback.runOnceAtState(STATE_TARGET_RECEIVED | STATE_FLING_FINISHED,
+                this::onFlingFinished);
 
         mSwipeDetector = new SingleAxisSwipeDetector(mContext, this, VERTICAL);
         mSwipeDetector.setDetectableScrollConditions(DIRECTION_POSITIVE, false);
