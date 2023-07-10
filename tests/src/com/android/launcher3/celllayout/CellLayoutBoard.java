@@ -141,9 +141,14 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
             return this.mType == CellType.IGNORE;
         }
 
+        boolean contains(int x, int y) {
+            return mBounds.contains(x, y);
+        }
+
         @Override
         public String toString() {
-            return "WidgetRect type = " + mType + " bounds = " + mBounds.toString();
+            return "WidgetRect type = " + mType + " x = " + getCellX() + " | y " + getCellY()
+                    + " xs = " + getSpanX() + " ys = " + getSpanY();
         }
     }
 
@@ -225,6 +230,17 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
                 mWidget[x][y] = CellType.EMPTY;
             }
         }
+    }
+
+    public boolean pointInsideRect(int x, int y, WidgetRect rect) {
+        Boolean isXInRect = x >= rect.getCellX() && x < rect.getCellX() + rect.getSpanX();
+        Boolean isYInRect = y >= rect.getCellY() && y < rect.getCellY() + rect.getSpanY();
+        return isXInRect && isYInRect;
+    }
+
+    public WidgetRect getWidgetAt(int x, int y) {
+        return mWidgetsRects.stream()
+                .filter(widgetRect -> pointInsideRect(x, y, widgetRect)).findFirst().orElse(null);
     }
 
     public List<WidgetRect> getWidgets() {
@@ -439,6 +455,17 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
             if (main != null) {
                 return main;
             }
+        }
+        return null;
+    }
+
+    public static WidgetRect getWidgetIn(List<CellLayoutBoard> boards, int x, int y) {
+        for (CellLayoutBoard board : boards) {
+            WidgetRect main = board.getWidgetAt(x, y);
+            if (main != null) {
+                return main;
+            }
+            x -= board.mWidth;
         }
         return null;
     }

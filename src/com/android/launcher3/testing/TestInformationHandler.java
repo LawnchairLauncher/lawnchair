@@ -202,10 +202,11 @@ public class TestInformationHandler implements ResourceBasedOverride {
             }
 
             case TestProtocol.REQUEST_WORKSPACE_COLUMNS_ROWS: {
+                InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(mContext);
                 return getLauncherUIProperty(Bundle::putParcelable, launcher -> new Point(
-                        InvariantDeviceProfile.INSTANCE.get(mContext).numColumns,
-                        InvariantDeviceProfile.INSTANCE.get(mContext).numRows)
-                );
+                        idp.getDeviceProfile(mContext).getPanelCount() * idp.numColumns,
+                        idp.numRows
+                ));
             }
 
             case TestProtocol.REQUEST_WORKSPACE_CURRENT_PAGE_INDEX: {
