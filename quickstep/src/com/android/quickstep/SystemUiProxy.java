@@ -660,6 +660,31 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     /**
+     * Tells SysUI to remove the bubble with the provided key.
+     * @param key the key of the bubble to show.
+     */
+    public void removeBubble(String key) {
+        if (mBubbles == null) return;
+        try {
+            mBubbles.removeBubble(key);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed call removeBubble");
+        }
+    }
+
+    /**
+     * Tells SysUI to remove all bubbles.
+     */
+    public void removeAllBubbles() {
+        if (mBubbles == null) return;
+        try {
+            mBubbles.removeAllBubbles();
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed call removeAllBubbles");
+        }
+    }
+
+    /**
      * Tells SysUI to collapse the bubbles.
      */
     public void collapseBubbles() {
@@ -669,6 +694,21 @@ public class SystemUiProxy implements ISystemUiProxy {
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call collapseBubbles");
             }
+        }
+    }
+
+    /**
+     * Tells SysUI to collapse/expand selected bubble view while it's dragged.
+     * Should be called only when the bubble bar is expanded.
+     * @param bubbleKey the key of the bubble to collapse/expand
+     * @param collapse whether to collapse/expand selected bubble
+     */
+    public void collapseWhileDragging(@Nullable String bubbleKey, boolean collapse) {
+        if (mBubbles == null) return;
+        try {
+            mBubbles.collapseWhileDragging(bubbleKey, collapse);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed call collapseWhileDragging");
         }
     }
 
