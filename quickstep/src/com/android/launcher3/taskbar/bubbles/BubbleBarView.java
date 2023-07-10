@@ -234,6 +234,7 @@ public class BubbleBarView extends FrameLayout {
         final float collapsedWidth = collapsedWidth();
         int bubbleCount = getChildCount();
         final float ty = (mBubbleBarBounds.height() - mIconSize) / 2f;
+        final boolean animate = getVisibility() == VISIBLE;
         for (int i = 0; i < bubbleCount; i++) {
             BubbleView bv = (BubbleView) getChildAt(i);
             bv.setTranslationY(ty);
@@ -251,16 +252,14 @@ public class BubbleBarView extends FrameLayout {
                 if (widthState == 1f) {
                     bv.setZ(0);
                 }
-                bv.showBadge();
+                // When we're expanded, we're not stacked so we're not behind the stack
+                bv.setBehindStack(false, animate);
             } else {
                 final float targetX = currentWidth - collapsedWidth + collapsedX;
                 bv.setTranslationX(widthState * (expandedX - targetX) + targetX);
                 bv.setZ((MAX_BUBBLES * mBubbleElevation) - i);
-                if (i > 0) {
-                    bv.hideBadge();
-                } else {
-                    bv.showBadge();
-                }
+                // If we're not the first bubble we're behind the stack
+                bv.setBehindStack(i > 0, animate);
             }
         }
 
