@@ -381,7 +381,9 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
         // Draw all page indicators;
         float circleGap = mCircleGap;
-        float startX = (getWidth() - (mNumPages * circleGap) + mDotRadius) / 2;
+        float startX = ((float) getWidth() / 2)
+                - (mCircleGap * (((float) mNumPages - 1) / 2))
+                - mDotRadius;
 
         float x = startX + mDotRadius;
         float y = getHeight() / 2;
@@ -420,9 +422,9 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
         float startCircle = (int) mCurrentPosition;
         float delta = mCurrentPosition - startCircle;
         float diameter = 2 * mDotRadius;
-        float startX;
-
-        startX = ((getWidth() - (mNumPages * mCircleGap) + mDotRadius) / 2);
+        float startX = ((float) getWidth() / 2)
+                - (mCircleGap * (((float) mNumPages - 1) / 2))
+                - mDotRadius;
         sTempRect.top = (getHeight() * 0.5f) - mDotRadius;
         sTempRect.bottom = (getHeight() * 0.5f) + mDotRadius;
         sTempRect.left = startX + (startCircle * mCircleGap);
