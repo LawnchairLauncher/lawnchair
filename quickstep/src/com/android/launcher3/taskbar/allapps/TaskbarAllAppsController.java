@@ -15,11 +15,14 @@
  */
 package com.android.launcher3.taskbar.allapps;
 
+import android.view.View;
+
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.R;
 import com.android.launcher3.appprediction.PredictionRowView;
+import com.android.launcher3.dragndrop.DragOptions.PreDragCondition;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.taskbar.TaskbarControllers;
@@ -207,5 +210,13 @@ public final class TaskbarAllAppsController {
     public int getTaskbarAllAppsScroll() {
         // Allow null-pointer since this should only be null if the apps view is not showing.
         return mAppsView.getActiveRecyclerView().computeVerticalScrollOffset();
+    }
+
+    /** @see TaskbarSearchSessionController#createPreDragConditionForSearch(View) */
+    @Nullable
+    public PreDragCondition createPreDragConditionForSearch(View view) {
+        return mSearchSessionController != null
+                ? mSearchSessionController.createPreDragConditionForSearch(view)
+                : null;
     }
 }
