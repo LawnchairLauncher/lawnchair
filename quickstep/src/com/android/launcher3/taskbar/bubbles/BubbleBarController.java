@@ -31,6 +31,8 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_Q
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
 
+import static java.lang.Math.abs;
+
 import android.annotation.BinderThread;
 import android.annotation.Nullable;
 import android.content.Context;
@@ -334,8 +336,8 @@ public class BubbleBarController extends IBubblesListener.Stub {
             // TODO: (b/273316505) handle suppression
         }
         if (update.selectedBubbleKey != null) {
-            if (mSelectedBubble != null
-                    && !update.selectedBubbleKey.equals(mSelectedBubble.getKey())) {
+            if (mSelectedBubble == null
+                    || !update.selectedBubbleKey.equals(mSelectedBubble.getKey())) {
                 BubbleBarBubble newlySelected = mBubbles.get(update.selectedBubbleKey);
                 if (newlySelected != null) {
                     bubbleToSelect = newlySelected;
@@ -360,12 +362,11 @@ public class BubbleBarController extends IBubblesListener.Stub {
     /** Tells WMShell to show the currently selected bubble. */
     public void showSelectedBubble() {
         if (getSelectedBubbleKey() != null) {
-            int[] bubbleBarCoords = mBarView.getLocationOnScreen();
             if (mSelectedBubble instanceof BubbleBarBubble) {
                 // TODO (b/269670235): hide the update dot on the view if needed.
             }
             mSystemUiProxy.showBubble(getSelectedBubbleKey(),
-                    bubbleBarCoords[0], bubbleBarCoords[1]);
+                    getBubbleBarOffsetX(), getBubbleBarOffsetY());
         } else {
             Log.w(TAG, "Trying to show the selected bubble but it's null");
         }
@@ -519,5 +520,14 @@ public class BubbleBarController extends IBubblesListener.Stub {
                 foreground);
 
         return mIconFactory.createBadgedIconBitmap(drawable).icon;
+    }
+
+    private int getBubbleBarOffsetY() {
+        final int translation = (int) abs(mBubbleStashController.getBubbleBarTranslationY());
+        return translation + mBarView.getHeight();
+    }
+
+    private int getBubbleBarOffsetX() {
+        return mBarView.getWidth() + mBarView.getHorizontalMargin();
     }
 }

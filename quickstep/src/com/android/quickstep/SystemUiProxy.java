@@ -646,13 +646,15 @@ public class SystemUiProxy implements ISystemUiProxy {
     /**
      * Tells SysUI to show the bubble with the provided key.
      * @param key the key of the bubble to show.
-     * @param bubbleBarXCoordinate the X coordinate of the bubble bar on the screen.
-     * @param bubbleBarYCoordinate the Y coordinate of the bubble bar on the screen.
+     * @param bubbleBarOffsetX the offset of the bubble bar from the edge of the screen on the X
+     *                         axis.
+     * @param bubbleBarOffsetY the offset of the bubble bar from the edge of the screen on the Y
+     *                         axis.
      */
-    public void showBubble(String key, int bubbleBarXCoordinate, int bubbleBarYCoordinate) {
+    public void showBubble(String key, int bubbleBarOffsetX, int bubbleBarOffsetY) {
         if (mBubbles != null) {
             try {
-                mBubbles.showBubble(key, bubbleBarXCoordinate, bubbleBarYCoordinate);
+                mBubbles.showBubble(key, bubbleBarOffsetX, bubbleBarOffsetY);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call showBubble");
             }
