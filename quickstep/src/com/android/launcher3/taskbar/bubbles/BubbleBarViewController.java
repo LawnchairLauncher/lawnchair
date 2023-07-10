@@ -113,8 +113,8 @@ public class BubbleBarViewController {
             mBubbleStashController.stashBubbleBar();
         } else {
             mBubbleBarController.setSelectedBubble(bubble);
-            mSystemUiProxy.showBubble(bubble.getKey(),
-                    mBubbleStashController.isBubblesShowingOnHome());
+            int[] bubbleBarCoords = mBarView.getLocationOnScreen();
+            mSystemUiProxy.showBubble(bubble.getKey(), bubbleBarCoords[0], bubbleBarCoords[1]);
         }
     }
 
@@ -293,8 +293,8 @@ public class BubbleBarViewController {
             } else {
                 final String selectedKey = mBubbleBarController.getSelectedBubbleKey();
                 if (selectedKey != null) {
-                    mSystemUiProxy.showBubble(selectedKey,
-                            mBubbleStashController.isBubblesShowingOnHome());
+                    int[] bubbleBarCoords = mBarView.getLocationOnScreen();
+                    mSystemUiProxy.showBubble(selectedKey, bubbleBarCoords[0], bubbleBarCoords[1]);
                 } else {
                     Log.w(TAG, "trying to expand bubbles when there isn't one selected");
                 }
