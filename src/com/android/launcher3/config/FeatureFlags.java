@@ -170,6 +170,10 @@ public final class FeatureFlags {
         return SMARTSPACE_AS_A_WIDGET.get() && WIDGET_ON_FIRST_SCREEN;
     }
 
+    public static final BooleanFlag ENABLE_SMARTSPACE_REMOVAL = getDebugFlag(290799975,
+            "ENABLE_SMARTSPACE_REMOVAL", DISABLED, "Enable SmartSpace removal for "
+            + "home screen");
+
     // TODO(Block 10): Clean up flags
     public static final BooleanFlag ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION = getDebugFlag(270614790,
             "ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION", DISABLED,
