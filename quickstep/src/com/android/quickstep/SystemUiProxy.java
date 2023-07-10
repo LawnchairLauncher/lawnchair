@@ -646,13 +646,13 @@ public class SystemUiProxy implements ISystemUiProxy {
     /**
      * Tells SysUI to show the bubble with the provided key.
      * @param key the key of the bubble to show.
-     * @param onLauncherHome whether the bubble is showing on launcher home or not (modifies where
-     *                       the expanded bubble view is placed).
+     * @param bubbleBarXCoordinate the X coordinate of the bubble bar on the screen.
+     * @param bubbleBarYCoordinate the Y coordinate of the bubble bar on the screen.
      */
-    public void showBubble(String key, boolean onLauncherHome) {
+    public void showBubble(String key, int bubbleBarXCoordinate, int bubbleBarYCoordinate) {
         if (mBubbles != null) {
             try {
-                mBubbles.showBubble(key, onLauncherHome);
+                mBubbles.showBubble(key, bubbleBarXCoordinate, bubbleBarYCoordinate);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call showBubble");
             }
