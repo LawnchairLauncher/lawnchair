@@ -112,9 +112,7 @@ public class BubbleBarViewController {
             setExpanded(false);
             mBubbleStashController.stashBubbleBar();
         } else {
-            mBubbleBarController.setSelectedBubble(bubble);
-            int[] bubbleBarCoords = mBarView.getLocationOnScreen();
-            mSystemUiProxy.showBubble(bubble.getKey(), bubbleBarCoords[0], bubbleBarCoords[1]);
+            mBubbleBarController.showAndSelectBubble(bubble);
         }
     }
 
@@ -291,13 +289,7 @@ public class BubbleBarViewController {
             if (!isExpanded) {
                 mSystemUiProxy.collapseBubbles();
             } else {
-                final String selectedKey = mBubbleBarController.getSelectedBubbleKey();
-                if (selectedKey != null) {
-                    int[] bubbleBarCoords = mBarView.getLocationOnScreen();
-                    mSystemUiProxy.showBubble(selectedKey, bubbleBarCoords[0], bubbleBarCoords[1]);
-                } else {
-                    Log.w(TAG, "trying to expand bubbles when there isn't one selected");
-                }
+                mBubbleBarController.showSelectedBubble();
                 mTaskbarStashController.updateAndAnimateTransientTaskbar(true /* stash */,
                         false /* shouldBubblesFollow */);
             }
