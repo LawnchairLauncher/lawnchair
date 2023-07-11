@@ -22,6 +22,8 @@ import android.os.Bundle;
 
 import androidx.test.InstrumentationRegistry;
 
+import com.android.launcher3.testing.shared.TestProtocol;
+
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -71,33 +73,57 @@ public class SimpleActivityRule<T extends Activity> implements TestRule {
         @Override
         public void onActivityCreated(Activity activity, Bundle bundle) {
             if (activity != null && mClass.isInstance(activity)) {
+                TestProtocol.testLogD(
+                        TestProtocol.ACTIVITY_LIFECYCLE_RULE, "MyStatement.onActivityCreated");
                 mActivity = (T) activity;
             }
         }
 
         @Override
         public void onActivityStarted(Activity activity) {
+            if (activity == mActivity) {
+                TestProtocol.testLogD(
+                        TestProtocol.ACTIVITY_LIFECYCLE_RULE, "MyStatement.onActivityStarted");
+            }
         }
 
         @Override
         public void onActivityResumed(Activity activity) {
+            if (activity == mActivity) {
+                TestProtocol.testLogD(
+                        TestProtocol.ACTIVITY_LIFECYCLE_RULE, "MyStatement.onActivityResumed");
+            }
         }
 
         @Override
         public void onActivityPaused(Activity activity) {
+            if (activity == mActivity) {
+                TestProtocol.testLogD(
+                        TestProtocol.ACTIVITY_LIFECYCLE_RULE, "MyStatement.onActivityPaused");
+            }
         }
 
         @Override
         public void onActivityStopped(Activity activity) {
+            if (activity == mActivity) {
+                TestProtocol.testLogD(
+                        TestProtocol.ACTIVITY_LIFECYCLE_RULE, "MyStatement.onAcgtivityStopped");
+            }
         }
 
         @Override
         public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+            if (activity == mActivity) {
+                TestProtocol.testLogD(TestProtocol.ACTIVITY_LIFECYCLE_RULE,
+                        "MyStatement.onActivitySaveInstanceState");
+            }
         }
 
         @Override
         public void onActivityDestroyed(Activity activity) {
             if (activity == mActivity) {
+                TestProtocol.testLogD(
+                        TestProtocol.ACTIVITY_LIFECYCLE_RULE, "MyStatement.onActivityDestroyed");
                 mActivity = null;
             }
         }
