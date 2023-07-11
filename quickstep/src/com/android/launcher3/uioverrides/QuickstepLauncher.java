@@ -549,7 +549,7 @@ public class QuickstepLauncher extends Launcher {
         list.add(getDragController());
         Consumer<AnimatorSet> splitAnimator = animatorSet -> {
             AnimatorSet anim = mSplitSelectStateController.getSplitAnimationController()
-                    .animateAwayPlaceholder(QuickstepLauncher.this);
+                    .createPlaceholderDismissAnim(QuickstepLauncher.this);
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
@@ -998,6 +998,13 @@ public class QuickstepLauncher extends Launcher {
 
     public SplitToWorkspaceController getSplitToWorkspaceController() {
         return mSplitToWorkspaceController;
+    }
+
+    @Override
+    protected void handleSplitAnimationGoingToHome() {
+        super.handleSplitAnimationGoingToHome();
+        mSplitSelectStateController.getSplitAnimationController()
+                .playPlaceholderDismissAnim(this);
     }
 
     public <T extends OverviewActionsView> T getActionsView() {
