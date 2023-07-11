@@ -17,6 +17,8 @@ package com.android.launcher3.taskbar.allapps;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -63,14 +65,23 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         }
         mIsOpen = true;
         attachToContainer();
+        mAllAppsCallbacks.onAllAppsTransitionStart(true);
 
         if (animate) {
             mOpenCloseAnimator.setValues(
                     PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
             mOpenCloseAnimator.setInterpolator(EMPHASIZED);
+            mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    mOpenCloseAnimator.removeListener(this);
+                    mAllAppsCallbacks.onAllAppsTransitionEnd(true);
+                }
+            });
             mOpenCloseAnimator.setDuration(mAllAppsCallbacks.getOpenDuration()).start();
         } else {
             mTranslationShift = TRANSLATION_SHIFT_OPENED;
+            mAllAppsCallbacks.onAllAppsTransitionEnd(true);
         }
     }
 
@@ -81,7 +92,16 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
 
     @Override
     protected void handleClose(boolean animate) {
+        if (mIsOpen) {
+            mAllAppsCallbacks.onAllAppsTransitionStart(false);
+        }
         handleClose(animate, mAllAppsCallbacks.getCloseDuration());
+    }
+
+    @Override
+    protected void onCloseComplete() {
+        mAllAppsCallbacks.onAllAppsTransitionEnd(false);
+        super.onCloseComplete();
     }
 
     @Override
