@@ -892,15 +892,6 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         container.put(R.id.work_tab_state_id, state);
     }
 
-    /**
-     * Sets the long click listener for icons
-     */
-    public void setOnIconLongClickListener(OnLongClickListener listener) {
-        for (AdapterHolder holder : mAH) {
-            holder.mAdapter.setOnIconLongClickListener(listener);
-        }
-    }
-
     public AllAppsStore getAppsStore() {
         return mAllAppsStore;
     }

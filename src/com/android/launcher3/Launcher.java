@@ -194,6 +194,7 @@ import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.AllAppsSwipeController;
+import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ActivityTracker;
@@ -3371,5 +3372,10 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     public boolean areFreeformTasksVisible() {
         return false; // Base launcher does not track freeform tasks
+    }
+
+    @Override
+    public View.OnLongClickListener getAllAppsItemLongClickListener() {
+        return ItemLongClickListener.INSTANCE_ALL_APPS;
     }
 }
