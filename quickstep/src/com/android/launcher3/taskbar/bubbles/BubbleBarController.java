@@ -118,6 +118,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
     private final Executor mMainExecutor;
     private final LauncherApps mLauncherApps;
     private final BubbleIconFactory mIconFactory;
+    private final SystemUiProxy mSystemUiProxy;
 
     private BubbleBarItem mSelectedBubble;
     private BubbleBarOverflow mOverflowBubble;
@@ -159,8 +160,10 @@ public class BubbleBarController extends IBubblesListener.Stub {
         mContext = context;
         mBarView = bubbleView; // Need the view for inflating bubble views.
 
+        mSystemUiProxy = SystemUiProxy.INSTANCE.get(context);
+
         if (BUBBLE_BAR_ENABLED) {
-            SystemUiProxy.INSTANCE.get(context).setBubblesListener(this);
+            mSystemUiProxy.setBubblesListener(this);
         }
         mMainExecutor = MAIN_EXECUTOR;
         mLauncherApps = context.getSystemService(LauncherApps.class);
@@ -173,7 +176,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
     }
 
     public void onDestroy() {
-        SystemUiProxy.INSTANCE.get(mContext).setBubblesListener(null);
+        mSystemUiProxy.setBubblesListener(null);
     }
 
     public void init(TaskbarControllers controllers, BubbleControllers bubbleControllers) {
@@ -354,12 +357,33 @@ public class BubbleBarController extends IBubblesListener.Stub {
         }
     }
 
+    /** Tells WMShell to show the currently selected bubble. */
+    public void showSelectedBubble() {
+        if (getSelectedBubbleKey() != null) {
+            int[] bubbleBarCoords = mBarView.getLocationOnScreen();
+            if (mSelectedBubble instanceof BubbleBarBubble) {
+                // TODO (b/269670235): hide the update dot on the view if needed.
+            }
+            mSystemUiProxy.showBubble(getSelectedBubbleKey(),
+                    bubbleBarCoords[0], bubbleBarCoords[1]);
+        } else {
+            Log.w(TAG, "Trying to show the selected bubble but it's null");
+        }
+    }
+
+    /** Updates the currently selected bubble for launcher views and tells WMShell to show it. */
+    public void showAndSelectBubble(BubbleBarItem b) {
+        if (DEBUG) Log.w(TAG, "showingSelectedBubble: " + b.getKey());
+        setSelectedBubble(b);
+        showSelectedBubble();
+    }
+
     /**
      * Sets the bubble that should be selected. This notifies the views, it does not notify
-     * WMShell that the selection has changed, that should go through
-     * {@link SystemUiProxy#showBubble}.
+     * WMShell that the selection has changed, that should go through either
+     * {@link #showSelectedBubble()} or {@link #showAndSelectBubble(BubbleBarItem)}.
      */
-    public void setSelectedBubble(BubbleBarItem b) {
+    private void setSelectedBubble(BubbleBarItem b) {
         if (!Objects.equals(b, mSelectedBubble)) {
             if (DEBUG) Log.w(TAG, "selectingBubble: " + b.getKey());
             mSelectedBubble = b;
