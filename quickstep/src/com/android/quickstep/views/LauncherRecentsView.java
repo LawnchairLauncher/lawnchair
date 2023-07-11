@@ -30,6 +30,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.Surface;
 
@@ -43,6 +44,7 @@ import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.PendingSplitSelectInfo;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -165,6 +167,8 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     @Override
     public void setOverviewStateEnabled(boolean enabled) {
         super.setOverviewStateEnabled(enabled);
+        Log.d(TestProtocol.OVERVIEW_OVER_HOME, "overview state enabled state has changed: "
+                + enabled);
         if (enabled) {
             LauncherState state = mActivity.getStateManager().getState();
             boolean hasClearAllButton = (state.getVisibleElements(mActivity)

@@ -158,6 +158,8 @@ public final class TestProtocol {
     public static final String FLAKY_ACTIVITY_COUNT = "b/260260325";
     public static final String ICON_MISSING = "b/282963545";
 
+    public static final String OVERVIEW_OVER_HOME = "b/279059025";
+
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
     public static final String REQUEST_STOP_EMULATE_DISPLAY = "stop-emulate-display";
     public static final String REQUEST_IS_EMULATE_DISPLAY_RUNNING = "is-emulate-display-running";
