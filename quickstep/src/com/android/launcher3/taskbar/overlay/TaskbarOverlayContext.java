@@ -126,11 +126,6 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
     }
 
     @Override
-    public View.OnLongClickListener getAllAppsItemLongClickListener() {
-        return mDragController::startDragOnLongClick;
-    }
-
-    @Override
     public PopupDataProvider getPopupDataProvider() {
         return mTaskbarContext.getPopupDataProvider();
     }
