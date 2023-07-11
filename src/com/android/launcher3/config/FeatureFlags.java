@@ -182,6 +182,11 @@ public final class FeatureFlags {
             "ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION", DISABLED,
             "Enables predictive back animation from all apps and widgets to home");
 
+    // TODO(Block 11): Clean up flags
+    public static final BooleanFlag ENABLE_PARAMETRIZE_REORDER = getDebugFlag(289420844,
+            "ENABLE_PARAMETRIZE_REORDER", DISABLED,
+            "Enables generating the reorder using a set of parameters");
+
     // TODO(Block 12): Clean up flags
     public static final BooleanFlag ENABLE_MULTI_INSTANCE = getDebugFlag(270396680,
             "ENABLE_MULTI_INSTANCE", DISABLED,
@@ -385,22 +390,22 @@ public final class FeatureFlags {
             "USE_SEARCH_REQUEST_TIMEOUT_OVERRIDES", DISABLED,
             "Use local overrides for search request timeout");
 
-    // TODO(Block 31)
+    // TODO(Block 31): Clean up flags
     public static final BooleanFlag ENABLE_SPLIT_LAUNCH_DATA_REFACTOR = getDebugFlag(279494325,
             "ENABLE_SPLIT_LAUNCH_DATA_REFACTOR", ENABLED,
             "Use refactored split launching code path");
 
-    // TODO(Block 32): Empty block
-
+    // TODO(Block 32): Clean up flags
     public static final BooleanFlag ENABLE_RESPONSIVE_WORKSPACE = getDebugFlag(241386436,
             "ENABLE_RESPONSIVE_WORKSPACE", DISABLED,
             "Enables new workspace grid calculations method.");
 
     // TODO(Block 33): Clean up flags
-
     public static final BooleanFlag ENABLE_ALL_APPS_RV_PREINFLATION = getDebugFlag(288161355,
             "ENABLE_ALL_APPS_RV_PREINFLATION", DISABLED,
             "Enables preinflating all apps icons to avoid scrolling jank.");
+
+    // TODO(Block 34): Empty block
 
     public static class BooleanFlag {
 
