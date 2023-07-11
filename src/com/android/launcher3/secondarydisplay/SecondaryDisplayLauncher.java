@@ -72,7 +72,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         implements BgDataModel.Callbacks, DragController.DragListener {
 
     private LauncherModel mModel;
-    private SecondaryDragLayer mDragLayer;
+    private BaseDragLayer mDragLayer;
     private SecondaryDragController mDragController;
     private ActivityAllAppsContainerView<SecondaryDisplayLauncher> mAppsView;
     private View mAppsButton;
@@ -314,6 +314,10 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         }
     }
 
+    public SecondaryDisplayPredictions getSecondaryDisplayPredictions() {
+        return mSecondaryDisplayPredictions;
+    }
+
     @Override
     public StringCache getStringCache() {
         return mStringCache;
@@ -331,11 +335,6 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     @Override
     public OnClickListener getItemOnClickListener() {
         return this::onIconClicked;
-    }
-
-    @Override
-    public View.OnLongClickListener getAllAppsItemLongClickListener() {
-        return mDragLayer::onIconLongClicked;
     }
 
     private void onIconClicked(View v) {

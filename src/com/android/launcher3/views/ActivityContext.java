@@ -239,11 +239,6 @@ public interface ActivityContext {
         };
     }
 
-    /** Long-click callback used for All Apps items. */
-    default View.OnLongClickListener getAllAppsItemLongClickListener() {
-        return v -> false;
-    }
-
     @Nullable
     default PopupDataProvider getPopupDataProvider() {
         return null;

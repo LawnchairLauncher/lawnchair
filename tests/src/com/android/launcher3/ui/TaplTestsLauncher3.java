@@ -530,7 +530,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @Test
-    @ScreenRecord // b/258071914
     @PortraitLandscape
     @PlatinumTest(focusArea = "launcher")
     public void testUninstallFromAllApps() throws Exception {

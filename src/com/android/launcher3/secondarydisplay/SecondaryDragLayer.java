@@ -79,6 +79,9 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
         mAllAppsButton = findViewById(R.id.all_apps_button);
 
         mAppsView = findViewById(R.id.apps_view);
+        mAppsView.setOnIconLongClickListener(this::onIconLongClicked);
+        mActivity.getSecondaryDisplayPredictions()
+                .setLongClickListener(mAppsView, this::onIconLongClicked);
         // Setup workspace
         mWorkspace = findViewById(R.id.workspace_grid);
         mPinnedAppsAdapter = new PinnedAppsAdapter(mActivity, mAppsView.getAppsStore(),
@@ -176,7 +179,7 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
         return mPinnedAppsAdapter;
     }
 
-    boolean onIconLongClicked(View v) {
+    private boolean onIconLongClicked(View v) {
         if (!(v instanceof BubbleTextView)) {
             return false;
         }
