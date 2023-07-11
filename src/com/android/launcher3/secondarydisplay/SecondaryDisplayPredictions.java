@@ -16,10 +16,8 @@
 package com.android.launcher3.secondarydisplay;
 
 import android.content.Context;
-import android.view.View;
 
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.util.ResourceBasedOverride;
 
@@ -46,13 +44,5 @@ public class SecondaryDisplayPredictions implements ResourceBasedOverride {
      * Set predicted apps in top of app drawer.
      */
     public void setPredictedApps(BgDataModel.FixedContainerItems item) {
-    }
-
-    /**
-     * Set long click listener for predicted apps in top of app drawer.
-     */
-    public void setLongClickListener(
-            ActivityAllAppsContainerView<?> appsView,
-            View.OnLongClickListener onIconLongClickListener) {
     }
 }
