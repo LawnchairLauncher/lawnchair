@@ -183,7 +183,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private static final String CONTROL_REMOTE_APP_TRANSITION_PERMISSION =
             "android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS";
 
-    private static final long APP_LAUNCH_DURATION = 500;
+    public static final long APP_LAUNCH_DURATION = 500;
 
     private static final long APP_LAUNCH_ALPHA_DURATION = 50;
     private static final long APP_LAUNCH_ALPHA_START_DELAY = 25;
