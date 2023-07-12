@@ -309,4 +309,9 @@ public class BubbleStashController {
         return -hotseatBottomSpace - hotseatCellHeight + mUnstashedHeight - abs(
                 hotseatCellHeight - mUnstashedHeight) / 2;
     }
+
+    float getBubbleBarTranslationY() {
+        return mBubblesShowingOnHome ? getBubbleBarTranslationYForHotseat()
+                : getBubbleBarTranslationYForTaskbar();
+    }
 }
