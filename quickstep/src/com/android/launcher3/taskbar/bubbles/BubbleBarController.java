@@ -243,17 +243,21 @@ public class BubbleBarController extends IBubblesListener.Stub {
             BUBBLE_STATE_EXECUTOR.execute(() -> {
                 createAndAddOverflowIfNeeded();
                 if (update.addedBubble != null) {
-                    viewUpdate.addedBubble = populateBubble(update.addedBubble, mContext, mBarView);
+                    viewUpdate.addedBubble = populateBubble(mContext, update.addedBubble, mBarView,
+                            null /* existingBubble */);
                 }
                 if (update.updatedBubble != null) {
+                    BubbleBarBubble existingBubble = mBubbles.get(update.updatedBubble.getKey());
                     viewUpdate.updatedBubble =
-                            populateBubble(update.updatedBubble, mContext, mBarView);
+                            populateBubble(mContext, update.updatedBubble, mBarView,
+                                    existingBubble);
                 }
                 if (update.currentBubbleList != null && !update.currentBubbleList.isEmpty()) {
                     List<BubbleBarBubble> currentBubbles = new ArrayList<>();
                     for (int i = 0; i < update.currentBubbleList.size(); i++) {
                         BubbleBarBubble b =
-                                populateBubble(update.currentBubbleList.get(i), mContext, mBarView);
+                                populateBubble(mContext, update.currentBubbleList.get(i), mBarView,
+                                        null /* existingBubble */);
                         currentBubbles.add(b);
                     }
                     viewUpdate.currentBubbles = currentBubbles;
@@ -407,7 +411,8 @@ public class BubbleBarController extends IBubblesListener.Stub {
     //
 
     @Nullable
-    private BubbleBarBubble populateBubble(BubbleInfo b, Context context, BubbleBarView bbv) {
+    private BubbleBarBubble populateBubble(Context context, BubbleInfo b, BubbleBarView bbv,
+            @Nullable BubbleBarBubble existingBubble) {
         String appName;
         Bitmap badgeBitmap;
         Bitmap bubbleBitmap;
@@ -476,16 +481,27 @@ public class BubbleBarController extends IBubblesListener.Stub {
         iconPath.transform(matrix);
         dotPath = iconPath;
         dotColor = ColorUtils.blendARGB(badgeBitmapInfo.color,
-                Color.WHITE, WHITE_SCRIM_ALPHA);
+                Color.WHITE, WHITE_SCRIM_ALPHA / 255f);
 
-        LayoutInflater inflater = LayoutInflater.from(context);
-        BubbleView bubbleView = (BubbleView) inflater.inflate(
-                R.layout.bubblebar_item_view, bbv, false /* attachToRoot */);
+        if (existingBubble == null) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            BubbleView bubbleView = (BubbleView) inflater.inflate(
+                    R.layout.bubblebar_item_view, bbv, false /* attachToRoot */);
 
-        BubbleBarBubble bubble = new BubbleBarBubble(b, bubbleView,
-                badgeBitmap, bubbleBitmap, dotColor, dotPath, appName);
-        bubbleView.setBubble(bubble);
-        return bubble;
+            BubbleBarBubble bubble = new BubbleBarBubble(b, bubbleView,
+                    badgeBitmap, bubbleBitmap, dotColor, dotPath, appName);
+            bubbleView.setBubble(bubble);
+            return bubble;
+        } else {
+            // If we already have a bubble (so it already has an inflated view), update it.
+            existingBubble.setInfo(b);
+            existingBubble.setBadge(badgeBitmap);
+            existingBubble.setIcon(bubbleBitmap);
+            existingBubble.setDotColor(dotColor);
+            existingBubble.setDotPath(dotPath);
+            existingBubble.setAppName(appName);
+            return existingBubble;
+        }
     }
 
     private BubbleBarOverflow createOverflow(Context context) {
