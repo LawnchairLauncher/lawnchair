@@ -1255,7 +1255,7 @@ public class DeviceProfile {
             folderFooterHeightPx = mResponsiveFolderHeightSpec.getEndPaddingPx();
 
             folderCellLayoutBorderSpacePx = new Point(mResponsiveFolderWidthSpec.getGutterPx(),
-                    mResponsiveHeightSpec.getGutterPx());
+                    mResponsiveFolderHeightSpec.getGutterPx());
 
             folderContentPaddingLeftRight = mResponsiveFolderWidthSpec.getStartPaddingPx();
 
