@@ -32,6 +32,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
@@ -87,6 +88,7 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
     private final View mRoot;
     private final BaseDraggingActivity mActivity;
     private final boolean mHideSysUiScrim;
+    private boolean mSkipScrimAnimationForTest = false;
 
     private boolean mAnimateScrimOnNextDraw = false;
     private final AnimatedFloat mSysUiAnimMultiplier = new AnimatedFloat(this::reapplySysUiAlpha);
@@ -189,6 +191,15 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
         mBottomMaskRect.set(0, h - mBottomMaskHeight, w, h);
     }
 
+    /**
+     * Sets whether the SysUiScrim should hide for testing.
+     */
+    @VisibleForTesting
+    public void skipScrimAnimation() {
+        mSkipScrimAnimationForTest = true;
+        reapplySysUiAlpha();
+    }
+
     private void reapplySysUiAlpha() {
         reapplySysUiAlphaNoInvalidate();
         if (!mHideSysUiScrim) {
@@ -198,6 +209,7 @@ public class SysUiScrim implements View.OnAttachStateChangeListener {
 
     private void reapplySysUiAlphaNoInvalidate() {
         float factor = mSysUiProgress.value * mSysUiAnimMultiplier.value;
+        if (mSkipScrimAnimationForTest) factor = 1f;
         mBottomMaskPaint.setAlpha(Math.round(MAX_SYSUI_SCRIM_ALPHA * factor));
         mTopMaskPaint.setAlpha(Math.round(MAX_SYSUI_SCRIM_ALPHA * factor));
     }
