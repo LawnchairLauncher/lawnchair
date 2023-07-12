@@ -33,6 +33,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_S
 
 import android.annotation.BinderThread;
 import android.annotation.Nullable;
+import android.app.Notification;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherApps;
@@ -319,9 +320,11 @@ public class BubbleBarController extends IBubblesListener.Stub {
         mBubbleStashedHandleViewController.setHiddenForBubbles(mBubbles.isEmpty());
 
         if (update.updatedBubble != null) {
-            // TODO: (b/269670235) handle updates:
-            //  (1) if content / icons change -- requires reload & add back in place
-            //  (2) if showing update dot changes -- tell the view to hide / show the dot
+            // Updates mean the dot state may have changed; any other changes were updated in
+            // the populateBubble step.
+            BubbleBarBubble bb = mBubbles.get(update.updatedBubble.getKey());
+            // If we're not stashed, we're visible so animate
+            bb.getView().updateDotVisibility(!mBubbleStashController.isStashed() /* animate */);
         }
         if (update.bubbleKeysInOrder != null && !update.bubbleKeysInOrder.isEmpty()) {
             // Create the new list
@@ -366,7 +369,13 @@ public class BubbleBarController extends IBubblesListener.Stub {
         if (getSelectedBubbleKey() != null) {
             int[] bubbleBarCoords = mBarView.getLocationOnScreen();
             if (mSelectedBubble instanceof BubbleBarBubble) {
-                // TODO (b/269670235): hide the update dot on the view if needed.
+                // Because we've visited this bubble, we should suppress the notification.
+                // This is updated on WMShell side when we show the bubble, but that update isn't
+                // passed to launcher, instead we apply it directly here.
+                BubbleInfo info = ((BubbleBarBubble) mSelectedBubble).getInfo();
+                info.setFlags(
+                        info.getFlags() | Notification.BubbleMetadata.FLAG_SUPPRESS_NOTIFICATION);
+                mSelectedBubble.getView().updateDotVisibility(true /* animate */);
             }
             mSystemUiProxy.showBubble(getSelectedBubbleKey(),
                     bubbleBarCoords[0], bubbleBarCoords[1]);
