@@ -69,7 +69,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     // The set of apps from the system
     private final List<AppInfo> mApps = new ArrayList<>();
     @Nullable
-    private final AllAppsStore mAllAppsStore;
+    private final AllAppsStore<T> mAllAppsStore;
 
     // The number of results in current adapter
     private int mAccessibilityResultsCount = 0;
@@ -86,7 +86,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     private int mNumAppRowsInAdapter;
     private Predicate<ItemInfo> mItemFilter;
 
-    public AlphabeticalAppsList(Context context, @Nullable AllAppsStore appsStore,
+    public AlphabeticalAppsList(Context context, @Nullable AllAppsStore<T> appsStore,
             WorkProfileManager workProfileManager) {
         mAllAppsStore = appsStore;
         mActivityContext = ActivityContext.lookupContext(context);
