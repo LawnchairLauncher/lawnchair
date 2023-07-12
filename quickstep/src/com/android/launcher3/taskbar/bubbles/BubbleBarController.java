@@ -33,6 +33,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_S
 
 import android.annotation.BinderThread;
 import android.annotation.Nullable;
+import android.app.Notification;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherApps;
@@ -243,17 +244,21 @@ public class BubbleBarController extends IBubblesListener.Stub {
             BUBBLE_STATE_EXECUTOR.execute(() -> {
                 createAndAddOverflowIfNeeded();
                 if (update.addedBubble != null) {
-                    viewUpdate.addedBubble = populateBubble(update.addedBubble, mContext, mBarView);
+                    viewUpdate.addedBubble = populateBubble(mContext, update.addedBubble, mBarView,
+                            null /* existingBubble */);
                 }
                 if (update.updatedBubble != null) {
+                    BubbleBarBubble existingBubble = mBubbles.get(update.updatedBubble.getKey());
                     viewUpdate.updatedBubble =
-                            populateBubble(update.updatedBubble, mContext, mBarView);
+                            populateBubble(mContext, update.updatedBubble, mBarView,
+                                    existingBubble);
                 }
                 if (update.currentBubbleList != null && !update.currentBubbleList.isEmpty()) {
                     List<BubbleBarBubble> currentBubbles = new ArrayList<>();
                     for (int i = 0; i < update.currentBubbleList.size(); i++) {
                         BubbleBarBubble b =
-                                populateBubble(update.currentBubbleList.get(i), mContext, mBarView);
+                                populateBubble(mContext, update.currentBubbleList.get(i), mBarView,
+                                        null /* existingBubble */);
                         currentBubbles.add(b);
                     }
                     viewUpdate.currentBubbles = currentBubbles;
@@ -315,9 +320,11 @@ public class BubbleBarController extends IBubblesListener.Stub {
         mBubbleStashedHandleViewController.setHiddenForBubbles(mBubbles.isEmpty());
 
         if (update.updatedBubble != null) {
-            // TODO: (b/269670235) handle updates:
-            //  (1) if content / icons change -- requires reload & add back in place
-            //  (2) if showing update dot changes -- tell the view to hide / show the dot
+            // Updates mean the dot state may have changed; any other changes were updated in
+            // the populateBubble step.
+            BubbleBarBubble bb = mBubbles.get(update.updatedBubble.getKey());
+            // If we're not stashed, we're visible so animate
+            bb.getView().updateDotVisibility(!mBubbleStashController.isStashed() /* animate */);
         }
         if (update.bubbleKeysInOrder != null && !update.bubbleKeysInOrder.isEmpty()) {
             // Create the new list
@@ -362,7 +369,13 @@ public class BubbleBarController extends IBubblesListener.Stub {
         if (getSelectedBubbleKey() != null) {
             int[] bubbleBarCoords = mBarView.getLocationOnScreen();
             if (mSelectedBubble instanceof BubbleBarBubble) {
-                // TODO (b/269670235): hide the update dot on the view if needed.
+                // Because we've visited this bubble, we should suppress the notification.
+                // This is updated on WMShell side when we show the bubble, but that update isn't
+                // passed to launcher, instead we apply it directly here.
+                BubbleInfo info = ((BubbleBarBubble) mSelectedBubble).getInfo();
+                info.setFlags(
+                        info.getFlags() | Notification.BubbleMetadata.FLAG_SUPPRESS_NOTIFICATION);
+                mSelectedBubble.getView().updateDotVisibility(true /* animate */);
             }
             mSystemUiProxy.showBubble(getSelectedBubbleKey(),
                     bubbleBarCoords[0], bubbleBarCoords[1]);
@@ -407,7 +420,8 @@ public class BubbleBarController extends IBubblesListener.Stub {
     //
 
     @Nullable
-    private BubbleBarBubble populateBubble(BubbleInfo b, Context context, BubbleBarView bbv) {
+    private BubbleBarBubble populateBubble(Context context, BubbleInfo b, BubbleBarView bbv,
+            @Nullable BubbleBarBubble existingBubble) {
         String appName;
         Bitmap badgeBitmap;
         Bitmap bubbleBitmap;
@@ -476,16 +490,27 @@ public class BubbleBarController extends IBubblesListener.Stub {
         iconPath.transform(matrix);
         dotPath = iconPath;
         dotColor = ColorUtils.blendARGB(badgeBitmapInfo.color,
-                Color.WHITE, WHITE_SCRIM_ALPHA);
+                Color.WHITE, WHITE_SCRIM_ALPHA / 255f);
 
-        LayoutInflater inflater = LayoutInflater.from(context);
-        BubbleView bubbleView = (BubbleView) inflater.inflate(
-                R.layout.bubblebar_item_view, bbv, false /* attachToRoot */);
+        if (existingBubble == null) {
+            LayoutInflater inflater = LayoutInflater.from(context);
+            BubbleView bubbleView = (BubbleView) inflater.inflate(
+                    R.layout.bubblebar_item_view, bbv, false /* attachToRoot */);
 
-        BubbleBarBubble bubble = new BubbleBarBubble(b, bubbleView,
-                badgeBitmap, bubbleBitmap, dotColor, dotPath, appName);
-        bubbleView.setBubble(bubble);
-        return bubble;
+            BubbleBarBubble bubble = new BubbleBarBubble(b, bubbleView,
+                    badgeBitmap, bubbleBitmap, dotColor, dotPath, appName);
+            bubbleView.setBubble(bubble);
+            return bubble;
+        } else {
+            // If we already have a bubble (so it already has an inflated view), update it.
+            existingBubble.setInfo(b);
+            existingBubble.setBadge(badgeBitmap);
+            existingBubble.setIcon(bubbleBitmap);
+            existingBubble.setDotColor(dotColor);
+            existingBubble.setDotPath(dotPath);
+            existingBubble.setAppName(appName);
+            return existingBubble;
+        }
     }
 
     private BubbleBarOverflow createOverflow(Context context) {
