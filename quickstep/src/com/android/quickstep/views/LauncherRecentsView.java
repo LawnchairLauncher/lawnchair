@@ -94,8 +94,8 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     }
 
     @Override
-    protected boolean isCommandQueueEmpty() {
-        return mActivity.isCommandQueueEmpty();
+    protected boolean canStartHomeSafely() {
+        return mActivity.canStartHomeSafely();
     }
 
     @Override

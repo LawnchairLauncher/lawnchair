@@ -165,6 +165,7 @@ import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.util.ViewPool;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.GestureState;
+import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.RecentsAnimationController;
 import com.android.quickstep.RecentsAnimationTargets;
 import com.android.quickstep.RecentsFilterState;
@@ -2367,14 +2368,14 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     public void startHome(boolean animated) {
-        if (!isCommandQueueEmpty()) return;
+        if (!canStartHomeSafely()) return;
         handleStartHome(animated);
     }
 
     protected abstract void handleStartHome(boolean animated);
 
-    /** Returns whether the overview command helper queue is empty. */
-    protected abstract boolean isCommandQueueEmpty();
+    /** Returns whether user can start home based on state in {@link OverviewCommandHelper}. */
+    protected abstract boolean canStartHomeSafely();
 
     public void reset() {
         setCurrentTask(-1);
