@@ -125,6 +125,12 @@ public class BubbleStashController {
     public void setBubblesShowingOnHome(boolean onHome) {
         if (mBubblesShowingOnHome != onHome) {
             mBubblesShowingOnHome = onHome;
+
+            if (!mBarViewController.isBubbleBarVisible()) {
+                // if the bubble bar is not visible, there are no bubbles, so just return.
+                return;
+            }
+
             if (mBubblesShowingOnHome) {
                 showBubbleBar(/* expanded= */ false);
                 // When transitioning from app to home the stash animator may already have been
