@@ -37,8 +37,6 @@ import android.view.RemoteAnimationTarget;
 
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
-import com.android.launcher3.tracing.GestureStateProto;
-import com.android.launcher3.tracing.SwipeHandlerProto;
 import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
 import com.android.quickstep.util.ActiveGestureErrorDetector;
 import com.android.quickstep.util.ActiveGestureLog;
@@ -62,24 +60,21 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
      * Defines the end targets of a gesture and the associated state.
      */
     public enum GestureEndTarget {
-        HOME(true, LAUNCHER_STATE_HOME, false, GestureStateProto.GestureEndTarget.HOME),
+        HOME(true, LAUNCHER_STATE_HOME, false),
 
-        RECENTS(true, LAUNCHER_STATE_OVERVIEW, true, GestureStateProto.GestureEndTarget.RECENTS),
+        RECENTS(true, LAUNCHER_STATE_OVERVIEW, true),
 
-        NEW_TASK(false, LAUNCHER_STATE_BACKGROUND, true,
-                GestureStateProto.GestureEndTarget.NEW_TASK),
+        NEW_TASK(false, LAUNCHER_STATE_BACKGROUND, true),
 
-        LAST_TASK(false, LAUNCHER_STATE_BACKGROUND, true,
-                GestureStateProto.GestureEndTarget.LAST_TASK),
+        LAST_TASK(false, LAUNCHER_STATE_BACKGROUND, true),
 
-        ALL_APPS(true, LAUNCHER_STATE_ALLAPPS, false, GestureStateProto.GestureEndTarget.ALL_APPS);
+        ALL_APPS(true, LAUNCHER_STATE_ALLAPPS, false);
 
-        GestureEndTarget(boolean isLauncher, int containerType, boolean recentsAttachedToAppWindow,
-                GestureStateProto.GestureEndTarget protoEndTarget) {
+        GestureEndTarget(boolean isLauncher, int containerType,
+                boolean recentsAttachedToAppWindow) {
             this.isLauncher = isLauncher;
             this.containerType = containerType;
             this.recentsAttachedToAppWindow = recentsAttachedToAppWindow;
-            this.protoEndTarget = protoEndTarget;
         }
 
         /** Whether the target is in the launcher activity. Implicitly, if the end target is going
@@ -89,8 +84,6 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         public final int containerType;
         /** Whether RecentsView should be attached to the window as we animate to this target */
         public final boolean recentsAttachedToAppWindow;
-        /** The GestureStateProto enum value, used for winscope tracing. See launcher_trace.proto */
-        public final GestureStateProto.GestureEndTarget protoEndTarget;
     }
 
     private static final String TAG = "GestureState";
@@ -488,18 +481,5 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         pw.println("  lastAppearedTaskTargetId=" + getLastAppearedTaskId());
         pw.println("  lastStartedTaskId=" + mLastStartedTaskId);
         pw.println("  isRecentsAnimationRunning=" + isRecentsAnimationRunning());
-    }
-
-    /**
-     * Used for winscope tracing, see launcher_trace.proto
-     * @see com.android.systemui.shared.tracing.ProtoTraceable#writeToProto
-     * @param swipeHandlerProto The parent of this proto message.
-     */
-    public void writeToProto(SwipeHandlerProto.Builder swipeHandlerProto) {
-        GestureStateProto.Builder gestureStateProto = GestureStateProto.newBuilder();
-        gestureStateProto.setEndTarget(mEndTarget == null
-                ? GestureStateProto.GestureEndTarget.UNSET
-                : mEndTarget.protoEndTarget);
-        swipeHandlerProto.setGestureState(gestureStateProto);
     }
 }
