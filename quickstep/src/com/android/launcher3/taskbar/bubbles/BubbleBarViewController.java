@@ -140,6 +140,11 @@ public class BubbleBarViewController {
         return mBarView.getVisibility() == VISIBLE;
     }
 
+    /** Whether the bubble bar has bubbles. */
+    public boolean hasBubbles() {
+        return mBubbleBarController.getSelectedBubbleKey() != null;
+    }
+
     /**
      * The bounds of the bubble bar.
      */
