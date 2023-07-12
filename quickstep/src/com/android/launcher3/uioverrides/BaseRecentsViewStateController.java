@@ -111,7 +111,7 @@ public abstract class BaseRecentsViewStateController<T extends RecentsView>
                 && !toState.overviewUi;
         if (mRecentsView.isSplitSelectionActive() && exitingOverview) {
             setter.add(mRecentsView.getSplitSelectController().getSplitAnimationController()
-                    .animateAwayPlaceholder(mLauncher));
+                    .createPlaceholderDismissAnim(mLauncher));
             setter.setViewAlpha(
                     mRecentsView.getSplitInstructionsView(),
                     0,

@@ -646,16 +646,43 @@ public class SystemUiProxy implements ISystemUiProxy {
     /**
      * Tells SysUI to show the bubble with the provided key.
      * @param key the key of the bubble to show.
-     * @param bubbleBarXCoordinate the X coordinate of the bubble bar on the screen.
-     * @param bubbleBarYCoordinate the Y coordinate of the bubble bar on the screen.
+     * @param bubbleBarOffsetX the offset of the bubble bar from the edge of the screen on the X
+     *                         axis.
+     * @param bubbleBarOffsetY the offset of the bubble bar from the edge of the screen on the Y
+     *                         axis.
      */
-    public void showBubble(String key, int bubbleBarXCoordinate, int bubbleBarYCoordinate) {
+    public void showBubble(String key, int bubbleBarOffsetX, int bubbleBarOffsetY) {
         if (mBubbles != null) {
             try {
-                mBubbles.showBubble(key, bubbleBarXCoordinate, bubbleBarYCoordinate);
+                mBubbles.showBubble(key, bubbleBarOffsetX, bubbleBarOffsetY);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call showBubble");
             }
+        }
+    }
+
+    /**
+     * Tells SysUI to remove the bubble with the provided key.
+     * @param key the key of the bubble to show.
+     */
+    public void removeBubble(String key) {
+        if (mBubbles == null) return;
+        try {
+            mBubbles.removeBubble(key);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed call removeBubble");
+        }
+    }
+
+    /**
+     * Tells SysUI to remove all bubbles.
+     */
+    public void removeAllBubbles() {
+        if (mBubbles == null) return;
+        try {
+            mBubbles.removeAllBubbles();
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed call removeAllBubbles");
         }
     }
 
@@ -669,6 +696,21 @@ public class SystemUiProxy implements ISystemUiProxy {
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call collapseBubbles");
             }
+        }
+    }
+
+    /**
+     * Tells SysUI to collapse/expand selected bubble view while it's dragged.
+     * Should be called only when the bubble bar is expanded.
+     * @param bubbleKey the key of the bubble to collapse/expand
+     * @param collapse whether to collapse/expand selected bubble
+     */
+    public void collapseWhileDragging(@Nullable String bubbleKey, boolean collapse) {
+        if (mBubbles == null) return;
+        try {
+            mBubbles.collapseWhileDragging(bubbleKey, collapse);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed call collapseWhileDragging");
         }
     }
 

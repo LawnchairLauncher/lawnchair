@@ -20,18 +20,18 @@ import android.graphics.Path
 import com.android.wm.shell.common.bubbles.BubbleInfo
 
 /** An entity in the bubble bar. */
-sealed class BubbleBarItem(open val key: String, open val view: BubbleView)
+sealed class BubbleBarItem(open var key: String, open var view: BubbleView)
 
 /** Contains state info about a bubble in the bubble bar as well as presentation information. */
 data class BubbleBarBubble(
-    val info: BubbleInfo,
-    override val view: BubbleView,
-    val badge: Bitmap,
-    val icon: Bitmap,
-    val dotColor: Int,
-    val dotPath: Path,
-    val appName: String
+    var info: BubbleInfo,
+    override var view: BubbleView,
+    var badge: Bitmap,
+    var icon: Bitmap,
+    var dotColor: Int,
+    var dotPath: Path,
+    var appName: String
 ) : BubbleBarItem(info.key, view)
 
 /** Represents the overflow bubble in the bubble bar. */
-data class BubbleBarOverflow(override val view: BubbleView) : BubbleBarItem("Overflow", view)
+data class BubbleBarOverflow(override var view: BubbleView) : BubbleBarItem("Overflow", view)

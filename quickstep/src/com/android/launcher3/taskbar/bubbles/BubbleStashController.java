@@ -125,6 +125,12 @@ public class BubbleStashController {
     public void setBubblesShowingOnHome(boolean onHome) {
         if (mBubblesShowingOnHome != onHome) {
             mBubblesShowingOnHome = onHome;
+
+            if (!mBarViewController.hasBubbles()) {
+                // if there are no bubbles, there's nothing to show, so just return.
+                return;
+            }
+
             if (mBubblesShowingOnHome) {
                 showBubbleBar(/* expanded= */ false);
                 // When transitioning from app to home the stash animator may already have been
@@ -308,5 +314,10 @@ public class BubbleStashController {
         final float hotseatCellHeight = mActivity.getDeviceProfile().hotseatCellHeightPx;
         return -hotseatBottomSpace - hotseatCellHeight + mUnstashedHeight - abs(
                 hotseatCellHeight - mUnstashedHeight) / 2;
+    }
+
+    float getBubbleBarTranslationY() {
+        return mBubblesShowingOnHome ? getBubbleBarTranslationYForHotseat()
+                : getBubbleBarTranslationYForTaskbar();
     }
 }

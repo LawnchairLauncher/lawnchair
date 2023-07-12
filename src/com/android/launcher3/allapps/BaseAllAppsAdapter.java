@@ -15,10 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.touch.ItemLongClickListener.INSTANCE_ALL_APPS;
-
 import android.content.Context;
-import android.content.res.Resources;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,7 +24,6 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.BubbleTextView;
@@ -139,29 +135,22 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
 
     protected final LayoutInflater mLayoutInflater;
     protected final OnClickListener mOnIconClickListener;
-    protected OnLongClickListener mOnIconLongClickListener = INSTANCE_ALL_APPS;
+    protected final OnLongClickListener mOnIconLongClickListener;
     protected OnFocusChangeListener mIconFocusListener;
     private final int mExtraTextHeight;
 
     public BaseAllAppsAdapter(T activityContext, LayoutInflater inflater,
             AlphabeticalAppsList<T> apps, SearchAdapterProvider<?> adapterProvider) {
-        Resources res = activityContext.getResources();
         mActivityContext = activityContext;
         mApps = apps;
         mLayoutInflater = inflater;
 
         mOnIconClickListener = mActivityContext.getItemOnClickListener();
+        mOnIconLongClickListener = mActivityContext.getAllAppsItemLongClickListener();
 
         mAdapterProvider = adapterProvider;
         mExtraTextHeight = Utilities.calculateTextHeight(
                 mActivityContext.getDeviceProfile().allAppsIconTextSizePx);
-    }
-
-    /**
-     * Sets the long click listener for icons
-     */
-    public void setOnIconLongClickListener(@Nullable OnLongClickListener listener) {
-        mOnIconLongClickListener = listener;
     }
 
     /** Checks if the passed viewType represents all apps divider. */
