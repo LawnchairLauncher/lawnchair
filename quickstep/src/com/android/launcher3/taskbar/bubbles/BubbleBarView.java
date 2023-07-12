@@ -223,6 +223,12 @@ public class BubbleBarView extends FrameLayout {
         setLayoutParams(lp);
     }
 
+    /** @return the horizontal margin between the bubble bar and the edge of the screen. */
+    int getHorizontalMargin() {
+        LayoutParams lp = (FrameLayout.LayoutParams) getLayoutParams();
+        return lp.getMarginEnd();
+    }
+
     /**
      * Updates the z order, positions, and badge visibility of the bubble views in the bar based
      * on the expanded state.
