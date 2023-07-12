@@ -2175,6 +2175,8 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     /**
      * Returns the CellLayout of the specified container at the specified screen.
+     *
+     * @param screenId must be presenterPos and not modelPos.
      */
     public CellLayout getCellLayout(int container, int screenId) {
         return (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT)
