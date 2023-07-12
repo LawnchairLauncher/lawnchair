@@ -302,7 +302,7 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     public void bindAllApplications(AppInfo[] apps, int flags,
             Map<PackageUserKey, Integer> packageUserKeytoUidMap) {
         Preconditions.assertUIThread();
-        AllAppsStore appsStore = mAppsView.getAppsStore();
+        AllAppsStore<SecondaryDisplayLauncher> appsStore = mAppsView.getAppsStore();
         appsStore.setApps(apps, flags, packageUserKeytoUidMap);
         PopupContainerWithArrow.dismissInvalidPopup(this);
     }
