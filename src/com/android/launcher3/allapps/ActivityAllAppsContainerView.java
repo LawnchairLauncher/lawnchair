@@ -43,7 +43,6 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Log;
 import android.util.SparseArray;
-import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -272,9 +271,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 0,
                 0 // Bottom left
         };
-        final TypedValue value = new TypedValue();
-        getContext().getTheme().resolveAttribute(android.R.attr.colorBackground, value, true);
-        mBottomSheetBackgroundColor = value.data;
+        mBottomSheetBackgroundColor =
+                Themes.getAttrColor(getContext(), R.attr.materialColorSurfaceDim);
         updateBackgroundVisibility(mActivityContext.getDeviceProfile());
         mSearchUiManager.initializeSearch(this);
     }
