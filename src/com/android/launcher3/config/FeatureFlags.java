@@ -353,10 +353,6 @@ public final class FeatureFlags {
             "Use inbuilt monochrome icons if app doesn't provide one");
 
     // TODO(Block 28): Clean up flags
-    public static final BooleanFlag ENABLE_SPLIT_FROM_WORKSPACE = getDebugFlag(270393906,
-            "ENABLE_SPLIT_FROM_WORKSPACE", ENABLED,
-            "Enable initiating split screen from workspace.");
-
     public static final BooleanFlag ENABLE_SPLIT_FROM_FULLSCREEN_WITH_KEYBOARD_SHORTCUTS =
             getDebugFlag(270394122, "ENABLE_SPLIT_FROM_FULLSCREEN_SHORTCUT", DISABLED,
                     "Enable splitting from fullscreen app with keyboard shortcuts");
