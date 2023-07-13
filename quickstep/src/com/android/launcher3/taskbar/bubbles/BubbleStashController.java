@@ -126,8 +126,8 @@ public class BubbleStashController {
         if (mBubblesShowingOnHome != onHome) {
             mBubblesShowingOnHome = onHome;
 
-            if (!mBarViewController.isBubbleBarVisible()) {
-                // if the bubble bar is not visible, there are no bubbles, so just return.
+            if (!mBarViewController.hasBubbles()) {
+                // if there are no bubbles, there's nothing to show, so just return.
                 return;
             }
 
