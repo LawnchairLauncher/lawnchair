@@ -223,6 +223,10 @@ public final class LauncherInstrumentation {
         return getTouchEventPattern("Touch event", action);
     }
 
+    private static Pattern getTouchEventPattern(String action, int pointerCount) {
+        return getTouchEventPattern("Touch event", action, pointerCount);
+    }
+
     private static Pattern getTouchEventPatternTIS(String action) {
         return getTouchEventPattern("TouchInteractionService.onInputEvent", action);
     }
@@ -1803,11 +1807,25 @@ public final class LauncherInstrumentation {
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
                 mPointerCount++;
+                if (gestureScope != GestureScope.OUTSIDE_WITH_PILFER
+                        && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER
+                        && gestureScope != GestureScope.OUTSIDE_WITH_KEYCODE
+                        && (!isTrackpadGesture || isTwoFingerTrackpadGesture)) {
+                    expectEvent(TestProtocol.SEQUENCE_MAIN,
+                            getTouchEventPattern("ACTION_POINTER_DOWN", mPointerCount));
+                }
                 expectEvent(TestProtocol.SEQUENCE_TIS, getTouchEventPatternTIS(
                         "ACTION_POINTER_DOWN", mPointerCount));
                 pointerCount = mPointerCount;
                 break;
             case MotionEvent.ACTION_POINTER_UP:
+                if (gestureScope != GestureScope.OUTSIDE_WITH_PILFER
+                        && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER
+                        && gestureScope != GestureScope.OUTSIDE_WITH_KEYCODE
+                        && (!isTrackpadGesture || isTwoFingerTrackpadGesture)) {
+                    expectEvent(TestProtocol.SEQUENCE_MAIN,
+                            getTouchEventPattern("ACTION_POINTER_UP", mPointerCount));
+                }
                 // When the gesture is handled outside, it's cancelled within launcher.
                 if (gestureScope != GestureScope.INSIDE_TO_OUTSIDE_WITH_KEYCODE
                         && gestureScope != GestureScope.OUTSIDE_WITH_KEYCODE) {
