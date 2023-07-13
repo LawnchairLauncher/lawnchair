@@ -273,7 +273,7 @@ android_library {
         "androidx.room_room-runtime",
     ],
     plugins: ["androidx.room_room-compiler-plugin"],
-    manifest: "quickstep/AndroidManifest-launcher.xml",
+    manifest: "quickstep/AndroidManifest.xml",
     additional_manifests: [
         "go/AndroidManifest.xml",
         "AndroidManifest-common.xml",
