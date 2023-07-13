@@ -141,8 +141,8 @@ public class OverviewCommandHelper {
     }
 
     @UiThread
-    public boolean isCommandQueueEmpty() {
-        return mPendingCommands.isEmpty();
+    public boolean canStartHomeSafely() {
+        return mPendingCommands.isEmpty() || mPendingCommands.get(0).type == TYPE_HOME;
     }
 
     @Nullable

@@ -86,8 +86,8 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    protected boolean isCommandQueueEmpty() {
-        return mActivity.isCommandQueueEmpty();
+    protected boolean canStartHomeSafely() {
+        return mActivity.canStartHomeSafely();
     }
 
     /**

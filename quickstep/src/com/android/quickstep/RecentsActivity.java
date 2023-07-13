@@ -470,8 +470,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         };
     }
 
-    public boolean isCommandQueueEmpty() {
+    public boolean canStartHomeSafely() {
         OverviewCommandHelper overviewCommandHelper = mTISBindHelper.getOverviewCommandHelper();
-        return overviewCommandHelper == null || overviewCommandHelper.isCommandQueueEmpty();
+        return overviewCommandHelper == null || overviewCommandHelper.canStartHomeSafely();
     }
 }
