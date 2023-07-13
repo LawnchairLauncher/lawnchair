@@ -59,6 +59,7 @@ public class StatsLogManager implements ResourceBasedOverride {
     private InstanceId mInstanceId;
 
     protected @Nullable ActivityContext mActivityContext = null;
+    protected @Nullable Context mContext = null;
     private KeyboardStateManager mKeyboardStateManager;
 
     /**
@@ -1035,7 +1036,9 @@ public class StatsLogManager implements ResourceBasedOverride {
      */
     public KeyboardStateManager keyboardStateManager() {
         if (mKeyboardStateManager == null) {
-            mKeyboardStateManager = new KeyboardStateManager();
+            mKeyboardStateManager = new KeyboardStateManager(
+                    mContext != null ? mContext.getResources().getDimensionPixelSize(
+                            R.dimen.default_ime_height) : 0);
         }
         return mKeyboardStateManager;
     }
@@ -1071,6 +1074,7 @@ public class StatsLogManager implements ResourceBasedOverride {
         StatsLogManager manager = Overrides.getObject(StatsLogManager.class,
                 context.getApplicationContext(), R.string.stats_log_manager_class);
         manager.mActivityContext = ActivityContext.lookupContextNoThrow(context);
+        manager.mContext = context;
         return manager;
     }
 }

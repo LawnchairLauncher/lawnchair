@@ -110,8 +110,6 @@ public class StatsLogCompatManager extends StatsLogManager {
     public static final CopyOnWriteArrayList<StatsLogConsumer> LOGS_CONSUMER =
             new CopyOnWriteArrayList<>();
 
-    private final Context mContext;
-
     public StatsLogCompatManager(Context context) {
         mContext = context;
     }
