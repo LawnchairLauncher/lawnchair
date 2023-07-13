@@ -48,7 +48,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.launcher3.tracing.InputConsumerProto;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.TraceHelper;
 import com.android.quickstep.AbsSwipeUpHandler;
@@ -507,13 +506,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     @Override
     public boolean allowInterceptByParent() {
         return !mPassedPilferInputSlop;
-    }
-
-    @Override
-    public void writeToProtoInternal(InputConsumerProto.Builder inputConsumerProto) {
-        if (mInteractionHandler != null) {
-            mInteractionHandler.writeToProto(inputConsumerProto);
-        }
     }
 
     /**

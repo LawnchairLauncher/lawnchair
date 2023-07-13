@@ -92,8 +92,6 @@ import com.android.launcher3.taskbar.TaskbarManager;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.testing.shared.TestProtocol;
-import com.android.launcher3.tracing.LauncherTraceProto;
-import com.android.launcher3.tracing.TouchInteractionServiceProto;
 import com.android.launcher3.uioverrides.flags.FlagsFactory;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.DisplayController;
@@ -117,7 +115,6 @@ import com.android.quickstep.inputconsumers.TaskbarUnstashInputConsumer;
 import com.android.quickstep.inputconsumers.TrackpadStatusBarInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActiveGestureLog.CompoundString;
-import com.android.quickstep.util.ProtoTracer;
 import com.android.quickstep.util.ProxyScreenStatusProvider;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -126,7 +123,6 @@ import com.android.systemui.shared.system.InputChannelCompat.InputEventReceiver;
 import com.android.systemui.shared.system.InputConsumerController;
 import com.android.systemui.shared.system.InputMonitorCompat;
 import com.android.systemui.shared.system.smartspace.ISysuiUnlockAnimationController;
-import com.android.systemui.shared.tracing.ProtoTraceable;
 import com.android.systemui.unfold.progress.IUnfoldAnimation;
 import com.android.wm.shell.back.IBackAnimation;
 import com.android.wm.shell.bubbles.IBubbles;
@@ -149,8 +145,7 @@ import java.util.function.Function;
  * Service connected by system-UI for handling touch interaction.
  */
 @TargetApi(Build.VERSION_CODES.R)
-public class TouchInteractionService extends Service
-        implements ProtoTraceable<LauncherTraceProto.Builder> {
+public class TouchInteractionService extends Service {
 
     private static final String SUBSTRING_PREFIX = "; ";
     private static final String NEWLINE_PREFIX = "\n\t\t\t-> ";
@@ -491,8 +486,6 @@ public class TouchInteractionService extends Service
         LockedUserState.get(this).runOnUserUnlocked(this::onUserUnlocked);
         LockedUserState.get(this).runOnUserUnlocked(mTaskbarManager::onUserUnlocked);
         mDeviceState.addNavigationModeChangedCallback(this::onNavigationModeChanged);
-
-        ProtoTracer.INSTANCE.get(this).add(this);
         sConnected = true;
     }
 
@@ -617,19 +610,6 @@ public class TouchInteractionService extends Service
                 // overview.
                 mTaskAnimationManager.endLiveTile();
             }
-
-            if ((lastSysUIFlags & SYSUI_STATE_TRACING_ENABLED) !=
-                    (systemUiStateFlags & SYSUI_STATE_TRACING_ENABLED)) {
-                // Update the tracing state
-                if ((systemUiStateFlags & SYSUI_STATE_TRACING_ENABLED) != 0) {
-                    Log.d(TAG, "Starting tracing.");
-                    ProtoTracer.INSTANCE.get(this).start();
-                } else {
-                    Log.d(TAG, "Stopping tracing. Dumping to file="
-                            + ProtoTracer.INSTANCE.get(this).getTraceFile());
-                    ProtoTracer.INSTANCE.get(this).stop();
-                }
-            }
         }
     }
 
@@ -652,8 +632,6 @@ public class TouchInteractionService extends Service
         disposeEventHandlers("TouchInteractionService onDestroy()");
         mDeviceState.destroy();
         SystemUiProxy.INSTANCE.get(this).clearProxy();
-        ProtoTracer.INSTANCE.get(this).stop();
-        ProtoTracer.INSTANCE.get(this).remove(this);
 
         getSystemService(AccessibilityManager.class)
                 .unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
@@ -781,7 +759,6 @@ public class TouchInteractionService extends Service
             reset();
         }
         traceToken.close();
-        ProtoTracer.INSTANCE.get(this).scheduleFrameUpdate();
     }
 
     private InputConsumer tryCreateAssistantInputConsumer(
@@ -1302,8 +1279,6 @@ public class TouchInteractionService extends Service
         pw.println("  mConsumer=" + mConsumer.getName());
         ActiveGestureLog.INSTANCE.dump("", pw);
         RecentsModel.INSTANCE.get(this).dump("", pw);
-        pw.println("ProtoTrace:");
-        pw.println("  file=" + ProtoTracer.INSTANCE.get(this).getTraceFile());
         if (createdOverviewActivity != null) {
             createdOverviewActivity.getDeviceProfile().dump(this, "", pw);
         }
@@ -1322,19 +1297,5 @@ public class TouchInteractionService extends Service
         return new FallbackSwipeHandler(this, mDeviceState, mTaskAnimationManager,
                 gestureState, touchTimeMs, mTaskAnimationManager.isRecentsAnimationRunning(),
                 mInputConsumer);
-    }
-
-    @Override
-    public void writeToProto(LauncherTraceProto.Builder proto) {
-        TouchInteractionServiceProto.Builder serviceProto =
-            TouchInteractionServiceProto.newBuilder();
-        serviceProto.setServiceConnected(true);
-
-        if (mOverviewComponentObserver != null) {
-            mOverviewComponentObserver.writeToProto(serviceProto);
-        }
-        mConsumer.writeToProto(serviceProto);
-
-        proto.setTouchInteractionService(serviceProto);
     }
 }

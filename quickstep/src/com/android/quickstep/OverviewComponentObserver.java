@@ -38,8 +38,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
-import com.android.launcher3.tracing.OverviewComponentObserverProto;
-import com.android.launcher3.tracing.TouchInteractionServiceProto;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 
@@ -273,19 +271,6 @@ public final class OverviewComponentObserver {
         pw.println("  homeAndOverviewSame=" + mIsHomeAndOverviewSame);
         pw.println("  overviewIntent=" + mOverviewIntent);
         pw.println("  homeIntent=" + mCurrentHomeIntent);
-    }
-
-    /**
-     * Used for winscope tracing, see launcher_trace.proto
-     * @see com.android.systemui.shared.tracing.ProtoTraceable#writeToProto
-     * @param serviceProto The parent of this proto message.
-     */
-    public void writeToProto(TouchInteractionServiceProto.Builder serviceProto) {
-        OverviewComponentObserverProto.Builder overviewComponentObserver =
-                OverviewComponentObserverProto.newBuilder();
-        overviewComponentObserver.setOverviewActivityStarted(mActivityInterface.isStarted());
-        overviewComponentObserver.setOverviewActivityResumed(mActivityInterface.isResumed());
-        serviceProto.setOverviewComponentObvserver(overviewComponentObserver);
     }
 
     /**
