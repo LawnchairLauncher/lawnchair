@@ -411,6 +411,7 @@
     <dimen name="split_instructions_elevation">1dp</dimen>
     <dimen name="split_instructions_horizontal_padding">24dp</dimen>
     <dimen name="split_instructions_vertical_padding">12dp</dimen>
+    <dimen name="split_instructions_drawable_padding">10dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_landscape">24dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_portrait">60dp</dimen>
     
