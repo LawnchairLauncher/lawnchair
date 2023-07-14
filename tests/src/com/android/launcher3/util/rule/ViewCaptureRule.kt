@@ -24,6 +24,7 @@ import com.android.app.viewcapture.SimpleViewCapture
 import com.android.app.viewcapture.ViewCapture.MAIN_EXECUTOR
 import com.android.app.viewcapture.data.ExportedData
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter
+import com.android.launcher3.util.viewcapture_analysis.ViewCaptureAnalyzer
 import java.util.function.Supplier
 import org.junit.rules.TestRule
 import org.junit.runner.Description
@@ -82,6 +83,8 @@ class ViewCaptureRule(var alreadyOpenActivitySupplier: Supplier<Activity?>) : Te
                     // is removed while onDraw is running, resulting in an IllegalStateException.
                     MAIN_EXECUTOR.execute { windowListenerCloseables.onEach(SafeCloseable::close) }
                 }
+
+                ViewCaptureAnalyzer.assertNoAnomalies(viewCaptureData)
             }
 
             private fun startCapture(
