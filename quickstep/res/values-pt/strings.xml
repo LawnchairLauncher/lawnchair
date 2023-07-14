@@ -56,7 +56,7 @@
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Volte"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Deslize da borda inferior da tela para cima."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Não pare antes de soltar."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Deslize para cima."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Deslize para cima em linha reta."</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Você concluiu o gesto para acessar a tela inicial. A seguir, aprenda a voltar."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Você concluiu o gesto para acessar a tela inicial."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Deslizar para voltar à tela inicial"</string>
