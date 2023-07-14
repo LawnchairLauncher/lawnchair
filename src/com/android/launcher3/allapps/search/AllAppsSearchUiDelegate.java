@@ -49,6 +49,11 @@ public class AllAppsSearchUiDelegate {
         // Do nothing.
     }
 
+    /** Invoked when transition animations to go to search is completed . */
+    public void onAnimateToSearchStateCompleted() {
+        // Do nothing
+    }
+
     /** Invoked when the search bar has been added to All Apps. */
     public void onInitializeSearchBar() {
         // Do nothing.
