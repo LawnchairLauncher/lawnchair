@@ -466,7 +466,7 @@ public class ModelDbController {
                 () -> parser, AutoInstallsLayout.TAG_WORKSPACE);
     }
 
-    private static Uri getLayoutUri(String authority, Context ctx) {
+    public static Uri getLayoutUri(String authority, Context ctx) {
         InvariantDeviceProfile grid = LauncherAppState.getIDP(ctx);
         return new Uri.Builder().scheme("content").authority(authority).path("launcher_layout")
                 .appendQueryParameter("version", "1")
