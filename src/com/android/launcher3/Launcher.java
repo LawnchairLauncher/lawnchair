@@ -1418,8 +1418,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     protected void completeAddShortcut(Intent data, int container, int screenId, int cellX,
             int cellY, PendingRequestArgs args) {
-        if (args.getRequestCode() != REQUEST_CREATE_SHORTCUT
-                || args.getPendingIntent().getComponent() == null) {
+        if (args.getRequestCode() != REQUEST_CREATE_SHORTCUT) {
             return;
         }
 
@@ -1928,16 +1927,10 @@ public class Launcher extends StatefulActivity<LauncherState>
         info.spanX = spanX;
         info.spanY = spanY;
 
-        switch (info.itemType) {
-            case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
-            case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
-                addAppWidgetFromDrop((PendingAddWidgetInfo) info);
-                break;
-            case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
-                processShortcutFromDrop((PendingAddShortcutInfo) info);
-                break;
-            default:
-                throw new IllegalStateException("Unknown item type: " + info.itemType);
+        if (info instanceof PendingAddWidgetInfo) {
+            addAppWidgetFromDrop((PendingAddWidgetInfo) info);
+        } else { // info can only be PendingAddShortcutInfo
+            processShortcutFromDrop((PendingAddShortcutInfo) info);
         }
     }
 
