@@ -370,6 +370,18 @@ class SplitSelectDataHolder(
         return secondTaskId
     }
 
+    fun getSplitEvent(): EventEnum? {
+        return splitEvent
+    }
+
+    fun getInitialStagePosition(): Int {
+        return initialStagePosition
+    }
+
+    fun getItemInfo(): ItemInfo? {
+        return itemInfo
+    }
+
     private fun isSecondTaskIntentSet(): Boolean {
         return secondTaskId != INVALID_TASK_ID || secondIntent != null
                 || secondPendingIntent != null
