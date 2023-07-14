@@ -27,8 +27,6 @@ public class BubbleControllers {
     public final BubbleBarViewController bubbleBarViewController;
     public final BubbleStashController bubbleStashController;
     public final BubbleStashedHandleViewController bubbleStashedHandleViewController;
-    public final BubbleDragController bubbleDragController;
-    public final BubbleDismissController bubbleDismissController;
 
     private final RunnableList mPostInitRunnables = new RunnableList();
 
@@ -41,15 +39,11 @@ public class BubbleControllers {
             BubbleBarController bubbleBarController,
             BubbleBarViewController bubbleBarViewController,
             BubbleStashController bubbleStashController,
-            BubbleStashedHandleViewController bubbleStashedHandleViewController,
-            BubbleDragController bubbleDragController,
-            BubbleDismissController bubbleDismissController) {
+            BubbleStashedHandleViewController bubbleStashedHandleViewController) {
         this.bubbleBarController = bubbleBarController;
         this.bubbleBarViewController = bubbleBarViewController;
         this.bubbleStashController = bubbleStashController;
         this.bubbleStashedHandleViewController = bubbleStashedHandleViewController;
-        this.bubbleDragController = bubbleDragController;
-        this.bubbleDismissController = bubbleDismissController;
     }
 
     /**
@@ -62,8 +56,6 @@ public class BubbleControllers {
         bubbleBarViewController.init(taskbarControllers, this);
         bubbleStashedHandleViewController.init(taskbarControllers, this);
         bubbleStashController.init(taskbarControllers, this);
-        bubbleDragController.init(/* bubbleControllers = */ this);
-        bubbleDismissController.init(/* bubbleControllers = */ this);
 
         mPostInitRunnables.executeAllAndDestroy();
     }
