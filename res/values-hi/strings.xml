@@ -56,7 +56,7 @@
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेट की सेटिंग में बदलाव करने के लिए टैप करें"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"ठीक है"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"विजेट की सेटिंग में बदलाव करें"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ऐप सर्च करें"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ऐप्लिकेशन खोजें"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ऐप्लिकेशन लोड हो रहे हैं…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" से मिलता-जुलता कोई ऐप्लिकेशन नहीं मिला"</string>
     <string name="label_application" msgid="8531721983832654978">"ऐप्लिकेशन"</string>
