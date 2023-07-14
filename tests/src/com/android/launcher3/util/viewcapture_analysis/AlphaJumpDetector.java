@@ -28,33 +28,101 @@ import java.util.Set;
  * Invisible views are treated as if they had zero alpha.
  */
 final class AlphaJumpDetector extends AnomalyDetector {
+    // Commonly used parts of the paths to ignore.
+    private static final String CONTENT = "DecorView|LinearLayout|FrameLayout:id/content|";
+    private static final String DRAG_LAYER =
+            CONTENT + "LauncherRootView:id/launcher|DragLayer:id/drag_layer|";
+
     // Paths of nodes that are excluded from analysis.
     private static final Collection<String> PATHS_TO_IGNORE = Set.of(
-            "DecorView|LinearLayout|FrameLayout:id/content|LauncherRootView:id/launcher|DragLayer"
-                    + ":id/drag_layer|SearchContainerView:id/apps_view|SearchRecyclerView:id"
-                    + "/search_results_list_view|SearchResultSmallIconRow",
-            "DecorView|LinearLayout|FrameLayout:id/content|LauncherRootView:id/launcher|DragLayer"
-                    + ":id/drag_layer|SearchContainerView:id/apps_view|SearchRecyclerView:id"
-                    + "/search_results_list_view|SearchResultIcon",
-            "DecorView|LinearLayout|FrameLayout:id/content|LauncherRootView:id/launcher|DragLayer"
-                    + ":id/drag_layer|LauncherRecentsView:id/overview_panel|TaskView",
-            "DecorView|LinearLayout|FrameLayout:id/content|LauncherRootView:id/launcher|DragLayer"
-                    + ":id/drag_layer|WidgetsFullSheet|SpringRelativeLayout:id/container"
-                    + "|WidgetsRecyclerView:id/primary_widgets_list_view|WidgetsListHeader:id"
-                    + "/widgets_list_header",
-            "DecorView|LinearLayout|FrameLayout:id/content|LauncherRootView:id/launcher|DragLayer"
-                    + ":id/drag_layer|WidgetsFullSheet|SpringRelativeLayout:id/container"
-                    + "|WidgetsRecyclerView:id/primary_widgets_list_view"
-                    + "|StickyHeaderLayout$EmptySpaceView",
-            "DecorView|LinearLayout|FrameLayout:id/content|LauncherRootView:id/launcher|DragLayer"
-                    + ":id/drag_layer|SearchContainerView:id/apps_view|AllAppsRecyclerView:id"
-                    + "/apps_list_view|BubbleTextView:id/icon",
-            "DecorView|LinearLayout|FrameLayout:id/content|LauncherRootView:id/launcher|DragLayer"
-                    + ":id/drag_layer|LauncherRecentsView:id/overview_panel|ClearAllButton:id"
-                    + "/clear_all",
-            "DecorView|LinearLayout|FrameLayout:id/content|LauncherRootView:id/launcher|DragLayer"
-                    + ":id/drag_layer|NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons"
+            CONTENT
+                    + "AddItemDragLayer:id/add_item_drag_layer|AddItemWidgetsBottomSheet:id"
+                    + "/add_item_bottom_sheet|LinearLayout:id/add_item_bottom_sheet_content"
+                    + "|ScrollView:id/widget_preview_scroll_view|WidgetCell:id/widget_cell"
+                    + "|WidgetCellPreview:id/widget_preview_container|ImageView:id/widget_badge",
+            CONTENT
+                    + "AddItemDragLayer:id/add_item_drag_layer|AddItemWidgetsBottomSheet:id"
+                    + "/add_item_bottom_sheet|LinearLayout:id/add_item_bottom_sheet_content"
+                    + "|ScrollView:id/widget_preview_scroll_view|WidgetCell:id/widget_cell"
+                    + "|WidgetCellPreview:id/widget_preview_container|WidgetCell$1|FrameLayout"
+                    + "|ImageView:id/icon",
+            CONTENT + "AddItemDragLayer:id/add_item_drag_layer|View",
+            DRAG_LAYER
+                    + "AppWidgetResizeFrame|FrameLayout|ImageButton:id/widget_reconfigure_button",
+            DRAG_LAYER
+                    + "AppWidgetResizeFrame|FrameLayout|ImageView:id/widget_resize_bottom_handle",
+            DRAG_LAYER + "AppWidgetResizeFrame|FrameLayout|ImageView:id/widget_resize_frame",
+            DRAG_LAYER + "AppWidgetResizeFrame|FrameLayout|ImageView:id/widget_resize_left_handle",
+            DRAG_LAYER + "AppWidgetResizeFrame|FrameLayout|ImageView:id/widget_resize_right_handle",
+            DRAG_LAYER + "AppWidgetResizeFrame|FrameLayout|ImageView:id/widget_resize_top_handle",
+            DRAG_LAYER + "FloatingTaskView|FloatingTaskThumbnailView:id/thumbnail",
+            DRAG_LAYER + "FloatingTaskView|SplitPlaceholderView:id/split_placeholder",
+            DRAG_LAYER + "Folder|FolderPagedView:id/folder_content",
+            DRAG_LAYER + "LauncherAllAppsContainerView:id/apps_view",
+            DRAG_LAYER + "LauncherDragView",
+            DRAG_LAYER + "LauncherRecentsView:id/overview_panel",
+            DRAG_LAYER
+                    + "NexusOverviewActionsView:id/overview_actions_view|FrameLayout:id"
+                    + "/select_mode_buttons|ImageButton:id/close",
+            DRAG_LAYER
+                    + "NexusOverviewActionsView:id/overview_actions_view|LinearLayout:id"
+                    + "/action_buttons|Button:id/action_screenshot",
+            DRAG_LAYER
+                    + "NexusOverviewActionsView:id/overview_actions_view|LinearLayout:id"
+                    + "/action_buttons|Button:id/action_select",
+            DRAG_LAYER
+                    + "NexusOverviewActionsView:id/overview_actions_view|LinearLayout:id"
+                    + "/action_buttons|Button:id/action_split",
+            DRAG_LAYER
+                    + "NexusOverviewActionsView:id/overview_actions_view|LinearLayout:id"
+                    + "/action_buttons|Space:id/action_split_space",
+            DRAG_LAYER
+                    + "PopupContainerWithArrow:id/popup_container|LinearLayout:id"
+                    + "/deep_shortcuts_container|DeepShortcutView:id/deep_shortcut_material"
+                    + "|DeepShortcutTextView:id/bubble_text",
+            DRAG_LAYER
+                    + "PopupContainerWithArrow:id/popup_container|LinearLayout:id"
+                    + "/deep_shortcuts_container|DeepShortcutView:id/deep_shortcut_material|View"
+                    + ":id/icon",
+            DRAG_LAYER
+                    + "PopupContainerWithArrow:id/popup_container|LinearLayout:id"
+                    + "/system_shortcuts_container|DeepShortcutView:id/system_shortcut"
+                    + "|BubbleTextView:id/bubble_text",
+            DRAG_LAYER
+                    + "PopupContainerWithArrow:id/popup_container|LinearLayout:id"
+                    + "/system_shortcuts_container|DeepShortcutView:id/system_shortcut|View:id"
+                    + "/icon",
+            DRAG_LAYER
+                    + "PopupContainerWithArrow:id/popup_container|LinearLayout:id"
+                    + "/system_shortcuts_container|ImageView",
+            DRAG_LAYER
+                    + "PopupContainerWithArrow:id/popup_container|LinearLayout:id"
+                    + "/widget_shortcut_container|DeepShortcutView:id/system_shortcut"
+                    + "|BubbleTextView:id/bubble_text",
+            DRAG_LAYER
+                    + "PopupContainerWithArrow:id/popup_container|LinearLayout:id"
+                    + "/widget_shortcut_container|DeepShortcutView:id/system_shortcut|View:id/icon",
+            DRAG_LAYER + "SearchContainerView:id/apps_view",
+            DRAG_LAYER + "Snackbar|TextView:id/action",
+            DRAG_LAYER + "Snackbar|TextView:id/label",
+            DRAG_LAYER + "SplitInstructionsView|AppCompatTextView:id/split_instructions_text",
+            DRAG_LAYER + "TaskMenuView|LinearLayout:id/menu_option_layout",
+            DRAG_LAYER + "TaskMenuView|TextView:id/task_name",
+            DRAG_LAYER + "View",
+            DRAG_LAYER + "WidgetsFullSheet|SpringRelativeLayout:id/container",
+            DRAG_LAYER + "WidgetsTwoPaneSheet|SpringRelativeLayout:id/container",
+            CONTENT + "LauncherRootView:id/launcher|FloatingIconView",
+            CONTENT
+                    + "LauncherRootView|RecentsDragLayer:id/drag_layer|FallbackRecentsView:id"
+                    + "/overview_panel",
+            CONTENT
+                    + "LauncherRootView|RecentsDragLayer:id/drag_layer|NexusOverviewActionsView"
+                    + ":id/overview_actions_view|LinearLayout:id/action_buttons|Button:id"
+                    + "/action_screenshot",
+            CONTENT
+                    + "LauncherRootView|RecentsDragLayer:id/drag_layer|NexusOverviewActionsView"
+                    + ":id/overview_actions_view|LinearLayout:id/action_buttons|Button:id"
+                    + "/action_select"
     );
     // Minimal increase or decrease of view's alpha between frames that triggers the error.
     private static final float ALPHA_JUMP_THRESHOLD = 1f;
