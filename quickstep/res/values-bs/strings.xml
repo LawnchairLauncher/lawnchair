@@ -68,7 +68,7 @@
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Idite na početni ekran"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Prevucite s dna ekrana prema gore"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Sjajno!"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Prevucite prema gore s donjeg ruba ekrana"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Vodite računa da prevučete s donjeg ruba ekrana prema gore"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Pokušajte zadržati prozor duže prije puštanja"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Prevucite ravno nagore, a zatim zastanite"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Naučili ste kako koristiti pokrete. Idite u Postavke da isključite pokrete."</string>
