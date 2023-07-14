@@ -9,7 +9,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.8.22"
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.8.22"
     id "com.google.devtools.ksp" version "1.8.22-1.0.11"
-    id 'com.google.protobuf' version "0.9.3"
+    id 'com.google.protobuf' version "0.9.4"
     id 'app.cash.licensee' version "1.7.0"
     id 'dev.rikka.tools.refine' version "4.3.0"
 }
