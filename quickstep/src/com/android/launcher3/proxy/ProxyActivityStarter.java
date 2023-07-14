@@ -24,6 +24,8 @@ import android.content.IntentSender.SendIntentException;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.android.launcher3.util.StartActivityParams;
+
 public class ProxyActivityStarter extends Activity {
 
     private static final String TAG = "ProxyActivityStarter";
