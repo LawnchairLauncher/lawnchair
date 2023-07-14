@@ -60,8 +60,8 @@
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Musíte potiahnuť nahor z dolného okraja obrazovky"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Pred uvoľnením nesmiete zastať"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Musíte potiahnuť priamo nahor"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Dokončili ste gesto na prechod na plochu. V ďalšom kroku sa naučíte, ako sa vrátiť späť."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Dokončili ste gesto na prechod na plochu"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Dokončili ste gesto prechodu na plochu. Teraz sa naučíte, ako sa vrátiť späť."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Dokončili ste gesto prechodu na plochu"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Prechod na plochu potiahnutím"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Potiahnite nahor zdola obrazovky. Týmto gestom sa vždy vrátite na plochu."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Postiahnite dvoma prstami z dolnej časti obrazovky. Týmto gestom sa vždy vrátite na plochu."</string>
