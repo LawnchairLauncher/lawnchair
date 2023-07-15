@@ -1402,9 +1402,10 @@ public class Launcher extends StatefulActivity<LauncherState>
      * @param info   The data structure describing the shortcut.
      * @return A View inflated from layoutResId.
      */
-    public View createShortcut(ViewGroup parent, WorkspaceItemInfo info) {
-        BubbleTextView favorite = (BubbleTextView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.app_icon, parent, false);
+    public View createShortcut(@Nullable ViewGroup parent, WorkspaceItemInfo info) {
+        BubbleTextView favorite =
+                (BubbleTextView) LayoutInflater.from(parent != null ? parent.getContext() : this)
+                        .inflate(R.layout.app_icon, parent, false);
         favorite.applyFromWorkspaceItem(info);
         favorite.setOnClickListener(getItemOnClickListener());
         favorite.setOnFocusChangeListener(mFocusHandler);
