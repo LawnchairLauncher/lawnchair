@@ -56,7 +56,7 @@
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेटका सेटिङ बदल्न ट्याप गर्नुहोस्"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"बुझेँ"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"विजेटका सेटिङ बदल्नुहोस्"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"खोजसम्बन्धी एपहरू"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"एपहरू खोज्नुहोस्"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"एपहरू लोड गर्दै…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" सँग मिल्दो कुनै एप भेटिएन"</string>
     <string name="label_application" msgid="8531721983832654978">"एप"</string>
