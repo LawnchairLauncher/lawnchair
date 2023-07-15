@@ -55,7 +55,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Geri dönmek için kaydırma"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Son ekrana geri gitmek için sol veya sağ kenardan ekranın ortasına doğru kaydırın."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Son ekrana geri gitmek için sol veya sağ kenardan ekranın ortasına doğru 2 parmağınızla kaydırın."</string>
-    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Geri dönün"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Geri dönme"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Sol veya sağ kenardan ekranın ortasına doğru kaydırın"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Ekranın alt kenarından yukarı kaydırdığınızdan emin olun"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Bırakmadan önce parmağınızı duraklatmadığınızdan emin olun"</string>
@@ -76,7 +76,7 @@
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Uygulamalar arasında geçiş yapmak için kaydırma"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Uygulamalar arasında geçiş yapmak için ekranınızın altından yukarı kaydırıp basılı tutun ve sonra bırakın."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Uygulamalara geçiş yapmak için ekranın altından 2 parmakla yukarı kaydırıp basılı tutun ve bırakın."</string>
-    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Uygulamalar arasında geçiş yapın"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Uygulamalar arasında geçiş yapma"</string>
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Ekranınızın alt tarafından yukarı doğru kaydırın, tutun ve sonra bırakın"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Tebrikler!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Hepsi bu kadar"</string>

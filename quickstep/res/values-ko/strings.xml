@@ -56,7 +56,7 @@
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"이전 화면으로 돌아가려면 왼쪽 또는 오른쪽 가장자리에서 화면 중앙으로 스와이프하세요."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"마지막 화면으로 돌아가려면 두 손가락을 사용해 왼쪽 또는 오른쪽 가장자리에서 화면 중앙으로 스와이프하세요"</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"뒤로"</string>
-    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"왼쪽 또는 오른쪽 가장자리에서 화면 중앙으로 스와이프하세요"</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"왼쪽 또는 오른쪽 가장자리에서 화면 중앙으로 스와이프하세요."</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"화면 하단 가장자리에서 위로 스와이프하세요."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"손가락을 떼기 전에 멈추지 않아야 합니다."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"위로 곧게 스와이프하세요."</string>
@@ -66,7 +66,7 @@
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"화면 하단에서 위로 스와이프합니다. 이 동작을 사용하면 언제든지 홈 화면으로 이동할 수 있습니다."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"두 손가락을 사용해 화면 하단에서 위로 스와이프하세요. 이 동작을 사용하면 언제든지 홈 화면으로 이동할 수 있습니다"</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"홈으로 이동"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"화면 하단에서 위로 스와이프하세요"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"화면 하단에서 위로 스와이프하세요."</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"아주 좋습니다"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"화면 하단 가장자리에서 위로 스와이프하세요."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"창을 더 오래 누르고 있다가 손가락을 떼 보세요."</string>
@@ -77,7 +77,7 @@
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"앱 간에 전환하려면 화면 하단에서 위로 스와이프하고 잠시 멈춘 다음 손가락을 떼세요."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"앱 간에 전환하려면 두 손가락을 사용해 화면 하단에서 위로 스와이프하고 잠시 멈춘 다음 손가락을 떼세요"</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"앱 전환"</string>
-    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"화면 하단에서 위로 스와이프하고 잠시 멈춘 다음 손가락을 떼세요"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"화면 하단에서 위로 스와이프하고 잠시 멈춘 다음 손가락을 떼세요."</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"잘하셨습니다"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"설정 완료"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"완료"</string>
