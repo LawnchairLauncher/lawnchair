@@ -387,9 +387,6 @@ public final class FeatureFlags {
             "Use local overrides for search request timeout");
 
     // TODO(Block 31): Clean up flags
-    public static final BooleanFlag ENABLE_SPLIT_LAUNCH_DATA_REFACTOR = getDebugFlag(279494325,
-            "ENABLE_SPLIT_LAUNCH_DATA_REFACTOR", ENABLED,
-            "Use refactored split launching code path");
 
     // TODO(Block 32): Clean up flags
     public static final BooleanFlag ENABLE_RESPONSIVE_WORKSPACE = getDebugFlag(241386436,
