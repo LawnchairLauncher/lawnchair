@@ -175,7 +175,7 @@
     <string name="wallpaper_depth_effect_description">Priblížiť a oddialiť pozadie pri prechode medzi stavmi.</string>
     <string name="show_sys_ui_scrim">Vrchný tieň</string>
     <string name="layout">Rozloženie</string>
-    <string name="home_screen_grid">Mriežka na Domovskej obrazovke</string>
+    <string name="home_screen_grid">Mriežka na domovskej obrazovke</string>
     <string name="home_screen_lock">Uzamknúť domovskú obrazovku</string>
     <string name="home_screen_lock_description">Zabráni zmenám v rozložení domovskej obrazovky.</string>
     <string name="home_screen_unlock">Odomknúť domovskú obrazovku</string>
@@ -216,7 +216,7 @@
     <string name="smartspace_widget_placeholder_date">Pia, Mar 3</string>
     <string name="preview_label">Náhľad</string>
     <string name="smartspace_calendar">Kalendár</string>
-    <string name="smartspace_date_and_time">Dátum &amp; Čas</string>
+    <string name="smartspace_date_and_time">Dátum a čas</string>
     <string name="smartspace_date">Dátum</string>
     <string name="smartspace_time">Čas</string>
     <string name="smartspace_time_format">Formát hodín</string>
