@@ -22,13 +22,14 @@ import androidx.recyclerview.widget.RecyclerView.RecycledViewPool
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.android.launcher3.BubbleTextView
 import com.android.launcher3.allapps.BaseAllAppsAdapter
+import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Executors.VIEW_PREINFLATION_EXECUTOR
 import com.android.launcher3.views.ActivityContext
 import java.util.concurrent.Future
 
-private const val PREINFLATE_ICONS_ROW_COUNT = 4
-private const val EXTRA_ICONS_COUNT = 2
+const val PREINFLATE_ICONS_ROW_COUNT = 4
+const val EXTRA_ICONS_COUNT = 2
 
 /**
  * An [RecycledViewPool] that preinflates app icons ([ViewHolder] of [BubbleTextView]) of all apps
@@ -81,11 +82,21 @@ class AllAppsRecyclerViewPool<T> : RecycledViewPool() {
      * After testing on phone, foldable and tablet, we found [PREINFLATE_ICONS_ROW_COUNT] rows of
      * app icons plus [EXTRA_ICONS_COUNT] is the magic minimal count of app icons to preinflate to
      * suffice fast scrolling.
+     *
+     * Note that if [FeatureFlags.ALL_APPS_GONE_VISIBILITY] is enabled, we need to preinfate extra
+     * app icons in size of one all apps pages, so that opening all apps don't need to inflate app
+     * icons.
      */
     fun <T> getPreinflateCount(context: T): Int where T : Context, T : ActivityContext {
-        val targetPreinflateCount =
+        var targetPreinflateCount =
             PREINFLATE_ICONS_ROW_COUNT * context.deviceProfile.numShownAllAppsColumns +
                 EXTRA_ICONS_COUNT
+        if (FeatureFlags.ALL_APPS_GONE_VISIBILITY.get()) {
+            val grid = ActivityContext.lookupContext<T>(context).deviceProfile
+            val approxRows =
+                Math.ceil((grid.availableHeightPx / grid.allAppsIconSizePx).toDouble()).toInt()
+            targetPreinflateCount += (approxRows + 1) * grid.numShownAllAppsColumns
+        }
         val existingPreinflateCount = getRecycledViewCount(BaseAllAppsAdapter.VIEW_TYPE_ICON)
         return targetPreinflateCount - existingPreinflateCount
     }
