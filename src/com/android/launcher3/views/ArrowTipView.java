@@ -28,7 +28,9 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.os.Handler;
+import android.util.IntProperty;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,6 +45,7 @@ import com.android.app.animation.Interpolators;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.graphics.TriangleShape;
 
@@ -57,6 +60,19 @@ public class ArrowTipView extends AbstractFloatingView {
     private static final long SHOW_DURATION_MS = 300;
     private static final long HIDE_DURATION_MS = 100;
 
+    public static final IntProperty<ArrowTipView> TEXT_ALPHA =
+            new IntProperty<>("textAlpha") {
+                @Override
+                public void setValue(ArrowTipView view, int v) {
+                    view.setTextAlpha(v);
+                }
+
+                @Override
+                public Integer get(ArrowTipView view) {
+                    return view.getTextAlpha();
+                }
+            };
+
     private final ActivityContext mActivityContext;
     private final Handler mHandler = new Handler();
     private boolean mIsPointingUp;
@@ -68,6 +84,8 @@ public class ArrowTipView extends AbstractFloatingView {
 
     private AnimatorSet mOpenAnimator = new AnimatorSet();
     private AnimatorSet mCloseAnimator = new AnimatorSet();
+
+    private int mTextAlpha;
 
     public ArrowTipView(Context context) {
         this(context, false);
@@ -86,6 +104,11 @@ public class ArrowTipView extends AbstractFloatingView {
         mArrowMinOffset = context.getResources().getDimensionPixelSize(
                 R.dimen.dynamic_grid_cell_border_spacing);
         TypedArray ta = context.obtainStyledAttributes(R.styleable.ArrowTipView);
+        // Set style to default to avoid inflation issues with missing attributes.
+        if (!ta.hasValue(R.styleable.ArrowTipView_arrowTipBackground)
+                || !ta.hasValue(R.styleable.ArrowTipView_arrowTipTextColor)) {
+            context = new ContextThemeWrapper(context, R.style.ArrowTipStyle);
+        }
         mArrowViewPaintColor = ta.getColor(R.styleable.ArrowTipView_arrowTipBackground,
                 context.getColor(R.color.arrow_tip_view_bg));
         ta.recycle();
@@ -110,6 +133,8 @@ public class ArrowTipView extends AbstractFloatingView {
         }
         if (mIsOpen) {
             if (animate) {
+                mCloseAnimator.addListener(AnimatorListeners.forSuccessCallback(
+                        () -> mActivityContext.getDragLayer().removeView(this)));
                 mCloseAnimator.start();
             } else {
                 mCloseAnimator.cancel();
@@ -413,5 +438,17 @@ public class ArrowTipView extends AbstractFloatingView {
      */
     public void setCustomCloseAnimation(AnimatorSet animator) {
         mCloseAnimator = animator;
+    }
+
+    private void setTextAlpha(int textAlpha) {
+        if (mTextAlpha != textAlpha) {
+            mTextAlpha = textAlpha;
+            TextView textView = findViewById(R.id.text);
+            textView.setTextColor(textView.getTextColors().withAlpha(mTextAlpha));
+        }
+    }
+
+    private int getTextAlpha() {
+        return mTextAlpha;
     }
 }
