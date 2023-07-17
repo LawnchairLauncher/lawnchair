@@ -160,13 +160,14 @@ public final class TaskViewUtils {
     }
 
     public static void createRecentsWindowAnimator(
-            @NonNull TaskView v, boolean skipViewChanges,
+            @NonNull RecentsView recentsView,
+            @NonNull TaskView v,
+            boolean skipViewChanges,
             @NonNull RemoteAnimationTarget[] appTargets,
             @NonNull RemoteAnimationTarget[] wallpaperTargets,
             @NonNull RemoteAnimationTarget[] nonAppTargets,
             @Nullable DepthController depthController,
             PendingAnimation out) {
-        RecentsView recentsView = v.getRecentsView();
         boolean isQuickSwitch = v.isEndQuickswitchCuj();
         v.setEndQuickswitchCuj(false);
 
@@ -606,8 +607,8 @@ public final class TaskViewUtils {
 
         TaskView taskView = findTaskViewToLaunch(recentsView, v, appTargets);
         PendingAnimation pa = new PendingAnimation(RECENTS_LAUNCH_DURATION);
-        createRecentsWindowAnimator(taskView, skipLauncherChanges, appTargets, wallpaperTargets,
-                nonAppTargets, depthController, pa);
+        createRecentsWindowAnimator(recentsView, taskView, skipLauncherChanges, appTargets,
+                wallpaperTargets, nonAppTargets, depthController, pa);
         if (launcherClosing) {
             // TODO(b/182592057): differentiate between "restore split" vs "launch fullscreen app"
             TaskViewUtils.createSplitAuxiliarySurfacesAnimator(nonAppTargets, true /*shown*/,
