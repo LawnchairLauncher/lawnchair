@@ -99,7 +99,9 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
 
     // Whether mAnim has started. Unlike mAnim.isStarted(), this is true even after mAnim ends.
     private boolean mScaleAnimStarted;
-    private Runnable mOnAnimEndCallback = null;
+    private boolean mShiftAnimStarted;
+    private Runnable mOnScaleAnimEndCallback;
+    private Runnable mOnShiftAnimEndCallback;
 
     private int mLastTouchX;
     private int mLastTouchY;
@@ -186,13 +188,26 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                if (mOnAnimEndCallback != null) {
-                    mOnAnimEndCallback.run();
+                if (mOnScaleAnimEndCallback != null) {
+                    mOnScaleAnimEndCallback.run();
                 }
             }
         });
         // Set up the shift animator.
         mShiftAnim = ValueAnimator.ofFloat(0f, 1f);
+        mShiftAnim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                mShiftAnimStarted = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (mOnShiftAnimEndCallback != null) {
+                    mOnShiftAnimEndCallback.run();
+                }
+            }
+        });
 
         setDragRegion(new Rect(0, 0, width, height));
 
@@ -211,8 +226,14 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         setWillNotDraw(false);
     }
 
-    public void setOnAnimationEndCallback(Runnable callback) {
-        mOnAnimEndCallback = callback;
+    /** Callback invoked when the scale animation ends. */
+    public void setOnScaleAnimEndCallback(Runnable callback) {
+        mOnScaleAnimEndCallback = callback;
+    }
+
+    /** Callback invoked when the shift animation ends. */
+    public void setOnShiftAnimEndCallback(Runnable callback) {
+        mOnShiftAnimEndCallback = callback;
     }
 
     /**
@@ -416,8 +437,14 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         }
     }
 
+    /** {@code true} if the scale animation has finished. */
     public boolean isScaleAnimationFinished() {
         return mScaleAnimStarted && !mScaleAnim.isRunning();
+    }
+
+    /** {@code true} if the shift animation has finished. */
+    public boolean isShiftAnimationFinished() {
+        return mShiftAnimStarted && !mShiftAnim.isRunning();
     }
 
     /**

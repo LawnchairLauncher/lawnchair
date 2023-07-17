@@ -240,9 +240,8 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
                 public void onPreDragStart(DropTarget.DragObject dragObject) {
                     mDragView = dragObject.dragView;
                     if (!shouldStartDrag(0)) {
-                        mDragView.setOnAnimationEndCallback(() -> {
-                            mActivity.beginDragShared(v, mActivity.getAppsView(), options);
-                        });
+                        mDragView.setOnScaleAnimEndCallback(() ->
+                                mActivity.beginDragShared(v, mActivity.getAppsView(), options));
                     }
                 }
 
