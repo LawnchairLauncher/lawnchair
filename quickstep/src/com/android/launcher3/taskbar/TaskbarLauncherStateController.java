@@ -249,7 +249,6 @@ public class TaskbarLauncherStateController {
 
         mIconAlignment.finishAnimation();
 
-        Log.d("b/260135164", "onDestroy - updateIconAlphaForHome(1)");
         mLauncher.getHotseat().setIconsAlpha(1f);
         mLauncher.getStateManager().removeStateListener(mStateListener);
 
@@ -645,8 +644,6 @@ public class TaskbarLauncherStateController {
                 public void onAnimationEnd(Animator animation) {
                     if (isInStashedState && committed) {
                         // Reset hotseat alpha to default
-                        Log.d("b/260135164",
-                                "playStateTransitionAnim#onAnimationEnd - setIconsAlpha(1)");
                         mLauncher.getHotseat().setIconsAlpha(1);
                     }
                 }
@@ -714,8 +711,6 @@ public class TaskbarLauncherStateController {
 
     private void updateIconAlphaForHome(float alpha) {
         if (mControllers.taskbarActivityContext.isDestroyed()) {
-            Log.e("b/260135164", "updateIconAlphaForHome is called after Taskbar is destroyed",
-                    new Exception());
             return;
         }
         mIconAlphaForHome.setValue(alpha);
@@ -726,9 +721,6 @@ public class TaskbarLauncherStateController {
          * Hide Launcher Hotseat icons when Taskbar icons have opacity. Both icon sets
          * should not be visible at the same time.
          */
-        Log.d("b/260135164",
-                "updateIconAlphaForHome - setIconsAlpha(" + (hotseatVisible ? 1 : 0)
-                        + "), isTaskbarPresent: " + mLauncher.getDeviceProfile().isTaskbarPresent);
         mLauncher.getHotseat().setIconsAlpha(hotseatVisible ? 1 : 0);
         if (mIsQsbInline) {
             mLauncher.getHotseat().setQsbAlpha(hotseatVisible ? 1 : 0);
