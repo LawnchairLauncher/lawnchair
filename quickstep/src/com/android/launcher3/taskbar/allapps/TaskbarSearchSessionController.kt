@@ -17,8 +17,10 @@
 package com.android.launcher3.taskbar.allapps
 
 import android.content.Context
+import android.view.View
 import com.android.launcher3.R
 import com.android.launcher3.config.FeatureFlags
+import com.android.launcher3.dragndrop.DragOptions.PreDragCondition
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.util.ResourceBasedOverride
 import com.android.launcher3.util.ResourceBasedOverride.Overrides
@@ -37,6 +39,9 @@ open class TaskbarSearchSessionController : ResourceBasedOverride {
 
     /** Updates the search suggestions shown in the zero-state. */
     open fun setZeroStateSearchSuggestions(items: List<ItemInfo>) {}
+
+    /** Creates a [PreDragCondition] for [view], if it is a search result that requires one. */
+    open fun createPreDragConditionForSearch(view: View): PreDragCondition? = null
 
     companion object {
         @JvmStatic
