@@ -17,15 +17,18 @@ package com.android.quickstep;
 
 import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 
+import static com.android.launcher3.config.FeatureFlags.enableGridOnlyOverview;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
+import android.content.ComponentCallbacks;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
@@ -36,6 +39,7 @@ import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.icons.IconProvider.IconChangeListener;
 import com.android.launcher3.util.Executors.SimpleThreadFactory;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.SafeCloseable;
 import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.TaskVisualsChangeListener;
 import com.android.systemui.shared.recents.model.Task;
@@ -57,7 +61,7 @@ import java.util.function.Predicate;
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class RecentsModel implements IconChangeListener, TaskStackChangeListener,
-        TaskVisualsChangeListener {
+        TaskVisualsChangeListener, SafeCloseable {
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<RecentsModel> INSTANCE =
@@ -72,17 +76,46 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
     private final RecentTasksList mTaskList;
     private final TaskIconCache mIconCache;
     private final TaskThumbnailCache mThumbnailCache;
+    private final ComponentCallbacks mCallbacks;
 
     private RecentsModel(Context context) {
-        mContext = context;
-        mTaskList = new RecentTasksList(MAIN_EXECUTOR,
-                context.getSystemService(KeyguardManager.class),
-                SystemUiProxy.INSTANCE.get(context));
+        this(context, new IconProvider(context));
+    }
 
-        IconProvider iconProvider = new IconProvider(context);
-        mIconCache = new TaskIconCache(context, RECENTS_MODEL_EXECUTOR, iconProvider);
+    private RecentsModel(Context context, IconProvider iconProvider) {
+        this(context,
+                new RecentTasksList(MAIN_EXECUTOR,
+                        context.getSystemService(KeyguardManager.class),
+                        SystemUiProxy.INSTANCE.get(context)),
+                new TaskIconCache(context, RECENTS_MODEL_EXECUTOR, iconProvider),
+                new TaskThumbnailCache(context, RECENTS_MODEL_EXECUTOR),
+                iconProvider);
+    }
+
+    @VisibleForTesting
+    RecentsModel(Context context, RecentTasksList taskList, TaskIconCache iconCache,
+            TaskThumbnailCache thumbnailCache,
+            IconProvider iconProvider) {
+        mContext = context;
+        mTaskList = taskList;
+        mIconCache = iconCache;
         mIconCache.registerTaskVisualsChangeListener(this);
-        mThumbnailCache = new TaskThumbnailCache(context, RECENTS_MODEL_EXECUTOR);
+        mThumbnailCache = thumbnailCache;
+        if (enableGridOnlyOverview()) {
+            mCallbacks = new ComponentCallbacks() {
+                @Override
+                public void onConfigurationChanged(Configuration configuration) {
+                    updateCacheSizeAndPreloadIfNeeded();
+                }
+
+                @Override
+                public void onLowMemory() {
+                }
+            };
+            context.registerComponentCallbacks(mCallbacks);
+        } else {
+            mCallbacks = null;
+        }
 
         TaskStackChangeListeners.getInstance().registerTaskStackListener(this);
         iconProvider.registerIconChangeListener(this, MAIN_EXECUTOR.getHandler());
@@ -108,7 +141,6 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
         return mTaskList.getTasks(false /* loadKeysOnly */, callback,
                 RecentsFilterState.DEFAULT_FILTER);
     }
-
 
     /**
      * Fetches the list of recent tasks, based on a filter
@@ -183,8 +215,8 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
                     // time the user next enters overview
                     continue;
                 }
-                mThumbnailCache.updateThumbnailInCache(group.task1);
-                mThumbnailCache.updateThumbnailInCache(group.task2);
+                mThumbnailCache.updateThumbnailInCache(group.task1, /* lowResolution= */ true);
+                mThumbnailCache.updateThumbnailInCache(group.task2, /* lowResolution= */ true);
             }
         });
     }
@@ -278,6 +310,54 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
      */
     public ArrayList<ActivityManager.RunningTaskInfo> getRunningTasks() {
         return mTaskList.getRunningTasks();
+    }
+
+    /**
+     * Preloads cache if enableGridOnlyOverview is true, preloading is enabled and
+     * highResLoadingState is enabled
+     */
+    public void preloadCacheIfNeeded() {
+        if (!enableGridOnlyOverview()) {
+            return;
+        }
+
+        if (!mThumbnailCache.isPreloadingEnabled()) {
+            // Skip if we aren't preloading.
+            return;
+        }
+
+        if (!mThumbnailCache.getHighResLoadingState().isEnabled()) {
+            // Skip if high-res loading state is disabled.
+            return;
+        }
+
+        mTaskList.getTaskKeys(mThumbnailCache.getCacheSize(), taskGroups -> {
+            for (GroupTask group : taskGroups) {
+                mThumbnailCache.updateThumbnailInCache(group.task1, /* lowResolution= */ false);
+                mThumbnailCache.updateThumbnailInCache(group.task2, /* lowResolution= */ false);
+            }
+        });
+    }
+
+    /**
+     * Updates cache size and preloads more tasks if cache size increases
+     */
+    public void updateCacheSizeAndPreloadIfNeeded() {
+        if (!enableGridOnlyOverview()) {
+            return;
+        }
+
+        // If new size is larger than original size, preload more cache to fill the gap
+        if (mThumbnailCache.updateCacheSizeAndRemoveExcess()) {
+            preloadCacheIfNeeded();
+        }
+    }
+
+    @Override
+    public void close() {
+        if (mCallbacks != null) {
+            mContext.unregisterComponentCallbacks(mCallbacks);
+        }
     }
 
     /**
