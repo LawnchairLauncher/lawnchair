@@ -45,6 +45,7 @@ import android.view.View;
 import android.window.RemoteTransition;
 import android.window.SplashScreen;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.app.animation.Interpolators;
@@ -240,6 +241,11 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         }
 
         final TaskView taskView = (TaskView) v;
+        final RecentsView recentsView = taskView.getRecentsView();
+        if (recentsView == null) {
+            return super.getActivityLaunchOptions(v, item);
+        }
+
         RunnableList onEndCallback = new RunnableList();
 
         mActivityLaunchAnimationRunner = new RemoteAnimationFactory() {
@@ -248,7 +254,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
                     RemoteAnimationTarget[] wallpaperTargets,
                     RemoteAnimationTarget[] nonAppTargets, AnimationResult result) {
                 mHandler.removeCallbacks(mAnimationStartTimeoutRunnable);
-                AnimatorSet anim = composeRecentsLaunchAnimator(taskView, appTargets,
+                AnimatorSet anim = composeRecentsLaunchAnimator(recentsView, taskView, appTargets,
                         wallpaperTargets, nonAppTargets);
                 anim.addListener(resetStateListener());
                 result.setAnimation(anim, RecentsActivity.this, onEndCallback::executeAllAndDestroy,
@@ -285,14 +291,16 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     /**
      * Composes the animations for a launch from the recents list if possible.
      */
-    private AnimatorSet  composeRecentsLaunchAnimator(TaskView taskView,
+    private AnimatorSet  composeRecentsLaunchAnimator(
+            @NonNull RecentsView recentsView,
+            @NonNull TaskView taskView,
             RemoteAnimationTarget[] appTargets,
             RemoteAnimationTarget[] wallpaperTargets,
             RemoteAnimationTarget[] nonAppTargets) {
         AnimatorSet target = new AnimatorSet();
         boolean activityClosing = taskIsATargetWithMode(appTargets, getTaskId(), MODE_CLOSING);
         PendingAnimation pa = new PendingAnimation(RECENTS_LAUNCH_DURATION);
-        createRecentsWindowAnimator(taskView, !activityClosing, appTargets,
+        createRecentsWindowAnimator(recentsView, taskView, !activityClosing, appTargets,
                 wallpaperTargets, nonAppTargets, null /* depthController */, pa);
         target.play(pa.buildAnim());
 
