@@ -544,17 +544,9 @@ public class QuickstepLauncher extends Launcher {
 
         ArrayList<TouchController> list = new ArrayList<>();
         list.add(getDragController());
-        Consumer<AnimatorSet> splitAnimator = animatorSet -> {
-            AnimatorSet anim = mSplitSelectStateController.getSplitAnimationController()
-                    .createPlaceholderDismissAnim(QuickstepLauncher.this);
-            anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mSplitSelectStateController.resetState();
-                }
-            });
-            animatorSet.play(anim);
-        };
+        Consumer<AnimatorSet> splitAnimator = animatorSet ->
+                animatorSet.play(mSplitSelectStateController.getSplitAnimationController()
+                        .createPlaceholderDismissAnim(this));
         switch (mode) {
             case NO_BUTTON:
                 list.add(new NoButtonQuickSwitchTouchController(this));
@@ -673,6 +665,8 @@ public class QuickstepLauncher extends Launcher {
                 mSplitSelectStateController.resetState();
             }
         });
+        anim.add(mSplitSelectStateController.getSplitAnimationController()
+                .getShowSplitInstructionsAnim(this).buildAnim());
         anim.buildAnim().start();
     }
 
