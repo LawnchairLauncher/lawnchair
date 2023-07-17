@@ -32,6 +32,7 @@ import android.view.View;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.celllayout.FavoriteItemsTransaction;
 import com.android.launcher3.model.data.ItemInfo;
@@ -193,7 +194,10 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
         @Override
         public boolean isTrue() throws Throwable {
-            return mMainThreadExecutor.submit(mActivityMonitor.itemExists(mOp)).get();
+            return mMainThreadExecutor.submit(() -> {
+                Launcher l = Launcher.ACTIVITY_TRACKER.getCreatedActivity();
+                return l != null && l.getWorkspace().getFirstMatch(mOp) != null;
+            }).get();
         }
     }
 }

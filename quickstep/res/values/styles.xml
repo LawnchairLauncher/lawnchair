@@ -298,4 +298,9 @@
     <style name="rotate_prompt_subtitle" parent="TextAppearance.GestureTutorial.Dialog.Subtitle">
         <item name="android:textColor">?androidprv:attr/materialColorOnSurfaceVariant</item>
     </style>
+
+    <style name="ArrowTipTaskbarStyle">
+        <item name="arrowTipBackground">?androidprv:attr/materialColorSurfaceContainer</item>
+        <item name="arrowTipTextColor">?androidprv:attr/materialColorOnSurface</item>
+    </style>
 </resources>
