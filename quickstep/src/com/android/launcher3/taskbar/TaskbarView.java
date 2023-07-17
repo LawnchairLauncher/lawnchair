@@ -18,6 +18,7 @@ package com.android.launcher3.taskbar;
 import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_CURSOR_HOVER_STATES;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
 import android.content.Context;
@@ -319,6 +320,9 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                 }
             }
             setClickAndLongClickListenersForIcon(hotseatView);
+            if (ENABLE_CURSOR_HOVER_STATES.get()) {
+                setHoverListenerForIcon(hotseatView);
+            }
             nextViewIndex++;
         }
         // Remove remaining views
@@ -364,6 +368,13 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     public void setClickAndLongClickListenersForIcon(View icon) {
         icon.setOnClickListener(mIconClickListener);
         icon.setOnLongClickListener(mIconLongClickListener);
+    }
+
+    /**
+     * Sets OnHoverListener for the given view.
+     */
+    private void setHoverListenerForIcon(View icon) {
+        icon.setOnHoverListener(mControllerCallbacks.getIconOnHoverListener(icon));
     }
 
     @Override

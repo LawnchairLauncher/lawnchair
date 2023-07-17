@@ -45,6 +45,8 @@ public class TaskbarAutohideSuspendController implements
     public static final int FLAG_AUTOHIDE_SUSPEND_IN_LAUNCHER = 1 << 4;
     // Transient Taskbar is temporarily unstashed (pending a timeout).
     public static final int FLAG_AUTOHIDE_SUSPEND_TRANSIENT_TASKBAR = 1 << 5;
+    // User has hovered the taskbar.
+    public static final int FLAG_AUTOHIDE_SUSPEND_HOVERING_ICONS = 1 << 6;
 
     @IntDef(flag = true, value = {
             FLAG_AUTOHIDE_SUSPEND_FULLSCREEN,
@@ -53,6 +55,7 @@ public class TaskbarAutohideSuspendController implements
             FLAG_AUTOHIDE_SUSPEND_EDU_OPEN,
             FLAG_AUTOHIDE_SUSPEND_IN_LAUNCHER,
             FLAG_AUTOHIDE_SUSPEND_TRANSIENT_TASKBAR,
+            FLAG_AUTOHIDE_SUSPEND_HOVERING_ICONS,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface AutohideSuspendFlag {}
