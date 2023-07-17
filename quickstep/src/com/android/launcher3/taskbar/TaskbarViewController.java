@@ -22,7 +22,6 @@ import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.Utilities.mapRange;
-import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.anim.AnimatedFloat.VALUE;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
@@ -899,50 +898,9 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             return mControllers.taskbarDragController::startDragOnLongClick;
         }
 
-        public View.OnLongClickListener getBackgroundOnLongClickListener() {
-            return view -> mControllers.taskbarStashController
-                    .updateAndAnimateIsManuallyStashedInApp(true);
-        }
-
         /** Gets the hover listener for the provided icon view. */
         public View.OnHoverListener getIconOnHoverListener(View icon) {
             return new TaskbarHoverToolTipController(mActivity, mTaskbarView, icon);
-        }
-
-        /**
-         * Get the first chance to handle TaskbarView#onTouchEvent, and return whether we want to
-         * consume the touch so TaskbarView treats it as an ACTION_CANCEL.
-         * TODO(b/270395798): We can remove this entirely once we remove the Transient Taskbar flag.
-         */
-        public boolean onTouchEvent(MotionEvent motionEvent) {
-            final float x = motionEvent.getRawX();
-            final float y = motionEvent.getRawY();
-            switch (motionEvent.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    mDownX = x;
-                    mDownY = y;
-                    mControllers.taskbarStashController.startStashHint(/* animateForward = */ true);
-                    mCanceledStashHint = false;
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    if (!mCanceledStashHint
-                            && squaredHypot(mDownX - x, mDownY - y) > mSquaredTouchSlop) {
-                        mControllers.taskbarStashController.startStashHint(
-                                /* animateForward= */ false);
-                        mCanceledStashHint = true;
-                        return true;
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    if (!mCanceledStashHint) {
-                        mControllers.taskbarStashController.startStashHint(
-                                /* animateForward= */ false);
-                    }
-                    break;
-            }
-
-            return false;
         }
 
         /**

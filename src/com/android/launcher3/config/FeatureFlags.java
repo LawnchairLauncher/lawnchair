@@ -219,9 +219,6 @@ public final class FeatureFlags {
     public static final BooleanFlag NOTIFY_CRASHES = getDebugFlag(270393108, "NOTIFY_CRASHES",
             TEAMFOOD, "Sends a notification whenever launcher encounters an uncaught exception.");
 
-    public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(270395798,
-            "ENABLE_TRANSIENT_TASKBAR", ENABLED, "Enables transient taskbar.");
-
     public static final boolean ENABLE_TASKBAR_NAVBAR_UNIFICATION =
             enableTaskbarNavbarUnification();
 

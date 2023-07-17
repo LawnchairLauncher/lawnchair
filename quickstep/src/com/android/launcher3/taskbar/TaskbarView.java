@@ -261,8 +261,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         mIconClickListener = mControllerCallbacks.getIconOnClickListener();
         mIconLongClickListener = mControllerCallbacks.getIconOnLongClickListener();
 
-        setOnLongClickListener(mControllerCallbacks.getBackgroundOnLongClickListener());
-
         if (mAllAppsButton != null) {
             mAllAppsButton.setOnClickListener(mControllerCallbacks.getAllAppsButtonClickListener());
         }
@@ -511,24 +509,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         if (!sTmpRect.equals(mIconLayoutBounds)) {
             mControllerCallbacks.notifyIconLayoutBoundsChanged();
         }
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (mIconLayoutBounds.left <= event.getX() && event.getX() <= mIconLayoutBounds.right) {
-            // Don't allow long pressing between icons, or above/below them.
-            return true;
-        }
-        if (mControllerCallbacks.onTouchEvent(event)) {
-            int oldAction = event.getAction();
-            try {
-                event.setAction(MotionEvent.ACTION_CANCEL);
-                return super.onTouchEvent(event);
-            } finally {
-                event.setAction(oldAction);
-            }
-        }
-        return super.onTouchEvent(event);
     }
 
     /**
