@@ -587,5 +587,6 @@
 
     <declare-styleable name="ArrowTipView">
         <attr name="arrowTipBackground" format="color" />
+        <attr name="arrowTipTextColor" format="color" />
     </declare-styleable>
 </resources>
