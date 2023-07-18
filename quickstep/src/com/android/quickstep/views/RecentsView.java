@@ -1369,9 +1369,15 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             return null;
         }
 
+        // We're looking for a taskView that matches these ids, regardless of order
+        int[] taskIdsCopy = Arrays.copyOf(taskIds, taskIds.length);
+        Arrays.sort(taskIdsCopy);
+
         for (int i = 0; i < getTaskViewCount(); i++) {
             TaskView taskView = requireTaskViewAt(i);
-            if (Arrays.equals(taskIds, taskView.getTaskIds())) {
+            int[] taskViewIdsCopy = taskView.getTaskIds();
+            Arrays.sort(taskViewIdsCopy);
+            if (Arrays.equals(taskIdsCopy, taskViewIdsCopy)) {
                 return taskView;
             }
         }
