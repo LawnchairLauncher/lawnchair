@@ -302,7 +302,7 @@ public class AllSetActivity extends Activity {
     }
 
     private AnimatedFloat createSwipeUpProxy(GestureState state) {
-        if (state.getRunningTaskId() != getTaskId()) {
+        if (state.getTopRunningTaskId() != getTaskId()) {
             return null;
         }
         mSwipeProgress.updateValue(0);
