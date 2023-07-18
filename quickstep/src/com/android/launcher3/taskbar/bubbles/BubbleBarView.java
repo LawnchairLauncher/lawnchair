@@ -306,7 +306,10 @@ public class BubbleBarView extends FrameLayout {
         if (!isExpanded()) {
             for (int i = 0; i < viewOrder.size(); i++) {
                 View child = viewOrder.get(i);
-                if (child != null) {
+                // this child view may have already been removed so verify that it still exists
+                // before reordering it, otherwise it will be re-added.
+                int indexOfChild = indexOfChild(child);
+                if (child != null && indexOfChild >= 0) {
                     removeViewInLayout(child);
                     addViewInLayout(child, i, child.getLayoutParams());
                 }
