@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:gravity="center"
         android:textColor="?androidprv:attr/textColorOnAccent"
-        android:drawableEnd="@drawable/ic_split_horizontal"
+        android:drawableEnd="@drawable/ic_split_exit"
         android:drawablePadding="@dimen/split_instructions_drawable_padding"
         android:text="@string/toast_split_select_app" />
 </com.android.quickstep.views.SplitInstructionsView>
