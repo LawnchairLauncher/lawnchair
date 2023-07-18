@@ -585,6 +585,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         } else {
             mAH.get(AdapterHolder.MAIN).setup(findViewById(R.id.apps_list_view), null);
             mAH.get(AdapterHolder.WORK).mRecyclerView = null;
+            if (ENABLE_ALL_APPS_RV_PREINFLATION.get()) {
+                mAH.get(AdapterHolder.MAIN).mRecyclerView
+                        .setRecycledViewPool(mAllAppsStore.getRecyclerViewPool());
+            }
         }
         setupHeader();
 
