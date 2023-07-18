@@ -41,7 +41,6 @@ import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_UNF
 import static com.android.systemui.shared.system.QuickStepContract.KEY_EXTRA_UNLOCK_ANIMATION_CONTROLLER;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_TRACING_ENABLED;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_BACK_ANIMATION;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_BUBBLES;
 import static com.android.wm.shell.sysui.ShellSharedConstants.KEY_EXTRA_SHELL_DESKTOP_MODE;
@@ -792,7 +791,7 @@ public class TouchInteractionService extends Service {
                     ActiveGestureLog.INSTANCE.getLogId());
             taskInfo = previousGestureState.getRunningTask();
             gestureState.updateRunningTask(taskInfo);
-            gestureState.updateLastStartedTaskId(previousGestureState.getLastStartedTaskId());
+            gestureState.updateLastStartedTaskIds(previousGestureState.getLastStartedTaskIds());
             gestureState.updatePreviouslyAppearedTaskIds(
                     previousGestureState.getPreviouslyAppearedTaskIds());
         } else {
@@ -1005,6 +1004,7 @@ public class TouchInteractionService extends Service {
         }
 
         reasonString.append(SUBSTRING_PREFIX).append("keyguard is not showing occluded");
+
         // Use overview input consumer for sharesheets on top of home.
         boolean forceOverviewInputConsumer = gestureState.getActivityInterface().isStarted()
                 && gestureState.getRunningTask() != null
