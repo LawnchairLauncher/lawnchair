@@ -37,6 +37,7 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Condition;
 import androidx.test.uiautomator.UiDevice;
 
+import com.android.launcher3.testing.shared.ResourceUtils;
 import com.android.launcher3.testing.shared.TestProtocol;
 
 /**
@@ -49,6 +50,8 @@ public final class LaunchedAppState extends Background {
 
     // UNSTASHED_TASKBAR_HANDLE_HINT_SCALE value from TaskbarStashController.
     private static final float UNSTASHED_TASKBAR_HANDLE_HINT_SCALE = 1.1f;
+
+    private static final int STASHED_TASKBAR_BOTTOM_EDGE_DP = 1;
 
     private final Condition<UiDevice, Boolean> mStashedTaskbarHintScaleCondition =
             device -> mLauncher.getTestInfo(REQUEST_STASHED_TASKBAR_SCALE).getFloat(
@@ -209,7 +212,7 @@ public final class LaunchedAppState extends Background {
      *
      * <p>This unstashing occurs when not actively hovering the taskbar.
      */
-    public void hoverScreenBottomEdgeToUnstashTaskbar() {
+    public Taskbar hoverScreenBottomEdgeToUnstashTaskbar() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "cursor hover entering screen edge to unstash taskbar")) {
@@ -226,13 +229,15 @@ public final class LaunchedAppState extends Background {
 
             mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_HOVER_EXIT,
                     new Point(taskbarUnstashArea.x, taskbarUnstashArea.y), null);
+
+            return new Taskbar(mLauncher);
         }
     }
 
     /**
      * Emulate the cursor hovering the taskbar to get unstash hint, then hovering below to unstash.
      */
-    public void hoverBelowHintedTaskbarToUnstash() {
+    public Taskbar hoverBelowHintedTaskbarToUnstash() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "cursor hover entering stashed taskbar")) {
@@ -254,6 +259,7 @@ public final class LaunchedAppState extends Background {
                         new Point(taskbarUnstashArea.x, taskbarUnstashArea.y), null);
 
                 mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID);
+                return new Taskbar(mLauncher);
             }
         }
     }
@@ -285,6 +291,47 @@ public final class LaunchedAppState extends Background {
 
                 mLauncher.getDevice().wait(mStashedTaskbarDefaultScaleCondition,
                         LauncherInstrumentation.WAIT_TIME_MS);
+            }
+        }
+    }
+
+    /**
+     * Emulate the cursor clicking the stashed taskbar to go home.
+     */
+    public Workspace clickStashedTaskbarToGoHome() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "cursor hover entering stashed taskbar")) {
+            long downTime = SystemClock.uptimeMillis();
+            int stashedTaskbarBottomEdge = ResourceUtils.pxFromDp(STASHED_TASKBAR_BOTTOM_EDGE_DP,
+                    mLauncher.getResources().getDisplayMetrics());
+            Point stashedTaskbarHintArea = new Point(mLauncher.getRealDisplaySize().x / 2,
+                    mLauncher.getRealDisplaySize().y - stashedTaskbarBottomEdge - 1);
+            mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_HOVER_ENTER,
+                    new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y), null);
+
+            mLauncher.getDevice().wait(mStashedTaskbarHintScaleCondition,
+                    LauncherInstrumentation.WAIT_TIME_MS);
+
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "cursor clicking stashed taskbar to go home")) {
+                mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_HOVER_EXIT,
+                        new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y),
+                        null);
+                mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN,
+                        new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y),
+                        LauncherInstrumentation.GestureScope.OUTSIDE_WITHOUT_PILFER);
+                mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_BUTTON_PRESS,
+                        new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y),
+                        null);
+                mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_BUTTON_RELEASE,
+                        new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y),
+                        null);
+                mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_UP,
+                        new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y),
+                        LauncherInstrumentation.GestureScope.OUTSIDE_WITHOUT_PILFER);
+
+                return mLauncher.getWorkspace();
             }
         }
     }
