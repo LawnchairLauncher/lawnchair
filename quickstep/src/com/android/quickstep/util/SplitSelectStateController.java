@@ -17,6 +17,8 @@
 package com.android.quickstep.util;
 
 import static com.android.launcher3.Utilities.postAsyncCallback;
+import static com.android.launcher3.testing.shared.TestProtocol.LAUNCH_SPLIT_PAIR;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.DEFAULT_SPLIT_RATIO;
 import static com.android.quickstep.util.SplitSelectDataHolder.SPLIT_PENDINGINTENT_PENDINGINTENT;
@@ -522,6 +524,7 @@ public class SplitSelectStateController {
         public void startAnimation(IBinder transition, TransitionInfo info,
                 SurfaceControl.Transaction t,
                 IRemoteTransitionFinishedCallback finishedCallback) {
+            testLogD(LAUNCH_SPLIT_PAIR, "Received split startAnimation");
             final Runnable finishAdapter = () ->  {
                 try {
                     finishedCallback.onTransitionFinished(null /* wct */, null /* sct */);
