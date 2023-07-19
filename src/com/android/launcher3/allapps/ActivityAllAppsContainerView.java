@@ -391,7 +391,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                         rebindAdapters(false);
                         mRebindAdaptersAfterSearchAnimation = false;
                     }
-                    if (!goingToSearch) {
+
+                    if (goingToSearch) {
+                        mSearchUiDelegate.onAnimateToSearchStateCompleted();
+                    } else {
                         setSearchResults(null);
                         if (mViewPager != null) {
                             mViewPager.setCurrentPage(previousPage);
@@ -585,6 +588,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         } else {
             mAH.get(AdapterHolder.MAIN).setup(findViewById(R.id.apps_list_view), null);
             mAH.get(AdapterHolder.WORK).mRecyclerView = null;
+            if (ENABLE_ALL_APPS_RV_PREINFLATION.get()) {
+                mAH.get(AdapterHolder.MAIN).mRecyclerView
+                        .setRecycledViewPool(mAllAppsStore.getRecyclerViewPool());
+            }
         }
         setupHeader();
 

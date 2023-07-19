@@ -62,8 +62,10 @@ import java.util.List;
 
 /**
  * Popup shown on long pressing an empty space in launcher
+ *
+ * @param <T> The context showing this popup.
  */
-public class OptionsPopupView extends ArrowPopup<Launcher>
+public class OptionsPopupView<T extends Context & ActivityContext> extends ArrowPopup<T>
         implements OnClickListener, OnLongClickListener {
 
     // An intent extra to indicate the horizontal scroll of the wallpaper.
@@ -155,21 +157,27 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         }
     }
 
-    public static OptionsPopupView show(ActivityContext launcher, RectF targetRect,
-            List<OptionItem> items, boolean shouldAddArrow) {
-        return show(launcher, targetRect, items, shouldAddArrow, 0 /* width */);
+    public static <T extends Context & ActivityContext> OptionsPopupView<T> show(
+            ActivityContext activityContext,
+            RectF targetRect,
+            List<OptionItem> items,
+            boolean shouldAddArrow) {
+        return show(activityContext, targetRect, items, shouldAddArrow, 0 /* width */);
     }
 
-    public static OptionsPopupView show(ActivityContext launcher, RectF targetRect,
-            List<OptionItem> items, boolean shouldAddArrow, int width) {
-        OptionsPopupView popup = (OptionsPopupView) launcher.getLayoutInflater()
-                .inflate(R.layout.longpress_options_menu, launcher.getDragLayer(), false);
+    public static <T extends Context & ActivityContext> OptionsPopupView<T> show(
+            ActivityContext activityContext,
+            RectF targetRect,
+            List<OptionItem> items,
+            boolean shouldAddArrow,
+            int width) {
+        OptionsPopupView<T> popup = (OptionsPopupView<T>) activityContext.getLayoutInflater()
+                .inflate(R.layout.longpress_options_menu, activityContext.getDragLayer(), false);
         popup.mTargetRect = targetRect;
         popup.setShouldAddArrow(shouldAddArrow);
 
         for (OptionItem item : items) {
-            DeepShortcutView view =
-                    (DeepShortcutView) popup.inflateAndAdd(R.layout.system_shortcut, popup);
+            DeepShortcutView view = popup.inflateAndAdd(R.layout.system_shortcut, popup);
             if (width > 0) {
                 view.getLayoutParams().width = width;
             }
