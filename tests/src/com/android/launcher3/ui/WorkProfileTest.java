@@ -85,7 +85,7 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
         waitForStateTransitionToEnd("Launcher internal state didn't switch to Normal",
                 () -> NORMAL);
         waitForResumed("Launcher internal state is still Background");
-        executeOnLauncher(launcher -> launcher.getStateManager().goToState(ALL_APPS));
+        mLauncher.getWorkspace().switchToAllApps();
         waitForStateTransitionToEnd("Launcher internal state didn't switch to All Apps",
                 () -> ALL_APPS);
     }
