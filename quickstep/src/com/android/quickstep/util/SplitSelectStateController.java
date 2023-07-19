@@ -293,7 +293,7 @@ public class SplitSelectStateController {
 
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
             final RemoteTransition remoteTransition = getShellRemoteTransition(firstTaskId,
-                    secondTaskId, callback);
+                    secondTaskId, callback, "LaunchSplitPair");
             switch (launchData.getSplitLaunchType()) {
                 case SPLIT_TASK_TASK ->
                         mSystemUiProxy.startTasks(firstTaskId, optionsBundle, secondTaskId,
@@ -385,7 +385,7 @@ public class SplitSelectStateController {
 
         if (TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
             final RemoteTransition remoteTransition = getShellRemoteTransition(firstTaskId,
-                    secondTaskId, callback);
+                    secondTaskId, callback, "LaunchExistingPair");
             mSystemUiProxy.startTasks(firstTaskId, optionsBundle, secondTaskId,
                     null /* options2 */, stagePosition, splitRatio,
                     remoteTransition, null /*shellInstanceId*/);
@@ -455,11 +455,11 @@ public class SplitSelectStateController {
     }
 
     private RemoteTransition getShellRemoteTransition(int firstTaskId, int secondTaskId,
-            Consumer<Boolean> callback) {
+            Consumer<Boolean> callback, String transitionName) {
         final RemoteSplitLaunchTransitionRunner animationRunner =
                 new RemoteSplitLaunchTransitionRunner(firstTaskId, secondTaskId, callback);
         return new RemoteTransition(animationRunner,
-                ActivityThread.currentActivityThread().getApplicationThread(), "LaunchSplitPair");
+                ActivityThread.currentActivityThread().getApplicationThread(), transitionName);
     }
 
     private RemoteAnimationAdapter getLegacyRemoteAdapter(int firstTaskId, int secondTaskId,
