@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.workspace
+package com.android.launcher3.responsive
 
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -49,7 +49,7 @@ class CalculatedWorkspaceSpecTest : AbstractDeviceProfileTest() {
         val availableHeight = deviceSpec.naturalSize.second - deviceSpec.statusBarNaturalPx - 495
 
         val workspaceSpecs =
-            WorkspaceSpecs(TestResourceHelper(context!!, TestR.xml.valid_workspace_file))
+            WorkspaceSpecs.create(TestResourceHelper(context!!, TestR.xml.valid_workspace_file))
         val widthSpec = workspaceSpecs.getCalculatedWidthSpec(4, availableWidth)
         val heightSpec = workspaceSpecs.getCalculatedHeightSpec(5, availableHeight)
 
@@ -86,7 +86,7 @@ class CalculatedWorkspaceSpecTest : AbstractDeviceProfileTest() {
         val availableHeight = deviceSpec.naturalSize.second - deviceSpec.statusBarNaturalPx - 640
 
         val workspaceSpecs =
-            WorkspaceSpecs(TestResourceHelper(context!!, TestR.xml.valid_workspace_file))
+            WorkspaceSpecs.create(TestResourceHelper(context!!, TestR.xml.valid_workspace_file))
         val widthSpec = workspaceSpecs.getCalculatedWidthSpec(4, availableWidth)
         val heightSpec = workspaceSpecs.getCalculatedHeightSpec(5, availableHeight)
 

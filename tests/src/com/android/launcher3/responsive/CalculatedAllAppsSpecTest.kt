@@ -23,7 +23,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.AbstractDeviceProfileTest
 import com.android.launcher3.tests.R as TestR
 import com.android.launcher3.util.TestResourceHelper
-import com.android.launcher3.workspace.WorkspaceSpecs
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,12 +48,12 @@ class CalculatedAllAppsSpecTest : AbstractDeviceProfileTest() {
         val availableHeight = deviceSpec.naturalSize.second - deviceSpec.statusBarNaturalPx - 495
 
         val workspaceSpecs =
-            WorkspaceSpecs(TestResourceHelper(context!!, TestR.xml.valid_workspace_file))
+            WorkspaceSpecs.create(TestResourceHelper(context!!, TestR.xml.valid_workspace_file))
         val widthSpec = workspaceSpecs.getCalculatedWidthSpec(4, availableWidth)
         val heightSpec = workspaceSpecs.getCalculatedHeightSpec(5, availableHeight)
 
         val allAppsSpecs =
-            AllAppsSpecs(TestResourceHelper(context!!, TestR.xml.valid_all_apps_file))
+            AllAppsSpecs.create(TestResourceHelper(context!!, TestR.xml.valid_all_apps_file))
 
         with(allAppsSpecs.getCalculatedWidthSpec(4, availableWidth, widthSpec)) {
             assertThat(availableSpace).isEqualTo(availableWidth)
