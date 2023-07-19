@@ -391,7 +391,10 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                         rebindAdapters(false);
                         mRebindAdaptersAfterSearchAnimation = false;
                     }
-                    if (!goingToSearch) {
+
+                    if (goingToSearch) {
+                        mSearchUiDelegate.onAnimateToSearchStateCompleted();
+                    } else {
                         setSearchResults(null);
                         if (mViewPager != null) {
                             mViewPager.setCurrentPage(previousPage);
