@@ -32,11 +32,8 @@ import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.views.ActivityContext;
-
-import java.util.List;
 
 /**
  * Handles the user event logging in R+.
@@ -961,33 +958,32 @@ public class StatsLogManager implements ResourceBasedOverride {
         }
 
         /**
-         * Sets list of {@link com.android.app.search.ResultType} for the impression event.
+         * Sets {@link com.android.app.search.ResultType} for the impression event.
          */
-        default StatsImpressionLogger withResultType(IntArray resultType) {
+        default StatsImpressionLogger withResultType(int resultType) {
             return this;
         }
 
         /**
-         * Sets list of count for each of {@link com.android.app.search.ResultType} for the
-         * impression event.
-         */
-        default StatsImpressionLogger withResultCount(IntArray resultCount) {
-            return this;
-        }
-
-        /**
-         * Sets list of boolean for each of {@link com.android.app.search.ResultType} that indicates
+         * Sets boolean for each of {@link com.android.app.search.ResultType} that indicates
          * if this result is above keyboard or not for the impression event.
          */
-        default StatsImpressionLogger withAboveKeyboard(List<Boolean> aboveKeyboard) {
+        default StatsImpressionLogger withAboveKeyboard(boolean aboveKeyboard) {
             return this;
         }
 
         /**
-         * Sets list of uid for each of {@link com.android.app.search.ResultType} that indicates
+         * Sets uid for each of {@link com.android.app.search.ResultType} that indicates
          * package name for the impression event.
          */
-        default StatsImpressionLogger withUids(IntArray uid) {
+        default StatsImpressionLogger withUid(int uid) {
+            return this;
+        }
+
+        /**
+         * Sets result source that indicates the origin of the result for the impression event.
+         */
+        default StatsImpressionLogger withResultSource(int resultSource) {
             return this;
         }
 
