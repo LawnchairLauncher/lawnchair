@@ -799,12 +799,7 @@ public final class LauncherInstrumentation {
                     waitUntilSystemLauncherObjectGone(OVERVIEW_RES_ID);
                     waitUntilSystemLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
                     waitUntilLauncherObjectGone(KEYBOARD_QUICK_SWITCH_RES_ID);
-
-                    if (is3PLauncher() && isTablet()) {
-                        waitForSystemLauncherObject(TASKBAR_RES_ID);
-                    } else {
-                        waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
-                    }
+                    waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
 
                     return waitForLauncherObject(WORKSPACE_RES_ID);
                 }
@@ -814,12 +809,7 @@ public final class LauncherInstrumentation {
                     waitUntilSystemLauncherObjectGone(OVERVIEW_RES_ID);
                     waitUntilSystemLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
                     waitUntilLauncherObjectGone(KEYBOARD_QUICK_SWITCH_RES_ID);
-
-                    if (is3PLauncher() && isTablet()) {
-                        waitForSystemLauncherObject(TASKBAR_RES_ID);
-                    } else {
-                        waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
-                    }
+                    waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
 
                     return waitForLauncherObject(WIDGETS_RES_ID);
                 }
@@ -840,7 +830,7 @@ public final class LauncherInstrumentation {
                     waitUntilSystemLauncherObjectGone(SPLIT_PLACEHOLDER_RES_ID);
                     waitUntilLauncherObjectGone(KEYBOARD_QUICK_SWITCH_RES_ID);
 
-                    if (is3PLauncher() && isTablet()) {
+                    if (is3PLauncher() && isTablet() && !isTransientTaskbar()) {
                         waitForSystemLauncherObject(TASKBAR_RES_ID);
                     } else {
                         waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
@@ -853,7 +843,7 @@ public final class LauncherInstrumentation {
                     waitUntilLauncherObjectGone(APPS_RES_ID);
                     waitUntilLauncherObjectGone(WORKSPACE_RES_ID);
                     waitUntilLauncherObjectGone(WIDGETS_RES_ID);
-                    if (isTablet()) {
+                    if (isTablet() && !is3PLauncher()) {
                         waitForSystemLauncherObject(TASKBAR_RES_ID);
                     } else {
                         waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
@@ -890,7 +880,11 @@ public final class LauncherInstrumentation {
                     }
 
                     if (isTablet()) {
-                        waitForSystemLauncherObject(TASKBAR_RES_ID);
+                        // Only check that Persistent Taskbar is visible, since Transient Taskbar
+                        // may or may not be visible by design.
+                        if (!isTransientTaskbar()) {
+                            waitForSystemLauncherObject(TASKBAR_RES_ID);
+                        }
                     } else {
                         waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
                     }
@@ -964,7 +958,7 @@ public final class LauncherInstrumentation {
     /**
      * Using swiping up gesture to dismiss closable floating views, such as Menu or Folder Content.
      */
-    private void swipeUpToCloseFloatingView(boolean gestureStartFromLauncher) {
+    private void swipeUpToCloseFloatingView() {
         final Point displaySize = getRealDisplaySize();
 
         final Optional<String> floatingRes = getFloatingResId();
@@ -973,16 +967,11 @@ public final class LauncherInstrumentation {
             return;
         }
 
-        GestureScope gestureScope = gestureStartFromLauncher
-                // Without the navigation bar layer, the gesture scope on tablets remains inside the
-                // launcher process.
-                ? (isTablet() ? GestureScope.DONT_EXPECT_PILFER : GestureScope.EXPECT_PILFER)
-                : GestureScope.EXPECT_PILFER;
         linearGesture(
                 displaySize.x / 2, displaySize.y - 1,
                 displaySize.x / 2, 0,
                 ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
-                false, gestureScope);
+                false, GestureScope.EXPECT_PILFER);
 
         try (LauncherInstrumentation.Closable c1 = addContextLayer(
                 String.format("Swiped up from floating view %s to home", floatingRes.get()))) {
@@ -1050,11 +1039,8 @@ public final class LauncherInstrumentation {
 
                 final Point displaySize = getRealDisplaySize();
 
-                boolean gestureStartFromLauncher =
-                        isTablet() ? !isLauncher3() : isLauncherVisible();
-
                 // CLose floating views before going back to home.
-                swipeUpToCloseFloatingView(gestureStartFromLauncher);
+                swipeUpToCloseFloatingView();
 
                 if (hasLauncherObject(WORKSPACE_RES_ID)) {
                     log(action = "already at home");
@@ -1984,7 +1970,8 @@ public final class LauncherInstrumentation {
         }
     }
 
-    Point getRealDisplaySize() {
+    /** Returns the bounds of the display as a Point where x is width and y is height. */
+    public Point getRealDisplaySize() {
         final Rect displayBounds = getContext().getSystemService(WindowManager.class)
                 .getMaximumWindowMetrics()
                 .getBounds();
@@ -2044,6 +2031,11 @@ public final class LauncherInstrumentation {
         getTestInfo(enable
                 ? TestProtocol.REQUEST_ENABLE_BLOCK_TIMEOUT
                 : TestProtocol.REQUEST_DISABLE_BLOCK_TIMEOUT);
+    }
+
+    public boolean isTransientTaskbar() {
+        return getTestInfo(TestProtocol.REQUEST_IS_TRANSIENT_TASKBAR)
+                .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     /** Enables transient taskbar for testing purposes only. */
