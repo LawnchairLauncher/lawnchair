@@ -80,7 +80,7 @@
     <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Մատը սահեցրեք էկրանի ներքևից վերև, պահեք և բաց թողեք"</string>
     <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Հիանալի՛ է"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Պատրաստ է"</string>
-    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Պատրաստ է"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Ավարտել"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Կարգավորումներ"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Նորից փորձեք"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Գերազանց է"</string>
