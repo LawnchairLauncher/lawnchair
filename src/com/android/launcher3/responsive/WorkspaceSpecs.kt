@@ -17,57 +17,40 @@
 package com.android.launcher3.responsive
 
 import android.content.res.TypedArray
+import android.util.Log
 import com.android.launcher3.R
 import com.android.launcher3.responsive.ResponsiveSpec.SpecType
 import com.android.launcher3.util.ResourceHelper
 
-class AllAppsSpecs(widthSpecs: List<AllAppsSpec>, heightSpecs: List<AllAppsSpec>) :
-    ResponsiveSpecs<AllAppsSpec>(widthSpecs, heightSpecs) {
+private const val TAG = "WorkspaceSpecs"
 
-    fun getCalculatedWidthSpec(
-        columns: Int,
-        availableWidth: Int,
-        calculatedWorkspaceSpec: CalculatedWorkspaceSpec
-    ): CalculatedAllAppsSpec {
-        check(calculatedWorkspaceSpec.spec.specType == SpecType.WIDTH) {
-            "Invalid specType for CalculatedWorkspaceSpec. " +
-                "Expected: ${SpecType.WIDTH} - " +
-                "Found: ${calculatedWorkspaceSpec.spec.specType}}"
-        }
+class WorkspaceSpecs(widthSpecs: List<WorkspaceSpec>, heightSpecs: List<WorkspaceSpec>) :
+    ResponsiveSpecs<WorkspaceSpec>(widthSpecs, heightSpecs) {
 
+    fun getCalculatedWidthSpec(columns: Int, availableWidth: Int): CalculatedWorkspaceSpec {
         val spec = getWidthSpec(availableWidth)
-        return CalculatedAllAppsSpec(availableWidth, columns, spec, calculatedWorkspaceSpec)
+        return CalculatedWorkspaceSpec(availableWidth, columns, spec)
     }
 
-    fun getCalculatedHeightSpec(
-        rows: Int,
-        availableHeight: Int,
-        calculatedWorkspaceSpec: CalculatedWorkspaceSpec
-    ): CalculatedAllAppsSpec {
-        check(calculatedWorkspaceSpec.spec.specType == SpecType.HEIGHT) {
-            "Invalid specType for CalculatedWorkspaceSpec. " +
-                "Expected: ${SpecType.HEIGHT} - " +
-                "Found: ${calculatedWorkspaceSpec.spec.specType}}"
-        }
-
+    fun getCalculatedHeightSpec(rows: Int, availableHeight: Int): CalculatedWorkspaceSpec {
         val spec = getHeightSpec(availableHeight)
-        return CalculatedAllAppsSpec(availableHeight, rows, spec, calculatedWorkspaceSpec)
+        return CalculatedWorkspaceSpec(availableHeight, rows, spec)
     }
 
     companion object {
-        private const val XML_ALL_APPS_SPEC = "allAppsSpec"
+        private const val XML_WORKSPACE_SPEC = "workspaceSpec"
 
         @JvmStatic
-        fun create(resourceHelper: ResourceHelper): AllAppsSpecs {
+        fun create(resourceHelper: ResourceHelper): WorkspaceSpecs {
             val parser = ResponsiveSpecsParser(resourceHelper)
-            val specs = parser.parseXML(XML_ALL_APPS_SPEC, ::AllAppsSpec)
+            val specs = parser.parseXML(XML_WORKSPACE_SPEC, ::WorkspaceSpec)
             val (widthSpecs, heightSpecs) = specs.partition { it.specType == SpecType.WIDTH }
-            return AllAppsSpecs(widthSpecs, heightSpecs)
+            return WorkspaceSpecs(widthSpecs, heightSpecs)
         }
     }
 }
 
-data class AllAppsSpec(
+data class WorkspaceSpec(
     override val maxAvailableSize: Int,
     override val specType: SpecType,
     override val startPadding: SizeSpec,
@@ -77,7 +60,7 @@ data class AllAppsSpec(
 ) : ResponsiveSpec(maxAvailableSize, specType, startPadding, endPadding, gutter, cellSize) {
 
     init {
-        check(isValid()) { "Invalid AllAppsSpec found." }
+        check(isValid()) { "Invalid WorkspaceSpec found." }
     }
 
     constructor(
@@ -94,11 +77,22 @@ data class AllAppsSpec(
         gutter = specs.getOrError(SizeSpec.XmlTags.GUTTER),
         cellSize = specs.getOrError(SizeSpec.XmlTags.CELL_SIZE)
     )
+
+    override fun isValid(): Boolean {
+        // Workspace spec should not match workspace
+        if (
+            startPadding.matchWorkspace ||
+                endPadding.matchWorkspace ||
+                gutter.matchWorkspace ||
+                cellSize.matchWorkspace
+        ) {
+            Log.e(TAG, "WorkspaceSpec#isValid - workspace shouldn't contain matchWorkspace!")
+            return false
+        }
+
+        return super.isValid()
+    }
 }
 
-class CalculatedAllAppsSpec(
-    availableSpace: Int,
-    cells: Int,
-    spec: AllAppsSpec,
-    calculatedWorkspaceSpec: CalculatedWorkspaceSpec
-) : CalculatedResponsiveSpec(availableSpace, cells, spec, calculatedWorkspaceSpec)
+class CalculatedWorkspaceSpec(availableSpace: Int, cells: Int, spec: WorkspaceSpec) :
+    CalculatedResponsiveSpec(availableSpace, cells, spec)
