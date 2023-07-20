@@ -38,6 +38,8 @@
     <dimen name="task_thumbnail_icon_size">48dp</dimen>
     <!--  The icon size for the focused task, placed in center of touch target  -->
     <dimen name="task_thumbnail_icon_drawable_size">44dp</dimen>
+    <!--  The border width shown when task is hovered  -->
+    <dimen name="task_hover_border_width">4dp</dimen>
     <!--  The space under the focused task icon  -->
     <dimen name="overview_task_margin">16dp</dimen>
     <!--  The horizontal space between tasks  -->

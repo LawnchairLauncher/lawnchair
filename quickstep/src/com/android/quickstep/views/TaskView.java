@@ -97,7 +97,6 @@ import com.android.quickstep.RemoteAnimationTargets;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.TaskIconCache;
-import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TaskViewUtils;
@@ -413,7 +412,9 @@ public class TaskView extends FrameLayout implements Reusable {
 
     private boolean mIsClickableAsLiveTile = true;
 
-    @Nullable private final BorderAnimator mBorderAnimator;
+    @Nullable private final BorderAnimator mFocusBorderAnimator;
+
+    @Nullable private final BorderAnimator mHoverBorderAnimator;
 
     public TaskView(Context context) {
         this(context, null);
@@ -439,23 +440,40 @@ public class TaskView extends FrameLayout implements Reusable {
         boolean keyboardFocusHighlightEnabled = FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH.get()
                 || DesktopTaskView.DESKTOP_MODE_SUPPORTED;
 
-        setWillNotDraw(!keyboardFocusHighlightEnabled);
+        boolean willDrawBorder =
+                keyboardFocusHighlightEnabled || FeatureFlags.ENABLE_CURSOR_HOVER_STATES.get();
+        setWillNotDraw(!willDrawBorder);
 
-        TypedArray ta = context.obtainStyledAttributes(
-                attrs, R.styleable.TaskView, defStyleAttr, defStyleRes);
+        if (willDrawBorder) {
+            TypedArray styledAttrs = context.obtainStyledAttributes(
+                    attrs, R.styleable.TaskView, defStyleAttr, defStyleRes);
 
-        mBorderAnimator = !keyboardFocusHighlightEnabled
-                ? null
-                : new BorderAnimator(
-                        /* borderRadiusPx= */ (int) mCurrentFullscreenParams.mCornerRadius,
-                        /* borderColor= */ ta.getColor(
-                                R.styleable.TaskView_borderColor, DEFAULT_BORDER_COLOR),
-                        /* borderAnimationParams= */ new BorderAnimator.SimpleParams(
-                                /* borderWidthPx= */ context.getResources().getDimensionPixelSize(
-                                        R.dimen.keyboard_quick_switch_border_width),
-                                /* boundsBuilder= */ this::updateBorderBounds,
-                                /* targetView= */ this));
-        ta.recycle();
+            mFocusBorderAnimator = keyboardFocusHighlightEnabled ? new BorderAnimator(
+                    /* borderRadiusPx= */ (int) mCurrentFullscreenParams.mCornerRadius,
+                    /* borderColor= */ styledAttrs.getColor(
+                            R.styleable.TaskView_focusBorderColor, DEFAULT_BORDER_COLOR),
+                    /* borderAnimationParams= */ new BorderAnimator.SimpleParams(
+                            /* borderWidthPx= */ context.getResources().getDimensionPixelSize(
+                                    R.dimen.keyboard_quick_switch_border_width),
+                            /* boundsBuilder= */ this::updateBorderBounds,
+                            /* targetView= */ this)) : null;
+
+            mHoverBorderAnimator =
+                    FeatureFlags.ENABLE_CURSOR_HOVER_STATES.get() ? new BorderAnimator(
+                            /* borderRadiusPx= */ (int) mCurrentFullscreenParams.mCornerRadius,
+                            /* borderColor= */ styledAttrs.getColor(
+                                    R.styleable.TaskView_hoverBorderColor, DEFAULT_BORDER_COLOR),
+                            /* borderAnimationParams= */ new BorderAnimator.SimpleParams(
+                                    /* borderWidthPx= */ context.getResources()
+                                            .getDimensionPixelSize(R.dimen.task_hover_border_width),
+                                    /* boundsBuilder= */ this::updateBorderBounds,
+                                    /* targetView= */ this)) : null;
+
+            styledAttrs.recycle();
+        } else {
+            mFocusBorderAnimator = null;
+            mHoverBorderAnimator = null;
+        }
     }
 
     protected void updateBorderBounds(Rect bounds) {
@@ -509,16 +527,48 @@ public class TaskView extends FrameLayout implements Reusable {
     @Override
     protected void onFocusChanged(boolean gainFocus, int direction, Rect previouslyFocusedRect) {
         super.onFocusChanged(gainFocus, direction, previouslyFocusedRect);
-        if (mBorderAnimator != null) {
-            mBorderAnimator.buildAnimator(gainFocus).start();
+        if (mFocusBorderAnimator != null) {
+            mFocusBorderAnimator.buildAnimator(gainFocus).start();
+        }
+    }
+
+    @Override
+    public boolean onHoverEvent(MotionEvent event) {
+        if (FeatureFlags.ENABLE_CURSOR_HOVER_STATES.get()) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_HOVER_ENTER:
+                    mHoverBorderAnimator.buildAnimator(/* isAppearing= */ true).start();
+                    break;
+                case MotionEvent.ACTION_HOVER_EXIT:
+                    mHoverBorderAnimator.buildAnimator(/* isAppearing= */ false).start();
+                    break;
+                default:
+                    break;
+            }
+        }
+        return super.onHoverEvent(event);
+    }
+
+    @Override
+    public boolean onInterceptHoverEvent(MotionEvent event) {
+        if (FeatureFlags.ENABLE_CURSOR_HOVER_STATES.get()) {
+            // avoid triggering hover event on child elements which would cause HOVER_EXIT for this
+            // task view
+            return true;
+        } else {
+            return super.onInterceptHoverEvent(event);
         }
     }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        if (mBorderAnimator != null) {
-            mBorderAnimator.drawBorder(canvas);
+        if (mFocusBorderAnimator != null) {
+            mFocusBorderAnimator.drawBorder(canvas);
+        }
+
+        if (mHoverBorderAnimator != null) {
+            mHoverBorderAnimator.drawBorder(canvas);
         }
     }
 
