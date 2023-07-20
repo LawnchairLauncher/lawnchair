@@ -25,7 +25,6 @@ import com.android.app.viewcapture.ViewCapture.MAIN_EXECUTOR
 import com.android.app.viewcapture.data.ExportedData
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter
 import com.android.launcher3.util.viewcapture_analysis.ViewCaptureAnalyzer
-import java.util.function.Supplier
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
@@ -36,7 +35,7 @@ import org.junit.runners.model.Statement
  *
  * This rule will not work in OOP tests that don't have access to the activity under test.
  */
-class ViewCaptureRule(var alreadyOpenActivitySupplier: Supplier<Activity?>) : TestRule {
+class ViewCaptureRule : TestRule {
     private val viewCapture = SimpleViewCapture("test-view-capture")
     var viewCaptureData: ExportedData? = null
         private set
@@ -47,20 +46,13 @@ class ViewCaptureRule(var alreadyOpenActivitySupplier: Supplier<Activity?>) : Te
                 viewCaptureData = null
                 val windowListenerCloseables = mutableListOf<SafeCloseable>()
 
-                val alreadyOpenActivity = alreadyOpenActivitySupplier.get()
-                if (alreadyOpenActivity != null) {
-                    startCapture(windowListenerCloseables, alreadyOpenActivity)
-                }
-
                 val lifecycleCallbacks =
                     object : ActivityLifecycleCallbacksAdapter {
                         override fun onActivityCreated(activity: Activity, bundle: Bundle?) {
-                            super.onActivityCreated(activity, bundle)
                             startCapture(windowListenerCloseables, activity)
                         }
 
                         override fun onActivityDestroyed(activity: Activity) {
-                            super.onActivityDestroyed(activity)
                             viewCapture.stopCapture(activity.window.decorView)
                         }
                     }
