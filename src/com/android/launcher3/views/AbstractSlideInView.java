@@ -94,6 +94,8 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
 
     // range [0, 1], 0=> completely open, 1=> completely closed
     protected float mTranslationShift = TRANSLATION_SHIFT_CLOSED;
+    /** {@link #mTranslationShift} at the invocation of {@link #onDragStart(boolean, float)}. */
+    protected float mDragStartTranslationShift;
 
     protected boolean mNoIntercept;
     protected @Nullable OnCloseListener mOnCloseBeginListener;
@@ -285,18 +287,23 @@ public abstract class AbstractSlideInView<T extends Context & ActivityContext>
     /* SingleAxisSwipeDetector.Listener */
 
     @Override
-    public void onDragStart(boolean start, float startDisplacement) { }
+    public void onDragStart(boolean start, float startDisplacement) {
+        mOpenCloseAnimator.cancel();
+        mDragStartTranslationShift = mTranslationShift;
+    }
 
     @Override
     public boolean onDrag(float displacement) {
-        float range = getShiftRange();
-        displacement = Utilities.boundToRange(displacement, 0, range);
-        setTranslationShift(displacement / range);
+        setTranslationShift(Utilities.boundToRange(
+                mDragStartTranslationShift + displacement / getShiftRange(),
+                TRANSLATION_SHIFT_OPENED,
+                TRANSLATION_SHIFT_CLOSED));
         return true;
     }
 
     @Override
     public void onDragEnd(float velocity) {
+        mDragStartTranslationShift = 0;
         float successfulShiftThreshold = mActivityContext.getDeviceProfile().isTablet
                 ? TABLET_BOTTOM_SHEET_SUCCESS_TRANSITION_PROGRESS : SUCCESS_TRANSITION_PROGRESS;
         if ((mSwipeDetector.isFling(velocity) && velocity > 0)
