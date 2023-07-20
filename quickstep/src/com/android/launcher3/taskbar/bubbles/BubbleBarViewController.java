@@ -206,10 +206,12 @@ public class BubbleBarViewController {
 
     // TODO: (b/273592694) animate it
     private void updateVisibilityForStateChange() {
-        if (!mHiddenForSysui && !mBubbleStashController.isStashed() && !mHiddenForNoBubbles) {
+        if (!mHiddenForSysui && !mHiddenForNoBubbles) {
             mBarView.setVisibility(VISIBLE);
         } else {
             mBarView.setVisibility(INVISIBLE);
+            mBarView.setAlpha(0);
+            mBarView.setExpanded(false);
         }
     }
 
