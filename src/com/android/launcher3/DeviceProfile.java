@@ -546,18 +546,19 @@ public class DeviceProfile {
                     new ResourceHelper(context, inv.workspaceSpecsId));
             int availableResponsiveWidth =
                     availableWidthPx - (isVerticalBarLayout() ? hotseatBarSizePx : 0);
+            int numColumns = getPanelCount() * inv.numColumns;
             // don't use availableHeightPx because it subtracts bottom padding,
             // but the workspace go behind it
             int availableResponsiveHeight =
                     heightPx - mInsets.top - (isVerticalBarLayout() ? 0 : hotseatBarSizePx);
-            mResponsiveWidthSpec = workspaceSpecs.getCalculatedWidthSpec(inv.numColumns,
+            mResponsiveWidthSpec = workspaceSpecs.getCalculatedWidthSpec(numColumns,
                     availableResponsiveWidth);
             mResponsiveHeightSpec = workspaceSpecs.getCalculatedHeightSpec(inv.numRows,
                     availableResponsiveHeight);
 
             AllAppsSpecs allAppsSpecs = AllAppsSpecs.create(
                     new ResourceHelper(context, inv.allAppsSpecsId));
-            mAllAppsResponsiveWidthSpec = allAppsSpecs.getCalculatedWidthSpec(inv.numColumns,
+            mAllAppsResponsiveWidthSpec = allAppsSpecs.getCalculatedWidthSpec(numColumns,
                     mResponsiveWidthSpec.getAvailableSpace(), mResponsiveWidthSpec);
             mAllAppsResponsiveHeightSpec = allAppsSpecs.getCalculatedHeightSpec(inv.numRows,
                     mResponsiveHeightSpec.getAvailableSpace(), mResponsiveHeightSpec);
@@ -1205,7 +1206,6 @@ public class DeviceProfile {
         allAppsStyle.recycle();
     }
 
-    // TODO(b/288075868): Resize the icon size to make sure it will fit inside the cell size
     private void updateAvailableFolderCellDimensions(Resources res) {
         updateFolderCellSize(1f, res);
 
