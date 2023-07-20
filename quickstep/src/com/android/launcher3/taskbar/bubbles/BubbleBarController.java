@@ -277,6 +277,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
     private void applyViewChanges(BubbleBarViewUpdate update) {
         final boolean isCollapsed = (update.expandedChanged && !update.expanded)
                 || (!update.expandedChanged && !mBubbleBarViewController.isExpanded());
+        BubbleBarItem previouslySelectedBubble = mSelectedBubble;
         BubbleBarBubble bubbleToSelect = null;
         if (!update.removedBubbles.isEmpty()) {
             for (int i = 0; i < update.removedBubbles.size(); i++) {
@@ -321,6 +322,11 @@ public class BubbleBarController extends IBubblesListener.Stub {
         mBubbleBarViewController.setHiddenForBubbles(mBubbles.isEmpty());
         mBubbleStashedHandleViewController.setHiddenForBubbles(mBubbles.isEmpty());
 
+        if (mBubbles.isEmpty()) {
+            // all bubbles were removed. clear the selected bubble
+            mSelectedBubble = null;
+        }
+
         if (update.updatedBubble != null) {
             // Updates mean the dot state may have changed; any other changes were updated in
             // the populateBubble step.
@@ -357,6 +363,11 @@ public class BubbleBarController extends IBubblesListener.Stub {
         if (bubbleToSelect != null) {
             setSelectedBubble(bubbleToSelect);
         }
+
+        if (previouslySelectedBubble == null) {
+            mBubbleStashController.animateToInitialState(update.expanded);
+        }
+
         if (update.expandedChanged) {
             if (update.expanded != mBubbleBarViewController.isExpanded()) {
                 mBubbleBarViewController.setExpandedFromSysui(update.expanded);
