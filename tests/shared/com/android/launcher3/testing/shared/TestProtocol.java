@@ -157,6 +157,7 @@ public final class TestProtocol {
     public static final String TWO_TASKBAR_LONG_CLICKS = "b/262282528";
     public static final String FLAKY_ACTIVITY_COUNT = "b/260260325";
     public static final String ICON_MISSING = "b/282963545";
+    public static final String LAUNCH_SPLIT_PAIR = "b/288939273";
 
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
     public static final String REQUEST_STOP_EMULATE_DISPLAY = "stop-emulate-display";

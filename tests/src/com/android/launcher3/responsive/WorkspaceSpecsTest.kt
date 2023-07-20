@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.launcher3.workspace
+package com.android.launcher3.responsive
 
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -41,9 +41,9 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
     @Test
     fun parseValidFile() {
         val workspaceSpecs =
-            WorkspaceSpecs(TestResourceHelper(context!!, TestR.xml.valid_workspace_file))
-        assertThat(workspaceSpecs.workspaceHeightSpecList.size).isEqualTo(3)
-        assertThat(workspaceSpecs.workspaceHeightSpecList[0].toString())
+            WorkspaceSpecs.create(TestResourceHelper(context!!, TestR.xml.valid_workspace_file))
+        assertThat(workspaceSpecs.heightSpecs.size).isEqualTo(3)
+        assertThat(workspaceSpecs.heightSpecs[0].toString())
             .isEqualTo(
                 "WorkspaceSpec(" +
                     "maxAvailableSize=1533, " +
@@ -70,7 +70,7 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
                     "maxSize=2147483647)" +
                     ")"
             )
-        assertThat(workspaceSpecs.workspaceHeightSpecList[1].toString())
+        assertThat(workspaceSpecs.heightSpecs[1].toString())
             .isEqualTo(
                 "WorkspaceSpec(" +
                     "maxAvailableSize=1607, " +
@@ -97,7 +97,7 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
                     "maxSize=2147483647)" +
                     ")"
             )
-        assertThat(workspaceSpecs.workspaceHeightSpecList[2].toString())
+        assertThat(workspaceSpecs.heightSpecs[2].toString())
             .isEqualTo(
                 "WorkspaceSpec(" +
                     "maxAvailableSize=26247, " +
@@ -124,8 +124,8 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
                     "maxSize=2147483647)" +
                     ")"
             )
-        assertThat(workspaceSpecs.workspaceWidthSpecList.size).isEqualTo(1)
-        assertThat(workspaceSpecs.workspaceWidthSpecList[0].toString())
+        assertThat(workspaceSpecs.widthSpecs.size).isEqualTo(1)
+        assertThat(workspaceSpecs.widthSpecs[0].toString())
             .isEqualTo(
                 "WorkspaceSpec(" +
                     "maxAvailableSize=26247, " +
@@ -156,21 +156,29 @@ class WorkspaceSpecsTest : AbstractDeviceProfileTest() {
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_missingTag_throwsError() {
-        WorkspaceSpecs(TestResourceHelper(context!!, TestR.xml.invalid_workspace_file_case_1))
+        WorkspaceSpecs.create(
+            TestResourceHelper(context!!, TestR.xml.invalid_workspace_file_case_1)
+        )
     }
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_moreThanOneValuePerTag_throwsError() {
-        WorkspaceSpecs(TestResourceHelper(context!!, TestR.xml.invalid_workspace_file_case_2))
+        WorkspaceSpecs.create(
+            TestResourceHelper(context!!, TestR.xml.invalid_workspace_file_case_2)
+        )
     }
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_valueBiggerThan1_throwsError() {
-        WorkspaceSpecs(TestResourceHelper(context!!, TestR.xml.invalid_workspace_file_case_3))
+        WorkspaceSpecs.create(
+            TestResourceHelper(context!!, TestR.xml.invalid_workspace_file_case_3)
+        )
     }
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_matchWorkspace_true_throwsError() {
-        WorkspaceSpecs(TestResourceHelper(context!!, TestR.xml.invalid_workspace_file_case_4))
+        WorkspaceSpecs.create(
+            TestResourceHelper(context!!, TestR.xml.invalid_workspace_file_case_4)
+        )
     }
 }

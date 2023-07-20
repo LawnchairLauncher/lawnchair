@@ -41,9 +41,9 @@ class AllAppsSpecsTest : AbstractDeviceProfileTest() {
     @Test
     fun parseValidFile() {
         val allAppsSpecs =
-            AllAppsSpecs(TestResourceHelper(context!!, TestR.xml.valid_all_apps_file))
-        assertThat(allAppsSpecs.allAppsHeightSpecList.size).isEqualTo(1)
-        assertThat(allAppsSpecs.allAppsHeightSpecList[0].toString())
+            AllAppsSpecs.create(TestResourceHelper(context!!, TestR.xml.valid_all_apps_file))
+        assertThat(allAppsSpecs.heightSpecs.size).isEqualTo(1)
+        assertThat(allAppsSpecs.heightSpecs[0].toString())
             .isEqualTo(
                 "AllAppsSpec(" +
                     "maxAvailableSize=26247, " +
@@ -71,8 +71,8 @@ class AllAppsSpecsTest : AbstractDeviceProfileTest() {
                     ")"
             )
 
-        assertThat(allAppsSpecs.allAppsWidthSpecList.size).isEqualTo(1)
-        assertThat(allAppsSpecs.allAppsWidthSpecList[0].toString())
+        assertThat(allAppsSpecs.widthSpecs.size).isEqualTo(1)
+        assertThat(allAppsSpecs.widthSpecs[0].toString())
             .isEqualTo(
                 "AllAppsSpec(" +
                     "maxAvailableSize=26247, " +
@@ -103,16 +103,16 @@ class AllAppsSpecsTest : AbstractDeviceProfileTest() {
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_missingTag_throwsError() {
-        AllAppsSpecs(TestResourceHelper(context!!, TestR.xml.invalid_all_apps_file_case_1))
+        AllAppsSpecs.create(TestResourceHelper(context!!, TestR.xml.invalid_all_apps_file_case_1))
     }
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_moreThanOneValuePerTag_throwsError() {
-        AllAppsSpecs(TestResourceHelper(context!!, TestR.xml.invalid_all_apps_file_case_2))
+        AllAppsSpecs.create(TestResourceHelper(context!!, TestR.xml.invalid_all_apps_file_case_2))
     }
 
     @Test(expected = IllegalStateException::class)
     fun parseInvalidFile_valueBiggerThan1_throwsError() {
-        AllAppsSpecs(TestResourceHelper(context!!, TestR.xml.invalid_all_apps_file_case_3))
+        AllAppsSpecs.create(TestResourceHelper(context!!, TestR.xml.invalid_all_apps_file_case_3))
     }
 }

@@ -97,7 +97,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     public static final int DISPLAY_ALL_APPS = 1;
     private static final int DISPLAY_FOLDER = 2;
     protected static final int DISPLAY_TASKBAR = 5;
-    private static final int DISPLAY_SEARCH_RESULT = 6;
+    public static final int DISPLAY_SEARCH_RESULT = 6;
     private static final int DISPLAY_SEARCH_RESULT_SMALL = 7;
     public static final int DISPLAY_PREDICTION_ROW = 8;
 
@@ -630,6 +630,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         } else if (hasDot()) {
             animateDotScale(0, 1);
         }
+    }
+
+    @VisibleForTesting
+    public boolean getForceHideDot() {
+        return mForceHideDot;
     }
 
     private boolean hasDot() {

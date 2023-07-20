@@ -38,6 +38,8 @@ import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DU
 import static com.android.launcher3.QuickstepTransitionManager.SPLIT_DIVIDER_ANIM_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.SPLIT_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
+import static com.android.launcher3.testing.shared.TestProtocol.LAUNCH_SPLIT_PAIR;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 import static com.android.quickstep.views.DesktopTaskView.DESKTOP_MODE_SUPPORTED;
 
@@ -431,6 +433,7 @@ public final class TaskViewUtils {
             int initialTaskId, int secondTaskId, @NonNull TransitionInfo transitionInfo,
             SurfaceControl.Transaction t, @NonNull Runnable finishCallback) {
         if (launchingTaskView != null) {
+            testLogD(LAUNCH_SPLIT_PAIR, "composeRecentsSplitLaunchAnimator taskView not-null");
             AnimatorSet animatorSet = new AnimatorSet();
             animatorSet.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -463,7 +466,10 @@ public final class TaskViewUtils {
         TransitionInfo.Change splitRoot2 = null;
         for (int i = 0; i < transitionInfo.getChanges().size(); ++i) {
             final TransitionInfo.Change change = transitionInfo.getChanges().get(i);
-            if (change.getTaskInfo() == null) continue;
+            if (change.getTaskInfo() == null) {
+                testLogD(LAUNCH_SPLIT_PAIR, "changeTaskInfo null; change: " + change);
+                continue;
+            }
             final int taskId = change.getTaskInfo().taskId;
             final int mode = change.getMode();
 
@@ -499,6 +505,7 @@ public final class TaskViewUtils {
 
     private static void animateSplitRoot(SurfaceControl.Transaction t,
             TransitionInfo.Change splitRoot) {
+        testLogD(LAUNCH_SPLIT_PAIR, "animateSplitRoot: " + splitRoot);
         if (splitRoot != null) {
             t.show(splitRoot.getLeash());
             t.setAlpha(splitRoot.getLeash(), 1.f);
