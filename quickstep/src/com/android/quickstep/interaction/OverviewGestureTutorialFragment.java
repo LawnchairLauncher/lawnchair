@@ -41,6 +41,12 @@ public class OverviewGestureTutorialFragment extends TutorialFragment {
         super(fromTutorialMenu);
     }
 
+    @NonNull
+    @Override
+    TutorialType getDefaultTutorialType() {
+        return TutorialType.OVERVIEW_NAVIGATION;
+    }
+
     @Nullable
     @Override
     Integer getEdgeAnimationResId() {
