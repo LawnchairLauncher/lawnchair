@@ -1672,7 +1672,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (isActionMain) {
             if (!internalStateHandled) {
                 // In all these cases, only animate if we're already on home
-                closeOpenViews(isStarted());
+                AbstractFloatingView.closeAllOpenViewsExcept(
+                        this, isStarted(), AbstractFloatingView.TYPE_LISTENER);
 
                 if (!isInState(NORMAL)) {
                     // Only change state, if not already the same. This prevents cancelling any
