@@ -16,7 +16,6 @@
 package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_MOVE;
 
 import static com.android.app.animation.Interpolators.ACCELERATE_0_75;
 import static com.android.app.animation.Interpolators.DECELERATE_3;
@@ -87,6 +86,7 @@ import com.android.quickstep.util.WorkspaceRevealAnim;
 import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.LauncherRecentsView;
 import com.android.quickstep.views.RecentsView;
+import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 
 /**
  * Handles quick switching to a recent task from the home screen. To give as much flexibility to
@@ -191,6 +191,9 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
     public void onDragStart(boolean start) {
         mMotionPauseDetector.clear();
         if (start) {
+            InteractionJankMonitorWrapper.begin(mRecentsView,
+                    InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+
             mStartState = mLauncher.getStateManager().getState();
 
             mMotionPauseDetector.setOnMotionPauseListener(this::onMotionPauseDetected);
@@ -325,6 +328,7 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
         if (mMotionPauseDetector.isPaused() && noFling) {
             // Going to Overview.
             cancelAnimations();
+            InteractionJankMonitorWrapper.cancel(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
 
             StateAnimationConfig config = new StateAnimationConfig();
             config.duration = ATOMIC_DURATION_FROM_PAUSED_TO_OVERVIEW;
@@ -441,6 +445,8 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                     RecentsView.SCROLL_VIBRATION_PRIMITIVE,
                     RecentsView.SCROLL_VIBRATION_PRIMITIVE_SCALE,
                     RecentsView.SCROLL_VIBRATION_FALLBACK);
+        } else {
+            InteractionJankMonitorWrapper.cancel(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
         }
 
         nonOverviewAnim.setDuration(Math.max(xDuration, yDuration));
@@ -462,6 +468,11 @@ public class NoButtonQuickSwitchTouchController implements TouchController,
                                 : targetState.ordinal > mStartState.ordinal
                                         ? LAUNCHER_UNKNOWN_SWIPEUP
                                         : LAUNCHER_UNKNOWN_SWIPEDOWN));
+
+        if (targetState == QUICK_SWITCH_FROM_HOME) {
+            InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
+        }
+
         mLauncher.getStateManager().goToState(targetState, false, forEndCallback(this::clearState));
     }
 
