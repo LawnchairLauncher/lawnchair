@@ -285,7 +285,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         mOpeningXInterpolator = AnimationUtils.loadInterpolator(context, R.interpolator.app_open_x);
         mOpeningInterpolator = AnimationUtils.loadInterpolator(context,
-                R.interpolator.three_point_fast_out_extra_slow_in);
+                R.interpolator.emphasized_interpolator);
     }
 
     @Override
