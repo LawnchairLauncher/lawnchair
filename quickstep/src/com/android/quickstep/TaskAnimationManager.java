@@ -206,7 +206,8 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                     if (mLastAppearedTaskTargets != null) {
                         for (RemoteAnimationTarget lastTarget : mLastAppearedTaskTargets) {
                             for (RemoteAnimationTarget appearedTarget : appearedTaskTargets) {
-                                if (appearedTarget.taskId != lastTarget.taskId) {
+                                if (lastTarget != null &&
+                                        appearedTarget.taskId != lastTarget.taskId) {
                                     mController.removeTaskTarget(lastTarget.taskId);
                                 }
                             }
