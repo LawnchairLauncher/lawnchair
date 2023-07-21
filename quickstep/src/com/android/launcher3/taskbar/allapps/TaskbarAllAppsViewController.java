@@ -120,5 +120,10 @@ final class TaskbarAllAppsViewController {
         public void onAllAppsTransitionEnd(boolean toAllApps) {
             mSearchSessionController.onAllAppsTransitionEnd(toAllApps);
         }
+
+        /** Invoked on back press, returning {@code true} if the search session handled it. */
+        boolean handleSearchBackInvoked() {
+            return mSearchSessionController.handleBackInvoked();
+        }
     }
 }
