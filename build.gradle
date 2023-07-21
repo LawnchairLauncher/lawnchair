@@ -65,7 +65,7 @@ allprojects {
 ext {
     FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
     accompanist_version = '0.30.1'
-    libsu_version = '5.1.0'
+    libsu_version = '5.2.0'
     protocVersion = '3.23.4'
     room_version = '2.5.2'
     optoVersion = "1.0.18"
