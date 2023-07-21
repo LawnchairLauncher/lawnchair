@@ -214,4 +214,11 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     protected boolean isEventOverContent(MotionEvent ev) {
         return getPopupContainer().isEventOverView(mAppsView.getVisibleContainerView(), ev);
     }
+
+    @Override
+    public void onBackInvoked() {
+        if (!mAllAppsCallbacks.handleSearchBackInvoked()) {
+            super.onBackInvoked();
+        }
+    }
 }
