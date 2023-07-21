@@ -164,7 +164,7 @@ public final class TaskbarAllAppsController {
             cleanUpOverlay();
         });
         TaskbarAllAppsViewController viewController = new TaskbarAllAppsViewController(
-                mOverlayContext, mSlideInView, mControllers);
+                mOverlayContext, mSlideInView, mControllers, mSearchSessionController);
 
         viewController.show(animate);
         mAppsView = mOverlayContext.getAppsView();

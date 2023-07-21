@@ -19,6 +19,7 @@ import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_STASHED_
 import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
 
 import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.allapps.AllAppsTransitionListener;
 import com.android.launcher3.appprediction.AppsDividerView;
 import com.android.launcher3.taskbar.NavbarButtonsViewController;
 import com.android.launcher3.taskbar.TaskbarControllers;
@@ -43,7 +44,8 @@ final class TaskbarAllAppsViewController {
     TaskbarAllAppsViewController(
             TaskbarOverlayContext context,
             TaskbarAllAppsSlideInView slideInView,
-            TaskbarControllers taskbarControllers) {
+            TaskbarControllers taskbarControllers,
+            TaskbarSearchSessionController searchSessionController) {
 
         mContext = context;
         mSlideInView = slideInView;
@@ -52,7 +54,7 @@ final class TaskbarAllAppsViewController {
         mNavbarButtonsViewController = taskbarControllers.navbarButtonsViewController;
         mOverlayController = taskbarControllers.taskbarOverlayController;
 
-        mSlideInView.init(new TaskbarAllAppsCallbacks());
+        mSlideInView.init(new TaskbarAllAppsCallbacks(searchSessionController));
         setUpAppDivider();
         setUpTaskbarStashing();
     }
@@ -94,13 +96,34 @@ final class TaskbarAllAppsViewController {
         });
     }
 
-    class TaskbarAllAppsCallbacks {
+    class TaskbarAllAppsCallbacks implements AllAppsTransitionListener {
+        private final TaskbarSearchSessionController mSearchSessionController;
+
+        private TaskbarAllAppsCallbacks(TaskbarSearchSessionController searchSessionController) {
+            mSearchSessionController = searchSessionController;
+        }
+
         int getOpenDuration() {
             return mOverlayController.getOpenDuration();
         }
 
         int getCloseDuration() {
             return mOverlayController.getCloseDuration();
+        }
+
+        @Override
+        public void onAllAppsTransitionStart(boolean toAllApps) {
+            mSearchSessionController.onAllAppsTransitionStart(toAllApps);
+        }
+
+        @Override
+        public void onAllAppsTransitionEnd(boolean toAllApps) {
+            mSearchSessionController.onAllAppsTransitionEnd(toAllApps);
+        }
+
+        /** Invoked on back press, returning {@code true} if the search session handled it. */
+        boolean handleSearchBackInvoked() {
+            return mSearchSessionController.handleBackInvoked();
         }
     }
 }
