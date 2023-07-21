@@ -19,6 +19,7 @@ package com.android.launcher3.taskbar.allapps
 import android.content.Context
 import android.view.View
 import com.android.launcher3.R
+import com.android.launcher3.allapps.AllAppsTransitionListener
 import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.dragndrop.DragOptions.PreDragCondition
 import com.android.launcher3.model.data.ItemInfo
@@ -26,19 +27,23 @@ import com.android.launcher3.util.ResourceBasedOverride
 import com.android.launcher3.util.ResourceBasedOverride.Overrides
 
 /** Stub for managing the Taskbar search session. */
-open class TaskbarSearchSessionController : ResourceBasedOverride {
+open class TaskbarSearchSessionController : ResourceBasedOverride, AllAppsTransitionListener {
 
     /** Start the search session lifecycle. */
-    open fun startLifecycle() {}
+    open fun startLifecycle() = Unit
 
     /** Destroy the search session. */
-    open fun onDestroy() {}
+    open fun onDestroy() = Unit
 
     /** Updates the predicted items shown in the zero-state. */
-    open fun setZeroStatePredictedItems(items: List<ItemInfo>) {}
+    open fun setZeroStatePredictedItems(items: List<ItemInfo>) = Unit
 
     /** Updates the search suggestions shown in the zero-state. */
-    open fun setZeroStateSearchSuggestions(items: List<ItemInfo>) {}
+    open fun setZeroStateSearchSuggestions(items: List<ItemInfo>) = Unit
+
+    override fun onAllAppsTransitionStart(toAllApps: Boolean) = Unit
+
+    override fun onAllAppsTransitionEnd(toAllApps: Boolean) = Unit
 
     /** Creates a [PreDragCondition] for [view], if it is a search result that requires one. */
     open fun createPreDragConditionForSearch(view: View): PreDragCondition? = null
