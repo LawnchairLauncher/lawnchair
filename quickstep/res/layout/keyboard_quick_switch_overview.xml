@@ -22,7 +22,7 @@
     android:layout_height="@dimen/keyboard_quick_switch_taskview_height"
     android:clipToOutline="true"
     android:importantForAccessibility="yes"
-    launcher:borderColor="?androidprv:attr/materialColorOutline">
+    launcher:focusBorderColor="?androidprv:attr/materialColorOutline">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/content"
