@@ -25,6 +25,7 @@ import com.android.app.viewcapture.ViewCapture.MAIN_EXECUTOR
 import com.android.app.viewcapture.data.ExportedData
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter
 import com.android.launcher3.util.viewcapture_analysis.ViewCaptureAnalyzer
+import java.util.function.Supplier
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
@@ -35,7 +36,7 @@ import org.junit.runners.model.Statement
  *
  * This rule will not work in OOP tests that don't have access to the activity under test.
  */
-class ViewCaptureRule : TestRule {
+class ViewCaptureRule(var alreadyOpenActivitySupplier: Supplier<Activity?>) : TestRule {
     private val viewCapture = SimpleViewCapture("test-view-capture")
     var viewCaptureData: ExportedData? = null
         private set
@@ -45,6 +46,8 @@ class ViewCaptureRule : TestRule {
             override fun evaluate() {
                 viewCaptureData = null
                 val windowListenerCloseables = mutableListOf<SafeCloseable>()
+
+                startCapturingExistingActivity(windowListenerCloseables)
 
                 val lifecycleCallbacks =
                     object : ActivityLifecycleCallbacksAdapter {
@@ -77,6 +80,15 @@ class ViewCaptureRule : TestRule {
                 }
 
                 ViewCaptureAnalyzer.assertNoAnomalies(viewCaptureData)
+            }
+
+            private fun startCapturingExistingActivity(
+                windowListenerCloseables: MutableCollection<SafeCloseable>
+            ) {
+                val alreadyOpenActivity = alreadyOpenActivitySupplier.get()
+                if (alreadyOpenActivity != null) {
+                    startCapture(windowListenerCloseables, alreadyOpenActivity)
+                }
             }
 
             private fun startCapture(
