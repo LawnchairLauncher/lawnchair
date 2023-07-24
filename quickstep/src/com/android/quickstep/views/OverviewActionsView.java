@@ -22,12 +22,14 @@ import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.BaseActivity;
+import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
@@ -49,6 +51,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         implements OnClickListener, Insettable {
 
     private final Rect mInsets = new Rect();
+    private BaseDraggingActivity mActivity;
 
     @IntDef(flag = true, value = {
             HIDDEN_NON_ZERO_ROTATION,
@@ -96,7 +99,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     public static final int FLAG_SINGLE_TASK = 1 << 0;
 
     private MultiValueAlpha mMultiValueAlpha;
-    private Button mSplitButton;
+    private ImageButton mSplitButton;
 
     @ActionsHiddenFlags
     private int mHiddenFlags;
@@ -132,6 +135,8 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mActivity = BaseActivity.fromContext(getContext());
+
         mMultiValueAlpha = new MultiValueAlpha(findViewById(R.id.action_buttons), NUM_ALPHAS);
         mMultiValueAlpha.setUpdateVisibility(true);
 
@@ -273,7 +278,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         LayoutParams actionParams = (LayoutParams) findViewById(
                 R.id.action_buttons).getLayoutParams();
         actionParams.setMargins(
-                actionParams.leftMargin, mDp.overviewActionsTopMarginPx,
+                actionParams.leftMargin, 0,
                 actionParams.rightMargin, getBottomMargin());
     }
 
@@ -284,6 +289,11 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
         if (mDp.isTablet && FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get()) {
             return mDp.stashedTaskbarHeight;
+        }
+
+        if (isFloatingSearchVisible()) {
+            // Center between task and bottom of the screen.
+            return (mDp.heightPx - mTaskSize.bottom - mDp.overviewActionsHeight) / 2;
         }
 
         // Align to bottom of task Rect.
@@ -301,9 +311,12 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
 
         requestLayout();
 
-        mSplitButton.setCompoundDrawablesRelativeWithIntrinsicBounds(
-                (dp.isLandscape ? R.drawable.ic_split_horizontal : R.drawable.ic_split_vertical),
-                0, 0, 0);
+        mSplitButton.setImageResource(
+                dp.isLandscape ? R.drawable.ic_split_horizontal : R.drawable.ic_split_vertical);
+    }
+
+    protected boolean isFloatingSearchVisible() {
+        return ((RecentsView) mActivity.getOverviewPanel()).isFloatingSearchVisible();
     }
 
     /**
