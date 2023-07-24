@@ -100,7 +100,7 @@ public abstract class AbstractLauncherUiTest {
 
     private static boolean sDumpWasGenerated = false;
     private static boolean sActivityLeakReported = false;
-    private static boolean sSeenKeygard = false;
+    private static boolean sSeenKeyguard = false;
 
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
@@ -260,9 +260,9 @@ public abstract class AbstractLauncherUiTest {
     }
 
     private static void verifyKeyguardInvisible() {
-        final boolean keyguardAlreadyVisible = sSeenKeygard;
+        final boolean keyguardAlreadyVisible = sSeenKeyguard;
 
-        sSeenKeygard = sSeenKeygard
+        sSeenKeyguard = sSeenKeyguard
                 || !TestHelpers.wait(
                 Until.gone(By.res(SYSTEMUI_PACKAGE, "keyguard_status_view")), 60000);
 
@@ -270,7 +270,7 @@ public abstract class AbstractLauncherUiTest {
                 "Keyguard is visible, which is likely caused by a crash in SysUI, seeing keyguard"
                         + " for the first time = "
                         + !keyguardAlreadyVisible,
-                sSeenKeygard);
+                sSeenKeyguard);
     }
 
     @After
