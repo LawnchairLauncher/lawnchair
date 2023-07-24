@@ -22,7 +22,6 @@ import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.AbstractDeviceProfileTest
 import com.android.launcher3.responsive.ResponsiveSpec.SpecType
-import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.tests.R
 import com.android.launcher3.util.TestResourceHelper
 import com.google.common.truth.Truth.assertThat
@@ -248,13 +247,5 @@ class FolderSpecsTest : AbstractDeviceProfileTest() {
         val resourceHelper = TestResourceHelper(context!!, R.xml.valid_folders_specs)
         val folderSpecs = FolderSpecs.create(resourceHelper)
         folderSpecs.getCalculatedHeightSpec(cells, availableSpace, calculatedWorkspaceSpec)
-    }
-
-    private fun Float.dpToPx(): Float {
-        return ResourceUtils.pxFromDp(this, context!!.resources.displayMetrics).toFloat()
-    }
-
-    private fun Int.dpToPx(): Int {
-        return ResourceUtils.pxFromDp(this.toFloat(), context!!.resources.displayMetrics)
     }
 }
