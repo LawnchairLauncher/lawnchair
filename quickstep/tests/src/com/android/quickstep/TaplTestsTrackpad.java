@@ -16,12 +16,19 @@
 
 package com.android.quickstep;
 
+import static com.android.quickstep.NavigationModeSwitchRule.Mode.ZERO_BUTTON;
+
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
+import android.app.Instrumentation;
+
 import androidx.test.filters.LargeTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.tapl.LauncherInstrumentation.TrackpadGestureType;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TaplTestsLauncher3;
@@ -35,6 +42,9 @@ import org.junit.runner.RunWith;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class TaplTestsTrackpad extends AbstractQuickStepTest {
+
+    private static final String READ_DEVICE_CONFIG_PERMISSION =
+            "android.permission.READ_DEVICE_CONFIG";
 
     @Before
     public void setUp() throws Exception {
@@ -56,6 +66,29 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
         mLauncher.setTrackpadGestureType(TrackpadGestureType.THREE_FINGER);
         startTestActivity(2);
         mLauncher.goHome();
+    }
+
+    @Test
+    @PortraitLandscape
+    // TODO(b/291944684): Support back in 3-button mode. It requires triggering the logic to enable
+    //  trackpad gesture back in SysUI. Normally it's triggered by the attachment of a trackpad. We
+    //  need to figure out a way to emulate that in the test, or bypass the logic altogether.
+    @NavigationModeSwitch(mode = ZERO_BUTTON)
+    public void pressBack() throws Exception {
+        assumeTrue(mLauncher.isTablet());
+        assumeFalse(FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get());
+        Instrumentation instrumentation = InstrumentationRegistry.getInstrumentation();
+
+        try {
+            instrumentation.getUiAutomation().adoptShellPermissionIdentity(
+                    READ_DEVICE_CONFIG_PERMISSION);
+            mLauncher.setTrackpadGestureType(TrackpadGestureType.THREE_FINGER);
+
+            startTestActivity(2);
+            mLauncher.pressBack();
+        } finally {
+            instrumentation.getUiAutomation().dropShellPermissionIdentity();
+        }
     }
 
     @Test
