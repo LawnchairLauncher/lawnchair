@@ -32,6 +32,8 @@ final class AlphaJumpDetector extends AnomalyDetector {
     private static final String CONTENT = "DecorView|LinearLayout|FrameLayout:id/content|";
     private static final String DRAG_LAYER =
             CONTENT + "LauncherRootView:id/launcher|DragLayer:id/drag_layer|";
+    private static final String RECENTS_DRAG_LAYER =
+            CONTENT + "LauncherRootView:id/launcher|RecentsDragLayer:id/drag_layer|";
 
     // Paths of nodes that are excluded from analysis.
     private static final Collection<String> PATHS_TO_IGNORE = Set.of(
@@ -112,17 +114,26 @@ final class AlphaJumpDetector extends AnomalyDetector {
             DRAG_LAYER + "WidgetsFullSheet|SpringRelativeLayout:id/container",
             DRAG_LAYER + "WidgetsTwoPaneSheet|SpringRelativeLayout:id/container",
             CONTENT + "LauncherRootView:id/launcher|FloatingIconView",
-            CONTENT
-                    + "LauncherRootView|RecentsDragLayer:id/drag_layer|FallbackRecentsView:id"
-                    + "/overview_panel",
-            CONTENT
-                    + "LauncherRootView|RecentsDragLayer:id/drag_layer|NexusOverviewActionsView"
-                    + ":id/overview_actions_view|LinearLayout:id/action_buttons|Button:id"
-                    + "/action_screenshot",
-            CONTENT
-                    + "LauncherRootView|RecentsDragLayer:id/drag_layer|NexusOverviewActionsView"
-                    + ":id/overview_actions_view|LinearLayout:id/action_buttons|Button:id"
-                    + "/action_select"
+            DRAG_LAYER + "FallbackRecentsView:id/overview_panel",
+            RECENTS_DRAG_LAYER + "FallbackRecentsView:id/overview_panel",
+            DRAG_LAYER
+                    + "NexusOverviewActionsView:id/overview_actions_view"
+                    + "|LinearLayout:id/action_buttons|ImageButton:id/action_screenshot",
+            RECENTS_DRAG_LAYER
+                    + "NexusOverviewActionsView:id/overview_actions_view"
+                    + "|LinearLayout:id/action_buttons|ImageButton:id/action_screenshot",
+            DRAG_LAYER
+                    + "NexusOverviewActionsView:id/overview_actions_view"
+                    + "|LinearLayout:id/action_buttons|ImageButton:id/action_select",
+            RECENTS_DRAG_LAYER
+                    + "NexusOverviewActionsView:id/overview_actions_view"
+                    + "|LinearLayout:id/action_buttons|ImageButton:id/action_select",
+            DRAG_LAYER
+                    + "NexusOverviewActionsView:id/overview_actions_view"
+                    + "|LinearLayout:id/action_buttons|ImageButton:id/action_split",
+            RECENTS_DRAG_LAYER
+                    + "NexusOverviewActionsView:id/overview_actions_view"
+                    + "|LinearLayout:id/action_buttons|ImageButton:id/action_split"
     );
     // Minimal increase or decrease of view's alpha between frames that triggers the error.
     private static final float ALPHA_JUMP_THRESHOLD = 1f;
