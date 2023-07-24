@@ -102,6 +102,9 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
     private LoaderTask mLoaderTask;
     private boolean mIsLoaderTaskRunning;
 
+    // only allow this once per reboot to reload work apps
+    private boolean mShouldReloadWorkProfile = true;
+
     // Indicates whether the current model data is valid or not.
     // We start off with everything not loaded. After that, we assume that
     // our monitoring of the package manager provides all updates and we never
@@ -308,17 +311,19 @@ public class LauncherModel extends LauncherApps.Callback implements InstallSessi
      */
     public void onUserEvent(UserHandle user, String action) {
         if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action)
+                && mShouldReloadWorkProfile) {
+            mShouldReloadWorkProfile = false;
+            forceReload();
+        } else if (Intent.ACTION_MANAGED_PROFILE_AVAILABLE.equals(action)
                 || Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE.equals(action)) {
+            mShouldReloadWorkProfile = false;
             enqueueModelUpdateTask(new PackageUpdatedTask(
                     PackageUpdatedTask.OP_USER_AVAILABILITY_CHANGE, user));
-        }
-
-        if (UserCache.ACTION_PROFILE_LOCKED.equals(action)
+        } else if (UserCache.ACTION_PROFILE_LOCKED.equals(action)
                 || UserCache.ACTION_PROFILE_UNLOCKED.equals(action)) {
             enqueueModelUpdateTask(new UserLockStateChangedTask(
                     user, UserCache.ACTION_PROFILE_UNLOCKED.equals(action)));
-        }
-        if (UserCache.ACTION_PROFILE_ADDED.equals(action)
+        } else if (UserCache.ACTION_PROFILE_ADDED.equals(action)
                 || UserCache.ACTION_PROFILE_REMOVED.equals(action)) {
             forceReload();
         }
