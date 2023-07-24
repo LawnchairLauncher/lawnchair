@@ -99,15 +99,17 @@ public final class LauncherInstrumentation {
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 15;
     private static final int GESTURE_STEP_MS = 16;
 
-    static final Pattern EVENT_TOUCH_DOWN = getTouchEventPattern("ACTION_DOWN");
-    static final Pattern EVENT_TOUCH_UP = getTouchEventPattern("ACTION_UP");
-    private static final Pattern EVENT_TOUCH_CANCEL = getTouchEventPattern("ACTION_CANCEL");
+    static final Pattern EVENT_TOUCH_DOWN = getTouchEventPatternWithPointerCount("ACTION_DOWN");
+    static final Pattern EVENT_TOUCH_UP = getTouchEventPatternWithPointerCount("ACTION_UP");
+    private static final Pattern EVENT_TOUCH_CANCEL = getTouchEventPatternWithPointerCount(
+            "ACTION_CANCEL");
     static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
     static final Pattern EVENT_START = Pattern.compile("start:");
 
     static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
-    static final Pattern EVENT_TOUCH_CANCEL_TIS = getTouchEventPatternTIS("ACTION_CANCEL");
+    static final Pattern EVENT_TOUCH_CANCEL_TIS = getTouchEventPattern(
+            "TouchInteractionService.onInputEvent", "ACTION_CANCEL");
     static final Pattern EVENT_HOVER_ENTER_TIS = getTouchEventPatternTIS("ACTION_HOVER_ENTER");
     static final Pattern EVENT_HOVER_EXIT_TIS = getTouchEventPatternTIS("ACTION_HOVER_EXIT");
     static final Pattern EVENT_BUTTON_PRESS_TIS = getTouchEventPatternTIS("ACTION_BUTTON_PRESS");
@@ -212,30 +214,35 @@ public final class LauncherInstrumentation {
     private int mPointerCount = 0;
 
     private static Pattern getTouchEventPattern(String prefix, String action) {
-        return getTouchEventPattern(prefix, action, 1);
+        return Pattern.compile(
+                prefix + ": MotionEvent.*?action=" + action + ".*?id\\[0\\]=0"
+                        + ".*?toolType\\[0\\]=TOOL_TYPE_FINGER.*?buttonState=0.*?");
     }
 
-    private static Pattern getTouchEventPattern(String prefix, String action, int pointerCount) {
+    private static Pattern getTouchEventPatternWithPointerCount(String prefix, String action,
+            int pointerCount) {
         return Pattern.compile(
                 prefix + ": MotionEvent.*?action=" + action + ".*?id\\[0\\]=0"
                         + ".*?toolType\\[0\\]=TOOL_TYPE_FINGER.*?buttonState=0.*?pointerCount="
                         + pointerCount);
     }
 
-    private static Pattern getTouchEventPattern(String action) {
-        return getTouchEventPattern("Touch event", action);
+    private static Pattern getTouchEventPatternWithPointerCount(String action) {
+        return getTouchEventPatternWithPointerCount("Touch event", action, 1);
     }
 
-    private static Pattern getTouchEventPattern(String action, int pointerCount) {
-        return getTouchEventPattern("Touch event", action, pointerCount);
+    private static Pattern getTouchEventPatternWithPointerCount(String action, int pointerCount) {
+        return getTouchEventPatternWithPointerCount("Touch event", action, pointerCount);
     }
 
     private static Pattern getTouchEventPatternTIS(String action) {
-        return getTouchEventPattern("TouchInteractionService.onInputEvent", action);
+        return getTouchEventPatternWithPointerCount("TouchInteractionService.onInputEvent", action,
+                1);
     }
 
     private static Pattern getTouchEventPatternTIS(String action, int pointerCount) {
-        return getTouchEventPattern("TouchInteractionService.onInputEvent", action, pointerCount);
+        return getTouchEventPatternWithPointerCount("TouchInteractionService.onInputEvent", action,
+                pointerCount);
     }
 
     private static Pattern getKeyEventPattern(String action, String keyCode) {
@@ -1814,11 +1821,14 @@ public final class LauncherInstrumentation {
                         && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER
                         && gestureScope != GestureScope.OUTSIDE_WITH_KEYCODE
                         && (!isTrackpadGesture || isTwoFingerTrackpadGesture)) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN,
-                            getTouchEventPattern("ACTION_POINTER_DOWN", mPointerCount));
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, getTouchEventPatternWithPointerCount(
+                            "ACTION_POINTER_DOWN", mPointerCount));
                 }
-                expectEvent(TestProtocol.SEQUENCE_TIS, getTouchEventPatternTIS(
-                        "ACTION_POINTER_DOWN", mPointerCount));
+                if (hasTIS && (isTrackpadGestureEnabled()
+                        || getNavigationModel() != NavigationModel.THREE_BUTTON)) {
+                    expectEvent(TestProtocol.SEQUENCE_TIS, getTouchEventPatternTIS(
+                            "ACTION_POINTER_DOWN", mPointerCount));
+                }
                 pointerCount = mPointerCount;
                 break;
             case MotionEvent.ACTION_POINTER_UP:
@@ -1826,14 +1836,17 @@ public final class LauncherInstrumentation {
                         && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER
                         && gestureScope != GestureScope.OUTSIDE_WITH_KEYCODE
                         && (!isTrackpadGesture || isTwoFingerTrackpadGesture)) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN,
-                            getTouchEventPattern("ACTION_POINTER_UP", mPointerCount));
+                    expectEvent(TestProtocol.SEQUENCE_MAIN, getTouchEventPatternWithPointerCount(
+                            "ACTION_POINTER_UP", mPointerCount));
                 }
                 // When the gesture is handled outside, it's cancelled within launcher.
-                if (gestureScope != GestureScope.INSIDE_TO_OUTSIDE_WITH_KEYCODE
-                        && gestureScope != GestureScope.OUTSIDE_WITH_KEYCODE) {
-                    expectEvent(TestProtocol.SEQUENCE_TIS, getTouchEventPatternTIS(
-                            "ACTION_POINTER_UP", mPointerCount));
+                if (hasTIS && (isTrackpadGestureEnabled()
+                        || getNavigationModel() != NavigationModel.THREE_BUTTON)) {
+                    if (gestureScope != GestureScope.INSIDE_TO_OUTSIDE_WITH_KEYCODE
+                            && gestureScope != GestureScope.OUTSIDE_WITH_KEYCODE) {
+                        expectEvent(TestProtocol.SEQUENCE_TIS, getTouchEventPatternTIS(
+                                "ACTION_POINTER_UP", mPointerCount));
+                    }
                 }
                 mPointerCount--;
                 break;
