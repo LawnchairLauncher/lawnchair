@@ -543,7 +543,8 @@ public class DeviceProfile {
         // for the available height to be correct
         if (mIsResponsiveGrid) {
             WorkspaceSpecs workspaceSpecs = WorkspaceSpecs.create(
-                    new ResourceHelper(context, inv.workspaceSpecsId));
+                    new ResourceHelper(context,
+                            isTwoPanels ? inv.workspaceSpecsTwoPanelId : inv.workspaceSpecsId));
             int availableResponsiveWidth =
                     availableWidthPx - (isVerticalBarLayout() ? hotseatBarSizePx : 0);
             int numColumns = getPanelCount() * inv.numColumns;
@@ -557,14 +558,16 @@ public class DeviceProfile {
                     availableResponsiveHeight);
 
             AllAppsSpecs allAppsSpecs = AllAppsSpecs.create(
-                    new ResourceHelper(context, inv.allAppsSpecsId));
+                    new ResourceHelper(context,
+                            isTwoPanels ? inv.allAppsSpecsTwoPanelId : inv.allAppsSpecsId));
             mAllAppsResponsiveWidthSpec = allAppsSpecs.getCalculatedWidthSpec(numColumns,
                     mResponsiveWidthSpec.getAvailableSpace(), mResponsiveWidthSpec);
             mAllAppsResponsiveHeightSpec = allAppsSpecs.getCalculatedHeightSpec(inv.numRows,
                     mResponsiveHeightSpec.getAvailableSpace(), mResponsiveHeightSpec);
 
             FolderSpecs folderSpecs = FolderSpecs.create(
-                    new ResourceHelper(context, inv.folderSpecsId));
+                    new ResourceHelper(context,
+                            isTwoPanels ? inv.folderSpecsTwoPanelId : inv.folderSpecsId));
             mResponsiveFolderWidthSpec = folderSpecs.getCalculatedWidthSpec(inv.numFolderColumns,
                     mResponsiveWidthSpec.getAvailableSpace(), mResponsiveWidthSpec);
             mResponsiveFolderHeightSpec = folderSpecs.getCalculatedHeightSpec(inv.numFolderRows,

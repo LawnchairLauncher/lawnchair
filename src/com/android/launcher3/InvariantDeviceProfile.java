@@ -180,9 +180,15 @@ public class InvariantDeviceProfile {
     @XmlRes
     public int workspaceSpecsId = INVALID_RESOURCE_HANDLE;
     @XmlRes
+    public int workspaceSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
+    @XmlRes
     public int allAppsSpecsId = INVALID_RESOURCE_HANDLE;
     @XmlRes
+    public int allAppsSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
+    @XmlRes
     public int folderSpecsId = INVALID_RESOURCE_HANDLE;
+    @XmlRes
+    public int folderSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
 
     public String dbFile;
     public int defaultLayoutId;
@@ -357,8 +363,11 @@ public class InvariantDeviceProfile {
         isScalable = closestProfile.isScalable;
         devicePaddingId = closestProfile.devicePaddingId;
         workspaceSpecsId = closestProfile.mWorkspaceSpecsId;
+        workspaceSpecsTwoPanelId = closestProfile.mWorkspaceSpecsTwoPanelId;
         allAppsSpecsId = closestProfile.mAllAppsSpecsId;
+        allAppsSpecsTwoPanelId = closestProfile.mAllAppsSpecsTwoPanelId;
         folderSpecsId = closestProfile.mFolderSpecsId;
+        folderSpecsTwoPanelId = closestProfile.mFolderSpecsTwoPanelId;
         this.deviceType = deviceType;
 
         inlineNavButtonsEndSpacing = closestProfile.inlineNavButtonsEndSpacing;
@@ -805,8 +814,11 @@ public class InvariantDeviceProfile {
         private final boolean isScalable;
         private final int devicePaddingId;
         private final int mWorkspaceSpecsId;
+        private final int mWorkspaceSpecsTwoPanelId;
         private final int mAllAppsSpecsId;
+        private final int mAllAppsSpecsTwoPanelId;
         private final int mFolderSpecsId;
+        private final int mFolderSpecsTwoPanelId;
 
         public GridOption(Context context, AttributeSet attrs) {
             TypedArray a = context.obtainStyledAttributes(
@@ -871,14 +883,26 @@ public class InvariantDeviceProfile {
             if (FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE.get()) {
                 mWorkspaceSpecsId = a.getResourceId(
                         R.styleable.GridDisplayOption_workspaceSpecsId, INVALID_RESOURCE_HANDLE);
+                mWorkspaceSpecsTwoPanelId = a.getResourceId(
+                        R.styleable.GridDisplayOption_workspaceSpecsTwoPanelId,
+                        INVALID_RESOURCE_HANDLE);
                 mAllAppsSpecsId = a.getResourceId(
                         R.styleable.GridDisplayOption_allAppsSpecsId, INVALID_RESOURCE_HANDLE);
+                mAllAppsSpecsTwoPanelId = a.getResourceId(
+                        R.styleable.GridDisplayOption_allAppsSpecsTwoPanelId,
+                        INVALID_RESOURCE_HANDLE);
                 mFolderSpecsId = a.getResourceId(
                         R.styleable.GridDisplayOption_folderSpecsId, INVALID_RESOURCE_HANDLE);
+                mFolderSpecsTwoPanelId = a.getResourceId(
+                        R.styleable.GridDisplayOption_folderSpecsTwoPanelId,
+                        INVALID_RESOURCE_HANDLE);
             } else {
                 mWorkspaceSpecsId = INVALID_RESOURCE_HANDLE;
+                mWorkspaceSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
                 mAllAppsSpecsId = INVALID_RESOURCE_HANDLE;
+                mAllAppsSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
                 mFolderSpecsId = INVALID_RESOURCE_HANDLE;
+                mFolderSpecsTwoPanelId = INVALID_RESOURCE_HANDLE;
             }
 
             int inlineForRotation = a.getInt(R.styleable.GridDisplayOption_inlineQsb,
