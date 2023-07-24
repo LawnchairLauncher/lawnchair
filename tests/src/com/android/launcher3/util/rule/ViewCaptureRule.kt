@@ -23,8 +23,10 @@ import androidx.test.core.app.ApplicationProvider
 import com.android.app.viewcapture.SimpleViewCapture
 import com.android.app.viewcapture.ViewCapture.MAIN_EXECUTOR
 import com.android.app.viewcapture.data.ExportedData
+import com.android.launcher3.tapl.TestHelpers
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter
 import com.android.launcher3.util.viewcapture_analysis.ViewCaptureAnalyzer
+import org.junit.Assert.assertTrue
 import java.util.function.Supplier
 import org.junit.rules.TestRule
 import org.junit.runner.Description
@@ -79,7 +81,7 @@ class ViewCaptureRule(var alreadyOpenActivitySupplier: Supplier<Activity?>) : Te
                     MAIN_EXECUTOR.execute { windowListenerCloseables.onEach(SafeCloseable::close) }
                 }
 
-                ViewCaptureAnalyzer.assertNoAnomalies(viewCaptureData)
+                analyzeViewCapture()
             }
 
             private fun startCapturingExistingActivity(
@@ -103,5 +105,18 @@ class ViewCaptureRule(var alreadyOpenActivitySupplier: Supplier<Activity?>) : Te
                 )
             }
         }
+    }
+
+    private fun analyzeViewCapture() {
+        // OOP tests don't produce ViewCapture data
+        if (!TestHelpers.isInLauncherProcess()) return
+
+        ViewCaptureAnalyzer.assertNoAnomalies(viewCaptureData)
+
+        var frameCount = 0
+        for (i in 0 until viewCaptureData!!.windowDataCount) {
+            frameCount += viewCaptureData!!.getWindowData(i).frameDataCount
+        }
+        assertTrue("Empty ViewCapture data", frameCount > 0)
     }
 }
