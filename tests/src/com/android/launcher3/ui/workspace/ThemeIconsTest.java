@@ -147,9 +147,8 @@ public class ThemeIconsTest extends AbstractLauncherUiTest {
                 for (int i = parent.getChildCount() - 1; i >= 0; i--) {
                     viewQueue.add(parent.getChildAt(i));
                 }
-            } else if (view instanceof BubbleTextView) {
-                BubbleTextView btv = (BubbleTextView) view;
-                if (title.equals(btv.getText())) {
+            } else if (view instanceof BubbleTextView btv) {
+                if (title.equals(btv.getContentDescription().toString())) {
                     icon = btv;
                     break;
                 }
