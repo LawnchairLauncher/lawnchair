@@ -210,6 +210,9 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
     public AppIcon getAppIcon(String appName) {
         AppIcon appIcon = tryGetAppIcon(appName);
         mLauncher.assertNotNull("Unable to scroll to a clickable icon: " + appName, appIcon);
+        // appIcon.getAppName() checks for content description, so it is possible that it can have
+        // trailing words. So check if the content description contains the appName.
+        mLauncher.assertTrue("Wrong app icon name.", appIcon.getAppName().contains(appName));
         return appIcon;
     }
 
