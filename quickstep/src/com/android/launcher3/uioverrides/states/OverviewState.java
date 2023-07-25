@@ -125,33 +125,8 @@ public class OverviewState extends LauncherState {
 
     @Override
     public int getFloatingSearchBarRestingMarginBottom(Launcher launcher) {
-        if (!areElementsVisible(launcher, FLOATING_SEARCH_BAR)) {
-            return super.getFloatingSearchBarRestingMarginBottom(launcher);
-        }
-        RecentsView recentsView = launcher.getOverviewPanel();
-        DeviceProfile dp = launcher.getDeviceProfile();
-        int activeTaskMarginBottom = LayoutUtils.getShelfTrackingDistance(launcher, dp,
-                recentsView.getPagedOrientationHandler());
-        // Center between task bottom and bottom of the screen.
-        return (activeTaskMarginBottom - dp.overviewActionsHeight) / 2
-                - launcher.getResources().getDimensionPixelSize(R.dimen.qsb_shadow_height);
-    }
-
-    @Override
-    public int getFloatingSearchBarRestingMarginStart(Launcher launcher) {
-        return getFloatingSearchBarRestingMarginHorizontal(launcher);
-    }
-
-    @Override
-    public int getFloatingSearchBarRestingMarginEnd(Launcher launcher) {
-        return getFloatingSearchBarRestingMarginHorizontal(launcher);
-    }
-
-    private static int getFloatingSearchBarRestingMarginHorizontal(Launcher launcher) {
-        // Width if the search bar were to be expanded (focused).
-        int expandedWidth = launcher.getResources().getDimensionPixelSize(
-                R.dimen.overview_floating_search_width);
-        return (launcher.getDeviceProfile().widthPx - expandedWidth) / 2;
+        return areElementsVisible(launcher, FLOATING_SEARCH_BAR) ? 0
+                : super.getFloatingSearchBarRestingMarginBottom(launcher);
     }
 
     @Override

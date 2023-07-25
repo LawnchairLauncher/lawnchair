@@ -15,33 +15,23 @@
  */
 package com.android.quickstep.interaction;
 
-import android.app.Activity;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 
-/** Displays one page of the gesture nav tutorial. */
-public abstract class GestureSandboxFragment extends Fragment {
+import com.android.launcher3.R;
 
-    void onAttachedToWindow() {}
-
-    void onDetachedFromWindow() {}
+/** Displays the prompt requesting that the user rotates their device. */
+public class RotationPromptFragment extends GestureSandboxFragment {
 
     @Nullable
-    GestureSandboxFragment recreateFragment() {
-        return null;
-    }
-
-    boolean shouldDisableSystemGestures() {
-        return true;
-    }
-
-    void close() {
-        FragmentActivity activity = getActivity();
-        if (activity != null) {
-            activity.setResult(Activity.RESULT_OK);
-            activity.finish();
-        }
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.gesture_tutorial_rotation_prompt, container, false);
     }
 }

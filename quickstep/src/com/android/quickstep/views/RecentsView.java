@@ -5220,11 +5220,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         });
     }
 
-    /** @return {@code true} if floating search bar is visible in Recents. */
-    public boolean isFloatingSearchVisible() {
-        return false;
-    }
-
     public RemoteTargetHandle[] getRemoteTargetHandles() {
         return mRemoteTargetHandles;
     }
