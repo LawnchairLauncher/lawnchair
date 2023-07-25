@@ -133,7 +133,8 @@ final class AlphaJumpDetector extends AnomalyDetector {
                     + "|LinearLayout:id/action_buttons|ImageButton:id/action_split",
             RECENTS_DRAG_LAYER
                     + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|ImageButton:id/action_split"
+                    + "|LinearLayout:id/action_buttons|ImageButton:id/action_split",
+            DRAG_LAYER + "IconView"
     );
 
     /**
