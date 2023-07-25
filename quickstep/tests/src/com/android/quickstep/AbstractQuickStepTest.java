@@ -16,11 +16,17 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
+
 import static org.junit.Assert.assertTrue;
 
 import android.os.SystemProperties;
 
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.Until;
+
 import com.android.launcher3.Launcher;
+import com.android.launcher3.tapl.LaunchedAppState;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.LauncherInstrumentation.ContainerType;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
@@ -74,6 +80,21 @@ public abstract class AbstractQuickStepTest extends AbstractLauncherUiTest {
                             + expectedContainerType,
                     isStarted && !isResumed);
         }
+    }
+
+    protected void assertTestActivityIsRunning(int activityNumber, String message) {
+        assertTrue(message, mDevice.wait(
+                Until.hasObject(By.pkg(getAppPackageName()).text("TestActivity" + activityNumber)),
+                DEFAULT_UI_TIMEOUT));
+    }
+
+    protected LaunchedAppState getAndAssertLaunchedApp() {
+        final LaunchedAppState launchedAppState = mLauncher.getLaunchedAppState();
+        executeOnLauncher(launcher -> assertTrue(
+                "Launcher activity is the top activity; expecting another activity to be the top "
+                        + "one",
+                isInLaunchedApp(launcher)));
+        return launchedAppState;
     }
 
     private boolean isInLiveTileMode(Launcher launcher,
