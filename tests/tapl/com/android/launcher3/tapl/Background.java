@@ -240,76 +240,71 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                      "want to quick switch to the previous app")) {
             verifyActiveContainer();
             final boolean launcherWasVisible = mLauncher.isLauncherVisible();
-            switch (mLauncher.getNavigationModel()) {
-                case ZERO_BUTTON: {
-                    final int startX;
-                    final int startY;
-                    final int endX;
-                    final int endY;
-                    final int cornerRadius = (int) Math.ceil(mLauncher.getWindowCornerRadius());
-                    if (toRight) {
-                        // Swipe from the bottom left to the bottom right of the screen.
-                        startX = cornerRadius;
-                        startY = getSwipeStartY();
-                        endX = mLauncher.getDevice().getDisplayWidth() - cornerRadius;
-                        endY = startY;
-                    } else {
-                        // Swipe from the bottom right to the bottom left of the screen.
-                        startX = mLauncher.getDevice().getDisplayWidth() - cornerRadius;
-                        startY = getSwipeStartY();
-                        endX = cornerRadius;
-                        endY = startY;
-                    }
-
-                    LauncherInstrumentation.GestureScope gestureScope =
-                            launcherWasVisible
-                                    ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
-                                    : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER;
-                    mLauncher.executeAndWaitForEvent(
-                            () -> mLauncher.linearGesture(
-                                    startX, startY, endX, endY, 20, false, gestureScope),
-                            event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                            () -> "Quick switch gesture didn't change window state", "swiping");
-                    break;
+            if (mLauncher.getNavigationModel() == NavigationModel.ZERO_BUTTON
+                    || mLauncher.getTrackpadGestureType() == TrackpadGestureType.FOUR_FINGER) {
+                final int startX;
+                final int startY;
+                final int endX;
+                final int endY;
+                final int cornerRadius = (int) Math.ceil(mLauncher.getWindowCornerRadius());
+                if (toRight) {
+                    // Swipe from the bottom left to the bottom right of the screen.
+                    startX = cornerRadius;
+                    startY = getSwipeStartY();
+                    endX = mLauncher.getDevice().getDisplayWidth() - cornerRadius;
+                    endY = startY;
+                } else {
+                    // Swipe from the bottom right to the bottom left of the screen.
+                    startX = mLauncher.getDevice().getDisplayWidth() - cornerRadius;
+                    startY = getSwipeStartY();
+                    endX = cornerRadius;
+                    endY = startY;
                 }
 
-                case THREE_BUTTON:
-                    // Double press the recents button.
-                    UiObject2 recentsButton = mLauncher.waitForNavigationUiObject("recent_apps");
-                    if (mLauncher.isTablet()) {
-                        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
-                                LauncherInstrumentation.EVENT_TOUCH_DOWN);
-                        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
-                                LauncherInstrumentation.EVENT_TOUCH_UP);
-                    }
-                    if (mLauncher.isTrackpadGestureEnabled()) {
-                        mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
-                        mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
-                    }
-                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
-                    mLauncher.runToState(() -> recentsButton.click(), OVERVIEW_STATE_ORDINAL,
-                            "clicking Recents button for the first time");
-                    mLauncher.getOverview();
-                    if (mLauncher.isTablet()) {
-                        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
-                                LauncherInstrumentation.EVENT_TOUCH_DOWN);
-                        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
-                                LauncherInstrumentation.EVENT_TOUCH_UP);
-                    }
-                    if (mLauncher.isTrackpadGestureEnabled()) {
-                        mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
-                        mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
-                    }
-                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
-                    mLauncher.executeAndWaitForEvent(
-                            () -> recentsButton.click(),
-                            event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
-                            () -> "Pressing recents button didn't change window state",
-                            "clicking Recents button for the second time");
-                    break;
+                LauncherInstrumentation.GestureScope gestureScope =
+                        launcherWasVisible
+                                ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
+                                : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER;
+                mLauncher.executeAndWaitForEvent(
+                        () -> mLauncher.linearGesture(
+                                startX, startY, endX, endY, 20, false, gestureScope),
+                        event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
+                        () -> "Quick switch gesture didn't change window state", "swiping");
+            } else {
+                // Double press the recents button.
+                UiObject2 recentsButton = mLauncher.waitForNavigationUiObject("recent_apps");
+                if (mLauncher.isTablet()) {
+                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
+                            LauncherInstrumentation.EVENT_TOUCH_DOWN);
+                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
+                            LauncherInstrumentation.EVENT_TOUCH_UP);
+                }
+                if (mLauncher.isTrackpadGestureEnabled()) {
+                    mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
+                    mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
+                }
+                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
+                mLauncher.runToState(() -> recentsButton.click(), OVERVIEW_STATE_ORDINAL,
+                        "clicking Recents button for the first time");
+                mLauncher.getOverview();
+                if (mLauncher.isTablet()) {
+                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
+                            LauncherInstrumentation.EVENT_TOUCH_DOWN);
+                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
+                            LauncherInstrumentation.EVENT_TOUCH_UP);
+                }
+                if (mLauncher.isTrackpadGestureEnabled()) {
+                    mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
+                    mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
+                }
+                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
+                mLauncher.executeAndWaitForEvent(
+                        () -> recentsButton.click(),
+                        event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
+                        () -> "Pressing recents button didn't change window state",
+                        "clicking Recents button for the second time");
             }
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, TASK_START_EVENT);
-            return;
         }
     }
 

@@ -19,6 +19,7 @@ package com.android.quickstep;
 import static com.android.quickstep.NavigationModeSwitchRule.Mode.ZERO_BUTTON;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
@@ -30,6 +31,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.tapl.LauncherInstrumentation.TrackpadGestureType;
+import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
@@ -111,5 +113,20 @@ public class TaplTestsTrackpad extends AbstractQuickStepTest {
         mLauncher.setTrackpadGestureType(TrackpadGestureType.TWO_FINGER);
         assertNotNull("switchToAllApps() returned null",
                 mLauncher.getWorkspace().switchToAllApps());
+    }
+
+    @Test
+    @NavigationModeSwitch
+    @PortraitLandscape
+    public void testQuickSwitchFromHome() throws Exception {
+        assumeTrue(mLauncher.isTablet());
+
+        startTestActivity(2);
+        Workspace workspace = mLauncher.goHome();
+        mLauncher.setTrackpadGestureType(TrackpadGestureType.FOUR_FINGER);
+        workspace.quickSwitchToPreviousApp();
+        assertTestActivityIsRunning(2,
+                "The most recent task is not running after quick switching from home");
+        getAndAssertLaunchedApp();
     }
 }

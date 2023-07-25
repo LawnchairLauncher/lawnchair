@@ -241,16 +241,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 isInState(() -> LauncherState.OVERVIEW));
     }
 
-    private LaunchedAppState getAndAssertLaunchedApp() {
-        final LaunchedAppState launchedAppState = mLauncher.getLaunchedAppState();
-        assertNotNull("Launcher.getLaunchedApp() returned null", launchedAppState);
-        executeOnLauncher(launcher -> assertTrue(
-                "Launcher activity is the top activity; expecting another activity to be the top "
-                        + "one",
-                isInLaunchedApp(launcher)));
-        return launchedAppState;
-    }
-
     private void quickSwitchToPreviousAppAndAssert(boolean toRight) {
         final LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
         if (toRight) {
@@ -292,22 +282,22 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         startTestActivity(4);
 
         quickSwitchToPreviousAppAndAssert(true /* toRight */);
-        assertTrue("The first app we should have quick switched to is not running",
-                isTestActivityRunning(3));
+        assertTestActivityIsRunning(3,
+                "The first app we should have quick switched to is not running");
 
         quickSwitchToPreviousAppAndAssert(true /* toRight */);
         if (mLauncher.getNavigationModel() == NavigationModel.THREE_BUTTON) {
             // 3-button mode toggles between 2 apps, rather than going back further.
-            assertTrue("Second quick switch should have returned to the first app.",
-                    isTestActivityRunning(4));
+            assertTestActivityIsRunning(4,
+                    "Second quick switch should have returned to the first app.");
         } else {
-            assertTrue("The second app we should have quick switched to is not running",
-                    isTestActivityRunning(2));
+            assertTestActivityIsRunning(2,
+                    "The second app we should have quick switched to is not running");
         }
 
         quickSwitchToPreviousAppAndAssert(false /* toRight */);
-        assertTrue("The 2nd app we should have quick switched to is not running",
-                isTestActivityRunning(3));
+        assertTestActivityIsRunning(3,
+                "The 2nd app we should have quick switched to is not running");
 
         final LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
         launchedAppState.switchToOverview();
@@ -331,9 +321,9 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         // Quick-switch to the test app with swiping to right.
         quickSwitchToPreviousAppAndAssert(true /* toRight */);
 
-        assertTrue("The first app we should have quick switched to is not running",
-                isTestActivityRunning(2));
-
+        assertTestActivityIsRunning(2,
+                "The first app we should have quick switched to is not running");
+        // Expect task bar visible when the launched app was the test activity.
         launchedAppState = getAndAssertLaunchedApp();
 
         Log.e(FLAKY_QUICK_SWITCH_TO_PREVIOUS_APP,
@@ -347,12 +337,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         }
     }
 
-    private boolean isTestActivityRunning(int activityNumber) {
-        return mDevice.wait(Until.hasObject(By.pkg(getAppPackageName())
-                        .text("TestActivity" + activityNumber)),
-                DEFAULT_UI_TIMEOUT);
-    }
-
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
@@ -360,8 +344,8 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     public void testQuickSwitchFromHome() throws Exception {
         startTestActivity(2);
         mLauncher.goHome().quickSwitchToPreviousApp();
-        assertTrue("The most recent task is not running after quick switching from home",
-                isTestActivityRunning(2));
+        assertTestActivityIsRunning(2,
+                "The most recent task is not running after quick switching from home");
         getAndAssertLaunchedApp();
     }
 
