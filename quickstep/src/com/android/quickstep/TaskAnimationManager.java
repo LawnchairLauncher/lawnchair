@@ -19,6 +19,7 @@ import static android.app.WindowConfiguration.ACTIVITY_TYPE_HOME;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.NavigationMode.NO_BUTTON;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_INITIALIZED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_STARTED;
@@ -37,6 +38,7 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.views.DesktopTaskView;
@@ -162,10 +164,16 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
 
                 for (RemoteAnimationTarget compat : appearedTaskTargets) {
                     if (compat.windowConfiguration.getActivityType() == ACTIVITY_TYPE_HOME
-                            && activityInterface.getCreatedActivity() instanceof RecentsActivity) {
-                        // When receive opening home activity while recents is running, enter home
-                        // and dismiss recents.
-                        ((RecentsActivity) activityInterface.getCreatedActivity()).startHome();
+                            && activityInterface.getCreatedActivity() instanceof RecentsActivity
+                            && DisplayController.getNavigationMode(mCtx) != NO_BUTTON) {
+                        // The only time we get onTasksAppeared() in button navigation with a
+                        // 3p launcher is if the user goes to overview first, and in this case we
+                        // can immediately finish the transition
+                        RecentsView recentsView =
+                                activityInterface.getCreatedActivity().getOverviewPanel();
+                        if (recentsView != null) {
+                            recentsView.finishRecentsAnimation(true, null);
+                        }
                         return;
                     }
                 }
