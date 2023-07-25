@@ -42,6 +42,12 @@ public class BackGestureTutorialFragment extends TutorialFragment {
         super(fromTutorialMenu);
     }
 
+    @NonNull
+    @Override
+    TutorialType getDefaultTutorialType() {
+        return TutorialType.BACK_NAVIGATION;
+    }
+
     @Nullable
     @Override
     Integer getEdgeAnimationResId() {
