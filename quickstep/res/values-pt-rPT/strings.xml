@@ -58,8 +58,8 @@
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Voltar"</string>
     <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Deslize rapidamente a partir da extremidade esquerda ou direita para o meio do ecrã"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Deslize rapidamente com o dedo a partir do limite inferior do ecrã"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Garanta que não faz uma pausa antes de soltar"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Garanta que desliza rapidamente com o dedo para cima"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Não faça uma pausa antes de soltar"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Deslize rapidamente com o dedo para cima"</string>
     <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Concluiu o gesto para aceder ao ecrã principal. A seguir, saiba como retroceder."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Concluiu o gesto para aceder ao ecrã principal"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Deslize rapidamente com o dedo para aceder ao ecrã principal"</string>

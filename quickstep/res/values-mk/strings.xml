@@ -50,7 +50,7 @@
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Повлечете од десниот или левиот раб кон средината на екранот и пуштете"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Научивте како да повлекувате оддесно за враќање назад. Научете и како да се префрлате помеѓу апликациите."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Завршивте со упатството за враќање назад"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Не повлекувајте преблиску до долниот раб на екранот"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Не повлекувајте преблиску до дното на екранот"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"За да ја промените чувствителноста, одете во „Поставки“"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Повлечете за да се вратите назад"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"За да се вратите на последниот екран, повлечете од левиот или десниот раб кон средината на екранот."</string>
@@ -60,7 +60,7 @@
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Повлечете нагоре од долниот раб на екранот"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Не правете пауза пред да пуштите"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Повлечете право нагоре"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Го научивте движењето за враќање на почетниот екран. Следно, дознајте како да се вратите назад."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Го научивте движењето за отворање на почетниот екран. Научете го и движењето за враќање назад."</string>
     <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Го научивте движењето за враќање на почетниот екран"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Повлечете за да одите на почетниот екран"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Повлечете нагоре од долниот раб на екранот. Ова движење секогаш ќе ве одведе на почетниот екран."</string>

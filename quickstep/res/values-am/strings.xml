@@ -33,12 +33,12 @@
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"የእርስዎ የሚገመቱ መተግበሪያዎች"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"በመነሻ ገጽዎ ታችኛው ረድፍ ላይ የመተግበሪያ አስተያየት ጥቆማዎችን ያግኙ"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"በመነሻ ማያ ገጽዎ የተወዳጆች ረድፍ ላይ የመተግበሪያ አስተያየት ጥቆማዎችን ያግኙ"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"በጣም ስራ ላይ የዋሉ መተግበሪያዎችዎን በቀላሉ ከመነሻ ገጹ ሆነው ይድረሱባቸው። የአስተያየት ጥቆማዎች በእርስዎ ዕለት ተዕለት ተግባራት ላይ በመመስረት ይቀየራሉ። በታችኛው ረድፍ ላይ ያሉ መተግበሪያዎች ወደ መነሻ ገጽዎ ይወሰዳሉ።"</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"በጣም ሥራ ላይ የዋሉ መተግበሪያዎችዎን በቀላሉ ከመነሻ ገጹ ሆነው ይድረሱባቸው። የአስተያየት ጥቆማዎች በእርስዎ ዕለት ተዕለት ተግባራት ላይ በመመስረት ይቀየራሉ። በታችኛው ረድፍ ላይ ያሉ መተግበሪያዎች ወደ መነሻ ገጽዎ ይወሰዳሉ።"</string>
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"በጣም ሥራ ላይ የዋሉ መተግበሪያዎችዎን በቀላሉ ከመነሻ ገጹ ሆነው ይድረሱባቸው። የአስተያየት ጥቆማዎች በእርስዎ ዕለት ተዕለት ተግባራት ላይ በመመሥረት ይቀየራሉ። በተወዳጆች ረድፍ ውስጥ ያሉ መተግበሪያዎች ወደ የእርስዎ መነሻ ማያ ገፅ ይንቀሳቀሳሉ።"</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"የመተግበሪያ አስተያየት ጥቆማዎችን አግኝ"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"አይ፣ አመሰግናለሁ"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"ቅንብሮች"</string>
-    <string name="hotseat_auto_enrolled" msgid="522100018967146807">"በብዛት ስራ ላይ የዋሉ መተግበሪያዎች እዚህ ይመጣሉ፣ እና በዕለት ተዕለት ተግባራት ላይ በመመስረት ይቀየራሉ"</string>
+    <string name="hotseat_auto_enrolled" msgid="522100018967146807">"በብዛት ሥራ ላይ የዋሉ መተግበሪያዎች እዚህ ይመጣሉ፣ እና በዕለት ተዕለት ተግባራት ላይ በመመስረት ይቀየራሉ"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"የመተግበሪያ ጥቆማዎችን ለማግኘት መተግበሪያዎችን ከታችኛው ረድፍ ይጎትቱ"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"የመተግበሪያ አስተያየት ጥቆማዎች ወደ ባዶ ቦታ ታክለዋል"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"የመተግበሪያ አስተያየት ጥቆማዎች ነቅቷል"</string>
