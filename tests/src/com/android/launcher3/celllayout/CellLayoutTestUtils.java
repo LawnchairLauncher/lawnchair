@@ -42,7 +42,7 @@ public class CellLayoutTestUtils {
                         params.getCellX(), params.getCellY(),
                         launcher.getWorkspace().getIdForScreen(cellLayout), CONTAINER_DESKTOP);
                 int screenId = pos.screenId;
-                if (screenId > boards.size() - 1) {
+                for (int j = boards.size(); j <= screenId; j++) {
                     boards.add(new CellLayoutBoard(cellLayout.getCountX(), cellLayout.getCountY()));
                 }
                 CellLayoutBoard board = boards.get(screenId);
