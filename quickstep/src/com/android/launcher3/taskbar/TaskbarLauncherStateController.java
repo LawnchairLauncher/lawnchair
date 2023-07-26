@@ -204,7 +204,7 @@ public class TaskbarLauncherStateController {
                     updateStateForFlag(FLAG_LAUNCHER_IN_STATE_TRANSITION, false);
                     // TODO(b/279514548) Cleans up bad state that can occur when user interacts with
                     // taskbar on top of transparent activity.
-                    if (finalState == LauncherState.NORMAL && mLauncher.isResumed()) {
+                    if (finalState == LauncherState.NORMAL && mLauncher.hasBeenResumed()) {
                         updateStateForFlag(FLAG_RESUMED, true);
                     }
                     applyState();
