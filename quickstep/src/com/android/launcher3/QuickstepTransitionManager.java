@@ -1046,7 +1046,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         boolean allowBlurringLauncher = mLauncher.getStateManager().getState() != OVERVIEW
                 && BlurUtils.supportsBlursOnWindows();
 
-        MyDepthController depthController = new MyDepthController(mLauncher);
+        LaunchDepthController depthController = new LaunchDepthController(mLauncher);
         ObjectAnimator backgroundRadiusAnim = ObjectAnimator.ofFloat(depthController.stateDepth,
                         MULTI_PROPERTY_VALUE, BACKGROUND_APP.getDepth(mLauncher))
                 .setDuration(APP_LAUNCH_DURATION);
@@ -2047,11 +2047,14 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
     }
 
-    private static class MyDepthController extends DepthController {
-        MyDepthController(Launcher l) {
-            super(l);
+    private static class LaunchDepthController extends DepthController {
+        LaunchDepthController(QuickstepLauncher launcher) {
+            super(launcher);
             setCrossWindowBlursEnabled(
                     CrossWindowBlurListeners.getInstance().isCrossWindowBlurEnabled());
+            // Make sure that the starting value matches the current depth set by the main
+            // controller.
+            stateDepth.setValue(launcher.getDepthController().stateDepth.getValue());
         }
     }
 }
