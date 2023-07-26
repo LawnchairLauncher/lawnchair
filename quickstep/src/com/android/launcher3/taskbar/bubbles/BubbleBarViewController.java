@@ -152,6 +152,11 @@ public class BubbleBarViewController {
         return mBarView.getBubbleBarBounds();
     }
 
+    /** The horizontal margin of the bubble bar from the edge of the screen. */
+    public int getHorizontalMargin() {
+        return mBarView.getHorizontalMargin();
+    }
+
     /**
      * When the bubble bar is not stashed, it can be collapsed (the icons are in a stack) or
      * expanded (the icons are in a row). This indicates whether the bubble bar is expanded.

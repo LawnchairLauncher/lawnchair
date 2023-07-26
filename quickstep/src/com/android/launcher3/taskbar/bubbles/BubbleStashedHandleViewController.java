@@ -123,13 +123,15 @@ public class BubbleStashedHandleViewController {
     private void updateBounds() {
         // As more bubbles get added, the icon bounds become larger. To ensure a consistent
         // handle bar position, we pin it to the edge of the screen.
-        Rect bubblebarRect = mBarViewController.getBubbleBarBounds();
+        final int right =
+                mActivity.getDeviceProfile().widthPx - mBarViewController.getHorizontalMargin();
+
         final int stashedCenterY = mStashedHandleView.getHeight() - mStashedTaskbarHeight / 2;
 
         mStashedHandleBounds.set(
-                bubblebarRect.right - mStashedHandleWidth,
+                right - mStashedHandleWidth,
                 stashedCenterY - mStashedHandleHeight / 2,
-                bubblebarRect.right,
+                right,
                 stashedCenterY + mStashedHandleHeight / 2);
         mStashedHandleView.updateSampledRegion(mStashedHandleBounds);
 
@@ -240,9 +242,6 @@ public class BubbleStashedHandleViewController {
      */
     public Animator createRevealAnimToIsStashed(boolean isStashed) {
         Rect bubbleBarBounds = new Rect(mBarViewController.getBubbleBarBounds());
-        // the bubble bar may have been invisible when the bounds were previously calculated,
-        // update them again to ensure they're correct.
-        updateBounds();
 
         // Account for the full visual height of the bubble bar
         int heightDiff = (mBarSize - bubbleBarBounds.height()) / 2;
