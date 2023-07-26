@@ -2735,11 +2735,13 @@ public class CellLayout extends ViewGroup {
     }
 
     public boolean isOccupied(int x, int y) {
-        if (x < mCountX && y < mCountY) {
+        if (x >= 0 && x < mCountX && y >= 0 && y < mCountY) {
             return mOccupied.cells[x][y];
-        } else {
+        }
+        if (BuildConfig.IS_STUDIO_BUILD) {
             throw new RuntimeException("Position exceeds the bound of this CellLayout");
         }
+        return true;
     }
 
     @Override
