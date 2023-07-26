@@ -201,7 +201,8 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected TestRule getRulesInsideActivityMonitor() {
-        final ViewCaptureRule viewCaptureRule = new ViewCaptureRule();
+        final ViewCaptureRule viewCaptureRule = new ViewCaptureRule(
+                Launcher.ACTIVITY_TRACKER::getCreatedActivity);
         final RuleChain inner = RuleChain
                 .outerRule(new PortraitLandscapeRunner(this))
                 .around(new FailureWatcher(mLauncher, viewCaptureRule::getViewCaptureData))
