@@ -265,6 +265,11 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         return anim
     }
 
+    /** Removes the split instructions view from [launcher] drag layer. */
+    fun removeSplitInstructionsView(launcher: StatefulActivity<*>) {
+        safeRemoveViewFromDragLayer(launcher, splitInstructionsView)
+    }
+
     private fun safeRemoveViewFromDragLayer(launcher: StatefulActivity<*>, view: View?) {
         if (view != null) {
             launcher.dragLayer.removeView(view)

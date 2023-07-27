@@ -169,6 +169,7 @@ public class SplitToWorkspaceController {
             private void cleanUp() {
                 mLauncher.getDragLayer().removeView(firstFloatingTaskView);
                 mLauncher.getDragLayer().removeView(secondFloatingTaskView);
+                mController.getSplitAnimationController().removeSplitInstructionsView(mLauncher);
                 mController.resetState();
             }
         });
