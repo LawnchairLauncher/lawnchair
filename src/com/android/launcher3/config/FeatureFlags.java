@@ -187,6 +187,17 @@ public final class FeatureFlags {
             "ENABLE_PARAMETRIZE_REORDER", DISABLED,
             "Enables generating the reorder using a set of parameters");
 
+    public static final BooleanFlag ENABLE_TWO_PANEL_HOME = getDebugFlag(270392643,
+            "ENABLE_TWO_PANEL_HOME", ENABLED,
+            "Uses two panel on home screen. Only applicable on large screen devices.");
+
+    public static final BooleanFlag FOLDABLE_WORKSPACE_REORDER = getDebugFlag(270395070,
+            "FOLDABLE_WORKSPACE_REORDER", DISABLED,
+            "In foldables, when reordering the icons and widgets, is now going to use both sides");
+
+    public static final BooleanFlag FOLDABLE_SINGLE_PAGE = getDebugFlag(270395274,
+            "FOLDABLE_SINGLE_PAGE", DISABLED, "Use a single page for the workspace");
+
     // TODO(Block 12): Clean up flags
     public static final BooleanFlag ENABLE_MULTI_INSTANCE = getDebugFlag(270396680,
             "ENABLE_MULTI_INSTANCE", DISABLED,
