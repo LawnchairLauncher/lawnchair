@@ -129,7 +129,7 @@ public final class FeatureFlags {
 
     // TODO(Block 5): Clean up flags
     public static final BooleanFlag ENABLE_TWOLINE_DEVICESEARCH = getDebugFlag(201388851,
-            "ENABLE_TWOLINE_DEVICESEARCH", TEAMFOOD,
+            "ENABLE_TWOLINE_DEVICESEARCH", ENABLED,
             "Enable two line label for icons with labels on device search.");
 
     public static final BooleanFlag ENABLE_ICON_IN_TEXT_HEADER = getDebugFlag(270395143,
@@ -227,7 +227,7 @@ public final class FeatureFlags {
             "COLLECT_SEARCH_HISTORY", DISABLED, "Allow launcher to collect search history for log");
 
     public static final BooleanFlag ENABLE_TWOLINE_ALLAPPS = getDebugFlag(270390937,
-            "ENABLE_TWOLINE_ALLAPPS", TEAMFOOD, "Enables two line label inside all apps.");
+            "ENABLE_TWOLINE_ALLAPPS", ENABLED, "Enables two line label inside all apps.");
 
     public static final BooleanFlag IME_STICKY_SNACKBAR_EDU = getDebugFlag(270391693,
             "IME_STICKY_SNACKBAR_EDU", ENABLED, "Show sticky IME edu in AllApps");
