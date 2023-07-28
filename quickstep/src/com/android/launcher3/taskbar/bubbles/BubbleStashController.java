@@ -201,7 +201,7 @@ public class BubbleStashController {
     public void onSysuiLockedStateChange(boolean isSysuiLocked) {
         if (isSysuiLocked != mIsSysuiLocked) {
             mIsSysuiLocked = isSysuiLocked;
-            if (!mIsSysuiLocked) {
+            if (!mIsSysuiLocked && mBarViewController.hasBubbles()) {
                 animateToInitialState(false /* expanding */);
             }
         }
