@@ -343,8 +343,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             boolean isRtlEnabled = !mIsRecentsRtl;
             mPositionHelper.updateThumbnailMatrix(
                     mThumbnailPosition, mThumbnailData, mTaskRect.width(), mTaskRect.height(),
-                    mDp.widthPx, mDp.heightPx, mDp.taskbarHeight, mDp.isTablet,
-                    mOrientationState.getRecentsActivityRotation(), isRtlEnabled);
+                    mDp.isTablet, mOrientationState.getRecentsActivityRotation(), isRtlEnabled);
             mPositionHelper.getMatrix().invert(mInversePositionMatrix);
             if (DEBUG) {
                 Log.d(TAG, " taskRect: " + mTaskRect);
@@ -353,7 +352,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
         float fullScreenProgress = Utilities.boundToRange(this.fullScreenProgress.value, 0, 1);
         mCurrentFullscreenParams.setProgress(fullScreenProgress, recentsViewScale.value,
-                /* taskViewScale= */1f, mTaskRect.width(), mDp, mPositionHelper);
+                /* taskViewScale= */1f);
 
         // Apply thumbnail matrix
         float taskWidth = mTaskRect.width();
