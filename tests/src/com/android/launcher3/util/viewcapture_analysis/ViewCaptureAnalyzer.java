@@ -40,6 +40,9 @@ public class ViewCaptureAnalyzer {
      * Detector of one kind of anomaly.
      */
     abstract static class AnomalyDetector {
+        // Index of this detector in ViewCaptureAnalyzer.ANOMALY_DETECTORS
+        public int detectorOrdinal;
+
         /**
          * Initializes fields of the node that are specific to the anomaly detected by this
          * detector.
@@ -64,9 +67,13 @@ public class ViewCaptureAnalyzer {
     }
 
     // All detectors. They will be invoked in the order listed here.
-    private static final Iterable<AnomalyDetector> ANOMALY_DETECTORS = Arrays.asList(
+    private static final AnomalyDetector[] ANOMALY_DETECTORS = {
             new AlphaJumpDetector()
-    );
+    };
+
+    static {
+        for (int i = 0; i < ANOMALY_DETECTORS.length; ++i) ANOMALY_DETECTORS[i].detectorOrdinal = i;
+    }
 
     // A view from view capture data converted to a form that's convenient for detecting anomalies.
     static class AnalysisNode {
@@ -86,7 +93,11 @@ public class ViewCaptureAnalyzer {
         public int frameN;
         public ViewNode viewCaptureNode;
 
-        public boolean ignoreAlphaJumps;
+        // Class name + resource id
+        public String nodeIdentity;
+
+        // Collection of detector-specific data for this node.
+        public final Object[] detectorsData = new Object[ANOMALY_DETECTORS.length];
 
         @Override
         public String toString() {
@@ -139,7 +150,7 @@ public class ViewCaptureAnalyzer {
         for (AnalysisNode info : lastSeenNodes.values()) {
             if (info.frameN == frameN - 1) {
                 if (!info.viewCaptureNode.getWillNotDraw()) {
-                    ANOMALY_DETECTORS.forEach(
+                    Arrays.stream(ANOMALY_DETECTORS).forEach(
                             detector -> detector.detectAnomalies(
                                     /* oldInfo = */ info,
                                     /* newInfo = */ null,
@@ -177,6 +188,8 @@ public class ViewCaptureAnalyzer {
         final AnalysisNode newAnalysisNode = new AnalysisNode();
         newAnalysisNode.className = viewCaptureData.getClassname(classIndex);
         newAnalysisNode.resourceId = viewCaptureNode.getId();
+        newAnalysisNode.nodeIdentity =
+                getNodeIdentity(newAnalysisNode.className, newAnalysisNode.resourceId);
         newAnalysisNode.parent = parent;
         newAnalysisNode.left = left;
         newAnalysisNode.top = top;
@@ -185,12 +198,13 @@ public class ViewCaptureAnalyzer {
         newAnalysisNode.alpha = alpha;
         newAnalysisNode.frameN = frameN;
         newAnalysisNode.viewCaptureNode = viewCaptureNode;
-        ANOMALY_DETECTORS.forEach(detector -> detector.initializeNode(newAnalysisNode));
+        Arrays.stream(ANOMALY_DETECTORS).forEach(
+                detector -> detector.initializeNode(newAnalysisNode));
 
         // Detect anomalies for the view
         final AnalysisNode oldAnalysisNode = lastSeenNodes.get(hashcode); // may be null
         if (frameN != 0 && !viewCaptureNode.getWillNotDraw()) {
-            ANOMALY_DETECTORS.forEach(
+            Arrays.stream(ANOMALY_DETECTORS).forEach(
                     detector -> detector.detectAnomalies(oldAnalysisNode, newAnalysisNode, frameN));
         }
         lastSeenNodes.put(hashcode, newAnalysisNode);
@@ -221,18 +235,18 @@ public class ViewCaptureAnalyzer {
         return className.substring(className.lastIndexOf(".") + 1);
     }
 
-    static String diagPathFromRoot(AnalysisNode nodeBox) {
-        final StringBuilder path = new StringBuilder(diagPathElement(nodeBox));
+    private static String diagPathFromRoot(AnalysisNode nodeBox) {
+        final StringBuilder path = new StringBuilder(nodeBox.nodeIdentity);
         for (AnalysisNode ancestor = nodeBox.parent; ancestor != null; ancestor = ancestor.parent) {
-            path.insert(0, diagPathElement(ancestor) + "|");
+            path.insert(0, ancestor.nodeIdentity + "|");
         }
         return path.toString();
     }
 
-    private static String diagPathElement(AnalysisNode nodeBox) {
+    private static String getNodeIdentity(String className, String resourceId) {
         final StringBuilder sb = new StringBuilder();
-        sb.append(classNameToSimpleName(nodeBox.className));
-        if (!"NO_ID".equals(nodeBox.resourceId)) sb.append(":" + nodeBox.resourceId);
+        sb.append(classNameToSimpleName(className));
+        if (!"NO_ID".equals(resourceId)) sb.append(":" + resourceId);
         return sb.toString();
     }
 }
