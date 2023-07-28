@@ -16,10 +16,8 @@
 
 package com.android.launcher3.widget;
 
-import static com.android.app.animation.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.Utilities.ATLEAST_R;
 
-import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Insets;
@@ -134,10 +132,7 @@ public class AddItemWidgetsBottomSheet extends AbstractSlideInView<AddItemActivi
             return;
         }
         mIsOpen = true;
-        mOpenCloseAnimator.setValues(
-                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-        mOpenCloseAnimator.setInterpolator(FAST_OUT_SLOW_IN);
-        mOpenCloseAnimator.start();
+        setUpDefaultOpenAnimator().start();
     }
 
     @Override
