@@ -16,6 +16,7 @@
 package com.android.launcher3.celllayout;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 import static com.android.launcher3.ui.TestViewHelpers.findWidgetProvider;
 import static com.android.launcher3.util.WidgetUtils.createWidgetInfo;
@@ -43,9 +44,9 @@ import java.util.stream.IntStream;
 public class TestWorkspaceBuilder {
 
     private static final String TAG = "CellLayoutBoardBuilder";
-    private static final ComponentName APP_COMPONENT_NAME = new ComponentName(
+    private static final String TEST_ACTIVITY_PACKAGE_PREFIX = "com.android.launcher3.tests.";
+    private ComponentName mAppComponentName = new ComponentName(
             "com.google.android.calculator", "com.android.calculator2.Calculator");
-
     private UserHandle mMyUser;
 
     private Context mContext;
@@ -80,8 +81,20 @@ public class TestWorkspaceBuilder {
     }
 
     private AppInfo getApp() {
-        return new AppInfo(APP_COMPONENT_NAME, "test icon", mMyUser,
-                AppInfo.makeLaunchIntent(APP_COMPONENT_NAME));
+        return new AppInfo(mAppComponentName, "test icon", mMyUser,
+                AppInfo.makeLaunchIntent(mAppComponentName));
+    }
+
+    /**
+     * Helper to set the app to use for the test workspace,
+     *  using activity-alias from AndroidManifest-common.
+     * @param testAppName the android:name field of the test app activity-alias to use
+     */
+    public void setTestAppActivityAlias(String testAppName) {
+        this.mAppComponentName = new ComponentName(
+            getInstrumentation().getContext().getPackageName(),
+        TEST_ACTIVITY_PACKAGE_PREFIX + testAppName
+        );
     }
 
     private void addCorrespondingWidgetRect(CellLayoutBoard.WidgetRect widgetRect,
