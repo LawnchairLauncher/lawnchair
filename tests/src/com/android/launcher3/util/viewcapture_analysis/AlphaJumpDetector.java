@@ -15,13 +15,12 @@
  */
 package com.android.launcher3.util.viewcapture_analysis;
 
-import static com.android.launcher3.util.viewcapture_analysis.ViewCaptureAnalyzer.diagPathFromRoot;
-
 import com.android.launcher3.util.viewcapture_analysis.ViewCaptureAnalyzer.AnalysisNode;
 import com.android.launcher3.util.viewcapture_analysis.ViewCaptureAnalyzer.AnomalyDetector;
 
-import java.util.Collection;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Anomaly detector that triggers an error when alpha of a view changes too rapidly.
@@ -34,7 +33,7 @@ final class AlphaJumpDetector extends AnomalyDetector {
             CONTENT + "LauncherRootView:id/launcher|DragLayer:id/drag_layer|";
 
     // Paths of nodes that are excluded from analysis.
-    private static final Collection<String> PATHS_TO_IGNORE = Set.of(
+    private static final Iterable<String> PATHS_TO_IGNORE = List.of(
             CONTENT
                     + "AddItemDragLayer:id/add_item_drag_layer|AddItemWidgetsBottomSheet:id"
                     + "/add_item_bottom_sheet|LinearLayout:id/add_item_bottom_sheet_content"
@@ -126,15 +125,80 @@ final class AlphaJumpDetector extends AnomalyDetector {
                     + ":id/overview_actions_view|LinearLayout:id/action_buttons|Button:id"
                     + "/action_select"
     );
+
+    /**
+     * Element of the tree of ignored nodes.
+     * If the "children" map is empty, then this node should be ignored, i.e. alpha jumps analysis
+     * shouldn't run for it.
+     * I.e. ignored nodes correspond to the leaves in the ignored nodes tree.
+     */
+    private static class IgnoreNode {
+        // Map from child node identities to ignore-nodes for these children.
+        public final Map<String, IgnoreNode> children = new HashMap<>();
+    }
+
+    private static final IgnoreNode IGNORED_NODES_ROOT = buildIgnoreNodesTree();
+
+    // Converts the list of full paths of nodes to ignore to a more efficient tree of ignore-nodes.
+    private static IgnoreNode buildIgnoreNodesTree() {
+        final IgnoreNode root = new IgnoreNode();
+        for (String pathToIgnore : PATHS_TO_IGNORE) {
+            // Scan the diag path of an ignored node and add its elements into the tree.
+            IgnoreNode currentIgnoreNode = root;
+            for (String part : pathToIgnore.split("\\|")) {
+                // Ensure that the child of the node is added to the tree.
+                IgnoreNode child = currentIgnoreNode.children.get(part);
+                if (child == null) {
+                    currentIgnoreNode.children.put(part, child = new IgnoreNode());
+                }
+                currentIgnoreNode = child;
+            }
+        }
+        return root;
+    }
+
     // Minimal increase or decrease of view's alpha between frames that triggers the error.
     private static final float ALPHA_JUMP_THRESHOLD = 1f;
 
+    // Per-AnalysisNode data that's specific to this detector.
+    private static class NodeData {
+        public boolean ignoreAlphaJumps;
+
+        // If ignoreNode is null, then this AnalysisNode node will be ignored if its parent is
+        // ignored.
+        // Otherwise, this AnalysisNode will be ignored if ignoreNode is a leaf i.e. has no
+        // children.
+        public IgnoreNode ignoreNode;
+    }
+
+    private NodeData getNodeData(AnalysisNode info) {
+        return (NodeData) info.detectorsData[detectorOrdinal];
+    }
+
     @Override
     void initializeNode(AnalysisNode info) {
+        final NodeData nodeData = new NodeData();
+        info.detectorsData[detectorOrdinal] = nodeData;
+
         // If the parent view ignores alpha jumps, its descendants will too.
-        final boolean parentIgnoreAlphaJumps = info.parent != null && info.parent.ignoreAlphaJumps;
-        info.ignoreAlphaJumps = parentIgnoreAlphaJumps
-                || PATHS_TO_IGNORE.contains(diagPathFromRoot(info));
+        final boolean parentIgnoresAlphaJumps = info.parent != null && getNodeData(
+                info.parent).ignoreAlphaJumps;
+        if (parentIgnoresAlphaJumps) {
+            nodeData.ignoreAlphaJumps = true;
+            return;
+        }
+
+        // Parent view doesn't ignore alpha jumps.
+        // Initialize this AnalysisNode's ignore-node with the corresponding child of the
+        // ignore-node of the parent, if present.
+        final IgnoreNode parentIgnoreNode = info.parent != null
+                ? getNodeData(info.parent).ignoreNode
+                : IGNORED_NODES_ROOT;
+        nodeData.ignoreNode = parentIgnoreNode != null
+                ? parentIgnoreNode.children.get(info.nodeIdentity) : null;
+        // AnalysisNode will be ignored if the corresponding ignore-node is a leaf.
+        nodeData.ignoreAlphaJumps =
+                nodeData.ignoreNode != null && nodeData.ignoreNode.children.isEmpty();
     }
 
     @Override
@@ -144,7 +208,7 @@ final class AlphaJumpDetector extends AnomalyDetector {
         if (oldInfo != null && oldInfo.frameN != frameN) return;
 
         final AnalysisNode latestInfo = newInfo != null ? newInfo : oldInfo;
-        if (latestInfo.ignoreAlphaJumps) return;
+        if (getNodeData(latestInfo).ignoreAlphaJumps) return;
 
         final float oldAlpha = oldInfo != null ? oldInfo.alpha : 0;
         final float newAlpha = newInfo != null ? newInfo.alpha : 0;
