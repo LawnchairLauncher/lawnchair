@@ -299,6 +299,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
+        <activity-alias android:name="MaxShortcutsActivity"
+            android:label="TestActivityMaxShortcuts"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/max_shortcuts"/>
+        </activity-alias>
+        <activity-alias android:name="SingleShortcutActivity"
+            android:label="TestActivitySingleShortcut"
+            android:exported="true"
+            android:targetActivity="com.android.launcher3.testcomponent.OtherBaseTestingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/single_shortcut"/>
+        </activity-alias>
         <activity
             android:name="com.android.launcher3.testcomponent.DialogTestActivity"
             android:label="Dialog Activity"

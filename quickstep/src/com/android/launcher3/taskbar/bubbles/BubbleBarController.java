@@ -362,10 +362,9 @@ public class BubbleBarController extends IBubblesListener.Stub {
         }
         if (bubbleToSelect != null) {
             setSelectedBubble(bubbleToSelect);
-        }
-
-        if (previouslySelectedBubble == null) {
-            mBubbleStashController.animateToInitialState(update.expanded);
+            if (previouslySelectedBubble == null) {
+                mBubbleStashController.animateToInitialState(update.expanded);
+            }
         }
 
         if (update.expandedChanged) {

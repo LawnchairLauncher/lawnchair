@@ -22,6 +22,7 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_ALL_APPS_RV_PREIN
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_COUNT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_WORK_TAB;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.ScrollableLayoutManager.PREDICTIVE_BACK_MIN_SCALE;
 
 import android.animation.Animator;
@@ -461,7 +462,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         updateHeaderScroll(0);
         if (exitSearch) {
             // Reset the search bar after transitioning home.
-            mSearchUiManager.resetSearch();
+            MAIN_EXECUTOR.getHandler().post(mSearchUiManager::resetSearch);
             // Animate to A-Z with 0 time to reset the animation with proper state management.
             animateToSearchState(false, 0);
         }

@@ -16,19 +16,9 @@
   -->
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android" >
     <shortcut
-        android:shortcutId="shortcut1_themed"
+        android:shortcutId="single_shortcut_themed"
         android:icon="@drawable/test_theme_icon"
         android:shortcutShortLabel="@string/shortcut1">
-        <intent android:action="com.android.launcher3.intent.action.test_shortcut"/>
-    </shortcut>
-    <shortcut
-        android:shortcutId="shortcut2"
-        android:shortcutShortLabel="@string/shortcut2">
-        <intent android:action="com.android.launcher3.intent.action.test_shortcut"/>
-    </shortcut>
-    <shortcut
-        android:shortcutId="shortcut3"
-        android:shortcutShortLabel="@string/shortcut3">
-        <intent android:action="com.android.launcher3.intent.action.test_shortcut"/>
+        <intent android:action="com.android.launcher3.intent.action.test_shortcut_single"/>
     </shortcut>
 </shortcuts>
