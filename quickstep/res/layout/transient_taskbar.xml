@@ -49,6 +49,7 @@
         android:visibility="gone"
         android:gravity="center"
         android:clipChildren="false"
+        android:elevation="@dimen/bubblebar_elevation"
         />
 
     <FrameLayout

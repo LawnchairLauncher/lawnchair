@@ -95,6 +95,8 @@ public class BubbleBarView extends FrameLayout {
     private View.OnClickListener mOnClickListener;
 
     private final Rect mTempRect = new Rect();
+    private float mRelativePivotX = 1f;
+    private float mRelativePivotY = 1f;
 
     // An animator that represents the expansion state of the bubble bar, where 0 corresponds to the
     // collapsed state and 1 to the fully expanded state.
@@ -108,6 +110,9 @@ public class BubbleBarView extends FrameLayout {
 
     @Nullable
     private Consumer<String> mUpdateSelectedBubbleAfterCollapse;
+
+    @Nullable
+    private BubbleView mDraggedBubbleView;
 
     public BubbleBarView(Context context) {
         this(context, null);
@@ -181,9 +186,10 @@ public class BubbleBarView extends FrameLayout {
         mBubbleBarBounds.right = right;
         mBubbleBarBounds.bottom = bottom;
 
-        // The bubble bar handle is aligned to the bottom edge of the screen so scale towards that.
-        setPivotX(getWidth());
-        setPivotY(getHeight());
+        // The bubble bar handle is aligned according to the relative pivot,
+        // by default it's aligned to the bottom edge of the screen so scale towards that
+        setPivotX(mRelativePivotX * getWidth());
+        setPivotY(mRelativePivotY * getHeight());
 
         // Position the views
         updateChildrenRenderNodeProperties();
@@ -196,6 +202,32 @@ public class BubbleBarView extends FrameLayout {
         mBubbleBarBounds.top = getTop() + (int) getTranslationY();
         mBubbleBarBounds.bottom = getBottom() + (int) getTranslationY();
         return mBubbleBarBounds;
+    }
+
+    /**
+     * Set bubble bar relative pivot value for X and Y, applied as a fraction of view width/height
+     * respectively. If the value is not in range of 0 to 1 it will be normalized.
+     * @param x relative X pivot value in range 0..1
+     * @param y relative Y pivot value in range 0..1
+     */
+    public void setRelativePivot(float x, float y) {
+        mRelativePivotX = Float.max(Float.min(x, 1), 0);
+        mRelativePivotY = Float.max(Float.min(y, 1), 0);
+        requestLayout();
+    }
+
+    /**
+     * Get current relative pivot for X axis
+     */
+    public float getRelativePivotX() {
+        return mRelativePivotX;
+    }
+
+    /**
+     * Get current relative pivot for Y axis
+     */
+    public float getRelativePivotY() {
+        return mRelativePivotY;
     }
 
     // TODO: (b/280605790) animate it
@@ -254,9 +286,9 @@ public class BubbleBarView extends FrameLayout {
                 // where the bubble will end up when the animation ends
                 final float targetX = currentWidth - expandedWidth + expandedX;
                 bv.setTranslationX(widthState * (targetX - collapsedX) + collapsedX);
-                // if we're fully expanded, set the z level to 0
+                // if we're fully expanded, set the z level to 0 or to bubble elevation if dragged
                 if (widthState == 1f) {
-                    bv.setZ(0);
+                    bv.setZ(bv == mDraggedBubbleView ? mBubbleElevation : 0);
                 }
                 // When we're expanded, we're not stacked so we're not behind the stack
                 bv.setBehindStack(false, animate);
@@ -329,6 +361,14 @@ public class BubbleBarView extends FrameLayout {
     public void setSelectedBubble(BubbleView view) {
         mSelectedBubbleView = view;
         updateArrowForSelected(/* shouldAnimate= */ true);
+    }
+
+    /**
+     * Sets the dragged bubble view to correctly apply Z order. Dragged view should appear on top
+     */
+    public void setDraggedBubble(@Nullable BubbleView view) {
+        mDraggedBubbleView = view;
+        requestLayout();
     }
 
     /**

@@ -90,6 +90,8 @@ import com.android.launcher3.taskbar.bubbles.BubbleBarController;
 import com.android.launcher3.taskbar.bubbles.BubbleBarView;
 import com.android.launcher3.taskbar.bubbles.BubbleBarViewController;
 import com.android.launcher3.taskbar.bubbles.BubbleControllers;
+import com.android.launcher3.taskbar.bubbles.BubbleDismissController;
+import com.android.launcher3.taskbar.bubbles.BubbleDragController;
 import com.android.launcher3.taskbar.bubbles.BubbleStashController;
 import com.android.launcher3.taskbar.bubbles.BubbleStashedHandleViewController;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
@@ -216,7 +218,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                     new BubbleBarController(this, bubbleBarView),
                     new BubbleBarViewController(this, bubbleBarView),
                     new BubbleStashController(this),
-                    new BubbleStashedHandleViewController(this, bubbleHandleView)));
+                    new BubbleStashedHandleViewController(this, bubbleHandleView),
+                    new BubbleDragController(this),
+                    new BubbleDismissController(this, mDragLayer)));
         }
 
         // Construct controllers.
