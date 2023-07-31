@@ -194,7 +194,7 @@ public final class FeatureFlags {
             "In foldables, when reordering the icons and widgets, is now going to use both sides");
 
     public static final BooleanFlag FOLDABLE_SINGLE_PAGE = getDebugFlag(270395274,
-            "FOLDABLE_SINGLE_PAGE", ENABLED, "Use a single page for the workspace");
+            "FOLDABLE_SINGLE_PAGE", DISABLED, "Use a single page for the workspace");
 
     // TODO(Block 12): Clean up flags
     public static final BooleanFlag ENABLE_MULTI_INSTANCE = getDebugFlag(270396680,
