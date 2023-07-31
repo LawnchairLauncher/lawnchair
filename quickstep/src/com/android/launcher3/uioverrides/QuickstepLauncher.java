@@ -664,6 +664,8 @@ public class QuickstepLauncher extends Launcher {
             @Override
             public void onAnimationCancel(Animator animation) {
                 getDragLayer().removeView(floatingTaskView);
+                mSplitSelectStateController.getSplitAnimationController()
+                        .removeSplitInstructionsView(QuickstepLauncher.this);
                 mSplitSelectStateController.resetState();
             }
         });

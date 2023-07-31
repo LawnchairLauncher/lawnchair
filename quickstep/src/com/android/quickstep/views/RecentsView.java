@@ -4823,6 +4823,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             mSecondFloatingTaskView = null;
             mSplitInstructionsView = null;
             mSplitSelectSource = null;
+            mSplitSelectStateController.getSplitAnimationController()
+                    .removeSplitInstructionsView(mActivity);
         }
 
         if (mSecondSplitHiddenView != null) {
