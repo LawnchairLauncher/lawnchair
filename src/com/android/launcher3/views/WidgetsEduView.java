@@ -15,9 +15,6 @@
  */
 package com.android.launcher3.views;
 
-import static com.android.app.animation.Interpolators.FAST_OUT_SLOW_IN;
-
-import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -123,10 +120,7 @@ public class WidgetsEduView extends AbstractSlideInView<Launcher> implements Ins
             return;
         }
         mIsOpen = true;
-        mOpenCloseAnimator.setValues(
-                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-        mOpenCloseAnimator.setInterpolator(FAST_OUT_SLOW_IN);
-        mOpenCloseAnimator.start();
+        setUpDefaultOpenAnimator().start();
     }
 
     /** Shows widget education dialog. */
