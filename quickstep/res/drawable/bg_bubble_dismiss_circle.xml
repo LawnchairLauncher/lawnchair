@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (C) 2022 The Android Open Source Project
+  ~ Copyright (C) 2023 The Android Open Source Project
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -15,8 +15,13 @@
   ~ limitations under the License.
   -->
 
-<pathInterpolator xmlns:android="http://schemas.android.com/apk/res/android"
-    android:controlX1="0.3"
-    android:controlY1="0"
-    android:controlX2="1"
-    android:controlY2="1"/>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <stroke
+        android:width="2dp"
+        android:color="@android:color/system_accent1_600" />
+
+    <solid android:color="@android:color/system_accent1_600" />
+</shape>

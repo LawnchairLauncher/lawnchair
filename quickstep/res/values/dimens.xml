@@ -363,6 +363,7 @@
     <dimen name="bubblebar_stashed_size">@dimen/transient_taskbar_stashed_height</dimen>
     <dimen name="bubblebar_stashed_handle_height">@dimen/taskbar_stashed_handle_height</dimen>
     <dimen name="bubblebar_pointer_size">8dp</dimen>
+    <dimen name="bubblebar_elevation">1dp</dimen>
 
     <dimen name="bubblebar_icon_size">50dp</dimen>
     <dimen name="bubblebar_badge_size">24dp</dimen>
@@ -370,6 +371,13 @@
     <dimen name="bubblebar_overflow_inset">24dp</dimen>
     <dimen name="bubblebar_icon_spacing">3dp</dimen>
     <dimen name="bubblebar_icon_elevation">1dp</dimen>
+
+    <!-- Bubble bar dismiss view -->
+    <dimen name="bubblebar_dismiss_target_size">96dp</dimen>
+    <dimen name="bubblebar_dismiss_target_small_size">60dp</dimen>
+    <dimen name="bubblebar_dismiss_target_icon_size">24dp</dimen>
+    <dimen name="bubblebar_dismiss_target_bottom_margin">50dp</dimen>
+    <dimen name="bubblebar_dismiss_floating_gradient_height">548dp</dimen>
 
     <!-- Launcher splash screen -->
     <!-- Note: keep this value in sync with the WindowManager/Shell dimens.xml -->
