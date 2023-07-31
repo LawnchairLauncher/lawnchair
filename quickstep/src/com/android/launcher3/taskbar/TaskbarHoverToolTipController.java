@@ -35,6 +35,8 @@ import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
@@ -49,7 +51,7 @@ import com.android.launcher3.views.ArrowTipView;
  */
 public class TaskbarHoverToolTipController implements View.OnHoverListener {
 
-    private static final int HOVER_TOOL_TIP_REVEAL_START_DELAY = 400;
+    @VisibleForTesting protected static final int HOVER_TOOL_TIP_REVEAL_START_DELAY = 400;
     private static final int HOVER_TOOL_TIP_REVEAL_DURATION = 300;
     private static final int HOVER_TOOL_TIP_EXIT_DURATION = 150;
 
@@ -145,7 +147,6 @@ public class TaskbarHoverToolTipController implements View.OnHoverListener {
     }
 
     private void startRevealHoverToolTip() {
-        mActivity.setTaskbarWindowFullscreen(true);
         mHoverToolTipHandler.postDelayed(mRevealHoverToolTipRunnable,
                 HOVER_TOOL_TIP_REVEAL_START_DELAY);
     }
@@ -157,6 +158,7 @@ public class TaskbarHoverToolTipController implements View.OnHoverListener {
         if (mHoverView instanceof FolderIcon && !((FolderIcon) mHoverView).getIconVisible()) {
             return;
         }
+        mActivity.setTaskbarWindowFullscreen(true);
         Rect iconViewBounds = Utilities.getViewBounds(mHoverView);
         mHoverToolTipView.showAtLocation(mToolTipText, iconViewBounds.centerX(),
                 mTaskbarView.getTop(), /* shouldAutoClose= */ false);
