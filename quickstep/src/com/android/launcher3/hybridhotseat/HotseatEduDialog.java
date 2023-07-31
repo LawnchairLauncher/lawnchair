@@ -19,7 +19,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_EDU_DENY;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_EDU_SEEN;
 
-import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -30,7 +29,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.app.animation.Interpolators;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
@@ -164,10 +162,7 @@ public class HotseatEduDialog extends AbstractSlideInView<Launcher> implements I
             return;
         }
         mIsOpen = true;
-        mOpenCloseAnimator.setValues(
-                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-        mOpenCloseAnimator.setInterpolator(Interpolators.FAST_OUT_SLOW_IN);
-        mOpenCloseAnimator.start();
+        setUpDefaultOpenAnimator().start();
     }
 
     @Override

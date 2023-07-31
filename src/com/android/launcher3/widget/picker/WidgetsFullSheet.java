@@ -22,9 +22,6 @@ import static com.android.launcher3.config.FeatureFlags.LARGE_SCREEN_WIDGET_PICK
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_SEARCHED;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
@@ -627,20 +624,14 @@ public class WidgetsFullSheet extends BaseWidgetSheet
                 mContent.setAlpha(0);
                 setTranslationShift(VERTICAL_START_POSITION);
             }
-            mOpenCloseAnimator.setValues(
-                    PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-            mOpenCloseAnimator
-                    .setDuration(mActivityContext.getDeviceProfile().bottomSheetOpenDuration)
-                    .setInterpolator(AnimationUtils.loadInterpolator(
+            setUpOpenCloseAnimator(
+                    TRANSLATION_SHIFT_OPENED,
+                    AnimationUtils.loadInterpolator(
                             getContext(), android.R.interpolator.linear_out_slow_in));
-            mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mOpenCloseAnimator.removeListener(this);
-                }
-            });
             post(() -> {
-                mOpenCloseAnimator.start();
+                mOpenCloseAnimator
+                        .setDuration(mActivityContext.getDeviceProfile().bottomSheetOpenDuration)
+                        .start();
                 mContent.animate().alpha(1).setDuration(FADE_IN_DURATION);
             });
         } else {

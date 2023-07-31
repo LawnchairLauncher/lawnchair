@@ -16,10 +16,8 @@
 
 package com.android.launcher3.widget;
 
-import static com.android.app.animation.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_BOTTOM_WIDGETS_TRAY;
 
-import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -231,10 +229,7 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
         }
         mIsOpen = true;
         setupNavBarColor();
-        mOpenCloseAnimator.setValues(
-                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-        mOpenCloseAnimator.setInterpolator(FAST_OUT_SLOW_IN);
-        mOpenCloseAnimator.start();
+        setUpDefaultOpenAnimator().start();
     }
 
     @Override
