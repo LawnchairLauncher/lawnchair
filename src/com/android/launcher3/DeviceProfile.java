@@ -886,6 +886,10 @@ public class DeviceProfile {
         updateIconSize(1f, res);
         updateWorkspacePadding();
 
+        if (mIsResponsiveGrid) {
+            return 0;
+        }
+
         // Check to see if the icons fit within the available height.
         float usedHeight = getCellLayoutHeightSpecification();
         final int maxHeight = getCellLayoutHeight();
