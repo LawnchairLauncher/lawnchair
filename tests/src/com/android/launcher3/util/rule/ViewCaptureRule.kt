@@ -26,8 +26,13 @@ import com.android.app.viewcapture.data.ExportedData
 import com.android.launcher3.tapl.TestHelpers
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter
 import com.android.launcher3.util.viewcapture_analysis.ViewCaptureAnalyzer
-import org.junit.Assert.assertTrue
+import java.io.BufferedOutputStream
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStreamWriter
 import java.util.function.Supplier
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runners.model.Statement
@@ -81,7 +86,7 @@ class ViewCaptureRule(var alreadyOpenActivitySupplier: Supplier<Activity?>) : Te
                     MAIN_EXECUTOR.execute { windowListenerCloseables.onEach(SafeCloseable::close) }
                 }
 
-                analyzeViewCapture()
+                analyzeViewCapture(description)
             }
 
             private fun startCapturingExistingActivity(
@@ -107,16 +112,39 @@ class ViewCaptureRule(var alreadyOpenActivitySupplier: Supplier<Activity?>) : Te
         }
     }
 
-    private fun analyzeViewCapture() {
+    private fun analyzeViewCapture(description: Description) {
         // OOP tests don't produce ViewCapture data
         if (!TestHelpers.isInLauncherProcess()) return
-
-        ViewCaptureAnalyzer.assertNoAnomalies(viewCaptureData)
 
         var frameCount = 0
         for (i in 0 until viewCaptureData!!.windowDataCount) {
             frameCount += viewCaptureData!!.getWindowData(i).frameDataCount
         }
         assertTrue("Empty ViewCapture data", frameCount > 0)
+
+        val anomalies: Map<String, String> = ViewCaptureAnalyzer.getAnomalies(viewCaptureData)
+        if (!anomalies.isEmpty()) {
+            val diagFile = FailureWatcher.diagFile(description, "ViewAnomalies", "txt")
+            try {
+                OutputStreamWriter(BufferedOutputStream(FileOutputStream(diagFile))).use { writer ->
+                    writer.write("View animation anomalies detected.\r\n")
+                    writer.write(
+                        "To suppress an anomaly for a view, add its full path to the PATHS_TO_IGNORE list in the corresponding AnomalyDetector.\r\n"
+                    )
+                    writer.write("List of views with animation anomalies:\r\n")
+
+                    for ((viewPath, message) in anomalies) {
+                        writer.write("View: $viewPath\r\n        $message\r\n")
+                    }
+                }
+            } catch (ex: IOException) {
+                throw RuntimeException(ex)
+            }
+
+            val (viewPath, message) = anomalies.entries.first()
+            fail(
+                "${anomalies.size} view(s) had animation anomalies during the test, including view: $viewPath: $message\r\nSee ${diagFile.name} for details."
+            )
+        }
     }
 }
