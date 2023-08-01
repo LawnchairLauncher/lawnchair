@@ -249,7 +249,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
         DesktopVisibilityController desktopVisibilityController =
                 mActivity.getDesktopVisibilityController();
         if (desktopVisibilityController != null) {
-            desktopVisibilityController.setGestureInProgress(true);
+            desktopVisibilityController.setRecentsGestureStart();
         }
     }
 
@@ -257,9 +257,11 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     public void onGestureAnimationEnd() {
         DesktopVisibilityController desktopVisibilityController = null;
         boolean showDesktopApps = false;
+        GestureState.GestureEndTarget endTarget = null;
         if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
             desktopVisibilityController = mActivity.getDesktopVisibilityController();
-            if (mCurrentGestureEndTarget == GestureState.GestureEndTarget.LAST_TASK
+            endTarget = mCurrentGestureEndTarget;
+            if (endTarget == GestureState.GestureEndTarget.LAST_TASK
                     && desktopVisibilityController.areFreeformTasksVisible()) {
                 // Recents gesture was cancelled and we are returning to the previous task.
                 // After super class has handled clean up, show desktop apps on top again
@@ -268,7 +270,7 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
         }
         super.onGestureAnimationEnd();
         if (desktopVisibilityController != null) {
-            desktopVisibilityController.setGestureInProgress(false);
+            desktopVisibilityController.setRecentsGestureEnd(endTarget);
         }
         if (showDesktopApps) {
             SystemUiProxy.INSTANCE.get(mActivity).showDesktopApps(mActivity.getDisplayId());
