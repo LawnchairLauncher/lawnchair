@@ -27,6 +27,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
+import com.android.quickstep.GestureState;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.views.DesktopAppSelectView;
 import com.android.wm.shell.desktopmode.IDesktopTaskListener;
@@ -39,7 +40,8 @@ public class DesktopVisibilityController {
 
     private static final String TAG = "DesktopVisController";
     private static final boolean DEBUG = false;
-
+    private static final boolean IS_STASHING_ENABLED = SystemProperties.getBoolean(
+            "persist.wm.debug.desktop_stashing", false);
     private final Launcher mLauncher;
 
     private boolean mFreeformTasksVisible;
@@ -73,6 +75,9 @@ public class DesktopVisibilityController {
 
             @Override
             public void onStashedChanged(int displayId, boolean stashed) {
+                if (!IS_STASHING_ENABLED) {
+                    return;
+                }
                 MAIN_EXECUTOR.execute(() -> {
                     if (displayId == mLauncher.getDisplayId()) {
                         if (DEBUG) {
@@ -166,19 +171,39 @@ public class DesktopVisibilityController {
     /**
      * Whether recents gesture is currently in progress.
      */
-    public boolean isGestureInProgress() {
+    public boolean isRecentsGestureInProgress() {
         return mGestureInProgress;
     }
 
     /**
-     * Sets whether recents gesture is in progress.
+     * Notify controller that recents gesture has started.
      */
-    public void setGestureInProgress(boolean gestureInProgress) {
-        if (DEBUG) {
-            Log.d(TAG, "setGestureInProgress: inProgress=" + gestureInProgress);
-        }
+    public void setRecentsGestureStart() {
         if (!isDesktopModeSupported()) {
             return;
+        }
+        setRecentsGestureInProgress(true);
+    }
+
+    /**
+     * Notify controller that recents gesture finished with the given
+     * {@link com.android.quickstep.GestureState.GestureEndTarget}
+     */
+    public void setRecentsGestureEnd(@Nullable GestureState.GestureEndTarget endTarget) {
+        if (!isDesktopModeSupported()) {
+            return;
+        }
+        setRecentsGestureInProgress(false);
+
+        if (endTarget == null) {
+            // Gesture did not result in a new end target. Ensure launchers gets paused again.
+            markLauncherPaused();
+        }
+    }
+
+    private void setRecentsGestureInProgress(boolean gestureInProgress) {
+        if (DEBUG) {
+            Log.d(TAG, "setGestureInProgress: inProgress=" + gestureInProgress);
         }
         if (gestureInProgress != mGestureInProgress) {
             mGestureInProgress = gestureInProgress;
@@ -189,7 +214,7 @@ public class DesktopVisibilityController {
      * Handle launcher moving to home due to home gesture or home button press.
      */
     public void onHomeActionTriggered() {
-        if (areFreeformTasksVisible()) {
+        if (IS_STASHING_ENABLED && areFreeformTasksVisible()) {
             SystemUiProxy.INSTANCE.get(mLauncher).stashDesktopApps(mLauncher.getDisplayId());
         }
     }

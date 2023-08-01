@@ -49,7 +49,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Animation;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.AllAppsContainer;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
@@ -323,9 +322,7 @@ public class ItemInfo {
      * Returns whether this item should use the background animation.
      */
     public boolean shouldUseBackgroundAnimation() {
-        return animationType == LauncherSettings.Animation.VIEW_BACKGROUND
-                && FeatureFlags.ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES.get()
-                && FeatureFlags.ENABLE_SEARCH_RESULT_LAUNCH_TRANSITION.get();
+        return animationType == LauncherSettings.Animation.VIEW_BACKGROUND;
     }
 
     /**

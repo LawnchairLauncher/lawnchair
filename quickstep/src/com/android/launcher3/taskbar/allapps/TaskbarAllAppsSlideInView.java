@@ -17,9 +17,6 @@ package com.android.launcher3.taskbar.allapps;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -31,6 +28,7 @@ import android.window.OnBackInvokedDispatcher;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsViewController.TaskbarAllAppsCallbacks;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
@@ -68,16 +66,9 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         mAllAppsCallbacks.onAllAppsTransitionStart(true);
 
         if (animate) {
-            mOpenCloseAnimator.setValues(
-                    PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED));
-            mOpenCloseAnimator.setInterpolator(EMPHASIZED);
-            mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mOpenCloseAnimator.removeListener(this);
-                    mAllAppsCallbacks.onAllAppsTransitionEnd(true);
-                }
-            });
+            setUpOpenCloseAnimator(TRANSLATION_SHIFT_OPENED, EMPHASIZED);
+            mOpenCloseAnimator.addListener(AnimatorListeners.forEndCallback(
+                    () -> mAllAppsCallbacks.onAllAppsTransitionEnd(true)));
             mOpenCloseAnimator.setDuration(mAllAppsCallbacks.getOpenDuration()).start();
         } else {
             mTranslationShift = TRANSLATION_SHIFT_OPENED;

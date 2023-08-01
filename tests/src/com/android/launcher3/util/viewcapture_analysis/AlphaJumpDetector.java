@@ -113,7 +113,7 @@ final class AlphaJumpDetector extends AnomalyDetector {
             DRAG_LAYER + "WidgetsFullSheet|SpringRelativeLayout:id/container",
             DRAG_LAYER + "WidgetsTwoPaneSheet|SpringRelativeLayout:id/container",
             CONTENT + "LauncherRootView:id/launcher|FloatingIconView",
-            RECENTS_DRAG_LAYER + "ArrowTipView|View:id/arrow",
+            RECENTS_DRAG_LAYER + "ArrowTipView",
             DRAG_LAYER + "FallbackRecentsView:id/overview_panel",
             RECENTS_DRAG_LAYER + "FallbackRecentsView:id/overview_panel",
             DRAG_LAYER
@@ -212,24 +212,26 @@ final class AlphaJumpDetector extends AnomalyDetector {
     }
 
     @Override
-    void detectAnomalies(AnalysisNode oldInfo, AnalysisNode newInfo, int frameN) {
+    String detectAnomalies(AnalysisNode oldInfo, AnalysisNode newInfo, int frameN) {
         // If the view was previously seen, proceed with analysis only if it was present in the
         // view hierarchy in the previous frame.
-        if (oldInfo != null && oldInfo.frameN != frameN) return;
+        if (oldInfo != null && oldInfo.frameN != frameN) return null;
 
         final AnalysisNode latestInfo = newInfo != null ? newInfo : oldInfo;
-        if (getNodeData(latestInfo).ignoreAlphaJumps) return;
+        final NodeData nodeData = getNodeData(latestInfo);
+        if (nodeData.ignoreAlphaJumps) return null;
 
         final float oldAlpha = oldInfo != null ? oldInfo.alpha : 0;
         final float newAlpha = newInfo != null ? newInfo.alpha : 0;
         final float alphaDeltaAbs = Math.abs(newAlpha - oldAlpha);
 
         if (alphaDeltaAbs >= ALPHA_JUMP_THRESHOLD) {
-            throw new AssertionError(
-                    String.format(
-                            "Alpha jump detected in ViewCapture data: alpha change: %s (%s -> %s)"
-                                    + ", threshold: %s, view: %s",
-                            alphaDeltaAbs, oldAlpha, newAlpha, ALPHA_JUMP_THRESHOLD, latestInfo));
+            nodeData.ignoreAlphaJumps = true; // No need to report alpha jump in children.
+            return String.format(
+                    "Alpha jump detected in ViewCapture data: alpha change: %s (%s -> %s)"
+                            + ", threshold: %s, %s", // ----------- no need to include view?
+                    alphaDeltaAbs, oldAlpha, newAlpha, ALPHA_JUMP_THRESHOLD, latestInfo);
         }
+        return null;
     }
 }

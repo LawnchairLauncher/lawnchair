@@ -263,6 +263,13 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
     }
 
     /**
+     * Returns the visibility of the overview actions buttons.
+     */
+    public @Visibility int getActionsButtonVisibility() {
+        return findViewById(R.id.action_buttons).getVisibility();
+    }
+
+    /**
      * Offsets OverviewActionsView horizontal position based on 3 button nav container in taskbar.
      */
     private void updatePadding() {

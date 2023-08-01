@@ -83,11 +83,11 @@ public final class FeatureFlags {
      */
     // TODO(Block 1): Clean up flags
     public static final BooleanFlag ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES = getReleaseFlag(
-            270394041, "ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES", DISABLED,
+            270394041, "ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES", TEAMFOOD,
             "Enable option to replace decorator-based search result backgrounds with drawables");
 
     public static final BooleanFlag ENABLE_SEARCH_RESULT_LAUNCH_TRANSITION = getReleaseFlag(
-            270394392, "ENABLE_SEARCH_RESULT_LAUNCH_TRANSITION", DISABLED,
+            270394392, "ENABLE_SEARCH_RESULT_LAUNCH_TRANSITION", TEAMFOOD,
             "Enable option to launch search results using the new view container transitions");
 
     // TODO(Block 2): Clean up flags
@@ -395,10 +395,15 @@ public final class FeatureFlags {
 
     // TODO(Block 33): Clean up flags
     public static final BooleanFlag ENABLE_ALL_APPS_RV_PREINFLATION = getDebugFlag(288161355,
-            "ENABLE_ALL_APPS_RV_PREINFLATION", DISABLED,
+            "ENABLE_ALL_APPS_RV_PREINFLATION", ENABLED,
             "Enables preinflating all apps icons to avoid scrolling jank.");
 
-    // TODO(Block 34): Empty block
+    // TODO(Block 34): Clean up flags
+    public static final BooleanFlag ALL_APPS_GONE_VISIBILITY = getDebugFlag(291651514,
+            "ALL_APPS_GONE_VISIBILITY", ENABLED,
+            "Set all apps container view's hidden visibility to GONE instead of INVISIBLE.");
+
+    // TODO(Block 35): Empty block
 
     public static class BooleanFlag {
 

@@ -664,6 +664,8 @@ public class QuickstepLauncher extends Launcher {
             @Override
             public void onAnimationCancel(Animator animation) {
                 getDragLayer().removeView(floatingTaskView);
+                mSplitSelectStateController.getSplitAnimationController()
+                        .removeSplitInstructionsView(QuickstepLauncher.this);
                 mSplitSelectStateController.resetState();
             }
         });
@@ -865,7 +867,7 @@ public class QuickstepLauncher extends Launcher {
         if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
             DesktopVisibilityController controller = mDesktopVisibilityController;
             if (controller != null && controller.areFreeformTasksVisible()
-                    && !controller.isGestureInProgress()) {
+                    && !controller.isRecentsGestureInProgress()) {
                 // Return early to skip setting activity to appear as resumed
                 // TODO(b/255649902): shouldn't be needed when we have a separate launcher state
                 //  for desktop that we can use to control other parts of launcher

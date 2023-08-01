@@ -159,6 +159,10 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             return mActionsView;
         }
 
+        public TaskThumbnailView getThumbnailView() {
+            return mThumbnailView;
+        }
+
         /**
          * Called when the current task is interactive for the user
          */
