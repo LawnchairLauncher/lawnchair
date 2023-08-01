@@ -1707,10 +1707,15 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     void updateCurrentFullscreenParams(PreviewPositionHelper previewPositionHelper) {
+        updateFullscreenParams(mCurrentFullscreenParams, previewPositionHelper);
+    }
+
+    protected void updateFullscreenParams(TaskView.FullscreenDrawParams fullscreenParams,
+            PreviewPositionHelper previewPositionHelper) {
         if (getRecentsView() == null) {
             return;
         }
-        mCurrentFullscreenParams.setProgress(mFullscreenProgress, getRecentsView().getScaleX(),
+        fullscreenParams.setProgress(mFullscreenProgress, getRecentsView().getScaleX(),
                 getScaleX(), getWidth(), mActivity.getDeviceProfile(), previewPositionHelper);
     }
 
@@ -1860,9 +1865,12 @@ public class TaskView extends FrameLayout implements Reusable {
         public float mCurrentDrawnCornerRadius;
 
         public FullscreenDrawParams(Context context) {
-            mCornerRadius = TaskCornerRadius.get(context);
-            mWindowCornerRadius = QuickStepContract.getWindowCornerRadius(context);
+            this(TaskCornerRadius.get(context), QuickStepContract.getWindowCornerRadius(context));
+        }
 
+        FullscreenDrawParams(float cornerRadius, float windowCornerRadius) {
+            mCornerRadius = cornerRadius;
+            mWindowCornerRadius = windowCornerRadius;
             mCurrentDrawnCornerRadius = mCornerRadius;
         }
 
