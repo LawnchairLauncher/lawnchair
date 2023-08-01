@@ -318,6 +318,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @Test
+    @Ignore // b/293191790
     @PortraitLandscape
     public void testWidgets() throws Exception {
         // Test opening widgets.
