@@ -39,7 +39,8 @@ public class DesktopVisibilityController {
 
     private static final String TAG = "DesktopVisController";
     private static final boolean DEBUG = false;
-
+    private static final boolean IS_STASHING_ENABLED = SystemProperties.getBoolean(
+            "persist.wm.debug.desktop_stashing", false);
     private final Launcher mLauncher;
 
     private boolean mFreeformTasksVisible;
@@ -73,6 +74,9 @@ public class DesktopVisibilityController {
 
             @Override
             public void onStashedChanged(int displayId, boolean stashed) {
+                if (!IS_STASHING_ENABLED) {
+                    return;
+                }
                 MAIN_EXECUTOR.execute(() -> {
                     if (displayId == mLauncher.getDisplayId()) {
                         if (DEBUG) {
@@ -189,7 +193,7 @@ public class DesktopVisibilityController {
      * Handle launcher moving to home due to home gesture or home button press.
      */
     public void onHomeActionTriggered() {
-        if (areFreeformTasksVisible()) {
+        if (IS_STASHING_ENABLED && areFreeformTasksVisible()) {
             SystemUiProxy.INSTANCE.get(mLauncher).stashDesktopApps(mLauncher.getDisplayId());
         }
     }
