@@ -442,6 +442,16 @@ public interface ActivityContext {
         return CellPosMapper.DEFAULT;
     }
 
+    /** Whether bubbles are enabled. */
+    default boolean isBubbleBarEnabled() {
+        return false;
+    }
+
+    /** Whether the bubble bar has bubbles. */
+    default boolean hasBubbles() {
+        return false;
+    }
+
     /**
      * Returns the ActivityContext associated with the given Context, or throws an exception if
      * the Context is not associated with any ActivityContext.

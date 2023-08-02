@@ -75,7 +75,7 @@ public class BubbleBarViewController {
     // Whether the bar is hidden for a sysui state.
     private boolean mHiddenForSysui;
     // Whether the bar is hidden because there are no bubbles.
-    private boolean mHiddenForNoBubbles;
+    private boolean mHiddenForNoBubbles = true;
     private boolean mShouldShowEducation;
 
     public BubbleBarViewController(TaskbarActivityContext activity, BubbleBarView barView) {
@@ -212,6 +212,7 @@ public class BubbleBarViewController {
         if (mHiddenForNoBubbles != hidden) {
             mHiddenForNoBubbles = hidden;
             updateVisibilityForStateChange();
+            mActivity.bubbleBarVisibilityChanged(!hidden);
         }
     }
 

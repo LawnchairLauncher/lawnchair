@@ -190,8 +190,10 @@ public class BubbleBarController extends IBubblesListener.Stub {
         mBubbleStashedHandleViewController = bubbleControllers.bubbleStashedHandleViewController;
 
         bubbleControllers.runAfterInit(() -> {
-            mBubbleBarViewController.setHiddenForBubbles(!BUBBLE_BAR_ENABLED);
-            mBubbleStashedHandleViewController.setHiddenForBubbles(!BUBBLE_BAR_ENABLED);
+            mBubbleBarViewController.setHiddenForBubbles(
+                    !BUBBLE_BAR_ENABLED || mBubbles.isEmpty());
+            mBubbleStashedHandleViewController.setHiddenForBubbles(
+                    !BUBBLE_BAR_ENABLED || mBubbles.isEmpty());
             mBubbleBarViewController.setUpdateSelectedBubbleAfterCollapse(
                     key -> setSelectedBubble(mBubbles.get(key)));
         });

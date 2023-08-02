@@ -302,6 +302,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mNavMode = DisplayController.getNavigationMode(this);
     }
 
+    /** Called when the visibility of the bubble bar changed. */
+    public void bubbleBarVisibilityChanged(boolean isVisible) {
+        mControllers.uiController.adjustHotseatForBubbleBar(isVisible);
+        mControllers.taskbarViewController.resetIconAlignmentController();
+    }
 
     public void init(@NonNull TaskbarSharedState sharedState) {
         mImeDrawsImeNavBar = getBoolByName(IME_DRAWS_IME_NAV_BAR_RES_NAME, getResources(), false);
