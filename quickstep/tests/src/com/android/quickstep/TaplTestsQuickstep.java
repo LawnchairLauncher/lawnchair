@@ -44,6 +44,7 @@ import com.android.launcher3.tapl.LauncherInstrumentation.NavigationModel;
 import com.android.launcher3.tapl.Overview;
 import com.android.launcher3.tapl.OverviewActions;
 import com.android.launcher3.tapl.OverviewTask;
+import com.android.launcher3.tapl.OverviewTaskMenu;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.DisplayController;
@@ -194,6 +195,19 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         OverviewActions actionsView =
                 mLauncher.goHome().switchToOverview().getOverviewActions();
         actionsView.clickAndDismissScreenshot();
+    }
+
+
+    @Test
+    public void testOverviewActionsMenu() throws Exception {
+        startTestAppsWithCheck();
+
+        OverviewTaskMenu menu = mLauncher.goHome().switchToOverview().getCurrentTask().tapMenu();
+
+        assertNotNull("Tapping App info menu item returned null", menu.tapAppInfoMenuItem());
+        executeOnLauncher(launcher -> assertTrue(
+                "Launcher activity is the top activity; expecting another activity to be the top",
+                isInLaunchedApp(launcher)));
     }
 
     private int getCurrentOverviewPage(Launcher launcher) {
