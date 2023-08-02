@@ -302,7 +302,7 @@ public final class FeatureFlags {
             "Enable widget transition animation when resizing the widgets");
 
     public static final BooleanFlag PREEMPTIVE_UNFOLD_ANIMATION_START = getDebugFlag(270397209,
-            "PREEMPTIVE_UNFOLD_ANIMATION_START", DISABLED,
+            "PREEMPTIVE_UNFOLD_ANIMATION_START", ENABLED,
             "Enables starting the unfold animation preemptively when unfolding, without"
                     + "waiting for SystemUI and then merging the SystemUI progress whenever we "
                     + "start receiving the events");
