@@ -338,7 +338,6 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         // us that we're paused until a bit later. This avoids flickering upon recreating taskbar.
         updateStateForFlag(FLAG_IN_APP, true);
         applyState(/* duration = */ 0);
-
         notifyStashChange(/* visible */ false, /* stashed */ isStashedInApp());
     }
 
@@ -675,7 +674,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                     .setDuration(duration));
             mAnimator.play(mTaskbarImeBgAlpha.animateToValue(
                     hasAnyFlag(FLAG_STASHED_IN_APP_IME) ? 0 : 1).setDuration(duration));
-            mAnimator.addListener(AnimatorListeners.forEndCallback(() -> mAnimator = null));
+            mAnimator.addListener(AnimatorListeners.forEndCallback(() -> {
+                mAnimator = null;
+                mIsStashed = isStashed;
+            }));
             return;
         }
 

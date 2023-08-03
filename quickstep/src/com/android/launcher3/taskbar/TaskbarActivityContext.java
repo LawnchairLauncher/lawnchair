@@ -146,7 +146,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     private int mLastRequestedNonFullscreenHeight;
 
     private NavigationMode mNavMode;
-    private final boolean mImeDrawsImeNavBar;
+    private boolean mImeDrawsImeNavBar;
     private final ViewCache mViewCache = new ViewCache();
 
     private final boolean mIsSafeModeEnabled;
@@ -299,6 +299,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
 
     public void init(@NonNull TaskbarSharedState sharedState) {
+        mImeDrawsImeNavBar = getBoolByName(IME_DRAWS_IME_NAV_BAR_RES_NAME, getResources(), false);
         mLastRequestedNonFullscreenHeight = getDefaultTaskbarWindowHeight();
         mWindowLayoutParams = createAllWindowParams();
 
