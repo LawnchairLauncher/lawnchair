@@ -395,12 +395,12 @@ public final class FeatureFlags {
 
     // TODO(Block 33): Clean up flags
     public static final BooleanFlag ENABLE_ALL_APPS_RV_PREINFLATION = getDebugFlag(288161355,
-            "ENABLE_ALL_APPS_RV_PREINFLATION", ENABLED,
+            "ENABLE_ALL_APPS_RV_PREINFLATION", DISABLED,
             "Enables preinflating all apps icons to avoid scrolling jank.");
 
     // TODO(Block 34): Clean up flags
     public static final BooleanFlag ALL_APPS_GONE_VISIBILITY = getDebugFlag(291651514,
-            "ALL_APPS_GONE_VISIBILITY", ENABLED,
+            "ALL_APPS_GONE_VISIBILITY", DISABLED,
             "Set all apps container view's hidden visibility to GONE instead of INVISIBLE.");
 
     // TODO(Block 35): Empty block
