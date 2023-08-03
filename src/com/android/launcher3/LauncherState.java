@@ -386,8 +386,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      * Gets the translation provider for workspace pages.
      */
     public PageTranslationProvider getWorkspacePageTranslationProvider(Launcher launcher) {
-        if (this != SPRING_LOADED
-                || this != EDIT_MODE
+        if (!(this == SPRING_LOADED || this == EDIT_MODE)
                 || !launcher.getDeviceProfile().isTwoPanels) {
             return DEFAULT_PAGE_TRANSLATION_PROVIDER;
         }
