@@ -67,6 +67,7 @@ class NavButtonLayoutFactory {
             val startContextualContainer =
                 navButtonsView.findViewById<ViewGroup>(ID_START_CONTEXTUAL_BUTTONS)
             val isPhoneNavMode = phoneMode && isThreeButtonNav
+            val isPhoneGestureMode = phoneMode && !isThreeButtonNav
             return when {
                 isPhoneNavMode -> {
                     if (!deviceProfile.isLandscape) {
@@ -91,6 +92,14 @@ class NavButtonLayoutFactory {
                                 startContextualContainer
                         )
                     }
+                }
+                isPhoneGestureMode ->{
+                    PhoneGestureLayoutter(
+                            resources,
+                            navButtonContainer,
+                            endContextualContainer,
+                            startContextualContainer
+                    )
                 }
                 deviceProfile.isTaskbarPresent -> {
                     return when {
