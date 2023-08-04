@@ -204,6 +204,8 @@ public class QuickstepLauncher extends Launcher {
 
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
 
+    protected static final String RING_APPEAR_ANIMATION_PREFIX = "RingAppearAnimation\t";
+
     private FixedContainerItems mAllAppsPredictions;
     private HotseatPredictionController mHotseatPredictionController;
     private DepthController mDepthController;
@@ -1335,6 +1337,9 @@ public class QuickstepLauncher extends Launcher {
                 recentsView.getPagedViewOrientedState()));
         if (recentsView != null) {
             recentsView.getSplitSelectController().dump(prefix, writer);
+        }
+        if (mAppTransitionManager != null) {
+            mAppTransitionManager.dump(prefix + "\t" + RING_APPEAR_ANIMATION_PREFIX, writer);
         }
     }
 }
