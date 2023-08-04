@@ -193,5 +193,6 @@ public class DepthController extends BaseDepthController implements StateHandler
         writer.println(prefix + "\tmIgnoreStateChangesDuringMultiWindowAnimation="
                 + mIgnoreStateChangesDuringMultiWindowAnimation);
         writer.println(prefix + "\tmPauseBlurs=" + mPauseBlurs);
+        writer.println(prefix + "\tmWaitingOnSurfaceValidity=" + mWaitingOnSurfaceValidity);
     }
 }
