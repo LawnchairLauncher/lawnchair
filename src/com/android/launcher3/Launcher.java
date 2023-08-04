@@ -725,18 +725,23 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     protected void onHandleConfigurationChanged() {
-        if (!initDeviceProfile(mDeviceProfile.inv)) {
-            return;
+        Trace.beginSection("Launcher#onHandleconfigurationChanged");
+        try {
+            if (!initDeviceProfile(mDeviceProfile.inv)) {
+                return;
+            }
+
+            dispatchDeviceProfileChanged();
+            reapplyUi();
+            mDragLayer.recreateControllers();
+
+            // Calling onSaveInstanceState ensures that static cache used by listWidgets is
+            // initialized properly.
+            onSaveInstanceState(new Bundle());
+            mModel.rebindCallbacks();
+        } finally {
+            Trace.endSection();
         }
-
-        dispatchDeviceProfileChanged();
-        reapplyUi();
-        mDragLayer.recreateControllers();
-
-        // Calling onSaveInstanceState ensures that static cache used by listWidgets is
-        // initialized properly.
-        onSaveInstanceState(new Bundle());
-        mModel.rebindCallbacks();
     }
 
     public void onAssistantVisibilityChanged(float visibility) {
