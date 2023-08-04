@@ -51,6 +51,7 @@ import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+import com.android.systemui.shared.system.QuickStepContract;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +80,7 @@ public class DesktopTaskView extends TaskView {
 
     private static final String TAG = DesktopTaskView.class.getSimpleName();
 
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     @NonNull
     private List<Task> mTasks = new ArrayList<>();
@@ -90,6 +91,8 @@ public class DesktopTaskView extends TaskView {
     private final SparseArray<TaskThumbnailView> mSnapshotViewMap = new SparseArray<>();
 
     private final ArrayList<CancellableTask<?>> mPendingThumbnailRequests = new ArrayList<>();
+
+    private final TaskView.FullscreenDrawParams mSnapshotDrawParams;
 
     private View mBackgroundView;
 
@@ -103,6 +106,10 @@ public class DesktopTaskView extends TaskView {
 
     public DesktopTaskView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        mSnapshotDrawParams = new FullscreenDrawParams(
+                QuickStepContract.getWindowCornerRadius(context),
+                QuickStepContract.getWindowCornerRadius(context));
     }
 
     @Override
@@ -465,14 +472,20 @@ public class DesktopTaskView extends TaskView {
         for (int i = 0; i < mSnapshotViewMap.size(); i++) {
             TaskThumbnailView thumbnailView = mSnapshotViewMap.valueAt(i);
             thumbnailView.getTaskOverlay().setFullscreenProgress(progress);
-            updateSnapshotRadius();
         }
+        updateSnapshotRadius();
     }
 
     @Override
     protected void updateSnapshotRadius() {
+        super.updateSnapshotRadius();
         for (int i = 0; i < mSnapshotViewMap.size(); i++) {
-            mSnapshotViewMap.valueAt(i).setFullscreenParams(mCurrentFullscreenParams);
+            if (i == 0) {
+                // All snapshots share the same params. Only update it with the first snapshot.
+                updateFullscreenParams(mSnapshotDrawParams,
+                        mSnapshotView.getPreviewPositionHelper());
+            }
+            mSnapshotViewMap.valueAt(i).setFullscreenParams(mSnapshotDrawParams);
         }
     }
 
