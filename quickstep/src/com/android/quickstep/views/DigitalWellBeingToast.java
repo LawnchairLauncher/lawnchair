@@ -145,23 +145,29 @@ public final class DigitalWellBeingToast {
         mAppUsageLimitTimeMs = mAppRemainingTimeMs = -1;
         mTask = task;
         THREAD_POOL_EXECUTOR.execute(() -> {
-            final AppUsageLimit usageLimit = mLauncherApps.getAppUsageLimit(
-                    mTask.getTopComponent().getPackageName(),
-                    UserHandle.of(mTask.key.userId));
+                    AppUsageLimit usageLimit = null;
+                    try {
+                        usageLimit = mLauncherApps.getAppUsageLimit(
+                                mTask.getTopComponent().getPackageName(),
+                                UserHandle.of(mTask.key.userId));
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error initializing digital well being toast", e);
+                    }
+                    final long appUsageLimitTimeMs =
+                            usageLimit != null ? usageLimit.getTotalUsageLimit() : -1;
+                    final long appRemainingTimeMs =
+                            usageLimit != null ? usageLimit.getUsageRemaining() : -1;
 
-            final long appUsageLimitTimeMs =
-                    usageLimit != null ? usageLimit.getTotalUsageLimit() : -1;
-            final long appRemainingTimeMs =
-                    usageLimit != null ? usageLimit.getUsageRemaining() : -1;
+                    mTaskView.post(() -> {
+                        if (appUsageLimitTimeMs < 0 || appRemainingTimeMs < 0) {
+                            setNoLimit();
+                        } else {
+                            setLimit(appUsageLimitTimeMs, appRemainingTimeMs);
+                        }
+                    });
 
-            mTaskView.post(() -> {
-                if (appUsageLimitTimeMs < 0 || appRemainingTimeMs < 0) {
-                    setNoLimit();
-                } else {
-                    setLimit(appUsageLimitTimeMs, appRemainingTimeMs);
                 }
-            });
-        });
+        );
     }
 
     public void setSplitConfiguration(SplitBounds splitBounds) {
