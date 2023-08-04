@@ -73,6 +73,7 @@ import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.TaskViewUtils;
 import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.GroupedTaskView;
+import com.android.quickstep.views.SplitInstructionsView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 
@@ -112,6 +113,7 @@ public class SplitSelectStateController {
     private GroupedTaskView mLaunchingTaskView;
 
     private FloatingTaskView mFirstFloatingTaskView;
+    private SplitInstructionsView mSplitInstructionsView;
 
     private final List<SplitSelectionListener> mSplitSelectionListeners = new ArrayList<>();
 
@@ -612,6 +614,7 @@ public class SplitSelectStateController {
         mAnimateCurrentTaskDismissal = false;
         mDismissingFromSplitPair = false;
         mFirstFloatingTaskView = null;
+        mSplitInstructionsView = null;
     }
 
     /**
@@ -642,9 +645,18 @@ public class SplitSelectStateController {
         mFirstFloatingTaskView = floatingTaskView;
     }
 
+    public void setSplitInstructionsView(SplitInstructionsView splitInstructionsView) {
+        mSplitInstructionsView = splitInstructionsView;
+    }
+
     @Nullable
     public FloatingTaskView getFirstFloatingTaskView() {
         return mFirstFloatingTaskView;
+    }
+
+    @Nullable
+    public SplitInstructionsView getSplitInstructionsView() {
+        return mSplitInstructionsView;
     }
 
     public AppPairsController getAppPairsController() {
