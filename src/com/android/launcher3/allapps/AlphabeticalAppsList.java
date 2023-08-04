@@ -82,7 +82,7 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
     private final ArrayList<AdapterItem> mSearchResults = new ArrayList<>();
     private BaseAllAppsAdapter<T> mAdapter;
     private AppInfoComparator mAppNameComparator;
-    private final int mNumAppsPerRowAllApps;
+    private int mNumAppsPerRowAllApps;
     private int mNumAppRowsInAdapter;
     private Predicate<ItemInfo> mItemFilter;
 
@@ -92,10 +92,15 @@ public class AlphabeticalAppsList<T extends Context & ActivityContext> implement
         mActivityContext = ActivityContext.lookupContext(context);
         mAppNameComparator = new AppInfoComparator(context);
         mWorkProviderManager = workProfileManager;
-        mNumAppsPerRowAllApps = mActivityContext.getDeviceProfile().inv.numAllAppsColumns;
+        mNumAppsPerRowAllApps = mActivityContext.getDeviceProfile().numShownAllAppsColumns;
         if (mAllAppsStore != null) {
             mAllAppsStore.addUpdateListener(this);
         }
+    }
+
+    /** Set the number of apps per row when device profile changes. */
+    public void setNumAppsPerRowAllApps(int numAppsPerRow) {
+        mNumAppsPerRowAllApps = numAppsPerRow;
     }
 
     public void updateItemFilter(Predicate<ItemInfo> itemFilter) {
