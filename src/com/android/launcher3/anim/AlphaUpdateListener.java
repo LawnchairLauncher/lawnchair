@@ -53,8 +53,18 @@ public class AlphaUpdateListener extends AnimatorListenerAdapter
     }
 
     public static void updateVisibility(View view) {
-        if (view.getAlpha() < ALPHA_CUTOFF_THRESHOLD && view.getVisibility() != View.INVISIBLE) {
-            view.setVisibility(View.INVISIBLE);
+        updateVisibility(view, View.INVISIBLE);
+    }
+
+    /**
+     * Update view's visibility.
+     *
+     * @param view View that needs to update visibility.
+     * @param hiddenVisibility {@link View#GONE} or {@link View#INVISIBLE}
+     */
+    public static void updateVisibility(View view, int hiddenVisibility) {
+        if (view.getAlpha() < ALPHA_CUTOFF_THRESHOLD && view.getVisibility() != hiddenVisibility) {
+            view.setVisibility(hiddenVisibility);
         } else if (view.getAlpha() > ALPHA_CUTOFF_THRESHOLD
                 && view.getVisibility() != View.VISIBLE) {
             if (view instanceof ViewGroup) {
