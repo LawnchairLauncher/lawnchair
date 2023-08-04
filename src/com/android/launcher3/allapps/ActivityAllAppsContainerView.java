@@ -18,6 +18,7 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.SEARCH;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_WORK_DISABLED_CARD;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_WORK_EDU_CARD;
+import static com.android.launcher3.config.FeatureFlags.ALL_APPS_GONE_VISIBILITY;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ALL_APPS_RV_PREINFLATION;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_COUNT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_TAP_ON_PERSONAL_TAB;
@@ -552,17 +553,14 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
         mAllAppsStore.unregisterIconContainer(mAH.get(AdapterHolder.SEARCH).mRecyclerView);
 
+        final AllAppsRecyclerView mainRecyclerView;
+        final AllAppsRecyclerView workRecyclerView;
         if (mUsingTabs) {
-            mAH.get(AdapterHolder.MAIN).setup(mViewPager.getChildAt(0), mPersonalMatcher);
-            mAH.get(AdapterHolder.WORK).setup(mViewPager.getChildAt(1), mWorkManager.getMatcher());
-            mAH.get(AdapterHolder.WORK).mRecyclerView.setId(R.id.apps_list_view_work);
-            if (ENABLE_ALL_APPS_RV_PREINFLATION.get()) {
-                // Let main and work rv share same view pool.
-                ((RecyclerView) mViewPager.getChildAt(0))
-                        .setRecycledViewPool(mAllAppsStore.getRecyclerViewPool());
-                ((RecyclerView) mViewPager.getChildAt(1))
-                        .setRecycledViewPool(mAllAppsStore.getRecyclerViewPool());
-            }
+            mainRecyclerView = (AllAppsRecyclerView) mViewPager.getChildAt(0);
+            workRecyclerView = (AllAppsRecyclerView) mViewPager.getChildAt(1);
+            mAH.get(AdapterHolder.MAIN).setup(mainRecyclerView, mPersonalMatcher);
+            mAH.get(AdapterHolder.WORK).setup(workRecyclerView, mWorkManager.getMatcher());
+            workRecyclerView.setId(R.id.apps_list_view_work);
             if (FeatureFlags.ENABLE_EXPANDING_PAUSE_WORK_BUTTON.get()) {
                 mAH.get(AdapterHolder.WORK).mRecyclerView.addOnScrollListener(
                         mWorkManager.newScrollListener());
@@ -587,13 +585,15 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 onActivePageChanged(mViewPager.getNextPage());
             }
         } else {
-            mAH.get(AdapterHolder.MAIN).setup(findViewById(R.id.apps_list_view), null);
+            mainRecyclerView = findViewById(R.id.apps_list_view);
+            workRecyclerView = null;
+            mAH.get(AdapterHolder.MAIN).setup(mainRecyclerView, null);
             mAH.get(AdapterHolder.WORK).mRecyclerView = null;
-            if (ENABLE_ALL_APPS_RV_PREINFLATION.get()) {
-                mAH.get(AdapterHolder.MAIN).mRecyclerView
-                        .setRecycledViewPool(mAllAppsStore.getRecyclerViewPool());
-            }
         }
+        setUpCustomRecyclerViewPool(
+                mainRecyclerView,
+                workRecyclerView,
+                mAllAppsStore.getRecyclerViewPool());
         setupHeader();
 
         if (isSearchBarFloating()) {
@@ -608,6 +608,30 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.MAIN).mRecyclerView);
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.WORK).mRecyclerView);
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.SEARCH).mRecyclerView);
+    }
+
+    /**
+     * If {@link ENABLE_ALL_APPS_RV_PREINFLATION} is enabled, wire custom
+     * {@link RecyclerView.RecycledViewPool} to main and work {@link AllAppsRecyclerView}.
+     *
+     * Then if {@link ALL_APPS_GONE_VISIBILITY} is enabled, update max pool size. This is because
+     * all apps rv's hidden visibility is changed to {@link View#GONE} from {@link View#INVISIBLE),
+     * thus we cannot rely on layout pass to update pool size.
+     */
+    private static void setUpCustomRecyclerViewPool(
+            @NonNull AllAppsRecyclerView mainRecyclerView,
+            @Nullable AllAppsRecyclerView workRecyclerView,
+            @NonNull RecyclerView.RecycledViewPool recycledViewPool) {
+        if (!ENABLE_ALL_APPS_RV_PREINFLATION.get()) {
+            return;
+        }
+        mainRecyclerView.setRecycledViewPool(recycledViewPool);
+        if (workRecyclerView != null) {
+            workRecyclerView.setRecycledViewPool(recycledViewPool);
+        }
+        if (ALL_APPS_GONE_VISIBILITY.get()) {
+            mainRecyclerView.updatePoolSize();
+        }
     }
 
     private void replaceAppsRVContainer(boolean showTabs) {
