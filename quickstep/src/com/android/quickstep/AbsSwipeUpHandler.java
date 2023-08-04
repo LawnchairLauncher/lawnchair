@@ -106,6 +106,7 @@ import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StatefulActivity;
+import com.android.launcher3.taskbar.TaskbarThresholdUtils;
 import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter;
@@ -379,12 +380,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         mTaskbarAlreadyOpen = controller != null && !controller.isTaskbarStashed();
         mIsTaskbarAllAppsOpen = controller != null && controller.isTaskbarAllAppsOpen();
         mTaskbarAppWindowThreshold =
-                res.getDimensionPixelSize(R.dimen.taskbar_app_window_threshold);
+                TaskbarThresholdUtils.getAppWindowThreshold(res, mDp);
         boolean swipeWillNotShowTaskbar = mTaskbarAlreadyOpen || mGestureState.isTrackpadGesture();
         mTaskbarHomeOverviewThreshold = swipeWillNotShowTaskbar
                 ? 0
-                : res.getDimensionPixelSize(R.dimen.taskbar_home_overview_threshold);
-        mTaskbarCatchUpThreshold = res.getDimensionPixelSize(R.dimen.taskbar_catch_up_threshold);
+                : TaskbarThresholdUtils.getHomeOverviewThreshold(res, mDp);
+        mTaskbarCatchUpThreshold = TaskbarThresholdUtils.getCatchUpThreshold(res, mDp);
     }
 
     @Nullable
