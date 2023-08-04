@@ -37,6 +37,7 @@ import com.android.launcher3.util.IntSet;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.LauncherWidgetHolder;
+import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -237,6 +238,14 @@ public final class QuickstepWidgetHolder extends LauncherWidgetHolder {
     @Override
     public LauncherAppWidgetHostView createView(@NonNull Context context, int appWidgetId,
             @NonNull LauncherAppWidgetProviderInfo appWidget) {
+
+        if (appWidget.isCustomWidget()) {
+            LauncherAppWidgetHostView lahv = new LauncherAppWidgetHostView(context);
+            lahv.setAppWidget(appWidgetId, appWidget);
+            CustomWidgetManager.INSTANCE.get(context).onViewCreated(lahv);
+            return lahv;
+        }
+
         LauncherAppWidgetHostView widgetView = getPendingView(appWidgetId);
         if (widgetView != null) {
             removePendingView(appWidgetId);

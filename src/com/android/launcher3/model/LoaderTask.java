@@ -95,6 +95,7 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.TraceHelper;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.widget.WidgetManagerHelper;
+import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -740,8 +741,13 @@ public class LoaderTask implements Runnable {
 
                     ComponentKey providerKey = new ComponentKey(component, c.user);
                     if (!mWidgetProvidersMap.containsKey(providerKey)) {
-                        mWidgetProvidersMap.put(providerKey,
-                                widgetHelper.findProvider(component, c.user));
+                        if (customWidget) {
+                            mWidgetProvidersMap.put(providerKey, CustomWidgetManager.INSTANCE
+                                    .get(mApp.getContext()).getWidgetProvider(component));
+                        } else {
+                            mWidgetProvidersMap.put(providerKey,
+                                    widgetHelper.findProvider(component, c.user));
+                        }
                     }
                     final AppWidgetProviderInfo provider = mWidgetProvidersMap.get(providerKey);
 
@@ -814,7 +820,8 @@ public class LoaderTask implements Runnable {
                             return;
                         }
                         LauncherAppWidgetProviderInfo widgetProviderInfo =
-                                widgetHelper.getLauncherAppWidgetInfo(appWidgetId);
+                                widgetHelper.getLauncherAppWidgetInfo(appWidgetId,
+                                        appWidgetInfo.getTargetComponent());
                         if (widgetProviderInfo != null
                                 && (appWidgetInfo.spanX < widgetProviderInfo.minSpanX
                                 || appWidgetInfo.spanY < widgetProviderInfo.minSpanY)) {

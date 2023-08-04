@@ -23,9 +23,11 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.os.SystemClock;
 import android.os.Trace;
 import android.util.Log;
+import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
@@ -497,5 +499,14 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
          * @param bottom The new bottom coordinate of this view
          */
         void notifyBoundChangeOnPreLayout(View v, int left, int top, int right, int bottom);
+    }
+
+    @Override
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
+        try {
+            super.dispatchRestoreInstanceState(container);
+        } catch (Exception e) {
+            Log.i(TAG, "Exception: " + e);
+        }
     }
 }

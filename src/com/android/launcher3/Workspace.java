@@ -3413,7 +3413,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             if (item.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_ID_NOT_VALID)) {
                 widgetInfo = widgetHelper.findProvider(item.providerName, item.user);
             } else {
-                widgetInfo = widgetHelper.getLauncherAppWidgetInfo(item.appWidgetId);
+                widgetInfo = widgetHelper.getLauncherAppWidgetInfo(item.appWidgetId,
+                        item.getTargetComponent());
             }
 
             if (widgetInfo != null) {
