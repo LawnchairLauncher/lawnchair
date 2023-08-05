@@ -72,7 +72,7 @@
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Prøv at holde fingeren nede på vinduet i længere tid, inden du løfter den"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Stryg lige opad, og hold derefter fingeren stille"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Du har lært, hvordan du bruger bevægelser. Du kan aktivere bevægelser i Indstillinger."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Du har fuldført bevægelsen for Skift app"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Du har fuldført bevægelsen for at skifte mellem apps"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Stryg for at skifte app"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Skift mellem apps ved at stryge opad fra bunden af skærmen, holde fingeren stille og løfte den."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Skift mellem apps ved at stryge opad fra bunden af skærmen med 2 fingre, holde dem nede og slippe."</string>
