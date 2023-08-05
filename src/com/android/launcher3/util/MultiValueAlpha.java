@@ -32,8 +32,15 @@ public class MultiValueAlpha extends MultiPropertyFactory<View> {
     // Whether we should change from INVISIBLE to VISIBLE and vice versa at low alpha values.
     private boolean mUpdateVisibility;
 
+    private final int mHiddenVisibility;
+
     public MultiValueAlpha(View view, int size) {
+        this(view, size, View.INVISIBLE);
+    }
+
+    public MultiValueAlpha(View view, int size, int hiddenVisibility) {
         super(view, VIEW_ALPHA, size, ALPHA_AGGREGATOR, 1f);
+        this.mHiddenVisibility = hiddenVisibility;
     }
 
     /** Sets whether we should update between INVISIBLE and VISIBLE based on alpha. */
@@ -45,7 +52,7 @@ public class MultiValueAlpha extends MultiPropertyFactory<View> {
     protected void apply(float value) {
         super.apply(value);
         if (mUpdateVisibility) {
-            AlphaUpdateListener.updateVisibility(mTarget);
+            AlphaUpdateListener.updateVisibility(mTarget, mHiddenVisibility);
         }
     }
 }

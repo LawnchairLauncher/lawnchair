@@ -736,6 +736,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                             dp, mNavButtonsView, res, isInKidsMode, isInSetup, isThreeButtonNav,
                             TaskbarManager.isPhoneMode(dp), mDisplayController.getInfo().rotation);
             navButtonLayoutter.layoutButtons(dp, isContextualButtonShowing());
+            updateNavButtonColor();
             return;
         }
 
