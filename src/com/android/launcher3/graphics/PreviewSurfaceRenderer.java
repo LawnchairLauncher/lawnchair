@@ -16,6 +16,8 @@
 
 package com.android.launcher3.graphics;
 
+import static android.view.Display.DEFAULT_DISPLAY;
+
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -80,11 +82,12 @@ public class PreviewSurfaceRenderer {
     private static final String KEY_DISPLAY_ID = "display_id";
     private static final String KEY_COLORS = "wallpaper_colors";
 
-    private final Context mContext;
-    private final InvariantDeviceProfile mIdp;
+    private Context mContext;
     private final IBinder mHostToken;
     private final int mWidth;
     private final int mHeight;
+    private String mGridName;
+
     private final Display mDisplay;
     private final WallpaperColors mWallpaperColors;
     private final RunnableList mOnDestroyCallbacks = new RunnableList();
@@ -97,15 +100,13 @@ public class PreviewSurfaceRenderer {
 
     public PreviewSurfaceRenderer(Context context, Bundle bundle) throws Exception {
         mContext = context;
-
-        String gridName = bundle.getString("name");
+        mGridName = bundle.getString("name");
         bundle.remove("name");
-        if (gridName == null) {
-            gridName = InvariantDeviceProfile.getCurrentGridName(context);
+        if (mGridName == null) {
+            mGridName = InvariantDeviceProfile.getCurrentGridName(context);
         }
         mWallpaperColors = bundle.getParcelable(KEY_COLORS);
         mHideQsb = bundle.getBoolean(GridCustomizationsProvider.KEY_HIDE_BOTTOM_ROW);
-        mIdp = new InvariantDeviceProfile(context, gridName);
 
         mHostToken = bundle.getBinder(KEY_HOST_TOKEN);
         mWidth = bundle.getInt(KEY_VIEW_WIDTH);
@@ -113,9 +114,9 @@ public class PreviewSurfaceRenderer {
         mDisplay = context.getSystemService(DisplayManager.class)
                 .getDisplay(bundle.getInt(KEY_DISPLAY_ID));
 
-        mSurfaceControlViewHost = MAIN_EXECUTOR
-                .submit(() -> new SurfaceControlViewHost(mContext, mDisplay, mHostToken))
-                .get(5, TimeUnit.SECONDS);
+        mSurfaceControlViewHost = MAIN_EXECUTOR.submit(() -> new SurfaceControlViewHost(mContext,
+                context.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY),
+                mHostToken)).get(5, TimeUnit.SECONDS);
         mOnDestroyCallbacks.add(mSurfaceControlViewHost::release);
     }
 
@@ -195,28 +196,33 @@ public class PreviewSurfaceRenderer {
         }
     }
 
+    /***
+     * Generates a new context overriding the theme color and the display size without affecting the
+     * main application context
+     */
+    private Context getPreviewContext() {
+        Context context = mContext.createDisplayContext(mDisplay);
+        if (mWallpaperColors == null) {
+            return new ContextThemeWrapper(context,
+                    Themes.getActivityThemeRes(context));
+        }
+        if (Utilities.ATLEAST_R) {
+            context = context.createWindowContext(
+                    LayoutParams.TYPE_APPLICATION_OVERLAY, null);
+        }
+        LocalColorExtractor.newInstance(context)
+                .applyColorsOverride(context, mWallpaperColors);
+        return new ContextThemeWrapper(context,
+                Themes.getActivityThemeRes(context, mWallpaperColors.getColorHints()));
+    }
+
     @WorkerThread
     private void loadModelData() {
-        final Context inflationContext;
-        if (mWallpaperColors != null) {
-            // Create a themed context, without affecting the main application context
-            Context context = mContext.createDisplayContext(mDisplay);
-            if (Utilities.ATLEAST_R) {
-                context = context.createWindowContext(
-                        LayoutParams.TYPE_APPLICATION_OVERLAY, null);
-            }
-            LocalColorExtractor.newInstance(mContext)
-                    .applyColorsOverride(context, mWallpaperColors);
-            inflationContext = new ContextThemeWrapper(context,
-                    Themes.getActivityThemeRes(context, mWallpaperColors.getColorHints()));
-        } else {
-            inflationContext = new ContextThemeWrapper(mContext,
-                    Themes.getActivityThemeRes(mContext));
-        }
-
-        if (GridSizeMigrationUtil.needsToMigrate(inflationContext, mIdp)) {
+        final Context inflationContext = getPreviewContext();
+        final InvariantDeviceProfile idp = new InvariantDeviceProfile(inflationContext, mGridName);
+        if (GridSizeMigrationUtil.needsToMigrate(inflationContext, idp)) {
             // Start the migration
-            PreviewContext previewContext = new PreviewContext(inflationContext, mIdp);
+            PreviewContext previewContext = new PreviewContext(inflationContext, idp);
             // Copy existing data to preview DB
             LauncherDbUtils.copyTable(LauncherAppState.getInstance(mContext)
                     .getModel().getModelDbController().getDb(),
@@ -239,7 +245,7 @@ public class PreviewSurfaceRenderer {
 
                 @Override
                 public void run() {
-                    DeviceProfile deviceProfile = mIdp.getDeviceProfile(previewContext);
+                    DeviceProfile deviceProfile = idp.getDeviceProfile(previewContext);
                     String query =
                             LauncherSettings.Favorites.SCREEN + " = " + Workspace.FIRST_SCREEN_ID
                                     + " or " + LauncherSettings.Favorites.CONTAINER + " = "
@@ -254,7 +260,8 @@ public class PreviewSurfaceRenderer {
                             getLoadedLauncherWidgetInfo(previewContext.getBaseContext());
 
                     MAIN_EXECUTOR.execute(() -> {
-                        renderView(previewContext, mBgDataModel, mWidgetProvidersMap, spanInfo);
+                        renderView(previewContext, mBgDataModel, mWidgetProvidersMap, spanInfo,
+                                idp);
                         mOnDestroyCallbacks.add(previewContext::onDestroy);
                     });
                 }
@@ -263,7 +270,7 @@ public class PreviewSurfaceRenderer {
             LauncherAppState.getInstance(inflationContext).getModel().loadAsync(dataModel -> {
                 if (dataModel != null) {
                     MAIN_EXECUTOR.execute(() -> renderView(inflationContext, dataModel, null,
-                            null));
+                            null, idp));
                 } else {
                     Log.e(TAG, "Model loading failed");
                 }
@@ -274,11 +281,11 @@ public class PreviewSurfaceRenderer {
     @UiThread
     private void renderView(Context inflationContext, BgDataModel dataModel,
             Map<ComponentKey, AppWidgetProviderInfo> widgetProviderInfoMap,
-            @Nullable final SparseArray<Size> launcherWidgetSpanInfo) {
+            @Nullable final SparseArray<Size> launcherWidgetSpanInfo, InvariantDeviceProfile idp) {
         if (mDestroyed) {
             return;
         }
-        mRenderer = new LauncherPreviewRenderer(inflationContext, mIdp,
+        mRenderer = new LauncherPreviewRenderer(inflationContext, idp,
                 mWallpaperColors, launcherWidgetSpanInfo);
         mRenderer.hideBottomRow(mHideQsb);
         View view = mRenderer.getRenderedView(dataModel, widgetProviderInfoMap);
