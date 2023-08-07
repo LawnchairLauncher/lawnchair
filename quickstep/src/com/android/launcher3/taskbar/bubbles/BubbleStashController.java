@@ -22,6 +22,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.annotation.Nullable;
 import android.view.InsetsController;
+import android.view.MotionEvent;
 
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.taskbar.StashedHandleViewController;
@@ -349,5 +350,10 @@ public class BubbleStashController {
         // the bubble bar aligns with the taskbar.
         return mBubblesShowingOnHome ? getBubbleBarTranslationYForHotseat()
                 : getBubbleBarTranslationYForTaskbar();
+    }
+
+    /** Checks whether the motion event is over the stash handle. */
+    public boolean isEventOverStashHandle(MotionEvent ev) {
+        return mHandleViewController.isEventOverHandle(ev);
     }
 }
