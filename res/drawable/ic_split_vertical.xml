@@ -5,5 +5,5 @@
     android:viewportHeight="24">
   <path
       android:pathData="M18,4V9H6V4H18ZM18,2H6C4.9,2 4,2.9 4,4V9C4,10.1 4.9,11 6,11H18C19.1,11 20,10.1 20,9V4C20,2.9 19.1,2 18,2ZM18,15V20H6V15H18ZM18,13H6C4.9,13 4,13.9 4,15V20C4,21.1 4.9,22 6,22H18C19.1,22 20,21.1 20,20V15C20,13.9 19.1,13 18,13Z"
-      android:fillColor="@color/overview_button"/>
+      android:fillColor="#000000"/>
 </vector>

@@ -50,10 +50,8 @@
 
     <!-- Overrideable in overlay that provides the Overview Actions. -->
     <dimen name="overview_actions_top_margin">24dp</dimen>
-    <dimen name="overview_actions_size">60dp</dimen>
+    <dimen name="overview_actions_height">48dp</dimen>
     <dimen name="overview_actions_button_spacing">36dp</dimen>
-    <!-- 12dp + 156dp floating search pill width (note this is in addition to normal 36dp) -->
-    <dimen name="overview_actions_additional_floating_search_spacing">168dp</dimen>
 
     <!-- These speeds are in dp/s -->
     <dimen name="max_task_dismiss_drag_velocity">2.25dp</dimen>

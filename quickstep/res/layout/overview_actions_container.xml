@@ -22,7 +22,7 @@
     <LinearLayout
         android:id="@+id/action_buttons"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/overview_actions_size"
+        android:layout_height="@dimen/overview_actions_height"
         android:layout_gravity="bottom|center_horizontal"
         android:orientation="horizontal">
 
@@ -31,14 +31,13 @@
             android:layout_height="1dp"
             android:layout_weight="1" />
 
-        <ImageButton
+        <Button
             android:id="@+id/action_screenshot"
             style="@style/OverviewActionButton"
-            android:layout_width="@dimen/overview_actions_size"
-            android:layout_height="@dimen/overview_actions_size"
-            android:gravity="center"
-            android:src="@drawable/ic_screenshot"
-            android:contentDescription="@string/action_screenshot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_screenshot"
+            android:text="@string/action_screenshot"
             android:theme="@style/ThemeControlHighlightWorkspaceColor" />
 
         <Space
@@ -47,14 +46,12 @@
             android:layout_height="1dp"
             android:visibility="gone" />
 
-        <ImageButton
+        <Button
             android:id="@+id/action_split"
             style="@style/OverviewActionButton"
-            android:layout_width="@dimen/overview_actions_size"
-            android:layout_height="@dimen/overview_actions_size"
-            android:gravity="center"
-            android:src="@drawable/ic_split_vertical"
-            android:contentDescription="@string/action_split"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/action_split"
             android:theme="@style/ThemeControlHighlightWorkspaceColor"
             android:visibility="gone" />
 

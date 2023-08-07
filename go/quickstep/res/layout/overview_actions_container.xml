@@ -23,8 +23,8 @@
     <LinearLayout
         android:id="@+id/action_buttons"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
+        android:layout_height="@dimen/overview_actions_height"
+        android:layout_gravity="top|center_horizontal"
         android:orientation="horizontal">
 
         <Space
@@ -104,11 +104,13 @@
         </LinearLayout>
 
         <!-- Unused. Included only for compatibility with parent class. -->
-        <ImageButton
+        <Button
             android:id="@+id/action_split"
             style="@style/GoOverviewActionButton"
-            android:src="@drawable/ic_split_vertical"
-            android:contentDescription="@string/action_split"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_split_vertical"
+            android:text="@string/action_split"
             android:theme="@style/ThemeControlHighlightWorkspaceColor"
             android:visibility="gone" />
 
