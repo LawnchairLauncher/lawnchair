@@ -37,6 +37,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
+import com.android.launcher3.taskbar.TaskbarThresholdUtils;
 import com.android.launcher3.taskbar.TaskbarTranslationController.TransitionCallback;
 import com.android.launcher3.taskbar.bubbles.BubbleControllers;
 import com.android.launcher3.touch.OverScroll;
@@ -94,7 +95,8 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
 
         Resources res = context.getResources();
         mUnstashArea = res.getDimensionPixelSize(R.dimen.taskbar_unstash_input_area);
-        mTaskbarNavThreshold = res.getDimensionPixelSize(R.dimen.taskbar_from_nav_threshold);
+        mTaskbarNavThreshold = TaskbarThresholdUtils.getFromNavThreshold(res,
+                taskbarActivityContext.getDeviceProfile());
         mTaskbarNavThresholdY = taskbarActivityContext.getDeviceProfile().heightPx
                 - mTaskbarNavThreshold;
         mIsTaskbarAllAppsOpen =
