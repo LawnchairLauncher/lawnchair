@@ -224,12 +224,12 @@ public class WidgetsBottomSheet extends BaseWidgetSheet {
     }
 
     private void animateOpen() {
-        if (mIsOpen || mOpenCloseAnimator.isRunning()) {
+        if (mIsOpen || mOpenCloseAnimation.getAnimationPlayer().isRunning()) {
             return;
         }
         mIsOpen = true;
         setupNavBarColor();
-        setUpDefaultOpenAnimator().start();
+        setUpDefaultOpenAnimation().start();
     }
 
     @Override
