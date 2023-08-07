@@ -330,6 +330,12 @@
     <!-- Taskbar swipe down threshold -->
     <dimen name="taskbar_to_nav_threshold">24dp</dimen>
 
+    <!-- Taskbar swipe up threshold multipliers -->
+    <item name="taskbar_nav_threshold_mult" format="float" type="dimen">4.5</item>
+    <item name="taskbar_app_window_threshold_mult" format="float" type="dimen">10</item>
+    <item name="taskbar_home_overview_threshold_mult" format="float" type="dimen">18</item>
+    <item name="taskbar_catch_up_threshold_mult" format="float" type="dimen">30</item>
+
     <!--  Taskbar 3 button spacing  -->
     <dimen name="taskbar_button_space_inbetween">24dp</dimen>
     <dimen name="taskbar_button_space_inbetween_phone">40dp</dimen>
