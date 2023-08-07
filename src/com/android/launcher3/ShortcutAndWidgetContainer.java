@@ -28,6 +28,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.os.Trace;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -182,6 +183,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        Trace.beginSection("ShortcutAndWidgetConteiner#onLayout");
         int count = getChildCount();
         for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
@@ -189,6 +191,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
                 layoutChild(child);
             }
         }
+        Trace.endSection();
     }
 
     /**
