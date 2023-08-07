@@ -40,6 +40,7 @@ import android.hardware.display.DisplayManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemProperties;
+import android.os.Trace;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
@@ -180,6 +181,8 @@ public class TaskbarManager {
 
             @Override
             public void onConfigurationChanged(Configuration newConfig) {
+                Trace.instantForTrack(Trace.TRACE_TAG_APP, "TaskbarManager",
+                        "onConfigurationChanged: " + newConfig);
                 debugWhyTaskbarNotDestroyed(
                         "TaskbarManager#mComponentCallbacks.onConfigurationChanged: " + newConfig);
                 DeviceProfile dp = mUserUnlocked
@@ -347,38 +350,44 @@ public class TaskbarManager {
      */
     @VisibleForTesting
     public void recreateTaskbar() {
-        DeviceProfile dp = mUserUnlocked ?
+        Trace.beginSection("recreateTaskbar");
+        try {
+            DeviceProfile dp = mUserUnlocked ?
                 LauncherAppState.getIDP(mContext).getDeviceProfile(mContext) : null;
 
-        destroyExistingTaskbar();
+            destroyExistingTaskbar();
 
-        boolean isTaskbarEnabled = dp != null && isTaskbarPresent(dp);
-        debugWhyTaskbarNotDestroyed("recreateTaskbar: isTaskbarEnabled=" + isTaskbarEnabled
+            boolean isTaskbarEnabled = dp != null && isTaskbarPresent(dp);
+            debugWhyTaskbarNotDestroyed("recreateTaskbar: isTaskbarEnabled=" + isTaskbarEnabled
                 + " [dp != null (i.e. mUserUnlocked)]=" + (dp != null)
                 + " FLAG_HIDE_NAVBAR_WINDOW=" + FLAG_HIDE_NAVBAR_WINDOW
                 + " dp.isTaskbarPresent=" + (dp == null ? "null" : dp.isTaskbarPresent));
-        if (!isTaskbarEnabled) {
-            SystemUiProxy.INSTANCE.get(mContext)
+            if (!isTaskbarEnabled) {
+                SystemUiProxy.INSTANCE.get(mContext)
                     .notifyTaskbarStatus(/* visible */ false, /* stashed */ false);
-            return;
-        }
+                return;
+            }
 
-        if (mTaskbarActivityContext == null) {
-            mTaskbarActivityContext = new TaskbarActivityContext(mContext, dp, mNavButtonController,
+            if (mTaskbarActivityContext == null) {
+                mTaskbarActivityContext = new TaskbarActivityContext(mContext, dp,
+                    mNavButtonController,
                     mUnfoldProgressProvider);
-        } else {
-            mTaskbarActivityContext.updateDeviceProfile(dp);
-        }
-        mTaskbarActivityContext.init(mSharedState);
+            } else {
+                mTaskbarActivityContext.updateDeviceProfile(dp);
+            }
+            mTaskbarActivityContext.init(mSharedState);
 
-        if (mActivity != null) {
-            mTaskbarActivityContext.setUIController(
+            if (mActivity != null) {
+                mTaskbarActivityContext.setUIController(
                     createTaskbarUIControllerForActivity(mActivity));
-        }
+            }
 
-        // We to wait until user unlocks the device to attach listener.
-        LauncherPrefs.get(mContext).addListener(mTaskbarPinningPreferenceChangeListener,
+            // We to wait until user unlocks the device to attach listener.
+            LauncherPrefs.get(mContext).addListener(mTaskbarPinningPreferenceChangeListener,
                 TASKBAR_PINNING);
+        } finally {
+            Trace.endSection();
+        }
     }
 
     public void onSystemUiFlagsChanged(int systemUiStateFlags) {
