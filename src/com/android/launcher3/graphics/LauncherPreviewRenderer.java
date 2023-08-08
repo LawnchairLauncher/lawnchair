@@ -51,6 +51,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.TextClock;
 
 import androidx.annotation.NonNull;
@@ -70,6 +71,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.WorkspaceLayoutManager;
+import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.config.FeatureFlags;
@@ -358,12 +360,13 @@ public class LauncherPreviewRenderer extends ContextWrapper
         addInScreenFromBind(icon, info);
     }
 
-    private void inflateAndAddFolder(FolderInfo info) {
+    private void inflateAndAddCollectionIcon(FolderInfo info) {
         CellLayout screen = info.container == Favorites.CONTAINER_DESKTOP
                 ? mWorkspaceScreens.get(info.screenId)
                 : mHotseat;
-        FolderIcon folderIcon = FolderIcon.inflateIcon(R.layout.folder_icon, this, screen,
-                info);
+        FrameLayout folderIcon = info.itemType == Favorites.ITEM_TYPE_FOLDER
+                ? FolderIcon.inflateIcon(R.layout.folder_icon, this, screen, info)
+                : AppPairIcon.inflateIcon(R.layout.app_pair_icon, this, screen, info);
         addInScreenFromBind(folderIcon, info);
     }
 
@@ -467,7 +470,8 @@ public class LauncherPreviewRenderer extends ContextWrapper
                     inflateAndAddIcon((WorkspaceItemInfo) itemInfo);
                     break;
                 case Favorites.ITEM_TYPE_FOLDER:
-                    inflateAndAddFolder((FolderInfo) itemInfo);
+                case Favorites.ITEM_TYPE_APP_PAIR:
+                    inflateAndAddCollectionIcon((FolderInfo) itemInfo);
                     break;
                 default:
                     break;

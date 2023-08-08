@@ -489,6 +489,7 @@ public class ModelWriter {
                         case Favorites.ITEM_TYPE_APPLICATION:
                         case Favorites.ITEM_TYPE_DEEP_SHORTCUT:
                         case Favorites.ITEM_TYPE_FOLDER:
+                        case Favorites.ITEM_TYPE_APP_PAIR:
                             if (!mBgDataModel.workspaceItems.contains(modelItem)) {
                                 mBgDataModel.workspaceItems.add(modelItem);
                             }

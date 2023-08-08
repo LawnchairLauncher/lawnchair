@@ -145,6 +145,7 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.BaseSearchConfig;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.PropertyListBuilder;
+import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.celllayout.CellPosMapper.CellPos;
 import com.android.launcher3.celllayout.CellPosMapper.TwoPanelCellPosMapper;
@@ -2451,9 +2452,9 @@ public class Launcher extends StatefulActivity<LauncherState>
                     break;
                 }
                 case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR: {
-                    FolderInfo info = (FolderInfo) item;
-                    // TODO (jeremysim b/274189428): Create app pair icon
-                    view = null;
+                    view = AppPairIcon.inflateIcon(R.layout.app_pair_icon, this,
+                            (ViewGroup) workspace.getChildAt(workspace.getCurrentPage()),
+                            (FolderInfo) item);
                     break;
                 }
                 case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
@@ -3394,5 +3395,13 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Override
     public View.OnLongClickListener getAllAppsItemLongClickListener() {
         return ItemLongClickListener.INSTANCE_ALL_APPS;
+    }
+
+    /**
+     * Handles an app pair launch; overridden in
+     * {@link com.android.launcher3.uioverrides.QuickstepLauncher}
+     */
+    public void launchAppPair(WorkspaceItemInfo app1, WorkspaceItemInfo app2) {
+        // Overridden
     }
 }

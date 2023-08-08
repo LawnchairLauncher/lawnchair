@@ -117,6 +117,7 @@ import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.statehandlers.DepthController;
@@ -173,6 +174,7 @@ import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.unfold.RemoteUnfoldSharedComponent;
 import com.android.systemui.unfold.UnfoldSharedComponent;
@@ -618,9 +620,10 @@ public class QuickstepLauncher extends Launcher {
         RecentsView recentsView = getOverviewPanel();
         // Check if there is already an instance of this app running, if so, initiate the split
         // using that.
-        mSplitSelectStateController.findLastActiveTaskAndRunCallback(
-                splitSelectSource.itemInfo.getComponentKey(),
-                foundTask -> {
+        mSplitSelectStateController.findLastActiveTasksAndRunCallback(
+                Collections.singletonList(splitSelectSource.itemInfo.getComponentKey()),
+                foundTasks -> {
+                    @Nullable Task foundTask = foundTasks.get(0);
                     boolean taskWasFound = foundTask != null;
                     splitSelectSource.alreadyRunningTaskId = taskWasFound
                             ? foundTask.key.id
@@ -1324,6 +1327,13 @@ public class QuickstepLauncher extends Launcher {
                         : groupTask.mSplitBounds.appsStackedVertically
                                 ? groupTask.mSplitBounds.topTaskPercent
                                 : groupTask.mSplitBounds.leftTaskPercent);
+    }
+
+    /**
+     * Launches two apps as an app pair.
+     */
+    public void launchAppPair(WorkspaceItemInfo app1, WorkspaceItemInfo app2) {
+        mSplitSelectStateController.getAppPairsController().launchAppPair(app1, app2);
     }
 
     public boolean canStartHomeSafely() {
