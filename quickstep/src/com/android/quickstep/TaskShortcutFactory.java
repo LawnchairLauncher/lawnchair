@@ -140,6 +140,7 @@ public interface TaskShortcutFactory {
 
         @Override
         public void onClick(View view) {
+            dismissTaskMenuView(mTarget);
             ((RecentsView) mTarget.getOverviewPanel())
                     .getSplitSelectController().getAppPairsController().saveAppPair(mTaskView);
         }
