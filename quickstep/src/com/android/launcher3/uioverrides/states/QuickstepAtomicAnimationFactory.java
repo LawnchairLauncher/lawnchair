@@ -55,12 +55,14 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_T
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
 
 import android.animation.ValueAnimator;
+import android.util.Log;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.AllAppsSwipeController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
@@ -94,7 +96,8 @@ public class QuickstepAtomicAnimationFactory extends
     @Override
     public void prepareForAtomicAnimation(LauncherState fromState, LauncherState toState,
             StateAnimationConfig config) {
-
+        Log.d(TestProtocol.OVERVIEW_OVER_HOME, "creating animation fromState: "
+                + fromState + " toState: " + toState);
         RecentsView overview = mActivity.getOverviewPanel();
         if ((fromState == OVERVIEW || fromState == OVERVIEW_SPLIT_SELECT) && toState == NORMAL) {
             overview.switchToScreenshot(() ->
