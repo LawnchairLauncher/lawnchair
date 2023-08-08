@@ -46,23 +46,27 @@ class PhonePortraitNavLayoutter(
             DimensionUtils.getTaskbarPhoneDimensions(dp, resources,
                     TaskbarManager.isPhoneMode(dp))
         val endStartMargins = resources.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size)
-        navContainerParams.width = taskbarDimensions.x
-        navContainerParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-        navContainerParams.gravity = Gravity.CENTER_VERTICAL
 
         // Ensure order of buttons is correct
         navButtonContainer.removeAllViews()
         navButtonContainer.orientation = LinearLayout.HORIZONTAL
-        navContainerParams.topMargin = 0
-        navContainerParams.bottomMargin = 0
-        navContainerParams.marginEnd = endStartMargins
-        navContainerParams.marginStart = endStartMargins
+
+        navContainerParams.apply {
+            width = taskbarDimensions.x
+            height = ViewGroup.LayoutParams.MATCH_PARENT
+            topMargin = 0
+            bottomMargin = 0
+            marginEnd = endStartMargins
+            marginStart = endStartMargins
+        }
+
         // Swap recents and back button in case we were landscape prior to this
         navButtonContainer.addView(backButton)
         navButtonContainer.addView(homeButton)
         navButtonContainer.addView(recentsButton)
 
         navButtonContainer.layoutParams = navContainerParams
+        navButtonContainer.gravity = Gravity.CENTER_VERTICAL
 
         // Add the spaces in between the nav buttons
         val spaceInBetween =
