@@ -60,8 +60,6 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         )
     }
 
-    var splitInstructionsView: SplitInstructionsView? = null
-
     /**
      * Returns different elements to animate for the initial split selection animation
      * depending on the state of the surface from which the split was initiated
@@ -235,7 +233,8 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         animatorSet.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 splitSelectStateController.resetState()
-                safeRemoveViewFromDragLayer(launcher, splitInstructionsView)
+                safeRemoveViewFromDragLayer(launcher,
+                        splitSelectStateController.splitInstructionsView)
             }
         })
         return animatorSet
@@ -246,8 +245,9 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
      * app for splitscreen
      */
     fun getShowSplitInstructionsAnim(launcher: StatefulActivity<*>) : PendingAnimation {
-        safeRemoveViewFromDragLayer(launcher, splitInstructionsView)
-        splitInstructionsView = SplitInstructionsView.getSplitInstructionsView(launcher)
+        safeRemoveViewFromDragLayer(launcher, splitSelectStateController.splitInstructionsView)
+        val splitInstructionsView = SplitInstructionsView.getSplitInstructionsView(launcher)
+        splitSelectStateController.splitInstructionsView = splitInstructionsView
         val timings = AnimUtils.getDeviceOverviewToSplitTimings(launcher.deviceProfile.isTablet)
         val anim = PendingAnimation(100 /*duration */)
         anim.setViewAlpha(splitInstructionsView, 1f,
@@ -267,7 +267,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
 
     /** Removes the split instructions view from [launcher] drag layer. */
     fun removeSplitInstructionsView(launcher: StatefulActivity<*>) {
-        safeRemoveViewFromDragLayer(launcher, splitInstructionsView)
+        safeRemoveViewFromDragLayer(launcher, splitSelectStateController.splitInstructionsView)
     }
 
     private fun safeRemoveViewFromDragLayer(launcher: StatefulActivity<*>, view: View?) {
