@@ -334,6 +334,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mControllers.taskbarStashController.showTaskbarFromBroadcast();
     }
 
+    /** Toggles Taskbar All Apps overlay. */
+    public void toggleAllApps() {
+        mControllers.taskbarAllAppsController.toggle();
+    }
+
     @Override
     public DeviceProfile getDeviceProfile() {
         return mDeviceProfile;

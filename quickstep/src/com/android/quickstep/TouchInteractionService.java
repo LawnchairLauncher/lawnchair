@@ -56,6 +56,8 @@ import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.app.RemoteAction;
 import android.app.Service;
+import android.content.IIntentReceiver;
+import android.content.IIntentSender;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -571,15 +573,7 @@ public class TouchInteractionService extends Service {
         AccessibilityManager am = getSystemService(AccessibilityManager.class);
 
         if (isHomeAndOverviewSame) {
-            Intent intent = new Intent(mOverviewComponentObserver.getHomeIntent())
-                    .setAction(INTENT_ACTION_ALL_APPS_TOGGLE);
-            RemoteAction allAppsAction = new RemoteAction(
-                    Icon.createWithResource(this, R.drawable.ic_apps),
-                    getString(R.string.all_apps_label),
-                    getString(R.string.all_apps_label),
-                    PendingIntent.getActivity(this, GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS, intent,
-                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE));
-            am.registerSystemAction(allAppsAction, GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
+            am.registerSystemAction(createAllAppsAction(), GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
         } else {
             am.unregisterSystemAction(GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS);
         }
@@ -590,6 +584,35 @@ public class TouchInteractionService extends Service {
             mTaskbarManager.setActivity(newOverviewActivity);
         }
         mTISBinder.onOverviewTargetChange();
+    }
+
+    private RemoteAction createAllAppsAction() {
+        final Intent homeIntent = new Intent(mOverviewComponentObserver.getHomeIntent())
+                .setAction(INTENT_ACTION_ALL_APPS_TOGGLE);
+        final PendingIntent actionPendingIntent;
+
+        if (FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR.get()) {
+            actionPendingIntent = new PendingIntent(new IIntentSender.Stub() {
+                @Override
+                public void send(int code, Intent intent, String resolvedType,
+                        IBinder allowlistToken, IIntentReceiver finishedReceiver,
+                        String requiredPermission, Bundle options) {
+                    MAIN_EXECUTOR.execute(() -> mTaskbarManager.toggleAllApps(homeIntent));
+                }
+            });
+        } else {
+            actionPendingIntent = PendingIntent.getActivity(
+                    this,
+                    GLOBAL_ACTION_ACCESSIBILITY_ALL_APPS,
+                    homeIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        }
+
+        return new RemoteAction(
+                Icon.createWithResource(this, R.drawable.ic_apps),
+                getString(R.string.all_apps_label),
+                getString(R.string.all_apps_label),
+                actionPendingIntent);
     }
 
     @UiThread
