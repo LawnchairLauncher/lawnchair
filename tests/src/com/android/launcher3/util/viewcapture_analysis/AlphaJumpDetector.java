@@ -118,22 +118,22 @@ final class AlphaJumpDetector extends AnomalyDetector {
             RECENTS_DRAG_LAYER + "FallbackRecentsView:id/overview_panel",
             DRAG_LAYER
                     + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|ImageButton:id/action_screenshot",
+                    + "|LinearLayout:id/action_buttons|Button:id/action_screenshot",
             RECENTS_DRAG_LAYER
                     + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|ImageButton:id/action_screenshot",
+                    + "|LinearLayout:id/action_buttons|Button:id/action_screenshot",
             DRAG_LAYER
                     + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|ImageButton:id/action_select",
+                    + "|LinearLayout:id/action_buttons|Button:id/action_select",
             RECENTS_DRAG_LAYER
                     + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|ImageButton:id/action_select",
+                    + "|LinearLayout:id/action_buttons|Button:id/action_select",
             DRAG_LAYER
                     + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|ImageButton:id/action_split",
+                    + "|LinearLayout:id/action_buttons|Button:id/action_split",
             RECENTS_DRAG_LAYER
                     + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|ImageButton:id/action_split",
+                    + "|LinearLayout:id/action_buttons|Button:id/action_split",
             DRAG_LAYER + "IconView"
     );
 

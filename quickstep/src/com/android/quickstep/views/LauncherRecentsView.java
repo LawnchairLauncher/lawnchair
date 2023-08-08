@@ -20,7 +20,6 @@ import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.CLEAR_ALL_BUTTON;
 import static com.android.launcher3.LauncherState.EDIT_MODE;
-import static com.android.launcher3.LauncherState.FLOATING_SEARCH_BAR;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
@@ -97,12 +96,6 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     @Override
     protected boolean canStartHomeSafely() {
         return mActivity.canStartHomeSafely();
-    }
-
-    @Override
-    public boolean isFloatingSearchVisible() {
-        return FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()
-                && OVERVIEW.areElementsVisible(mActivity, FLOATING_SEARCH_BAR);
     }
 
     @Override
