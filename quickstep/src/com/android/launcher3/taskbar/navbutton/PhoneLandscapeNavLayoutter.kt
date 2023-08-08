@@ -52,7 +52,6 @@ open class PhoneLandscapeNavLayoutter(
         navContainerParams.apply {
             width = taskbarDimensions.x
             height = ViewGroup.LayoutParams.MATCH_PARENT
-            gravity = Gravity.CENTER
             topMargin = endStartMargins
             bottomMargin = endStartMargins
             marginEnd = 0
@@ -65,6 +64,7 @@ open class PhoneLandscapeNavLayoutter(
         navButtonContainer.addView(backButton)
 
         navButtonContainer.layoutParams = navContainerParams
+        navButtonContainer.gravity = Gravity.CENTER_HORIZONTAL
 
         // Add the spaces in between the nav buttons
         val spaceInBetween: Int =
