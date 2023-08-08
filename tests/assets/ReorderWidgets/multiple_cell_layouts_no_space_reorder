@@ -1,0 +1,56 @@
+###################################################################################################
+# This file contains test case composed of the following tags:
+#     * # (coments): Lines starting with this character would be ignored.
+#     * arguments: is set of words separated by spaces that can later be parsed
+#     * board: represent a workspace, the first line is the dimensions of the board width x height (wxh)
+# There are different characters on the board that represent different things:
+#     * x: The x character represents spaces that would be ignored, for example it can be used in
+#          the first row if we don't know how wide the smartspace is.
+#     * i: Represents an icon on the workspace, none in particular just an icon
+#     * [a-z]: Represents a widget and it can be any number or character
+#          except any other already in use. The whole continuos are of the same character is the
+#          area of the widget.
+#     * [A-Z]: Represents a folder and number of icons in the folder is represented by the order of
+#          letter in the alphabet, A=2, B=3, C=4 ... etc.
+# Test are parsed by CellLayoutTestCaseReader.java and boards are parsed by CellLayoutBoard.java
+###################################################################################################
+# 5x5 Test
+board: 5x5
+xxxxx|aeeee
+--mm-|acccc
+--mm-|acccc
+ggggg|acccc
+ggggg|adddd
+arguments: 7 1
+board: 10x5
+xxxxx|aeeee
+---mm|acccc
+---mm|acccc
+ggggg|acccc
+ggggg|adddd
+# 4x4 Test
+board: 4x4
+xxxx|aeee
+--mm|accc
+--mm|accc
+gggg|accc
+arguments: 5 1
+board: 8x4
+xxxx|aeee
+--mm|accc
+--mm|accc
+gggg|accc
+# 6x5 Test
+board: 6x5
+xxxxxx|aeeeee
+--mm--|accccc
+--mm--|accccc
+gggggg|accccc
+gggggg|addddd
+arguments: 8 1
+board: 12x5
+xxxxxx|aeeeee
+----mm|accccc
+----mm|accccc
+gggggg|accccc
+gggggg|addddd
