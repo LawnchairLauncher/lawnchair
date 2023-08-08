@@ -42,6 +42,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.logging.InstanceId;
@@ -95,6 +96,8 @@ public class ItemClickHandler {
         } else if (tag instanceof FolderInfo) {
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v);
+            } else if (v instanceof AppPairIcon) {
+                onClickAppPairIcon(v);
             }
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v, (AppInfo) tag, launcher);
@@ -120,6 +123,17 @@ public class ItemClickHandler {
             StatsLogManager.newInstance(v.getContext()).logger().withItemInfo(folder.mInfo)
                     .log(LAUNCHER_FOLDER_OPEN);
         }
+    }
+
+    /**
+     * Event handler for an app pair icon click.
+     *
+     * @param v The view that was clicked. Must be an instance of {@link AppPairIcon}.
+     */
+    private static void onClickAppPairIcon(View v) {
+        Launcher launcher = Launcher.getLauncher(v.getContext());
+        FolderInfo folderInfo = ((AppPairIcon) v).getInfo();
+        launcher.launchAppPair(folderInfo.contents.get(0), folderInfo.contents.get(1));
     }
 
     /**
