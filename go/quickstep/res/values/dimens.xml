@@ -24,7 +24,7 @@
     <dimen name="go_overview_button_container_width">80dp</dimen>
     <dimen name="go_overview_button_container_margin">16dp</dimen>
     <dimen name="go_overview_button_caption_margin">8dp</dimen>
-    <dimen name="overview_actions_size">96dp</dimen>
+    <dimen name="overview_actions_height">96dp</dimen>
     <dimen name="overview_proactive_row_height">0dp</dimen>
     <dimen name="overview_proactive_row_bottom_margin">24dp</dimen>
     <dimen name="task_corner_radius_override">28dp</dimen>

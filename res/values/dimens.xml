@@ -396,12 +396,10 @@
     <dimen name="task_thumbnail_icon_drawable_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_drawable_size_grid">0dp</dimen>
     <dimen name="overview_task_margin">0dp</dimen>
-    <dimen name="overview_actions_size">0dp</dimen>
+    <dimen name="overview_actions_height">0dp</dimen>
     <dimen name="overview_actions_button_spacing">0dp</dimen>
     <dimen name="overview_actions_margin_gesture">0dp</dimen>
     <dimen name="overview_actions_top_margin">0dp</dimen>
-    <!-- Width if the search bar were to be full-size in Overview. Note pill is 192dp smaller. -->
-    <dimen name="overview_floating_search_width">348dp</dimen>
     <dimen name="overview_grid_side_margin">0dp</dimen>
     <dimen name="overview_grid_row_spacing">0dp</dimen>
     <dimen name="overview_page_spacing">0dp</dimen>

@@ -221,10 +221,15 @@
         <item name="android:colorControlHighlight">?attr/workspaceTextColor</item>
     </style>
 
-    <style name="OverviewActionButton" parent="@android:style/Widget.DeviceDefault.ImageButton">
-        <item name="android:background">@drawable/circle_btn_bg</item>
-        <item name="android:backgroundTint">?androidprv:attr/materialColorSurfaceBright</item>
+    <style name="OverviewActionButton"
+        parent="@android:style/Widget.DeviceDefault.Button.Borderless">
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+        <item name="android:textColor">@color/overview_button</item>
         <item name="android:drawableTint">@color/overview_button</item>
+        <item name="android:tint">?android:attr/textColorPrimary</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 
     <style name="OverviewClearAllButton" parent="@android:style/Widget.DeviceDefault.Button">

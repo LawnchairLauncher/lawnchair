@@ -19,18 +19,18 @@
         android:viewportHeight="24"
         android:tint="?attr/colorControlNormal">
   <path
-      android:fillColor="@color/overview_button"
+      android:fillColor="@android:color/white"
       android:pathData="M16,3h-2v2h2c1.65,0 3,1.35 3,3v2h2V8C21,5.24 18.76,3 16,3z"/>
   <path
-      android:fillColor="@color/overview_button"
+      android:fillColor="@android:color/white"
       android:pathData="M5,16v-2H3v2c0,2.76 2.24,5 5,5h2v-2H8C6.35,19 5,17.65 5,16z"/>
   <path
-      android:fillColor="@color/overview_button"
+      android:fillColor="@android:color/white"
       android:pathData="M12,8.5c-1.93,0 -3.5,1.57 -3.5,3.5s1.57,3.5 3.5,3.5s3.5,-1.57 3.5,-3.5S13.93,8.5 12,8.5z"/>
   <path
-      android:fillColor="@color/overview_button"
+      android:fillColor="@android:color/white"
       android:pathData="M18,18m-2,0a2,2 0,1 1,4 0a2,2 0,1 1,-4 0"/>
   <path
-      android:fillColor="@color/overview_button"
+      android:fillColor="@android:color/white"
       android:pathData="M5,8c0,-1.65 1.35,-3 3,-3h2V3H8C5.24,3 3,5.24 3,8v2h2V8z"/>
 </vector>
