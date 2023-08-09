@@ -41,12 +41,10 @@ final class FlashDetector extends AnomalyDetector {
             DRAG_LAYER
                     + "SearchContainerView:id/apps_view|AllAppsRecyclerView:id/apps_list_view"
                     + "|BubbleTextView:id/icon",
-            DRAG_LAYER + "LauncherDragView|ImageView",
             DRAG_LAYER + "LauncherRecentsView:id/overview_panel|TaskView|TextView",
             DRAG_LAYER
                     + "LauncherAllAppsContainerView:id/apps_view|AllAppsRecyclerView:id"
                     + "/apps_list_view|BubbleTextView:id/icon",
-            DRAG_LAYER + "LauncherDragView|View",
             CONTENT
                     + "AddItemDragLayer:id/add_item_drag_layer|AddItemWidgetsBottomSheet:id"
                     + "/add_item_bottom_sheet|LinearLayout:id/add_item_bottom_sheet_content"
@@ -61,7 +59,8 @@ final class FlashDetector extends AnomalyDetector {
             RECENTS_DRAG_LAYER + "FallbackRecentsView:id/overview_panel|TaskView|IconView:id/icon",
             DRAG_LAYER
                     + "SearchContainerView:id/apps_view|UniversalSearchInputView:id"
-                    + "/search_container_all_apps|View:id/ripple"
+                    + "/search_container_all_apps|View:id/ripple",
+            DRAG_LAYER + "LauncherDragView"
     ));
 
     // Per-AnalysisNode data that's specific to this detector.
