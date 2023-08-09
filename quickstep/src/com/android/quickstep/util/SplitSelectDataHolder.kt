@@ -156,7 +156,7 @@ class SplitSelectDataHolder(
      */
     fun setSecondTask(pendingIntent: PendingIntent) {
         secondPendingIntent = pendingIntent
-        secondUser = pendingIntent.creatorUserHandle!!
+        secondUser = pendingIntent.creatorUserHandle
     }
 
     private fun getShortcutInfo(intent: Intent?, user: UserHandle?): ShortcutInfo? {
@@ -252,7 +252,7 @@ class SplitSelectDataHolder(
      * convert [secondIntent]
      */
     private fun convertIntentsToFinalTypes() {
-        initialShortcut = getShortcutInfo(initialIntent, initialUser)
+        initialShortcut = getShortcutInfo(initialIntent, checkNotNull(initialUser))
         initialPendingIntent = getPendingIntent(initialIntent, initialUser)
         initialIntent = null
 
@@ -266,7 +266,7 @@ class SplitSelectDataHolder(
             return
         }
 
-        secondShortcut = getShortcutInfo(secondIntent, secondUser)
+        secondShortcut = getShortcutInfo(secondIntent, checkNotNull(secondUser))
         secondPendingIntent = getPendingIntent(secondIntent, secondUser)
         secondIntent = null
     }

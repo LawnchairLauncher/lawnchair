@@ -101,10 +101,10 @@ constructor(
     @SuppressLint("UseSwitchCompatOrMaterialCode")
     override fun onFinishInflate() {
         super.onFinishInflate()
-        val taskbarSwitchOption = findViewById<LinearLayout>(R.id.taskbar_switch_option)
-        val alwaysShowTaskbarSwitch = findViewById<Switch>(R.id.taskbar_pinning_switch)
+        val taskbarSwitchOption = requireViewById<LinearLayout>(R.id.taskbar_switch_option)
+        val alwaysShowTaskbarSwitch = requireViewById<Switch>(R.id.taskbar_pinning_switch)
         val navigationModeChangeOption =
-            findViewById<LinearLayout>(R.id.navigation_mode_switch_option)
+            requireViewById<LinearLayout>(R.id.navigation_mode_switch_option)
         alwaysShowTaskbarSwitch.isChecked = alwaysShowTaskbarOn
         taskbarSwitchOption.setOnClickListener {
             alwaysShowTaskbarSwitch.isClickable = true
