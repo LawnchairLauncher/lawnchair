@@ -360,6 +360,37 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             lp.y = sTmpRect.top;
         }
 
+        // Handle invalid resize across CellLayouts in the two panel UI.
+        if (mCellLayout.getParent() instanceof Workspace) {
+            Workspace<?> workspace = (Workspace<?>) mCellLayout.getParent();
+            CellLayout pairedCellLayout = workspace.getScreenPair(mCellLayout);
+            if (pairedCellLayout != null) {
+                Rect focusedCellLayoutBound = sTmpRect;
+                mDragLayerRelativeCoordinateHelper.viewToRect(mCellLayout, focusedCellLayoutBound);
+                Rect resizeFrameBound = sTmpRect2;
+                findViewById(R.id.widget_resize_frame).getGlobalVisibleRect(resizeFrameBound);
+                float progress = 1f;
+                if (workspace.indexOfChild(pairedCellLayout) < workspace.indexOfChild(mCellLayout)
+                        && mDeltaX < 0
+                        && resizeFrameBound.left < focusedCellLayoutBound.left) {
+                    // Resize from right to left.
+                    progress = (mDragAcrossTwoPanelOpacityMargin + mDeltaX)
+                            / mDragAcrossTwoPanelOpacityMargin;
+                } else if (workspace.indexOfChild(pairedCellLayout)
+                                > workspace.indexOfChild(mCellLayout)
+                        && mDeltaX > 0
+                        && resizeFrameBound.right > focusedCellLayoutBound.right) {
+                    // Resize from left to right.
+                    progress = (mDragAcrossTwoPanelOpacityMargin - mDeltaX)
+                            / mDragAcrossTwoPanelOpacityMargin;
+                }
+                float alpha = Math.max(MIN_OPACITY_FOR_CELL_LAYOUT_DURING_INVALID_RESIZE, progress);
+                float springLoadedProgress = Math.min(1f, 1f - progress);
+                updateInvalidResizeEffect(mCellLayout, pairedCellLayout, alpha,
+                        springLoadedProgress);
+            }
+        }
+
         requestLayout();
     }
 
@@ -516,6 +547,13 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         }
 
         final DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
+        final CellLayout pairedCellLayout;
+        if (mCellLayout.getParent() instanceof Workspace) {
+            Workspace<?> workspace = (Workspace<?>) mCellLayout.getParent();
+            pairedCellLayout = workspace.getScreenPair(mCellLayout);
+        } else {
+            pairedCellLayout = null;
+        }
         if (!animate) {
             lp.width = newWidth;
             lp.height = newHeight;
@@ -523,6 +561,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             lp.y = newY;
             for (int i = 0; i < HANDLE_COUNT; i++) {
                 mDragHandles[i].setAlpha(1f);
+            }
+            if (pairedCellLayout != null) {
+                updateInvalidResizeEffect(mCellLayout, pairedCellLayout, /* alpha= */ 1f,
+                        /* springLoadedProgress= */ 0f);
             }
             requestLayout();
         } else {
@@ -538,6 +580,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             for (int i = 0; i < HANDLE_COUNT; i++) {
                 set.play(mFirstFrameAnimatorHelper.addTo(
                         ObjectAnimator.ofFloat(mDragHandles[i], ALPHA, 1f)));
+            }
+            if (pairedCellLayout != null) {
+                updateInvalidResizeEffect(mCellLayout, pairedCellLayout, /* alpha= */ 1f,
+                        /* springLoadedProgress= */ 0f, /* animatorSet= */ set);
             }
             set.setDuration(SNAP_DURATION);
             set.start();
