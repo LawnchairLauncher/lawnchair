@@ -158,7 +158,6 @@ import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.wm.shell.startingsurface.IStartingWindowListener;
 
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -477,9 +476,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             }
         });
     }
-
-    /** Dump debug logs to bug report. */
-    public void dump(@NonNull String prefix, @NonNull PrintWriter printWriter) {}
 
     /**
      * Content is everything on screen except the background and the floating view (if any).
