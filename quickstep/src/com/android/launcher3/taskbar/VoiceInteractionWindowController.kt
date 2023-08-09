@@ -192,13 +192,13 @@ class VoiceInteractionWindowController(val context: TaskbarActivityContext) :
         removeOnAttachStateChangeListener(pendingAttachedToWindowListener)
         pendingAttachedToWindowListener =
             object : View.OnAttachStateChangeListener {
-                override fun onViewAttachedToWindow(v: View?) {
+                override fun onViewAttachedToWindow(v: View) {
                     onAttachedToWindow()
                     removeOnAttachStateChangeListener(this)
                     pendingAttachedToWindowListener = null
                 }
 
-                override fun onViewDetachedFromWindow(v: View?) {}
+                override fun onViewDetachedFromWindow(v: View) {}
             }
         addOnAttachStateChangeListener(pendingAttachedToWindowListener)
     }
