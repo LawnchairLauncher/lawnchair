@@ -61,11 +61,12 @@ class NavButtonLayoutFactory {
             phoneMode: Boolean,
             @Rotation surfaceRotation: Int
         ): NavButtonLayoutter {
-            val navButtonContainer = navButtonsView.findViewById<LinearLayout>(ID_END_NAV_BUTTONS)
+            val navButtonContainer =
+                navButtonsView.requireViewById<LinearLayout>(ID_END_NAV_BUTTONS)
             val endContextualContainer =
-                navButtonsView.findViewById<ViewGroup>(ID_END_CONTEXTUAL_BUTTONS)
+                navButtonsView.requireViewById<ViewGroup>(ID_END_CONTEXTUAL_BUTTONS)
             val startContextualContainer =
-                navButtonsView.findViewById<ViewGroup>(ID_START_CONTEXTUAL_BUTTONS)
+                navButtonsView.requireViewById<ViewGroup>(ID_START_CONTEXTUAL_BUTTONS)
             val isPhoneNavMode = phoneMode && isThreeButtonNav
             val isPhoneGestureMode = phoneMode && !isThreeButtonNav
             return when {
