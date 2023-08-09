@@ -28,6 +28,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
+import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPELEFT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SWIPERIGHT;
@@ -126,6 +127,7 @@ import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverla
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlayCallbacks;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -501,14 +503,19 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 .log(LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED);
     }
 
-    public void deferRemoveExtraEmptyScreen() {
-        mDeferRemoveExtraEmptyScreen = true;
+    private boolean isTwoPanelEnabled() {
+        return !FOLDABLE_SINGLE_PAGE.get() && mLauncher.mDeviceProfile.isTwoPanels;
     }
 
     @Override
     public int getPanelCount() {
-        return super.getPanelCount();
+        return isTwoPanelEnabled() ? 2 : super.getPanelCount();
     }
+
+    public void deferRemoveExtraEmptyScreen() {
+        mDeferRemoveExtraEmptyScreen = true;
+    }
+
     @Override
     public void onDragEnd() {
         if (ENFORCE_DRAG_EVENT_ORDER) {
@@ -661,7 +668,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // created CellLayout.
         DeviceProfile dp = mLauncher.getDeviceProfile();
         CellLayout newScreen;
-        if (dp.isTwoPanels) {
+        if (FOLDABLE_SINGLE_PAGE.get() && dp.isTwoPanels) {
             newScreen = (CellLayout) LayoutInflater.from(getContext()).inflate(
                     R.layout.workspace_screen_foldable, this, false /* attachToRoot */);
         } else {
@@ -686,6 +693,15 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
         if (mDragSourceInternal != null) {
             int dragSourceChildCount = mDragSourceInternal.getChildCount();
+
+            // If the icon was dragged from Hotseat, there is no page pair
+            if (isTwoPanelEnabled() && !(mDragSourceInternal.getParent() instanceof Hotseat)) {
+                int pagePairScreenId = getScreenPair(getCellPosMapper().mapModelToPresenter(
+                        dragObject.dragInfo).screenId);
+                CellLayout pagePair = mWorkspaceScreens.get(pagePairScreenId);
+                dragSourceChildCount += pagePair.getShortcutsAndWidgets().getChildCount();
+            }
+
             // When the drag view content is a LauncherAppWidgetHostView, we should increment the
             // drag source child count by 1 because the widget in drag has been detached from its
             // original parent, ShortcutAndWidgetContainer, and reattached to the DragView.
@@ -695,6 +711,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
             if (dragSourceChildCount == 1) {
                 lastChildOnScreen = true;
+            }
+            CellLayout cl = (CellLayout) mDragSourceInternal.getParent();
+            if (!FOLDABLE_SINGLE_PAGE.get() && getLeftmostVisiblePageForIndex(indexOfChild(cl))
+                    == getLeftmostVisiblePageForIndex(getPageCount() - 1)) {
+                childOnFinalScreen = true;
             }
         }
 
@@ -730,6 +751,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      */
     private void forEachExtraEmptyPageId(Consumer<Integer> callback) {
         callback.accept(EXTRA_EMPTY_SCREEN_ID);
+        if (isTwoPanelEnabled()) {
+            callback.accept(EXTRA_EMPTY_SCREEN_SECOND_ID);
+        }
     }
 
     /**
@@ -843,7 +867,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
 
     public boolean hasExtraEmptyScreens() {
         return mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_ID)
-                && getChildCount() > getPanelCount();
+                && getChildCount() > getPanelCount()
+                && (!isTwoPanelEnabled()
+                || mWorkspaceScreens.containsKey(EXTRA_EMPTY_SCREEN_SECOND_ID));
     }
 
     /**
@@ -949,7 +975,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      */
     @Nullable
     public CellLayout getScreenPair(CellLayout cellLayout) {
-        return null;
+        if (!isTwoPanelEnabled()) {
+            return null;
+        }
+        int screenId = getIdForScreen(cellLayout);
+        if (screenId == -1) {
+            return null;
+        }
+        return getScreenWithId(getScreenPair(screenId));
     }
 
     public void stripEmptyScreens() {
@@ -977,6 +1010,22 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             }
         }
 
+        // When two panel home is enabled we only remove an empty page if both visible pages are
+        // empty.
+        if (isTwoPanelEnabled()) {
+            // We go through all the pages that were marked as removable and check their page pair
+            Iterator<Integer> removeScreensIterator = removeScreens.iterator();
+            while (removeScreensIterator.hasNext()) {
+                int pageToRemove = removeScreensIterator.next();
+                int pagePair = getScreenPair(pageToRemove);
+                if (!removeScreens.contains(pagePair)) {
+                    // The page pair isn't empty so we want to remove the current page from the
+                    // removable pages' collection
+                    removeScreensIterator.remove();
+                }
+            }
+        }
+
         // We enforce at least one page (two pages on two panel home) to add new items to.
         // In the case that we remove the last such screen(s), we convert the last screen(s)
         // to the empty screen(s)
@@ -997,7 +1046,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 removeView(cl);
             } else {
                 // The last page(s) should be converted into extra empty page(s)
-                int extraScreenId = EXTRA_EMPTY_SCREEN_ID;
+                int extraScreenId = isTwoPanelEnabled() && id % 2 == 1
+                        // This is the right panel in a two panel scenario
+                        ? EXTRA_EMPTY_SCREEN_SECOND_ID
+                        // This is either the last screen in a one panel scenario, or the left panel
+                        // in a two panel scenario when there are only two empty pages left
+                        : EXTRA_EMPTY_SCREEN_ID;
                 mWorkspaceScreens.put(extraScreenId, cl);
                 mScreenOrder.add(extraScreenId);
             }
@@ -2518,7 +2572,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // Go through the pages and check if the dragged item is inside one of them. This block
         // is responsible for determining whether we need to snap to a different screen.
         int nextPage = getNextPage();
-        IntSet pageIndexesToVerify = IntSet.wrap(nextPage - 1, nextPage + 1);
+        IntSet pageIndexesToVerify = IntSet.wrap(nextPage - 1,
+                nextPage + (isTwoPanelEnabled() ? 2 : 1));
 
         for (int pageIndex : pageIndexesToVerify) {
             // When deciding whether to perform a page switch, we need to consider the most
