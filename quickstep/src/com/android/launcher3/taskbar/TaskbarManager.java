@@ -22,6 +22,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
 import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING_KEY;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.util.DisplayController.TASKBAR_NOT_DESTROYED_TAG;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
@@ -268,6 +269,25 @@ public class TaskbarManager {
         if (ACTION_SHOW_TASKBAR.equals(intent.getAction()) && mTaskbarActivityContext != null) {
             mTaskbarActivityContext.showTaskbarFromBroadcast();
         }
+    }
+
+    /**
+     * Toggles All Apps for Taskbar or Launcher depending on the current state.
+     *
+     * @param homeAllAppsIntent Intent used if Taskbar is not enabled or Launcher is resumed.
+     */
+    public void toggleAllApps(Intent homeAllAppsIntent) {
+        if (mTaskbarActivityContext == null) {
+            mContext.startActivity(homeAllAppsIntent);
+            return;
+        }
+
+        if (mActivity != null && mActivity.isResumed() && !mActivity.isInState(OVERVIEW)) {
+            mContext.startActivity(homeAllAppsIntent);
+            return;
+        }
+
+        mTaskbarActivityContext.toggleAllApps();
     }
 
     /**

@@ -683,8 +683,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private final Toast mSplitUnsupportedToast = Toast.makeText(getContext(),
             R.string.toast_split_app_unsupported, Toast.LENGTH_SHORT);
 
-    private SplitInstructionsView mSplitInstructionsView;
-
     @Nullable
     private SplitSelectSource mSplitSelectSource;
 
@@ -3252,19 +3250,21 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         firstFloatingTaskView.setOnClickListener(this::animateToFullscreen);
 
         // SplitInstructionsView: animate in
-        safeRemoveDragLayerView(mSplitInstructionsView);
-        mSplitInstructionsView = SplitInstructionsView.getSplitInstructionsView(mActivity);
-        mSplitInstructionsView.setAlpha(0);
-        anim.setViewAlpha(mSplitInstructionsView, 1, clampToProgress(LINEAR,
+        safeRemoveDragLayerView(mSplitSelectStateController.getSplitInstructionsView());
+        SplitInstructionsView splitInstructionsView =
+                SplitInstructionsView.getSplitInstructionsView(mActivity);
+        splitInstructionsView.setAlpha(0);
+        anim.setViewAlpha(splitInstructionsView, 1, clampToProgress(LINEAR,
                 timings.getInstructionsContainerFadeInStartOffset(),
                 timings.getInstructionsContainerFadeInEndOffset()));
-        anim.setViewAlpha(mSplitInstructionsView.getTextView(), 1, clampToProgress(LINEAR,
+        anim.setViewAlpha(splitInstructionsView.getTextView(), 1, clampToProgress(LINEAR,
                 timings.getInstructionsTextFadeInStartOffset(),
                 timings.getInstructionsTextFadeInEndOffset()));
-        anim.addFloat(mSplitInstructionsView, mSplitInstructionsView.UNFOLD, 0.1f, 1,
+        anim.addFloat(splitInstructionsView, splitInstructionsView.UNFOLD, 0.1f, 1,
                 clampToProgress(EMPHASIZED_DECELERATE,
                         timings.getInstructionsUnfoldStartOffset(),
                         timings.getInstructionsUnfoldEndOffset()));
+        mSplitSelectStateController.setSplitInstructionsView(splitInstructionsView);
 
         InteractionJankMonitorWrapper.begin(this,
                 InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "First tile selected");
@@ -4781,9 +4781,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSecondFloatingTaskView.addConfirmAnimation(pendingAnimation, secondTaskStartingBounds,
                 secondTaskEndingBounds, true /* fadeWithThumbnail */, false /* isStagedTask */);
 
-        pendingAnimation.setViewAlpha(mSplitInstructionsView, 0, clampToProgress(LINEAR,
-                timings.getInstructionsFadeStartOffset(),
-                timings.getInstructionsFadeEndOffset()));
+        pendingAnimation.setViewAlpha(mSplitSelectStateController.getSplitInstructionsView(), 0,
+                clampToProgress(LINEAR, timings.getInstructionsFadeStartOffset(),
+                        timings.getInstructionsFadeEndOffset()));
 
         pendingAnimation.addEndListener(aBoolean -> {
             mSplitSelectStateController.launchSplitTasks(
@@ -4819,9 +4819,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
             safeRemoveDragLayerView(mSplitSelectStateController.getFirstFloatingTaskView());
             safeRemoveDragLayerView(mSecondFloatingTaskView);
-            safeRemoveDragLayerView(mSplitInstructionsView);
+            safeRemoveDragLayerView(mSplitSelectStateController.getSplitInstructionsView());
             mSecondFloatingTaskView = null;
-            mSplitInstructionsView = null;
             mSplitSelectSource = null;
             mSplitSelectStateController.getSplitAnimationController()
                     .removeSplitInstructionsView(mActivity);
@@ -4921,8 +4920,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         taskViewsFloat.first.set(this, getSplitSelectTranslation());
         taskViewsFloat.second.set(this, 0f);
 
-        if (mSplitInstructionsView != null) {
-            mSplitInstructionsView.ensureProperRotation();
+        if (mSplitSelectStateController.getSplitInstructionsView() != null) {
+            mSplitSelectStateController.getSplitInstructionsView().ensureProperRotation();
         }
     }
 
@@ -5220,11 +5219,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 remoteTargetHandle.getTaskViewSimulator().apply(params);
             }
         });
-    }
-
-    /** @return {@code true} if floating search bar is visible in Recents. */
-    public boolean isFloatingSearchVisible() {
-        return false;
     }
 
     public RemoteTargetHandle[] getRemoteTargetHandles() {
@@ -6039,7 +6033,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     @Nullable
     public SplitInstructionsView getSplitInstructionsView() {
-        return mSplitInstructionsView;
+        return mSplitSelectStateController.getSplitInstructionsView();
     }
 
     /** Update the current activity locus id to show the enabled state of Overview */

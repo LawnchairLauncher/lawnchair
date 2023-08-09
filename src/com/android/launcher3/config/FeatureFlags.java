@@ -370,6 +370,10 @@ public final class FeatureFlags {
             270393453, "ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE", TEAMFOOD,
             "Enable initiating split screen from workspace to workspace.");
 
+    public static final BooleanFlag ENABLE_SPLIT_FROM_DESKTOP_TO_WORKSPACE = getDebugFlag(
+            279586624, "ENABLE_SPLIT_FROM_DESKTOP_TO_WORKSPACE", DISABLED,
+            "Enable initiating split screen from desktop mode to workspace.");
+
     public static final BooleanFlag ENABLE_TRACKPAD_GESTURE = getDebugFlag(271010401,
             "ENABLE_TRACKPAD_GESTURE", ENABLED, "Enables trackpad gesture.");
 

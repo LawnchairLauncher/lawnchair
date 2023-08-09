@@ -17,9 +17,6 @@ package com.android.launcher3.util.viewcapture_analysis;
 
 import static android.view.View.VISIBLE;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.android.app.viewcapture.data.ExportedData;
 import com.android.app.viewcapture.data.FrameData;
 import com.android.app.viewcapture.data.ViewNode;
@@ -36,40 +33,10 @@ import java.util.Map;
 public class ViewCaptureAnalyzer {
     private static final String SCRIM_VIEW_CLASS = "com.android.launcher3.views.ScrimView";
 
-    /**
-     * Detector of one kind of anomaly.
-     */
-    abstract static class AnomalyDetector {
-        // Index of this detector in ViewCaptureAnalyzer.ANOMALY_DETECTORS
-        public int detectorOrdinal;
-
-        /**
-         * Initializes fields of the node that are specific to the anomaly detected by this
-         * detector.
-         */
-        abstract void initializeNode(@NonNull AnalysisNode info);
-
-        /**
-         * Detects anomalies by looking at the last occurrence of a view, and the current one.
-         * null value means that the view. 'oldInfo' and 'newInfo' cannot be both null.
-         * If an anomaly is detected, an exception will be thrown.
-         *
-         * @param oldInfo the view, as seen in the last frame that contained it in the view
-         *                hierarchy before 'currentFrame'. 'null' means that the view is first seen
-         *                in the 'currentFrame'.
-         * @param newInfo the view in the view hierarchy of the 'currentFrame'. 'null' means that
-         *                the view is not present in the 'currentFrame', but was present in earlier
-         *                frames.
-         * @param frameN  number of the current frame.
-         * @return Anomaly diagnostic message if an anomaly has been detected; null otherwise.
-         */
-        abstract String detectAnomalies(
-                @Nullable AnalysisNode oldInfo, @Nullable AnalysisNode newInfo, int frameN);
-    }
-
     // All detectors. They will be invoked in the order listed here.
     private static final AnomalyDetector[] ANOMALY_DETECTORS = {
-            new AlphaJumpDetector()
+            new AlphaJumpDetector(),
+            new FlashDetector()
     };
 
     static {
@@ -89,9 +56,21 @@ public class ViewCaptureAnalyzer {
         // Visible scale and alpha, build recursively from the ancestor list.
         public float scaleX;
         public float scaleY;
-        public float alpha;
+        public float alpha; // Always > 0
 
         public int frameN;
+
+        // Timestamp of the frame when this view became abruptly visible, i.e. its alpha became 1
+        // the next frame after it was 0 or the view wasn't visible.
+        // If the view is currently invisible or the last appearance wasn't abrupt, the value is -1.
+        public long timeBecameVisibleNs;
+
+        // Timestamp of the frame when this view became abruptly invisible last time, i.e. its
+        // alpha became 0, or view disappeared, after being 1 in the previous frame.
+        // If the view is currently visible or the last disappearance wasn't abrupt, the value is
+        // -1.
+        public long timeBecameInvisibleNs;
+
         public ViewNode viewCaptureNode;
 
         // Class name + resource id
@@ -143,7 +122,9 @@ public class ViewCaptureAnalyzer {
             Map<Integer, AnalysisNode> lastSeenNodes, int scrimClassIndex,
             Map<String, String> anomalies) {
         // Analyze the node tree starting from the root.
+        long frameTimeNs = frame.getTimestamp();
         analyzeView(
+                frameTimeNs,
                 frame.getNode(),
                 /* parent = */ null,
                 frameN,
@@ -154,7 +135,7 @@ public class ViewCaptureAnalyzer {
                 scrimClassIndex,
                 anomalies);
 
-        // Analyze transitions when a view visible in the last frame become invisible in the
+        // Analyze transitions when a view visible in the previous frame became invisible in the
         // current one.
         for (AnalysisNode info : lastSeenNodes.values()) {
             if (info.frameN == frameN - 1) {
@@ -166,14 +147,18 @@ public class ViewCaptureAnalyzer {
                                             frameN,
                                             /* oldInfo = */ info,
                                             /* newInfo = */ null,
-                                            anomalies)
+                                            anomalies,
+                                            frameTimeNs)
                     );
                 }
+                info.timeBecameInvisibleNs = info.alpha == 1 ? frameTimeNs : -1;
+                info.timeBecameVisibleNs = -1;
             }
         }
     }
 
-    private static void analyzeView(ViewNode viewCaptureNode, AnalysisNode parent, int frameN,
+    private static void analyzeView(long frameTimeNs, ViewNode viewCaptureNode, AnalysisNode parent,
+            int frameN,
             float leftShift, float topShift, ExportedData viewCaptureData,
             Map<Integer, AnalysisNode> lastSeenNodes, int scrimClassIndex,
             Map<String, String> anomalies) {
@@ -211,17 +196,31 @@ public class ViewCaptureAnalyzer {
         newAnalysisNode.scaleY = scaleY;
         newAnalysisNode.alpha = alpha;
         newAnalysisNode.frameN = frameN;
+        newAnalysisNode.timeBecameInvisibleNs = -1;
         newAnalysisNode.viewCaptureNode = viewCaptureNode;
         Arrays.stream(ANOMALY_DETECTORS).forEach(
                 detector -> detector.initializeNode(newAnalysisNode));
 
-        // Detect anomalies for the view
         final AnalysisNode oldAnalysisNode = lastSeenNodes.get(hashcode); // may be null
+
+        if (oldAnalysisNode != null && oldAnalysisNode.frameN + 1 == frameN) {
+            // If this view was present in the previous frame, keep the time when it became visible.
+            newAnalysisNode.timeBecameVisibleNs = oldAnalysisNode.timeBecameVisibleNs;
+        } else {
+            // If the view is becoming visible after being invisible, initialize the time when it
+            // became visible with a new value.
+            // If the view became visible abruptly, i.e. alpha jumped from 0 to 1 between the
+            // previous and the current frames, then initialize with the time of the current
+            // frame. Otherwise, use -1.
+            newAnalysisNode.timeBecameVisibleNs = newAnalysisNode.alpha >= 1 ? frameTimeNs : -1;
+        }
+
+        // Detect anomalies for the view.
         if (frameN != 0 && !viewCaptureNode.getWillNotDraw()) {
             Arrays.stream(ANOMALY_DETECTORS).forEach(
                     detector ->
                             detectAnomaly(detector, frameN, oldAnalysisNode, newAnalysisNode,
-                                    anomalies)
+                                    anomalies, frameTimeNs)
             );
         }
         lastSeenNodes.put(hashcode, newAnalysisNode);
@@ -236,20 +235,22 @@ public class ViewCaptureAnalyzer {
             // transparent.
             if (child.getClassnameIndex() == scrimClassIndex) break;
 
-            analyzeView(child, newAnalysisNode, frameN, leftShiftForChildren, topShiftForChildren,
+            analyzeView(frameTimeNs, child, newAnalysisNode, frameN, leftShiftForChildren,
+                    topShiftForChildren,
                     viewCaptureData, lastSeenNodes, scrimClassIndex, anomalies);
         }
     }
 
     private static void detectAnomaly(AnomalyDetector detector, int frameN,
             AnalysisNode oldAnalysisNode, AnalysisNode newAnalysisNode,
-            Map<String, String> anomalies) {
+            Map<String, String> anomalies, long frameTimeNs) {
         final String maybeAnomaly =
-                detector.detectAnomalies(oldAnalysisNode, newAnalysisNode, frameN);
+                detector.detectAnomalies(oldAnalysisNode, newAnalysisNode, frameN, frameTimeNs);
         if (maybeAnomaly != null) {
-            final String viewDiagPath = diagPathFromRoot(newAnalysisNode);
+            AnalysisNode latestInfo = newAnalysisNode != null ? newAnalysisNode : oldAnalysisNode;
+            final String viewDiagPath = diagPathFromRoot(latestInfo);
             if (!anomalies.containsKey(viewDiagPath)) {
-                anomalies.put(viewDiagPath, maybeAnomaly);
+                anomalies.put(viewDiagPath, String.format("%s, %s", maybeAnomaly, latestInfo));
             }
         }
     }
