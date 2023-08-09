@@ -42,16 +42,15 @@ open class PhoneLandscapeNavLayoutter(
 
     override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
         // TODO(b/230395757): Polish pending, this is just to make it usable
-        val navContainerParams = navButtonContainer.layoutParams as FrameLayout.LayoutParams
         val endStartMargins = resources.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size)
         val taskbarDimensions = DimensionUtils.getTaskbarPhoneDimensions(dp, resources,
                 TaskbarManager.isPhoneMode(dp))
         navButtonContainer.removeAllViews()
         navButtonContainer.orientation = LinearLayout.VERTICAL
 
+        val navContainerParams = FrameLayout.LayoutParams(
+                taskbarDimensions.x, ViewGroup.LayoutParams.MATCH_PARENT)
         navContainerParams.apply {
-            width = taskbarDimensions.x
-            height = ViewGroup.LayoutParams.MATCH_PARENT
             topMargin = endStartMargins
             bottomMargin = endStartMargins
             marginEnd = 0
@@ -64,7 +63,7 @@ open class PhoneLandscapeNavLayoutter(
         navButtonContainer.addView(backButton)
 
         navButtonContainer.layoutParams = navContainerParams
-        navButtonContainer.gravity = Gravity.CENTER_HORIZONTAL
+        navButtonContainer.gravity = Gravity.CENTER
 
         // Add the spaces in between the nav buttons
         val spaceInBetween: Int =
