@@ -413,20 +413,14 @@ public final class TaskViewUtils {
     }
 
     /**
-     * TODO: This doesn't animate at present. Feel free to blow out everyhing in this method
-     * if needed
+     * If {@param launchingTaskView} is not null, then this will play the tasks launch animation
+     * from the position of the GroupedTaskView (when user taps on the TaskView to start it).
+     * Technically this case should be taken care of by
+     * {@link #composeRecentsSplitLaunchAnimatorLegacy} below, but the way we launch tasks whether
+     * it's a single task or multiple tasks results in different entry-points.
      *
-     * We could manually try to animate the just the bounds for the leashes we get back, but we try
-     * to do it through TaskViewSimulator(TVS) since that handles a lot of the recents UI stuff for
-     * us.
-     *
-     * First you have to call TVS#setPreview() to indicate which leash it will operate one
-     * Then operations happen in TVS#apply() on each frame callback.
-     *
-     * TVS uses DeviceProfile to try to figure out things like task height and such based on if the
-     * device is in multiWindowMode or not. It's unclear given the two calls to startTask() when the
-     * device is considered in multiWindowMode and things like insets and stuff change
-     * and calculations have to be adjusted in the animations for that
+     * If it is null, then it will simply fade in the starting apps and fade out launcher (for the
+     * case where launcher handles animating starting split tasks from app icon)
      */
     public static void composeRecentsSplitLaunchAnimator(GroupedTaskView launchingTaskView,
             @NonNull StateManager stateManager, @Nullable DepthController depthController,
@@ -461,9 +455,9 @@ public final class TaskViewUtils {
             return;
         }
 
-        // TODO: consider initialTaskPendingIntent
         TransitionInfo.Change splitRoot1 = null;
         TransitionInfo.Change splitRoot2 = null;
+        final ArrayList<SurfaceControl> openingTargets = new ArrayList<>();
         for (int i = 0; i < transitionInfo.getChanges().size(); ++i) {
             final TransitionInfo.Change change = transitionInfo.getChanges().get(i);
             if (change.getTaskInfo() == null) {
@@ -484,32 +478,48 @@ public final class TaskViewUtils {
             if (taskId == initialTaskId) {
                 splitRoot1 = change.getParent() == null ? change :
                         transitionInfo.getChange(change.getParent());
+                openingTargets.add(splitRoot1.getLeash());
             }
             if (taskId == secondTaskId) {
                 splitRoot2 = change.getParent() == null ? change :
                         transitionInfo.getChange(change.getParent());
+                openingTargets.add(splitRoot2.getLeash());
             }
         }
 
-        // This is where we should animate the split roots. For now, though, just make them visible.
-        animateSplitRoot(t, splitRoot1);
-        animateSplitRoot(t, splitRoot2);
+        SurfaceControl.Transaction animTransaction = new SurfaceControl.Transaction();
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.setDuration(SPLIT_LAUNCH_DURATION);
+        animator.addUpdateListener(valueAnimator -> {
+            float progress = valueAnimator.getAnimatedFraction();
+            for (SurfaceControl leash: openingTargets) {
+                animTransaction.setAlpha(leash, progress);
+            }
+            animTransaction.apply();
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                for (SurfaceControl leash: openingTargets) {
+                    animTransaction.show(leash)
+                            .setAlpha(leash, 0.0f);
+                }
+                animTransaction.apply();
+            }
 
-        // This contains the initial state (before animation), so apply this at the beginning of
-        // the animation.
-        t.apply();
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                finishCallback.run();
+            }
+        });
 
-        // Once there is an animation, this should be called AFTER the animation completes.
-        finishCallback.run();
-    }
-
-    private static void animateSplitRoot(SurfaceControl.Transaction t,
-            TransitionInfo.Change splitRoot) {
-        testLogD(LAUNCH_SPLIT_PAIR, "animateSplitRoot: " + splitRoot);
-        if (splitRoot != null) {
-            t.show(splitRoot.getLeash());
-            t.setAlpha(splitRoot.getLeash(), 1.f);
+        if (splitRoot1 != null && splitRoot1.getParent() != null) {
+            // Set the highest level split root alpha; we could technically use the parent of either
+            // splitRoot1 or splitRoot2
+            t.setAlpha(transitionInfo.getChange(splitRoot1.getParent()).getLeash(), 1f);
         }
+        t.apply();
+        animator.start();
     }
 
     /**
@@ -522,7 +532,9 @@ public final class TaskViewUtils {
      * it's a single task or multiple tasks results in different entry-points.
      *
      * If it is null, then it will simply fade in the starting apps and fade out launcher (for the
-     * case where launcher handles animating starting split tasks from app icon) */
+     * case where launcher handles animating starting split tasks from app icon)
+     * @deprecated with shell transitions
+     */
     public static void composeRecentsSplitLaunchAnimatorLegacy(
             @Nullable GroupedTaskView launchingTaskView, int initialTaskId, int secondTaskId,
             @NonNull RemoteAnimationTarget[] appTargets,
