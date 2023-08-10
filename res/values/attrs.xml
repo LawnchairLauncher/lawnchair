@@ -202,6 +202,7 @@
         <attr name="demoModeLayoutId" format="reference" />
         <attr name="isScalable" format="boolean" />
         <attr name="devicePaddingId" format="reference" />
+
         <!-- File that contains the specs for the workspace.
         Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
         <attr name="workspaceSpecsId" format="reference" />
@@ -210,11 +211,14 @@
         Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
         <attr name="allAppsSpecsId" format="reference" />
         <attr name="allAppsSpecsTwoPanelId" format="reference" />
-
         <!-- File that contains the specs for the workspace.
         Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
         <attr name="folderSpecsId" format="reference" />
         <attr name="folderSpecsTwoPanelId" format="reference" />
+        <!-- File that contains the specs for hotseat bar.
+        Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
+        <attr name="hotseatSpecsId" format="reference" />
+        <attr name="hotseatSpecsTwoPanelId" format="reference" />
 
         <!-- By default all categories are enabled -->
         <attr name="deviceCategory" format="integer">
@@ -274,6 +278,11 @@
     </declare-styleable>
 
     <declare-styleable name="AllAppsSpec">
+        <attr name="specType" />
+        <attr name="maxAvailableSize" />
+    </declare-styleable>
+
+    <declare-styleable name="HotseatSpec">
         <attr name="specType" />
         <attr name="maxAvailableSize" />
     </declare-styleable>

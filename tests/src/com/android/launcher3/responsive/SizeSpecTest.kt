@@ -139,4 +139,20 @@ class SizeSpecTest : AbstractDeviceProfileTest() {
             assertThat(instance.isValid()).isEqualTo(false)
         }
     }
+
+    @Test
+    fun onlyFixedSize() {
+        assertThat(SizeSpec(fixedSize = 16f).onlyFixedSize()).isEqualTo(true)
+
+        val combinations =
+            listOf(
+                SizeSpec(0f, 1.1f, 0f, false),
+                SizeSpec(0f, 0f, 1.1f, false),
+                SizeSpec(0f, 0f, 0f, true)
+            )
+
+        for (instance in combinations) {
+            assertThat(instance.onlyFixedSize()).isEqualTo(false)
+        }
+    }
 }

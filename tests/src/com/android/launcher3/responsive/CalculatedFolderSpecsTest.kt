@@ -21,7 +21,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.AbstractDeviceProfileTest
-import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.tests.R
 import com.android.launcher3.util.TestResourceHelper
 import com.google.common.truth.Truth.assertThat
@@ -117,9 +116,5 @@ class CalculatedFolderSpecsTest : AbstractDeviceProfileTest() {
             assertThat(gutterPx).isEqualTo(16.dpToPx())
             assertThat(cellSizePx).isEqualTo(calculatedWorkspace.cellSizePx)
         }
-    }
-
-    private fun Int.dpToPx(): Int {
-        return ResourceUtils.pxFromDp(this.toFloat(), context!!.resources.displayMetrics)
     }
 }

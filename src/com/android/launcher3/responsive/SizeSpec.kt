@@ -107,11 +107,20 @@ data class SizeSpec(
         return true
     }
 
+    fun onlyFixedSize(): Boolean {
+        if (ofAvailableSpace > 0 || ofRemainderSpace > 0 || matchWorkspace) {
+            Log.e(TAG, "SizeSpec#onlyFixedSize - only fixed size allowed for this tag")
+            return false
+        }
+        return true
+    }
+
     object XmlTags {
         const val START_PADDING = "startPadding"
         const val END_PADDING = "endPadding"
         const val GUTTER = "gutter"
         const val CELL_SIZE = "cellSize"
+        const val HOTSEAT_QSB_SPACE = "hotseatQsbSpace"
     }
 
     companion object {

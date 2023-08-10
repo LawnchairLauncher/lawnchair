@@ -22,6 +22,7 @@ import android.graphics.Rect
 import android.util.DisplayMetrics
 import android.view.Surface
 import androidx.test.core.app.ApplicationProvider
+import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.NavigationMode
 import com.android.launcher3.util.WindowBounds
@@ -319,5 +320,13 @@ abstract class AbstractDeviceProfileTest {
 
     private fun writeToDevice(context: Context, fileName: String, content: String) {
         File(context.getDir("dumpTests", Context.MODE_PRIVATE), fileName).writeText(content)
+    }
+
+    protected fun Float.dpToPx(): Float {
+        return ResourceUtils.pxFromDp(this, context!!.resources.displayMetrics).toFloat()
+    }
+
+    protected fun Int.dpToPx(): Int {
+        return ResourceUtils.pxFromDp(this.toFloat(), context!!.resources.displayMetrics)
     }
 }
