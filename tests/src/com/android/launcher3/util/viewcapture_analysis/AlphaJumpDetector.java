@@ -16,11 +16,8 @@
 package com.android.launcher3.util.viewcapture_analysis;
 
 import com.android.launcher3.util.viewcapture_analysis.ViewCaptureAnalyzer.AnalysisNode;
-import com.android.launcher3.util.viewcapture_analysis.ViewCaptureAnalyzer.AnomalyDetector;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Anomaly detector that triggers an error when alpha of a view changes too rapidly.
@@ -34,8 +31,7 @@ final class AlphaJumpDetector extends AnomalyDetector {
     private static final String RECENTS_DRAG_LAYER =
             CONTENT + "LauncherRootView:id/launcher|RecentsDragLayer:id/drag_layer|";
 
-    // Paths of nodes that are excluded from analysis.
-    private static final Iterable<String> PATHS_TO_IGNORE = List.of(
+    private static final IgnoreNode IGNORED_NODES_ROOT = buildIgnoreNodesTree(List.of(
             CONTENT
                     + "AddItemDragLayer:id/add_item_drag_layer|AddItemWidgetsBottomSheet:id"
                     + "/add_item_bottom_sheet|LinearLayout:id/add_item_bottom_sheet_content"
@@ -135,38 +131,7 @@ final class AlphaJumpDetector extends AnomalyDetector {
                     + "NexusOverviewActionsView:id/overview_actions_view"
                     + "|LinearLayout:id/action_buttons|Button:id/action_split",
             DRAG_LAYER + "IconView"
-    );
-
-    /**
-     * Element of the tree of ignored nodes.
-     * If the "children" map is empty, then this node should be ignored, i.e. alpha jumps analysis
-     * shouldn't run for it.
-     * I.e. ignored nodes correspond to the leaves in the ignored nodes tree.
-     */
-    private static class IgnoreNode {
-        // Map from child node identities to ignore-nodes for these children.
-        public final Map<String, IgnoreNode> children = new HashMap<>();
-    }
-
-    private static final IgnoreNode IGNORED_NODES_ROOT = buildIgnoreNodesTree();
-
-    // Converts the list of full paths of nodes to ignore to a more efficient tree of ignore-nodes.
-    private static IgnoreNode buildIgnoreNodesTree() {
-        final IgnoreNode root = new IgnoreNode();
-        for (String pathToIgnore : PATHS_TO_IGNORE) {
-            // Scan the diag path of an ignored node and add its elements into the tree.
-            IgnoreNode currentIgnoreNode = root;
-            for (String part : pathToIgnore.split("\\|")) {
-                // Ensure that the child of the node is added to the tree.
-                IgnoreNode child = currentIgnoreNode.children.get(part);
-                if (child == null) {
-                    currentIgnoreNode.children.put(part, child = new IgnoreNode());
-                }
-                currentIgnoreNode = child;
-            }
-        }
-        return root;
-    }
+    ));
 
     // Minimal increase or decrease of view's alpha between frames that triggers the error.
     private static final float ALPHA_JUMP_THRESHOLD = 1f;
@@ -213,7 +178,7 @@ final class AlphaJumpDetector extends AnomalyDetector {
     }
 
     @Override
-    String detectAnomalies(AnalysisNode oldInfo, AnalysisNode newInfo, int frameN) {
+    String detectAnomalies(AnalysisNode oldInfo, AnalysisNode newInfo, int frameN, long timestamp) {
         // If the view was previously seen, proceed with analysis only if it was present in the
         // view hierarchy in the previous frame.
         if (oldInfo != null && oldInfo.frameN != frameN) return null;
@@ -229,9 +194,8 @@ final class AlphaJumpDetector extends AnomalyDetector {
         if (alphaDeltaAbs >= ALPHA_JUMP_THRESHOLD) {
             nodeData.ignoreAlphaJumps = true; // No need to report alpha jump in children.
             return String.format(
-                    "Alpha jump detected in ViewCapture data: alpha change: %s (%s -> %s)"
-                            + ", threshold: %s, %s", // ----------- no need to include view?
-                    alphaDeltaAbs, oldAlpha, newAlpha, ALPHA_JUMP_THRESHOLD, latestInfo);
+                    "Alpha jump detected: alpha change: %s (%s -> %s), threshold: %s",
+                    alphaDeltaAbs, oldAlpha, newAlpha, ALPHA_JUMP_THRESHOLD);
         }
         return null;
     }
