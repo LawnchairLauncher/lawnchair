@@ -95,9 +95,10 @@ public class AllSetActivity extends Activity {
 
     private static final float ANIMATION_PAUSE_ALPHA_THRESHOLD = 0.1f;
 
+    private final AnimatedFloat mSwipeProgress = new AnimatedFloat(this::onSwipeProgressUpdate);
+
     private TISBindHelper mTISBindHelper;
 
-    private final AnimatedFloat mSwipeProgress = new AnimatedFloat(this::onSwipeProgressUpdate);
     private BgDrawable mBackground;
     private View mRootView;
     private float mSwipeUpShift;
@@ -172,7 +173,7 @@ public class AllSetActivity extends Activity {
                         LOTTIE_TERTIARY_COLOR_TOKEN, R.color.all_set_bg_tertiary),
                 getTheme());
 
-        startBackgroundAnimation();
+        startBackgroundAnimation(dp.isTablet);
     }
 
     private void runOnUiHelperThread(Runnable runnable) {
@@ -183,7 +184,7 @@ public class AllSetActivity extends Activity {
         Executors.UI_HELPER_EXECUTOR.execute(runnable);
     }
 
-    private void startBackgroundAnimation() {
+    private void startBackgroundAnimation(boolean forTablet) {
         if (!Utilities.ATLEAST_S || mVibrator == null) {
             return;
         }
@@ -199,7 +200,7 @@ public class AllSetActivity extends Activity {
                     .addPrimitive(supportsThud
                                     ? VibrationEffect.Composition.PRIMITIVE_THUD
                                     : VibrationEffect.Composition.PRIMITIVE_TICK,
-                            /* scale= */ 1.0f,
+                            /* scale= */ forTablet ? 1.0f : 0.3f,
                             /* delay= */ 50)
                     .compose();
 
