@@ -108,7 +108,10 @@ fun CustomColorPicker(
             }
         }
 
-        val pagerState = rememberPagerState(0)
+        val pagerState = rememberPagerState(
+            initialPage = 0,
+            pageCount = { 2 }
+        )
         val scope = rememberCoroutineScope()
         val scrollToPage =
             { page: Int -> scope.launch { pagerState.animateScrollToPage(page) } }
@@ -142,7 +145,6 @@ fun CustomColorPicker(
 
                 HorizontalPager(
                     modifier = Modifier.animateContentSize(),
-                    pageCount = 2,
                     state = pagerState,
                     verticalAlignment = Alignment.Top,
                 ) { page ->
