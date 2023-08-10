@@ -56,8 +56,10 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.responsive.AllAppsSpecs;
 import com.android.launcher3.responsive.CalculatedAllAppsSpec;
 import com.android.launcher3.responsive.CalculatedFolderSpec;
+import com.android.launcher3.responsive.CalculatedHotseatSpec;
 import com.android.launcher3.responsive.CalculatedWorkspaceSpec;
 import com.android.launcher3.responsive.FolderSpecs;
+import com.android.launcher3.responsive.HotseatSpecs;
 import com.android.launcher3.responsive.WorkspaceSpecs;
 import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.DisplayController;
@@ -121,6 +123,7 @@ public class DeviceProfile {
     private CalculatedAllAppsSpec mAllAppsResponsiveHeightSpec;
     private CalculatedFolderSpec mResponsiveFolderWidthSpec;
     private CalculatedFolderSpec mResponsiveFolderHeightSpec;
+    private CalculatedHotseatSpec mResponsiveHotseatSpec;
 
     /**
      * The maximum amount of left/right workspace padding as a percentage of the screen width.
@@ -316,7 +319,8 @@ public class DeviceProfile {
         // TODO(b/241386436): shouldn't change any launcher behaviour
         mIsResponsiveGrid = inv.workspaceSpecsId != INVALID_RESOURCE_HANDLE
                 && inv.allAppsSpecsId != INVALID_RESOURCE_HANDLE
-                && inv.folderSpecsId != INVALID_RESOURCE_HANDLE;
+                && inv.folderSpecsId != INVALID_RESOURCE_HANDLE
+                && inv.hotseatSpecsId != INVALID_RESOURCE_HANDLE;
 
         mIsScalableGrid = inv.isScalable && !isVerticalBarLayout() && !isMultiWindowMode;
         // Determine device posture.
@@ -495,7 +499,17 @@ public class DeviceProfile {
 
         int hotseatBarBottomSpace = pxFromDp(inv.hotseatBarBottomSpace[mTypeIndex], mMetrics);
         int minQsbMargin = res.getDimensionPixelSize(R.dimen.min_qsb_margin);
-        hotseatQsbSpace = pxFromDp(inv.hotseatQsbSpace[mTypeIndex], mMetrics);
+
+        if (mIsResponsiveGrid) {
+            HotseatSpecs hotseatSpecs =
+                    HotseatSpecs.create(new ResourceHelper(context,
+                            isTwoPanels ? inv.hotseatSpecsTwoPanelId : inv.hotseatSpecsId));
+            mResponsiveHotseatSpec = hotseatSpecs.getCalculatedHeightSpec(heightPx);
+            hotseatQsbSpace = mResponsiveHotseatSpec.getHotseatQsbSpace();
+        } else {
+            hotseatQsbSpace = pxFromDp(inv.hotseatQsbSpace[mTypeIndex], mMetrics);
+        }
+
         // Have a little space between the inset and the QSB
         if (mInsets.bottom + minQsbMargin > hotseatBarBottomSpace) {
             int availableSpace = hotseatQsbSpace - (mInsets.bottom - hotseatBarBottomSpace);
@@ -1985,6 +1999,7 @@ public class DeviceProfile {
                     + mAllAppsResponsiveWidthSpec.toString());
             writer.println(prefix + "\tmResponsiveFolderHeightSpec:" + mResponsiveFolderHeightSpec);
             writer.println(prefix + "\tmResponsiveFolderWidthSpec:" + mResponsiveFolderWidthSpec);
+            writer.println(prefix + "\tmResponsiveHotseatSpec:" + mResponsiveHotseatSpec);
         }
     }
 
