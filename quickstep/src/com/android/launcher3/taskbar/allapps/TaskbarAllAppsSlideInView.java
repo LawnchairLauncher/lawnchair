@@ -17,6 +17,7 @@ package com.android.launcher3.taskbar.allapps;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -58,7 +59,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
 
     /** Opens the all apps view. */
     void show(boolean animate) {
-        if (mIsOpen || mOpenCloseAnimator.isRunning()) {
+        if (mIsOpen || mOpenCloseAnimation.getAnimationPlayer().isRunning()) {
             return;
         }
         mIsOpen = true;
@@ -66,10 +67,12 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         mAllAppsCallbacks.onAllAppsTransitionStart(true);
 
         if (animate) {
-            setUpOpenCloseAnimator(TRANSLATION_SHIFT_OPENED, EMPHASIZED);
-            mOpenCloseAnimator.addListener(AnimatorListeners.forEndCallback(
+            setUpOpenAnimation(mAllAppsCallbacks.getOpenDuration());
+            Animator animator = mOpenCloseAnimation.getAnimationPlayer();
+            animator.setInterpolator(EMPHASIZED);
+            animator.addListener(AnimatorListeners.forEndCallback(
                     () -> mAllAppsCallbacks.onAllAppsTransitionEnd(true)));
-            mOpenCloseAnimator.setDuration(mAllAppsCallbacks.getOpenDuration()).start();
+            animator.start();
         } else {
             mTranslationShift = TRANSLATION_SHIFT_OPENED;
             mAllAppsCallbacks.onAllAppsTransitionEnd(true);

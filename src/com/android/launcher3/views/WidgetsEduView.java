@@ -116,11 +116,11 @@ public class WidgetsEduView extends AbstractSlideInView<Launcher> implements Ins
     }
 
     private void animateOpen() {
-        if (mIsOpen || mOpenCloseAnimator.isRunning()) {
+        if (mIsOpen || mOpenCloseAnimation.getAnimationPlayer().isRunning()) {
             return;
         }
         mIsOpen = true;
-        setUpDefaultOpenAnimator().start();
+        setUpDefaultOpenAnimation().start();
     }
 
     /** Shows widget education dialog. */
