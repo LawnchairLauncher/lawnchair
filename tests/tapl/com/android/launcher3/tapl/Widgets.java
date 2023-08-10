@@ -93,47 +93,29 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
     }
 
     private int getWidgetsScroll() {
-        return mLauncher.getTestInfo(TestProtocol.REQUEST_WIDGETS_SCROLL_Y)
+        return mLauncher.getTestInfo(
+                TestProtocol.REQUEST_WIDGETS_SCROLL_Y)
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
-    /**
-     * Gets the desired widget by first expanding the header using test package name
-     * and then picking the widget itself using widgetName
-     */
-    public Widget getWidget(String widgetName) {
-        return getWidget(widgetName, mLauncher.getContext().getPackageName());
-    }
-
-    /**
-     * Gets the desired widget by first expanding the header using widgetListHeaderTitle
-     * and then picking the widget itself using widgetName
-     */
-    public Widget getWidget(String widgetName, String widgetListHeaderTitle) {
+    public Widget getWidget(String labelText) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                     "getting widget " + widgetName + " in widgets list")) {
+                     "getting widget " + labelText + " in widgets list")) {
             final UiObject2 searchBar = findSearchBar();
             final int searchBarHeight = searchBar.getVisibleBounds().height();
             final UiObject2 fullWidgetsPicker = verifyActiveContainer();
             mLauncher.assertTrue("Widgets container didn't become scrollable",
                     fullWidgetsPicker.wait(Until.scrollable(true), WAIT_TIME_MS));
 
-            final UiObject2 widgetsContainer =
-                    findTestAppWidgetsTableContainer(widgetListHeaderTitle);
-
+            final UiObject2 widgetsContainer = findTestAppWidgetsTableContainer();
             mLauncher.assertTrue("Can't locate widgets list for the test app: "
                             + mLauncher.getLauncherPackageName(),
                     widgetsContainer != null);
-
-            final BySelector labelSelector =
-                    By.clazz("android.widget.TextView").text(widgetName);
-
+            final BySelector labelSelector = By.clazz("android.widget.TextView").text(labelText);
             final BySelector previewSelector = By.res(mLauncher.getLauncherPackageName(),
-                    "widget_preview_container");
-
+                    "widget_preview");
             final int bottomGestureStartOnScreen = mLauncher.getBottomGestureStartOnScreen();
-
             int i = 0;
             for (; ; ) {
                 final Collection<UiObject2> tableRows = mLauncher.getChildren(widgetsContainer);
@@ -183,13 +165,13 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
     }
 
     /** Finds the widgets list of this test app from the collapsed full widgets picker. */
-    private UiObject2 findTestAppWidgetsTableContainer(String widgetListHeaderTitle) {
+    private UiObject2 findTestAppWidgetsTableContainer() {
         final BySelector headerSelector = By.res(mLauncher.getLauncherPackageName(),
                 "widgets_list_header");
         final BySelector widgetPickerSelector = By.res(mLauncher.getLauncherPackageName(),
                 "container");
         final BySelector targetAppSelector = By.clazz("android.widget.TextView").text(
-                widgetListHeaderTitle);
+                mLauncher.getContext().getPackageName());
         final BySelector widgetsContainerSelector = By.res(mLauncher.getLauncherPackageName(),
                 "widgets_table");
 
