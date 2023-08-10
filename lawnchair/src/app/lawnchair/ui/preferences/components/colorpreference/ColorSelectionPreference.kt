@@ -84,7 +84,10 @@ fun ColorSelection(
         adapter.onChange(newValue = option)
     }
 
-    val pagerState = rememberPagerState(initialPage = defaultTabIndex)
+    val pagerState = rememberPagerState(
+        initialPage = defaultTabIndex,
+        pageCount = { 2 },
+    )
     PreferenceLayout(
         label = label,
         bottomBar = {
@@ -132,7 +135,6 @@ fun ColorSelection(
                 )
             }
             HorizontalPager(
-                pageCount = 2,
                 state = pagerState,
                 verticalAlignment = Alignment.Top,
                 modifier = Modifier.animateContentSize(),
