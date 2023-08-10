@@ -20,6 +20,7 @@ import android.content.Context
 import android.view.View
 import com.android.launcher3.R
 import com.android.launcher3.allapps.AllAppsTransitionListener
+import com.android.launcher3.anim.PendingAnimation
 import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.dragndrop.DragOptions.PreDragCondition
 import com.android.launcher3.model.data.ItemInfo
@@ -49,6 +50,8 @@ open class TaskbarSearchSessionController : ResourceBasedOverride, AllAppsTransi
     open fun createPreDragConditionForSearch(view: View): PreDragCondition? = null
 
     open fun handleBackInvoked(): Boolean = false
+
+    open fun onAllAppsAnimationPending(animation: PendingAnimation, toAllApps: Boolean) = Unit
 
     companion object {
         @JvmStatic
