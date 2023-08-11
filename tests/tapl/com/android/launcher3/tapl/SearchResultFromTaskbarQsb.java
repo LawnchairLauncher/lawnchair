@@ -35,4 +35,14 @@ public class SearchResultFromTaskbarQsb extends SearchResultFromQsb {
     protected TaskbarAppIcon createAppIcon(UiObject2 icon) {
         return new TaskbarAppIcon(mLauncher, icon);
     }
+
+    @Override
+    public TaskbarSearchWebSuggestion findWebSuggestion(String text) {
+        return (TaskbarSearchWebSuggestion) super.findWebSuggestion(text);
+    }
+
+    @Override
+    protected TaskbarSearchWebSuggestion createWebSuggestion(UiObject2 webSuggestion) {
+        return new TaskbarSearchWebSuggestion(mLauncher, webSuggestion);
+    }
 }
