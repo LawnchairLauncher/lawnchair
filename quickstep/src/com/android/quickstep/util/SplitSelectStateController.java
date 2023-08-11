@@ -42,7 +42,6 @@ import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.app.ActivityThread;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
@@ -77,8 +76,10 @@ import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statemanager.StateManager;
+import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.launcher3.util.BackPressHandler;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
 import com.android.quickstep.OverviewComponentObserver;
@@ -113,9 +114,11 @@ import java.util.function.Consumer;
 public class SplitSelectStateController {
     private static final String TAG = "SplitSelectStateCtor";
 
-    private Context mContext;
+    private StatefulActivity mContext;
     private final Handler mHandler;
     private final RecentsModel mRecentTasksModel;
+    @Nullable
+    private final Runnable mActivityBackCallback;
     private final SplitAnimationController mSplitAnimationController;
     private final AppPairsController mAppPairsController;
     private final SplitSelectDataHolder mSplitSelectDataHolder;
@@ -142,9 +145,28 @@ public class SplitSelectStateController {
 
     private final List<SplitSelectionListener> mSplitSelectionListeners = new ArrayList<>();
 
-    public SplitSelectStateController(Context context, Handler handler, StateManager stateManager,
-            DepthController depthController, StatsLogManager statsLogManager,
-            SystemUiProxy systemUiProxy, RecentsModel recentsModel) {
+    private final BackPressHandler mSplitBackHandler = new BackPressHandler() {
+        @Override
+        public boolean canHandleBack() {
+            return FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get() &&
+                    isSplitSelectActive();
+        }
+
+        @Override
+        public void onBackInvoked() {
+            // When exiting from split selection, leave current context to go to
+            // homescreen as well
+            getSplitAnimationController().playPlaceholderDismissAnim(mContext);
+            if (mActivityBackCallback != null) {
+                mActivityBackCallback.run();
+            }
+        }
+    };
+
+    public SplitSelectStateController(StatefulActivity context, Handler handler,
+            StateManager stateManager, DepthController depthController,
+            StatsLogManager statsLogManager, SystemUiProxy systemUiProxy, RecentsModel recentsModel,
+            Runnable activityBackCallback) {
         mContext = context;
         mHandler = handler;
         mStatsLogManager = statsLogManager;
@@ -152,6 +174,7 @@ public class SplitSelectStateController {
         mStateManager = stateManager;
         mDepthController = depthController;
         mRecentTasksModel = recentsModel;
+        mActivityBackCallback = activityBackCallback;
         mSplitAnimationController = new SplitAnimationController(this);
         mAppPairsController = new AppPairsController(context, this, statsLogManager);
         mSplitSelectDataHolder = new SplitSelectDataHolder(mContext);
@@ -714,6 +737,10 @@ public class SplitSelectStateController {
 
     public AppPairsController getAppPairsController() {
         return mAppPairsController;
+    }
+
+    public BackPressHandler getSplitBackHandler() {
+        return mSplitBackHandler;
     }
 
     public void dump(String prefix, PrintWriter writer) {
