@@ -93,7 +93,7 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
         tooltipStep = TOOLTIP_STEP_FEATURES
         inflateTooltip(R.layout.taskbar_edu_swipe)
         tooltip?.run {
-            findViewById<LottieAnimationView>(R.id.swipe_animation).supportLightTheme()
+            requireViewById<LottieAnimationView>(R.id.swipe_animation).supportLightTheme()
             show()
         }
     }
@@ -112,10 +112,10 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
         tooltipStep = TOOLTIP_STEP_NONE
         inflateTooltip(R.layout.taskbar_edu_features)
         tooltip?.run {
-            val splitscreenAnim = findViewById<LottieAnimationView>(R.id.splitscreen_animation)
-            val suggestionsAnim = findViewById<LottieAnimationView>(R.id.suggestions_animation)
-            val settingsAnim = findViewById<LottieAnimationView>(R.id.settings_animation)
-            val settingsEdu = findViewById<View>(R.id.settings_edu)
+            val splitscreenAnim = requireViewById<LottieAnimationView>(R.id.splitscreen_animation)
+            val suggestionsAnim = requireViewById<LottieAnimationView>(R.id.suggestions_animation)
+            val settingsAnim = requireViewById<LottieAnimationView>(R.id.settings_animation)
+            val settingsEdu = requireViewById<View>(R.id.settings_edu)
             splitscreenAnim.supportLightTheme()
             suggestionsAnim.supportLightTheme()
             settingsAnim.supportLightTheme()
@@ -186,7 +186,7 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
     private fun createAccessibilityDelegate() =
         object : View.AccessibilityDelegate() {
             override fun performAccessibilityAction(
-                host: View?,
+                host: View,
                 action: Int,
                 args: Bundle?
             ): Boolean {
@@ -197,22 +197,22 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
                 return super.performAccessibilityAction(host, action, args)
             }
 
-            override fun onPopulateAccessibilityEvent(host: View?, event: AccessibilityEvent?) {
+            override fun onPopulateAccessibilityEvent(host: View, event: AccessibilityEvent) {
                 super.onPopulateAccessibilityEvent(host, event)
-                if (event?.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-                    event.text?.add(host?.context?.getText(R.string.taskbar_edu_a11y_title))
+                if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+                    event.text.add(host.context?.getText(R.string.taskbar_edu_a11y_title))
                 }
             }
 
             override fun onInitializeAccessibilityNodeInfo(
-                host: View?,
-                info: AccessibilityNodeInfo?
+                host: View,
+                info: AccessibilityNodeInfo
             ) {
                 super.onInitializeAccessibilityNodeInfo(host, info)
-                info?.addAction(
+                info.addAction(
                     AccessibilityNodeInfo.AccessibilityAction(
                         R.id.close,
-                        host?.context?.getText(R.string.taskbar_edu_close)
+                        host.context?.getText(R.string.taskbar_edu_close)
                     )
                 )
             }
