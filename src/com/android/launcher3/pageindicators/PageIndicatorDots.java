@@ -130,6 +130,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
      */
     private float mCurrentPosition;
     private float mFinalPosition;
+    private boolean mAreScreensBinding;
     private ObjectAnimator mAnimator;
     private @Nullable ObjectAnimator mAlphaAnimator;
 
@@ -163,12 +164,17 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
     @Override
     public void setScroll(int currentScroll, int totalScroll) {
-        if (SHOW_DOT_PAGINATION.get() && mActivePage != 0 && currentScroll == 0) {
+        if (SHOW_DOT_PAGINATION.get() && currentScroll == 0 && totalScroll == 0) {
             CURRENT_POSITION.set(this, (float) mActivePage);
             return;
         }
 
         if (mNumPages <= 1) {
+            return;
+        }
+
+        // Skip scroll update during binding. We will update it when binding completes.
+        if (mAreScreensBinding) {
             return;
         }
 
@@ -356,6 +362,16 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     public void setMarkersCount(int numMarkers) {
         mNumPages = numMarkers;
         requestLayout();
+    }
+
+    @Override
+    public void setAreScreensBinding(boolean areScreensBinding) {
+        // Reapply correct current position which was skipped during setScroll.
+        if (mAreScreensBinding && !areScreensBinding) {
+            CURRENT_POSITION.set(this, (float) mActivePage);
+        }
+
+        mAreScreensBinding = areScreensBinding;
     }
 
     @Override
