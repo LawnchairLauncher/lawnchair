@@ -114,8 +114,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         WorkspaceItemInfo dragItem = new WorkspaceItemInfo((WorkspaceItemInfo) v.getTag());
         v.setVisibility(View.INVISIBLE);
         mLauncher.getWorkspace().beginDragShared(
-                v, null, this, dragItem, new DragPreviewProvider(v),
-                mLauncher.getDefaultWorkspaceDragOptions());
+                v, null, this, dragItem, new DragPreviewProvider(v), new DragOptions());
         return true;
     };
 
