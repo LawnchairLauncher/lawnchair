@@ -121,7 +121,7 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        optionLayout = requireViewById(R.id.menu_option_layout)
+        optionLayout = findViewById(R.id.menu_option_layout)
     }
 
     private fun populateAndShowForTask(
@@ -193,8 +193,8 @@ class TaskMenuViewWithArrow<T : BaseDraggingActivity> : ArrowPopup<T> {
             mActivityContext.layoutInflater.inflate(R.layout.task_view_menu_option, this, false)
                 as LinearLayout
         menuOption.setIconAndLabelFor(
-            menuOptionView.requireViewById(R.id.icon),
-            menuOptionView.requireViewById(R.id.text)
+            menuOptionView.findViewById(R.id.icon),
+            menuOptionView.findViewById(R.id.text)
         )
         val lp = menuOptionView.layoutParams as LayoutParams
         lp.width = menuWidth
