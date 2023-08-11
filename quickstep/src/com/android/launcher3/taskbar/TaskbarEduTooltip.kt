@@ -97,8 +97,8 @@ constructor(
     override fun onFinishInflate() {
         super.onFinishInflate()
 
-        content = requireViewById(R.id.content)
-        arrow = requireViewById(R.id.arrow)
+        content = findViewById(R.id.content)
+        arrow = findViewById(R.id.arrow)
         arrow.background =
             RoundedArrowDrawable(
                 arrowWidth,
