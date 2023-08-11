@@ -181,7 +181,7 @@ class GridSizeMigrationUtilTest {
         intentIndex = c.getColumnIndex(INTENT)
         val cellXIndex = c.getColumnIndex(CELLX)
         val cellYIndex = c.getColumnIndex(CELLY)
-        val locMap = HashMap<String, Point>()
+        val locMap = HashMap<String?, Point>()
         while (c.moveToNext()) {
             locMap[Intent.parseUri(c.getString(intentIndex), 0).getPackage()] =
                 Point(c.getInt(cellXIndex), c.getInt(cellYIndex))
@@ -424,13 +424,13 @@ class GridSizeMigrationUtilTest {
         c.close()
     }
 
-    private fun parseLocMap(context: Context, c: Cursor): Map<String, Triple<Int, Int, Int>> {
+    private fun parseLocMap(context: Context, c: Cursor): Map<String?, Triple<Int, Int, Int>> {
         // Check workspace items
         val intentIndex = c.getColumnIndex(INTENT)
         val screenIndex = c.getColumnIndex(SCREEN)
         val cellXIndex = c.getColumnIndex(CELLX)
         val cellYIndex = c.getColumnIndex(CELLY)
-        val locMap = mutableMapOf<String, Triple<Int, Int, Int>>()
+        val locMap = mutableMapOf<String?, Triple<Int, Int, Int>>()
         while (c.moveToNext()) {
             locMap[Intent.parseUri(c.getString(intentIndex), 0).getPackage()] =
                 Triple(c.getInt(screenIndex), c.getInt(cellXIndex), c.getInt(cellYIndex))
@@ -606,7 +606,7 @@ class GridSizeMigrationUtilTest {
         val screenIndex = c.getColumnIndex(SCREEN)
 
         // Get in which screen the icon is
-        val locMap = HashMap<String, Int>()
+        val locMap = HashMap<String?, Int>()
         while (c.moveToNext()) {
             locMap[Intent.parseUri(c.getString(intentIndex), 0).getPackage()] =
                 c.getInt(screenIndex)
@@ -668,7 +668,7 @@ class GridSizeMigrationUtilTest {
         val screenIndex = c.getColumnIndex(SCREEN)
 
         // Get in which screen the icon is
-        val locMap = HashMap<String, Int>()
+        val locMap = HashMap<String?, Int>()
         while (c.moveToNext()) {
             locMap[Intent.parseUri(c.getString(intentIndex), 0).getPackage()] =
                 c.getInt(screenIndex)
@@ -728,7 +728,7 @@ class GridSizeMigrationUtilTest {
         val screenIndex = c.getColumnIndex(SCREEN)
 
         // Get in which screen the icon is
-        val locMap = HashMap<String, Int>()
+        val locMap = HashMap<String?, Int>()
         while (c.moveToNext()) {
             locMap[Intent.parseUri(c.getString(intentIndex), 0).getPackage()] =
                 c.getInt(screenIndex)
