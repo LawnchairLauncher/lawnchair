@@ -30,13 +30,21 @@ public abstract class Qsb {
     private static final String ASSISTANT_APP_PACKAGE = "com.google.android.googlequicksearchbox";
     private static final String ASSISTANT_ICON_RES_ID = "mic_icon";
     protected final LauncherInstrumentation mLauncher;
+    private final UiObject2 mContainer;
+    private final String mQsbResName;
 
-    protected Qsb(LauncherInstrumentation launcher) {
+    protected Qsb(LauncherInstrumentation launcher, UiObject2 container, String qsbResName) {
         mLauncher = launcher;
+        mContainer = container;
+        mQsbResName = qsbResName;
+        waitForQsbObject();
     }
 
     // Waits for the quick search box.
-    protected abstract UiObject2 waitForQsbObject();
+    private UiObject2 waitForQsbObject() {
+        return mLauncher.waitForObjectInContainer(mContainer, mQsbResName);
+    }
+
     /**
      * Launch assistant app by tapping mic icon on qsb.
      */
@@ -79,8 +87,12 @@ public abstract class Qsb {
             mLauncher.waitForIdle();
             try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
                     "clicked qsb to open search result page")) {
-                return new SearchResultFromQsb(mLauncher);
+                return createSearchResult();
             }
         }
+    }
+
+    protected SearchResultFromQsb createSearchResult() {
+        return new SearchResultFromQsb(mLauncher);
     }
 }
