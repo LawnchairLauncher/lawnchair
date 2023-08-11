@@ -156,18 +156,19 @@ class SplitSelectDataHolder(
      */
     fun setSecondTask(pendingIntent: PendingIntent) {
         secondPendingIntent = pendingIntent
-        secondUser = pendingIntent.creatorUserHandle!!
+        secondUser = pendingIntent.creatorUserHandle
     }
 
-    private fun getShortcutInfo(intent: Intent?, user: UserHandle?): ShortcutInfo? {
-        if (intent?.getPackage() == null) {
+    private fun getShortcutInfo(intent: Intent?, user: UserHandle): ShortcutInfo? {
+        val intentPackage = intent?.getPackage()
+        if (intentPackage == null) {
             return null
         }
         val shortcutId = intent.getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID)
                 ?: return null
         try {
             val context: Context = context.createPackageContextAsUser(
-                    intent.getPackage(), 0 /* flags */, user)
+                    intentPackage, 0 /* flags */, user)
             return ShortcutInfo.Builder(context, shortcutId).build()
         } catch (e: PackageManager.NameNotFoundException) {
             Log.w(TAG, "Failed to create a ShortcutInfo for " + intent.getPackage())
@@ -250,7 +251,7 @@ class SplitSelectDataHolder(
      * convert [secondIntent]
      */
     private fun convertIntentsToFinalTypes() {
-        initialShortcut = getShortcutInfo(initialIntent, initialUser)
+        initialShortcut = getShortcutInfo(initialIntent, checkNotNull(initialUser))
         initialPendingIntent = getPendingIntent(initialIntent, initialUser)
         initialIntent = null
 
@@ -264,7 +265,7 @@ class SplitSelectDataHolder(
             return
         }
 
-        secondShortcut = getShortcutInfo(secondIntent, secondUser)
+        secondShortcut = getShortcutInfo(secondIntent, checkNotNull(secondUser))
         secondPendingIntent = getPendingIntent(secondIntent, secondUser)
         secondIntent = null
     }
