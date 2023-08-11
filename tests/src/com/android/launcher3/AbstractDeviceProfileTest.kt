@@ -22,6 +22,7 @@ import android.graphics.Rect
 import android.util.DisplayMetrics
 import android.view.Surface
 import androidx.test.core.app.ApplicationProvider
+import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.NavigationMode
 import com.android.launcher3.util.WindowBounds
@@ -158,41 +159,55 @@ abstract class AbstractDeviceProfileTest {
     }
 
     protected fun initializeVarsForTwoPanel(
-        deviceTabletSpec: DeviceSpec,
-        deviceSpec: DeviceSpec,
+        deviceSpecUnfolded: DeviceSpec,
+        deviceSpecFolded: DeviceSpec,
         isLandscape: Boolean = false,
-        isGestureMode: Boolean = true
+        isGestureMode: Boolean = true,
+        isFolded: Boolean = false
     ) {
-        val (tabletNaturalX, tabletNaturalY) = deviceTabletSpec.naturalSize
-        val tabletWindowsBounds =
-            tabletWindowsBounds(deviceTabletSpec, tabletNaturalX, tabletNaturalY)
-        val tabletDisplayInfo =
+        val (unfoldedNaturalX, unfoldedNaturalY) = deviceSpecUnfolded.naturalSize
+        val unfoldedWindowsBounds =
+            tabletWindowsBounds(deviceSpecUnfolded, unfoldedNaturalX, unfoldedNaturalY)
+        val unfoldedDisplayInfo =
             CachedDisplayInfo(
-                Point(tabletNaturalX, tabletNaturalY),
+                Point(unfoldedNaturalX, unfoldedNaturalY),
                 Surface.ROTATION_0,
                 Rect(0, 0, 0, 0)
             )
 
-        val (phoneNaturalX, phoneNaturalY) = deviceSpec.naturalSize
-        val phoneWindowsBounds =
-            phoneWindowsBounds(deviceSpec, isGestureMode, phoneNaturalX, phoneNaturalY)
-        val phoneDisplayInfo =
+        val (foldedNaturalX, foldedNaturalY) = deviceSpecFolded.naturalSize
+        val foldedWindowsBounds =
+            phoneWindowsBounds(deviceSpecFolded, isGestureMode, foldedNaturalX, foldedNaturalY)
+        val foldedDisplayInfo =
             CachedDisplayInfo(
-                Point(phoneNaturalX, phoneNaturalY),
+                Point(foldedNaturalX, foldedNaturalY),
                 Surface.ROTATION_0,
                 Rect(0, 0, 0, 0)
             )
 
         val perDisplayBoundsCache =
-            mapOf(tabletDisplayInfo to tabletWindowsBounds, phoneDisplayInfo to phoneWindowsBounds)
+            mapOf(
+                unfoldedDisplayInfo to unfoldedWindowsBounds,
+                foldedDisplayInfo to foldedWindowsBounds
+            )
 
-        initializeCommonVars(
-            perDisplayBoundsCache,
-            tabletDisplayInfo,
-            rotation = if (isLandscape) Surface.ROTATION_0 else Surface.ROTATION_90,
-            isGestureMode,
-            densityDpi = deviceTabletSpec.densityDpi
-        )
+        if (isFolded) {
+            initializeCommonVars(
+                perDisplayBoundsCache = perDisplayBoundsCache,
+                displayInfo = foldedDisplayInfo,
+                rotation = if (isLandscape) Surface.ROTATION_90 else Surface.ROTATION_0,
+                isGestureMode = isGestureMode,
+                densityDpi = deviceSpecFolded.densityDpi
+            )
+        } else {
+            initializeCommonVars(
+                perDisplayBoundsCache = perDisplayBoundsCache,
+                displayInfo = unfoldedDisplayInfo,
+                rotation = if (isLandscape) Surface.ROTATION_0 else Surface.ROTATION_90,
+                isGestureMode = isGestureMode,
+                densityDpi = deviceSpecUnfolded.densityDpi
+            )
+        }
     }
 
     private fun phoneWindowsBounds(
@@ -305,5 +320,13 @@ abstract class AbstractDeviceProfileTest {
 
     private fun writeToDevice(context: Context, fileName: String, content: String) {
         File(context.getDir("dumpTests", Context.MODE_PRIVATE), fileName).writeText(content)
+    }
+
+    protected fun Float.dpToPx(): Float {
+        return ResourceUtils.pxFromDp(this, context!!.resources.displayMetrics).toFloat()
+    }
+
+    protected fun Int.dpToPx(): Int {
+        return ResourceUtils.pxFromDp(this.toFloat(), context!!.resources.displayMetrics)
     }
 }

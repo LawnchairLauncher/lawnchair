@@ -183,6 +183,17 @@ public final class FeatureFlags {
             "Enables predictive back animation from all apps and widgets to home");
 
     // TODO(Block 11): Clean up flags
+    public static final BooleanFlag ENABLE_TWO_PANEL_HOME = getDebugFlag(270392643,
+            "ENABLE_TWO_PANEL_HOME", ENABLED,
+            "Uses two panel on home screen. Only applicable on large screen devices.");
+
+    public static final BooleanFlag FOLDABLE_WORKSPACE_REORDER = getDebugFlag(270395070,
+            "FOLDABLE_WORKSPACE_REORDER", DISABLED,
+            "In foldables, when reordering the icons and widgets, is now going to use both sides");
+
+    public static final BooleanFlag FOLDABLE_SINGLE_PAGE = getDebugFlag(270395274,
+            "FOLDABLE_SINGLE_PAGE", ENABLED, "Use a single page for the workspace");
+
     public static final BooleanFlag ENABLE_PARAMETRIZE_REORDER = getDebugFlag(289420844,
             "ENABLE_PARAMETRIZE_REORDER", DISABLED,
             "Enables generating the reorder using a set of parameters");
@@ -245,7 +256,7 @@ public final class FeatureFlags {
             "Inject fallback app corpus result when AiAi fails to return it.");
 
     public static final BooleanFlag ENABLE_LONG_PRESS_NAV_HANDLE =
-            getDebugFlag(282993230, "ENABLE_LONG_PRESS_NAV_HANDLE", DISABLED,
+            getReleaseFlag(282993230, "ENABLE_LONG_PRESS_NAV_HANDLE", TEAMFOOD,
                     "Enables long pressing on the bottom bar nav handle to trigger events.");
 
     // TODO(Block 17): Clean up flags

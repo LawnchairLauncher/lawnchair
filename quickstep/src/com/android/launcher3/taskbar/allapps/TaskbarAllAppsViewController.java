@@ -20,6 +20,7 @@ import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.allapps.AllAppsTransitionListener;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.appprediction.AppsDividerView;
 import com.android.launcher3.taskbar.NavbarButtonsViewController;
 import com.android.launcher3.taskbar.TaskbarControllers;
@@ -124,6 +125,10 @@ final class TaskbarAllAppsViewController {
         /** Invoked on back press, returning {@code true} if the search session handled it. */
         boolean handleSearchBackInvoked() {
             return mSearchSessionController.handleBackInvoked();
+        }
+
+        void onAllAppsAnimationPending(PendingAnimation animation, boolean toAllApps) {
+            mSearchSessionController.onAllAppsAnimationPending(animation, toAllApps);
         }
     }
 }

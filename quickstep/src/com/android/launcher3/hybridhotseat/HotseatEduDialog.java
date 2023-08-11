@@ -158,11 +158,11 @@ public class HotseatEduDialog extends AbstractSlideInView<Launcher> implements I
     }
 
     private void animateOpen() {
-        if (mIsOpen || mOpenCloseAnimator.isRunning()) {
+        if (mIsOpen || mOpenCloseAnimation.getAnimationPlayer().isRunning()) {
             return;
         }
         mIsOpen = true;
-        setUpDefaultOpenAnimator().start();
+        setUpDefaultOpenAnimation().start();
     }
 
     @Override

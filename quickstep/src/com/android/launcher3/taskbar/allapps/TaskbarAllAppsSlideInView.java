@@ -17,11 +17,13 @@ package com.android.launcher3.taskbar.allapps;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.animation.Interpolator;
 import android.window.OnBackInvokedDispatcher;
 
@@ -29,6 +31,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorListeners;
+import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsViewController.TaskbarAllAppsCallbacks;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
@@ -58,22 +61,50 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
 
     /** Opens the all apps view. */
     void show(boolean animate) {
-        if (mIsOpen || mOpenCloseAnimator.isRunning()) {
+        if (mIsOpen || mOpenCloseAnimation.getAnimationPlayer().isRunning()) {
             return;
         }
         mIsOpen = true;
         attachToContainer();
-        mAllAppsCallbacks.onAllAppsTransitionStart(true);
 
-        if (animate) {
-            setUpOpenCloseAnimator(TRANSLATION_SHIFT_OPENED, EMPHASIZED);
-            mOpenCloseAnimator.addListener(AnimatorListeners.forEndCallback(
-                    () -> mAllAppsCallbacks.onAllAppsTransitionEnd(true)));
-            mOpenCloseAnimator.setDuration(mAllAppsCallbacks.getOpenDuration()).start();
-        } else {
-            mTranslationShift = TRANSLATION_SHIFT_OPENED;
+        addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                removeOnAttachStateChangeListener(this);
+                // Wait for view and its descendants to be fully attached before starting open.
+                post(() -> showOnFullyAttachedToWindow(animate));
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                removeOnAttachStateChangeListener(this);
+            }
+        });
+    }
+
+    private void showOnFullyAttachedToWindow(boolean animate) {
+        mAllAppsCallbacks.onAllAppsTransitionStart(true);
+        if (!animate) {
             mAllAppsCallbacks.onAllAppsTransitionEnd(true);
+            mTranslationShift = TRANSLATION_SHIFT_OPENED;
+            return;
         }
+
+        setUpOpenAnimation(mAllAppsCallbacks.getOpenDuration());
+        Animator animator = mOpenCloseAnimation.getAnimationPlayer();
+        animator.setInterpolator(EMPHASIZED);
+        animator.addListener(AnimatorListeners.forEndCallback(() -> {
+            if (mIsOpen) {
+                mAllAppsCallbacks.onAllAppsTransitionEnd(true);
+            }
+        }));
+        animator.start();
+    }
+
+    @Override
+    protected void onOpenCloseAnimationPending(PendingAnimation animation) {
+        mAllAppsCallbacks.onAllAppsAnimationPending(
+                animation, mToTranslationShift == TRANSLATION_SHIFT_OPENED);
     }
 
     /** The apps container inside this view. */
