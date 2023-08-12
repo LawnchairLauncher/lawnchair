@@ -110,6 +110,7 @@ final class AlphaJumpDetector extends AnomalyDetector {
             DRAG_LAYER + "WidgetsTwoPaneSheet|SpringRelativeLayout:id/container",
             CONTENT + "LauncherRootView:id/launcher|FloatingIconView",
             RECENTS_DRAG_LAYER + "ArrowTipView",
+            DRAG_LAYER + "ArrowTipView",
             DRAG_LAYER + "FallbackRecentsView:id/overview_panel",
             RECENTS_DRAG_LAYER + "FallbackRecentsView:id/overview_panel",
             DRAG_LAYER
