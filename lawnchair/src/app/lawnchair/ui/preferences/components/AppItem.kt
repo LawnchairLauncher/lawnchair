@@ -24,12 +24,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.placeholder.PlaceholderHighlight
+import app.lawnchair.ui.placeholder.material.fade
+import app.lawnchair.ui.placeholder.material.placeholder
 import app.lawnchair.util.App
-import com.google.accompanist.placeholder.PlaceholderHighlight
-import com.google.accompanist.placeholder.material.fade
-import com.google.accompanist.placeholder.material.placeholder
 
 @Composable
 fun AppItem(

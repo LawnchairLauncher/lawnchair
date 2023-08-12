@@ -328,6 +328,7 @@ dependencies {
 
     implementation platform("androidx.compose:compose-bom:2023.08.00")
     implementation "androidx.compose.ui:ui"
+    implementation "androidx.compose.ui:ui-util"
     debugImplementation "androidx.compose.ui:ui-tooling"
     implementation "androidx.compose.ui:ui-text-google-fonts"
     implementation "androidx.compose.foundation:foundation"
@@ -344,7 +345,6 @@ dependencies {
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanist_version"
     implementation "com.google.accompanist:accompanist-permissions:$accompanist_version"
     implementation "com.google.accompanist:accompanist-pager:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-placeholder-material:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
     implementation "com.google.android.material:material:1.9.0"
     implementation "io.github.fornewid:material-motion-compose-core:1.0.4"
