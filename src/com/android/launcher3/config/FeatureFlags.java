@@ -83,11 +83,11 @@ public final class FeatureFlags {
      */
     // TODO(Block 1): Clean up flags
     public static final BooleanFlag ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES = getReleaseFlag(
-            270394041, "ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES", TEAMFOOD,
+            270394041, "ENABLE_SEARCH_RESULT_BACKGROUND_DRAWABLES", ENABLED,
             "Enable option to replace decorator-based search result backgrounds with drawables");
 
     public static final BooleanFlag ENABLE_SEARCH_RESULT_LAUNCH_TRANSITION = getReleaseFlag(
-            270394392, "ENABLE_SEARCH_RESULT_LAUNCH_TRANSITION", TEAMFOOD,
+            270394392, "ENABLE_SEARCH_RESULT_LAUNCH_TRANSITION", ENABLED,
             "Enable option to launch search results using the new view container transitions");
 
     // TODO(Block 2): Clean up flags
