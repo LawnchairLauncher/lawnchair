@@ -5,9 +5,8 @@ import android.content.Context
 import app.lawnchair.BlankActivity
 import app.lawnchair.ui.preferences.PreferenceActivity
 import app.lawnchair.ui.preferences.Routes
+import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.R
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 
 sealed class GestureHandlerOption(
     val labelRes: Int,
@@ -41,7 +40,7 @@ sealed class GestureHandlerOption(
             val intent = PreferenceActivity.createIntent(activity, "/${Routes.PICK_APP_FOR_GESTURE}/")
             val result = BlankActivity.startBlankActivityForResult(activity, intent)
             val configString = result.data?.getStringExtra("config") ?: return null
-            return Json.decodeFromString(configString)
+            return kotlinxJson.decodeFromString(configString)
         }
     }
 }

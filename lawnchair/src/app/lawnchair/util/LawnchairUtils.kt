@@ -47,6 +47,7 @@ import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Themes
 import com.android.systemui.shared.system.QuickStepContract
 import com.patrykmichalik.opto.core.firstBlocking
+import kotlinx.serialization.json.Json
 import org.json.JSONArray
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -141,6 +142,10 @@ fun <T> JSONArray.toArrayList(): ArrayList<T> {
         arrayList.add(get(i) as T)
     }
     return arrayList
+}
+
+val kotlinxJson = Json {
+    ignoreUnknownKeys = true
 }
 
 val ViewGroup.recursiveChildren: Sequence<View>
