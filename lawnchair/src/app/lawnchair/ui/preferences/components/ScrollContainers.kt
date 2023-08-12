@@ -15,9 +15,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import app.lawnchair.ui.util.LocalScaffoldPadding
 import app.lawnchair.ui.util.addIf
 import app.lawnchair.ui.util.rememberExtendPadding
-import com.google.accompanist.insets.ui.LocalScaffoldPadding
 import kotlinx.coroutines.awaitCancellation
 
 @Composable

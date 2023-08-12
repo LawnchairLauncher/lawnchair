@@ -33,11 +33,11 @@ import app.lawnchair.icons.*
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.ui.util.LazyGridLayout
+import app.lawnchair.ui.util.LocalScaffoldPadding
 import app.lawnchair.ui.util.resultSender
 import app.lawnchair.util.requireSystemService
 import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
-import com.google.accompanist.insets.ui.LocalScaffoldPadding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
