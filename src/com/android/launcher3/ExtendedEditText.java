@@ -21,6 +21,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.inputmethod.InputMethodManager;
@@ -37,6 +38,8 @@ import java.util.Set;
  * Note: AppCompatEditText doesn't fully support #displayCompletions and #onCommitCompletion
  */
 public class ExtendedEditText extends EditText {
+    private static final String TAG = "ExtendedEditText";
+
     private final Set<OnFocusChangeListener> mOnFocusChangeListeners = new HashSet<>();
 
     private boolean mForceDisableSuggestions = false;
@@ -89,9 +92,17 @@ public class ExtendedEditText extends EditText {
         return false;
     }
 
-    public void showKeyboard() {
+    /**
+     * Synchronously shows the soft input method.
+     *
+     * @param shouldFocus whether this EditText should also request focus.
+     * @return true if the keyboard is shown correctly and focus is given to this view (if
+     *     applicable).
+     */
+    public boolean showKeyboard(boolean shouldFocus) {
         onKeyboardShown();
-        showSoftInput();
+        boolean focusResult = !shouldFocus || requestFocus();
+        return focusResult && showSoftInputInternal();
     }
 
     public void hideKeyboard() {
@@ -104,10 +115,15 @@ public class ExtendedEditText extends EditText {
                 .keyboardStateManager().setKeyboardState(SHOW);
     }
 
-    private boolean showSoftInput() {
-        return requestFocus() &&
-                getContext().getSystemService(InputMethodManager.class)
-                    .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+    private boolean showSoftInputInternal() {
+        boolean result = false;
+        InputMethodManager imm = getContext().getSystemService(InputMethodManager.class);
+        if (imm != null) {
+            result = imm.showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+        } else {
+            Log.w(TAG, "Failed to retrieve InputMethodManager from the system.");
+        }
+        return result;
     }
 
     public void dispatchBackKey() {
