@@ -27,13 +27,12 @@ import app.lawnchair.ui.preferences.components.colorpreference.pickers.PresetsLi
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.SwatchGrid
 import app.lawnchair.ui.preferences.preferenceGraph
 import com.android.launcher3.R
-import com.google.accompanist.navigation.animation.composable
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.navigation.compose.composable
 import com.patrykmichalik.opto.domain.Preference
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.colorSelectionGraph(route: String) {
     preferenceGraph(route, {}) { subRoute ->
         composable(

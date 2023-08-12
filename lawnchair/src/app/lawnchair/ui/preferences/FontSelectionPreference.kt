@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.lawnchair.font.FontCache
 import app.lawnchair.font.googlefonts.GoogleFontsListing
@@ -37,10 +38,7 @@ import app.lawnchair.ui.AndroidText
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.R
-import com.google.accompanist.navigation.animation.composable
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.fontSelectionGraph(route: String) {
     preferenceGraph(route, {}) { subRoute ->
         composable(

@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.LocalPreferenceInteractor
@@ -42,9 +43,7 @@ import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.ui.preferences.subRoute
 import com.android.launcher3.R
-import com.google.accompanist.navigation.animation.composable
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.licensesGraph(route: String) {
     preferenceGraph(route, { Acknowledgements() }) { subRoute ->
         composable(

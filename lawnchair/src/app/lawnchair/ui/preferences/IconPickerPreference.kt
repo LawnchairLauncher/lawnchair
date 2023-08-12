@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.lawnchair.icons.*
 import app.lawnchair.ui.OverflowMenu
@@ -37,13 +38,11 @@ import app.lawnchair.util.requireSystemService
 import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
 import com.google.accompanist.insets.ui.LocalScaffoldPadding
-import com.google.accompanist.navigation.animation.composable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import androidx.compose.material.MaterialTheme as Material2Theme
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.iconPickerGraph(route: String) {
     preferenceGraph(route, {
         IconPickerPreference(packageName = "")

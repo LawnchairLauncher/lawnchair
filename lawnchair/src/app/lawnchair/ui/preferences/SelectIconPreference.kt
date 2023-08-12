@@ -10,6 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.lawnchair.data.iconoverride.IconOverrideRepository
 import app.lawnchair.icons.IconPickerItem
@@ -21,10 +22,8 @@ import app.lawnchair.ui.util.OnResult
 import app.lawnchair.util.requireSystemService
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
-import com.google.accompanist.navigation.animation.composable
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.selectIconGraph(route: String) {
     preferenceGraph(route, { }) { subRoute ->
         composable(
