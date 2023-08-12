@@ -28,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.AlertBottomSheetContent
 import app.lawnchair.ui.util.bottomSheetHandler
-import com.android.launcher3.R
 
 @Composable
 fun ClickablePreference(

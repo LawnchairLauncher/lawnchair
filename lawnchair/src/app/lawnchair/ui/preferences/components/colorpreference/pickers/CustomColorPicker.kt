@@ -276,9 +276,9 @@ private fun HsvColorPicker(
     onSliderValuesChange: (Int) -> Unit,
 ) {
     val hsv = remember { intColorToHsvColorArray(selectedColor) }
-    var hue by remember { mutableStateOf(hsv[0]) }
-    var saturation by remember { mutableStateOf(hsv[1]) }
-    var brightness by remember { mutableStateOf(hsv[2]) }
+    var hue by remember { mutableFloatStateOf(hsv[0]) }
+    var saturation by remember { mutableFloatStateOf(hsv[1]) }
+    var brightness by remember { mutableFloatStateOf(hsv[2]) }
     val coroutineScope = rememberCoroutineScope()
 
     fun updateColor(
@@ -345,9 +345,9 @@ private fun RgbColorPicker(
     onSliderValuesChange: (Int) -> Unit,
 ) {
 
-    var red by remember { mutableStateOf(selectedColor.red) }
-    var green by remember { mutableStateOf(selectedColor.green) }
-    var blue by remember { mutableStateOf(selectedColor.blue) }
+    var red by remember { mutableIntStateOf(selectedColor.red) }
+    var green by remember { mutableIntStateOf(selectedColor.green) }
+    var blue by remember { mutableIntStateOf(selectedColor.blue) }
     val coroutineScope = rememberCoroutineScope()
 
     fun updateColor(

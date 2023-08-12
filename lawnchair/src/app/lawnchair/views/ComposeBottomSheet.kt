@@ -16,6 +16,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -41,8 +42,8 @@ class ComposeBottomSheet<T>(context: Context)
 
     private val container = ComposeView(context)
     private var imeShift = 0f
-    private var _hintCloseProgress = mutableStateOf(0f)
-    private val hintCloseProgress get() = _hintCloseProgress.value
+    private var _hintCloseProgress = mutableFloatStateOf(0f)
+    private val hintCloseProgress get() = _hintCloseProgress.floatValue
     private var hintCloseDistance = 0f
 
     init {
@@ -224,10 +225,10 @@ class ComposeBottomSheet<T>(context: Context)
         private val HINT_CLOSE_PROGRESS = object : FloatProperty<ComposeBottomSheet<*>>("hintCloseProgress") {
 
             override fun setValue(view: ComposeBottomSheet<*>, value: Float) {
-                view._hintCloseProgress.value = value
+                view._hintCloseProgress.floatValue = value
             }
 
-            override fun get(view: ComposeBottomSheet<*>) = view._hintCloseProgress.value
+            override fun get(view: ComposeBottomSheet<*>) = view._hintCloseProgress.floatValue
         }
 
         fun <T> show(

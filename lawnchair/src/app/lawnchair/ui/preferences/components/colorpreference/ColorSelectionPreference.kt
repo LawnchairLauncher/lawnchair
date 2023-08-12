@@ -2,7 +2,6 @@ package app.lawnchair.ui.preferences.components.colorpreference
 
 import android.content.Context
 import android.graphics.Color
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
@@ -66,10 +65,10 @@ fun ColorSelection(
     val adapter = preference.getAdapter()
     val appliedColor = adapter.state.value
     val context = LocalContext.current
-    val selectedColor = remember { mutableStateOf(appliedColor.forCustomPicker(context)) }
+    val selectedColor = remember { mutableIntStateOf(appliedColor.forCustomPicker(context)) }
     val selectedColorApplied = remember {
         derivedStateOf {
-            appliedColor is ColorOption.CustomColor && appliedColor.color == selectedColor.value
+            appliedColor is ColorOption.CustomColor && appliedColor.color == selectedColor.intValue
         }
     }
     val defaultTabIndex = when {
@@ -79,7 +78,7 @@ fun ColorSelection(
     }
 
     val onPresetClick = { option: ColorOption ->
-        selectedColor.value = option.forCustomPicker(context)
+        selectedColor.intValue = option.forCustomPicker(context)
         adapter.onChange(newValue = option)
     }
 
@@ -100,7 +99,7 @@ fun ColorSelection(
             ) {
                 Button(
                     enabled = !selectedColorApplied.value,
-                    onClick = { adapter.onChange(newValue = ColorOption.CustomColor(selectedColor.value)) },
+                    onClick = { adapter.onChange(newValue = ColorOption.CustomColor(selectedColor.intValue)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(all = 16.dp),
@@ -162,8 +161,8 @@ fun ColorSelection(
                     }
                     1 -> {
                         CustomColorPicker(
-                            selectedColor = selectedColor.value,
-                            onSelect = { selectedColor.value = it },
+                            selectedColor = selectedColor.intValue,
+                            onSelect = { selectedColor.intValue = it },
                         )
                     }
                 }

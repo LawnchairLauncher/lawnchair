@@ -79,16 +79,18 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
         }
         value = list
     }
-    val allItems by derivedStateOf { customFonts + items }
+    val allItems by remember { derivedStateOf { items + customFonts } }
     val adapter = fontPref.getAdapter()
     var searchQuery by remember { mutableStateOf("") }
 
-    val hasFilter by derivedStateOf { searchQuery.isNotEmpty() }
-    val filteredItems by derivedStateOf {
-        if (hasFilter) {
-            val lowerCaseQuery = searchQuery.lowercase()
-            allItems.filter { it.displayName.lowercase().contains(lowerCaseQuery) }
-        } else items
+    val hasFilter by remember { derivedStateOf { searchQuery.isNotEmpty() } }
+    val filteredItems by remember {
+        derivedStateOf {
+            if (hasFilter) {
+                val lowerCaseQuery = searchQuery.lowercase()
+                allItems.filter { it.displayName.lowercase().contains(lowerCaseQuery) }
+            } else items
+        }
     }
 
     val request = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
