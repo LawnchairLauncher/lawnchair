@@ -15,9 +15,13 @@ interface KatbinService {
     suspend fun upload(@Body body: KatbinUploadBody): KatbinUploadResult
 
     companion object {
+        private val json = Json {
+            ignoreUnknownKeys = true
+        }
+
         fun create(): KatbinService = Retrofit.Builder()
             .baseUrl("https://katb.in/")
-            .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
             .create()
     }
