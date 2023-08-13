@@ -52,9 +52,11 @@ fun ProvideBottomSheetHandler(
 ) {
     val coroutineScope = rememberCoroutineScope()
     var onDismiss by remember { mutableStateOf({}) }
+    val density = LocalDensity.current
     val bottomSheetState = remember {
         ModalBottomSheetState(
             initialValue = ModalBottomSheetValue.Hidden,
+            density = density,
             confirmValueChange = {
                 if (it == ModalBottomSheetValue.Hidden) onDismiss()
                 true
