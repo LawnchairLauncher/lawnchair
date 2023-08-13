@@ -16,7 +16,6 @@
 
 package app.lawnchair.ui.preferences
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider

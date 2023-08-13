@@ -3,7 +3,6 @@ package app.lawnchair.ui.preferences
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.LauncherApps
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
