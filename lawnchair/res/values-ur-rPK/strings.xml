@@ -97,7 +97,7 @@
     <string name="icon_shape_top_right">Top Right</string>
     <string name="icon_shape_bottom_left">Bottom Left</string>
     <string name="icon_shape_bottom_right">Bottom Right</string>
-    <string name="create">Create</string>
+    <string name="create">تخلیق</string>
     <string name="clipboard">Clipboard</string>
     <string name="export_to_clipboard">Export to Clipboard</string>
     <string name="import_from_clipboard">Import from Clipboard</string>
@@ -108,9 +108,9 @@
     <string name="themed_icon_pack">Themed Icon Source</string>
     <string name="system_icons">System Icons</string>
     <string name="themed_icon_title">Themed Icons</string>
-    <string name="themed_icons_off_label">Off</string>
+    <string name="themed_icons_off_label">آف</string>
     <string name="themed_icons_home_label">ہوم اسکرین</string>
-    <string name="themed_icons_home_and_drawer_label">Home Screen &amp; App Drawer</string>
+    <string name="themed_icons_home_and_drawer_label">ہوم اسکرین اور ایپ دراز</string>
     <string name="lawnicons_not_installed_description">Lawnicons not installed.</string>
     <!-- <string name="cancel" /> (unknown source)-->
     <!-- IconPickerPreference -->
@@ -121,7 +121,7 @@
     <string name="icon_shape_diamond">Diamond</string>
     <string name="icon_shape_egg">Egg</string>
     <string name="icon_shape_cupertino">iOS</string>
-    <string name="icon_shape_octagon">Octagon</string>
+    <string name="icon_shape_octagon">آکٹاگون</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">Rounded Square</string>
     <string name="icon_shape_sharp_square">Sharp Square</string>
@@ -158,10 +158,10 @@
     <string name="hsb_brightness">Brightness</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Sliders</string>
-    <string name="action_copy">Copy</string>
-    <string name="action_paste">Paste</string>
+    <string name="action_copy">کاپی کریں</string>
+    <string name="action_paste">پیسٹ</string>
     <string name="copied_toast">Copied to clipboard.</string>
-    <string name="invalid_color">Invalid Color</string>
+    <string name="invalid_color">غلط رنگ</string>
     <string name="launcher_default_color">Managed by Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
@@ -184,7 +184,7 @@
     <string name="popup_menu">Pop-up Menu</string>
     <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
     <string name="show_system_settings_entry">Show System Settings Entry</string>
-    <string name="status_bar_label">Status Bar</string>
+    <string name="status_bar_label">اسٹیٹس بار</string>
     <string name="show_status_bar">Show Status Bar</string>
     <string name="dark_status_bar_label">Dark Status Bar</string>
     <string name="icons">آئکنس</string>
@@ -203,33 +203,33 @@
     <!-- <string name="home_screen_grid" /> -->
     <string name="columns">Columns</string>
     <string name="rows">Rows</string>
-    <string name="apply_grid">Apply</string>
+    <string name="apply_grid">درخواست دیں</string>
     <!-- Smartspace -->
-    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_battery_charging">Charging</string>
-    <string name="smartspace_battery_full">Charged</string>
-    <string name="smartspace_battery_low">Battery Low</string>
-    <string name="battery_charging_percentage_charging_time">"%1$d%% — Full in %2$s"</string>
+    <string name="generic_smartspace_concatenated_desc">%1$s %2$s</string>
+    <string name="smartspace_battery_charging">چارج ہو رہا ہے</string>
+    <string name="smartspace_battery_full">چارج ہو گیا ہے</string>
+    <string name="smartspace_battery_low">بیٹری کم ہے</string>
+    <string name="battery_charging_percentage_charging_time">"%2$s - %%%1$d میں مکمل"</string>
     <string name="accessibility_smartspace_page">Page %1$d of %2$d</string>
-    <string name="smartspace_widget">At a Glance</string>
-    <string name="smartspace_widget_description">What to Show</string>
-    <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
+    <string name="smartspace_widget">ایک نظر میں</string>
+    <string name="smartspace_widget_description">کیا دکھانا ہے</string>
+    <string name="smartspace_widget_placeholder_date">جمعہ، 3 مارچ</string>
     <string name="preview_label">Preview</string>
-    <string name="smartspace_calendar">Calendar</string>
+    <string name="smartspace_calendar">کیلنڈر</string>
     <string name="smartspace_date_and_time">Date &amp; Time</string>
-    <string name="smartspace_date">Date</string>
-    <string name="smartspace_time">Time</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_date">تاریخ</string>
+    <string name="smartspace_time">وقت</string>
+    <string name="smartspace_time_format">وقت کی ترتیب</string>
     <string name="smartspace_time_follow_system">Follow System</string>
-    <string name="smartspace_time_12_hour_format">12-Hour Format</string>
+    <string name="smartspace_time_12_hour_format">12 گھنٹے کا فارمیٹ</string>
     <string name="smartspace_time_24_hour_format">24-Hour Format</string>
-    <string name="smartspace_weather">Weather</string>
+    <string name="smartspace_weather">موسم</string>
     <string name="smartspace_battery_status">Battery Status</string>
     <string name="smartspace_now_playing">Now Playing</string>
     <string name="smartspace_requires_setup">Tap to Set Up</string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
     <string name="smartspace_media_info_separator">" — "</string>
-    <string name="smartspace_calendar_gregorian">Gregorian</string>
+    <string name="smartspace_calendar_gregorian">گریگورین</string>
     <string name="smartspace_calendar_persian">Persian</string>
     <string name="smartspace_preferences">ترجیحات</string>
     <string name="smartspace_widget_toggle_label">Show on Home Screen</string>
@@ -243,8 +243,8 @@
     <string name="hotseat_mode_label">Search Bar Widget</string>
     <string name="hotseat_mode_disabled">Disabled</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
-    <string name="hotseat_mode_google_search">Google Search Bar</string>
-    <string name="search_bar_label">Search Bar</string>
+    <string name="hotseat_mode_google_search">Google سرچ بار</string>
+    <string name="search_bar_label">سرچ بار</string>
     <string name="corner_radius_label">Corner Radius</string>
     <string name="apply_accent_color_label">Apply Accent Color</string>
     <string name="search_provider">Search Provider</string>
