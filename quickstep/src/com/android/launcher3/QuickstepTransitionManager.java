@@ -82,7 +82,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -140,7 +139,6 @@ import com.android.quickstep.util.MultiValueUpdateListener;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.RectFSpringAnim.DefaultSpringConfig;
 import com.android.quickstep.util.RectFSpringAnim.TaskbarHotseatSpringConfig;
-import com.android.quickstep.util.RemoteAnimationProvider;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.util.SurfaceTransaction;
 import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
@@ -229,7 +227,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
     private DeviceProfile mDeviceProfile;
 
-    private RemoteAnimationProvider mRemoteAnimationProvider;
     // Strong refs to runners which are cleared when the launcher activity is destroyed
     private RemoteAnimationFactory mWallpaperOpenRunner;
     private RemoteAnimationFactory mAppLaunchRunner;
@@ -466,16 +463,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             bounds.bottom -= target.contentInsets.bottom;
         }
         return bounds;
-    }
-
-    public void setRemoteAnimationProvider(final RemoteAnimationProvider animationProvider,
-            CancellationSignal cancellationSignal) {
-        mRemoteAnimationProvider = animationProvider;
-        cancellationSignal.setOnCancelListener(() -> {
-            if (animationProvider == mRemoteAnimationProvider) {
-                mRemoteAnimationProvider = null;
-            }
-        });
     }
 
     /** Dump debug logs to bug report. */
@@ -1234,7 +1221,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * ie. pressing home, swiping up from nav bar.
      */
     RemoteAnimationFactory createWallpaperOpenRunner(boolean fromUnlock) {
-        return new WallpaperOpenLauncherAnimationRunner(mHandler, fromUnlock);
+        return new WallpaperOpenLauncherAnimationRunner(fromUnlock);
     }
 
     /**
@@ -1352,7 +1339,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     /**
      * Closing animator that animates the window into its final location on the workspace.
      */
-    private RectFSpringAnim getClosingWindowAnimators(AnimatorSet animation,
+    protected RectFSpringAnim getClosingWindowAnimators(AnimatorSet animation,
             RemoteAnimationTarget[] targets, View launcherView, PointF velocityPxPerS,
             RectF closingWindowStartRect, float startWindowCornerRadius) {
         FloatingIconView floatingIconView = null;
@@ -1592,89 +1579,80 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             RectF startRect,
             float startWindowCornerRadius,
             boolean fromPredictiveBack) {
-        AnimatorSet anim = null;
+        AnimatorSet anim = new AnimatorSet();
         RectFSpringAnim rectFSpringAnim = null;
 
-        RemoteAnimationProvider provider = mRemoteAnimationProvider;
-        if (provider != null) {
-            anim = provider.createWindowAnimation(appTargets, wallpaperTargets);
+        final boolean launcherIsForceInvisibleOrOpening = mLauncher.isForceInvisible()
+                || launcherIsATargetWithMode(appTargets, MODE_OPENING);
+
+        View launcherView = findLauncherView(appTargets);
+        boolean playFallBackAnimation = (launcherView == null
+                && launcherIsForceInvisibleOrOpening)
+                || mLauncher.getWorkspace().isOverlayShown()
+                || shouldPlayFallbackClosingAnimation(appTargets);
+
+        boolean playWorkspaceReveal = true;
+        boolean skipAllAppsScale = false;
+        if (fromUnlock) {
+            anim.play(getUnlockWindowAnimator(appTargets, wallpaperTargets));
+        } else if (ENABLE_BACK_SWIPE_HOME_ANIMATION.get()
+                && !playFallBackAnimation) {
+            // Use a fixed velocity to start the animation.
+            float velocityPxPerS = DynamicResource.provider(mLauncher)
+                    .getDimension(R.dimen.unlock_staggered_velocity_dp_per_s);
+            PointF velocity = new PointF(0, -velocityPxPerS);
+            rectFSpringAnim = getClosingWindowAnimators(
+                    anim, appTargets, launcherView, velocity, startRect,
+                    startWindowCornerRadius);
+            if (mLauncher.isInState(LauncherState.ALL_APPS)) {
+                // Skip scaling all apps, otherwise FloatingIconView will get wrong
+                // layout bounds.
+                skipAllAppsScale = true;
+            } else if (!fromPredictiveBack) {
+                anim.play(new StaggeredWorkspaceAnim(mLauncher, velocity.y,
+                        true /* animateOverviewScrim */, launcherView).getAnimators());
+
+                if (!areAllTargetsTranslucent(appTargets)) {
+                    anim.play(ObjectAnimator.ofFloat(mLauncher.getDepthController().stateDepth,
+                            MULTI_PROPERTY_VALUE,
+                            BACKGROUND_APP.getDepth(mLauncher), NORMAL.getDepth(mLauncher)));
+                }
+
+                // We play StaggeredWorkspaceAnim as a part of the closing window animation.
+                playWorkspaceReveal = false;
+            }
+        } else {
+            anim.play(getFallbackClosingWindowAnimators(appTargets));
         }
 
-        if (anim == null) {
-            anim = new AnimatorSet();
+        // Normally, we run the launcher content animation when we are transitioning
+        // home, but if home is already visible, then we don't want to animate the
+        // contents of launcher unless we know that we are animating home as a result
+        // of the home button press with quickstep, which will result in launcher being
+        // started on touch down, prior to the animation home (and won't be in the
+        // targets list because it is already visible). In that case, we force
+        // invisibility on touch down, and only reset it after the animation to home
+        // is initialized.
+        if (launcherIsForceInvisibleOrOpening) {
+            addCujInstrumentation(
+                    anim, InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
+            // Only register the content animation for cancellation when state changes
+            mLauncher.getStateManager().setCurrentAnimation(anim);
 
-            final boolean launcherIsForceInvisibleOrOpening = mLauncher.isForceInvisible()
-                    || launcherIsATargetWithMode(appTargets, MODE_OPENING);
-
-            View launcherView = findLauncherView(appTargets);
-            boolean playFallBackAnimation = (launcherView == null
-                    && launcherIsForceInvisibleOrOpening)
-                    || mLauncher.getWorkspace().isOverlayShown()
-                    || shouldPlayFallbackClosingAnimation(appTargets);
-
-            boolean playWorkspaceReveal = true;
-            boolean skipAllAppsScale = false;
-            if (fromUnlock) {
-                anim.play(getUnlockWindowAnimator(appTargets, wallpaperTargets));
-            } else if (ENABLE_BACK_SWIPE_HOME_ANIMATION.get()
-                    && !playFallBackAnimation) {
-                // Use a fixed velocity to start the animation.
-                float velocityPxPerS = DynamicResource.provider(mLauncher)
-                        .getDimension(R.dimen.unlock_staggered_velocity_dp_per_s);
-                PointF velocity = new PointF(0, -velocityPxPerS);
-                rectFSpringAnim = getClosingWindowAnimators(
-                        anim, appTargets, launcherView, velocity, startRect,
-                        startWindowCornerRadius);
-                if (mLauncher.isInState(LauncherState.ALL_APPS)) {
-                    // Skip scaling all apps, otherwise FloatingIconView will get wrong
-                    // layout bounds.
-                    skipAllAppsScale = true;
-                } else if (!fromPredictiveBack) {
-                    anim.play(new StaggeredWorkspaceAnim(mLauncher, velocity.y,
-                            true /* animateOverviewScrim */, launcherView).getAnimators());
-
-                    if (!areAllTargetsTranslucent(appTargets)) {
-                        anim.play(ObjectAnimator.ofFloat(mLauncher.getDepthController().stateDepth,
-                                MULTI_PROPERTY_VALUE,
-                                BACKGROUND_APP.getDepth(mLauncher), NORMAL.getDepth(mLauncher)));
+            if (mLauncher.isInState(LauncherState.ALL_APPS)) {
+                Pair<AnimatorSet, Runnable> contentAnimator =
+                        getLauncherContentAnimator(false, LAUNCHER_RESUME_START_DELAY,
+                                skipAllAppsScale);
+                anim.play(contentAnimator.first);
+                anim.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        contentAnimator.second.run();
                     }
-
-                    // We play StaggeredWorkspaceAnim as a part of the closing window animation.
-                    playWorkspaceReveal = false;
-                }
+                });
             } else {
-                anim.play(getFallbackClosingWindowAnimators(appTargets));
-            }
-
-            // Normally, we run the launcher content animation when we are transitioning
-            // home, but if home is already visible, then we don't want to animate the
-            // contents of launcher unless we know that we are animating home as a result
-            // of the home button press with quickstep, which will result in launcher being
-            // started on touch down, prior to the animation home (and won't be in the
-            // targets list because it is already visible). In that case, we force
-            // invisibility on touch down, and only reset it after the animation to home
-            // is initialized.
-            if (launcherIsForceInvisibleOrOpening) {
-                addCujInstrumentation(
-                        anim, InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
-                // Only register the content animation for cancellation when state changes
-                mLauncher.getStateManager().setCurrentAnimation(anim);
-
-                if (mLauncher.isInState(LauncherState.ALL_APPS)) {
-                    Pair<AnimatorSet, Runnable> contentAnimator =
-                            getLauncherContentAnimator(false, LAUNCHER_RESUME_START_DELAY,
-                                    skipAllAppsScale);
-                    anim.play(contentAnimator.first);
-                    anim.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            contentAnimator.second.run();
-                        }
-                    });
-                } else {
-                    if (playWorkspaceReveal) {
-                        anim.play(new WorkspaceRevealAnim(mLauncher, false).getAnimators());
-                    }
+                if (playWorkspaceReveal) {
+                    anim.play(new WorkspaceRevealAnim(mLauncher, false).getAnimators());
                 }
             }
         }
@@ -1687,11 +1665,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      */
     protected class WallpaperOpenLauncherAnimationRunner implements RemoteAnimationFactory {
 
-        private final Handler mHandler;
         private final boolean mFromUnlock;
 
-        public WallpaperOpenLauncherAnimationRunner(Handler handler, boolean fromUnlock) {
-            mHandler = handler;
+        public WallpaperOpenLauncherAnimationRunner(boolean fromUnlock) {
             mFromUnlock = fromUnlock;
         }
 
