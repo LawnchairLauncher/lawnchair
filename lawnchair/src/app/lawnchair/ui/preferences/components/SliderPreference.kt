@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -76,7 +77,7 @@ fun SliderPreference(
     showAsPercentage: Boolean = false,
 ) {
     var adapterValue by adapter
-    var sliderValue by remember { mutableStateOf(adapterValue) }
+    var sliderValue by remember { mutableFloatStateOf(adapterValue) }
 
     DisposableEffect(adapterValue) {
         sliderValue = adapterValue

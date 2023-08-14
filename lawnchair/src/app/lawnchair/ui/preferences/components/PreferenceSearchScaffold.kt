@@ -6,6 +6,7 @@ import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,8 +15,7 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import com.google.accompanist.insets.ui.LocalScaffoldPadding
-import com.google.accompanist.insets.ui.Scaffold
+import app.lawnchair.ui.util.LocalScaffoldPadding
 
 @Composable
 fun PreferenceSearchScaffold(
@@ -74,7 +74,7 @@ fun PreferenceSearchScaffold(
             }
         },
         bottomBar = { BottomSpacer() },
-        contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues()
+        contentWindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
     ) {
         val layoutDirection = LocalLayoutDirection.current
         innerPadding.left = it.calculateLeftPadding(layoutDirection)

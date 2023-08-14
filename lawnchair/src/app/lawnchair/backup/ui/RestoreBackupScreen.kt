@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -30,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.lawnchair.backup.LawnchairBackup
 import app.lawnchair.ui.preferences.LocalNavController
@@ -40,11 +40,9 @@ import app.lawnchair.util.BackHandler
 import app.lawnchair.util.hasFlag
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.R
-import com.google.accompanist.navigation.animation.composable
 import kotlinx.coroutines.launch
 import java.util.Base64
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.restoreBackupGraph(route: String) {
     preferenceGraph(route, {}) { subRoute ->
         composable(

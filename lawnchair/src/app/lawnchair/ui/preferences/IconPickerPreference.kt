@@ -7,7 +7,6 @@ import android.os.Process
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,23 +26,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.lawnchair.icons.*
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.components.*
 import app.lawnchair.ui.util.LazyGridLayout
+import app.lawnchair.ui.util.LocalScaffoldPadding
 import app.lawnchair.ui.util.resultSender
 import app.lawnchair.util.requireSystemService
 import com.android.launcher3.R
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
-import com.google.accompanist.insets.ui.LocalScaffoldPadding
-import com.google.accompanist.navigation.animation.composable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import androidx.compose.material.MaterialTheme as Material2Theme
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.iconPickerGraph(route: String) {
     preferenceGraph(route, {
         IconPickerPreference(packageName = "")
@@ -162,11 +160,13 @@ fun IconPickerGrid(
             .catch { loadFailed = true }
     }
     val categories by categoriesFlow.collectAsState(emptyList())
-    val filteredCategories by derivedStateOf {
-        categories.asSequence()
-            .map { it.filter(searchQuery) }
-            .filter { it.items.isNotEmpty() }
-            .toList()
+    val filteredCategories by remember {
+        derivedStateOf {
+            categories.asSequence()
+                .map { it.filter(searchQuery) }
+                .filter { it.items.isNotEmpty() }
+                .toList()
+        }
     }
 
     val density = LocalDensity.current
