@@ -23,7 +23,7 @@ class LazyGridLayout(
             val gapWidth = gapWidth.roundToPx()
             val availableWidth = (it.width - minWidth).coerceAtLeast(0)
             val additionalCols = availableWidth / (minWidth + gapWidth)
-            _numColumns.value = 1 + additionalCols
+            _numColumns.intValue = 1 + additionalCols
         }
     }
 }
