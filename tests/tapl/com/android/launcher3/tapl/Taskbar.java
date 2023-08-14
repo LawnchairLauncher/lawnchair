@@ -101,6 +101,14 @@ public final class Taskbar {
                     mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID),
                     getAllAppsButtonSelector()));
 
+            return getAllApps();
+        }
+    }
+
+    /** Returns {@link TaskbarAllApps} if it is open, otherwise fails. */
+    public TaskbarAllApps getAllApps() {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to get taskbar all apps object")) {
             return new TaskbarAllApps(mLauncher);
         }
     }
