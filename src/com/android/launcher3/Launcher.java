@@ -100,7 +100,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.CancellationSignal;
 import android.os.Parcelable;
 import android.os.StrictMode;
 import android.os.SystemClock;
@@ -155,7 +154,6 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.LauncherDragController;
 import com.android.launcher3.folder.Folder;
@@ -3250,8 +3248,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         return new TouchController[] {getDragController(), new AllAppsSwipeController(this)};
     }
 
-    public void useFadeOutAnimationForLauncherStart(CancellationSignal signal) { }
-
     public void onDragLayerHierarchyChanged() {
         updateDisallowBack();
     }
@@ -3315,10 +3311,6 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     public boolean supportsAdaptiveIconAnimation(View clickedView) {
         return false;
-    }
-
-    public DragOptions getDefaultWorkspaceDragOptions() {
-        return new DragOptions();
     }
 
     /**
