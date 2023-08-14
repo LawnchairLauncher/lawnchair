@@ -203,6 +203,10 @@ public class QuickstepLauncher extends Launcher {
 
     public static final boolean ENABLE_PIP_KEEP_CLEAR_ALGORITHM =
             SystemProperties.getBoolean("persist.wm.debug.enable_pip_keep_clear_algorithm", true);
+    private static final boolean TRACE_LAYOUTS =
+            SystemProperties.getBoolean("persist.debug.trace_layouts", false);
+    private static final String TRACE_RELAYOUT_CLASS =
+            SystemProperties.get("persist.debug.trace_request_layout_class", null);
 
     public static final boolean GO_LOW_RAM_RECENTS_ENABLED = false;
 
@@ -615,6 +619,8 @@ public class QuickstepLauncher extends Launcher {
             mViewCapture = SettingsAwareViewCapture.getInstance(this).startCapture(getWindow());
         }
         getWindow().addPrivateFlags(PRIVATE_FLAG_OPTIMIZE_MEASURE);
+        View.setTraceLayoutSteps(TRACE_LAYOUTS);
+        View.setTracedRequestLayoutClassClass(TRACE_RELAYOUT_CLASS);
     }
 
     @Override
