@@ -90,10 +90,11 @@ public class StatusBarTouchController implements TouchController {
             if (!mCanIntercept) {
                 return false;
             }
+            mDownEvents.clear();
             mDownEvents.put(pid, new PointF(ev.getX(), ev.getY()));
         } else if (ev.getActionMasked() == MotionEvent.ACTION_POINTER_DOWN) {
-           // Check!! should only set it only when threshold is not entered.
-           mDownEvents.put(pid, new PointF(ev.getX(idx), ev.getY(idx)));
+            // Check!! should only set it only when threshold is not entered.
+            mDownEvents.put(pid, new PointF(ev.getX(idx), ev.getY(idx)));
         }
         if (!mCanIntercept) {
             return false;

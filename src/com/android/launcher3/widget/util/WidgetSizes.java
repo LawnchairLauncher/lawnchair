@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.widget.util;
 
-import static android.appwidget.AppWidgetHostView.getDefaultPaddingForWidget;
-
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -27,8 +25,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Size;
 import android.util.SizeF;
-
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
@@ -43,24 +39,13 @@ public final class WidgetSizes {
 
     /**
      * Returns the list of all possible sizes, in dp, for a widget of given spans on this device.
-     *
-     * <p>The returned sizes already take into account the system padding, and whether it is applied
-     * or not in that specific configuration.
      */
-    public static ArrayList<SizeF> getWidgetPaddedSizes(Context context, ComponentName provider,
-            int spanX, int spanY) {
-        Rect padding = getDefaultPaddingForWidget(context, provider, /* padding= */ null);
-
+    public static ArrayList<SizeF> getWidgetSizesDp(Context context, int spanX, int spanY) {
         ArrayList<SizeF> sizes = new ArrayList<>(2);
         final float density = context.getResources().getDisplayMetrics().density;
-        final Point cellSize = new Point();
 
         for (DeviceProfile profile : LauncherAppState.getIDP(context).supportedProfiles) {
-            Size widgetSizePx = getWidgetSizePx(profile, spanX, spanY, cellSize);
-            if (!profile.shouldInsetWidgets()) {
-                widgetSizePx = new Size(widgetSizePx.getWidth() - padding.left - padding.right,
-                        widgetSizePx.getHeight() - padding.top - padding.bottom);
-            }
+            Size widgetSizePx = getWidgetSizePx(profile, spanX, spanY);
             sizes.add(new SizeF(widgetSizePx.getWidth() / density,
                     widgetSizePx.getHeight() / density));
         }
@@ -69,21 +54,15 @@ public final class WidgetSizes {
 
     /** Returns the size, in pixels, a widget of given spans & {@code profile}. */
     public static Size getWidgetSizePx(DeviceProfile profile, int spanX, int spanY) {
-        return getWidgetSizePx(profile, spanX, spanY, /* recycledCellSize= */ null);
-    }
+        final int hBorderSpacing = (spanX - 1) * profile.cellLayoutBorderSpacePx.x;
+        final int vBorderSpacing = (spanY - 1) * profile.cellLayoutBorderSpacePx.y;
 
-    /**
-     * Returns the size, in pixels and removing padding, a widget of given spans & {@code profile}.
-     */
-    public static Size getWidgetPaddedSizePx(Context context, ComponentName component,
-            DeviceProfile profile, int spanX, int spanY) {
-        Size size = getWidgetSizePx(profile, spanX, spanY);
-        if (profile.shouldInsetWidgets()) {
-            return size;
-        }
-        Rect padding = getDefaultPaddingForWidget(context, component, /* padding= */ null);
-        return new Size(size.getWidth() - padding.left - padding.right,
-                size.getHeight() - padding.top - padding.bottom);
+        Point cellSize = profile.getCellSize();
+        Rect padding = profile.widgetPadding;
+
+        return new Size(
+                (spanX * cellSize.x) + hBorderSpacing - padding.left - padding.right,
+                (spanY * cellSize.y) + vBorderSpacing - padding.top - padding.bottom);
     }
 
     /**
@@ -92,8 +71,7 @@ public final class WidgetSizes {
      * <p>This size is used by the widget picker. It should NEVER be shared with app widgets.
      *
      * <p>For sizes shared with app widgets, please refer to
-     * {@link #getWidgetPaddedSizes(Context, ComponentName, int, int)} &
-     * {@link #getWidgetPaddedSizePx(Context, ComponentName, DeviceProfile, int, int)}.
+     * {@link #getWidgetSizesDp(Context, int, int)} &
      */
     public static Size getWidgetItemSizePx(Context context, DeviceProfile profile,
             WidgetItem widgetItem) {
@@ -102,27 +80,7 @@ public final class WidgetSizes {
                     .getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
             return new Size(dimension, dimension);
         }
-        Size widgetItemSize = getWidgetSizePx(profile, widgetItem.spanX,
-                widgetItem.spanY, /* recycledCellSize= */ null);
-        if (profile.shouldInsetWidgets()) {
-            Rect inset = new Rect();
-            AppWidgetHostView.getDefaultPaddingForWidget(context, widgetItem.componentName, inset);
-            return new Size(widgetItemSize.getWidth() + inset.left + inset.right,
-                    widgetItemSize.getHeight() + inset.top + inset.bottom);
-        }
-        return widgetItemSize;
-    }
-
-    private static Size getWidgetSizePx(DeviceProfile profile, int spanX, int spanY,
-            @Nullable Point recycledCellSize) {
-        final int hBorderSpacing = (spanX - 1) * profile.cellLayoutBorderSpacePx.x;
-        final int vBorderSpacing = (spanY - 1) * profile.cellLayoutBorderSpacePx.y;
-        if (recycledCellSize == null) {
-            recycledCellSize = new Point();
-        }
-        profile.getCellSize(recycledCellSize);
-        return new Size(((spanX * recycledCellSize.x) + hBorderSpacing),
-                ((spanY * recycledCellSize.y) + vBorderSpacing));
+        return getWidgetSizePx(profile, widgetItem.spanX, widgetItem.spanY);
     }
 
     /**
@@ -154,7 +112,7 @@ public final class WidgetSizes {
      */
     public static Bundle getWidgetSizeOptions(Context context, ComponentName provider, int spanX,
             int spanY) {
-        ArrayList<SizeF> paddedSizes = getWidgetPaddedSizes(context, provider, spanX, spanY);
+        ArrayList<SizeF> paddedSizes = getWidgetSizesDp(context, spanX, spanY);
 
         Rect rect = getMinMaxSizes(paddedSizes);
         Bundle options = new Bundle();

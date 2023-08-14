@@ -20,35 +20,47 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="@dimen/keyboard_quick_switch_taskview_width"
     android:layout_height="@dimen/keyboard_quick_switch_taskview_height"
-    android:background="@drawable/keyboard_quick_switch_overview_button_background"
     android:clipToOutline="true"
     android:importantForAccessibility="yes"
-    launcher:borderColor="?androidprv:attr/colorAccentSecondaryVariant">
+    launcher:borderColor="?androidprv:attr/materialColorOutline">
 
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="@dimen/keyboard_quick_switch_recents_icon_size"
-        android:layout_height="@dimen/keyboard_quick_switch_recents_icon_size"
-        android:layout_marginBottom="8dp"
-        android:src="@drawable/ic_empty_recents"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/keyboard_quick_switch_overview_button_background"
 
-        app:tint="?android:attr/textColorPrimary"
-        app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <TextView
-        style="@style/KeyboardQuickSwitchOverview"
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-
-        app:layout_constraintTop_toBottomOf="@id/icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/keyboard_quick_switch_recents_icon_size"
+            android:layout_height="@dimen/keyboard_quick_switch_recents_icon_size"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_empty_recents"
+            android:tint="?androidprv:attr/materialColorOnSurface"
+
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            style="@style/KeyboardQuickSwitchText"
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+
+            app:layout_constraintTop_toBottomOf="@id/icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.android.launcher3.taskbar.KeyboardQuickSwitchTaskView>

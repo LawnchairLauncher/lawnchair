@@ -43,6 +43,10 @@ public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProg
             new UnfoldMoveFromCenterRotationListener();
     private boolean mAnimationInProgress = false;
 
+    // Save the last transition progress so we can re-apply it in case we re-register the view for
+    // the animation (by calling onPrepareViewsForAnimation)
+    private Float mLastTransitionProgress = null;
+
     public BaseUnfoldMoveFromCenterAnimator(WindowManager windowManager,
             RotationChangeProvider rotationChangeProvider) {
         mMoveFromCenterAnimation = new UnfoldMoveFromCenterAnimator(windowManager,
@@ -63,11 +67,13 @@ public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProg
     @Override
     public void onTransitionProgress(float progress) {
         mMoveFromCenterAnimation.onTransitionProgress(progress);
+        mLastTransitionProgress = progress;
     }
 
     @CallSuper
     @Override
     public void onTransitionFinished() {
+        mLastTransitionProgress = null;
         mAnimationInProgress = false;
         mRotationChangeProvider.removeCallback(mRotationListener);
         mMoveFromCenterAnimation.onTransitionFinished();
@@ -93,8 +99,11 @@ public abstract class BaseUnfoldMoveFromCenterAnimator implements TransitionProg
         mOriginalClipToPadding.clear();
     }
 
+    @CallSuper
     protected void onPrepareViewsForAnimation() {
-
+        if (mLastTransitionProgress != null) {
+            mMoveFromCenterAnimation.onTransitionProgress(mLastTransitionProgress);
+        }
     }
 
     protected void registerViewForAnimation(View view) {

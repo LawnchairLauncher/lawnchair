@@ -24,6 +24,7 @@ import android.view.WindowManager;
 import android.view.WindowMetrics;
 
 import com.android.internal.policy.SystemBarUtils;
+import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.WindowBounds;
 import com.android.launcher3.util.window.CachedDisplayInfo;
 import com.android.launcher3.util.window.WindowManagerProxy;
@@ -59,6 +60,7 @@ public class SystemWindowManagerProxy extends WindowManagerProxy {
         WindowManager windowManager = displayInfoContext.getSystemService(WindowManager.class);
         Set<WindowMetrics> possibleMaximumWindowMetrics =
                 windowManager.getPossibleMaximumWindowMetrics(DEFAULT_DISPLAY);
+        FileLog.d("b/283944974", "possibleMaximumWindowMetrics: " + possibleMaximumWindowMetrics);
         for (WindowMetrics windowMetrics : possibleMaximumWindowMetrics) {
             CachedDisplayInfo info = getDisplayInfo(windowMetrics, Surface.ROTATION_0);
             WindowBounds[] bounds = estimateWindowBounds(displayInfoContext, info);

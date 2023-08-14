@@ -69,14 +69,14 @@
             android:background="@android:color/transparent" />
 
         <include
+            android:id="@+id/overview_panel"
+            layout="@layout/overview_panel" />
+
+        <include
             android:id="@+id/apps_view"
             layout="@layout/all_apps"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
-        <include
-            android:id="@+id/overview_panel"
-            layout="@layout/overview_panel" />
 
     </com.android.launcher3.dragndrop.DragLayer>
 

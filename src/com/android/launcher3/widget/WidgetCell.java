@@ -16,18 +16,15 @@
 
 package com.android.launcher3.widget;
 
-import static android.view.View.MeasureSpec.makeMeasureSpec;
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
-import static com.android.launcher3.Utilities.ATLEAST_S;
-import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_WIDGET_CENTERING;
+import static com.android.launcher3.widget.LauncherAppWidgetProviderInfo.fromProviderInfo;
+import static com.android.launcher3.widget.util.WidgetSizes.getWidgetItemSizePx;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Process;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Size;
@@ -47,7 +44,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.CheckLongPressHelper;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.FastBitmapDrawable;
@@ -55,7 +51,6 @@ import com.android.launcher3.icons.RoundDrawableWrapper;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.views.ActivityContext;
-import com.android.launcher3.widget.util.WidgetSizes;
 
 import java.util.function.Consumer;
 
@@ -75,40 +70,8 @@ public class WidgetCell extends LinearLayout {
 
     private static final int FADE_IN_DURATION_MS = 90;
 
-    /** Widget cell width is calculated by multiplying this factor to grid cell width. */
-    private static final float WIDTH_SCALE = 3f;
-
-    /** Widget preview width is calculated by multiplying this factor to the widget cell width. */
-    private static final float PREVIEW_SCALE = 0.8f;
-
     /**
-     * The maximum dimension that can be used as the size in
-     * {@link android.view.View.MeasureSpec#makeMeasureSpec(int, int)}.
-     *
-     * <p>This is equal to (1 << MeasureSpec.MODE_SHIFT) - 1.
-     */
-    private static final int MAX_MEASURE_SPEC_DIMENSION = (1 << 30) - 1;
-
-    /**
-     * The target preview width, in pixels, of a widget or a shortcut.
-     *
-     * <p>The actual preview width may be smaller than or equal to this value subjected to scaling.
-     */
-    protected int mTargetPreviewWidth;
-
-    /**
-     * The target preview height, in pixels, of a widget or a shortcut.
-     *
-     * <p>The actual preview height may be smaller than or equal to this value subjected to scaling.
-     */
-    protected int mTargetPreviewHeight;
-
-    protected int mPresetPreviewSize;
-
-    private int mCellSize;
-
-    /**
-     * The scale of the preview container.
+     * The requested scale of the preview container. It can be lower than this as well.
      */
     private float mPreviewContainerScale = 1f;
 
@@ -119,7 +82,8 @@ public class WidgetCell extends LinearLayout {
     private TextView mWidgetDims;
     private TextView mWidgetDescription;
 
-    protected WidgetItem mItem;
+    private WidgetItem mItem;
+    private Size mWidgetSize;
 
     private final DatabaseWidgetPreviewLoader mWidgetPreviewLoader;
 
@@ -150,18 +114,11 @@ public class WidgetCell extends LinearLayout {
         mWidgetPreviewLoader = new DatabaseWidgetPreviewLoader(context);
         mLongPressHelper = new CheckLongPressHelper(this);
         mLongPressHelper.setLongPressTimeoutFactor(1);
+        mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(context);
+        mWidgetSize = new Size(0, 0);
 
-        setContainerWidth();
-        setWillNotDraw(false);
         setClipToPadding(false);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
-        mEnforcedCornerRadius = RoundedCornerEnforcement.computeEnforcedRadius(context);
-    }
-
-    private void setContainerWidth() {
-        mCellSize = (int) (mActivity.getDeviceProfile().allAppsIconSizePx * WIDTH_SCALE);
-        mPresetPreviewSize = (int) (mCellSize * PREVIEW_SCALE);
-        mTargetPreviewWidth = mTargetPreviewHeight = mPresetPreviewSize;
     }
 
     @Override
@@ -206,7 +163,6 @@ public class WidgetCell extends LinearLayout {
         mWidgetDims.setText(null);
         mWidgetDescription.setText(null);
         mWidgetDescription.setVisibility(GONE);
-        mTargetPreviewWidth = mTargetPreviewHeight = mPresetPreviewSize;
 
         if (mActiveRequest != null) {
             mActiveRequest.cancel();
@@ -218,7 +174,9 @@ public class WidgetCell extends LinearLayout {
         }
         mAppWidgetHostViewPreview = null;
         mAppWidgetHostViewScale = 1f;
+        mPreviewContainerScale = 1f;
         mItem = null;
+        mWidgetSize = new Size(0, 0);
     }
 
     public void setSourceContainer(int sourceContainer) {
@@ -248,17 +206,12 @@ public class WidgetCell extends LinearLayout {
      */
     public void applyFromCellItem(WidgetItem item, float previewScale,
             @NonNull Consumer<Bitmap> callback, @Nullable Bitmap cachedPreview) {
-        // setPreviewSize
-        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        Size widgetSize = WidgetSizes.getWidgetItemSizePx(getContext(), deviceProfile, item);
-        mTargetPreviewWidth = widgetSize.getWidth();
-        mTargetPreviewHeight = widgetSize.getHeight();
         mPreviewContainerScale = previewScale;
-
-        applyPreviewOnAppWidgetHostView(item);
 
         Context context = getContext();
         mItem = item;
+        mWidgetSize = getWidgetItemSizePx(getContext(), mActivity.getDeviceProfile(), mItem);
+
         mWidgetName.setText(mItem.label);
         mWidgetName.setContentDescription(
                 context.getString(R.string.widget_preview_context_description, mItem.label));
@@ -266,14 +219,11 @@ public class WidgetCell extends LinearLayout {
                 mItem.spanX, mItem.spanY));
         mWidgetDims.setContentDescription(context.getString(
                 R.string.widget_accessible_dims_format, mItem.spanX, mItem.spanY));
-        if (ATLEAST_S && mItem.widgetInfo != null) {
-            CharSequence description = mItem.widgetInfo.loadDescription(context);
-            if (description != null && description.length() > 0) {
-                mWidgetDescription.setText(description);
-                mWidgetDescription.setVisibility(VISIBLE);
-            } else {
-                mWidgetDescription.setVisibility(GONE);
-            }
+        if (!TextUtils.isEmpty(mItem.description)) {
+            mWidgetDescription.setText(mItem.description);
+            mWidgetDescription.setVisibility(VISIBLE);
+        } else {
+            mWidgetDescription.setVisibility(GONE);
         }
 
         if (item.activityInfo != null) {
@@ -282,68 +232,31 @@ public class WidgetCell extends LinearLayout {
             setTag(new PendingAddWidgetInfo(item.widgetInfo, mSourceContainer));
         }
 
-        ensurePreviewWithCallback(callback, cachedPreview);
-    }
-
-    private static class ScaledAppWidgetHostView extends LauncherAppWidgetHostView {
-        private boolean mKeepOrigForDragging = true;
-
-        ScaledAppWidgetHostView(Context context) {
-            super(context);
-        }
-
-        /**
-         * Set if the view will keep its original scale when dragged
-         * @param isKeepOrig True if keep original scale when dragged, false otherwise
-         */
-        public void setKeepOrigForDragging(boolean isKeepOrig) {
-            mKeepOrigForDragging = isKeepOrig;
-        }
-
-        /**
-         * @return True if the view is set to preserve original scale when dragged, false otherwise
-         */
-        public boolean isKeepOrigForDragging() {
-            return mKeepOrigForDragging;
-        }
-
-        @Override
-        public void startDrag() {
-            super.startDrag();
-            if (!isKeepOrigForDragging()) {
-                // restore to original scale when being dragged, if set to do so
-                setScaleToFit(1.0f);
-            }
-            // When the drag start, translations need to be set to zero to center the view
-            getTranslateDelegate().setTranslation(INDEX_WIDGET_CENTERING, 0f, 0f);
-        }
-    }
-
-    private void applyPreviewOnAppWidgetHostView(WidgetItem item) {
         if (mRemoteViewsPreview != null) {
-            mAppWidgetHostViewPreview = createAppWidgetHostView(getContext());
+            mAppWidgetHostViewPreview = createAppWidgetHostView(context);
             setAppWidgetHostViewPreview(mAppWidgetHostViewPreview, item.widgetInfo,
                     mRemoteViewsPreview);
-            return;
+        } else if (item.hasPreviewLayout()) {
+            // If the context is a Launcher activity, DragView will show mAppWidgetHostViewPreview
+            // as a preview during drag & drop. And thus, we should use LauncherAppWidgetHostView,
+            // which supports applying local color extraction during drag & drop.
+            mAppWidgetHostViewPreview = isLauncherContext(context)
+                    ? new LauncherAppWidgetHostView(context)
+                    : createAppWidgetHostView(context);
+            LauncherAppWidgetProviderInfo providerInfo =
+                    fromProviderInfo(context, item.widgetInfo.clone());
+            // A hack to force the initial layout to be the preview layout since there is no API for
+            // rendering a preview layout for work profile apps yet. For non-work profile layout, a
+            // proper solution is to use RemoteViews(PackageName, LayoutId).
+            providerInfo.initialLayout = item.widgetInfo.previewLayout;
+            setAppWidgetHostViewPreview(mAppWidgetHostViewPreview, providerInfo, null);
+        } else if (cachedPreview != null) {
+            applyPreview(cachedPreview);
+        } else {
+            if (mActiveRequest == null) {
+                mActiveRequest = mWidgetPreviewLoader.loadPreview(mItem, mWidgetSize, callback);
+            }
         }
-
-        if (!item.hasPreviewLayout()) return;
-
-        Context context = getContext();
-        // If the context is a Launcher activity, DragView will show mAppWidgetHostViewPreview as
-        // a preview during drag & drop. And thus, we should use LauncherAppWidgetHostView, which
-        // supports applying local color extraction during drag & drop.
-        mAppWidgetHostViewPreview = isLauncherContext(context)
-                ? new ScaledAppWidgetHostView(context)
-                : createAppWidgetHostView(context);
-        LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo =
-                LauncherAppWidgetProviderInfo.fromProviderInfo(context, item.widgetInfo.clone());
-        // A hack to force the initial layout to be the preview layout since there is no API for
-        // rendering a preview layout for work profile apps yet. For non-work profile layout, a
-        // proper solution is to use RemoteViews(PackageName, LayoutId).
-        launcherAppWidgetProviderInfo.initialLayout = item.widgetInfo.previewLayout;
-        setAppWidgetHostViewPreview(mAppWidgetHostViewPreview,
-                launcherAppWidgetProviderInfo, /* remoteViews= */ null);
     }
 
     private void setAppWidgetHostViewPreview(
@@ -353,6 +266,43 @@ public class WidgetCell extends LinearLayout {
         appWidgetHostViewPreview.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO);
         appWidgetHostViewPreview.setAppWidget(/* appWidgetId= */ -1, providerInfo);
         appWidgetHostViewPreview.updateAppWidget(remoteViews);
+        appWidgetHostViewPreview.setClipToPadding(false);
+        appWidgetHostViewPreview.setClipChildren(false);
+
+        FrameLayout.LayoutParams widgetHostLP = new FrameLayout.LayoutParams(
+                mWidgetSize.getWidth(), mWidgetSize.getHeight(), Gravity.CENTER);
+        mWidgetImageContainer.addView(appWidgetHostViewPreview, /* index= */ 0, widgetHostLP);
+        mWidgetImage.setVisibility(View.GONE);
+        applyPreview(null);
+
+        appWidgetHostViewPreview.addOnLayoutChangeListener(
+                (v, l, t, r, b, ol, ot, or, ob) ->
+                        updateAppWidgetHostScale(appWidgetHostViewPreview));
+    }
+
+    private void updateAppWidgetHostScale(NavigableAppWidgetHostView view) {
+        // Scale the content such that all of the content is visible
+        int contentWidth = view.getWidth();
+        int contentHeight = view.getHeight();
+
+        if (view.getChildCount() == 1) {
+            View content = view.getChildAt(0);
+            // Take the content width based on the edge furthest from the center, so that when
+            // scaling the hostView, the farthest edge is still visible.
+            contentWidth = 2 * Math.max(contentWidth / 2 - content.getLeft(),
+                    content.getRight() - contentWidth / 2);
+            contentHeight = 2 * Math.max(contentHeight / 2 - content.getTop(),
+                    content.getBottom() - contentHeight / 2);
+        }
+
+        if (contentWidth <= 0 || contentHeight <= 0) {
+            mAppWidgetHostViewScale = 1;
+        } else {
+            float pWidth = mWidgetImageContainer.getWidth();
+            float pHeight = mWidgetImageContainer.getHeight();
+            mAppWidgetHostViewScale = Math.min(pWidth / contentWidth, pHeight / contentHeight);
+        }
+        view.setScaleToFit(mAppWidgetHostViewScale);
     }
 
     public WidgetImageView getWidgetView() {
@@ -372,17 +322,6 @@ public class WidgetCell extends LinearLayout {
         if (bitmap != null) {
             Drawable drawable = new RoundDrawableWrapper(
                     new FastBitmapDrawable(bitmap), mEnforcedCornerRadius);
-
-            // Scale down the preview size if it's wider than the cell.
-            float scale = 1f;
-            if (mTargetPreviewWidth > 0) {
-                float maxWidth = mTargetPreviewWidth;
-                float previewWidth = drawable.getIntrinsicWidth() * mPreviewContainerScale;
-                scale = Math.min(maxWidth / previewWidth, 1);
-            }
-            setContainerSize(
-                    Math.round(drawable.getIntrinsicWidth() * scale * mPreviewContainerScale),
-                    Math.round(drawable.getIntrinsicHeight() * scale * mPreviewContainerScale));
             mWidgetImage.setDrawable(drawable);
             mWidgetImage.setVisibility(View.VISIBLE);
             if (mAppWidgetHostViewPreview != null) {
@@ -413,76 +352,6 @@ public class WidgetCell extends LinearLayout {
             mWidgetBadge.setVisibility(View.VISIBLE);
             mWidgetBadge.setImageResource(R.drawable.ic_work_app_badge);
         }
-    }
-
-    private void setContainerSize(int width, int height) {
-        LayoutParams layoutParams = (LayoutParams) mWidgetImageContainer.getLayoutParams();
-        layoutParams.width = width;
-        layoutParams.height = height;
-        mWidgetImageContainer.setLayoutParams(layoutParams);
-    }
-
-    /**
-     * Ensures that the preview is already loaded or being loaded. If the preview is not loaded,
-     * it applies the provided cachedPreview. If that is null, it starts a loader and notifies the
-     * callback on successful load.
-     */
-    private void ensurePreviewWithCallback(Consumer<Bitmap> callback,
-            @Nullable Bitmap cachedPreview) {
-        if (mAppWidgetHostViewPreview != null) {
-            int containerWidth = (int) (mTargetPreviewWidth * mPreviewContainerScale);
-            int containerHeight = (int) (mTargetPreviewHeight * mPreviewContainerScale);
-            setContainerSize(containerWidth, containerHeight);
-            boolean shouldMeasureAndScale = false;
-            if (mAppWidgetHostViewPreview.getChildCount() == 1) {
-                View widgetContent = mAppWidgetHostViewPreview.getChildAt(0);
-                ViewGroup.LayoutParams layoutParams = widgetContent.getLayoutParams();
-                // We only scale preview if both the width & height of the outermost view group are
-                // not set to MATCH_PARENT.
-                shouldMeasureAndScale =
-                        layoutParams.width != MATCH_PARENT && layoutParams.height != MATCH_PARENT;
-                if (shouldMeasureAndScale) {
-                    setNoClip(mWidgetImageContainer);
-                    setNoClip(mAppWidgetHostViewPreview);
-                    mAppWidgetHostViewScale = measureAndComputeWidgetPreviewScale();
-                }
-            }
-
-            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                    mTargetPreviewWidth, mTargetPreviewHeight, Gravity.FILL);
-            mAppWidgetHostViewPreview.setLayoutParams(params);
-
-            if (!shouldMeasureAndScale
-                    && mAppWidgetHostViewPreview instanceof ScaledAppWidgetHostView) {
-                // If the view is not measured & scaled, at least one side will match the grid size,
-                // so it should be safe to restore the original scale once it is dragged.
-                ScaledAppWidgetHostView tempView =
-                        (ScaledAppWidgetHostView) mAppWidgetHostViewPreview;
-                tempView.setKeepOrigForDragging(false);
-                tempView.setScaleToFit(mPreviewContainerScale);
-            } else if (!shouldMeasureAndScale) {
-                mAppWidgetHostViewPreview.setScaleToFit(mPreviewContainerScale);
-            } else {
-                mAppWidgetHostViewPreview.setScaleToFit(mAppWidgetHostViewScale);
-            }
-            mAppWidgetHostViewPreview.getTranslateDelegate().setTranslation(
-                    INDEX_WIDGET_CENTERING,
-                    -(params.width - (params.width * mPreviewContainerScale)) / 2.0f,
-                    -(params.height - (params.height * mPreviewContainerScale)) / 2.0f);
-            mWidgetImageContainer.addView(mAppWidgetHostViewPreview, /* index= */ 0);
-            mWidgetImage.setVisibility(View.GONE);
-            applyPreview(null);
-            return;
-        }
-        if (cachedPreview != null) {
-            applyPreview(cachedPreview);
-            return;
-        }
-        if (mActiveRequest != null) {
-            return;
-        }
-        mActiveRequest = mWidgetPreviewLoader.loadPreview(
-                mItem, new Size(mTargetPreviewWidth, mTargetPreviewHeight), callback);
     }
 
     @Override
@@ -522,61 +391,20 @@ public class WidgetCell extends LinearLayout {
         info.removeAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK);
     }
 
-    private static void setNoClip(ViewGroup view) {
-        view.setClipChildren(false);
-        view.setClipToPadding(false);
-    }
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        ViewGroup.LayoutParams containerLp = mWidgetImageContainer.getLayoutParams();
 
-    private float measureAndComputeWidgetPreviewScale() {
-        if (mAppWidgetHostViewPreview.getChildCount() != 1) {
-            return 1f;
+        mAppWidgetHostViewScale = mPreviewContainerScale;
+        int maxWidth = MeasureSpec.getSize(widthMeasureSpec);
+        containerLp.width = Math.round(mWidgetSize.getWidth() * mAppWidgetHostViewScale);
+        if (containerLp.width > maxWidth) {
+            containerLp.width = maxWidth;
+            mAppWidgetHostViewScale = (float) containerLp.width / mWidgetSize.getWidth();
         }
+        containerLp.height = Math.round(mWidgetSize.getHeight() * mAppWidgetHostViewScale);
+        // No need to call mWidgetImageContainer.setLayoutParams as we are in measure pass
 
-        // Measure the largest possible width & height that the app widget wants to display.
-        mAppWidgetHostViewPreview.measure(
-                makeMeasureSpec(MAX_MEASURE_SPEC_DIMENSION, MeasureSpec.UNSPECIFIED),
-                makeMeasureSpec(MAX_MEASURE_SPEC_DIMENSION, MeasureSpec.UNSPECIFIED));
-        if (mRemoteViewsPreview != null) {
-            // If RemoteViews contains multiple sizes, the best fit sized RemoteViews will be
-            // selected in onLayout. To work out the right measurement, let's layout and then
-            // measure again.
-            mAppWidgetHostViewPreview.layout(
-                    /* left= */ 0,
-                    /* top= */ 0,
-                    /* right= */ mTargetPreviewWidth,
-                    /* bottom= */ mTargetPreviewHeight);
-            mAppWidgetHostViewPreview.measure(
-                    makeMeasureSpec(mTargetPreviewWidth, MeasureSpec.UNSPECIFIED),
-                    makeMeasureSpec(mTargetPreviewHeight, MeasureSpec.UNSPECIFIED));
-
-        }
-        View widgetContent = mAppWidgetHostViewPreview.getChildAt(0);
-        int appWidgetContentWidth = widgetContent.getMeasuredWidth();
-        int appWidgetContentHeight = widgetContent.getMeasuredHeight();
-        if (appWidgetContentWidth == 0 || appWidgetContentHeight == 0) {
-            return 1f;
-        }
-
-        // If the width / height of the widget content is set to wrap content, overrides the width /
-        // height with the measured dimension. This avoids incorrect measurement after scaling.
-        FrameLayout.LayoutParams layoutParam =
-                (FrameLayout.LayoutParams) widgetContent.getLayoutParams();
-        if (layoutParam.width == WRAP_CONTENT) {
-            layoutParam.width = widgetContent.getMeasuredWidth();
-        }
-        if (layoutParam.height == WRAP_CONTENT) {
-            layoutParam.height = widgetContent.getMeasuredHeight();
-        }
-        widgetContent.setLayoutParams(layoutParam);
-
-        int horizontalPadding = mAppWidgetHostViewPreview.getPaddingStart()
-                + mAppWidgetHostViewPreview.getPaddingEnd();
-        int verticalPadding = mAppWidgetHostViewPreview.getPaddingTop()
-                + mAppWidgetHostViewPreview.getPaddingBottom();
-        return Math.min(
-                (mTargetPreviewWidth - horizontalPadding) * mPreviewContainerScale
-                        / appWidgetContentWidth,
-                (mTargetPreviewHeight - verticalPadding) * mPreviewContainerScale
-                        / appWidgetContentHeight);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 }

@@ -13,6 +13,8 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+<!-- Make sure to align any changes to
+     frameworks/base/libs/WindowManager/Shell/res/color/taskbar_background_dark.xml -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-  <item android:color="@android:color/system_neutral1_500" android:lStar="20" />
+  <item android:color="@android:color/system_neutral1_500" android:lStar="6" />
 </selector>

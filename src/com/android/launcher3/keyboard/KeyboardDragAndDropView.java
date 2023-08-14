@@ -17,6 +17,7 @@ package com.android.launcher3.keyboard;
 
 import static android.app.Activity.DEFAULT_KEYS_SEARCH_LOCAL;
 
+import static com.android.launcher3.LauncherState.EDIT_MODE;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 
 import android.app.Activity;
@@ -114,7 +115,7 @@ public class KeyboardDragAndDropView extends AbstractFloatingView
 
     @Override
     public void onStateTransitionStart(LauncherState toState) {
-        if (toState != SPRING_LOADED) {
+        if (toState != SPRING_LOADED && toState != EDIT_MODE) {
             close(false);
         }
     }

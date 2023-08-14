@@ -129,7 +129,7 @@ public class WidgetsModel {
                         LauncherAppWidgetProviderInfo.fromProviderInfo(context, widgetInfo);
 
                 widgetsAndShortcuts.add(new WidgetItem(
-                        launcherWidgetInfo, idp, app.getIconCache()));
+                        launcherWidgetInfo, idp, app.getIconCache(), app.getContext()));
                 updatedItems.add(launcherWidgetInfo);
             }
 
@@ -200,7 +200,8 @@ public class WidgetsModel {
                                     app.getContext().getPackageManager()));
                         } else {
                             items.set(i, new WidgetItem(item.widgetInfo,
-                                    app.getInvariantDeviceProfile(), app.getIconCache()));
+                                    app.getInvariantDeviceProfile(), app.getIconCache(),
+                                    app.getContext()));
                         }
                     }
                 }

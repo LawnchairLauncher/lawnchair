@@ -146,8 +146,7 @@ public class DatabaseWidgetPreviewLoader {
             previewWidth = drawable.getIntrinsicWidth();
             previewHeight = drawable.getIntrinsicHeight();
         } else {
-            Size widgetSize = WidgetSizes.getWidgetPaddedSizePx(mContext, info.provider, dp, spanX,
-                    spanY);
+            Size widgetSize = WidgetSizes.getWidgetSizePx(dp, spanX, spanY);
             previewWidth = widgetSize.getWidth();
             previewHeight = widgetSize.getHeight();
         }

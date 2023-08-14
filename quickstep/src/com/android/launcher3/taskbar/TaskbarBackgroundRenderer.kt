@@ -16,11 +16,13 @@
 
 package com.android.launcher3.taskbar
 
+import android.content.res.Resources
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
+import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.Utilities.mapRange
@@ -32,6 +34,7 @@ import com.android.launcher3.util.DisplayController
 /** Helps draw the taskbar background, made up of a rectangle plus two inverted rounded corners. */
 class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
 
+    private val isInSetup: Boolean = !context.isUserSetupComplete
     private val DARK_THEME_SHADOW_ALPHA = 51f
     private val LIGHT_THEME_SHADOW_ALPHA = 25f
 
@@ -55,12 +58,13 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
     private val fullRightCornerRadius = context.rightCornerRadius.toFloat()
     private var leftCornerRadius = fullLeftCornerRadius
     private var rightCornerRadius = fullRightCornerRadius
+    private var widthInsetPercentage = 0f
     private val square: Path = Path()
     private val circle: Path = Path()
     private val invertedLeftCornerPath: Path = Path()
     private val invertedRightCornerPath: Path = Path()
 
-    private val stashedHandleWidth =
+    private var stashedHandleWidth =
         context.resources.getDimensionPixelSize(R.dimen.taskbar_stashed_handle_width)
 
     private val stashedHandleHeight =
@@ -83,6 +87,13 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
             else LIGHT_THEME_SHADOW_ALPHA
 
         setCornerRoundness(DEFAULT_ROUNDNESS)
+    }
+
+    fun updateStashedHandleWidth(dp: DeviceProfile, res: Resources) {
+        stashedHandleWidth = res.getDimensionPixelSize(
+                if (TaskbarManager.isPhoneMode(dp)) R.dimen.taskbar_stashed_small_screen
+                else R.dimen.taskbar_stashed_handle_width
+        )
     }
 
     /**
@@ -127,7 +138,7 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
             canvas.translate(0f, leftCornerRadius)
             canvas.translate(canvas.width - rightCornerRadius, -rightCornerRadius)
             canvas.drawPath(invertedRightCornerPath, paint)
-        } else {
+        } else if (!isInSetup) {
             // backgroundHeight is a value from [0...maxBackgroundHeight], so we can use it as a
             // proxy to figure out the animation progress of the stash/unstash animation.
             val progress = backgroundHeight / maxBackgroundHeight
@@ -166,10 +177,20 @@ class TaskbarBackgroundRenderer(context: TaskbarActivityContext) {
                 transientBackgroundBounds.right - halfWidthDelta,
                 bottom
             )
+            val horizontalInset = fullWidth * widthInsetPercentage
+            lastDrawnTransientRect.inset(horizontalInset, 0f)
 
             canvas.drawRoundRect(lastDrawnTransientRect, radius, radius, paint)
         }
         canvas.restore()
+    }
+
+    /**
+     * Sets the width percentage to inset the transient taskbar's background from the left and from
+     * the right.
+     */
+    fun setBackgroundHorizontalInsets(insetPercentage: Float) {
+        widthInsetPercentage = insetPercentage
     }
 
     companion object {

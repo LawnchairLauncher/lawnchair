@@ -50,7 +50,7 @@ abstract class AbstractDeviceProfileTest {
     private lateinit var originalWindowManagerProxy: WindowManagerProxy
 
     @Before
-    fun setUp() {
+    open fun setUp() {
         val appContext: Context = ApplicationProvider.getApplicationContext()
         originalWindowManagerProxy = WindowManagerProxy.INSTANCE.get(appContext)
         originalDisplayController = DisplayController.INSTANCE.get(appContext)
@@ -59,14 +59,14 @@ abstract class AbstractDeviceProfileTest {
     }
 
     @After
-    fun tearDown() {
+    open fun tearDown() {
         WindowManagerProxy.INSTANCE.initializeForTesting(originalWindowManagerProxy)
         DisplayController.INSTANCE.initializeForTesting(originalDisplayController)
     }
 
     class DeviceSpec(
         val naturalSize: Pair<Int, Int>,
-        val densityDpi: Int,
+        var densityDpi: Int,
         val statusBarNaturalPx: Int,
         val statusBarRotatedPx: Int,
         val gesturePx: Int,

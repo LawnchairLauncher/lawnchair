@@ -25,7 +25,7 @@
     android:clipToOutline="true"
     android:defaultFocusHighlightEnabled="false"
     android:focusable="true"
-    launcher:borderColor="?androidprv:attr/colorAccentSecondaryVariant">
+    launcher:borderColor="?androidprv:attr/materialColorOutline">
 
     <View
         android:id="@+id/background"

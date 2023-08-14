@@ -49,7 +49,6 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.shortcuts.ShortcutRequest;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.PersistedItemArray;
 import com.android.launcher3.util.Preconditions;
@@ -119,18 +118,10 @@ public class ItemInstallQueue {
         Launcher launcher = Launcher.ACTIVITY_TRACKER.getCreatedActivity();
         if (launcher == null) {
             // Launcher not loaded
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.MISSING_PROMISE_ICON,
-                        LOG + " flushQueueInBackground launcher not loaded");
-            }
             return;
         }
         ensureQueueLoaded();
         if (mItems.isEmpty()) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.MISSING_PROMISE_ICON,
-                        LOG + " flushQueueInBackground no items to load");
-            }
             return;
         }
 
@@ -140,10 +131,6 @@ public class ItemInstallQueue {
 
         // Add the items and clear queue
         if (!installQueue.isEmpty()) {
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.MISSING_PROMISE_ICON,
-                        LOG + " flushQueueInBackground launcher addAndBindAddedWorkspaceItems");
-            }
             // add log
             launcher.getModel().addAndBindAddedWorkspaceItems(installQueue);
         }
@@ -204,10 +191,6 @@ public class ItemInstallQueue {
         // Queue the item up for adding if launcher has not loaded properly yet
         MODEL_EXECUTOR.post(() -> {
             Pair<ItemInfo, Object> itemInfo = info.getItemInfo(mContext);
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.MISSING_PROMISE_ICON, LOG + " queuePendingShortcutInfo"
-                        + ", itemInfo=" + itemInfo);
-            }
             if (itemInfo == null) {
                 FileLog.d(LOG,
                         "Adding PendingInstallShortcutInfo with no attached info to queue.",

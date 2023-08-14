@@ -15,17 +15,55 @@
 -->
 <com.android.launcher3.taskbar.KeyboardQuickSwitchView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingVertical="@dimen/keyboard_quick_switch_view_spacing"
     android:layout_marginTop="@dimen/keyboard_quick_switch_margin_top"
     android:layout_marginHorizontal="@dimen/keyboard_quick_switch_margin_ends"
     android:background="@drawable/keyboard_quick_switch_view_background"
     android:clipToOutline="true"
     android:alpha="0"
     android:visibility="invisible"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    app:layout_ignoreInsets="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/no_recent_items_pane"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/keyboard_quick_switch_taskview_height"
+        android:paddingVertical="@dimen/keyboard_quick_switch_view_spacing"
+        android:alpha="0"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/no_recent_items_icon"
+            android:layout_width="@dimen/keyboard_quick_switch_no_recent_items_icon_size"
+            android:layout_height="@dimen/keyboard_quick_switch_no_recent_items_icon_size"
+            android:layout_marginBottom="@dimen/keyboard_quick_switch_no_recent_items_icon_margin"
+            android:src="@drawable/ic_empty_recents"
+            android:tint="?androidprv:attr/materialColorOnSurfaceInverse"
+            android:importantForAccessibility="no"
+
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/no_recent_items_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <TextView
+            style="@style/KeyboardQuickSwitchText.OnBackground"
+            android:id="@+id/no_recent_items_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/recents_empty_message"
+
+            app:layout_constraintTop_toBottomOf="@id/no_recent_items_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <HorizontalScrollView
         android:id="@+id/scroll_view"
@@ -34,7 +72,7 @@
         android:fillViewport="true"
         android:scrollbars="none"
         android:alpha="0"
-        android:visibility="invisible"
+        android:visibility="gone"
 
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -43,7 +81,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/content"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:paddingVertical="@dimen/keyboard_quick_switch_view_spacing"
+            android:clipToPadding="false"/>
 
     </HorizontalScrollView>
 

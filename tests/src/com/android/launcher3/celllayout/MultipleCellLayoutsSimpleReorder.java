@@ -17,6 +17,8 @@ package com.android.launcher3.celllayout.testcases;
 
 import android.graphics.Point;
 
+import com.android.launcher3.celllayout.ReorderTestCase;
+
 import java.util.Map;
 
 /**

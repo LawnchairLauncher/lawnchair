@@ -15,19 +15,8 @@
  */
 package com.android.launcher3.model;
 
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Process;
-import android.util.Log;
-
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.icons.BitmapInfo;
-import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 
@@ -41,8 +30,6 @@ import java.util.stream.IntStream;
  * Utils class for {@link com.android.launcher3.LauncherModel}.
  */
 public class ModelUtils {
-
-    private static final String TAG = "ModelUtils";
 
     /**
      * Filters the set of items who are directly or indirectly (via another container) on the
@@ -63,10 +50,6 @@ public class ModelUtils {
                 (lhs, rhs) -> Integer.compare(lhs.container, rhs.container));
         for (T info : allWorkspaceItems) {
             if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                if (TestProtocol.sDebugTracing) {
-                    Log.d(TestProtocol.NULL_INT_SET, "filterCurrentWorkspaceItems: "
-                            + currentScreenIds);
-                }
                 if (currentScreenIds.contains(info.screenId)) {
                     currentScreenItems.add(info);
                     itemsOnScreen.add(info.id);
@@ -98,61 +81,5 @@ public class ModelUtils {
         IntArray result = new IntArray(len);
         IntStream.range(0, len).filter(i -> !seen.contains(i)).forEach(result::add);
         return result;
-    }
-
-
-    /**
-     * Creates a workspace item info for the legacy shortcut intent
-     */
-    @SuppressWarnings("deprecation")
-    public static WorkspaceItemInfo fromLegacyShortcutIntent(Context context, Intent data) {
-        if (!isValidExtraType(data, Intent.EXTRA_SHORTCUT_INTENT, Intent.class)
-                || !(isValidExtraType(data, Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                        Intent.ShortcutIconResource.class))
-                || !(isValidExtraType(data, Intent.EXTRA_SHORTCUT_ICON, Bitmap.class))) {
-
-            Log.e(TAG, "Invalid install shortcut intent");
-            return null;
-        }
-
-        Intent launchIntent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
-        String label = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-        if (launchIntent == null || label == null) {
-            Log.e(TAG, "Invalid install shortcut intent");
-            return null;
-        }
-
-        final WorkspaceItemInfo info = new WorkspaceItemInfo();
-        info.user = Process.myUserHandle();
-
-        BitmapInfo iconInfo = null;
-        try (LauncherIcons li = LauncherIcons.obtain(context)) {
-            Bitmap bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
-            if (bitmap != null) {
-                iconInfo = li.createIconBitmap(bitmap);
-            } else {
-                info.iconResource = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
-                if (info.iconResource != null) {
-                    iconInfo = li.createIconBitmap(info.iconResource);
-                }
-            }
-        }
-
-        if (iconInfo == null) {
-            Log.e(TAG, "Invalid icon by the app");
-            return null;
-        }
-        info.bitmap = iconInfo;
-        info.contentDescription = info.title = Utilities.trim(label);
-        info.intent = launchIntent;
-        return info;
-    }
-
-    /**
-     * @return true if the extra is either null or is of type {@param type}
-     */
-    private static boolean isValidExtraType(Intent intent, String key, Class type) {
-        Object extra = intent.getParcelableExtra(key);
-        return extra == null || type.isInstance(extra);
     }
 }

@@ -25,16 +25,18 @@ import android.view.MotionEvent
 import android.view.MotionEvent.ACTION_DOWN
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.animation.Interpolator
+import androidx.core.view.updateLayoutParams
+import com.android.app.animation.Interpolators.EMPHASIZED_ACCELERATE
+import com.android.app.animation.Interpolators.EMPHASIZED_DECELERATE
+import com.android.app.animation.Interpolators.STANDARD
 import com.android.launcher3.AbstractFloatingView
 import com.android.launcher3.R
 import com.android.launcher3.anim.AnimatorListeners
 import com.android.launcher3.popup.RoundedArrowDrawable
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.ActivityContext
-import com.android.systemui.animation.Interpolators.EMPHASIZED_ACCELERATE
-import com.android.systemui.animation.Interpolators.EMPHASIZED_DECELERATE
-import com.android.systemui.animation.Interpolators.STANDARD
 
 private const val ENTER_DURATION_MS = 300L
 private const val EXIT_DURATION_MS = 150L
@@ -51,7 +53,7 @@ constructor(
     private val activityContext: ActivityContext = ActivityContext.lookupContext(context)
 
     private val backgroundColor =
-        Themes.getAttrColor(context, com.android.internal.R.attr.colorSurface)
+        Themes.getAttrColor(context, com.android.internal.R.attr.materialColorSurfaceBright)
 
     private val tooltipCornerRadius = Themes.getDialogCornerRadius(context)
     private val arrowWidth = resources.getDimension(R.dimen.popup_arrow_width)
@@ -77,6 +79,18 @@ constructor(
         }
         mIsOpen = true
         activityContext.dragLayer.addView(this)
+
+        // Make sure we have enough height to display all of the content, which can be an issue on
+        // large text and display scaling configurations. If we run out of height, remove the width
+        // constraint to reduce the number of lines of text and hopefully free up some height.
+        activityContext.dragLayer.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED)
+        if (
+            measuredHeight + activityContext.deviceProfile.taskbarHeight >=
+                activityContext.deviceProfile.availableHeightPx
+        ) {
+            updateLayoutParams { width = MATCH_PARENT }
+        }
+
         openCloseAnimator = createOpenCloseAnimator(isOpening = true).apply { start() }
     }
 

@@ -17,9 +17,14 @@
 package com.android.launcher3.uioverrides;
 
 import android.app.Person;
+import android.content.Context;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.ShortcutInfo;
 
 import com.android.launcher3.Utilities;
+
+import java.util.Collections;
+import java.util.Map;
 
 /**
  * A wrapper for the hidden API calls
@@ -30,5 +35,9 @@ public class ApiWrapper {
 
     public static Person[] getPersons(ShortcutInfo si) {
         return Utilities.EMPTY_PERSON_ARRAY;
+    }
+
+    public static Map<String, LauncherActivityInfo> getActivityOverrides(Context context) {
+        return Collections.emptyMap();
     }
 }

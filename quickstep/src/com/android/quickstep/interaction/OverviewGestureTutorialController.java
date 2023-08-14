@@ -21,29 +21,52 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_T
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
-import android.annotation.Nullable;
 import android.annotation.TargetApi;
 import android.graphics.PointF;
 import android.os.Build;
 import android.os.Handler;
-import android.view.View;
+
+import androidx.annotation.ColorInt;
+import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.quickstep.SwipeUpAnimationLogic;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
+import com.android.quickstep.util.LottieAnimationColorUtils;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /** A {@link TutorialController} for the Overview tutorial. */
 @TargetApi(Build.VERSION_CODES.R)
 final class OverviewGestureTutorialController extends SwipeUpGestureTutorialController {
 
+    private static final float LAUNCHER_COLOR_BLENDING_RATIO = 0.4f;
+
     OverviewGestureTutorialController(OverviewGestureTutorialFragment fragment,
             TutorialType tutorialType) {
         super(fragment, tutorialType);
+
+        // Set the Lottie animation colors specifically for the Overview gesture
+        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+            LottieAnimationColorUtils.updateColors(
+                    mAnimatedGestureDemonstration,
+                    Map.of(".onSurfaceOverview", fragment.mRootView.mColorOnSurfaceOverview,
+                            ".surfaceOverview", fragment.mRootView.mColorSurfaceOverview,
+                            ".secondaryOverview", fragment.mRootView.mColorSecondaryOverview));
+
+            LottieAnimationColorUtils.updateColors(
+                    mCheckmarkAnimation,
+                    Map.of(".checkmark",
+                            Utilities.isDarkTheme(mContext)
+                                    ? fragment.mRootView.mColorOnSurfaceOverview
+                                    : fragment.mRootView.mColorSecondaryOverview,
+                            ".checkmarkBackground", fragment.mRootView.mColorSurfaceOverview));
+        }
     }
     @Override
     public int getIntroductionTitle() {
@@ -54,12 +77,21 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
 
     @Override
     public int getIntroductionSubtitle() {
-        return R.string.overview_gesture_intro_subtitle;
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? R.string.overview_gesture_tutorial_subtitle
+                : R.string.overview_gesture_intro_subtitle;
     }
 
     @Override
     public int getSpokenIntroductionSubtitle() {
         return R.string.overview_gesture_spoken_intro_subtitle;
+    }
+
+    @Override
+    public int getSuccessFeedbackTitle() {
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? R.string.overview_gesture_tutorial_success
+                : R.string.gesture_tutorial_nice;
     }
 
     @Override
@@ -70,36 +102,84 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
     }
 
     @Override
+    public int getTitleTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_MainTitle_Overview;
+    }
+
+    @Override
+    public int getSuccessTitleTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_MainTitle_Success_Overview;
+    }
+
+    @Override
+    public int getDoneButtonTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_ButtonLabel_Overview;
+    }
+
+    @Override
+    public int getDoneButtonColor() {
+        return Utilities.isDarkTheme(mContext)
+                ? mTutorialFragment.mRootView.mColorOnSurfaceOverview
+                : mTutorialFragment.mRootView.mColorSecondaryOverview;
+    }
+
+    @Override
     protected int getMockAppTaskLayoutResId() {
-        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                ? R.layout.gesture_tutorial_mock_task_view
-                : mTutorialFragment.isLargeScreen()
-                        ? R.layout.gesture_tutorial_tablet_mock_conversation_list
-                        : R.layout.gesture_tutorial_mock_conversation_list;
+        return mTutorialFragment.isLargeScreen()
+                ? R.layout.gesture_tutorial_tablet_mock_conversation_list
+                : R.layout.gesture_tutorial_mock_conversation_list;
     }
 
     @Override
     protected int getGestureLottieAnimationId() {
         return mTutorialFragment.isLargeScreen()
-                ? R.raw.overview_gesture_tutorial_tablet_animation
+                ? mTutorialFragment.isFoldable()
+                    ? R.raw.overview_gesture_tutorial_open_foldable_animation
+                    : R.raw.overview_gesture_tutorial_tablet_animation
                 : R.raw.overview_gesture_tutorial_animation;
     }
 
-    @Override
-    protected int getSwipeActionColorResId() {
-        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                ? R.color.gesture_overview_background
-                : R.color.gesture_overview_tutorial_swipe_rect;
+    @ColorInt
+    private int getFakeTaskViewStartColor() {
+        return mTutorialFragment.mRootView.mColorSurfaceOverview;
+    }
+
+    @ColorInt
+    private int getFakeTaskViewEndColor() {
+        return getMockPreviousAppTaskThumbnailColor();
     }
 
     @Override
-    protected int getMockPreviousAppTaskThumbnailColorResId() {
-        return R.color.gesture_overview_tutorial_swipe_rect;
+    protected int getFakeTaskViewColor() {
+        return isGestureCompleted()
+                ? getFakeTaskViewEndColor()
+                : getFakeTaskViewStartColor();
+    }
+
+    @Override
+    protected int getFakeLauncherColor() {
+        return ColorUtils.blendARGB(
+                mTutorialFragment.mRootView.mColorSurfaceContainer,
+                mTutorialFragment.mRootView.mColorOnSurfaceOverview,
+                LAUNCHER_COLOR_BLENDING_RATIO);
+    }
+
+    @Override
+    protected int getHotseatIconColor() {
+        return mTutorialFragment.mRootView.mColorOnSurfaceOverview;
+    }
+
+    @Override
+    protected int getMockPreviousAppTaskThumbnailColor() {
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? mTutorialFragment.mRootView.mColorSurfaceContainer
+                : mContext.getResources().getColor(
+                        R.color.gesture_tutorial_fake_previous_task_view_color);
     }
 
     @Override
     public void onBackGestureAttempted(BackGestureResult result) {
-        if (isGestureCompleted()) {
+        if (skipGestureAttempt()) {
             return;
         }
         switch (mTutorialType) {
@@ -109,6 +189,8 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                     case BACK_COMPLETED_FROM_RIGHT:
                     case BACK_CANCELLED_FROM_LEFT:
                     case BACK_CANCELLED_FROM_RIGHT:
+                    case BACK_NOT_STARTED_TOO_FAR_FROM_EDGE:
+                        resetTaskViews();
                         showFeedback(R.string.overview_gesture_feedback_swipe_too_far_from_edge);
                         break;
                 }
@@ -124,7 +206,7 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
 
     @Override
     public void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity) {
-        if (isGestureCompleted()) {
+        if (skipGestureAttempt()) {
             return;
         }
         switch (mTutorialType) {
@@ -139,39 +221,21 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
                     }
                     case HOME_NOT_STARTED_TOO_FAR_FROM_EDGE:
                     case OVERVIEW_NOT_STARTED_TOO_FAR_FROM_EDGE:
+                        resetTaskViews();
                         showFeedback(R.string.overview_gesture_feedback_swipe_too_far_from_edge);
                         break;
                     case OVERVIEW_GESTURE_COMPLETED:
+                        setGestureCompleted();
                         mTutorialFragment.releaseFeedbackAnimation();
-                        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
-                            onMotionPaused(true /*arbitrary value*/);
-                            animateTaskViewToOverview(() -> {
-                                mFakeTaskView.setVisibility(View.INVISIBLE);
-                                if(!mTutorialFragment.isLargeScreen()){
-                                    mFakePreviousTaskView.animateToFillScreen(() -> {
-                                        mFakeLauncherView.setBackgroundColor(
-                                                mContext.getColor(
-                                                        R.color.gesture_overview_tutorial_swipe_rect
-                                                ));
-                                        showSuccessFeedback();
-                                    });
-                                } else {
-                                    mFakeLauncherView.setBackgroundColor(
-                                            mContext.getColor(
-                                                    R.color.gesture_overview_tutorial_swipe_rect
-                                            ));
-                                    showSuccessFeedback();
-                                }
-                            });
-                        } else {
-                            animateTaskViewToOverview(null);
-                            onMotionPaused(true /*arbitrary value*/);
+                        animateTaskViewToOverview(ENABLE_NEW_GESTURE_NAV_TUTORIAL.get());
+                        onMotionPaused(true /*arbitrary value*/);
+                        if (!ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
                             showSuccessFeedback();
                         }
                         break;
                     case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
                     case HOME_OR_OVERVIEW_CANCELLED:
-                        fadeOutFakeTaskView(false, true, null);
+                        fadeOutFakeTaskView(false, null);
                         showFeedback(R.string.overview_gesture_feedback_wrong_swipe_direction);
                         break;
                 }
@@ -186,21 +250,34 @@ final class OverviewGestureTutorialController extends SwipeUpGestureTutorialCont
 
     /**
      * runnable executed with slight delay to ease the swipe animation after landing on overview
-     * @param runnable
      */
-    public void animateTaskViewToOverview(@Nullable Runnable runnable) {
+    public void animateTaskViewToOverview(boolean animateDelayedSuccessFeedback) {
         PendingAnimation anim = new PendingAnimation(TASK_VIEW_END_ANIMATION_DURATION_MILLIS);
         anim.setFloat(mTaskViewSwipeUpAnimation
                 .getCurrentShift(), AnimatedFloat.VALUE, 1, ACCEL);
 
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                if (runnable != null) {
-                    new Handler().postDelayed(runnable, 300);
+        if (animateDelayedSuccessFeedback) {
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    new Handler().postDelayed(
+                            () -> fadeOutFakeTaskView(
+                                    /* toOverviewFirst= */ true,
+                                    /* animatePreviousTask= */ false,
+                                    /* resetViews= */ false,
+                                    /* updateListener= */ v -> mFakeTaskView.setBackgroundColor(
+                                            ColorUtils.blendARGB(
+                                                    getFakeTaskViewStartColor(),
+                                                    getFakeTaskViewEndColor(),
+                                                    v.getAnimatedFraction())),
+                                    /* onEndRunnable= */ () -> {
+                                        showSuccessFeedback();
+                                        resetTaskViews();
+                                    }),
+                            TASK_VIEW_FILL_SCREEN_ANIMATION_DELAY_MILLIS);
                 }
-            }
-        });
+            });
+        }
 
         ArrayList<Animator> animators = new ArrayList<>();
 

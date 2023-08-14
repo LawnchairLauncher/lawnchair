@@ -265,23 +265,41 @@ public class FolderAnimationManager {
         Animator z = getAnimator(mFolder, View.TRANSLATION_Z, -mFolder.getElevation(), 0);
         play(a, z, mIsOpening ? midDuration : 0, midDuration);
 
-        // Store clip variables
-        CellLayout cellLayout = mContent.getCurrentCellLayout();
-        boolean folderClipChildren = mFolder.getClipChildren();
-        boolean folderClipToPadding = mFolder.getClipToPadding();
-        boolean contentClipChildren = mContent.getClipChildren();
-        boolean contentClipToPadding = mContent.getClipToPadding();
-        boolean cellLayoutClipChildren = cellLayout.getClipChildren();
-        boolean cellLayoutClipPadding = cellLayout.getClipToPadding();
-
-        mFolder.setClipChildren(false);
-        mFolder.setClipToPadding(false);
-        mContent.setClipChildren(false);
-        mContent.setClipToPadding(false);
-        cellLayout.setClipChildren(false);
-        cellLayout.setClipToPadding(false);
-
+        // Store clip variables.
+        // Because {@link #onAnimationStart} and {@link #onAnimationEnd} callbacks are sent to
+        // message queue and executed on separate frame, we should save states in
+        // {@link #onAnimationStart} instead of before creating animator, so that cancelling
+        // animation A and restarting animation B allows A to reset states in
+        // {@link #onAnimationEnd} before B reads new UI state from {@link #onAnimationStart}.
         a.addListener(new AnimatorListenerAdapter() {
+            private CellLayout mCellLayout;
+
+            private boolean mFolderClipChildren;
+            private boolean mFolderClipToPadding;
+            private boolean mContentClipChildren;
+            private boolean mContentClipToPadding;
+            private boolean mCellLayoutClipChildren;
+            private boolean mCellLayoutClipPadding;
+
+            @Override
+            public void onAnimationStart(Animator animator) {
+                super.onAnimationStart(animator);
+                mCellLayout = mContent.getCurrentCellLayout();
+                mFolderClipChildren = mFolder.getClipChildren();
+                mFolderClipToPadding = mFolder.getClipToPadding();
+                mContentClipChildren = mContent.getClipChildren();
+                mContentClipToPadding = mContent.getClipToPadding();
+                mCellLayoutClipChildren = mCellLayout.getClipChildren();
+                mCellLayoutClipPadding = mCellLayout.getClipToPadding();
+
+                mFolder.setClipChildren(false);
+                mFolder.setClipToPadding(false);
+                mContent.setClipChildren(false);
+                mContent.setClipToPadding(false);
+                mCellLayout.setClipChildren(false);
+                mCellLayout.setClipToPadding(false);
+            }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
@@ -295,13 +313,12 @@ public class FolderAnimationManager {
                 mFolder.mFooter.setTranslationX(0f);
                 mFolder.mFolderName.setAlpha(1f);
 
-                mFolder.setClipChildren(folderClipChildren);
-                mFolder.setClipToPadding(folderClipToPadding);
-                mContent.setClipChildren(contentClipChildren);
-                mContent.setClipToPadding(contentClipToPadding);
-                cellLayout.setClipChildren(cellLayoutClipChildren);
-                cellLayout.setClipToPadding(cellLayoutClipPadding);
-
+                mFolder.setClipChildren(mFolderClipChildren);
+                mFolder.setClipToPadding(mFolderClipToPadding);
+                mContent.setClipChildren(mContentClipChildren);
+                mContent.setClipToPadding(mContentClipToPadding);
+                mCellLayout.setClipChildren(mCellLayoutClipChildren);
+                mCellLayout.setClipToPadding(mCellLayoutClipPadding);
             }
         });
 

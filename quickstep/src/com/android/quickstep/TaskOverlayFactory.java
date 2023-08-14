@@ -28,7 +28,6 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Build;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -42,6 +41,7 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.views.ActivityContext;
+import com.android.launcher3.views.Snackbar;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
@@ -129,7 +129,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             TaskShortcutFactory.PIN,
             TaskShortcutFactory.INSTALL,
             TaskShortcutFactory.FREE_FORM,
-            TaskShortcutFactory.WELLBEING
+            TaskShortcutFactory.WELLBEING,
+            TaskShortcutFactory.SAVE_APP_PAIR
     };
 
     /**
@@ -271,10 +272,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
             String message = activityContext.getStringCache() != null
                     ? activityContext.getStringCache().disabledByAdminMessage
                     : mThumbnailView.getContext().getString(R.string.blocked_by_policy);
-            Toast.makeText(
-                    mThumbnailView.getContext(),
-                    message,
-                    Toast.LENGTH_LONG).show();
+
+            Snackbar.show(BaseActivity.fromContext(mThumbnailView.getContext()), message, null);
         }
 
         /** Called when the snapshot has updated its full screen drawing parameters. */

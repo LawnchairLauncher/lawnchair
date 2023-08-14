@@ -53,7 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Pasa o dedo para volver"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Para volver á última pantalla, pasa o dedo cara ao medio desde o bordo dereito ou esquerdo."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Para volver á última pantalla, pasa 2 dedos desde o bordo esquerdo ou o dereito ata a metade da pantalla."</string>
-    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Volver atrás"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Atrás"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Asegúrate de pasar o dedo cara arriba desde o bordo inferior da pantalla."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Asegúrate de non facer unha pausa antes de avanzar."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Asegúrate de pasar o dedo cara arriba cun movemento vertical."</string>
@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Omitir"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Xira a pantalla"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Información sobre a función Barra de tarefas"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Panel de información de barra de tarefas aberto"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Panel de información de barra de tarefas pechado"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Arrastra unha aplicación cara a un lado para usar dúas á vez"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Pasa o dedo amodo cara arriba para ver a barra de tarefas"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Obtén suxestións de aplicacións en función da túa rutina"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Activa navegación con xestos en Configuración e oculta automaticamente a barra de tarefas"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Tira máis proveito da barra de tarefas"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Seguinte"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Atrás"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Pechar"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Listo"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Inicio"</string>

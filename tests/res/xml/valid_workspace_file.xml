@@ -15,43 +15,45 @@
   -->
 
 <workspaceSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
+    <!-- 584 grid height -->
     <workspaceSpec
         launcher:specType="height"
-        launcher:maxAvailableSize="648dp">
-        <startPadding
-            launcher:ofAvailableSpace="0.0125" />
-        <endPadding
-            launcher:ofAvailableSpace="0.05" />
-        <gutter
-            launcher:fixedSize="16dp" />
-        <cellSize
-            launcher:ofRemainderSpace="0.2" />
+        launcher:maxAvailableSize="584dp">
+        <startPadding launcher:fixedSize="0dp" />
+        <endPadding launcher:fixedSize="32dp" />
+        <gutter launcher:fixedSize="16dp" />
+        <cellSize launcher:ofAvailableSpace="0.15808" />
+    </workspaceSpec>
+
+    <!-- 584 grid height + 28 remainder space -->
+    <workspaceSpec
+        launcher:specType="height"
+        launcher:maxAvailableSize="612dp">
+        <startPadding launcher:fixedSize="0dp" />
+        <endPadding launcher:ofRemainderSpace="1" />
+        <gutter launcher:fixedSize="16dp" />
+        <cellSize launcher:fixedSize="104dp" />
     </workspaceSpec>
 
     <workspaceSpec
         launcher:specType="height"
         launcher:maxAvailableSize="9999dp">
-        <startPadding
-            launcher:ofAvailableSpace="0.0306" />
-        <endPadding
-            launcher:ofAvailableSpace="0.068" />
-        <gutter
-            launcher:fixedSize="16dp" />
-        <cellSize
-            launcher:ofRemainderSpace="0.2" />
+        <startPadding launcher:fixedSize="8dp" />
+        <endPadding launcher:ofRemainderSpace="1" />
+        <gutter launcher:fixedSize="16dp" />
+        <cellSize launcher:fixedSize="104dp" />
     </workspaceSpec>
+
+    <!--  TODO(b/241386436): other specs here for height ...  -->
 
     <!-- Width spec is always the same -->
     <workspaceSpec
         launcher:specType="width"
         launcher:maxAvailableSize="9999dp">
-        <startPadding
-            launcher:ofRemainderSpace="0.21436227" />
-        <endPadding
-            launcher:ofRemainderSpace="0.21436227" />
-        <gutter
-            launcher:ofRemainderSpace="0.11425509" />
-        <cellSize
-            launcher:fixedSize="120dp" />
+        <startPadding launcher:fixedSize="22dp" />
+        <endPadding launcher:fixedSize="22dp" />
+        <gutter launcher:fixedSize="16dp" />
+        <cellSize launcher:ofRemainderSpace="0.25" />
     </workspaceSpec>
+
 </workspaceSpecs>

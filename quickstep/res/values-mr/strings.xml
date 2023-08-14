@@ -44,7 +44,7 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"अ‍ॅप सूचना सुरू केल्या आहेत"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"अ‍ॅप सूचना बंद केल्या आहेत"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"पूर्वानुमान केलेले अ‍ॅप: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"तुम्ही स्क्रीनच्या अगदी उजव्या किंवा अगदी डाव्या कडेपासून स्‍वाइप केल्याची खात्री करा."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"तुम्ही स्क्रीनच्या अगदी उजव्या किंवा अगदी डाव्या कडेला स्‍वाइप केल्याची खात्री करा."</string>
     <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"तुम्ही स्क्रीनच्या उजव्या किंवा डाव्या कडेपासून मध्यभागी स्‍वाइप करून सोडून दिल्याची खात्री करा."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"मागे जाण्यासाठी उजवीकडून कसे स्‍वाइप करावे ते शिकलात. आता पुढे, ॲप्स कशी स्विच करायची ते जाणून घ्या."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"तुम्ही गो बॅक जेश्चर पूर्ण केले."</string>
@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"वगळा"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"स्क्रीन फिरवा"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"टास्कबारशी संबंधित माहिती"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"टास्कबारशी संबंधित माहिती देणारे पॅनल उघडले आहे"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"टास्कबारशी संबंधित माहिती देणारे पॅनल बंद केले आहे"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"दोन ॲप्स एकत्र वापरण्यासाठी एक अ‍ॅप बाजूला ड्रॅग करा"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"टास्कबार दाखवण्यासाठी थोडे हळू वरती स्वाइप करा"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"तुमच्या दिनक्रमावर आधारित ॲप सूचना मिळवा"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"टास्कबार ऑटो हाइड करण्यासाठी सेटिंग्ज मधून जेश्चर नेव्हिगेशन सुरू करा"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"टास्कबार चा पुरेपूर वापर करा"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"पुढे"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"मागे जा"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"बंद करा"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"पूर्ण झाले"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"होम"</string>

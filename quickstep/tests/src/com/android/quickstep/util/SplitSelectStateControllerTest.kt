@@ -18,6 +18,7 @@
 package com.android.quickstep.util
 
 import android.app.ActivityManager
+import android.app.PendingIntent
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -36,8 +37,6 @@ import com.android.launcher3.util.withArgCaptor
 import com.android.quickstep.RecentsModel
 import com.android.quickstep.SystemUiProxy
 import com.android.systemui.shared.recents.model.Task
-import java.util.ArrayList
-import java.util.function.Consumer
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -47,7 +46,9 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import java.util.function.Consumer
 
 @RunWith(AndroidJUnit4::class)
 class SplitSelectStateControllerTest {
@@ -59,6 +60,7 @@ class SplitSelectStateControllerTest {
     @Mock lateinit var handler: Handler
     @Mock lateinit var context: Context
     @Mock lateinit var recentsModel: RecentsModel
+    @Mock lateinit var pendingIntent: PendingIntent
 
     lateinit var splitSelectStateController: SplitSelectStateController
 
@@ -346,6 +348,15 @@ class SplitSelectStateControllerTest {
         )
         splitSelectStateController.resetState()
         assertFalse(splitSelectStateController.isSplitSelectActive)
+    }
+
+    @Test
+    fun secondPendingIntentSet() {
+        val itemInfo = ItemInfo()
+        `when`(pendingIntent.creatorUserHandle).thenReturn(primaryUserHandle)
+        splitSelectStateController.setInitialTaskSelect(null, 0, itemInfo, null, 1)
+        splitSelectStateController.setSecondTask(pendingIntent)
+        assertTrue(splitSelectStateController.isBothSplitAppsConfirmed)
     }
 
     // Generate GroupTask with default userId.

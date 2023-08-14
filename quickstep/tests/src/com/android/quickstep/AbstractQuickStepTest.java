@@ -34,7 +34,7 @@ import org.junit.rules.TestRule;
  */
 public abstract class AbstractQuickStepTest extends AbstractLauncherUiTest {
     public static final boolean ENABLE_SHELL_TRANSITIONS =
-            SystemProperties.getBoolean("persist.wm.debug.shell_transit", false);
+            SystemProperties.getBoolean("persist.wm.debug.shell_transit", true);
     @Override
     protected TestRule getRulesInsideActivityMonitor() {
         return RuleChain.

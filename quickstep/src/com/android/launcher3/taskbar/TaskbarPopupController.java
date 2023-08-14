@@ -32,7 +32,6 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
@@ -137,6 +136,7 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
         if (folder != null) {
             folder.iterateOverItems(op);
         }
+        mControllers.taskbarAllAppsController.updateNotificationDots(updatedDots);
     }
 
     /**
@@ -175,9 +175,9 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
                     deepShortcutCount,
                     mPopupDataProvider.getNotificationKeysForItem(item),
                     systemShortcuts);
-            icon.clearAccessibilityFocus();
         }
 
+        icon.clearAccessibilityFocus();
         container.addOnAttachStateChangeListener(
                 new PopupLiveUpdateHandler<BaseTaskbarContext>(context, container) {
                     @Override
@@ -204,9 +204,7 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
         // append split options to APP_INFO shortcut, the order here will reflect in the popup
         return Stream.concat(
                 Stream.of(APP_INFO),
-                Utilities.getSplitPositionOptions(mContext.getDeviceProfile())
-                        .stream()
-                        .map(this::createSplitShortcutFactory)
+                mControllers.uiController.getSplitMenuOptions()
         );
     }
 
@@ -264,7 +262,7 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
      *                 right.
      * @return A factory function to be used in populating the long-press menu.
      */
-    private SystemShortcut.Factory<BaseTaskbarContext> createSplitShortcutFactory(
+    SystemShortcut.Factory<BaseTaskbarContext> createSplitShortcutFactory(
             SplitPositionOption position) {
         return (context, itemInfo, originalView) -> new TaskbarSplitShortcut(context, itemInfo,
                 originalView, position, mAllowInitialSplitSelection);
@@ -327,6 +325,7 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
                                 mItemInfo.getIntent().getComponent(),
                                 null,
                                 mItemInfo.user),
+                        mItemInfo.user.getIdentifier(),
                         new Intent(),
                         getPosition().stagePosition,
                         null,

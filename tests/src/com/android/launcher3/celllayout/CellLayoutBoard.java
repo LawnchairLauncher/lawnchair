@@ -171,6 +171,8 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
         }
     }
 
+    private HashSet<Character> mUsedWidgetTypes = new HashSet<>();
+
     static final int INFINITE = 99999;
 
     char[][] mWidget = new char[30][30];
@@ -179,11 +181,23 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
     Map<Character, WidgetRect> mWidgetsMap = new HashMap<>();
 
     List<IconPoint> mIconPoints = new ArrayList<>();
-    Map<Character, IconPoint> mIconsMap = new HashMap<>();
 
     WidgetRect mMain = null;
 
+    int mWidth, mHeight;
+
     CellLayoutBoard() {
+        for (int x = 0; x < mWidget.length; x++) {
+            for (int y = 0; y < mWidget[0].length; y++) {
+                mWidget[x][y] = CellType.EMPTY;
+            }
+        }
+    }
+
+    CellLayoutBoard(int width, int height) {
+        mWidget = new char[width][height];
+        this.mWidth = width;
+        this.mHeight = height;
         for (int x = 0; x < mWidget.length; x++) {
             for (int y = 0; y < mWidget[0].length; y++) {
                 mWidget[x][y] = CellType.EMPTY;
@@ -257,6 +271,16 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
         }).collect(Collectors.toList());
     }
 
+    private char getNextWidgetType() {
+        for (char type = 'a'; type <= 'z'; type++) {
+            if (type == 'i') continue;
+            if (mUsedWidgetTypes.contains(type)) continue;
+            mUsedWidgetTypes.add(type);
+            return type;
+        }
+        return 'z';
+    }
+
     public void addWidget(int x, int y, int spanX, int spanY, char type) {
         Rect rect = new Rect(x, y + spanY - 1, x + spanX - 1, y);
         removeOverlappingItems(rect);
@@ -269,8 +293,14 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
         }
     }
 
+    public void addWidget(int x, int y, int spanX, int spanY) {
+        addWidget(x, y, spanX, spanY, getNextWidgetType());
+    }
+
     public void addIcon(int x, int y) {
-        removeOverlappingItems(new Point(x, y));
+        Point iconCoord = new Point(x, y);
+        removeOverlappingItems(iconCoord);
+        mIconPoints.add(new IconPoint(iconCoord, CellType.ICON));
         mWidget[x][y] = 'i';
     }
 
@@ -306,8 +336,12 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
         return new WidgetRect(type, widgetRect);
     }
 
+    public static boolean isFolder(char type) {
+        return type >= 'A' && type <= 'Z';
+    }
+
     public static boolean isWidget(char type) {
-        return type != CellType.ICON && type != CellType.EMPTY;
+        return type != CellType.ICON && type != CellType.EMPTY && (type >= 'a' && type <= 'z');
     }
 
     public static boolean isIcon(char type) {
@@ -362,6 +396,8 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
                 }
             }
         }
+        board.mHeight = lines.length;
+        board.mWidth = lines[0].length();
         board.mWidgetsRects = getRects(board.mWidget);
         board.mWidgetsRects.forEach(widgetRect -> {
             if (widgetRect.mType == CellType.MAIN_WIDGET) {
@@ -375,6 +411,11 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
 
     public String toString(int maxX, int maxY) {
         StringBuilder s = new StringBuilder();
+        s.append("board: ");
+        s.append(maxX);
+        s.append("x");
+        s.append(maxY);
+        s.append("\n");
         maxX = Math.min(maxX, mWidget.length);
         maxY = Math.min(maxY, mWidget[0].length);
         for (int y = 0; y < maxY; y++) {
@@ -384,6 +425,11 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
             s.append('\n');
         }
         return s.toString();
+    }
+
+    @Override
+    public String toString() {
+        return toString(mWidth, mHeight);
     }
 
     public static List<CellLayoutBoard> boardListFromString(String boardsStr) {
@@ -404,5 +450,13 @@ public class CellLayoutBoard implements Comparable<CellLayoutBoard> {
             boards.add(CellLayoutBoard.boardFromString(board));
         }
         return boards;
+    }
+
+    public int getWidth() {
+        return mWidth;
+    }
+
+    public int getHeight() {
+        return mHeight;
     }
 }

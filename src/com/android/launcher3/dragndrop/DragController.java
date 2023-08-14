@@ -21,7 +21,6 @@ import static com.android.launcher3.Utilities.ATLEAST_Q;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -35,7 +34,6 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.ActivityContext;
 
@@ -145,17 +143,12 @@ public abstract class DragController<T extends ActivityContext>
             int dragLayerY,
             DragSource source,
             ItemInfo dragInfo,
-            Point dragOffset,
             Rect dragRegion,
             float initialDragViewScale,
             float dragViewScaleOnDrop,
             DragOptions options) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_DROP_TARGET, "4");
-        }
-        return startDrag(drawable, /* view= */ null, originalView, dragLayerX, dragLayerY,
-                source, dragInfo, dragOffset, dragRegion, initialDragViewScale, dragViewScaleOnDrop,
-                options);
+        return startDrag(drawable, /* view= */ null, originalView, dragLayerX, dragLayerY, source,
+                dragInfo, dragRegion, initialDragViewScale, dragViewScaleOnDrop, options);
     }
 
     /**
@@ -185,14 +178,12 @@ public abstract class DragController<T extends ActivityContext>
             int dragLayerY,
             DragSource source,
             ItemInfo dragInfo,
-            Point dragOffset,
             Rect dragRegion,
             float initialDragViewScale,
             float dragViewScaleOnDrop,
             DragOptions options) {
-        return startDrag(/* drawable= */ null, view, originalView, dragLayerX, dragLayerY,
-                source, dragInfo, dragOffset, dragRegion, initialDragViewScale, dragViewScaleOnDrop,
-                options);
+        return startDrag(/* drawable= */ null, view, originalView, dragLayerX, dragLayerY, source,
+                dragInfo, dragRegion, initialDragViewScale, dragViewScaleOnDrop, options);
     }
 
     protected abstract DragView startDrag(
@@ -203,16 +194,12 @@ public abstract class DragController<T extends ActivityContext>
             int dragLayerY,
             DragSource source,
             ItemInfo dragInfo,
-            Point dragOffset,
             Rect dragRegion,
             float initialDragViewScale,
             float dragViewScaleOnDrop,
             DragOptions options);
 
     protected void callOnDragStart() {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_DROP_TARGET, "6");
-        }
         if (mOptions.preDragCondition != null) {
             mOptions.preDragCondition.onPreDragEnd(mDragObject, true /* dragStarted*/);
         }

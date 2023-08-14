@@ -67,7 +67,7 @@ public abstract class SwipeUpAnimationLogic implements
     // 0 => preview snapShot is completely visible, and hotseat is completely translated down
     // 1 => preview snapShot is completely aligned with the recents view and hotseat is completely
     // visible.
-    protected final AnimatedFloat mCurrentShift = new AnimatedFloat(this::updateFinalShift);
+    protected final AnimatedFloat mCurrentShift = new AnimatedFloat(this::onCurrentShiftUpdated);
     protected float mCurrentDisplacement;
 
     // The distance needed to drag to reach the task size in recents.
@@ -82,7 +82,8 @@ public abstract class SwipeUpAnimationLogic implements
         mContext = context;
         mDeviceState = deviceState;
         mGestureState = gestureState;
-        mIsSwipeForSplit = TopTaskTracker.INSTANCE.get(context).getRunningSplitTaskIds().length > 1;
+        updateIsGestureForSplit(TopTaskTracker.INSTANCE.get(context)
+                .getRunningSplitTaskIds().length);
 
         mTargetGluer = new RemoteTargetGluer(mContext, mGestureState.getActivityInterface());
         mRemoteTargetHandles = mTargetGluer.getRemoteTargetHandles();
@@ -148,7 +149,7 @@ public abstract class SwipeUpAnimationLogic implements
      * Called when the value of {@link #mCurrentShift} changes
      */
     @UiThread
-    public abstract void updateFinalShift();
+    public abstract void onCurrentShiftUpdated();
 
     protected PagedOrientationHandler getOrientationHandler() {
         // OrientationHandler should be independent of remote target, can directly take one
@@ -278,6 +279,10 @@ public abstract class SwipeUpAnimationLogic implements
                     remoteHandle.getTaskViewSimulator(), startRects[i], homeToWindowPositionMap[i]);
         }
         return out;
+    }
+
+    protected void updateIsGestureForSplit(int targetCount) {
+        mIsSwipeForSplit = targetCount > 1;
     }
 
     private RectFSpringAnim getWindowAnimationToHomeInternal(

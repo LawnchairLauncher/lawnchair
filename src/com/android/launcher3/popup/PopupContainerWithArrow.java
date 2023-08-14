@@ -95,6 +95,8 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
 
     private static final int SHORTCUT_COLLAPSE_THRESHOLD = 6;
 
+    private final float mShortcutHeight;
+
     private BubbleTextView mOriginalIcon;
     private int mNumNotifications;
     private NotificationContainer mNotificationContainer;
@@ -112,6 +114,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
         mStartDragThreshold = getResources().getDimensionPixelSize(
                 R.dimen.deep_shortcuts_start_drag_threshold);
         mContainerWidth = getResources().getDimensionPixelSize(R.dimen.bg_popup_item_width);
+        mShortcutHeight = getResources().getDimension(R.dimen.system_shortcut_header_height);
     }
 
     public PopupContainerWithArrow(Context context, AttributeSet attrs) {
@@ -239,6 +242,7 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
                     popupDataProvider.getNotificationKeysForItem(item),
                     systemShortcuts);
         }
+        launcher.tryClearAccessibilityFocus(icon);
         launcher.refreshAndBindWidgetsForPackageUser(PackageUserKey.fromItemInfo(item));
         container.requestFocus();
         return container;
@@ -387,16 +391,18 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
      */
     private void addAllShortcutsMaterialU(int deepShortcutCount,
             List<SystemShortcut> systemShortcuts) {
-
         if (deepShortcutCount + systemShortcuts.size() <= SHORTCUT_COLLAPSE_THRESHOLD) {
             // add all system shortcuts including widgets shortcut to same container
             addSystemShortcutsMaterialU(systemShortcuts,
                     R.layout.system_shortcut_rows_container_material_u,
                     R.layout.system_shortcut);
-            addDeepShortcutsMaterialU(deepShortcutCount);
+            float currentHeight = (mShortcutHeight * systemShortcuts.size())
+                    + mChildContainerMargin;
+            addDeepShortcutsMaterialU(deepShortcutCount, currentHeight);
             return;
         }
 
+        float currentHeight = mShortcutHeight + mChildContainerMargin;
         List<SystemShortcut> nonWidgetSystemShortcuts =
                 getNonWidgetSystemShortcuts(systemShortcuts);
         // If total shortcuts over threshold, collapse system shortcuts to single row
@@ -411,8 +417,9 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
             mWidgetContainer = inflateAndAdd(R.layout.widget_shortcut_container_material_u,
                     this);
             initializeWidgetShortcut(mWidgetContainer, widgetShortcutOpt.get());
+            currentHeight += mShortcutHeight + mChildContainerMargin;
         }
-        addDeepShortcutsMaterialU(deepShortcutCount);
+        addDeepShortcutsMaterialU(deepShortcutCount, currentHeight);
     }
 
     /**
@@ -497,10 +504,14 @@ public class PopupContainerWithArrow<T extends Context & ActivityContext>
     /**
      * Inflates and adds [deepShortcutCount] number of DeepShortcutView for the  to a new container
      * @param deepShortcutCount number of DeepShortcutView instances to add
+     * @param currentHeight height of popup before adding deep shortcuts
      */
-    private void addDeepShortcutsMaterialU(int deepShortcutCount) {
+    private void addDeepShortcutsMaterialU(int deepShortcutCount, float currentHeight) {
         mDeepShortcutContainer = inflateAndAdd(R.layout.deep_shortcut_container, this);
         for (int i = deepShortcutCount; i > 0; i--) {
+            currentHeight += mShortcutHeight;
+            // when there is limited vertical screen space, limit total popup rows to fit
+            if (currentHeight >= mActivityContext.getDeviceProfile().availableHeightPx) break;
             DeepShortcutView v = inflateAndAdd(R.layout.deep_shortcut_material_u,
                     mDeepShortcutContainer);
             v.getLayoutParams().width = mContainerWidth;

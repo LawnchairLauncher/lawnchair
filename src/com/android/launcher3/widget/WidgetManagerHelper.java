@@ -78,8 +78,16 @@ public class WidgetManagerHelper {
             return allWidgetsSteam(mContext).collect(Collectors.toList());
         }
 
-        return mAppWidgetManager.getInstalledProvidersForPackage(
-                packageUser.mPackageName, packageUser.mUser);
+        try {
+            return mAppWidgetManager.getInstalledProvidersForPackage(
+                    packageUser.mPackageName, packageUser.mUser);
+        } catch (IllegalStateException e) {
+            // b/277189566: Launcher will load the widget when it gets the user-unlock event.
+            // If exception is thrown because of device is locked, it means a race condition occurs
+            // that the user got locked again while launcher is processing the event. In this case
+            // we should return empty list.
+            return Collections.emptyList();
+        }
     }
 
     /**

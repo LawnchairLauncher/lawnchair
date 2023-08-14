@@ -32,12 +32,6 @@
     <dimen name="dynamic_grid_hotseat_bottom_tall_padding">0dp</dimen>
     <dimen name="spring_loaded_hotseat_top_margin">76dp</dimen>
 
-    <!-- Qsb -->
-    <!-- Used for adjusting the position of QSB when placed in hotseat. This is a ratio and a higher
-     number signifies that the QSB is close to the hotseat icons and a lower number signifies that
-      it is close to the bottom of the screen -->
-    <item name="qsb_center_factor" format="float" type="dimen">0.325</item>
-
     <dimen name="dynamic_grid_hotseat_side_padding">0dp</dimen>
 
     <!-- Scalable Grid -->
@@ -178,6 +172,7 @@
     <dimen name="widget_tabs_button_horizontal_padding">4dp</dimen>
     <dimen name="widget_tabs_horizontal_padding">16dp</dimen>
     <dimen name="widget_apps_tabs_vertical_padding">6dp</dimen>
+    <dimen name="widget_picker_landscape_tablet_left_right_margin">117dp</dimen>
 
     <dimen name="recommended_widgets_table_vertical_padding">8dp</dimen>
 
@@ -192,7 +187,7 @@
     <dimen name="widget_list_header_view_vertical_padding">20dp</dimen>
     <dimen name="widget_list_entry_spacing">2dp</dimen>
     <dimen name="widget_list_horizontal_margin">16dp</dimen>
-    <dimen name="widget_list_horizontal_margin_large_screen">24dp</dimen>
+    <dimen name="widget_list_horizontal_margin_two_pane">24dp</dimen>
 
     <dimen name="widget_preview_shadow_blur">0.5dp</dimen>
     <dimen name="widget_preview_key_shadow_distance">1dp</dimen>
@@ -232,6 +227,7 @@
     <dimen name="drop_target_button_drawable_padding">8dp</dimen>
     <dimen name="drop_target_button_drawable_horizontal_padding">16dp</dimen>
     <dimen name="drop_target_button_drawable_vertical_padding">8dp</dimen>
+    <dimen name="drop_target_button_frame_radius">80dp</dimen>
     <dimen name="drop_target_button_gap">28dp</dimen>
     <dimen name="drop_target_button_workspace_edge_gap">0dp</dimen>
 

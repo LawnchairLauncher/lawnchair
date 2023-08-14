@@ -22,49 +22,46 @@
     android:paddingVertical="26dp"
     android:paddingHorizontal="56dp">
 
+    <androidx.constraintlayout.helper.widget.Flow
+        android:id="@+id/hotseat_flow"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+
+        app:constraint_referenced_ids=
+            "hotseat_icon_1, hotseat_icon_2, hotseat_icon_3, hotseat_icon_4"
+        app:flow_wrapMode="aligned"
+        app:flow_maxElementsWrap="1"
+        app:flow_verticalStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
     <View
         android:id="@+id/hotseat_icon_1"
         android:layout_width="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_height="@dimen/gesture_tutorial_hotseat_icon_size"
-        android:background="@drawable/hotseat_icon_home"
-        android:clipToOutline="true"
-
-        app:layout_constraintBottom_toTopOf="@id/hotseat_icon_2"
-        app:layout_constraintVertical_chainStyle="spread_inside"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@drawable/redesigned_hotseat_icon"
+        android:clipToOutline="true" />
 
     <View
         android:id="@+id/hotseat_icon_2"
         android:layout_width="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_height="@dimen/gesture_tutorial_hotseat_icon_size"
-        android:background="@drawable/hotseat_icon_home"
-        android:clipToOutline="true"
-
-        app:layout_constraintBottom_toTopOf="@id/hotseat_icon_3"
-        app:layout_constraintTop_toBottomOf="@id/hotseat_icon_1"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:background="@drawable/redesigned_hotseat_icon"
+        android:clipToOutline="true" />
 
     <View
         android:id="@+id/hotseat_icon_3"
         android:layout_width="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_height="@dimen/gesture_tutorial_hotseat_icon_size"
-        android:background="@drawable/hotseat_icon_home"
-        android:clipToOutline="true"
-
-        app:layout_constraintBottom_toTopOf="@id/hotseat_icon_4"
-        app:layout_constraintTop_toBottomOf="@id/hotseat_icon_2"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:background="@drawable/redesigned_hotseat_icon"
+        android:clipToOutline="true" />
 
     <View
         android:id="@+id/hotseat_icon_4"
         android:layout_width="@dimen/gesture_tutorial_hotseat_icon_size"
         android:layout_height="@dimen/gesture_tutorial_hotseat_icon_size"
-        android:background="@drawable/hotseat_icon_home"
-        android:clipToOutline="true"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/hotseat_icon_3"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        android:background="@drawable/redesigned_hotseat_icon"
+        android:clipToOutline="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -304,7 +304,8 @@ public class AddItemActivity extends BaseActivity
         mWidgetOptions = pendingInfo.getDefaultSizeOptions(this);
         mWidgetCell.getWidgetView().setTag(pendingInfo);
 
-        applyWidgetItemAsync(() -> new WidgetItem(widgetInfo, mIdp, mApp.getIconCache()));
+        applyWidgetItemAsync(() -> new WidgetItem(
+                widgetInfo, mIdp, mApp.getIconCache(), mApp.getContext()));
         return WidgetsModel.newPendingItemInfo(this, widgetInfo.getComponent(),
                 widgetInfo.getUser());
     }

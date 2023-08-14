@@ -37,6 +37,7 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.LauncherModelHelper;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.TestUtil;
 
@@ -48,6 +49,7 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -180,7 +182,8 @@ public class ModelMultiCallbacksTest {
         }
 
         @Override
-        public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks) {
+        public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks,
+                int workspaceItemCount, boolean isBindSync) {
             mPageBoundSync = boundPages;
             mPendingTasks = pendingTasks;
         }
@@ -191,7 +194,8 @@ public class ModelMultiCallbacksTest {
         }
 
         @Override
-        public void bindAllApplications(AppInfo[] apps, int flags) {
+        public void bindAllApplications(AppInfo[] apps, int flags,
+                Map<PackageUserKey, Integer> packageUserKeytoUidMap) {
             mAppInfos = apps;
         }
 

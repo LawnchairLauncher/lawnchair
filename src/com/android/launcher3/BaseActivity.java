@@ -29,6 +29,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.IntDef;
@@ -360,6 +361,12 @@ public abstract class BaseActivity extends Activity implements ActivityContext {
 
     public boolean hasSomeInvisibleFlag(int mask) {
         return (mForceInvisible & mask) != 0;
+    }
+
+    /**
+     * Attempts to clear accessibility focus on {@param view}.
+     */
+    public void tryClearAccessibilityFocus(View view) {
     }
 
     public interface MultiWindowModeChangedListener {

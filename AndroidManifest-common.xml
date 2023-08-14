@@ -43,8 +43,8 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <!-- for rotating surface by arbitrary degree -->
     <uses-permission android:name="android.permission.ROTATE_SURFACE_FLINGER" />
+    <uses-permission android:name="android.permission.WAKEUP_SURFACE_FLINGER" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.READ_HOME_APP_SEARCH_DATA" />
 
     <!--
     Permissions required for read/write access to the workspace data. These permission name

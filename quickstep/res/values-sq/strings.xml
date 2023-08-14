@@ -82,7 +82,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Plotësisht gati!"</string>
     <string name="allset_hint" msgid="459504134589971527">"Rrëshqit shpejt lart për të shkuar në ekranin bazë"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Trokit te butoni \"kreu\" për të shkuar tek ekrani bazë"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"Je gati që të fillosh ta përdorësh këtë <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Je gati që të fillosh të përdorësh <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"pajisje"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Cilësimet e navigimit të sistemit"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Ndaj"</string>
@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Kapërce"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Rrotullo ekranin"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Edukimi për shiritin e detyrave"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Edukimi i shiritit të detyrave u shfaq"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Edukimi nga shiriti i detyrave u mbyll"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Zvarrit një aplikacion në anë për të përdorur 2 aplikacione njëherësh"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Rrëshqit lart ngadalë për të shfaqur \"Shiritin e detyrave\""</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Merr sugjerime për aplikacion bazuar në rutinën tënde"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Aktivizo navigimin me gjeste te \"Cilësimet\" për të fshehur \"Shiritin e detyrave\""</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Bëj më shumë me \"Shiritin e detyrave\""</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Para"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Pas"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Mbyll"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"U krye"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Faqja kryesore"</string>

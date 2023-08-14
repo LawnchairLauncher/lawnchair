@@ -58,6 +58,8 @@ public class UnfoldMoveFromCenterWorkspaceAnimator extends BaseUnfoldMoveFromCen
 
         setClipChildren(workspace, false);
         setClipToPadding(workspace, true);
+
+        super.onPrepareViewsForAnimation();
     }
 
     @Override

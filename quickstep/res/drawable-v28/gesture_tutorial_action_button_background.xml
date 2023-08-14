@@ -16,5 +16,4 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <corners android:radius="?android:attr/dialogCornerRadius"/>
-    <solid android:color="?android:attr/colorAccent"/>
 </shape>

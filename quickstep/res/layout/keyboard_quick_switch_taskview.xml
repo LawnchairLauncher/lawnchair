@@ -23,7 +23,17 @@
     android:importantForAccessibility="yes"
     android:background="@drawable/keyboard_quick_switch_task_view_background"
     android:clipToOutline="true"
-    launcher:borderColor="?androidprv:attr/colorAccentSecondaryVariant">
+    launcher:borderColor="?androidprv:attr/materialColorOutline">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <include
             layout="@layout/keyboard_quick_switch_thumbnail"
@@ -48,5 +58,30 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+
+        <ImageView
+            android:id="@+id/icon1"
+            android:layout_width="@dimen/keyboard_quick_switch_taskview_icon_size"
+            android:layout_height="@dimen/keyboard_quick_switch_taskview_icon_size"
+            android:layout_marginTop="@dimen/keyboard_quick_switch_taskview_icon_margin"
+            android:layout_marginStart="@dimen/keyboard_quick_switch_taskview_icon_margin"
+            android:importantForAccessibility="no"
+
+            app:layout_constraintTop_toTopOf="@id/thumbnail1"
+            app:layout_constraintStart_toStartOf="@id/thumbnail1"/>
+
+        <ImageView
+            android:id="@+id/icon2"
+            android:layout_width="@dimen/keyboard_quick_switch_taskview_icon_size"
+            android:layout_height="@dimen/keyboard_quick_switch_taskview_icon_size"
+            android:layout_marginTop="@dimen/keyboard_quick_switch_taskview_icon_margin"
+            android:layout_marginStart="@dimen/keyboard_quick_switch_taskview_icon_margin"
+            android:importantForAccessibility="no"
+            android:visibility="gone"
+
+            app:layout_constraintTop_toTopOf="@id/thumbnail2"
+            app:layout_constraintStart_toStartOf="@id/thumbnail2"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.android.launcher3.taskbar.KeyboardQuickSwitchTaskView>

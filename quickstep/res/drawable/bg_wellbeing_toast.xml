@@ -14,8 +14,8 @@
      limitations under the License.
 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:priv-android="http://schemas.android.com/apk/prv/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     android:shape="rectangle">
-    <solid android:color="?priv-android:attr/colorAccentPrimary" />
+    <solid android:color="?androidprv:attr/materialColorSecondaryFixed" />
     <corners android:radius="?android:attr/dialogCornerRadius" />
 </shape>

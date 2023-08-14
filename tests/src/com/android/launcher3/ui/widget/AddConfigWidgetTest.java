@@ -15,24 +15,27 @@
  */
 package com.android.launcher3.ui.widget;
 
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
+
+import static com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
+import android.view.View;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.tapl.Widget;
-import com.android.launcher3.tapl.WidgetResizeFrame;
-import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.testcomponent.WidgetConfigActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
+import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
@@ -84,30 +87,51 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
         clearHomescreen();
         mDevice.pressHome();
 
-        final Widgets widgets = mLauncher.getWorkspace().openAllWidgets();
-
         // Drag widget to homescreen
         WidgetConfigStartupMonitor monitor = new WidgetConfigStartupMonitor();
-        WidgetResizeFrame resizeFrame =
-                widgets.getWidget(mWidgetInfo.getLabel(mTargetContext.getPackageManager()))
-                        .dragConfigWidgetToWorkspace(acceptConfig);
+        mLauncher.getWorkspace()
+                .openAllWidgets()
+                .getWidget(mWidgetInfo.getLabel(mTargetContext.getPackageManager()))
+                .dragToWorkspace(true, false);
         // Widget id for which the config activity was opened
         mWidgetId = monitor.getWidgetId();
 
         // Verify that the widget id is valid and bound
         assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
 
+        setResult(acceptConfig);
         if (acceptConfig) {
-            assertNotNull("Widget resize frame not shown after widget added", resizeFrame);
-            resizeFrame.dismiss();
-
-            final Widget widget =
-                    mLauncher.getWorkspace().tryGetWidget(mWidgetInfo.label, DEFAULT_UI_TIMEOUT);
-            assertNotNull("Widget not found on the workspace", widget);
+            Wait.atMost("", new WidgetSearchCondition(), DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
+            assertNotNull(mAppWidgetManager.getAppWidgetInfo(mWidgetId));
         } else {
-            final Widget widget =
-                    mLauncher.getWorkspace().tryGetWidget(mWidgetInfo.label, DEFAULT_UI_TIMEOUT);
-            assertNull("Widget unexpectedly found on the workspace", widget);
+            // Verify that the widget id is deleted.
+            Wait.atMost("", () -> mAppWidgetManager.getAppWidgetInfo(mWidgetId) == null,
+                    DEFAULT_ACTIVITY_TIMEOUT, mLauncher);
+        }
+    }
+
+    private void setResult(boolean success) {
+        getInstrumentation().getTargetContext().sendBroadcast(
+                WidgetConfigActivity.getCommandIntent(WidgetConfigActivity.class,
+                        success ? "clickOK" : "clickCancel"));
+    }
+
+    /**
+     * Condition for searching widget id
+     */
+    private class WidgetSearchCondition implements Wait.Condition, ItemOperator {
+
+        @Override
+        public boolean isTrue() throws Throwable {
+            return mMainThreadExecutor.submit(mActivityMonitor.itemExists(this)).get();
+        }
+
+        @Override
+        public boolean evaluate(ItemInfo info, View view) {
+            return info instanceof LauncherAppWidgetInfo
+                    && ((LauncherAppWidgetInfo) info).providerName.getClassName().equals(
+                            mWidgetInfo.provider.getClassName())
+                    && ((LauncherAppWidgetInfo) info).appWidgetId == mWidgetId;
         }
     }
 

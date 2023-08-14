@@ -113,13 +113,13 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
      * full/invariant device profile sizes.
      */
     public void setup(int cellWidth, int cellHeight, boolean invertHorizontally, int colCount,
-            int rowCount, Point borderSpace, @Nullable Rect inset) {
+            int rowCount, Point borderSpace) {
         setup(cellWidth, cellHeight, invertHorizontally, colCount, rowCount, 1.0f, 1.0f,
-                borderSpace, inset);
+                borderSpace, null);
     }
 
     /**
-     * Use this method, as opposed to {@link #setup(int, int, boolean, int, int, Point, Rect)},
+     * Use this method, as opposed to {@link #setup(int, int, boolean, int, int, Point)},
      * if the view needs to be scaled.
      *
      * ie. In multi-window mode, we setup widgets so that they are measured and laid out
@@ -150,10 +150,10 @@ public class CellLayoutLayoutParams extends ViewGroup.MarginLayoutParams {
             y = topMargin + (myCellY * cellHeight) + (myCellY * borderSpace.y);
 
             if (inset != null) {
-                x -= inset.left;
-                y -= inset.top;
-                width += inset.left + inset.right;
-                height += inset.top + inset.bottom;
+                x += inset.left;
+                y += inset.top;
+                width -= inset.left + inset.right;
+                height -= inset.top + inset.bottom;
             }
         }
     }

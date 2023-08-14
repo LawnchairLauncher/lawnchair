@@ -21,7 +21,6 @@ import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.content.Context;
 
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.GridBackupTable;
@@ -42,10 +41,7 @@ public class HotseatRestoreHelper {
                             context.getContentResolver(),
                             LauncherSettings.Settings.METHOD_NEW_TRANSACTION)
                             .getBinder(LauncherSettings.Settings.EXTRA_VALUE)) {
-                InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
-                GridBackupTable backupTable = new GridBackupTable(context,
-                        transaction.getDb(), idp.numDatabaseHotseatIcons, idp.numColumns,
-                        idp.numRows);
+                GridBackupTable backupTable = new GridBackupTable(context, transaction.getDb());
                 backupTable.createCustomBackupTable(HYBRID_HOTSEAT_BACKUP_TABLE);
                 transaction.commit();
                 LauncherSettings.Settings.call(context.getContentResolver(),
@@ -67,10 +63,7 @@ public class HotseatRestoreHelper {
                 if (!tableExists(transaction.getDb(), HYBRID_HOTSEAT_BACKUP_TABLE)) {
                     return;
                 }
-                InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
-                GridBackupTable backupTable = new GridBackupTable(context,
-                        transaction.getDb(), idp.numDatabaseHotseatIcons, idp.numColumns,
-                        idp.numRows);
+                GridBackupTable backupTable = new GridBackupTable(context, transaction.getDb());
                 backupTable.restoreFromCustomBackupTable(HYBRID_HOTSEAT_BACKUP_TABLE, true);
                 transaction.commit();
                 LauncherAppState.getInstance(context).getModel().forceReload();

@@ -39,10 +39,6 @@
     <!-- Recents: Title of a button that goes back from displaying tasks filtered by package name to displaying all tasks [CHAR LIMIT=30] -->
     <string name="recents_back" translatable="false">Back</string>
 
-    <!-- TODO: b/260610444. Content description of filtering icons needs to be updated -->
-    <!-- Recents: Content description for the icon on top of taskviews to initiate filtering -->
-    <string name="recents_filter_icon_desc" translatable="false">Click to show only this app\'s tasks</string>
-
     <!-- Accessibility title for the list of recent apps [CHAR_LIMIT=none] -->
     <string name="accessibility_recent_apps">Recent apps</string>
 
@@ -98,16 +94,21 @@
     <!-- content description for hotseat items -->
     <string name="hotseat_prediction_content_description">Predicted app: <xliff:g id="title" example="Chrome">%1$s</xliff:g></string>
 
+    <!-- Title of prompt shown before the gesture navigation tutorial to users who need to rotate their screen. [CHAR LIMIT=100] -->
+    <string name="gesture_tutorial_rotation_prompt_title">Rotate your device</string>
+    <!-- Prompt shown before the gesture navigation tutorial to users who need to rotate their screen to begin. [CHAR LIMIT=100] -->
+    <string name="gesture_tutorial_rotation_prompt">Please rotate your device to complete the gesture navigation tutorial</string>
+
     <!-- Feedback shown during interactive parts of Back gesture tutorial for right edge when the gesture is too far from the edge. [CHAR LIMIT=100] -->
-    <string name="back_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe from the far-right or far-left edge.</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe from the far-right or far-left edge</string>
     <!-- Feedback shown during interactive parts of Back gesture tutorial for right edge when the gesture is cancelled. [CHAR LIMIT=100] -->
-    <string name="back_gesture_feedback_cancelled">Make sure you swipe from the right or left edge to the middle of the screen and let go.</string>
+    <string name="back_gesture_feedback_cancelled">Make sure you swipe from the right or left edge to the middle of the screen and let go</string>
     <!-- Feedback shown after completing the back gesture step if the user is following the full gesture tutorial flow. [CHAR LIMIT=100] -->
     <string name="back_gesture_feedback_complete_with_overview_follow_up">You learned how to swipe from the right to go back. Next up, learn how to switch apps.</string>
     <!-- Feedback shown after completing the back gesture step if the user started this tutorial individually. [CHAR LIMIT=100] -->
-    <string name="back_gesture_feedback_complete_without_follow_up">You completed the go back gesture.</string>
+    <string name="back_gesture_feedback_complete_without_follow_up">You completed the go back gesture</string>
     <!-- Feedback shown during interactive parts of Back gesture tutorial when the gesture is within the nav bar region. [CHAR LIMIT=100] -->
-    <string name="back_gesture_feedback_swipe_in_nav_bar">Make sure you don\'t swipe too close to the bottom of the screen.</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar">Make sure you don\'t swipe too close to the bottom of the screen</string>
     <!-- Subtitle shown on the confirmation screen after successful gesture. [CHAR LIMIT=60] -->
     <string name="back_gesture_tutorial_confirm_subtitle">To change the sensitivity of the back gesture, go to Settings</string>
     <!-- Feedback shown during interactive parts of Home gesture tutorial when the gesture is started too far from the edge. [CHAR LIMIT=100] -->
@@ -119,16 +120,18 @@
     <string name="back_gesture_spoken_intro_subtitle">To go back to the last screen, swipe with 2 fingers from the left or right edge to the middle of the screen.</string>
     <!-- Title of the gesture tutorial section educating users on how to go back to the previous screen. [CHAR LIMIT=100] -->
     <string name="back_gesture_tutorial_title">Go back</string>
+    <!-- Subtitle of the gesture tutorial section educating users on how to go to back to the previous screen [CHAR LIMIT=100] -->
+    <string name="back_gesture_tutorial_subtitle">Swipe from the left or right edge to the middle of the screen</string>
 
-    <string name="home_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe up from the bottom edge of the screen.</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe up from the bottom edge of the screen</string>
     <!-- Feedback shown during interactive parts of Home gesture tutorial when the Overview gesture is detected. [CHAR LIMIT=100] -->
-    <string name="home_gesture_feedback_overview_detected">Make sure you don\'t pause before letting go.</string>
+    <string name="home_gesture_feedback_overview_detected">Make sure you don\'t pause before letting go</string>
     <!-- Feedback shown during interactive parts of Home gesture tutorial when the gesture is horizontal instead of vertical. [CHAR LIMIT=100] -->
-    <string name="home_gesture_feedback_wrong_swipe_direction">Make sure you swipe straight up.</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction">Make sure you swipe straight up</string>
     <!-- Feedback shown after completing the home gesture step if the user is following the full gesture tutorial flow. [CHAR LIMIT=100] -->
-    <string name="home_gesture_feedback_complete_with_follow_up">You completed the go Home gesture. Next up, learn how to go back.</string>
+    <string name="home_gesture_feedback_complete_with_follow_up">You completed the go home gesture. Next up, learn how to go back.</string>
     <!-- Feedback shown after completing the home gesture step if the user started this tutorial individually. [CHAR LIMIT=100] -->
-    <string name="home_gesture_feedback_complete_without_follow_up">You completed the go Home gesture.</string>
+    <string name="home_gesture_feedback_complete_without_follow_up">You completed the go home gesture</string>
     <!-- Introduction title for the Home gesture tutorial. [CHAR LIMIT=100] -->
     <string name="home_gesture_intro_title">Swipe to go home</string>
     <!-- Introduction subtitle for the Home gesture tutorial. [CHAR LIMIT=100] -->
@@ -138,18 +141,20 @@
     <!-- Title of the gesture tutorial section educating users on how to go to the home screen. [CHAR LIMIT=100] -->
     <string name="home_gesture_tutorial_title">Go home</string>
     <!-- Subtitle of the gesture tutorial section educating users on how to go to the home screen [CHAR LIMIT=100] -->
-    <string name="home_gesture_tutorial_subtitle">To go to your home screen at any time, swipe up from the bottom of your screen</string>
+    <string name="home_gesture_tutorial_subtitle">Swipe up from the bottom of your screen</string>
+    <!-- Title message when users successfully learn to go to the home screen [CHAR LIMIT=100] -->
+    <string name="home_gesture_tutorial_success">Great job!</string>
 
     <!-- Feedback shown during interactive parts of Overview gesture tutorial when the gesture is started too far from the edge. [CHAR LIMIT=100] -->
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe up from the bottom edge of the screen.</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge">Make sure you swipe up from the bottom edge of the screen</string>
     <!-- Feedback shown during interactive parts of Overview gesture tutorial when the Home gesture is detected. The window refers to the current app's window during the gesture. [CHAR LIMIT=100] -->
-    <string name="overview_gesture_feedback_home_detected">Try holding the window for longer before releasing.</string>
+    <string name="overview_gesture_feedback_home_detected">Try holding the window for longer before releasing</string>
     <!-- Feedback shown during interactive parts of Overview gesture tutorial when the gesture is horizontal instead of vertical. [CHAR LIMIT=100] -->
-    <string name="overview_gesture_feedback_wrong_swipe_direction">Make sure you swipe straight up, then pause.</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction">Make sure you swipe straight up, then pause</string>
     <!-- Feedback shown after completing the overview gesture step if the user is following the full gesture tutorial flow. [CHAR LIMIT=100] -->
     <string name="overview_gesture_feedback_complete_with_follow_up">You learned how to use gestures. To turn off gestures, go to Settings.</string>
     <!-- Feedback shown after completing the overview gesture step if the user started this tutorial individually. [CHAR LIMIT=100] -->
-    <string name="overview_gesture_feedback_complete_without_follow_up">You completed the switch apps gesture.</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up">You completed the switch apps gesture</string>
     <!-- Introduction title for the Overview gesture tutorial. [CHAR LIMIT=100] -->
     <string name="overview_gesture_intro_title">Swipe to switch apps</string>
     <!-- Introduction subtitle for the Overview gesture tutorial. [CHAR LIMIT=100] -->
@@ -158,6 +163,11 @@
     <string name="overview_gesture_spoken_intro_subtitle">To switch between apps, swipe up with 2 fingers from the bottom of your screen, hold, then release.</string>
     <!-- Title of the gesture tutorial section educating users on how to switch between apps. [CHAR LIMIT=100] -->
     <string name="overview_gesture_tutorial_title">Switch apps</string>
+    <!-- Subtitle of the gesture tutorial section educating users on how to switch between apps [CHAR LIMIT=100] -->
+    <string name="overview_gesture_tutorial_subtitle">Swipe up from the bottom of your screen, hold, then release</string>
+    <!-- Title message when users successfully learn to switch between apps [CHAR LIMIT=100] -->
+    <string name="overview_gesture_tutorial_success">Well done!</string>
+
 
     <!-- Title shown during interactive part of Assistant gesture tutorial. [CHAR LIMIT=30] -->
     <string name="assistant_gesture_tutorial_playground_title" translatable="false">Tutorial: Assistant</string>
@@ -241,10 +251,6 @@
     <!-- ******* Taskbar Edu ******* -->
     <!-- Accessibility title for the Taskbar education window. [CHAR_LIMIT=NONE] -->
     <string name="taskbar_edu_a11y_title">Taskbar education</string>
-    <!-- Accessibility text spoken when the Taskbar education panel appears [CHAR_LIMIT=NONE] -->
-    <string name="taskbar_edu_opened">Taskbar education appeared</string>
-    <!-- Accessibility text spoken when the Taskbar education panel disappears [CHAR_LIMIT=NONE] -->
-    <string name="taskbar_edu_closed">Taskbar education closed</string>
     <!-- Text in dialog that lets a user know how they can use the Taskbar to use multiple apps at once on their device. [CHAR_LIMIT=60] -->
     <string name="taskbar_edu_splitscreen">Drag an app to the side to use 2 apps at once</string>
     <!-- Text in dialog that lets a user know how they can show the Taskbar on their device. [CHAR_LIMIT=60] -->
@@ -255,10 +261,6 @@
     <string name="taskbar_edu_settings_persistent">Turn on gesture navigation in Settings to auto-hide the Taskbar</string>
     <!-- Title in dialog that shows a user what they can do with the Taskbar. [CHAR_LIMIT=60] -->
     <string name="taskbar_edu_features">Do more with the Taskbar</string>
-    <!-- Text on button to go to the next screen of a tutorial [CHAR_LIMIT=16] -->
-    <string name="taskbar_edu_next">Next</string>
-    <!-- Text on button to go to the previous screen of a tutorial [CHAR_LIMIT=16] -->
-    <string name="taskbar_edu_previous">Back</string>
     <!-- Text on button to exit a tutorial [CHAR_LIMIT=16] -->
     <string name="taskbar_edu_close">Close</string>
     <!-- Text on button to finish a tutorial [CHAR_LIMIT=16] -->
@@ -285,6 +287,13 @@
     <string name="taskbar_a11y_hidden_title">Taskbar hidden</string>
     <!-- Accessibility title for the Taskbar window on phones. [CHAR_LIMIT=NONE] -->
     <string name="taskbar_phone_a11y_title">Navigation bar</string>
+    <!-- Text in popup dialog for user to switch between always showing Taskbar or not. [CHAR LIMIT=30] -->
+    <string name="always_show_taskbar">Always show Taskbar</string>
+    <!-- Text in popup dialog for user to switch between system navigation modes. [CHAR LIMIT=30] -->
+    <string name="change_navigation_mode">Change navigation mode</string>
+    <!-- Accessibility title for the Taskbar vertical divider icon. [CHAR_LIMIT=NONE] -->
+    <string name="taskbar_divider_a11y_title">Taskbar Divider</string>
+
 
     <!-- Label for moving drop target to the top or left side of the screen, depending on orientation (from the Taskbar only). -->
     <string name="move_drop_target_top_or_left">Move to top&#47;left</string>
@@ -296,6 +305,7 @@
             =1{Show # more app.}
             other{Show # more apps.}
         }</string>
+
     <!-- Accessibility label for quick switch tiles showing split tasks [CHAR LIMIT=NONE] -->
     <string name="quick_switch_split_task"><xliff:g id="app_name_1" example="Chrome">%1$s</xliff:g> and <xliff:g id="app_name_2" example="Gmail">%2$s</xliff:g></string>
 </resources>

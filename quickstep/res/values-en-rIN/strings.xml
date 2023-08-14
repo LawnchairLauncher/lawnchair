@@ -63,7 +63,7 @@
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Swipe up from the bottom of your screen. This gesture always takes you to the home screen."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Swipe up with two fingers from the bottom of the screen. This gesture always takes you to the home screen."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Go home"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"To go to your home screen at any time, swipe up from the bottom of your screen."</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"To go to your home screen at any time, swipe up from the bottom of your screen"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Make sure that you swipe up from the bottom edge of the screen."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Try holding the window for longer before releasing."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Make sure that you swipe straight up, then pause."</string>
@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Skip"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Rotate screen"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Taskbar education"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Taskbar education appeared"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Taskbar education closed"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Drag an app to the side to use two apps at once"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Slow-swipe up to show the Taskbar"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Get app suggestions based on your routine"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Turn on gesture navigation in Settings to auto-hide the Taskbar"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Do more with the Taskbar"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Next"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Back"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Close"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Done"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Home"</string>

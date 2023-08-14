@@ -28,6 +28,9 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
+import com.android.quickstep.util.LottieAnimationColorUtils;
+
+import java.util.Map;
 
 /** A {@link TutorialController} for the Back tutorial. */
 final class BackGestureTutorialController extends TutorialController {
@@ -36,6 +39,22 @@ final class BackGestureTutorialController extends TutorialController {
 
     BackGestureTutorialController(BackGestureTutorialFragment fragment, TutorialType tutorialType) {
         super(fragment, tutorialType);
+        // Set the Lottie animation colors specifically for the Back gesture
+        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+            LottieAnimationColorUtils.updateColors(
+                    mAnimatedGestureDemonstration,
+                    Map.of(".onSurfaceBack", fragment.mRootView.mColorOnSurfaceBack,
+                            ".surfaceBack", fragment.mRootView.mColorSurfaceBack,
+                            ".secondaryBack", fragment.mRootView.mColorSecondaryBack));
+
+            LottieAnimationColorUtils.updateColors(
+                    mCheckmarkAnimation,
+                    Map.of(".checkmark",
+                            Utilities.isDarkTheme(mContext)
+                                    ? fragment.mRootView.mColorOnSurfaceBack
+                                    : fragment.mRootView.mColorSecondaryBack,
+                            ".checkmarkBackground", fragment.mRootView.mColorSurfaceBack));
+        }
     }
 
     @Override
@@ -47,12 +66,19 @@ final class BackGestureTutorialController extends TutorialController {
 
     @Override
     public int getIntroductionSubtitle() {
-        return R.string.back_gesture_intro_subtitle;
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? R.string.back_gesture_tutorial_subtitle
+                : R.string.back_gesture_intro_subtitle;
     }
 
     @Override
     public int getSpokenIntroductionSubtitle() {
         return R.string.back_gesture_spoken_intro_subtitle;
+    }
+
+    @Override
+    public int getSuccessFeedbackTitle() {
+        return R.string.gesture_tutorial_nice;
     }
 
     @Override
@@ -63,6 +89,28 @@ final class BackGestureTutorialController extends TutorialController {
     }
 
     @Override
+    public int getTitleTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_MainTitle_Back;
+    }
+
+    @Override
+    public int getSuccessTitleTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_MainTitle_Success_Back;
+    }
+
+    @Override
+    public int getDoneButtonTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_ButtonLabel_Back;
+    }
+
+    @Override
+    public int getDoneButtonColor() {
+        return Utilities.isDarkTheme(mContext)
+                ? mTutorialFragment.mRootView.mColorOnSurfaceBack
+                : mTutorialFragment.mRootView.mColorSecondaryBack;
+    }
+
+    @Override
     protected int getMockAppTaskLayoutResId() {
         return getMockAppTaskCurrentPageLayoutResId();
     }
@@ -70,7 +118,9 @@ final class BackGestureTutorialController extends TutorialController {
     @Override
     protected int getGestureLottieAnimationId() {
         return mTutorialFragment.isLargeScreen()
-                ? R.raw.back_gesture_tutorial_tablet_animation
+                ? mTutorialFragment.isFoldable()
+                    ? R.raw.back_gesture_tutorial_open_foldable_animation
+                    : R.raw.back_gesture_tutorial_tablet_animation
                 : R.raw.back_gesture_tutorial_animation;
     }
 
@@ -93,13 +143,18 @@ final class BackGestureTutorialController extends TutorialController {
     }
 
     @Override
-    protected int getSwipeActionColorResId() {
-        return R.color.gesture_back_tutorial_background;
+    protected int getFakeLauncherColor() {
+        return mTutorialFragment.mRootView.mColorSurfaceContainer;
+    }
+
+    @Override
+    protected int getExitingAppColor() {
+        return mTutorialFragment.mRootView.mColorSurfaceBack;
     }
 
     @Override
     public void onBackGestureAttempted(BackGestureResult result) {
-        if (isGestureCompleted()) {
+        if (skipGestureAttempt()) {
             return;
         }
         switch (mTutorialType) {
@@ -117,7 +172,7 @@ final class BackGestureTutorialController extends TutorialController {
 
     @Override
     public void onBackGestureProgress(float diffx, float diffy, boolean isLeftGesture) {
-        if (isGestureCompleted()) {
+        if (skipGestureAttempt()) {
             return;
         }
 
@@ -186,7 +241,7 @@ final class BackGestureTutorialController extends TutorialController {
 
     @Override
     public void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity) {
-        if (isGestureCompleted()) {
+        if (skipGestureAttempt()) {
             return;
         }
         if (mTutorialType == BACK_NAVIGATION_COMPLETE) {
@@ -203,9 +258,6 @@ final class BackGestureTutorialController extends TutorialController {
                 case HOME_GESTURE_COMPLETED:
                 case OVERVIEW_GESTURE_COMPLETED:
                 case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
-                case ASSISTANT_COMPLETED:
-                case ASSISTANT_NOT_STARTED_BAD_ANGLE:
-                case ASSISTANT_NOT_STARTED_SWIPE_TOO_SHORT:
                 default:
                     showFeedback(R.string.back_gesture_feedback_swipe_in_nav_bar);
 

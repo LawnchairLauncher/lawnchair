@@ -24,8 +24,12 @@ import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
+import com.android.launcher3.util.PackageUserKey;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  * Handles the all apps overlay window initialization, updates, and its data.
@@ -51,6 +55,8 @@ public final class TaskbarAllAppsController {
     private boolean mDisallowGlobalDrag;
     private boolean mDisallowLongClick;
 
+    private Map<PackageUserKey, Integer> mPackageUserKeytoUidMap = Collections.emptyMap();
+
     /** Initialize the controller. */
     public void init(TaskbarControllers controllers, boolean allAppsVisible) {
         mControllers = controllers;
@@ -65,11 +71,12 @@ public final class TaskbarAllAppsController {
     }
 
     /** Updates the current {@link AppInfo} instances. */
-    public void setApps(AppInfo[] apps, int flags) {
+    public void setApps(AppInfo[] apps, int flags, Map<PackageUserKey, Integer> map) {
         mApps = apps;
         mAppsModelFlags = flags;
+        mPackageUserKeytoUidMap = map;
         if (mAppsView != null) {
-            mAppsView.getAppsStore().setApps(mApps, mAppsModelFlags);
+            mAppsView.getAppsStore().setApps(mApps, mAppsModelFlags, mPackageUserKeytoUidMap);
         }
     }
 
@@ -91,9 +98,20 @@ public final class TaskbarAllAppsController {
         }
     }
 
-    /** Opens the {@link TaskbarAllAppsContainerView} in a new window. */
-    public void show() {
-        show(true);
+    /** Updates the current notification dots. */
+    public void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
+        if (mAppsView != null) {
+            mAppsView.getAppsStore().updateNotificationDots(updatedDots);
+        }
+    }
+
+    /** Toggles visibility of {@link TaskbarAllAppsContainerView} in the overlay window. */
+    public void toggle() {
+        if (isOpen()) {
+            mSlideInView.close(true);
+        } else {
+            show(true);
+        }
     }
 
     /** Returns {@code true} if All Apps is open. */
@@ -123,7 +141,7 @@ public final class TaskbarAllAppsController {
 
         viewController.show(animate);
         mAppsView = overlayContext.getAppsView();
-        mAppsView.getAppsStore().setApps(mApps, mAppsModelFlags);
+        mAppsView.getAppsStore().setApps(mApps, mAppsModelFlags, mPackageUserKeytoUidMap);
         mAppsView.getFloatingHeaderView()
                 .findFixedRowByType(PredictionRowView.class)
                 .setPredictedApps(mPredictedApps);
@@ -135,10 +153,15 @@ public final class TaskbarAllAppsController {
         overlayContext.getDragController().setDisallowLongClick(mDisallowLongClick);
     }
 
-
     @VisibleForTesting
     public int getTaskbarAllAppsTopPadding() {
         // Allow null-pointer since this should only be null if the apps view is not showing.
         return mAppsView.getActiveRecyclerView().getClipBounds().top;
+    }
+
+    @VisibleForTesting
+    public int getTaskbarAllAppsScroll() {
+        // Allow null-pointer since this should only be null if the apps view is not showing.
+        return mAppsView.getActiveRecyclerView().computeVerticalScrollOffset();
     }
 }

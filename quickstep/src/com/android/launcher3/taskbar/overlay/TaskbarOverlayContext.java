@@ -27,7 +27,6 @@ import com.android.launcher3.taskbar.BaseTaskbarContext;
 import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.taskbar.TaskbarControllers;
 import com.android.launcher3.taskbar.TaskbarDragController;
-import com.android.launcher3.taskbar.TaskbarStashController;
 import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsContainerView;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource;
@@ -45,8 +44,6 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
     private final TaskbarDragController mDragController;
     private final TaskbarOverlayDragLayer mDragLayer;
 
-    // We automatically stash taskbar when All Apps is opened in gesture navigation mode.
-    private final boolean mWillTaskbarBeVisuallyStashed;
     private final int mStashedTaskbarHeight;
     private final TaskbarUIController mUiController;
 
@@ -60,16 +57,9 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
         mDragController = new TaskbarDragController(this);
         mDragController.init(controllers);
         mDragLayer = new TaskbarOverlayDragLayer(this);
-
-        TaskbarStashController taskbarStashController = controllers.taskbarStashController;
-        mWillTaskbarBeVisuallyStashed = taskbarStashController.supportsVisualStashing();
-        mStashedTaskbarHeight = taskbarStashController.getStashedHeight();
+        mStashedTaskbarHeight = controllers.taskbarStashController.getStashedHeight();
 
         mUiController = controllers.uiController;
-    }
-
-    boolean willTaskbarBeVisuallyStashed() {
-        return mWillTaskbarBeVisuallyStashed;
     }
 
     int getStashedTaskbarHeight() {
@@ -80,9 +70,20 @@ public class TaskbarOverlayContext extends BaseTaskbarContext {
         return mOverlayController;
     }
 
+    /** Returns {@code true} if overlay or Taskbar windows are handling a system drag. */
+    boolean isAnySystemDragInProgress() {
+        return mDragController.isSystemDragInProgress()
+                || mTaskbarContext.getDragController().isSystemDragInProgress();
+    }
+
     @Override
     public DeviceProfile getDeviceProfile() {
         return mOverlayController.getLauncherDeviceProfile();
+    }
+
+    @Override
+    public View.AccessibilityDelegate getAccessibilityDelegate() {
+        return mTaskbarContext.getAccessibilityDelegate();
     }
 
     @Override

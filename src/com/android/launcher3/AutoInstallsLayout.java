@@ -16,33 +16,43 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.LauncherActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.content.res.Resources.NotFoundException;
+import android.content.res.XmlResourceParser;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Process;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Patterns;
 import android.util.Xml;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.annotation.WorkerThread;
+import androidx.annotation.XmlRes;
 
 import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.icons.GraphicsUtils;
-import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.qsb.QsbContainerView;
+import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.Partner;
 import com.android.launcher3.util.Thunk;
@@ -52,7 +62,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Locale;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -73,7 +85,7 @@ public class AutoInstallsLayout {
     private static final String FORMATTED_LAYOUT_RES = "default_layout_%dx%d";
     private static final String LAYOUT_RES = "default_layout";
 
-    static AutoInstallsLayout get(Context context, LauncherWidgetHolder appWidgetHolder,
+    public static AutoInstallsLayout get(Context context, LauncherWidgetHolder appWidgetHolder,
             LayoutParserCallback callback) {
         Partner partner = Partner.get(context.getPackageManager(), ACTION_LAUNCHER_CUSTOMIZATION);
         if (partner == null) {
@@ -128,6 +140,7 @@ public class AutoInstallsLayout {
     private static final String ATTR_TITLE = "title";
     private static final String ATTR_TITLE_TEXT = "titleText";
     private static final String ATTR_SCREEN = "screen";
+    private static final String ATTR_SHORTCUT_ID = "shortcutId";
 
     // x and y can be specified as negative integers, in which case -1 represents the
     // last row / column, -2 represents the second last, and so on.
@@ -136,8 +149,6 @@ public class AutoInstallsLayout {
 
     private static final String ATTR_SPAN_X = "spanX";
     private static final String ATTR_SPAN_Y = "spanY";
-    private static final String ATTR_ICON = "icon";
-    private static final String ATTR_URL = "url";
 
     // Attrs for "Include"
     private static final String ATTR_WORKSPACE = "workspace";
@@ -149,20 +160,18 @@ public class AutoInstallsLayout {
     private static final String HOTSEAT_CONTAINER_NAME =
             Favorites.containerToString(Favorites.CONTAINER_HOTSEAT);
 
-    @Thunk
-    final Context mContext;
-    @Thunk
-    final LauncherWidgetHolder mAppWidgetHolder;
+    protected final Context mContext;
+    protected final LauncherWidgetHolder mAppWidgetHolder;
     protected final LayoutParserCallback mCallback;
 
     protected final PackageManager mPackageManager;
-    protected final Resources mSourceRes;
+    protected final SourceResources mSourceRes;
     protected final Supplier<XmlPullParser> mInitialLayoutSupplier;
 
     private final InvariantDeviceProfile mIdp;
     private final int mRowCount;
     private final int mColumnCount;
-
+    private final Map<String, LauncherActivityInfo> mActivityOverride;
     private final int[] mTemp = new int[2];
     @Thunk
     final ContentValues mValues;
@@ -173,11 +182,12 @@ public class AutoInstallsLayout {
     public AutoInstallsLayout(Context context, LauncherWidgetHolder appWidgetHolder,
             LayoutParserCallback callback, Resources res,
             int layoutId, String rootTag) {
-        this(context, appWidgetHolder, callback, res, () -> res.getXml(layoutId), rootTag);
+        this(context, appWidgetHolder, callback, SourceResources.wrap(res),
+                () -> res.getXml(layoutId), rootTag);
     }
 
     public AutoInstallsLayout(Context context, LauncherWidgetHolder appWidgetHolder,
-            LayoutParserCallback callback, Resources res,
+            LayoutParserCallback callback, SourceResources res,
             Supplier<XmlPullParser> initialLayoutSupplier, String rootTag) {
         mContext = context;
         mAppWidgetHolder = appWidgetHolder;
@@ -193,6 +203,7 @@ public class AutoInstallsLayout {
         mIdp = LauncherAppState.getIDP(context);
         mRowCount = mIdp.numRows;
         mColumnCount = mIdp.numColumns;
+        mActivityOverride = ApiWrapper.getActivityOverrides(context);
     }
 
     /**
@@ -299,6 +310,17 @@ public class AutoInstallsLayout {
         mValues.put(Favorites.SPANX, 1);
         mValues.put(Favorites.SPANY, 1);
         mValues.put(Favorites._ID, id);
+
+        if (type == ITEM_TYPE_APPLICATION) {
+            ComponentName cn = intent.getComponent();
+            if (cn != null && mActivityOverride.containsKey(cn.getPackageName())) {
+                LauncherActivityInfo replacementInfo = mActivityOverride.get(cn.getPackageName());
+                mValues.put(Favorites.PROFILE_ID, UserCache.INSTANCE.get(mContext)
+                        .getSerialNumberForUser(replacementInfo.getUser()));
+                mValues.put(Favorites.INTENT, AppInfo.makeLaunchIntent(replacementInfo).toUri(0));
+            }
+        }
+
         if (mCallback.insertAndCheck(mDb, mValues) < 0) {
             return -1;
         } else {
@@ -310,7 +332,7 @@ public class AutoInstallsLayout {
         ArrayMap<String, TagParser> parsers = new ArrayMap<>();
         parsers.put(TAG_APP_ICON, new AppShortcutParser());
         parsers.put(TAG_AUTO_INSTALL, new AutoInstallParser());
-        parsers.put(TAG_SHORTCUT, new ShortcutParser(mSourceRes));
+        parsers.put(TAG_SHORTCUT, new ShortcutParser());
         return parsers;
     }
 
@@ -321,7 +343,7 @@ public class AutoInstallsLayout {
         parsers.put(TAG_FOLDER, new FolderParser());
         parsers.put(TAG_APPWIDGET, new PendingWidgetParser());
         parsers.put(TAG_SEARCH_WIDGET, new SearchWidgetParser());
-        parsers.put(TAG_SHORTCUT, new ShortcutParser(mSourceRes));
+        parsers.put(TAG_SHORTCUT, new ShortcutParser());
         return parsers;
     }
 
@@ -364,7 +386,7 @@ public class AutoInstallsLayout {
                                     | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
                     return addShortcut(info.loadLabel(mPackageManager).toString(),
-                            intent, Favorites.ITEM_TYPE_APPLICATION);
+                            intent, ITEM_TYPE_APPLICATION);
                 } catch (PackageManager.NameNotFoundException e) {
                     Log.e(TAG, "Favorite not found: " + packageName + "/" + className);
                 }
@@ -404,64 +426,32 @@ public class AutoInstallsLayout {
                     .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             return addShortcut(mContext.getString(R.string.package_state_unknown), intent,
-                    Favorites.ITEM_TYPE_APPLICATION);
+                    ITEM_TYPE_APPLICATION);
         }
     }
 
     /**
-     * Parses a web shortcut. Required attributes url, icon, title
+     * Parses a deep shortcut. Required attributes packageName and shortcutId
      */
     protected class ShortcutParser implements TagParser {
 
-        private final Resources mIconRes;
-
-        public ShortcutParser(Resources iconRes) {
-            mIconRes = iconRes;
-        }
-
         @Override
         public int parseAndAdd(XmlPullParser parser) {
-            final int titleResId = getAttributeResourceValue(parser, ATTR_TITLE, 0);
-            final int iconId = getAttributeResourceValue(parser, ATTR_ICON, 0);
+            final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
+            final String shortcutId = getAttributeValue(parser, ATTR_SHORTCUT_ID);
 
-            if (titleResId == 0 || iconId == 0) {
-                if (LOGD) Log.d(TAG, "Ignoring shortcut");
-                return -1;
+            try {
+                LauncherApps launcherApps = mContext.getSystemService(LauncherApps.class);
+                launcherApps.pinShortcuts(packageName, Collections.singletonList(shortcutId),
+                        Process.myUserHandle());
+                Intent intent = ShortcutKey.makeIntent(shortcutId, packageName);
+                mValues.put(Favorites.RESTORED, WorkspaceItemInfo.FLAG_RESTORED_ICON);
+                return addShortcut(null, intent, Favorites.ITEM_TYPE_DEEP_SHORTCUT);
+            } catch (Exception e) {
+                Log.e(TAG, "Unable to pin the shortcut for shortcut id = " + shortcutId
+                        + " and package name = " + packageName, e);
             }
-
-            final Intent intent = parseIntent(parser);
-            if (intent == null) {
-                return -1;
-            }
-
-            Drawable icon = mIconRes.getDrawable(iconId);
-            if (icon == null) {
-                if (LOGD) Log.d(TAG, "Ignoring shortcut, can't load icon");
-                return -1;
-            }
-
-            // Auto installs should always support the current platform version.
-            LauncherIcons li = LauncherIcons.obtain(mContext);
-            mValues.put(LauncherSettings.Favorites.ICON, GraphicsUtils.flattenBitmap(
-                    li.createBadgedIconBitmap(icon).icon));
-            li.recycle();
-
-            mValues.put(Favorites.ICON_PACKAGE, mIconRes.getResourcePackageName(iconId));
-            mValues.put(Favorites.ICON_RESOURCE, mIconRes.getResourceName(iconId));
-
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            return addShortcut(mSourceRes.getString(titleResId),
-                    intent, Favorites.ITEM_TYPE_SHORTCUT);
-        }
-
-        protected Intent parseIntent(XmlPullParser parser) {
-            final String url = getAttributeValue(parser, ATTR_URL);
-            if (TextUtils.isEmpty(url) || !Patterns.WEB_URL.matcher(url).matches()) {
-                if (LOGD) Log.d(TAG, "Ignoring shortcut, invalid url: " + url);
-                return null;
-            }
-            return new Intent(Intent.ACTION_VIEW, null).setData(Uri.parse(url));
+            return -1;
         }
     }
 
@@ -547,6 +537,7 @@ public class AutoInstallsLayout {
     protected class SearchWidgetParser extends PendingWidgetParser {
         @Override
         @Nullable
+        @WorkerThread
         public ComponentName getComponentName(XmlPullParser parser) {
             return QsbContainerView.getSearchComponentName(mContext);
         }
@@ -573,8 +564,7 @@ public class AutoInstallsLayout {
         }
 
         @Override
-        public int parseAndAdd(XmlPullParser parser)
-                throws XmlPullParserException, IOException {
+        public int parseAndAdd(XmlPullParser parser) throws XmlPullParserException, IOException {
             final String title;
             final int titleResId = getAttributeResourceValue(parser, ATTR_TITLE, 0);
             if (titleResId != 0) {
@@ -717,4 +707,43 @@ public class AutoInstallsLayout {
     static void copyInteger(ContentValues from, ContentValues to, String key) {
         to.put(key, from.getAsInteger(key));
     }
+
+    /**
+     * Wrapper over resources for easier abstraction
+     */
+    public interface SourceResources {
+
+        /**
+         * Refer {@link Resources#getXml(int)}
+         */
+        default XmlResourceParser getXml(@XmlRes int id) throws NotFoundException {
+            throw new NotFoundException();
+        }
+
+        /**
+         * Refer {@link Resources#getString(int)}
+         */
+        default String getString(@StringRes int id) throws NotFoundException {
+            throw new NotFoundException();
+        }
+
+        /**
+         * Returns a {@link SourceResources} corresponding to the provided resources
+         */
+        static SourceResources wrap(Resources res) {
+            return new SourceResources() {
+                @Override
+                public XmlResourceParser getXml(int id) {
+                    return res.getXml(id);
+                }
+
+                @Override
+                public String getString(int id) {
+                    return res.getString(id);
+                }
+            };
+        }
+    }
+
+
 }

@@ -62,7 +62,7 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Переход на главный экран"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Проведите вверх от нижнего края дисплея. Этот жест открывает главный экран."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Проведите двумя пальцами вверх от нижнего края экрана. Этот жест открывает главный экран."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Как перейти на главный экран"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Переход на главный экран"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Чтобы открыть главный экран, проведите снизу вверх по экрану."</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Проведите снизу вверх от самого края экрана."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Прежде чем отпускать палец, задержите его на дисплее подольше."</string>
@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Пропустить"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Повернуть экран"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Обучение по работе с панелью задач"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Обучение по работе с панелью задач показано"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Обучение по работе с панелью задач скрыто"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Используйте два приложения сразу, перетащив одно в сторону."</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Чтобы открыть панель задач, медленно проведите снизу вверх."</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Получайте рекомендации, основанные на ваших действиях."</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Чтобы панель задач скрывалась автоматически, включите навигацию с помощью жестов."</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Используйте все возможности панели задач"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Далее"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Назад"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Закрыть"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Готово"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Главный экран"</string>

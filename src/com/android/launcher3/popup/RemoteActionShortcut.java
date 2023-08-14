@@ -38,6 +38,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfo;
 
+import java.lang.ref.WeakReference;
+
 @TargetApi(Build.VERSION_CODES.Q)
 public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
     private static final String TAG = "RemoteActionShortcut";
@@ -79,6 +81,7 @@ public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
         mTarget.getStatsLogManager().logger().withItemInfo(mItemInfo)
                 .log(LAUNCHER_SYSTEM_SHORTCUT_PAUSE_TAP);
 
+        final WeakReference<BaseDraggingActivity> weakTarget = new WeakReference<>(mTarget);
         final String actionIdentity = mAction.getTitle() + ", "
                 + mItemInfo.getTargetComponent().getPackageName();
         try {
@@ -91,10 +94,13 @@ public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
                             mItemInfo.getTargetComponent().getPackageName()),
                     (pendingIntent, intent, resultCode, resultData, resultExtras) -> {
                         if (DEBUG) Log.d(TAG, "Action is complete: " + actionIdentity);
+                        final BaseDraggingActivity target = weakTarget.get();
                         if (resultData != null && !resultData.isEmpty()) {
                             Log.e(TAG, "Remote action returned result: " + actionIdentity
                                     + " : " + resultData);
-                            Toast.makeText(mTarget, resultData, Toast.LENGTH_SHORT).show();
+                            if (target != null) {
+                                Toast.makeText(target, resultData, Toast.LENGTH_SHORT).show();
+                            }
                         }
                     },
                     MAIN_EXECUTOR.getHandler());

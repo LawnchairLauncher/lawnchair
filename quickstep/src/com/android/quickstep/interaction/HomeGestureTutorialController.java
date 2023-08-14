@@ -22,8 +22,12 @@ import android.graphics.PointF;
 import android.os.Build;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.quickstep.interaction.EdgeBackGestureHandler.BackGestureResult;
 import com.android.quickstep.interaction.NavBarGestureHandler.NavBarGestureResult;
+import com.android.quickstep.util.LottieAnimationColorUtils;
+
+import java.util.Map;
 
 /** A {@link TutorialController} for the Home tutorial. */
 @TargetApi(Build.VERSION_CODES.R)
@@ -31,6 +35,23 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     HomeGestureTutorialController(HomeGestureTutorialFragment fragment, TutorialType tutorialType) {
         super(fragment, tutorialType);
+
+        // Set the Lottie animation colors specifically for the Home gesture
+        if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+            LottieAnimationColorUtils.updateColors(
+                    mAnimatedGestureDemonstration,
+                    Map.of(".onSurfaceHome", fragment.mRootView.mColorOnSurfaceHome,
+                            ".surfaceHome", fragment.mRootView.mColorSurfaceHome,
+                            ".secondaryHome", fragment.mRootView.mColorSecondaryHome));
+
+            LottieAnimationColorUtils.updateColors(
+                    mCheckmarkAnimation,
+                    Map.of(".checkmark",
+                            Utilities.isDarkTheme(mContext)
+                                    ? fragment.mRootView.mColorOnSurfaceHome
+                                    : fragment.mRootView.mColorSecondaryHome,
+                            ".checkmarkBackground", fragment.mRootView.mColorSurfaceHome));
+        }
     }
 
     @Override
@@ -53,6 +74,13 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
     }
 
     @Override
+    public int getSuccessFeedbackTitle() {
+        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
+                ? R.string.home_gesture_tutorial_success
+                : R.string.gesture_tutorial_nice;
+    }
+
+    @Override
     public int getSuccessFeedbackSubtitle() {
         return mTutorialFragment.isAtFinalStep()
                 ? R.string.home_gesture_feedback_complete_without_follow_up
@@ -60,29 +88,66 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
     }
 
     @Override
+    public int getTitleTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_MainTitle_Home;
+    }
+
+    @Override
+    public int getSuccessTitleTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_MainTitle_Success_Home;
+    }
+
+    @Override
+    public int getDoneButtonTextAppearance() {
+        return R.style.TextAppearance_GestureTutorial_ButtonLabel_Home;
+    }
+
+    @Override
+    public int getDoneButtonColor() {
+        return Utilities.isDarkTheme(mContext)
+                ? mTutorialFragment.mRootView.mColorOnSurfaceHome
+                : mTutorialFragment.mRootView.mColorSecondaryHome;
+    }
+
+    @Override
     protected int getMockAppTaskLayoutResId() {
-        return ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()
-                ? R.layout.swipe_up_gesture_tutorial_shape
-                : mTutorialFragment.isLargeScreen()
-                    ? R.layout.gesture_tutorial_tablet_mock_webpage
-                    : R.layout.gesture_tutorial_mock_webpage;
+        return mTutorialFragment.isLargeScreen()
+                ? R.layout.gesture_tutorial_tablet_mock_webpage
+                : R.layout.gesture_tutorial_mock_webpage;
     }
 
     @Override
     protected int getGestureLottieAnimationId() {
         return mTutorialFragment.isLargeScreen()
-                ? R.raw.home_gesture_tutorial_tablet_animation
+                ? mTutorialFragment.isFoldable()
+                    ? R.raw.home_gesture_tutorial_open_foldable_animation
+                    : R.raw.home_gesture_tutorial_tablet_animation
                 : R.raw.home_gesture_tutorial_animation;
     }
 
     @Override
-    protected int getSwipeActionColorResId() {
-        return R.color.gesture_home_tutorial_swipe_up_rect;
+    protected int getFakeTaskViewColor() {
+        return isGestureCompleted() ? getFakeLauncherColor() : getExitingAppColor();
+    }
+
+    @Override
+    protected int getFakeLauncherColor() {
+        return mTutorialFragment.mRootView.mColorSurfaceContainer;
+    }
+
+    @Override
+    protected int getExitingAppColor() {
+        return mTutorialFragment.mRootView.mColorSurfaceHome;
+    }
+
+    @Override
+    protected int getHotseatIconColor() {
+        return getExitingAppColor();
     }
 
     @Override
     public void onBackGestureAttempted(BackGestureResult result) {
-        if (isGestureCompleted()) {
+        if (skipGestureAttempt()) {
             return;
         }
         switch (mTutorialType) {
@@ -93,6 +158,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
                     case BACK_CANCELLED_FROM_LEFT:
                     case BACK_CANCELLED_FROM_RIGHT:
                     case BACK_NOT_STARTED_TOO_FAR_FROM_EDGE:
+                        resetTaskViews();
                         showFeedback(R.string.home_gesture_feedback_swipe_too_far_from_edge);
                         break;
                 }
@@ -108,7 +174,7 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
 
     @Override
     public void onNavBarGestureAttempted(NavBarGestureResult result, PointF finalVelocity) {
-        if (isGestureCompleted()) {
+        if (skipGestureAttempt()) {
             return;
         }
         switch (mTutorialType) {
@@ -122,17 +188,18 @@ final class HomeGestureTutorialController extends SwipeUpGestureTutorialControll
                     }
                     case HOME_NOT_STARTED_TOO_FAR_FROM_EDGE:
                     case OVERVIEW_NOT_STARTED_TOO_FAR_FROM_EDGE:
+                        resetTaskViews();
                         showFeedback(R.string.home_gesture_feedback_swipe_too_far_from_edge);
                         break;
                     case OVERVIEW_GESTURE_COMPLETED:
-                        fadeOutFakeTaskView(true, true, () -> {
+                        fadeOutFakeTaskView(false, () -> {
                             showFeedback(R.string.home_gesture_feedback_overview_detected);
                             showFakeTaskbar(/* animateFromHotseat= */ false);
                         });
                         break;
                     case HOME_OR_OVERVIEW_NOT_STARTED_WRONG_SWIPE_DIRECTION:
                     case HOME_OR_OVERVIEW_CANCELLED:
-                        fadeOutFakeTaskView(false, true, null);
+                        fadeOutFakeTaskView(false, null);
                         showFeedback(R.string.home_gesture_feedback_wrong_swipe_direction);
                         break;
                 }

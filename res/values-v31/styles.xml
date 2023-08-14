@@ -24,7 +24,7 @@
         <item name="android:listPreferredItemPaddingStart">24dp</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:switchStyle">@style/HomeSettings.SwitchStyle</item>
+        <item name="android:switchStyle">@style/SwitchStyle</item>
         <item name="android:textAppearanceListItem">@style/HomeSettings.PreferenceTitle</item>
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
@@ -59,13 +59,6 @@
     <style name="HomeSettings.SwitchPreferenceStyle"
             parent="@style/Preference.SwitchPreference.Material">
         <item name="iconSpaceReserved">@bool/home_settings_icon_space_reserved</item>
-    </style>
-
-    <style name="HomeSettings.SwitchStyle"
-            parent="@android:style/Widget.Material.CompoundButton.Switch">
-        <item name="android:switchMinWidth">52dp</item>
-        <item name="android:thumb">@drawable/home_settings_switch_thumb</item>
-        <item name="android:track">@drawable/home_settings_switch_track</item>
     </style>
 
     <style name="HomeSettings.PreferenceTitle"

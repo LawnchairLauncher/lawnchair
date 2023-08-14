@@ -57,7 +57,8 @@ public class LauncherDragView extends DragView<Launcher>
     @Override
     public void onStateTransitionComplete(LauncherState finalState) {
         setVisibility((finalState == LauncherState.NORMAL
-                || finalState == LauncherState.SPRING_LOADED) ? VISIBLE : INVISIBLE);
+                || finalState == LauncherState.SPRING_LOADED
+                || finalState == LauncherState.EDIT_MODE) ? VISIBLE : INVISIBLE);
     }
 
     @Override

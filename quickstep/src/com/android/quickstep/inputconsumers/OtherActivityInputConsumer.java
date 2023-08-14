@@ -80,10 +80,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     public static final String DOWN_EVT = "OtherActivityInputConsumer.DOWN";
     private static final String UP_EVT = "OtherActivityInputConsumer.UP";
 
-    // TODO: Move to quickstep contract
-    public static final float QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON = 9;
-    public static final float QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL = 2;
-
     // Minimum angle of a gesture's coordinate where a release goes to overview.
     public static final int OVERVIEW_MIN_DEGREES = 15;
 
@@ -157,11 +153,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         boolean continuingPreviousGesture = mTaskAnimationManager.isRecentsAnimationRunning();
         mIsDeferredDownTarget = !continuingPreviousGesture && isDeferredDownTarget;
 
-        float slopMultiplier = mDeviceState.isFullyGesturalNavMode()
-                ? QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL
-                : QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON;
         mTouchSlop = ViewConfiguration.get(this).getScaledTouchSlop();
-        mSquaredTouchSlop = slopMultiplier * mTouchSlop * mTouchSlop;
+        mSquaredTouchSlop = mDeviceState.getSquaredTouchSlop();
 
         mPassedPilferInputSlop = mPassedWindowMoveSlop = continuingPreviousGesture;
         mDisableHorizontalSwipe = !mPassedPilferInputSlop && disableHorizontalSwipe;
@@ -203,7 +196,26 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
         }
         int edgeFlags = ev.getEdgeFlags();
         ev.setEdgeFlags(edgeFlags | EDGE_NAV_BAR);
-        mRecentsViewDispatcher.dispatchEvent(ev);
+
+        if (mGestureState.isTrackpadGesture()) {
+            // Disable scrolling in RecentsView for 3-finger trackpad gesture. We don't know if a
+            // trackpad motion event is 3-finger or 4-finger with the U API until ACTION_MOVE (we
+            // skip ACTION_POINTER_UP events in TouchInteractionService), so in order to make sure
+            // that RecentsView always get a closed sequence of motion events and yet disable
+            // 3-finger scroll, we do the following (1) always dispatch ACTION_DOWN and ACTION_UP
+            // trackpad multi-finger motion events. (2) only dispatch 4-finger ACTION_MOVE motion
+            // events.
+            switch (ev.getActionMasked()) {
+                case ACTION_MOVE -> {
+                    if (mGestureState.isFourFingerTrackpadGesture()) {
+                        mRecentsViewDispatcher.dispatchEvent(ev);
+                    }
+                }
+                default -> mRecentsViewDispatcher.dispatchEvent(ev);
+            }
+        } else {
+            mRecentsViewDispatcher.dispatchEvent(ev);
+        }
         ev.setEdgeFlags(edgeFlags);
 
         mVelocityTracker.addMovement(ev);
@@ -236,7 +248,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 if (!mPassedPilferInputSlop) {
                     // Cancel interaction in case of multi-touch interaction
                     int ptrIdx = ev.getActionIndex();
-                    if (!mRotationTouchHelper.isInSwipeUpTouchRegion(ev, ptrIdx)) {
+                    if (!mRotationTouchHelper.isInSwipeUpTouchRegion(ev, ptrIdx,
+                            mActivityInterface)) {
                         forceCancelGesture(ev);
                     }
                 }
@@ -290,14 +303,30 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                 boolean haveNotPassedSlopOnContinuedGesture =
                         !mPassedSlopOnThisGesture && mPassedPilferInputSlop;
                 double degrees = Math.toDegrees(Math.atan(upDist / horizontalDist));
-                boolean isLikelyToStartNewTask = haveNotPassedSlopOnContinuedGesture
-                        || degrees <= OVERVIEW_MIN_DEGREES;
+
+                // Regarding degrees >= -OVERVIEW_MIN_DEGREES - Trackpad gestures can start anywhere
+                // on the screen, allowing downward swipes. We want to impose the same angle in that
+                // scenario.
+                boolean swipeWithinQuickSwitchRange = degrees <= OVERVIEW_MIN_DEGREES
+                        && (!mGestureState.isTrackpadGesture() || degrees >= -OVERVIEW_MIN_DEGREES);
+                boolean isLikelyToStartNewTask =
+                        haveNotPassedSlopOnContinuedGesture || swipeWithinQuickSwitchRange;
 
                 if (!mPassedPilferInputSlop) {
                     if (passedSlop) {
-                        if (mDisableHorizontalSwipe
-                                && Math.abs(displacementX) > Math.abs(displacementY)) {
-                            // Horizontal gesture is not allowed in this region
+                        // Horizontal gesture is not allowed in this region
+                        boolean isHorizontalSwipeWhenDisabled =
+                                (mDisableHorizontalSwipe && Math.abs(displacementX) > Math.abs(
+                                        displacementY));
+                        // Do not allow quick switch for trackpad 3-finger gestures
+                        // TODO(b/261815244): might need to impose stronger conditions for the swipe
+                        //  angle
+                        boolean noQuickSwitchForThreeFingerGesture = isLikelyToStartNewTask
+                                && mGestureState.isThreeFingerTrackpadGesture();
+                        boolean noQuickstepForFourFingerGesture = !isLikelyToStartNewTask
+                                && mGestureState.isFourFingerTrackpadGesture();
+                        if (isHorizontalSwipeWhenDisabled || noQuickSwitchForThreeFingerGesture
+                                || noQuickstepForFourFingerGesture) {
                             forceCancelGesture(ev);
                             break;
                         }
@@ -312,7 +341,6 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                         if (!mPassedWindowMoveSlop) {
                             mPassedWindowMoveSlop = true;
                             mStartDisplacement = Math.min(displacement, -mTouchSlop);
-
                         }
                         notifyGestureStarted(isLikelyToStartNewTask);
                     }
@@ -405,8 +433,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                                 ? -velocityXPxPerMs
                                 : velocityYPxPerMs;
                 mInteractionHandler.updateDisplacement(getDisplacement(ev) - mStartDisplacement);
-                mInteractionHandler.onGestureEnded(
-                        velocityPxPerMs, new PointF(velocityXPxPerMs, velocityYPxPerMs), mDownPos);
+                mInteractionHandler.onGestureEnded(velocityPxPerMs,
+                        new PointF(velocityXPxPerMs, velocityYPxPerMs));
             }
         } else {
             // Since we start touch tracking on DOWN, we may reach this state without actually

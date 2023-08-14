@@ -15,6 +15,8 @@
  */
 package com.android.quickstep;
 
+import static android.view.WindowManager.LayoutParams.TYPE_DOCK_DIVIDER;
+
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.CANCEL_RECENTS_ANIMATION;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.START_RECENTS_ANIMATION;
@@ -34,6 +36,7 @@ import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
@@ -105,8 +108,16 @@ public class RecentsAnimationCallbacks implements
             Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(),
                     mController::finishAnimationToApp);
         } else {
-            RemoteAnimationTarget[] nonAppTargets =
-                    mSystemUiProxy.onGoingToRecentsLegacy(appTargets);
+            RemoteAnimationTarget[] nonAppTargets;
+            if (!TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
+                nonAppTargets = mSystemUiProxy.onGoingToRecentsLegacy(appTargets);
+            } else {
+                final ArrayList<RemoteAnimationTarget> apps = new ArrayList<>();
+                final ArrayList<RemoteAnimationTarget> nonApps = new ArrayList<>();
+                classifyTargets(appTargets, apps, nonApps);
+                appTargets = apps.toArray(new RemoteAnimationTarget[apps.size()]);
+                nonAppTargets = nonApps.toArray(new RemoteAnimationTarget[nonApps.size()]);
+            }
             if (nonAppTargets == null) {
                 nonAppTargets = new RemoteAnimationTarget[0];
             }
@@ -174,6 +185,18 @@ public class RecentsAnimationCallbacks implements
 
     private RecentsAnimationListener[] getListeners() {
         return mListeners.toArray(new RecentsAnimationListener[mListeners.size()]);
+    }
+
+    private void classifyTargets(RemoteAnimationTarget[] appTargets,
+            ArrayList<RemoteAnimationTarget> apps, ArrayList<RemoteAnimationTarget> nonApps) {
+        for (int i = 0; i < appTargets.length; i++) {
+            RemoteAnimationTarget target = appTargets[i];
+            if (target.windowType == TYPE_DOCK_DIVIDER) {
+                nonApps.add(target);
+            } else {
+                apps.add(target);
+            }
+        }
     }
 
     /**

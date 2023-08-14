@@ -243,7 +243,17 @@ public final class TaskViewUtils {
                     TOUCH_RESPONSE_INTERPOLATOR);
             out.setFloat(tvsLocal.recentsViewScroll, AnimatedFloat.VALUE, 0,
                     TOUCH_RESPONSE_INTERPOLATOR);
-
+            out.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    final SurfaceTransaction showTransaction = new SurfaceTransaction();
+                    for (int i = targets.apps.length - 1; i >= 0; --i) {
+                        showTransaction.getTransaction().show(targets.apps[i].leash);
+                    }
+                    applier.scheduleApply(showTransaction);
+                }
+            });
             out.addOnFrameCallback(() -> {
                 for (RemoteTargetHandle handle : remoteTargetHandles) {
                     handle.getTaskViewSimulator().apply(handle.getTransformParams());

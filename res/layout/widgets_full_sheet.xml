@@ -34,7 +34,7 @@
             android:layout_height="@dimen/bottom_sheet_handle_height"
             android:layout_marginTop="@dimen/bottom_sheet_handle_margin"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/bg_rounded_corner_bottom_sheet_handle"/>
+            android:background="@drawable/widget_picker_collapse_handle"/>
 
         <TextView
             style="@style/PrimaryHeadline"
@@ -58,6 +58,7 @@
         <com.android.launcher3.views.RecyclerViewFastScroller
             android:id="@+id/fast_scroller"
             android:layout_width="@dimen/fastscroll_width"
+            android:elevation="1dp"
             android:layout_height="match_parent"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"

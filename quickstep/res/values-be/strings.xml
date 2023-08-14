@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Прапусціць"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Павярнуць экран"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Інфармацыя пра панэль задач"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"З\'явілася панэль навучання на панэлі задач"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Панэль навучання на панэлі задач закрыта"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Каб карыстацца 2 праграмамі, перацягніце адну з іх убок"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Каб паказаць панэль задач, павольна правядзіце пальцам уверх"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Атрымлівайце прапановы праграм з улікам вашых дзеянняў"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Каб аўтаматычна схаваць панэль задач, уключыце ў Наладах навігацыю жэстамі"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Выкарыстоўвайце магчымасці панэлі задач"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Далей"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Назад"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Закрыць"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Гатова"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Галоўны экран"</string>

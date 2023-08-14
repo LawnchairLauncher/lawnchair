@@ -113,7 +113,7 @@ public class LauncherModelHelper {
     private final HashMap<Class, HashMap<String, Field>> mFieldCache = new HashMap<>();
     private final MockContentResolver mMockResolver = new MockContentResolver();
     public final TestLauncherProvider provider;
-    public final SanboxModelContext sandboxContext;
+    public final SandboxModelContext sandboxContext;
 
     public final long defaultProfileId;
 
@@ -128,7 +128,7 @@ public class LauncherModelHelper {
         Settings.Global.getString(context.getContentResolver(), "test");
 
         provider = new TestLauncherProvider();
-        sandboxContext = new SanboxModelContext();
+        sandboxContext = new SandboxModelContext();
         defaultProfileId = UserCache.INSTANCE.get(sandboxContext)
                 .getSerialNumberForUser(Process.myUserHandle());
         setupProvider(LauncherProvider.AUTHORITY, provider);
@@ -363,60 +363,6 @@ public class LauncherModelHelper {
         sandboxContext.getContentResolver().insert(contentUri, values);
     }
 
-    public void deleteItem(int itemId, @NonNull final String tableName) {
-        final Uri uri = Uri.parse("content://"
-                + LauncherProvider.AUTHORITY + "/" + tableName + "/" + itemId);
-        sandboxContext.getContentResolver().delete(uri, null, null);
-    }
-
-    public int[][][] createGrid(int[][][] typeArray) {
-        return createGrid(typeArray, 1);
-    }
-
-    public int[][][] createGrid(int[][][] typeArray, int startScreen) {
-        LauncherSettings.Settings.call(sandboxContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
-        LauncherSettings.Settings.call(sandboxContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
-        return createGrid(typeArray, startScreen, defaultProfileId);
-    }
-
-    /**
-     * Initializes the DB with mock elements to represent the provided grid structure.
-     * @param typeArray A 3d array of item types. {@see #addItem(int, long, long, int, int)} for
-     *                  type definitions. The first dimension represents the screens and the next
-     *                  two represent the workspace grid.
-     * @param startScreen First screen id from where the icons will be added.
-     * @return the same grid representation where each entry is the corresponding item id.
-     */
-    public int[][][] createGrid(int[][][] typeArray, int startScreen, long profileId) {
-        int[][][] ids = new int[typeArray.length][][];
-        for (int i = 0; i < typeArray.length; i++) {
-            // Add screen to DB
-            int screenId = startScreen + i;
-
-            // Keep the screen id counter up to date
-            LauncherSettings.Settings.call(sandboxContext.getContentResolver(),
-                    LauncherSettings.Settings.METHOD_NEW_SCREEN_ID);
-
-            ids[i] = new int[typeArray[i].length][];
-            for (int y = 0; y < typeArray[i].length; y++) {
-                ids[i][y] = new int[typeArray[i][y].length];
-                for (int x = 0; x < typeArray[i][y].length; x++) {
-                    if (typeArray[i][y][x] < 0) {
-                        // Empty cell
-                        ids[i][y][x] = -1;
-                    } else {
-                        ids[i][y][x] = addItem(
-                                typeArray[i][y][x], screenId, DESKTOP, x, y, profileId);
-                    }
-                }
-            }
-        }
-
-        return ids;
-    }
-
     /**
      * Sets up a mock provider to load the provided layout by default, next time the layout loads
      */
@@ -474,12 +420,7 @@ public class LauncherModelHelper {
         }
 
         public SQLiteDatabase getDb() {
-            createDbIfNotExists();
-            return mOpenHelper.getWritableDatabase();
-        }
-
-        public DatabaseHelper getHelper() {
-            return mOpenHelper;
+            return getModelDbController().getDb();
         }
     }
 
@@ -499,13 +440,13 @@ public class LauncherModelHelper {
         return success;
     }
 
-    public class SanboxModelContext extends SandboxContext {
+    public class SandboxModelContext extends SandboxContext {
 
         private final ArrayMap<String, Object> mSpiedServices = new ArrayMap<>();
         private final PackageManager mPm;
         private final File mDbDir;
 
-        SanboxModelContext() {
+        SandboxModelContext() {
             super(ApplicationProvider.getApplicationContext(),
                     UserCache.INSTANCE, InstallSessionHelper.INSTANCE, LauncherPrefs.INSTANCE,
                     LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE,
@@ -516,7 +457,7 @@ public class LauncherModelHelper {
             mDbDir = new File(getCacheDir(), UUID.randomUUID().toString());
         }
 
-        public SanboxModelContext allow(MainThreadInitializedObject object) {
+        public SandboxModelContext allow(MainThreadInitializedObject object) {
             mAllowedObjects.add(object);
             return this;
         }

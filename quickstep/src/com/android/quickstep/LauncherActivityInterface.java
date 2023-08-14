@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.OVERVIEW;
@@ -39,6 +40,7 @@ import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherInitListener;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.StateManager;
@@ -264,6 +266,11 @@ public final class LauncherActivityInterface extends
     }
 
     @Override
+    public boolean allowAllAppsFromOverview() {
+        return FeatureFlags.ENABLE_ALL_APPS_FROM_OVERVIEW.get();
+    }
+
+    @Override
     public boolean isInLiveTileMode() {
         Launcher launcher = getCreatedActivity();
         return launcher != null && launcher.getStateManager().getState() == OVERVIEW &&
@@ -347,6 +354,8 @@ public final class LauncherActivityInterface extends
             case NEW_TASK:
             case LAST_TASK:
                 return BACKGROUND_APP;
+            case ALL_APPS:
+                return ALL_APPS;
             case HOME:
             default:
                 return NORMAL;

@@ -18,7 +18,6 @@ package com.android.launcher3.secondarydisplay;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -26,6 +25,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewAnimationUtils;
 import android.view.inputmethod.InputMethodManager;
+
+import androidx.annotation.UiThread;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
@@ -39,6 +40,7 @@ import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
+import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DraggableView;
@@ -55,10 +57,13 @@ import com.android.launcher3.touch.ItemClickHandler.ItemClickProxy;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.OnboardingPrefs;
+import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Launcher activity for secondary displays
@@ -292,9 +297,13 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         mPopupDataProvider.setDeepShortcutMap(deepShortcutMap);
     }
 
+    @UiThread
     @Override
-    public void bindAllApplications(AppInfo[] apps, int flags) {
-        mAppsView.getAppsStore().setApps(apps, flags);
+    public void bindAllApplications(AppInfo[] apps, int flags,
+            Map<PackageUserKey, Integer> packageUserKeytoUidMap) {
+        Preconditions.assertUIThread();
+        AllAppsStore appsStore = mAppsView.getAppsStore();
+        appsStore.setApps(apps, flags, packageUserKeytoUidMap);
         PopupContainerWithArrow.dismissInvalidPopup(this);
     }
 
@@ -405,17 +414,25 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
             drawable = null;
             scale = previewProvider.getScaleAndPosition(contentView, mTempXY);
         }
-        int halfPadding = previewProvider.previewPadding / 2;
+
         int dragLayerX = mTempXY[0];
         int dragLayerY = mTempXY[1];
 
-        Point dragVisualizeOffset = null;
         Rect dragRect = new Rect();
         if (draggableView != null) {
             draggableView.getSourceVisualDragBounds(dragRect);
             dragLayerY += dragRect.top;
-            dragVisualizeOffset = new Point(-halfPadding, halfPadding);
         }
+
+        if (options.preDragCondition != null) {
+            int xOffSet = options.preDragCondition.getDragOffset().x;
+            int yOffSet = options.preDragCondition.getDragOffset().y;
+            if (xOffSet != 0 && yOffSet != 0) {
+                dragLayerX += xOffSet;
+                dragLayerY += yOffSet;
+            }
+        }
+
         if (contentView != null) {
             mDragController.startDrag(
                     contentView,
@@ -424,7 +441,6 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
                     dragLayerY,
                     source,
                     dragObject,
-                    dragVisualizeOffset,
                     dragRect,
                     scale * iconScale,
                     scale,
@@ -437,7 +453,6 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
                     dragLayerY,
                     source,
                     dragObject,
-                    dragVisualizeOffset,
                     dragRect,
                     scale * iconScale,
                     scale,

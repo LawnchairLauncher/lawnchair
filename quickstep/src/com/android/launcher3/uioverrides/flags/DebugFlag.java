@@ -15,16 +15,20 @@
  */
 package com.android.launcher3.uioverrides.flags;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.config.FeatureFlags.BooleanFlag;
+import com.android.launcher3.config.FeatureFlags.FlagState;
 
 class DebugFlag extends BooleanFlag {
 
     public final String key;
     public final String description;
 
-    public final boolean defaultValue;
+    @NonNull
+    public final FlagState defaultValue;
 
-    public DebugFlag(String key, String description, boolean defaultValue, boolean currentValue) {
+    DebugFlag(String key, String description, FlagState defaultValue, boolean currentValue) {
         super(currentValue);
         this.key = key;
         this.defaultValue = defaultValue;

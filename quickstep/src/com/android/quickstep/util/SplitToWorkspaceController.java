@@ -21,9 +21,15 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSP
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.NonNull;
+import android.annotation.Nullable;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
 import android.view.View;
 
@@ -56,13 +62,37 @@ public class SplitToWorkspaceController {
     }
 
     /**
+     * Handles widget selection from staged split.
+     * @param view Original widget view
+     * @param pendingIntent Provided by widget via InteractionHandler
+     * @return {@code true} if we can attempt launch the widget into split, {@code false} otherwise
+     *         to allow launcher to handle the click
+     */
+    public boolean handleSecondWidgetSelectionForSplit(View view, PendingIntent pendingIntent) {
+        if (shouldIgnoreSecondSplitLaunch()) {
+            return false;
+        }
+
+        // Convert original widgetView into bitmap to use for animation
+        // TODO(b/276361926) get the icon for this widget via PackageManager?
+        int width = view.getWidth();
+        int height = view.getHeight();
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        view.draw(canvas);
+
+        mController.setSecondTask(pendingIntent);
+
+        startWorkspaceAnimation(view, bitmap, null /*icon*/);
+        return true;
+    }
+
+    /**
      * Handles second app selection from stage split. If the item can't be opened in split or
      * it's not in stage split state, we pass it onto Launcher's default item click handler.
      */
     public boolean handleSecondAppSelectionForSplit(View view) {
-        if ((!ENABLE_SPLIT_FROM_FULLSCREEN_WITH_KEYBOARD_SHORTCUTS.get()
-                && !ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get())
-                || !mController.isSplitSelectActive()) {
+        if (shouldIgnoreSecondSplitLaunch()) {
             return false;
         }
         Object tag = view.getTag();
@@ -86,6 +116,12 @@ public class SplitToWorkspaceController {
 
         mController.setSecondTask(intent, user);
 
+        startWorkspaceAnimation(view, null /*bitmap*/, bitmapInfo.newIcon(mLauncher));
+        return true;
+    }
+
+    private void startWorkspaceAnimation(@NonNull View view, @Nullable Bitmap bitmap,
+            @Nullable Drawable icon) {
         boolean isTablet = mLauncher.getDeviceProfile().isTablet;
         SplitAnimationTimings timings = AnimUtils.getDeviceSplitToConfirmTimings(isTablet);
         PendingAnimation pendingAnimation = new PendingAnimation(timings.getDuration());
@@ -107,8 +143,7 @@ public class SplitToWorkspaceController {
                 false /* fadeWithThumbnail */, true /* isStagedTask */);
 
         FloatingTaskView secondFloatingTaskView = FloatingTaskView.getFloatingTaskView(mLauncher,
-                view, null /* thumbnail */, bitmapInfo.newIcon(mLauncher),
-                secondTaskStartingBounds);
+                view, bitmap, icon, secondTaskStartingBounds);
         secondFloatingTaskView.setAlpha(1);
         secondFloatingTaskView.addConfirmAnimation(pendingAnimation, secondTaskStartingBounds,
                 secondTaskEndingBounds, true /* fadeWithThumbnail */, false /* isStagedTask */);
@@ -138,6 +173,11 @@ public class SplitToWorkspaceController {
             }
         });
         pendingAnimation.buildAnim().start();
-        return true;
+    }
+
+    private boolean shouldIgnoreSecondSplitLaunch() {
+        return (!ENABLE_SPLIT_FROM_FULLSCREEN_WITH_KEYBOARD_SHORTCUTS.get()
+                && !ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get())
+                || !mController.isSplitSelectActive();
     }
 }

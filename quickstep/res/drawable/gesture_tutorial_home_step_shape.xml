@@ -19,5 +19,5 @@
     android:viewportHeight="66">
   <path
       android:pathData="M283.8,0H80.2C40.7,0 8,28.5 1.3,66H362.8C356,28.5 323.3,0 283.8,0Z"
-      android:fillColor="#4B67AE"/>
+      android:fillColor="?attr/onSurfaceHome"/>
 </vector>

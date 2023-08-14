@@ -15,14 +15,17 @@
  */
 package com.android.quickstep;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
+
 import android.content.Intent;
 
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.ui.TaplTestsLauncher3;
-import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 
 import org.junit.After;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,13 +40,6 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
         super.setUp();
         TaplTestsLauncher3.initialize(this);
 
-        mLauncher.getWorkspace()
-                .deleteAppIcon(mLauncher.getWorkspace().getHotseatAppIcon(0))
-                .switchToAllApps()
-                .getAppIcon(CALCULATOR_APP_NAME)
-                .dragToHotseat(0);
-
-        startAppFast(CALCULATOR_APP_PACKAGE);
         if (mLauncher.isTablet()) {
             mLauncher.enableBlockTimeout(true);
             mLauncher.showTaskbarIfHidden();
@@ -58,14 +54,25 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
     }
 
     @Test
-    // TODO (b/270201357): When this test is proven stable, remove this TestStabilityRule and
-    // introduce into presubmit as well.
-    @TestStabilityRule.Stability(
-            flavors = TestStabilityRule.LOCAL | TestStabilityRule.PLATFORM_POSTSUBMIT)
+    @PortraitLandscape
+    public void testSplitFromOverview() {
+        createAndLaunchASplitPair();
+    }
+
+    @Test
     @PortraitLandscape
     @TaskbarModeSwitch
     public void testSplitAppFromHomeWithItself() throws Exception {
-        Assume.assumeTrue(mLauncher.isTablet());
+        // Currently only tablets have Taskbar in Overview, so test is only active on tablets
+        assumeTrue(mLauncher.isTablet());
+
+        mLauncher.getWorkspace()
+                .deleteAppIcon(mLauncher.getWorkspace().getHotseatAppIcon(0))
+                .switchToAllApps()
+                .getAppIcon(CALCULATOR_APP_NAME)
+                .dragToHotseat(0);
+
+        startAppFast(CALCULATOR_APP_PACKAGE);
 
         mLauncher.goHome()
                 .switchToAllApps()
@@ -78,5 +85,51 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
                 .getTaskbar()
                 .getAppIcon(CALCULATOR_APP_NAME)
                 .launchIntoSplitScreen();
+    }
+
+    @Test
+    public void testSaveAppPairMenuItemExistsOnSplitPair() throws Exception {
+        assumeTrue(FeatureFlags.ENABLE_APP_PAIRS.get());
+
+        createAndLaunchASplitPair();
+
+        assertTrue("Save app pair menu item is missing",
+                mLauncher.goHome()
+                        .switchToOverview()
+                        .getCurrentTask()
+                        .tapMenu()
+                        .hasMenuItem("Save app pair"));
+    }
+
+    @Test
+    public void testSaveAppPairMenuItemDoesNotExistOnSingleTask() throws Exception {
+        assumeTrue(FeatureFlags.ENABLE_APP_PAIRS.get());
+
+        startAppFast(CALCULATOR_APP_PACKAGE);
+
+        assertFalse("Save app pair menu item is erroneously appearing on single task",
+                mLauncher.goHome()
+                        .switchToOverview()
+                        .getCurrentTask()
+                        .tapMenu()
+                        .hasMenuItem("Save app pair"));
+    }
+
+    private void createAndLaunchASplitPair() {
+        startTestActivity(2);
+        startTestActivity(3);
+
+        if (mLauncher.isTablet()) {
+            mLauncher.goHome().switchToOverview().getOverviewActions()
+                    .clickSplit()
+                    .getTestActivityTask(2)
+                    .open();
+        } else {
+            mLauncher.goHome().switchToOverview().getCurrentTask()
+                    .tapMenu()
+                    .tapSplitMenuItem()
+                    .getCurrentTask()
+                    .open();
+        }
     }
 }

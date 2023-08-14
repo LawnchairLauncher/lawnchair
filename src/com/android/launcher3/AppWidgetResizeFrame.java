@@ -1,7 +1,5 @@
 package com.android.launcher3;
 
-import static android.appwidget.AppWidgetHostView.getDefaultPaddingForWidget;
-
 import static com.android.launcher3.CellLayout.SPRING_LOADED_PROGRESS;
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_HEIGHT;
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_WIDTH;
@@ -76,8 +74,6 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private CellLayout mCellLayout;
     private DragLayer mDragLayer;
     private ImageButton mReconfigureButton;
-
-    private Rect mWidgetPadding;
 
     private final int mBackgroundPadding;
     private final int mTouchTargetWidth;
@@ -217,9 +213,6 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         mMinVSpan = info.minSpanY;
         mMaxHSpan = info.maxSpanX;
         mMaxVSpan = info.maxSpanY;
-
-        mWidgetPadding = getDefaultPaddingForWidget(getContext(),
-                widgetView.getAppWidgetInfo().provider, null);
 
         // Only show resize handles for the directions in which resizing is possible.
         InvariantDeviceProfile idp = LauncherAppState.getIDP(cellLayout.getContext());
@@ -517,16 +510,12 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
      */
     private void getSnappedRectRelativeToDragLayer(Rect out) {
         float scale = mWidgetView.getScaleToFit();
-
         mDragLayer.getViewRectRelativeToSelf(mWidgetView, out);
 
-        int width = 2 * mBackgroundPadding
-                + (int) (scale * (out.width() - mWidgetPadding.left - mWidgetPadding.right));
-        int height = 2 * mBackgroundPadding
-                + (int) (scale * (out.height() - mWidgetPadding.top - mWidgetPadding.bottom));
-
-        int x = (int) (out.left - mBackgroundPadding + scale * mWidgetPadding.left);
-        int y = (int) (out.top - mBackgroundPadding + scale * mWidgetPadding.top);
+        int width = 2 * mBackgroundPadding + Math.round(scale * out.width());
+        int height = 2 * mBackgroundPadding + Math.round(scale * out.height());
+        int x = out.left - mBackgroundPadding;
+        int y = out.top - mBackgroundPadding;
 
         out.left = x;
         out.top = y;

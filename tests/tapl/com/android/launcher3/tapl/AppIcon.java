@@ -37,7 +37,8 @@ public abstract class AppIcon extends Launchable {
     }
 
     static BySelector getAppIconSelector(String appName, LauncherInstrumentation launcher) {
-        return By.clazz(TextView.class).text(appName).pkg(launcher.getLauncherPackageName());
+        return By.clazz(TextView.class).textContains(appName)
+                .pkg(launcher.getLauncherPackageName());
     }
 
     static BySelector getAnyAppIconSelector() {

@@ -18,7 +18,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/system_shortcut_header_icon_touch_size"
     android:layout_height="@dimen/system_shortcut_header_icon_touch_size"
-    android:tint="?attr/iconOnlyShortcutColor"
+    android:tint="?attr/popupTextColor"
     android:tintMode="src_in"
     android:padding="@dimen/system_shortcut_header_icon_padding"
     android:theme="@style/PopupItemIconOnly" />

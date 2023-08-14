@@ -25,6 +25,8 @@
     <attr name="popupColorPrimary" format="color" />
     <attr name="popupColorSecondary" format="color" />
     <attr name="popupColorTertiary" format="color" />
+    <attr name="popupColorBackground" format="color" />
+    <attr name="popupTextColor" format="color" />
     <attr name="popupShadeFirst" format="color" />
     <attr name="popupShadeSecond" format="color" />
     <attr name="popupShadeThird" format="color" />
@@ -40,22 +42,36 @@
     <attr name="eduHalfSheetBGColor" format="color" />
     <attr name="overviewScrimColor" format="color" />
     <attr name="popupNotificationDotColor" format="color" />
+    <attr name="notificationDotColor" format="color" />
 
-    <attr name="folderDotColor" format="color" />
     <attr name="folderPaginationColor" format="color" />
     <attr name="folderPreviewColor" format="color" />
     <attr name="folderBackgroundColor" format="color" />
     <attr name="folderIconRadius" format="float" />
     <attr name="folderIconBorderColor" format="color" />
     <attr name="folderTextColor" format="color" />
-    <attr name="folderHintColor" format="color" />
+    <attr name="folderHintTextColor" format="color" />
     <attr name="isFolderDarkText" format="boolean" />
     <attr name="workspaceAccentColor" format="color" />
+    <attr name="workspaceSurfaceColor" format="color" />
     <attr name="dropTargetHoverTextColor" format="color" />
+    <attr name="dropTargetHoverButtonColor" format="color" />
     <attr name="preloadIconAccentColor" format="color" />
     <attr name="preloadIconBackgroundColor" format="color" />
+    <attr name="widgetPickerTitleColor" format="color"/>
+    <attr name="widgetPickerPrimarySurfaceColor" format="color"/>
+    <attr name="widgetPickerSecondarySurfaceColor" format="color"/>
     <attr name="widgetPickerHeaderAppTitleColor" format="color"/>
     <attr name="widgetPickerHeaderAppSubtitleColor" format="color"/>
+    <attr name="widgetPickerHeaderBackgroundColor" format="color"/>
+    <attr name="widgetPickerSuggestionsIconBackgroundColor" format="color"/>
+    <attr name="widgetPickerSuggestionsIconColor" format="color"/>
+    <attr name="widgetPickerTabBackgroundSelected" format="color"/>
+    <attr name="widgetPickerTabBackgroundUnselected" format="color"/>
+    <attr name="widgetPickerSearchTextColor" format="color"/>
+    <attr name="widgetPickerSelectedTabTextColor" format="color"/>
+    <attr name="widgetPickerUnselectedTabTextColor" format="color"/>
+    <attr name="widgetPickerCollapseHandleColor" format="color"/>
 
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
@@ -78,7 +94,6 @@
     <declare-styleable name="FolderIconPreview">
         <attr name="folderPreviewColor" />
         <attr name="folderIconBorderColor" />
-        <attr name="folderDotColor" />
     </declare-styleable>
 
     <declare-styleable name="SearchResultSuggestion">
@@ -187,6 +202,9 @@
         <attr name="demoModeLayoutId" format="reference" />
         <attr name="isScalable" format="boolean" />
         <attr name="devicePaddingId" format="reference" />
+        <!-- File that contains the specs for the workspace.
+        Needs FeatureFlags.ENABLE_RESPONSIVE_WORKSPACE enabled -->
+        <attr name="workspaceSpecsId" format="reference" />
         <!-- By default all categories are enabled -->
         <attr name="deviceCategory" format="integer">
             <!-- Enable on phone only -->
@@ -487,6 +505,51 @@
     <declare-styleable name="WidgetsListRowHeader">
         <attr name="appIconSize" format="dimension" />
     </declare-styleable>
+
+    <attr name="materialColorOnSecondaryFixedVariant" format="color" />
+    <attr name="materialColorOnTertiaryFixedVariant" format="color" />
+    <attr name="materialColorSurfaceContainerLowest" format="color" />
+    <attr name="materialColorOnPrimaryFixedVariant" format="color" />
+    <attr name="materialColorOnSecondaryContainer" format="color" />
+    <attr name="materialColorOnTertiaryContainer" format="color" />
+    <attr name="materialColorSurfaceContainerLow" format="color" />
+    <attr name="materialColorOnPrimaryContainer" format="color" />
+    <attr name="materialColorSecondaryFixedDim" format="color" />
+    <attr name="materialColorOnErrorContainer" format="color" />
+    <attr name="materialColorOnSecondaryFixed" format="color" />
+    <attr name="materialColorOnSurfaceInverse" format="color" />
+    <attr name="materialColorTertiaryFixedDim" format="color" />
+    <attr name="materialColorOnTertiaryFixed" format="color" />
+    <attr name="materialColorPrimaryFixedDim" format="color" />
+    <attr name="materialColorSecondaryContainer" format="color" />
+    <attr name="materialColorErrorContainer" format="color" />
+    <attr name="materialColorOnPrimaryFixed" format="color" />
+    <attr name="materialColorPrimaryInverse" format="color" />
+    <attr name="materialColorSecondaryFixed" format="color" />
+    <attr name="materialColorTertiaryContainer" format="color" />
+    <attr name="materialColorTertiaryFixed" format="color" />
+    <attr name="materialColorPrimaryContainer" format="color" />
+    <attr name="materialColorOnBackground" format="color" />
+    <attr name="materialColorPrimaryFixed" format="color" />
+    <attr name="materialColorOnSecondary" format="color" />
+    <attr name="materialColorOnTertiary" format="color" />
+    <attr name="materialColorOnError" format="color" />
+    <attr name="materialColorOnSurfaceVariant" format="color" />
+    <attr name="materialColorOutline" format="color" />
+    <attr name="materialColorOutlineVariant" format="color" />
+    <attr name="materialColorOnPrimary" format="color" />
+    <attr name="materialColorOnSurface" format="color" />
+    <attr name="materialColorPrimary" format="color" />
+    <attr name="materialColorSecondary" format="color" />
+    <attr name="materialColorTertiary" format="color" />
+    <attr name="materialColorSurfaceInverse" format="color" />
+    <attr name="materialColorSurfaceVariant" format="color" />
+    <attr name="materialColorSurfaceDim" format="color" />
+    <attr name="materialColorSurfaceBright" format="color" />
+    <attr name="materialColorSurface" format="color" />
+    <attr name="materialColorSurfaceContainerHigh" format="color" />
+    <attr name="materialColorSurfaceContainerHighest" format="color" />
+    <attr name="materialColorSurfaceContainer" format="color" />
 
     <declare-styleable name="WidgetSections">
         <!-- Component name of an app widget provider. -->

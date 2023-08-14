@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Spring over"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Roter skærm"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Oplysninger om proceslinjen"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Vejledningen om proceslinjen blev åbnet"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Vejledningen om proceslinjen blev lukket"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Træk en app til siden for at bruge 2 apps på én gang"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Stryg langsomt opad for at se proceslinjen"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Få appforslag baseret på din rutine"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Aktivér navigation med bevægelser under Indstillinger for automatisk at skjule proceslinjen"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Få mere fra hånden med proceslinjen"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Næste"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Tilbage"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Luk"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Luk"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Hjem"</string>

@@ -17,14 +17,13 @@ package com.android.launcher3.dragndrop;
 
 import static com.android.launcher3.AbstractFloatingView.TYPE_DISCOVERY_BOUNCE;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
+import static com.android.launcher3.LauncherState.EDIT_MODE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.res.Resources;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 
@@ -37,7 +36,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.testing.shared.TestProtocol;
 
 /**
  * Drag controller for Launcher activity
@@ -62,14 +60,10 @@ public class LauncherDragController extends DragController<Launcher> {
             int dragLayerY,
             DragSource source,
             ItemInfo dragInfo,
-            Point dragOffset,
             Rect dragRegion,
             float initialDragViewScale,
             float dragViewScaleOnDrop,
             DragOptions options) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_DROP_TARGET, "5");
-        }
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
@@ -134,9 +128,11 @@ public class LauncherDragController extends DragController<Launcher> {
         mDragObject.dragInfo = dragInfo;
         mDragObject.originalDragInfo = mDragObject.dragInfo.makeShallowCopy();
 
-        if (dragOffset != null) {
-            dragView.setDragVisualizeOffset(new Point(dragOffset));
+        if (mOptions.preDragCondition != null) {
+            dragView.setHasDragOffset(mOptions.preDragCondition.getDragOffset().x != 0 ||
+                    mOptions.preDragCondition.getDragOffset().y != 0);
         }
+
         if (dragRegion != null) {
             dragView.setDragRegion(new Rect(dragRegion));
         }
@@ -162,7 +158,9 @@ public class LauncherDragController extends DragController<Launcher> {
 
     @Override
     protected void exitDrag() {
-        mActivity.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
+        if (!mActivity.isInState(EDIT_MODE)) {
+            mActivity.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
+        }
     }
 
     @Override

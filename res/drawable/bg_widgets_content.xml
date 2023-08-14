@@ -24,7 +24,7 @@
     <!-- SINGLE : L L L L -->
     <item android:state_single="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/surface" />
+            <solid android:color="?attr/widgetPickerSecondarySurfaceColor" />
             <corners android:radius="@dimen/widget_list_top_bottom_corner_radius"/>
         </shape>
     </item>
@@ -32,7 +32,7 @@
     <!-- FIRST : 0 0 s s -->
     <item android:state_first="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/surface" />
+            <solid android:color="?attr/widgetPickerSecondarySurfaceColor" />
             <corners
                 android:bottomLeftRadius="@dimen/widget_list_content_corner_radius"
                 android:bottomRightRadius="@dimen/widget_list_content_corner_radius" />
@@ -42,7 +42,7 @@
     <!-- MIDDLE : 0 0 s s -->
     <item android:state_middle="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/surface" />
+            <solid android:color="?attr/widgetPickerSecondarySurfaceColor" />
             <corners
                 android:bottomLeftRadius="@dimen/widget_list_content_corner_radius"
                 android:bottomRightRadius="@dimen/widget_list_content_corner_radius" />
@@ -52,7 +52,7 @@
     <!-- LAST : 0 0 L L -->
     <item android:state_last="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/surface" />
+            <solid android:color="?attr/widgetPickerSecondarySurfaceColor" />
             <corners
                 android:bottomLeftRadius="@dimen/widget_list_top_bottom_corner_radius"
                 android:bottomRightRadius="@dimen/widget_list_top_bottom_corner_radius" />

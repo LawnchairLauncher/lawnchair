@@ -31,6 +31,8 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewDebug;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
@@ -46,7 +48,6 @@ import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
-import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.ViewCache;
@@ -216,7 +217,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         final BubbleTextView textView = mViewCache.getView(
                 R.layout.folder_application, getContext(), null);
         textView.applyFromWorkspaceItem(item);
-        textView.setOnClickListener(ItemClickHandler.INSTANCE);
+        textView.setOnClickListener(mFolder.mActivityContext.getItemOnClickListener());
         textView.setOnLongClickListener(mFolder);
         textView.setOnFocusChangeListener(mFocusIndicatorHelper);
         CellLayoutLayoutParams lp = (CellLayoutLayoutParams) textView.getLayoutParams();
@@ -231,11 +232,13 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
         return textView;
     }
 
+    @Nullable
     @Override
     public CellLayout getPageAt(int index) {
         return (CellLayout) getChildAt(index);
     }
 
+    @Nullable
     public CellLayout getCurrentCellLayout() {
         return getPageAt(getNextPage());
     }
@@ -382,7 +385,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
     }
 
     private View getViewInCurrentPage(ToIntFunction<ShortcutAndWidgetContainer> rankProvider) {
-        if (getChildCount() < 1) {
+        if (getChildCount() < 1 || getCurrentCellLayout() == null) {
             return null;
         }
         ShortcutAndWidgetContainer container = getCurrentCellLayout().getShortcutsAndWidgets();
@@ -421,10 +424,15 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> implements Cli
      * Sets the focus on the first visible child.
      */
     public void setFocusOnFirstChild() {
-        View firstChild = getCurrentCellLayout().getChildAt(0, 0);
-        if (firstChild != null) {
-            firstChild.requestFocus();
+        CellLayout currentCellLayout = getCurrentCellLayout();
+        if (currentCellLayout == null) {
+            return;
         }
+        View firstChild = currentCellLayout.getChildAt(0, 0);
+        if (firstChild == null) {
+            return;
+        }
+        firstChild.requestFocus();
     }
 
     @Override

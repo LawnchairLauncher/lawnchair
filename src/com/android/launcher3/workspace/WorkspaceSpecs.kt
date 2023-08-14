@@ -25,6 +25,7 @@ import android.util.Xml
 import com.android.launcher3.R
 import com.android.launcher3.util.ResourceHelper
 import java.io.IOException
+import kotlin.math.roundToInt
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 
@@ -159,6 +160,77 @@ class WorkspaceSpecs(resourceHelper: ResourceHelper) {
             }
         }
     }
+
+    /**
+     * Returns the CalculatedWorkspaceSpec for width, based on the available width and the
+     * WorkspaceSpecs.
+     */
+    fun getCalculatedWidthSpec(columns: Int, availableWidth: Int): CalculatedWorkspaceSpec {
+        val widthSpec = workspaceWidthSpecList.first { availableWidth <= it.maxAvailableSize }
+
+        return CalculatedWorkspaceSpec(availableWidth, columns, widthSpec)
+    }
+
+    /**
+     * Returns the CalculatedWorkspaceSpec for height, based on the available height and the
+     * WorkspaceSpecs.
+     */
+    fun getCalculatedHeightSpec(rows: Int, availableHeight: Int): CalculatedWorkspaceSpec {
+        val heightSpec = workspaceHeightSpecList.first { availableHeight <= it.maxAvailableSize }
+
+        return CalculatedWorkspaceSpec(availableHeight, rows, heightSpec)
+    }
+}
+
+class CalculatedWorkspaceSpec(
+    val availableSpace: Int,
+    val cells: Int,
+    val workspaceSpec: WorkspaceSpec
+) {
+    var startPaddingPx: Int = 0
+        private set
+    var endPaddingPx: Int = 0
+        private set
+    var gutterPx: Int = 0
+        private set
+    var cellSizePx: Int = 0
+        private set
+    init {
+        // Calculate all fixed size first
+        if (workspaceSpec.startPadding.fixedSize > 0)
+            startPaddingPx = workspaceSpec.startPadding.fixedSize.roundToInt()
+        if (workspaceSpec.endPadding.fixedSize > 0)
+            endPaddingPx = workspaceSpec.endPadding.fixedSize.roundToInt()
+        if (workspaceSpec.gutter.fixedSize > 0)
+            gutterPx = workspaceSpec.gutter.fixedSize.roundToInt()
+        if (workspaceSpec.cellSize.fixedSize > 0)
+            cellSizePx = workspaceSpec.cellSize.fixedSize.roundToInt()
+
+        // Calculate all available space next
+        if (workspaceSpec.startPadding.ofAvailableSpace > 0)
+            startPaddingPx =
+                (workspaceSpec.startPadding.ofAvailableSpace * availableSpace).roundToInt()
+        if (workspaceSpec.endPadding.ofAvailableSpace > 0)
+            endPaddingPx = (workspaceSpec.endPadding.ofAvailableSpace * availableSpace).roundToInt()
+        if (workspaceSpec.gutter.ofAvailableSpace > 0)
+            gutterPx = (workspaceSpec.gutter.ofAvailableSpace * availableSpace).roundToInt()
+        if (workspaceSpec.cellSize.ofAvailableSpace > 0)
+            cellSizePx = (workspaceSpec.cellSize.ofAvailableSpace * availableSpace).roundToInt()
+
+        // Calculate remainder space last
+        val gutters = cells - 1
+        val usedSpace = startPaddingPx + endPaddingPx + (gutterPx * gutters) + (cellSizePx * cells)
+        val remainderSpace = availableSpace - usedSpace
+        if (workspaceSpec.startPadding.ofRemainderSpace > 0)
+            startPaddingPx =
+                (workspaceSpec.startPadding.ofRemainderSpace * remainderSpace).roundToInt()
+        if (workspaceSpec.endPadding.ofRemainderSpace > 0)
+            endPaddingPx = (workspaceSpec.endPadding.ofRemainderSpace * remainderSpace).roundToInt()
+        if (workspaceSpec.gutter.ofRemainderSpace > 0)
+            gutterPx = (workspaceSpec.gutter.ofRemainderSpace * remainderSpace).roundToInt()
+        if (workspaceSpec.cellSize.ofRemainderSpace > 0)
+            cellSizePx = (workspaceSpec.cellSize.ofRemainderSpace * remainderSpace).roundToInt()
+    }
 }
 
 data class WorkspaceSpec(
@@ -220,7 +292,7 @@ class SizeSpec(resourceHelper: ResourceHelper, attrs: AttributeSet) {
 
     fun isValid(): Boolean {
         // All attributes are empty
-        if (fixedSize <= 0f && ofAvailableSpace <= 0f && ofRemainderSpace <= 0f) {
+        if (fixedSize < 0f && ofAvailableSpace <= 0f && ofRemainderSpace <= 0f) {
             Log.e(TAG, "SizeSpec#isValid - all attributes are empty")
             return false
         }

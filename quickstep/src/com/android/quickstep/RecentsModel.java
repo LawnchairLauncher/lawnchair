@@ -145,6 +145,9 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
      * @param filter Returns true if GroupTask should be in the list of considerations
      */
     public void isTaskRemoved(int taskId, Consumer<Boolean> callback, Predicate<GroupTask> filter) {
+        // Invalidate the existing list before checking to ensure this reflects the current state in
+        // the system
+        mTaskList.onRecentTasksChanged();
         mTaskList.getTasks(true /* loadKeysOnly */, (taskGroups) -> {
             for (GroupTask group : taskGroups) {
                 if (group.containsTask(taskId)) {

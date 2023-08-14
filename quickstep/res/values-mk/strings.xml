@@ -53,7 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Повлечете за да се вратите назад"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"За да се вратите на последниот екран, повлечете од левиот или десниот раб кон средината на екранот."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"За да се вратите на последниот екран на кој бевте, повлечете со два прста од левиот или десниот раб кон средината на екранот."</string>
-    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Враќање назад"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Назад"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Повлечете нагоре од долниот раб на екранот."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Не правете пауза пред да пуштите."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Повлечете право нагоре."</string>
@@ -62,8 +62,8 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Повлечете за да одите на почетниот екран"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Повлечете нагоре од долниот раб на екранот. Ова движење секогаш ќе ве одведе на почетниот екран."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Повлечете нагоре со два прста од долниот раб на екранот. Движењево секогаш ве носи на почетниот екран."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Отворање на почетниот екран"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"За да го отворите почетниот екран, повлечете нагоре од дното на екранот"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Одете на почетниот екран"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"За да одите на вашиот почетен екран во кое било време, повлечете нагоре од дното на екранот"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Повлечете нагоре од долниот раб на екранот."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Задржете го прозорецот подолго пред да го пуштите."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Повлечете право нагоре, а потоа застанете."</string>
@@ -76,7 +76,7 @@
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Готово"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Готово"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Поставки"</string>
-    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Обидете се повторно"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Обиди се пак"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Одлично!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Упатство <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Готово!"</string>
@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Прескокни"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Ротирајте го екранот"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Обука за лентата со задачи"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Се појави лентата за задачи за образование"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Затворена е лентата за задачи за образование"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Повлечете апликација настрана за да користите 2 апликации"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Полека повлечете нагоре за да се прикаже лентата со задачи"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Полека повлечете нагоре за да се прикаже „Лентата со задачи“"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Добивајте предлози за апликации според вашата рутина"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Вклучете навигација со движење во „Поставки“ за автоматско сокривање на „Лентата со задачи“"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Правете повеќе со една лента со задачи"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Следно"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Назад"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Затвори"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Готово"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Дома"</string>
@@ -117,7 +113,7 @@
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Брзи поставки"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Лента со задачи"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Лентата со задачи е прикажана"</string>
-    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Лентата со задачи е скриена"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Лентата со задачи е сокриена"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Лента за навигација"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Премести горе лево"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Премести долу десно"</string>

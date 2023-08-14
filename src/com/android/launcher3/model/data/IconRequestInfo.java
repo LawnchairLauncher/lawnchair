@@ -18,16 +18,12 @@ package com.android.launcher3.model.data;
 import static android.graphics.BitmapFactory.decodeByteArray;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.LauncherActivityInfo;
-import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 
 /**
@@ -42,8 +38,6 @@ public class IconRequestInfo<T extends ItemInfoWithIcon> {
 
     @NonNull public final T itemInfo;
     @Nullable public final LauncherActivityInfo launcherActivityInfo;
-    @Nullable public final String packageName;
-    @Nullable public final String resourceName;
     @Nullable public final byte[] iconBlob;
     public final boolean useLowResIcon;
 
@@ -54,8 +48,6 @@ public class IconRequestInfo<T extends ItemInfoWithIcon> {
         this(
                 itemInfo,
                 launcherActivityInfo,
-                /* packageName= */ null,
-                /* resourceName= */ null,
                 /* iconBlob= */ null,
                 useLowResIcon);
     }
@@ -63,14 +55,10 @@ public class IconRequestInfo<T extends ItemInfoWithIcon> {
     public IconRequestInfo(
             @NonNull T itemInfo,
             @Nullable LauncherActivityInfo launcherActivityInfo,
-            @Nullable String packageName,
-            @Nullable String resourceName,
             @Nullable byte[] iconBlob,
             boolean useLowResIcon) {
         this.itemInfo = itemInfo;
         this.launcherActivityInfo = launcherActivityInfo;
-        this.packageName = packageName;
-        this.resourceName = resourceName;
         this.iconBlob = iconBlob;
         this.useLowResIcon = useLowResIcon;
     }
@@ -87,31 +75,16 @@ public class IconRequestInfo<T extends ItemInfoWithIcon> {
 
         try (LauncherIcons li = LauncherIcons.obtain(context)) {
             WorkspaceItemInfo info = (WorkspaceItemInfo) itemInfo;
-            if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
-                if (!TextUtils.isEmpty(packageName) || !TextUtils.isEmpty(resourceName)) {
-                    info.iconResource = new Intent.ShortcutIconResource();
-                    info.iconResource.packageName = packageName;
-                    info.iconResource.resourceName = resourceName;
-                    BitmapInfo iconInfo = li.createIconBitmap(info.iconResource);
-                    if (iconInfo != null) {
-                        info.bitmap = iconInfo;
-                        return true;
-                    }
-                }
-            }
-
             // Failed to load from resource, try loading from DB.
-            try {
-                if (iconBlob == null) {
-                    return false;
-                }
-                info.bitmap = li.createIconBitmap(decodeByteArray(
-                        iconBlob, 0, iconBlob.length));
-                return true;
-            } catch (Exception e) {
-                Log.e(TAG, "Failed to decode byte array for info " + info, e);
+            if (iconBlob == null) {
                 return false;
             }
+            info.bitmap = li.createIconBitmap(decodeByteArray(
+                    iconBlob, 0, iconBlob.length));
+            return true;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to decode byte array for info " + itemInfo, e);
+            return false;
         }
     }
 }

@@ -134,7 +134,6 @@
     <dimen name="gesture_tutorial_menu_done_button_top_spacing">0dp</dimen>
     <dimen name="gesture_tutorial_menu_back_shape_bottom_margin">0dp</dimen>
     <dimen name="gesture_tutorial_menu_done_button_spacing">72dp</dimen>
-    <dimen name="gesture_tutorial_menu_done_button_margin">0dp</dimen>
 
     <!-- Gesture Tutorial mock conversations -->
     <dimen name="gesture_tutorial_message_icon_size">44dp</dimen>
@@ -292,6 +291,8 @@
     <dimen name="taskbar_stashed_small_screen">108dp</dimen>
     <dimen name="taskbar_unstash_input_area">316dp</dimen>
     <dimen name="taskbar_stashed_handle_height">4dp</dimen>
+    <dimen name="taskbar_stashed_screen_edge_hover_deadzone_height">10dp</dimen>
+    <dimen name="taskbar_stashed_below_hover_deadzone_height">1dp</dimen>
     <dimen name="taskbar_edu_horizontal_margin">112dp</dimen>
     <dimen name="taskbar_nav_buttons_width_kids">88dp</dimen>
     <dimen name="taskbar_nav_buttons_height_kids">40dp</dimen>
@@ -340,9 +341,27 @@
     <dimen name="taskbar_edu_features_lottie_width">170dp</dimen>
     <dimen name="taskbar_edu_features_lottie_height">106dp</dimen>
     <dimen name="taskbar_edu_features_horizontal_spacing">24dp</dimen>
+    <dimen name="taskbar_edu_features_tooltip_width_persistent">624dp</dimen>
+    <dimen name="taskbar_edu_features_tooltip_width_transient">428dp</dimen>
+
+    <!--- Taskbar Pinning -->
+    <dimen name="taskbar_pinning_popup_menu_width">300dp</dimen>
 
     <!-- Recents overview -->
     <dimen name="recents_filter_icon_size">30dp</dimen>
+
+    <!-- Bubble bar -->
+    <dimen name="bubblebar_size">72dp</dimen>
+    <dimen name="bubblebar_stashed_handle_width">55dp</dimen>
+    <dimen name="bubblebar_stashed_size">@dimen/transient_taskbar_stashed_height</dimen>
+    <dimen name="bubblebar_stashed_handle_height">@dimen/taskbar_stashed_handle_height</dimen>
+    <dimen name="bubblebar_pointer_size">8dp</dimen>
+
+    <dimen name="bubblebar_icon_size">50dp</dimen>
+    <dimen name="bubblebar_badge_size">24dp</dimen>
+    <dimen name="bubblebar_icon_overlap">12dp</dimen>
+    <dimen name="bubblebar_icon_spacing">3dp</dimen>
+    <dimen name="bubblebar_icon_elevation">1dp</dimen>
 
     <!-- Launcher splash screen -->
     <!-- Note: keep this value in sync with the WindowManager/Shell dimens.xml -->
@@ -353,6 +372,8 @@
     <dimen name="keyboard_quick_switch_border_width">4dp</dimen>
     <dimen name="keyboard_quick_switch_taskview_width">104dp</dimen>
     <dimen name="keyboard_quick_switch_taskview_height">134dp</dimen>
+    <dimen name="keyboard_quick_switch_taskview_icon_size">28dp</dimen>
+    <dimen name="keyboard_quick_switch_taskview_icon_margin">4dp</dimen>
     <dimen name="keyboard_quick_switch_recents_icon_size">20dp</dimen>
     <dimen name="keyboard_quick_switch_margin_top">56dp</dimen>
     <dimen name="keyboard_quick_switch_margin_ends">16dp</dimen>
@@ -360,4 +381,6 @@
     <dimen name="keyboard_quick_switch_split_view_spacing">2dp</dimen>
     <dimen name="keyboard_quick_switch_view_radius">28dp</dimen>
     <dimen name="keyboard_quick_switch_task_view_radius">16dp</dimen>
+    <dimen name="keyboard_quick_switch_no_recent_items_icon_size">24dp</dimen>
+    <dimen name="keyboard_quick_switch_no_recent_items_icon_margin">8dp</dimen>
 </resources>

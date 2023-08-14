@@ -14,7 +14,8 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
 
     <style name="AllSetTheme" parent="@android:style/Theme.DeviceDefault.NoActionBar">
         <item name="android:navigationBarColor">@android:color/transparent</item>
@@ -22,6 +23,60 @@
         <item name="android:enforceNavigationBarContrast">false</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MenuButton.Home"
+        parent="TextAppearance.GestureTutorial.MenuButton">
+        <item name="android:textColor">?attr/onSurfaceHome</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MenuButton.Back"
+        parent="TextAppearance.GestureTutorial.MenuButton">
+        <item name="android:textColor">?attr/onSurfaceBack</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MenuButton.Overview"
+        parent="TextAppearance.GestureTutorial.MenuButton">
+        <item name="android:textColor">?attr/onSurfaceOverview</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.ButtonLabel.Home"
+        parent="TextAppearance.GestureTutorial.ButtonLabel">
+        <item name="android:textColor">?attr/secondaryHome</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.ButtonLabel.Back"
+        parent="TextAppearance.GestureTutorial.ButtonLabel">
+        <item name="android:textColor">?attr/secondaryBack</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.ButtonLabel.Overview"
+        parent="TextAppearance.GestureTutorial.ButtonLabel">
+        <item name="android:textColor">?attr/secondaryOverview</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Success.Home"
+        parent="TextAppearance.GestureTutorial.MainTitle.Home" />
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Success.Back"
+        parent="TextAppearance.GestureTutorial.MainTitle.Back" />
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Success.Overview"
+        parent="TextAppearance.GestureTutorial.MainTitle.Overview" />
+
+    <style name="GestureTutorialActivity" parent="@style/AppTheme">
+        <item name="background">@android:color/transparent</item>
+        <item name="tutorialSubtitle">@android:color/white</item>
+        <item name="surfaceContainer">?androidprv:attr/materialColorSurfaceContainer</item>
+        <item name="onSurfaceHome">?androidprv:attr/materialColorPrimaryFixedDim</item>
+        <item name="surfaceHome">?androidprv:attr/materialColorOnPrimaryFixedVariant</item>
+        <item name="secondaryHome">?androidprv:attr/materialColorOnPrimaryFixed</item>
+        <item name="onSurfaceBack">?androidprv:attr/materialColorTertiaryFixedDim</item>
+        <item name="surfaceBack">?androidprv:attr/materialColorOnTertiaryFixedVariant</item>
+        <item name="secondaryBack">?androidprv:attr/materialColorOnTertiaryFixed</item>
+        <item name="onSurfaceOverview">?androidprv:attr/materialColorPrimaryFixed</item>
+        <item name="surfaceOverview">?androidprv:attr/materialColorOnSecondaryFixedVariant</item>
+        <item name="secondaryOverview">?androidprv:attr/materialColorOnSecondaryFixed</item>
     </style>
 
 </resources>

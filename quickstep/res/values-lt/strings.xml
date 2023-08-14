@@ -62,7 +62,7 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Perbraukite, kad pereitumėte į pagrindinį ekraną"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Perbraukite aukštyn nuo ekrano apačios. Atlikus šį gestą, visada nukreipiama į pagrindinį ekraną."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Perbraukite dviem pirštais nuo ekrano apačios. Šis gestas visada nukreipia į pagrindinį ekraną."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Eiti į pagrindinį ekraną"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Eikite į pagrindinį ekraną"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Jei norite bet kada pasiekti pagrindinį ekraną, perbraukite aukštyn iš ekrano apačios"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Turite perbraukti aukštyn nuo apatinio ekrano krašto."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Pabandykite palaikyti langą ilgiau prieš pakeldami pirštą."</string>
@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Praleisti"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Pasukti ekraną"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Užduočių juostos mokomoji informacija"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Užduočių juostos patarimai rodomi"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Užduočių juostos patarimai uždaryti"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Nuvilkę programą į šoną vienu metu naudokite dvi programas"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Trumpai perbraukite, kad būtų rodoma Užduočių juosta"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Gaukite programų pasiūlymų pagal savo veiklą"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Įjungę naršymą gestais „Nustatymų“ skiltyje automatiškai paslėpkite Užduočių juostą"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Atlikite daugiau naudodami Užduočių juostą"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Kitas"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Atgal"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Uždaryti"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Atlikta"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Pagrindinis"</string>

@@ -16,13 +16,14 @@
 
 package com.android.launcher3.widget;
 
+import static com.android.launcher3.widget.util.WidgetSizes.getWidgetSizePx;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.util.Size;
 import android.view.View;
 import android.view.View.MeasureSpec;
@@ -43,9 +44,7 @@ import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.RoundDrawableWrapper;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
-import com.android.launcher3.widget.util.WidgetSizes;
 
 /**
  * Extension of {@link DragPreviewProvider} with logic specific to pending widgets/shortcuts
@@ -97,9 +96,6 @@ public class PendingItemDragHelper extends DragPreviewProvider {
      */
     public void startDrag(Rect previewBounds, int previewBitmapWidth, int previewViewWidth,
             Point screenPos, DragSource source, DragOptions options) {
-        if (TestProtocol.sDebugTracing) {
-            Log.d(TestProtocol.NO_DROP_TARGET, "3");
-        }
         final Launcher launcher = Launcher.getLauncher(mView.getContext());
         LauncherAppState app = LauncherAppState.getInstance(launcher);
 
@@ -107,7 +103,6 @@ public class PendingItemDragHelper extends DragPreviewProvider {
         final int previewWidth;
         final int previewHeight;
         final float scale;
-        final Point dragOffset;
         final Rect dragRegion;
 
         mEstimatedCellSize = launcher.getWorkspace().estimateItemSize(mAddInfo);
@@ -126,13 +121,8 @@ public class PendingItemDragHelper extends DragPreviewProvider {
                 mAppWidgetHostViewPreview.setAppWidget(/* appWidgetId= */ -1,
                         ((PendingAddWidgetInfo) mAddInfo).info);
                 DeviceProfile deviceProfile = launcher.getDeviceProfile();
-                Rect padding = new Rect();
-                mAppWidgetHostViewPreview.getWidgetInset(deviceProfile, padding);
-                mAppWidgetHostViewPreview.setPadding(padding.left, padding.top, padding.right,
-                        padding.bottom);
                 mAppWidgetHostViewPreview.updateAppWidget(/* remoteViews= */ mRemoteViewsPreview);
-                Size widgetSizes = WidgetSizes.getWidgetPaddedSizePx(launcher,
-                        mAddInfo.componentName, deviceProfile, mAddInfo.spanX, mAddInfo.spanY);
+                Size widgetSizes = getWidgetSizePx(deviceProfile, mAddInfo.spanX, mAddInfo.spanY);
                 mAppWidgetHostViewPreview.measure(
                         MeasureSpec.makeMeasureSpec(widgetSizes.getWidth(), MeasureSpec.EXACTLY),
                         MeasureSpec.makeMeasureSpec(widgetSizes.getHeight(), MeasureSpec.EXACTLY));
@@ -166,8 +156,15 @@ public class PendingItemDragHelper extends DragPreviewProvider {
                 previewBounds.right -= padding;
             }
             if (mAppWidgetHostViewPreview != null) {
-                previewWidth = mAppWidgetHostViewPreview.getMeasuredWidth();
-                previewHeight = mAppWidgetHostViewPreview.getMeasuredHeight();
+                float previewScale = mAppWidgetHostViewPreview.getScaleX();
+                int widgetWidth = mAppWidgetHostViewPreview.getMeasuredWidth();
+                int widgetHeight = mAppWidgetHostViewPreview.getMeasuredHeight();
+                previewWidth = Math.round(widgetWidth * previewScale);
+                previewHeight = Math.round(widgetHeight * previewScale);
+
+                previewBounds.offset(
+                        Math.round(widgetWidth * (previewScale - 1) / 2),
+                        Math.round(widgetHeight * (previewScale - 1) / 2));
             } else {
                 previewWidth = preview.getIntrinsicWidth();
                 previewHeight = preview.getIntrinsicHeight();
@@ -175,7 +172,6 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             scale = previewBounds.width() / (float) previewWidth;
             launcher.getDragController().addDragListener(new WidgetHostViewLoader(launcher, mView));
 
-            dragOffset = null;
             dragRegion = null;
             draggableView = DraggableView.ofType(DraggableView.DRAGGABLE_WIDGET);
         } else {
@@ -189,8 +185,6 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             previewHeight = preview.getIntrinsicHeight();
             li.recycle();
             scale = ((float) launcher.getDeviceProfile().iconSizePx) / previewWidth;
-
-            dragOffset = new Point(previewPadding / 2, previewPadding / 2);
 
             // Create a preview same as the workspace cell size and draw the icon at the
             // appropriate position.
@@ -219,11 +213,10 @@ public class PendingItemDragHelper extends DragPreviewProvider {
         // Start the drag
         if (mAppWidgetHostViewPreview != null) {
             launcher.getDragController().startDrag(mAppWidgetHostViewPreview, draggableView,
-                    dragLayerX, dragLayerY, source, mAddInfo, dragOffset, dragRegion, scale, scale,
-                    options);
+                    dragLayerX, dragLayerY, source, mAddInfo, dragRegion, scale, scale, options);
         } else {
             launcher.getDragController().startDrag(preview, draggableView, dragLayerX, dragLayerY,
-                    source, mAddInfo, dragOffset, dragRegion, scale, scale, options);
+                    source, mAddInfo, dragRegion, scale, scale, options);
         }
     }
 

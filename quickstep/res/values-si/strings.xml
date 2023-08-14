@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"මඟ හරින්න"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"තිරය කරකවන්න"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"කාර්ය තීරු අධ්‍යාපනය"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"කාර්ය තීරු අධ්‍යාපනය දිස් විය"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"කාර්ය තීරු අධ්‍යාපනය වසා ඇත"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"එකවර යෙදුම් 2ක් භාවිතා කිරීමට යෙදුමක් පැත්තට අදින්න"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"කාර්ය තීරුව පෙන්වීමට ඉහළට සෙමින් ස්වයිප් කරන්න"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ඔබේ දිනචරියාව මත පදනම්ව යෙදුම් යෝජනා ලබා ගන්න"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"කාර්ය තීරුව ස්වයංක්‍රීයව සැඟවීමට සැකසීම් තුළ අභින සංචලනය සක්‍රීය කරන්න"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"කාර්ය තීරුව සමග තවත් කරන්න"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"ඊළඟ"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"ආපසු"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"වසන්න"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"නිමයි"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"මුල් පිටුව"</string>

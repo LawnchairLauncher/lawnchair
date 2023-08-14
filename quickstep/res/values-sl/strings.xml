@@ -53,7 +53,7 @@
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Povlecite za vrnitev"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Če se želite vrniti na prejšnji zaslon, povlecite z levega ali desnega roba do sredine zaslona."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Če se želite vrniti na zadnji prikazani zaslon, z dvema prstoma povlecite z levega ali desnega roba do sredine zaslona."</string>
-    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Pomik nazaj"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Nazaj"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pazite, da povlečete s spodnjega roba zaslona navzgor."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pazite, da ne zaustavite prsta, preden ga dvignete."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Pazite, da povlečete naravnost navzgor."</string>
@@ -97,15 +97,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Preskoči"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Sukanje zaslona"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Poučni nasveti o opravilni vrstici"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Poučni nasveti o opravilni vrstici so prikazani."</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Poučni nasveti o opravilni vrstici so zaprti."</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Povlecite aplikacijo na stran za uporabo 2 aplikacij hkrati."</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Počasi povlecite navzgor za prikaz opravilne vrstice"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Počasi povlecite navzgor za prikaz opravilne vrstice."</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Prejemajte predloge aplikacij na podlagi svojih navad."</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"V nastavitvah vklopite krmarjenje s potezami, da se bo opravilna vrstica samodejno skrila."</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Naredite več z opravilno vrstico"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Naprej"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Nazaj"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zapri"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Končano"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Začetni zaslon"</string>

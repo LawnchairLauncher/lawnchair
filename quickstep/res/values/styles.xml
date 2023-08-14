@@ -14,13 +14,14 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
 
     <style name="TextAppearance.GestureTutorial"
-        parent="android:TextAppearance.Material.Body1" />
+        parent="@android:style/Theme.DeviceDefault.DayNight" />
 
     <style name="TextAppearance.GestureTutorial.CallToAction"
-        parent="android:TextAppearance.Material.Body2" />
+        parent="@android:style/Theme.DeviceDefault.DayNight" />
 
     <style name="TextAppearance.GestureTutorial.Title"
         parent="TextAppearance.GestureTutorial">
@@ -50,8 +51,22 @@
     <style name="TextAppearance.GestureTutorial.MenuButton"
         parent="TextAppearance.GestureTutorial.Feedback.Title">
         <item name="android:gravity">center</item>
-        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
         <item name="fontWeight">400</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MenuButton.Home"
+        parent="TextAppearance.GestureTutorial.MenuButton">
+        <item name="android:textColor">?attr/secondaryHome</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MenuButton.Back"
+        parent="TextAppearance.GestureTutorial.MenuButton">
+        <item name="android:textColor">?attr/secondaryBack</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MenuButton.Overview"
+        parent="TextAppearance.GestureTutorial.MenuButton">
+        <item name="android:textColor">?attr/secondaryOverview</item>
     </style>
 
     <style name="TextAppearance.GestureTutorial.Feedback.Title.AllSet"
@@ -109,11 +124,26 @@
     <style name="TextAppearance.GestureTutorial.ButtonLabel"
         parent="TextAppearance.GestureTutorial.CallToAction">
         <item name="android:gravity">center</item>
-        <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:textColor">?androidprv:attr/materialColorOnPrimary</item>
         <item name="android:letterSpacing">0.02</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:fontFamily">google-sans-text-medium</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.ButtonLabel.Home"
+        parent="TextAppearance.GestureTutorial.ButtonLabel">
+        <item name="android:textColor">?attr/onSurfaceHome</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.ButtonLabel.Back"
+        parent="TextAppearance.GestureTutorial.ButtonLabel">
+        <item name="android:textColor">?attr/onSurfaceBack</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.ButtonLabel.Overview"
+        parent="TextAppearance.GestureTutorial.ButtonLabel">
+        <item name="android:textColor">?attr/onSurfaceOverview</item>
     </style>
 
     <style name="TextAppearance.GestureTutorial.CancelButtonLabel"
@@ -134,26 +164,45 @@
     <style name="TextAppearance.GestureTutorial.MainTitle"
         parent="TextAppearance.GestureTutorial">
         <item name="android:textSize">36sp</item>
-        <item name="android:textColor">@android:color/black</item>
         <item name="android:fontFamily">google-sans</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Home"
+        parent="TextAppearance.GestureTutorial.MainTitle">
+        <item name="android:textColor">?attr/onSurfaceHome</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Back"
+        parent="TextAppearance.GestureTutorial.MainTitle">
+        <item name="android:textColor">?attr/onSurfaceBack</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Overview"
+        parent="TextAppearance.GestureTutorial.MainTitle">
+        <item name="android:textColor">?attr/onSurfaceOverview</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Success.Home"
+        parent="TextAppearance.GestureTutorial.MainTitle.Home">
+        <item name="android:textColor">?attr/secondaryHome</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Success.Back"
+        parent="TextAppearance.GestureTutorial.MainTitle.Back">
+        <item name="android:textColor">?attr/secondaryBack</item>
+    </style>
+
+    <style name="TextAppearance.GestureTutorial.MainTitle.Success.Overview"
+        parent="TextAppearance.GestureTutorial.MainTitle.Overview">
+        <item name="android:textColor">?attr/secondaryOverview</item>
     </style>
 
     <style name="TextAppearance.GestureTutorial.MainSubtitle"
         parent="TextAppearance.GestureTutorial.Subtitle">
         <item name="android:textSize">16sp</item>
         <item name="android:letterSpacing">0.02</item>
-        <item name="android:textColor">@android:color/black</item>
         <item name="android:fontFamily">google-sans-text</item>
-    </style>
-
-    <style name="TextAppearance.GestureTutorial.SuccessTitle"
-        parent="TextAppearance.GestureTutorial.MainTitle">
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
-    <style name="TextAppearance.GestureTutorial.SuccessSubtitle"
-        parent="TextAppearance.GestureTutorial.MainSubtitle">
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">?attr/tutorialSubtitle</item>
     </style>
 
     <style name="AllSetTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
@@ -174,6 +223,8 @@
 
     <style name="OverviewActionButton"
         parent="@android:style/Widget.DeviceDefault.Button.Borderless">
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
         <item name="android:textColor">@color/overview_button</item>
         <item name="android:drawableTint">@color/overview_button</item>
         <item name="android:tint">?android:attr/textColorPrimary</item>
@@ -195,28 +246,11 @@
         <item name="iconDisplay">taskbar</item>
     </style>
 
-    <style name="TaskbarEdu.Button.Close" parent="@android:style/Widget.Material.Button">
-        <item name="android:background">@drawable/button_taskbar_edu_bordered</item>
-        <item name="android:stateListAnimator">@null</item>
-        <item name="android:textSize">16sp</item>
-        <item name="android:padding">4dp</item>
-    </style>
-
-    <style name="TaskbarEdu.Button.Next" parent="@android:style/Widget.Material.Button">
+    <style name="TaskbarEdu.Button.Done" parent="@android:style/Widget.Material.Button">
         <item name="android:background">@drawable/button_taskbar_edu_colored</item>
         <item name="android:stateListAnimator">@null</item>
         <item name="android:textSize">16sp</item>
-        <item name="android:padding">4dp</item>
-    </style>
-
-    <style name="TextAppearance.TaskbarEdu.Title"
-        parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle" >
-        <item name="android:layout_marginHorizontal">16dp</item>
-        <item name="android:gravity">center_horizontal</item>
-        <item name="android:fontFamily">google-sans</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
-        <item name="android:textSize">24sp</item>
-        <item name="android:lines">2</item>
+        <item name="android:minHeight">36dp</item>
     </style>
 
     <style name="TextAppearance.TaskbarEduTooltip.Title" parent="@android:style/TextAppearance.DeviceDefault.DialogWindowTitle">
@@ -231,15 +265,37 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="KeyboardQuickSwitchOverview">
+    <style name="KeyboardQuickSwitchText">
         <item name="fontFamily">google-sans-text</item>
         <item name="android:textSize">14sp</item>
-        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textColor">?androidprv:attr/materialColorOnSurface</item>
         <item name="lineHeight">20sp</item>
     </style>
 
-    <style name="GestureTutorialActivity"
-        parent="@style/AppTheme">
+    <style name="KeyboardQuickSwitchText.OnBackground" parent="KeyboardQuickSwitchText">
+        <item name="android:textColor">?androidprv:attr/materialColorOnSurfaceInverse</item>
+    </style>
+
+    <style name="GestureTutorialActivity" parent="@style/AppTheme">
         <item name="background">@android:color/transparent</item>
+        <item name="tutorialSubtitle">@android:color/black</item>
+        <item name="surfaceContainer">?androidprv:attr/materialColorSurfaceContainer</item>
+        <item name="onSurfaceHome">?androidprv:attr/materialColorPrimaryFixed</item>
+        <item name="surfaceHome">@android:color/system_accent1_300</item>
+        <item name="secondaryHome">?androidprv:attr/materialColorOnPrimaryFixedVariant</item>
+        <item name="onSurfaceBack">?androidprv:attr/materialColorTertiaryFixed</item>
+        <item name="surfaceBack">@android:color/system_accent3_300</item>
+        <item name="secondaryBack">?androidprv:attr/materialColorOnTertiaryFixedVariant</item>
+        <item name="onSurfaceOverview">?androidprv:attr/materialColorPrimaryFixed</item>
+        <item name="surfaceOverview">@android:color/system_accent2_300</item>
+        <item name="secondaryOverview">?androidprv:attr/materialColorOnSecondaryFixedVariant</item>
+    </style>
+
+    <style name="rotate_prompt_title" parent="TextAppearance.GestureTutorial.Dialog.Title">
+        <item name="android:textColor">?androidprv:attr/materialColorOnSurface</item>
+    </style>
+
+    <style name="rotate_prompt_subtitle" parent="TextAppearance.GestureTutorial.Dialog.Subtitle">
+        <item name="android:textColor">?androidprv:attr/materialColorOnSurfaceVariant</item>
     </style>
 </resources>

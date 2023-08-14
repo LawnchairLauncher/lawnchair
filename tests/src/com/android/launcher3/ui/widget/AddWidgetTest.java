@@ -20,7 +20,7 @@ import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import android.platform.test.annotations.IwTest;
+import android.platform.test.annotations.PlatinumTest;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -48,7 +48,7 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
     @Rule
     public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
-    @IwTest(focusArea="launcher")
+    @PlatinumTest(focusArea = "launcher")
     @Test
     @PortraitLandscape
     public void testDragIcon() throws Throwable {
@@ -60,11 +60,11 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
         final LauncherAppWidgetProviderInfo widgetInfo =
                 TestViewHelpers.findWidgetProvider(this, false /* hasConfigureScreen */);
 
-        WidgetResizeFrame resizeFrame = mLauncher.
-                getWorkspace().
-                openAllWidgets().
-                getWidget(widgetInfo.getLabel(mTargetContext.getPackageManager())).
-                dragWidgetToWorkspace();
+        WidgetResizeFrame resizeFrame = mLauncher
+                .getWorkspace()
+                .openAllWidgets()
+                .getWidget(widgetInfo.getLabel(mTargetContext.getPackageManager()))
+                .dragWidgetToWorkspace();
 
         assertTrue(mActivityMonitor.itemExists(
                 (info, view) -> info instanceof LauncherAppWidgetInfo &&
