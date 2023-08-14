@@ -25,6 +25,7 @@ import com.android.app.viewcapture.ViewCapture.MAIN_EXECUTOR
 import com.android.app.viewcapture.data.ExportedData
 import com.android.launcher3.tapl.TestHelpers
 import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter
+import com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT
 import com.android.launcher3.util.viewcapture_analysis.ViewCaptureAnalyzer
 import java.io.BufferedOutputStream
 import java.io.FileOutputStream
@@ -115,6 +116,9 @@ class ViewCaptureRule(var alreadyOpenActivitySupplier: Supplier<Activity?>) : Te
     private fun analyzeViewCapture(description: Description) {
         // OOP tests don't produce ViewCapture data
         if (!TestHelpers.isInLauncherProcess()) return
+
+        // Due to flakiness of ViewCapture verifier, don't run the check in presubmit
+        if (TestStabilityRule.getRunFlavor() != PLATFORM_POSTSUBMIT) return
 
         var frameCount = 0
         for (i in 0 until viewCaptureData!!.windowDataCount) {
