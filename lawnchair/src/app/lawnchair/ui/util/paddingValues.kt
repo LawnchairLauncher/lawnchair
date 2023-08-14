@@ -9,9 +9,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 
-val LocalScaffoldPadding: ProvidableCompositionLocal<PaddingValues> =
-    staticCompositionLocalOf { PaddingValues(0.dp) }
-
 @Composable
 fun rememberExtendPadding(
     padding: PaddingValues,
