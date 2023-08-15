@@ -3,6 +3,7 @@ package app.lawnchair.ui.preferences.components
 import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -20,8 +21,8 @@ import app.lawnchair.ui.StretchEdgeEffect
 
 @Composable
 fun NestedScrollStretch(content: @Composable () -> Unit) {
-    val invalidateTick = remember { mutableStateOf(0) }
-    val invalidate = Runnable { invalidateTick.value++ }
+    val invalidateTick = remember { mutableIntStateOf(0) }
+    val invalidate = Runnable { invalidateTick.intValue++ }
 
     val context = LocalContext.current
     val connection = remember { NestedScrollStretchConnection(context, invalidate) }
@@ -38,7 +39,7 @@ fun NestedScrollStretch(content: @Composable () -> Unit) {
             }
             .drawWithContent {
                 // Redraw when this value changes
-                invalidateTick.value
+                invalidateTick.intValue
 
                 connection.topEdgeEffect.draw(tmpOut, StretchEdgeEffect.POSITION_TOP, this) {
                     connection.bottomEdgeEffect.draw(tmpOut, StretchEdgeEffect.POSITION_BOTTOM, this) {

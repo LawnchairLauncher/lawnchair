@@ -74,7 +74,7 @@ fun PreferenceSearchScaffold(
             }
         },
         bottomBar = { BottomSpacer() },
-        contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues()
+        contentPadding = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal).asPaddingValues(),
     ) {
         val layoutDirection = LocalLayoutDirection.current
         innerPadding.left = it.calculateLeftPadding(layoutDirection)

@@ -16,7 +16,6 @@
 
 package app.lawnchair.ui.preferences
 
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -25,6 +24,8 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
 import app.lawnchair.backup.ui.createBackupGraph
 import app.lawnchair.backup.ui.restoreBackupGraph
 import app.lawnchair.ui.preferences.about.aboutGraph
@@ -32,8 +33,6 @@ import app.lawnchair.ui.preferences.components.SystemUi
 import app.lawnchair.ui.preferences.components.colorpreference.colorSelectionGraph
 import app.lawnchair.ui.util.ProvideBottomSheetHandler
 import app.lawnchair.util.ProvideLifecycleState
-import com.google.accompanist.navigation.animation.AnimatedNavHost
-import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import soup.compose.material.motion.animation.materialSharedAxisXIn
 import soup.compose.material.motion.animation.materialSharedAxisXOut
 import soup.compose.material.motion.animation.rememberSlideDistance
@@ -68,10 +67,9 @@ val LocalPreferenceInteractor = staticCompositionLocalOf<PreferenceInteractor> {
     error("CompositionLocal LocalPreferenceInteractor not present")
 }
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel>()) {
-    val navController = rememberAnimatedNavController()
+    val navController = rememberNavController()
     val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     val slideDistance = rememberSlideDistance()
 
@@ -82,7 +80,7 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
                 LocalNavController provides navController,
                 LocalPreferenceInteractor provides interactor,
             ) {
-                AnimatedNavHost(
+                NavHost(
                     navController = navController,
                     startDestination = "/",
                     enterTransition = { materialSharedAxisXIn(!isRtl, slideDistance) },

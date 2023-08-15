@@ -2,7 +2,6 @@ package app.lawnchair.ui.preferences.components.colorpreference
 
 import android.content.Context
 import android.graphics.Color
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
@@ -27,13 +26,12 @@ import app.lawnchair.ui.preferences.components.colorpreference.pickers.PresetsLi
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.SwatchGrid
 import app.lawnchair.ui.preferences.preferenceGraph
 import com.android.launcher3.R
-import com.google.accompanist.navigation.animation.composable
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.navigation.compose.composable
 import com.patrykmichalik.opto.domain.Preference
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.colorSelectionGraph(route: String) {
     preferenceGraph(route, {}) { subRoute ->
         composable(
@@ -67,10 +65,10 @@ fun ColorSelection(
     val adapter = preference.getAdapter()
     val appliedColor = adapter.state.value
     val context = LocalContext.current
-    val selectedColor = remember { mutableStateOf(appliedColor.forCustomPicker(context)) }
+    val selectedColor = remember { mutableIntStateOf(appliedColor.forCustomPicker(context)) }
     val selectedColorApplied = remember {
         derivedStateOf {
-            appliedColor is ColorOption.CustomColor && appliedColor.color == selectedColor.value
+            appliedColor is ColorOption.CustomColor && appliedColor.color == selectedColor.intValue
         }
     }
     val defaultTabIndex = when {
@@ -80,11 +78,14 @@ fun ColorSelection(
     }
 
     val onPresetClick = { option: ColorOption ->
-        selectedColor.value = option.forCustomPicker(context)
+        selectedColor.intValue = option.forCustomPicker(context)
         adapter.onChange(newValue = option)
     }
 
-    val pagerState = rememberPagerState(initialPage = defaultTabIndex)
+    val pagerState = rememberPagerState(
+        initialPage = defaultTabIndex,
+        pageCount = { 2 },
+    )
     PreferenceLayout(
         label = label,
         bottomBar = {
@@ -98,7 +99,7 @@ fun ColorSelection(
             ) {
                 Button(
                     enabled = !selectedColorApplied.value,
-                    onClick = { adapter.onChange(newValue = ColorOption.CustomColor(selectedColor.value)) },
+                    onClick = { adapter.onChange(newValue = ColorOption.CustomColor(selectedColor.intValue)) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(all = 16.dp),
@@ -132,7 +133,6 @@ fun ColorSelection(
                 )
             }
             HorizontalPager(
-                pageCount = 2,
                 state = pagerState,
                 verticalAlignment = Alignment.Top,
                 modifier = Modifier.animateContentSize(),
@@ -161,8 +161,8 @@ fun ColorSelection(
                     }
                     1 -> {
                         CustomColorPicker(
-                            selectedColor = selectedColor.value,
-                            onSelect = { selectedColor.value = it },
+                            selectedColor = selectedColor.intValue,
+                            onSelect = { selectedColor.intValue = it },
                         )
                     }
                 }

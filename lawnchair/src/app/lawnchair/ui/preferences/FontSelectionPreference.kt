@@ -5,7 +5,6 @@ import android.content.Intent
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -26,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.lawnchair.font.FontCache
 import app.lawnchair.font.googlefonts.GoogleFontsListing
@@ -37,10 +37,7 @@ import app.lawnchair.ui.AndroidText
 import app.lawnchair.ui.OverflowMenu
 import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.R
-import com.google.accompanist.navigation.animation.composable
-import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalAnimationApi::class)
 fun NavGraphBuilder.fontSelectionGraph(route: String) {
     preferenceGraph(route, {}) { subRoute ->
         composable(
@@ -81,16 +78,18 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
         }
         value = list
     }
-    val allItems by derivedStateOf { customFonts + items }
+    val allItems by remember { derivedStateOf { items + customFonts } }
     val adapter = fontPref.getAdapter()
     var searchQuery by remember { mutableStateOf("") }
 
-    val hasFilter by derivedStateOf { searchQuery.isNotEmpty() }
-    val filteredItems by derivedStateOf {
-        if (hasFilter) {
-            val lowerCaseQuery = searchQuery.lowercase()
-            allItems.filter { it.displayName.lowercase().contains(lowerCaseQuery) }
-        } else items
+    val hasFilter by remember { derivedStateOf { searchQuery.isNotEmpty() } }
+    val filteredItems by remember {
+        derivedStateOf {
+            if (hasFilter) {
+                val lowerCaseQuery = searchQuery.lowercase()
+                allItems.filter { it.displayName.lowercase().contains(lowerCaseQuery) }
+            } else items
+        }
     }
 
     val request = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
