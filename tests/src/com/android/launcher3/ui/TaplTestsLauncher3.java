@@ -229,7 +229,18 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @PortraitLandscape
     public void testAllAppsSwitchToWorkspace() {
         assertNotNull("switchToWorkspace() returned null",
-                mLauncher.getWorkspace().switchToAllApps().switchToWorkspace());
+                mLauncher.getWorkspace().switchToAllApps()
+                        .switchToWorkspace(/* swipeDown= */ true));
+        assertTrue("Launcher internal state is not Workspace",
+                isInState(() -> LauncherState.NORMAL));
+    }
+
+    @Test
+    @PortraitLandscape
+    public void testAllAppsSwipeUpToWorkspace() {
+        assertNotNull("testAllAppsSwipeUpToWorkspace() returned null",
+                mLauncher.getWorkspace().switchToAllApps()
+                        .switchToWorkspace(/* swipeDown= */ false));
         assertTrue("Launcher internal state is not Workspace",
                 isInState(() -> LauncherState.NORMAL));
     }
