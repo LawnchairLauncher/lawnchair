@@ -27,7 +27,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"ନିରାପଦ ମୋଡରେ ୱିଜେଟ୍‌ ଅକ୍ଷମ କରାଗଲା"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"ଶର୍ଟକଟ୍‌ ଉପଲବ୍ଧ ନାହିଁ"</string>
     <string name="home_screen" msgid="5629429142036709174">"ହୋମ"</string>
-    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"ସ୍କ୍ରିନ‌କୁ ସ୍ପ୍ଲିଟ୍ କରନ୍ତୁ"</string>
+    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"ସ୍କ୍ରିନ‌କୁ ସ୍ପ୍ଲିଟ କରନ୍ତୁ"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s ପାଇଁ ଆପ ସୂଚନା"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"ଆପ ପେୟାର ସେଭ କରନ୍ତୁ"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ଏକ ୱିଜେଟକୁ ମୁଭ୍ କରିବା ପାଇଁ ସ୍ପର୍ଶ କରି ଧରି ରଖନ୍ତୁ।"</string>
@@ -56,7 +56,7 @@
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"ୱିଜେଟ ସେଟିଂସ ପରିବର୍ତ୍ତନ କରିବାକୁ ଟାପ କରନ୍ତୁ"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"ବୁଝିଗଲି"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"ୱିଜେଟ ସେଟିଂସ ପରିବର୍ତ୍ତନ କରନ୍ତୁ"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ଆପ୍‌ ଖୋଜନ୍ତୁ"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ଆପ ସର୍ଚ୍ଚ କରନ୍ତୁ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ଆପ୍‌ ଲୋଡ୍‌ ହେଉଛି..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ସହିତ ମେଳ ହେଉଥିବା କୌଣସି ଆପ୍‌ ମିଳିଲା ନାହିଁ"</string>
     <string name="label_application" msgid="8531721983832654978">"ଆପ୍"</string>

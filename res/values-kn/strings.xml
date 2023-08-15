@@ -56,7 +56,7 @@
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"ವಿಜೆಟ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಲು ಟ್ಯಾಪ್ ಮಾಡಿ"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"ಅರ್ಥವಾಯಿತು"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"ವಿಜೆಟ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಬದಲಾಯಿಸಿ"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಹುಡುಕಿ"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ಆ್ಯಪ್‍ಗಳನ್ನು ಹುಡುಕಿ"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ಅಪ್ಲಿಕೇಶನ್‌ಗಳನ್ನು ಲೋಡ್ ಮಾಡಲಾಗುತ್ತಿದೆ..."</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ಹೊಂದಿಕೆಯ ಯಾವುದೇ ಅಪ್ಲಿಕೇಶನ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ"</string>
     <string name="label_application" msgid="8531721983832654978">"ಆ್ಯಪ್"</string>
@@ -110,7 +110,7 @@
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"ಆನ್ ಆಗಿದೆ"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"ಆಫ್ ಆಗಿದೆ"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"ನೋಟಿಫಿಕೇಶನ್ ಆ್ಯಕ್ಸೆಸ್ ಅಗತ್ಯವಿದೆ"</string>
-    <string name="msg_missing_notification_access" msgid="281113995110910548">"ಅಧಿಸೂಚನೆ ಚುಕ್ಕೆಗಳನ್ನು ತೋರಿಸಲು, <xliff:g id="NAME">%1$s</xliff:g> ಗೆ ಅಪ್ಲಿಕೇಶನ್‌ ಅಧಿಸೂಚನೆಗಳನ್ನು ಆನ್‌ ಮಾಡಿ"</string>
+    <string name="msg_missing_notification_access" msgid="281113995110910548">"ನೋಟಿಫಿಕೇಶನ್ ಚುಕ್ಕೆಗಳನ್ನು ತೋರಿಸಲು, <xliff:g id="NAME">%1$s</xliff:g> ಗೆ ಆ್ಯಪ್ ನೋಟಿಫಿಕೇಶನ್‍ಗಳನ್ನು ಆನ್‌ ಮಾಡಿ"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"ಸೆಟ್ಟಿಂಗ್‌‌ಗಳನ್ನು ಬದಲಾಯಿಸಿ"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"ನೋಟಿಫಿಕೇಶನ್ ಡಾಟ್‌ಗಳನ್ನು ತೋರಿಸಿ"</string>
     <string name="developer_options_title" msgid="700788437593726194">"ಡೆವಲಪರ್ ಆಯ್ಕೆಗಳು"</string>
