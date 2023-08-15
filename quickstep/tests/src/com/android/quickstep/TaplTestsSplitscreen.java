@@ -22,6 +22,8 @@ import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
 
+import androidx.test.platform.app.InstrumentationRegistry;
+
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TaplTestsLauncher3;
@@ -36,6 +38,9 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
     private static final String CALCULATOR_APP_PACKAGE =
             resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR);
 
+    private static final String READ_DEVICE_CONFIG_PERMISSION =
+            "android.permission.READ_DEVICE_CONFIG";
+
     @Override
     @Before
     public void setUp() throws Exception {
@@ -46,6 +51,8 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
             mLauncher.enableBlockTimeout(true);
             mLauncher.showTaskbarIfHidden();
         }
+        InstrumentationRegistry.getInstrumentation().getUiAutomation().adoptShellPermissionIdentity(
+                READ_DEVICE_CONFIG_PERMISSION);
     }
 
     @After
