@@ -42,5 +42,6 @@ filegroup {
         "tests/src/com/android/quickstep/NavigationModeSwitchRule.java",
         "tests/src/com/android/quickstep/AbstractQuickStepTest.java",
         "tests/src/com/android/quickstep/TaplTestsQuickstep.java",
+        "tests/src/com/android/quickstep/TaplTestsSplitscreen.java",
     ]
 }
