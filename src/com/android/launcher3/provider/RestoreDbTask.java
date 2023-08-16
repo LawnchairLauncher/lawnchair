@@ -82,11 +82,15 @@ public class RestoreDbTask {
     public static final String APPWIDGET_OLD_IDS = "appwidget_old_ids";
     public static final String APPWIDGET_IDS = "appwidget_ids";
 
+    private static final String[] DB_COLUMNS_TO_LOG = {"profileId", "title", "itemType", "screen",
+            "container", "cellX", "cellY", "spanX", "spanY", "intent"};
+
     /**
      * Tries to restore the backup DB if needed
      */
     public static void restoreIfNeeded(Context context, ModelDbController dbController) {
         if (!isPending(context)) {
+            Log.d(TAG, "No restore task pending, exiting RestoreDbTask");
             return;
         }
         if (!performRestore(context, dbController)) {
@@ -106,6 +110,7 @@ public class RestoreDbTask {
 
     private static boolean performRestore(Context context, ModelDbController controller) {
         SQLiteDatabase db = controller.getDb();
+        FileLog.d(TAG, "performRestore: starting restore from db");
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             RestoreDbTask task = new RestoreDbTask();
             task.sanitizeDB(context, controller, db, new BackupManager(context));
@@ -133,10 +138,11 @@ public class RestoreDbTask {
     @VisibleForTesting
     protected int sanitizeDB(Context context, ModelDbController controller, SQLiteDatabase db,
             BackupManager backupManager) throws Exception {
+        FileLog.d(TAG, "Old Launcher Database before sanitizing:");
         // Primary user ids
         long myProfileId = controller.getSerialNumberForUser(myUserHandle());
         long oldProfileId = getDefaultProfileId(db);
-        Log.d(TAG, "sanitizeDB: myProfileId=" + myProfileId + " oldProfileId=" + oldProfileId);
+        FileLog.d(TAG, "sanitizeDB: myProfileId=" + myProfileId + " oldProfileId=" + oldProfileId);
         LongSparseArray<Long> oldManagedProfileIds = getManagedProfileIds(db, oldProfileId);
         LongSparseArray<Long> profileMapping = new LongSparseArray<>(oldManagedProfileIds.size()
                 + 1);
@@ -149,8 +155,11 @@ public class RestoreDbTask {
             if (user != null) {
                 long newManagedProfileId = controller.getSerialNumberForUser(user);
                 profileMapping.put(oldManagedProfileId, newManagedProfileId);
-                Log.d(TAG, "sanitizeDB: managed profile id=" + oldManagedProfileId
+                FileLog.d(TAG, "sanitizeDB: managed profile id=" + oldManagedProfileId
                         + " should be mapped to new id=" + newManagedProfileId);
+            } else {
+                FileLog.e(TAG, "sanitizeDB: No User found for old profileId, Ancestral Serial "
+                        + "Number: " + oldManagedProfileId);
             }
         }
 
@@ -161,11 +170,13 @@ public class RestoreDbTask {
         for (int i = numProfiles - 1; i >= 1; --i) {
             profileIds[i] = Long.toString(profileMapping.keyAt(i));
         }
+
         final String[] args = new String[profileIds.length];
         Arrays.fill(args, "?");
         final String where = "profileId NOT IN (" + TextUtils.join(", ", Arrays.asList(args)) + ")";
-        int itemsDeleted = db.delete(Favorites.TABLE_NAME, where, profileIds);
-        FileLog.d(TAG, itemsDeleted + " items from unrestored user(s) were deleted");
+        logUnrestoredItems(db, where, profileIds);
+        int itemsDeletedCount = db.delete(Favorites.TABLE_NAME, where, profileIds);
+        FileLog.d(TAG, itemsDeletedCount + " total items from unrestored user(s) were deleted");
 
         // Mark all items as restored.
         boolean keepAllIcons = Utilities.isPropertyEnabled(LogConfig.KEEP_ALL_ICONS);
@@ -219,8 +230,48 @@ public class RestoreDbTask {
 
         // Override shortcuts
         maybeOverrideShortcuts(context, controller, db, myProfileId);
+        return itemsDeletedCount;
+    }
 
-        return itemsDeleted;
+    /**
+     * Queries and logs the items we will delete from unrestored profiles in the launcher db.
+     * This is to understand why items might be missing during the restore process for Launcher.
+     * @param database the Launcher db to query from.
+     * @param where the SELECT statement to query items that will be deleted.
+     * @param profileIds the profile ID's the user will be migrating to.
+     */
+    private void logUnrestoredItems(SQLiteDatabase database, String where, String[] profileIds) {
+        try (Cursor itemsToDelete = database.query(
+                /* table */ Favorites.TABLE_NAME,
+                /* columns */ DB_COLUMNS_TO_LOG,
+                /* selection */ where,
+                /* selection args */ profileIds,
+                /* groupBy */ null,
+                /* having */ null,
+                /* orderBy */ null
+        )) {
+            if (itemsToDelete.moveToFirst()) {
+                String[] columnNames = itemsToDelete.getColumnNames();
+                StringBuilder stringBuilder = new StringBuilder(
+                        "items to be deleted from the Favorites Table during restore:\n"
+                );
+                do {
+                    for (String columnName : columnNames) {
+                        stringBuilder.append(columnName)
+                            .append("=")
+                            .append(itemsToDelete.getString(
+                                        itemsToDelete.getColumnIndex(columnName)))
+                            .append(" ");
+                    }
+                    stringBuilder.append("\n");
+                } while (itemsToDelete.moveToNext());
+                FileLog.d(TAG, stringBuilder.toString());
+            } else {
+                FileLog.d(TAG, "logDeletedItems: No items found to delete");
+            }
+        } catch (Exception e) {
+            FileLog.e(TAG, "logDeletedItems: Error reading from database", e);
+        }
     }
 
     /**
@@ -321,7 +372,7 @@ public class RestoreDbTask {
      * Marks the DB state as pending restoration
      */
     public static void setPending(Context context) {
-        FileLog.d(TAG, "Restore data received through full backup ");
+        FileLog.d(TAG, "Restore data received through full backup");
         LauncherPrefs.get(context)
                 .putSync(RESTORE_DEVICE.to(new DeviceGridState(context).getDeviceType()));
     }
