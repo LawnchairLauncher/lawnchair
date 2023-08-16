@@ -32,6 +32,8 @@ import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.util.Executors;
 
+import java.util.Locale;
+
 /**
  * BroadcastReceiver to handle session commit intent.
  */
@@ -63,9 +65,20 @@ public class SessionCommitReceiver extends BroadcastReceiver {
         }
 
         InstallSessionHelper packageInstallerCompat = InstallSessionHelper.INSTANCE.get(context);
+        boolean alreadyAddedPromiseIcon =
+                packageInstallerCompat.promiseIconAddedForId(info.getSessionId());
         if (TextUtils.isEmpty(info.getAppPackageName())
                 || info.getInstallReason() != PackageManager.INSTALL_REASON_USER
-                || packageInstallerCompat.promiseIconAddedForId(info.getSessionId())) {
+                || alreadyAddedPromiseIcon) {
+            FileLog.d(LOG,
+                    String.format(Locale.ENGLISH,
+                            "Removing PromiseIcon for package: %s, install reason: %d,"
+                            + " alreadyAddedPromiseIcon: %s",
+                    info.getAppPackageName(),
+                    info.getInstallReason(),
+                    alreadyAddedPromiseIcon
+                )
+            );
             packageInstallerCompat.removePromiseIconId(info.getSessionId());
             return;
         }
