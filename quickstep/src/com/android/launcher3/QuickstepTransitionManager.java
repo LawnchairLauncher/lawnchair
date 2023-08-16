@@ -60,6 +60,8 @@ import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATI
 import static com.android.launcher3.views.FloatingIconView.getFloatingIconView;
 import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
+import static com.android.systemui.shared.system.InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME;
+import static com.android.systemui.shared.system.InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME_FALLBACK;
 import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
 import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
 
@@ -1634,8 +1636,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         // invisibility on touch down, and only reset it after the animation to home
         // is initialized.
         if (launcherIsForceInvisibleOrOpening) {
-            addCujInstrumentation(
-                    anim, InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
+            addCujInstrumentation(anim, playFallBackAnimation
+                    ? CUJ_APP_CLOSE_TO_HOME_FALLBACK :  CUJ_APP_CLOSE_TO_HOME);
             // Only register the content animation for cancellation when state changes
             mLauncher.getStateManager().setCurrentAnimation(anim);
 
