@@ -88,7 +88,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     private @Nullable IconButtonView mAllAppsButton;
 
     // Only non-null when device supports having an All Apps button.
-    private @Nullable View mTaskbarDivider;
+    private @Nullable IconButtonView mTaskbarDivider;
 
     private View mQsb;
 
@@ -158,8 +158,12 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                     mActivityContext.getColor(R.color.all_apps_button_color));
 
             if (FeatureFlags.ENABLE_TASKBAR_PINNING.get()) {
-                mTaskbarDivider = LayoutInflater.from(context).inflate(R.layout.taskbar_divider,
+                mTaskbarDivider = (IconButtonView) LayoutInflater.from(context).inflate(
+                        R.layout.taskbar_divider,
                         this, false);
+                mTaskbarDivider.setIconDrawable(
+                        resources.getDrawable(R.drawable.taskbar_divider_button));
+                mTaskbarDivider.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
             }
         }
 
