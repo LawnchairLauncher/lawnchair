@@ -70,7 +70,7 @@
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"¡Bien hecho!"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Asegúrate de deslizar hacia arriba desde el borde inferior de la pantalla"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Intenta mantener presionada la ventana más tiempo antes de soltarla"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Asegúrate de deslizar directamente hacia arriba y, luego, detenerte"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Asegúrate de deslizar directamente hacia arriba y detenerte"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Ya sabes cómo usar los gestos. Para desactivarlos, ve a Configuración."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Completaste el gesto para cambiar de app"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Desliza para cambiar de app"</string>
