@@ -65,12 +65,12 @@
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Desliza para ir a la pantalla de inicio"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Desliza hacia arriba desde la parte inferior de la pantalla. Este gesto siempre te lleva a la pantalla de inicio."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Desliza dos dedos hacia arriba desde la parte inferior de la pantalla. Si haces este gesto, siempre irás a la pantalla de inicio."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Ir a Inicio"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Ir a inicio"</string>
     <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Desliza hacia arriba desde la parte inferior de la pantalla"</string>
     <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"¡Bien hecho!"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Asegúrate de deslizar hacia arriba desde el borde inferior de la pantalla"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Prueba a mantener pulsada la ventana durante más tiempo antes de soltarla"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Asegúrate de deslizar directamente hacia arriba y, luego, detenerte"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Asegúrate de deslizar directamente hacia arriba y luego detenerte"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Ya sabes cómo utilizar gestos. Para desactivarlos, ve a Ajustes."</string>
     <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Has completado el gesto para cambiar de aplicación"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Desliza el dedo para cambiar de aplicación"</string>

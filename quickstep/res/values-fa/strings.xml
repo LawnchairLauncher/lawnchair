@@ -72,7 +72,7 @@
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"قبل‌از رها کردن پنجره، آن را برای مدت طولانی‌تری نگه دارید"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"دقت کنید که مستقیماً تند به بالا بکشید و سپس توقف کنید"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"با نحوه استفاده از اشاره‌ها آشنا شدید. برای خاموش کردن اشاره‌ها، به «تنظیمات» بروید."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"اشاره جابه‌جا شدن بین برنامه‌ها را تکمیل کردید"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"اشاره جابه‌جایی بین برنامه‌ها را تکمیل کردید"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"برای جابه‌جا شدن بین برنامه‌ها، تند به‌بالا بکشید"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"برای جابه‌جا شدن بین برنامه‌ها، از پایین صفحه تند به‌بالا بکشید، نگه دارید، و سپس رها کنید."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"برای جابه‌جایی بین برنامه‌ها، با ۲ انگشت از پایین صفحه تند به‌بالا بکشید، نگه دارید، و سپس رها کنید."</string>

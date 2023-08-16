@@ -104,6 +104,7 @@ final class AlphaJumpDetector extends AnomalyDetector {
             DRAG_LAYER + "Snackbar|TextView:id/label",
             DRAG_LAYER + "SplitInstructionsView|AppCompatTextView:id/split_instructions_text",
             DRAG_LAYER + "TaskMenuView|LinearLayout:id/menu_option_layout",
+            DRAG_LAYER + "TaskMenuViewWithArrow|LinearLayout:id/menu_option_layout",
             DRAG_LAYER + "TaskMenuView|TextView:id/task_name",
             DRAG_LAYER + "View",
             DRAG_LAYER + "WidgetsFullSheet|SpringRelativeLayout:id/container",

@@ -374,6 +374,8 @@ public class LoaderTask implements Runnable {
             final HashMap<PackageUserKey, SessionInfo> installingPkgs =
                     mSessionHelper.getActiveSessions();
             installingPkgs.forEach(mApp.getIconCache()::updateSessionCache);
+            FileLog.d(TAG, "loadWorkspace: Packages with active install sessions: "
+                    + installingPkgs.values());
 
             final PackageUserKey tempPackageKey = new PackageUserKey(null, null);
             mFirstScreenBroadcast = new FirstScreenBroadcast(installingPkgs);
