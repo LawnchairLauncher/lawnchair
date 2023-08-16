@@ -676,6 +676,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                     hasAnyFlag(FLAG_STASHED_IN_APP_IME) ? 0 : 1).setDuration(duration));
             mAnimator.addListener(AnimatorListeners.forEndCallback(() -> {
                 mAnimator = null;
+                mIsStashed = isStashed;
             }));
             return;
         }
