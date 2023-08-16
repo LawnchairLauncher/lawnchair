@@ -26,7 +26,6 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.SystemProperties;
 import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceControl;
@@ -153,14 +152,9 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             // Create a new overlay layer. We do not call detach on this instance, it's propagated
             // to other classes like PipTaskOrganizer / RecentsAnimationController to complete
             // the cleanup.
-            if (SystemProperties.getBoolean(
-                    "persist.wm.debug.enable_pip_app_icon_overlay", true)) {
-                mPipContentOverlay = new PipContentOverlay.PipAppIconOverlay(view.getContext(),
-                        mAppBounds, new IconProvider(context).getIcon(mActivityInfo),
-                        appIconSizePx);
-            }  else {
-                mPipContentOverlay = new PipContentOverlay.PipColorOverlay(view.getContext());
-            }
+            mPipContentOverlay = new PipContentOverlay.PipAppIconOverlay(view.getContext(),
+                    mAppBounds, new IconProvider(context).getIcon(mActivityInfo),
+                    appIconSizePx);
             final SurfaceControl.Transaction tx = new SurfaceControl.Transaction();
             mPipContentOverlay.attach(tx, mLeash);
         } else {
