@@ -378,7 +378,7 @@ public final class FeatureFlags {
                     "Enable splitting from fullscreen app with keyboard shortcuts");
 
     public static final BooleanFlag ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE = getDebugFlag(
-            270393453, "ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE", TEAMFOOD,
+            270393453, "ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE", DISABLED,
             "Enable initiating split screen from workspace to workspace.");
 
     public static final BooleanFlag ENABLE_SPLIT_FROM_DESKTOP_TO_WORKSPACE = getDebugFlag(
