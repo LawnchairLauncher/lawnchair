@@ -289,7 +289,7 @@ public final class FeatureFlags {
             "Enables home animation to icon when user swipes back.");
 
     public static final BooleanFlag ENABLE_DYNAMIC_TASKBAR_THRESHOLDS = getDebugFlag(294252473,
-            "ENABLE_DYNAMIC_TASKBAR_THRESHOLDS", TEAMFOOD,
+            "ENABLE_DYNAMIC_TASKBAR_THRESHOLDS", ENABLED,
             "Enables taskbar thresholds that scale based on screen size.");
 
     // TODO(Block 21): Clean up flags
