@@ -166,5 +166,10 @@ public class SurfaceTransaction {
             this.shadowRadius = radius;
             return this;
         }
+
+        @Override
+        public SurfaceProperties setShow() {
+            return this;
+        }
     }
 }
