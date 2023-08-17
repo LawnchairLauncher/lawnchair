@@ -1761,6 +1761,11 @@ public final class LauncherInstrumentation {
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    boolean isGridOnlyOverviewEnabled() {
+        return getTestInfo(TestProtocol.REQUEST_FLAG_ENABLE_GRID_ONLY_OVERVIEW).getBoolean(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     public void sendPointer(long downTime, long currentTime, int action, Point point,
             GestureScope gestureScope) {
         final boolean hasTIS = hasTIS();
