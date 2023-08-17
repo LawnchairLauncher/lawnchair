@@ -32,7 +32,7 @@
         android:clickable="true"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:background="@drawable/top_rounded_popup_ripple"
+        android:background="@drawable/rounded_popup_ripple"
         android:paddingEnd="10dp"
         android:paddingStart="10dp"
         android:theme="@style/PopupItem">
@@ -57,42 +57,6 @@
             android:textSize="14sp"
             android:textColor="?android:attr/textColorPrimary"
             android:text="@string/always_show_taskbar" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/navigation_mode_switch_option"
-        android:layout_width="match_parent"
-        android:layout_height="52dp"
-        android:layout_gravity="center_vertical"
-        android:elevation="2dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="@drawable/bottom_rounded_popup_ripple"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingEnd="10dp"
-        android:paddingStart="10dp"
-        android:theme="@style/PopupItem">
-
-        <View
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_margin="4dp"
-            android:background="@drawable/ic_touch"
-            android:backgroundTint="?android:attr/textColorPrimary" />
-
-        <com.android.launcher3.BubbleTextView
-            style="@style/BaseIcon"
-            android:id="@+id/change_navigation_mode_text"
-            android:gravity="start|center_vertical"
-            android:textAlignment="viewStart"
-            android:paddingStart="12dp"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:textSize="14sp"
-            android:textColor="?android:attr/textColorPrimary"
-            android:text="@string/change_navigation_mode" />
 
     </LinearLayout>
 </com.android.launcher3.taskbar.TaskbarDividerPopupView>
