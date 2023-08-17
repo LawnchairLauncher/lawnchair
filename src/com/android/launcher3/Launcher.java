@@ -2325,6 +2325,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public void bindScreens(IntArray orderedScreenIds) {
+        mWorkspace.mPageIndicator.setAreScreensBinding(true);
         int firstScreenPosition = 0;
         if (FeatureFlags.QSB_ON_FIRST_SCREEN &&
                 orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != firstScreenPosition) {
@@ -2822,8 +2823,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         getViewCache().setCacheSize(R.layout.folder_page, 2);
 
         TraceHelper.INSTANCE.endSection();
-
-        mWorkspace.removeExtraEmptyScreen(true);
+        mWorkspace.removeExtraEmptyScreen(/* stripEmptyScreens= */ true);
+        mWorkspace.mPageIndicator.setAreScreensBinding(false);
     }
 
     private boolean canAnimatePageChange() {
