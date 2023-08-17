@@ -40,8 +40,7 @@ public class MultiScalePropertyFactory<T extends View> {
     private static final boolean DEBUG = false;
     private static final String TAG = "MultiScaleProperty";
     private final String mName;
-    private final ArrayMap<Integer, MultiScaleProperty> mProperties =
-            new ArrayMap<Integer, MultiScaleProperty>();
+    private final ArrayMap<Integer, MultiScaleProperty> mProperties = new ArrayMap<>();
 
     // This is an optimization for cases when set is called repeatedly with the same setterIndex.
     private float mMinOfOthers = 0;
@@ -55,7 +54,7 @@ public class MultiScalePropertyFactory<T extends View> {
     }
 
     /** Returns the [MultiFloatProperty] associated with [inx], creating it if not present. */
-    public MultiScaleProperty get(Integer index) {
+    public FloatProperty<T> get(Integer index) {
         return mProperties.computeIfAbsent(index,
                 (k) -> new MultiScaleProperty(index, mName + "_" + index));
     }
