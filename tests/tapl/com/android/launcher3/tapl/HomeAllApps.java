@@ -30,23 +30,28 @@ public class HomeAllApps extends AllApps {
     }
 
     /**
-     * Swipes down to Workspace.
+     * Swipes up or down to dismiss to Workspace.
+     * @param swipeDown Swipe all apps down to dismiss, otherwise swipe up to dismiss by going home.
      *
      * @return the Workspace object.
      */
     @NonNull
-    public Workspace switchToWorkspace() {
+    public Workspace switchToWorkspace(boolean swipeDown) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c =
                      mLauncher.addContextLayer("want to switch from all apps to workspace")) {
             UiObject2 allAppsContainer = verifyActiveContainer();
 
             final int startX = allAppsContainer.getVisibleCenter().x;
-            final int startY = getTopVisibleIconBounds(allAppsContainer).centerY();
-            final int endY = mLauncher.getDevice().getDisplayHeight();
+            final int startY = swipeDown ? getTopVisibleIconBounds(allAppsContainer).centerY()
+                    : mLauncher.getDevice().getDisplayHeight();
+            final int endY =
+                    swipeDown ? mLauncher.getDevice().getDisplayHeight() : getTopVisibleIconBounds(
+                            allAppsContainer).centerY();
             LauncherInstrumentation.log(
                     "switchToWorkspace: startY = " + startY + ", endY = " + endY
-                            + ", slop = " + mLauncher.getTouchSlop());
+                            + ", slop = " + mLauncher.getTouchSlop()
+                            + ", swipeDown = " + swipeDown);
 
             mLauncher.swipeToState(
                     startX,
@@ -54,7 +59,9 @@ public class HomeAllApps extends AllApps {
                     startX,
                     endY,
                     5 /* steps */,
-                    NORMAL_STATE_ORDINAL, LauncherInstrumentation.GestureScope.INSIDE);
+                    NORMAL_STATE_ORDINAL,
+                    swipeDown ? LauncherInstrumentation.GestureScope.INSIDE
+                            : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped to workspace")) {
