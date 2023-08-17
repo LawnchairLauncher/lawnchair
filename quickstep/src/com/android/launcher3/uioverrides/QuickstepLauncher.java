@@ -193,9 +193,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class QuickstepLauncher extends Launcher {
-
-    public static final boolean ENABLE_PIP_KEEP_CLEAR_ALGORITHM =
-            SystemProperties.getBoolean("persist.wm.debug.enable_pip_keep_clear_algorithm", true);
     private static final boolean TRACE_LAYOUTS =
             SystemProperties.getBoolean("persist.debug.trace_layouts", false);
     private static final String TRACE_RELAYOUT_CLASS =
@@ -435,12 +432,8 @@ public class QuickstepLauncher extends Launcher {
             boolean visible = (state == NORMAL || state == OVERVIEW)
                     && (willUserBeActive || isUserActive())
                     && !profile.isVerticalBarLayout();
-            if (ENABLE_PIP_KEEP_CLEAR_ALGORITHM)  {
-                SystemUiProxy.INSTANCE.get(this)
-                        .setLauncherKeepClearAreaHeight(visible, profile.hotseatBarSizePx);
-            } else {
-                SystemUiProxy.INSTANCE.get(this).setShelfHeight(visible, profile.hotseatBarSizePx);
-            }
+            SystemUiProxy.INSTANCE.get(this)
+                    .setLauncherKeepClearAreaHeight(visible, profile.hotseatBarSizePx);
         }
         if (state == NORMAL && !inTransition) {
             ((RecentsView) getOverviewPanel()).setSwipeDownShouldLaunchApp(false);

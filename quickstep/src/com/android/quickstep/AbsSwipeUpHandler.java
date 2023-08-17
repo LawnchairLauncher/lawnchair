@@ -34,7 +34,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_GESTURE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_LEFT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_RIGHT;
-import static com.android.launcher3.uioverrides.QuickstepLauncher.ENABLE_PIP_KEEP_CLEAR_ALGORITHM;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_FULLSCREEN_TASK;
@@ -1753,11 +1752,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     private Rect getKeepClearAreaForHotseat() {
         Rect keepClearArea;
-        if (!ENABLE_PIP_KEEP_CLEAR_ALGORITHM) {
-            // make the height equal to hotseatBarSizePx only
-            keepClearArea = new Rect(0, 0, 0, mDp.hotseatBarSizePx);
-            return keepClearArea;
-        }
         // the keep clear area in global screen coordinates, in pixels
         if (mDp.isPhone) {
             if (mDp.isSeascape()) {
