@@ -888,18 +888,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         return mContent;
     }
 
-    /** Gets the search bar, which is used for testing */ // b/294050472
-    @VisibleForTesting
-    public View getSearchBar() {
-        return (View) mSearchBar;
-    }
-
-    /** Gets the search bar container, which is used for testing */ // b/294050472
-    @VisibleForTesting
-    public View getSearchBarContainer() {
-        return (View) mSearchBarContainer;
-    }
-
     /** Opens the first header in widget picker and scrolls to the top of the RecyclerView. */
     @VisibleForTesting
     public void openFirstHeader() {
