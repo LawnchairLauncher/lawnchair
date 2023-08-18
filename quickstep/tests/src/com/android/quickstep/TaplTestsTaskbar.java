@@ -15,8 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 import static com.android.quickstep.TaplTestsTaskbar.TaskbarMode.PERSISTENT;
 import static com.android.quickstep.TaplTestsTaskbar.TaskbarMode.TRANSIENT;
 
@@ -24,7 +22,6 @@ import androidx.test.filters.LargeTest;
 
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
-import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -137,7 +134,6 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
     @Test
     @ScreenRecord // b/231615831
     @PortraitLandscape
-    @TestStabilityRule.Stability(flavors = PLATFORM_POSTSUBMIT | LOCAL) // b/295225524
     public void testLaunchAppInSplitscreen_fromTaskbarAllApps() {
         getTaskbar().openAllApps()
                 .getAppIcon(TEST_APP_NAME)
