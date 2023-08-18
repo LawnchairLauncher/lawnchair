@@ -1351,9 +1351,14 @@ public class SystemUiProxy implements ISystemUiProxy {
             @Override
             public void onAnimationStart(IRecentsAnimationController controller,
                     RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
-                    Rect homeContentInsets, Rect minimizedHomeBounds) {
+                    Rect homeContentInsets, Rect minimizedHomeBounds, Bundle extras) {
+                // Aidl bundles need to explicitly set class loader
+                // https://developer.android.com/guide/components/aidl#Bundles
+                if (extras != null) {
+                    extras.setClassLoader(getClass().getClassLoader());
+                }
                 listener.onAnimationStart(new RecentsAnimationControllerCompat(controller), apps,
-                        wallpapers, homeContentInsets, minimizedHomeBounds);
+                        wallpapers, homeContentInsets, minimizedHomeBounds, extras);
             }
 
             @Override
