@@ -9,7 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -49,8 +49,8 @@ fun HomeScreenGridPreferences() {
 
         val originalColumns = remember { columnsAdapter.state.value }
         val originalRows = remember { rowsAdapter.state.value }
-        val columns = rememberSaveable { mutableStateOf(originalColumns) }
-        val rows = rememberSaveable { mutableStateOf(originalRows) }
+        val columns = rememberSaveable { mutableIntStateOf(originalColumns) }
+        val rows = rememberSaveable { mutableIntStateOf(originalRows) }
 
         if (isPortrait) {
             GridOverridesPreview(
@@ -60,7 +60,7 @@ fun HomeScreenGridPreferences() {
                     .align(Alignment.CenterHorizontally)
                     .clip(MaterialTheme.shapes.large)
             ) {
-                copy(numColumns = columns.value, numRows = rows.value)
+                copy(numColumns = columns.intValue, numRows = rows.intValue)
             }
         }
 
@@ -85,8 +85,8 @@ fun HomeScreenGridPreferences() {
         val context = LocalContext.current
         val applyOverrides = {
             prefs.batchEdit {
-                columnsAdapter.onChange(columns.value)
-                rowsAdapter.onChange(rows.value)
+                columnsAdapter.onChange(columns.intValue)
+                rowsAdapter.onChange(rows.intValue)
             }
             LauncherAppState.getIDP(context).onPreferencesChanged(context)
             navController.popBackStack()
@@ -103,7 +103,7 @@ fun HomeScreenGridPreferences() {
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .fillMaxWidth(),
-                enabled = columns.value != originalColumns || rows.value != originalRows
+                enabled = columns.intValue != originalColumns || rows.intValue != originalRows
             ) {
                 Text(text = stringResource(id = R.string.apply_grid))
             }

@@ -16,7 +16,6 @@
 
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme

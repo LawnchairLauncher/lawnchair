@@ -6,13 +6,15 @@
 [![Telegram](https://img.shields.io/endpoint?url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Flccommunity)](https://t.me/lccommunity)
 [![Discord](https://img.shields.io/discord/803299970169700402?label=server&logo=discord)](https://discord.gg/3x8qNWxgGZ)
 
-> **This repository is currently in maintenance mode.** Most of our main developers are busy in real life, so only minor bug fixes/features and dependency updates will be made in this repo. Issues won't be prioritized as well.
+> **This repository is currently in maintenance mode**. Our main developers currently do not have the time to contibute to the project, so only dependency updates and minor optimizations will be commited.
 >
-> If you want to volunteer your time to restore more active development of Lawnchair, please message us. We'll gladly accept your help.
-> 
-> **Note that this is just temporary.** Once the developers have free time, more active development will be resumed.
+> *This doesn't mean that the project is dead.* It simply means that Lawnchair’s development is stalled.
+>
+> If you have the time to contribute to Lawnchair’s development, please contact a dev via [Telegram](https://t.me/lccommunity). We will gladly appreciate your help.
 
-Lawnchair is a free, open-source home app for Android. Taking Launcher3 — Android’s default home app — as a starting point, it ports Pixel Launcher features and introduces rich options for customization. This branch houses the codebase of Lawnchair 12.1, currently in alpha and based on Launcher3 from Android 12.1. For Lawnchair 9, 10, 11, and 12, see the branches with the `9-`, `10-`, `11-`, and `12-` prefixes, respectively.
+Lawnchair is a free, open-source home app for Android. Taking [Launcher3](https://android.googlesource.com/platform/packages/apps/Launcher3/) — Android’s default home app — as a starting point, it ports Pixel Launcher features and introduces rich options for customization.
+
+This branch houses the codebase of Lawnchair 12.1, currently in alpha and based on Launcher3 from Android 12.1. For older unsupported versions, see the branches with the `9-`, `10-`, `11-`, and `12-` prefixes.
 
 ## Contribute code
 
@@ -44,7 +46,7 @@ You can help translate Lawnchair 12.1 [on Crowdin](https://lawnchair.crowdin.com
 
 - Lawnchair uses title case for some English UI text. Title case isn’t used in other languages; opt for sentence case instead.
 
-- Some English terminology may have no commonly used equivalents in other languages. In such cases, use short descriptive phrases—for example, the equivalent of _bottom row_ for _dock_.
+- Some English terminology may have no commonly used equivalents in other languages. In such cases, use short descriptive phrases–for example, the equivalent of _bottom row_ for _dock_.
 
 ## Quick links
 
@@ -53,4 +55,4 @@ You can help translate Lawnchair 12.1 [on Crowdin](https://lawnchair.crowdin.com
 - [Website](https://lawnchair.app)
 - [_XDA_ thread](https://forum.xda-developers.com/t/lawnchair-customizable-pixel-launcher.3627137/)
 
-You can view all our links [in the Lawnchair Wiki](https://github.com/LawnchairLauncher/lawnchair/wiki).
+You can view all our links on [the Lawnchair Wiki](https://github.com/LawnchairLauncher/lawnchair/wiki).

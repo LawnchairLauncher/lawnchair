@@ -25,6 +25,7 @@ import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.ui.preferences.about.acknowledgements.OssLibrary
 import app.lawnchair.util.Constants.LAWNICONS_PACKAGE_NAME
 import app.lawnchair.util.getPackageVersionCode
+import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,7 +33,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.serialization.json.Json
 
 private val iconPackIntents = listOf(
     Intent("com.novalauncher.THEME"),
@@ -111,7 +111,7 @@ class PreferenceViewModel(private val app: Application) : AndroidViewModel(app),
     override val ossLibraries: StateFlow<List<OssLibrary>> = flow {
         val jsonString = app.resources.assets.open("artifacts.json")
             .bufferedReader().use { it.readText() }
-        val ossLibraries = Json.decodeFromString<List<OssLibrary>>(jsonString)
+        val ossLibraries = kotlinxJson.decodeFromString<List<OssLibrary>>(jsonString)
             .asSequence()
             .distinctBy { "${it.groupId}:${it.artifactId}" }
             .sortedBy { it.name }

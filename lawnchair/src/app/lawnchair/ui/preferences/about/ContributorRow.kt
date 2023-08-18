@@ -34,9 +34,9 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.theme.surfaceColorAtElevation
 import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import coil.compose.SubcomposeAsyncImage
-import com.google.accompanist.placeholder.PlaceholderHighlight
-import com.google.accompanist.placeholder.material.fade
-import com.google.accompanist.placeholder.material.placeholder
+import app.lawnchair.ui.placeholder.PlaceholderHighlight
+import app.lawnchair.ui.placeholder.material.fade
+import app.lawnchair.ui.placeholder.material.placeholder
 
 @Composable
 fun ContributorRow(name: String, description: String, photoUrl: String, url: String) {

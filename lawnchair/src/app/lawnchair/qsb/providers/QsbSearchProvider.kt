@@ -119,6 +119,7 @@ sealed class QsbSearchProvider(
             AppSearch,
             Google,
             GoogleGo,
+            Youtube,
             PixelSearch,
             Sesame,
             Wikipedia,

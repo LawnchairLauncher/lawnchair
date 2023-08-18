@@ -182,7 +182,7 @@
     <!-- used in popup menu-->
     <string name="home_screen_locked">الشاشة الرئيسية مقفلة.</string>
     <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
+    <string name="home_screen_lock_toggle_from_home_popup">عرض زر القُفل</string>
     <string name="show_system_settings_entry">Show System Settings Entry</string>
     <string name="status_bar_label">شريط الحالة</string>
     <string name="show_status_bar">إظهار شريط الحالة</string>

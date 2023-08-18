@@ -73,8 +73,10 @@ private fun CustomIconShapePreference() {
 
     val appliedIconShape = customIconShapeAdapter.state.value
     val selectedIconShape = remember { mutableStateOf(appliedIconShape ?: IconShape.Circle) }
-    val selectedIconShapeApplied = derivedStateOf {
-        appliedIconShape.toString() == selectedIconShape.value.toString()
+    val selectedIconShapeApplied = remember {
+        derivedStateOf {
+            appliedIconShape.toString() == selectedIconShape.value.toString()
+        }
     }
 
     PreferenceLayout(

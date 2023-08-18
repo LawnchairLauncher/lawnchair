@@ -66,7 +66,7 @@ sealed class BasePreferenceManager(private val context: Context) : SharedPrefere
         }
     }
 
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String) {
+    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         val pref = prefsMap[key] ?: return
         val changedSet = changedPrefs
         if (changedSet != null) {
