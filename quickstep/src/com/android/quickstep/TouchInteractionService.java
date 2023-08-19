@@ -914,7 +914,8 @@ public class TouchInteractionService extends Service {
                     base = new TaskbarUnstashInputConsumer(this, base, mInputMonitorCompat, tac,
                             mOverviewCommandHelper);
                 }
-            } else if (canStartSystemGesture && FeatureFlags.ENABLE_LONG_PRESS_NAV_HANDLE.get()) {
+            } else if (canStartSystemGesture && FeatureFlags.ENABLE_LONG_PRESS_NAV_HANDLE.get()
+                    && !previousGestureState.isRecentsAnimationRunning()) {
                 base = new NavHandleLongPressInputConsumer(this, base, mInputMonitorCompat);
             }
 
