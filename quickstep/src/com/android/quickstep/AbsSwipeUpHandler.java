@@ -193,6 +193,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     ActiveGestureLog.INSTANCE.addLog("Launcher destroyed", LAUNCHER_DESTROYED);
                     mRecentsView = null;
                     mActivity = null;
+                    mStateCallback.clearState(STATE_LAUNCHER_PRESENT);
                 }
             };
 
