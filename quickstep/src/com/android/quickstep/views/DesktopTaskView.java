@@ -22,6 +22,7 @@ import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -43,6 +44,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.util.RunnableList;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SystemUiProxy;
@@ -220,7 +222,22 @@ public class DesktopTaskView extends TaskView {
 
     private TaskIdAttributeContainer createAttributeContainer(Task task,
             TaskThumbnailView thumbnailView) {
-        return new TaskIdAttributeContainer(task, thumbnailView, null, STAGE_POSITION_UNDEFINED);
+        return new TaskIdAttributeContainer(task, thumbnailView, createIconView(task),
+                STAGE_POSITION_UNDEFINED);
+    }
+
+    private IconView createIconView(Task task) {
+        IconView iconView = new IconView(mContext);
+        PackageManager pm = mContext.getApplicationContext().getPackageManager();
+        try {
+            IconProvider provider = new IconProvider(mContext);
+            Drawable appIcon = provider.getIcon(pm.getActivityInfo(task.topActivity,
+                    PackageManager.ComponentInfoFlags.of(0)));
+            iconView.setDrawable(appIcon);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(TAG, "Package not found: " + task.topActivity.getPackageName(), e);
+        }
+        return iconView;
     }
 
     @Nullable

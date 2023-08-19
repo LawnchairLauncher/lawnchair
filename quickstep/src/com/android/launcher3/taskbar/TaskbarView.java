@@ -88,7 +88,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     private @Nullable IconButtonView mAllAppsButton;
 
     // Only non-null when device supports having an All Apps button.
-    private @Nullable View mTaskbarDivider;
+    private @Nullable IconButtonView mTaskbarDivider;
 
     private View mQsb;
 
@@ -158,8 +158,12 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                     mActivityContext.getColor(R.color.all_apps_button_color));
 
             if (FeatureFlags.ENABLE_TASKBAR_PINNING.get()) {
-                mTaskbarDivider = LayoutInflater.from(context).inflate(R.layout.taskbar_divider,
+                mTaskbarDivider = (IconButtonView) LayoutInflater.from(context).inflate(
+                        R.layout.taskbar_divider,
                         this, false);
+                mTaskbarDivider.setIconDrawable(
+                        resources.getDrawable(R.drawable.taskbar_divider_button));
+                mTaskbarDivider.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
             }
         }
 
@@ -382,11 +386,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         int count = getChildCount();
         DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
         int spaceNeeded = getIconLayoutWidth();
-        // We are removing the margin from taskbar divider item in taskbar,
-        // so remove it from spacing also.
-        if (FeatureFlags.ENABLE_TASKBAR_PINNING.get() && count > 1) {
-            spaceNeeded -= mIconTouchSize;
-        }
         int navSpaceNeeded = deviceProfile.hotseatBarEndOffset;
         boolean layoutRtl = isLayoutRtl();
         int centerAlignIconEnd = right - (right - left - spaceNeeded) / 2;
@@ -507,7 +506,15 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         if (deviceProfile.isQsbInline) {
             countExcludingQsb--;
         }
-        return countExcludingQsb * (mItemMarginLeftRight * 2 + mIconTouchSize);
+        int iconLayoutBoundsWidth =
+                countExcludingQsb * (mItemMarginLeftRight * 2 + mIconTouchSize);
+
+        if (FeatureFlags.ENABLE_TASKBAR_PINNING.get() && countExcludingQsb > 1) {
+            // We are removing 4 * mItemMarginLeftRight as there should be no space between
+            // All Apps icon, divider icon, and first app icon in taskbar
+            iconLayoutBoundsWidth -= mItemMarginLeftRight * 4;
+        }
+        return iconLayoutBoundsWidth;
     }
 
     /**
