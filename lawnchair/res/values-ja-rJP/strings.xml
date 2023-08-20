@@ -34,7 +34,7 @@
     <string name="folders_description">行と列の数</string>
     <string name="gestures_label">ジェスチャー</string>
     <string name="gestures_description">タップとスワイプ</string>
-    <string name="quickstep_label">履歴</string>
+    <string name="quickstep_label">最近</string>
     <string name="quickstep_description">「すべてクリア」ボタン、角の丸み</string>
     <string name="about_label">このアプリについて</string>
     <!-- <string name="version" /> (unknown source) -->
@@ -49,11 +49,11 @@
     <string name="smartspace_calendar_label">At a Glance カレンダーのカスタマイズ</string>
     <string name="smartspace_calendar_description">グレゴリオ暦以外の暦で日付を表示できるようにします</string>
     <string name="workspace_increase_max_grid_size_label">ホーム画面のグリッドの最大数を増やす</string>
-    <string name="workspace_increase_max_grid_size_description">ホーム画面のグリッド数を 10x10 から 20x20 まで増やします</string>
+    <string name="workspace_increase_max_grid_size_description">ホーム画面のグリッド数を 10 × 10 から 20 × 20 まで増やします</string>
     <string name="always_reload_icons_label">常にアイコンを再読み込みします</string>
     <string name="always_reload_icons_description">アイコンパックからキャッシュされたアイコンを使用しないようにします</string>
     <string name="transparent_background_icons">透明なテーマアイコン</string>
-    <string name="transparent_background_icons_description">テーマごとにアイコンの背景を透明にします</string>
+    <string name="transparent_background_icons_description">テーマアイコンの背景を透明にします</string>
     <string name="smartspace_mode_selection">At a Glance のプロバイダー選択</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">ホーム画面の回転</string>
@@ -62,17 +62,17 @@
     <!-- <string name="icons" /> -->
     <string name="icon_style">アイコンのスタイル</string>
     <string name="icon_shape_label">アイコンの形状</string>
-    <string name="auto_adaptive_icons_label">自動アダプティブ アイコン</string>
-    <string name="auto_adaptive_icons_description">すべての非アダプティブ アイコンを対象</string>
+    <string name="auto_adaptive_icons_label">自動アダプティブアイコン</string>
+    <string name="auto_adaptive_icons_description">すべての非アダプティブアイコンが対象</string>
     <string name="background_lightness_label">背景の明るさ</string>
     <string name="adaptive_icon_background_description">白色の背景の明るさを100%にします</string>
     <string name="notification_dots">通知ドット</string>
     <!-- <string name="notification_dots" />-->
     <string name="show_notification_count">通知の数を表示</string>
     <string name="notification_dots_color">通知ドットの色</string>
-    <string name="notification_dots_text_color">通知数の色</string>
-    <string name="notification_dots_color_contrast_warning_always">警告：通知ドットとカウンターカラーのコントラストが互いに十分ではありません</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">警告：通知ドットとカウンターカラーのコントラストが互いに十分ではない場合があります</string>
+    <string name="notification_dots_text_color">通知の数の色</string>
+    <string name="notification_dots_color_contrast_warning_always">警告: 通知ドットと通知の数の色のコントラストが互いに十分ではありません</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">警告: 通知ドットと通知の数の色のコントラストが互いに十分ではない場合があります</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">通知へのアクセスが必要です</string>
     <string name="missing_notification_access_description">通知へのアクセス権が必要です</string>
@@ -86,7 +86,7 @@
     <string name="theme_follow_wallpaper">壁紙に合わせる</string>
     <string name="accent_color">アクセントカラー</string>
     <!-- CustomIconShapePreference -->
-    <string name="custom_icon_shape">カスタムアイコンの形状</string>
+    <string name="custom_icon_shape">カスタムアイコン形状</string>
     <string name="custom_icon_shape_create">カスタムアイコン形状を作成します</string>
     <string name="custom_icon_shape_edit">カスタムアイコンの形状を編集します</string>
     <string name="icon_shape_corner">角の形状</string>
@@ -101,11 +101,11 @@
     <string name="clipboard">クリップボード</string>
     <string name="export_to_clipboard">クリップボードにエクスポート</string>
     <string name="import_from_clipboard">クリップボードからインポート</string>
-    <string name="icon_shape_clipboard_import_error">クリップボードに有効なアイコンがありません</string>
+    <string name="icon_shape_clipboard_import_error">クリップボードに有効なアイコン形状がありません</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">アイコンパック</string>
-    <string name="themed_icon_pack">テーマのアイコンソース</string>
+    <string name="themed_icon_pack">テーマアイコンのソース</string>
     <string name="system_icons">システムアイコン</string>
     <string name="themed_icon_title">テーマアイコン</string>
     <string name="themed_icons_off_label">オフ</string>
@@ -130,7 +130,7 @@
     <string name="icon_shape_teardrop">水滴型</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">フォントを追加</string>
-    <string name="pref_fonts_add_fonts_summary">OTF &amp; TTF がサポートされています</string>
+    <string name="pref_fonts_add_fonts_summary">OTF と TTF がサポートされています</string>
     <string name="pref_fonts_missing_font">フォントが見つかりません</string>
     <string name="font_variant_italic">斜体</string>
     <string name="font_weight_thin">Thin</string>
@@ -145,7 +145,7 @@
     <string name="reset_font">リセット</string>
     <!-- colorpreference/* -->
     <string name="dynamic">ダイナミック</string>
-    <string name="swatches">スワッチ</string>
+    <string name="swatches">色見本</string>
     <string name="presets">プリセット</string>
     <string name="custom">カスタム</string>
     <string name="rgb">RGBカラー</string>
@@ -156,21 +156,21 @@
     <string name="hsb_hue">色相</string>
     <string name="hsb_saturation">彩度</string>
     <string name="hsb_brightness">明度</string>
-    <string name="hex">カラーコード</string>
+    <string name="hex">16進数カラーコード</string>
     <string name="color_sliders">スライダー</string>
     <string name="action_copy">コピー</string>
-    <string name="action_paste">貼付け</string>
+    <string name="action_paste">貼り付け</string>
     <string name="copied_toast">クリップボードにコピーしました</string>
     <string name="invalid_color">無効な色</string>
-    <string name="launcher_default_color">Lawnchairに管理されています</string>
+    <string name="launcher_default_color">Lawnchair に管理されています</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">ホーム画面に新しいアプリを追加</string>
     <!-- <string name="gesture_double_tap" /> -->
     <string name="minus_one_enable">フィード</string>
-    <string name="minus_one_unavailable">フィードが利用できません</string>
+    <string name="minus_one_unavailable">フィードがインストールされていません</string>
     <string name="wallpaper">壁紙</string>
-    <string name="wallpaper_scrolling_label">壁紙をスクロール</string>
+    <string name="wallpaper_scrolling_label">壁紙のスクロール</string>
     <string name="wallpaper_depth_effect_label">壁紙の視差効果</string>
     <string name="wallpaper_depth_effect_description">ランチャー内で画面を切り替える時に壁紙を拡大/縮小します</string>
     <string name="show_sys_ui_scrim">上部の影</string>
@@ -205,20 +205,20 @@
     <string name="rows">行数</string>
     <string name="apply_grid">適用</string>
     <!-- Smartspace -->
-    <string name="generic_smartspace_concatenated_desc">%1$s,%2$s</string>
-    <string name="smartspace_battery_charging">充電中...</string>
+    <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
+    <string name="smartspace_battery_charging">充電中</string>
     <string name="smartspace_battery_full">充電完了</string>
     <string name="smartspace_battery_low">バッテリー残量の低下</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — 充電完了まで %2$s"</string>
-    <string name="accessibility_smartspace_page">%1$d ページ中 %2$d</string>
+    <string name="accessibility_smartspace_page">%1$d/%2$d ページ</string>
     <string name="smartspace_widget">At a Glance</string>
     <string name="smartspace_widget_description">表示する項目</string>
     <string name="smartspace_widget_placeholder_date">3月3日 (金)</string>
     <string name="preview_label">プレビュー</string>
     <string name="smartspace_calendar">カレンダー</string>
-    <string name="smartspace_date_and_time">日付 &amp; 時間</string>
+    <string name="smartspace_date_and_time">日付と時刻</string>
     <string name="smartspace_date">日付</string>
-    <string name="smartspace_time">時間</string>
+    <string name="smartspace_time">時刻</string>
     <string name="smartspace_time_format">時刻の形式</string>
     <string name="smartspace_time_follow_system">システムに従う</string>
     <string name="smartspace_time_12_hour_format">12時間表記</string>
@@ -227,7 +227,7 @@
     <string name="smartspace_battery_status">バッテリーの状態</string>
     <string name="smartspace_now_playing">再生中</string>
     <string name="smartspace_requires_setup">タップしてセットアップ</string>
-    <string name="event_provider_missing_notification_dots">使用するには <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>、通知ドットを有効にします</string>
+    <string name="event_provider_missing_notification_dots"><xliff:g example="My Provider" id="providerName">%1$s</xliff:g> を使用するには、通知ドットを有効にします</string>
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">グレゴリオ暦</string>
     <string name="smartspace_calendar_persian">ペルシア暦</string>
