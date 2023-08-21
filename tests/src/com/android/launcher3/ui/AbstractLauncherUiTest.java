@@ -68,6 +68,7 @@ import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.SamplerRule;
 import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
+import com.android.launcher3.util.rule.TestIsolationRule;
 import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.launcher3.util.rule.ViewCaptureRule;
 
@@ -121,6 +122,10 @@ public abstract class AbstractLauncherUiTest {
                     return MAIN_EXECUTOR.submit(
                             () -> launcher.noLeakedActivities()).get();
                 }, DEFAULT_UI_TIMEOUT, launcher);
+    }
+
+    public void checkDetectedLeaks() {
+        checkDetectedLeaks(mLauncher);
     }
 
     private static String getActivityLeakErrorMessage(LauncherInstrumentation launcher) {
@@ -215,7 +220,8 @@ public abstract class AbstractLauncherUiTest {
 
     @Rule
     public TestRule mOrderSensitiveRules = RuleChain
-            .outerRule(new SamplerRule())
+            .outerRule(new TestIsolationRule(this))
+            .around(new SamplerRule())
             .around(new TestStabilityRule())
             .around(getRulesInsideActivityMonitor());
 
@@ -488,6 +494,12 @@ public abstract class AbstractLauncherUiTest {
     }
 
     protected void closeLauncherActivity() {
+        finishLauncherActivity();
+        waitForLauncherCondition(
+                "Launcher still active", launcher -> launcher == null, DEFAULT_UI_TIMEOUT);
+    }
+
+    public void finishLauncherActivity() {
         // Destroy Launcher activity.
         executeOnLauncher(launcher -> {
             if (launcher != null) {
@@ -495,8 +507,6 @@ public abstract class AbstractLauncherUiTest {
                 launcher.finish();
             }
         });
-        waitForLauncherCondition(
-                "Launcher still active", launcher -> launcher == null, DEFAULT_UI_TIMEOUT);
     }
 
     protected boolean isInLaunchedApp(Launcher launcher) {
