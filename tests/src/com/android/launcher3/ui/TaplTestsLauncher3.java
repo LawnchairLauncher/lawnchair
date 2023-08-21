@@ -531,6 +531,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     @PlatinumTest(focusArea = "launcher")
+    @ScreenRecord // TODO(b/293944634): Remove after flaky debug
     public void testUninstallFromWorkspace() throws Exception {
         installDummyAppAndWaitForUIUpdate();
         try {
