@@ -393,7 +393,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         super.onDestroy();
         ACTIVITY_TRACKER.onActivityDestroyed(this);
         mActivityLaunchAnimationRunner = null;
-
+        mSplitSelectStateController.onDestroy();
         mTISBindHelper.onDestroy();
     }
 
