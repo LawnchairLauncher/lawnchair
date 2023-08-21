@@ -15,7 +15,7 @@
 <com.android.launcher3.allapps.WorkPausedCard xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/work_edu_card_margin"
+    android:padding="@dimen/all_apps_tabs_margin_top"
     android:orientation="vertical"
     android:gravity="center_horizontal">
 
@@ -25,7 +25,6 @@
         android:id="@+id/work_apps_paused_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
         android:text="@string/work_apps_paused_title"
         android:textAlignment="center"
         android:textSize="18sp" />
