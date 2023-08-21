@@ -15,7 +15,6 @@
  */
 package com.android.quickstep.inputconsumers;
 
-import static android.view.MotionEvent.ACTION_BUTTON_RELEASE;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
@@ -29,6 +28,7 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.InputDevice;
 import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
@@ -130,8 +130,8 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
     public void onMotionEvent(MotionEvent ev) {
         mLongPressDetector.onTouchEvent(ev);
         if (mState != STATE_ACTIVE) {
-            boolean isStashedTaskbarHovered =
-                    isStashedTaskbarHovered((int) ev.getX(), (int) ev.getY());
+            boolean isStashedTaskbarHovered = isMouseEvent(ev)
+                    && isStashedTaskbarHovered((int) ev.getX(), (int) ev.getY());
             if (!isStashedTaskbarHovered) {
                 mDelegate.onMotionEvent(ev);
             }
@@ -229,7 +229,7 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
                         mHasPassedTaskbarNavThreshold = false;
                         mIsInBubbleBarArea = false;
                         break;
-                    case ACTION_BUTTON_RELEASE:
+                    case MotionEvent.ACTION_BUTTON_RELEASE:
                         if (isStashedTaskbarHovered) {
                             mOverviewCommandHelper.addCommand(OverviewCommandHelper.TYPE_HOME);
                         }
@@ -341,5 +341,9 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
                 (int) (((dp.widthPx - mUnstashArea) / 2) + mUnstashArea),
                 dp.heightPx);
         return mStashedTaskbarHandleBounds.contains(x, y);
+    }
+
+    private boolean isMouseEvent(MotionEvent event) {
+        return event.getSource() == InputDevice.SOURCE_MOUSE;
     }
 }

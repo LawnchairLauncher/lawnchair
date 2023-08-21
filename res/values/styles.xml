@@ -32,7 +32,8 @@
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
         <item name="android:textColorSecondary">#DE000000</item>
         <item name="allAppsScrimColor">?attr/materialColorSurfaceDim</item>
-        <item name="allappsHeaderProtectionColor">@color/popup_color_tertiary_light</item>
+        <item name="allappsHeaderProtectionColor">
+            @color/material_color_surface_container_highest</item>
         <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
         <item name="popupColorPrimary">@color/popup_color_primary_light</item>
         <item name="popupColorSecondary">@color/popup_color_secondary_light</item>
@@ -149,6 +150,7 @@
         <item name="android:colorControlHighlight">#19FFFFFF</item>
         <item name="android:colorPrimary">#FF212121</item>
         <item name="allAppsScrimColor">?attr/materialColorSurfaceDim</item>
+        <item name="allappsHeaderProtectionColor">@color/material_color_surface_container_low</item>
         <item name="allAppsNavBarScrimColor">#80000000</item>
         <item name="popupColorPrimary">@color/popup_color_primary_dark</item>
         <item name="popupColorSecondary">@color/popup_color_secondary_dark</item>
