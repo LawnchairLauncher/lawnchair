@@ -30,6 +30,7 @@ import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_STASHED_
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.SystemClock;
+import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
@@ -308,7 +309,8 @@ public final class LaunchedAppState extends Background {
             Point stashedTaskbarHintArea = new Point(mLauncher.getRealDisplaySize().x / 2,
                     mLauncher.getRealDisplaySize().y - stashedTaskbarBottomEdge - 1);
             mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_HOVER_ENTER,
-                    new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y), null);
+                    new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y), null,
+                    InputDevice.SOURCE_MOUSE);
 
             mLauncher.getDevice().wait(mStashedTaskbarHintScaleCondition,
                     LauncherInstrumentation.WAIT_TIME_MS);
@@ -317,19 +319,21 @@ public final class LaunchedAppState extends Background {
                     "cursor clicking stashed taskbar to go home")) {
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_HOVER_EXIT,
                         new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y),
-                        null);
+                        null, InputDevice.SOURCE_MOUSE);
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN,
                         new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y),
-                        LauncherInstrumentation.GestureScope.OUTSIDE_WITHOUT_PILFER);
+                        LauncherInstrumentation.GestureScope.OUTSIDE_WITHOUT_PILFER,
+                        InputDevice.SOURCE_MOUSE);
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_BUTTON_PRESS,
                         new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y),
-                        null);
+                        null, InputDevice.SOURCE_MOUSE);
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_BUTTON_RELEASE,
                         new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y),
-                        null);
+                        null, InputDevice.SOURCE_MOUSE);
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_UP,
                         new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y),
-                        LauncherInstrumentation.GestureScope.OUTSIDE_WITHOUT_PILFER);
+                        LauncherInstrumentation.GestureScope.OUTSIDE_WITHOUT_PILFER,
+                        InputDevice.SOURCE_MOUSE);
 
                 return mLauncher.getWorkspace();
             }

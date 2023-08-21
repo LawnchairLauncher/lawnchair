@@ -1728,11 +1728,11 @@ public final class LauncherInstrumentation {
     }
 
     private static MotionEvent getMotionEvent(long downTime, long eventTime, int action,
-            float x, float y) {
+            float x, float y, int source) {
         return MotionEvent.obtain(downTime, eventTime, action, 1,
-                new MotionEvent.PointerProperties[] {getPointerProperties(0)},
-                new MotionEvent.PointerCoords[] {getPointerCoords(x, y)},
-                0, 0, 1.0f, 1.0f, 0, 0, InputDevice.SOURCE_TOUCHSCREEN, 0);
+                new MotionEvent.PointerProperties[]{getPointerProperties(0)},
+                new MotionEvent.PointerCoords[]{getPointerCoords(x, y)},
+                0, 0, 1.0f, 1.0f, 0, 0, source, 0);
     }
 
     private static MotionEvent.PointerProperties getPointerProperties(int pointerId) {
@@ -1768,6 +1768,12 @@ public final class LauncherInstrumentation {
 
     public void sendPointer(long downTime, long currentTime, int action, Point point,
             GestureScope gestureScope) {
+        sendPointer(downTime, currentTime, action, point, gestureScope,
+                InputDevice.SOURCE_TOUCHSCREEN);
+    }
+
+    public void sendPointer(long downTime, long currentTime, int action, Point point,
+            GestureScope gestureScope, int source) {
         final boolean hasTIS = hasTIS();
         int pointerCount = mPointerCount;
 
@@ -1867,7 +1873,7 @@ public final class LauncherInstrumentation {
                 ? getTrackpadMotionEvent(
                         downTime, currentTime, action, point.x, point.y, pointerCount,
                         mTrackpadGestureType)
-                : getMotionEvent(downTime, currentTime, action, point.x, point.y);
+                : getMotionEvent(downTime, currentTime, action, point.x, point.y, source);
         if (action == MotionEvent.ACTION_BUTTON_PRESS
                 || action == MotionEvent.ACTION_BUTTON_RELEASE) {
             event.setActionButton(MotionEvent.BUTTON_PRIMARY);
