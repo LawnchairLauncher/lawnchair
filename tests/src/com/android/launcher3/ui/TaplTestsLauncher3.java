@@ -333,6 +333,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/293191790
+    @ScreenRecord
     @PortraitLandscape
     public void testWidgets() throws Exception {
         // Test opening widgets.
