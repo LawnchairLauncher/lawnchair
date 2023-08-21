@@ -116,7 +116,6 @@ import com.android.quickstep.inputconsumers.TaskbarUnstashInputConsumer;
 import com.android.quickstep.inputconsumers.TrackpadStatusBarInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActiveGestureLog.CompoundString;
-import com.android.quickstep.util.ProxyScreenStatusProvider;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -298,24 +297,6 @@ public class TouchInteractionService extends Service {
         public void onActiveNavBarRegionChanges(Region region) {
             MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(
                     tis -> tis.mDeviceState.setDeferredGestureRegion(region)));
-        }
-
-        @BinderThread
-        @Override
-        public void onScreenTurnedOn() {
-            MAIN_EXECUTOR.execute(ProxyScreenStatusProvider.INSTANCE::onScreenTurnedOn);
-        }
-
-        @BinderThread
-        @Override
-        public void onScreenTurningOn() {
-            MAIN_EXECUTOR.execute(ProxyScreenStatusProvider.INSTANCE::onScreenTurningOn);
-        }
-
-        @BinderThread
-        @Override
-        public void onScreenTurningOff() {
-            MAIN_EXECUTOR.execute(ProxyScreenStatusProvider.INSTANCE::onScreenTurningOff);
         }
 
         @BinderThread
