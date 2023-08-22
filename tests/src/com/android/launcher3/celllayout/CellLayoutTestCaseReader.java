@@ -63,8 +63,8 @@ public class CellLayoutTestCaseReader {
     }
 
     public static class Board extends TestSection {
-        Point gridSize;
-        String board;
+        public Point gridSize;
+        public String board;
 
         public Board(Point gridSize, String board) {
             super(State.BOARD);
@@ -127,7 +127,7 @@ public class CellLayoutTestCaseReader {
         }
     }
 
-    List<TestSection> parse() {
+    public List<TestSection> parse() {
         List<TestSection> sections = new ArrayList<>();
         String[] lines = mTest.split("\n");
         Iterator<String> it = Arrays.stream(lines).iterator();
