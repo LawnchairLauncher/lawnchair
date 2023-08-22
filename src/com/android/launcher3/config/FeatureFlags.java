@@ -297,11 +297,6 @@ public final class FeatureFlags {
             "ENABLE_APP_ICON_IN_INLINE_SHORTCUTS", DISABLED, "Show app icon for inline shortcut");
 
     // TODO(Block 22): Clean up flags
-    public static final BooleanFlag RECEIVE_UNFOLD_EVENTS_FROM_SYSUI = getDebugFlag(270397209,
-            "RECEIVE_UNFOLD_EVENTS_FROM_SYSUI", ENABLED,
-            "Enables receiving unfold animation events from sysui instead of calculating "
-                    + "them in launcher process using hinge sensor values.");
-
     public static final BooleanFlag ENABLE_WIDGET_TRANSITION_FOR_RESIZING = getDebugFlag(268553314,
             "ENABLE_WIDGET_TRANSITION_FOR_RESIZING", DISABLED,
             "Enable widget transition animation when resizing the widgets");
