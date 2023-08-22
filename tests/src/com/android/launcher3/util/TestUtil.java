@@ -67,6 +67,7 @@ public class TestUtil {
     private static final String TAG = "TestUtil";
 
     public static final String DUMMY_PACKAGE = "com.example.android.aardwolf";
+    public static final String DUMMY_CLASS_NAME = "com.example.android.aardwolf.Activity1";
     public static final long DEFAULT_UI_TIMEOUT = 10000;
 
     public static void installDummyApp() throws IOException {
