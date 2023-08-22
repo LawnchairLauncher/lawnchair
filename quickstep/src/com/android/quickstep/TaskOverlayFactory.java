@@ -122,6 +122,12 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
     public void removeListeners() {
     }
 
+    /**
+     * Clears any active state outside of the TaskOverlay lifecycle which might have built
+     * up over time
+     */
+    public void clearAllActiveState() { }
+
     /** Note that these will be shown in order from top to bottom, if available for the task. */
     private static final TaskShortcutFactory[] MENU_OPTIONS = new TaskShortcutFactory[]{
             TaskShortcutFactory.APP_INFO,
