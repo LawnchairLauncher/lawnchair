@@ -70,6 +70,7 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.Choreographer;
+import android.view.InputDevice;
 import android.view.InputEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceControl;
@@ -116,7 +117,6 @@ import com.android.quickstep.inputconsumers.TaskbarUnstashInputConsumer;
 import com.android.quickstep.inputconsumers.TrackpadStatusBarInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActiveGestureLog.CompoundString;
-import com.android.quickstep.util.ProxyScreenStatusProvider;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -298,24 +298,6 @@ public class TouchInteractionService extends Service {
         public void onActiveNavBarRegionChanges(Region region) {
             MAIN_EXECUTOR.execute(() -> executeForTouchInteractionService(
                     tis -> tis.mDeviceState.setDeferredGestureRegion(region)));
-        }
-
-        @BinderThread
-        @Override
-        public void onScreenTurnedOn() {
-            MAIN_EXECUTOR.execute(ProxyScreenStatusProvider.INSTANCE::onScreenTurnedOn);
-        }
-
-        @BinderThread
-        @Override
-        public void onScreenTurningOn() {
-            MAIN_EXECUTOR.execute(ProxyScreenStatusProvider.INSTANCE::onScreenTurningOn);
-        }
-
-        @BinderThread
-        @Override
-        public void onScreenTurningOff() {
-            MAIN_EXECUTOR.execute(ProxyScreenStatusProvider.INSTANCE::onScreenTurningOff);
         }
 
         @BinderThread
@@ -771,7 +753,7 @@ public class TouchInteractionService extends Service {
         if (mGestureState.isTrackpadGesture() && (action == ACTION_POINTER_DOWN
                 || action == ACTION_POINTER_UP)) {
             // Skip ACTION_POINTER_DOWN and ACTION_POINTER_UP events from trackpad.
-        } else if (event.isHoverEvent()) {
+        } else if (isCursorHoverEvent(event)) {
             mUncheckedConsumer.onHoverEvent(event);
         } else {
             mUncheckedConsumer.onMotionEvent(event);
@@ -781,6 +763,11 @@ public class TouchInteractionService extends Service {
             reset();
         }
         traceToken.close();
+    }
+
+    // Talkback generates hover events on touch, which we do not want to consume.
+    private boolean isCursorHoverEvent(MotionEvent event) {
+        return event.isHoverEvent() && event.getSource() == InputDevice.SOURCE_MOUSE;
     }
 
     private InputConsumer tryCreateAssistantInputConsumer(
