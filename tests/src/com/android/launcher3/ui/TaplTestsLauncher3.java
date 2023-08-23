@@ -19,6 +19,8 @@ package com.android.launcher3.ui;
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
 import static com.android.launcher3.testing.shared.TestProtocol.ICON_MISSING;
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -61,6 +63,7 @@ import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.TISBindRule;
+import com.android.launcher3.util.rule.TestStabilityRule.Stability;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.android.launcher3.widget.picker.WidgetsRecyclerView;
 
@@ -329,7 +332,8 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     }
 
     @Test
-    @Ignore // b/293191790
+    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/293191790
+    @ScreenRecord
     @PortraitLandscape
     public void testWidgets() throws Exception {
         // Test opening widgets.

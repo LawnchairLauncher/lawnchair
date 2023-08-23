@@ -161,7 +161,7 @@ public final class TestProtocol {
     public static final String LAUNCH_SPLIT_PAIR = "b/288939273";
 
     public static final String OVERVIEW_OVER_HOME = "b/279059025";
-
+    public static final String INCORRECT_HOME_STATE = "b/293191790";
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
     public static final String REQUEST_STOP_EMULATE_DISPLAY = "stop-emulate-display";
     public static final String REQUEST_IS_EMULATE_DISPLAY_RUNNING = "is-emulate-display-running";
