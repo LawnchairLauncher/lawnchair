@@ -38,9 +38,6 @@ final class FlashDetector extends AnomalyDetector {
 
     private static final IgnoreNode IGNORED_NODES_ROOT = buildIgnoreNodesTree(List.of(
             CONTENT + "LauncherRootView:id/launcher|FloatingIconView",
-            DRAG_LAYER
-                    + "SearchContainerView:id/apps_view|AllAppsRecyclerView:id/apps_list_view"
-                    + "|BubbleTextView:id/icon",
             DRAG_LAYER + "LauncherRecentsView:id/overview_panel|TaskView|TextView",
             DRAG_LAYER
                     + "LauncherAllAppsContainerView:id/apps_view|AllAppsRecyclerView:id"
