@@ -731,6 +731,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         });
     }
 
+
+    /**
+     * Returns if the given screenId is already in the Workspace
+     */
+    public boolean containsScreenId(int screenId) {
+        return this.mWorkspaceScreens.containsKey(screenId);
+    }
+
     /**
      * Inserts extra empty pages to the end of the existing workspaces.
      * Usually we add one extra empty screen, but when two panel home is enabled we add
