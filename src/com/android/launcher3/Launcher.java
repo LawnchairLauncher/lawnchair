@@ -198,6 +198,7 @@ import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ActivityTracker;
+import com.android.launcher3.util.CannedAnimationCoordinator;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
@@ -420,6 +421,9 @@ public class Launcher extends StatefulActivity<LauncherState>
     private BaseSearchConfig mBaseSearchConfig;
     private StartupLatencyLogger mStartupLatencyLogger;
     private CellPosMapper mCellPosMapper = CellPosMapper.DEFAULT;
+
+    private final CannedAnimationCoordinator mAnimationCoordinator =
+            new CannedAnimationCoordinator(this);
 
     @Override
     @TargetApi(Build.VERSION_CODES.S)
@@ -3421,5 +3425,12 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     public void launchAppPair(WorkspaceItemInfo app1, WorkspaceItemInfo app2) {
         // Overridden
+    }
+
+    /**
+     * Returns the animation coordinator for playing one-off animations
+     */
+    public CannedAnimationCoordinator getAnimationCoordinator() {
+        return mAnimationCoordinator;
     }
 }
