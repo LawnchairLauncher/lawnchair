@@ -1134,10 +1134,11 @@ public class DeviceProfile {
      * This method calculates the space between the icons to achieve a certain width.
      */
     private int calculateHotseatBorderSpace(float hotseatWidthPx, int numExtraBorder) {
+        int numBorders = (numShownHotseatIcons - 1 + numExtraBorder);
+        if (numBorders <= 0) return 0;
+
         float hotseatIconsTotalPx = iconSizePx * numShownHotseatIcons;
-        int hotseatBorderSpacePx =
-                (int) (hotseatWidthPx - hotseatIconsTotalPx)
-                        / (numShownHotseatIcons - 1 + numExtraBorder);
+        int hotseatBorderSpacePx = (int) (hotseatWidthPx - hotseatIconsTotalPx) / numBorders;
         return Math.min(hotseatBorderSpacePx, mMaxHotseatIconSpacePx);
     }
 
