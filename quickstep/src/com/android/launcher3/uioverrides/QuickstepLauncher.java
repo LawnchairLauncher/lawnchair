@@ -471,6 +471,10 @@ public class QuickstepLauncher extends Launcher {
             mDesktopVisibilityController.unregisterSystemUiListener();
         }
 
+        if (mSplitSelectStateController != null) {
+            mSplitSelectStateController.onDestroy();
+        }
+
         super.onDestroy();
         mHotseatPredictionController.destroy();
         mSplitWithKeyboardShortcutController.onDestroy();
