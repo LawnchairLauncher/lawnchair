@@ -29,7 +29,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Flags;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.AppInfo;
@@ -138,7 +137,6 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
     protected final OnClickListener mOnIconClickListener;
     protected final OnLongClickListener mOnIconLongClickListener;
     protected OnFocusChangeListener mIconFocusListener;
-    private final int mExtraTextHeight;
 
     public BaseAllAppsAdapter(T activityContext, LayoutInflater inflater,
             AlphabeticalAppsList<T> apps, SearchAdapterProvider<?> adapterProvider) {
@@ -150,8 +148,6 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         mOnIconLongClickListener = mActivityContext.getAllAppsItemLongClickListener();
 
         mAdapterProvider = adapterProvider;
-        mExtraTextHeight = Utilities.calculateTextHeight(
-                mActivityContext.getDeviceProfile().allAppsIconTextSizePx);
     }
 
     /** Checks if the passed viewType represents all apps divider. */
@@ -177,9 +173,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_ICON:
-                int layout =
-                        !(Flags.enableTwolineAllapps() || FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get())
-                                ? R.layout.all_apps_icon
+                int layout = !FeatureFlags.enableTwolineAllapps() ? R.layout.all_apps_icon
                                 : R.layout.all_apps_icon_twoline;
                 BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
                         layout, parent, false);
@@ -190,9 +184,6 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 // Ensure the all apps icon height matches the workspace icons in portrait mode.
                 icon.getLayoutParams().height =
                         mActivityContext.getDeviceProfile().allAppsCellHeightPx;
-                if (Flags.enableTwolineAllapps() || FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get()) {
-                    icon.getLayoutParams().height += mExtraTextHeight;
-                }
                 return new ViewHolder(icon);
             case VIEW_TYPE_EMPTY_SEARCH:
                 return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
