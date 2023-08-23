@@ -224,12 +224,14 @@ public final class LaunchedAppState extends Background {
             int leftEdge = 10;
             Point taskbarUnstashArea = new Point(leftEdge, mLauncher.getRealDisplaySize().y - 1);
             mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_HOVER_ENTER,
-                    new Point(taskbarUnstashArea.x, taskbarUnstashArea.y), null);
+                    new Point(taskbarUnstashArea.x, taskbarUnstashArea.y), null,
+                    InputDevice.SOURCE_MOUSE);
 
             mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID);
 
             mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_HOVER_EXIT,
-                    new Point(taskbarUnstashArea.x, taskbarUnstashArea.y), null);
+                    new Point(taskbarUnstashArea.x, taskbarUnstashArea.y), null,
+                    InputDevice.SOURCE_MOUSE);
 
             return new Taskbar(mLauncher);
         }
@@ -246,7 +248,8 @@ public final class LaunchedAppState extends Background {
             Point stashedTaskbarHintArea = new Point(mLauncher.getRealDisplaySize().x / 2,
                     mLauncher.getRealDisplaySize().y - 1);
             mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_HOVER_ENTER,
-                    new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y), null);
+                    new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y), null,
+                    InputDevice.SOURCE_MOUSE);
 
             mLauncher.getDevice().wait(mStashedTaskbarHintScaleCondition,
                     LauncherInstrumentation.WAIT_TIME_MS);
@@ -257,7 +260,8 @@ public final class LaunchedAppState extends Background {
                 Point taskbarUnstashArea = new Point(mLauncher.getRealDisplaySize().x / 2,
                         mLauncher.getRealDisplaySize().y - 1);
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_HOVER_EXIT,
-                        new Point(taskbarUnstashArea.x, taskbarUnstashArea.y), null);
+                        new Point(taskbarUnstashArea.x, taskbarUnstashArea.y), null,
+                        InputDevice.SOURCE_MOUSE);
 
                 mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID);
                 return new Taskbar(mLauncher);
