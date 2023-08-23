@@ -306,6 +306,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
         // Initialize controllers after all are constructed.
         mControllers.init(sharedState);
+        // This may not be necessary and can be reverted once we move towards recreating all
+        // controllers without re-creating the window
+        mControllers.rotationButtonController.onNavigationModeChanged(mNavMode.resValue);
         updateSysuiStateFlags(sharedState.sysuiStateFlags, true /* fromInit */);
         disableNavBarElements(sharedState.disableNavBarDisplayId, sharedState.disableNavBarState1,
                 sharedState.disableNavBarState2, false /* animate */);
