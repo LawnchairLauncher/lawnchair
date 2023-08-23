@@ -113,7 +113,7 @@ import java.util.function.Consumer;
 public class SplitSelectStateController {
     private static final String TAG = "SplitSelectStateCtor";
 
-    private final Context mContext;
+    private Context mContext;
     private final Handler mHandler;
     private final RecentsModel mRecentTasksModel;
     private final SplitAnimationController mSplitAnimationController;
@@ -155,6 +155,10 @@ public class SplitSelectStateController {
         mSplitAnimationController = new SplitAnimationController(this);
         mAppPairsController = new AppPairsController(context, this, statsLogManager);
         mSplitSelectDataHolder = new SplitSelectDataHolder(mContext);
+    }
+
+    public void onDestroy() {
+        mContext = null;
     }
 
     /**
