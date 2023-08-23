@@ -197,6 +197,11 @@ public class BubbleStashController {
         }
     }
 
+    /** Whether bubbles are showing on Overview. */
+    public boolean isBubblesShowingOnOverview() {
+        return mBubblesShowingOnOverview;
+    }
+
     /** Called when sysui locked state changes, when locked, bubble bar is stashed. */
     public void onSysuiLockedStateChange(boolean isSysuiLocked) {
         if (isSysuiLocked != mIsSysuiLocked) {

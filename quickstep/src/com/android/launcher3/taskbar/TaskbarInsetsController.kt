@@ -44,6 +44,7 @@ import com.android.launcher3.anim.AlphaUpdateListener
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
 import com.android.launcher3.util.DisplayController
 import java.io.PrintWriter
+import kotlin.jvm.optionals.getOrNull
 
 /** Handles the insets that Taskbar provides to underlying apps and the IME. */
 class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTaskbarController {
@@ -290,9 +291,24 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                 controllers.uiController.isInOverview &&
                     DisplayController.isTransientTaskbar(context)
             ) {
-                insetsInfo.touchableRegion.set(
+                val region =
                     controllers.taskbarActivityContext.dragLayer.lastDrawnTransientRect.toRegion()
-                )
+                val bubbleBarBounds =
+                    controllers.bubbleControllers.getOrNull()?.let { bubbleControllers ->
+                        if (!bubbleControllers.bubbleStashController.isBubblesShowingOnOverview) {
+                            return@let null
+                        }
+                        if (!bubbleControllers.bubbleBarViewController.isBubbleBarVisible) {
+                            return@let null
+                        }
+                        bubbleControllers.bubbleBarViewController.bubbleBarBounds
+                    }
+
+                // Include the bounds of the bubble bar in the touchable region if they exist.
+                if (bubbleBarBounds != null) {
+                    region.op(bubbleBarBounds, Region.Op.UNION)
+                }
+                insetsInfo.touchableRegion.set(region)
             } else {
                 insetsInfo.touchableRegion.set(touchableRegion)
             }
