@@ -70,6 +70,7 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.Choreographer;
+import android.view.InputDevice;
 import android.view.InputEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceControl;
@@ -752,7 +753,7 @@ public class TouchInteractionService extends Service {
         if (mGestureState.isTrackpadGesture() && (action == ACTION_POINTER_DOWN
                 || action == ACTION_POINTER_UP)) {
             // Skip ACTION_POINTER_DOWN and ACTION_POINTER_UP events from trackpad.
-        } else if (event.isHoverEvent()) {
+        } else if (isCursorHoverEvent(event)) {
             mUncheckedConsumer.onHoverEvent(event);
         } else {
             mUncheckedConsumer.onMotionEvent(event);
@@ -762,6 +763,11 @@ public class TouchInteractionService extends Service {
             reset();
         }
         traceToken.close();
+    }
+
+    // Talkback generates hover events on touch, which we do not want to consume.
+    private boolean isCursorHoverEvent(MotionEvent event) {
+        return event.isHoverEvent() && event.getSource() == InputDevice.SOURCE_MOUSE;
     }
 
     private InputConsumer tryCreateAssistantInputConsumer(
