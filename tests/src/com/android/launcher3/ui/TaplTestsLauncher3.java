@@ -395,6 +395,28 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         }
     }
 
+    @Test
+    public void testLaunchHomeScreenMenuItem() {
+        // Drag the test app icon to home screen and open short cut menu from the icon
+        final HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
+        allApps.freeze();
+        try {
+            allApps.getAppIcon(APP_NAME).dragToWorkspace(false, false);
+            final AppIconMenu menu = mLauncher.getWorkspace().getWorkspaceAppIcon(
+                    APP_NAME).openDeepShortcutMenu();
+
+            executeOnLauncher(
+                    launcher -> assertTrue("Launcher internal state didn't switch to Showing Menu",
+                            isOptionsPopupVisible(launcher)));
+
+            final AppIconMenuItem menuItem = menu.getMenuItem(1);
+            assertEquals("Wrong menu item", "Shortcut 2", menuItem.getText());
+            menuItem.launch(getAppPackageName());
+        } finally {
+            allApps.unfreeze();
+        }
+    }
+
     @PlatinumTest(focusArea = "launcher")
     @Test
     @PortraitLandscape
