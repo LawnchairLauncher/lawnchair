@@ -22,16 +22,7 @@ import androidx.test.uiautomator.UiObject2;
  */
 class HomeQsb extends Qsb {
 
-    private final UiObject2 mHotSeat;
-
     HomeQsb(LauncherInstrumentation launcher, UiObject2 hotseat) {
-        super(launcher);
-        mHotSeat = hotseat;
-        waitForQsbObject();
-    }
-
-    @Override
-    protected UiObject2 waitForQsbObject() {
-        return mLauncher.waitForObjectInContainer(mHotSeat, "search_container_hotseat");
+        super(launcher, hotseat, "search_container_hotseat");
     }
 }
