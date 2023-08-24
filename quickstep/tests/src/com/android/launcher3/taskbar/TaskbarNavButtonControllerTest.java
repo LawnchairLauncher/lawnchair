@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 import android.os.Handler;
 import android.view.View;
 
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.logging.StatsLogManager;
@@ -70,6 +71,9 @@ public class TaskbarNavButtonControllerTest {
         MockitoAnnotations.initMocks(this);
         when(mockService.getDisplayId()).thenReturn(DISPLAY_ID);
         when(mockService.getOverviewCommandHelper()).thenReturn(mockCommandHelper);
+        when(mockService.getApplicationContext())
+                .thenReturn(InstrumentationRegistry.getInstrumentation().getTargetContext()
+                        .getApplicationContext());
         when(mockStatsLogManager.logger()).thenReturn(mockStatsLogger);
         when(mockTaskbarControllers.getTaskbarActivityContext())
                 .thenReturn(mockTaskbarActivityContext);

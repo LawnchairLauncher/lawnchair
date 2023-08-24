@@ -62,6 +62,7 @@ import com.android.internal.view.AppearanceRegion;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.quickstep.util.AssistUtilsBase;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
@@ -250,6 +251,8 @@ public class SystemUiProxy implements ISystemUiProxy {
         setBackToLauncherCallback(mBackToLauncherCallback, mBackToLauncherRunner);
         setUnfoldAnimationListener(mUnfoldAnimationListener);
         setDesktopTaskListener(mDesktopTaskListener);
+        setAssistantOverridesRequested(
+                AssistUtilsBase.newInstance(mContext).getSysUiAssistOverrideInvocationTypes());
     }
 
     /**
@@ -369,6 +372,17 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSystemUiProxy.startAssistant(args);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startAssistant", e);
+            }
+        }
+    }
+
+    @Override
+    public void setAssistantOverridesRequested(int[] invocationTypes) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.setAssistantOverridesRequested(invocationTypes);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setAssistantOverridesRequested", e);
             }
         }
     }
