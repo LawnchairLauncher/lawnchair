@@ -66,6 +66,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
         mActivity = ActivityContext.lookupContext(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
         mContainerType = containerType;
+        setClipChildren(false);
     }
 
     public void setCellDimensions(int cellWidth, int cellHeight, int countX, int countY,
