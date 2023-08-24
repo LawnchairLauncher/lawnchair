@@ -25,6 +25,8 @@ import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.launcher3.config.FeatureFlags;
@@ -36,7 +38,10 @@ import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+@LargeTest
+@RunWith(AndroidJUnit4.class)
 public class TaplTestsSplitscreen extends AbstractQuickStepTest {
     private static final String CALCULATOR_APP_NAME = "Calculator";
     private static final String CALCULATOR_APP_PACKAGE =
