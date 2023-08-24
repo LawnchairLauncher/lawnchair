@@ -15,8 +15,11 @@
  */
 package com.android.launcher3.taskbar.allapps;
 
+import static com.android.launcher3.model.data.AppInfo.EMPTY_ARRAY;
+
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
@@ -33,7 +36,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-
 /**
  * Handles the all apps overlay window initialization, updates, and its data.
  * <p>
@@ -54,9 +56,9 @@ public final class TaskbarAllAppsController {
     private @Nullable TaskbarSearchSessionController mSearchSessionController;
 
     // Application data models.
-    private AppInfo[] mApps;
+    private @NonNull AppInfo[] mApps = EMPTY_ARRAY;
     private int mAppsModelFlags;
-    private List<ItemInfo> mPredictedApps;
+    private @NonNull List<ItemInfo> mPredictedApps = Collections.emptyList();
     private @Nullable List<ItemInfo> mZeroStateSearchSuggestions;
     private boolean mDisallowGlobalDrag;
     private boolean mDisallowLongClick;
@@ -82,8 +84,8 @@ public final class TaskbarAllAppsController {
     }
 
     /** Updates the current {@link AppInfo} instances. */
-    public void setApps(AppInfo[] apps, int flags, Map<PackageUserKey, Integer> map) {
-        mApps = apps;
+    public void setApps(@Nullable AppInfo[] apps, int flags, Map<PackageUserKey, Integer> map) {
+        mApps = apps == null ? EMPTY_ARRAY : apps;
         mAppsModelFlags = flags;
         mPackageUserKeytoUidMap = map;
         if (mAppsView != null) {

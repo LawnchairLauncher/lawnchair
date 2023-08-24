@@ -61,7 +61,7 @@ public class AllAppsStore<T extends Context & ActivityContext> {
     private PackageUserKey mTempKey = new PackageUserKey(null, null);
     private AppInfo mTempInfo = new AppInfo();
 
-    private AppInfo[] mApps = EMPTY_ARRAY;
+    private @NonNull AppInfo[] mApps = EMPTY_ARRAY;
 
     private final List<OnUpdateListener> mUpdateListeners = new CopyOnWriteArrayList<>();
     private final ArrayList<ViewGroup> mIconContainers = new ArrayList<>();
@@ -85,8 +85,8 @@ public class AllAppsStore<T extends Context & ActivityContext> {
      * Sets the current set of apps and sets mapping for {@link PackageUserKey} to Uid for
      * the current set of apps.
      */
-    public void setApps(AppInfo[] apps, int flags, Map<PackageUserKey, Integer> map)  {
-        mApps = apps;
+    public void setApps(@Nullable AppInfo[] apps, int flags, Map<PackageUserKey, Integer> map)  {
+        mApps = apps == null ? EMPTY_ARRAY : apps;
         mModelFlags = flags;
         notifyUpdate();
         mPackageUserKeytoUidMap = map;
