@@ -59,6 +59,11 @@ final class FlashDetector extends AnomalyDetector {
             DRAG_LAYER + "FloatingTaskView|FloatingTaskThumbnailView:id/thumbnail",
             DRAG_LAYER
                     + "WidgetsFullSheet|SpringRelativeLayout:id/container|WidgetsRecyclerView:id"
+                    + "/primary_widgets_list_view|WidgetsListHeader:id/widgets_list_header",
+            DRAG_LAYER
+                    + "WidgetsTwoPaneSheet|SpringRelativeLayout:id/container|LinearLayout:id"
+                    + "/linear_layout_container|FrameLayout:id/recycler_view_container"
+                    + "|FrameLayout:id/widgets_two_pane_sheet_recyclerview|WidgetsRecyclerView:id"
                     + "/primary_widgets_list_view|WidgetsListHeader:id/widgets_list_header"
     ));
 
