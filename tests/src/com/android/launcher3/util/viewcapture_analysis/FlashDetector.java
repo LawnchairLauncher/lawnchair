@@ -56,7 +56,10 @@ final class FlashDetector extends AnomalyDetector {
             RECENTS_DRAG_LAYER + "FallbackRecentsView:id/overview_panel|TaskView|IconView:id/icon",
             DRAG_LAYER + "SearchContainerView:id/apps_view",
             DRAG_LAYER + "LauncherDragView",
-            DRAG_LAYER + "FloatingTaskView|FloatingTaskThumbnailView:id/thumbnail"
+            DRAG_LAYER + "FloatingTaskView|FloatingTaskThumbnailView:id/thumbnail",
+            DRAG_LAYER
+                    + "WidgetsFullSheet|SpringRelativeLayout:id/container|WidgetsRecyclerView:id"
+                    + "/primary_widgets_list_view|WidgetsListHeader:id/widgets_list_header"
     ));
 
     // Per-AnalysisNode data that's specific to this detector.
