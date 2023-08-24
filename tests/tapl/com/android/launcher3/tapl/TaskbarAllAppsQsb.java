@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 The Android Open Source Project
+ * Copyright (C) 2023 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,21 @@ package com.android.launcher3.tapl;
 import androidx.test.uiautomator.UiObject2;
 
 /**
- * Operations on AllApp screen qsb.
+ * Operations on Taskbar AllApp screen qsb.
  */
-class AllAppsQsb extends Qsb {
+public class TaskbarAllAppsQsb extends Qsb {
 
-    AllAppsQsb(LauncherInstrumentation launcher, UiObject2 allAppsContainer) {
+    TaskbarAllAppsQsb(LauncherInstrumentation launcher, UiObject2 allAppsContainer) {
         super(launcher, allAppsContainer, "search_container_all_apps");
+    }
+
+    @Override
+    public SearchResultFromTaskbarQsb showSearchResult() {
+        return (SearchResultFromTaskbarQsb) super.showSearchResult();
+    }
+
+    @Override
+    protected SearchResultFromTaskbarQsb createSearchResult() {
+        return new SearchResultFromTaskbarQsb(mLauncher);
     }
 }
