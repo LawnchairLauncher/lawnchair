@@ -136,6 +136,24 @@ java_library {
     min_sdk_version: min_launcher3_sdk_version,
 }
 
+aconfig_declarations {
+    name: "launcher_flags",
+    package: "com.google.android.platform.launcher.aconfig.flags",
+    srcs: ["launcher.aconfig"],
+}
+
+java_aconfig_library {
+    name: "launcher_flags_lib",
+    aconfig_declarations: "launcher_flags",
+}
+
+java_aconfig_library {
+    name: "launcher_flags_lib_test",
+    aconfig_declarations: "launcher_flags",
+    test: true
+}
+
+
 // Library with all the dependencies for building Launcher3
 android_library {
     name: "Launcher3ResLib",
@@ -167,8 +185,8 @@ android_library {
 //
 // Build rule for Launcher3 dependencies lib.
 //
-android_library {
-    name: "Launcher3CommonDepsLib",
+java_defaults {
+    name: "Launcher3CommonDepsDefault",
     srcs: ["src_build_config/**/*.java"],
     static_libs: [
         "Launcher3ResLib",
@@ -184,13 +202,35 @@ android_library {
 }
 
 //
+// Build rule for Launcher3 dependencies lib.
+//
+android_library {
+    name: "Launcher3CommonDepsLib",
+    defaults: ["Launcher3CommonDepsDefault"],
+    static_libs: [
+        "launcher_flags_lib",
+    ],
+}
+
+//
+// Build rule for Launcher3 dependencies lib for test and debug.
+//
+android_library {
+    name: "Launcher3CommonDepsLibDebug",
+    defaults: ["Launcher3CommonDepsDefault"],
+    static_libs: [
+        "launcher_flags_lib_test",
+    ],
+}
+
+//
 // Build rule for Launcher3 app.
 //
 android_app {
     name: "Launcher3",
 
     static_libs: [
-        "Launcher3CommonDepsLib",
+        "Launcher3CommonDepsLibDebug",
     ],
     srcs: [
         ":launcher-src",
