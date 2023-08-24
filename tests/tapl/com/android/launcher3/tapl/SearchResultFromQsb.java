@@ -32,7 +32,7 @@ public class SearchResultFromQsb {
 
     // This particular ID change should happen with caution
     private static final String SEARCH_CONTAINER_RES_ID = "search_results_list_view";
-    private final LauncherInstrumentation mLauncher;
+    protected final LauncherInstrumentation mLauncher;
 
     SearchResultFromQsb(LauncherInstrumentation launcher) {
         mLauncher = launcher;
@@ -49,8 +49,12 @@ public class SearchResultFromQsb {
     }
 
     /** Find the app from search results with app name. */
-    public Launchable findAppIcon(String appName) {
+    public AppIcon findAppIcon(String appName) {
         UiObject2 icon = mLauncher.waitForLauncherObject(By.clazz(TextView.class).text(appName));
+        return createAppIcon(icon);
+    }
+
+    protected AppIcon createAppIcon(UiObject2 icon) {
         return new AllAppsAppIcon(mLauncher, icon);
     }
 

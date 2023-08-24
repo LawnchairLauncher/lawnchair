@@ -336,4 +336,11 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
         final Bundle testInfo = mLauncher.getTestInfo(TestProtocol.REQUEST_APP_LIST_FREEZE_FLAGS);
         return testInfo == null ? 0 : testInfo.getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
+
+    /**
+     * Return the QSB UI object on the AllApps screen.
+     * @return the QSB UI object.
+     */
+    @NonNull
+    public abstract Qsb getQsb();
 }
