@@ -152,7 +152,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     private final CheckLongPressHelper mLongPressHelper;
 
-    private final boolean mLayoutHorizontal;
+    private boolean mLayoutHorizontal;
     private final boolean mIsRtl;
     private final int mIconSize;
 
@@ -666,6 +666,18 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     /**
+     * Sets whether the layout is horizontal.
+     */
+    public void setLayoutHorizontal(boolean layoutHorizontal) {
+        if (mLayoutHorizontal == layoutHorizontal) {
+            return;
+        }
+
+        mLayoutHorizontal = layoutHorizontal;
+        applyCompoundDrawables(getIconOrTransparentColor());
+    }
+
+    /**
      * Sets whether to vertically center the content.
      */
     public void setCenterVertically(boolean centerVertically) {
@@ -991,8 +1003,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         if (!mIsIconVisible) {
             resetIconScale();
         }
-        Drawable icon = visible ? mIcon : new ColorDrawable(Color.TRANSPARENT);
+        Drawable icon = getIconOrTransparentColor();
         applyCompoundDrawables(icon);
+    }
+
+    private Drawable getIconOrTransparentColor() {
+        return mIsIconVisible ? mIcon : new ColorDrawable(Color.TRANSPARENT);
     }
 
     /** Sets the icon visual state to disabled or not. */
