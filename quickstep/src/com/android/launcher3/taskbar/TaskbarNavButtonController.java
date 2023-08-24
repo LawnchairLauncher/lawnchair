@@ -51,6 +51,7 @@ import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TouchInteractionService;
+import com.android.quickstep.util.AssistUtilsBase;
 import com.android.quickstep.views.DesktopTaskView;
 
 import java.io.PrintWriter;
@@ -158,7 +159,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         switch (buttonType) {
             case BUTTON_HOME:
                 logEvent(LAUNCHER_TASKBAR_HOME_BUTTON_LONGPRESS);
-                startAssistant();
+                onLongPressHome();
                 return true;
             case BUTTON_A11Y:
                 logEvent(LAUNCHER_TASKBAR_A11Y_BUTTON_LONGPRESS);
@@ -307,13 +308,17 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
         }
     }
 
-    private void startAssistant() {
+    private void onLongPressHome() {
         if (mScreenPinned || !mAssistantLongPressEnabled) {
             return;
         }
-        Bundle args = new Bundle();
-        args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS);
-        mSystemUiProxy.startAssistant(args);
+        // Attempt to start Assist with AssistUtils, otherwise fall back to SysUi's implementation.
+        if (!AssistUtilsBase.newInstance(mService.getApplicationContext()).tryStartAssistOverride(
+                INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS)) {
+            Bundle args = new Bundle();
+            args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS);
+            mSystemUiProxy.startAssistant(args);
+        }
     }
 
     private void showQuickSettings() {
