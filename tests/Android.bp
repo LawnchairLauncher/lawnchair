@@ -73,6 +73,7 @@ android_library {
     asset_dirs: ["assets"],
     resource_dirs: ["res"],
     static_libs: [
+        "flag-junit-base",
         "launcher-aosp-tapl",
         "androidx.test.core",
         "androidx.test.runner",
@@ -87,6 +88,7 @@ android_library {
         "truth-prebuilt",
         "platform-test-rules",
         "testables",
+        "launcher_flags_lib_test",
     ],
     manifest: "AndroidManifest-common.xml",
     platform_apis: true,
@@ -103,7 +105,10 @@ android_test {
         ":launcher-tests-src",
         ":launcher-non-quickstep-tests-src",
     ],
-    static_libs: ["Launcher3TestLib"],
+    static_libs: [
+        "Launcher3TestLib",
+        "launcher_flags_lib_test",
+    ],
     libs: [
         "android.test.base",
         "android.test.runner",

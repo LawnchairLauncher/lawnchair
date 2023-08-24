@@ -22,10 +22,13 @@ import static com.android.launcher3.util.TestUtil.installDummyAppForUser;
 import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
 import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
+import static com.google.android.platform.launcher.aconfig.flags.Flags.FLAG_ENABLE_EXPANDING_PAUSE_WORK_BUTTON;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
+import android.platform.test.flag.junit.SetFlagsRule;
 import android.util.Log;
 import android.view.View;
 
@@ -44,6 +47,7 @@ import com.android.launcher3.util.rule.TestStabilityRule.Stability;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.Objects;
@@ -52,6 +56,7 @@ import java.util.function.Predicate;
 public class WorkProfileTest extends AbstractLauncherUiTest {
 
     private static final int WORK_PAGE = ActivityAllAppsContainerView.AdapterHolder.WORK;
+    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
 
     private int mProfileUserId;
     private boolean mWorkProfileSetupSuccessful;
@@ -60,6 +65,7 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     @Before
     @Override
     public void setUp() throws Exception {
+        mSetFlagsRule.disableFlags(FLAG_ENABLE_EXPANDING_PAUSE_WORK_BUTTON);
         super.setUp();
         String output =
                 mDevice.executeShellCommand(
