@@ -117,6 +117,7 @@ import com.android.quickstep.inputconsumers.TaskbarUnstashInputConsumer;
 import com.android.quickstep.inputconsumers.TrackpadStatusBarInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActiveGestureLog.CompoundString;
+import com.android.quickstep.util.AssistUtilsBase;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -278,6 +279,20 @@ public class TouchInteractionService extends Service {
                 tis.mDeviceState.setAssistantVisibility(visibility);
                 tis.onAssistantVisibilityChanged();
             }));
+        }
+
+        /**
+         * Sent when the assistant has been invoked with the given type (defined in AssistManager)
+         * and should be shown. This method is used if SystemUiProxy#setAssistantOverridesRequested
+         * was previously called including this invocation type.
+         */
+        @Override
+        public void onAssistantOverrideInvoked(int invocationType) {
+            executeForTouchInteractionService(tis -> {
+                if (!AssistUtilsBase.newInstance(tis).tryStartAssistOverride(invocationType)) {
+                    Log.w(TAG, "Failed to invoke Assist override");
+                }
+            });
         }
 
         @Override
