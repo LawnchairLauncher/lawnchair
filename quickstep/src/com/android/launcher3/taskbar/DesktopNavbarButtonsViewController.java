@@ -18,6 +18,7 @@ package com.android.launcher3.taskbar;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_NOTIFICATIONS;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_QUICK_SETTINGS;
 
+import android.content.pm.ActivityInfo.Config;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,11 @@ public class DesktopNavbarButtonsViewController extends NavbarButtonsViewControl
     @Override
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
+        super.init(controllers);
+    }
+
+    @Override
+    protected void setupController() {
         mNavButtonsView.getLayoutParams().height = mContext.getDeviceProfile().taskbarHeight;
 
         // Quick settings and notifications buttons
@@ -72,4 +78,7 @@ public class DesktopNavbarButtonsViewController extends NavbarButtonsViewControl
     /** Cleans up on destroy */
     @Override
     public void onDestroy() { }
+
+    @Override
+    public void onConfigurationChanged(@Config int configChanges) { }
 }

@@ -219,11 +219,15 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
      */
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
+        setupController();
+    }
+
+    protected void setupController() {
         boolean isThreeButtonNav = mContext.isThreeButtonNav();
         DeviceProfile deviceProfile = mContext.getDeviceProfile();
         Resources resources = mContext.getResources();
         Point p = !mContext.isUserSetupComplete()
-                ? new Point(0, controllers.taskbarActivityContext.getSetupWindowHeight())
+                ? new Point(0, mControllers.taskbarActivityContext.getSetupWindowHeight())
                 : DimensionUtils.getTaskbarPhoneDimensions(deviceProfile, resources,
                         TaskbarManager.isPhoneMode(deviceProfile));
         mNavButtonsView.getLayoutParams().height = p.y;
