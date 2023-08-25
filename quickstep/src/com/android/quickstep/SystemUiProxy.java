@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 
+import static com.android.launcher3.Flags.enableUnfoldStateAnimation;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
@@ -67,6 +68,7 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.AssistUtils;
+import com.android.quickstep.util.unfold.ProxyUnfoldTransitionProvider;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
@@ -74,6 +76,7 @@ import com.android.systemui.shared.system.RecentsAnimationListener;
 import com.android.systemui.shared.system.smartspace.ILauncherUnlockAnimationController;
 import com.android.systemui.shared.system.smartspace.ISysuiUnlockAnimationController;
 import com.android.systemui.shared.system.smartspace.SmartspaceState;
+import com.android.systemui.unfold.config.ResourceUnfoldTransitionConfig;
 import com.android.systemui.unfold.progress.IUnfoldAnimation;
 import com.android.systemui.unfold.progress.IUnfoldTransitionListener;
 import com.android.wm.shell.back.IBackAnimation;
@@ -177,7 +180,10 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
      */
     private final PendingIntent mRecentsPendingIntent;
 
-    public SystemUiProxy(Context context) {
+    @Nullable
+    private final ProxyUnfoldTransitionProvider mUnfoldTransitionProvider;
+
+    private SystemUiProxy(Context context) {
         mContext = context;
         mAsyncHandler = new Handler(UI_HELPER_EXECUTOR.getLooper(), this::handleMessageAsync);
         final Intent baseIntent = new Intent().setPackage(mContext.getPackageName());
@@ -187,6 +193,10 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
         mRecentsPendingIntent = PendingIntent.getActivity(mContext, 0, baseIntent,
                 PendingIntent.FLAG_MUTABLE | PendingIntent.FLAG_ALLOW_UNSAFE_IMPLICIT_INTENT
                         | Intent.FILL_IN_COMPONENT, options.toBundle());
+
+        mUnfoldTransitionProvider =
+                (enableUnfoldStateAnimation() && new ResourceUnfoldTransitionConfig().isEnabled())
+                         ? new ProxyUnfoldTransitionProvider() : null;
     }
 
     @Override
@@ -251,7 +261,7 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
         mRecentTasks = recentTasks;
         mBackAnimation = backAnimation;
         mDesktopMode = desktopMode;
-        mUnfoldAnimation = unfoldAnimation;
+        mUnfoldAnimation = enableUnfoldStateAnimation() ? null : unfoldAnimation;
         mDragAndDrop = dragAndDrop;
         linkToDeath();
         // re-attach the listeners once missing due to setProxy has not been initialized yet.
@@ -272,6 +282,19 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
         setAssistantOverridesRequested(
                 AssistUtils.newInstance(mContext).getSysUiAssistOverrideInvocationTypes());
         mStateChangeCallbacks.forEach(Runnable::run);
+
+        if (mUnfoldTransitionProvider != null) {
+            if (unfoldAnimation != null) {
+                try {
+                    unfoldAnimation.setListener(mUnfoldTransitionProvider);
+                    mUnfoldTransitionProvider.setActive(true);
+                } catch (RemoteException e) {
+                    // Ignore
+                }
+            } else {
+                mUnfoldTransitionProvider.setActive(false);
+            }
+        }
     }
 
     /**
@@ -1449,6 +1472,11 @@ public class SystemUiProxy implements ISystemUiProxy, NavHandle {
         } catch (RemoteException e) {
             Log.e(TAG, "Failed call setUnfoldAnimationListener", e);
         }
+    }
+
+    @Nullable
+    public ProxyUnfoldTransitionProvider getUnfoldTransitionProvider() {
+        return mUnfoldTransitionProvider;
     }
 
     //

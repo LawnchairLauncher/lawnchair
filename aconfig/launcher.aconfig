@@ -127,3 +127,10 @@ flag {
     description: "Enables asnc inflation of workspace icons"
     bug: "318539160"
 }
+
+flag {
+    name: "enable_unfold_state_animation"
+    namespace: "launcher"
+    description: "Tie unfold animation with state animation"
+    bug: "297057373"
+}
