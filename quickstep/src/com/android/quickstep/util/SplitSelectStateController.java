@@ -102,7 +102,6 @@ import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.wm.shell.splitscreen.ISplitSelectListener;
 
 import java.io.PrintWriter;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -591,13 +590,13 @@ public class SplitSelectStateController {
 
         private final int mInitialTaskId;
         private final int mSecondTaskId;
-        private final WeakReference<Consumer<Boolean>> mSuccessCallback;
+        private final Consumer<Boolean> mSuccessCallback;
 
         RemoteSplitLaunchTransitionRunner(int initialTaskId, int secondTaskId,
                 @Nullable Consumer<Boolean> callback) {
             mInitialTaskId = initialTaskId;
             mSecondTaskId = secondTaskId;
-            mSuccessCallback = new WeakReference<>(callback);
+            mSuccessCallback = callback;
         }
 
         @Override
@@ -617,8 +616,8 @@ public class SplitSelectStateController {
                 TaskViewUtils.composeRecentsSplitLaunchAnimator(mLaunchingTaskView, mStateManager,
                         mDepthController, mInitialTaskId, mSecondTaskId, info, t, () -> {
                             finishAdapter.run();
-                            if (mSuccessCallback.get() != null) {
-                                mSuccessCallback.get().accept(true);
+                            if (mSuccessCallback != null) {
+                                mSuccessCallback.accept(true);
                             }
                             resetState();
                         });
