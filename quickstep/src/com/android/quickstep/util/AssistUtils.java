@@ -21,13 +21,13 @@ import com.android.launcher3.R;
 import com.android.launcher3.util.ResourceBasedOverride;
 
 /** Utilities to work with Assistant functionality. */
-public class AssistUtilsBase implements ResourceBasedOverride {
+public class AssistUtils implements ResourceBasedOverride {
 
-    public AssistUtilsBase() {}
+    public AssistUtils() {}
 
     /** Creates AssistUtils as specified by overrides */
-    public static AssistUtilsBase newInstance(Context context) {
-        return Overrides.getObject(AssistUtilsBase.class, context, R.string.assist_utils_class);
+    public static AssistUtils newInstance(Context context) {
+        return Overrides.getObject(AssistUtils.class, context, R.string.assist_utils_class);
     }
 
     /** @return Array of AssistUtils.INVOCATION_TYPE_* that we want to handle instead of SysUI. */

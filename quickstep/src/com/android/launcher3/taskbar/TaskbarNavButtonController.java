@@ -51,7 +51,7 @@ import com.android.quickstep.OverviewCommandHelper;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TouchInteractionService;
-import com.android.quickstep.util.AssistUtilsBase;
+import com.android.quickstep.util.AssistUtils;
 import com.android.quickstep.views.DesktopTaskView;
 
 import java.io.PrintWriter;
@@ -313,7 +313,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
             return;
         }
         // Attempt to start Assist with AssistUtils, otherwise fall back to SysUi's implementation.
-        if (!AssistUtilsBase.newInstance(mService.getApplicationContext()).tryStartAssistOverride(
+        if (!AssistUtils.newInstance(mService.getApplicationContext()).tryStartAssistOverride(
                 INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS)) {
             Bundle args = new Bundle();
             args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS);
