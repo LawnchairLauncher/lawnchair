@@ -83,7 +83,7 @@ android_library {
         "androidx.test.espresso.contrib",
         "androidx.test.espresso.intents",
         "androidx.test.uiautomator_uiautomator",
-        "mockito-target-inline-minus-junit4",
+        "mockito-target-extended-minus-junit4",
         "launcher_log_protos_lite",
         "truth-prebuilt",
         "platform-test-rules",
@@ -114,6 +114,7 @@ android_test {
         "android.test.runner",
         "android.test.mock",
     ],
+    // Libraries used by mockito inline extended
     jni_libs: [
         "libdexmakerjvmtiagent",
         "libstaticjvmtiagent",
