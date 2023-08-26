@@ -278,7 +278,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                     if (!mIsDeferredDownTarget) {
                         // Normal gesture, ensure we pass the drag slop before we start tracking
                         // the gesture
-                        if (Math.abs(displacement) > mTouchSlop) {
+                        if (mGestureState.isTrackpadGesture() || Math.abs(displacement)
+                                > mTouchSlop) {
                             mPassedWindowMoveSlop = true;
                             mStartDisplacement = Math.min(displacement, -mTouchSlop);
                         }
@@ -287,8 +288,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
                 float horizontalDist = Math.abs(displacementX);
                 float upDist = -displacement;
-                boolean passedSlop = squaredHypot(displacementX, displacementY)
-                        >= mSquaredTouchSlop;
+                boolean passedSlop = mGestureState.isTrackpadGesture() || squaredHypot(
+                        displacementX, displacementY) >= mSquaredTouchSlop;
 
                 if (!mPassedSlopOnThisGesture && passedSlop) {
                     mPassedSlopOnThisGesture = true;
