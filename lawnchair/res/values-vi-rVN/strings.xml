@@ -183,7 +183,7 @@
     <string name="home_screen_locked">Đã khoá màn hình chính.</string>
     <string name="popup_menu">Pop-up Menu</string>
     <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="show_system_settings_entry">Hiển thị mục cài đặt hệ thống</string>
     <string name="status_bar_label">Thanh trạng thái</string>
     <string name="show_status_bar">Hiện thanh trạng thái</string>
     <string name="dark_status_bar_label">Thanh trạng thái tối màu</string>
@@ -402,5 +402,5 @@
     <string name="invalid_backup_file">Tệp sao lưu không hợp lệ.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="system_settings">System Settings</string>
+    <string name="system_settings">Cài đặt hệ thống</string>
 </resources>
