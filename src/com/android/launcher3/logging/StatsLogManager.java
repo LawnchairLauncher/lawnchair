@@ -621,8 +621,11 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User has invoked split to left half with a keyboard shortcut.")
         LAUNCHER_KEYBOARD_SHORTCUT_SPLIT_LEFT_TOP(1233),
 
-        @UiEvent(doc = "User has invoked split to right half with desktop mode app icon")
+        @UiEvent(doc = "User has invoked split to right half from desktop mode.")
         LAUNCHER_DESKTOP_MODE_SPLIT_RIGHT_BOTTOM(1412),
+
+        @UiEvent(doc = "User has invoked split to left half from desktop mode.")
+        LAUNCHER_DESKTOP_MODE_SPLIT_LEFT_TOP(1464),
 
         @UiEvent(doc = "User has collapsed the work FAB button by scrolling down in the all apps"
                 + " work A-Z list.")
