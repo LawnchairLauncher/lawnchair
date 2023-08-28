@@ -180,7 +180,8 @@ final class AlphaJumpDetector extends AnomalyDetector {
     }
 
     @Override
-    String detectAnomalies(AnalysisNode oldInfo, AnalysisNode newInfo, int frameN, long timestamp) {
+    String detectAnomalies(AnalysisNode oldInfo, AnalysisNode newInfo, int frameN, long timestamp,
+            int windowSizePx) {
         // If the view was previously seen, proceed with analysis only if it was present in the
         // view hierarchy in the previous frame.
         if (oldInfo != null && oldInfo.frameN != frameN) return null;
