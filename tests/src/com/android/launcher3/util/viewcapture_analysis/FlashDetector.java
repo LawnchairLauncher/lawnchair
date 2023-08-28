@@ -110,7 +110,7 @@ final class FlashDetector extends AnomalyDetector {
 
     @Override
     String detectAnomalies(AnalysisNode oldInfo, AnalysisNode newInfo, int frameN,
-            long frameTimeNs) {
+            long frameTimeNs, int windowSizePx) {
         // Should we check when a view was visible for a short period, then its alpha became 0?
         // Then 'lastVisible' time should be the last one still visible?
         // Check only transitions of alpha between 0 and 1?
