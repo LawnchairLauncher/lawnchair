@@ -198,8 +198,8 @@ import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ActivityTracker;
-import com.android.launcher3.util.CannedAnimationCoordinator;
 import com.android.launcher3.util.BackPressHandler;
+import com.android.launcher3.util.CannedAnimationCoordinator;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
@@ -330,10 +330,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     private static final FloatProperty<Hotseat> HOTSEAT_WIDGET_SCALE =
             HOTSEAT_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_WIDGET_TRANSITION);
 
-    private static final boolean DESKTOP_MODE_1_SUPPORTED =
-            "1".equals(Utilities.getSystemProperty("persist.wm.debug.desktop_mode", "0"));
-
-    private static final boolean DESKTOP_MODE_2_SUPPORTED =
+    private static final boolean DESKTOP_MODE_SUPPORTED =
             "1".equals(Utilities.getSystemProperty("persist.wm.debug.desktop_mode_2", "0"));
 
     @Thunk
@@ -3301,7 +3298,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     private void updateDisallowBack() {
-        if (DESKTOP_MODE_1_SUPPORTED || DESKTOP_MODE_2_SUPPORTED) {
+        if (DESKTOP_MODE_SUPPORTED) {
             // Do not disable back in launcher when prototype behavior is enabled
             return;
         }

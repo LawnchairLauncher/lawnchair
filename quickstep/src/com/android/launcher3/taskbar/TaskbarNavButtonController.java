@@ -272,7 +272,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     private void navigateHome() {
         TaskUtils.closeSystemWindowsAsync(CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY);
 
-        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
             DesktopVisibilityController desktopVisibilityController =
                     LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
             if (desktopVisibilityController != null) {
