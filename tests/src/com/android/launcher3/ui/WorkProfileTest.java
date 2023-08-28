@@ -15,14 +15,13 @@
  */
 package com.android.launcher3.ui;
 
+import static com.android.launcher3.Flags.FLAG_ENABLE_EXPANDING_PAUSE_WORK_BUTTON;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 import static com.android.launcher3.util.TestUtil.installDummyAppForUser;
 import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
 import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
-
-import static com.google.android.platform.launcher.aconfig.flags.Flags.FLAG_ENABLE_EXPANDING_PAUSE_WORK_BUTTON;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
