@@ -8,7 +8,6 @@
     "packageRules": [
         {
             "groupName": "Kotlin",
-            "groupSlug": "kotlin",
             "matchPackagePrefixes": [
                 "com.google.devtools.ksp",
                 "androidx.compose.compiler"
@@ -19,21 +18,18 @@
         },
         {
             "groupName": "AGP",
-            "groupSlug": "agp",
             "matchPackagePatterns": [
                 "com.android.*"
             ]
         },
         {
             "groupName": "dev.rikka.tools.refine",
-            "groupSlug": "refine",
             "matchPackagePatterns": [
                 "dev.rikka.tools.refine.*"
             ]
         },
         {
             "groupName": "androidx.lifecycle",
-            "groupSlug": "lifecycle",
             "matchPackagePatterns": [
                 "androidx.lifecycle:*"
             ]
