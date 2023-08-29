@@ -144,12 +144,12 @@ class SplitSelectStateControllerTest {
             Consumer<Task> {
                 assertEquals(
                     "ComponentName package mismatched",
-                    it.key.baseIntent.component.packageName,
+                    it.key.baseIntent.component?.packageName,
                     matchingPackage
                 )
                 assertEquals(
                     "ComponentName class mismatched",
-                    it.key.baseIntent.component.className,
+                    it.key.baseIntent.component?.className,
                     matchingClass
                 )
                 assertEquals(it, groupTask1.task1)
@@ -236,12 +236,12 @@ class SplitSelectStateControllerTest {
             Consumer<Task> {
                 assertEquals(
                     "ComponentName package mismatched",
-                    it.key.baseIntent.component.packageName,
+                    it.key.baseIntent.component?.packageName,
                     matchingPackage
                 )
                 assertEquals(
                     "ComponentName class mismatched",
-                    it.key.baseIntent.component.className,
+                    it.key.baseIntent.component?.className,
                     matchingClass
                 )
                 assertEquals("userId mismatched", it.key.userId, nonPrimaryUserHandle.identifier)
@@ -288,12 +288,12 @@ class SplitSelectStateControllerTest {
             Consumer<Task> {
                 assertEquals(
                     "ComponentName package mismatched",
-                    it.key.baseIntent.component.packageName,
+                    it.key.baseIntent.component?.packageName,
                     matchingPackage
                 )
                 assertEquals(
                     "ComponentName class mismatched",
-                    it.key.baseIntent.component.className,
+                    it.key.baseIntent.component?.className,
                     matchingClass
                 )
                 assertEquals(it, groupTask2.task2)
