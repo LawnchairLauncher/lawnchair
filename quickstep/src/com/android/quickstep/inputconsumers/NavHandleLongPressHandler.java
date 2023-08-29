@@ -18,6 +18,8 @@ package com.android.quickstep.inputconsumers;
 
 import android.content.Context;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.R;
 import com.android.launcher3.util.ResourceBasedOverride;
 
@@ -33,12 +35,15 @@ public class NavHandleLongPressHandler implements ResourceBasedOverride {
     }
 
     /**
-     * Called when nav handle is long pressed.
-     *
-     * @return if the long press was consumed, meaning other input consumers should receive a
-     * cancel event
+     * Called when nav handle is long pressed to get the Runnable that should be executed by the
+     * caller to invoke long press behavior. If null is returned that means long press couldn't be
+     * handled.
+     * <p>
+     * A Runnable is returned here to ensure the InputConsumer can call
+     * {@link android.view.InputMonitor#pilferPointers()} before invoking the long press behavior
+     * since pilfering can break the long press behavior.
      */
-    public boolean onLongPress() {
-        return false;
+    public @Nullable Runnable getLongPressRunnable() {
+        return null;
     }
 }

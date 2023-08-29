@@ -38,8 +38,8 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
     public NavHandleLongPressInputConsumer(Context context, InputConsumer delegate,
             InputMonitorCompat inputMonitor) {
         super(delegate, inputMonitor);
-        mNavHandleWidth = context.getResources()
-                .getDimensionPixelSize(R.dimen.navigation_home_handle_width);
+        mNavHandleWidth = context.getResources().getDimensionPixelSize(
+                R.dimen.navigation_home_handle_width);
         mScreenWidth = DisplayController.INSTANCE.get(context).getInfo().currentSize.x;
 
         mNavHandleLongPressHandler = NavHandleLongPressHandler.newInstance(context);
@@ -48,8 +48,11 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
             @Override
             public void onLongPress(MotionEvent motionEvent) {
                 if (isInArea(motionEvent.getRawX())) {
-                    if (mNavHandleLongPressHandler.onLongPress()) {
+                    Runnable longPressRunnable = mNavHandleLongPressHandler.getLongPressRunnable();
+                    if (longPressRunnable != null) {
                         setActive(motionEvent);
+
+                        longPressRunnable.run();
                     }
                 }
             }
