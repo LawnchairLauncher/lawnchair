@@ -59,21 +59,23 @@ public class SearchResultFromQsb {
     }
 
     /** Find the web suggestion from search suggestion's title text */
-    public void verifyWebSuggestIsPresent(String text) {
-        ArrayList<UiObject2> goldenGateResults =
+    public SearchWebSuggestion findWebSuggestion(String text) {
+        ArrayList<UiObject2> webSuggestions =
                 new ArrayList<>(mLauncher.waitForObjectsInContainer(
                         mLauncher.waitForSystemLauncherObject(SEARCH_CONTAINER_RES_ID),
                         By.clazz(TextView.class)));
-        boolean found = false;
-        for(UiObject2 uiObject: goldenGateResults) {
+        for (UiObject2 uiObject: webSuggestions) {
             String currentString = uiObject.getText();
             if (currentString.equals(text)) {
-                found = true;
+                return createWebSuggestion(uiObject);
             }
         }
-        if (!found) {
-            throw new IllegalStateException("Web suggestion title: " + text + " not found");
-        }
+        mLauncher.fail("Web suggestion title: " + text + " not found");
+        return null;
+    }
+
+    protected SearchWebSuggestion createWebSuggestion(UiObject2 webSuggestion) {
+        return new SearchWebSuggestion(mLauncher, webSuggestion);
     }
 
     /** Find the total amount of views being displayed and return the size */

@@ -643,6 +643,10 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             mLauncher.getWorkspace().verifyWorkspaceAppIconIsGone(
                     DUMMY_APP_NAME + " was expected to disappear after uninstall.", DUMMY_APP_NAME);
 
+            // Debug for b/288944469 I want to test if we are not waiting enough after removing
+            // the icon to request the list of icons again, since the items are not removed
+            // immediately. This should reduce the flake rate
+            SystemClock.sleep(500);
             Map<String, Point> finalPositions =
                     mLauncher.getWorkspace().getWorkspaceIconsPositions();
             assertThat(finalPositions).doesNotContainKey(DUMMY_APP_NAME);

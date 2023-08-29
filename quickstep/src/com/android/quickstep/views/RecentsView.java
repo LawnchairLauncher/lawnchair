@@ -4794,8 +4794,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         } else {
                             resetFromSplitSelectionState();
                         }
+                        InteractionJankMonitorWrapper.end(
+                                InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
                     });
-            InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
         });
 
         mSecondSplitHiddenView = containerTaskView;
