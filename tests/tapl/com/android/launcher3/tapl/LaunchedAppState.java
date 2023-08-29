@@ -194,7 +194,7 @@ public final class LaunchedAppState extends Background {
                             SystemClock.uptimeMillis(),
                             MotionEvent.ACTION_UP,
                             endPoint,
-                            LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE_WITHOUT_PILFER);
+                            LauncherInstrumentation.GestureScope.INSIDE);
                     LauncherInstrumentation.log("SplitscreenDragSource.dragToSplitscreen: "
                             + "after drop");
 
