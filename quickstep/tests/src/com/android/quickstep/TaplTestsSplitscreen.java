@@ -108,7 +108,8 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
 
     @Test
     public void testSaveAppPairMenuItemExistsOnSplitPair() throws Exception {
-        assumeTrue(FeatureFlags.ENABLE_APP_PAIRS.get());
+        assumeTrue("App pairs feature is currently not enabled, no test needed",
+                FeatureFlags.ENABLE_APP_PAIRS.get());
 
         createAndLaunchASplitPair();
 
@@ -122,7 +123,8 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
 
     @Test
     public void testSaveAppPairMenuItemDoesNotExistOnSingleTask() throws Exception {
-        assumeTrue(FeatureFlags.ENABLE_APP_PAIRS.get());
+        assumeTrue("App pairs feature is currently not enabled, no test needed",
+                FeatureFlags.ENABLE_APP_PAIRS.get());
 
         startAppFast(CALCULATOR_APP_PACKAGE);
 
