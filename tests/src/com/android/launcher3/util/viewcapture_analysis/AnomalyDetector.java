@@ -68,17 +68,18 @@ abstract class AnomalyDetector {
      * null value means that the view. 'oldInfo' and 'newInfo' cannot be both null.
      * If an anomaly is detected, an exception will be thrown.
      *
-     * @param oldInfo the view, as seen in the last frame that contained it in the view
-     *                hierarchy before 'currentFrame'. 'null' means that the view is first seen
-     *                in the 'currentFrame'.
-     * @param newInfo the view in the view hierarchy of the 'currentFrame'. 'null' means that
-     *                the view is not present in the 'currentFrame', but was present in the previous
-     *                frame.
-     * @param frameN  number of the current frame.
+     * @param oldInfo      the view, as seen in the last frame that contained it in the view
+     *                     hierarchy before 'currentFrame'. 'null' means that the view is first seen
+     *                     in the 'currentFrame'.
+     * @param newInfo      the view in the view hierarchy of the 'currentFrame'. 'null' means that
+     *                     the view is not present in the 'currentFrame', but was present in the
+     *                     previous frame.
+     * @param frameN       number of the current frame.
+     * @param windowSizePx maximum of the window width and height, in pixels.
      * @return Anomaly diagnostic message if an anomaly has been detected; null otherwise.
      */
     abstract String detectAnomalies(
             @Nullable ViewCaptureAnalyzer.AnalysisNode oldInfo,
             @Nullable ViewCaptureAnalyzer.AnalysisNode newInfo, int frameN,
-            long frameTimeNs);
+            long frameTimeNs, int windowSizePx);
 }
