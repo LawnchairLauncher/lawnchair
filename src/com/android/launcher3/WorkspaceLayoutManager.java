@@ -55,6 +55,7 @@ public interface WorkspaceLayoutManager {
         int y = presenterPos.cellY;
         if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT
                 || info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION) {
+            Log.d(TAG, "add predicted icon " + child.getTag().toString() + " to home screen");
             int screenId = presenterPos.screenId;
             x = getHotseat().getCellXFromOrder(screenId);
             y = getHotseat().getCellYFromOrder(screenId);
