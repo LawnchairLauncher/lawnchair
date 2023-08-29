@@ -159,6 +159,7 @@ import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.wm.shell.startingsurface.IStartingWindowListener;
 
 import java.io.PrintWriter;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -225,7 +226,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private final float mClosingWindowTransY;
     private final float mMaxShadowRadius;
 
-    private final StartingWindowListener mStartingWindowListener = new StartingWindowListener();
+    private final StartingWindowListener mStartingWindowListener =
+            new StartingWindowListener(this);
 
     private DeviceProfile mDeviceProfile;
 
@@ -278,7 +280,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 }
             };
 
-            mStartingWindowListener.setTransitionManager(this);
             SystemUiProxy.INSTANCE.get(mLauncher).setStartingWindowListener(
                     mStartingWindowListener);
         }
@@ -310,8 +311,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         mAppLaunchRunner = new AppLaunchAnimationRunner(v, onEndCallback);
         ItemInfo tag = (ItemInfo) v.getTag();
         if (tag != null && tag.shouldUseBackgroundAnimation()) {
-            ContainerAnimationRunner containerAnimationRunner =
-                    ContainerAnimationRunner.from(v, mStartingWindowListener, onEndCallback);
+            ContainerAnimationRunner containerAnimationRunner = ContainerAnimationRunner.from(
+                            v, mLauncher, mStartingWindowListener, onEndCallback);
             if (containerAnimationRunner != null) {
                 mAppLaunchRunner = containerAnimationRunner;
             }
@@ -1152,7 +1153,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     public void onActivityDestroyed() {
         unregisterRemoteAnimations();
         unregisterRemoteTransitions();
-        mStartingWindowListener.setTransitionManager(null);
         SystemUiProxy.INSTANCE.get(mLauncher).setStartingWindowListener(null);
     }
 
@@ -1775,8 +1775,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
 
         @Nullable
-        private static ContainerAnimationRunner from(
-                View v, StartingWindowListener startingWindowListener, RunnableList onEndCallback) {
+        private static ContainerAnimationRunner from(View v, Launcher launcher,
+                StartingWindowListener startingWindowListener, RunnableList onEndCallback) {
             View viewToUse = findViewWithBackground(v);
             if (viewToUse == null) {
                 viewToUse = v;
@@ -1801,8 +1801,13 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                         }
                     };
 
-            ActivityLaunchAnimator.Callback callback = task -> ColorUtils.setAlphaComponent(
-                    startingWindowListener.getBackgroundColor(), 255);
+            ActivityLaunchAnimator.Callback callback = task -> {
+                final int backgroundColor =
+                        startingWindowListener.mBackgroundColor == Color.TRANSPARENT
+                                ? launcher.getScrimView().getBackgroundColor()
+                                : startingWindowListener.mBackgroundColor;
+                return ColorUtils.setAlphaComponent(backgroundColor, 255);
+            };
 
             ActivityLaunchAnimator.Listener listener = new ActivityLaunchAnimator.Listener() {
                 @Override
@@ -1912,24 +1917,21 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
     }
 
-    private class StartingWindowListener extends IStartingWindowListener.Stub {
-        private QuickstepTransitionManager mTransitionManager;
+    private static class StartingWindowListener extends IStartingWindowListener.Stub {
+        private final WeakReference<QuickstepTransitionManager> mTransitionManagerRef;
         private int mBackgroundColor;
 
-        public void setTransitionManager(QuickstepTransitionManager transitionManager) {
-            mTransitionManager = transitionManager;
+        private StartingWindowListener(QuickstepTransitionManager transitionManager) {
+            mTransitionManagerRef = new WeakReference<>(transitionManager);
         }
 
         @Override
         public void onTaskLaunching(int taskId, int supportedType, int color) {
-            mTransitionManager.mTaskStartParams.put(taskId, Pair.create(supportedType, color));
+            QuickstepTransitionManager transitionManager = mTransitionManagerRef.get();
+            if (transitionManager != null) {
+                transitionManager.mTaskStartParams.put(taskId, Pair.create(supportedType, color));
+            }
             mBackgroundColor = color;
-        }
-
-        public int getBackgroundColor() {
-            return mBackgroundColor == Color.TRANSPARENT
-                    ? mLauncher.getScrimView().getBackgroundColor()
-                    : mBackgroundColor;
         }
     }
 
