@@ -92,7 +92,7 @@ public final class Taskbar {
     /**
      * Opens the Taskbar all apps page.
      */
-    public AllAppsFromTaskbar openAllApps() {
+    public TaskbarAllApps openAllApps() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to open taskbar all apps");
              LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
@@ -101,7 +101,7 @@ public final class Taskbar {
                     mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID),
                     getAllAppsButtonSelector()));
 
-            return new AllAppsFromTaskbar(mLauncher);
+            return new TaskbarAllApps(mLauncher);
         }
     }
 
