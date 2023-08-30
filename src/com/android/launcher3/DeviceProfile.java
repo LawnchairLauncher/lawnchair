@@ -294,6 +294,7 @@ public class DeviceProfile {
     public final int taskbarIconSize;
     // If true, used to layout taskbar in 3 button navigation mode.
     public final boolean startAlignTaskbar;
+    public final boolean isTransientTaskbar;
 
     // DragController
     public int flingToDeleteThresholdVelocity;
@@ -361,7 +362,8 @@ public class DeviceProfile {
             }
         }
 
-        if (DisplayController.isTransientTaskbar(context)) {
+        isTransientTaskbar = DisplayController.isTransientTaskbar(context);
+        if (isTransientTaskbar) {
             float invTransientIconSizeDp = inv.transientTaskbarIconSize[mTypeIndex];
             taskbarIconSize = pxFromDp(invTransientIconSizeDp, mMetrics);
             taskbarHeight = Math.round((taskbarIconSize * ICON_VISIBLE_AREA_FACTOR)
