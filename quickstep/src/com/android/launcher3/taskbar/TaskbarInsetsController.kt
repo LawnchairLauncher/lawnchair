@@ -15,9 +15,9 @@
  */
 package com.android.launcher3.taskbar
 
-import android.inputmethodservice.InputMethodService.ENABLE_HIDE_IME_CAPTION_BAR
 import android.graphics.Insets
 import android.graphics.Region
+import android.inputmethodservice.InputMethodService.ENABLE_HIDE_IME_CAPTION_BAR
 import android.os.Binder
 import android.os.IBinder
 import android.view.Gravity
@@ -41,6 +41,7 @@ import com.android.internal.policy.GestureNavigationSettingsObserver
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.anim.AlphaUpdateListener
+import com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NO_RECREATION
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
 import com.android.launcher3.util.DisplayController
 import java.io.PrintWriter
@@ -97,11 +98,18 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                 0
             }
 
-        windowLayoutParams.providedInsets = getProvidedInsets(insetsRoundedCornerFlag)
+        windowLayoutParams.providedInsets =
+            if (ENABLE_TASKBAR_NO_RECREATION.get()) {
+                getProvidedInsets(controllers.sharedState!!.insetsFrameProviders!!,
+                        insetsRoundedCornerFlag)
+            } else {
+                getProvidedInsets(insetsRoundedCornerFlag)
+            }
+
         if (!context.isGestureNav) {
             if (windowLayoutParams.paramsForRotation != null) {
                 for (layoutParams in windowLayoutParams.paramsForRotation) {
-                    layoutParams.providedInsets = getProvidedInsets(insetsRoundedCornerFlag)
+                    layoutParams.providedInsets = windowLayoutParams.providedInsets
                 }
             }
         }
@@ -151,6 +159,26 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         }
 
         context.notifyUpdateLayoutParams()
+    }
+
+    /**
+     * This is for when ENABLE_TASKBAR_NO_RECREATION is enabled. We generate one instance of
+     * providedInsets and use it across the entire lifecycle of TaskbarManager. The only thing
+     * we need to reset is nav bar flags based on insetsRoundedCornerFlag.
+     */
+    private fun getProvidedInsets(providedInsets: Array<InsetsFrameProvider>,
+                                  insetsRoundedCornerFlag: Int): Array<InsetsFrameProvider> {
+        val navBarsFlag =
+                (if (context.isGestureNav) FLAG_SUPPRESS_SCRIM else 0) or insetsRoundedCornerFlag
+        for (provider in providedInsets) {
+            if (provider.type == navigationBars()) {
+                provider.setFlags(
+                        navBarsFlag,
+                        FLAG_SUPPRESS_SCRIM or FLAG_INSETS_ROUNDED_CORNER
+                )
+            }
+        }
+        return providedInsets
     }
 
     /**

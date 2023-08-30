@@ -15,14 +15,27 @@
  */
 package com.android.launcher3.taskbar;
 
+import static android.view.InsetsFrameProvider.SOURCE_DISPLAY;
+import static android.view.WindowInsets.Type.mandatorySystemGestures;
+import static android.view.WindowInsets.Type.navigationBars;
+import static android.view.WindowInsets.Type.systemGestures;
+import static android.view.WindowInsets.Type.tappableElement;
+
 import static com.android.launcher3.taskbar.LauncherTaskbarUIController.DISPLAY_PROGRESS_COUNT;
 
 import android.app.PendingIntent;
+import android.os.Binder;
+import android.os.IBinder;
+import android.view.InsetsFrameProvider;
 
 /**
  * State shared across different taskbar instance
  */
 public class TaskbarSharedState {
+
+    private final IBinder mInsetsOwner = new Binder();
+    private static int INDEX_LEFT = 0;
+    private static int INDEX_RIGHT = 1;
 
     // TaskbarManager#onSystemUiFlagsChanged
     public int sysuiStateFlags;
@@ -48,4 +61,14 @@ public class TaskbarSharedState {
 
     // Taskbar System Action
     public PendingIntent taskbarSystemActionPendingIntent;
+
+    public final InsetsFrameProvider[] insetsFrameProviders = new InsetsFrameProvider[] {
+            new InsetsFrameProvider(mInsetsOwner, 0, navigationBars()),
+            new InsetsFrameProvider(mInsetsOwner, 0, tappableElement()),
+            new InsetsFrameProvider(mInsetsOwner, 0, mandatorySystemGestures()),
+            new InsetsFrameProvider(mInsetsOwner, INDEX_LEFT, systemGestures())
+                    .setSource(SOURCE_DISPLAY),
+            new InsetsFrameProvider(mInsetsOwner, INDEX_RIGHT, systemGestures())
+                    .setSource(SOURCE_DISPLAY)
+    };
 }

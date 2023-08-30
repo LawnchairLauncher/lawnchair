@@ -213,6 +213,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(270395798,
             "ENABLE_TRANSIENT_TASKBAR", ENABLED, "Enables transient taskbar.");
 
+    public static final BooleanFlag ENABLE_TASKBAR_NO_RECREATION = getDebugFlag(299193589,
+            "ENABLE_TASKBAR_NO_RECREATION", DISABLED,
+            "Enables taskbar with no recreation from lifecycle changes of TaskbarActivityContext.");
+
     // TODO(Block 16): Clean up flags
     // When enabled the promise icon is visible in all apps while installation an app.
     public static final BooleanFlag PROMISE_APPS_IN_ALL_APPS = getDebugFlag(270390012,
