@@ -119,9 +119,6 @@ public class NoButtonNavbarToOverviewTouchController extends PortraitStatesTouch
     protected LauncherState getTargetState(LauncherState fromState, boolean isDragTowardPositive) {
         if (fromState == NORMAL && mDidTouchStartInNavBar) {
             return HINT_STATE;
-        } else if (fromState == OVERVIEW && isDragTowardPositive) {
-            // Don't allow swiping up to all apps.
-            return OVERVIEW;
         }
         return super.getTargetState(fromState, isDragTowardPositive);
     }
