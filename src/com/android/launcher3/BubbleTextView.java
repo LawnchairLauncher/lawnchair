@@ -272,7 +272,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         mDotParams.scale = 0f;
         mForceHideDot = false;
         setBackground(null);
-        if (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get()
+        if (Flags.enableTwolineAllapps() || FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get()
                 || FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()) {
             setMaxLines(1);
         }
@@ -405,7 +405,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
      *  Only if actual text can be displayed in two line, the {@code true} value will be effective.
      */
     protected boolean shouldUseTwoLine() {
-        return  (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() && mDisplay == DISPLAY_ALL_APPS)
+        return ((Flags.enableTwolineAllapps() || FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get())
+                && mDisplay == DISPLAY_ALL_APPS)
                 || (FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()
                 && mDisplay == DISPLAY_SEARCH_RESULT);
     }
