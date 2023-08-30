@@ -60,8 +60,8 @@ public class HomeAllApps extends AllApps {
                     endY,
                     5 /* steps */,
                     NORMAL_STATE_ORDINAL,
-                    swipeDown ? LauncherInstrumentation.GestureScope.INSIDE
-                            : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER);
+                    swipeDown ? LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER
+                            : LauncherInstrumentation.GestureScope.EXPECT_PILFER);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped to workspace")) {

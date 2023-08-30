@@ -66,10 +66,6 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
     }
 
 
-    protected boolean zeroButtonToOverviewGestureStartsInLauncher() {
-        return mLauncher.isTablet();
-    }
-
     protected boolean zeroButtonToOverviewGestureStateTransitionWhileHolding() {
         return false;
     }
@@ -146,12 +142,9 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
         final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
         final int startY = getSwipeStartY();
         final Point start = new Point(centerX, startY);
-        final LauncherInstrumentation.GestureScope gestureScope =
-                zeroButtonToOverviewGestureStartsInLauncher()
-                        ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
-                        : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER;
 
-        mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start, gestureScope);
+        mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start,
+                LauncherInstrumentation.GestureScope.EXPECT_PILFER);
 
         if (!mLauncher.isLauncher3()) {
             mLauncher.expectEvent(TestProtocol.SEQUENCE_PILFER,
@@ -167,10 +160,6 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
         final Point start = new Point(centerX, startY);
         final Point end =
                 new Point(centerX, startY - swipeHeight - mLauncher.getTouchSlop());
-        final LauncherInstrumentation.GestureScope gestureScope =
-                zeroButtonToOverviewGestureStartsInLauncher()
-                        ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
-                        : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER;
 
         mLauncher.movePointer(
                 downTime,
@@ -178,7 +167,7 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                 ZERO_BUTTON_SWIPE_UP_GESTURE_DURATION,
                 start,
                 end,
-                gestureScope);
+                LauncherInstrumentation.GestureScope.EXPECT_PILFER);
     }
 
     private void sendUpPointerToEnterOverviewToLauncher(long downTime) {
@@ -189,13 +178,9 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
         final Point end =
                 new Point(centerX, startY - swipeHeight - mLauncher.getTouchSlop());
 
-        final LauncherInstrumentation.GestureScope gestureScope =
-                zeroButtonToOverviewGestureStartsInLauncher()
-                        ? LauncherInstrumentation.GestureScope.INSIDE
-                        : LauncherInstrumentation.GestureScope.OUTSIDE_WITHOUT_PILFER;
-
         mLauncher.sendPointer(downTime, SystemClock.uptimeMillis(),
-                MotionEvent.ACTION_UP, end, gestureScope);
+                MotionEvent.ACTION_UP, end,
+                LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
     }
 
     /**
@@ -227,7 +212,6 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "want to quick switch to the previous app")) {
             verifyActiveContainer();
-            final boolean launcherWasVisible = mLauncher.isLauncherVisible();
             if (mLauncher.getNavigationModel() == NavigationModel.ZERO_BUTTON
                     || mLauncher.getTrackpadGestureType() == TrackpadGestureType.FOUR_FINGER) {
                 final int startX;
@@ -249,13 +233,10 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                     endY = startY;
                 }
 
-                LauncherInstrumentation.GestureScope gestureScope =
-                        launcherWasVisible
-                                ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE
-                                : LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER;
                 mLauncher.executeAndWaitForEvent(
                         () -> mLauncher.linearGesture(
-                                startX, startY, endX, endY, 20, false, gestureScope),
+                                startX, startY, endX, endY, 20, false,
+                                LauncherInstrumentation.GestureScope.EXPECT_PILFER),
                         event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
                         () -> "Quick switch gesture didn't change window state", "swiping");
             } else {

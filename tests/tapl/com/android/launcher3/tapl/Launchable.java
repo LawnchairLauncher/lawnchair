@@ -152,7 +152,7 @@ public abstract class Launchable {
                 downTime,
                 MotionEvent.ACTION_DOWN,
                 iconCenter,
-                LauncherInstrumentation.GestureScope.INSIDE);
+                LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
         LauncherInstrumentation.log("movePointerForStartDrag: sent down");
         expectLongClickEvents.run();
         waitForLongPressConfirmation();
@@ -165,7 +165,7 @@ public abstract class Launchable {
                 downTime,
                 downTime,
                 /* slowDown= */ true,
-                LauncherInstrumentation.GestureScope.INSIDE);
+                LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
     }
 
     private int getStartDragThreshold() {
