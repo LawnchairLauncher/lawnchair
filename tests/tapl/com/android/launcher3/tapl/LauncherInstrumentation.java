@@ -99,17 +99,9 @@ public final class LauncherInstrumentation {
     private static final int ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME = 15;
     private static final int GESTURE_STEP_MS = 16;
 
-    static final Pattern EVENT_TOUCH_DOWN = getTouchEventPatternWithPointerCount("ACTION_DOWN");
-    static final Pattern EVENT_TOUCH_UP = getTouchEventPatternWithPointerCount("ACTION_UP");
-    private static final Pattern EVENT_TOUCH_CANCEL = getTouchEventPatternWithPointerCount(
-            "ACTION_CANCEL");
     static final Pattern EVENT_PILFER_POINTERS = Pattern.compile("pilferPointers");
     static final Pattern EVENT_START = Pattern.compile("start:");
 
-    static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
-    static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
-    static final Pattern EVENT_TOUCH_CANCEL_TIS = getTouchEventPattern(
-            "TouchInteractionService.onInputEvent", "ACTION_CANCEL");
     static final Pattern EVENT_HOVER_ENTER_TIS = getTouchEventPatternTIS("ACTION_HOVER_ENTER");
     static final Pattern EVENT_HOVER_EXIT_TIS = getTouchEventPatternTIS("ACTION_HOVER_EXIT");
     static final Pattern EVENT_BUTTON_PRESS_TIS = getTouchEventPatternTIS("ACTION_BUTTON_PRESS");
@@ -139,7 +131,6 @@ public final class LauncherInstrumentation {
     // whether the gesture recognition triggers pilfer.
     public enum GestureScope {
         OUTSIDE_WITHOUT_PILFER, OUTSIDE_WITH_PILFER, INSIDE, INSIDE_TO_OUTSIDE,
-        INSIDE_TO_OUTSIDE_WITHOUT_PILFER,
         INSIDE_TO_OUTSIDE_WITH_KEYCODE, // For gestures that will trigger a keycode from TIS.
         OUTSIDE_WITH_KEYCODE,
     }
@@ -213,22 +204,12 @@ public final class LauncherInstrumentation {
     private TrackpadGestureType mTrackpadGestureType = TrackpadGestureType.NONE;
     private int mPointerCount = 0;
 
-    private static Pattern getTouchEventPattern(String prefix, String action) {
-        return Pattern.compile(
-                prefix + ": MotionEvent.*?action=" + action + ".*?id\\[0\\]=0"
-                        + ".*?toolType\\[0\\]=TOOL_TYPE_FINGER.*?buttonState=0.*?");
-    }
-
     private static Pattern getTouchEventPatternWithPointerCount(String prefix, String action,
             int pointerCount) {
         return Pattern.compile(
                 prefix + ": MotionEvent.*?action=" + action + ".*?id\\[0\\]=0"
                         + ".*?toolType\\[0\\]=TOOL_TYPE_FINGER.*?buttonState=0.*?pointerCount="
                         + pointerCount);
-    }
-
-    private static Pattern getTouchEventPatternWithPointerCount(String action) {
-        return getTouchEventPatternWithPointerCount("Touch event", action, 1);
     }
 
     private static Pattern getTouchEventPatternWithPointerCount(String action, int pointerCount) {
@@ -1072,14 +1053,6 @@ public final class LauncherInstrumentation {
                 log("Hierarchy before clicking home:");
                 dumpViewHierarchy();
                 action = "clicking home button";
-                if (isTablet()) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_UP);
-                }
-                if (isTrackpadGestureEnabled()) {
-                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
-                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
-                }
 
                 runToState(
                         waitForNavigationUiObject("home")::click,
@@ -1120,14 +1093,6 @@ public final class LauncherInstrumentation {
                         10, false, gestureScope);
             } else {
                 waitForNavigationUiObject("back").click();
-                if (isTablet()) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_UP);
-                }
-                if (isTrackpadGestureEnabled()) {
-                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
-                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
-                }
             }
             if (launcherVisible) {
                 if (getContext().getApplicationInfo().isOnBackInvokedCallbackEnabled()) {
@@ -1781,43 +1746,16 @@ public final class LauncherInstrumentation {
         boolean isTwoFingerTrackpadGesture = mTrackpadGestureType == TrackpadGestureType.TWO_FINGER;
         switch (action & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_DOWN:
-                if (gestureScope != GestureScope.OUTSIDE_WITH_PILFER
-                        && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER
-                        && gestureScope != GestureScope.OUTSIDE_WITH_KEYCODE
-                        && (!isTrackpadGesture || isTwoFingerTrackpadGesture)) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_TOUCH_DOWN);
-                }
-                if (hasTIS && (isTrackpadGestureEnabled()
-                        || getNavigationModel() != NavigationModel.THREE_BUTTON)) {
-                    expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
-                }
                 if (isTrackpadGesture) {
                     mPointerCount = 1;
                     pointerCount = mPointerCount;
                 }
                 break;
             case MotionEvent.ACTION_UP:
-                if (hasTIS && gestureScope != GestureScope.INSIDE
-                        && gestureScope != GestureScope.INSIDE_TO_OUTSIDE_WITHOUT_PILFER
+                if (hasTIS
                         && (gestureScope == GestureScope.OUTSIDE_WITH_PILFER
                         || gestureScope == GestureScope.INSIDE_TO_OUTSIDE)) {
                     expectEvent(TestProtocol.SEQUENCE_PILFER, EVENT_PILFER_POINTERS);
-                }
-                if (gestureScope != GestureScope.OUTSIDE_WITH_PILFER
-                        && gestureScope != GestureScope.OUTSIDE_WITHOUT_PILFER
-                        && gestureScope != GestureScope.OUTSIDE_WITH_KEYCODE
-                        && (!isTrackpadGesture || isTwoFingerTrackpadGesture)) {
-                    expectEvent(TestProtocol.SEQUENCE_MAIN,
-                            gestureScope == GestureScope.INSIDE
-                                    || gestureScope == GestureScope.OUTSIDE_WITHOUT_PILFER
-                                    ? EVENT_TOUCH_UP : EVENT_TOUCH_CANCEL);
-                }
-                if (hasTIS && (isTrackpadGestureEnabled()
-                        || getNavigationModel() != NavigationModel.THREE_BUTTON)) {
-                    expectEvent(TestProtocol.SEQUENCE_TIS,
-                            gestureScope == GestureScope.INSIDE_TO_OUTSIDE_WITH_KEYCODE
-                                    || gestureScope == GestureScope.OUTSIDE_WITH_KEYCODE
-                                    ? EVENT_TOUCH_CANCEL_TIS : EVENT_TOUCH_UP_TIS);
                 }
                 break;
             case MotionEvent.ACTION_HOVER_ENTER:

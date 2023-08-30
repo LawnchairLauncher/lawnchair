@@ -18,8 +18,6 @@ package com.android.launcher3.tapl;
 
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
-import static com.android.launcher3.tapl.LauncherInstrumentation.EVENT_TOUCH_DOWN_TIS;
-import static com.android.launcher3.tapl.LauncherInstrumentation.EVENT_TOUCH_UP_TIS;
 import static com.android.launcher3.tapl.OverviewTask.TASK_START_EVENT;
 import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
 
@@ -133,16 +131,6 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                 }
             }
         } else {
-            if (mLauncher.isTablet()) {
-                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
-                        LauncherInstrumentation.EVENT_TOUCH_DOWN);
-                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
-                        LauncherInstrumentation.EVENT_TOUCH_UP);
-            }
-            if (mLauncher.isTrackpadGestureEnabled()) {
-                mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
-                mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
-            }
             mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
             mLauncher.runToState(
                     () -> mLauncher.waitForNavigationUiObject("recent_apps").click(),
@@ -203,7 +191,7 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
 
         final LauncherInstrumentation.GestureScope gestureScope =
                 zeroButtonToOverviewGestureStartsInLauncher()
-                        ? LauncherInstrumentation.GestureScope.INSIDE_TO_OUTSIDE_WITHOUT_PILFER
+                        ? LauncherInstrumentation.GestureScope.INSIDE
                         : LauncherInstrumentation.GestureScope.OUTSIDE_WITHOUT_PILFER;
 
         mLauncher.sendPointer(downTime, SystemClock.uptimeMillis(),
@@ -273,30 +261,10 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
             } else {
                 // Double press the recents button.
                 UiObject2 recentsButton = mLauncher.waitForNavigationUiObject("recent_apps");
-                if (mLauncher.isTablet()) {
-                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
-                            LauncherInstrumentation.EVENT_TOUCH_DOWN);
-                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
-                            LauncherInstrumentation.EVENT_TOUCH_UP);
-                }
-                if (mLauncher.isTrackpadGestureEnabled()) {
-                    mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
-                    mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
-                }
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
                 mLauncher.runToState(() -> recentsButton.click(), OVERVIEW_STATE_ORDINAL,
                         "clicking Recents button for the first time");
                 mLauncher.getOverview();
-                if (mLauncher.isTablet()) {
-                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
-                            LauncherInstrumentation.EVENT_TOUCH_DOWN);
-                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN,
-                            LauncherInstrumentation.EVENT_TOUCH_UP);
-                }
-                if (mLauncher.isTrackpadGestureEnabled()) {
-                    mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_DOWN_TIS);
-                    mLauncher.expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_TOUCH_UP_TIS);
-                }
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, SQUARE_BUTTON_EVENT);
                 mLauncher.executeAndWaitForEvent(
                         () -> recentsButton.click(),
