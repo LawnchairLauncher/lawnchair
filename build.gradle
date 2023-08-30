@@ -1,4 +1,4 @@
-import com.android.build.gradle.BasePlugin
+import com.android.build.gradle.api.AndroidBasePlugin
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
@@ -12,10 +12,13 @@ plugins {
     id 'com.google.protobuf' version "0.9.4"
     id 'app.cash.licensee' version "1.7.0"
     id 'dev.rikka.tools.refine' version "4.3.0"
+    id 'org.gradle.android.cache-fix' version '2.7.3'
 }
 
 allprojects {
-    plugins.withType(BasePlugin).configureEach {
+    plugins.withType(AndroidBasePlugin).configureEach {
+        apply plugin: 'org.gradle.android.cache-fix'
+
         project.android {
             compileSdk 34
             defaultConfig {
@@ -43,7 +46,6 @@ allprojects {
     tasks.withType(KotlinCompile).configureEach {
         compilerOptions.jvmTarget = JvmTarget.JVM_1_8
     }
-
 
     ext.addFrameworkJar = { String name ->
         def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
