@@ -16,8 +16,6 @@
 
 package com.android.launcher3.ui;
 
-import static androidx.test.InstrumentationRegistry.getInstrumentation;
-
 import static com.android.launcher3.testing.shared.TestProtocol.ICON_MISSING;
 import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
 import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
@@ -32,7 +30,6 @@ import static org.junit.Assume.assumeFalse;
 
 import android.content.Intent;
 import android.graphics.Point;
-import android.os.SystemClock;
 import android.platform.test.annotations.PlatinumTest;
 import android.util.Log;
 
@@ -49,11 +46,8 @@ import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.tapl.AppIcon;
 import com.android.launcher3.tapl.AppIconMenu;
 import com.android.launcher3.tapl.AppIconMenuItem;
-import com.android.launcher3.tapl.Folder;
-import com.android.launcher3.tapl.FolderIcon;
 import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.tapl.HomeAppIcon;
-import com.android.launcher3.tapl.HomeAppIconMenuItem;
 import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
@@ -68,7 +62,6 @@ import com.android.launcher3.widget.picker.WidgetsRecyclerView;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -79,11 +72,11 @@ import java.util.Map;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
-    private static final String APP_NAME = "LauncherTestApp";
-    private static final String DUMMY_APP_NAME = "Aardwolf";
-    private static final String MAPS_APP_NAME = "Maps";
-    private static final String STORE_APP_NAME = "Play Store";
-    private static final String GMAIL_APP_NAME = "Gmail";
+    public static final String APP_NAME = "LauncherTestApp";
+    public static final String DUMMY_APP_NAME = "Aardwolf";
+    public static final String MAPS_APP_NAME = "Maps";
+    public static final String STORE_APP_NAME = "Play Store";
+    public static final String GMAIL_APP_NAME = "Gmail";
     private static final String READ_DEVICE_CONFIG_PERMISSION =
             "android.permission.READ_DEVICE_CONFIG";
 
@@ -312,89 +305,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             allApps.unfreeze();
         }
     }
-
-    @PlatinumTest(focusArea = "launcher")
-    @Test
-    @PortraitLandscape
-    @ScreenRecord // b/256898879
-    public void testDragAppIcon() throws Throwable {
-        // 1. Open all apps and wait for load complete.
-        // 2. Drag icon to homescreen.
-        // 3. Verify that the icon works on homescreen.
-        final HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
-        allApps.freeze();
-        try {
-            allApps.getAppIcon(APP_NAME).dragToWorkspace(false, false);
-            mLauncher.getWorkspace().getWorkspaceAppIcon(APP_NAME).launch(getAppPackageName());
-        } finally {
-            allApps.unfreeze();
-        }
-        executeOnLauncher(launcher -> assertTrue(
-                "Launcher activity is the top activity; expecting another activity to be the top "
-                        + "one",
-                isInLaunchedApp(launcher)));
-    }
-
-    @Test
-    @PortraitLandscape
-    @PlatinumTest(focusArea = "launcher")
-    public void testDragShortcut() throws Throwable {
-        // 1. Open all apps and wait for load complete.
-        // 2. Find the app and long press it to show shortcuts.
-        // 3. Press icon center until shortcuts appear
-        final HomeAllApps allApps = mLauncher
-                .getWorkspace()
-                .switchToAllApps();
-        allApps.freeze();
-        try {
-            final HomeAppIconMenuItem menuItem = allApps
-                    .getAppIcon(APP_NAME)
-                    .openDeepShortcutMenu()
-                    .getMenuItem(0);
-            final String actualShortcutName = menuItem.getText();
-            final String expectedShortcutName = "Shortcut 1";
-
-            assertEquals(expectedShortcutName, actualShortcutName);
-            menuItem.dragToWorkspace(false, false);
-            mLauncher.getWorkspace().getWorkspaceAppIcon(expectedShortcutName)
-                    .launch(getAppPackageName());
-        } finally {
-            allApps.unfreeze();
-        }
-    }
-
-    @Test
-    @PortraitLandscape
-    @ScreenRecord
-    @Ignore // b/233075289
-    @PlatinumTest(focusArea = "launcher")
-    public void testDragToFolder() {
-        // TODO: add the use case to drag an icon to an existing folder. Currently it either fails
-        // on tablets or phones due to difference in resolution.
-        final HomeAppIcon playStoreIcon = createShortcutIfNotExist(STORE_APP_NAME, 0, 1);
-        final HomeAppIcon gmailIcon = createShortcutInCenterIfNotExist(GMAIL_APP_NAME);
-
-        FolderIcon folderIcon = gmailIcon.dragToIcon(playStoreIcon);
-        Folder folder = folderIcon.open();
-        folder.getAppIcon(STORE_APP_NAME);
-        folder.getAppIcon(GMAIL_APP_NAME);
-        Workspace workspace = folder.close();
-
-        workspace.verifyWorkspaceAppIconIsGone(STORE_APP_NAME + " should be moved to a folder.",
-                STORE_APP_NAME);
-        workspace.verifyWorkspaceAppIconIsGone(GMAIL_APP_NAME + " should be moved to a folder.",
-                GMAIL_APP_NAME);
-
-        final HomeAppIcon mapIcon = createShortcutInCenterIfNotExist(MAPS_APP_NAME);
-        folderIcon = mapIcon.dragToIcon(folderIcon);
-        folder = folderIcon.open();
-        folder.getAppIcon(MAPS_APP_NAME);
-        workspace = folder.close();
-
-        workspace.verifyWorkspaceAppIconIsGone(MAPS_APP_NAME + " should be moved to a folder.",
-                MAPS_APP_NAME);
-    }
-
     @FlakyTest(bugId = 256615483)
     @Test
     @PortraitLandscape
@@ -410,24 +320,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         mLauncher.pressBack();
         mLauncher.getWorkspace();
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
-    }
-
-    @Test
-    @PortraitLandscape
-    @PlatinumTest(focusArea = "launcher")
-    public void testDragAndCancelAppIcon() {
-        final HomeAppIcon homeAppIcon = createShortcutInCenterIfNotExist(GMAIL_APP_NAME);
-        Point positionBeforeDrag =
-                mLauncher.getWorkspace().getWorkspaceIconsPositions().get(GMAIL_APP_NAME);
-        assertNotNull("App not found in Workspace before dragging.", positionBeforeDrag);
-
-        mLauncher.getWorkspace().dragAndCancelAppIcon(homeAppIcon);
-
-        Point positionAfterDrag =
-                mLauncher.getWorkspace().getWorkspaceIconsPositions().get(GMAIL_APP_NAME);
-        assertNotNull("App not found in Workspace after dragging.", positionAfterDrag);
-        assertEquals("App not returned to same position in Workspace after drag & cancel",
-                positionBeforeDrag, positionAfterDrag);
     }
 
     @Test
@@ -479,50 +371,14 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             TestUtil.uninstallDummyApp();
         }
     }
-
-    @Test
-    @PortraitLandscape
-    @PlatinumTest(focusArea = "launcher")
-    public void testDragAppIconToWorkspaceCell() throws Exception {
-        long startTime, endTime, elapsedTime;
-        Point[] targets = getCornersAndCenterPositions();
-
-        for (Point target : targets) {
-            startTime = SystemClock.uptimeMillis();
-            final HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
-            allApps.freeze();
-            try {
-                allApps.getAppIcon(APP_NAME).dragToWorkspace(target.x, target.y);
-            } finally {
-                allApps.unfreeze();
-            }
-            // Reset the workspace for the next shortcut creation.
-            initialize(this, true);
-            endTime = SystemClock.uptimeMillis();
-            elapsedTime = endTime - startTime;
-            Log.d("testDragAppIconToWorkspaceCellTime",
-                    "Milliseconds taken to drag app icon to workspace cell: " + elapsedTime);
-        }
-
-        // test to move a shortcut to other cell.
-        final HomeAppIcon launcherTestAppIcon = createShortcutInCenterIfNotExist(APP_NAME);
-        for (Point target : targets) {
-            startTime = SystemClock.uptimeMillis();
-            launcherTestAppIcon.dragToWorkspace(target.x, target.y);
-            endTime = SystemClock.uptimeMillis();
-            elapsedTime = endTime - startTime;
-            Log.d("testDragAppIconToWorkspaceCellTime",
-                    "Milliseconds taken to move shortcut to other cell: " + elapsedTime);
-        }
-    }
-
     /**
      * Adds three icons to the workspace and removes one of them by dragging to uninstall.
      */
     @Test
+    @ScreenRecord // b/241821721
     @PlatinumTest(focusArea = "launcher")
     public void uninstallWorkspaceIcon() throws IOException {
-        Point[] gridPositions = getCornersAndCenterPositions();
+        Point[] gridPositions = TestUtil.getCornersAndCenterPositions(mLauncher);
         StringBuilder sb = new StringBuilder();
         for (Point p : gridPositions) {
             sb.append(p).append(", ");
@@ -552,26 +408,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
-    @PlatinumTest(focusArea = "launcher")
-    public void testDragShortcutToWorkspaceCell() throws Exception {
-        Point[] targets = getCornersAndCenterPositions();
-
-        for (Point target : targets) {
-            final HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
-            allApps.freeze();
-            try {
-                allApps.getAppIcon(APP_NAME)
-                        .openDeepShortcutMenu()
-                        .getMenuItem(0)
-                        .dragToWorkspace(target.x, target.y);
-            } finally {
-                allApps.unfreeze();
-            }
-        }
-    }
-
-    @Test
-    @PortraitLandscape
     public void testAddDeleteShortcutOnHotseat() {
         mLauncher.getWorkspace()
                 .deleteAppIcon(mLauncher.getWorkspace().getHotseatAppIcon(0))
@@ -595,25 +431,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         // response to the model update. Not that `waitForLauncherInitialized` is just a proxy
         // method, we can use any method which touches Launcher UI thread,
         mLauncher.waitForLauncherInitialized();
-    }
-
-    /**
-     * @return List of workspace grid coordinates. Those are not pixels. See {@link
-     * Workspace#getIconGridDimensions()}
-     */
-    private Point[] getCornersAndCenterPositions() {
-        final Point dimensions = mLauncher.getWorkspace().getIconGridDimensions();
-        return new Point[]{
-                new Point(0, 1),
-                new Point(0, dimensions.y - 2),
-                new Point(dimensions.x - 1, 1),
-                new Point(dimensions.x - 1, dimensions.y - 2),
-                new Point(dimensions.x / 2, dimensions.y / 2)
-        };
-    }
-
-    public static String getAppPackageName() {
-        return getInstrumentation().getContext().getPackageName();
     }
 
     @Test

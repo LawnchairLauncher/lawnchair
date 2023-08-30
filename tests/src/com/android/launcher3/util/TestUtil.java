@@ -30,6 +30,7 @@ import android.app.blob.BlobStoreManager;
 import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
@@ -46,6 +47,8 @@ import androidx.test.uiautomator.UiDevice;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.config.FeatureFlags.BooleanFlag;
 import com.android.launcher3.config.FeatureFlags.IntFlag;
+import com.android.launcher3.tapl.LauncherInstrumentation;
+import com.android.launcher3.tapl.Workspace;
 
 import org.junit.Assert;
 
@@ -122,6 +125,21 @@ public class TestUtil {
         } catch (NumberFormatException e) {
             return 0;
         }
+    }
+
+    /**
+     * @return Grid coordinates from the center and corners of the Workspace. Those are not pixels.
+     * See {@link Workspace#getIconGridDimensions()}
+     */
+    public static Point[] getCornersAndCenterPositions(LauncherInstrumentation launcher) {
+        final Point dimensions = launcher.getWorkspace().getIconGridDimensions();
+        return new Point[]{
+                new Point(0, 1),
+                new Point(0, dimensions.y - 2),
+                new Point(dimensions.x - 1, 1),
+                new Point(dimensions.x - 1, dimensions.y - 2),
+                new Point(dimensions.x / 2, dimensions.y / 2)
+        };
     }
 
     /**
