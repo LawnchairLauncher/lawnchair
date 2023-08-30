@@ -29,7 +29,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
-import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
 import android.graphics.Point;
@@ -155,107 +154,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                         launcher.getOptionsPopup()));
         // Check that pressHome works when the menu is shown.
         mLauncher.goHome();
-    }
-
-    @Test
-    public void testPressHomeOnAllAppsContextMenu() throws Exception {
-        final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
-        allApps.freeze();
-        try {
-            allApps.getAppIcon("TestActivity7").openMenu();
-        } finally {
-            allApps.unfreeze();
-        }
-        mLauncher.goHome();
-    }
-
-    public static void runAllAppsTest(AbstractLauncherUiTest test, AllApps allApps) {
-        allApps.freeze();
-        try {
-            assertNotNull("allApps parameter is null", allApps);
-
-            assertTrue(
-                    "Launcher internal state is not All Apps",
-                    test.isInState(() -> LauncherState.ALL_APPS));
-
-            // Test flinging forward and backward.
-            test.executeOnLauncher(launcher -> assertEquals(
-                    "All Apps started in already scrolled state", 0,
-                    test.getAllAppsScroll(launcher)));
-
-            allApps.flingForward();
-            assertTrue("Launcher internal state is not All Apps",
-                    test.isInState(() -> LauncherState.ALL_APPS));
-            final Integer flingForwardY = test.getFromLauncher(
-                    launcher -> test.getAllAppsScroll(launcher));
-            test.executeOnLauncher(
-                    launcher -> assertTrue("flingForward() didn't scroll App Apps",
-                            flingForwardY > 0));
-
-            allApps.flingBackward();
-            assertTrue(
-                    "Launcher internal state is not All Apps",
-                    test.isInState(() -> LauncherState.ALL_APPS));
-            final Integer flingBackwardY = test.getFromLauncher(
-                    launcher -> test.getAllAppsScroll(launcher));
-            test.executeOnLauncher(launcher -> assertTrue("flingBackward() didn't scroll App Apps",
-                    flingBackwardY < flingForwardY));
-
-            // Test scrolling down to YouTube.
-            assertNotNull("All apps: can't find YouTube", allApps.getAppIcon("YouTube"));
-            // Test scrolling up to Camera.
-            assertNotNull("All apps: can't find Camera", allApps.getAppIcon("Camera"));
-            // Test failing to find a non-existing app.
-            final AllApps allAppsFinal = allApps;
-            expectFail("All apps: could find a non-existing app",
-                    () -> allAppsFinal.getAppIcon("NO APP"));
-
-            assertTrue(
-                    "Launcher internal state is not All Apps",
-                    test.isInState(() -> LauncherState.ALL_APPS));
-        } finally {
-            allApps.unfreeze();
-        }
-    }
-
-    @Test
-    @PortraitLandscape
-    public void testWorkspaceSwitchToAllApps() {
-        assertNotNull("switchToAllApps() returned null",
-                mLauncher.getWorkspace().switchToAllApps());
-        assertTrue("Launcher internal state is not All Apps",
-                isInState(() -> LauncherState.ALL_APPS));
-    }
-
-    @Test
-    @PortraitLandscape
-    public void testAllAppsSwitchToWorkspace() {
-        assertNotNull("switchToWorkspace() returned null",
-                mLauncher.getWorkspace().switchToAllApps()
-                        .switchToWorkspace(/* swipeDown= */ true));
-        assertTrue("Launcher internal state is not Workspace",
-                isInState(() -> LauncherState.NORMAL));
-    }
-
-    @Test
-    @PortraitLandscape
-    public void testAllAppsSwipeUpToWorkspace() {
-        assertNotNull("testAllAppsSwipeUpToWorkspace() returned null",
-                mLauncher.getWorkspace().switchToAllApps()
-                        .switchToWorkspace(/* swipeDown= */ false));
-        assertTrue("Launcher internal state is not Workspace",
-                isInState(() -> LauncherState.NORMAL));
-    }
-
-    @Test
-    @PortraitLandscape
-    public void testAllAppsDeadzoneForTablet() throws Exception {
-        assumeTrue(mLauncher.isTablet());
-
-        mLauncher.getWorkspace().switchToAllApps().dismissByTappingOutsideForTablet(
-                true /* tapRight */);
-        mLauncher.getWorkspace().switchToAllApps().dismissByTappingOutsideForTablet(
-                false /* tapRight */);
     }
 
     @PlatinumTest(focusArea = "launcher")
