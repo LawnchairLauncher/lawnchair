@@ -64,6 +64,7 @@ import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
+import com.android.quickstep.util.AssistUtils;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
@@ -176,7 +177,8 @@ public class TaskbarManager {
                 service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
         mContext = service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null);
         mNavButtonController = new TaskbarNavButtonController(service,
-                SystemUiProxy.INSTANCE.get(mContext), new Handler());
+                SystemUiProxy.INSTANCE.get(mContext), new Handler(),
+                AssistUtils.newInstance(mContext));
         mComponentCallbacks = new ComponentCallbacks() {
             private Configuration mOldConfig = mContext.getResources().getConfiguration();
 

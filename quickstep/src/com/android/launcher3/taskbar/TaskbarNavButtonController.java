@@ -109,15 +109,17 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
     private final TouchInteractionService mService;
     private final SystemUiProxy mSystemUiProxy;
     private final Handler mHandler;
+    private final AssistUtils mAssistUtils;
     @Nullable private StatsLogManager mStatsLogManager;
 
     private final Runnable mResetLongPress = this::resetScreenUnpin;
 
     public TaskbarNavButtonController(TouchInteractionService service,
-            SystemUiProxy systemUiProxy, Handler handler) {
+            SystemUiProxy systemUiProxy, Handler handler, AssistUtils assistUtils) {
         mService = service;
         mSystemUiProxy = systemUiProxy;
         mHandler = handler;
+        mAssistUtils = assistUtils;
     }
 
     public void onButtonClick(@TaskbarButton int buttonType, View view) {
@@ -313,8 +315,7 @@ public class TaskbarNavButtonController implements TaskbarControllers.LoggableTa
             return;
         }
         // Attempt to start Assist with AssistUtils, otherwise fall back to SysUi's implementation.
-        if (!AssistUtils.newInstance(mService.getApplicationContext()).tryStartAssistOverride(
-                INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS)) {
+        if (!mAssistUtils.tryStartAssistOverride(INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS)) {
             Bundle args = new Bundle();
             args.putInt(INVOCATION_TYPE_KEY, INVOCATION_TYPE_HOME_BUTTON_LONG_PRESS);
             mSystemUiProxy.startAssistant(args);
