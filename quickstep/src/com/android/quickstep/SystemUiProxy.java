@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -728,6 +729,18 @@ public class SystemUiProxy implements ISystemUiProxy {
             mBubbles.onBubbleDrag(bubbleKey, isBeingDragged);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed call onBubbleDrag");
+        }
+    }
+
+    /**
+     * Tells SysUI to show user education relative to the reference point provided.
+     * @param position the bubble bar top center position in Screen coordinates.
+     */
+    public void showUserEducation(Point position) {
+        try {
+            mBubbles.showUserEducation(position.x, position.y);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed call showUserEducation");
         }
     }
 

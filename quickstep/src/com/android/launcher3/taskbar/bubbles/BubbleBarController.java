@@ -137,6 +137,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
     private static class BubbleBarViewUpdate {
         boolean expandedChanged;
         boolean expanded;
+        boolean shouldShowEducation;
         String selectedBubbleKey;
         String suppressedBubbleKey;
         String unsuppressedBubbleKey;
@@ -151,6 +152,7 @@ public class BubbleBarController extends IBubblesListener.Stub {
         BubbleBarViewUpdate(BubbleBarUpdate update) {
             expandedChanged = update.expandedChanged;
             expanded = update.expanded;
+            shouldShowEducation = update.shouldShowEducation;
             selectedBubbleKey = update.selectedBubbleKey;
             suppressedBubbleKey = update.suppressedBubbleKey;
             unsuppressedBubbleKey = update.unsupressedBubbleKey;
@@ -366,7 +368,9 @@ public class BubbleBarController extends IBubblesListener.Stub {
                 mBubbleStashController.animateToInitialState(update.expanded);
             }
         }
-
+        if (update.shouldShowEducation) {
+            mBubbleBarViewController.prepareToShowEducation();
+        }
         if (update.expandedChanged) {
             if (update.expanded != mBubbleBarViewController.isExpanded()) {
                 mBubbleBarViewController.setExpandedFromSysui(update.expanded);
