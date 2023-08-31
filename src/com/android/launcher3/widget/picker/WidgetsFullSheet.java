@@ -794,13 +794,15 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
 
         // Checks the orientation of the screen
-        if (LARGE_SCREEN_WIDGET_PICKER.get()
-                && mOrientation != newConfig.orientation
-                && mDeviceProfile.isTablet
-                && !mDeviceProfile.isTwoPanels) {
+        if (mOrientation != newConfig.orientation) {
             mOrientation = newConfig.orientation;
-            handleClose(false);
-            show(Launcher.getLauncher(getContext()), false);
+            if (LARGE_SCREEN_WIDGET_PICKER.get()
+                    && mDeviceProfile.isTablet && !mDeviceProfile.isTwoPanels) {
+                handleClose(false);
+                show(Launcher.getLauncher(getContext()), false);
+            } else {
+                reset();
+            }
         }
     }
 
