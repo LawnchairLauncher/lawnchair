@@ -50,6 +50,7 @@ import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.views.RecentsView;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
 
 /**
  * A data source which integrates with a Launcher instance
@@ -105,6 +106,10 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
         // Restore the in-app display progress from before Taskbar was recreated.
         float[] prevProgresses = mControllers.getSharedState().inAppDisplayProgressMultiPropValues;
+        // Make a copy of the previous progress to set since updating the multiprop will update
+        // the property which also calls onInAppDisplayProgressChanged() which writes the current
+        // values into the shared state
+        prevProgresses = Arrays.copyOf(prevProgresses, prevProgresses.length);
         for (int i = 0; i < prevProgresses.length; i++) {
             mTaskbarInAppDisplayProgressMultiProp.get(i).setValue(prevProgresses[i]);
         }

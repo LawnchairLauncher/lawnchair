@@ -841,17 +841,20 @@ public class TaskView extends FrameLayout implements Reusable {
                 // the actual overview state
                 failureListener.register(mActivity, mTask.key.id, () -> {
                     notifyTaskLaunchFailed(TAG);
-                    // Disable animations for now, as it is an edge case and the app usually covers
-                    // launcher and also any state transition animation also gets clobbered by
-                    // QuickstepTransitionManager.createWallpaperOpenAnimations when launcher
-                    // shows again
-                    getRecentsView().startHome(false /* animated */);
                     RecentsView rv = getRecentsView();
-                    if (rv != null && rv.mSizeStrategy.getTaskbarController() != null) {
-                        // LauncherTaskbarUIController depends on the launcher state when checking
-                        // whether to handle resume, but that can come in before startHome() changes
-                        // the state, so force-refresh here to ensure the taskbar is updated
-                        rv.mSizeStrategy.getTaskbarController().refreshResumedState();
+                    if (rv != null) {
+                        // Disable animations for now, as it is an edge case and the app usually
+                        // covers launcher and also any state transition animation also gets
+                        // clobbered by QuickstepTransitionManager.createWallpaperOpenAnimations
+                        // when launcher shows again
+                        rv.startHome(false /* animated */);
+                        if (rv.mSizeStrategy.getTaskbarController() != null) {
+                            // LauncherTaskbarUIController depends on the launcher state when
+                            // checking whether to handle resume, but that can come in before
+                            // startHome() changes the state, so force-refresh here to ensure the
+                            // taskbar is updated
+                            rv.mSizeStrategy.getTaskbarController().refreshResumedState();
+                        }
                     }
                 });
             }
