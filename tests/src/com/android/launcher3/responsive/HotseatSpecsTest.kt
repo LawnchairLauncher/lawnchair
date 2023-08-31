@@ -23,7 +23,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.AbstractDeviceProfileTest
 import com.android.launcher3.tests.R as TestR
 import com.android.launcher3.util.TestResourceHelper
-import com.android.systemui.util.dpToPx
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -43,25 +42,55 @@ class HotseatSpecsTest : AbstractDeviceProfileTest() {
     fun parseValidFile() {
         val hotseatSpecs =
             HotseatSpecs.create(TestResourceHelper(context!!, TestR.xml.valid_hotseat_file))
-        assertThat(hotseatSpecs.specs.size).isEqualTo(2)
 
-        val expectedSpecs =
+        val expectedHeightSpecs =
             listOf(
                 HotseatSpec(
                     maxAvailableSize = 847.dpToPx(),
                     specType = ResponsiveSpec.SpecType.HEIGHT,
-                    hotseatQsbSpace = SizeSpec(24f.dpToPx())
+                    hotseatQsbSpace = SizeSpec(24f.dpToPx()),
+                    edgePadding = SizeSpec(48f.dpToPx())
                 ),
                 HotseatSpec(
                     maxAvailableSize = 9999.dpToPx(),
                     specType = ResponsiveSpec.SpecType.HEIGHT,
-                    hotseatQsbSpace = SizeSpec(36f.dpToPx())
+                    hotseatQsbSpace = SizeSpec(36f.dpToPx()),
+                    edgePadding = SizeSpec(48f.dpToPx())
                 ),
             )
 
-        assertThat(hotseatSpecs.specs.size).isEqualTo(expectedSpecs.size)
-        assertThat(hotseatSpecs.specs[0]).isEqualTo(expectedSpecs[0])
-        assertThat(hotseatSpecs.specs[1]).isEqualTo(expectedSpecs[1])
+        assertThat(hotseatSpecs.heightSpecs.size).isEqualTo(expectedHeightSpecs.size)
+        assertThat(hotseatSpecs.heightSpecs[0]).isEqualTo(expectedHeightSpecs[0])
+        assertThat(hotseatSpecs.heightSpecs[1]).isEqualTo(expectedHeightSpecs[1])
+
+        assertThat(hotseatSpecs.widthSpecs.size).isEqualTo(0)
+    }
+
+    @Test
+    fun parseValidLandscapeFile() {
+        val hotseatSpecs =
+            HotseatSpecs.create(TestResourceHelper(context!!, TestR.xml.valid_hotseat_land_file))
+        assertThat(hotseatSpecs.heightSpecs.size).isEqualTo(0)
+
+        val expectedWidthSpecs =
+            listOf(
+                HotseatSpec(
+                    maxAvailableSize = 743.dpToPx(),
+                    specType = ResponsiveSpec.SpecType.WIDTH,
+                    hotseatQsbSpace = SizeSpec(0f),
+                    edgePadding = SizeSpec(48f.dpToPx())
+                ),
+                HotseatSpec(
+                    maxAvailableSize = 9999.dpToPx(),
+                    specType = ResponsiveSpec.SpecType.WIDTH,
+                    hotseatQsbSpace = SizeSpec(0f),
+                    edgePadding = SizeSpec(64f.dpToPx())
+                ),
+            )
+
+        assertThat(hotseatSpecs.widthSpecs.size).isEqualTo(expectedWidthSpecs.size)
+        assertThat(hotseatSpecs.widthSpecs[0]).isEqualTo(expectedWidthSpecs[0])
+        assertThat(hotseatSpecs.widthSpecs[1]).isEqualTo(expectedWidthSpecs[1])
     }
 
     @Test(expected = IllegalStateException::class)

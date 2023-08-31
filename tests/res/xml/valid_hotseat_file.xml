@@ -16,15 +16,17 @@
 <hotseatSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
 
     <hotseatSpec
-        launcher:specType="height"
-        launcher:maxAvailableSize="847dp">
+        launcher:maxAvailableSize="847dp"
+        launcher:specType="height">
         <hotseatQsbSpace launcher:fixedSize="24dp" />
+        <edgePadding launcher:fixedSize="48dp" />
     </hotseatSpec>
 
     <hotseatSpec
-        launcher:specType="height"
-        launcher:maxAvailableSize="9999dp">
+        launcher:maxAvailableSize="9999dp"
+        launcher:specType="height">
         <hotseatQsbSpace launcher:fixedSize="36dp" />
+        <edgePadding launcher:fixedSize="48dp" />
     </hotseatSpec>
 
 </hotseatSpecs>
