@@ -261,7 +261,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @PlatinumTest(focusArea = "launcher")
     @Test
-    @ScreenRecord // b/202433017
     public void testWorkspace() throws Exception {
         // Set workspace  that includes the chrome Activity app icon on the hotseat.
         LauncherLayoutBuilder builder = new LauncherLayoutBuilder()
