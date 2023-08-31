@@ -9,12 +9,12 @@
     <string name="dialog_cancel" msgid="6464336969134856366">"ይቅር"</string>
     <string name="dialog_settings" msgid="6564397136021186148">"ቅንብሮች"</string>
     <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"በማያ ገጹ ላይ ጽሑፍን ይተረጉሙ ወይም ያዳምጡ"</string>
-    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"እንደ በማያ ገጽዎ ላይ ያለ ጽሁፍ፣ የድር አድራሻዎች እና ቅጽበታዊ ገጽ እይታዎች ያሉ መረጃዎች ለGoogle ሊጋሩ ይችላሉ።\n\nምን መረጃ እንደሚያጋሩ ለመቀየር ወደ "<b>"ቅንብሮች &gt; መተግበሪያዎች &gt; ነባሪ መተግበሪያዎች &gt; ዲጂታል ረዳት መተግበሪያ"</b>" ይሂዱ።"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"እንደ በማያ ገፅዎ ላይ ያለ ጽሁፍ፣ የድር አድራሻዎች እና ቅጽበታዊ ገፅ እይታዎች ያሉ መረጃዎች ለGoogle ሊጋሩ ይችላሉ።\n\nምን መረጃ እንደሚያጋሩ ለመቀየር ወደ "<b>"ቅንብሮች &gt; መተግበሪያዎች &gt; ነባሪ መተግበሪያዎች &gt; ዲጂታል ረዳት መተግበሪያ"</b>" ይሂዱ።"</string>
     <string name="assistant_not_selected_title" msgid="5017072974603345228">"ይህንን ባህሪ ለመጠቀም ረዳት ይምረጡ"</string>
     <string name="assistant_not_selected_text" msgid="3244613673884359276">"በማያ ገጽዎ ላይ ጽሑፍን ለማዳመጥ ወይም ለመተርጎም በቅንብሮች ውስጥ የዲጂታል ረዳት መተግበሪያን ይምረጡ"</string>
     <string name="assistant_not_supported_title" msgid="1675788067597484142">"ይህንን ባህሪ ለመጠቀም ረዳትዎን ይቀይሩ"</string>
     <string name="assistant_not_supported_text" msgid="1708031078549268884">"በማያ ገጽዎ ላይ ጽሑፍን ለማዳመጥ ወይም ለመተርጎም በቅንብሮች ውስጥ የዲጂታል ረዳት መተግበሪያዎን ይቀይሩ"</string>
-    <string name="tooltip_listen" msgid="7634466447860989102">"በዚህ ማያ ገጽ ላይ ጽሁፍ ለማዳመጥ እዚህ መታ ያድርጉ"</string>
-    <string name="tooltip_translate" msgid="4184845868901542567">"በዚህ ማያ ገጽ ላይ ጽሁፍ ለመተርጎም እዚህ መታ ያድርጉ"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"በዚህ ማያ ገፅ ላይ ጽሁፍ ለማዳመጥ እዚህ መታ ያድርጉ"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"በዚህ ማያ ገፅ ላይ ጽሁፍ ለመተርጎም እዚህ መታ ያድርጉ"</string>
     <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"ይህ መተግበሪያ ሊጋራ አይችልም"</string>
 </resources>
