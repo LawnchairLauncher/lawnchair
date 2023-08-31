@@ -11,6 +11,7 @@ import static com.android.launcher3.views.BaseDragLayer.LAYOUT_Y;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.appwidget.AppWidgetProviderInfo;
@@ -26,12 +27,14 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.CellPosMapper.CellPos;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logging.InstanceId;
@@ -47,14 +50,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppWidgetResizeFrame extends AbstractFloatingView implements View.OnKeyListener {
-    private static final int SNAP_DURATION = 150;
+    private static final int SNAP_DURATION_MS = 150;
     private static final float DIMMED_HANDLE_ALPHA = 0f;
     private static final float RESIZE_THRESHOLD = 0.66f;
+    private static final int RESIZE_TRANSITION_DURATION_MS = 150;
 
     private static final String KEY_RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN =
             "launcher.reconfigurable_widget_education_tip_seen";
     private static final Rect sTmpRect = new Rect();
     private static final Rect sTmpRect2 = new Rect();
+
+    private static final int[] sDragLayerLoc = new int[2];
 
     private static final int HANDLE_COUNT = 4;
     private static final int INDEX_LEFT = 0;
@@ -124,6 +130,12 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private int mTopTouchRegionAdjustment = 0;
     private int mBottomTouchRegionAdjustment = 0;
 
+    private int[] mWidgetViewWindowPos;
+    private final Rect mWidgetViewOldRect = new Rect();
+    private final Rect mWidgetViewNewRect = new Rect();
+    private final @Nullable LauncherAppWidgetHostView.CellChildViewPreLayoutListener
+            mCellChildViewPreLayoutListener;
+
     private int mXDown, mYDown;
 
     public AppWidgetResizeFrame(Context context) {
@@ -139,6 +151,18 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
         mLauncher = Launcher.getLauncher(context);
         mStateAnnouncer = DragViewStateAnnouncer.createFor(this);
+
+        mCellChildViewPreLayoutListener = FeatureFlags.ENABLE_WIDGET_TRANSITION_FOR_RESIZING.get()
+                ? (v, left, top, right, bottom) -> {
+                            if (mWidgetViewWindowPos == null) {
+                                mWidgetViewWindowPos = new int[2];
+                            }
+                            v.getLocationInWindow(mWidgetViewWindowPos);
+                            mWidgetViewOldRect.set(v.getLeft(), v.getTop(), v.getRight(),
+                                    v.getBottom());
+                            mWidgetViewNewRect.set(left, top, right, bottom);
+                        }
+                : null;
 
         mBackgroundPadding = getResources()
                 .getDimensionPixelSize(R.dimen.resize_frame_background_padding);
@@ -260,6 +284,14 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             }
         }
 
+        if (FeatureFlags.ENABLE_WIDGET_TRANSITION_FOR_RESIZING.get()) {
+            mWidgetView.setCellChildViewPreLayoutListener(mCellChildViewPreLayoutListener);
+            mWidgetViewOldRect.set(mWidgetView.getLeft(), mWidgetView.getTop(),
+                    mWidgetView.getRight(),
+                    mWidgetView.getBottom());
+            mWidgetViewNewRect.set(mWidgetViewOldRect);
+        }
+
         CellLayoutLayoutParams lp = (CellLayoutLayoutParams) mWidgetView.getLayoutParams();
         ItemInfo widgetInfo = (ItemInfo) mWidgetView.getTag();
         CellPos presenterPos = mLauncher.getCellPosMapper().mapModelToPresenter(widgetInfo);
@@ -343,22 +375,6 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         lp.height = mTempRange1.size();
 
         resizeWidgetIfNeeded(false);
-
-        // When the widget resizes in multi-window mode, the translation value changes to maintain
-        // a center fit. These overrides ensure the resize frame always aligns with the widget view.
-        getSnappedRectRelativeToDragLayer(sTmpRect);
-        if (mLeftBorderActive) {
-            lp.width = sTmpRect.width() + sTmpRect.left - lp.x;
-        }
-        if (mTopBorderActive) {
-            lp.height = sTmpRect.height() + sTmpRect.top - lp.y;
-        }
-        if (mRightBorderActive) {
-            lp.x = sTmpRect.left;
-        }
-        if (mBottomBorderActive) {
-            lp.y = sTmpRect.top;
-        }
 
         // Handle invalid resize across CellLayouts in the two panel UI.
         if (mCellLayout.getParent() instanceof Workspace) {
@@ -508,9 +524,13 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
      * Returns the rect of this view when the frame is snapped around the widget, with the bounds
      * relative to the {@link DragLayer}.
      */
-    private void getSnappedRectRelativeToDragLayer(Rect out) {
+    private void getSnappedRectRelativeToDragLayer(@NonNull Rect out) {
         float scale = mWidgetView.getScaleToFit();
-        mDragLayer.getViewRectRelativeToSelf(mWidgetView, out);
+        if (FeatureFlags.ENABLE_WIDGET_TRANSITION_FOR_RESIZING.get()) {
+            getViewRectRelativeToDragLayer(out);
+        } else {
+            mDragLayer.getViewRectRelativeToSelf(mWidgetView, out);
+        }
 
         int width = 2 * mBackgroundPadding + Math.round(scale * out.width());
         int height = 2 * mBackgroundPadding + Math.round(scale * out.height());
@@ -523,7 +543,41 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         out.bottom = out.top + height;
     }
 
+    private void getViewRectRelativeToDragLayer(@NonNull Rect out) {
+        int[] afterPos = getViewPosRelativeToDragLayer();
+        out.set(afterPos[0], afterPos[1], afterPos[0] + mWidgetViewNewRect.width(),
+                afterPos[1] + mWidgetViewNewRect.height());
+    }
+
+    /** Returns the relative x and y values of the widget view after the layout transition */
+    private int[] getViewPosRelativeToDragLayer() {
+        mDragLayer.getLocationInWindow(sDragLayerLoc);
+        int x = sDragLayerLoc[0];
+        int y = sDragLayerLoc[1];
+
+        if (mWidgetViewWindowPos == null) {
+            mWidgetViewWindowPos = new int[2];
+            mWidgetView.getLocationInWindow(mWidgetViewWindowPos);
+        }
+
+        int leftOffset = mWidgetViewNewRect.left - mWidgetViewOldRect.left;
+        int topOffset = mWidgetViewNewRect.top - mWidgetViewOldRect.top;
+
+        return new int[] {mWidgetViewWindowPos[0] - x + leftOffset,
+                mWidgetViewWindowPos[1] - y + topOffset};
+    }
+
     private void snapToWidget(boolean animate) {
+        // The widget is guaranteed to be attached to the cell layout at this point, thus setting
+        // the transition here
+        if (FeatureFlags.ENABLE_WIDGET_TRANSITION_FOR_RESIZING.get()
+                && mWidgetView.getLayoutTransition() == null) {
+            final LayoutTransition transition = new LayoutTransition();
+            transition.setDuration(RESIZE_TRANSITION_DURATION_MS);
+            transition.enableTransitionType(LayoutTransition.CHANGING);
+            mWidgetView.setLayoutTransition(transition);
+        }
+
         getSnappedRectRelativeToDragLayer(sTmpRect);
         int newWidth = sTmpRect.width();
         int newHeight = sTmpRect.height();
@@ -585,7 +639,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                 updateInvalidResizeEffect(mCellLayout, pairedCellLayout, /* alpha= */ 1f,
                         /* springLoadedProgress= */ 0f, /* animatorSet= */ set);
             }
-            set.setDuration(SNAP_DURATION);
+            set.setDuration(SNAP_DURATION_MS);
             set.start();
         }
 
@@ -665,6 +719,10 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
 
     @Override
     protected void handleClose(boolean animate) {
+        if (FeatureFlags.ENABLE_WIDGET_TRANSITION_FOR_RESIZING.get()) {
+            mWidgetView.clearCellChildViewPreLayoutListener();
+            mWidgetView.setLayoutTransition(null);
+        }
         mDragLayer.removeView(this);
     }
 
