@@ -19,7 +19,7 @@
     android:layout_width="@dimen/taskbar_pinning_popup_menu_width"
     android:layout_height="wrap_content"
     android:focusable="true"
-    android:background="@drawable/popup_background_material_u"
+    android:background="@drawable/popup_background"
     android:orientation="vertical">
 
     <LinearLayout

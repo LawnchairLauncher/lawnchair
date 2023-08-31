@@ -13,10 +13,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <com.android.launcher3.shortcuts.DeepShortcutView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/deep_shortcut_material"
     android:layout_width="@dimen/bg_popup_item_width"
     android:layout_height="@dimen/bg_popup_item_height"
     android:elevation="@dimen/deep_shortcuts_elevation"
@@ -31,12 +31,11 @@
         android:textAlignment="viewStart"
         android:paddingStart="@dimen/deep_shortcuts_text_padding_start"
         android:paddingEnd="@dimen/popup_padding_end"
-        android:drawableEnd="@drawable/ic_drag_handle"
         android:drawablePadding="@dimen/deep_shortcut_drawable_padding"
         android:singleLine="true"
         android:ellipsize="end"
         android:textSize="14sp"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="?attr/popupTextColor"
         launcher:layoutHorizontal="true"
         launcher:iconDisplay="shortcut_popup"
         launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size" />
@@ -48,5 +47,4 @@
         android:layout_marginStart="@dimen/popup_padding_start"
         android:layout_gravity="start|center_vertical"
         android:background="@drawable/ic_deepshortcut_placeholder"/>
-
 </com.android.launcher3.shortcuts.DeepShortcutView>
