@@ -167,13 +167,14 @@ android_library {
 //
 // Build rule for Launcher3 dependencies lib.
 //
-java_defaults {
-    name: "Launcher3CommonDepsDefault",
+android_library {
+    name: "Launcher3CommonDepsLib",
     srcs: ["src_build_config/**/*.java"],
     static_libs: [
         "Launcher3ResLib",
         "launcher-testing-shared",
-        "animationlib"
+        "animationlib",
+        "com_android_launcher3_flags_lib",
     ],
     sdk_version: "current",
     min_sdk_version: min_launcher3_sdk_version,
@@ -184,35 +185,13 @@ java_defaults {
 }
 
 //
-// Build rule for Launcher3 dependencies lib.
-//
-android_library {
-    name: "Launcher3CommonDepsLib",
-    defaults: ["Launcher3CommonDepsDefault"],
-    static_libs: [
-        "com_android_launcher3_flags_lib",
-    ],
-}
-
-//
-// Build rule for Launcher3 dependencies lib for test and debug.
-//
-android_library {
-    name: "Launcher3CommonDepsLibDebug",
-    defaults: ["Launcher3CommonDepsDefault"],
-    static_libs: [
-        "com_android_launcher3_flags_lib_debug",
-    ],
-}
-
-//
 // Build rule for Launcher3 app.
 //
 android_app {
     name: "Launcher3",
 
     static_libs: [
-        "Launcher3CommonDepsLibDebug",
+        "Launcher3CommonDepsLib",
     ],
     srcs: [
         ":launcher-src",

@@ -88,7 +88,7 @@ android_library {
         "truth-prebuilt",
         "platform-test-rules",
         "testables",
-        "com_android_launcher3_flags_lib_debug",
+        "com_android_launcher3_flags_lib",
     ],
     manifest: "AndroidManifest-common.xml",
     platform_apis: true,
@@ -107,7 +107,7 @@ android_test {
     ],
     static_libs: [
         "Launcher3TestLib",
-        "com_android_launcher3_flags_lib_debug",
+        "com_android_launcher3_flags_lib",
     ],
     libs: [
         "android.test.base",

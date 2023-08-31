@@ -6,3 +6,10 @@ flag {
     description: "Expand and collapse pause work button while scrolling."
     bug: "270390779"
 }
+
+flag {
+    name: "enable_twoline_allapps"
+    namespace: "launcher"
+    description: "Enables two line label inside all apps."
+    bug: "270390937"
+}

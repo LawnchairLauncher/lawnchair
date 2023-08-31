@@ -27,9 +27,3 @@ java_aconfig_library {
     name: "com_android_launcher3_flags_lib",
     aconfig_declarations: "com_android_launcher3_flags",
 }
-
-java_aconfig_library {
-    name: "com_android_launcher3_flags_lib_debug",
-    aconfig_declarations: "com_android_launcher3_flags",
-    test: true
-}
