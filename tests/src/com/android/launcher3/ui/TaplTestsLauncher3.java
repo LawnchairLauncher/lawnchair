@@ -622,7 +622,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
      * Adds three icons to the workspace and removes one of them by dragging to uninstall.
      */
     @Test
-    @ScreenRecord // b/241821721
     @PlatinumTest(focusArea = "launcher")
     public void uninstallWorkspaceIcon() throws IOException {
         Point[] gridPositions = getCornersAndCenterPositions();
