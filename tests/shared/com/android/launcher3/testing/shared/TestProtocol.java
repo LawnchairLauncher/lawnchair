@@ -39,7 +39,6 @@ public final class TestProtocol {
     public static final int HINT_STATE_TWO_BUTTON_ORDINAL = 8;
     public static final int OVERVIEW_SPLIT_SELECT_ORDINAL = 9;
     public static final int EDIT_MODE_STATE_ORDINAL = 10;
-    public static final String TAPL_EVENTS_TAG = "TaplEvents";
     public static final String SEQUENCE_MAIN = "Main";
     public static final String SEQUENCE_TIS = "TIS";
     public static final String SEQUENCE_PILFER = "Pilfer";
@@ -155,7 +154,6 @@ public final class TestProtocol {
 
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
     public static final String TWO_TASKBAR_LONG_CLICKS = "b/262282528";
-    public static final String FLAKY_ACTIVITY_COUNT = "b/260260325";
     public static final String FLAKY_QUICK_SWITCH_TO_PREVIOUS_APP = "b/286084688";
     public static final String ICON_MISSING = "b/282963545";
     public static final String LAUNCH_SPLIT_PAIR = "b/288939273";
