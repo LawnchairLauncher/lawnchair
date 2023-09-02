@@ -185,7 +185,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
-    @ScreenRecord // b/195673272
     @PlatinumTest(focusArea = "launcher")
     public void testOverviewActions() throws Exception {
         // Experimenting for b/165029151:
