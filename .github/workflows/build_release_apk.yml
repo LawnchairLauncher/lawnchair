@@ -23,7 +23,6 @@ jobs:
         with:
           gradle-home-cache-cleanup: true
       - name: Write sign info
-        if: github.repository == 'LawnchairLauncher/lawnchair'
         run: |
           if [ ! -z "${{ secrets.KEYSTORE }}" ]; then
             echo storePassword='${{ secrets.KEYSTORE_PASSWORD }}' >> keystore.properties
