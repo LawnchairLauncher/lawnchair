@@ -40,37 +40,3 @@ jobs:
           path: |
             build/outputs/apk/lawnWithQuickstep/release/*.apk
             build/outputs/mapping/lawnWithQuickstepRelease/mapping.txt
-
-  send-notifications:
-    runs-on: ubuntu-latest
-    if: github.repository == 'LawnchairLauncher/lawnchair'
-    needs: build-release-apk
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v3
-        with:
-          submodules: true
-          fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-      - name: Install Python packages
-        run: |
-          python -m pip install --upgrade pip
-          pip install gitpython requests
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: Release APK
-          path: artifacts/release-apk
-      - name: Send notifications
-        run: python ci.py
-        env:
-          GITHUB_EVENT_BEFORE: ${{ github.event.before }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_CI_BOT_TOKEN }}
-          TELEGRAM_CI_CHANNEL_ID: ${{ secrets.TELEGRAM_CI_CHANNEL_ID }}
-          TELEGRAM_TEAM_GROUP_ID: ${{ secrets.NOTIFY_CHANNEL_ID }}
-          ARTIFACT_DIRECTORY: artifacts/release-apk
-          GITHUB_REF: ${{ github.ref }}
-          ACTION: internal_notifications
