@@ -177,6 +177,9 @@ public final class FeatureFlags {
             "MULTI_SELECT_EDIT_MODE", DISABLED, "Enable new multi-select edit mode "
                     + "for home screen");
 
+    public static final BooleanFlag SMARTSPACE_AS_A_WIDGET = getDebugFlag(299181941,
+            "SMARTSPACE_AS_A_WIDGET", DISABLED, "Enable SmartSpace as a widget");
+
     // TODO(Block 10): Clean up flags
     public static final BooleanFlag ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION = getDebugFlag(270614790,
             "ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION", DISABLED,
