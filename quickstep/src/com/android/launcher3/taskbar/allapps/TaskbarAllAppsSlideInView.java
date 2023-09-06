@@ -21,11 +21,15 @@ import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
 import android.window.OnBackInvokedDispatcher;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
@@ -40,8 +44,11 @@ import com.android.launcher3.views.AbstractSlideInView;
 /** Wrapper for taskbar all apps with slide-in behavior. */
 public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverlayContext>
         implements Insettable, DeviceProfile.OnDeviceProfileChangeListener {
+    private final Handler mHandler;
+
     private TaskbarAllAppsContainerView mAppsView;
     private float mShiftRange;
+    private @Nullable Runnable mShowOnFullyAttachedToWindowRunnable;
 
     // Initialized in init.
     private TaskbarAllAppsCallbacks mAllAppsCallbacks;
@@ -53,6 +60,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     public TaskbarAllAppsSlideInView(Context context, AttributeSet attrs,
             int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mHandler = new Handler(Looper.myLooper());
     }
 
     void init(TaskbarAllAppsCallbacks callbacks) {
@@ -65,14 +73,14 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
             return;
         }
         mIsOpen = true;
-        attachToContainer();
 
         addOnAttachStateChangeListener(new OnAttachStateChangeListener() {
             @Override
             public void onViewAttachedToWindow(View v) {
                 removeOnAttachStateChangeListener(this);
                 // Wait for view and its descendants to be fully attached before starting open.
-                post(() -> showOnFullyAttachedToWindow(animate));
+                mShowOnFullyAttachedToWindowRunnable = () -> showOnFullyAttachedToWindow(animate);
+                mHandler.post(mShowOnFullyAttachedToWindowRunnable);
             }
 
             @Override
@@ -80,6 +88,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
                 removeOnAttachStateChangeListener(this);
             }
         });
+        attachToContainer();
     }
 
     private void showOnFullyAttachedToWindow(boolean animate) {
@@ -114,6 +123,10 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
 
     @Override
     protected void handleClose(boolean animate) {
+        if (mShowOnFullyAttachedToWindowRunnable != null) {
+            mHandler.removeCallbacks(mShowOnFullyAttachedToWindowRunnable);
+            mShowOnFullyAttachedToWindowRunnable = null;
+        }
         if (mIsOpen) {
             mAllAppsCallbacks.onAllAppsTransitionStart(false);
         }
