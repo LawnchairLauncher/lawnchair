@@ -26,12 +26,6 @@ allprojects {
                 targetSdk 32
                 vectorDrawables.useSupportLibrary = true
             }
-            // Can remove this once https://issuetracker.google.com/issues/260059413 is fixed.
-            // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
-            compileOptions {
-                sourceCompatibility JavaVersion.VERSION_1_8
-                targetCompatibility JavaVersion.VERSION_1_8
-            }
             lint {
                 abortOnError true
                 checkReleaseBuilds false
@@ -43,8 +37,10 @@ allprojects {
         }
     }
 
-    tasks.withType(KotlinCompile).configureEach {
-        compilerOptions.jvmTarget = JvmTarget.JVM_1_8
+    plugins.withType(JavaBasePlugin).configureEach {
+        java {
+            toolchain.languageVersion = JavaLanguageVersion.of(11)
+        }
     }
 
     ext.addFrameworkJar = { String name ->
