@@ -271,24 +271,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     }
 
     @Test
-    @PortraitLandscape
-    public void testAllAppsFromHome() throws Exception {
-        // Test opening all apps
-        assertNotNull("switchToAllApps() returned null",
-                mLauncher.getWorkspace().switchToAllApps());
-
-        TaplTestsLauncher3.runAllAppsTest(this, mLauncher.getAllApps());
-
-        // Testing pressHome.
-        assertTrue("Launcher internal state is not All Apps",
-                isInState(() -> LauncherState.ALL_APPS));
-        assertNotNull("pressHome returned null", mLauncher.goHome());
-        assertTrue("Launcher internal state is not Home",
-                isInState(() -> LauncherState.NORMAL));
-        assertNotNull("getHome returned null", mLauncher.getWorkspace());
-    }
-
-    @Test
     @NavigationModeSwitch
     @PortraitLandscape
     @PlatinumTest(focusArea = "launcher")
