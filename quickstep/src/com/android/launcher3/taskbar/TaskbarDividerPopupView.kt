@@ -59,6 +59,7 @@ constructor(
             return taskMenuViewWithArrow.populateForView(view)
         }
     }
+
     private lateinit var dividerView: View
 
     private val menuWidth =
@@ -178,13 +179,19 @@ constructor(
 
     override fun closeComplete() {
         onCloseCallback(didPreferenceChange)
+        onCloseCallback = {}
         super.closeComplete()
     }
 
     private fun onClickAlwaysShowTaskbarSwitchOption() {
         didPreferenceChange = true
         changePreference()
+        changePreference = {}
         // Allow switch animation to finish and then close the popup.
-        postDelayed(DIVIDER_POPUP_CLOSING_DELAY) { close(true) }
+        postDelayed(DIVIDER_POPUP_CLOSING_DELAY) {
+            if (isOpen) {
+                close(false)
+            }
+        }
     }
 }
