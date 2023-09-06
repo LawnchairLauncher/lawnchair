@@ -47,6 +47,7 @@ abstract class FakeInvariantDeviceProfileTest {
     protected var transposeLayoutWithOrientation: Boolean = false
     protected var useTwoPanels: Boolean = false
     protected var isGestureMode: Boolean = true
+    protected var isTransientTaskbar: Boolean = true
 
     @Before
     fun setUp() {
@@ -68,7 +69,8 @@ abstract class FakeInvariantDeviceProfileTest {
             useTwoPanels,
             isGestureMode,
             DEFAULT_PROVIDER,
-            DEFAULT_DIMENSION_PROVIDER
+            DEFAULT_DIMENSION_PROVIDER,
+            isTransientTaskbar,
         )
 
     protected fun initializeVarsForPhone(
@@ -93,6 +95,7 @@ abstract class FakeInvariantDeviceProfileTest {
         whenever(info.smallestSizeDp(any())).thenReturn(411f)
 
         this.isGestureMode = isGestureMode
+        this.isTransientTaskbar = false
         transposeLayoutWithOrientation = true
 
         inv =
@@ -175,6 +178,7 @@ abstract class FakeInvariantDeviceProfileTest {
         whenever(info.smallestSizeDp(any())).thenReturn(800f)
 
         this.isGestureMode = isGestureMode
+        this.isTransientTaskbar = true
         useTwoPanels = false
 
         inv =
@@ -258,6 +262,7 @@ abstract class FakeInvariantDeviceProfileTest {
         whenever(info.smallestSizeDp(any())).thenReturn(700f)
 
         this.isGestureMode = isGestureMode
+        this.isTransientTaskbar = true
         useTwoPanels = true
 
         inv =

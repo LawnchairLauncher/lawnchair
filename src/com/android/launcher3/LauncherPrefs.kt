@@ -287,7 +287,7 @@ class LauncherPrefs(private val encryptedContext: Context) {
         @JvmField val WORK_EDU_STEP = backedUpItem(WorkProfileManager.KEY_WORK_EDU_STEP, 0)
         @JvmField val WORKSPACE_SIZE = backedUpItem(DeviceGridState.KEY_WORKSPACE_SIZE, "", true)
         @JvmField val HOTSEAT_COUNT = backedUpItem(DeviceGridState.KEY_HOTSEAT_COUNT, -1, true)
-        @JvmField val TASKBAR_PINNING = backedUpItem(TASKBAR_PINNING_KEY, false)
+        @JvmField val TASKBAR_PINNING = backedUpItem(TASKBAR_PINNING_KEY, false, true)
 
         @JvmField
         val DEVICE_TYPE =

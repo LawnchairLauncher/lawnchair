@@ -40,6 +40,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.spy
 import org.mockito.Mockito.`when` as whenever
 
 /**
@@ -306,9 +307,9 @@ abstract class AbstractDeviceProfileTest {
             }
         context = runningContext.createConfigurationContext(config)
 
-        val info = DisplayController.Info(context, windowManagerProxy, perDisplayBoundsCache)
+        val info = spy(DisplayController.Info(context, windowManagerProxy, perDisplayBoundsCache))
         whenever(displayController.info).thenReturn(info)
-        whenever(displayController.isTransientTaskbar).thenReturn(isGestureMode)
+        whenever(info.isTransientTaskbar).thenReturn(isGestureMode)
     }
 
     /** Create a new dump of DeviceProfile, saves to a file in the device and returns it */
