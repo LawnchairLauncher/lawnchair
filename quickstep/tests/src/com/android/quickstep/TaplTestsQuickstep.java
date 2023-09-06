@@ -502,7 +502,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     }
 
     @Test
-    @ScreenRecord // b/242163205
     public void testDisableRotationCheckForPhone() throws Exception {
         assumeFalse(mLauncher.isTablet());
         try {
