@@ -141,6 +141,7 @@
     <dimen name="work_fab_icon_size">24dp</dimen>
     <dimen name="work_fab_text_start_margin">8dp</dimen>
     <dimen name="work_card_padding_horizontal">10dp</dimen>
+    <dimen name="work_fab_width">214dp</dimen>
     <dimen name="work_card_button_height">52dp</dimen>
     <dimen name="work_fab_margin">16dp</dimen>
     <dimen name="work_fab_margin_bottom">20dp</dimen>
