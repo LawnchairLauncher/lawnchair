@@ -56,8 +56,8 @@ allprojects {
             tasks.withType(JavaCompile).configureEach {
                 options.bootstrapClasspath = files(frameworkJar, options.bootstrapClasspath)
             }
-            tasks.withType(KotlinCompile).configureEach {
-                it.libraries.from(files(frameworkJar))
+            dependencies {
+                compileOnly files(frameworkJar)
             }
         }
     }
