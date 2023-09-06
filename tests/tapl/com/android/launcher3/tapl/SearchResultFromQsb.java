@@ -91,7 +91,7 @@ public class SearchResultFromQsb {
      * Taps outside bottom sheet to dismiss and return to workspace. Available on tablets only.
      * @param tapRight Tap on the right of bottom sheet if true, or left otherwise.
      */
-    public Workspace dismissByTappingOutsideForTablet(boolean tapRight) {
+    public void dismissByTappingOutsideForTablet(boolean tapRight) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "want to tap outside AllApps bottom sheet on the "
@@ -101,8 +101,12 @@ public class SearchResultFromQsb {
             mLauncher.touchOutsideContainer(allAppsBottomSheet, tapRight);
             try (LauncherInstrumentation.Closable tapped = mLauncher.addContextLayer(
                     "tapped outside AllApps bottom sheet")) {
-                return mLauncher.getWorkspace();
+                verifyVisibleContainerOnDismiss();
             }
         }
+    }
+
+    protected void verifyVisibleContainerOnDismiss() {
+        mLauncher.getWorkspace();
     }
 }
