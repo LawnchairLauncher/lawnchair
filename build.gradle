@@ -50,7 +50,7 @@ allprojects {
         }
         gradle.projectsEvaluated {
             tasks.withType(JavaCompile).configureEach {
-                options.bootstrapClasspath = files(frameworkJar, options.bootstrapClasspath)
+                classpath = files(frameworkJar, classpath)
             }
             dependencies {
                 compileOnly files(frameworkJar)
