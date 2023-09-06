@@ -21,12 +21,18 @@ import android.util.Log
 import com.android.launcher3.R
 import com.android.launcher3.util.ResourceHelper
 
-class HotseatSpecs(val specs: List<HotseatSpec>) {
+class HotseatSpecs(val widthSpecs: List<HotseatSpec>, val heightSpecs: List<HotseatSpec>) {
 
     fun getCalculatedHeightSpec(availableHeight: Int): CalculatedHotseatSpec {
-        val spec = specs.firstOrNull { availableHeight <= it.maxAvailableSize }
+        val spec = heightSpecs.firstOrNull { availableHeight <= it.maxAvailableSize }
         check(spec != null) { "No available height spec found within $availableHeight." }
         return CalculatedHotseatSpec(availableHeight, spec)
+    }
+
+    fun getCalculatedWidthSpec(availableWidth: Int): CalculatedHotseatSpec {
+        val spec = widthSpecs.firstOrNull { availableWidth <= it.maxAvailableSize }
+        check(spec != null) { "No available width spec found within $availableWidth." }
+        return CalculatedHotseatSpec(availableWidth, spec)
     }
 
     companion object {
@@ -36,7 +42,9 @@ class HotseatSpecs(val specs: List<HotseatSpec>) {
         fun create(resourceHelper: ResourceHelper): HotseatSpecs {
             val parser = ResponsiveSpecsParser(resourceHelper)
             val specs = parser.parseXML(XML_HOTSEAT_SPEC, ::HotseatSpec)
-            return HotseatSpecs(specs.filter { it.specType == ResponsiveSpec.SpecType.HEIGHT })
+            val (widthSpecs, heightSpecs) =
+                specs.partition { it.specType == ResponsiveSpec.SpecType.WIDTH }
+            return HotseatSpecs(widthSpecs, heightSpecs)
         }
     }
 }
@@ -44,7 +52,8 @@ class HotseatSpecs(val specs: List<HotseatSpec>) {
 data class HotseatSpec(
     val maxAvailableSize: Int,
     val specType: ResponsiveSpec.SpecType,
-    val hotseatQsbSpace: SizeSpec
+    val hotseatQsbSpace: SizeSpec,
+    val edgePadding: SizeSpec
 ) {
 
     init {
@@ -63,7 +72,8 @@ data class HotseatSpec(
                         R.styleable.ResponsiveSpec_specType,
                         ResponsiveSpec.SpecType.HEIGHT.ordinal
                     )],
-        hotseatQsbSpace = specs.getOrError(SizeSpec.XmlTags.HOTSEAT_QSB_SPACE)
+        hotseatQsbSpace = specs.getOrError(SizeSpec.XmlTags.HOTSEAT_QSB_SPACE),
+        edgePadding = specs.getOrError(SizeSpec.XmlTags.EDGE_PADDING)
     )
 
     fun isValid(): Boolean {
@@ -82,7 +92,10 @@ data class HotseatSpec(
     }
 
     private fun allSpecsAreValid(): Boolean {
-        return hotseatQsbSpace.isValid() && hotseatQsbSpace.onlyFixedSize()
+        return hotseatQsbSpace.isValid() &&
+            hotseatQsbSpace.onlyFixedSize() &&
+            edgePadding.isValid() &&
+            edgePadding.onlyFixedSize()
     }
 
     companion object {
@@ -95,13 +108,18 @@ class CalculatedHotseatSpec(val availableSpace: Int, val spec: HotseatSpec) {
     var hotseatQsbSpace: Int = 0
         private set
 
+    var edgePadding: Int = 0
+        private set
+
     init {
         hotseatQsbSpace = spec.hotseatQsbSpace.getCalculatedValue(availableSpace)
+        edgePadding = spec.edgePadding.getCalculatedValue(availableSpace)
     }
 
     override fun hashCode(): Int {
         var result = availableSpace.hashCode()
         result = 31 * result + hotseatQsbSpace.hashCode()
+        result = 31 * result + edgePadding.hashCode()
         result = 31 * result + spec.hashCode()
         return result
     }
@@ -110,12 +128,14 @@ class CalculatedHotseatSpec(val availableSpace: Int, val spec: HotseatSpec) {
         return other is CalculatedHotseatSpec &&
             availableSpace == other.availableSpace &&
             hotseatQsbSpace == other.hotseatQsbSpace &&
+            edgePadding == other.edgePadding &&
             spec == other.spec
     }
 
     override fun toString(): String {
         return "${this::class.simpleName}(" +
             "availableSpace=$availableSpace, hotseatQsbSpace=$hotseatQsbSpace, " +
+            "edgePadding=$edgePadding, " +
             "${spec::class.simpleName}.maxAvailableSize=${spec.maxAvailableSize}" +
             ")"
     }
