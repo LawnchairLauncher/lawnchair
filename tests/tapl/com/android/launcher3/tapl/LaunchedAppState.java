@@ -128,13 +128,13 @@ public final class LaunchedAppState extends Background {
                     mLauncher.getRealDisplaySize().x / 2, unstashTargetY);
 
             mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, unstashTarget,
-                    LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER);
+                    LauncherInstrumentation.GestureScope.EXPECT_PILFER);
             LauncherInstrumentation.log("showTaskbar: sent down");
 
             try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("pressed down")) {
                 mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID);
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_UP, unstashTarget,
-                        LauncherInstrumentation.GestureScope.OUTSIDE_WITH_PILFER);
+                        LauncherInstrumentation.GestureScope.EXPECT_PILFER);
 
                 return new Taskbar(mLauncher);
             }
@@ -183,7 +183,7 @@ public final class LaunchedAppState extends Background {
                         downTime,
                         SystemClock.uptimeMillis(),
                         /* slowDown= */ false,
-                        LauncherInstrumentation.GestureScope.INSIDE);
+                        LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
 
                 try (LauncherInstrumentation.Closable c3 = launcher.addContextLayer(
                         "moved pointer to drop point")) {
@@ -194,7 +194,7 @@ public final class LaunchedAppState extends Background {
                             SystemClock.uptimeMillis(),
                             MotionEvent.ACTION_UP,
                             endPoint,
-                            LauncherInstrumentation.GestureScope.INSIDE);
+                            LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
                     LauncherInstrumentation.log("SplitscreenDragSource.dragToSplitscreen: "
                             + "after drop");
 
@@ -326,7 +326,7 @@ public final class LaunchedAppState extends Background {
                         null, InputDevice.SOURCE_MOUSE);
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN,
                         new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y),
-                        LauncherInstrumentation.GestureScope.OUTSIDE_WITHOUT_PILFER,
+                        LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER,
                         InputDevice.SOURCE_MOUSE);
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_BUTTON_PRESS,
                         new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y),
@@ -336,7 +336,7 @@ public final class LaunchedAppState extends Background {
                         null, InputDevice.SOURCE_MOUSE);
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_UP,
                         new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y),
-                        LauncherInstrumentation.GestureScope.OUTSIDE_WITHOUT_PILFER,
+                        LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER,
                         InputDevice.SOURCE_MOUSE);
 
                 return mLauncher.getWorkspace();

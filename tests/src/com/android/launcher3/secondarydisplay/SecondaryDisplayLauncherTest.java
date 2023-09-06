@@ -184,7 +184,7 @@ public final class SecondaryDisplayLauncherTest extends AbstractLauncherUiTest {
         mStartPoint = icon.getVisibleCenter();
         mEndPoint = new Point(mStartPoint.x, mStartPoint.y);
         mLauncher.sendPointer(mDownTime, mDownTime, ACTION_DOWN, mStartPoint,
-                LauncherInstrumentation.GestureScope.INSIDE);
+                LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
         assertThat(findObjectByResourceName("popup_container")).isNotNull();
         return appName;
     }
@@ -206,7 +206,7 @@ public final class SecondaryDisplayLauncherTest extends AbstractLauncherUiTest {
         mStartPoint = icon.getVisibleCenter();
         mEndPoint = new Point(mStartPoint.x, mStartPoint.y);
         mLauncher.sendPointer(mDownTime, mDownTime, ACTION_DOWN, mStartPoint,
-                LauncherInstrumentation.GestureScope.INSIDE);
+                LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
         assertThat(findObjectByResourceName("popup_container")).isNotNull();
         return appName;
     }
@@ -214,12 +214,12 @@ public final class SecondaryDisplayLauncherTest extends AbstractLauncherUiTest {
     private void moveAppToCenterOfScreen() {
         mEndPoint.set(mDevice.getDisplayWidth() / 2, mDevice.getDisplayHeight() / 2);
         mLauncher.movePointer(mDownTime, SystemClock.uptimeMillis(), DRAG_TIME_MS, true,
-                mStartPoint, mEndPoint, LauncherInstrumentation.GestureScope.INSIDE);
+                mStartPoint, mEndPoint, LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
     }
 
     private void dropApp() {
         mLauncher.sendPointer(mDownTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP,
-                mEndPoint, LauncherInstrumentation.GestureScope.INSIDE);
+                mEndPoint, LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
     }
 
     private void removeAppByName(String appName) {
