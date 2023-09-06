@@ -20,6 +20,7 @@ import android.app.Application
 import android.media.permission.SafeCloseable
 import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
+import androidx.test.platform.app.InstrumentationRegistry
 import com.android.app.viewcapture.SimpleViewCapture
 import com.android.app.viewcapture.ViewCapture.MAIN_EXECUTOR
 import com.android.app.viewcapture.data.ExportedData
@@ -50,6 +51,13 @@ class ViewCaptureRule(var alreadyOpenActivitySupplier: Supplier<Activity?>) : Te
         private set
 
     override fun apply(base: Statement, description: Description): Statement {
+        // Skip view capture collection in Launcher3 tests to avoid hidden API check exception.
+        if (
+            "com.android.launcher3.tests" ==
+                InstrumentationRegistry.getInstrumentation().context.packageName
+        )
+            return base
+
         return object : Statement() {
             override fun evaluate() {
                 viewCaptureData = null
