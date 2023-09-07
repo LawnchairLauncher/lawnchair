@@ -21,7 +21,6 @@ import static android.content.pm.PackageManager.DONT_KILL_APP;
 import static android.content.pm.PackageManager.MATCH_ALL;
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 import static android.view.MotionEvent.AXIS_GESTURE_SWIPE_FINGER_COUNT;
-
 import static com.android.launcher3.tapl.Folder.FOLDER_CONTENT_RES_ID;
 import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
@@ -29,12 +28,14 @@ import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORD
 import android.app.ActivityManager;
 import android.app.Instrumentation;
 import android.app.UiAutomation;
+import android.app.UiModeManager;
 import android.content.ComponentName;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Insets;
 import android.graphics.Point;
@@ -173,6 +174,8 @@ public final class LauncherInstrumentation {
     static final long DEFAULT_POLL_INTERVAL = 1000;
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
     private static final String ANDROID_PACKAGE = "android";
+    private static final String ASSISTANT_PACKAGE = "com.google.android.googlequicksearchbox";
+    private static final String ASSISTANT_GO_HOME_RES_ID = "home_icon";
 
     private static WeakReference<VisibleContainer> sActiveContainer = new WeakReference<>(null);
 
@@ -1024,7 +1027,7 @@ public final class LauncherInstrumentation {
                 action = "clicking home button";
 
                 runToState(
-                        waitForNavigationUiObject("home")::click,
+                        getHomeButton()::click,
                         NORMAL_STATE_ORDINAL,
                         !hasLauncherObject(WORKSPACE_RES_ID)
                                 && (hasLauncherObject(APPS_RES_ID)
@@ -1201,6 +1204,28 @@ public final class LauncherInstrumentation {
         final UiObject2 object = TestHelpers.wait(
                 Until.findObject(selector), WAIT_TIME_MS);
         assertNotNull("Can't find a systemui object with selector: " + selector, object);
+        return object;
+    }
+
+    @NonNull
+    private UiObject2 getHomeButton() {
+        UiModeManager uiManager =
+                (UiModeManager) getContext().getSystemService(Context.UI_MODE_SERVICE);
+        if (uiManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_CAR) {
+            return waitForAssistantHomeButton();
+        } else {
+            return waitForNavigationUiObject("home");
+        }
+    }
+
+    /* Assistant Home button is present when system is in car mode. */
+    @NonNull
+    UiObject2 waitForAssistantHomeButton() {
+        final UiObject2 object = mDevice.wait(
+                Until.findObject(By.res(ASSISTANT_PACKAGE, ASSISTANT_GO_HOME_RES_ID)),
+                WAIT_TIME_MS);
+        assertNotNull(
+                "Can't find an assistant UI object with id: " + ASSISTANT_GO_HOME_RES_ID, object);
         return object;
     }
 
