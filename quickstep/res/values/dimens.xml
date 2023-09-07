@@ -306,7 +306,7 @@
     <dimen name="taskbar_home_button_left_margin_kids">48dp</dimen>
     <dimen name="taskbar_icon_size_kids">32dp</dimen>
     <dimen name="taskbar_all_apps_button_translation_x_offset">6dp</dimen>
-
+    <dimen name="taskbar_all_apps_search_button_translation_x_offset">4.5dp</dimen>
 
     <!-- Transient taskbar -->
     <dimen name="transient_taskbar_padding">12dp</dimen>
