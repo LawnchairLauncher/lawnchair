@@ -120,7 +120,6 @@ public final class TestProtocol {
             "get-activities-created-count";
     public static final String REQUEST_GET_ACTIVITIES = "get-activities";
     public static final String REQUEST_HAS_TIS = "has-touch-interaction-service";
-    public static final String REQUEST_IS_TRACKPAD_GESTURE_ENABLED = "is-trackpad-gesture-enabled";
     public static final String REQUEST_TASKBAR_ALL_APPS_TOP_PADDING =
             "taskbar-all-apps-top-padding";
     public static final String REQUEST_ALL_APPS_TOP_PADDING = "all-apps-top-padding";

@@ -76,13 +76,13 @@ public final class Taskbar {
                     mLauncher.getRealDisplaySize().x - 1, mLauncher.getRealDisplaySize().y - 1);
 
             mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, stashTarget,
-                    LauncherInstrumentation.GestureScope.INSIDE);
+                    LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
             LauncherInstrumentation.log("hideTaskbar: sent down");
 
             try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("pressed down")) {
                 mLauncher.waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_UP, stashTarget,
-                        LauncherInstrumentation.GestureScope.INSIDE);
+                        LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
             }
         } finally {
             mLauncher.getTestInfo(REQUEST_DISABLE_MANUAL_TASKBAR_STASHING);
@@ -147,9 +147,9 @@ public final class Taskbar {
                     mLauncher.getRealDisplaySize().y - 1);
 
             mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, tapTarget,
-                    LauncherInstrumentation.GestureScope.INSIDE);
+                    LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
             mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_UP, tapTarget,
-                    LauncherInstrumentation.GestureScope.INSIDE);
+                    LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
         }
     }
 }
