@@ -70,15 +70,12 @@ public final class TestLogging {
     public static void recordMotionEvent(String sequence, String message, MotionEvent event) {
         final int action = event.getAction();
         if (Utilities.isRunningInTestHarness() && action != MotionEvent.ACTION_MOVE) {
-            // "Expecting" in TAPL ACTION_DOWN, UP and CANCEL events was thought to be producing
-            // considerable noise in tests due to failed checks for expected events. So we are not
-            // sending them to TAPL.
+            // "Expecting" in TAPL motion events was thought to be producing considerable noise in
+            // tests due to failed checks for expected events. So we are not sending them to TAPL.
             // Other events, such as EVENT_PILFER_POINTERS produce less noise and are thought to
             // be more useful.
-            final boolean reportToTapl = action != MotionEvent.ACTION_DOWN
-                    && action != MotionEvent.ACTION_UP
-                    && action != MotionEvent.ACTION_CANCEL;
-            recordEventSlow(sequence, message + ": " + event, reportToTapl);
+            // That's why we pass false as the value for the 'reportToTapl' parameter.
+            recordEventSlow(sequence, message + ": " + event, false);
             registerEventNotFromTest(event);
         }
     }

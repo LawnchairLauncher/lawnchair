@@ -17,7 +17,6 @@ package com.android.launcher3.testing;
 
 import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TRACKPAD_GESTURE;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
@@ -233,12 +232,6 @@ public class TestInformationHandler implements ResourceBasedOverride {
 
             case TestProtocol.REQUEST_HAS_TIS: {
                 response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, false);
-                return response;
-            }
-
-            case TestProtocol.REQUEST_IS_TRACKPAD_GESTURE_ENABLED: {
-                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        ENABLE_TRACKPAD_GESTURE.get());
                 return response;
             }
 
