@@ -61,7 +61,7 @@
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" ಹೊಂದಿಕೆಯ ಯಾವುದೇ ಅಪ್ಲಿಕೇಶನ್‌ಗಳು ಕಂಡುಬಂದಿಲ್ಲ"</string>
     <string name="label_application" msgid="8531721983832654978">"ಆ್ಯಪ್"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"ಎಲ್ಲಾ ಆ್ಯಪ್‌ಗಳು"</string>
-    <string name="notifications_header" msgid="1404149926117359025">"ಅಧಿಸೂಚನೆಗಳು"</string>
+    <string name="notifications_header" msgid="1404149926117359025">"ನೋಟಿಫಿಕೇಶನ್‌ಗಳು"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"ಶಾರ್ಟ್‌ಕಟ್ ಸರಿಸಲು ಸ್ಪರ್ಶಿಸಿ ಮತ್ತು ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"ಶಾರ್ಟ್‌ಕಟ್ ಸರಿಸಲು ಅಥವಾ ಕಸ್ಟಮ್ ಕ್ರಿಯೆಗಳನ್ನು ಬಳಸಲು ಡಬಲ್-ಟ್ಯಾಪ್ ಮಾಡಿ ಮತ್ತು ಹಿಡಿದುಕೊಳ್ಳಿ."</string>
     <string name="out_of_space" msgid="6455557115204099579">"ಈ ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ನಲ್ಲಿ ಸ್ಥಳಾವಕಾಶವಿಲ್ಲ"</string>
