@@ -33,6 +33,7 @@ import static com.android.launcher3.taskbar.TaskbarManager.SYSTEM_ACTION_ID_TASK
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
 import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SWITCHER_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE;
@@ -96,6 +97,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
     public static final int FLAG_STASHED_IN_APP_AUTO = 1 << 9; // Autohide (transient taskbar).
     public static final int FLAG_STASHED_SYSUI = 1 << 10; //  app pinning,...
     public static final int FLAG_STASHED_DEVICE_LOCKED = 1 << 11; // device is locked: keyguard, ...
+    public static final int FLAG_IN_OVERVIEW = 1 << 12; // launcher is in overview
 
     // If any of these flags are enabled, isInApp should return true.
     private static final int FLAGS_IN_APP = FLAG_IN_APP | FLAG_IN_SETUP;
@@ -1015,9 +1017,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
 
         updateStateForFlag(FLAG_STASHED_IN_APP_SYSUI, hasAnyFlag(systemUiStateFlags,
                 SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE));
-        updateStateForFlag(FLAG_STASHED_SYSUI,
-                hasAnyFlag(systemUiStateFlags, SYSUI_STATE_SCREEN_PINNING));
 
+        boolean bubblesOnOverview = hasAnyFlag(FLAG_IN_OVERVIEW)
+                && hasAnyFlag(systemUiStateFlags, SYSUI_STATE_BUBBLES_EXPANDED);
+        updateStateForFlag(FLAG_STASHED_SYSUI,
+                hasAnyFlag(systemUiStateFlags, SYSUI_STATE_SCREEN_PINNING) || bubblesOnOverview);
         boolean isLocked = hasAnyFlag(systemUiStateFlags, MASK_ANY_SYSUI_LOCKED)
                 && !hasAnyFlag(systemUiStateFlags, SYSUI_STATE_STATUS_BAR_KEYGUARD_GOING_AWAY);
         updateStateForFlag(FLAG_STASHED_DEVICE_LOCKED, isLocked);
