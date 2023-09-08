@@ -627,4 +627,28 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
             allApps.unfreeze();
         }
     }
+
+    @PlatinumTest(focusArea = "launcher")
+    @Test
+    public void testAddAndDeletePageAndFling() {
+        Workspace workspace = mLauncher.getWorkspace();
+        // Get the first app from the hotseat
+        HomeAppIcon hotSeatIcon = workspace.getHotseatAppIcon(0);
+        String appName = hotSeatIcon.getIconName();
+
+        // Add one page by dragging app to page 1.
+        workspace.dragIcon(hotSeatIcon, workspace.pagesPerScreen());
+        assertEquals("Incorrect Page count Number",
+                workspace.pagesPerScreen() * 2,
+                workspace.getPageCount());
+
+        // Delete one page by dragging app to hot seat.
+        workspace.getWorkspaceAppIcon(appName).dragToHotseat(0);
+
+        // Refresh workspace to avoid using stale container error.
+        workspace = mLauncher.getWorkspace();
+        assertEquals("Incorrect Page count Number",
+                workspace.pagesPerScreen(),
+                workspace.getPageCount());
+    }
 }
