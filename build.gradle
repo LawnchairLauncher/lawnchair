@@ -370,7 +370,7 @@ dependencies {
     implementation "com.google.protobuf:protobuf-javalite:$protocVersion"
 
     // Persian Date
-    implementation 'com.github.samanzamani:PersianDate:1.6.1'
+    implementation 'com.github.samanzamani:PersianDate:1.7.1'
 
     implementation 'com.airbnb.android:lottie:6.1.0'
 
