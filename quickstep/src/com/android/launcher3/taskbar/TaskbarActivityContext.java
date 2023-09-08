@@ -32,6 +32,7 @@ import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLA
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_FULLSCREEN;
 import static com.android.launcher3.taskbar.TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW;
 import static com.android.launcher3.testing.shared.ResourceUtils.getBoolByName;
+import static com.android.launcher3.util.VibratorWrapper.EFFECT_CLICK;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_VOICE_INTERACTION_WINDOW_SHOWING;
 
@@ -108,6 +109,7 @@ import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource;
 import com.android.launcher3.util.TraceHelper;
+import com.android.launcher3.util.VibratorWrapper;
 import com.android.launcher3.util.ViewCache;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.views.RecentsView;
@@ -1063,6 +1065,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * Called when we want to unstash taskbar when user performs swipes up gesture.
      */
     public void onSwipeToUnstashTaskbar() {
+        VibratorWrapper.INSTANCE.get(this).vibrate(EFFECT_CLICK);
         mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(/* stash= */ false);
         mControllers.taskbarEduTooltipController.hide();
     }
