@@ -27,6 +27,8 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NO_RECREA
 import static com.android.launcher3.util.DisplayController.TASKBAR_NOT_DESTROYED_TAG;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
+import static com.android.quickstep.util.SystemActionConstants.ACTION_SHOW_TASKBAR;
+import static com.android.quickstep.util.SystemActionConstants.SYSTEM_ACTION_ID_TASKBAR;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -140,13 +142,6 @@ public class TaskbarManager {
     private final SettingsCache.OnChangeListener mOnSettingsChangeListener = c -> recreateTaskbar();
 
     private boolean mUserUnlocked = false;
-
-    public static final int SYSTEM_ACTION_ID_TASKBAR = 499;
-
-    /**
-     * For Taskbar broadcast intent filter.
-     */
-    public static final String ACTION_SHOW_TASKBAR = "ACTION_SHOW_TASKBAR";
 
     private final SimpleBroadcastReceiver mTaskbarBroadcastReceiver =
             new SimpleBroadcastReceiver(this::showTaskbarFromBroadcast);
