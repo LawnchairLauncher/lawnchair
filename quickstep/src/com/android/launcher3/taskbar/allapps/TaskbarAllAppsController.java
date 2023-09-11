@@ -161,6 +161,9 @@ public final class TaskbarAllAppsController {
 
         mSlideInView = (TaskbarAllAppsSlideInView) mOverlayContext.getLayoutInflater().inflate(
                 R.layout.taskbar_all_apps_sheet, mOverlayContext.getDragLayer(), false);
+        // Ensures All Apps gets touch events in case it is not the top floating view. Floating
+        // views above it may not be able to intercept the touch, so All Apps should try to.
+        mOverlayContext.getDragLayer().addTouchController(mSlideInView);
         mSlideInView.addOnCloseListener(() -> {
             mControllers.getSharedState().allAppsVisible = false;
             cleanUpOverlay();
@@ -195,6 +198,7 @@ public final class TaskbarAllAppsController {
             mSearchSessionController = null;
         }
         if (mOverlayContext != null) {
+            mOverlayContext.getDragLayer().removeTouchController(mSlideInView);
             mOverlayContext.setSearchSessionController(null);
             mOverlayContext = null;
         }
