@@ -70,6 +70,18 @@ public final class TaskbarOverlayController {
             // New front task will be below existing overlay, so move out of the way.
             hideWindow();
         }
+
+        @Override
+        public void onTaskStackChanged() {
+            // The other callbacks are insufficient for All Apps, because there are many cases where
+            // it can relaunch the same task already behind it. However, this callback needs to be a
+            // no-op when only EDU is shown, because going between the EDU steps invokes this
+            // callback.
+            if (mControllers.getSharedState() != null
+                    && mControllers.getSharedState().allAppsVisible) {
+                hideWindow();
+            }
+        }
     };
 
     private DeviceProfile mLauncherDeviceProfile;
@@ -199,8 +211,10 @@ public final class TaskbarOverlayController {
 
         @Override
         protected void handleClose(boolean animate) {
-            mTaskbarContext.getDragLayer().removeView(this);
-            Optional.ofNullable(mOverlayContext).ifPresent(c -> closeAllOpenViews(c, animate));
+            if (mIsOpen) {
+                mTaskbarContext.getDragLayer().removeView(this);
+                Optional.ofNullable(mOverlayContext).ifPresent(c -> closeAllOpenViews(c, animate));
+            }
         }
 
         @Override
