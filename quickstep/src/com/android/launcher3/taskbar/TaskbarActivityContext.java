@@ -57,6 +57,7 @@ import android.view.Gravity;
 import android.view.RoundedCorner;
 import android.view.Surface;
 import android.view.View;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -853,6 +854,21 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     }
 
     /**
+     * Applies forcibly show flag to taskbar window iff transient taskbar is unstashed.
+     */
+    public void applyForciblyShownFlagWhileTransientTaskbarUnstashed(boolean shouldForceShow) {
+        if (!DisplayController.isTransientTaskbar(this)) {
+            return;
+        }
+        if (shouldForceShow) {
+            mWindowLayoutParams.forciblyShownTypes |= WindowInsets.Type.navigationBars();
+        } else {
+            mWindowLayoutParams.forciblyShownTypes &= ~WindowInsets.Type.navigationBars();
+        }
+        notifyUpdateLayoutParams();
+    }
+
+    /**
      * Either adds or removes {@link WindowManager.LayoutParams#FLAG_NOT_FOCUSABLE} on the taskbar
      * window. If we're now focusable, also move nav buttons to a separate window above IME.
      */
@@ -958,8 +974,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                         }
 
                     } catch (NullPointerException
-                            | ActivityNotFoundException
-                            | SecurityException e) {
+                             | ActivityNotFoundException
+                             | SecurityException e) {
                         Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT)
                                 .show();
                         Log.e(TAG, "Unable to launch. tag=" + info + " intent=" + intent, e);
@@ -1053,6 +1069,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     /**
      * Called when we detect a long press in the nav region before passing the gesture slop.
+     *
      * @return Whether taskbar handled the long press, and thus should cancel the gesture.
      */
     public boolean onLongPressToUnstashTaskbar() {
@@ -1121,7 +1138,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * Called when we detect a motion down or up/cancel in the nav region while stashed.
      *
      * @param animateForward Whether to animate towards the unstashed hint state or back to stashed.
-     * @param forceUnstash Whether we force the unstash hint.
+     * @param forceUnstash   Whether we force the unstash hint.
      */
     public void startTaskbarUnstashHint(boolean animateForward, boolean forceUnstash) {
         // TODO(b/270395798): Clean up forceUnstash after removing long-press unstashing code.
