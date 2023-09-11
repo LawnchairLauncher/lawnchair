@@ -151,6 +151,7 @@ import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.animation.ActivityLaunchAnimator;
 import com.android.systemui.animation.DelegateLaunchAnimatorController;
+import com.android.systemui.animation.LaunchableView;
 import com.android.systemui.animation.RemoteAnimationDelegate;
 import com.android.systemui.shared.system.BlurUtils;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
@@ -1777,7 +1778,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         @Nullable
         private static ContainerAnimationRunner from(
                 View v, StartingWindowListener startingWindowListener, RunnableList onEndCallback) {
-            View viewToUse = findViewWithBackground(v);
+            View viewToUse = findLaunchableViewWithBackground(v);
             if (viewToUse == null) {
                 viewToUse = v;
             }
@@ -1815,11 +1816,15 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     new ActivityLaunchAnimator.AnimationDelegate(controller, callback, listener));
         }
 
-        /** Finds the closest parent of [view] (inclusive) with a background drawable. */
+        /**
+         * Finds the closest parent of [view] (inclusive) that implements {@link LaunchableView} and
+         * has a background drawable.
+         */
         @Nullable
-        private static View findViewWithBackground(View view) {
+        private static <T extends View & LaunchableView> T findLaunchableViewWithBackground(
+                View view) {
             View current = view;
-            while (current.getBackground() == null) {
+            while (current.getBackground() == null || !(current instanceof LaunchableView)) {
                 if (!(current.getParent() instanceof View)) {
                     return null;
                 }
@@ -1827,7 +1832,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 current = (View) view.getParent();
             }
 
-            return current;
+            return (T) current;
         }
 
         @Override
