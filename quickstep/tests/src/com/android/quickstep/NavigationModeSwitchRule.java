@@ -26,7 +26,10 @@ import static com.android.systemui.shared.system.QuickStepContract.NAV_BAR_MODE_
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
+import android.os.SystemClock;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import androidx.test.uiautomator.UiDevice;
 
@@ -115,6 +118,18 @@ public class NavigationModeSwitchRule implements TestRule {
                 private void evaluateWithThreeButtons() throws Throwable {
                     if (setActiveOverlay(mLauncher, NAV_BAR_MODE_3BUTTON_OVERLAY,
                             LauncherInstrumentation.NavigationModel.THREE_BUTTON, description)) {
+                        // After switching to three button, ensure that we interact with the screen
+                        // within the app area to reset the frozen recents state (if a quickswitch
+                        // was just performed), otherwise the list may be in the wrong order
+                        // spatially when executing the next test
+                        final Point center = new Point(mLauncher.getDevice().getDisplayWidth() / 2,
+                                mLauncher.getDevice().getDisplayHeight() / 2);
+                        final long clickTime = SystemClock.uptimeMillis();
+                        mLauncher.sendPointer(clickTime, clickTime, MotionEvent.ACTION_DOWN, center,
+                                LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
+                        mLauncher.sendPointer(clickTime, clickTime, MotionEvent.ACTION_UP, center,
+                                LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
+
                         base.evaluate();
                     }
                 }
