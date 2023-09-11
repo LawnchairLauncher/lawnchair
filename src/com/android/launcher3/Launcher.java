@@ -324,6 +324,8 @@ public class Launcher extends StatefulActivity<LauncherState>
     private static final String DISPLAY_ALL_APPS_TRACE_METHOD_NAME = "DisplayAllApps";
     public static final int DISPLAY_WORKSPACE_TRACE_COOKIE = 0;
     public static final int DISPLAY_ALL_APPS_TRACE_COOKIE = 1;
+    private static final String COLD_STARTUP_TRACE_METHOD_NAME = "LauncherColdStartup";
+    public static final int COLD_STARTUP_TRACE_COOKIE = 2;
 
     private static final FloatProperty<Workspace<?>> WORKSPACE_WIDGET_SCALE =
             WORKSPACE_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_WIDGET_TRANSITION);
@@ -424,6 +426,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             new CannedAnimationCoordinator(this);
 
     private final List<BackPressHandler> mBackPressedHandlers = new ArrayList<>();
+    private boolean mIsColdStartupAfterReboot;
 
     @Override
     @TargetApi(Build.VERSION_CODES.S)
@@ -434,6 +437,14 @@ public class Launcher extends StatefulActivity<LauncherState>
                             ? COLD
                             : COLD_DEVICE_REBOOTING
                         : WARM);
+
+        mIsColdStartupAfterReboot = sIsNewProcess
+            && !LockedUserState.get(this).isUserUnlockedAtLauncherStartup();
+        if (mIsColdStartupAfterReboot) {
+            Trace.beginAsyncSection(
+                    COLD_STARTUP_TRACE_METHOD_NAME, COLD_STARTUP_TRACE_COOKIE);
+        }
+
         sIsNewProcess = false;
         mStartupLatencyLogger
                 .logStart(LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION)
@@ -2820,6 +2831,11 @@ public class Launcher extends StatefulActivity<LauncherState>
                                 .logEnd(LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION)
                                 .log()
                                 .reset();
+                        if (mIsColdStartupAfterReboot) {
+                            Trace.endAsyncSection(COLD_STARTUP_TRACE_METHOD_NAME,
+                                    COLD_STARTUP_TRACE_COOKIE);
+                        }
+
                         MAIN_EXECUTOR.getHandler().postAtFrontOfQueue(
                                 () -> getRootView().getViewTreeObserver()
                                         .removeOnDrawListener(this));
