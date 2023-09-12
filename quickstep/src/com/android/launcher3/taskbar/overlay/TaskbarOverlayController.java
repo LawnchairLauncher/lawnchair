@@ -62,13 +62,13 @@ public final class TaskbarOverlayController {
         @Override
         public void onTaskCreated(int taskId, ComponentName componentName) {
             // Created task will be below existing overlay, so move out of the way.
-            hideWindow();
+            hideWindowOnTaskStackChange();
         }
 
         @Override
         public void onTaskMovedToFront(int taskId) {
             // New front task will be below existing overlay, so move out of the way.
-            hideWindow();
+            hideWindowOnTaskStackChange();
         }
 
         @Override
@@ -79,8 +79,14 @@ public final class TaskbarOverlayController {
             // callback.
             if (mControllers.getSharedState() != null
                     && mControllers.getSharedState().allAppsVisible) {
-                hideWindow();
+                hideWindowOnTaskStackChange();
             }
+        }
+
+        private void hideWindowOnTaskStackChange() {
+            // A task was launched while overlay window was open, so stash Taskbar.
+            mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
+            hideWindow();
         }
     };
 
