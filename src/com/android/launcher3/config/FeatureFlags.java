@@ -141,7 +141,7 @@ public final class FeatureFlags {
 
     // TODO(Block 6): Clean up flags
     public static final BooleanFlag ENABLE_ALL_APPS_SEARCH_IN_TASKBAR = getDebugFlag(270393900,
-            "ENABLE_ALL_APPS_SEARCH_IN_TASKBAR", DISABLED,
+            "ENABLE_ALL_APPS_SEARCH_IN_TASKBAR", TEAMFOOD,
             "Enables Search box in Taskbar All Apps.");
 
     public static final BooleanFlag SECONDARY_DRAG_N_DROP_TO_PIN = getDebugFlag(270395140,
