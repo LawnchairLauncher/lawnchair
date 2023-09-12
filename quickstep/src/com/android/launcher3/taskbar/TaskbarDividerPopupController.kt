@@ -18,6 +18,10 @@ package com.android.launcher3.taskbar
 import android.view.View
 import com.android.launcher3.LauncherPrefs
 import com.android.launcher3.LauncherPrefs.Companion.TASKBAR_PINNING
+import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_DIVIDER_MENU_CLOSE
+import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_DIVIDER_MENU_OPEN
+import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_PINNED
+import com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_UNPINNED
 import com.android.launcher3.taskbar.TaskbarDividerPopupView.Companion.createAndPopulate
 import java.io.PrintWriter
 
@@ -27,6 +31,7 @@ class TaskbarDividerPopupController(private val context: TaskbarActivityContext)
 
     private lateinit var controllers: TaskbarControllers
     private val launcherPrefs = LauncherPrefs.get(context)
+    private val statsLogManager = context.statsLogManager
 
     fun init(taskbarControllers: TaskbarControllers) {
         controllers = taskbarControllers
@@ -41,6 +46,7 @@ class TaskbarDividerPopupController(private val context: TaskbarActivityContext)
 
             popupView.onCloseCallback =
                 callback@{ didPreferenceChange ->
+                    statsLogManager.logger().log(LAUNCHER_TASKBAR_DIVIDER_MENU_CLOSE)
                     context.dragLayer.post { context.onPopupVisibilityChanged(false) }
 
                     if (!didPreferenceChange) {
@@ -49,8 +55,10 @@ class TaskbarDividerPopupController(private val context: TaskbarActivityContext)
 
                     if (launcherPrefs.get(TASKBAR_PINNING)) {
                         animateTransientToPersistentTaskbar()
+                        statsLogManager.logger().log(LAUNCHER_TASKBAR_PINNED)
                     } else {
                         animatePersistentToTransientTaskbar()
+                        statsLogManager.logger().log(LAUNCHER_TASKBAR_UNPINNED)
                     }
                 }
             popupView.changePreference = {
@@ -58,6 +66,7 @@ class TaskbarDividerPopupController(private val context: TaskbarActivityContext)
             }
             context.onPopupVisibilityChanged(true)
             popupView.show()
+            statsLogManager.logger().log(LAUNCHER_TASKBAR_DIVIDER_MENU_OPEN)
         }
     }
 

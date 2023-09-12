@@ -654,7 +654,19 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_APP_PAIR_SAVE(1456),
 
         @UiEvent(doc = "App launched through pending intent")
-        LAUNCHER_APP_LAUNCH_PENDING_INTENT(1394)
+        LAUNCHER_APP_LAUNCH_PENDING_INTENT(1394),
+
+        @UiEvent(doc = "User long pressed on taskbar divider icon to open popup menu")
+        LAUNCHER_TASKBAR_DIVIDER_MENU_OPEN(1488),
+
+        @UiEvent(doc = "User long pressed on taskbar divider icon to close popup menu")
+        LAUNCHER_TASKBAR_DIVIDER_MENU_CLOSE(1489),
+
+        @UiEvent(doc = "User has pinned taskbar using taskbar divider menu")
+        LAUNCHER_TASKBAR_PINNED(1490),
+
+        @UiEvent(doc = "User has unpinned taskbar using taskbar divider menu")
+        LAUNCHER_TASKBAR_UNPINNED(1491)
 
         // ADD MORE
         ;
