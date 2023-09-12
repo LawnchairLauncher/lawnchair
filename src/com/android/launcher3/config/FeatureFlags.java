@@ -268,7 +268,7 @@ public final class FeatureFlags {
 
     // TODO(Block 17): Clean up flags
     public static final BooleanFlag ENABLE_TASKBAR_PINNING = getDebugFlag(270396583,
-            "ENABLE_TASKBAR_PINNING", TEAMFOOD,
+            "ENABLE_TASKBAR_PINNING", DISABLED,
             "Enables taskbar pinning to allow user to switch between transient and persistent "
                     + "taskbar flavors");
 
