@@ -27,6 +27,7 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_OVERLAY_PROXY;
 import static com.android.launcher3.Utilities.isRunningInTestHarness;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NO_RECREATION;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_FULLSCREEN;
@@ -326,11 +327,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             mIsDestroyed = false;
         }
 
-        if (!mAddedWindow) {
+        if (!ENABLE_TASKBAR_NO_RECREATION.get() && !mAddedWindow) {
             mWindowManager.addView(mDragLayer, mWindowLayoutParams);
             mAddedWindow = true;
         } else {
-            mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
+            notifyUpdateLayoutParams();
         }
     }
 
@@ -677,7 +678,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mIsDestroyed = true;
         setUIController(TaskbarUIController.DEFAULT);
         mControllers.onDestroy();
-        if (!FLAG_HIDE_NAVBAR_WINDOW) {
+        if (!ENABLE_TASKBAR_NO_RECREATION.get() && !FLAG_HIDE_NAVBAR_WINDOW) {
             mWindowManager.removeViewImmediate(mDragLayer);
             mAddedWindow = false;
         }
@@ -809,7 +810,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
         mWindowLayoutParams.height = height;
         mControllers.taskbarInsetsController.onTaskbarOrBubblebarWindowHeightOrInsetsChanged();
-        mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
+        notifyUpdateLayoutParams();
     }
 
     /**
@@ -852,7 +853,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         } else {
             mWindowLayoutParams.flags |= FLAG_NOT_FOCUSABLE;
         }
-        mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
+        notifyUpdateLayoutParams();
     }
 
     /**
@@ -1249,12 +1250,16 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             mWindowLayoutParams.privateFlags &=
                     ~WindowManager.LayoutParams.PRIVATE_FLAG_EXCLUDE_FROM_SCREEN_MAGNIFICATION;
         }
-        mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
+        notifyUpdateLayoutParams();
     }
 
     void notifyUpdateLayoutParams() {
         if (mDragLayer.isAttachedToWindow()) {
-            mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
+            if (ENABLE_TASKBAR_NO_RECREATION.get()) {
+                mWindowManager.updateViewLayout(mDragLayer.getRootView(), mWindowLayoutParams);
+            } else {
+                mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);
+            }
         }
     }
 
