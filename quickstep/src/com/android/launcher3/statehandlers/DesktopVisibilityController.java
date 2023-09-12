@@ -160,7 +160,9 @@ public class DesktopVisibilityController {
             if (mInOverviewState) {
                 setLauncherViewsVisibility(View.VISIBLE);
                 markLauncherResumed();
-            } else if (mFreeformTasksVisible) {
+            } else if (mFreeformTasksVisible && !mGestureInProgress) {
+                // Switching out of overview state and gesture finished.
+                // If freeform tasks are still visible, hide launcher again.
                 setLauncherViewsVisibility(View.INVISIBLE);
                 markLauncherPaused();
             }
