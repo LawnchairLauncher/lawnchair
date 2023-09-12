@@ -138,7 +138,8 @@ public class RecentsAnimationCallbacks implements
                 nonAppTargets = new RemoteAnimationTarget[0];
             }
             final RecentsAnimationTargets targets = new RecentsAnimationTargets(appTargets,
-                    wallpaperTargets, nonAppTargets, homeContentInsets, minimizedHomeBounds);
+                    wallpaperTargets, nonAppTargets, homeContentInsets, minimizedHomeBounds,
+                    extras);
 
             Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), () -> {
                 ActiveGestureLog.INSTANCE.addLog(

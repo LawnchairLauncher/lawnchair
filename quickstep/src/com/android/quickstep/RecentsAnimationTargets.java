@@ -20,6 +20,7 @@ import static android.view.RemoteAnimationTarget.MODE_CLOSING;
 
 import android.app.WindowConfiguration;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.view.RemoteAnimationTarget;
 
 import com.android.quickstep.views.DesktopTaskView;
@@ -35,8 +36,8 @@ public class RecentsAnimationTargets extends RemoteAnimationTargets {
 
     public RecentsAnimationTargets(RemoteAnimationTarget[] apps,
             RemoteAnimationTarget[] wallpapers, RemoteAnimationTarget[] nonApps,
-            Rect homeContentInsets, Rect minimizedHomeBounds) {
-        super(apps, wallpapers, nonApps, MODE_CLOSING);
+            Rect homeContentInsets, Rect minimizedHomeBounds, Bundle extras) {
+        super(apps, wallpapers, nonApps, MODE_CLOSING, extras);
         this.homeContentInsets = homeContentInsets;
         this.minimizedHomeBounds = minimizedHomeBounds;
     }
