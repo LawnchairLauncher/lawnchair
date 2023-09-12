@@ -18,6 +18,7 @@ package com.android.launcher3.taskbar;
 import static com.android.launcher3.taskbar.bubbles.BubbleBarController.BUBBLE_BAR_ENABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_MANAGE_MENU_EXPANDED;
+import static com.android.wm.shell.common.bubbles.BubbleConstants.BUBBLE_EXPANDED_SCRIM_ALPHA;
 
 import android.animation.ObjectAnimator;
 import android.view.animation.Interpolator;
@@ -34,8 +35,6 @@ import java.io.PrintWriter;
  */
 public class TaskbarScrimViewController implements TaskbarControllers.LoggableTaskbarController,
         TaskbarControllers.BackgroundRendererController {
-
-    private static final float SCRIM_ALPHA = 0.6f;
 
     private static final Interpolator SCRIM_ALPHA_IN = new PathInterpolator(0.4f, 0f, 1f, 1f);
     private static final Interpolator SCRIM_ALPHA_OUT = new PathInterpolator(0f, 0f, 0.8f, 1f);
@@ -78,8 +77,9 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
         final float scrimAlpha = manageMenuExpanded
                 // When manage menu shows there's the first scrim and second scrim so figure out
                 // what the total transparency would be.
-                ? (SCRIM_ALPHA + (SCRIM_ALPHA * (1 - SCRIM_ALPHA)))
-                : showScrim ? SCRIM_ALPHA : 0;
+                ? (BUBBLE_EXPANDED_SCRIM_ALPHA + (BUBBLE_EXPANDED_SCRIM_ALPHA
+                * (1 - BUBBLE_EXPANDED_SCRIM_ALPHA)))
+                : showScrim ? BUBBLE_EXPANDED_SCRIM_ALPHA : 0;
         showScrim(showScrim, scrimAlpha, skipAnim);
     }
 
