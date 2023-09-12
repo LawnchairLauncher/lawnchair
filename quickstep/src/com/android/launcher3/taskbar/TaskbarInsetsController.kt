@@ -109,7 +109,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         if (!context.isGestureNav) {
             if (windowLayoutParams.paramsForRotation != null) {
                 for (layoutParams in windowLayoutParams.paramsForRotation) {
-                    layoutParams.providedInsets = windowLayoutParams.providedInsets
+                    layoutParams.providedInsets = getProvidedInsets(insetsRoundedCornerFlag)
                 }
             }
         }
