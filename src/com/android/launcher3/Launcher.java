@@ -144,6 +144,7 @@ import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.BaseSearchConfig;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.celllayout.CellPosMapper;
@@ -1719,7 +1720,16 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (getStateManager().isInStableState(ALL_APPS)) {
             getStateManager().goToState(NORMAL, alreadyOnHome);
         } else {
-            showAllAppsFromIntent(alreadyOnHome);
+            AbstractFloatingView.closeAllOpenViews(this);
+            getStateManager().goToState(ALL_APPS, true /* animated */,
+                    new AnimationSuccessListener() {
+                        @Override
+                        public void onAnimationSuccess(Animator animator) {
+                            if (mAppsView.getSearchUiManager().getEditText() != null) {
+                                mAppsView.getSearchUiManager().getEditText().requestFocus();
+                            }
+                        }
+                    });
         }
     }
 
