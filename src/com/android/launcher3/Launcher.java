@@ -68,6 +68,7 @@ import static com.android.launcher3.logging.StatsLogManager.StatsLatencyLogger.L
 import static com.android.launcher3.logging.StatsLogManager.StatsLatencyLogger.LatencyType.WARM;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_ACTIVITY_PAUSED;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_DRAG_AND_DROP;
+import static com.android.launcher3.model.data.LauncherAppWidgetInfo.CUSTOM_WIDGET_ID;
 import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
 import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
@@ -886,7 +887,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 if (widgetInfo != null) {
                     // Since the view was just bound, also launch the configure activity if needed
                     LauncherAppWidgetProviderInfo provider = mAppWidgetManager
-                            .getLauncherAppWidgetInfo(widgetId);
+                            .getLauncherAppWidgetInfo(widgetId, info.getTargetComponent());
                     if (provider != null) {
                         new WidgetAddFlowHandler(provider)
                                 .startConfigActivity(this, widgetInfo,
@@ -1500,7 +1501,8 @@ public class Launcher extends StatefulActivity<LauncherState>
             AppWidgetHostView hostView, LauncherAppWidgetProviderInfo appWidgetInfo) {
 
         if (appWidgetInfo == null) {
-            appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(appWidgetId);
+            appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(appWidgetId,
+                    itemInfo.getTargetComponent());
         }
 
         if (hostView == null) {
@@ -1995,8 +1997,8 @@ public class Launcher extends StatefulActivity<LauncherState>
             // In this case, we either need to start an activity to get permission to bind
             // the widget, or we need to start an activity to configure the widget, or both.
             if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET) {
-                appWidgetId = CustomWidgetManager.INSTANCE.get(this).getWidgetIdForCustomProvider(
-                        info.componentName);
+                appWidgetId = CustomWidgetManager.INSTANCE.get(this)
+                        .allocateCustomAppWidgetId(info.componentName);
             } else {
                 appWidgetId = getAppWidgetHolder().allocateAppWidgetId();
             }
@@ -2642,9 +2644,10 @@ public class Launcher extends StatefulActivity<LauncherState>
                     }
                 }
             } else {
-                appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(item.appWidgetId);
+                appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(item.appWidgetId,
+                        item.getTargetComponent());
                 if (appWidgetInfo == null) {
-                    if (item.appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
+                    if (item.appWidgetId <= CUSTOM_WIDGET_ID) {
                         removalReason =
                                 "CustomWidgetManager cannot find provider from that widget id.";
                     } else {
