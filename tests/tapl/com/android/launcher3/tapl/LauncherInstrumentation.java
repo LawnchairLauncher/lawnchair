@@ -341,6 +341,11 @@ public final class LauncherInstrumentation {
                 .getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
+    Insets getImeInsets() {
+        return getTestInfo(TestProtocol.REQUEST_IME_INSETS)
+                .getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     public boolean isTablet() {
         return getTestInfo(TestProtocol.REQUEST_IS_TABLET)
                 .getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
@@ -2111,7 +2116,11 @@ public final class LauncherInstrumentation {
                         ? containerBounds.right + 1
                         : containerBounds.left - 1;
             }
-            int y = containerBounds.top + containerBounds.height() / 2;
+            // If IME is visible and overlaps the container bounds, touch above it.
+            int bottomBound = Math.min(
+                    containerBounds.bottom,
+                    getRealDisplaySize().y - getImeInsets().bottom);
+            int y = (bottomBound - containerBounds.top) / 2;
 
             final long downTime = SystemClock.uptimeMillis();
             final Point tapTarget = new Point(x, y);

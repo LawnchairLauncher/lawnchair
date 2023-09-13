@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.view.WindowInsets;
 
 import androidx.annotation.Nullable;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
@@ -139,6 +140,14 @@ public class TestInformationHandler implements ResourceBasedOverride {
                     WindowInsets insets = activity.getWindow()
                             .getDecorView().getRootWindowInsets();
                     return insets.getSystemWindowInsets();
+                }, this::getCurrentActivity);
+            }
+
+            case TestProtocol.REQUEST_IME_INSETS: {
+                return getUIProperty(Bundle::putParcelable, activity -> {
+                    WindowInsetsCompat insets = WindowInsetsCompat.toWindowInsetsCompat(
+                            activity.getWindow().getDecorView().getRootWindowInsets());
+                    return insets.getInsets(WindowInsetsCompat.Type.ime()).toPlatformInsets();
                 }, this::getCurrentActivity);
             }
 
