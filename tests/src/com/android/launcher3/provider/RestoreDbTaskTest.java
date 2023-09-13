@@ -19,30 +19,17 @@ import static android.os.Process.myUserHandle;
 
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
-import static com.android.launcher3.LauncherPrefs.APP_WIDGET_IDS;
-import static com.android.launcher3.LauncherPrefs.OLD_APP_WIDGET_IDS;
-import static com.android.launcher3.LauncherPrefs.RESTORE_DEVICE;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
-import static com.android.launcher3.widget.LauncherWidgetHolder.APPWIDGET_HOST_ID;
-
-import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
 
 import android.app.backup.BackupManager;
-import android.appwidget.AppWidgetHost;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -56,7 +43,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.ModelDbController;
@@ -66,10 +52,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-
-import java.util.Arrays;
-import java.util.stream.IntStream;
 
 /**
  * Tests for {@link RestoreDbTask}
@@ -84,21 +66,11 @@ public class RestoreDbTaskTest {
 
     private LauncherModelHelper mModelHelper;
     private Context mContext;
-    private RestoreDbTask mTask;
-    private ModelDbController mMockController;
-    private SQLiteDatabase mMockDb;
-    private Cursor mMockCursor;
-    private LauncherPrefs mPrefs;
 
     @Before
     public void setup() {
         mModelHelper = new LauncherModelHelper();
         mContext = mModelHelper.sandboxContext;
-        mTask = new RestoreDbTask();
-        mMockController = Mockito.mock(ModelDbController.class);
-        mMockDb = mock(SQLiteDatabase.class);
-        mMockCursor = mock(Cursor.class);
-        mPrefs = new LauncherPrefs(mContext);
     }
 
     @After
@@ -176,7 +148,8 @@ public class RestoreDbTaskTest {
         assertEquals(10, getItemCountForProfile(db, myProfileId_old));
         assertEquals(6, getItemCountForProfile(db, workProfileId_old));
 
-        mTask.sanitizeDB(mContext, controller, controller.getDb(), bm);
+        RestoreDbTask task = new RestoreDbTask();
+        task.sanitizeDB(mContext, controller, controller.getDb(), bm);
 
         // All the data has been migrated to the new user ids
         assertEquals(0, getItemCountForProfile(db, myProfileId_old));
@@ -205,90 +178,14 @@ public class RestoreDbTaskTest {
         assertEquals(10, getItemCountForProfile(db, myProfileId_old));
         assertEquals(6, getItemCountForProfile(db, workProfileId_old));
 
-        mTask.sanitizeDB(mContext, controller, controller.getDb(), bm);
+        RestoreDbTask task = new RestoreDbTask();
+        task.sanitizeDB(mContext, controller, controller.getDb(), bm);
 
         // All the data has been migrated to the new user ids
         assertEquals(0, getItemCountForProfile(db, myProfileId_old));
         assertEquals(0, getItemCountForProfile(db, workProfileId_old));
         assertEquals(10, getItemCountForProfile(db, myProfileId));
         assertEquals(10, getCount(db, "select * from favorites"));
-    }
-
-    @Test
-    public void givenLauncherPrefsHasNoIds_whenRestoreAppWidgetIdsIfExists_thenIdsAreRemoved() {
-        // When
-        mTask.restoreAppWidgetIdsIfExists(mContext, mMockController);
-        // Then
-        assertThat(mPrefs.has(OLD_APP_WIDGET_IDS, APP_WIDGET_IDS)).isFalse();
-    }
-
-    @Test
-    public void givenNoPendingRestore_WhenRestoreAppWidgetIds_ThenRemoveNewWidgetIds() {
-        // Given
-        AppWidgetHost expectedHost = new AppWidgetHost(mContext, APPWIDGET_HOST_ID);
-        int[] expectedOldIds = generateOldWidgetIds(expectedHost);
-        int[] expectedNewIds = generateNewWidgetIds(expectedHost, expectedOldIds);
-        when(mMockController.getDb()).thenReturn(mMockDb);
-        mPrefs.remove(RESTORE_DEVICE);
-
-        // When
-        RestoreDbTask.setRestoredAppWidgetIds(mContext, expectedOldIds, expectedNewIds);
-        mTask.restoreAppWidgetIdsIfExists(mContext, mMockController);
-
-        // Then
-        assertThat(expectedHost.getAppWidgetIds()).isEqualTo(expectedOldIds);
-        assertThat(mPrefs.has(OLD_APP_WIDGET_IDS, APP_WIDGET_IDS)).isFalse();
-        verifyZeroInteractions(mMockController);
-    }
-
-    @Test
-    public void givenRestoreWithNonExistingWidgets_WhenRestoreAppWidgetIds_ThenRemoveNewIds() {
-        // Given
-        AppWidgetHost expectedHost = new AppWidgetHost(mContext, APPWIDGET_HOST_ID);
-        int[] expectedOldIds = generateOldWidgetIds(expectedHost);
-        int[] expectedNewIds = generateNewWidgetIds(expectedHost, expectedOldIds);
-        when(mMockController.getDb()).thenReturn(mMockDb);
-        when(mMockDb.query(any(), any(), any(), any(), any(), any(), any())).thenReturn(
-                mMockCursor);
-        when(mMockCursor.moveToFirst()).thenReturn(false);
-        RestoreDbTask.setPending(mContext);
-
-        // When
-        RestoreDbTask.setRestoredAppWidgetIds(mContext, expectedOldIds, expectedNewIds);
-        mTask.restoreAppWidgetIdsIfExists(mContext, mMockController);
-
-        // Then
-        assertThat(expectedHost.getAppWidgetIds()).isEqualTo(expectedOldIds);
-        assertThat(mPrefs.has(OLD_APP_WIDGET_IDS, APP_WIDGET_IDS)).isFalse();
-        verify(mMockController, times(expectedOldIds.length)).update(any(), any(), any(), any());
-    }
-
-    @Test
-    public void givenRestore_WhenRestoreAppWidgetIds_ThenAddNewIds() {
-        // Given
-        AppWidgetHost expectedHost = new AppWidgetHost(mContext, APPWIDGET_HOST_ID);
-        int[] expectedOldIds = generateOldWidgetIds(expectedHost);
-        int[] expectedNewIds = generateNewWidgetIds(expectedHost, expectedOldIds);
-        int[] allExpectedIds = IntStream.concat(
-                Arrays.stream(expectedOldIds),
-                Arrays.stream(expectedNewIds)
-        ).toArray();
-
-        when(mMockController.getDb()).thenReturn(mMockDb);
-        when(mMockDb.query(any(), any(), any(), any(), any(), any(), any()))
-                .thenReturn(mMockCursor);
-        when(mMockCursor.moveToFirst()).thenReturn(true);
-        when(mMockCursor.isAfterLast()).thenReturn(true);
-        RestoreDbTask.setPending(mContext);
-
-        // When
-        RestoreDbTask.setRestoredAppWidgetIds(mContext, expectedOldIds, expectedNewIds);
-        mTask.restoreAppWidgetIdsIfExists(mContext, mMockController);
-
-        // Then
-        assertThat(expectedHost.getAppWidgetIds()).isEqualTo(allExpectedIds);
-        assertThat(mPrefs.has(OLD_APP_WIDGET_IDS, APP_WIDGET_IDS)).isFalse();
-        verify(mMockController, times(expectedOldIds.length)).update(any(), any(), any(), any());
     }
 
     private void addIconsBulk(MyModelDbController controller,
@@ -371,19 +268,6 @@ public class RestoreDbTaskTest {
         try (Cursor c = db.rawQuery(sql, null)) {
             return c.getCount();
         }
-    }
-
-    private int[] generateOldWidgetIds(AppWidgetHost host) {
-        // generate some widget ids in case there are none
-        host.allocateAppWidgetId();
-        host.allocateAppWidgetId();
-        return host.getAppWidgetIds();
-    }
-
-    private int[] generateNewWidgetIds(AppWidgetHost host, int[] oldWidgetIds) {
-        // map as many new ids as old ids
-        return Arrays.stream(oldWidgetIds)
-                .map(id -> host.allocateAppWidgetId()).toArray();
     }
 
     private class MyModelDbController extends ModelDbController {
