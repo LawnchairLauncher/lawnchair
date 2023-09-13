@@ -66,12 +66,10 @@ public class TaplTestsTransientTaskbar extends AbstractTaplTestsTaskbar {
 
     @Test
     @TaskbarModeSwitch(mode = TRANSIENT)
-    public void testClickHoveredTaskbarToGoHome() {
+    public void testClickHoveredTaskbarToGoHome() throws Exception {
         try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_CURSOR_HOVER_STATES, true)) {
             getTaskbar().getAppIcon(TEST_APP_NAME).launch(TEST_APP_PACKAGE);
             mLauncher.getLaunchedAppState().clickStashedTaskbarToGoHome();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
     }
 }

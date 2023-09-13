@@ -44,9 +44,7 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
             }
 
             case TestProtocol.REQUEST_BACKGROUND_TO_OVERVIEW_SWIPE_HEIGHT: {
-                final float swipeHeight =
-                        LayoutUtils.getShelfTrackingDistance(mContext, mDeviceProfile,
-                                PagedOrientationHandler.PORTRAIT);
+                final float swipeHeight = mDeviceProfile.heightPx / 2f;
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, (int) swipeHeight);
                 return response;
             }
