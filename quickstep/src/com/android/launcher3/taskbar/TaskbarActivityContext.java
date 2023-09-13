@@ -347,6 +347,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mControllers.taskbarAllAppsController.toggle();
     }
 
+    /** Toggles Taskbar All Apps overlay with keyboard ready for search. */
+    public void toggleAllAppsSearch() {
+        mControllers.taskbarAllAppsController.toggleSearch();
+    }
+
     @Override
     public DeviceProfile getDeviceProfile() {
         return mDeviceProfile;

@@ -128,10 +128,19 @@ public final class TaskbarAllAppsController {
 
     /** Toggles visibility of {@link TaskbarAllAppsContainerView} in the overlay window. */
     public void toggle() {
+        toggle(false);
+    }
+
+    /** Toggles visibility of {@link TaskbarAllAppsContainerView} with the keyboard for search. */
+    public void toggleSearch() {
+        toggle(true);
+    }
+
+    private void toggle(boolean showKeyboard) {
         if (isOpen()) {
             mSlideInView.close(true);
         } else {
-            show(true);
+            show(true, showKeyboard);
         }
     }
 
@@ -141,6 +150,10 @@ public final class TaskbarAllAppsController {
     }
 
     private void show(boolean animate) {
+        show(animate, false);
+    }
+
+    private void show(boolean animate, boolean showKeyboard) {
         if (mAppsView != null) {
             return;
         }
@@ -166,7 +179,11 @@ public final class TaskbarAllAppsController {
             cleanUpOverlay();
         });
         TaskbarAllAppsViewController viewController = new TaskbarAllAppsViewController(
-                mOverlayContext, mSlideInView, mControllers, mSearchSessionController);
+                mOverlayContext,
+                mSlideInView,
+                mControllers,
+                mSearchSessionController,
+                showKeyboard);
 
         viewController.show(animate);
         mAppsView = mOverlayContext.getAppsView();

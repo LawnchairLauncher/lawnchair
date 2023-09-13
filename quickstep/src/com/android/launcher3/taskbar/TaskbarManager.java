@@ -304,7 +304,7 @@ public class TaskbarManager {
             return;
         }
 
-        mTaskbarActivityContext.toggleAllApps();
+        mTaskbarActivityContext.toggleAllAppsSearch();
     }
 
     /**
