@@ -19,6 +19,7 @@ package com.android.launcher3;
 import static com.android.app.animation.Interpolators.SCROLL;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.isObservedEventType;
+import static com.android.launcher3.testing.shared.TestProtocol.SCROLL_FINISHED_MESSAGE;
 import static com.android.launcher3.touch.OverScroll.OVERSCROLL_DAMP_FACTOR;
 import static com.android.launcher3.touch.PagedOrientationHandler.VIEW_SCROLL_BY;
 import static com.android.launcher3.touch.PagedOrientationHandler.VIEW_SCROLL_TO;
@@ -492,7 +493,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
      */
     protected void onPageEndTransition() {
         mCurrentPageScrollDiff = 0;
-        AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
+        AccessibilityManagerCompat.sendTestProtocolEventToTest(getContext(),
+                SCROLL_FINISHED_MESSAGE);
         AccessibilityManagerCompat.sendCustomAccessibilityEvent(getPageAt(mCurrentPage),
                 AccessibilityEvent.TYPE_VIEW_FOCUSED, null);
         if (mOnPageTransitionEndCallback != null) {

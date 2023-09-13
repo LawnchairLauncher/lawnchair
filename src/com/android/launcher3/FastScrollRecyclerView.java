@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.testing.shared.TestProtocol.SCROLL_FINISHED_MESSAGE;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -170,7 +172,8 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
         super.onScrollStateChanged(state);
 
         if (state == SCROLL_STATE_IDLE) {
-            AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
+            AccessibilityManagerCompat.sendTestProtocolEventToTest(getContext(),
+                    SCROLL_FINISHED_MESSAGE);
         }
     }
 

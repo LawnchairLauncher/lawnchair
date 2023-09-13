@@ -25,6 +25,7 @@ import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustom
 import static com.android.launcher3.config.FeatureFlags.ALWAYS_USE_HARDWARE_OPTIMIZATION_FOR_FOLDER_ANIMATIONS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_LABEL_UPDATED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED;
+import static com.android.launcher3.testing.shared.TestProtocol.FOLDER_OPENED_MESSAGE;
 import static com.android.launcher3.util.window.RefreshRateTracker.getSingleFrameMs;
 
 import android.animation.Animator;
@@ -692,7 +693,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             public void onAnimationEnd(Animator animation) {
                 setState(STATE_OPEN);
                 announceAccessibilityChanges();
-                AccessibilityManagerCompat.sendFolderOpenedEventToTest(getContext());
+                AccessibilityManagerCompat.sendTestProtocolEventToTest(getContext(),
+                        FOLDER_OPENED_MESSAGE);
 
                 mContent.setFocusOnFirstChild();
             }
