@@ -1137,7 +1137,7 @@ public class TaskView extends FrameLayout implements Reusable {
         if (dp.isTablet) {
             int alignedOptionIndex = 0;
             if (getRecentsView().isOnGridBottomRow(menuContainer.getTaskView()) && dp.isLandscape) {
-                if (FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get()) {
+                if (FeatureFlags.enableGridOnlyOverview()) {
                     // With no focused task, there is less available space below the tasks, so align
                     // the arrow to the third option in the menu.
                     alignedOptionIndex = 2;

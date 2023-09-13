@@ -239,7 +239,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public final void calculateTaskSize(Context context, DeviceProfile dp, Rect outRect,
             PagedOrientationHandler orientedState) {
         if (dp.isTablet) {
-            if (FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get()) {
+            if (FeatureFlags.enableGridOnlyOverview()) {
                 calculateGridTaskSize(context, dp, outRect, orientedState);
             } else {
                 calculateFocusTaskSize(context, dp, outRect);
@@ -336,7 +336,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             PagedOrientationHandler orientedState) {
         Resources res = context.getResources();
         Rect potentialTaskRect = new Rect();
-        if (FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get()) {
+        if (FeatureFlags.enableGridOnlyOverview()) {
             calculateGridSize(dp, potentialTaskRect);
         } else {
             calculateFocusTaskSize(context, dp, potentialTaskRect);
@@ -368,7 +368,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public final void calculateModalTaskSize(Context context, DeviceProfile dp, Rect outRect,
             PagedOrientationHandler orientedState) {
         calculateTaskSize(context, dp, outRect, orientedState);
-        boolean isGridOnlyOverview = dp.isTablet && FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get();
+        boolean isGridOnlyOverview = dp.isTablet && FeatureFlags.enableGridOnlyOverview();
         int claimedSpaceBelow = isGridOnlyOverview
                 ? dp.overviewActionsTopMarginPx + dp.overviewActionsHeight + dp.stashedTaskbarHeight
                 : (dp.heightPx - outRect.bottom - dp.getInsets().bottom);

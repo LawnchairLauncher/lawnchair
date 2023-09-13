@@ -13,3 +13,10 @@ flag {
     description: "Enables two line label inside all apps."
     bug: "270390937"
 }
+
+flag {
+    name: "enable_grid_only_overview"
+    namespace: "launcher"
+    description: "Enable a grid-only overview without a focused task."
+    bug: "270397206"
+}
