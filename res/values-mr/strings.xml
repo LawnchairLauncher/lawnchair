@@ -35,7 +35,7 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d रूंद बाय %2$d उंच"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> विजेट"</string>
-    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"होम स्क्रीनवर ते हलवण्यासाठी विजेटला स्पर्श करा आणि धरून ठेवा"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"होम स्क्रीनवर हलवण्यासाठी विजेटला स्पर्श करून धरून ठेवा"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"होम स्क्रीनवर जोडा"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> हे विजेट तुमच्या होम स्क्रीनवर जोडले आहे"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"सूचना"</string>
