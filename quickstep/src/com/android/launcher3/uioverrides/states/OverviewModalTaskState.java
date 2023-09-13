@@ -72,7 +72,7 @@ public class OverviewModalTaskState extends OverviewState {
 
     @Override
     public boolean isTaskbarStashed(Launcher launcher) {
-        if (FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get()) {
+        if (FeatureFlags.enableGridOnlyOverview()) {
             return true;
         }
         return super.isTaskbarStashed(launcher);
