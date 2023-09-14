@@ -345,9 +345,7 @@ public class QuickstepLauncher extends Launcher {
         mHotseatPredictionController.setPauseUIUpdate(getTaskbarUIController() == null);
         RunnableList result = super.startActivitySafely(v, intent, item);
         if (result == null) {
-            if (getTaskbarUIController() == null) {
-                mHotseatPredictionController.setPauseUIUpdate(false);
-            }
+            mHotseatPredictionController.setPauseUIUpdate(false);
         } else {
             result.add(() -> mHotseatPredictionController.setPauseUIUpdate(false));
         }
@@ -1310,6 +1308,9 @@ public class QuickstepLauncher extends Launcher {
         }
         if (mAppTransitionManager != null) {
             mAppTransitionManager.dump(prefix + "\t" + RING_APPEAR_ANIMATION_PREFIX, writer);
+        }
+        if (mHotseatPredictionController != null) {
+            mHotseatPredictionController.dump(prefix, writer);
         }
     }
 }

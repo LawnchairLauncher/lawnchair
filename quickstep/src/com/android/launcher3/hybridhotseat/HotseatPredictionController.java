@@ -22,6 +22,7 @@ import static com.android.launcher3.hybridhotseat.HotseatEduController.getSettin
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_PREDICTION_PINNED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_RANKED;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
@@ -61,9 +62,11 @@ import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.views.Snackbar;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -185,7 +188,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     private void fillGapsWithPrediction(boolean animate) {
-        Log.d(TAG, "fillGapsWithPrediction");
+        Log.d(TAG, "fillGapsWithPrediction flags: " + getStateString(mPauseFlags));
         if (mPauseFlags != 0) {
             return;
         }
@@ -291,6 +294,7 @@ public class HotseatPredictionController implements DragController.DragListener,
      * start and pauses predicted apps update on the hotseat
      */
     public void setPauseUIUpdate(boolean paused) {
+        Log.d(TAG, "setPauseUIUpdate parameter `paused` is " + paused);
         mPauseFlags = paused
                 ? (mPauseFlags | FLAG_UPDATE_PAUSED)
                 : (mPauseFlags & ~FLAG_UPDATE_PAUSED);
@@ -514,5 +518,22 @@ public class HotseatPredictionController implements DragController.DragListener,
         return view instanceof PredictedAppIcon && view.getTag() instanceof WorkspaceItemInfo
                 && ((WorkspaceItemInfo) view.getTag()).container
                 == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
+    }
+
+    private static String getStateString(int flags) {
+        StringJoiner str = new StringJoiner("|");
+        appendFlag(str, flags, FLAG_UPDATE_PAUSED, "FLAG_UPDATE_PAUSED");
+        appendFlag(str, flags, FLAG_DRAG_IN_PROGRESS, "FLAG_DRAG_IN_PROGRESS");
+        appendFlag(str, flags, FLAG_FILL_IN_PROGRESS, "FLAG_FILL_IN_PROGRESS");
+        appendFlag(str, flags, FLAG_REMOVING_PREDICTED_ICON,
+                "FLAG_REMOVING_PREDICTED_ICON");
+        return str.toString();
+    }
+
+    public void dump(String prefix, PrintWriter writer) {
+        writer.println(prefix + this.getClass().getSimpleName());
+        writer.println(prefix + "\tFlags: " + getStateString(mPauseFlags));
+        writer.println(prefix + "\tmHotSeatItemsCount: " + mHotSeatItemsCount);
+        writer.println(prefix + "\tmPredictedItems: " + mPredictedItems);
     }
 }
