@@ -104,7 +104,7 @@
     <string name="settings_button_text" msgid="8873672322605444408">"主畫面設定"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"已由你的管理員停用"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"允許旋轉主畫面"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"當手機旋轉時"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"隨手機旋轉"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"通知圓點"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"開啟"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"關閉"</string>
