@@ -38,6 +38,7 @@ import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.BaseDragLayer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -69,6 +70,7 @@ public class TaskbarOverlayDragLayer extends
             return true;
         }
     };
+    private final List<TouchController> mTouchControllers = new ArrayList<>();
 
     TaskbarOverlayDragLayer(Context context) {
         super(context, null, 1);
@@ -93,10 +95,13 @@ public class TaskbarOverlayDragLayer extends
 
     @Override
     public void recreateControllers() {
-        mControllers = mOnClickListeners.isEmpty()
-                ? new TouchController[]{mActivity.getDragController()}
-                : new TouchController[] {
-                        mActivity.getDragController(), mClickListenerTouchController};
+        List<TouchController> controllers = new ArrayList<>();
+        controllers.add(mActivity.getDragController());
+        controllers.addAll(mTouchControllers);
+        if (!mOnClickListeners.isEmpty()) {
+            controllers.add(mClickListenerTouchController);
+        }
+        mControllers = controllers.toArray(new TouchController[0]);
     }
 
     @Override
@@ -181,6 +186,18 @@ public class TaskbarOverlayDragLayer extends
                 removeOnClickListener(this);
             }
         });
+    }
+
+    /** Adds a {@link TouchController} to this drag layer. */
+    public void addTouchController(@NonNull TouchController touchController) {
+        mTouchControllers.add(touchController);
+        recreateControllers();
+    }
+
+    /** Removes a {@link TouchController} from this drag layer. */
+    public void removeTouchController(@NonNull TouchController touchController) {
+        mTouchControllers.remove(touchController);
+        recreateControllers();
     }
 
     /**
