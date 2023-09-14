@@ -55,6 +55,7 @@ filegroup {
       "src/com/android/launcher3/util/rule/SamplerRule.java",
       "src/com/android/launcher3/util/rule/ScreenRecordRule.java",
       "src/com/android/launcher3/util/rule/ShellCommandRule.java",
+      "src/com/android/launcher3/util/rule/TestIsolationRule.java",
       "src/com/android/launcher3/util/rule/TestStabilityRule.java",
       "src/com/android/launcher3/util/rule/TISBindRule.java",
       "src/com/android/launcher3/util/viewcapture_analysis/*.java",
