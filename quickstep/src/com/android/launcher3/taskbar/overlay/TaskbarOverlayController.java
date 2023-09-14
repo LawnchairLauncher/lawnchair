@@ -23,7 +23,6 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 
 import android.annotation.SuppressLint;
-import android.content.ComponentName;
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.view.Gravity;
@@ -59,12 +58,6 @@ public final class TaskbarOverlayController {
     private final LayoutParams mLayoutParams;
 
     private final TaskStackChangeListener mTaskStackListener = new TaskStackChangeListener() {
-        @Override
-        public void onTaskCreated(int taskId, ComponentName componentName) {
-            // Created task will be below existing overlay, so move out of the way.
-            hideWindowOnTaskStackChange();
-        }
-
         @Override
         public void onTaskMovedToFront(int taskId) {
             // New front task will be below existing overlay, so move out of the way.
