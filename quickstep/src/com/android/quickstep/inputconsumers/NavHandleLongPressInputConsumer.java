@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.inputconsumers;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import android.content.Context;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -52,7 +54,7 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
                     if (longPressRunnable != null) {
                         setActive(motionEvent);
 
-                        longPressRunnable.run();
+                        MAIN_EXECUTOR.post(longPressRunnable);
                     }
                 }
             }
