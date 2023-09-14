@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import static com.android.launcher3.LauncherPrefs.GRID_NAME;
 import static com.android.launcher3.Utilities.dpiFromPx;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TWO_PANEL_HOME;
 import static com.android.launcher3.testing.shared.ResourceUtils.INVALID_RESOURCE_HANDLE;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
@@ -316,7 +315,7 @@ public class InvariantDeviceProfile {
         int type = displayInfo.supportedBounds.stream()
                 .mapToInt(bounds -> displayInfo.isTablet(bounds) ? flagTablet : flagPhone)
                 .reduce(0, (a, b) -> a | b);
-        if ((type == (flagPhone | flagTablet)) && ENABLE_TWO_PANEL_HOME.get()) {
+        if (type == (flagPhone | flagTablet)) {
             // device has profiles supporting both phone and table modes
             return TYPE_MULTI_DISPLAY;
         } else if (type == flagTablet) {
