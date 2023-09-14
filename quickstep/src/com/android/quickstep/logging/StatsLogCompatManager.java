@@ -87,6 +87,7 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static final String LATENCY_TAG = "StatsLatencyLog";
     private static final String IMPRESSION_TAG = "StatsImpressionLog";
     private static final boolean IS_VERBOSE = Utilities.isPropertyEnabled(LogConfig.STATSLOG);
+    private static final boolean DEBUG = !Utilities.isRunningInTestHarness();
     private static final InstanceId DEFAULT_INSTANCE_ID = InstanceId.fakeInstanceId(0);
     // LauncherAtom.ItemInfo.getDefaultInstance() should be used but until launcher proto migrates
     // from nano to lite, bake constant to prevent robo test failure.
@@ -325,6 +326,11 @@ public class StatsLogCompatManager extends StatsLogManager {
         public void log(EventEnum event) {
             if (!Utilities.ATLEAST_R) {
                 return;
+            }
+            if (DEBUG) {
+                String name = (event instanceof Enum) ? ((Enum) event).name() :
+                        event.getId() + "";
+                Log.d(TAG, name);
             }
             LauncherAppState appState = LauncherAppState.getInstanceNoCreate();
 
