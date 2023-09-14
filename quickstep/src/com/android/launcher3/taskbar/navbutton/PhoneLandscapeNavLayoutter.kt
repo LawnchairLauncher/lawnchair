@@ -57,13 +57,10 @@ open class PhoneLandscapeNavLayoutter(
             marginStart = 0
         }
 
-        // Swap recents and back button
-        navButtonContainer.addView(recentsButton)
-        navButtonContainer.addView(homeButton)
-        navButtonContainer.addView(backButton)
-
         navButtonContainer.layoutParams = navContainerParams
         navButtonContainer.gravity = Gravity.CENTER
+
+        addThreeButtons()
 
         // Add the spaces in between the nav buttons
         val spaceInBetween: Int =
@@ -84,5 +81,12 @@ open class PhoneLandscapeNavLayoutter(
                 }
             }
         }
+    }
+
+    open fun addThreeButtons() {
+        // Swap recents and back button
+        navButtonContainer.addView(recentsButton)
+        navButtonContainer.addView(homeButton)
+        navButtonContainer.addView(backButton)
     }
 }

@@ -88,10 +88,10 @@ import com.android.launcher3.taskbar.TaskbarNavButtonController.TaskbarButton;
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory;
 import com.android.launcher3.taskbar.navbutton.NavButtonLayoutFactory.NavButtonLayoutter;
 import com.android.launcher3.util.DimensionUtils;
-import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.systemui.shared.rotation.FloatingRotationButton;
 import com.android.systemui.shared.rotation.RotationButton;
@@ -144,6 +144,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     private int mState;
 
     private final TaskbarActivityContext mContext;
+    private final WindowManagerProxy mWindowManagerProxy;
     private final FrameLayout mNavButtonsView;
     private final LinearLayout mNavButtonContainer;
     // Used for IME+A11Y buttons
@@ -198,10 +199,10 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             this::onComputeInsetsForSeparateWindow;
     private final RecentsHitboxExtender mHitboxExtender = new RecentsHitboxExtender();
     private ImageView mRecentsButton;
-    private DisplayController mDisplayController;
 
     public NavbarButtonsViewController(TaskbarActivityContext context, FrameLayout navButtonsView) {
         mContext = context;
+        mWindowManagerProxy = WindowManagerProxy.INSTANCE.get(mContext);
         mNavButtonsView = navButtonsView;
         mNavButtonContainer = mNavButtonsView.findViewById(R.id.end_nav_buttons);
         mEndContextualContainer = mNavButtonsView.findViewById(R.id.end_contextual_buttons);
@@ -231,8 +232,6 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                 : DimensionUtils.getTaskbarPhoneDimensions(deviceProfile, resources,
                         TaskbarManager.isPhoneMode(deviceProfile));
         mNavButtonsView.getLayoutParams().height = p.y;
-
-        mDisplayController = DisplayController.INSTANCE.get(mContext);
 
         mIsImeRenderingNavButtons =
                 InputMethodService.canImeRenderGesturalNavButtons() && mContext.imeDrawsImeNavBar();
@@ -738,7 +737,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             NavButtonLayoutter navButtonLayoutter =
                     NavButtonLayoutFactory.Companion.getUiLayoutter(
                             dp, mNavButtonsView, res, isInKidsMode, isInSetup, isThreeButtonNav,
-                            TaskbarManager.isPhoneMode(dp), mDisplayController.getInfo().rotation);
+                            TaskbarManager.isPhoneMode(dp),
+                            mWindowManagerProxy.getRotation(mContext));
             navButtonLayoutter.layoutButtons(dp, isContextualButtonShowing());
             updateNavButtonColor();
             return;
