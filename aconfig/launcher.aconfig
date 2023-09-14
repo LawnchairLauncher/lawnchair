@@ -18,5 +18,5 @@ flag {
     name: "enable_grid_only_overview"
     namespace: "launcher"
     description: "Enable a grid-only overview without a focused task."
-    bug: "270397206"
+    bug: "257950105"
 }
