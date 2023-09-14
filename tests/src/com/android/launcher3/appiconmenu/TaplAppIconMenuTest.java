@@ -82,6 +82,7 @@ public class TaplAppIconMenuTest extends AbstractLauncherUiTest {
      * Drag icon from AllApps to the workspace and then open the AppIconMenu and launch a shortcut
      * from it.
      */
+    @PlatinumTest(focusArea = "launcher")
     @Test
     public void testLaunchHomeScreenMenuItem() {
         // Drag the test app icon to home screen and open short cut menu from the icon
