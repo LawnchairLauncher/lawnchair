@@ -49,7 +49,6 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
 
     @Test
     @NavigationModeSwitch
-    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/187761685
     public void testStressPressHome() {
         for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
             // Destroy Launcher activity.
