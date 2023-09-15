@@ -19,8 +19,6 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
 import static com.android.launcher3.util.TestUtil.installDummyAppForUser;
-import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -39,7 +37,6 @@ import com.android.launcher3.allapps.WorkPausedCard;
 import com.android.launcher3.allapps.WorkProfileManager;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.util.TestUtil;
-import com.android.launcher3.util.rule.TestStabilityRule.Stability;
 
 import org.junit.After;
 import org.junit.Before;
@@ -103,8 +100,6 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     }
 
     private void waitForWorkTabSetup() {
-        // Added for b/243688989 flake to determine if we really are in allApps or not at this point
-        mLauncher.getAllApps();
         waitForLauncherCondition("Work tab not setup", launcher -> {
             if (launcher.getAppsView().getContentView() instanceof AllAppsPagedView) {
                 launcher.getAppsView().getAppsStore().enableDeferUpdates(DEFER_UPDATES_TEST);
@@ -115,7 +110,6 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     }
 
     @Test
-    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/243688989
     public void workTabExists() {
         assumeTrue(mWorkProfileSetupSuccessful);
         waitForWorkTabSetup();
@@ -176,7 +170,6 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
     }
 
     @Test
-    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/243688989
     public void testEdu() {
         assumeTrue(mWorkProfileSetupSuccessful);
         waitForWorkTabSetup();
