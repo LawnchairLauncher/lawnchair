@@ -41,6 +41,7 @@ import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.taskbar.bubbles.BubbleBarController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.MultiPropertyFactory;
@@ -202,8 +203,16 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
         return mTaskbarLauncherStateController.applyState(fromInit ? 0 : duration, startAnimation);
     }
 
+    @Override
     public void refreshResumedState() {
         onLauncherResumedOrPaused(mLauncher.hasBeenResumed());
+    }
+
+    @Override
+    public void adjustHotseatForBubbleBar(boolean isBubbleBarVisible) {
+        if (mLauncher.getHotseat() != null) {
+            mLauncher.getHotseat().adjustForBubbleBar(isBubbleBarVisible);
+        }
     }
 
     /**
@@ -325,6 +334,21 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     /** Returns true iff any in-app display progress > 0. */
     public boolean shouldUseInAppLayout() {
         return mTaskbarInAppDisplayProgress.value > 0;
+    }
+
+    public boolean isBubbleBarEnabled() {
+        return BubbleBarController.BUBBLE_BAR_ENABLED;
+    }
+
+    /** Whether the bubble bar has any bubbles. */
+    public boolean hasBubbles() {
+        if (mControllers == null) {
+            return false;
+        }
+        if (mControllers.bubbleControllers.isEmpty()) {
+            return false;
+        }
+        return mControllers.bubbleControllers.get().bubbleBarViewController.hasBubbles();
     }
 
     @Override

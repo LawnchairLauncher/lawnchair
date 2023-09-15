@@ -368,6 +368,7 @@
     <dimen name="bubblebar_stashed_handle_height">@dimen/taskbar_stashed_handle_height</dimen>
     <dimen name="bubblebar_pointer_size">8dp</dimen>
     <dimen name="bubblebar_elevation">1dp</dimen>
+    <dimen name="bubblebar_hotseat_adjustment_threshold">90dp</dimen>
 
     <dimen name="bubblebar_icon_size">50dp</dimen>
     <dimen name="bubblebar_badge_size">24dp</dimen>

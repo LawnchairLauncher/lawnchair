@@ -21,6 +21,7 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static com.android.launcher3.CellLayout.FOLDER;
 import static com.android.launcher3.CellLayout.HOTSEAT;
 import static com.android.launcher3.CellLayout.WORKSPACE;
+import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_BUBBLE_ADJUSTMENT_ANIM;
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_WIDGET_CENTERING;
 
 import android.app.WallpaperManager;
@@ -32,6 +33,8 @@ import android.os.Trace;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
@@ -61,6 +64,9 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
 
     private final ActivityContext mActivity;
     private boolean mInvertIfRtl = false;
+
+    @Nullable
+    private TranslationProvider mTranslationProvider = null;
 
     public ShortcutAndWidgetContainer(Context context, @ContainerType int containerType) {
         super(context);
@@ -229,6 +235,16 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
                     childLeft, childTop, childLeft + lp.width, childTop + lp.height);
         }
         child.layout(childLeft, childTop, childLeft + lp.width, childTop + lp.height);
+        if (mTranslationProvider != null) {
+            final float tx = mTranslationProvider.getTranslationX(child);
+            if (child instanceof Reorderable) {
+                ((Reorderable) child).getTranslateDelegate()
+                        .getTranslationX(INDEX_BUBBLE_ADJUSTMENT_ANIM)
+                        .setValue(tx);
+            } else {
+                child.setTranslationX(tx);
+            }
+        }
 
         if (lp.dropped) {
             lp.dropped = false;
@@ -297,5 +313,14 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
             CellLayout cl = (CellLayout) getParent();
             cl.clearFolderLeaveBehind();
         }
+    }
+
+    void setTranslationProvider(@Nullable TranslationProvider provider) {
+        mTranslationProvider = provider;
+    }
+
+    /** Provides translation values to apply when laying out child views. */
+    interface TranslationProvider {
+        float getTranslationX(View child);
     }
 }

@@ -219,6 +219,9 @@ public class DeviceProfile {
     private final int mMinHotseatQsbWidthPx;
     private final int mMaxHotseatIconSpacePx;
     public final int inlineNavButtonsEndSpacingPx;
+    // Space required for the bubble bar between the hotseat and the edge of the screen. If there's
+    // not enough space, the hotseat will adjust itself for the bubble bar.
+    private final int mBubbleBarSpaceThresholdPx;
 
     // Bottom sheets
     public int bottomSheetTopPadding;
@@ -569,6 +572,9 @@ public class DeviceProfile {
             inlineNavButtonsEndSpacingPx = 0;
             hotseatBarEndOffset = 0;
         }
+
+        mBubbleBarSpaceThresholdPx =
+                res.getDimensionPixelSize(R.dimen.bubblebar_hotseat_adjustment_threshold);
 
         // Needs to be calculated after hotseatBarSizePx is correct,
         // for the available height to be correct
@@ -1558,6 +1564,32 @@ public class DeviceProfile {
         paddings.bottom -= insets.bottom;
     }
 
+
+    /**
+     * Returns the new border space that should be used between hotseat icons after adjusting it to
+     * the bubble bar.
+     *
+     * <p>If there's no adjustment needed, this method returns {@code 0}.
+     */
+    public float getHotseatAdjustedBorderSpaceForBubbleBar(Context context) {
+        // only need to adjust when QSB is on top of the hotseat.
+        if (isQsbInline) {
+            return 0;
+        }
+
+        // no need to adjust if there's enough space for the bubble bar to the right of the hotseat.
+        if (getHotseatLayoutPadding(context).right > mBubbleBarSpaceThresholdPx) {
+            return 0;
+        }
+
+        // The adjustment is shrinking the hotseat's width by 1 icon on either side.
+        int iconsWidth =
+                iconSizePx * numShownHotseatIcons + hotseatBorderSpace * (numShownHotseatIcons - 1);
+        int newWidth = iconsWidth - 2 * iconSizePx;
+        // Evenly space the icons within the boundaries of the new width.
+        return (float) (newWidth - iconSizePx * numShownHotseatIcons) / (numShownHotseatIcons - 1);
+    }
+
     /**
      * Returns the padding for hotseat view
      */
@@ -2165,5 +2197,4 @@ public class DeviceProfile {
                     mIsGestureMode, mViewScaleProvider, mOverrideProvider);
         }
     }
-
 }
