@@ -226,20 +226,23 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         }
 
         // Construct controllers.
+        RotationButtonController rotationButtonController = new RotationButtonController(this,
+                c.getColor(R.color.floating_rotation_button_light_color),
+                c.getColor(R.color.floating_rotation_button_dark_color),
+                R.drawable.ic_sysbar_rotate_button_ccw_start_0,
+                R.drawable.ic_sysbar_rotate_button_ccw_start_90,
+                R.drawable.ic_sysbar_rotate_button_cw_start_0,
+                R.drawable.ic_sysbar_rotate_button_cw_start_90,
+                () -> getDisplay().getRotation());
+        rotationButtonController.setBgExecutor(Executors.THREAD_POOL_EXECUTOR);
+
         mControllers = new TaskbarControllers(this,
                 new TaskbarDragController(this),
                 buttonController,
                 isDesktopMode
                         ? new DesktopNavbarButtonsViewController(this, navButtonsView)
                         : new NavbarButtonsViewController(this, navButtonsView),
-                new RotationButtonController(this,
-                        c.getColor(R.color.floating_rotation_button_light_color),
-                        c.getColor(R.color.floating_rotation_button_dark_color),
-                        R.drawable.ic_sysbar_rotate_button_ccw_start_0,
-                        R.drawable.ic_sysbar_rotate_button_ccw_start_90,
-                        R.drawable.ic_sysbar_rotate_button_cw_start_0,
-                        R.drawable.ic_sysbar_rotate_button_cw_start_90,
-                        () -> getDisplay().getRotation()),
+                rotationButtonController,
                 new TaskbarDragLayerController(this, mDragLayer),
                 new TaskbarViewController(this, taskbarView),
                 new TaskbarScrimViewController(this, taskbarScrimView),
