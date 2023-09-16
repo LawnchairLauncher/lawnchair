@@ -16,7 +16,9 @@
 package com.android.quickstep;
 
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
+
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
+
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
 import static com.android.launcher3.tapl.TestHelpers.getHomeIntentInPackage;
 import static com.android.launcher3.tapl.TestHelpers.getLauncherInMyProcess;
@@ -32,6 +34,7 @@ import static com.android.launcher3.util.rule.ShellCommandRule.disableHeadsUpNot
 import static com.android.launcher3.util.rule.ShellCommandRule.getLauncherCommand;
 import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
 import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -139,6 +142,7 @@ public class FallbackRecentsTest {
                 RecentsActivity.ACTIVITY_TRACKER::getCreatedActivity);
         mOrderSensitiveRules = RuleChain
                 .outerRule(new SamplerRule())
+                .around(new TestStabilityRule())
                 .around(new NavigationModeSwitchRule(mLauncher))
                 .around(new FailureWatcher(mLauncher, viewCaptureRule::getViewCaptureData))
                 .around(viewCaptureRule)
