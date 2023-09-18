@@ -499,8 +499,7 @@ public class DesktopTaskView extends TaskView {
         for (int i = 0; i < mSnapshotViewMap.size(); i++) {
             if (i == 0) {
                 // All snapshots share the same params. Only update it with the first snapshot.
-                updateFullscreenParams(mSnapshotDrawParams,
-                        mSnapshotView.getPreviewPositionHelper());
+                updateFullscreenParams(mSnapshotDrawParams);
             }
             mSnapshotViewMap.valueAt(i).setFullscreenParams(mSnapshotDrawParams);
         }

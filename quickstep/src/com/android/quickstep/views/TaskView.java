@@ -110,7 +110,6 @@ import com.android.quickstep.util.TaskRemovedDuringLaunchListener;
 import com.android.quickstep.util.TransformParams;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.recents.utilities.PreviewPositionHelper;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 
@@ -1708,21 +1707,20 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     protected void updateSnapshotRadius() {
-        updateCurrentFullscreenParams(mSnapshotView.getPreviewPositionHelper());
+        updateCurrentFullscreenParams();
         mSnapshotView.setFullscreenParams(mCurrentFullscreenParams);
     }
 
-    void updateCurrentFullscreenParams(PreviewPositionHelper previewPositionHelper) {
-        updateFullscreenParams(mCurrentFullscreenParams, previewPositionHelper);
+    void updateCurrentFullscreenParams() {
+        updateFullscreenParams(mCurrentFullscreenParams);
     }
 
-    protected void updateFullscreenParams(TaskView.FullscreenDrawParams fullscreenParams,
-            PreviewPositionHelper previewPositionHelper) {
+    protected void updateFullscreenParams(TaskView.FullscreenDrawParams fullscreenParams) {
         if (getRecentsView() == null) {
             return;
         }
         fullscreenParams.setProgress(mFullscreenProgress, getRecentsView().getScaleX(),
-                getScaleX(), getWidth(), mActivity.getDeviceProfile(), previewPositionHelper);
+                getScaleX());
     }
 
     /**
@@ -1893,8 +1891,7 @@ public class TaskView extends FrameLayout implements Reusable {
         /**
          * Sets the progress in range [0, 1]
          */
-        public void setProgress(float fullscreenProgress, float parentScale, float taskViewScale,
-                int previewWidth, DeviceProfile dp, PreviewPositionHelper pph) {
+        public void setProgress(float fullscreenProgress, float parentScale, float taskViewScale) {
             mCurrentDrawnCornerRadius =
                     Utilities.mapRange(fullscreenProgress, mCornerRadius, mWindowCornerRadius)
                             / parentScale / taskViewScale;
