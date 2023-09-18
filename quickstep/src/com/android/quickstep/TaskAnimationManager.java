@@ -331,7 +331,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
      * Finishes the running recents animation.
      * @param forceFinish will synchronously finish the controller
      */
-    private void finishRunningRecentsAnimation(boolean toHome, boolean forceFinish) {
+    public void finishRunningRecentsAnimation(boolean toHome, boolean forceFinish) {
         if (mController != null) {
             ActiveGestureLog.INSTANCE.addLog(
                     /* event= */ "finishRunningRecentsAnimation", toHome);
