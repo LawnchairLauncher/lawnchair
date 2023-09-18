@@ -1018,10 +1018,11 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         updateStateForFlag(FLAG_STASHED_IN_APP_SYSUI, hasAnyFlag(systemUiStateFlags,
                 SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE));
 
-        boolean bubblesOnOverview = hasAnyFlag(FLAG_IN_OVERVIEW)
-                && hasAnyFlag(systemUiStateFlags, SYSUI_STATE_BUBBLES_EXPANDED);
+        boolean stashForBubbles = hasAnyFlag(FLAG_IN_OVERVIEW)
+                && hasAnyFlag(systemUiStateFlags, SYSUI_STATE_BUBBLES_EXPANDED)
+                && DisplayController.isTransientTaskbar(mActivity);
         updateStateForFlag(FLAG_STASHED_SYSUI,
-                hasAnyFlag(systemUiStateFlags, SYSUI_STATE_SCREEN_PINNING) || bubblesOnOverview);
+                hasAnyFlag(systemUiStateFlags, SYSUI_STATE_SCREEN_PINNING) || stashForBubbles);
         boolean isLocked = hasAnyFlag(systemUiStateFlags, MASK_ANY_SYSUI_LOCKED)
                 && !hasAnyFlag(systemUiStateFlags, SYSUI_STATE_STATUS_BAR_KEYGUARD_GOING_AWAY);
         updateStateForFlag(FLAG_STASHED_DEVICE_LOCKED, isLocked);
