@@ -690,6 +690,14 @@ public class QuickstepLauncher extends Launcher {
         }
 
         super.onPause();
+
+        if (ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+            // If Launcher pauses before both split apps are selected, exit split screen.
+            if (!mSplitSelectStateController.isBothSplitAppsConfirmed()) {
+                mSplitSelectStateController.getSplitAnimationController()
+                        .playPlaceholderDismissAnim(this);
+            }
+        }
     }
 
     @Override
