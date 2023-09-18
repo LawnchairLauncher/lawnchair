@@ -201,8 +201,9 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                     RecentsView recentsView =
                             activityInterface.getCreatedActivity().getOverviewPanel();
                     if (recentsView != null) {
-                        ActiveGestureLog.INSTANCE.addLog("Launching side task id="
-                                + appearedTaskTarget.taskId);
+                        ActiveGestureLog.INSTANCE.addLog(
+                                new ActiveGestureLog.CompoundString("Launching side task id=")
+                                        .append(appearedTaskTarget.taskId));
                         recentsView.launchSideTaskInLiveTileMode(appearedTaskTarget.taskId,
                                 appearedTaskTargets,
                                 new RemoteAnimationTarget[0] /* wallpaper */,

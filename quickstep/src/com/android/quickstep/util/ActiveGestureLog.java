@@ -46,7 +46,7 @@ public class ActiveGestureLog {
     private static final int TYPE_INTEGER = 2;
     private static final int TYPE_BOOL_TRUE = 3;
     private static final int TYPE_BOOL_FALSE = 4;
-    private static final int TYPE_INPUT_CONSUMER = 5;
+    private static final int TYPE_COMPOUND_STRING = 5;
     private static final int TYPE_GESTURE_EVENT = 6;
 
     private final EventLog[] logs;
@@ -81,7 +81,13 @@ public class ActiveGestureLog {
     }
 
     public void addLog(CompoundString compoundString) {
-        addLog(TYPE_INPUT_CONSUMER, "", 0, compoundString, null);
+        addLog(TYPE_COMPOUND_STRING, "", 0, compoundString, null);
+    }
+
+    public void addLog(
+            CompoundString compoundString,
+            @Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
+        addLog(TYPE_COMPOUND_STRING, "", 0, compoundString, gestureEvent);
     }
 
     /**
@@ -185,7 +191,7 @@ public class ActiveGestureLog {
                     case TYPE_INTEGER:
                         msg.append(": ").append((int) eventEntry.extras);
                         break;
-                    case TYPE_INPUT_CONSUMER:
+                    case TYPE_COMPOUND_STRING:
                         msg.append(eventEntry.mCompoundString);
                         break;
                     case TYPE_GESTURE_EVENT:
@@ -310,6 +316,15 @@ public class ActiveGestureLog {
                 return this;
             }
             mSubstrings.add(substring);
+
+            return this;
+        }
+
+        public CompoundString append(int num) {
+            if (mIsNoOp) {
+                return this;
+            }
+            mSubstrings.add(Integer.toString(num));
 
             return this;
         }

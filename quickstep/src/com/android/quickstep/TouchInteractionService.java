@@ -734,24 +734,37 @@ public class TouchInteractionService extends Service {
                     // fall through
                 case ACTION_UP:
                     ActiveGestureLog.INSTANCE.addLog(
-                            /* event= */ "onMotionEvent(" + (int) event.getRawX() + ", "
-                                    + (int) event.getRawY() + "): "
-                                    + MotionEvent.actionToString(event.getActionMasked()) + ", "
-                                    + MotionEvent.classificationToString(event.getClassification()),
+                            new CompoundString("onMotionEvent(")
+                                    .append((int) event.getRawX())
+                                    .append(", ")
+                                    .append((int) event.getRawY())
+                                    .append("): ")
+                                    .append(MotionEvent.actionToString(event.getActionMasked()))
+                                    .append(", ")
+                                    .append(MotionEvent.classificationToString(
+                                            event.getClassification())),
                             /* gestureEvent= */ event.getActionMasked() == ACTION_DOWN
                                     ? MOTION_DOWN
                                     : MOTION_UP);
                     break;
                 case ACTION_MOVE:
-                    ActiveGestureLog.INSTANCE.addLog("onMotionEvent: "
-                            + MotionEvent.actionToString(event.getActionMasked()) + ","
-                            + MotionEvent.classificationToString(event.getClassification())
-                            + ", pointerCount: " + event.getPointerCount(), MOTION_MOVE);
+                    ActiveGestureLog.INSTANCE.addLog(
+                            new CompoundString("onMotionEvent: ")
+                                    .append(MotionEvent.actionToString(event.getActionMasked()))
+                                    .append(",")
+                                    .append(MotionEvent.classificationToString(
+                                            event.getClassification()))
+                                    .append(", pointerCount: ")
+                                    .append(event.getPointerCount()),
+                            MOTION_MOVE);
                     break;
                 default: {
-                    ActiveGestureLog.INSTANCE.addLog("onMotionEvent: "
-                            + MotionEvent.actionToString(event.getActionMasked()) + ","
-                            + MotionEvent.classificationToString(event.getClassification()));
+                    ActiveGestureLog.INSTANCE.addLog(
+                            new CompoundString("onMotionEvent: ")
+                                    .append(MotionEvent.actionToString(event.getActionMasked()))
+                                    .append(",")
+                                    .append(MotionEvent.classificationToString(
+                                            event.getClassification())));
                 }
             }
         }
