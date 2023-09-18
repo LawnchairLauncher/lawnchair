@@ -28,6 +28,7 @@ import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TRACKPAD_GESTURE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.window.WindowManagerProxy.MIN_TABLET_WIDTH;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
 import static com.android.quickstep.GestureState.TrackpadGestureType.getTrackpadGestureType;
 import static com.android.quickstep.InputConsumer.TYPE_CURSOR_HOVER;
@@ -68,6 +69,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.os.Trace;
 import android.util.Log;
 import android.view.Choreographer;
 import android.view.InputDevice;
@@ -1210,7 +1212,9 @@ public class TouchInteractionService extends Service {
     }
 
     private void preloadOverview(boolean fromInit) {
+        Trace.beginSection("preloadOverview(fromInit=" + fromInit + ")");
         preloadOverview(fromInit, false);
+        Trace.endSection();
     }
 
     private void preloadOverview(boolean fromInit, boolean forSUWAllSet) {
@@ -1260,7 +1264,10 @@ public class TouchInteractionService extends Service {
             // We only care about the existing background activity.
             return;
         }
-        if (mOverviewComponentObserver.canHandleConfigChanges(activity.getComponentName(),
+        Configuration oldConfig = activity.getResources().getConfiguration();
+        boolean isFoldUnfold = isTablet(oldConfig) != isTablet(newConfig);
+        if (!isFoldUnfold && mOverviewComponentObserver.canHandleConfigChanges(
+                activity.getComponentName(),
                 activity.getResources().getConfiguration().diff(newConfig))) {
             // Since navBar gestural height are different between portrait and landscape,
             // can handle orientation changes and refresh navigation gestural region through
@@ -1273,6 +1280,10 @@ public class TouchInteractionService extends Service {
         }
 
         preloadOverview(false /* fromInit */);
+    }
+
+    private static boolean isTablet(Configuration config) {
+        return config.smallestScreenWidthDp >= MIN_TABLET_WIDTH;
     }
 
     @Override
