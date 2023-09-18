@@ -133,7 +133,6 @@ import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchControlle
 import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TwoButtonNavbarTouchController;
 import com.android.launcher3.util.ActivityOptionsWrapper;
-import com.android.launcher3.util.BackPressHandler;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.util.IntSet;
@@ -736,15 +735,6 @@ public class QuickstepLauncher extends Launcher {
         // Remove the snapshot because the content view may have obvious changes.
         UI_HELPER_EXECUTOR.execute(
                 () -> ActivityManagerWrapper.getInstance().invalidateHomeTaskSnapshot(this));
-    }
-
-    @Override
-    protected void onScreenOnChanged(boolean isOn) {
-        super.onScreenOnChanged(isOn);
-        if (!isOn) {
-            RecentsView recentsView = getOverviewPanel();
-            recentsView.finishRecentsAnimation(true /* toRecents */, null);
-        }
     }
 
     @Override
