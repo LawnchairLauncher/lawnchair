@@ -20,22 +20,30 @@ import android.content.res.Resources
 import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
+import com.android.systemui.shared.rotation.RotationButton
 
 /** Layoutter for showing 3 button navigation on large screen */
 class TaskbarNavLayoutter(
-    resources: Resources,
-    navBarContainer: LinearLayout,
-    endContextualContainer: ViewGroup,
-    startContextualContainer: ViewGroup
+        resources: Resources,
+        navBarContainer: LinearLayout,
+        endContextualContainer: ViewGroup,
+        startContextualContainer: ViewGroup,
+        imeSwitcher: ImageView?,
+        rotationButton: RotationButton?,
+        a11yButton: ImageView
 ) :
     AbstractNavButtonLayoutter(
-        resources,
-        navBarContainer,
-        endContextualContainer,
-        startContextualContainer
+            resources,
+            navBarContainer,
+            endContextualContainer,
+            startContextualContainer,
+            imeSwitcher,
+            rotationButton,
+            a11yButton
     ) {
 
     override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
@@ -76,6 +84,29 @@ class TaskbarNavLayoutter(
                     buttonLayoutParams.marginEnd = spaceInBetween / 2
                 }
             }
+        }
+
+        endContextualContainer.removeAllViews()
+        startContextualContainer.removeAllViews()
+
+        val endContextualContainerParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        endContextualContainerParams.gravity = Gravity.END or Gravity.CENTER_VERTICAL
+        endContextualContainer.layoutParams = endContextualContainerParams
+
+        val startContextualContainerParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        startContextualContainerParams.gravity = Gravity.START or Gravity.CENTER_VERTICAL
+        startContextualContainer.layoutParams = startContextualContainerParams
+
+        if (imeSwitcher != null) {
+            startContextualContainer.addView(imeSwitcher)
+            imeSwitcher.layoutParams = getParamsToCenterView()
+        }
+        endContextualContainer.addView(a11yButton)
+        if (rotationButton != null) {
+            endContextualContainer.addView(rotationButton.currentView)
+            rotationButton.currentView.layoutParams = getParamsToCenterView()
         }
     }
 }
