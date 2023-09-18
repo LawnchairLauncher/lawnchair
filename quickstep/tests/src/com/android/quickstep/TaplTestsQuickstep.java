@@ -16,11 +16,13 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_CURSOR_HOVER_STATES;
 import static com.android.launcher3.testing.shared.TestProtocol.FLAKY_QUICK_SWITCH_TO_PREVIOUS_APP;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
 import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 import static com.android.quickstep.TaskbarModeSwitchRule.Mode.PERSISTENT;
+import static com.android.quickstep.TaskbarModeSwitchRule.Mode.TRANSIENT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -50,6 +52,7 @@ import com.android.launcher3.tapl.OverviewTaskMenu;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.TestStabilityRule;
@@ -240,6 +243,19 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 mLauncher.goHome().switchToOverview());
         assertTrue("Launcher internal state didn't switch to Overview",
                 isInState(() -> LauncherState.OVERVIEW));
+    }
+
+    @Test
+    @TaskbarModeSwitch(mode = TRANSIENT)
+    public void testSwitchToOverviewWithStashedTaskbar() throws Exception {
+        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_CURSOR_HOVER_STATES, true)) {
+            startTestAppsWithCheck();
+            // Set ignoreTaskbarVisibility, as transient taskbar will be stashed after app launch.
+            mLauncher.setIgnoreTaskbarVisibility(true);
+            mLauncher.getLaunchedAppState().switchToOverview();
+        } finally {
+            mLauncher.setIgnoreTaskbarVisibility(false);
+        }
     }
 
     @Ignore
