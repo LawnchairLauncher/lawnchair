@@ -437,11 +437,13 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     }
 
     protected void runOnInitBackgroundStateUI(Runnable callback) {
-        mOnInitBackgroundStateUICallback = callback;
         ACTIVITY_TYPE activity = getCreatedActivity();
         if (activity != null && activity.getStateManager().getState() == mBackgroundState) {
+            callback.run();
             onInitBackgroundStateUI();
+            return;
         }
+        mOnInitBackgroundStateUICallback = callback;
     }
 
     private void onInitBackgroundStateUI() {
