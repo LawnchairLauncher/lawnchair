@@ -1189,7 +1189,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 break;
         }
         ActiveGestureLog.INSTANCE.addLog(
-                /* event= */ "onSettledOnEndTarget " + endTarget,
+                new ActiveGestureLog.CompoundString("onSettledOnEndTarget ")
+                        .append(endTarget.name()),
                 /* gestureEvent= */ ON_SETTLED_ON_END_TARGET);
     }
 
@@ -2215,7 +2216,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             TaskView nextTask = mRecentsView == null ? null : mRecentsView.getNextPageTaskView();
             if (nextTask != null) {
                 int[] taskIds = nextTask.getTaskIds();
-                StringBuilder nextTaskLog = new StringBuilder();
+                ActiveGestureLog.CompoundString nextTaskLog = new ActiveGestureLog.CompoundString(
+                        "Launching task: ");
                 for (TaskIdAttributeContainer c : nextTask.getTaskIdAttributeContainers()) {
                     if (c == null) {
                         continue;
@@ -2234,7 +2236,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 if (!hasTaskPreviouslyAppeared) {
                     ActiveGestureLog.INSTANCE.trackEvent(EXPECTING_TASK_APPEARED);
                 }
-                ActiveGestureLog.INSTANCE.addLog("Launching task: " + nextTaskLog);
+                ActiveGestureLog.INSTANCE.addLog(nextTaskLog);
                 nextTask.launchTask(success -> {
                     resultCallback.accept(success);
                     if (success) {
@@ -2310,9 +2312,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 // previous quickswitch task launch, then cancel the animation back to the app
                 RemoteAnimationTarget appearedTaskTarget = appearedTaskTargets[0];
                 TaskInfo taskInfo = appearedTaskTarget.taskInfo;
-                ActiveGestureLog.INSTANCE.addLog("Unexpected task appeared"
-                        + " id=" + taskInfo.taskId
-                        + " pkg=" + taskInfo.baseIntent.getComponent().getPackageName());
+                ActiveGestureLog.INSTANCE.addLog(
+                        new ActiveGestureLog.CompoundString("Unexpected task appeared")
+                                .append(" id=")
+                                .append(taskInfo.taskId)
+                                .append(" pkg=")
+                                .append(taskInfo.baseIntent.getComponent().getPackageName()));
                 finishRecentsAnimationOnTasksAppeared(null /* onFinishComplete */);
             } else if (handleTaskAppeared(appearedTaskTargets)) {
                 Optional<RemoteAnimationTarget> taskTargetOptional =

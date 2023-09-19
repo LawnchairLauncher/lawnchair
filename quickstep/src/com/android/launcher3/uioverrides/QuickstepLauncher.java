@@ -754,15 +754,6 @@ public class QuickstepLauncher extends Launcher {
     }
 
     @Override
-    protected void onScreenOnChanged(boolean isOn) {
-        super.onScreenOnChanged(isOn);
-        if (!isOn) {
-            RecentsView recentsView = getOverviewPanel();
-            recentsView.finishRecentsAnimation(true /* toRecents */, null);
-        }
-    }
-
-    @Override
     public void onAllAppsTransition(float progress) {
         super.onAllAppsTransition(progress);
         onTaskbarInAppDisplayProgressUpdate(progress, ALL_APPS_PAGE_PROGRESS_INDEX);

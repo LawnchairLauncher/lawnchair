@@ -410,7 +410,8 @@ public class GestureState implements RecentsAnimationCallbacks.RecentsAnimationL
         mEndTarget = target;
         mStateCallback.setState(STATE_END_TARGET_SET);
         ActiveGestureLog.INSTANCE.addLog(
-                /* event= */ "setEndTarget " + mEndTarget,
+                new ActiveGestureLog.CompoundString("setEndTarget ")
+                        .append(mEndTarget.name()),
                 /* gestureEvent= */ SET_END_TARGET);
         switch (mEndTarget) {
             case HOME:
