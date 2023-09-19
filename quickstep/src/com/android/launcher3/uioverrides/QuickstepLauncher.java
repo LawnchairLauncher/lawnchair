@@ -73,10 +73,13 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.os.SystemProperties;
 import android.os.Trace;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
+import android.widget.AnalogClock;
+import android.widget.TextClock;
 import android.window.BackEvent;
 import android.window.OnBackAnimationCallback;
 import android.window.OnBackInvokedDispatcher;
@@ -152,6 +155,7 @@ import com.android.quickstep.RecentsModel;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
 import com.android.quickstep.TouchInteractionService.TISBinder;
+import com.android.quickstep.util.AsyncClockEventDelegate;
 import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.util.LauncherUnfoldAnimationController;
 import com.android.quickstep.util.QuickstepOnboardingPrefs;
@@ -212,6 +216,8 @@ public class QuickstepLauncher extends Launcher {
     private SplitSelectStateController mSplitSelectStateController;
     private SplitWithKeyboardShortcutController mSplitWithKeyboardShortcutController;
     private SplitToWorkspaceController mSplitToWorkspaceController;
+
+    private AsyncClockEventDelegate mAsyncClockEventDelegate;
 
     /**
      * If Launcher restarted while in the middle of an Overview split select, it needs this data to
@@ -476,6 +482,10 @@ public class QuickstepLauncher extends Launcher {
 
         if (mSplitSelectStateController != null) {
             mSplitSelectStateController.onDestroy();
+        }
+
+        if (mAsyncClockEventDelegate != null) {
+            mAsyncClockEventDelegate.onDestroy();
         }
 
         super.onDestroy();
@@ -1304,5 +1314,28 @@ public class QuickstepLauncher extends Launcher {
         if (mHotseatPredictionController != null) {
             mHotseatPredictionController.dump(prefix, writer);
         }
+    }
+
+    @Override
+    public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
+        switch (name) {
+            case "TextClock", "android.widget.TextClock" -> {
+                TextClock tc = new TextClock(context, attrs);
+                if (mAsyncClockEventDelegate == null) {
+                    mAsyncClockEventDelegate = new AsyncClockEventDelegate(this);
+                }
+                tc.setClockEventDelegate(mAsyncClockEventDelegate);
+                return tc;
+            }
+            case "AnalogClock", "android.widget.AnalogClock" -> {
+                AnalogClock ac = new AnalogClock(context, attrs);
+                if (mAsyncClockEventDelegate == null) {
+                    mAsyncClockEventDelegate = new AsyncClockEventDelegate(this);
+                }
+                ac.setClockEventDelegate(mAsyncClockEventDelegate);
+                return ac;
+            }
+        }
+        return super.onCreateView(parent, name, context, attrs);
     }
 }
