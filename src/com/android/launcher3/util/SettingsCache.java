@@ -154,7 +154,7 @@ public class SettingsCache extends ContentObserver implements SafeCloseable {
      */
     public void unregister(Uri uri, OnChangeListener listener) {
         List<OnChangeListener> listenersToRemoveFrom = mListenerMap.get(uri);
-        if (!listenersToRemoveFrom.contains(listener)) {
+        if (listenersToRemoveFrom == null) {
             return;
         }
 
