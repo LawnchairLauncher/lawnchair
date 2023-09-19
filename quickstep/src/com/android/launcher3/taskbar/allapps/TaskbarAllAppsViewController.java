@@ -84,7 +84,7 @@ final class TaskbarAllAppsViewController {
     private void setUpTaskbarStashing() {
         if (DisplayController.isTransientTaskbar(mContext)) {
             mTaskbarStashController.updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, true);
-            mTaskbarStashController.applyState(mOverlayController.getOpenDuration());
+            mTaskbarStashController.applyState();
         }
 
         mNavbarButtonsViewController.setSlideInViewVisible(true);
@@ -95,7 +95,7 @@ final class TaskbarAllAppsViewController {
 
             if (DisplayController.isTransientTaskbar(mContext)) {
                 mTaskbarStashController.updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, false);
-                mTaskbarStashController.applyState(mOverlayController.getCloseDuration());
+                mTaskbarStashController.applyState();
             }
         });
     }
