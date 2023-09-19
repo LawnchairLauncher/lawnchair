@@ -1044,13 +1044,19 @@ public class TouchInteractionService extends Service {
         boolean forceOverviewInputConsumer = gestureState.getActivityInterface().isStarted()
                 && gestureState.getRunningTask() != null
                 && gestureState.getRunningTask().isRootChooseActivity();
-        if (gestureState.getRunningTask() != null
-                && gestureState.getRunningTask().isExcludedAssistant()) {
-            // In the case where we are in the excluded assistant state, ignore it and treat the
-            // running activity as the task behind the assistant
-            gestureState.updateRunningTask(TopTaskTracker.INSTANCE.get(this)
-                    .getCachedTopTask(true /* filterOnlyVisibleRecents */));
-            forceOverviewInputConsumer = gestureState.getRunningTask().isHomeTask();
+
+        // In the case where we are in an excluded, translucent overlay, ignore it and treat the
+        // running activity as the task behind the overlay.
+        TopTaskTracker.CachedTaskInfo otherVisibleTask = gestureState.getRunningTask() == null
+                ? null
+                : gestureState.getRunningTask().otherVisibleTaskThisIsExcludedOver();
+        if (otherVisibleTask != null) {
+            ActiveGestureLog.INSTANCE.addLog(new CompoundString("Changing active task to ")
+                    .append(otherVisibleTask.getPackageName())
+                    .append(" because the previous task running on top of this one (")
+                    .append(gestureState.getRunningTask().getPackageName())
+                    .append(") was excluded from recents"));
+            gestureState.updateRunningTask(otherVisibleTask);
         }
 
         boolean previousGestureAnimatedToLauncher =
