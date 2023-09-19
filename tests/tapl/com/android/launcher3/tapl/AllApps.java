@@ -48,6 +48,8 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
 
     private static final int MAX_SCROLL_ATTEMPTS = 40;
 
+    private static final String BOTTOM_SHEET_RES_ID = "bottom_sheet_background";
+
     private final int mHeight;
     private final int mIconHeight;
 
@@ -336,6 +338,28 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
         final Bundle testInfo = mLauncher.getTestInfo(TestProtocol.REQUEST_APP_LIST_FREEZE_FLAGS);
         return testInfo == null ? 0 : testInfo.getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
+
+    /**
+     * Taps outside bottom sheet to dismiss it. Available on tablets only.
+     * @param tapRight Tap on the right of bottom sheet if true, or left otherwise.
+     */
+    public void dismissByTappingOutsideForTablet(boolean tapRight) {
+        mLauncher.assertTrue("Device must be a tablet", mLauncher.isTablet());
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to tap outside AllApps bottom sheet on the "
+                             + (tapRight ? "right" : "left"))) {
+            final UiObject2 allAppsBottomSheet =
+                    mLauncher.waitForLauncherObject(BOTTOM_SHEET_RES_ID);
+            mLauncher.touchOutsideContainer(allAppsBottomSheet, tapRight);
+            try (LauncherInstrumentation.Closable tapped = mLauncher.addContextLayer(
+                    "tapped outside AllApps bottom sheet")) {
+                verifyVisibleContainerOnDismiss();
+            }
+        }
+    }
+
+    protected abstract void verifyVisibleContainerOnDismiss();
 
     /**
      * Return the QSB UI object on the AllApps screen.

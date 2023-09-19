@@ -151,6 +151,13 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
                 .dragToSplitscreen(TEST_APP_PACKAGE, CALCULATOR_APP_PACKAGE);
     }
 
+    @Test
+    @PortraitLandscape
+    public void testDismissAllAppsByTappingOutsideSheet() {
+        getTaskbar().openAllApps().dismissByTappingOutsideForTablet(/* tapRight= */ true);
+        getTaskbar().openAllApps().dismissByTappingOutsideForTablet(/* tapRight= */ false);
+    }
+
     private boolean isTaskbarTestModeTransient() {
         return TRANSIENT == mTaskbarMode;
     }
