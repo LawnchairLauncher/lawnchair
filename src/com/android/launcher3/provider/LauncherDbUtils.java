@@ -120,6 +120,10 @@ public class LauncherDbUtils {
                 deletedShortcuts.add(lc.id);
                 continue;
             }
+            if (TextUtils.isEmpty(lc.getTitle())) {
+                deletedShortcuts.add(lc.id);
+                continue;
+            }
 
             // Make sure the target intent can be launched without any permissions. Otherwise remove
             // the shortcut
