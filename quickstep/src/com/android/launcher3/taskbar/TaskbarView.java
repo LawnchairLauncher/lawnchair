@@ -19,7 +19,7 @@ import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_CURSOR_HOVER_STATES;
+import static com.android.launcher3.config.FeatureFlags.enableCursorHoverStates;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
 import android.content.Context;
@@ -347,7 +347,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                 }
             }
             setClickAndLongClickListenersForIcon(hotseatView);
-            if (ENABLE_CURSOR_HOVER_STATES.get()) {
+            if (enableCursorHoverStates()) {
                 setHoverListenerForIcon(hotseatView);
             }
             nextViewIndex++;

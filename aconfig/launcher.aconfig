@@ -20,3 +20,10 @@ flag {
     description: "Enable a grid-only overview without a focused task."
     bug: "257950105"
 }
+
+flag {
+    name: "enable_cursor_hover_states"
+    namespace: "launcher"
+    description: "Enables cursor hover states for certain elements."
+    bug: "243191650"
+}

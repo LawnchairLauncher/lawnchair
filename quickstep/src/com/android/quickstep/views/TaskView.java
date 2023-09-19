@@ -443,7 +443,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 || DesktopTaskView.DESKTOP_MODE_SUPPORTED;
 
         boolean willDrawBorder =
-                keyboardFocusHighlightEnabled || FeatureFlags.ENABLE_CURSOR_HOVER_STATES.get();
+                keyboardFocusHighlightEnabled || FeatureFlags.enableCursorHoverStates();
         setWillNotDraw(!willDrawBorder);
 
         if (willDrawBorder) {
@@ -461,7 +461,7 @@ public class TaskView extends FrameLayout implements Reusable {
                             /* targetView= */ this)) : null;
 
             mHoverBorderAnimator =
-                    FeatureFlags.ENABLE_CURSOR_HOVER_STATES.get() ? new BorderAnimator(
+                    FeatureFlags.enableCursorHoverStates() ? new BorderAnimator(
                             /* borderRadiusPx= */ (int) mCurrentFullscreenParams.mCornerRadius,
                             /* borderColor= */ styledAttrs.getColor(
                                     R.styleable.TaskView_hoverBorderColor, DEFAULT_BORDER_COLOR),
@@ -536,7 +536,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        if (FeatureFlags.ENABLE_CURSOR_HOVER_STATES.get()) {
+        if (FeatureFlags.enableCursorHoverStates()) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_HOVER_ENTER:
                     mHoverBorderAnimator.buildAnimator(/* isAppearing= */ true).start();
@@ -553,7 +553,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     @Override
     public boolean onInterceptHoverEvent(MotionEvent event) {
-        if (FeatureFlags.ENABLE_CURSOR_HOVER_STATES.get()) {
+        if (FeatureFlags.enableCursorHoverStates()) {
             // avoid triggering hover event on child elements which would cause HOVER_EXIT for this
             // task view
             return true;
