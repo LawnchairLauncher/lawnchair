@@ -409,18 +409,16 @@ public class TouchInteractionService extends Service {
          * Sets a proxy to bypass swipe up behavior
          */
         public void setSwipeUpProxy(Function<GestureState, AnimatedFloat> proxy) {
-            TouchInteractionService tis = mTis.get();
-            if (tis == null) return;
-            tis.mSwipeUpProxyProvider = proxy != null ? proxy : (i -> null);
+            executeForTouchInteractionService(
+                    tis -> tis.mSwipeUpProxyProvider = proxy != null ? proxy : (i -> null));
         }
 
         /**
          * Sets the task id where gestures should be blocked
          */
         public void setGestureBlockedTaskId(int taskId) {
-            TouchInteractionService tis = mTis.get();
-            if (tis == null) return;
-            tis.mDeviceState.setGestureBlockingTaskId(taskId);
+            executeForTouchInteractionService(
+                    tis -> tis.mDeviceState.setGestureBlockingTaskId(taskId));
         }
 
         /** Sets a listener to be run on Overview Target updates. */
@@ -433,6 +431,12 @@ public class TouchInteractionService extends Service {
                 mOnOverviewTargetChangeListener.run();
                 mOnOverviewTargetChangeListener = null;
             }
+        }
+
+        /** Refreshes the current overview target. */
+        public void refreshOverviewTarget() {
+            executeForTouchInteractionService(tis -> tis.onOverviewTargetChange(
+                    tis.mOverviewComponentObserver.isHomeAndOverviewSame()));
         }
     }
 

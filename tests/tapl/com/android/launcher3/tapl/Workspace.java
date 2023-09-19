@@ -16,6 +16,7 @@
 
 package com.android.launcher3.tapl;
 
+import static android.view.KeyEvent.KEYCODE_META_RIGHT;
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_SCROLLED;
 
 import static com.android.launcher3.testing.shared.TestProtocol.ALL_APPS_STATE_ORDINAL;
@@ -110,6 +111,20 @@ public final class Workspace extends Home {
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped to all apps")) {
+                return new HomeAllApps(mLauncher);
+            }
+        }
+    }
+
+    /** Opens the Launcher all apps page with the meta keyboard shortcut. */
+    public HomeAllApps openAllAppsFromKeyboardShortcut() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c =
+                     mLauncher.addContextLayer("want to open all apps search")) {
+            verifyActiveContainer();
+            mLauncher.getDevice().pressKeyCode(KEYCODE_META_RIGHT);
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "pressed meta key")) {
                 return new HomeAllApps(mLauncher);
             }
         }
