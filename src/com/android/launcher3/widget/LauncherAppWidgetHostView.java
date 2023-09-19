@@ -107,7 +107,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         if (Utilities.ATLEAST_Q && Themes.getAttrBoolean(mLauncher, R.attr.isWorkspaceDarkText)) {
             setOnLightBackground(true);
         }
-        mColorExtractor = LocalColorExtractor.newInstance(getContext());
+        mColorExtractor = new LocalColorExtractor(); // no-op
     }
 
     @Override
