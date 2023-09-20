@@ -122,6 +122,10 @@ public abstract class AbstractLauncherUiTest {
                 }, DEFAULT_UI_TIMEOUT, launcher);
     }
 
+    public static String getAppPackageName() {
+        return getInstrumentation().getContext().getPackageName();
+    }
+
     private static String getActivityLeakErrorMessage(LauncherInstrumentation launcher) {
         sActivityLeakReported = true;
         return "Activity leak detector has found leaked activities, "
