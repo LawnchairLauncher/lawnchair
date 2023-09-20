@@ -18,6 +18,7 @@ package com.android.launcher3.util.rule;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.tapl.LauncherInstrumentation;
+import com.android.launcher3.ui.AbstractLauncherUiTest;
 
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -42,6 +43,7 @@ public class TestIsolationRule implements TestRule {
                 base.evaluate();
                 // Make sure that Launcher workspace looks correct.
                 mLauncher.goHome();
+                AbstractLauncherUiTest.checkDetectedLeaks(mLauncher);
             }
         };
     }
