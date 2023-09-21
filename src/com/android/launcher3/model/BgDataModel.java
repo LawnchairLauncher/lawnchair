@@ -170,11 +170,15 @@ public class BgDataModel {
             writer.println(prefix + '\t' + appWidgets.get(i).toString());
         }
         writer.println(prefix + " ---- folder items ");
-        for (int i = 0; i< folders.size(); i++) {
+        for (int i = 0; i < folders.size(); i++) {
             writer.println(prefix + '\t' + folders.valueAt(i).toString());
         }
+        writer.println(prefix + " ---- extra items ");
+        for (int i = 0; i < extraItems.size(); i++) {
+            writer.println(prefix + '\t' + extraItems.valueAt(i).toString());
+        }
         writer.println(prefix + " ---- items id map ");
-        for (int i = 0; i< itemsIdMap.size(); i++) {
+        for (int i = 0; i < itemsIdMap.size(); i++) {
             writer.println(prefix + '\t' + itemsIdMap.valueAt(i).toString());
         }
 
@@ -442,6 +446,20 @@ public class BgDataModel {
             this.containerId = containerId;
             this.items = Collections.unmodifiableList(items);
         }
+
+        @Override
+        @NonNull
+        public final String toString() {
+            StringBuilder s = new StringBuilder();
+            s.append("FixedContainerItems:");
+            s.append(" id=").append(containerId);
+            s.append(" itemCount=").append(items.size());
+            for (int i = 0; i < items.size(); i++) {
+                s.append(" item #").append(i).append(": ").append(items.get(i).toString());
+            }
+            return s.toString();
+        }
+
     }
 
 
