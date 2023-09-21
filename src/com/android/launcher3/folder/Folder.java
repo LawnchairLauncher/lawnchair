@@ -645,6 +645,11 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
      * is played.
      */
     private void animateOpen(List<WorkspaceItemInfo> items, int pageNo) {
+        if (items == null || items.size() <= 1) {
+            Log.d(TAG, "Couldn't animate folder open because items is: " + items);
+            return;
+        }
+
         Folder openFolder = getOpen(mActivityContext);
         if (openFolder != null && openFolder != this) {
             // Close any open folder before opening a folder.
