@@ -50,6 +50,7 @@ class CalculatedHotseatSpecTest : AbstractDeviceProfileTest() {
 
         assertThat(heightSpec.availableSpace).isEqualTo(availableHeight)
         assertThat(heightSpec.hotseatQsbSpace).isEqualTo(95)
+        assertThat(heightSpec.edgePadding).isEqualTo(126)
     }
 
     /**
@@ -71,5 +72,27 @@ class CalculatedHotseatSpecTest : AbstractDeviceProfileTest() {
 
         assertThat(heightSpec.availableSpace).isEqualTo(availableHeight)
         assertThat(heightSpec.hotseatQsbSpace).isEqualTo(81)
+        assertThat(heightSpec.edgePadding).isEqualTo(162)
+    }
+
+    /**
+     * This test tests:
+     * - (width spec) gets the correct breakpoint from the XML - skips the first breakpoint
+     */
+    @Test
+    fun normalPhoneLandscape_returnsSecondBreakpointSpec() {
+        val deviceSpec = deviceSpecs["phone"]!!
+        initializeVarsForPhone(deviceSpec, isVerticalBar = true)
+
+        // Hotseat uses the whole device width
+        val availableWidth = deviceSpec.naturalSize.second
+
+        val hotseatSpecs =
+            HotseatSpecs.create(TestResourceHelper(context!!, TestR.xml.valid_hotseat_land_file))
+        val widthSpec = hotseatSpecs.getCalculatedWidthSpec(availableWidth)
+
+        assertThat(widthSpec.availableSpace).isEqualTo(availableWidth)
+        assertThat(widthSpec.hotseatQsbSpace).isEqualTo(0)
+        assertThat(widthSpec.edgePadding).isEqualTo(168)
     }
 }

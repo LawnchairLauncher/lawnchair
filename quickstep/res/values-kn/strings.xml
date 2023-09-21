@@ -116,7 +116,7 @@
     <string name="taskbar_button_back" msgid="8558862226461164514">"ಹಿಂದೆ"</string>
     <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME ಪರಿವರ್ತಕ"</string>
     <string name="taskbar_button_recents" msgid="7273376136216613134">"ಇತ್ತೀಚಿನವು"</string>
-    <string name="taskbar_button_notifications" msgid="7471740351507357318">"ಅಧಿಸೂಚನೆಗಳು"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"ನೋಟಿಫಿಕೇಶನ್‌ಗಳು"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"ತ್ವರಿತ ಸೆಟ್ಟಿಂಗ್‍ಗಳು"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"ಟಾಸ್ಕ್‌ಬಾರ್"</string>
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"ಟಾಸ್ಕ್‌ಬಾರ್ ತೋರಿಸಲಾಗಿದೆ"</string>

@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.taskbar;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 import static com.android.launcher3.util.SplitConfigurationOptions.getLogEventForPosition;
 
 import android.content.Intent;
@@ -163,19 +162,9 @@ public class TaskbarPopupController implements TaskbarControllers.LoggableTaskba
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
-        if (ENABLE_MATERIAL_U_POPUP.get()) {
-            container = (PopupContainerWithArrow) context.getLayoutInflater().inflate(
-                    R.layout.popup_container_material_u, context.getDragLayer(), false);
-            container.populateAndShowRowsMaterialU(icon, deepShortcutCount, systemShortcuts);
-        } else {
-            container = (PopupContainerWithArrow) context.getLayoutInflater().inflate(
+        container = (PopupContainerWithArrow) context.getLayoutInflater().inflate(
                     R.layout.popup_container, context.getDragLayer(), false);
-            container.populateAndShow(
-                    icon,
-                    deepShortcutCount,
-                    mPopupDataProvider.getNotificationKeysForItem(item),
-                    systemShortcuts);
-        }
+        container.populateAndShowRows(icon, deepShortcutCount, systemShortcuts);
 
         container.addOnAttachStateChangeListener(
                 new PopupLiveUpdateHandler<BaseTaskbarContext>(context, container) {

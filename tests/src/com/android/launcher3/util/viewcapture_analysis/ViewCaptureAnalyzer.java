@@ -36,7 +36,8 @@ public class ViewCaptureAnalyzer {
     // All detectors. They will be invoked in the order listed here.
     private static final AnomalyDetector[] ANOMALY_DETECTORS = {
             new AlphaJumpDetector(),
-            new FlashDetector()
+            new FlashDetector(),
+            new PositionJumpDetector()
     };
 
     static {
@@ -52,6 +53,8 @@ public class ViewCaptureAnalyzer {
         // Window coordinates of the view.
         public float left;
         public float top;
+        public float right;
+        public float bottom;
 
         // Visible scale and alpha, build recursively from the ancestor list.
         public float scaleX;
@@ -81,7 +84,8 @@ public class ViewCaptureAnalyzer {
 
         @Override
         public String toString() {
-            return String.format("view window coordinates: (%s, %s)", left, top);
+            return String.format("view window coordinates: (%s, %s, %s, %s)",
+                    left, top, right, bottom);
         }
     }
 
@@ -112,15 +116,33 @@ public class ViewCaptureAnalyzer {
         // As we go though frames, if a view becomes invisible, it stays in the map.
         final Map<Integer, AnalysisNode> lastSeenNodes = new HashMap<>();
 
+        int windowWidthPx = -1;
+        int windowHeightPx = -1;
+
         for (int frameN = 0; frameN < windowData.getFrameDataCount(); ++frameN) {
-            analyzeFrame(frameN, windowData.getFrameData(frameN), viewCaptureData, lastSeenNodes,
-                    scrimClassIndex, anomalies);
+            final FrameData frame = windowData.getFrameData(frameN);
+            final ViewNode rootNode = frame.getNode();
+
+            // If the rotation or window size has changed, reset the analyzer state.
+            final boolean isFirstFrame = windowWidthPx != rootNode.getWidth()
+                    || windowHeightPx != rootNode.getHeight();
+            if (isFirstFrame) {
+                windowWidthPx = rootNode.getWidth();
+                windowHeightPx = rootNode.getHeight();
+                lastSeenNodes.clear();
+            }
+
+            final int windowSizePx = Math.max(rootNode.getWidth(), rootNode.getHeight());
+
+            analyzeFrame(frameN, isFirstFrame, frame, viewCaptureData, lastSeenNodes,
+                    scrimClassIndex, anomalies, windowSizePx);
         }
     }
 
-    private static void analyzeFrame(int frameN, FrameData frame, ExportedData viewCaptureData,
+    private static void analyzeFrame(int frameN, boolean isFirstFrame, FrameData frame,
+            ExportedData viewCaptureData,
             Map<Integer, AnalysisNode> lastSeenNodes, int scrimClassIndex,
-            Map<String, String> anomalies) {
+            Map<String, String> anomalies, int windowSizePx) {
         // Analyze the node tree starting from the root.
         long frameTimeNs = frame.getTimestamp();
         analyzeView(
@@ -128,12 +150,14 @@ public class ViewCaptureAnalyzer {
                 frame.getNode(),
                 /* parent = */ null,
                 frameN,
+                isFirstFrame,
                 /* leftShift = */ 0,
                 /* topShift = */ 0,
                 viewCaptureData,
                 lastSeenNodes,
                 scrimClassIndex,
-                anomalies);
+                anomalies,
+                windowSizePx);
 
         // Analyze transitions when a view visible in the previous frame became invisible in the
         // current one.
@@ -148,7 +172,8 @@ public class ViewCaptureAnalyzer {
                                             /* oldInfo = */ info,
                                             /* newInfo = */ null,
                                             anomalies,
-                                            frameTimeNs)
+                                            frameTimeNs,
+                                            windowSizePx)
                     );
                 }
                 info.timeBecameInvisibleNs = info.alpha == 1 ? frameTimeNs : -1;
@@ -159,9 +184,9 @@ public class ViewCaptureAnalyzer {
 
     private static void analyzeView(long frameTimeNs, ViewNode viewCaptureNode, AnalysisNode parent,
             int frameN,
-            float leftShift, float topShift, ExportedData viewCaptureData,
+            boolean isFirstFrame, float leftShift, float topShift, ExportedData viewCaptureData,
             Map<Integer, AnalysisNode> lastSeenNodes, int scrimClassIndex,
-            Map<String, String> anomalies) {
+            Map<String, String> anomalies, int windowSizePx) {
         // Skip analysis of invisible views
         final float parentAlpha = parent != null ? parent.alpha : 1;
         final float alpha = getVisibleAlpha(viewCaptureNode, parentAlpha);
@@ -182,6 +207,8 @@ public class ViewCaptureAnalyzer {
         final float top = topShift
                 + (viewCaptureNode.getTop() + viewCaptureNode.getTranslationY()) * parentScaleY
                 + viewCaptureNode.getHeight() * (parentScaleY - scaleY) / 2;
+        final float width = viewCaptureNode.getWidth() * scaleX;
+        final float height = viewCaptureNode.getHeight() * scaleY;
 
         // Initialize new analysis node
         final AnalysisNode newAnalysisNode = new AnalysisNode();
@@ -192,6 +219,8 @@ public class ViewCaptureAnalyzer {
         newAnalysisNode.parent = parent;
         newAnalysisNode.left = left;
         newAnalysisNode.top = top;
+        newAnalysisNode.right = left + width;
+        newAnalysisNode.bottom = top + height;
         newAnalysisNode.scaleX = scaleX;
         newAnalysisNode.scaleY = scaleY;
         newAnalysisNode.alpha = alpha;
@@ -216,11 +245,11 @@ public class ViewCaptureAnalyzer {
         }
 
         // Detect anomalies for the view.
-        if (frameN != 0 && !viewCaptureNode.getWillNotDraw()) {
+        if (!isFirstFrame && !viewCaptureNode.getWillNotDraw()) {
             Arrays.stream(ANOMALY_DETECTORS).forEach(
                     detector ->
                             detectAnomaly(detector, frameN, oldAnalysisNode, newAnalysisNode,
-                                    anomalies, frameTimeNs)
+                                    anomalies, frameTimeNs, windowSizePx)
             );
         }
         lastSeenNodes.put(hashcode, newAnalysisNode);
@@ -235,17 +264,19 @@ public class ViewCaptureAnalyzer {
             // transparent.
             if (child.getClassnameIndex() == scrimClassIndex) break;
 
-            analyzeView(frameTimeNs, child, newAnalysisNode, frameN, leftShiftForChildren,
+            analyzeView(frameTimeNs, child, newAnalysisNode, frameN, isFirstFrame,
+                    leftShiftForChildren,
                     topShiftForChildren,
-                    viewCaptureData, lastSeenNodes, scrimClassIndex, anomalies);
+                    viewCaptureData, lastSeenNodes, scrimClassIndex, anomalies, windowSizePx);
         }
     }
 
     private static void detectAnomaly(AnomalyDetector detector, int frameN,
             AnalysisNode oldAnalysisNode, AnalysisNode newAnalysisNode,
-            Map<String, String> anomalies, long frameTimeNs) {
+            Map<String, String> anomalies, long frameTimeNs, int windowSizePx) {
         final String maybeAnomaly =
-                detector.detectAnomalies(oldAnalysisNode, newAnalysisNode, frameN, frameTimeNs);
+                detector.detectAnomalies(oldAnalysisNode, newAnalysisNode, frameN, frameTimeNs,
+                        windowSizePx);
         if (maybeAnomaly != null) {
             AnalysisNode latestInfo = newAnalysisNode != null ? newAnalysisNode : oldAnalysisNode;
             final String viewDiagPath = diagPathFromRoot(latestInfo);

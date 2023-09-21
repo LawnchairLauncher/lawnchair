@@ -280,7 +280,7 @@ public class BubbleBarView extends FrameLayout {
             // the position of the bubble when the bar is fully expanded
             final float expandedX = i * (mIconSize + mIconSpacing);
             // the position of the bubble when the bar is fully collapsed
-            final float collapsedX = i * mIconOverlapAmount;
+            final float collapsedX = i == 0 ? 0 : mIconOverlapAmount;
 
             if (mIsBarExpanded) {
                 // where the bubble will end up when the animation ends
@@ -292,12 +292,22 @@ public class BubbleBarView extends FrameLayout {
                 }
                 // When we're expanded, we're not stacked so we're not behind the stack
                 bv.setBehindStack(false, animate);
+                bv.setAlpha(1);
             } else {
                 final float targetX = currentWidth - collapsedWidth + collapsedX;
                 bv.setTranslationX(widthState * (expandedX - targetX) + targetX);
                 bv.setZ((MAX_BUBBLES * mBubbleElevation) - i);
                 // If we're not the first bubble we're behind the stack
                 bv.setBehindStack(i > 0, animate);
+                // If we're fully collapsed, hide all bubbles except for the first 2. If there are
+                // only 2 bubbles, hide the second bubble as well because it's the overflow.
+                if (widthState == 0) {
+                    if (i > 1) {
+                        bv.setAlpha(0);
+                    } else if (i == 1 && bubbleCount == 2) {
+                        bv.setAlpha(0);
+                    }
+                }
             }
         }
 
@@ -458,7 +468,11 @@ public class BubbleBarView extends FrameLayout {
     private float collapsedWidth() {
         final int childCount = getChildCount();
         final int horizontalPadding = getPaddingStart() + getPaddingEnd();
-        return mIconSize + ((childCount - 1) * mIconOverlapAmount) + horizontalPadding;
+        // If there are more than 2 bubbles, the first 2 should be visible when collapsed.
+        // Otherwise just the first bubble should be visible because we don't show the overflow.
+        return childCount > 2
+                ? mIconSize + mIconOverlapAmount + horizontalPadding
+                : mIconSize + horizontalPadding;
     }
 
     /**

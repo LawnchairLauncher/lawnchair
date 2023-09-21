@@ -17,7 +17,6 @@ package com.android.launcher3.taskbar.bubbles;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
-import android.os.SystemProperties;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,10 +42,6 @@ import com.android.wm.shell.common.magnetictarget.MagnetizedObject;
 public class BubbleDismissController {
     private static final String TAG = BubbleDismissController.class.getSimpleName();
     private static final float FLING_TO_DISMISS_MIN_VELOCITY = 6000f;
-    // LINT.IfChange
-    private static final boolean ENABLE_FLING_TO_DISMISS_BUBBLE =
-            SystemProperties.getBoolean("persist.wm.debug.fling_to_dismiss_bubble", true);
-    // LINT.ThenChange(com/android/wm/shell/bubbles/BubbleStackView.java)
     private final TaskbarActivityContext mActivity;
     private final TaskbarDragLayer mDragLayer;
     @Nullable
@@ -182,7 +177,6 @@ public class BubbleDismissController {
         };
 
         mMagnetizedObject.setHapticsEnabled(true);
-        mMagnetizedObject.setFlingToTargetEnabled(ENABLE_FLING_TO_DISMISS_BUBBLE);
         mMagnetizedObject.setFlingToTargetMinVelocity(FLING_TO_DISMISS_MIN_VELOCITY);
         if (mMagneticTarget != null) {
             mMagnetizedObject.addTarget(mMagneticTarget);

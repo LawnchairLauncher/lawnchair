@@ -30,9 +30,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.view.Surface;
 
 import androidx.annotation.Nullable;
 
@@ -44,7 +42,6 @@ import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.PendingSplitSelectInfo;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -130,12 +127,18 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
     @Override
     public void reset() {
         super.reset();
-        setLayoutRotation(Surface.ROTATION_0, Surface.ROTATION_0);
+
+        int recentsActivityRotation = getPagedViewOrientedState().getRecentsActivityRotation();
+        setLayoutRotation(recentsActivityRotation, recentsActivityRotation);
     }
 
     @Override
     public void onStateTransitionStart(LauncherState toState) {
         setOverviewStateEnabled(toState.overviewUi);
+        if (toState.overviewUi) {
+            // If overview is enabled, we want to update at the start
+            updateOverviewStateForDesktop(true);
+        }
         setOverviewGridEnabled(toState.displayOverviewTasksAsGrid(mActivity.getDeviceProfile()));
         setOverviewFullscreenEnabled(toState.getOverviewFullscreenProgress() == 1);
         if (toState == OVERVIEW_MODAL_TASK) {
@@ -162,13 +165,16 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
             runActionOnRemoteHandles(remoteTargetHandle ->
                     remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(true));
         }
+
+        if (!finalState.overviewUi) {
+            // If overview is disabled, we want to update at the end
+            updateOverviewStateForDesktop(false);
+        }
     }
 
     @Override
     public void setOverviewStateEnabled(boolean enabled) {
         super.setOverviewStateEnabled(enabled);
-        Log.d(TestProtocol.OVERVIEW_OVER_HOME, "overview state enabled state has changed: "
-                + enabled);
         if (enabled) {
             LauncherState state = mActivity.getStateManager().getState();
             boolean hasClearAllButton = (state.getVisibleElements(mActivity)
@@ -271,6 +277,13 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
         }
         if (showDesktopApps) {
             SystemUiProxy.INSTANCE.get(mActivity).showDesktopApps(mActivity.getDisplayId());
+        }
+    }
+
+    private void updateOverviewStateForDesktop(boolean enabled) {
+        DesktopVisibilityController controller = mActivity.getDesktopVisibilityController();
+        if (controller != null) {
+            controller.setOverviewStateEnabled(enabled);
         }
     }
 }

@@ -72,7 +72,7 @@
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"尝试按住窗口较长时间，然后再松开手指"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"确保笔直向上滑动，然后停住"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"您已了解如何使用手势了。如要关闭手势，请前往“设置”。"</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"您完成了“切换应用”手势"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"您完成了应用切换手势"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"滑动即可切换应用"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"如需在应用之间切换，请从屏幕底部向上滑动，按住，然后松开。"</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"如需在应用之间切换，请从屏幕底部向上滑动，按住，然后松开。"</string>

@@ -121,6 +121,7 @@ data class SizeSpec(
         const val GUTTER = "gutter"
         const val CELL_SIZE = "cellSize"
         const val HOTSEAT_QSB_SPACE = "hotseatQsbSpace"
+        const val EDGE_PADDING = "edgePadding"
     }
 
     companion object {

@@ -539,8 +539,8 @@ public class GridSizeMigrationUtil {
                             verifyPackage(cn.getPackageName());
 
                             int widgetId = c.getInt(indexAppWidgetId);
-                            LauncherAppWidgetProviderInfo pInfo =
-                                    widgetManagerHelper.getLauncherAppWidgetInfo(widgetId);
+                            LauncherAppWidgetProviderInfo pInfo = widgetManagerHelper
+                                    .getLauncherAppWidgetInfo(widgetId, cn);
                             Point spans = null;
                             if (pInfo != null) {
                                 spans = pInfo.getMinSpans();

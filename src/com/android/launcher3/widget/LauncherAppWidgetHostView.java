@@ -23,9 +23,11 @@ import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.os.SystemClock;
 import android.os.Trace;
 import android.util.Log;
+import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
@@ -37,6 +39,7 @@ import android.widget.AdapterView;
 import android.widget.Advanceable;
 import android.widget.RemoteViews;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.CheckLongPressHelper;
@@ -62,6 +65,8 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     // Related to the auto-advancing of widgets
     private static final long ADVANCE_INTERVAL = 20000;
     private static final long ADVANCE_STAGGER = 250;
+
+    private @Nullable CellChildViewPreLayoutListener mCellChildViewPreLayoutListener;
 
     // Maintains a list of widget ids which are supposed to be auto advanced.
     private static final SparseBooleanArray sAutoAdvanceWidgetIds = new SparseBooleanArray();
@@ -107,7 +112,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         if (Utilities.ATLEAST_Q && Themes.getAttrBoolean(mLauncher, R.attr.isWorkspaceDarkText)) {
             setOnLightBackground(true);
         }
-        mColorExtractor = LocalColorExtractor.newInstance(getContext());
+        mColorExtractor = new LocalColorExtractor(); // no-op
     }
 
     @Override
@@ -335,6 +340,26 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         requestLayout();
     }
 
+    /**
+     * Set the pre-layout listener
+     * @param listener The listener to be notified when {@code CellLayout} is to layout this view
+     */
+    public void setCellChildViewPreLayoutListener(
+            @NonNull CellChildViewPreLayoutListener listener) {
+        mCellChildViewPreLayoutListener = listener;
+    }
+
+    /** @return The current cell layout listener */
+    @Nullable
+    public CellChildViewPreLayoutListener getCellChildViewPreLayoutListener() {
+        return mCellChildViewPreLayoutListener;
+    }
+
+    /** Clear the listener for the pre-layout in CellLayout */
+    public void clearCellChildViewPreLayoutListener() {
+        mCellChildViewPreLayoutListener = null;
+    }
+
     @Override
     public void onColorsChanged(SparseIntArray colors) {
         if (isDeferringUpdates()) {
@@ -459,5 +484,29 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
             return item.spanX == 1 && item.spanY == 1;
         }
         return false;
+    }
+
+    /**
+     * Listener interface to be called when {@code CellLayout} is about to layout this child view
+     */
+    public interface CellChildViewPreLayoutListener {
+        /**
+         * Notify the bound changes to this view on pre-layout
+         * @param v The view which the listener is set for
+         * @param left The new left coordinate of this view
+         * @param top The new top coordinate of this view
+         * @param right The new right coordinate of this view
+         * @param bottom The new bottom coordinate of this view
+         */
+        void notifyBoundChangeOnPreLayout(View v, int left, int top, int right, int bottom);
+    }
+
+    @Override
+    protected void dispatchRestoreInstanceState(SparseArray<Parcelable> container) {
+        try {
+            super.dispatchRestoreInstanceState(container);
+        } catch (Exception e) {
+            Log.i(TAG, "Exception: " + e);
+        }
     }
 }

@@ -794,13 +794,15 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         }
 
         // Checks the orientation of the screen
-        if (LARGE_SCREEN_WIDGET_PICKER.get()
-                && mOrientation != newConfig.orientation
-                && mDeviceProfile.isTablet
-                && !mDeviceProfile.isTwoPanels) {
+        if (mOrientation != newConfig.orientation) {
             mOrientation = newConfig.orientation;
-            handleClose(false);
-            show(Launcher.getLauncher(getContext()), false);
+            if (LARGE_SCREEN_WIDGET_PICKER.get()
+                    && mDeviceProfile.isTablet && !mDeviceProfile.isTwoPanels) {
+                handleClose(false);
+                show(Launcher.getLauncher(getContext()), false);
+            } else {
+                reset();
+            }
         }
     }
 
@@ -886,18 +888,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @VisibleForTesting
     public View getSheet() {
         return mContent;
-    }
-
-    /** Gets the search bar, which is used for testing */ // b/294050472
-    @VisibleForTesting
-    public View getSearchBar() {
-        return (View) mSearchBar;
-    }
-
-    /** Gets the search bar container, which is used for testing */ // b/294050472
-    @VisibleForTesting
-    public View getSearchBarContainer() {
-        return (View) mSearchBarContainer;
     }
 
     /** Opens the first header in widget picker and scrolls to the top of the RecyclerView. */

@@ -158,4 +158,25 @@ class HotseatWidthCalculationTest : FakeInvariantDeviceProfileTest() {
         assertThat(dp.isQsbInline).isFalse()
         assertThat(dp.hotseatQsbWidth).isEqualTo(1095)
     }
+
+    @Test
+    fun border_space_should_be_zero_when_numHotseatIcons_is_smallerOrEqual_1() {
+        initializeVarsForTablet(isGestureMode = false)
+        windowBounds = WindowBounds(Rect(0, 0, 1800, 2560), Rect(0, 104, 0, 0))
+
+        val numShownHotseatIcons = listOf(-1, 0, 1)
+        for (numHotseatIcons in numShownHotseatIcons) {
+            inv?.numShownHotseatIcons = numHotseatIcons
+
+            val dp = newDP()
+            dp.isTaskbarPresentInApps = true
+
+            assertThat(dp.numShownHotseatIcons).isEqualTo(numHotseatIcons)
+            assertThat(dp.hotseatBorderSpace).isEqualTo(0)
+
+            assertThat(dp.getHotseatLayoutPadding(context).left).isEqualTo(177)
+            assertThat(dp.getHotseatLayoutPadding(context).right).isEqualTo(177)
+            assertThat(dp.hotseatQsbWidth).isEqualTo(1445)
+        }
+    }
 }

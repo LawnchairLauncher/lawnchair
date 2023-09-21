@@ -23,6 +23,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
 import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING_KEY;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NO_RECREATION;
 import static com.android.launcher3.util.DisplayController.TASKBAR_NOT_DESTROYED_TAG;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
@@ -45,6 +46,8 @@ import android.os.Trace;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -64,6 +67,7 @@ import com.android.launcher3.util.SimpleBroadcastReceiver;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TouchInteractionService;
+import com.android.quickstep.util.AssistUtils;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
@@ -104,6 +108,9 @@ public class TaskbarManager {
             Settings.Secure.NAV_BAR_KIDS_MODE);
 
     private final Context mContext;
+    private WindowManager mWindowManager;
+    private FrameLayout mTaskbarRootLayout;
+    private boolean mAddedWindow;
     private final TaskbarNavButtonController mNavButtonController;
     private final ComponentCallbacks mComponentCallbacks;
 
@@ -175,8 +182,13 @@ public class TaskbarManager {
         Display display =
                 service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
         mContext = service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null);
+        if (ENABLE_TASKBAR_NO_RECREATION.get()) {
+            mWindowManager = mContext.getSystemService(WindowManager.class);
+            mTaskbarRootLayout = new FrameLayout(mContext);
+        }
         mNavButtonController = new TaskbarNavButtonController(service,
-                SystemUiProxy.INSTANCE.get(mContext), new Handler());
+                SystemUiProxy.INSTANCE.get(mContext), new Handler(),
+                AssistUtils.newInstance(mContext));
         mComponentCallbacks = new ComponentCallbacks() {
             private Configuration mOldConfig = mContext.getResources().getConfiguration();
 
@@ -256,9 +268,14 @@ public class TaskbarManager {
             LauncherPrefs.get(mContext).removeListener(mTaskbarPinningPreferenceChangeListener,
                     TASKBAR_PINNING);
             mTaskbarActivityContext.onDestroy();
-            if (!FLAG_HIDE_NAVBAR_WINDOW) {
+            if (!FLAG_HIDE_NAVBAR_WINDOW || ENABLE_TASKBAR_NO_RECREATION.get()) {
                 mTaskbarActivityContext = null;
             }
+        }
+        DeviceProfile dp = mUserUnlocked ?
+                LauncherAppState.getIDP(mContext).getDeviceProfile(mContext) : null;
+        if (dp == null || !isTaskbarPresent(dp)) {
+            removeTaskbarRootViewFromWindow();
         }
     }
 
@@ -287,7 +304,7 @@ public class TaskbarManager {
             return;
         }
 
-        mTaskbarActivityContext.toggleAllApps();
+        mTaskbarActivityContext.toggleAllAppsSearch();
     }
 
     /**
@@ -308,6 +325,7 @@ public class TaskbarManager {
         mUserUnlocked = true;
         LauncherAppState.getIDP(mContext).addOnChangeListener(mIdpChangeListener);
         recreateTaskbar();
+        addTaskbarRootViewToWindow();
     }
 
     /**
@@ -388,10 +406,9 @@ public class TaskbarManager {
                 return;
             }
 
-            if (mTaskbarActivityContext == null) {
+            if (ENABLE_TASKBAR_NO_RECREATION.get() || mTaskbarActivityContext == null) {
                 mTaskbarActivityContext = new TaskbarActivityContext(mContext, dp,
-                    mNavButtonController,
-                    mUnfoldProgressProvider);
+                        mNavButtonController, mUnfoldProgressProvider);
             } else {
                 mTaskbarActivityContext.updateDeviceProfile(dp);
             }
@@ -400,6 +417,13 @@ public class TaskbarManager {
             if (mActivity != null) {
                 mTaskbarActivityContext.setUIController(
                     createTaskbarUIControllerForActivity(mActivity));
+            }
+
+            if (ENABLE_TASKBAR_NO_RECREATION.get()) {
+                addTaskbarRootViewToWindow();
+                mTaskbarRootLayout.removeAllViews();
+                mTaskbarRootLayout.addView(mTaskbarActivityContext.getDragLayer());
+                mTaskbarActivityContext.notifyUpdateLayoutParams();
             }
 
             // We to wait until user unlocks the device to attach listener.
@@ -520,6 +544,22 @@ public class TaskbarManager {
             pw.println(prefix + "\tTaskbarActivityContext: null");
         } else {
             mTaskbarActivityContext.dumpLogs(prefix + "\t", pw);
+        }
+    }
+
+    private void addTaskbarRootViewToWindow() {
+        if (ENABLE_TASKBAR_NO_RECREATION.get() && !mAddedWindow
+                && mTaskbarActivityContext != null) {
+            mWindowManager.addView(mTaskbarRootLayout,
+                    mTaskbarActivityContext.getWindowLayoutParams());
+            mAddedWindow = true;
+        }
+    }
+
+    private void removeTaskbarRootViewFromWindow() {
+        if (ENABLE_TASKBAR_NO_RECREATION.get() && mAddedWindow) {
+            mWindowManager.removeViewImmediate(mTaskbarRootLayout);
+            mAddedWindow = false;
         }
     }
 

@@ -28,6 +28,7 @@ public final class TestProtocol {
     public static final String PAUSE_DETECTED_MESSAGE = "TAPL_PAUSE_DETECTED";
     public static final String DISMISS_ANIMATION_ENDS_MESSAGE = "TAPL_DISMISS_ANIMATION_ENDS";
     public static final String FOLDER_OPENED_MESSAGE = "TAPL_FOLDER_OPENED";
+    public static final String SEARCH_RESULT_COMPLETE = "SEARCH_RESULT_COMPLETE";
     public static final int NORMAL_STATE_ORDINAL = 0;
     public static final int SPRING_LOADED_STATE_ORDINAL = 1;
     public static final int OVERVIEW_STATE_ORDINAL = 2;
@@ -39,7 +40,6 @@ public final class TestProtocol {
     public static final int HINT_STATE_TWO_BUTTON_ORDINAL = 8;
     public static final int OVERVIEW_SPLIT_SELECT_ORDINAL = 9;
     public static final int EDIT_MODE_STATE_ORDINAL = 10;
-    public static final String TAPL_EVENTS_TAG = "TaplEvents";
     public static final String SEQUENCE_MAIN = "Main";
     public static final String SEQUENCE_TIS = "TIS";
     public static final String SEQUENCE_PILFER = "Pilfer";
@@ -103,6 +103,7 @@ public final class TestProtocol {
     public static final String REQUEST_WIDGETS_SCROLL_Y = "widgets-scroll-y";
     public static final String REQUEST_TARGET_INSETS = "target-insets";
     public static final String REQUEST_WINDOW_INSETS = "window-insets";
+    public static final String REQUEST_IME_INSETS = "ime-insets";
     public static final String REQUEST_PID = "pid";
     public static final String REQUEST_FORCE_GC = "gc";
     public static final String REQUEST_RECENT_TASKS_LIST = "recent-tasks-list";
@@ -121,7 +122,6 @@ public final class TestProtocol {
             "get-activities-created-count";
     public static final String REQUEST_GET_ACTIVITIES = "get-activities";
     public static final String REQUEST_HAS_TIS = "has-touch-interaction-service";
-    public static final String REQUEST_IS_TRACKPAD_GESTURE_ENABLED = "is-trackpad-gesture-enabled";
     public static final String REQUEST_TASKBAR_ALL_APPS_TOP_PADDING =
             "taskbar-all-apps-top-padding";
     public static final String REQUEST_ALL_APPS_TOP_PADDING = "all-apps-top-padding";
@@ -155,17 +155,16 @@ public final class TestProtocol {
 
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
     public static final String TWO_TASKBAR_LONG_CLICKS = "b/262282528";
-    public static final String FLAKY_ACTIVITY_COUNT = "b/260260325";
     public static final String FLAKY_QUICK_SWITCH_TO_PREVIOUS_APP = "b/286084688";
     public static final String ICON_MISSING = "b/282963545";
-    public static final String LAUNCH_SPLIT_PAIR = "b/288939273";
-
-    public static final String OVERVIEW_OVER_HOME = "b/279059025";
+    public static final String INCORRECT_HOME_STATE = "b/293191790";
 
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
     public static final String REQUEST_STOP_EMULATE_DISPLAY = "stop-emulate-display";
     public static final String REQUEST_IS_EMULATE_DISPLAY_RUNNING = "is-emulate-display-running";
     public static final String REQUEST_EMULATE_PRINT_DEVICE = "emulate-print-device";
+
+    public static final String REQUEST_FLAG_ENABLE_GRID_ONLY_OVERVIEW = "enable-grid-only-overview";
 
     /** Logs {@link Log#d(String, String)} if {@link #sDebugTracing} is true. */
     public static void testLogD(String tag, String message) {

@@ -17,7 +17,6 @@ package com.android.launcher3.taskbar
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.util.AttributeSet
@@ -44,9 +43,6 @@ constructor(
     companion object {
         private const val TAG = "TaskbarDividerPopupView"
         private const val DIVIDER_POPUP_CLOSING_DELAY = 500L
-        private const val SETTINGS_PACKAGE_NAME = "com.android.settings"
-        private const val CHANGE_NAVIGATION_MODE_ACTION =
-            "com.android.settings.NAVIGATION_MODE_SETTINGS"
 
         @JvmStatic
         fun createAndPopulate(
@@ -63,6 +59,7 @@ constructor(
             return taskMenuViewWithArrow.populateForView(view)
         }
     }
+
     private lateinit var dividerView: View
 
     private val menuWidth =
@@ -103,20 +100,11 @@ constructor(
         super.onFinishInflate()
         val taskbarSwitchOption = requireViewById<LinearLayout>(R.id.taskbar_switch_option)
         val alwaysShowTaskbarSwitch = requireViewById<Switch>(R.id.taskbar_pinning_switch)
-        val navigationModeChangeOption =
-            requireViewById<LinearLayout>(R.id.navigation_mode_switch_option)
         alwaysShowTaskbarSwitch.isChecked = alwaysShowTaskbarOn
         taskbarSwitchOption.setOnClickListener {
             alwaysShowTaskbarSwitch.isClickable = true
             alwaysShowTaskbarSwitch.isChecked = !alwaysShowTaskbarOn
             onClickAlwaysShowTaskbarSwitchOption()
-        }
-        navigationModeChangeOption.setOnClickListener {
-            context.startActivity(
-                Intent(CHANGE_NAVIGATION_MODE_ACTION)
-                    .setPackage(SETTINGS_PACKAGE_NAME)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            )
         }
     }
 
@@ -191,13 +179,19 @@ constructor(
 
     override fun closeComplete() {
         onCloseCallback(didPreferenceChange)
+        onCloseCallback = {}
         super.closeComplete()
     }
 
     private fun onClickAlwaysShowTaskbarSwitchOption() {
         didPreferenceChange = true
         changePreference()
+        changePreference = {}
         // Allow switch animation to finish and then close the popup.
-        postDelayed(DIVIDER_POPUP_CLOSING_DELAY) { close(true) }
+        postDelayed(DIVIDER_POPUP_CLOSING_DELAY) {
+            if (isOpen) {
+                close(false)
+            }
+        }
     }
 }

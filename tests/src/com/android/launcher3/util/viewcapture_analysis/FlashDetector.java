@@ -38,9 +38,6 @@ final class FlashDetector extends AnomalyDetector {
 
     private static final IgnoreNode IGNORED_NODES_ROOT = buildIgnoreNodesTree(List.of(
             CONTENT + "LauncherRootView:id/launcher|FloatingIconView",
-            DRAG_LAYER
-                    + "SearchContainerView:id/apps_view|AllAppsRecyclerView:id/apps_list_view"
-                    + "|BubbleTextView:id/icon",
             DRAG_LAYER + "LauncherRecentsView:id/overview_panel|TaskView|TextView",
             DRAG_LAYER
                     + "LauncherAllAppsContainerView:id/apps_view|AllAppsRecyclerView:id"
@@ -58,7 +55,16 @@ final class FlashDetector extends AnomalyDetector {
                     + "|WidgetCellPreview:id/widget_preview_container|ImageView:id/widget_badge",
             RECENTS_DRAG_LAYER + "FallbackRecentsView:id/overview_panel|TaskView|IconView:id/icon",
             DRAG_LAYER + "SearchContainerView:id/apps_view",
-            DRAG_LAYER + "LauncherDragView"
+            DRAG_LAYER + "LauncherDragView",
+            DRAG_LAYER + "FloatingTaskView|FloatingTaskThumbnailView:id/thumbnail",
+            DRAG_LAYER
+                    + "WidgetsFullSheet|SpringRelativeLayout:id/container|WidgetsRecyclerView:id"
+                    + "/primary_widgets_list_view|WidgetsListHeader:id/widgets_list_header",
+            DRAG_LAYER
+                    + "WidgetsTwoPaneSheet|SpringRelativeLayout:id/container|LinearLayout:id"
+                    + "/linear_layout_container|FrameLayout:id/recycler_view_container"
+                    + "|FrameLayout:id/widgets_two_pane_sheet_recyclerview|WidgetsRecyclerView:id"
+                    + "/primary_widgets_list_view|WidgetsListHeader:id/widgets_list_header"
     ));
 
     // Per-AnalysisNode data that's specific to this detector.
@@ -104,7 +110,7 @@ final class FlashDetector extends AnomalyDetector {
 
     @Override
     String detectAnomalies(AnalysisNode oldInfo, AnalysisNode newInfo, int frameN,
-            long frameTimeNs) {
+            long frameTimeNs, int windowSizePx) {
         // Should we check when a view was visible for a short period, then its alpha became 0?
         // Then 'lastVisible' time should be the last one still visible?
         // Check only transitions of alpha between 0 and 1?

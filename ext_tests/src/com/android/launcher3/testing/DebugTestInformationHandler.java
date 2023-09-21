@@ -25,7 +25,6 @@ import android.content.Context;
 import android.os.Binder;
 import android.os.Bundle;
 import android.system.Os;
-import android.util.Log;
 
 import androidx.annotation.Keep;
 import androidx.annotation.Nullable;
@@ -62,7 +61,6 @@ public class DebugTestInformationHandler extends TestInformationHandler {
                 public void onActivityCreated(Activity activity, Bundle bundle) {
                     sActivities.put(activity, true);
                     ++sActivitiesCreatedCount;
-                    Log.d(TestProtocol.FLAKY_ACTIVITY_COUNT, "onActivityCreated", new Exception());
                 }
 
                 @Override

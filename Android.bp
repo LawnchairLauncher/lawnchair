@@ -173,7 +173,8 @@ android_library {
     static_libs: [
         "Launcher3ResLib",
         "launcher-testing-shared",
-        "animationlib"
+        "animationlib",
+        "com_android_launcher3_flags_lib",
     ],
     sdk_version: "current",
     min_sdk_version: min_launcher3_sdk_version,

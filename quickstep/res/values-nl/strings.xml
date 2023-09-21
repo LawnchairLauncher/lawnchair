@@ -46,7 +46,7 @@
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Voorspelde app: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Het apparaat draaien"</string>
     <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Draai het apparaat om de tutorial voor navigatie met gebaren af te ronden"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Swipe helemaal vanaf de rechter- of linkerrand"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Swipe vanaf de rechter- of linkerrand"</string>
     <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Swipe vanaf de rechter- of linkerrand naar het midden van het scherm en laat los"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Je weet nu hoe je vanaf rechts kunt swipen om terug te gaan. Ontdek nu hoe je tussen apps schakelt."</string>
     <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Je weet nu hoe je het gebaar Terug maakt"</string>

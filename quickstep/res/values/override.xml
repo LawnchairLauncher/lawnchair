@@ -27,6 +27,8 @@
 
   <string name="nav_handle_long_press_handler_class" translatable="false"></string>
 
+  <string name="assist_utils_class" translatable="false"></string>
+
   <string name="secondary_display_predictions_class" translatable="false">com.android.launcher3.secondarydisplay.SecondaryDisplayPredictionsImpl</string>
 
   <string name="taskbar_model_callbacks_factory_class" translatable="false">com.android.launcher3.taskbar.TaskbarModelCallbacksFactory</string>

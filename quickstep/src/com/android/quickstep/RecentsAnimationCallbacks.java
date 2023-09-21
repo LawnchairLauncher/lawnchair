@@ -23,6 +23,7 @@ import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.START_RECENTS_ANIMATION;
 
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.util.ArraySet;
 import android.view.RemoteAnimationTarget;
 
@@ -92,9 +93,9 @@ public class RecentsAnimationCallbacks implements
     @Deprecated
     public final void onAnimationStart(RecentsAnimationControllerCompat controller,
             RemoteAnimationTarget[] appTargets, Rect homeContentInsets,
-            Rect minimizedHomeBounds) {
+            Rect minimizedHomeBounds, Bundle extras) {
         onAnimationStart(controller, appTargets, new RemoteAnimationTarget[0],
-                homeContentInsets, minimizedHomeBounds);
+                homeContentInsets, minimizedHomeBounds, extras);
     }
 
     // Called only in R+ platform
@@ -102,7 +103,7 @@ public class RecentsAnimationCallbacks implements
     public final void onAnimationStart(RecentsAnimationControllerCompat animationController,
             RemoteAnimationTarget[] appTargets,
             RemoteAnimationTarget[] wallpaperTargets,
-            Rect homeContentInsets, Rect minimizedHomeBounds) {
+            Rect homeContentInsets, Rect minimizedHomeBounds, Bundle extras) {
         long appCount = Arrays.stream(appTargets)
                 .filter(app -> app.mode == MODE_CLOSING)
                 .count();

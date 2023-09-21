@@ -368,7 +368,8 @@ class SplitSelectDataHolder(
     }
 
     private fun isInitialTaskIntentSet(): Boolean {
-        return initialTaskId != INVALID_TASK_ID || initialIntent != null
+        return initialTaskId != INVALID_TASK_ID || initialIntent != null ||
+                initialPendingIntent != null
     }
 
     fun getInitialTaskId(): Int {
@@ -404,6 +405,7 @@ class SplitSelectDataHolder(
         secondUser = null
         initialIntent = null
         secondIntent = null
+        initialPendingIntent = null
         secondPendingIntent = null
         itemInfo = null
         splitEvent = null

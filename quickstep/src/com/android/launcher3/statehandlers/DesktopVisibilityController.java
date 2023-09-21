@@ -106,8 +106,7 @@ public class DesktopVisibilityController {
      * Whether desktop mode is supported.
      */
     private boolean isDesktopModeSupported() {
-        return SystemProperties.getBoolean("persist.wm.debug.desktop_mode", false)
-                || SystemProperties.getBoolean("persist.wm.debug.desktop_mode_2", false);
+        return SystemProperties.getBoolean("persist.wm.debug.desktop_mode_2", false);
     }
 
     /**
@@ -161,7 +160,9 @@ public class DesktopVisibilityController {
             if (mInOverviewState) {
                 setLauncherViewsVisibility(View.VISIBLE);
                 markLauncherResumed();
-            } else if (mFreeformTasksVisible) {
+            } else if (mFreeformTasksVisible && !mGestureInProgress) {
+                // Switching out of overview state and gesture finished.
+                // If freeform tasks are still visible, hide launcher again.
                 setLauncherViewsVisibility(View.INVISIBLE);
                 markLauncherPaused();
             }

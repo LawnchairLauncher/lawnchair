@@ -58,6 +58,8 @@ import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.systemui.shared.system.QuickStepContract;
 
+import java.lang.ref.WeakReference;
+
 /**
  * Controls the animation of swiping back and returning to launcher.
  *
@@ -105,7 +107,7 @@ public class LauncherBackAnimationController {
     private boolean mAnimatorSetInProgress = false;
     private float mBackProgress = 0;
     private boolean mBackInProgress = false;
-    private IOnBackInvokedCallback mBackCallback;
+    private OnBackInvokedCallbackStub mBackCallback;
     private IRemoteAnimationFinishedCallback mAnimationFinishedCallback;
     private BackProgressAnimator mProgressAnimator = new BackProgressAnimator();
     private SurfaceControl mScrimLayer;
@@ -137,65 +139,104 @@ public class LauncherBackAnimationController {
      * @param handler Handler to the thread to run the animations on.
      */
     public void registerBackCallbacks(Handler handler) {
-        mBackCallback = new IOnBackInvokedCallback.Stub() {
-            @Override
-            public void onBackCancelled() {
-                handler.post(() -> {
+        mBackCallback = new OnBackInvokedCallbackStub(handler, mProgressAnimator, this);
+        SystemUiProxy.INSTANCE.get(mLauncher).setBackToLauncherCallback(mBackCallback,
+                new RemoteAnimationRunnerStub(this));
+    }
+
+    private static class OnBackInvokedCallbackStub extends IOnBackInvokedCallback.Stub {
+        private Handler mHandler;
+        private BackProgressAnimator mProgressAnimator;
+        // LauncherBackAnimationController has strong reference to Launcher activity, the binder
+        // callback should not hold strong reference to it to avoid memory leak.
+        private WeakReference<LauncherBackAnimationController> mControllerRef;
+
+        private OnBackInvokedCallbackStub(
+                Handler handler,
+                BackProgressAnimator progressAnimator,
+                LauncherBackAnimationController controller) {
+            mHandler = handler;
+            mProgressAnimator = progressAnimator;
+            mControllerRef = new WeakReference<>(controller);
+        }
+
+        @Override
+        public void onBackCancelled() {
+            mHandler.post(() -> {
+                LauncherBackAnimationController controller = mControllerRef.get();
+                if (controller != null) {
                     mProgressAnimator.onBackCancelled(
-                            LauncherBackAnimationController.this::resetPositionAnimated);
-                });
-            }
-
-            @Override
-            public void onBackInvoked() {
-                handler.post(() -> {
-                    startTransition();
-                    mProgressAnimator.reset();
-                });
-            }
-
-            @Override
-            public void onBackProgressed(BackMotionEvent backEvent) {
-                handler.post(() -> {
-                    mProgressAnimator.onBackProgressed(backEvent);
-                });
-            }
-
-            @Override
-            public void onBackStarted(BackMotionEvent backEvent) {
-                handler.post(() -> {
-                    startBack(backEvent);
-                    mProgressAnimator.onBackStarted(backEvent, event -> {
-                        mBackProgress = event.getProgress();
-                        // TODO: Update once the interpolation curve spec is finalized.
-                        mBackProgress =
-                                1 - (1 - mBackProgress) * (1 - mBackProgress) * (1
-                                        - mBackProgress);
-                        updateBackProgress(mBackProgress, event);
-                    });
-                });
-            }
-        };
-
-        final IRemoteAnimationRunner runner = new IRemoteAnimationRunner.Stub() {
-            @Override
-            public void onAnimationStart(int transit, RemoteAnimationTarget[] apps,
-                    RemoteAnimationTarget[] wallpapers, RemoteAnimationTarget[] nonApps,
-                    IRemoteAnimationFinishedCallback finishedCallback) {
-                for (final RemoteAnimationTarget target : apps) {
-                    if (MODE_CLOSING == target.mode) {
-                        mBackTarget = target;
-                        break;
-                    }
+                            controller::resetPositionAnimated);
                 }
-                mAnimationFinishedCallback = finishedCallback;
+            });
+        }
+
+        @Override
+        public void onBackInvoked() {
+            mHandler.post(() -> {
+                LauncherBackAnimationController controller = mControllerRef.get();
+                if (controller != null) {
+                    controller.startTransition();
+                }
+                mProgressAnimator.reset();
+            });
+        }
+
+        @Override
+        public void onBackProgressed(BackMotionEvent backMotionEvent) {
+            mHandler.post(() -> {
+                mProgressAnimator.onBackProgressed(backMotionEvent);
+            });
+        }
+
+        @Override
+        public void onBackStarted(BackMotionEvent backEvent) {
+            mHandler.post(() -> {
+                LauncherBackAnimationController controller = mControllerRef.get();
+                if (controller != null) {
+                    controller.startBack(backEvent);
+                    mProgressAnimator.onBackStarted(backEvent, event -> {
+                        float backProgress = event.getProgress();
+                        // TODO: Update once the interpolation curve spec is finalized.
+                        controller.mBackProgress =
+                                1 - (1 - backProgress) * (1 - backProgress) * (1
+                                        - backProgress);
+                        controller.updateBackProgress(controller.mBackProgress, event);
+                    });
+                }
+            });
+        }
+    }
+
+    private static class RemoteAnimationRunnerStub extends IRemoteAnimationRunner.Stub {
+
+        // LauncherBackAnimationController has strong reference to Launcher activity, the binder
+        // callback should not hold strong reference to it to avoid memory leak.
+        private WeakReference<LauncherBackAnimationController> mControllerRef;
+
+        private RemoteAnimationRunnerStub(LauncherBackAnimationController controller) {
+            mControllerRef = new WeakReference<>(controller);
+        }
+
+        @Override
+        public void onAnimationStart(int transit, RemoteAnimationTarget[] apps,
+                RemoteAnimationTarget[] wallpapers, RemoteAnimationTarget[] nonApps,
+                IRemoteAnimationFinishedCallback finishedCallback) {
+            LauncherBackAnimationController controller = mControllerRef.get();
+            if (controller == null) {
+                return;
             }
+            for (final RemoteAnimationTarget target : apps) {
+                if (MODE_CLOSING == target.mode) {
+                    controller.mBackTarget = target;
+                    break;
+                }
+            }
+            controller.mAnimationFinishedCallback = finishedCallback;
+        }
 
-            @Override
-            public void onAnimationCancelled() {}
-        };
-
-        SystemUiProxy.INSTANCE.get(mLauncher).setBackToLauncherCallback(mBackCallback, runner);
+        @Override
+        public void onAnimationCancelled() {}
     }
 
     private void resetPositionAnimated() {
@@ -363,12 +404,16 @@ public class LauncherBackAnimationController {
         AbstractFloatingView.closeAllOpenViewsExcept(mLauncher, false, TYPE_REBIND_SAFE);
         float cornerRadius = Utilities.mapRange(
                 mBackProgress, mWindowScaleStartCornerRadius, mWindowScaleEndCornerRadius);
+        final RectF resolveRectF = new RectF();
+        mQuickstepTransitionManager.transferRectToTargetCoordinate(
+                mBackTarget, mCurrentRect, true, resolveRectF);
+
         Pair<RectFSpringAnim, AnimatorSet> pair =
                 mQuickstepTransitionManager.createWallpaperOpenAnimations(
                     new RemoteAnimationTarget[]{mBackTarget},
                     new RemoteAnimationTarget[0],
                     false /* fromUnlock */,
-                    mCurrentRect,
+                    resolveRectF,
                     cornerRadius,
                     mBackInProgress /* fromPredictiveBack */);
         startTransitionAnimations(pair.first, pair.second);

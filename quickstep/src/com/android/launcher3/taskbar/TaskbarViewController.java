@@ -448,6 +448,11 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         }
     }
 
+    /** Resets the icon alignment controller so that it can be recreated again later. */
+    void resetIconAlignmentController() {
+        mIconAlignControllerLazy = null;
+    }
+
     /**
      * Creates an animation for aligning the Taskbar icons with the provided Launcher device profile
      */
@@ -564,9 +569,18 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 continue;
             }
 
-            float hotseatIconCenter = hotseatPadding.left
-                    + (hotseatCellSize + borderSpacing) * positionInHotseat
-                    + hotseatCellSize / 2f;
+            float hotseatAdjustedBorderSpace =
+                    launcherDp.getHotseatAdjustedBorderSpaceForBubbleBar(child.getContext());
+            float hotseatIconCenter;
+            if (bubbleBarHasBubbles() && hotseatAdjustedBorderSpace != 0) {
+                hotseatIconCenter = hotseatPadding.left + hotseatCellSize
+                        + (hotseatCellSize + hotseatAdjustedBorderSpace) * positionInHotseat
+                        + hotseatCellSize / 2f;
+            } else {
+                hotseatIconCenter = hotseatPadding.left
+                        + (hotseatCellSize + borderSpacing) * positionInHotseat
+                        + hotseatCellSize / 2f;
+            }
             float childCenter = (child.getLeft() + child.getRight()) / 2f;
             float toX = hotseatIconCenter - childCenter;
             if (child instanceof Reorderable) {
@@ -586,6 +600,11 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         AnimatorPlaybackController controller = setter.createPlaybackController();
         mOnControllerPreCreateCallback = () -> controller.setPlayFraction(0);
         return controller;
+    }
+
+    private boolean bubbleBarHasBubbles() {
+        return mControllers.bubbleControllers.isPresent()
+                && mControllers.bubbleControllers.get().bubbleBarViewController.hasBubbles();
     }
 
     public void onRotationChanged(DeviceProfile deviceProfile) {
@@ -736,6 +755,14 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
          */
         public void notifyIconLayoutBoundsChanged() {
             mControllers.uiController.onIconLayoutBoundsChanged();
+        }
+
+        /**
+         * Notifies the taskbar scrim when the visibility of taskbar changes.
+         */
+        public void notifyVisibilityChanged() {
+            mControllers.taskbarScrimViewController.onTaskbarVisibilityChanged(
+                    mTaskbarView.getVisibility());
         }
     }
 }

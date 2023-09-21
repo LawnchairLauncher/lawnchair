@@ -16,9 +16,13 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_CURSOR_HOVER_STATES;
 import static com.android.launcher3.testing.shared.TestProtocol.FLAKY_QUICK_SWITCH_TO_PREVIOUS_APP;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 import static com.android.quickstep.TaskbarModeSwitchRule.Mode.PERSISTENT;
+import static com.android.quickstep.TaskbarModeSwitchRule.Mode.TRANSIENT;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -48,8 +52,10 @@ import com.android.launcher3.tapl.OverviewTaskMenu;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
+import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 import com.android.quickstep.views.RecentsView;
@@ -182,7 +188,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
-    @ScreenRecord // b/195673272
     @PlatinumTest(focusArea = "launcher")
     public void testOverviewActions() throws Exception {
         // Experimenting for b/165029151:
@@ -240,6 +245,19 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 isInState(() -> LauncherState.OVERVIEW));
     }
 
+    @Test
+    @TaskbarModeSwitch(mode = TRANSIENT)
+    public void testSwitchToOverviewWithStashedTaskbar() throws Exception {
+        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_CURSOR_HOVER_STATES, true)) {
+            startTestAppsWithCheck();
+            // Set ignoreTaskbarVisibility, as transient taskbar will be stashed after app launch.
+            mLauncher.setIgnoreTaskbarVisibility(true);
+            mLauncher.getLaunchedAppState().switchToOverview();
+        } finally {
+            mLauncher.setIgnoreTaskbarVisibility(false);
+        }
+    }
+
     @Ignore
     @Test
     @NavigationModeSwitch
@@ -266,24 +284,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         // While enable shell transition, Launcher can be resumed due to transient launch.
         waitForLauncherCondition("Launcher shouldn't stay in resume forever",
                 this::isInLaunchedApp, 3000 /* timeout */);
-    }
-
-    @Test
-    @PortraitLandscape
-    public void testAllAppsFromHome() throws Exception {
-        // Test opening all apps
-        assertNotNull("switchToAllApps() returned null",
-                mLauncher.getWorkspace().switchToAllApps());
-
-        TaplTestsLauncher3.runAllAppsTest(this, mLauncher.getAllApps());
-
-        // Testing pressHome.
-        assertTrue("Launcher internal state is not All Apps",
-                isInState(() -> LauncherState.ALL_APPS));
-        assertNotNull("pressHome returned null", mLauncher.goHome());
-        assertTrue("Launcher internal state is not Home",
-                isInState(() -> LauncherState.NORMAL));
-        assertNotNull("getHome returned null", mLauncher.getWorkspace());
     }
 
     @Test
@@ -320,6 +320,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @ScreenRecord // b/242163205
     @PlatinumTest(focusArea = "launcher")
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/286084688
     public void testQuickSwitchToPreviousAppForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
         startTestActivity(2);
@@ -499,7 +500,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     }
 
     @Test
-    @ScreenRecord // b/242163205
     public void testDisableRotationCheckForPhone() throws Exception {
         assumeFalse(mLauncher.isTablet());
         try {

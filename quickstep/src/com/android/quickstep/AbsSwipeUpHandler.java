@@ -34,7 +34,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_GESTURE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_LEFT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_QUICKSWITCH_RIGHT;
-import static com.android.launcher3.uioverrides.QuickstepLauncher.ENABLE_PIP_KEEP_CLEAR_ALGORITHM;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_FULLSCREEN_TASK;
@@ -194,6 +193,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                     ActiveGestureLog.INSTANCE.addLog("Launcher destroyed", LAUNCHER_DESTROYED);
                     mRecentsView = null;
                     mActivity = null;
+                    mStateCallback.clearState(STATE_LAUNCHER_PRESENT);
                 }
             };
 
@@ -518,20 +518,22 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         // Set up a entire animation lifecycle callback to notify the current recents view when
         // the animation is canceled
         mGestureState.runOnceAtState(STATE_RECENTS_ANIMATION_CANCELED, () -> {
-                HashMap<Integer, ThumbnailData> snapshots =
-                        mGestureState.consumeRecentsAnimationCanceledSnapshot();
-                if (snapshots != null) {
-                    mRecentsView.switchToScreenshot(snapshots, () -> {
-                        if (mRecentsAnimationController != null) {
-                            mRecentsAnimationController.cleanupScreenshot();
-                        } else if (mDeferredCleanupRecentsAnimationController != null) {
-                            mDeferredCleanupRecentsAnimationController.cleanupScreenshot();
-                            mDeferredCleanupRecentsAnimationController = null;
-                        }
-                    });
-                    mRecentsView.onRecentsAnimationComplete();
-                }
-            });
+            if (mRecentsView == null) return;
+
+            HashMap<Integer, ThumbnailData> snapshots =
+                    mGestureState.consumeRecentsAnimationCanceledSnapshot();
+            if (snapshots != null) {
+                mRecentsView.switchToScreenshot(snapshots, () -> {
+                    if (mRecentsAnimationController != null) {
+                        mRecentsAnimationController.cleanupScreenshot();
+                    } else if (mDeferredCleanupRecentsAnimationController != null) {
+                        mDeferredCleanupRecentsAnimationController.cleanupScreenshot();
+                        mDeferredCleanupRecentsAnimationController = null;
+                    }
+                });
+                mRecentsView.onRecentsAnimationComplete();
+            }
+        });
 
         setupRecentsViewUi();
         mRecentsView.runOnPageScrollsInitialized(this::linkRecentsViewScroll);
@@ -1159,7 +1161,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
                 // Notify the SysUI to use fade-in animation when entering PiP
                 SystemUiProxy.INSTANCE.get(mContext).setPipAnimationTypeToAlpha();
-                if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+                if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
                     // Notify the SysUI to stash desktop apps if they are visible
                     DesktopVisibilityController desktopVisibilityController =
                             mActivityInterface.getDesktopVisibilityController();
@@ -1187,7 +1189,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 break;
         }
         ActiveGestureLog.INSTANCE.addLog(
-                /* event= */ "onSettledOnEndTarget " + endTarget,
+                new ActiveGestureLog.CompoundString("onSettledOnEndTarget ")
+                        .append(endTarget.name()),
                 /* gestureEvent= */ ON_SETTLED_ON_END_TARGET);
     }
 
@@ -1753,11 +1756,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
     private Rect getKeepClearAreaForHotseat() {
         Rect keepClearArea;
-        if (!ENABLE_PIP_KEEP_CLEAR_ALGORITHM) {
-            // make the height equal to hotseatBarSizePx only
-            keepClearArea = new Rect(0, 0, 0, mDp.hotseatBarSizePx);
-            return keepClearArea;
-        }
         // the keep clear area in global screen coordinates, in pixels
         if (mDp.isPhone) {
             if (mDp.isSeascape()) {
@@ -2218,7 +2216,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             TaskView nextTask = mRecentsView == null ? null : mRecentsView.getNextPageTaskView();
             if (nextTask != null) {
                 int[] taskIds = nextTask.getTaskIds();
-                StringBuilder nextTaskLog = new StringBuilder();
+                ActiveGestureLog.CompoundString nextTaskLog = new ActiveGestureLog.CompoundString(
+                        "Launching task: ");
                 for (TaskIdAttributeContainer c : nextTask.getTaskIdAttributeContainers()) {
                     if (c == null) {
                         continue;
@@ -2237,7 +2236,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 if (!hasTaskPreviouslyAppeared) {
                     ActiveGestureLog.INSTANCE.trackEvent(EXPECTING_TASK_APPEARED);
                 }
-                ActiveGestureLog.INSTANCE.addLog("Launching task: " + nextTaskLog);
+                ActiveGestureLog.INSTANCE.addLog(nextTaskLog);
                 nextTask.launchTask(success -> {
                     resultCallback.accept(success);
                     if (success) {
@@ -2313,9 +2312,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 // previous quickswitch task launch, then cancel the animation back to the app
                 RemoteAnimationTarget appearedTaskTarget = appearedTaskTargets[0];
                 TaskInfo taskInfo = appearedTaskTarget.taskInfo;
-                ActiveGestureLog.INSTANCE.addLog("Unexpected task appeared"
-                        + " id=" + taskInfo.taskId
-                        + " pkg=" + taskInfo.baseIntent.getComponent().getPackageName());
+                ActiveGestureLog.INSTANCE.addLog(
+                        new ActiveGestureLog.CompoundString("Unexpected task appeared")
+                                .append(" id=")
+                                .append(taskInfo.taskId)
+                                .append(" pkg=")
+                                .append(taskInfo.baseIntent.getComponent().getPackageName()));
                 finishRecentsAnimationOnTasksAppeared(null /* onFinishComplete */);
             } else if (handleTaskAppeared(appearedTaskTargets)) {
                 Optional<RemoteAnimationTarget> taskTargetOptional =

@@ -16,11 +16,9 @@
 package com.android.launcher3.ui;
 
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
-
 import static com.android.launcher3.testing.shared.TestProtocol.ICON_MISSING;
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -68,6 +66,7 @@ import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.SamplerRule;
 import com.android.launcher3.util.rule.ScreenRecordRule;
 import com.android.launcher3.util.rule.ShellCommandRule;
+import com.android.launcher3.util.rule.TestIsolationRule;
 import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.launcher3.util.rule.ViewCaptureRule;
 
@@ -121,6 +120,10 @@ public abstract class AbstractLauncherUiTest {
                     return MAIN_EXECUTOR.submit(
                             () -> launcher.noLeakedActivities()).get();
                 }, DEFAULT_UI_TIMEOUT, launcher);
+    }
+
+    public static String getAppPackageName() {
+        return getInstrumentation().getContext().getPackageName();
     }
 
     private static String getActivityLeakErrorMessage(LauncherInstrumentation launcher) {
@@ -206,7 +209,8 @@ public abstract class AbstractLauncherUiTest {
         final RuleChain inner = RuleChain
                 .outerRule(new PortraitLandscapeRunner(this))
                 .around(new FailureWatcher(mLauncher, viewCaptureRule::getViewCaptureData))
-                .around(viewCaptureRule);
+                .around(viewCaptureRule)
+                .around(new TestIsolationRule(mLauncher));
 
         return TestHelpers.isInLauncherProcess()
                 ? RuleChain.outerRule(ShellCommandRule.setDefaultLauncher()).around(inner)

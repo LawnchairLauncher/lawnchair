@@ -41,12 +41,14 @@ final class TaskbarAllAppsViewController {
     private final TaskbarStashController mTaskbarStashController;
     private final NavbarButtonsViewController mNavbarButtonsViewController;
     private final TaskbarOverlayController mOverlayController;
+    private final boolean mShowKeyboard;
 
     TaskbarAllAppsViewController(
             TaskbarOverlayContext context,
             TaskbarAllAppsSlideInView slideInView,
             TaskbarControllers taskbarControllers,
-            TaskbarSearchSessionController searchSessionController) {
+            TaskbarSearchSessionController searchSessionController,
+            boolean showKeyboard) {
 
         mContext = context;
         mSlideInView = slideInView;
@@ -54,6 +56,7 @@ final class TaskbarAllAppsViewController {
         mTaskbarStashController = taskbarControllers.taskbarStashController;
         mNavbarButtonsViewController = taskbarControllers.navbarButtonsViewController;
         mOverlayController = taskbarControllers.taskbarOverlayController;
+        mShowKeyboard = showKeyboard;
 
         mSlideInView.init(new TaskbarAllAppsCallbacks(searchSessionController));
         setUpAppDivider();
@@ -81,7 +84,7 @@ final class TaskbarAllAppsViewController {
     private void setUpTaskbarStashing() {
         if (DisplayController.isTransientTaskbar(mContext)) {
             mTaskbarStashController.updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, true);
-            mTaskbarStashController.applyState(mOverlayController.getOpenDuration());
+            mTaskbarStashController.applyState();
         }
 
         mNavbarButtonsViewController.setSlideInViewVisible(true);
@@ -92,7 +95,7 @@ final class TaskbarAllAppsViewController {
 
             if (DisplayController.isTransientTaskbar(mContext)) {
                 mTaskbarStashController.updateStateForFlag(FLAG_STASHED_IN_TASKBAR_ALL_APPS, false);
-                mTaskbarStashController.applyState(mOverlayController.getCloseDuration());
+                mTaskbarStashController.applyState();
             }
         });
     }
@@ -120,6 +123,11 @@ final class TaskbarAllAppsViewController {
         @Override
         public void onAllAppsTransitionEnd(boolean toAllApps) {
             mSearchSessionController.onAllAppsTransitionEnd(toAllApps);
+            if (toAllApps
+                    && mShowKeyboard
+                    && mAppsView.getSearchUiManager().getEditText() != null) {
+                mAppsView.getSearchUiManager().getEditText().requestFocus();
+            }
         }
 
         /** Invoked on back press, returning {@code true} if the search session handled it. */
@@ -128,7 +136,7 @@ final class TaskbarAllAppsViewController {
         }
 
         void onAllAppsAnimationPending(PendingAnimation animation, boolean toAllApps) {
-            mSearchSessionController.onAllAppsAnimationPending(animation, toAllApps);
+            mSearchSessionController.onAllAppsAnimationPending(animation, toAllApps, mShowKeyboard);
         }
     }
 }

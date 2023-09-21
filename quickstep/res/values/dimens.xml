@@ -306,7 +306,7 @@
     <dimen name="taskbar_home_button_left_margin_kids">48dp</dimen>
     <dimen name="taskbar_icon_size_kids">32dp</dimen>
     <dimen name="taskbar_all_apps_button_translation_x_offset">6dp</dimen>
-
+    <dimen name="taskbar_all_apps_search_button_translation_x_offset">4.5dp</dimen>
 
     <!-- Transient taskbar -->
     <dimen name="transient_taskbar_padding">12dp</dimen>
@@ -317,6 +317,8 @@
     <dimen name="transient_taskbar_stashed_height">32dp</dimen>
     <dimen name="transient_taskbar_all_apps_button_translation_x_offset">4dp</dimen>
     <dimen name="transient_taskbar_stash_spring_velocity_dp_per_s">400dp</dimen>
+    <dimen name="taskbar_tooltip_vertical_padding">8dp</dimen>
+    <dimen name="taskbar_tooltip_horizontal_padding">16dp</dimen>
 
     <!-- An additional touch slop to prevent x-axis movement during the swipe up to show taskbar -->
     <dimen name="transient_taskbar_clamped_offset_bound">16dp</dimen>
@@ -368,6 +370,7 @@
     <dimen name="bubblebar_stashed_handle_height">@dimen/taskbar_stashed_handle_height</dimen>
     <dimen name="bubblebar_pointer_size">8dp</dimen>
     <dimen name="bubblebar_elevation">1dp</dimen>
+    <dimen name="bubblebar_hotseat_adjustment_threshold">90dp</dimen>
 
     <dimen name="bubblebar_icon_size">50dp</dimen>
     <dimen name="bubblebar_badge_size">24dp</dimen>

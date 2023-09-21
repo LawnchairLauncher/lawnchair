@@ -37,7 +37,7 @@ public class ActiveGestureErrorDetector {
         START_RECENTS_ANIMATION, FINISH_RECENTS_ANIMATION, CANCEL_RECENTS_ANIMATION,
         SET_ON_PAGE_TRANSITION_END_CALLBACK, CANCEL_CURRENT_ANIMATION, CLEANUP_SCREENSHOT,
         SCROLLER_ANIMATION_ABORTED, TASK_APPEARED, EXPECTING_TASK_APPEARED,
-        FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER, LAUNCHER_DESTROYED,
+        FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER, LAUNCHER_DESTROYED, RECENT_TASKS_MISSING,
 
         /**
          * These GestureEvents are specifically associated to state flags that get set in
@@ -216,6 +216,14 @@ public class ActiveGestureErrorDetector {
                             prefix,
                             /* errorMessage= */ "STATE_RECENTS_ANIMATION_CANCELED "
                                     + "set before/without startRecentsAnimation.",
+                            writer);
+                    break;
+                case RECENT_TASKS_MISSING:
+                    errorDetected |= printErrorIfTrue(
+                            true,
+                            prefix,
+                            /* errorMessage= */ "SystemUiProxy.mRecentTasks missing,"
+                                    + " couldn't start the recents activity",
                             writer);
                     break;
                 case MOTION_DOWN:

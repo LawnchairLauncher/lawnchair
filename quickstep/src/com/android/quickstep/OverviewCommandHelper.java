@@ -78,6 +78,14 @@ public class OverviewCommandHelper {
      */
     private int mTaskFocusIndexOverride = -1;
 
+    /**
+     * Whether we should incoming toggle commands while a previous toggle command is still ongoing.
+     * This serves as a rate-limiter to prevent overlapping animations that can clobber each other
+     * and prevent clean-up callbacks from running. This thus prevents a recurring set of bugs with
+     * janky recents animations and unresponsive home and overview buttons.
+     */
+    private boolean mWaitForToggleCommandComplete = false;
+
     public OverviewCommandHelper(TouchInteractionService service,
             OverviewComponentObserver observer,
             TaskAnimationManager taskAnimationManager) {
@@ -160,15 +168,20 @@ public class OverviewCommandHelper {
     private boolean launchTask(RecentsView recents, @Nullable TaskView taskView, CommandInfo cmd) {
         RunnableList callbackList = null;
         if (taskView != null) {
+            mWaitForToggleCommandComplete = true;
             taskView.setEndQuickswitchCuj(true);
             callbackList = taskView.launchTasks();
         }
 
         if (callbackList != null) {
-            callbackList.add(() -> scheduleNextTask(cmd));
+            callbackList.add(() -> {
+                scheduleNextTask(cmd);
+                mWaitForToggleCommandComplete = false;
+            });
             return false;
         } else {
             recents.startHome();
+            mWaitForToggleCommandComplete = false;
             return true;
         }
     }
@@ -178,6 +191,9 @@ public class OverviewCommandHelper {
      * task is deferred until {@link #scheduleNextTask} is called
      */
     private <T extends StatefulActivity<?>> boolean executeCommand(CommandInfo cmd) {
+        if (mWaitForToggleCommandComplete && cmd.type == TYPE_TOGGLE) {
+            return true;
+        }
         BaseActivityInterface<?, T> activityInterface =
                 mOverviewComponentObserver.getActivityInterface();
         RecentsView recents = activityInterface.getVisibleRecentsView();
@@ -359,6 +375,7 @@ public class OverviewCommandHelper {
             pw.println("    pendingCommandType=" + mPendingCommands.get(0).type);
         }
         pw.println("  mTaskFocusIndexOverride=" + mTaskFocusIndexOverride);
+        pw.println("  mWaitForToggleCommandComplete=" + mWaitForToggleCommandComplete);
     }
 
     private static class CommandInfo {

@@ -40,6 +40,9 @@ public class MultiTranslateDelegate {
     // Specific for widgets
     public static final int INDEX_WIDGET_CENTERING = 3;
 
+    // Specific for hotseat items when adjusting for bubbles
+    public static final int INDEX_BUBBLE_ADJUSTMENT_ANIM = 3;
+
     public static final int COUNT = 5;
 
     private final MultiPropertyFactory<View> mTranslationX;

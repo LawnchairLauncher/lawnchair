@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;
@@ -50,15 +52,23 @@ public class OverviewTaskMenu {
         }
     }
 
-    /** Taps the app info item from the overview task menu and returns the LaunchedAppState
-     * representing the App info settings page. */
+    /**
+     * Taps the app info item from the overview task menu and returns the LaunchedAppState
+     * representing the App info settings page.
+     */
     @NonNull
     public LaunchedAppState tapAppInfoMenuItem() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "before tapping the app info menu item")) {
-            mLauncher.clickLauncherObject(
-                    mLauncher.findObjectInContainer(mMenu, By.text("App info")));
+
+            mLauncher.executeAndWaitForLauncherEvent(
+                    () -> mLauncher.clickLauncherObject(
+                            mLauncher.findObjectInContainer(mMenu, By.text("App info"))),
+                    accessibilityEvent ->
+                            accessibilityEvent.getEventType() == TYPE_WINDOW_STATE_CHANGED,
+                    () -> "Unable to start Settings by clicking App Info",
+                    "Tap the app info menu item");
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "tapped app info menu item")) {

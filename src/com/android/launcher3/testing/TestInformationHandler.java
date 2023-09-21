@@ -16,7 +16,7 @@
 package com.android.launcher3.testing;
 
 import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TRACKPAD_GESTURE;
+import static com.android.launcher3.config.FeatureFlags.enableGridOnlyOverview;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.view.WindowInsets;
 
 import androidx.annotation.Nullable;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
@@ -142,6 +143,14 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 }, this::getCurrentActivity);
             }
 
+            case TestProtocol.REQUEST_IME_INSETS: {
+                return getUIProperty(Bundle::putParcelable, activity -> {
+                    WindowInsetsCompat insets = WindowInsetsCompat.toWindowInsetsCompat(
+                            activity.getWindow().getDecorView().getRootWindowInsets());
+                    return insets.getInsets(WindowInsetsCompat.Type.ime()).toPlatformInsets();
+                }, this::getCurrentActivity);
+            }
+
             case TestProtocol.REQUEST_ICON_HEIGHT: {
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
                         mDeviceProfile.allAppsCellHeightPx);
@@ -235,12 +244,6 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 return response;
             }
 
-            case TestProtocol.REQUEST_IS_TRACKPAD_GESTURE_ENABLED: {
-                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        ENABLE_TRACKPAD_GESTURE.get());
-                return response;
-            }
-
             case TestProtocol.REQUEST_ALL_APPS_TOP_PADDING: {
                 return getLauncherUIProperty(Bundle::putInt,
                         l -> l.getAppsView().getActiveRecyclerView().getClipBounds().top);
@@ -251,6 +254,12 @@ public class TestInformationHandler implements ResourceBasedOverride {
                         l -> l.getAppsView().getBottom()
                                 - l.getAppsView().getActiveRecyclerView().getBottom()
                                 + l.getAppsView().getActiveRecyclerView().getPaddingBottom());
+            }
+
+            case TestProtocol.REQUEST_FLAG_ENABLE_GRID_ONLY_OVERVIEW: {
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        enableGridOnlyOverview());
+                return response;
             }
 
             default:

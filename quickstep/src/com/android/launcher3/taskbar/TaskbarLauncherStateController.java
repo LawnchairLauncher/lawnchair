@@ -18,6 +18,7 @@ package com.android.launcher3.taskbar;
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.taskbar.TaskbarKeyguardController.MASK_ANY_SYSUI_LOCKED;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
+import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_OVERVIEW;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_HOME;
 import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
@@ -415,6 +416,9 @@ public class TaskbarLauncherStateController {
             controllers.bubbleStashController.setBubblesShowingOnHome(onHome);
             controllers.bubbleStashController.setBubblesShowingOnOverview(onOverview);
         });
+
+        mControllers.taskbarStashController.updateStateForFlag(FLAG_IN_OVERVIEW,
+                mLauncherState == LauncherState.OVERVIEW);
 
         AnimatorSet animatorSet = new AnimatorSet();
 

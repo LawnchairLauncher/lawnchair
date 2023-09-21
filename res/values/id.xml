@@ -43,4 +43,6 @@
     <item type="id" name="saved_floating_widget_foreground" />
     <item type="id" name="saved_floating_widget_background" />
 
+    <item type="id" name="dismiss_view" />
+
 </resources>

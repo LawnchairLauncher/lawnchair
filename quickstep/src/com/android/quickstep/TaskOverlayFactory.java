@@ -80,7 +80,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         boolean isInLandscape = orientedState.getTouchRotation() != ROTATION_0;
         boolean isTablet = activity.getDeviceProfile().isTablet;
 
-        boolean isGridOnlyOverview = isTablet && FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get();
+        boolean isGridOnlyOverview = isTablet && FeatureFlags.enableGridOnlyOverview();
         // Add overview actions to the menu when in in-place rotate landscape mode, or in
         // grid-only overview.
         if ((!canLauncherRotate && isInLandscape) || isGridOnlyOverview) {
@@ -121,6 +121,12 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
      */
     public void removeListeners() {
     }
+
+    /**
+     * Clears any active state outside of the TaskOverlay lifecycle which might have built
+     * up over time
+     */
+    public void clearAllActiveState() { }
 
     /** Note that these will be shown in order from top to bottom, if available for the task. */
     private static final TaskShortcutFactory[] MENU_OPTIONS = new TaskShortcutFactory[]{

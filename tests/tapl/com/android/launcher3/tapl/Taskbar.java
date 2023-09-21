@@ -76,13 +76,13 @@ public final class Taskbar {
                     mLauncher.getRealDisplaySize().x - 1, mLauncher.getRealDisplaySize().y - 1);
 
             mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, stashTarget,
-                    LauncherInstrumentation.GestureScope.INSIDE);
+                    LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
             LauncherInstrumentation.log("hideTaskbar: sent down");
 
             try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("pressed down")) {
                 mLauncher.waitUntilSystemLauncherObjectGone(TASKBAR_RES_ID);
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_UP, stashTarget,
-                        LauncherInstrumentation.GestureScope.INSIDE);
+                        LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
             }
         } finally {
             mLauncher.getTestInfo(REQUEST_DISABLE_MANUAL_TASKBAR_STASHING);
@@ -92,7 +92,7 @@ public final class Taskbar {
     /**
      * Opens the Taskbar all apps page.
      */
-    public AllAppsFromTaskbar openAllApps() {
+    public TaskbarAllApps openAllApps() {
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to open taskbar all apps");
              LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
@@ -101,7 +101,15 @@ public final class Taskbar {
                     mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID),
                     getAllAppsButtonSelector()));
 
-            return new AllAppsFromTaskbar(mLauncher);
+            return getAllApps();
+        }
+    }
+
+    /** Returns {@link TaskbarAllApps} if it is open, otherwise fails. */
+    public TaskbarAllApps getAllApps() {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to get taskbar all apps object")) {
+            return new TaskbarAllApps(mLauncher);
         }
     }
 
@@ -147,9 +155,9 @@ public final class Taskbar {
                     mLauncher.getRealDisplaySize().y - 1);
 
             mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, tapTarget,
-                    LauncherInstrumentation.GestureScope.INSIDE);
+                    LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
             mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_UP, tapTarget,
-                    LauncherInstrumentation.GestureScope.INSIDE);
+                    LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
         }
     }
 }

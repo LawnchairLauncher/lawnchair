@@ -68,6 +68,7 @@ import static com.android.launcher3.logging.StatsLogManager.StatsLatencyLogger.L
 import static com.android.launcher3.logging.StatsLogManager.StatsLatencyLogger.LatencyType.WARM;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_ACTIVITY_PAUSED;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_DRAG_AND_DROP;
+import static com.android.launcher3.model.data.LauncherAppWidgetInfo.CUSTOM_WIDGET_ID;
 import static com.android.launcher3.popup.SystemShortcut.APP_INFO;
 import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
@@ -144,6 +145,7 @@ import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.BaseSearchConfig;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.celllayout.CellPosMapper;
@@ -198,6 +200,8 @@ import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ActivityTracker;
+import com.android.launcher3.util.BackPressHandler;
+import com.android.launcher3.util.CannedAnimationCoordinator;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
@@ -328,10 +332,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     private static final FloatProperty<Hotseat> HOTSEAT_WIDGET_SCALE =
             HOTSEAT_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_WIDGET_TRANSITION);
 
-    private static final boolean DESKTOP_MODE_1_SUPPORTED =
-            "1".equals(Utilities.getSystemProperty("persist.wm.debug.desktop_mode", "0"));
-
-    private static final boolean DESKTOP_MODE_2_SUPPORTED =
+    private static final boolean DESKTOP_MODE_SUPPORTED =
             "1".equals(Utilities.getSystemProperty("persist.wm.debug.desktop_mode_2", "0"));
 
     @Thunk
@@ -420,6 +421,11 @@ public class Launcher extends StatefulActivity<LauncherState>
     private BaseSearchConfig mBaseSearchConfig;
     private StartupLatencyLogger mStartupLatencyLogger;
     private CellPosMapper mCellPosMapper = CellPosMapper.DEFAULT;
+
+    private final CannedAnimationCoordinator mAnimationCoordinator =
+            new CannedAnimationCoordinator(this);
+
+    private final List<BackPressHandler> mBackPressedHandlers = new ArrayList<>();
 
     @Override
     @TargetApi(Build.VERSION_CODES.S)
@@ -600,6 +606,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      *  <li> auto cancel action mode handler
      *  <li> drag handler
      *  <li> view handler
+     *  <li> registered {@link BackPressHandler}
      *  <li> state handler
      * </ol>
      *
@@ -629,7 +636,14 @@ public class Launcher extends StatefulActivity<LauncherState>
             return topView;
         }
 
-        // #4 state handler
+        // #4 Custom back handlers
+        for (BackPressHandler handler : mBackPressedHandlers) {
+            if (handler.canHandleBack()) {
+                return handler;
+            }
+        }
+
+        // #5 state handler
         return new OnBackAnimationCallback() {
             @Override
             public void onBackInvoked() {
@@ -873,7 +887,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 if (widgetInfo != null) {
                     // Since the view was just bound, also launch the configure activity if needed
                     LauncherAppWidgetProviderInfo provider = mAppWidgetManager
-                            .getLauncherAppWidgetInfo(widgetId);
+                            .getLauncherAppWidgetInfo(widgetId, info.getTargetComponent());
                     if (provider != null) {
                         new WidgetAddFlowHandler(provider)
                                 .startConfigActivity(this, widgetInfo,
@@ -1487,7 +1501,8 @@ public class Launcher extends StatefulActivity<LauncherState>
             AppWidgetHostView hostView, LauncherAppWidgetProviderInfo appWidgetInfo) {
 
         if (appWidgetInfo == null) {
-            appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(appWidgetId);
+            appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(appWidgetId,
+                    itemInfo.getTargetComponent());
         }
 
         if (hostView == null) {
@@ -1715,7 +1730,16 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (getStateManager().isInStableState(ALL_APPS)) {
             getStateManager().goToState(NORMAL, alreadyOnHome);
         } else {
-            showAllAppsFromIntent(alreadyOnHome);
+            AbstractFloatingView.closeAllOpenViews(this);
+            getStateManager().goToState(ALL_APPS, true /* animated */,
+                    new AnimationSuccessListener() {
+                        @Override
+                        public void onAnimationSuccess(Animator animator) {
+                            if (mAppsView.getSearchUiManager().getEditText() != null) {
+                                mAppsView.getSearchUiManager().getEditText().requestFocus();
+                            }
+                        }
+                    });
         }
     }
 
@@ -1973,8 +1997,8 @@ public class Launcher extends StatefulActivity<LauncherState>
             // In this case, we either need to start an activity to get permission to bind
             // the widget, or we need to start an activity to configure the widget, or both.
             if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET) {
-                appWidgetId = CustomWidgetManager.INSTANCE.get(this).getWidgetIdForCustomProvider(
-                        info.componentName);
+                appWidgetId = CustomWidgetManager.INSTANCE.get(this)
+                        .allocateCustomAppWidgetId(info.componentName);
             } else {
                 appWidgetId = getAppWidgetHolder().allocateAppWidgetId();
             }
@@ -2301,6 +2325,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      * <p>
      * Implementation of the method from LauncherModel.Callbacks.
      */
+    @Override
     public void startBinding() {
         TraceHelper.INSTANCE.beginSection("startBinding");
         // Floating panels (except the full widget sheet) are associated with individual icons. If
@@ -2325,6 +2350,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public void bindScreens(IntArray orderedScreenIds) {
+        mWorkspace.mPageIndicator.setAreScreensBinding(true);
         int firstScreenPosition = 0;
         if (FeatureFlags.QSB_ON_FIRST_SCREEN &&
                 orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != firstScreenPosition) {
@@ -2342,13 +2368,37 @@ public class Launcher extends StatefulActivity<LauncherState>
         mWorkspace.unlockWallpaperFromDefaultPageOnNextLayout();
     }
 
+    /**
+     * Remove odd number because they are already included when isTwoPanels and add the pair screen
+     * if not present.
+     */
+    private IntArray filterTwoPanelScreenIds(IntArray orderedScreenIds) {
+        IntSet screenIds = IntSet.wrap(orderedScreenIds);
+        orderedScreenIds.forEach(screenId -> {
+            if (screenId % 2 == 1) {
+                screenIds.remove(screenId);
+                // In case the pair is not added, add it
+                if (!mWorkspace.containsScreenId(screenId - 1)) {
+                    screenIds.add(screenId - 1);
+                }
+            }
+        });
+        return screenIds.getArray();
+    }
+
     private void bindAddScreens(IntArray orderedScreenIds) {
+
         if (mDeviceProfile.isTwoPanels) {
-            // Some empty pages might have been removed while the phone was in a single panel
-            // mode, so we want to add those empty pages back.
-            IntSet screenIds = IntSet.wrap(orderedScreenIds);
-            orderedScreenIds.forEach(screenId -> screenIds.add(mWorkspace.getScreenPair(screenId)));
-            orderedScreenIds = screenIds.getArray();
+            if (FOLDABLE_SINGLE_PAGE.get()) {
+                orderedScreenIds = filterTwoPanelScreenIds(orderedScreenIds);
+            } else {
+                // Some empty pages might have been removed while the phone was in a single panel
+                // mode, so we want to add those empty pages back.
+                IntSet screenIds = IntSet.wrap(orderedScreenIds);
+                orderedScreenIds.forEach(
+                        screenId -> screenIds.add(mWorkspace.getScreenPair(screenId)));
+                orderedScreenIds = screenIds.getArray();
+            }
         }
 
         int count = orderedScreenIds.size();
@@ -2595,9 +2645,10 @@ public class Launcher extends StatefulActivity<LauncherState>
                     }
                 }
             } else {
-                appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(item.appWidgetId);
+                appWidgetInfo = mAppWidgetManager.getLauncherAppWidgetInfo(item.appWidgetId,
+                        item.getTargetComponent());
                 if (appWidgetInfo == null) {
-                    if (item.appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
+                    if (item.appWidgetId <= CUSTOM_WIDGET_ID) {
                         removalReason =
                                 "CustomWidgetManager cannot find provider from that widget id.";
                     } else {
@@ -2822,8 +2873,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         getViewCache().setCacheSize(R.layout.folder_page, 2);
 
         TraceHelper.INSTANCE.endSection();
-
-        mWorkspace.removeExtraEmptyScreen(true);
+        mWorkspace.removeExtraEmptyScreen(/* stripEmptyScreens= */ true);
+        mWorkspace.mPageIndicator.setAreScreensBinding(false);
     }
 
     private boolean canAnimatePageChange() {
@@ -3252,17 +3303,33 @@ public class Launcher extends StatefulActivity<LauncherState>
         updateDisallowBack();
     }
 
+    protected void addBackAnimationCallback(BackPressHandler callback) {
+        mBackPressedHandlers.add(callback);
+    }
+
+    protected void removeBackAnimationCallback(BackPressHandler callback) {
+        mBackPressedHandlers.remove(callback);
+    }
+
     private void updateDisallowBack() {
-        if (DESKTOP_MODE_1_SUPPORTED || DESKTOP_MODE_2_SUPPORTED) {
+        if (DESKTOP_MODE_SUPPORTED) {
             // Do not disable back in launcher when prototype behavior is enabled
             return;
         }
         LauncherRootView rv = getRootView();
         if (rv != null) {
+            boolean isSplitSelectionEnabled = isSplitSelectionEnabled();
             boolean disableBack = getStateManager().getState() == NORMAL
-                    && AbstractFloatingView.getTopOpenView(this) == null;
+                    && AbstractFloatingView.getTopOpenView(this) == null
+                    && !isSplitSelectionEnabled;
             rv.setDisallowBackGesture(disableBack);
         }
+    }
+
+    /** To be overridden by subclasses */
+    protected boolean isSplitSelectionEnabled() {
+        // Overridden
+        return false;
     }
 
     @Override
@@ -3396,5 +3463,12 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     public void launchAppPair(WorkspaceItemInfo app1, WorkspaceItemInfo app2) {
         // Overridden
+    }
+
+    /**
+     * Returns the animation coordinator for playing one-off animations
+     */
+    public CannedAnimationCoordinator getAnimationCoordinator() {
+        return mAnimationCoordinator;
     }
 }

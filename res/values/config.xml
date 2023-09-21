@@ -241,4 +241,7 @@
         <item>@dimen/iconSize66dp</item>
         <item>@dimen/iconSize72dp</item>
     </integer-array>
+
+    <!--  Used for custom widgets  -->
+    <array name="custom_widget_providers"/>
 </resources>

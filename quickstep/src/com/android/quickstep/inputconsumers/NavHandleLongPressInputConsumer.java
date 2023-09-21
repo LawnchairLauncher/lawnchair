@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.inputconsumers;
 
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import android.content.Context;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -38,8 +40,8 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
     public NavHandleLongPressInputConsumer(Context context, InputConsumer delegate,
             InputMonitorCompat inputMonitor) {
         super(delegate, inputMonitor);
-        mNavHandleWidth = context.getResources()
-                .getDimensionPixelSize(R.dimen.navigation_home_handle_width);
+        mNavHandleWidth = context.getResources().getDimensionPixelSize(
+                R.dimen.navigation_home_handle_width);
         mScreenWidth = DisplayController.INSTANCE.get(context).getInfo().currentSize.x;
 
         mNavHandleLongPressHandler = NavHandleLongPressHandler.newInstance(context);
@@ -48,8 +50,11 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
             @Override
             public void onLongPress(MotionEvent motionEvent) {
                 if (isInArea(motionEvent.getRawX())) {
-                    if (mNavHandleLongPressHandler.onLongPress()) {
+                    Runnable longPressRunnable = mNavHandleLongPressHandler.getLongPressRunnable();
+                    if (longPressRunnable != null) {
                         setActive(motionEvent);
+
+                        MAIN_EXECUTOR.post(longPressRunnable);
                     }
                 }
             }

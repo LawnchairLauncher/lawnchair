@@ -109,7 +109,7 @@ public final class KeyboardQuickSwitchController implements
         DesktopVisibilityController desktopController =
                 LauncherActivityInterface.INSTANCE.getDesktopVisibilityController();
         final boolean onDesktop =
-                DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED
+                DesktopTaskView.DESKTOP_MODE_SUPPORTED
                         && desktopController != null
                         && desktopController.areFreeformTasksVisible();
 
@@ -136,7 +136,7 @@ public final class KeyboardQuickSwitchController implements
 
         // Hide all desktop tasks and show them on the hidden tile
         int hiddenDesktopTasks = 0;
-        if (DesktopTaskView.DESKTOP_IS_PROTO2_ENABLED) {
+        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
             DesktopTask desktopTask = findDesktopTask(tasks);
             if (desktopTask != null) {
                 hiddenDesktopTasks = desktopTask.tasks.size();

@@ -103,7 +103,8 @@ public class FailureWatcher extends TestWatcher {
 
             if (viewCaptureDataSupplier != null) {
                 out.putNextEntry(new ZipEntry("FS/data/misc/wmtrace/failed_test.vc"));
-                viewCaptureDataSupplier.get().writeTo(out);
+                final ExportedData exportedData = viewCaptureDataSupplier.get();
+                if (exportedData != null) exportedData.writeTo(out);
                 out.closeEntry();
             }
         } catch (Exception ignored) {

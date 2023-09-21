@@ -621,8 +621,11 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User has invoked split to left half with a keyboard shortcut.")
         LAUNCHER_KEYBOARD_SHORTCUT_SPLIT_LEFT_TOP(1233),
 
-        @UiEvent(doc = "User has invoked split to right half with desktop mode app icon")
+        @UiEvent(doc = "User has invoked split to right half from desktop mode.")
         LAUNCHER_DESKTOP_MODE_SPLIT_RIGHT_BOTTOM(1412),
+
+        @UiEvent(doc = "User has invoked split to left half from desktop mode.")
+        LAUNCHER_DESKTOP_MODE_SPLIT_LEFT_TOP(1464),
 
         @UiEvent(doc = "User has collapsed the work FAB button by scrolling down in the all apps"
                 + " work A-Z list.")
@@ -651,7 +654,19 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_APP_PAIR_SAVE(1456),
 
         @UiEvent(doc = "App launched through pending intent")
-        LAUNCHER_APP_LAUNCH_PENDING_INTENT(1394)
+        LAUNCHER_APP_LAUNCH_PENDING_INTENT(1394),
+
+        @UiEvent(doc = "User long pressed on taskbar divider icon to open popup menu")
+        LAUNCHER_TASKBAR_DIVIDER_MENU_OPEN(1488),
+
+        @UiEvent(doc = "User long pressed on taskbar divider icon to close popup menu")
+        LAUNCHER_TASKBAR_DIVIDER_MENU_CLOSE(1489),
+
+        @UiEvent(doc = "User has pinned taskbar using taskbar divider menu")
+        LAUNCHER_TASKBAR_PINNED(1490),
+
+        @UiEvent(doc = "User has unpinned taskbar using taskbar divider menu")
+        LAUNCHER_TASKBAR_UNPINNED(1491)
 
         // ADD MORE
         ;

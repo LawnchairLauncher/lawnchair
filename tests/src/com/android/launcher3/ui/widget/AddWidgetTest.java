@@ -16,7 +16,6 @@
 package com.android.launcher3.ui.widget;
 
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
-
 import static org.junit.Assert.assertNotNull;
 
 import android.platform.test.annotations.PlatinumTest;
@@ -95,5 +94,27 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
                 .dragToWorkspace(false, true);
         mLauncher.getWorkspace().getWorkspaceAppIcon("Shortcut")
                 .launch(getAppPackageName());
+    }
+
+    /**
+     * Test dragging a widget to the workspace and resize it.
+     */
+    @Test
+    public void testResizeWidget() throws Throwable {
+        new FavoriteItemsTransaction(mTargetContext).commitAndLoadHome(mLauncher);
+
+        waitForLauncherCondition("Workspace didn't finish loading", l -> !l.isWorkspaceLoading());
+
+        final LauncherAppWidgetProviderInfo widgetInfo =
+                TestViewHelpers.findWidgetProvider(false /* hasConfigureScreen */);
+
+        WidgetResizeFrame resizeFrame = mLauncher
+                .getWorkspace()
+                .openAllWidgets()
+                .getWidget(widgetInfo.getLabel(mTargetContext.getPackageManager()))
+                .dragWidgetToWorkspace();
+
+        assertNotNull("Widget resize frame not shown after widget add", resizeFrame);
+        resizeFrame.resize();
     }
 }

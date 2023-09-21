@@ -289,7 +289,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             return 0;
         }
 
-        if (mDp.isTablet && FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get()) {
+        if (mDp.isTablet && FeatureFlags.enableGridOnlyOverview()) {
             return mDp.stashedTaskbarHeight;
         }
 

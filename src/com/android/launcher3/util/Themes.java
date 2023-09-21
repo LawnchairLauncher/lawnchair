@@ -21,8 +21,6 @@ import static android.app.WallpaperColors.HINT_SUPPORTS_DARK_THEME;
 
 import static com.android.launcher3.LauncherPrefs.THEMED_ICONS;
 
-import android.app.WallpaperColors;
-import android.app.WallpaperManager;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
@@ -48,16 +46,9 @@ public class Themes {
 
     public static final String KEY_THEMED_ICONS = "themed_icons";
 
+    /** Gets the WallpaperColorHints and then uses those to get the correct activity theme res. */
     public static int getActivityThemeRes(Context context) {
-        final int colorHints;
-        if (Utilities.ATLEAST_P) {
-            WallpaperColors colors = context.getSystemService(WallpaperManager.class)
-                    .getWallpaperColors(WallpaperManager.FLAG_SYSTEM);
-            colorHints = colors == null ? 0 : colors.getColorHints();
-        } else {
-            colorHints = 0;
-        }
-        return getActivityThemeRes(context, colorHints);
+        return getActivityThemeRes(context, WallpaperColorHints.get(context).getHints());
     }
 
     public static int getActivityThemeRes(Context context, int wallpaperColorHints) {

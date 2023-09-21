@@ -30,16 +30,21 @@ import android.graphics.Typeface;
 import android.view.ViewGroup;
 
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.Flags;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.search.StringMatcherUtility;
 import com.android.launcher3.util.ActivityContextWrapper;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.TestUtil;
+import com.android.launcher3.util.rule.StaticMockitoRule;
 import com.android.launcher3.views.BaseDragLayer;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 /**
  * Unit tests for testing modifyTitleToSupportMultiLine() in BubbleTextView.java
@@ -50,6 +55,7 @@ import org.junit.Test;
  */
 public class BubbleTextViewTest {
 
+    @Rule public StaticMockitoRule mockitoRule = new StaticMockitoRule(Flags.class);
     private static final StringMatcherUtility.StringMatcher
             MATCHER = StringMatcherUtility.StringMatcher.getInstance();
     private static final int ONE_LINE = 1;
@@ -77,6 +83,8 @@ public class BubbleTextViewTest {
 
     @Before
     public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(false);
         Utilities.enableRunningInTestHarnessForTests();
         mContext = new ActivityContextWrapper(getApplicationContext());
         mBubbleTextView = new BubbleTextView(mContext);

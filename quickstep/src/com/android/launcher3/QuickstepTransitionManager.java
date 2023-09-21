@@ -22,6 +22,8 @@ import static android.app.WindowConfiguration.WINDOWING_MODE_MULTI_WINDOW;
 import static android.provider.Settings.Secure.LAUNCHER_TASKBAR_EDUCATION_SHOWING;
 import static android.view.RemoteAnimationTarget.MODE_CLOSING;
 import static android.view.RemoteAnimationTarget.MODE_OPENING;
+import static android.view.Surface.ROTATION_0;
+import static android.view.Surface.ROTATION_180;
 import static android.view.WindowManager.TRANSIT_CLOSE;
 import static android.view.WindowManager.TRANSIT_FLAG_KEYGUARD_GOING_AWAY;
 import static android.view.WindowManager.TRANSIT_OPEN;
@@ -60,6 +62,8 @@ import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATI
 import static com.android.launcher3.views.FloatingIconView.getFloatingIconView;
 import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
+import static com.android.systemui.shared.system.InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME;
+import static com.android.systemui.shared.system.InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME_FALLBACK;
 import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
 import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
 
@@ -149,6 +153,7 @@ import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.animation.ActivityLaunchAnimator;
 import com.android.systemui.animation.DelegateLaunchAnimatorController;
+import com.android.systemui.animation.LaunchableView;
 import com.android.systemui.animation.RemoteAnimationDelegate;
 import com.android.systemui.shared.system.BlurUtils;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
@@ -157,6 +162,7 @@ import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
 import com.android.wm.shell.startingsurface.IStartingWindowListener;
 
 import java.io.PrintWriter;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -223,7 +229,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private final float mClosingWindowTransY;
     private final float mMaxShadowRadius;
 
-    private final StartingWindowListener mStartingWindowListener = new StartingWindowListener();
+    private final StartingWindowListener mStartingWindowListener =
+            new StartingWindowListener(this);
 
     private DeviceProfile mDeviceProfile;
 
@@ -234,6 +241,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
     private RemoteAnimationFactory mWallpaperOpenTransitionRunner;
     private RemoteTransition mLauncherOpenTransition;
+
+    private final RemoteAnimationCoordinateTransfer mCoordinateTransfer;
 
     private LauncherBackAnimationController mBackAnimationController;
     private final AnimatorListenerAdapter mForceInvisibleListener = new AnimatorListenerAdapter() {
@@ -276,7 +285,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 }
             };
 
-            mStartingWindowListener.setTransitionManager(this);
             SystemUiProxy.INSTANCE.get(mLauncher).setStartingWindowListener(
                     mStartingWindowListener);
         }
@@ -284,6 +292,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         mOpeningXInterpolator = AnimationUtils.loadInterpolator(context, R.interpolator.app_open_x);
         mOpeningInterpolator = AnimationUtils.loadInterpolator(context,
                 R.interpolator.emphasized_interpolator);
+        mCoordinateTransfer = new RemoteAnimationCoordinateTransfer(mLauncher);
     }
 
     @Override
@@ -308,8 +317,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         mAppLaunchRunner = new AppLaunchAnimationRunner(v, onEndCallback);
         ItemInfo tag = (ItemInfo) v.getTag();
         if (tag != null && tag.shouldUseBackgroundAnimation()) {
-            ContainerAnimationRunner containerAnimationRunner =
-                    ContainerAnimationRunner.from(v, mStartingWindowListener, onEndCallback);
+            ContainerAnimationRunner containerAnimationRunner = ContainerAnimationRunner.from(
+                            v, mLauncher, mStartingWindowListener, onEndCallback);
             if (containerAnimationRunner != null) {
                 mAppLaunchRunner = containerAnimationRunner;
             }
@@ -1150,7 +1159,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     public void onActivityDestroyed() {
         unregisterRemoteAnimations();
         unregisterRemoteTransitions();
-        mStartingWindowListener.setTransitionManager(null);
         SystemUiProxy.INSTANCE.get(mLauncher).setStartingWindowListener(null);
     }
 
@@ -1386,8 +1394,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                         targetRect));
 
         // Hook up floating views to the closing window animators.
-        final int rotationChange = getRotationChange(targets);
-        Rect windowTargetBounds = getWindowTargetBounds(targets, rotationChange);
+        // note the coordinate of closingWindowStartRect is based on launcher
+        Rect windowTargetBounds = new Rect();
+        closingWindowStartRect.round(windowTargetBounds);
         if (floatingIconView != null) {
             anim.addAnimatorListener(floatingIconView);
             floatingIconView.setOnTargetChangeListener(anim::onTargetPositionChanged);
@@ -1634,8 +1643,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         // invisibility on touch down, and only reset it after the animation to home
         // is initialized.
         if (launcherIsForceInvisibleOrOpening) {
-            addCujInstrumentation(
-                    anim, InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
+            addCujInstrumentation(anim, playFallBackAnimation
+                    ? CUJ_APP_CLOSE_TO_HOME_FALLBACK :  CUJ_APP_CLOSE_TO_HOME);
             // Only register the content animation for cancellation when state changes
             mLauncher.getStateManager().setCurrentAnimation(anim);
 
@@ -1691,8 +1700,18 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
             RectF windowTargetBounds =
                     new RectF(getWindowTargetBounds(appTargets, getRotationChange(appTargets)));
+
+            final RectF resolveRectF = new RectF(windowTargetBounds);
+            for (RemoteAnimationTarget t : appTargets) {
+                if (t.mode == MODE_CLOSING) {
+                    transferRectToTargetCoordinate(
+                            t, windowTargetBounds, true, resolveRectF);
+                    break;
+                }
+            }
+
             Pair<RectFSpringAnim, AnimatorSet> pair = createWallpaperOpenAnimations(
-                    appTargets, wallpaperTargets, mFromUnlock, windowTargetBounds,
+                    appTargets, wallpaperTargets, mFromUnlock, resolveRectF,
                     QuickStepContract.getWindowCornerRadius(mLauncher),
                     false /* fromPredictiveBack */);
 
@@ -1773,9 +1792,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
 
         @Nullable
-        private static ContainerAnimationRunner from(
-                View v, StartingWindowListener startingWindowListener, RunnableList onEndCallback) {
-            View viewToUse = findViewWithBackground(v);
+        private static ContainerAnimationRunner from(View v, Launcher launcher,
+                StartingWindowListener startingWindowListener, RunnableList onEndCallback) {
+            View viewToUse = findLaunchableViewWithBackground(v);
             if (viewToUse == null) {
                 viewToUse = v;
             }
@@ -1799,8 +1818,13 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                         }
                     };
 
-            ActivityLaunchAnimator.Callback callback = task -> ColorUtils.setAlphaComponent(
-                    startingWindowListener.getBackgroundColor(), 255);
+            ActivityLaunchAnimator.Callback callback = task -> {
+                final int backgroundColor =
+                        startingWindowListener.mBackgroundColor == Color.TRANSPARENT
+                                ? launcher.getScrimView().getBackgroundColor()
+                                : startingWindowListener.mBackgroundColor;
+                return ColorUtils.setAlphaComponent(backgroundColor, 255);
+            };
 
             ActivityLaunchAnimator.Listener listener = new ActivityLaunchAnimator.Listener() {
                 @Override
@@ -1813,11 +1837,15 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     new ActivityLaunchAnimator.AnimationDelegate(controller, callback, listener));
         }
 
-        /** Finds the closest parent of [view] (inclusive) with a background drawable. */
+        /**
+         * Finds the closest parent of [view] (inclusive) that implements {@link LaunchableView} and
+         * has a background drawable.
+         */
         @Nullable
-        private static View findViewWithBackground(View view) {
+        private static <T extends View & LaunchableView> T findLaunchableViewWithBackground(
+                View view) {
             View current = view;
-            while (current.getBackground() == null) {
+            while (current.getBackground() == null || !(current instanceof LaunchableView)) {
                 if (!(current.getParent() instanceof View)) {
                     return null;
                 }
@@ -1825,7 +1853,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 current = (View) view.getParent();
             }
 
-            return current;
+            return (T) current;
         }
 
         @Override
@@ -1910,24 +1938,67 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
     }
 
-    private class StartingWindowListener extends IStartingWindowListener.Stub {
-        private QuickstepTransitionManager mTransitionManager;
+    private static class StartingWindowListener extends IStartingWindowListener.Stub {
+        private final WeakReference<QuickstepTransitionManager> mTransitionManagerRef;
         private int mBackgroundColor;
 
-        public void setTransitionManager(QuickstepTransitionManager transitionManager) {
-            mTransitionManager = transitionManager;
+        private StartingWindowListener(QuickstepTransitionManager transitionManager) {
+            mTransitionManagerRef = new WeakReference<>(transitionManager);
         }
 
         @Override
         public void onTaskLaunching(int taskId, int supportedType, int color) {
-            mTransitionManager.mTaskStartParams.put(taskId, Pair.create(supportedType, color));
+            QuickstepTransitionManager transitionManager = mTransitionManagerRef.get();
+            if (transitionManager != null) {
+                transitionManager.mTaskStartParams.put(taskId, Pair.create(supportedType, color));
+            }
             mBackgroundColor = color;
         }
+    }
 
-        public int getBackgroundColor() {
-            return mBackgroundColor == Color.TRANSPARENT
-                    ? mLauncher.getScrimView().getBackgroundColor()
-                    : mBackgroundColor;
+    /**
+     * Transfer the rectangle to another coordinate if needed.
+     * @param toLauncher which one is the anchor of this transfer, if true then transfer from
+     *                   animation target to launcher, false transfer from launcher to animation
+     *                   target.
+     */
+    public void transferRectToTargetCoordinate(RemoteAnimationTarget target, RectF currentRect,
+            boolean toLauncher, RectF resultRect) {
+        mCoordinateTransfer.transferRectToTargetCoordinate(
+                target, currentRect, toLauncher, resultRect);
+    }
+
+    private static class RemoteAnimationCoordinateTransfer {
+        private final QuickstepLauncher mLauncher;
+        private final Rect mDisplayRect = new Rect();
+        private final Rect mTmpResult = new Rect();
+
+        RemoteAnimationCoordinateTransfer(QuickstepLauncher launcher) {
+            mLauncher = launcher;
+        }
+
+        void transferRectToTargetCoordinate(RemoteAnimationTarget target, RectF currentRect,
+                boolean toLauncher, RectF resultRect) {
+            final int taskRotation = target.windowConfiguration.getRotation();
+            final DeviceProfile profile = mLauncher.getDeviceProfile();
+
+            final int rotationDelta = toLauncher
+                    ? android.util.RotationUtils.deltaRotation(taskRotation, profile.rotationHint)
+                    : android.util.RotationUtils.deltaRotation(profile.rotationHint, taskRotation);
+            if (rotationDelta != ROTATION_0) {
+                // Get original display size when task is on top but with different rotation
+                if (rotationDelta % 2 != 0 && toLauncher && (profile.rotationHint == ROTATION_0
+                        || profile.rotationHint == ROTATION_180)) {
+                    mDisplayRect.set(0, 0, profile.heightPx, profile.widthPx);
+                } else {
+                    mDisplayRect.set(0, 0, profile.widthPx, profile.heightPx);
+                }
+                currentRect.round(mTmpResult);
+                android.util.RotationUtils.rotateBounds(mTmpResult, mDisplayRect, rotationDelta);
+                resultRect.set(mTmpResult);
+            } else {
+                resultRect.set(currentRect);
+            }
         }
     }
 
@@ -1953,6 +2024,20 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             mEndRadius = Math.max(1, targetRect.width()) / 2f;
             mSurfaceApplier = new SurfaceTransactionApplier(mDragLayer);
             mWindowTargetBounds.set(windowTargetBounds);
+
+            // transfer the coordinate based on animation target.
+            if (mAppTargets != null) {
+                for (RemoteAnimationTarget t : mAppTargets) {
+                    if (t.mode == MODE_CLOSING) {
+                        final RectF targetBounds = new RectF(mWindowTargetBounds);
+                        final RectF result = new RectF();
+                        transferRectToTargetCoordinate(
+                                t, targetBounds, false, result);
+                        result.round(mWindowTargetBounds);
+                        break;
+                    }
+                }
+            }
         }
 
         public float getCornerRadius(float progress) {
@@ -1973,6 +2058,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 }
 
                 if (target.mode == MODE_CLOSING) {
+                    final RectF before = new RectF(currentRectF);
+                    transferRectToTargetCoordinate(target, currentRectF, false, currentRectF);
                     currentRectF.round(mCurrentRect);
 
                     // Scale the target window to match the currentRectF.

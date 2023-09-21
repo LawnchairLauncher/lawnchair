@@ -278,7 +278,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
                     if (!mIsDeferredDownTarget) {
                         // Normal gesture, ensure we pass the drag slop before we start tracking
                         // the gesture
-                        if (Math.abs(displacement) > mTouchSlop) {
+                        if (mGestureState.isTrackpadGesture() || Math.abs(displacement)
+                                > mTouchSlop) {
                             mPassedWindowMoveSlop = true;
                             mStartDisplacement = Math.min(displacement, -mTouchSlop);
                         }
@@ -287,8 +288,8 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
 
                 float horizontalDist = Math.abs(displacementX);
                 float upDist = -displacement;
-                boolean passedSlop = squaredHypot(displacementX, displacementY)
-                        >= mSquaredTouchSlop;
+                boolean passedSlop = mGestureState.isTrackpadGesture() || squaredHypot(
+                        displacementX, displacementY) >= mSquaredTouchSlop;
 
                 if (!mPassedSlopOnThisGesture && passedSlop) {
                     mPassedSlopOnThisGesture = true;
@@ -416,8 +417,9 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     private void finishTouchTracking(MotionEvent ev) {
         TraceHelper.INSTANCE.beginSection(UP_EVT);
 
+        boolean isCanceled = ev.getActionMasked() == ACTION_CANCEL;
         if (mPassedWindowMoveSlop && mInteractionHandler != null) {
-            if (ev.getActionMasked() == ACTION_CANCEL) {
+            if (isCanceled) {
                 mInteractionHandler.onGestureCancelled();
             } else {
                 mVelocityTracker.computeCurrentVelocity(PX_PER_MS);
@@ -439,8 +441,10 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
             if (mActiveCallbacks != null && mInteractionHandler != null) {
                 if (mTaskAnimationManager.isRecentsAnimationRunning()) {
                     // The animation started, but with no movement, in this case, there will be no
-                    // animateToProgress so we have to manually finish here.
-                    mTaskAnimationManager.finishRunningRecentsAnimation(false /* toHome */);
+                    // animateToProgress so we have to manually finish here. In the case of
+                    // ACTION_CANCEL, someone else may be doing something so finish synchronously.
+                    mTaskAnimationManager.finishRunningRecentsAnimation(false /* toHome */,
+                            isCanceled /* forceFinish */);
                 } else {
                     // The animation hasn't started yet, so insert a replacement handler into the
                     // callbacks which immediately finishes the animation after it starts.

@@ -23,9 +23,9 @@ import com.android.launcher3.testing.shared.TestProtocol;
 /**
  * Operations on AllApps opened from the Taskbar.
  */
-public class AllAppsFromTaskbar extends AllApps {
+public class TaskbarAllApps extends AllApps {
 
-    AllAppsFromTaskbar(LauncherInstrumentation launcher) {
+    TaskbarAllApps(LauncherInstrumentation launcher) {
         super(launcher);
     }
 
@@ -61,5 +61,16 @@ public class AllAppsFromTaskbar extends AllApps {
     protected int getAllAppsScroll() {
         return mLauncher.getTestInfo(TestProtocol.REQUEST_TASKBAR_APPS_LIST_SCROLL_Y)
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    @NonNull
+    @Override
+    public TaskbarAllAppsQsb getQsb() {
+        return new TaskbarAllAppsQsb(mLauncher, verifyActiveContainer());
+    }
+
+    @Override
+    protected void verifyVisibleContainerOnDismiss() {
+        mLauncher.getLaunchedAppState().assertTaskbarVisible();
     }
 }

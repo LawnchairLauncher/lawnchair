@@ -19,6 +19,7 @@ import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.RECENT_TASKS_MISSING;
 import static com.android.quickstep.util.LogUtils.splitFailureMessage;
 
 import android.app.ActivityManager;
@@ -31,6 +32,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ShortcutInfo;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -62,6 +64,8 @@ import com.android.internal.view.AppearanceRegion;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.quickstep.util.ActiveGestureLog;
+import com.android.quickstep.util.AssistUtils;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
@@ -250,6 +254,8 @@ public class SystemUiProxy implements ISystemUiProxy {
         setBackToLauncherCallback(mBackToLauncherCallback, mBackToLauncherRunner);
         setUnfoldAnimationListener(mUnfoldAnimationListener);
         setDesktopTaskListener(mDesktopTaskListener);
+        setAssistantOverridesRequested(
+                AssistUtils.newInstance(mContext).getSysUiAssistOverrideInvocationTypes());
     }
 
     /**
@@ -369,6 +375,17 @@ public class SystemUiProxy implements ISystemUiProxy {
                 mSystemUiProxy.startAssistant(args);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call startAssistant", e);
+            }
+        }
+    }
+
+    @Override
+    public void setAssistantOverridesRequested(int[] invocationTypes) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.setAssistantOverridesRequested(invocationTypes);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setAssistantOverridesRequested", e);
             }
         }
     }
@@ -714,6 +731,18 @@ public class SystemUiProxy implements ISystemUiProxy {
             mBubbles.onBubbleDrag(bubbleKey, isBeingDragged);
         } catch (RemoteException e) {
             Log.w(TAG, "Failed call onBubbleDrag");
+        }
+    }
+
+    /**
+     * Tells SysUI to show user education relative to the reference point provided.
+     * @param position the bubble bar top center position in Screen coordinates.
+     */
+    public void showUserEducation(Point position) {
+        try {
+            mBubbles.showUserEducation(position.x, position.y);
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed call showUserEducation");
         }
     }
 
@@ -1345,15 +1374,21 @@ public class SystemUiProxy implements ISystemUiProxy {
     public boolean startRecentsActivity(Intent intent, ActivityOptions options,
             RecentsAnimationListener listener) {
         if (mRecentTasks == null) {
+            ActiveGestureLog.INSTANCE.trackEvent(RECENT_TASKS_MISSING);
             return false;
         }
         final IRecentsAnimationRunner runner = new IRecentsAnimationRunner.Stub() {
             @Override
             public void onAnimationStart(IRecentsAnimationController controller,
                     RemoteAnimationTarget[] apps, RemoteAnimationTarget[] wallpapers,
-                    Rect homeContentInsets, Rect minimizedHomeBounds) {
+                    Rect homeContentInsets, Rect minimizedHomeBounds, Bundle extras) {
+                // Aidl bundles need to explicitly set class loader
+                // https://developer.android.com/guide/components/aidl#Bundles
+                if (extras != null) {
+                    extras.setClassLoader(getClass().getClassLoader());
+                }
                 listener.onAnimationStart(new RecentsAnimationControllerCompat(controller), apps,
-                        wallpapers, homeContentInsets, minimizedHomeBounds);
+                        wallpapers, homeContentInsets, minimizedHomeBounds, extras);
             }
 
             @Override

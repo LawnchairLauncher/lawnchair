@@ -13,8 +13,18 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle" >
-    <solid android:color="@color/taskbar_divider_background"/>
-    <corners android:radius="1dp" />
-</shape>
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="52dp"
+    android:height="52dp"
+    android:viewportHeight="52"
+    android:viewportWidth="52">
+    <group>
+        <path
+            android:fillColor="@color/taskbar_divider_background"
+            android:pathData="M26,11L26,41"
+            android:strokeColor="@color/taskbar_divider_background"
+            android:strokeLineCap="round"
+            android:strokeWidth="2" />
+    </group>
+</vector>

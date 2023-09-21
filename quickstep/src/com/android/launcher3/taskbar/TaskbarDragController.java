@@ -259,6 +259,8 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
             DraggableView originalView, int dragLayerX, int dragLayerY, DragSource source,
             ItemInfo dragInfo, Rect dragRegion, float initialDragViewScale,
             float dragViewScaleOnDrop, DragOptions options) {
+        mActivity.hideKeyboard();
+
         mOptions = options;
 
         mRegistrationX = mMotionDown.x - dragLayerX;

@@ -31,6 +31,7 @@ import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.statehandlers.DepthController
 import com.android.launcher3.statemanager.StateManager
+import com.android.launcher3.statemanager.StatefulActivity
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.SplitConfigurationOptions
 import com.android.launcher3.util.withArgCaptor
@@ -58,7 +59,7 @@ class SplitSelectStateControllerTest {
     @Mock lateinit var statsLogManager: StatsLogManager
     @Mock lateinit var stateManager: StateManager<LauncherState>
     @Mock lateinit var handler: Handler
-    @Mock lateinit var context: Context
+    @Mock lateinit var context: StatefulActivity<*>
     @Mock lateinit var recentsModel: RecentsModel
     @Mock lateinit var pendingIntent: PendingIntent
 
@@ -81,7 +82,8 @@ class SplitSelectStateControllerTest {
                 depthController,
                 statsLogManager,
                 systemUiProxy,
-                recentsModel
+                recentsModel,
+                null /*activityBackCallback*/
             )
     }
 

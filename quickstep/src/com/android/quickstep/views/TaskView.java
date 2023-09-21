@@ -71,6 +71,7 @@ import android.widget.Toast;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.DeviceProfile;
@@ -109,7 +110,6 @@ import com.android.quickstep.util.TaskRemovedDuringLaunchListener;
 import com.android.quickstep.util.TransformParams;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
-import com.android.systemui.shared.recents.utilities.PreviewPositionHelper;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 
@@ -133,15 +133,17 @@ public class TaskView extends FrameLayout implements Reusable {
 
     public static final int FLAG_UPDATE_ICON = 1;
     public static final int FLAG_UPDATE_THUMBNAIL = FLAG_UPDATE_ICON << 1;
+    public static final int FLAG_UPDATE_CORNER_RADIUS = FLAG_UPDATE_THUMBNAIL << 1;
 
-    public static final int FLAG_UPDATE_ALL = FLAG_UPDATE_ICON | FLAG_UPDATE_THUMBNAIL;
+    public static final int FLAG_UPDATE_ALL = FLAG_UPDATE_ICON | FLAG_UPDATE_THUMBNAIL
+            | FLAG_UPDATE_CORNER_RADIUS;
 
     /**
      * Used in conjunction with {@link #onTaskListVisibilityChanged(boolean, int)}, providing more
      * granularity on which components of this task require an update
      */
     @Retention(SOURCE)
-    @IntDef({FLAG_UPDATE_ALL, FLAG_UPDATE_ICON, FLAG_UPDATE_THUMBNAIL})
+    @IntDef({FLAG_UPDATE_ALL, FLAG_UPDATE_ICON, FLAG_UPDATE_THUMBNAIL, FLAG_UPDATE_CORNER_RADIUS})
     public @interface TaskDataChanges {}
 
     /**
@@ -441,7 +443,7 @@ public class TaskView extends FrameLayout implements Reusable {
                 || DesktopTaskView.DESKTOP_MODE_SUPPORTED;
 
         boolean willDrawBorder =
-                keyboardFocusHighlightEnabled || FeatureFlags.ENABLE_CURSOR_HOVER_STATES.get();
+                keyboardFocusHighlightEnabled || FeatureFlags.enableCursorHoverStates();
         setWillNotDraw(!willDrawBorder);
 
         if (willDrawBorder) {
@@ -459,7 +461,7 @@ public class TaskView extends FrameLayout implements Reusable {
                             /* targetView= */ this)) : null;
 
             mHoverBorderAnimator =
-                    FeatureFlags.ENABLE_CURSOR_HOVER_STATES.get() ? new BorderAnimator(
+                    FeatureFlags.enableCursorHoverStates() ? new BorderAnimator(
                             /* borderRadiusPx= */ (int) mCurrentFullscreenParams.mCornerRadius,
                             /* borderColor= */ styledAttrs.getColor(
                                     R.styleable.TaskView_hoverBorderColor, DEFAULT_BORDER_COLOR),
@@ -534,7 +536,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     @Override
     public boolean onHoverEvent(MotionEvent event) {
-        if (FeatureFlags.ENABLE_CURSOR_HOVER_STATES.get()) {
+        if (FeatureFlags.enableCursorHoverStates()) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_HOVER_ENTER:
                     mHoverBorderAnimator.buildAnimator(/* isAppearing= */ true).start();
@@ -551,7 +553,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     @Override
     public boolean onInterceptHoverEvent(MotionEvent event) {
-        if (FeatureFlags.ENABLE_CURSOR_HOVER_STATES.get()) {
+        if (FeatureFlags.enableCursorHoverStates()) {
             // avoid triggering hover event on child elements which would cause HOVER_EXIT for this
             // task view
             return true;
@@ -1079,6 +1081,9 @@ public class TaskView extends FrameLayout implements Reusable {
                             mDigitalWellBeingToast.initialize(task);
                         });
             }
+            if (needsUpdate(changes, FLAG_UPDATE_CORNER_RADIUS)) {
+                mCurrentFullscreenParams.updateCornerRadius(getContext());
+            }
         } else {
             if (needsUpdate(changes, FLAG_UPDATE_THUMBNAIL)) {
                 mSnapshotView.setThumbnail(null, null);
@@ -1131,7 +1136,7 @@ public class TaskView extends FrameLayout implements Reusable {
         if (dp.isTablet) {
             int alignedOptionIndex = 0;
             if (getRecentsView().isOnGridBottomRow(menuContainer.getTaskView()) && dp.isLandscape) {
-                if (FeatureFlags.ENABLE_GRID_ONLY_OVERVIEW.get()) {
+                if (FeatureFlags.enableGridOnlyOverview()) {
                     // With no focused task, there is less available space below the tasks, so align
                     // the arrow to the third option in the menu.
                     alignedOptionIndex = 2;
@@ -1702,21 +1707,20 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     protected void updateSnapshotRadius() {
-        updateCurrentFullscreenParams(mSnapshotView.getPreviewPositionHelper());
+        updateCurrentFullscreenParams();
         mSnapshotView.setFullscreenParams(mCurrentFullscreenParams);
     }
 
-    void updateCurrentFullscreenParams(PreviewPositionHelper previewPositionHelper) {
-        updateFullscreenParams(mCurrentFullscreenParams, previewPositionHelper);
+    void updateCurrentFullscreenParams() {
+        updateFullscreenParams(mCurrentFullscreenParams);
     }
 
-    protected void updateFullscreenParams(TaskView.FullscreenDrawParams fullscreenParams,
-            PreviewPositionHelper previewPositionHelper) {
+    protected void updateFullscreenParams(TaskView.FullscreenDrawParams fullscreenParams) {
         if (getRecentsView() == null) {
             return;
         }
         fullscreenParams.setProgress(mFullscreenProgress, getRecentsView().getScaleX(),
-                getScaleX(), getWidth(), mActivity.getDeviceProfile(), previewPositionHelper);
+                getScaleX());
     }
 
     /**
@@ -1859,26 +1863,35 @@ public class TaskView extends FrameLayout implements Reusable {
      */
     public static class FullscreenDrawParams {
 
-        private final float mCornerRadius;
-        private final float mWindowCornerRadius;
+        private float mCornerRadius;
+        private float mWindowCornerRadius;
 
         public float mCurrentDrawnCornerRadius;
 
         public FullscreenDrawParams(Context context) {
-            this(TaskCornerRadius.get(context), QuickStepContract.getWindowCornerRadius(context));
+            updateCornerRadius(context);
         }
 
-        FullscreenDrawParams(float cornerRadius, float windowCornerRadius) {
-            mCornerRadius = cornerRadius;
-            mWindowCornerRadius = windowCornerRadius;
-            mCurrentDrawnCornerRadius = mCornerRadius;
+        /** Recomputes the start and end corner radius for the given Context. */
+        public void updateCornerRadius(Context context) {
+            mCornerRadius = computeTaskCornerRadius(context);
+            mWindowCornerRadius = computeWindowCornerRadius(context);
+        }
+
+        @VisibleForTesting
+        public float computeTaskCornerRadius(Context context) {
+            return TaskCornerRadius.get(context);
+        }
+
+        @VisibleForTesting
+        public float computeWindowCornerRadius(Context context) {
+            return QuickStepContract.getWindowCornerRadius(context);
         }
 
         /**
          * Sets the progress in range [0, 1]
          */
-        public void setProgress(float fullscreenProgress, float parentScale, float taskViewScale,
-                int previewWidth, DeviceProfile dp, PreviewPositionHelper pph) {
+        public void setProgress(float fullscreenProgress, float parentScale, float taskViewScale) {
             mCurrentDrawnCornerRadius =
                     Utilities.mapRange(fullscreenProgress, mCornerRadius, mWindowCornerRadius)
                             / parentScale / taskViewScale;

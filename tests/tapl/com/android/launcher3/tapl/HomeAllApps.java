@@ -23,30 +23,34 @@ import androidx.test.uiautomator.UiObject2;
 import com.android.launcher3.testing.shared.TestProtocol;
 
 public class HomeAllApps extends AllApps {
-    private static final String BOTTOM_SHEET_RES_ID = "bottom_sheet_background";
 
     HomeAllApps(LauncherInstrumentation launcher) {
         super(launcher);
     }
 
     /**
-     * Swipes down to Workspace.
+     * Swipes up or down to dismiss to Workspace.
+     * @param swipeDown Swipe all apps down to dismiss, otherwise swipe up to dismiss by going home.
      *
      * @return the Workspace object.
      */
     @NonNull
-    public Workspace switchToWorkspace() {
+    public Workspace switchToWorkspace(boolean swipeDown) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
              LauncherInstrumentation.Closable c =
                      mLauncher.addContextLayer("want to switch from all apps to workspace")) {
             UiObject2 allAppsContainer = verifyActiveContainer();
 
             final int startX = allAppsContainer.getVisibleCenter().x;
-            final int startY = getTopVisibleIconBounds(allAppsContainer).centerY();
-            final int endY = mLauncher.getDevice().getDisplayHeight();
+            final int startY = swipeDown ? getTopVisibleIconBounds(allAppsContainer).centerY()
+                    : mLauncher.getDevice().getDisplayHeight();
+            final int endY =
+                    swipeDown ? mLauncher.getDevice().getDisplayHeight() : getTopVisibleIconBounds(
+                            allAppsContainer).centerY();
             LauncherInstrumentation.log(
                     "switchToWorkspace: startY = " + startY + ", endY = " + endY
-                            + ", slop = " + mLauncher.getTouchSlop());
+                            + ", slop = " + mLauncher.getTouchSlop()
+                            + ", swipeDown = " + swipeDown);
 
             mLauncher.swipeToState(
                     startX,
@@ -54,7 +58,9 @@ public class HomeAllApps extends AllApps {
                     startX,
                     endY,
                     5 /* steps */,
-                    NORMAL_STATE_ORDINAL, LauncherInstrumentation.GestureScope.INSIDE);
+                    NORMAL_STATE_ORDINAL,
+                    swipeDown ? LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER
+                            : LauncherInstrumentation.GestureScope.EXPECT_PILFER);
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "swiped to workspace")) {
@@ -91,30 +97,8 @@ public class HomeAllApps extends AllApps {
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
-    /**
-     * Taps outside bottom sheet to dismiss and return to workspace. Available on tablets only.
-     * @param tapRight Tap on the right of bottom sheet if true, or left otherwise.
-     */
-    public Workspace dismissByTappingOutsideForTablet(boolean tapRight) {
-        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
-             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                     "want to tap outside AllApps bottom sheet on the "
-                             + (tapRight ? "right" : "left"))) {
-            final UiObject2 allAppsBottomSheet =
-                    mLauncher.waitForLauncherObject(BOTTOM_SHEET_RES_ID);
-            mLauncher.touchOutsideContainer(allAppsBottomSheet, tapRight);
-            try (LauncherInstrumentation.Closable tapped = mLauncher.addContextLayer(
-                    "tapped outside AllApps bottom sheet")) {
-                return mLauncher.getWorkspace();
-            }
-        }
-    }
-
-    /**
-     * Return the QSB UI object on the AllApps screen.
-     * @return the QSB UI object.
-     */
     @NonNull
+    @Override
     public Qsb getQsb() {
         return new AllAppsQsb(mLauncher, verifyActiveContainer());
     }
@@ -123,5 +107,10 @@ public class HomeAllApps extends AllApps {
     protected int getAllAppsScroll() {
         return mLauncher.getTestInfo(TestProtocol.REQUEST_APPS_LIST_SCROLL_Y)
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    @Override
+    protected void verifyVisibleContainerOnDismiss() {
+        mLauncher.getWorkspace();
     }
 }

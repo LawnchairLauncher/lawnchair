@@ -72,7 +72,7 @@
     <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Mantenha a janela pressionada por mais tempo antes de soltar"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Deslize para cima e pare"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Você aprendeu. Para desativar os gestos, acesse as Configurações."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Você concluiu o gesto para trocar de app"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Você concluiu o gesto para mudar de app"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Deslizar para trocar de app"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Para mudar de app, deslize de baixo para cima, mantenha a tela pressionada por um tempo e solte."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Para mudar de app, deslize de baixo para cima na tela com dois dedos, segure por um tempo e solte."</string>

@@ -16,10 +16,14 @@
 
 package com.android.launcher3.tapl;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+
 import static com.android.launcher3.testing.shared.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 
+import android.app.UiAutomation;
 import android.graphics.Point;
 import android.view.MotionEvent;
+import android.view.accessibility.AccessibilityEvent;
 
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
@@ -83,12 +87,18 @@ public abstract class Launchable {
      * fired when the click is executed.
      */
     public LaunchedAppState launchIntoSplitScreen() {
-        try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
-                "want to launch split tasks from " + launchableType())) {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                     "want to launch split tasks from " + launchableType())) {
             LauncherInstrumentation.log("Launchable.launch before click "
-                    + mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(mObject));
-
-            mLauncher.clickLauncherObject(mObject);
+                    + mObject.getVisibleCenter() + " in " + mLauncher.getVisibleBounds(
+                    mObject));
+            mLauncher.executeAndWaitForLauncherEvent(
+                    () -> mLauncher.clickLauncherObject(mObject),
+                    accessibilityEvent ->
+                            accessibilityEvent.getEventType() == TYPE_WINDOW_STATE_CHANGED,
+                    () -> "Unable to click object to launch split",
+                    "Click launcher object to launch split");
 
             try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("clicked")) {
                 mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, OverviewTask.SPLIT_START_EVENT);
@@ -152,7 +162,7 @@ public abstract class Launchable {
                 downTime,
                 MotionEvent.ACTION_DOWN,
                 iconCenter,
-                LauncherInstrumentation.GestureScope.INSIDE);
+                LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
         LauncherInstrumentation.log("movePointerForStartDrag: sent down");
         expectLongClickEvents.run();
         waitForLongPressConfirmation();
@@ -165,7 +175,7 @@ public abstract class Launchable {
                 downTime,
                 downTime,
                 /* slowDown= */ true,
-                LauncherInstrumentation.GestureScope.INSIDE);
+                LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER);
     }
 
     private int getStartDragThreshold() {
