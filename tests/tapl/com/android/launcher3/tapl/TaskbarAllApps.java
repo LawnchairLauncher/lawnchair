@@ -68,4 +68,9 @@ public class TaskbarAllApps extends AllApps {
     public TaskbarAllAppsQsb getQsb() {
         return new TaskbarAllAppsQsb(mLauncher, verifyActiveContainer());
     }
+
+    @Override
+    protected void verifyVisibleContainerOnDismiss() {
+        mLauncher.getLaunchedAppState().assertTaskbarVisible();
+    }
 }
