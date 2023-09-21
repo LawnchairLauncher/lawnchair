@@ -363,7 +363,10 @@ public class DeviceProfile {
         }
 
         isTransientTaskbar = DisplayController.isTransientTaskbar(context);
-        if (isTransientTaskbar) {
+        if (!isTaskbarPresent) {
+            taskbarIconSize = taskbarHeight = stashedTaskbarHeight = taskbarBottomMargin = 0;
+            startAlignTaskbar = false;
+        } else if (isTransientTaskbar) {
             float invTransientIconSizeDp = inv.transientTaskbarIconSize[mTypeIndex];
             taskbarIconSize = pxFromDp(invTransientIconSizeDp, mMetrics);
             taskbarHeight = Math.round((taskbarIconSize * ICON_VISIBLE_AREA_FACTOR)
