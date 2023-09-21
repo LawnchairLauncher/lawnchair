@@ -50,9 +50,9 @@ import static com.android.launcher3.testing.shared.TestProtocol.QUICK_SWITCH_STA
 import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
-import static com.android.launcher3.util.SplitConfigurationOptions.DEFAULT_SPLIT_RATIO;
 import static com.android.quickstep.util.SplitAnimationTimings.TABLET_HOME_TO_SPLIT;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
+import static com.android.wm.shell.common.split.SplitScreenConstants.SNAP_TO_50_50;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -1260,10 +1260,8 @@ public class QuickstepLauncher extends Launcher {
                 /* callback= */ success -> mSplitSelectStateController.resetState(),
                 /* freezeTaskList= */ true,
                 groupTask.mSplitBounds == null
-                        ? DEFAULT_SPLIT_RATIO
-                        : groupTask.mSplitBounds.appsStackedVertically
-                                ? groupTask.mSplitBounds.topTaskPercent
-                                : groupTask.mSplitBounds.leftTaskPercent);
+                        ? SNAP_TO_50_50
+                        : groupTask.mSplitBounds.snapPosition);
     }
 
     /**

@@ -26,6 +26,7 @@ import static com.android.launcher3.util.SplitConfigurationOptions.StagePosition
 import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 import static com.android.quickstep.util.RecentsOrientedState.postDisplayRotation;
 import static com.android.quickstep.util.RecentsOrientedState.preDisplayRotation;
+import static com.android.quickstep.util.SplitScreenUtils.convertLauncherSplitBoundsToShell;
 
 import android.animation.TimeInterpolator;
 import android.content.Context;
@@ -210,7 +211,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mStagePosition = mThumbnailPosition.equals(splitInfo.leftTopBounds) ?
                 STAGE_POSITION_TOP_OR_LEFT :
                 STAGE_POSITION_BOTTOM_OR_RIGHT;
-        mPositionHelper.setSplitBounds(convertSplitBounds(mSplitBounds), mStagePosition);
+        mPositionHelper.setSplitBounds(convertLauncherSplitBoundsToShell(mSplitBounds),
+                mStagePosition);
     }
 
     /**
@@ -434,17 +436,5 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
         // Ideally we should use square-root. This is an optimization as one of the dimension is 0.
         return Math.max(Math.abs(mTempPoint[0]), Math.abs(mTempPoint[1]));
-    }
-
-    /**
-     * TODO(b/254378592): Remove this after consolidation of classes
-     */
-    public static com.android.wm.shell.util.SplitBounds convertSplitBounds(SplitBounds bounds) {
-        return new com.android.wm.shell.util.SplitBounds(
-                bounds.leftTopBounds,
-                bounds.rightBottomBounds,
-                bounds.leftTopTaskId,
-                bounds.rightBottomTaskId
-        );
     }
 }
