@@ -721,6 +721,10 @@ public final class LauncherInstrumentation {
         mExpectedRotationCheckEnabled = expectedRotationCheckEnabled;
     }
 
+    public boolean getExpectedRotationCheckEnabled() {
+        return mExpectedRotationCheckEnabled;
+    }
+
     public String getNavigationModeMismatchError(boolean waitForCorrectState) {
         final int waitTime = waitForCorrectState ? WAIT_TIME_MS : 0;
         final NavigationModel navigationModel = getNavigationModel();
