@@ -195,6 +195,15 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     }
 
     @Override
+    public void setVisibility(int visibility) {
+        boolean changed = getVisibility() != visibility;
+        super.setVisibility(visibility);
+        if (changed && mControllerCallbacks != null) {
+            mControllerCallbacks.notifyVisibilityChanged();
+        }
+    }
+
+    @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mActivityContext.addOnDeviceProfileChangeListener(this);

@@ -756,5 +756,13 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         public void notifyIconLayoutBoundsChanged() {
             mControllers.uiController.onIconLayoutBoundsChanged();
         }
+
+        /**
+         * Notifies the taskbar scrim when the visibility of taskbar changes.
+         */
+        public void notifyVisibilityChanged() {
+            mControllers.taskbarScrimViewController.onTaskbarVisibilityChanged(
+                    mTaskbarView.getVisibility());
+        }
     }
 }
