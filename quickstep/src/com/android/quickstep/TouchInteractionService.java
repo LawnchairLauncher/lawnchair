@@ -119,6 +119,7 @@ import com.android.quickstep.inputconsumers.TaskbarUnstashInputConsumer;
 import com.android.quickstep.inputconsumers.TrackpadStatusBarInputConsumer;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.ActiveGestureLog.CompoundString;
+import com.android.quickstep.util.AssistStateManager;
 import com.android.quickstep.util.AssistUtils;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
@@ -1321,6 +1322,8 @@ public class TouchInteractionService extends Service {
             createdOverviewActivity.getDeviceProfile().dump(this, "", pw);
         }
         mTaskbarManager.dumpLogs("", pw);
+        pw.println("AssistStateManager:");
+        AssistStateManager.INSTANCE.get(this).dump("  ", pw);
     }
 
     private AbsSwipeUpHandler createLauncherSwipeHandler(
