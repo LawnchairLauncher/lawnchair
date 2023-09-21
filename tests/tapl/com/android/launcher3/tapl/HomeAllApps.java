@@ -113,4 +113,9 @@ public class HomeAllApps extends AllApps {
     protected void verifyVisibleContainerOnDismiss() {
         mLauncher.getWorkspace();
     }
+
+    @Override
+    public boolean isHomeState() {
+        return true;
+    }
 }

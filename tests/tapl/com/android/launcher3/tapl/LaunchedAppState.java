@@ -34,7 +34,6 @@ import android.view.InputDevice;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
-import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.Condition;
 import androidx.test.uiautomator.UiDevice;
 
@@ -70,6 +69,11 @@ public final class LaunchedAppState extends Background {
     @Override
     protected LauncherInstrumentation.ContainerType getContainerType() {
         return LauncherInstrumentation.ContainerType.LAUNCHED_APP;
+    }
+
+    @Override
+    public boolean isHomeState() {
+        return false;
     }
 
     /**
@@ -200,8 +204,8 @@ public final class LaunchedAppState extends Background {
 
                     try (LauncherInstrumentation.Closable c4 = launcher.addContextLayer(
                             "dropped item")) {
-                        launchable.assertAppLaunched(By.pkg(expectedNewPackageName));
-                        launchable.assertAppLaunched(By.pkg(expectedExistingPackageName));
+                        launcher.assertAppLaunched(expectedNewPackageName);
+                        launcher.assertAppLaunched(expectedExistingPackageName);
                     }
                 }
             }

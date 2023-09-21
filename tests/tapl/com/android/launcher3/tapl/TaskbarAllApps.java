@@ -73,4 +73,9 @@ public class TaskbarAllApps extends AllApps {
     protected void verifyVisibleContainerOnDismiss() {
         mLauncher.getLaunchedAppState().assertTaskbarVisible();
     }
+
+    @Override
+    public boolean isHomeState() {
+        return false;
+    }
 }
