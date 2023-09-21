@@ -376,9 +376,10 @@ class LauncherPrefs(private val encryptedContext: Context) {
     }
 }
 
-// This is hard-coded to false for now until it is time to release this optimization. It is only
-// a var because the unit tests are setting this to true so they can run.
-@VisibleForTesting var isBootAwareStartupDataEnabled: Boolean = false
+// It is a var because the unit tests are setting this to true so they can run.
+@VisibleForTesting
+var isBootAwareStartupDataEnabled: Boolean =
+    com.android.launcher3.config.FeatureFlags.ENABLE_BOOT_AWARE_STARTUP_DATA.get()
 
 private val BOOT_AWARE_ITEMS: MutableSet<ConstantItem<*>> = mutableSetOf()
 
