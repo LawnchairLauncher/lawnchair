@@ -26,6 +26,7 @@ import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.MulticellReorderAlgorithm;
 import com.android.launcher3.util.CellAndSpan;
 import com.android.launcher3.util.GridOccupancy;
+import com.android.launcher3.util.MultiTranslateDelegate;
 
 /**
  * CellLayout that simulates a split in the middle for use in foldable devices.
@@ -139,16 +140,57 @@ public class MultipageCellLayout extends CellLayout {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        float animatedWorkspaceMargin = mSpaceBetweenCellLayoutsPx * mSpringLoadedProgress;
         if (mLeftBackground.getAlpha() > 0) {
+            canvas.save();
+            canvas.translate(-animatedWorkspaceMargin, 0);
             mLeftBackground.setState(mBackground.getState());
             mLeftBackground.draw(canvas);
+            canvas.restore();
         }
         if (mRightBackground.getAlpha() > 0) {
+            canvas.save();
+            canvas.translate(animatedWorkspaceMargin, 0);
             mRightBackground.setState(mBackground.getState());
             mRightBackground.draw(canvas);
+            canvas.restore();
         }
-
         super.onDraw(canvas);
+    }
+
+    private void updateMarginBetweenCellLayouts() {
+        for (int i = 0; i < mShortcutsAndWidgets.getChildCount(); i++) {
+            View workspaceItem = mShortcutsAndWidgets.getChildAt(i);
+            if (!(workspaceItem instanceof Reorderable)) {
+                continue;
+            }
+            CellLayoutLayoutParams params =
+                    (CellLayoutLayoutParams) workspaceItem.getLayoutParams();
+            ((Reorderable) workspaceItem).getTranslateDelegate().setTranslation(
+                    MultiTranslateDelegate.INDEX_CELLAYOUT_MULTIPAGE_SPACING,
+                    getMarginForGivenCellParams(params),
+                    0
+            );
+
+        }
+    }
+
+    @Override
+    protected float getMarginForGivenCellParams(CellLayoutLayoutParams params) {
+        float margin = mSpaceBetweenCellLayoutsPx * mSpringLoadedProgress;
+        return params.getCellX() >= mCountX / 2 ? margin : -margin;
+    }
+
+    @Override
+    public void setSpringLoadedProgress(float progress) {
+        super.setSpringLoadedProgress(progress);
+        updateMarginBetweenCellLayouts();
+    }
+
+    @Override
+    public void setSpaceBetweenCellLayoutsPx(int spaceBetweenCellLayoutsPx) {
+        super.setSpaceBetweenCellLayoutsPx(spaceBetweenCellLayoutsPx);
+        updateMarginBetweenCellLayouts();
     }
 
     @Override
@@ -161,8 +203,9 @@ public class MultipageCellLayout extends CellLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
         Rect rect = mBackground.getBounds();
-        mLeftBackground.setBounds(rect.left, rect.top, rect.right / 2 - 20, rect.bottom);
-        mRightBackground.setBounds(rect.right / 2 + 20, rect.top, rect.right, rect.bottom);
+        int middlePointInPixels = rect.centerX();
+        mLeftBackground.setBounds(rect.left, rect.top, middlePointInPixels, rect.bottom);
+        mRightBackground.setBounds(middlePointInPixels, rect.top, rect.right, rect.bottom);
     }
 
     public void setCountX(int countX) {
