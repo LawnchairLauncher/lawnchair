@@ -104,4 +104,43 @@ class CalculatedWorkspaceSpecTest : AbstractDeviceProfileTest() {
         assertThat(heightSpec.gutterPx).isEqualTo(54)
         assertThat(heightSpec.cellSizePx).isEqualTo(260)
     }
+
+    /**
+     * This test tests:
+     * - (height spec) gets the correct breakpoint from the XML - use the first breakpoint
+     * - (height spec) do the correct calculations for remainder space and fixed size
+     * - (width spec) do the correct calculations for remainder space and fixed size
+     */
+    @Test
+    fun smallPhone_returnsFirstBreakpointSpec_unsortedFile() {
+        val deviceSpec = deviceSpecs["phone"]!!
+        deviceSpec.densityDpi = 540 // larger display size
+        initializeVarsForPhone(deviceSpec)
+
+        val availableWidth = deviceSpec.naturalSize.first
+        // Hotseat size is roughly 640px on a real device,
+        // it doesn't need to be precise on unit tests
+        val availableHeight = deviceSpec.naturalSize.second - deviceSpec.statusBarNaturalPx - 640
+
+        val workspaceSpecs =
+            WorkspaceSpecs.create(
+                TestResourceHelper(context!!, TestR.xml.valid_workspace_unsorted_file)
+            )
+        val widthSpec = workspaceSpecs.getCalculatedWidthSpec(4, availableWidth)
+        val heightSpec = workspaceSpecs.getCalculatedHeightSpec(5, availableHeight)
+
+        assertThat(widthSpec.availableSpace).isEqualTo(availableWidth)
+        assertThat(widthSpec.cells).isEqualTo(4)
+        assertThat(widthSpec.startPaddingPx).isEqualTo(74)
+        assertThat(widthSpec.endPaddingPx).isEqualTo(74)
+        assertThat(widthSpec.gutterPx).isEqualTo(54)
+        assertThat(widthSpec.cellSizePx).isEqualTo(193)
+
+        assertThat(heightSpec.availableSpace).isEqualTo(availableHeight)
+        assertThat(heightSpec.cells).isEqualTo(5)
+        assertThat(heightSpec.startPaddingPx).isEqualTo(0)
+        assertThat(heightSpec.endPaddingPx).isEqualTo(108)
+        assertThat(heightSpec.gutterPx).isEqualTo(54)
+        assertThat(heightSpec.cellSizePx).isEqualTo(260)
+    }
 }

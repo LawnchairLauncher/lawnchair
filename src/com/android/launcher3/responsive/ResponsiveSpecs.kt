@@ -24,10 +24,9 @@ import android.util.Log
  * @param widthSpecs List of width responsive specifications
  * @param heightSpecs List of height responsive specifications
  */
-abstract class ResponsiveSpecs<T : ResponsiveSpec>(
-    val widthSpecs: List<T>,
+abstract class ResponsiveSpecs<T : ResponsiveSpec>(widthSpecs: List<T>, heightSpecs: List<T>) {
+    val widthSpecs: List<T>
     val heightSpecs: List<T>
-) {
 
     init {
         check(widthSpecs.isNotEmpty() && heightSpecs.isNotEmpty()) {
@@ -35,6 +34,9 @@ abstract class ResponsiveSpecs<T : ResponsiveSpec>(
                 "width list size = ${widthSpecs.size}; " +
                 "height list size = ${heightSpecs.size}."
         }
+
+        this.widthSpecs = widthSpecs.sortedBy { it.maxAvailableSize }
+        this.heightSpecs = heightSpecs.sortedBy { it.maxAvailableSize }
     }
 
     /**
