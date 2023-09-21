@@ -160,6 +160,9 @@ public class TaskbarManager {
                     if (mActivity != null) {
                         mActivity.removeOnDeviceProfileChangeListener(
                                 mDebugActivityDeviceProfileChanged);
+                        Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                                "unregistering activity lifecycle callbacks from "
+                                        + "onActivityDestroyed.");
                         mActivity.unregisterActivityLifecycleCallbacks(this);
                     }
                     mActivity = null;
@@ -168,6 +171,35 @@ public class TaskbarManager {
                         mTaskbarActivityContext.setUIController(TaskbarUIController.DEFAULT);
                     }
                     mUnfoldProgressProvider.setSourceProvider(null);
+                }
+            };
+
+    UnfoldTransitionProgressProvider.TransitionProgressListener mUnfoldTransitionProgressListener =
+            new UnfoldTransitionProgressProvider.TransitionProgressListener() {
+                @Override
+                public void onTransitionStarted() {
+                    Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                            "fold/unfold transition started getting called.");
+                }
+
+                @Override
+                public void onTransitionProgress(float progress) {
+                    Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                            "fold/unfold transition progress : " + progress);
+                }
+
+                @Override
+                public void onTransitionFinishing() {
+                    Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                            "fold/unfold transition finishing getting called.");
+
+                }
+
+                @Override
+                public void onTransitionFinished() {
+                    Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                            "fold/unfold transition finished getting called.");
+
                 }
             };
 
@@ -234,6 +266,7 @@ public class TaskbarManager {
                 .register(USER_SETUP_COMPLETE_URI, mOnSettingsChangeListener);
         SettingsCache.INSTANCE.get(mContext)
                 .register(NAV_BAR_KIDS_MODE, mOnSettingsChangeListener);
+        Log.d(TASKBAR_NOT_DESTROYED_TAG, "registering component callbacks from constructor.");
         mContext.registerComponentCallbacks(mComponentCallbacks);
         mShutdownReceiver.register(mContext, Intent.ACTION_SHUTDOWN);
         UI_HELPER_EXECUTOR.execute(() -> {
@@ -319,16 +352,18 @@ public class TaskbarManager {
         if (mActivity == activity) {
             return;
         }
-        if (mActivity != null) {
-            mActivity.removeOnDeviceProfileChangeListener(mDebugActivityDeviceProfileChanged);
-            mActivity.unregisterActivityLifecycleCallbacks(mLifecycleCallbacks);
-        }
+        removeActivityCallbacksAndListeners();
         mActivity = activity;
         debugWhyTaskbarNotDestroyed("Set mActivity=" + mActivity);
         mActivity.addOnDeviceProfileChangeListener(mDebugActivityDeviceProfileChanged);
+        Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                "registering activity lifecycle callbacks from setActivity().");
         mActivity.registerActivityLifecycleCallbacks(mLifecycleCallbacks);
         UnfoldTransitionProgressProvider unfoldTransitionProgressProvider =
                 getUnfoldTransitionProgressProviderForActivity(activity);
+        if (unfoldTransitionProgressProvider != null) {
+            unfoldTransitionProgressProvider.addCallback(mUnfoldTransitionProgressListener);
+        }
         mUnfoldProgressProvider.setSourceProvider(unfoldTransitionProgressProvider);
 
         if (mTaskbarActivityContext != null) {
@@ -489,15 +524,27 @@ public class TaskbarManager {
         }
     }
 
+    private void removeActivityCallbacksAndListeners() {
+        if (mActivity != null) {
+            mActivity.removeOnDeviceProfileChangeListener(mDebugActivityDeviceProfileChanged);
+            Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                    "unregistering activity lifecycle callbacks from "
+                            + "removeActivityCallbackAndListeners().");
+            mActivity.unregisterActivityLifecycleCallbacks(mLifecycleCallbacks);
+            UnfoldTransitionProgressProvider unfoldTransitionProgressProvider =
+                    getUnfoldTransitionProgressProviderForActivity(mActivity);
+            if (unfoldTransitionProgressProvider != null) {
+                unfoldTransitionProgressProvider.removeCallback(mUnfoldTransitionProgressListener);
+            }
+        }
+    }
+
     /**
      * Called when the manager is no longer needed
      */
     public void destroy() {
         debugWhyTaskbarNotDestroyed("TaskbarManager#destroy()");
-        if (mActivity != null) {
-            mActivity.removeOnDeviceProfileChangeListener(mDebugActivityDeviceProfileChanged);
-        }
-
+        removeActivityCallbacksAndListeners();
         UI_HELPER_EXECUTOR.execute(
                 () -> mTaskbarBroadcastReceiver.unregisterReceiverSafely(mContext));
         destroyExistingTaskbar();
@@ -508,6 +555,7 @@ public class TaskbarManager {
                 .unregister(USER_SETUP_COMPLETE_URI, mOnSettingsChangeListener);
         SettingsCache.INSTANCE.get(mContext)
                 .unregister(NAV_BAR_KIDS_MODE, mOnSettingsChangeListener);
+        Log.d(TASKBAR_NOT_DESTROYED_TAG, "unregistering component callbacks from destroy().");
         mContext.unregisterComponentCallbacks(mComponentCallbacks);
         mContext.unregisterReceiver(mShutdownReceiver);
     }
