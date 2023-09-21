@@ -21,19 +21,21 @@ import static android.content.Intent.ACTION_USER_UNLOCKED;
 import static android.view.Display.DEFAULT_DISPLAY;
 
 import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
+import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
+import static com.android.launcher3.util.NavigationMode.NO_BUTTON;
+import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
+import static com.android.launcher3.util.NavigationMode.TWO_BUTTONS;
 import static com.android.launcher3.util.SettingsCache.ONE_HANDED_ENABLED;
 import static com.android.launcher3.util.SettingsCache.ONE_HANDED_SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED;
-import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
-import static com.android.quickstep.SysUINavigationMode.Mode.THREE_BUTTONS;
-import static com.android.quickstep.SysUINavigationMode.Mode.TWO_BUTTONS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_LONG_CLICKABLE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ALLOW_GESTURE_IGNORING_BAR_VISIBILITY;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_EXPANDED;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_GLOBAL_ACTIONS_SHOWING;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DIALOG_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_MAGNIFICATION_OVERLAP;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NAV_BAR_HIDDEN;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED;
@@ -41,37 +43,32 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_O
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_QUICK_SETTINGS_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_SCREEN_PINNING;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
 
-import android.app.ActivityManager;
 import android.app.ActivityTaskManager;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.Resources;
 import android.graphics.Region;
+import android.inputmethodservice.InputMethodService;
 import android.net.Uri;
 import android.os.Process;
 import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.os.UserManager;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.view.MotionEvent;
-import android.view.Surface;
 
 import androidx.annotation.BinderThread;
+import androidx.annotation.NonNull;
 
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
+import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.SettingsCache;
-import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
-import com.android.quickstep.SysUINavigationMode.OneHandedModeChangeListener;
+import com.android.launcher3.util.SimpleBroadcastReceiver;
+import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -82,30 +79,29 @@ import com.android.systemui.shared.system.TaskStackChangeListeners;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
+
+import app.lawnchair.LawnchairApp;
 
 /**
  * Manages the state of the system during a swipe up gesture.
  */
-public class RecentsAnimationDeviceState implements
-        NavigationModeChangeListener,
-        DisplayInfoChangeListener,
-        OneHandedModeChangeListener {
+public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
     static final String SUPPORT_ONE_HANDED_MODE = "ro.support_one_handed_mode";
 
     private final Context mContext;
-    private final SysUINavigationMode mSysUiNavMode;
     private final DisplayController mDisplayController;
     private final int mDisplayId;
     private final RotationTouchHelper mRotationTouchHelper;
     private final TaskStackChangeListener mPipListener;
-    private final List<ComponentName> mGestureBlockedActivities;
+    // Cache for better performance since it doesn't change at runtime.
+    private final boolean mCanImeRenderGesturalNavButtons =
+            InputMethodService.canImeRenderGesturalNavButtons();
 
     private final ArrayList<Runnable> mOnDestroyActions = new ArrayList<>();
 
     private @SystemUiStateFlags int mSystemUiStateFlags;
-    private SysUINavigationMode.Mode mMode = THREE_BUTTONS;
+    private NavigationMode mMode = THREE_BUTTONS;
     private NavBarPosition mNavBarPosition;
 
     private final Region mDeferredGestureRegion = new Region();
@@ -119,17 +115,15 @@ public class RecentsAnimationDeviceState implements
 
     private boolean mIsUserUnlocked;
     private final ArrayList<Runnable> mUserUnlockedActions = new ArrayList<>();
-    private final BroadcastReceiver mUserUnlockedReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (ACTION_USER_UNLOCKED.equals(intent.getAction())) {
-                mIsUserUnlocked = true;
-                notifyUserUnlocked();
-            }
+    private final SimpleBroadcastReceiver mUserUnlockedReceiver = new SimpleBroadcastReceiver(i -> {
+        if (ACTION_USER_UNLOCKED.equals(i.getAction())) {
+            mIsUserUnlocked = true;
+            notifyUserUnlocked();
         }
-    };
+    });
 
-    private Region mExclusionRegion;
+    private int mGestureBlockingTaskId = -1;
+    private @NonNull Region mExclusionRegion = new Region();
     private SystemGestureExclusionListenerCompat mExclusionListener;
 
     public RecentsAnimationDeviceState(Context context) {
@@ -143,10 +137,8 @@ public class RecentsAnimationDeviceState implements
     public RecentsAnimationDeviceState(Context context, boolean isInstanceForTouches) {
         mContext = context;
         mDisplayController = DisplayController.INSTANCE.get(context);
-        mSysUiNavMode = SysUINavigationMode.INSTANCE.get(context);
         mDisplayId = DEFAULT_DISPLAY;
         mIsOneHandedModeSupported = SystemProperties.getBoolean(SUPPORT_ONE_HANDED_MODE, false);
-        runOnDestroy(() -> mDisplayController.removeChangeListener(this));
         mRotationTouchHelper = RotationTouchHelper.INSTANCE.get(context);
         if (isInstanceForTouches) {
             // rotationTouchHelper doesn't get initialized after being destroyed, so only destroy
@@ -154,56 +146,44 @@ public class RecentsAnimationDeviceState implements
             mRotationTouchHelper.init();
             runOnDestroy(mRotationTouchHelper::destroy);
         }
-        runOnUserUnlocked(mRotationTouchHelper::onUserUnlocked);
+//        runOnUserUnlocked(mRotationTouchHelper::onUserUnlocked);
 
         // Register for user unlocked if necessary
         mIsUserUnlocked = context.getSystemService(UserManager.class)
                 .isUserUnlocked(Process.myUserHandle());
         if (!mIsUserUnlocked) {
-            mContext.registerReceiver(mUserUnlockedReceiver,
-                    new IntentFilter(ACTION_USER_UNLOCKED));
+            mUserUnlockedReceiver.register(mContext, ACTION_USER_UNLOCKED);
         }
-        runOnDestroy(() -> Utilities.unregisterReceiverSafely(mContext, mUserUnlockedReceiver));
+        runOnDestroy(() -> mUserUnlockedReceiver.unregisterReceiverSafely(mContext));
 
         // Register for exclusion updates
         mExclusionListener = new SystemGestureExclusionListenerCompat(mDisplayId) {
             @Override
             @BinderThread
             public void onExclusionChanged(Region region) {
+                if (region == null) {
+                    // Don't think this is possible but just in case, don't let it be null.
+                    region = new Region();
+                }
                 // Assignments are atomic, it should be safe on binder thread
                 mExclusionRegion = region;
             }
         };
-        runOnDestroy(mExclusionListener::unregister);
+//        runOnDestroy(mExclusionListener::unregister);
 
-        // Register for navigation mode changes
-        onNavigationModeChanged(mSysUiNavMode.addModeChangeListener(this));
-        runOnDestroy(() -> mSysUiNavMode.removeModeChangeListener(this));
-
-        // Add any blocked activities
-        String[] blockingActivities;
-        try {
-            blockingActivities =
-                    context.getResources().getStringArray(R.array.gesture_blocking_activities);
-        } catch (Resources.NotFoundException e) {
-            blockingActivities = new String[0];
-        }
-        mGestureBlockedActivities = new ArrayList<>(blockingActivities.length);
-        for (String blockingActivity : blockingActivities) {
-            if (!TextUtils.isEmpty(blockingActivity)) {
-                mGestureBlockedActivities.add(
-                        ComponentName.unflattenFromString(blockingActivity));
-            }
-        }
+        // Register for display changes changes
+        mDisplayController.addChangeListener(this);
+        onDisplayInfoChanged(context, mDisplayController.getInfo(), CHANGE_ALL);
+        runOnDestroy(() -> mDisplayController.removeChangeListener(this));
 
         SettingsCache settingsCache = SettingsCache.INSTANCE.get(mContext);
         if (mIsOneHandedModeSupported) {
-            Uri oneHandedUri = Settings.Secure.getUriFor(ONE_HANDED_ENABLED);
-            SettingsCache.OnChangeListener onChangeListener =
-                    enabled -> mIsOneHandedModeEnabled = enabled;
-            settingsCache.register(oneHandedUri, onChangeListener);
-            mIsOneHandedModeEnabled = settingsCache.getValue(oneHandedUri);
-            runOnDestroy(() -> settingsCache.unregister(oneHandedUri, onChangeListener));
+//            Uri oneHandedUri = Settings.Secure.getUriFor(ONE_HANDED_ENABLED);
+//            SettingsCache.OnChangeListener onChangeListener =
+//                    enabled -> mIsOneHandedModeEnabled = enabled;
+//            settingsCache.register(oneHandedUri, onChangeListener);
+//            mIsOneHandedModeEnabled = settingsCache.getValue(oneHandedUri);
+//            runOnDestroy(() -> settingsCache.unregister(oneHandedUri, onChangeListener));
         } else {
             mIsOneHandedModeEnabled = false;
         }
@@ -213,11 +193,11 @@ public class RecentsAnimationDeviceState implements
         SettingsCache.OnChangeListener onChangeListener =
                 enabled -> mIsSwipeToNotificationEnabled = enabled;
         settingsCache.register(swipeBottomNotificationUri, onChangeListener);
-        mIsSwipeToNotificationEnabled = settingsCache.getValue(swipeBottomNotificationUri);
+        mIsSwipeToNotificationEnabled = LawnchairApp.isRecentsEnabled () && settingsCache.getValue(swipeBottomNotificationUri);
         runOnDestroy(() -> settingsCache.unregister(swipeBottomNotificationUri, onChangeListener));
 
         Uri setupCompleteUri = Settings.Secure.getUriFor(Settings.Secure.USER_SETUP_COMPLETE);
-        mIsUserSetupComplete = settingsCache.getValue(setupCompleteUri, 0);
+        mIsUserSetupComplete = LawnchairApp.isRecentsEnabled () && settingsCache.getValue(setupCompleteUri, 0);
         if (!mIsUserSetupComplete) {
             SettingsCache.OnChangeListener userSetupChangeListener = e -> mIsUserSetupComplete = e;
             settingsCache.register(setupCompleteUri, userSetupChangeListener);
@@ -225,7 +205,7 @@ public class RecentsAnimationDeviceState implements
         }
 
         try {
-            mPipIsActive = Utilities.ATLEAST_S && ActivityTaskManager.getService().getRootTaskInfo(
+            mPipIsActive = LawnchairApp.isRecentsEnabled () && Utilities.ATLEAST_S && ActivityTaskManager.getService().getRootTaskInfo(
                     WINDOWING_MODE_PINNED, ACTIVITY_TYPE_UNDEFINED) != null;
         } catch (RemoteException e) {
             // Do nothing
@@ -263,53 +243,33 @@ public class RecentsAnimationDeviceState implements
      * Adds a listener for the nav mode change, guaranteed to be called after the device state's
      * mode has changed.
      */
-    public void addNavigationModeChangedCallback(NavigationModeChangeListener listener) {
-        listener.onNavigationModeChanged(mSysUiNavMode.addModeChangeListener(listener));
-        runOnDestroy(() -> mSysUiNavMode.removeModeChangeListener(listener));
-    }
-
-    /**
-     * Adds a listener for the one handed mode change,
-     * guaranteed to be called after the device state's mode has changed.
-     */
-    public void addOneHandedModeChangedCallback(OneHandedModeChangeListener listener) {
-        listener.onOneHandedModeChanged(mSysUiNavMode.addOneHandedOverlayChangeListener(listener));
-        runOnDestroy(() -> mSysUiNavMode.removeOneHandedOverlayChangeListener(listener));
-    }
-
-    @Override
-    public void onNavigationModeChanged(SysUINavigationMode.Mode newMode) {
-        mDisplayController.removeChangeListener(this);
-        mDisplayController.addChangeListener(this);
-        onDisplayInfoChanged(mContext, mDisplayController.getInfo(), CHANGE_ALL);
-
-        if (newMode == NO_BUTTON) {
-            mExclusionListener.register();
-        } else {
-            mExclusionListener.unregister();
-        }
-
-        mNavBarPosition = new NavBarPosition(newMode, mDisplayController.getInfo());
-        mMode = newMode;
+    public void addNavigationModeChangedCallback(Runnable callback) {
+        DisplayController.DisplayInfoChangeListener listener = (context, info, flags) -> {
+            if ((flags & CHANGE_NAVIGATION_MODE) != 0) {
+                callback.run();
+            }
+        };
+        mDisplayController.addChangeListener(listener);
+        callback.run();
+        runOnDestroy(() -> mDisplayController.removeChangeListener(listener));
     }
 
     @Override
     public void onDisplayInfoChanged(Context context, Info info, int flags) {
-        if ((flags & CHANGE_ROTATION) != 0) {
+        if ((flags & (CHANGE_ROTATION | CHANGE_NAVIGATION_MODE)) != 0) {
+            mMode = info.navigationMode;
             mNavBarPosition = new NavBarPosition(mMode, info);
+
+            if (mMode == NO_BUTTON) {
+                mExclusionListener.register();
+            } else {
+                mExclusionListener.unregister();
+            }
         }
     }
 
-    @Override
     public void onOneHandedModeChanged(int newGesturalHeight) {
         mRotationTouchHelper.setGesturalHeight(newGesturalHeight);
-    }
-
-    /**
-     * @return the current navigation mode for the device.
-     */
-    public SysUINavigationMode.Mode getNavMode() {
-        return mMode;
     }
 
     /**
@@ -385,15 +345,21 @@ public class RecentsAnimationDeviceState implements
             action.run();
         }
         mUserUnlockedActions.clear();
-        Utilities.unregisterReceiverSafely(mContext, mUserUnlockedReceiver);
+        mUserUnlockedReceiver.unregisterReceiverSafely(mContext);
     }
 
     /**
-     * @return whether the given running task info matches the gesture-blocked activity.
+     * Sets the task id where gestures should be blocked
      */
-    public boolean isGestureBlockedActivity(ActivityManager.RunningTaskInfo runningTaskInfo) {
-        return runningTaskInfo != null
-                && mGestureBlockedActivities.contains(runningTaskInfo.topActivity);
+    public void setGestureBlockingTaskId(int taskId) {
+        mGestureBlockingTaskId = taskId;
+    }
+
+    /**
+     * @return whether the given running task info matches the gesture-blocked task.
+     */
+    public boolean isGestureBlockedTask(CachedTaskInfo taskInfo) {
+        return taskInfo != null && taskInfo.getTaskId() == mGestureBlockingTaskId;
     }
 
     /**
@@ -420,10 +386,11 @@ public class RecentsAnimationDeviceState implements
                 || mRotationTouchHelper.isTaskListFrozen();
         return canStartWithNavHidden
                 && (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) == 0
+                && (mSystemUiStateFlags & SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING) == 0
                 && (mSystemUiStateFlags & SYSUI_STATE_QUICK_SETTINGS_EXPANDED) == 0
                 && (mSystemUiStateFlags & SYSUI_STATE_MAGNIFICATION_OVERLAP) == 0
                 && ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0
-                        || (mSystemUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0);
+                || (mSystemUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0);
     }
 
     /**
@@ -456,10 +423,17 @@ public class RecentsAnimationDeviceState implements
     }
 
     /**
+     * @return whether notification panel is expanded
+     */
+    public boolean isNotificationPanelExpanded() {
+        return (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) != 0;
+    }
+
+    /**
      * @return whether the global actions dialog is showing
      */
-    public boolean isGlobalActionsShowing() {
-        return (mSystemUiStateFlags & SYSUI_STATE_GLOBAL_ACTIONS_SHOWING) != 0;
+    public boolean isSystemUiDialogShowing() {
+        return (mSystemUiStateFlags & SYSUI_STATE_DIALOG_SHOWING) != 0;
     }
 
     /**
@@ -528,7 +502,7 @@ public class RecentsAnimationDeviceState implements
     public boolean isInExclusionRegion(MotionEvent event) {
         // mExclusionRegion can change on binder thread, use a local instance here.
         Region exclusionRegion = mExclusionRegion;
-        return mMode == NO_BUTTON && exclusionRegion != null
+        return mMode == NO_BUTTON
                 && exclusionRegion.contains((int) event.getX(), (int) event.getY());
     }
 
@@ -578,8 +552,7 @@ public class RecentsAnimationDeviceState implements
         if (mIsOneHandedModeEnabled) {
             final Info displayInfo = mDisplayController.getInfo();
             return (mRotationTouchHelper.touchInOneHandedModeRegion(ev)
-                && displayInfo.rotation != Surface.ROTATION_90
-                && displayInfo.rotation != Surface.ROTATION_270);
+                    && (displayInfo.currentSize.x < displayInfo.currentSize.y));
         }
         return false;
     }
@@ -600,19 +573,29 @@ public class RecentsAnimationDeviceState implements
         return mRotationTouchHelper;
     }
 
+    /** Returns whether IME is rendering nav buttons, and IME is currently showing. */
+    public boolean isImeRenderingNavButtons() {
+        return mCanImeRenderGesturalNavButtons && mMode == NO_BUTTON
+                && ((mSystemUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0);
+    }
+
+    public String getSystemUiStateString() {
+        return  QuickStepContract.getSystemUiStateString(mSystemUiStateFlags);
+    }
+
     public void dump(PrintWriter pw) {
         pw.println("DeviceState:");
         pw.println("  canStartSystemGesture=" + canStartSystemGesture());
         pw.println("  systemUiFlags=" + mSystemUiStateFlags);
-        pw.println("  systemUiFlagsDesc="
-                + QuickStepContract.getSystemUiStateString(mSystemUiStateFlags));
+        pw.println("  systemUiFlagsDesc=" + getSystemUiStateString());
         pw.println("  assistantAvailable=" + mAssistantAvailable);
         pw.println("  assistantDisabled="
                 + QuickStepContract.isAssistantGestureDisabled(mSystemUiStateFlags));
         pw.println("  isUserUnlocked=" + mIsUserUnlocked);
         pw.println("  isOneHandedModeEnabled=" + mIsOneHandedModeEnabled);
         pw.println("  isSwipeToNotificationEnabled=" + mIsSwipeToNotificationEnabled);
-        pw.println("  deferredGestureRegion=" + mDeferredGestureRegion);
+        pw.println("  deferredGestureRegion=" + mDeferredGestureRegion.getBounds());
+        pw.println("  exclusionRegion=" + mExclusionRegion.getBounds());
         pw.println("  pipIsActive=" + mPipIsActive);
         mRotationTouchHelper.dump(pw);
     }

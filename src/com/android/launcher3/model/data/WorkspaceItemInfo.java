@@ -75,6 +75,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     /**
      * The intent used to start the application.
      */
+    @NonNull
     public Intent intent;
 
     /**
@@ -130,7 +131,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     }
 
     @Override
-    public void onAddToDatabase(ContentWriter writer) {
+    public void onAddToDatabase(@NonNull ContentWriter writer) {
         super.onAddToDatabase(writer);
         writer.put(Favorites.TITLE, title)
                 .put(Favorites.INTENT, getIntent())
@@ -147,6 +148,7 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     }
 
     @Override
+    @NonNull
     public Intent getIntent() {
         return intent;
     }
@@ -164,7 +166,8 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         return isPromise() && !hasStatusFlag(FLAG_SUPPORTS_WEB_UI);
     }
 
-    public void updateFromDeepShortcutInfo(ShortcutInfo shortcutInfo, Context context) {
+    public void updateFromDeepShortcutInfo(@NonNull final ShortcutInfo shortcutInfo,
+            @NonNull final Context context) {
         // {@link ShortcutInfo#getActivity} can change during an update. Recreate the intent
         intent = ShortcutKey.makeIntent(shortcutInfo);
         title = shortcutInfo.getShortLabel();
@@ -180,12 +183,25 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
             runtimeStatusFlags |= FLAG_DISABLED_BY_PUBLISHER;
         }
         disabledMessage = shortcutInfo.getDisabledMessage();
+        if (Utilities.ATLEAST_P
+                && shortcutInfo.getDisabledReason() == ShortcutInfo.DISABLED_REASON_VERSION_LOWER) {
+            runtimeStatusFlags |= FLAG_DISABLED_VERSION_LOWER;
+        } else {
+            runtimeStatusFlags &= ~FLAG_DISABLED_VERSION_LOWER;
+        }
 
         if (Utilities.ATLEAST_Q) {
             Person[] persons = ApiWrapper.getPersons(shortcutInfo);
             personKeys = persons.length == 0 ? Utilities.EMPTY_STRING_ARRAY
                     : Arrays.stream(persons).map(Person::getKey).sorted().toArray(String[]::new);
         }
+    }
+
+    /**
+     * {@code true} if the shortcut is disabled due to its app being a lower version.
+     */
+    public boolean isDisabledVersionLower() {
+        return (runtimeStatusFlags & FLAG_DISABLED_VERSION_LOWER) != 0;
     }
 
     /** Returns the WorkspaceItemInfo id associated with the deep shortcut. */

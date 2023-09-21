@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Udostępnij aplikację"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Posłuchaj"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Przetłumacz"</string>
+    <string name="action_search" msgid="6269564710943755464">"Obiektyw"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"OK"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"ANULUJ"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"USTAWIENIA"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Przetłumacz lub odsłuchaj tekst na ekranie"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Informacje takie jak tekst na ekranie, adresy internetowe i zrzuty ekranu mogą być udostępniane Google.\n\nAby zmienić zakres udostępnianych informacji, kliknij "<b>"Ustawienia &gt; Aplikacje &gt; Aplikacje domyślne &gt; Asystent cyfrowy"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Aby użyć tej funkcji, wybierz asystenta"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Aby odsłuchać lub przetłumaczyć tekst widoczny na ekranie, wybierz w Ustawieniach aplikację asystenta cyfrowego"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Aby użyć tej funkcji, zmień asystenta"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Aby odsłuchać lub przetłumaczyć tekst widoczny na ekranie, zmień w Ustawieniach aplikację asystenta cyfrowego"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Kliknij tutaj, aby odsłuchać tekst widoczny na ekranie"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Kliknij tutaj, aby przetłumaczyć tekst widoczny na ekranie"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Tej aplikacji nie można udostępnić"</string>
+</resources>

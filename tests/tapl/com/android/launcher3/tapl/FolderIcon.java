@@ -21,7 +21,7 @@ import android.graphics.Rect;
 import androidx.annotation.NonNull;
 import androidx.test.uiautomator.UiObject2;
 
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 
 /**
  * Folder Icon, an app folder in workspace.
@@ -52,11 +52,13 @@ public class FolderIcon implements FolderDragTarget {
         return new Folder(mLauncher);
     }
 
+    /** This method requires public access, however should not be called in tests. */
     @Override
     public Rect getDropLocationBounds() {
         return mLauncher.getVisibleBounds(mObject.getParent());
     }
 
+    /** This method requires public access, however should not be called in tests. */
     @Override
     public FolderIcon getTargetFolder(Rect bounds) {
         return this;

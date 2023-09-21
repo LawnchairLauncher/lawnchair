@@ -22,13 +22,16 @@ import android.animation.ObjectAnimator;
 import android.view.animation.Interpolator;
 import android.view.animation.PathInterpolator;
 
-import com.android.quickstep.AnimatedFloat;
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.quickstep.SystemUiProxy;
+
+import java.io.PrintWriter;
 
 /**
  * Handles properties/data collection, and passes the results to {@link TaskbarScrimView} to render.
  */
-public class TaskbarScrimViewController {
+public class TaskbarScrimViewController implements TaskbarControllers.LoggableTaskbarController,
+        TaskbarControllers.BackgroundRendererController {
 
     private static final float SCRIM_ALPHA = 0.6f;
 
@@ -47,9 +50,6 @@ public class TaskbarScrimViewController {
     public TaskbarScrimViewController(TaskbarActivityContext activity, TaskbarScrimView scrimView) {
         mActivity = activity;
         mScrimView = scrimView;
-        mScrimView.setCornerSizes(mActivity.getLeftCornerRadius(),
-                mActivity.getRightCornerRadius());
-        mScrimView.setBackgroundHeight(mActivity.getDeviceProfile().taskbarSize);
     }
 
     /**
@@ -67,7 +67,8 @@ public class TaskbarScrimViewController {
         final boolean manageMenuExpanded =
                 (stateFlags & SYSUI_STATE_BUBBLES_MANAGE_MENU_EXPANDED) != 0;
         final boolean showScrim = !mControllers.navbarButtonsViewController.isImeVisible()
-                && bubblesExpanded && mControllers.taskbarStashController.isInAppAndNotStashed();
+                && bubblesExpanded
+                && mControllers.taskbarStashController.isTaskbarVisibleAndNotStashing();
         final float scrimAlpha = manageMenuExpanded
                 // When manage menu shows there's the first scrim and second scrim so figure out
                 // what the total transparency would be.
@@ -93,5 +94,17 @@ public class TaskbarScrimViewController {
 
     private void onClick() {
         SystemUiProxy.INSTANCE.get(mActivity).onBackPressed();
+    }
+
+    @Override
+    public void setCornerRoundness(float cornerRoundness) {
+        mScrimView.setCornerRoundness(cornerRoundness);
+    }
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarScrimViewController:");
+
+        pw.println(prefix + "\tmScrimAlpha.value=" + mScrimAlpha.value);
     }
 }

@@ -7,7 +7,7 @@ pluginManagement {
 
 // https://docs.gradle.com/enterprise/gradle-plugin/
 plugins {
-    id "com.gradle.enterprise" version "3.15"
+    id "com.gradle.enterprise" version "3.14.1"
 }
 
 gradleEnterprise {
@@ -37,6 +37,9 @@ include ':searchuilib'
 project(':searchuilib').projectDir = new File(rootDir, 'platform_frameworks_libs_systemui/searchuilib')
 
 include ':systemUIShared'
+include ':systemUIAnim'
+include ':systemUIUnFold'
+include ':systemUIViewCapture'
 include ':compatLib'
 include ':compatLibVR'
 include ':compatLibVS'

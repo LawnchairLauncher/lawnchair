@@ -128,7 +128,8 @@ data class SearchTargetCompat(
         }
     }
 
-    private constructor(from: SearchTarget) : this(
+    private constructor(from: SearchTarget) :
+            this(
         from.getResultType(),
         from.getLayoutType(),
         from.getId(),

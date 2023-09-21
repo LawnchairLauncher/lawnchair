@@ -40,6 +40,12 @@ public class DragOptions {
     /** Determines when a pre-drag should transition to a drag. By default, this is immediate. */
     public PreDragCondition preDragCondition = null;
 
+    /**
+     * A drag scale that scales the original drag view size when the preDragCondition is met (or
+     * is ignored if preDragEndScale is 0).
+     */
+    public float preDragEndScale;
+
     /** Scale of the icons over the workspace icon size. */
     public float intrinsicIconScaleFactor = 1f;
 

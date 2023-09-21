@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"앱 공유"</string>
+    <string name="action_listen" msgid="2370304050784689486">"듣기"</string>
+    <string name="action_translate" msgid="8028378961867277746">"번역"</string>
+    <string name="action_search" msgid="6269564710943755464">"렌즈"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"확인"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"취소"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"설정"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"화면의 텍스트 번역 또는 듣기"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"화면의 텍스트, 웹 주소, 스크린샷과 같은 정보가 Google과 공유될 수 있습니다.\n\n공유되는 정보를 변경하려면 "<b>"설정 &gt; 앱 &gt; 기본 앱 &gt; 디지털 어시스턴트 앱"</b>"으로 이동하세요."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"이 기능을 사용하려면 어시스턴트를 선택하세요."</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"화면에서 텍스트를 듣거나 번역하려면 설정에서 디지털 어시스턴트 앱을 선택하세요."</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"어시스턴트가 이 기능을 사용하도록 변경하세요."</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"화면에서 텍스트를 듣거나 번역하려면 설정에서 디지털 어시스턴트 앱을 변경하세요."</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"화면에서 텍스트를 들으려면 여기를 탭하세요."</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"화면에서 텍스트를 번역하려면 여기를 탭하세요."</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"공유할 수 없는 앱입니다."</string>
+</resources>

@@ -1,42 +1,48 @@
 package com.android.launcher3.taskbar;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_AWAKE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BACK_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BOUNCER_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DEVICE_DOZING;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DEVICE_DREAMING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_WAKEFULNESS_MASK;
+import static com.android.systemui.shared.system.QuickStepContract.WAKEFULNESS_ASLEEP;
 
 import android.app.KeyguardManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
+
+import com.android.launcher3.AbstractFloatingView;
+import com.android.systemui.shared.system.QuickStepContract;
+
+import java.io.PrintWriter;
 
 /**
  * Controller for managing keyguard state for taskbar
  */
-public class TaskbarKeyguardController {
+public class TaskbarKeyguardController implements TaskbarControllers.LoggableTaskbarController {
 
-    private static final int KEYGUARD_SYSUI_FLAGS = SYSUI_STATE_BOUNCER_SHOWING |
-            SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING | SYSUI_STATE_DEVICE_DOZING |
-            SYSUI_STATE_OVERVIEW_DISABLED | SYSUI_STATE_HOME_DISABLED |
-            SYSUI_STATE_BACK_DISABLED | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED;
+    private static final int KEYGUARD_SYSUI_FLAGS = SYSUI_STATE_BOUNCER_SHOWING
+            | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING | SYSUI_STATE_DEVICE_DOZING
+            | SYSUI_STATE_OVERVIEW_DISABLED | SYSUI_STATE_HOME_DISABLED
+            | SYSUI_STATE_BACK_DISABLED | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED
+            | SYSUI_STATE_WAKEFULNESS_MASK;
+
+    // If any of these SysUi flags (via QuickstepContract) is set, the device to be considered
+    // locked.
+    public static final int MASK_ANY_SYSUI_LOCKED = SYSUI_STATE_BOUNCER_SHOWING
+            | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING
+            | SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED
+            | SYSUI_STATE_DEVICE_DREAMING;
 
     private final TaskbarActivityContext mContext;
     private int mKeyguardSysuiFlags;
     private boolean mBouncerShowing;
     private NavbarButtonsViewController mNavbarButtonsViewController;
     private final KeyguardManager mKeyguardManager;
-    private boolean mIsScreenOff;
-
-    private final BroadcastReceiver mScreenOffReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            mIsScreenOff = true;
-        }
-    };
 
     public TaskbarKeyguardController(TaskbarActivityContext context) {
         mContext = context;
@@ -45,10 +51,16 @@ public class TaskbarKeyguardController {
 
     public void init(NavbarButtonsViewController navbarButtonUIController) {
         mNavbarButtonsViewController = navbarButtonUIController;
-        mContext.registerReceiver(mScreenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
     }
 
     public void updateStateForSysuiFlags(int systemUiStateFlags) {
+        int interestingKeyguardFlags = systemUiStateFlags & KEYGUARD_SYSUI_FLAGS;
+        if (interestingKeyguardFlags == mKeyguardSysuiFlags) {
+            // No change in keyguard relevant flags
+            return;
+        }
+        mKeyguardSysuiFlags = interestingKeyguardFlags;
+
         boolean bouncerShowing = (systemUiStateFlags & SYSUI_STATE_BOUNCER_SHOWING) != 0;
         boolean keyguardShowing = (systemUiStateFlags & SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING)
                 != 0;
@@ -56,25 +68,22 @@ public class TaskbarKeyguardController {
                 (systemUiStateFlags & SYSUI_STATE_STATUS_BAR_KEYGUARD_SHOWING_OCCLUDED) != 0;
         boolean dozing = (systemUiStateFlags & SYSUI_STATE_DEVICE_DOZING) != 0;
 
-        int interestingKeyguardFlags = systemUiStateFlags & KEYGUARD_SYSUI_FLAGS;
-        if (interestingKeyguardFlags == mKeyguardSysuiFlags) {
-            return;
-        }
-        mKeyguardSysuiFlags = interestingKeyguardFlags;
 
         mBouncerShowing = bouncerShowing;
 
         mNavbarButtonsViewController.setKeyguardVisible(keyguardShowing || dozing,
                 keyguardOccluded);
         updateIconsForBouncer();
-    }
 
-    public boolean isScreenOff() {
-        return mIsScreenOff;
-    }
+        boolean asleepOrGoingToSleep = (systemUiStateFlags & SYSUI_STATE_AWAKE) == 0;
+        boolean closeFloatingViews = keyguardShowing || asleepOrGoingToSleep;
 
-    public void setScreenOn() {
-        mIsScreenOff = false;
+        if (closeFloatingViews) {
+            // animate the closing of the views, unless the screen is already asleep.
+            boolean animateViewClosing =
+                    (systemUiStateFlags & SYSUI_STATE_WAKEFULNESS_MASK) != WAKEFULNESS_ASLEEP;
+            AbstractFloatingView.closeOpenViews(mContext, animateViewClosing, TYPE_ALL);
+        }
     }
 
     /**
@@ -82,17 +91,18 @@ public class TaskbarKeyguardController {
      */
     private void updateIconsForBouncer() {
         boolean disableBack = (mKeyguardSysuiFlags & SYSUI_STATE_BACK_DISABLED) != 0;
-        boolean disableRecent = (mKeyguardSysuiFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0;
-        boolean disableHome = (mKeyguardSysuiFlags & SYSUI_STATE_HOME_DISABLED) != 0;
-        boolean onlyBackEnabled = !disableBack && disableRecent && disableHome;
-
-        boolean showBackForBouncer = onlyBackEnabled &&
-                mKeyguardManager.isDeviceSecure() &&
-                mBouncerShowing;
+        boolean showBackForBouncer =
+                !disableBack && mKeyguardManager.isDeviceSecure() && mBouncerShowing;
         mNavbarButtonsViewController.setBackForBouncer(showBackForBouncer);
     }
 
-    public void onDestroy() {
-        mContext.unregisterReceiver(mScreenOffReceiver);
+
+    @Override
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "TaskbarKeyguardController:");
+
+        pw.println(prefix + "\tmKeyguardSysuiFlags=" + QuickStepContract.getSystemUiStateString(
+                mKeyguardSysuiFlags));
+        pw.println(prefix + "\tmBouncerShowing=" + mBouncerShowing);
     }
 }

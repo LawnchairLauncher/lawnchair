@@ -16,7 +16,7 @@ object DrawableTokens {
     val BgOverviewClearAllButton = ResourceDrawableToken<RippleDrawable>(R.drawable.bg_overview_clear_all_button)
         .mutate { context, scheme, uiColorMode ->
             val background = getDrawable(0) as GradientDrawable
-            background.setColor(ColorTokens.Surface.resolveColor(context, scheme, uiColorMode))
+            background.setColor(ColorTokens.ColorBackground.resolveColor(context, scheme, uiColorMode))
         }
 
     @JvmField
@@ -72,7 +72,7 @@ object DrawableTokens {
         .setColor(ColorTokens.Surface)
 
     @JvmField
-    val WidgetsRecommendationBackground = ResourceDrawableToken<GradientDrawable>(R.drawable.widgets_recommendation_background)
+    val WidgetsRecommendationBackground = ResourceDrawableToken<GradientDrawable>(R.drawable.widgets_surface_background)
         .setColor(ColorTokens.Surface)
 
     @JvmField

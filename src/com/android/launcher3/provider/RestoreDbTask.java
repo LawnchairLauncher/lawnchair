@@ -17,13 +17,16 @@
 package com.android.launcher3.provider;
 
 import static com.android.launcher3.InvariantDeviceProfile.TYPE_MULTI_DISPLAY;
-import static com.android.launcher3.InvariantDeviceProfile.TYPE_PHONE;
+import static com.android.launcher3.LauncherPrefs.APP_WIDGET_IDS;
+import static com.android.launcher3.LauncherPrefs.OLD_APP_WIDGET_IDS;
+import static com.android.launcher3.LauncherPrefs.RESTORE_DEVICE;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
+import static com.android.launcher3.widget.LauncherWidgetHolder.APPWIDGET_HOST_ID;
 
 import android.app.backup.BackupManager;
+import android.appwidget.AppWidgetHost;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.UserHandle;
@@ -36,6 +39,7 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.AppWidgetsRestoredReceiver;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
@@ -60,13 +64,13 @@ import java.util.Arrays;
 public class RestoreDbTask {
 
     private static final String TAG = "RestoreDbTask";
-    private static final String RESTORED_DEVICE_TYPE = "restored_task_pending";
+    public static final String RESTORED_DEVICE_TYPE = "restored_task_pending";
 
     private static final String INFO_COLUMN_NAME = "name";
     private static final String INFO_COLUMN_DEFAULT_VALUE = "dflt_value";
 
-    private static final String APPWIDGET_OLD_IDS = "appwidget_old_ids";
-    private static final String APPWIDGET_IDS = "appwidget_ids";
+    public static final String APPWIDGET_OLD_IDS = "appwidget_old_ids";
+    public static final String APPWIDGET_IDS = "appwidget_ids";
 
     /**
      * Tries to restore the backup DB if needed
@@ -79,11 +83,15 @@ public class RestoreDbTask {
             helper.createEmptyDB(helper.getWritableDatabase());
         }
 
+        // Obtain InvariantDeviceProfile first before setting pending to false, so
+        // InvariantDeviceProfile won't switch to new grid when initializing.
+        InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(context);
+
         // Set is pending to false irrespective of the result, so that it doesn't get
         // executed again.
-        Utilities.getPrefs(context).edit().remove(RESTORED_DEVICE_TYPE).commit();
+        LauncherPrefs.get(context).removeSync(RESTORE_DEVICE);
 
-        InvariantDeviceProfile.INSTANCE.get(context).reinitializeAfterRestore(context);
+        idp.reinitializeAfterRestore(context);
     }
 
     private static boolean performRestore(Context context, DatabaseHelper helper) {
@@ -234,8 +242,7 @@ public class RestoreDbTask {
         }
 
         // If restored from a single display backup, remove gaps between screenIds
-        if (Utilities.getPrefs(context).getInt(RESTORED_DEVICE_TYPE, TYPE_PHONE)
-                != TYPE_MULTI_DISPLAY) {
+        if (LauncherPrefs.get(context).get(RESTORE_DEVICE) != TYPE_MULTI_DISPLAY) {
             removeScreenIdGaps(db);
         }
 
@@ -333,7 +340,7 @@ public class RestoreDbTask {
     }
 
     public static boolean isPending(Context context) {
-        return Utilities.getPrefs(context).contains(RESTORED_DEVICE_TYPE);
+        return LauncherPrefs.get(context).has(RESTORE_DEVICE);
     }
 
     /**
@@ -341,31 +348,30 @@ public class RestoreDbTask {
      */
     public static void setPending(Context context) {
         FileLog.d(TAG, "Restore data received through full backup ");
-        Utilities.getPrefs(context).edit()
-                .putInt(RESTORED_DEVICE_TYPE, new DeviceGridState(context).getDeviceType())
-                .commit();
+        LauncherPrefs.get(context)
+                .putSync(RESTORE_DEVICE.to(new DeviceGridState(context).getDeviceType()));
     }
 
     private void restoreAppWidgetIdsIfExists(Context context) {
-        SharedPreferences prefs = Utilities.getPrefs(context);
-        if (prefs.contains(APPWIDGET_OLD_IDS) && prefs.contains(APPWIDGET_IDS)) {
+        LauncherPrefs lp = LauncherPrefs.get(context);
+        if (lp.has(APP_WIDGET_IDS, OLD_APP_WIDGET_IDS)) {
+            AppWidgetHost host = new AppWidgetHost(context, APPWIDGET_HOST_ID);
             AppWidgetsRestoredReceiver.restoreAppWidgetIds(context,
-                    IntArray.fromConcatString(prefs.getString(APPWIDGET_OLD_IDS, "")).toArray(),
-                    IntArray.fromConcatString(prefs.getString(APPWIDGET_IDS, "")).toArray());
+                    IntArray.fromConcatString(lp.get(OLD_APP_WIDGET_IDS)).toArray(),
+                    IntArray.fromConcatString(lp.get(APP_WIDGET_IDS)).toArray(),
+                    host);
         } else {
             FileLog.d(TAG, "No app widget ids to restore.");
         }
 
-        prefs.edit().remove(APPWIDGET_OLD_IDS)
-                .remove(APPWIDGET_IDS).apply();
+        lp.remove(APP_WIDGET_IDS, OLD_APP_WIDGET_IDS);
     }
 
     public static void setRestoredAppWidgetIds(Context context, @NonNull int[] oldIds,
             @NonNull int[] newIds) {
-        Utilities.getPrefs(context).edit()
-                .putString(APPWIDGET_OLD_IDS, IntArray.wrap(oldIds).toConcatString())
-                .putString(APPWIDGET_IDS, IntArray.wrap(newIds).toConcatString())
-                .commit();
+        LauncherPrefs.get(context).putSync(
+                OLD_APP_WIDGET_IDS.to(IntArray.wrap(oldIds).toConcatString()),
+                APP_WIDGET_IDS.to(IntArray.wrap(newIds).toConcatString()));
     }
 
 }

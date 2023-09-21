@@ -28,18 +28,16 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"Le raccourci n\'est pas disponible"</string>
     <string name="home_screen" msgid="5629429142036709174">"Accueil"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Écran partagé"</string>
-    <string name="split_screen_position_top" msgid="1504965011158689649">"Diviser dans la partie supérieure"</string>
-    <string name="split_screen_position_left" msgid="7537793098851830883">"Diviser à gauche"</string>
-    <string name="split_screen_position_right" msgid="1569377524925193369">"Diviser à droite"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Renseignements sur l\'appli pour %1$s"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Maintenez le doigt sur un widget pour le déplacer."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Touchez 2x un widget et maintenez le doigt dessus pour le déplacer ou utiliser des actions personnalisées."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d de largeur sur %2$d de hauteur"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"Widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g>"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Maintenez le doigt sur le widget pour le déplacer sur l\'écran d\'accueil"</string>
-    <string name="add_to_home_screen" msgid="8631549138215492708">"Ajouter à l\'écran d\'accueil"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Maintenez le doigt sur le widget pour le déplacer sur l\'écran d\'accueil"</string>
+    <string name="add_to_home_screen" msgid="9168649446635919791">"Ajouter à l\'écran d\'accueil"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"Le widget <xliff:g id="WIDGET_NAME">%1$s</xliff:g> a été ajouté à l\'écran d\'accueil"</string>
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Suggestions"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# widget}one{# widget}other{# widgets}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# raccourci}one{# raccourci}other{# raccourcis}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -52,20 +50,19 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Professionnels"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversations"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Renseignements utiles à portée de main"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"Pour obtenir des renseignements sans ouvrir d\'application, vous pouvez ajouter des widgets à votre écran d\'accueil"</string>
+    <string name="widget_education_content" msgid="1731667670753497052">"Pour obtenir des informations sans ouvrir d\'applications, vous pouvez ajouter des widgets à votre écran d\'accueil"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Touchez pour modifier les paramètres du widget"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"OK"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Modifier les paramètres du widget"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Rechercher dans les applications"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Chargement des applications en cours…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Aucune application trouvée correspondant à « <xliff:g id="QUERY">%1$s</xliff:g> »"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Rechercher plus d\'applications"</string>
     <string name="label_application" msgid="8531721983832654978">"Application"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Toutes les applications"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notifications"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Maintenez le doigt sur un raccourci pour le déplacer."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Touchez deux fois un raccourci et maintenez le doigt dessus pour le déplacer ou utiliser des actions personnalisées."</string>
-    <string name="out_of_space" msgid="6692471482459245734">"Pas d\'espace libre sur cet écran d\'accueil"</string>
+    <string name="out_of_space" msgid="6455557115204099579">"Pas d\'espace libre sur cet écran d\'accueil"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Il n\'y a plus d\'espace dans la zone des favoris"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Liste des applications"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"Résultats de recherche"</string>
@@ -79,10 +76,10 @@
     <string name="pin_prediction" msgid="4196423321649756498">"Épingler la prédiction"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"installer des raccourcis"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Permet à une application d\'ajouter des raccourcis sans l\'intervention de l\'utilisateur."</string>
-    <string name="permlab_read_settings" msgid="1941457408239617576">"lire les paramètres et les raccourcis de la page d\'accueil"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"Permet à l\'application de lire les paramètres et les raccourcis de l\'écran d\'accueil."</string>
-    <string name="permlab_write_settings" msgid="3574213698004620587">"enregistrer les paramètres de la page d\'accueil et des raccourcis"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"Permet à l\'application de modifier les paramètres et les raccourcis de l\'écran d\'accueil."</string>
+    <string name="permlab_read_settings" msgid="5136500343007704955">"lire les paramètres et les raccourcis de la page d\'accueil"</string>
+    <string name="permdesc_read_settings" msgid="4208061150510996676">"Permet à l\'application de lire les paramètres et les raccourcis de l\'écran d\'accueil."</string>
+    <string name="permlab_write_settings" msgid="4820028712156303762">"modifier les paramètres et les raccourcis de la page d\'accueil"</string>
+    <string name="permdesc_write_settings" msgid="726859348127868466">"Permet à l\'application de modifier les paramètres et les raccourcis de l\'écran d\'accueil."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"L\'application <xliff:g id="APP_NAME">%1$s</xliff:g> n\'est pas autorisée à faire des appels téléphoniques"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Impossible de charger le widget"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Paramètres du widget"</string>
@@ -90,7 +87,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Impossible de désinstaller cette application, car il s\'agit d\'une application système."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Modifier le nom"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"L\'application <xliff:g id="APP_NAME">%1$s</xliff:g> est désactivée"</string>
-    <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{{app_name} a # notification}one{{app_name} a # notification}other{{app_name} a # notifications}}"</string>
+    <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} a # notification}one{{app_name} a # notification}other{{app_name} a # notifications}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Page %1$d sur %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Écran d\'accueil %1$d sur %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Nouvelle page d\'écran d\'accueil"</string>
@@ -105,7 +102,7 @@
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Fond d\'écran et style"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Paramètres d\'accueil"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Cette fonction est désactivée par votre administrateur"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"Autoriser la rotation de l\'écran d\'accueil"</string>
+    <string name="allow_rotation_title" msgid="7222049633713050106">"Autoriser la rotation de l\'écran d\'accueil"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Lorsque vous faites pivoter le téléphone"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Points de notification"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Activé"</string>
@@ -114,7 +111,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Pour afficher les points de notification, activez les notifications d\'application pour <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Modifier les paramètres"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Afficher les points de notification"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Ajouter icônes d\'applis à l\'écran d\'accueil"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"Options pour les développeurs"</string>
+    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Ajouter les icônes des applications à l\'écran d\'accueil"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"Pour les nouvelles applications"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Inconnu"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Supprimer"</string>
@@ -124,15 +122,19 @@
     <string name="app_installing_title" msgid="5864044122733792085">"Installation de l\'application <xliff:g id="NAME">%1$s</xliff:g> en cours, <xliff:g id="PROGRESS">%2$s</xliff:g> terminée"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Téléchargement de <xliff:g id="NAME">%1$s</xliff:g> : <xliff:g id="PROGRESS">%2$s</xliff:g>"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> en attente d\'installation"</string>
+    <string name="dialog_update_title" msgid="114234265740994042">"Mise à jour de l\'application requise"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"L\'application pour cette icône n\'est pas à jour. Vous pouvez soit la mettre à jour manuellement pour réactiver ce raccourci, soit retirer l\'icône."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Mettre à jour"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Retirer"</string>
     <string name="widgets_list" msgid="796804551140113767">"Liste des widgets"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Liste des widgets fermée"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"Ajouter à l\'écran d\'accueil"</string>
+    <string name="action_add_to_workspace" msgid="215894119683164916">"Ajouter à l\'écran d\'accueil"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Déplacer l\'élément ici"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Élément ajouté à l\'écran d\'accueil"</string>
     <string name="item_removed" msgid="851119963877842327">"Élément retiré"</string>
     <string name="undo" msgid="4151576204245173321">"Annuler"</string>
     <string name="action_move" msgid="4339390619886385032">"Déplacer l\'élément"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"Déplacer vers rangée <xliff:g id="NUMBER_0">%1$s</xliff:g> colonne <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"Déplacer à la ligne <xliff:g id="NUMBER_0">%1$s</xliff:g> colonne <xliff:g id="NUMBER_1">%2$s</xliff:g> dans <xliff:g id="STRING">%3$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Déplacer vers la position <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Déplacer vers la position <xliff:g id="NUMBER">%1$s</xliff:g> dans les favoris"</string>
     <string name="item_moved" msgid="4606538322571412879">"Élément déplacé"</string>
@@ -141,7 +143,7 @@
     <string name="added_to_folder" msgid="4793259502305558003">"Élément ajouté au dossier"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"Créer un dossier avec : <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Dossier créé"</string>
-    <string name="action_move_to_workspace" msgid="1603837886334246317">"Déplacer sur l\'écran d\'accueil"</string>
+    <string name="action_move_to_workspace" msgid="39528912300293768">"Déplacer sur l\'écran d\'accueil"</string>
     <string name="action_resize" msgid="1802976324781771067">"Redimensionner"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Augmenter la largeur"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Augmenter la hauteur"</string>
@@ -163,8 +165,10 @@
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Les applications professionnelles sont désactivées. Vos applications professionnelles ne peuvent ni vous envoyer de notifications, ni utiliser la pile, ni accéder à votre position"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Les applications professionnelles sont indiquées par un badge et sont visibles pour votre administrateur informatique"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Désactiver les applications professionnelles"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Mettre en pause les applications professionnelles"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Activer les applications professionnelles"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtrer"</string>
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"Rechercher sur votre téléphone"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Rechercher sur votre tablette"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Échec : <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

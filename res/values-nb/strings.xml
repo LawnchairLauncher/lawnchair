@@ -28,18 +28,16 @@
     <string name="shortcut_not_available" msgid="2536503539825726397">"Snarveien er ikke tilgjengelig"</string>
     <string name="home_screen" msgid="5629429142036709174">"Startskjerm"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Delt skjerm"</string>
-    <string name="split_screen_position_top" msgid="1504965011158689649">"Splitt øverst"</string>
-    <string name="split_screen_position_left" msgid="7537793098851830883">"Splitt til venstre"</string>
-    <string name="split_screen_position_right" msgid="1569377524925193369">"Splitt til høyre"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Appinformasjon for %1$s"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Trykk og hold for å flytte en modul."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Dobbelttrykk og hold inne for å flytte en modul eller bruke tilpassede handlinger."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d bredde x %2$d høyde"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g>-modul"</string>
-    <string name="add_item_request_drag_hint" msgid="5653291305078645405">"Trykk og hold på modulen for å bevege den rundt på startskjermen"</string>
-    <string name="add_to_home_screen" msgid="8631549138215492708">"Legg til på startskjermen"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"Trykk og hold på modulen for å bevege den rundt på startskjermen"</string>
+    <string name="add_to_home_screen" msgid="9168649446635919791">"Legg til på startskjermen"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g>-modulen er lagt til på startskjermen"</string>
+    <string name="suggested_widgets_header_title" msgid="1844314680798145222">"Forslag"</string>
     <string name="widgets_count" msgid="6467746476364652096">"{count,plural, =1{# modul}other{# moduler}}"</string>
     <string name="shortcuts_count" msgid="8471715556199592381">"{count,plural, =1{# snarvei}other{# snarveier}}"</string>
     <string name="widgets_and_shortcuts_count" msgid="7209136747878365116">"<xliff:g id="WIDGETS_COUNT">%1$s</xliff:g>, <xliff:g id="SHORTCUTS_COUNT">%2$s</xliff:g>"</string>
@@ -52,20 +50,19 @@
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Jobb"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Samtaler"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Lett tilgjengelig nyttig informasjon"</string>
-    <string name="widget_education_content" msgid="745542879510751525">"For å se informasjon uten å åpne apper kan du legge til moduler på startskjermen"</string>
+    <string name="widget_education_content" msgid="1731667670753497052">"For å se informasjon uten å åpne apper kan du legge til moduler på startskjermen"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Trykk for å endre modulinnstillinger"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Greit"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Endre modulinnstillinger"</string>
     <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"Søk etter apper"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Laster inn appene …"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"Fant ingen apper som samsvarer med «<xliff:g id="QUERY">%1$s</xliff:g>»"</string>
-    <string name="all_apps_search_market_message" msgid="1366263386197059176">"Søk etter flere apper"</string>
     <string name="label_application" msgid="8531721983832654978">"App"</string>
     <string name="all_apps_label" msgid="5015784846527570951">"Alle apper"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Varsler"</string>
     <string name="long_press_shortcut_to_add" msgid="5405328730817637737">"Trykk og hold for å flytte en snarvei."</string>
     <string name="long_accessible_way_to_add_shortcut" msgid="2199537273817090740">"Dobbelttrykk og hold for å flytte en snarvei eller bruke tilpassede handlinger."</string>
-    <string name="out_of_space" msgid="6692471482459245734">"Ingen ledig plass på denne startskjermen"</string>
+    <string name="out_of_space" msgid="6455557115204099579">"Ingen ledig plass på denne startskjermen"</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"Favoritter-skuffen er full"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"App-liste"</string>
     <string name="all_apps_search_results" msgid="5889367432531296759">"Søkeresultater"</string>
@@ -79,10 +76,10 @@
     <string name="pin_prediction" msgid="4196423321649756498">"Fest forslaget"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"installere snarveier"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Gir apper tillatelse til å legge til snarveier uten innblanding fra brukeren."</string>
-    <string name="permlab_read_settings" msgid="1941457408239617576">"lese startsideinnstillinger og -snarveier"</string>
-    <string name="permdesc_read_settings" msgid="5833423719057558387">"Lar appen lese innstillingene og snarveiene på startsiden."</string>
-    <string name="permlab_write_settings" msgid="3574213698004620587">"angi startsideinnstillinger og -snarveier"</string>
-    <string name="permdesc_write_settings" msgid="5440712911516509985">"Lar appen endre innstillingene og snarveiene på startsiden."</string>
+    <string name="permlab_read_settings" msgid="5136500343007704955">"lese startsideinnstillinger og -snarveier"</string>
+    <string name="permdesc_read_settings" msgid="4208061150510996676">"Lar appen lese innstillingene og snarveiene på startsiden."</string>
+    <string name="permlab_write_settings" msgid="4820028712156303762">"angi startsideinnstillinger og -snarveier"</string>
+    <string name="permdesc_write_settings" msgid="726859348127868466">"Lar appen endre innstillingene og snarveiene på startsiden."</string>
     <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> har ikke tillatelse til å ringe"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Kan ikke laste inn modulen"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Modulinnstillinger"</string>
@@ -90,7 +87,7 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"Dette er en systemapp som ikke kan avinstalleres."</string>
     <string name="folder_hint_text" msgid="5174843001373488816">"Rediger navn"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Slo av <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
-    <string name="dotted_app_label" msgid="1704091277755818896">"{count,plural,offset:1 =1{{app_name} har # varsel}other{{app_name} har # varsler}}"</string>
+    <string name="dotted_app_label" msgid="1865617679843363410">"{count,plural, =1{{app_name} har # varsel}other{{app_name} har # varsler}}"</string>
     <string name="default_scroll_format" msgid="7475544710230993317">"Side %1$d av %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Startside %1$d av %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"Ny side på startskjermen"</string>
@@ -105,7 +102,7 @@
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Bakgrunn og stil"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Startsideinnstillinger"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Administratoren har slått av funksjonen"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"Tillat at startskjermen roterer"</string>
+    <string name="allow_rotation_title" msgid="7222049633713050106">"Tillat at startskjermen roterer"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Når telefonen roteres"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"Varselsprikker"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"På"</string>
@@ -114,7 +111,8 @@
     <string name="msg_missing_notification_access" msgid="281113995110910548">"Slå på appvarsler for <xliff:g id="NAME">%1$s</xliff:g> for å vise varselsprikker"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Endre innstillingene"</string>
     <string name="notification_dots_service_title" msgid="4284221181793592871">"Vis varselsprikker"</string>
-    <string name="auto_add_shortcuts_label" msgid="3698776050751790653">"Legg til appikoner på startskjermen"</string>
+    <string name="developer_options_title" msgid="700788437593726194">"Utvikleralternativer"</string>
+    <string name="auto_add_shortcuts_label" msgid="4926805029653694105">"Legg til appikoner på startskjermen"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"For nye apper"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Ukjent"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Fjern"</string>
@@ -124,15 +122,19 @@
     <string name="app_installing_title" msgid="5864044122733792085">"<xliff:g id="NAME">%1$s</xliff:g> installerer, <xliff:g id="PROGRESS">%2$s</xliff:g> er fullført"</string>
     <string name="app_downloading_title" msgid="8336702962104482644">"Laster ned <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="PROGRESS">%2$s</xliff:g> er fullført"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"Venter på å installere <xliff:g id="NAME">%1$s</xliff:g>"</string>
+    <string name="dialog_update_title" msgid="114234265740994042">"Appen må oppdateres"</string>
+    <string name="dialog_update_message" msgid="4176784553982226114">"Appen for dette ikonet er ikke oppdatert. Du kan oppdatere manuelt for å aktivere denne snarveien igjen, eller du kan fjerne ikonet."</string>
+    <string name="dialog_update" msgid="2178028071796141234">"Oppdater"</string>
+    <string name="dialog_remove" msgid="6510806469849709407">"Fjern"</string>
     <string name="widgets_list" msgid="796804551140113767">"Modulliste"</string>
     <string name="widgets_list_closed" msgid="6141506579418771922">"Modullisten er lukket"</string>
-    <string name="action_add_to_workspace" msgid="8902165848117513641">"Legg til på startskjermen"</string>
+    <string name="action_add_to_workspace" msgid="215894119683164916">"Legg til på startskjermen"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Flytt elementet hit"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Elementet er lagt til på startskjermen"</string>
     <string name="item_removed" msgid="851119963877842327">"Elementet er fjernet"</string>
     <string name="undo" msgid="4151576204245173321">"Angre"</string>
     <string name="action_move" msgid="4339390619886385032">"Flytt elementet"</string>
-    <string name="move_to_empty_cell" msgid="2833711483015685619">"Flytt til rad <xliff:g id="NUMBER_0">%1$s</xliff:g>, kolonne <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
+    <string name="move_to_empty_cell_description" msgid="5254852678218206889">"Flytt til rad <xliff:g id="NUMBER_0">%1$s</xliff:g> kolonne <xliff:g id="NUMBER_1">%2$s</xliff:g> i <xliff:g id="STRING">%3$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Flytt til posisjon <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="move_to_hotseat_position" msgid="6295412897075147808">"Flytt til posisjonen for favoritter <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
     <string name="item_moved" msgid="4606538322571412879">"Elementet er flyttet"</string>
@@ -141,7 +143,7 @@
     <string name="added_to_folder" msgid="4793259502305558003">"Elementet er lagt til i mappen"</string>
     <string name="create_folder_with" msgid="4050141361160214248">"Opprett mappe med: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Mappen er opprettet"</string>
-    <string name="action_move_to_workspace" msgid="1603837886334246317">"Flytt til startskjermen"</string>
+    <string name="action_move_to_workspace" msgid="39528912300293768">"Flytt til startskjermen"</string>
     <string name="action_resize" msgid="1802976324781771067">"Endre størrelse"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Øk bredden"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Øk høyden"</string>
@@ -156,15 +158,17 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personlig"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"Jobb"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"Jobbprofil"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Jobbapper er merket og synlige for IT-administratoren din"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Jobbapper er merket og synlige for IT-administratoren"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Greit"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Jobbapper er satt på pause"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Jobbapper kan ikke sende deg varsler, bruke batteriet eller få tilgang til posisjonen din"</string>
     <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Jobbapper er av. De kan ikke sende deg varsler, bruke batteriet eller få tilgang til posisjonen din"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Jobbapper er merket og synlige for IT-administratoren din"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Greit"</string>
-    <string name="work_apps_pause_btn_text" msgid="1921059713673767460">"Slå av jobbapper"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Sett jobbapper på pause"</string>
     <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Slå på jobbapper"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filter"</string>
+    <string name="search_pref_screen_title" msgid="3258959643336315962">"Søk på telefonen"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Søk på nettbrettet"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Mislyktes: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

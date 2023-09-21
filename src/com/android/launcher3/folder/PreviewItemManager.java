@@ -78,6 +78,8 @@ public class PreviewItemManager {
     private int mPrevTopPadding = -1;
     private Drawable mReferenceDrawable = null;
 
+    private int mNumOfPrevItems = 0;
+
     // These hold the first page preview items
     private ArrayList<PreviewItemDrawingParams> mFirstPageParams = new ArrayList<>();
     // These hold the current page preview items. It is empty if the current page is the first page.
@@ -253,7 +255,6 @@ public class PreviewItemManager {
 
     void buildParamsForPage(int page, ArrayList<PreviewItemDrawingParams> params, boolean animate) {
         List<WorkspaceItemInfo> items = mIcon.getPreviewItemsOnPage(page);
-        int prevNumItems = params.size();
 
         // We adjust the size of the list to match the number of items in the preview.
         while (items.size() < params.size()) {
@@ -277,8 +278,9 @@ public class PreviewItemManager {
                     mReferenceDrawable = p.drawable;
                 }
             } else {
-                FolderPreviewItemAnim anim = new FolderPreviewItemAnim(this, p, i, prevNumItems, i,
-                        numItemsInFirstPagePreview, DROP_IN_ANIMATION_DURATION, null);
+                FolderPreviewItemAnim anim = new FolderPreviewItemAnim(this, p, i,
+                        mNumOfPrevItems, i, numItemsInFirstPagePreview, DROP_IN_ANIMATION_DURATION,
+                        null);
 
                 if (p.anim != null) {
                     if (p.anim.hasEqualFinalState(anim)) {
@@ -317,7 +319,9 @@ public class PreviewItemManager {
     }
 
     void updatePreviewItems(boolean animate) {
+        int numOfPrevItemsAux = mFirstPageParams.size();
         buildParamsForPage(0, mFirstPageParams, animate);
+        mNumOfPrevItems = numOfPrevItemsAux;
     }
 
     void updatePreviewItems(Predicate<WorkspaceItemInfo> itemCheck) {
@@ -429,7 +433,7 @@ public class PreviewItemManager {
             drawable.setLevel(item.getProgressLevel());
             p.drawable = drawable;
         } else {
-            p.drawable = item.newIcon(mContext, true);
+            p.drawable = item.newIcon(mContext);
         }
         p.drawable.setBounds(0, 0, mIconSize, mIconSize);
         p.item = item;

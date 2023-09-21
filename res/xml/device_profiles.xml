@@ -26,7 +26,7 @@
         launcher:numHotseatIcons="3"
         launcher:dbFile="launcher_3_by_3.db"
         launcher:defaultLayoutId="@xml/default_workspace_3x3"
-        launcher:deviceCategory="phone|multi_display" >
+        launcher:deviceCategory="phone" >
 
         <display-option
             launcher:name="Super Short Stubby"
@@ -34,6 +34,8 @@
             launcher:minHeightDps="300"
             launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -42,6 +44,8 @@
             launcher:minHeightDps="400"
             launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
     </grid-option>
@@ -53,7 +57,9 @@
         launcher:numFolderRows="3"
         launcher:numFolderColumns="4"
         launcher:numHotseatIcons="4"
+        launcher:numExtendedHotseatIcons="6"
         launcher:dbFile="launcher_4_by_4.db"
+        launcher:inlineNavButtonsEndSpacing="@dimen/taskbar_button_margin_split"
         launcher:defaultLayoutId="@xml/default_workspace_4x4"
         launcher:deviceCategory="phone|multi_display" >
 
@@ -63,6 +69,8 @@
             launcher:minHeightDps="420"
             launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -71,6 +79,8 @@
             launcher:minHeightDps="450"
             launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -79,6 +89,8 @@
             launcher:minHeightDps="491.33"
             launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -87,6 +99,8 @@
             launcher:minHeightDps="567"
             launcher:iconImageSize="54"
             launcher:iconTextSize="13.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -95,6 +109,8 @@
             launcher:minHeightDps="567"
             launcher:iconImageSize="54"
             launcher:iconTextSize="13.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
     </grid-option>
@@ -106,7 +122,9 @@
         launcher:numFolderRows="4"
         launcher:numFolderColumns="4"
         launcher:numHotseatIcons="5"
+        launcher:numExtendedHotseatIcons="6"
         launcher:dbFile="launcher.db"
+        launcher:inlineNavButtonsEndSpacing="@dimen/taskbar_button_margin_split"
         launcher:defaultLayoutId="@xml/default_workspace_5x5"
         launcher:deviceCategory="phone|multi_display" >
 
@@ -116,6 +134,8 @@
             launcher:minHeightDps="694"
             launcher:iconImageSize="56"
             launcher:iconTextSize="14.4"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -124,6 +144,8 @@
             launcher:minHeightDps="694"
             launcher:iconImageSize="56"
             launcher:iconTextSize="14.4"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
         <display-option
@@ -132,6 +154,8 @@
             launcher:minHeightDps="400"
             launcher:iconImageSize="48"
             launcher:iconTextSize="13.0"
+            launcher:allAppsBorderSpace="16"
+            launcher:allAppsCellHeight="104"
             launcher:canBeDefault="true" />
 
     </grid-option>
@@ -140,10 +164,15 @@
         launcher:name="6_by_5"
         launcher:numRows="5"
         launcher:numColumns="6"
+        launcher:numSearchContainerColumns="3"
         launcher:numFolderRows="3"
         launcher:numFolderColumns="3"
         launcher:numHotseatIcons="6"
+        launcher:hotseatColumnSpanLandscape="4"
         launcher:numAllAppsColumns="6"
+        launcher:isScalable="true"
+        launcher:inlineNavButtonsEndSpacing="@dimen/taskbar_button_margin_6_5"
+        launcher:devicePaddingId="@xml/paddings_6x5"
         launcher:dbFile="launcher_6_by_5.db"
         launcher:defaultLayoutId="@xml/default_workspace_6x5"
         launcher:deviceCategory="tablet" >
@@ -152,14 +181,29 @@
             launcher:name="Tablet"
             launcher:minWidthDps="900"
             launcher:minHeightDps="820"
-            launcher:minCellHeightDps="104"
-            launcher:minCellWidthDps="80"
+            launcher:minCellHeight="120"
+            launcher:minCellWidth="102"
+            launcher:minCellHeightLandscape="104"
+            launcher:minCellWidthLandscape="120"
             launcher:iconImageSize="60"
             launcher:iconTextSize="14"
-            launcher:borderSpaceDps="16"
+            launcher:borderSpaceHorizontal="16"
+            launcher:borderSpaceVertical="64"
+            launcher:borderSpaceLandscapeHorizontal="64"
+            launcher:borderSpaceLandscapeVertical="16"
+            launcher:horizontalMargin="54"
+            launcher:horizontalMarginLandscape="120"
+            launcher:allAppsCellWidth="96"
+            launcher:allAppsCellHeight="142"
+            launcher:allAppsCellWidthLandscape="126"
+            launcher:allAppsCellHeightLandscape="126"
             launcher:allAppsIconSize="60"
             launcher:allAppsIconTextSize="14"
-            launcher:allAppsCellSpacingDps="16"
+            launcher:allAppsBorderSpaceHorizontal="8"
+            launcher:allAppsBorderSpaceVertical="16"
+            launcher:allAppsBorderSpaceLandscape="16"
+            launcher:hotseatBarBottomSpace="76"
+            launcher:hotseatBarBottomSpaceLandscape="40"
             launcher:canBeDefault="true" />
 
     </grid-option>

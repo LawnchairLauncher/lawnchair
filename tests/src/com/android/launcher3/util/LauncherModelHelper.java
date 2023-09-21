@@ -47,6 +47,7 @@ import android.provider.Settings;
 import android.test.mock.MockContentResolver;
 import android.util.ArrayMap;
 
+import androidx.annotation.NonNull;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.uiautomator.UiDevice;
 
@@ -54,6 +55,7 @@ import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherProvider;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.AllAppsList;
@@ -67,6 +69,7 @@ import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.testing.TestInformationProvider;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext;
+import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
 import org.mockito.ArgumentCaptor;
@@ -131,7 +134,7 @@ public class LauncherModelHelper {
         setupProvider(LauncherProvider.AUTHORITY, provider);
     }
 
-    protected void setupProvider(String authority, ContentProvider provider) {
+    public void setupProvider(String authority, ContentProvider provider) {
         ProviderInfo providerInfo = new ProviderInfo();
         providerInfo.authority = authority;
         providerInfo.applicationInfo = sandboxContext.getApplicationInfo();
@@ -193,8 +196,9 @@ public class LauncherModelHelper {
         Executor mockExecutor = mock(Executor.class);
         model.enqueueModelUpdateTask(new ModelUpdateTask() {
             @Override
-            public void init(LauncherAppState app, LauncherModel model, BgDataModel dataModel,
-                    AllAppsList allAppsList, Executor uiExecutor) {
+            public void init(@NonNull final LauncherAppState app,
+                    @NonNull final LauncherModel model, @NonNull final BgDataModel dataModel,
+                    @NonNull final AllAppsList allAppsList, @NonNull final Executor uiExecutor) {
                 task.init(app, model, dataModel, allAppsList, mockExecutor);
             }
 
@@ -359,6 +363,12 @@ public class LauncherModelHelper {
         sandboxContext.getContentResolver().insert(contentUri, values);
     }
 
+    public void deleteItem(int itemId, @NonNull final String tableName) {
+        final Uri uri = Uri.parse("content://"
+                + LauncherProvider.AUTHORITY + "/" + tableName + "/" + itemId);
+        sandboxContext.getContentResolver().delete(uri, null, null);
+    }
+
     public int[][][] createGrid(int[][][] typeArray) {
         return createGrid(typeArray, 1);
     }
@@ -497,11 +507,11 @@ public class LauncherModelHelper {
 
         SanboxModelContext() {
             super(ApplicationProvider.getApplicationContext(),
-                    UserCache.INSTANCE, InstallSessionHelper.INSTANCE,
+                    UserCache.INSTANCE, InstallSessionHelper.INSTANCE, LauncherPrefs.INSTANCE,
                     LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE,
                     DisplayController.INSTANCE, CustomWidgetManager.INSTANCE,
-                    SettingsCache.INSTANCE, PluginManagerWrapper.INSTANCE,
-                    ItemInstallQueue.INSTANCE);
+                    SettingsCache.INSTANCE, PluginManagerWrapper.INSTANCE, LockedUserState.INSTANCE,
+                    ItemInstallQueue.INSTANCE, WindowManagerProxy.INSTANCE);
             mPm = spy(getBaseContext().getPackageManager());
             mDbDir = new File(getCacheDir(), UUID.randomUUID().toString());
         }

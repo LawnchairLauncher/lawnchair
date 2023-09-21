@@ -11,9 +11,9 @@ import kotlin.coroutines.resume
 
 suspend fun Launcher.animateToAllApps() {
     suspendCancellableCoroutine { cont ->
-        val duration = LauncherState.ALL_APPS.getTransitionDuration(this).toLong()
+        val duration = LauncherState.ALL_APPS.getTransitionDuration(this, true).toLong()
         val config = StateAnimationConfig()
-        AllAppsSwipeController.applyNormalToAllAppsAnimConfig(config)
+        AllAppsSwipeController.applyNormalToAllAppsAnimConfig(this, config)
         config.duration = duration
 
         val animation = stateManager

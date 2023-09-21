@@ -35,7 +35,6 @@
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"ਆਪਣੀ ਹੋਮ ਸਕ੍ਰੀਨ ਦੀ ਮਨਪਸੰਦ ਕਤਾਰ \'ਤੇ ਐਪ ਸੁਝਾਅ ਹਾਸਲ ਕਰੋ"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਆਪਣੀਆਂ ਸਭ ਤੋਂ ਵੱਧ ਵਰਤੀਆਂ ਗਈਆਂ ਐਪਾਂ ਤੱਕ ਆਸਾਨੀ ਨਾਲ ਪਹੁੰਚ ਕਰੋ। ਸੁਝਾਅ ਤੁਹਾਡੇ ਨਿਯਮਬੱਧ ਕੰਮਾਂ ਦੇ ਆਧਾਰ \'ਤੇ ਬਦਲਣਗੇ। ਹੇਠਲੀ ਕਤਾਰ ਵਾਲੀਆਂ ਐਪਾਂ ਤੁਹਾਡੀ ਹੋਮ ਸਕ੍ਰੀਨ ਵੱਲ ਉੱਪਰ ਆ ਜਾਣਗੀਆਂ।"</string>
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਆਪਣੀਆਂ ਸਭ ਤੋਂ ਵੱਧ ਵਰਤੀਆਂ ਗਈਆਂ ਐਪਾਂ ਤੱਕ ਆਸਾਨੀ ਨਾਲ ਪਹੁੰਚ ਕਰੋ। ਸੁਝਾਅ ਤੁਹਾਡੇ ਨਿਯਮਬੱਧ ਕੰਮਾਂ ਦੇ ਆਧਾਰ \'ਤੇ ਬਦਲਣਗੇ। ਮਨਪਸੰਦ ਕਤਾਰ ਵਿਚਲੀਆਂ ਐਪਾਂ ਤੁਹਾਡੀ ਹੋਮ ਸਕ੍ਰੀਨ ਉੱਪਰ ਆ ਜਾਣਗੀਆਂ।"</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਆਪਣੀਆਂ ਸਭ ਤੋਂ ਵੱਧ ਵਰਤੀਆਂ ਗਈਆਂ ਐਪਾਂ ਤੱਕ ਆਸਾਨੀ ਨਾਲ ਪਹੁੰਚ ਕਰੋ। ਸੁਝਾਅ ਤੁਹਾਡੇ ਨਿਯਮਬੱਧ ਕੰਮਾਂ ਦੇ ਆਧਾਰ \'ਤੇ ਬਦਲਣਗੇ। ਹੇਠਲੀ ਕਤਾਰ ਵਾਲੀਆਂ ਐਪਾਂ ਇੱਕ ਨਵੇਂ ਫੋਲਡਰ ਵਿੱਚ ਚਲੀਆਂ ਜਾਣਗੀਆਂ।"</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"ਐਪ ਸੁਝਾਅ ਪ੍ਰਾਪਤ ਕਰੋ"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"ਨਹੀਂ ਧੰਨਵਾਦ"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"ਸੈਟਿੰਗਾਂ"</string>
@@ -45,53 +44,83 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"ਐਪ ਸੁਝਾਵਾਂ ਨੂੰ ਚਾਲੂ ਕੀਤਾ ਗਿਆ"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"ਐਪ ਸੁਝਾਵਾਂ ਨੂੰ ਬੰਦ ਕੀਤਾ ਗਿਆ"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"ਪੂਰਵ ਅਨੁਮਾਨਿਤ ਐਪ: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਦੂਰ-ਖੱਬੇ ਕਿਨਾਰੇ ਤੋਂ ਸਵਾਈਪ ਕਰਦੇ ਹੋ।"</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਖੱਬੇ ਕਿਨਾਰੇ ਤੋਂ ਸਕ੍ਰੀਨ ਦੇ ਵਿਚਕਾਰ ਤੱਕ ਸਵਾਈਪ ਕਰਦੇ ਹੋ ਅਤੇ ਛੱਡ ਦਿੰਦੇ ਹੋ।"</string>
-    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"ਹੋ ਗਿਆ! ਹੁਣ ਸੱਜੇ ਕਿਨਾਰੇ ਤੋਂ ਸਵਾਈਪ ਕਰਕੇ ਦੇੇਖੋ।"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਦੂਰ-ਸੱਜੇ ਕਿਨਾਰੇ ਤੋਂ ਸਵਾਈਪ ਕਰਦੇ ਹੋ।"</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸੱਜੇ ਕਿਨਾਰੇ ਤੋਂ ਸਕ੍ਰੀਨ ਦੇ ਵਿਚਕਾਰ ਤੱਕ ਸਵਾਈਪ ਕਰਦੇ ਹੋ ਅਤੇ ਛੱਡ ਦਿੰਦੇ ਹੋ।"</string>
-    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"ਤੁਸੀਂ \'ਵਾਪਸ ਜਾਓ\' ਦਾ ਇਸ਼ਾਰਾ ਪੂਰਾ ਕੀਤਾ। ਅੱਗੇ, ਜਾਣੋ ਕਿ ਹੋਮ \'ਤੇ ਕਿਵੇਂ ਜਾਣਾ ਹੈ।"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸੱਜੇ ਜਾਂ ਖੱਬੇ ਪਾਸੇ ਦੇ ਬਿਲਕੁਲ ਕਿਨਾਰੇ ਤੋਂ ਸਵਾਈਪ ਕਰਦੇ ਹੋ।"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸੱਜੇ ਜਾਂ ਖੱਬੇ ਕਿਨਾਰੇ ਤੋਂ ਸਕ੍ਰੀਨ ਦੇ ਵਿਚਕਾਰ ਤੱਕ ਸਵਾਈਪ ਕਰਦੇ ਹੋ ਅਤੇ ਛੱਡ ਦਿੰਦੇ ਹੋ।"</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"ਤੁਸੀਂ ਪਿੱਛੇ ਜਾਣ ਲਈ ਸੱਜੇ ਪਾਸੇ ਤੋਂ ਸਵਾਈਪ ਕਰਨ ਦਾ ਤਰੀਕਾ ਜਾਣਿਆ। ਅੱਗੇ, ਐਪਾਂ ਵਿਚਾਲੇ ਸਵਿੱਚ ਕਰਨ ਦਾ ਤਰੀਕਾ ਜਾਣੋ।"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"ਤੁਸੀਂ \'ਵਾਪਸ ਜਾਓ\' ਦਾ ਇਸ਼ਾਰਾ ਪੂਰਾ ਕੀਤਾ।"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਲੇ ਹਿੱਸੇ ਦੇ ਬਹੁਤ ਨੇੜੇ ਸਵਾਈਪ ਨਾ ਕਰੋ।"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ਪਿੱਛੇ ਜਾਣ ਦੇ ਸੰਕੇਤ ਦੀ ਸੰਵੇਦਨਸ਼ੀਲਤਾ ਬਦਲਣ ਲਈ, ਸੈਟਿੰਗਾਂ \'ਤੇ ਜਾਓ"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"ਪਿੱਛੇ ਜਾਣ ਲਈ ਸਵਾਈਪ ਕਰੋ"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"ਪਿਛਲੀ ਸਕ੍ਰੀਨ \'ਤੇ ਵਾਪਸ ਜਾਣ ਲਈ, ਖੱਬੇ ਜਾਂ ਸੱਜੇ ਕਿਨਾਰੇ ਤੋਂ ਸਕ੍ਰੀਨ ਦੇ ਵਿਚਕਾਰ ਤੱਕ ਸਵਾਈਪ ਕਰੋ।"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਲੇ ਕਿਨਾਰੇ ਤੋਂ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰਦੇ ਹੋ।"</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"ਪਿਛਲੀ ਸਕ੍ਰੀਨ \'ਤੇ ਵਾਪਸ ਜਾਣ ਲਈ, ਖੱਬੇ ਜਾਂ ਸੱਜੇ ਕਿਨਾਰੇ ਤੋਂ ਸਕ੍ਰੀਨ ਦੇ ਵਿਚਕਾਰ ਤੱਕ 2 ਉਂਗਲਾਂ ਨਾਲ ਸਵਾਈਪ ਕਰੋ।"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"ਵਾਪਸ ਜਾਓ"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਲੇ ਕਿਨਾਰੇ ਤੋਂ ਉੱਤੇ ਵੱਲ ਸਵਾਈਪ ਕਰਦੇ ਹੋ।"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"ਪੱਕਾ ਕਰੋ ਕਿ ਸਕ੍ਰੀਨ ਨੂੰ ਛੱਡਣ ਤੋਂ ਪਹਿਲਾਂ ਰੁਕੋ ਨਾ।"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਿੱਧੇ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰਦੇ ਹੋ।"</string>
-    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"ਤੁਸੀਂ ਹੋਮ \'ਤੇ ਜਾਓ ਦਾ ਇਸ਼ਾਰਾ ਪੂਰਾ ਕੀਤਾ। ਅੱਗੇ, ਜਾਣੋ ਕਿ ਐਪਾਂ ਵਿਚਾਲੇ ਅਦਲਾ-ਬਦਲੀ ਕਿਵੇਂ ਕਰਨੀ ਹੈ।"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"ਤੁਸੀਂ \'ਹੋਮ \'ਤੇ ਜਾਓ\' ਦਾ ਇਸ਼ਾਰਾ ਪੂਰਾ ਕੀਤਾ। ਅੱਗੇ, ਜਾਣੋ ਕਿ ਪਿੱਛੇ ਕਿਵੇਂ ਜਾਣਾ ਹੈ।"</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"ਤੁਸੀਂ \'ਹੋਮ \'ਤੇ ਜਾਓ\' ਦਾ ਇਸ਼ਾਰਾ ਪੂਰਾ ਕੀਤਾ।"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"ਹੋਮ \'ਤੇ ਜਾਣ ਲਈ ਸਵਾਈਪ ਕਰੋ"</string>
-    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"ਆਪਣੀ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਾਂ ਤੋਂ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰੋ। ਇਹ ਸੰਕੇਤ ਹਮੇਸ਼ਾਂ ਤੁਹਾਨੂੰ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਲੈ ਜਾਂਦਾ ਹੈ।"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਲੇ ਕਿਨਾਰੇ ਤੋਂ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰਦੇ ਹੋ।"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"ਆਪਣੀ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਾਂ ਤੋਂ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰੋ। ਇਹ ਇਸ਼ਾਰਾ ਹਮੇਸ਼ਾਂ ਤੁਹਾਨੂੰ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਲੈ ਜਾਂਦਾ ਹੈ।"</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਾਂ ਤੋਂ 2 ਉਂਗਲਾਂ ਨਾਲ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰੋ। ਇਹ ਇਸ਼ਾਰਾ ਹਮੇਸ਼ਾਂ ਤੁਹਾਨੂੰ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਲੈ ਜਾਂਦਾ ਹੈ।"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਜਾਓ"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"ਕਿਸੇ ਵੀ ਸਮੇਂ ਆਪਣੀ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਜਾਣ ਲਈ, ਆਪਣੀ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਾਂ ਤੋਂ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰੋ"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਲੇ ਕਿਨਾਰੇ ਤੋਂ ਉੱਤੇ ਵੱਲ ਸਵਾਈਪ ਕਰਦੇ ਹੋ।"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"ਛੱਡਣ ਤੋਂ ਪਹਿਲਾਂ ਵਿੰਡੋ ਨੂੰ ਕੁਝ ਸਮੇਂ ਲਈ ਦਬਾ ਕੇ ਰੱਖੋ।"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"ਇਹ ਪੱਕਾ ਕਰੋ ਕਿ ਤੁਸੀਂ ਸਿੱਧੇ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰਦੇ ਹੋ, ਫਿਰ ਰੋਕੋ।"</string>
-    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"ਤੁਸੀਂ ਐਪਾਂ ਵਿਚਾਲੇ ਅਦਲਾ-ਬਦਲੀ ਦਾ ਇਸ਼ਾਰਾ ਪੂਰਾ ਕੀਤਾ। ਤੁਸੀਂ ਆਪਣੇ ਫ਼ੋਨ ਦੀ ਵਰਤੋਂ ਕਰਨ ਲਈ ਤਿਆਰ ਹੋ!"</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"ਤੁਸੀਂ ਇਸ਼ਾਰੇ ਵਰਤਣ ਬਾਰੇ ਜਾਣਿਆ। ਇਸ਼ਾਰੇ ਬੰਦ ਕਰਨ ਲਈ, ਸੈਟਿੰਗਾਂ \'ਤੇ ਜਾਓ।"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"ਤੁਸੀਂ \'ਐਪਾਂ ਵਿਚਾਲੇ ਅਦਲਾ-ਬਦਲੀ ਕਰੋ\' ਦਾ ਇਸ਼ਾਰਾ ਪੂਰਾ ਕੀਤਾ।"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ਐਪਾਂ ਵਿਚਾਲੇ ਅਦਲਾ-ਬਦਲੀ ਕਰਨ ਲਈ ਸਵਾਈਪ ਕਰੋ"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"ਆਪਣੀ ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਾਂ ਤੋਂ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰਕੇ ਦਬਾਈ ਰੱਖੋ, ਅਤੇ ਫਿਰ ਛੱਡੋ।"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ਐਪਾਂ ਵਿਚਾਲੇ ਸਵਿੱਚ ਕਰਨ ਲਈ, ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਾਂ ਤੋਂ ਉੱਤੇ ਸਵਾਈਪ ਕਰ ਕੇ ਦਬਾਈ ਰੱਖੋ ਅਤੇ ਫਿਰ ਛੱਡੋ।"</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"ਐਪਾਂ ਵਿਚਾਲੇ ਸਵਿੱਚ ਕਰਨ ਲਈ, ਸਕ੍ਰੀਨ ਦੇ ਹੇਠਾਂ ਤੋਂ 2 ਉਂਗਲਾਂ ਨਾਲ ਉੱਤੇ ਸਵਾਈਪ ਕਰ ਕੇ ਦਬਾਈ ਰੱਖੋ ਅਤੇ ਫਿਰ ਛੱਡੋ।"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"ਐਪਾਂ ਵਿਚਕਾਰ ਸਵਿੱਚ ਕਰੋ"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"ਪੂਰੀ ਤਰ੍ਹਾਂ ਤਿਆਰ"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"ਅੱਗੇ"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"ਹੋ ਗਿਆ"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"ਹੋ ਗਿਆ"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ਸੈਟਿੰਗਾਂ"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"ਵਧੀਆ!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ਟਿਊਟੋਰੀਅਲ <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <string name="allset_title" msgid="5021126669778966707">"ਪੂਰੀ ਤਰ੍ਹਾਂ ਤਿਆਰ!"</string>
+    <string name="allset_hint" msgid="459504134589971527">"ਹੋਮ \'ਤੇ ਜਾਣ ਲਈ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰੋ"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"ਆਪਣੀ ਹੋਮ ਸਕ੍ਰੀਨ \'ਤੇ ਜਾਣ ਲਈ ਹੋਮ ਬਟਨ \'ਤੇ ਟੈਪ ਕਰੋ"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"ਤੁਸੀਂ ਆਪਣਾ <xliff:g id="DEVICE">%1$s</xliff:g> ਵਰਤਣ ਲਈ ਤਿਆਰ ਹੋ"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"ਡੀਵਾਈਸ"</string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"ਸਿਸਟਮ ਨੈਵੀਗੇਸ਼ਨ ਸੈਟਿੰਗਾਂ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"ਸਾਂਝਾ ਕਰੋ"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"ਸਕ੍ਰੀਨਸ਼ਾਟ"</string>
     <string name="action_split" msgid="2098009717623550676">"ਸਪਲਿਟ"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"ਸਪਲਿਟ ਸਕ੍ਰੀਨ ਵਰਤਣ ਲਈ ਕਿਸੇ ਹੋਰ ਐਪ \'ਤੇ ਟੈਪ ਕਰੋ"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"ਐਪ ਸਪਲਿਟ-ਸਕ੍ਰੀਨ ਦਾ ਸਮਰਥਨ ਨਹੀਂ ਕਰਦੀ।"</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"ਸਪਲਿਟ ਸਕ੍ਰੀਨ ਨੂੰ ਵਰਤਣ ਲਈ ਕਿਸੇ ਹੋਰ ਐਪ \'ਤੇ ਟੈਪ ਕਰੋ"</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"ਸਪਲਿਟ ਸਕ੍ਰੀਨ ਵਰਤਣ ਲਈ ਕਿਸੇ ਹੋਰ ਐਪ ਨੂੰ ਚੁਣੋ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ਐਪ ਜਾਂ ਤੁਹਾਡੀ ਸੰਸਥਾ ਵੱਲੋਂ ਇਸ ਕਾਰਵਾਈ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ ਹੈ"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"ਕੀ ਨੈਵੀਗੇਸ਼ਨ ਟਿਊਟੋਰੀਅਲ ਨੂੰ ਛੱਡਣਾ ਹੈ?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"ਤੁਸੀਂ ਇਸਨੂੰ ਬਾਅਦ ਵਿੱਚ <xliff:g id="NAME">%1$s</xliff:g> ਐਪ ਵਿੱਚ ਲੱਭ ਸਕਦੇ ਹੋ"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ਰੱਦ ਕਰੋ"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ਛੱਡੋ"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ਸਕ੍ਰੀਨ ਘੁਮਾਓ"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"ਟਾਸਕਬਾਰ ਸਿੱਖਿਆ"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ਟਾਸਕਵਾਰ ਸਿੱਖਿਆ ਪੈਨਲ ਦਿਖਾਇਆ ਗਿਆ"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ਟਾਸਕਵਾਰ ਸਿੱਖਿਆ ਪੈਨਲ ਬੰਦ ਕੀਤਾ ਗਿਆ"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ਐਪਾਂ ਸਵਿੱਚ ਕਰਨ ਲਈ ਟਾਸਕਬਾਰ ਵਰਤੋ"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"ਇੱਕ ਵਾਰ ਵਿੱਚ ਦੋ ਐਪਾਂ ਵਰਤਣ ਲਈ ਉਨ੍ਹਾਂ ਨੂੰ ਸਾਈਡ ਵੱਲ ਘਸੀਟੋ"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ਟਾਸਕਬਾਰ ਨੂੰ ਲੁਕਾਉਣ ਲਈ ਸਪਰਸ਼ ਕਰਕੇ ਰੱਖੋ"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ਇੱਕੋ ਸਮੇਂ \'ਤੇ 2 ਐਪਾਂ ਵਰਤਣ ਲਈ, ਐਪ ਨੂੰ ਪਾਸੇ ਵੱਲ ਘਸੀਟੋ"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ਟਾਸਕਬਾਰ ਦਿਖਾਉਣ ਲਈ ਥੋੜ੍ਹਾ ਉੱਪਰ ਵੱਲ ਸਵਾਈਪ ਕਰੋ"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ਤੁਹਾਡੇ ਨਿਯਮਬੱਧ ਕੰਮ ਦੇ ਆਧਾਰ \'ਤੇ ਐਪ ਸੁਝਾਅ ਪ੍ਰਾਪਤ ਕਰੋ"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"ਟਾਸਕਬਾਰ ਨੂੰ ਸਵੈ-ਲੁਕਾਉਣ ਲਈ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਇਸ਼ਾਰਾ ਨੈਵੀਗੇਸ਼ਨ ਨੂੰ ਚਾਲੂ ਕਰੋ"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"ਟਾਸਕਬਾਰ ਦਾ ਹੋਰ ਲਾਹਾ ਲਓ"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"ਅੱਗੇ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"ਪਿੱਛੇ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ਬੰਦ ਕਰੋ"</string>
-    <string name="taskbar_edu_done" msgid="6880178093977704569">"ਹੋ ਗਿਆ"</string>
+    <string name="taskbar_edu_done" msgid="6880178093977704569">"ਸਮਝ ਲਿਆ"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"ਘਰ"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"ਪਹੁੰਚਯੋਗਤਾ"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"ਪਿੱਛੇ"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME ਸਵਿੱਚਰ"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"ਹਾਲੀਆ"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"ਸੂਚਨਾਵਾਂ"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"ਤਤਕਾਲ ਸੈਟਿੰਗਾਂ"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"ਟਾਸਕਬਾਰ"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"ਟਾਸਕਬਾਰ ਨੂੰ ਦਿਖਾਇਆ ਗਿਆ"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"ਟਾਸਕਬਾਰ ਨੂੰ ਲੁਕਾਇਆ ਗਿਆ"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"ਨੈਵੀਗੇਸ਼ਨ ਵਾਲੀ ਪੱਟੀ"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ਸਿਖਰਲੇ/ਖੱਬੇ ਪਾਸੇ ਲੈ ਕੇ ਜਾਓ"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ਹੇਠਾਂ/ਸੱਜੇ ਪਾਸੇ ਲੈ ਕੇ ਜਾਓ"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{# ਹੋਰ ਐਪ ਦਿਖਾਓ।}one{# ਹੋਰ ਐਪ ਦਿਖਾਓ।}other{# ਹੋਰ ਐਪਾਂ ਦਿਖਾਓ।}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> ਅਤੇ <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

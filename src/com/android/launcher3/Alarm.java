@@ -30,6 +30,7 @@ public class Alarm implements Runnable{
     private Handler mHandler;
     private OnAlarmListener mAlarmListener;
     private boolean mAlarmPending = false;
+    private long mLastSetTimeout;
 
     public Alarm() {
         mHandler = new Handler();
@@ -46,6 +47,7 @@ public class Alarm implements Runnable{
         mAlarmPending = true;
         long oldTriggerTime = mAlarmTriggerTime;
         mAlarmTriggerTime = currentTime + millisecondsInFuture;
+        mLastSetTimeout = millisecondsInFuture;
 
         // If the previous alarm was set for a longer duration, cancel it.
         if (mWaitingForCallback && oldTriggerTime > mAlarmTriggerTime) {
@@ -83,5 +85,10 @@ public class Alarm implements Runnable{
 
     public boolean alarmPending() {
         return mAlarmPending;
+    }
+
+    /** Returns the last value passed to {@link #setAlarm(long)} */
+    public long getLastSetTimeout() {
+        return mLastSetTimeout;
     }
 }

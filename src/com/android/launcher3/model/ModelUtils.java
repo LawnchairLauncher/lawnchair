@@ -15,23 +15,19 @@
  */
 package com.android.launcher3.model;
 
-import static com.android.launcher3.Utilities.isValidExtraType;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Process;
 import android.util.Log;
 
-import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 
@@ -53,7 +49,7 @@ public class ModelUtils {
      * specified screen.
      */
     public static <T extends ItemInfo> void filterCurrentWorkspaceItems(
-            IntSet currentScreenIds,
+            final IntSet currentScreenIds,
             ArrayList<T> allWorkspaceItems,
             ArrayList<T> currentScreenItems,
             ArrayList<T> otherScreenItems) {
@@ -89,42 +85,6 @@ public class ModelUtils {
                 }
             }
         }
-    }
-
-    /**
-     * Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to right)
-     */
-    public static void sortWorkspaceItemsSpatially(InvariantDeviceProfile profile,
-            ArrayList<ItemInfo> workspaceItems) {
-        final int screenCols = profile.numColumns;
-        final int screenCellCount = profile.numColumns * profile.numRows;
-        Collections.sort(workspaceItems, (lhs, rhs) -> {
-            if (lhs.container == rhs.container) {
-                // Within containers, order by their spatial position in that container
-                switch (lhs.container) {
-                    case LauncherSettings.Favorites.CONTAINER_DESKTOP: {
-                        int lr = (lhs.screenId * screenCellCount + lhs.cellY * screenCols
-                                + lhs.cellX);
-                        int rr = (rhs.screenId * screenCellCount + +rhs.cellY * screenCols
-                                + rhs.cellX);
-                        return Integer.compare(lr, rr);
-                    }
-                    case LauncherSettings.Favorites.CONTAINER_HOTSEAT: {
-                        // We currently use the screen id as the rank
-                        return Integer.compare(lhs.screenId, rhs.screenId);
-                    }
-                    default:
-                        if (FeatureFlags.IS_STUDIO_BUILD) {
-                            throw new RuntimeException(
-                                    "Unexpected container type when sorting workspace items.");
-                        }
-                        return 0;
-                }
-            } else {
-                // Between containers, order by hotseat, desktop
-                return Integer.compare(lhs.container, rhs.container);
-            }
-        });
     }
 
     /**
@@ -186,5 +146,13 @@ public class ModelUtils {
         info.contentDescription = info.title = Utilities.trim(label);
         info.intent = launchIntent;
         return info;
+    }
+
+    /**
+     * @return true if the extra is either null or is of type {@param type}
+     */
+    private static boolean isValidExtraType(Intent intent, String key, Class type) {
+        Object extra = intent.getParcelableExtra(key);
+        return extra == null || type.isInstance(extra);
     }
 }

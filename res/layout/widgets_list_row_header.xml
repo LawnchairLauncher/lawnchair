@@ -19,9 +19,12 @@
     android:id="@+id/widgets_list_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingVertical="@dimen/widget_list_header_view_vertical_padding"
     android:orientation="horizontal"
-    launcher:appIconSize="48dp">
+    android:importantForAccessibility="yes"
+    android:focusable="true"
+    launcher:appIconSize="48dp"
+    android:descendantFocusability="afterDescendants"
+    android:background="@drawable/bg_widgets_header" >
 
     <ImageView
         android:id="@+id/app_icon"
@@ -32,14 +35,11 @@
         tools:src="@drawable/ic_corp"/>
 
     <LinearLayout
-        android:id="@+id/app_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:focusable="true"
-        android:descendantFocusability="afterDescendants">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/app_title"
@@ -66,8 +66,11 @@
 
     <!-- This checkbox is not clickable. The outermost LinearLayout is responsible to handle all
          click event and update the checkbox state. -->
-    <CheckBox
+    <ImageView
+        android:duplicateParentState="true"
         android:id="@+id/toggle"
+        android:alpha=".6"
+        android:src="@drawable/widgets_tray_expand_button"
         android:layout_marginHorizontal="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -75,7 +78,6 @@
         android:layout_alignParentEnd="true"
         android:enabled="false"
         android:clickable="false"
-        android:importantForAccessibility="no"
-        android:button="@drawable/widgets_tray_expand_button"/>
+        android:importantForAccessibility="no" />
 
 </com.android.launcher3.widget.picker.WidgetsListHeader>

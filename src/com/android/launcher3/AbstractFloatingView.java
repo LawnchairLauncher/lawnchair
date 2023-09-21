@@ -46,7 +46,8 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Base class for a View which shows a floating UI on top of the launcher UI.
  */
-public abstract class AbstractFloatingView extends LinearLayout implements TouchController {
+public abstract class AbstractFloatingView extends LinearLayout implements TouchController,
+        OnBackPressedHandler {
 
     @IntDef(flag = true, value = {
             TYPE_COMPOSE_VIEW,
@@ -64,12 +65,18 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             TYPE_TASK_MENU,
             TYPE_OPTIONS_POPUP,
             TYPE_ICON_SURFACE,
+            TYPE_OPTIONS_POPUP_DIALOG,
             TYPE_PIN_WIDGET_FROM_EXTERNAL_POPUP,
             TYPE_WIDGETS_EDUCATION_DIALOG,
-            TYPE_TASKBAR_EDUCATION_DIALOG
+            TYPE_TASKBAR_EDUCATION_DIALOG,
+            TYPE_TASKBAR_ALL_APPS,
+            TYPE_ADD_TO_HOME_CONFIRMATION,
+            TYPE_TASKBAR_OVERLAY_PROXY
     })
     @Retention(RetentionPolicy.SOURCE)
-    public @interface FloatingViewType {}
+    public @interface FloatingViewType {
+    }
+
     public static final int TYPE_FOLDER = 1 << 0;
     public static final int TYPE_ACTION_POPUP = 1 << 1;
     public static final int TYPE_WIDGETS_BOTTOM_SHEET = 1 << 2;
@@ -86,10 +93,14 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_TASK_MENU = 1 << 11;
     public static final int TYPE_OPTIONS_POPUP = 1 << 12;
     public static final int TYPE_ICON_SURFACE = 1 << 13;
+    public static final int TYPE_OPTIONS_POPUP_DIALOG = 1 << 14;
 
-    public static final int TYPE_PIN_WIDGET_FROM_EXTERNAL_POPUP = 1 << 14;
-    public static final int TYPE_WIDGETS_EDUCATION_DIALOG = 1 << 15;
-    public static final int TYPE_TASKBAR_EDUCATION_DIALOG = 1 << 16;
+    public static final int TYPE_PIN_WIDGET_FROM_EXTERNAL_POPUP = 1 << 15;
+    public static final int TYPE_WIDGETS_EDUCATION_DIALOG = 1 << 16;
+    public static final int TYPE_TASKBAR_EDUCATION_DIALOG = 1 << 17;
+    public static final int TYPE_TASKBAR_ALL_APPS = 1 << 18;
+    public static final int TYPE_ADD_TO_HOME_CONFIRMATION = 1 << 19;
+    public static final int TYPE_TASKBAR_OVERLAY_PROXY = 1 << 20;
 
     // Custom compose popups
     public static final int TYPE_COMPOSE_VIEW = 1 << 20;
@@ -99,23 +110,22 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU
             | TYPE_OPTIONS_POPUP | TYPE_SNACKBAR | TYPE_LISTENER | TYPE_ALL_APPS_EDU
             | TYPE_ICON_SURFACE | TYPE_DRAG_DROP_POPUP | TYPE_PIN_WIDGET_FROM_EXTERNAL_POPUP
-            | TYPE_WIDGETS_EDUCATION_DIALOG | TYPE_TASKBAR_EDUCATION_DIALOG
-            | TYPE_COMPOSE_VIEW;
+            | TYPE_WIDGETS_EDUCATION_DIALOG | TYPE_TASKBAR_EDUCATION_DIALOG | TYPE_TASKBAR_ALL_APPS
+            | TYPE_OPTIONS_POPUP_DIALOG | TYPE_ADD_TO_HOME_CONFIRMATION
+            | TYPE_TASKBAR_OVERLAY_PROXY;
 
     // Type of popups which should be kept open during launcher rebind
     public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
-            | TYPE_ALL_APPS_EDU | TYPE_ICON_SURFACE | TYPE_WIDGETS_EDUCATION_DIALOG | TYPE_COMPOSE_VIEW
-            | TYPE_TASKBAR_EDUCATION_DIALOG;
-
-    // Usually we show the back button when a floating view is open. Instead, hide for these types.
-    public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE
-            | TYPE_SNACKBAR | TYPE_WIDGET_RESIZE_FRAME | TYPE_LISTENER;
+            | TYPE_ALL_APPS_EDU | TYPE_ICON_SURFACE | TYPE_WIDGETS_EDUCATION_DIALOG
+            | TYPE_TASKBAR_EDUCATION_DIALOG | TYPE_TASKBAR_ALL_APPS | TYPE_OPTIONS_POPUP_DIALOG
+            | TYPE_TASKBAR_OVERLAY_PROXY;
 
     public static final int TYPE_ACCESSIBLE = TYPE_ALL & ~TYPE_DISCOVERY_BOUNCE & ~TYPE_LISTENER
             & ~TYPE_ALL_APPS_EDU;
 
-    // These view all have particular operation associated with swipe down interaction.
+    // These view all have particular operation associated with swipe down
+    // interaction.
     public static final int TYPE_STATUS_BAR_SWIPE_DOWN_DISALLOW = TYPE_WIDGETS_BOTTOM_SHEET |
             TYPE_WIDGETS_FULL_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_ON_BOARD_POPUP |
             TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU | TYPE_DRAG_DROP_POPUP | TYPE_COMPOSE_VIEW;
@@ -131,7 +141,8 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     /**
-     * We need to handle touch events to prevent them from falling through to the workspace below.
+     * We need to handle touch events to prevent them from falling through to the
+     * workspace below.
      */
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -151,11 +162,15 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     protected abstract void handleClose(boolean animate);
 
     /**
-     * Creates a user-controlled animation to hint that the view will be closed if completed.
-     * @param distanceToMove The max distance that elements should move from their starting point.
+     * Creates a user-controlled animation to hint that the view will be closed if
+     * completed.
+     * 
+     * @param distanceToMove The max distance that elements should move from their
+     *                       starting point.
      */
     public void addHintCloseAnim(
-            float distanceToMove, Interpolator interpolator, PendingAnimation target) { }
+            float distanceToMove, Interpolator interpolator, PendingAnimation target) {
+    }
 
     public final boolean isOpen() {
         return mIsOpen;
@@ -163,10 +178,14 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     protected abstract boolean isOfType(@FloatingViewType int type);
 
-    /** @return Whether the back is consumed. If false, Launcher will handle the back as well. */
-    public boolean onBackPressed() {
-        close(true);
+    /** Return true if this view can consume back press. */
+    public boolean canHandleBack() {
         return true;
+    }
+
+    @Override
+    public void onBackInvoked() {
+        close(true);
     }
 
     @Override
@@ -208,7 +227,16 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     /**
-     * Returns a view matching FloatingViewType, and {@link #isOpen()} may be false (if animating
+     * Returns whether there is at least one view of the given type where
+     * {@link #isOpen()} == true.
+     */
+    public static boolean hasOpenView(ActivityContext activity, @FloatingViewType int type) {
+        return getOpenView(activity, type) != null;
+    }
+
+    /**
+     * Returns a view matching FloatingViewType, and {@link #isOpen()} may be false
+     * (if animating
      * closed).
      */
     public static <T extends AbstractFloatingView> T getAnyView(
@@ -219,8 +247,10 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     private static <T extends AbstractFloatingView> T getView(
             ActivityContext activity, @FloatingViewType int type, boolean mustBeOpen) {
         BaseDragLayer dragLayer = activity.getDragLayer();
-        if (dragLayer == null) return null;
-        // Iterate in reverse order. AbstractFloatingView is added later to the dragLayer,
+        if (dragLayer == null)
+            return null;
+        // Iterate in reverse order. AbstractFloatingView is added later to the
+        // dragLayer,
         // and will be one of the last views.
         for (int i = dragLayer.getChildCount() - 1; i >= 0; i--) {
             View child = dragLayer.getChildAt(i);
@@ -245,7 +275,8 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static void closeOpenViews(ActivityContext activity, boolean animate,
             @FloatingViewType int type) {
         BaseDragLayer dragLayer = activity.getDragLayer();
-        // Iterate in reverse order. AbstractFloatingView is added later to the dragLayer,
+        // Iterate in reverse order. AbstractFloatingView is added later to the
+        // dragLayer,
         // and will be one of the last views.
         for (int i = dragLayer.getChildCount() - 1; i >= 0; i--) {
             View child = dragLayer.getChildAt(i);
@@ -268,13 +299,13 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     public static void closeAllOpenViewsExcept(ActivityContext activity, boolean animate,
-                                               @FloatingViewType int type) {
+            @FloatingViewType int type) {
         closeOpenViews(activity, animate, TYPE_ALL & ~type);
         activity.finishAutoCancelActionMode();
     }
 
     public static void closeAllOpenViewsExcept(ActivityContext activity,
-                                               @FloatingViewType int type) {
+            @FloatingViewType int type) {
         closeAllOpenViewsExcept(activity, true, type);
     }
 

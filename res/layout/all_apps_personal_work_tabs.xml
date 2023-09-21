@@ -16,19 +16,23 @@
 
 <com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tabs"
     android:layout_width="match_parent"
     android:layout_height="@dimen/all_apps_header_pill_height"
     android:layout_gravity="center_horizontal"
+    android:paddingTop="@dimen/all_apps_tabs_vertical_padding"
+    android:paddingBottom="@dimen/all_apps_tabs_vertical_padding"
+    android:layout_marginTop="@dimen/all_apps_tabs_margin_top"
     android:orientation="horizontal"
-    style="@style/TextHeadline">
+    style="@style/TextHeadline"
+    launcher:alignOnIcon="true">
 
     <Button
         android:id="@+id/tab_personal"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/all_apps_tabs_button_horizontal_padding"
-        android:layout_marginVertical="@dimen/all_apps_tabs_vertical_padding"
         android:layout_weight="1"
         android:background="@drawable/all_apps_tabs_background"
         android:text="@string/all_apps_personal_tab"
@@ -41,7 +45,6 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_marginStart="@dimen/all_apps_tabs_button_horizontal_padding"
-        android:layout_marginVertical="@dimen/all_apps_tabs_vertical_padding"
         android:layout_weight="1"
         android:background="@drawable/all_apps_tabs_background"
         android:text="@string/all_apps_work_tab"

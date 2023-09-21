@@ -23,8 +23,8 @@ import android.content.Context;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.views.ActivityContext;
 
 import app.lawnchair.LawnchairLauncher;
 import app.lawnchair.util.LawnchairUtilsKt;
@@ -34,28 +34,23 @@ import app.lawnchair.util.LawnchairUtilsKt;
  */
 public class AllAppsState extends LauncherState {
 
-    private static final int STATE_FLAGS = FLAG_WORKSPACE_INACCESSIBLE | FLAG_CLOSE_POPUPS;
-
-    private static final PageAlphaProvider PAGE_ALPHA_PROVIDER = new PageAlphaProvider(DEACCEL_2) {
-        @Override
-        public float getPageAlpha(int pageIndex) {
-            return 0;
-        }
-    };
+    private static final int STATE_FLAGS = FLAG_WORKSPACE_INACCESSIBLE | FLAG_CLOSE_POPUPS | FLAG_HOTSEAT_INACCESSIBLE;
 
     public AllAppsState(int id) {
         super(id, LAUNCHER_STATE_ALLAPPS, STATE_FLAGS);
     }
 
     @Override
-    public int getTransitionDuration(Context context) {
-        return 320;
+    public <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext> int getTransitionDuration(
+            DEVICE_PROFILE_CONTEXT context, boolean isToState) {
+        return isToState
+                ? context.getDeviceProfile().allAppsOpenDuration
+                : context.getDeviceProfile().allAppsCloseDuration;
     }
 
     @Override
     public String getDescription(Launcher launcher) {
-        AllAppsContainerView appsView = launcher.getAppsView();
-        return appsView.getDescription();
+        return launcher.getAppsView().getDescription();
     }
 
     @Override
@@ -65,32 +60,55 @@ public class AllAppsState extends LauncherState {
 
     @Override
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
-        ScaleAndTranslation scaleAndTranslation = LauncherState.OVERVIEW
-                .getWorkspaceScaleAndTranslation(launcher);
-        scaleAndTranslation.scale = 1;
-        return scaleAndTranslation;
+        return new ScaleAndTranslation(launcher.getDeviceProfile().workspaceContentScale, NO_OFFSET,
+                NO_OFFSET);
     }
 
     @Override
-    public boolean isTaskbarStashed(Launcher launcher) {
-        return true;
+    public ScaleAndTranslation getHotseatScaleAndTranslation(Launcher launcher) {
+        if (launcher.getDeviceProfile().isTablet) {
+            return getWorkspaceScaleAndTranslation(launcher);
+        } else {
+            ScaleAndTranslation overviewScaleAndTranslation = LauncherState.OVERVIEW
+                    .getWorkspaceScaleAndTranslation(launcher);
+            return new ScaleAndTranslation(
+                    launcher.getDeviceProfile().workspaceContentScale,
+                    overviewScaleAndTranslation.translationX,
+                    overviewScaleAndTranslation.translationY);
+        }
     }
 
     @Override
-    protected float getDepthUnchecked(Context context) {
-        // The scrim fades in at approximately 50% of the swipe gesture.
-        // This means that the depth should be greater than 1, in order to fully zoom out.
-        return 2f;
+    protected <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext> float getDepthUnchecked(
+            DEVICE_PROFILE_CONTEXT context) {
+        if (context.getDeviceProfile().isTablet) {
+            return context.getDeviceProfile().bottomSheetDepth;
+        } else {
+            // The scrim fades in at approximately 50% of the swipe gesture.
+            // This means that the depth should be greater than 1, in order to fully zoom
+            // out.
+            return 2f;
+        }
     }
 
     @Override
     public PageAlphaProvider getWorkspacePageAlphaProvider(Launcher launcher) {
-        return PAGE_ALPHA_PROVIDER;
+        PageAlphaProvider superPageAlphaProvider = super.getWorkspacePageAlphaProvider(launcher);
+        return new PageAlphaProvider(DEACCEL_2) {
+            @Override
+            public float getPageAlpha(int pageIndex) {
+                return launcher.getDeviceProfile().isTablet
+                        ? superPageAlphaProvider.getPageAlpha(pageIndex)
+                        : 0;
+            }
+        };
     }
 
     @Override
     public int getVisibleElements(Launcher launcher) {
-        return ALL_APPS_CONTENT;
+        // Don't add HOTSEAT_ICONS for non-tablets in ALL_APPS state.
+        return launcher.getDeviceProfile().isTablet ? ALL_APPS_CONTENT | HOTSEAT_ICONS
+                : ALL_APPS_CONTENT;
     }
 
     @Override

@@ -36,6 +36,7 @@
     <uses-permission android:name="android.permission.MANAGE_ACCESSIBILITY"/>
     <uses-permission android:name="android.permission.MONITOR_INPUT"/>
     <uses-permission android:name="android.permission.ALLOW_SLIPPERY_TOUCHES"/>
+    <uses-permission android:name="android.permission.ACCESS_SHORTCUTS"/>
 
     <uses-permission android:name="android.permission.SYSTEM_APPLICATION_OVERLAY" />
 
@@ -101,6 +102,7 @@
         <activity android:name="com.android.quickstep.interaction.GestureSandboxActivity"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
+            android:theme="@style/GestureTutorialActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.android.quickstep.action.GESTURE_SANDBOX"/>

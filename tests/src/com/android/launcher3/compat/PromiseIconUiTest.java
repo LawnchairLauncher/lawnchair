@@ -27,12 +27,14 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator;
+import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -43,6 +45,8 @@ import java.util.UUID;
 public class PromiseIconUiTest extends AbstractLauncherUiTest {
 
     private int mSessionId = -1;
+    // TODO(b/202985412): Revert to default timeout when PackageManager bug is fixed.
+    private static final long PROMISE_ICON_TIMEOUT = TimeUnit.SECONDS.toMillis(60);
 
     @Override
     public void setUp() throws Exception {
@@ -73,6 +77,7 @@ public class PromiseIconUiTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @ScreenRecord // b/202985412
     public void testPromiseIcon_addedFromEligibleSession() throws Throwable {
         final String appLabel = "Test Promise App " + UUID.randomUUID().toString();
         final ItemOperator findPromiseApp = (info, view) ->
@@ -83,7 +88,8 @@ public class PromiseIconUiTest extends AbstractLauncherUiTest {
 
         // Verify promise icon is added
         waitForLauncherCondition("Test Promise App not found on workspace", launcher ->
-                launcher.getWorkspace().getFirstMatch(findPromiseApp) != null);
+                launcher.getWorkspace().getFirstMatch(findPromiseApp) != null,
+                PROMISE_ICON_TIMEOUT);
 
         // Remove session
         mTargetContext.getPackageManager().getPackageInstaller().abandonSession(mSessionId);
@@ -91,10 +97,12 @@ public class PromiseIconUiTest extends AbstractLauncherUiTest {
 
         // Verify promise icon is removed
         waitForLauncherCondition("Test Promise App not removed from workspace", launcher ->
-                launcher.getWorkspace().getFirstMatch(findPromiseApp) == null);
+                launcher.getWorkspace().getFirstMatch(findPromiseApp) == null,
+                PROMISE_ICON_TIMEOUT);
     }
 
     @Test
+    @ScreenRecord // b/202985412
     public void testPromiseIcon_notAddedFromIneligibleSession() throws Throwable {
         final String appLabel = "Test Promise App " + UUID.randomUUID().toString();
         final ItemOperator findPromiseApp = (info, view) ->
@@ -108,6 +116,7 @@ public class PromiseIconUiTest extends AbstractLauncherUiTest {
 
         // Verify promise icon is not added
         waitForLauncherCondition("Test Promise App not found on workspace", launcher ->
-                launcher.getWorkspace().getFirstMatch(findPromiseApp) == null);
+                launcher.getWorkspace().getFirstMatch(findPromiseApp) == null,
+                PROMISE_ICON_TIMEOUT);
     }
 }

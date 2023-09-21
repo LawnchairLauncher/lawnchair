@@ -9,11 +9,11 @@ import app.lawnchair.theme.color.ColorTokens
 import app.lawnchair.util.EditTextExtensions.setCursorColor
 import app.lawnchair.util.EditTextExtensions.setTextSelectHandleColor
 import com.android.launcher3.ExtendedEditText
-import com.android.launcher3.allapps.AllAppsContainerView
+import com.android.launcher3.allapps.ActivityAllAppsContainerView
 
 class FallbackSearchInputView(context: Context, attrs: AttributeSet?) : ExtendedEditText(context, attrs) {
 
-    private var appsView: AllAppsContainerView? = null
+    private var appsView: ActivityAllAppsContainerView<*>? = null
 
     init {
         val accentColor = ColorTokens.ColorAccent.resolveColor(context)
@@ -22,7 +22,7 @@ class FallbackSearchInputView(context: Context, attrs: AttributeSet?) : Extended
         highlightColor = ColorUtils.setAlphaComponent(accentColor, 82)
     }
 
-    fun initialize(appsView: AllAppsContainerView) {
+    fun initialize(appsView: ActivityAllAppsContainerView<*>?) {
         this.appsView = appsView
     }
 

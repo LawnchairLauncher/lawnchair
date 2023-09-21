@@ -17,7 +17,7 @@ import com.android.launcher3.LauncherSettings.Favorites.*
 import com.android.launcher3.R
 import com.android.launcher3.graphics.LauncherPreviewRenderer
 import com.android.launcher3.model.BgDataModel
-import com.android.launcher3.model.GridSizeMigrationTaskV2
+import com.android.launcher3.model.GridSizeMigrationUtil
 import com.android.launcher3.model.LoaderTask
 import com.android.launcher3.model.ModelDelegate
 import com.android.launcher3.util.ComponentKey
@@ -118,11 +118,11 @@ class LauncherPreviewView(
 
     @WorkerThread
     private fun doGridMigrationIfNecessary(): Boolean {
-        val needsToMigrate = GridSizeMigrationTaskV2.needsToMigrate(context, idp)
+        val needsToMigrate = GridSizeMigrationUtil.needsToMigrate(context, idp)
         if (!needsToMigrate) {
             return false
         }
-        return GridSizeMigrationTaskV2.migrateGridIfNeeded(context, idp)
+        return GridSizeMigrationUtil.migrateGridIfNeeded(context, idp)
     }
 
     @UiThread
@@ -135,7 +135,7 @@ class LauncherPreviewView(
             return
         }
 
-        val renderer = LauncherPreviewRenderer(inflationContext, idp, null, dummyInsets)
+        val renderer = LauncherPreviewRenderer(inflationContext, idp, null, null)
         if (dummySmartspace) {
             renderer.setWorkspaceSearchContainer(R.layout.smartspace_widget_placeholder)
         }

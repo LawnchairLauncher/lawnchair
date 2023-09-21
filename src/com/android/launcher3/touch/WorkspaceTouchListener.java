@@ -22,7 +22,10 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
+
+import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_CLOSE_TAP_OUTSIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORKSPACE_LONGPRESS;
 
 import android.app.admin.DevicePolicyManager;
@@ -42,22 +45,27 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.testing.TestLogging;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.launcher3.util.TouchUtil;
 
 import app.lawnchair.LawnchairLauncher;
 
-
 /**
- * Helper class to handle touch on empty space in workspace and show options popup on long press
+ * Helper class to handle touch on empty space in workspace and show options
+ * popup on long press
  */
 public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListener
         implements OnTouchListener {
 
     /**
-     * STATE_PENDING_PARENT_INFORM is the state between longPress performed & the next motionEvent.
-     * This next event is used to send an ACTION_CANCEL to Workspace, to that it clears any
-     * temporary scroll state. After that, the state is set to COMPLETED, and we just eat up all
+     * STATE_PENDING_PARENT_INFORM is the state between longPress performed & the
+     * next motionEvent.
+     * This next event is used to send an ACTION_CANCEL to Workspace, to that it
+     * clears any
+     * temporary scroll state. After that, the state is set to COMPLETED, and we
+     * just eat up all
      * subsequent motion events.
      */
     private static final int STATE_CANCELLED = 0;
@@ -67,7 +75,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     private final Rect mTempRect = new Rect();
     private final Launcher mLauncher;
-    private final Workspace mWorkspace;
+    private final Workspace<?> mWorkspace;
     private final PointF mTouchDownPoint = new PointF();
     private final float mTouchSlop;
 
@@ -77,7 +85,7 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     DevicePolicyManager mDpm;
 
-    public WorkspaceTouchListener(Launcher launcher, Workspace workspace) {
+    public WorkspaceTouchListener(Launcher launcher, Workspace<?> workspace) {
         mLauncher = launcher;
         mWorkspace = workspace;
         // Use twice the touch slop as we are looking for long press which is more
@@ -111,6 +119,11 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
             if (handleLongPress) {
                 mLongPressState = STATE_REQUESTED;
                 mTouchDownPoint.set(ev.getX(), ev.getY());
+                // Mouse right button's ACTION_DOWN should immediately show menu
+                if (TouchUtil.isMouseRightClickDownOrMove(ev)) {
+                    maybeShowMenu();
+                    return true;
+                }
             }
 
             mWorkspace.onTouchEvent(ev);
@@ -127,9 +140,13 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
             mLongPressState = STATE_COMPLETED;
         }
 
+        boolean isInAllAppsBottomSheet = mLauncher.isInState(ALL_APPS)
+                && mLauncher.getDeviceProfile().isTablet;
+
         final boolean result;
         if (mLongPressState == STATE_COMPLETED) {
-            // We have handled the touch, so workspace does not need to know anything anymore.
+            // We have handled the touch, so workspace does not need to know anything
+            // anymore.
             result = true;
         } else if (mLongPressState == STATE_REQUESTED) {
             mWorkspace.onTouchEvent(ev);
@@ -142,14 +159,15 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
             result = true;
         } else {
-            // We don't want to handle touch, let workspace handle it as usual.
-            result = false;
+            // We don't want to handle touch unless we're in AllApps bottom sheet, let
+            // workspace
+            // handle it as usual.
+            result = isInAllAppsBottomSheet;
         }
 
         if (action == ACTION_UP || action == ACTION_POINTER_UP) {
             if (!mWorkspace.isHandlingTouch()) {
-                final CellLayout currentPage =
-                        (CellLayout) mWorkspace.getChildAt(mWorkspace.getCurrentPage());
+                final CellLayout currentPage = (CellLayout) mWorkspace.getChildAt(mWorkspace.getCurrentPage());
                 if (currentPage != null) {
                     mWorkspace.onWallpaperTap(ev);
                 }
@@ -158,6 +176,19 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
         if (action == ACTION_UP || action == ACTION_CANCEL) {
             cancelLongPress();
+        }
+        if (action == ACTION_UP && isInAllAppsBottomSheet) {
+            mLauncher.getStateManager().goToState(NORMAL);
+            mLauncher.getStatsLogManager().logger()
+                    .withSrcState(ALL_APPS.statsLogOrdinal)
+                    .withDstState(NORMAL.statsLogOrdinal)
+                    .withContainerInfo(LauncherAtom.ContainerInfo.newBuilder()
+                            .setWorkspace(
+                                    LauncherAtom.WorkspaceContainer.newBuilder()
+                                            .setPageIndex(
+                                                    mLauncher.getWorkspace().getCurrentPage()))
+                            .build())
+                    .log(LAUNCHER_ALLAPPS_CLOSE_TAP_OUTSIDE);
         }
 
         return result;
@@ -174,6 +205,10 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     @Override
     public void onLongPress(MotionEvent event) {
+        maybeShowMenu();
+    }
+
+    private void maybeShowMenu() {
         if (mLongPressState == STATE_REQUESTED) {
             TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Workspace.longPress");
             if (canHandleLongPress()) {

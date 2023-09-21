@@ -92,7 +92,7 @@ class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) : LauncherOv
     }
 
     override fun onOverlayScrollChanged(progress: Float) {
-        mLauncherOverlayCallbacks?.onScrollChanged(progress)
+        mLauncherOverlayCallbacks?.onOverlayScrollChanged(progress)
     }
 
     override fun onServiceStateChanged(overlayAttached: Boolean, hotwordActive: Boolean) {

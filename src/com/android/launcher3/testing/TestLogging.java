@@ -22,6 +22,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 
 import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.shared.TestProtocol;
 
 import java.util.function.BiConsumer;
 
@@ -38,13 +39,13 @@ public final class TestLogging {
     }
 
     public static void recordEvent(String sequence, String event) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+        if (Utilities.isRunningInTestHarness()) {
             recordEventSlow(sequence, event);
         }
     }
 
     public static void recordEvent(String sequence, String message, Object parameter) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+        if (Utilities.isRunningInTestHarness()) {
             recordEventSlow(sequence, message + ": " + parameter);
         }
     }
@@ -57,14 +58,14 @@ public final class TestLogging {
     }
 
     public static void recordKeyEvent(String sequence, String message, KeyEvent event) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS) {
+        if (Utilities.isRunningInTestHarness()) {
             recordEventSlow(sequence, message + ": " + event);
             registerEventNotFromTest(event);
         }
     }
 
     public static void recordMotionEvent(String sequence, String message, MotionEvent event) {
-        if (Utilities.IS_RUNNING_IN_TEST_HARNESS && event.getAction() != MotionEvent.ACTION_MOVE) {
+        if (Utilities.isRunningInTestHarness() && event.getAction() != MotionEvent.ACTION_MOVE) {
             recordEventSlow(sequence, message + ": " + event);
             registerEventNotFromTest(event);
         }

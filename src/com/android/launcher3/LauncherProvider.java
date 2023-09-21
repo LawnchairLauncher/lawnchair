@@ -16,13 +16,13 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.DefaultLayoutParser.RES_PARTNER_DEFAULT_LAYOUT;
 import static com.android.launcher3.provider.LauncherDbUtils.copyTable;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
 
 import android.annotation.TargetApi;
 import android.app.backup.BackupManager;
-import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.ContentProvider;
@@ -35,7 +35,6 @@ import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
 import android.content.pm.ProviderInfo;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
@@ -55,6 +54,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Xml;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.config.FeatureFlags;
@@ -69,8 +70,9 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.NoLocaleSQLiteHelper;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.Partner;
 import com.android.launcher3.util.Thunk;
-import com.android.launcher3.widget.LauncherAppWidgetHost;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -85,6 +87,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.LawnchairAppKt;
@@ -100,10 +103,14 @@ public class LauncherProvider extends ContentProvider {
      * Represents the schema of the database. Changes in scheme need not be backwards compatible.
      * When increasing the scheme version, ensure that downgrade_schema.json is updated
      */
-    public static final int SCHEMA_VERSION = 30;
+    public static final int SCHEMA_VERSION = 31;
 
     public static final String AUTHORITY = BuildConfig.APPLICATION_ID + ".settings";
     public static final String KEY_LAYOUT_PROVIDER_AUTHORITY = "KEY_LAYOUT_PROVIDER_AUTHORITY";
+
+    private static final int TEST_WORKSPACE_LAYOUT_RES_XML = R.xml.default_test_workspace;
+    private static final int TEST2_WORKSPACE_LAYOUT_RES_XML = R.xml.default_test2_workspace;
+    private static final int TAPL_WORKSPACE_LAYOUT_RES_XML = R.xml.default_tapl_test_workspace;
 
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 
@@ -111,6 +118,8 @@ public class LauncherProvider extends ContentProvider {
     protected String mProviderAuthority;
 
     private long mLastRestoreTimestamp = 0L;
+
+    private int mDefaultWorkspaceLayoutOverride = 0;
 
     /**
      * $ adb shell dumpsys activity provider com.android.launcher3
@@ -161,6 +170,7 @@ public class LauncherProvider extends ContentProvider {
     private synchronized boolean prepForMigration(String dbFile, String targetTableName,
                                                   Supplier<DatabaseHelper> src, Supplier<DatabaseHelper> dst) {
         if (TextUtils.equals(dbFile, mOpenHelper.getDatabaseName())) {
+            Log.e(TAG, "prepForMigration - target db is same as current: " + dbFile);
             return false;
         }
 
@@ -252,17 +262,20 @@ public class LauncherProvider extends ContentProvider {
                     values.getAsString(Favorites.APPWIDGET_PROVIDER));
 
             if (cn != null) {
+                LauncherWidgetHolder widgetHolder = mOpenHelper.newLauncherWidgetHolder();
                 try {
-                    AppWidgetHost widgetHost = mOpenHelper.newLauncherWidgetHost();
-                    int appWidgetId = widgetHost.allocateAppWidgetId();
+                    int appWidgetId = widgetHolder.allocateAppWidgetId();
                     values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
                     if (!appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,cn)) {
-                        widgetHost.deleteAppWidgetId(appWidgetId);
+                        widgetHolder.deleteAppWidgetId(appWidgetId);
                         return false;
                     }
                 } catch (RuntimeException e) {
                     Log.e(TAG, "Failed to initialize external widget", e);
                     return false;
+                } finally {
+                    // Necessary to destroy the holder to free up possible activity context
+                    widgetHolder.destroy();
                 }
             } else {
                 return false;
@@ -367,7 +380,7 @@ public class LauncherProvider extends ContentProvider {
             case LauncherSettings.Settings.METHOD_WAS_EMPTY_DB_CREATED : {
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
-                        Utilities.getPrefs(getContext()).getBoolean(
+                        LauncherPrefs.getPrefs(getContext()).getBoolean(
                                 mOpenHelper.getKey(EMPTY_DATABASE_CREATED), false));
                 return result;
             }
@@ -391,6 +404,27 @@ public class LauncherProvider extends ContentProvider {
             }
             case LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB: {
                 mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
+                return null;
+            }
+            case LauncherSettings.Settings.METHOD_SET_USE_TEST_WORKSPACE_LAYOUT_FLAG: {
+                switch (arg) {
+                    case LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TEST:
+                        mDefaultWorkspaceLayoutOverride = TEST_WORKSPACE_LAYOUT_RES_XML;
+                        break;
+                    case LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TEST2:
+                        mDefaultWorkspaceLayoutOverride = TEST2_WORKSPACE_LAYOUT_RES_XML;
+                        break;
+                    case LauncherSettings.Settings.ARG_DEFAULT_WORKSPACE_LAYOUT_TAPL:
+                        mDefaultWorkspaceLayoutOverride = TAPL_WORKSPACE_LAYOUT_RES_XML;
+                        break;
+                    default:
+                        mDefaultWorkspaceLayoutOverride = 0;
+                        break;
+                }
+                return null;
+            }
+            case LauncherSettings.Settings.METHOD_CLEAR_USE_TEST_WORKSPACE_LAYOUT_FLAG: {
+                mDefaultWorkspaceLayoutOverride = 0;
                 return null;
             }
             case LauncherSettings.Settings.METHOD_LOAD_DEFAULT_FAVORITES: {
@@ -430,7 +464,7 @@ public class LauncherProvider extends ContentProvider {
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
                         prepForMigration(
-                                InvariantDeviceProfile.INSTANCE.get(getContext()).dbFile,
+                                arg /* dbFile */,
                                 Favorites.TMP_TABLE,
                                 () -> mOpenHelper,
                                 () -> DatabaseHelper.createDatabaseHelper(
@@ -505,7 +539,7 @@ public class LauncherProvider extends ContentProvider {
     }
 
     private void clearFlagEmptyDbCreated() {
-        Utilities.getPrefs(getContext()).edit()
+        LauncherPrefs.getPrefs(getContext()).edit()
                 .remove(mOpenHelper.getKey(EMPTY_DATABASE_CREATED)).commit();
     }
 
@@ -517,46 +551,48 @@ public class LauncherProvider extends ContentProvider {
      *   4) The default configuration for the particular device
      */
     synchronized private void loadDefaultFavoritesIfNecessary() {
-        SharedPreferences sp = Utilities.getPrefs(getContext());
+        SharedPreferences sp = LauncherPrefs.getPrefs(getContext());
 
         if (sp.getBoolean(mOpenHelper.getKey(EMPTY_DATABASE_CREATED), false)) {
             Log.d(TAG, "loading default workspace");
 
-            AppWidgetHost widgetHost = mOpenHelper.newLauncherWidgetHost();
-            AutoInstallsLayout loader = createWorkspaceLoaderFromAppRestriction(widgetHost);
-            if (loader == null) {
-                loader = AutoInstallsLayout.get(getContext(),widgetHost, mOpenHelper);
-            }
-            if (loader == null) {
-                final Partner partner = Partner.get(getContext().getPackageManager());
-                if (partner != null && partner.hasDefaultLayout()) {
-                    final Resources partnerRes = partner.getResources();
-                    int workspaceResId = partnerRes.getIdentifier(Partner.RES_DEFAULT_LAYOUT,
-                            "xml", partner.getPackageName());
-                    if (workspaceResId != 0) {
-                        loader = new DefaultLayoutParser(getContext(), widgetHost,
-                                mOpenHelper, partnerRes, workspaceResId);
+            LauncherWidgetHolder widgetHolder = mOpenHelper.newLauncherWidgetHolder();
+            try {
+                AutoInstallsLayout loader = createWorkspaceLoaderFromAppRestriction(widgetHolder);
+                if (loader == null) {
+                    loader = AutoInstallsLayout.get(getContext(), widgetHolder, mOpenHelper);
+                }
+                if (loader == null) {
+                    final Partner partner = Partner.get(getContext().getPackageManager());
+                    if (partner != null) {
+                        int workspaceResId = partner.getXmlResId(RES_PARTNER_DEFAULT_LAYOUT);
+                        if (workspaceResId != 0) {
+                            loader = new DefaultLayoutParser(getContext(), widgetHolder,
+                                    mOpenHelper, partner.getResources(), workspaceResId);
+                        }
                     }
                 }
-            }
 
-            final boolean usingExternallyProvidedLayout = loader != null;
-            if (loader == null) {
-                loader = getDefaultLayoutParser(widgetHost);
-            }
+                final boolean usingExternallyProvidedLayout = loader != null;
+                if (loader == null) {
+                    loader = getDefaultLayoutParser(widgetHolder);
+                }
 
-            // There might be some partially restored DB items, due to buggy restore logic in
-            // previous versions of launcher.
-            mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
-            // Populate favorites table with initial favorites
-            if ((mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), loader) <= 0)
-                    && usingExternallyProvidedLayout) {
-                // Unable to load external layout. Cleanup and load the internal layout.
+                // There might be some partially restored DB items, due to buggy restore logic in
+                // previous versions of launcher.
                 mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
-                mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(),
-                        getDefaultLayoutParser(widgetHost));
+                // Populate favorites table with initial favorites
+                if ((mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(), loader) <= 0)
+                        && usingExternallyProvidedLayout) {
+                    // Unable to load external layout. Cleanup and load the internal layout.
+                    mOpenHelper.createEmptyDB(mOpenHelper.getWritableDatabase());
+                    mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(),
+                            getDefaultLayoutParser(widgetHolder));
+                }
+                clearFlagEmptyDbCreated();
+            } finally {
+                widgetHolder.destroy();
             }
-            clearFlagEmptyDbCreated();
         }
     }
 
@@ -565,7 +601,8 @@ public class LauncherProvider extends ContentProvider {
      *
      * @return the loader if the restrictions are set and the resource exists; null otherwise.
      */
-    private AutoInstallsLayout createWorkspaceLoaderFromAppRestriction(AppWidgetHost widgetHost) {
+    private AutoInstallsLayout createWorkspaceLoaderFromAppRestriction(
+            LauncherWidgetHolder widgetHolder) {
         Context ctx = getContext();
         final String authority;
         if (!TextUtils.isEmpty(mProviderAuthority)) {
@@ -591,7 +628,7 @@ public class LauncherProvider extends ContentProvider {
             parser.setInput(new StringReader(layout));
 
             Log.d(TAG, "Loading layout from " + authority);
-            return new AutoInstallsLayout(ctx, widgetHost, mOpenHelper,
+            return new AutoInstallsLayout(ctx, widgetHolder, mOpenHelper,
                     ctx.getPackageManager().getResourcesForApplication(pi.applicationInfo),
                     () -> parser, AutoInstallsLayout.TAG_WORKSPACE);
         } catch (Exception e) {
@@ -610,16 +647,17 @@ public class LauncherProvider extends ContentProvider {
                 .build();
     }
 
-    private DefaultLayoutParser getDefaultLayoutParser(AppWidgetHost widgetHost) {
+    private DefaultLayoutParser getDefaultLayoutParser(LauncherWidgetHolder widgetHolder) {
         InvariantDeviceProfile idp = LauncherAppState.getIDP(getContext());
-        int defaultLayout = idp.defaultLayoutId;
+        int defaultLayout = mDefaultWorkspaceLayoutOverride > 0
+                ? mDefaultWorkspaceLayoutOverride : idp.defaultLayoutId;
 
         if (getContext().getSystemService(UserManager.class).isDemoUser()
                 && idp.demoModeLayoutId != 0) {
             defaultLayout = idp.demoModeLayoutId;
         }
 
-        return new DefaultLayoutParser(getContext(), widgetHost,
+        return new DefaultLayoutParser(getContext(), widgetHolder,
                 mOpenHelper, getContext().getResources(), defaultLayout);
     }
 
@@ -725,7 +763,7 @@ public class LauncherProvider extends ContentProvider {
          */
         protected void onEmptyDbCreated() {
             // Set the flag for empty DB
-            Utilities.getPrefs(mContext).edit().putBoolean(getKey(EMPTY_DATABASE_CREATED), true)
+            LauncherPrefs.getPrefs(mContext).edit().putBoolean(getKey(EMPTY_DATABASE_CREATED), true)
                     .commit();
         }
 
@@ -872,6 +910,19 @@ public class LauncherProvider extends ContentProvider {
                             Favorites.SCREEN, IntArray.wrap(-777, -778)), null);
                 }
                 case 30: {
+                    if (FeatureFlags.topQsbOnFirstScreenEnabled (mContext)) {
+                        // Clean up first row in screen 0 as it might contain junk data.
+                        Log.d(TAG, "Cleaning up first row");
+                        db.delete(Favorites.TABLE_NAME,
+                                String.format(Locale.ENGLISH,
+                                        "%1$s = %2$d AND %3$s = %4$d AND %5$s = %6$d",
+                                        Favorites.SCREEN, 0,
+                                        Favorites.CONTAINER, Favorites.CONTAINER_DESKTOP,
+                                        Favorites.CELLY, 0), null);
+                    }
+                    return;
+                }
+                case 31: {
                     // DB Upgraded successfully
                     return;
                 }
@@ -912,28 +963,44 @@ public class LauncherProvider extends ContentProvider {
          */
         public void removeGhostWidgets(SQLiteDatabase db) {
             // Get all existing widget ids.
-            final AppWidgetHost host = newLauncherWidgetHost();
-            final int[] allWidgets;
+            final LauncherWidgetHolder holder = newLauncherWidgetHolder();
             try {
-                // Although the method was defined in O, it has existed since the beginning of time,
-                // so it might work on older platforms as well.
-                allWidgets = host.getAppWidgetIds();
-            } catch (IncompatibleClassChangeError e) {
-                Log.e(TAG, "getAppWidgetIds not supported", e);
-                return;
-            }
-            final IntSet validWidgets = IntSet.wrap(LauncherDbUtils.queryIntArray(false, db,
-                    Favorites.TABLE_NAME, Favorites.APPWIDGET_ID,
-                    "itemType=" + Favorites.ITEM_TYPE_APPWIDGET, null, null));
-            for (int widgetId : allWidgets) {
-                if (!validWidgets.contains(widgetId)) {
-                    try {
-                        FileLog.d(TAG, "Deleting invalid widget " + widgetId);
-                        host.deleteAppWidgetId(widgetId);
-                    } catch (RuntimeException e) {
-                        // Ignore
+                final int[] allWidgets;
+                try {
+                    // Although the method was defined in O, it has existed since the beginning of
+                    // time, so it might work on older platforms as well.
+                    allWidgets = holder.getAppWidgetIds();
+                } catch (IncompatibleClassChangeError e) {
+                    Log.e(TAG, "getAppWidgetIds not supported", e);
+                    return;
+                }
+                final IntSet validWidgets = IntSet.wrap(LauncherDbUtils.queryIntArray(false, db,
+                        Favorites.TABLE_NAME, Favorites.APPWIDGET_ID,
+                        "itemType=" + Favorites.ITEM_TYPE_APPWIDGET, null, null));
+                boolean isAnyWidgetRemoved = false;
+                for (int widgetId : allWidgets) {
+                    if (!validWidgets.contains(widgetId)) {
+                        try {
+                            FileLog.d(TAG, "Deleting invalid widget " + widgetId);
+                            holder.deleteAppWidgetId(widgetId);
+                            isAnyWidgetRemoved = true;
+                        } catch (RuntimeException e) {
+                            // Ignore
+                        }
                     }
                 }
+                if (isAnyWidgetRemoved) {
+                    final String allWidgetsIds = Arrays.stream(allWidgets).mapToObj(String::valueOf)
+                            .collect(Collectors.joining(",", "[", "]"));
+                    final String validWidgetsIds = Arrays.stream(
+                                    validWidgets.getArray().toArray()).mapToObj(String::valueOf)
+                            .collect(Collectors.joining(",", "[", "]"));
+                    FileLog.d(TAG, "One or more widgets was removed. db_path=" + db.getPath()
+                            + " allWidgetsIds=" + allWidgetsIds
+                            + ", validWidgetsIds=" + validWidgetsIds);
+                }
+            } finally {
+                holder.destroy();
             }
         }
 
@@ -1034,8 +1101,12 @@ public class LauncherProvider extends ContentProvider {
             return mMaxItemId;
         }
 
-        public AppWidgetHost newLauncherWidgetHost() {
-            return new LauncherAppWidgetHost(mContext);
+        /**
+         * @return A new {@link LauncherWidgetHolder} based on the current context
+         */
+        @NonNull
+        public LauncherWidgetHolder newLauncherWidgetHolder() {
+            return LauncherWidgetHolder.newInstance(mContext);
         }
 
         @Override

@@ -16,7 +16,7 @@
 package com.android.launcher3.uioverrides.touchcontrollers;
 
 import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.QUICK_SWITCH;
+import static com.android.launcher3.LauncherState.QUICK_SWITCH_FROM_HOME;
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
 import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.anim.Interpolators.INSTANT;
@@ -29,7 +29,6 @@ import static com.android.launcher3.states.StateAnimationConfig.ANIM_OVERVIEW_TR
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_WORKSPACE_TRANSLATE;
-import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_FULLSCREEN_TASK;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
@@ -37,7 +36,6 @@ import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHO
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.launcher3.Launcher;
@@ -46,10 +44,11 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.states.StateAnimationConfig;
 import com.android.launcher3.touch.AbstractStateChangeTouchController;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
-import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.SysUINavigationMode.Mode;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.NavigationMode;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskUtils;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
@@ -80,6 +79,10 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
         if ((ev.getEdgeFlags() & Utilities.EDGE_NAV_BAR) == 0) {
             return false;
         }
+        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+            // TODO(b/268075592): add support for quickswitch to/from desktop
+            return false;
+        }
         return true;
     }
 
@@ -89,7 +92,7 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
         if ((stateFlags & SYSUI_STATE_OVERVIEW_DISABLED) != 0) {
             return NORMAL;
         }
-        return isDragTowardPositive ? QUICK_SWITCH : NORMAL;
+        return isDragTowardPositive ? QUICK_SWITCH_FROM_HOME : NORMAL;
     }
 
     @Override
@@ -112,9 +115,8 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
 
         // Set RecentView's initial properties for coming in from the side.
         RECENTS_SCALE_PROPERTY.set(mOverviewPanel,
-                QUICK_SWITCH.getOverviewScaleAndOffset(mLauncher)[0] * 0.85f);
+                QUICK_SWITCH_FROM_HOME.getOverviewScaleAndOffset(mLauncher)[0] * 0.85f);
         ADJACENT_PAGE_HORIZONTAL_OFFSET.set(mOverviewPanel, 1f);
-        Log.d(BAD_STATE, "QuickSwitchTouchController initCurrentAnimation setContentAlpha=1");
         mOverviewPanel.setContentAlpha(1);
 
         mCurrentAnimation = mLauncher.getStateManager()
@@ -128,7 +130,7 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
     private void setupInterpolators(StateAnimationConfig stateAnimationConfig) {
         stateAnimationConfig.setInterpolator(ANIM_WORKSPACE_FADE, DEACCEL_2);
         stateAnimationConfig.setInterpolator(ANIM_ALL_APPS_FADE, DEACCEL_2);
-        if (SysUINavigationMode.getMode(mLauncher) == Mode.NO_BUTTON) {
+        if (DisplayController.getNavigationMode(mLauncher) == NavigationMode.NO_BUTTON) {
             // Overview lives to the left of workspace, so translate down later than over
             stateAnimationConfig.setInterpolator(ANIM_WORKSPACE_TRANSLATE, ACCEL_2);
             stateAnimationConfig.setInterpolator(ANIM_VERTICAL_PROGRESS, ACCEL_2);

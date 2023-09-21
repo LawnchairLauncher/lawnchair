@@ -17,34 +17,44 @@
 package com.android.quickstep.views;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.FloatProperty;
-import android.view.Gravity;
+import android.util.TypedValue;
 import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 
 public class SplitPlaceholderView extends FrameLayout {
 
-    public static final FloatProperty<SplitPlaceholderView> ALPHA_FLOAT =
-            new FloatProperty<SplitPlaceholderView>("SplitViewAlpha") {
-                @Override
-                public void setValue(SplitPlaceholderView splitPlaceholderView, float v) {
-                    splitPlaceholderView.setVisibility(v != 0 ? VISIBLE : GONE);
-                    splitPlaceholderView.setAlpha(v);
-                }
-
-                @Override
-                public Float get(SplitPlaceholderView splitPlaceholderView) {
-                    return splitPlaceholderView.getAlpha();
-                }
-            };
+    private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Rect mTempRect = new Rect();
 
     @Nullable
     private IconView mIconView;
 
     public SplitPlaceholderView(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        mPaint.setColor(getThemeBackgroundColor(context));
+        setWillNotDraw(false);
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        // Call this before super call to draw below the children.
+        drawBackground(canvas);
+
+        super.dispatchDraw(canvas);
+
+        if (mIconView != null) {
+            // Center the icon view in the visible area.
+            getLocalVisibleRect(mTempRect);
+            FloatingTaskView parent = (FloatingTaskView) getParent();
+            parent.centerIconView(mIconView, mTempRect.centerX(), mTempRect.centerY());
+        }
     }
 
     @Nullable
@@ -52,15 +62,25 @@ public class SplitPlaceholderView extends FrameLayout {
         return mIconView;
     }
 
-    public void setIconView(IconView iconView, int iconSize) {
+    public void setIcon(Drawable drawable, int iconSize) {
         if (mIconView == null) {
             mIconView = new IconView(getContext());
             addView(mIconView);
         }
-        mIconView.setDrawable(iconView.getDrawable());
+        mIconView.setDrawable(drawable);
         mIconView.setDrawableSize(iconSize, iconSize);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(iconView.getLayoutParams());
-        params.gravity = Gravity.CENTER;
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(iconSize, iconSize);
         mIconView.setLayoutParams(params);
+    }
+
+    private void drawBackground(Canvas canvas) {
+        FloatingTaskView parent = (FloatingTaskView) getParent();
+        parent.drawRoundedRect(canvas, mPaint);
+    }
+
+    private static int getThemeBackgroundColor(Context context) {
+        final TypedValue value = new TypedValue();
+        context.getTheme().resolveAttribute(android.R.attr.colorBackground, value, true);
+        return value.data;
     }
 }

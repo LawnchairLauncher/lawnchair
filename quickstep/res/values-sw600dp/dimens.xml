@@ -14,6 +14,31 @@
  * limitations under the License.
 */
 -->
+<!-- Applies to small tablet screens -->
 <resources>
     <dimen name="navigation_key_padding">25dp</dimen>
+
+    <!--  Overview Task Views  -->
+    <!--  A touch target for icons, sometimes slightly larger than the icons themselves  -->
+    <dimen name="task_thumbnail_icon_size">48dp</dimen>
+    <!--  The icon size for the focused task, placed in center of touch target  -->
+    <dimen name="task_thumbnail_icon_drawable_size">44dp</dimen>
+    <!--  The space under the focused task icon  -->
+    <dimen name="overview_task_margin">12dp</dimen>
+    <!--  The icon size of all non-focused task icons, placed in center of touch target  -->
+    <dimen name="task_thumbnail_icon_drawable_size_grid">44dp</dimen>
+    <!--  The space between grid rows (when there's 2 rows of thumbnails)  -->
+    <dimen name="overview_grid_row_spacing">28dp</dimen>
+    <!--  The horizontal space between tasks  -->
+    <dimen name="overview_page_spacing">36dp</dimen>
+    <!--  The space to the left and to the right of the "Clear all" button  -->
+    <dimen name="overview_grid_side_margin">64dp</dimen>
+    <!--  Overview actions  -->
+    <dimen name="overview_actions_top_margin">24dp</dimen>
+
+    <!-- All Set page -->
+    <dimen name="allset_page_margin_horizontal">120dp</dimen>
+    <dimen name="allset_page_allset_text_size">38sp</dimen>
+    <dimen name="allset_page_swipe_up_text_size">15sp</dimen>
+
 </resources>

@@ -12,7 +12,7 @@ import app.lawnchair.launcher
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
-import com.android.launcher3.allapps.AllAppsGridAdapter
+import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.model.AllAppsList
 import com.android.launcher3.model.BaseModelUpdateTask
 import com.android.launcher3.model.BgDataModel
@@ -30,6 +30,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
+import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem
+import com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_EMPTY_SEARCH
+import com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_ICON
 
 class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context) {
 
@@ -62,13 +65,9 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         }
     }
 
-    override fun doSearch(query: String, callback: SearchCallback<AllAppsGridAdapter.AdapterItem>) {
+    override fun doSearch(query: String, callback: SearchCallback<AdapterItem>) {
         appState.model.enqueueModelUpdateTask(object : BaseModelUpdateTask() {
-            override fun execute(
-                app: LauncherAppState?,
-                dataModel: BgDataModel?,
-                apps: AllAppsList?
-            ) {
+            override fun execute(app: LauncherAppState, dataModel: BgDataModel, apps: AllAppsList) {
                 val result = getResult(apps!!.data, query)
                 resultHandler.post { callback.onSearchResult(query, result) }
             }
@@ -84,7 +83,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     private fun getResult(
         apps: MutableList<AppInfo>,
         query: String
-    ): ArrayList<AllAppsGridAdapter.AdapterItem> {
+    ): java.util.ArrayList<AdapterItem> {
         val appResults = if (enableFuzzySearch) {
             fuzzySearch(apps, query)
         } else {
@@ -101,7 +100,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         }
         if (results.isEmpty()) {
             if (marketSearchComponent == null) {
-                return arrayListOf(AllAppsGridAdapter.AdapterItem.asEmptySearch(0))
+                return arrayListOf(AdapterItem(VIEW_TYPE_EMPTY_SEARCH))
             }
             results.add(getEmptySearchItem(query))
         }

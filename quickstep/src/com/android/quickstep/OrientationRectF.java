@@ -66,7 +66,7 @@ public class OrientationRectF extends RectF {
         return applyTransform(event, deltaRotation(mRotation, currentRotation), forceTransform);
     }
 
-    private boolean applyTransform(MotionEvent event, int deltaRotation, boolean forceTransform) {
+    public boolean applyTransform(MotionEvent event, int deltaRotation, boolean forceTransform) {
         mTmpMatrix.reset();
         postDisplayRotation(deltaRotation, mHeight, mWidth, mTmpMatrix);
         if (forceTransform) {

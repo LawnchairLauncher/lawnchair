@@ -15,9 +15,10 @@
  */
 package com.android.launcher3;
 
-import static com.android.launcher3.util.UiThreadHelper.hideKeyboardAsync;
+import static com.android.launcher3.logging.KeyboardStateManager.KeyboardState.SHOW;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.DragEvent;
@@ -28,15 +29,17 @@ import android.widget.EditText;
 import com.android.launcher3.views.ActivityContext;
 
 import app.lawnchair.font.FontManager;
-
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The edit text that reports back when the back key has been pressed.
- * Note: AppCompatEditText doesn't fully support #displayCompletions and #onCommitCompletion
+ * Note: AppCompatEditText doesn't fully support #displayCompletions and
+ * #onCommitCompletion
  */
 public class ExtendedEditText extends EditText {
+    private final Set<OnFocusChangeListener> mOnFocusChangeListeners = new HashSet<>();
 
-    private boolean mShowImeAfterFirstLayout;
     private boolean mForceDisableSuggestions = false;
 
     /**
@@ -89,30 +92,25 @@ public class ExtendedEditText extends EditText {
         return false;
     }
 
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-        if (mShowImeAfterFirstLayout) {
-            // soft input only shows one frame after the layout of the EditText happens,
-            post(() -> {
-                showSoftInput();
-                mShowImeAfterFirstLayout = false;
-            });
-        }
-    }
-
     public void showKeyboard() {
-        mShowImeAfterFirstLayout = !showSoftInput();
+        onKeyboardShown();
+        showSoftInput();
     }
 
     public void hideKeyboard() {
-        hideKeyboardAsync(ActivityContext.lookupContext(getContext()), getWindowToken());
+        ActivityContext.lookupContext(getContext()).hideKeyboard();
+        clearFocus();
+    }
+
+    protected void onKeyboardShown() {
+        ActivityContext.lookupContext(getContext()).getStatsLogManager()
+                .keyboardStateManager().setKeyboardState(SHOW);
     }
 
     private boolean showSoftInput() {
         return requestFocus() &&
                 getContext().getSystemService(InputMethodManager.class)
-                    .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+                        .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
     }
 
     public void dispatchBackKey() {
@@ -124,7 +122,8 @@ public class ExtendedEditText extends EditText {
 
     /**
      * Set to true when you want isSuggestionsEnabled to return false.
-     * Use this to disable the red underlines that appear under typos when suggestions is enabled.
+     * Use this to disable the red underlines that appear under typos when
+     * suggestions is enabled.
      */
     public void forceDisableSuggestions(boolean forceDisableSuggestions) {
         mForceDisableSuggestions = forceDisableSuggestions;
@@ -139,5 +138,44 @@ public class ExtendedEditText extends EditText {
         if (!TextUtils.isEmpty(getText())) {
             setText("");
         }
+    }
+
+    /**
+     * This method should be preferred to
+     * {@link #setOnFocusChangeListener(OnFocusChangeListener)},
+     * as it allows for multiple listeners from different sources.
+     */
+    public void addOnFocusChangeListener(OnFocusChangeListener listener) {
+        mOnFocusChangeListeners.add(listener);
+    }
+
+    /**
+     * Removes the given listener from the set of registered focus listeners, or
+     * does nothing if it
+     * wasn't registered in the first place.
+     */
+    public void removeOnFocusChangeListener(OnFocusChangeListener listener) {
+        mOnFocusChangeListeners.remove(listener);
+    }
+
+    @Override
+    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+        super.onFocusChanged(focused, direction, previouslyFocusedRect);
+        for (OnFocusChangeListener listener : mOnFocusChangeListeners) {
+            listener.onFocusChange(this, focused);
+        }
+    }
+
+    /**
+     * Save the input, suggestion, hint states when it's on focus, and set to
+     * unfocused states.
+     */
+    public void saveFocusedStateAndUpdateToUnfocusedState() {
+    }
+
+    /**
+     * Restore to the previous saved focused state.
+     */
+    public void restoreToFocusedState() {
     }
 }

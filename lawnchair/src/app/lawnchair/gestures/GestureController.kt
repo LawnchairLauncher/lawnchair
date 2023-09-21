@@ -23,8 +23,8 @@ import app.lawnchair.gestures.config.GestureHandlerConfig
 import app.lawnchair.gestures.handlers.GestureHandler
 import app.lawnchair.gestures.handlers.NoOpGestureHandler
 import app.lawnchair.preferences2.PreferenceManager2
-import com.android.quickstep.SysUINavigationMode
-import com.android.quickstep.util.VibratorWrapper
+import com.android.launcher3.util.VibratorWrapper
+
 import com.patrykmichalik.opto.domain.Preference
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.flow.*
@@ -53,8 +53,7 @@ class GestureController(private val launcher: LawnchairLauncher) {
     }
 
     fun onHomePressed() {
-        val usingGestures = SysUINavigationMode.getMode(launcher) == SysUINavigationMode.Mode.NO_BUTTON
-        triggerHandler(homePressHandler, LawnchairApp.isRecentsEnabled && usingGestures)
+        triggerHandler(homePressHandler, LawnchairApp.isRecentsEnabled)
     }
 
     fun onBackPressed() {

@@ -57,23 +57,26 @@ public class CacheDataUpdatedTaskTest {
         IconCache iconCache = LauncherAppState.getInstance(context).getIconCache();
         CachingLogic<ItemInfo> placeholderLogic = new CachingLogic<ItemInfo>() {
             @Override
-            public ComponentName getComponent(ItemInfo info) {
+            @NonNull
+            public ComponentName getComponent(@NonNull ItemInfo info) {
                 return info.getTargetComponent();
             }
 
+            @NonNull
             @Override
-            public UserHandle getUser(ItemInfo info) {
+            public UserHandle getUser(@NonNull ItemInfo info) {
                 return info.user;
             }
 
+            @NonNull
             @Override
-            public CharSequence getLabel(ItemInfo info) {
+            public CharSequence getLabel(@NonNull ItemInfo info) {
                 return NEW_LABEL_PREFIX + info.id;
             }
 
             @NonNull
             @Override
-            public BitmapInfo loadIcon(Context context, ItemInfo info) {
+            public BitmapInfo loadIcon(@NonNull Context context, @NonNull ItemInfo info) {
                 return BitmapInfo.of(Bitmap.createBitmap(1, 1, Config.ARGB_8888), Color.RED);
             }
         };

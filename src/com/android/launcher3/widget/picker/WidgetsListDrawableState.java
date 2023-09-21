@@ -21,9 +21,7 @@ package com.android.launcher3.widget.picker;
  */
 enum WidgetsListDrawableState {
     FIRST(new int[]{android.R.attr.state_first}),
-    FIRST_EXPANDED(new int[]{android.R.attr.state_first, android.R.attr.state_expanded}),
     MIDDLE(new int[]{android.R.attr.state_middle}),
-    MIDDLE_EXPANDED(new int[]{android.R.attr.state_middle, android.R.attr.state_expanded}),
     LAST(new int[]{android.R.attr.state_last}),
     SINGLE(new int[]{android.R.attr.state_single});
 
@@ -33,12 +31,10 @@ enum WidgetsListDrawableState {
         mStateSet = stateSet;
     }
 
-    static WidgetsListDrawableState obtain(boolean isFirst, boolean isLast, boolean isExpanded) {
+    static WidgetsListDrawableState obtain(boolean isFirst, boolean isLast) {
         if (isFirst && isLast) return SINGLE;
-        if (isFirst && isExpanded) return FIRST_EXPANDED;
         if (isFirst) return FIRST;
         if (isLast) return LAST;
-        if (isExpanded) return MIDDLE_EXPANDED;
         return MIDDLE;
     }
 }

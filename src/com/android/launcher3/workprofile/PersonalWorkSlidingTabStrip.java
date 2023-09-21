@@ -17,6 +17,7 @@ package com.android.launcher3.workprofile;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -24,8 +25,10 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.pageindicators.PageIndicator;
+import com.android.launcher3.views.ActivityContext;
 
 import app.lawnchair.font.FontManager;
 import app.lawnchair.theme.color.ColorStateListTokens;
@@ -35,11 +38,17 @@ import app.lawnchair.theme.drawable.DrawableTokens;
  * Supports two indicator colors, dedicated for personal and work tabs.
  */
 public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageIndicator {
+    private final boolean mIsAlignOnIcon;
     private OnActivePageChangedListener mOnActivePageChangedListener;
     private int mLastActivePage = 0;
 
     public PersonalWorkSlidingTabStrip(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        TypedArray typedArray = context.obtainStyledAttributes(attrs,
+                R.styleable.PersonalWorkSlidingTabStrip);
+        mIsAlignOnIcon = typedArray.getBoolean(
+                R.styleable.PersonalWorkSlidingTabStrip_alignOnIcon, false);
+        typedArray.recycle();
     }
 
     @Override
@@ -92,8 +101,29 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         return false;
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mIsAlignOnIcon) {
+            // If any padding is not specified, restrict the width to emulate padding
+            int size = MeasureSpec.getSize(widthMeasureSpec);
+            size = getTabWidth(getContext(), size);
+            widthMeasureSpec = MeasureSpec.makeMeasureSpec(size, MeasureSpec.EXACTLY);
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     /**
-     * Interface definition for a callback to be invoked when an active page has been changed.
+     * Returns distance between left and right app icons
+     */
+    public static int getTabWidth(Context context, int totalWidth) {
+        DeviceProfile grid = ActivityContext.lookupContext(context).getDeviceProfile();
+        int iconPadding = totalWidth / grid.numShownAllAppsColumns - grid.allAppsIconSizePx;
+        return totalWidth - iconPadding;
+    }
+
+    /**
+     * Interface definition for a callback to be invoked when an active page has
+     * been changed.
      */
     public interface OnActivePageChangedListener {
         /** Called when the active page has been changed. */

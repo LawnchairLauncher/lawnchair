@@ -19,6 +19,7 @@ package com.android.launcher3.tapl;
 import android.graphics.Rect;
 
 import androidx.annotation.NonNull;
+import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
@@ -127,7 +128,8 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
 
             OverviewTask task = getCurrentTask();
             mLauncher.assertNotNull("current task is null", task);
-            mLauncher.scrollLeftByDistance(verifyActiveContainer(), task.getVisibleWidth());
+            mLauncher.scrollLeftByDistance(verifyActiveContainer(),
+                    task.getVisibleWidth() + mLauncher.getOverviewPageSpacing());
 
             try (LauncherInstrumentation.Closable c2 =
                          mLauncher.addContextLayer("scrolled task off screen")) {
@@ -165,6 +167,27 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                         mLauncher.getVisibleBounds(t2).width()));
 
         return new OverviewTask(mLauncher, widestTask, this);
+    }
+
+    /** Returns an overview task matching TestActivity {@param activityNumber}. */
+    @NonNull
+    public OverviewTask getTestActivityTask(int activityNumber) {
+        final List<UiObject2> taskViews = getTasks();
+        mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
+
+        final String activityName = "TestActivity" + activityNumber;
+        UiObject2 task = null;
+        for (UiObject2 taskView : taskViews) {
+            // TODO(b/239452415): Use equals instead of descEndsWith
+            if (taskView.getParent().hasObject(By.descEndsWith(activityName))) {
+                task = taskView;
+                break;
+            }
+        }
+        mLauncher.assertNotNull(
+                "Unable to find a task with " + activityName + " from the task list", task);
+
+        return new OverviewTask(mLauncher, task, this);
     }
 
     /**
@@ -221,34 +244,36 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      * Returns if clear all button is visible.
      */
     public boolean isClearAllVisible() {
-        return mLauncher.hasLauncherObject(mLauncher.getOverviewObjectSelector("clear_all"));
+        return verifyActiveContainer().hasObject(
+                mLauncher.getOverviewObjectSelector("clear_all"));
+    }
+
+    protected boolean isActionsViewVisible() {
+        if (!hasTasks() || isClearAllVisible()) {
+            return false;
+        }
+        OverviewTask task = mLauncher.isTablet() ? getFocusedTaskForTablet() : getCurrentTask();
+        if (task == null) {
+            return false;
+        }
+        // In tablets, if focused task is not in center, overview actions aren't visible.
+        if (mLauncher.isTablet()
+                && Math.abs(task.getExactCenterX() - mLauncher.getExactScreenCenterX()) >= 1) {
+            return false;
+        }
+        // Overview actions aren't visible for split screen tasks.
+        return !task.isTaskSplit();
     }
 
     private void verifyActionsViewVisibility() {
-        if (!hasTasks()) {
-            return;
-        }
         try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                 "want to assert overview actions view visibility")) {
-            if (mLauncher.isTablet() && !isOverviewSnappedToFocusedTaskForTablet()) {
-                mLauncher.waitUntilOverviewObjectGone("action_buttons");
-            } else {
+            if (isActionsViewVisible()) {
                 mLauncher.waitForOverviewObject("action_buttons");
+            } else {
+                mLauncher.waitUntilOverviewObjectGone("action_buttons");
             }
         }
-    }
-
-    /**
-     * Returns if focused task is currently snapped task in tablet grid overview.
-     */
-    private boolean isOverviewSnappedToFocusedTaskForTablet() {
-        UiObject2 focusedTask = getFocusedTaskForTablet();
-        if (focusedTask == null) {
-            return false;
-        }
-        return Math.abs(
-                focusedTask.getVisibleBounds().exactCenterX() - mLauncher.getExactScreenCenterX())
-                < 1;
     }
 
     /**
@@ -256,7 +281,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
      *
      * @throws IllegalStateException if not run on a tablet device.
      */
-    UiObject2 getFocusedTaskForTablet() {
+    OverviewTask getFocusedTaskForTablet() {
         if (!mLauncher.isTablet()) {
             throw new IllegalStateException("Must be run on tablet device.");
         }
@@ -267,7 +292,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         int focusedTaskHeight = mLauncher.getFocusedTaskHeightForTablet();
         for (UiObject2 task : taskViews) {
             if (task.getVisibleBounds().height() == focusedTaskHeight) {
-                return task;
+                return new OverviewTask(mLauncher, task, this);
             }
         }
         return null;

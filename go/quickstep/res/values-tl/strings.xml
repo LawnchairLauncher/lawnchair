@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Ibahagi ang App"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Makinig"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Isalin"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"OK"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"KANSELAHIN"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"MGA SETTING"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"I-translate o pakinggan ang text sa screen"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Posibleng ibahagi sa Google ang impormasyong gaya ng text sa iyong screen, mga web address, at screenshot.\n\nPara baguhin kung anong impormasyon ang ibinabahagi mo, pumunta sa "<b>"Mga Setting &gt; Mga App &gt; Mga default na app &gt; Digital assistant app"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Pumili ng assistant para magamit ang feature na ito"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Para pakinggan o isalin ang text sa iyong screen, pumili ng app ng digital na assistant sa Mga Setting"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Palitan ang iyong assistant para magamit ang feature na ito"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Para pakinggan o isalin ang text sa iyong screen, palitan ang iyong app ng digital na assistant sa Mga Setting"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Mag-tap dito para pakinggan ang text sa screen na ito"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Mag-tap dito para isalin ang text sa screen na ito"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Hindi maibabahagi ang app na ito"</string>
+</resources>

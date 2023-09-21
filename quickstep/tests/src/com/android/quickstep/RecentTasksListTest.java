@@ -26,12 +26,12 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.app.ActivityManager;
+import android.app.KeyguardManager;
 
 import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.util.LooperExecutor;
 import com.android.quickstep.util.GroupTask;
-import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.wm.shell.util.GroupedRecentTaskInfo;
 
 import org.junit.Before;
@@ -56,8 +56,8 @@ public class RecentTasksListTest {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         LooperExecutor mockMainThreadExecutor = mock(LooperExecutor.class);
-        KeyguardManagerCompat mockKeyguardManagerCompat = mock(KeyguardManagerCompat.class);
-        mRecentTasksList = new RecentTasksList(mockMainThreadExecutor, mockKeyguardManagerCompat,
+        KeyguardManager mockKeyguardManager = mock(KeyguardManager.class);
+        mRecentTasksList = new RecentTasksList(mockMainThreadExecutor, mockKeyguardManager,
                 mockSystemUiProxy);
     }
 
@@ -70,7 +70,7 @@ public class RecentTasksListTest {
 
     @Test
     public void loadTasksInBackground_onlyKeys_noValidTaskDescription() {
-        GroupedRecentTaskInfo recentTaskInfos = new GroupedRecentTaskInfo(
+        GroupedRecentTaskInfo recentTaskInfos = GroupedRecentTaskInfo.forSplitTasks(
                 new ActivityManager.RecentTaskInfo(), new ActivityManager.RecentTaskInfo(), null);
         when(mockSystemUiProxy.getRecentTasks(anyInt(), anyInt()))
                 .thenReturn(new ArrayList<>(Collections.singletonList(recentTaskInfos)));
@@ -90,8 +90,8 @@ public class RecentTasksListTest {
         task1.taskDescription = new ActivityManager.TaskDescription(taskDescription);
         ActivityManager.RecentTaskInfo task2 = new ActivityManager.RecentTaskInfo();
         task2.taskDescription = new ActivityManager.TaskDescription();
-        GroupedRecentTaskInfo recentTaskInfos = new GroupedRecentTaskInfo(
-                task1, task2, null);
+        GroupedRecentTaskInfo recentTaskInfos = GroupedRecentTaskInfo.forSplitTasks(task1, task2,
+                null);
         when(mockSystemUiProxy.getRecentTasks(anyInt(), anyInt()))
                 .thenReturn(new ArrayList<>(Collections.singletonList(recentTaskInfos)));
 

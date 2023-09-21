@@ -16,30 +16,34 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
-import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
-import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
-import static com.android.launcher3.testing.TestProtocol.HINT_STATE_ORDINAL;
-import static com.android.launcher3.testing.TestProtocol.HINT_STATE_TWO_BUTTON_ORDINAL;
-import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
-import static com.android.launcher3.testing.TestProtocol.OVERVIEW_MODAL_TASK_STATE_ORDINAL;
-import static com.android.launcher3.testing.TestProtocol.OVERVIEW_SPLIT_SELECT_ORDINAL;
-import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
-import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
-import static com.android.launcher3.testing.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.ALL_APPS_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.HINT_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.HINT_STATE_TWO_BUTTON_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_MODAL_TASK_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_SPLIT_SELECT_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.SPRING_LOADED_STATE_ORDINAL;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.FloatRange;
+
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.states.HintState;
 import com.android.launcher3.states.SpringLoadedState;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.uioverrides.states.AllAppsState;
 import com.android.launcher3.uioverrides.states.OverviewState;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.Arrays;
 
@@ -72,14 +76,14 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final int FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED = BaseState.getFlag(2);
     // Flag to indicate that workspace should draw page background
     public static final int FLAG_WORKSPACE_HAS_BACKGROUNDS = BaseState.getFlag(3);
-    // True if the back button should be hidden when in this state (assuming no floating views are
-    // open, launcher has window focus, etc).
-    public static final int FLAG_HIDE_BACK_BUTTON = BaseState.getFlag(4);
     // Flag to indicate if the state would have scrim over sysui region: statu sbar and nav bar
-    public static final int FLAG_HAS_SYS_UI_SCRIM = BaseState.getFlag(5);
+    public static final int FLAG_HAS_SYS_UI_SCRIM = BaseState.getFlag(4);
     // Flag to inticate that all popups should be closed when this state is enabled.
-    public static final int FLAG_CLOSE_POPUPS = BaseState.getFlag(6);
-    public static final int FLAG_OVERVIEW_UI = BaseState.getFlag(7);
+    public static final int FLAG_CLOSE_POPUPS = BaseState.getFlag(5);
+    public static final int FLAG_OVERVIEW_UI = BaseState.getFlag(6);
+
+    // Flag indicating that hotseat and its contents are not accessible.
+    public static final int FLAG_HOTSEAT_INACCESSIBLE = BaseState.getFlag(7);
 
 
     public static final float NO_OFFSET = 0;
@@ -93,6 +97,14 @@ public abstract class LauncherState implements BaseState<LauncherState> {
                 }
             };
 
+    protected static final PageTranslationProvider DEFAULT_PAGE_TRANSLATION_PROVIDER =
+            new PageTranslationProvider(DEACCEL_2) {
+                @Override
+                public float getPageTranslation(int pageIndex) {
+                    return 0;
+                }
+            };
+
     private static final LauncherState[] sAllStates = new LauncherState[10];
 
     /**
@@ -100,10 +112,9 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      */
     public static final LauncherState NORMAL = new LauncherState(NORMAL_STATE_ORDINAL,
             LAUNCHER_STATE_HOME,
-            FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON |
-                    FLAG_HAS_SYS_UI_SCRIM) {
+            FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HAS_SYS_UI_SCRIM) {
         @Override
-        public int getTransitionDuration(Context context) {
+        public int getTransitionDuration(Context context, boolean isToState) {
             // Arbitrary duration, when going to NORMAL we use the state we're coming from instead.
             return 0;
         }
@@ -130,7 +141,11 @@ public abstract class LauncherState implements BaseState<LauncherState> {
     public static final LauncherState OVERVIEW = new OverviewState(OVERVIEW_STATE_ORDINAL);
     public static final LauncherState OVERVIEW_MODAL_TASK = OverviewState.newModalTaskState(
             OVERVIEW_MODAL_TASK_STATE_ORDINAL);
-    public static final LauncherState QUICK_SWITCH =
+    /**
+     * State when user performs a quickswitch gesture from home/workspace to the most recent
+     * app
+     */
+    public static final LauncherState QUICK_SWITCH_FROM_HOME =
             OverviewState.newSwitchState(QUICK_SWITCH_STATE_ORDINAL);
     public static final LauncherState BACKGROUND_APP =
             OverviewState.newBackgroundState(BACKGROUND_APP_STATE_ORDINAL);
@@ -206,14 +221,32 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         return (getVisibleElements(launcher) & elements) == elements;
     }
 
-    /** Returns whether taskbar is stashed and thus should replace hotseat with a handle */
+    /**
+     * Returns whether taskbar is stashed and thus should either:
+     * 1) replace hotseat or taskbar icons with a handle in gesture navigation mode or
+     * 2) fade out the hotseat or taskbar icons in 3-button navigation mode.
+     */
     public boolean isTaskbarStashed(Launcher launcher) {
         return false;
     }
 
     /** Returns whether taskbar is aligned with the hotseat vs position inside apps */
     public boolean isTaskbarAlignedWithHotseat(Launcher launcher) {
-        return !isTaskbarStashed(launcher);
+        return true;
+    }
+
+    /**
+     * Returns whether taskbar global drag is disallowed in this state.
+     */
+    public boolean disallowTaskbarGlobalDrag() {
+        return false;
+    }
+
+    /**
+     * Returns whether the taskbar shortcut should trigger split selection mode.
+     */
+    public boolean allowTaskbarInitialSplitSelection() {
+        return false;
     }
 
     /**
@@ -259,7 +292,8 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      *
      * 0 means completely zoomed in, without blurs. 1 is zoomed out, with blurs.
      */
-    public final float getDepth(Context context) {
+    public final  <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
+            float getDepth(DEVICE_PROFILE_CONTEXT context) {
         return getDepth(context,
                 BaseDraggingActivity.fromContext(context).getDeviceProfile().isMultiWindowMode);
     }
@@ -269,14 +303,16 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      *
      * @see #getDepth(Context).
      */
-    public final float getDepth(Context context, boolean isMultiWindowMode) {
+    public final <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
+            float getDepth(DEVICE_PROFILE_CONTEXT context, boolean isMultiWindowMode) {
         if (isMultiWindowMode) {
             return 0;
         }
         return getDepthUnchecked(context);
     }
 
-    protected float getDepthUnchecked(Context context) {
+    protected <DEVICE_PROFILE_CONTEXT extends Context & ActivityContext>
+            float getDepthUnchecked(DEVICE_PROFILE_CONTEXT context) {
         return 0f;
     }
 
@@ -294,6 +330,25 @@ public abstract class LauncherState implements BaseState<LauncherState> {
             @Override
             public float getPageAlpha(int pageIndex) {
                 return pageIndex != centerPage ? 0 : 1f;
+            }
+        };
+    }
+
+    /**
+     * Gets the translation provider for workspace pages.
+     */
+    public PageTranslationProvider getWorkspacePageTranslationProvider(Launcher launcher) {
+        if (this != SPRING_LOADED || !launcher.getDeviceProfile().isTwoPanels) {
+            return DEFAULT_PAGE_TRANSLATION_PROVIDER;
+        }
+        final float quarterPageSpacing = launcher.getWorkspace().getPageSpacing() / 4f;
+        return new PageTranslationProvider(DEACCEL_2) {
+            @Override
+            public float getPageTranslation(int pageIndex) {
+                boolean isRtl = launcher.getWorkspace().mIsRtl;
+                boolean isFirstPage = pageIndex % 2 == 0;
+                return ((isFirstPage && !isRtl) || (!isFirstPage && isRtl)) ? -quarterPageSpacing
+                        : quarterPageSpacing;
             }
         };
     }
@@ -317,6 +372,27 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         }
     }
 
+    /**
+     * Find {@link StateManager} and target {@link LauncherState} to handle back progress in
+     * predictive back gesture.
+     */
+    public void onBackProgressed(
+            Launcher launcher, @FloatRange(from = 0.0, to = 1.0) float backProgress) {
+        StateManager<LauncherState> lsm = launcher.getStateManager();
+        LauncherState toState = lsm.getLastState();
+        lsm.onBackProgressed(toState, backProgress);
+    }
+
+    /**
+     * Find {@link StateManager} and target {@link LauncherState} to handle backProgress in
+     * predictive back gesture.
+     */
+    public void onBackCancelled(Launcher launcher) {
+        StateManager<LauncherState> lsm = launcher.getStateManager();
+        LauncherState toState = lsm.getLastState();
+        lsm.onBackCancelled(toState);
+    }
+
     public static abstract class PageAlphaProvider {
 
         public final Interpolator interpolator;
@@ -326,6 +402,23 @@ public abstract class LauncherState implements BaseState<LauncherState> {
         }
 
         public abstract float getPageAlpha(int pageIndex);
+    }
+
+    /**
+     * Provider for the translation and animation interpolation of workspace pages.
+     */
+    public abstract static class PageTranslationProvider {
+
+        public final Interpolator interpolator;
+
+        public PageTranslationProvider(Interpolator interpolator) {
+            this.interpolator = interpolator;
+        }
+
+        /**
+         * Gets the translation of the workspace page at the provided page index.
+         */
+        public abstract float getPageTranslation(int pageIndex);
     }
 
     public static class ScaleAndTranslation {

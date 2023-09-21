@@ -168,15 +168,18 @@ public class PinnedAppsAdapter extends BaseAdapter implements OnSharedPreference
         mPrefs.unregisterOnSharedPreferenceChangeListener(this);
     }
 
-    private void update(ItemInfo info, Function<ComponentKey, Boolean> op) {
+    /**
+     * Pins or unpins apps from home screen
+     */
+    public void update(ItemInfo info, Function<ComponentKey, Boolean> op) {
         ComponentKey key = new ComponentKey(info.getTargetComponent(), info.user);
         if (op.apply(key)) {
             createFilteredAppsList();
             Set<ComponentKey> copy = new HashSet<>(mPinnedApps);
             Executors.MODEL_EXECUTOR.submit(() ->
                     mPrefs.edit().putStringSet(PINNED_APPS_KEY,
-                        copy.stream().map(this::encode).collect(Collectors.toSet()))
-                        .apply());
+                                    copy.stream().map(this::encode).collect(Collectors.toSet()))
+                            .apply());
         }
     }
 
@@ -205,19 +208,27 @@ public class PinnedAppsAdapter extends BaseAdapter implements OnSharedPreference
     /**
      * Returns a system shortcut to pin/unpin a shortcut
      */
-    public SystemShortcut getSystemShortcut(ItemInfo info) {
-        return new PinUnPinShortcut(mLauncher, info,
+    public SystemShortcut getSystemShortcut(ItemInfo info, View originalView) {
+        return new PinUnPinShortcut(mLauncher, info, originalView,
                 mPinnedApps.contains(new ComponentKey(info.getTargetComponent(), info.user)));
+    }
+
+    /**
+     * Pins app to home screen
+     */
+    public void addPinnedApp(ItemInfo info) {
+        update(info, mPinnedApps::add);
     }
 
     private class PinUnPinShortcut extends SystemShortcut<SecondaryDisplayLauncher> {
 
         private final boolean mIsPinned;
 
-        PinUnPinShortcut(SecondaryDisplayLauncher target, ItemInfo info, boolean isPinned) {
+        PinUnPinShortcut(SecondaryDisplayLauncher target, ItemInfo info, View originalView,
+                boolean isPinned) {
             super(isPinned ? R.drawable.ic_remove_no_shadow : R.drawable.ic_pin,
                     isPinned ? R.string.remove_drop_target_label : R.string.action_add_to_workspace,
-                    target, info);
+                    target, info, originalView);
             mIsPinned = isPinned;
         }
 

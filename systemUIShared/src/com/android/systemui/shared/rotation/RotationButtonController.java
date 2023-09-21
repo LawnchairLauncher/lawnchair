@@ -16,9 +16,11 @@
 
 package com.android.systemui.shared.rotation;
 
+import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.Display.DEFAULT_DISPLAY;
 
-import static com.android.internal.view.RotationPolicy.NATURAL_ROTATION;
+//import static com.android.internal.view.RotationPolicy.NATURAL_ROTATION;
+import static com.android.systemui.shared.system.QuickStepContract.isGesturalMode;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -27,8 +29,11 @@ import android.annotation.ColorInt;
 import android.annotation.DrawableRes;
 import android.annotation.SuppressLint;
 import android.app.StatusBarManager;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -47,19 +52,20 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 
+import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.logging.UiEvent;
 import com.android.internal.logging.UiEventLogger;
 import com.android.internal.logging.UiEventLoggerImpl;
 import com.android.internal.view.RotationPolicy;
-import com.android.systemui.shared.rotation.RotationButton.RotationButtonUpdatesCallback;
 import com.android.systemui.shared.recents.utilities.Utilities;
 import com.android.systemui.shared.recents.utilities.ViewRippler;
+import com.android.systemui.shared.rotation.RotationButton.RotationButtonUpdatesCallback;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
+import java.io.PrintWriter;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -67,7 +73,7 @@ import java.util.function.Supplier;
  */
 public class RotationButtonController {
 
-    private static final String TAG = "StatusBar/RotationButtonController";
+    private static final String TAG = "RotationButtonController";
     private static final int BUTTON_FADE_IN_OUT_DURATION_MS = 100;
     private static final int NAVBAR_HIDDEN_PENDING_ICON_TIMEOUT_MS = 20000;
     private static final Interpolator LINEAR_INTERPOLATOR = new LinearInterpolator();
@@ -82,19 +88,22 @@ public class RotationButtonController {
     private RotationButton mRotationButton;
 
     private boolean mIsRecentsAnimationRunning;
+    private boolean mDocked;
     private boolean mHomeRotationEnabled;
     private int mLastRotationSuggestion;
     private boolean mPendingRotationSuggestion;
     private boolean mHoveringRotationSuggestion;
     private final AccessibilityManager mAccessibilityManager;
     private final TaskStackListenerImpl mTaskStackListener;
-    private Consumer<Integer> mRotWatcherListener;
 
     private boolean mListenersRegistered = false;
+    private boolean mRotationWatcherRegistered = false;
     private boolean mIsNavigationBarShowing;
     @SuppressLint("InlinedApi")
     private @WindowInsetsController.Behavior
     int mBehavior = WindowInsetsController.BEHAVIOR_DEFAULT;
+    private int mNavBarMode;
+    private boolean mTaskBarVisible = false;
     private boolean mSkipOverrideUserLockPrefsOnce;
     private final int mLightIconColor;
     private final int mDarkIconColor;
@@ -117,6 +126,12 @@ public class RotationButtonController {
             () -> mPendingRotationSuggestion = false;
     private Animator mRotateHideAnimator;
 
+    private final BroadcastReceiver mDockedReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateDockedState(intent);
+        }
+    };
 
     private final IRotationWatcher.Stub mRotationWatcher = new IRotationWatcher.Stub() {
         @Override
@@ -124,18 +139,7 @@ public class RotationButtonController {
             // We need this to be scheduled as early as possible to beat the redrawing of
             // window in response to the orientation change.
             mMainThreadHandler.postAtFrontOfQueue(() -> {
-                // If the screen rotation changes while locked, potentially update lock to flow with
-                // new screen rotation and hide any showing suggestions.
-                if (isRotationLocked()) {
-                    if (shouldOverrideUserLockPrefs(rotation)) {
-                        setRotationLockedAtAngle(rotation);
-                    }
-                    setRotateSuggestionButtonState(false /* visible */, true /* forced */);
-                }
-
-                if (mRotWatcherListener != null) {
-                    mRotWatcherListener.accept(rotation);
-                }
+                onRotationWatcherChanged(rotation);
             });
         }
     };
@@ -186,8 +190,11 @@ public class RotationButtonController {
         return mContext;
     }
 
+    /**
+     * Called during Taskbar initialization.
+     */
     public void init() {
-        registerListeners();
+        registerListeners(true /* registerRotationWatcher */);
         if (mContext.getDisplay().getDisplayId() != DEFAULT_DISPLAY) {
             // Currently there is no accelerometer sensor on non-default display, disable fixed
             // rotation for non-default display
@@ -195,25 +202,35 @@ public class RotationButtonController {
         }
     }
 
+    /**
+     * Called during Taskbar uninitialization.
+     */
     public void onDestroy() {
         unregisterListeners();
     }
 
-    public void registerListeners() {
-        if (mListenersRegistered) {
+    public void registerListeners(boolean registerRotationWatcher) {
+        if (mListenersRegistered || getContext().getPackageManager().hasSystemFeature(FEATURE_PC)) {
             return;
         }
 
         mListenersRegistered = true;
-        try {
-            WindowManagerGlobal.getWindowManagerService()
-                    .watchRotation(mRotationWatcher, DEFAULT_DISPLAY);
-        } catch (IllegalArgumentException e) {
-            mListenersRegistered = false;
-            Log.w(TAG, "RegisterListeners for the display failed");
-        } catch (RemoteException e) {
-            Log.e(TAG, "RegisterListeners caught a RemoteException", e);
-            return;
+
+        updateDockedState(mContext.registerReceiver(mDockedReceiver,
+                new IntentFilter(Intent.ACTION_DOCK_EVENT)));
+
+        if (registerRotationWatcher) {
+            try {
+                WindowManagerGlobal.getWindowManagerService()
+                        .watchRotation(mRotationWatcher, DEFAULT_DISPLAY);
+                mRotationWatcherRegistered = true;
+            } catch (IllegalArgumentException e) {
+                mListenersRegistered = false;
+                Log.w(TAG, "RegisterListeners for the display failed", e);
+            } catch (RemoteException e) {
+                Log.e(TAG, "RegisterListeners caught a RemoteException", e);
+                return;
+            }
         }
 
         TaskStackChangeListeners.getInstance().registerTaskStackListener(mTaskStackListener);
@@ -225,22 +242,29 @@ public class RotationButtonController {
         }
 
         mListenersRegistered = false;
+
         try {
-            WindowManagerGlobal.getWindowManagerService().removeRotationWatcher(mRotationWatcher);
-        } catch (RemoteException e) {
-            Log.e(TAG, "UnregisterListeners caught a RemoteException", e);
-            return;
+            mContext.unregisterReceiver(mDockedReceiver);
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "Docked receiver already unregistered", e);
+        }
+
+        if (mRotationWatcherRegistered) {
+            try {
+                WindowManagerGlobal.getWindowManagerService().removeRotationWatcher(
+                        mRotationWatcher);
+            } catch (RemoteException e) {
+                Log.e(TAG, "UnregisterListeners caught a RemoteException", e);
+                return;
+            }
         }
 
         TaskStackChangeListeners.getInstance().unregisterTaskStackListener(mTaskStackListener);
     }
 
-    public void setRotationCallback(Consumer<Integer> watcher) {
-        mRotWatcherListener = watcher;
-    }
-
     public void setRotationLockedAtAngle(int rotationSuggestion) {
-        RotationPolicy.setRotationLockAtAngle(mContext, true, rotationSuggestion);
+        RotationPolicy.setRotationLockAtAngle(mContext, /* enabled= */ isRotationLocked(),
+                /* rotation= */ rotationSuggestion);
     }
 
     public boolean isRotationLocked() {
@@ -335,6 +359,15 @@ public class RotationButtonController {
         updateRotationButtonStateInOverview();
     }
 
+    private void updateDockedState(Intent intent) {
+        if (intent == null) {
+            return;
+        }
+
+        mDocked = intent.getIntExtra(Intent.EXTRA_DOCK_STATE, Intent.EXTRA_DOCK_STATE_UNDOCKED)
+                != Intent.EXTRA_DOCK_STATE_UNDOCKED;
+    }
+
     private void updateRotationButtonStateInOverview() {
         if (mIsRecentsAnimationRunning && !mHomeRotationEnabled) {
             setRotateSuggestionButtonState(false, true /* hideImmediately */);
@@ -368,6 +401,7 @@ public class RotationButtonController {
         }
 
         // Prepare to show the navbar icon by updating the icon style to change anim params
+        Log.i(TAG, "onRotationProposal(rotation=" + rotation + ")");
         mLastRotationSuggestion = rotation; // Remember rotation for click
         final boolean rotationCCW = Utilities.isRotationAnimationCCW(windowRotation, rotation);
         if (windowRotation == Surface.ROTATION_0 || windowRotation == Surface.ROTATION_180) {
@@ -390,9 +424,37 @@ public class RotationButtonController {
         }
     }
 
+    /**
+     * Called when the rotation watcher rotation changes, either from the watcher registered
+     * internally in this class, or a signal propagated from NavBarHelper.
+     */
+    public void onRotationWatcherChanged(int rotation) {
+        if (!mListenersRegistered) {
+            // Ignore if not registered
+            return;
+        }
+
+        // If the screen rotation changes while locked, potentially update lock to flow with
+        // new screen rotation and hide any showing suggestions.
+        boolean rotationLocked = isRotationLocked();
+        // The isVisible check makes the rotation button disappear when we are not locked
+        // (e.g. for tabletop auto-rotate).
+        if (rotationLocked || mRotationButton.isVisible()) {
+            // Do not allow a change in rotation to set user rotation when docked.
+            if (shouldOverrideUserLockPrefs(rotation) && rotationLocked && !mDocked) {
+                setRotationLockedAtAngle(rotation);
+            }
+            setRotateSuggestionButtonState(false /* visible */, true /* forced */);
+        }
+    }
+
     public void onDisable2FlagChanged(int state2) {
         final boolean rotateSuggestionsDisabled = hasDisable2RotateSuggestionFlag(state2);
         if (rotateSuggestionsDisabled) onRotationSuggestionsDisabled();
+    }
+
+    public void onNavigationModeChanged(int mode) {
+        mNavBarMode = mode;
     }
 
     public void onBehaviorChanged(int displayId, @WindowInsetsController.Behavior int behavior) {
@@ -414,6 +476,10 @@ public class RotationButtonController {
     }
 
     public void onTaskbarStateChange(boolean visible, boolean stashed) {
+        mTaskBarVisible = visible;
+        if (getRotationButton() == null) {
+            return;
+        }
         getRotationButton().onTaskbarStateChanged(visible, stashed);
     }
 
@@ -427,8 +493,12 @@ public class RotationButtonController {
      * Return true when either the task bar is visible or it's in visual immersive mode.
      */
     @SuppressLint("InlinedApi")
-    private boolean canShowRotationButton() {
-        return mIsNavigationBarShowing || mBehavior == WindowInsetsController.BEHAVIOR_DEFAULT;
+    @VisibleForTesting
+    boolean canShowRotationButton() {
+        return mIsNavigationBarShowing
+            || mBehavior == WindowInsetsController.BEHAVIOR_DEFAULT
+            || isGesturalMode(mNavBarMode)
+            || mTaskBarVisible;
     }
 
     @DrawableRes
@@ -446,6 +516,30 @@ public class RotationButtonController {
         return mDarkIconColor;
     }
 
+    public void dumpLogs(String prefix, PrintWriter pw) {
+        pw.println(prefix + "RotationButtonController:");
+
+        pw.println(String.format(
+                "%s\tmIsRecentsAnimationRunning=%b", prefix, mIsRecentsAnimationRunning));
+        pw.println(String.format("%s\tmHomeRotationEnabled=%b", prefix, mHomeRotationEnabled));
+        pw.println(String.format(
+                "%s\tmLastRotationSuggestion=%d", prefix, mLastRotationSuggestion));
+        pw.println(String.format(
+                "%s\tmPendingRotationSuggestion=%b", prefix, mPendingRotationSuggestion));
+        pw.println(String.format(
+                "%s\tmHoveringRotationSuggestion=%b", prefix, mHoveringRotationSuggestion));
+        pw.println(String.format("%s\tmListenersRegistered=%b", prefix, mListenersRegistered));
+        pw.println(String.format(
+                "%s\tmIsNavigationBarShowing=%b", prefix, mIsNavigationBarShowing));
+        pw.println(String.format("%s\tmBehavior=%d", prefix, mBehavior));
+        pw.println(String.format(
+                "%s\tmSkipOverrideUserLockPrefsOnce=%b", prefix, mSkipOverrideUserLockPrefsOnce));
+        pw.println(String.format(
+                "%s\tmLightIconColor=0x%s", prefix, Integer.toHexString(mLightIconColor)));
+        pw.println(String.format(
+                "%s\tmDarkIconColor=0x%s", prefix, Integer.toHexString(mDarkIconColor)));
+    }
+
     public RotationButton getRotationButton() {
         return mRotationButton;
     }
@@ -454,6 +548,7 @@ public class RotationButtonController {
         mUiEventLogger.log(RotationButtonEvent.ROTATION_SUGGESTION_ACCEPTED);
         incrementNumAcceptedRotationSuggestionsIfNeeded();
         setRotationLockedAtAngle(mLastRotationSuggestion);
+        Log.i(TAG, "onRotateSuggestionClick() mLastRotationSuggestion=" + mLastRotationSuggestion);
         v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
     }
 
@@ -495,7 +590,7 @@ public class RotationButtonController {
         }
         // Only override user prefs when returning to the natural rotation (normally portrait).
         // Don't let apps that force landscape or 180 alter user lock.
-        return rotation == NATURAL_ROTATION;
+        return rotation == 0;
     }
 
     private void rescheduleRotationTimeout(final boolean reasonHover) {
@@ -539,7 +634,7 @@ public class RotationButtonController {
         }
     }
 
-    private class TaskStackListenerImpl extends TaskStackChangeListener {
+    private class TaskStackListenerImpl implements TaskStackChangeListener {
         // Invalidate any rotation suggestion on task change or activity orientation change
         // Note: all callbacks happen on main thread
 
@@ -588,4 +683,3 @@ public class RotationButtonController {
         }
     }
 }
-

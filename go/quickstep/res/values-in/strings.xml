@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Bagikan Aplikasi"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Dengarkan"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Terjemahkan"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"OKE"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"BATAL"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"SETELAN"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Terjemahkan atau dengarkan teks di layar"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Informasi seperti teks di layar, alamat web, dan screenshot dapat dibagikan ke Google.\n\nUntuk mengubah informasi yang Anda bagikan, buka "<b>"Setelan &gt; Aplikasi &gt; Aplikasi default &gt; Aplikasi asisten digital"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Pilih asisten untuk menggunakan fitur ini"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Untuk mendengarkan atau menerjemahkan teks di layar, pilih aplikasi asisten digital di Setelan"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Ubah asisten untuk menggunakan fitur ini"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Untuk mendengarkan atau menerjemahkan teks di layar, ubah aplikasi asisten digital Anda di Setelan"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Ketuk di sini untuk mendengarkan teks di layar ini"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Ketuk di sini untuk menerjemahkan teks di layar ini"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Aplikasi ini tidak dapat dibagikan"</string>
+</resources>

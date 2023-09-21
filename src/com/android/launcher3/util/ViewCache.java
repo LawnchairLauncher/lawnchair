@@ -21,6 +21,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.launcher3.R;
+
 /**
  * Utility class to cache views at an activity level
  */
@@ -39,18 +41,26 @@ public class ViewCache {
             mCache.put(layoutId, entry);
         }
 
+        T result;
         if (entry.mCurrentSize > 0) {
             entry.mCurrentSize --;
-            T result = (T) entry.mViews[entry.mCurrentSize];
+            result = (T) entry.mViews[entry.mCurrentSize];
             entry.mViews[entry.mCurrentSize] = null;
-            return result;
+        } else {
+            result = (T) LayoutInflater.from(context).inflate(layoutId, parent, false);
+            result.setTag(R.id.cache_entry_tag_id, entry);
         }
-
-        return (T) LayoutInflater.from(context).inflate(layoutId, parent, false);
+        return result;
     }
 
     public void recycleView(int layoutId, View view) {
         CacheEntry entry = mCache.get(layoutId);
+        if (entry != view.getTag(R.id.cache_entry_tag_id)) {
+            // Since this view was created, the cache has been reset. The view should not be
+            // recycled since this means the environment could also have changed, requiring new
+            // view setup.
+            return;
+        }
         if (entry != null && entry.mCurrentSize < entry.mMaxSize) {
             entry.mViews[entry.mCurrentSize] = view;
             entry.mCurrentSize++;

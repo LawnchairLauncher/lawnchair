@@ -19,6 +19,8 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Process;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -33,6 +35,9 @@ public class Executors {
     private static final int POOL_SIZE =
             Math.max(Runtime.getRuntime().availableProcessors(), 2);
     private static final int KEEP_ALIVE = 1;
+
+    /** Dedicated executor instances for work depending on other packages. */
+    private static final Map<String, LooperExecutor> PACKAGE_EXECUTORS = new ConcurrentHashMap<>();
 
     /**
      * An {@link ThreadPoolExecutor} to be used with async task with no limit on the queue size.
@@ -74,6 +79,17 @@ public class Executors {
      */
     public static final LooperExecutor MODEL_EXECUTOR =
             new LooperExecutor(createAndStartNewLooper("launcher-loader"));
+
+    /**
+     * Returns and caches a single thread executor for a given package.
+     *
+     * @param packageName Package associated with the executor.
+     */
+    public static LooperExecutor getPackageExecutor(String packageName) {
+        return PACKAGE_EXECUTORS.computeIfAbsent(
+                packageName, p -> new LooperExecutor(
+                        createAndStartNewLooper(p, Process.THREAD_PRIORITY_DEFAULT)));
+    }
 
     /**
      * A simple ThreadFactory to set the thread name and priority when used with executors.

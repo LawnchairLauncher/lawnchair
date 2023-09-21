@@ -409,6 +409,8 @@
       <string name="devops">DevOps</string>
 
     <string name="support_and_pr">Support &amp; PR</string>
+
+    <string name="unofficial_dev">Unofficial Developer</string>
       <!--
       <string name="support" />
       <string name="support_and_pr" />

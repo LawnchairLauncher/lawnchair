@@ -15,25 +15,35 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TURN_OFF_WORK_APPS_TAP;
+import static androidx.core.widget.TextViewCompat.setCompoundDrawableTintList;
+import static com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.getTabWidth;
 
+import android.animation.LayoutTransition;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Insets;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowInsets;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
-import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.KeyboardInsetAnimationCallback;
-import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.model.StringCache;
+import com.android.launcher3.views.ActivityContext;
 
 import app.lawnchair.font.FontManager;
 import app.lawnchair.theme.color.ColorStateListTokens;
@@ -42,79 +52,102 @@ import app.lawnchair.theme.drawable.DrawableTokens;
 /**
  * Work profile toggle switch shown at the bottom of AllApps work tab
  */
-public class WorkModeSwitch extends Button implements Insettable, View.OnClickListener,
-        KeyboardInsetAnimationCallback.KeyboardInsetListener,
-        PersonalWorkSlidingTabStrip.OnActivePageChangedListener {
+public class WorkModeSwitch extends LinearLayout implements Insettable,
+        KeyboardInsetAnimationCallback.KeyboardInsetListener {
 
     private static final int FLAG_FADE_ONGOING = 1 << 1;
     private static final int FLAG_TRANSLATION_ONGOING = 1 << 2;
     private static final int FLAG_PROFILE_TOGGLE_ONGOING = 1 << 3;
+    private static final int SCROLL_THRESHOLD_DP = 10;
 
     private final Rect mInsets = new Rect();
+    private final Rect mImeInsets = new Rect();
     private int mFlags;
-    private boolean mWorkEnabled;
-    private boolean mOnWorkTab;
+    private final ActivityContext mActivityContext;
 
+    // Threshold when user scrolls up/down to determine when should button
+    // extend/collapse
+    private final int mScrollThreshold;
+    private ImageView mIcon;
+    private TextView mTextView;
+    private final StatsLogManager mStatsLogManager;
 
-    public WorkModeSwitch(Context context) {
+    public WorkModeSwitch(@NonNull Context context) {
         this(context, null, 0);
     }
 
-    public WorkModeSwitch(Context context, AttributeSet attrs) {
+    public WorkModeSwitch(@NonNull Context context, @NonNull AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public WorkModeSwitch(Context context, AttributeSet attrs, int defStyleAttr) {
+    public WorkModeSwitch(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
-        FontManager.INSTANCE.get(context).overrideFont(this, attrs);
+        if(mTextView != null){
+            FontManager.INSTANCE.get(context).overrideFont(mTextView, attrs);
+        }
+        mScrollThreshold = Utilities.dpToPx(SCROLL_THRESHOLD_DP);
+        mActivityContext = ActivityContext.lookupContext(getContext());
+        mStatsLogManager = mActivityContext.getStatsLogManager();
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        mIcon = findViewById(R.id.work_icon);
+        mTextView = findViewById(R.id.pause_text);
+
         setSelected(true);
-        setOnClickListener(this);
         if (Utilities.ATLEAST_R) {
-            KeyboardInsetAnimationCallback keyboardInsetAnimationCallback =
-                    new KeyboardInsetAnimationCallback(this);
+            KeyboardInsetAnimationCallback keyboardInsetAnimationCallback = new KeyboardInsetAnimationCallback(this);
             setWindowInsetsAnimationCallback(keyboardInsetAnimationCallback);
         }
 
         setBackground(DrawableTokens.WorkAppsToggleBackground.resolve(getContext()));
         ColorStateList textColor = ColorStateListTokens.AllAppsTabText.resolve(getContext());
-        setTextColor(textColor);
-        setCompoundDrawableTintList(textColor);
+        mTextView.setTextColor(textColor);
+        setCompoundDrawableTintList(mTextView,textColor);
         DeviceProfile grid = BaseDraggingActivity.fromContext(getContext()).getDeviceProfile();
         setInsets(grid.getInsets());
+        setInsets(mActivityContext.getDeviceProfile().getInsets());
+        StringCache cache = mActivityContext.getStringCache();
+        if (cache != null) {
+            mTextView.setText(cache.workProfilePauseButton);
+        }
+
+        mIcon.setColorFilter(mTextView.getCurrentTextColor());
+        getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
     }
 
     @Override
     public void setInsets(Rect insets) {
-        int bottomInset = insets.bottom - mInsets.bottom;
         mInsets.set(insets);
-        ViewGroup.MarginLayoutParams marginLayoutParams =
-                (ViewGroup.MarginLayoutParams) getLayoutParams();
-        if (marginLayoutParams != null) {
-            marginLayoutParams.bottomMargin = bottomInset + marginLayoutParams.bottomMargin;
+        updateTranslationY();
+        MarginLayoutParams lp = (MarginLayoutParams) getLayoutParams();
+        if (lp != null) {
+            int bottomMargin = getResources().getDimensionPixelSize(R.dimen.work_fab_margin_bottom);
+            DeviceProfile dp = ActivityContext.lookupContext(getContext()).getDeviceProfile();
+            if (FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get()) {
+                bottomMargin += dp.hotseatQsbHeight;
+            }
+
+            if (!dp.isGestureMode && dp.isTaskbarPresent) {
+                bottomMargin += dp.taskbarHeight;
+            }
+
+            lp.bottomMargin = bottomMargin;
         }
     }
 
-
     @Override
-    public void onActivePageChanged(int page) {
-        mOnWorkTab = page == AllAppsContainerView.AdapterHolder.WORK;
-        updateVisibility();
-    }
-
-    @Override
-    public void onClick(View view) {
-        if (Utilities.ATLEAST_P && isEnabled()) {
-            setFlag(FLAG_PROFILE_TOGGLE_ONGOING);
-            Launcher launcher = Launcher.getLauncher(getContext());
-            launcher.getStatsLogManager().logger().log(LAUNCHER_TURN_OFF_WORK_APPS_TAP);
-            launcher.getAppsView().getWorkManager().setWorkProfileEnabled(false);
-        }
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        View parent = (View) getParent();
+        int allAppsLeftRightPadding = mActivityContext.getDeviceProfile().allAppsLeftRightPadding;
+        int size = parent.getWidth() - parent.getPaddingLeft() - parent.getPaddingRight()
+                - 2 * allAppsLeftRightPadding;
+        int tabWidth = getTabWidth(getContext(), size);
+        int shift = (size - tabWidth) / 2 + allAppsLeftRightPadding;
+        setTranslationX(Utilities.isRtl(getResources()) ? shift : -shift);
     }
 
     @Override
@@ -122,43 +155,48 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
         return super.isEnabled() && getVisibility() == VISIBLE && mFlags == 0;
     }
 
-    /**
-     * Sets the enabled or disabled state of the button
-     */
-    public void updateCurrentState(boolean isEnabled) {
-        removeFlag(FLAG_PROFILE_TOGGLE_ONGOING);
-        if (mWorkEnabled != isEnabled) {
-            mWorkEnabled = isEnabled;
-            updateVisibility();
-        }
-    }
-
-
-    private void updateVisibility() {
+    public void animateVisibility(boolean visible) {
         clearAnimation();
-        if (mWorkEnabled && mOnWorkTab) {
+        if (visible) {
             setFlag(FLAG_FADE_ONGOING);
             setVisibility(VISIBLE);
+            extend();
             animate().alpha(1).withEndAction(() -> removeFlag(FLAG_FADE_ONGOING)).start();
         } else if (getVisibility() != GONE) {
             setFlag(FLAG_FADE_ONGOING);
             animate().alpha(0).withEndAction(() -> {
                 removeFlag(FLAG_FADE_ONGOING);
-                this.setVisibility(GONE);
+                setVisibility(GONE);
             }).start();
         }
     }
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        if (Utilities.ATLEAST_R && isEnabled()) {
-            setTranslationY(0);
-            if (insets.isVisible(WindowInsets.Type.ime())) {
-                Insets keyboardInsets = insets.getInsets(WindowInsets.Type.ime());
-                setTranslationY(mInsets.bottom - keyboardInsets.bottom);
-            }
+        WindowInsetsCompat windowInsetsCompat = WindowInsetsCompat.toWindowInsetsCompat(insets, this);
+        if (windowInsetsCompat.isVisible(WindowInsetsCompat.Type.ime())) {
+            setInsets(mImeInsets, windowInsetsCompat.getInsets(WindowInsetsCompat.Type.ime()).toPlatformInsets ( ));
+        } else {
+            mImeInsets.setEmpty();
         }
-        return insets;
+        updateTranslationY();
+        return super.onApplyWindowInsets(insets);
+    }
+
+    private void updateTranslationY() {
+        setTranslationY(-mImeInsets.bottom);
+    }
+
+    @Override
+    public void setTranslationY(float translationY) {
+        // Always translate at least enough for nav bar insets.
+        super.setTranslationY(Math.min(translationY, -mInsets.bottom));
+    }
+
+    private void setInsets(Rect rect, Insets insets) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            rect.set(insets.left, insets.top, insets.right, insets.bottom);
+        }
     }
 
     @Override
@@ -177,5 +215,17 @@ public class WorkModeSwitch extends Button implements Insettable, View.OnClickLi
 
     private void removeFlag(int flag) {
         mFlags &= ~flag;
+    }
+
+    public void extend() {
+        mTextView.setVisibility(VISIBLE);
+    }
+
+    public void shrink() {
+        mTextView.setVisibility(GONE);
+    }
+
+    public int getScrollThreshold() {
+        return mScrollThreshold;
     }
 }

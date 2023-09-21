@@ -19,6 +19,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.PatternMatcher;
+import android.text.TextUtils;
+
+import androidx.annotation.Nullable;
 
 import java.util.function.Consumer;
 
@@ -39,10 +43,44 @@ public class SimpleBroadcastReceiver extends BroadcastReceiver {
      * Helper method to register multiple actions
      */
     public void register(Context context, String... actions) {
+        context.registerReceiver(this, getFilter(actions));
+    }
+
+    /**
+     * Helper method to register multiple actions associated with a paction
+     */
+    public void registerPkgActions(Context context, @Nullable String pkg, String... actions) {
+        context.registerReceiver(this, getPackageFilter(pkg, actions));
+    }
+
+    /**
+     * Creates an intent filter to listen for actions with a specific package in the data field.
+     */
+    public static IntentFilter getPackageFilter(String pkg, String... actions) {
+        IntentFilter filter = getFilter(actions);
+        filter.addDataScheme("package");
+        if (!TextUtils.isEmpty(pkg)) {
+            filter.addDataSchemeSpecificPart(pkg, PatternMatcher.PATTERN_LITERAL);
+        }
+        return filter;
+    }
+
+    private static IntentFilter getFilter(String... actions) {
         IntentFilter filter = new IntentFilter();
         for (String action : actions) {
             filter.addAction(action);
         }
-        context.registerReceiver(this, filter);
+        return filter;
+    }
+
+    /**
+     * Unregisters the receiver ignoring any errors
+     */
+    public void unregisterReceiverSafely(Context context) {
+        try {
+            context.unregisterReceiver(this);
+        } catch (IllegalArgumentException e) {
+            // It was probably never registered or already unregistered. Ignore.
+        }
     }
 }

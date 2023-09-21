@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Поділитися додатком"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Слухати"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Перекласти"</string>
+    <string name="action_search" msgid="6269564710943755464">"Об’єктив"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"OK"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"СКАСУВАТИ"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"НАЛАШТУВАННЯ"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Перекласти або прослухати текст на екрані"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Певна інформація (наприклад, текст на екрані, веб-адреси, знімки екрана) може надсилатися на сервери Google.\n\nЩоб змінити типи даних, які надсилаються, відкрийте "<b>"Налаштування &gt; Додатки &gt; Додатки за умовчанням &gt; Цифровий помічник"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Щоб користуватися цією функцією, виберіть помічника"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Щоб прослухати чи перекласти текст на екрані, виберіть цифрового помічника в налаштуваннях"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Змініть помічника, щоб користуватися цією функцією"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Щоб прослухати чи перекласти текст на екрані, змініть цифрового помічника в налаштуваннях"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Натисніть тут, щоб прослухати текст на цьому екрані"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Натисніть тут, щоб перекласти текст на цьому екрані"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Цим додатком не можна поділитися"</string>
+</resources>

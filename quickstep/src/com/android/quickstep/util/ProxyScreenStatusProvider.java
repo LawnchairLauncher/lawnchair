@@ -39,6 +39,16 @@ public class ProxyScreenStatusProvider implements ScreenStatusProvider {
         mListeners.forEach(ScreenListener::onScreenTurnedOn);
     }
 
+    /** Called when the screen is starting to turn on. */
+    public void onScreenTurningOn() {
+        mListeners.forEach(ScreenListener::onScreenTurningOn);
+    }
+
+    /** Called when the screen is starting to turn off. */
+    public void onScreenTurningOff() {
+        mListeners.forEach(ScreenListener::onScreenTurningOff);
+    }
+
     @Override
     public void addCallback(@NonNull ScreenListener listener) {
         mListeners.add(listener);

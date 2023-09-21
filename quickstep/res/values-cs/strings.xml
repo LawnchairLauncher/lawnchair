@@ -33,9 +33,8 @@
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"Návrhy aplikací pro vás"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"Nechte si ve spodním řádku na ploše zobrazovat návrhy aplikací"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Nechte si na řádku oblíbených na ploše zobrazovat návrhy aplikací"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Mějte nejpoužívanější aplikace k dispozici přímo na ploše. Návrhy se budou měnit v závislosti na sledech činností. Aplikace ve spodním řádku se přesunou na vaši plochu."</string>
-    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Mějte nejpoužívanější aplikace k dispozici přímo na ploše. Návrhy se budou měnit v závislosti na sledech činností. Aplikace na řádku oblíbených se přesunou na plochu."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Mějte nejpoužívanější aplikace k dispozici přímo na ploše. Návrhy se budou měnit v závislosti na sledech činností. Aplikace ve spodním řádku se přesunou do nové složky."</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Mějte nejpoužívanější aplikace k dispozici přímo na ploše. Návrhy se budou měnit podle vašich zvyklostí. Aplikace ve spodním řádku se přesunou nahoru na vaši plochu."</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Mějte nejpoužívanější aplikace k dispozici přímo na ploše. Návrhy se budou měnit podle vašich zvyklostí. Aplikace na řádku oblíbených se přesunou na plochu."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Zobrazovat návrhy aplikací"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Ne, díky"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Nastavení"</string>
@@ -45,53 +44,83 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Návrhy aplikací jsou povoleny"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Návrhy aplikací jsou zakázány"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Předpokládaná aplikace: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Přejeďte prstem z úplného levého okraje obrazovky."</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Přejeďte prstem z levého okraje doprostřed obrazovky a zdvihněte prst."</string>
-    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"A je to! Teď zkuste přejet prstem z pravého okraje."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Přejeďte prstem z úplného pravého okraje obrazovky."</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Přejeďte prstem z pravého okraje doprostřed obrazovky a zdvihněte prst."</string>
-    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"Dokončili jste gesto pro přechod zpět. Teď se naučíme přejít na plochu."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Je potřeba přejet prstem z úplného pravého nebo levého okraje obrazovky."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Přejeďte prstem z pravého nebo levého okraje doprostřed obrazovky a zdvihněte prst."</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Naučili jste se, jak se vrátit zpět přejetím prstem zprava. Teď se naučíte přepínat aplikace."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Dokončili jste gesto pro přechod zpět."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Dejte pozor, abyste prstem nepřejížděli moc blízko ke spodnímu okraji obrazovky."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Citlivost gesta pro přechod zpět můžete změnit v Nastavení"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Přejetím prstem se vrátíte zpět"</string>
-    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"K návratu na poslední obrazovku přejeďte prstem z levého nebo pravého okraje obrazovky doprostřed."</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Přejeďte prstem nahoru z dolního okraje obrazovky."</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Na předchozí obrazovku se vrátíte tak, že přejedete prstem z levého nebo pravého okraje obrazovky doprostřed."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Pokud se chcete vrátit na poslední obrazovku, přejeďte dvěma prsty z levého nebo pravého okraje doprostřed obrazovky."</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Návrat zpět"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Je potřeba přejet prstem nahoru z dolního okraje obrazovky."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Před zdvihnutím prstu nedělejte pauzu."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Přejeďte prstem přímo nahoru."</string>
-    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"Dokončili jste gesto pro přechod na plochu. Teď se naučíme přepínat aplikace."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Dokončili jste gesto pro přechod na plochu. Teď se naučíte vrátit se zpět."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Dokončili jste gesto pro přechod na plochu."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Přechod na plochu přejetím prstem"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Přejeďte prstem ze spodní části obrazovky nahoru. Tímto gestem se vždy dostanete na plochu."</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Přejeďte prstem nahoru z dolního okraje obrazovky."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Přejeďte dvěma prsty z dolního okraje obrazovky nahoru. Tímto gestem se vždy dostanete na plochu."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Přechod na plochu"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Na plochu se kdykoli dostanete tak, že přejedete prstem ze spodní části obrazovky nahoru."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Je potřeba přejet prstem nahoru z dolního okraje obrazovky."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Zkuste podržet okno delší dobu, než ho uvolníte."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Přejeďte prstem přímo nahoru a pak udělejte pauzu."</string>
-    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Dokončili jste gesto pro přepínání aplikací. Jste připraveni používat telefon."</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Naučili jste se používat gesta. Gesta můžete vypnout v nastavení."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Dokončili jste gesto pro přepínání aplikací."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Přepínání aplikací přejetím prstem"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Přejeďte prstem nahoru z dolního okraje obrazovky, podržte obrazovku a potom prst uvolněte."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Přejeďte nahoru z dolního okraje obrazovky, podržte obrazovku a uvolněte."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Přepínání mezi aplikacemi: Přejeďte dvěma prsty nahoru z dolního okraje obrazovky, podržte obrazovku a uvolněte."</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Přepnout aplikace"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Vše je nastaveno"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Další"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Hotovo"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Hotovo"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Nastavení"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Zkusit znovu"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Skvělé!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Výukový program <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <string name="allset_title" msgid="5021126669778966707">"Hotovo!"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Přejetím nahoru se vrátíte na plochu"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"Klepnutím na tlačítko plochy se vrátíte na plochu"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Jste připraveni začít používat <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"zařízení"</string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Nastavení navigace v systému"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Sdílet"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Snímek obrazovky"</string>
     <string name="action_split" msgid="2098009717623550676">"Rozdělit"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"Klepnutím na jinou aplikaci rozdělíte obrazovku"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"Aplikace nepodporuje režim rozdělené obrazovky."</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"Obrazovku rozdělíte klepnutím na jinou aplikaci"</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Vyberte podporovanou aplikaci"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Aplikace nebo organizace zakazuje tuto akci"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Přeskočit výukový program k navigaci?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Program později najdete v aplikaci <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Zrušit"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Přeskočit"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Otočit obrazovku"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Informace o panelu aplikací"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Zobrazila se výuka k hlavnímu panelu"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Výuka k hlavnímu panelu byla zavřena"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Aplikace lze přepínat pomocí hlavního panelu"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Po přetažení na stranu lze používat dvě aplikace současně"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Hlavní panel můžete skrýt podržením"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Přetáhněte aplikaci na stranu a používejte tak dvě najednou"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Panel aplikací zobrazíte pomalým přejetím prstem nahoru"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Dostávejte návrhy aplikací podle toho, jaké používáte"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Pokud chcete panel aplikací automaticky skrýt, zapněte v Nastavení navigaci gesty"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Více možností s panelem aplikací"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Další"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Zpět"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Zavřít"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Hotovo"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Domů"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Přístupnost"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Zpět"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Přepínač IME"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Poslední"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Oznámení"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Rychlé nastavení"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"Panel aplikací"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Panel aplikací je zobrazen"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Panel aplikací je skrytý"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigační panel"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Přesunout doleva nahoru"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Přesunout doprava dolů"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Zobrazit # další aplikaci.}few{Zobrazit # další aplikace.}many{Zobrazit # další aplikace.}other{Zobrazit # dalších aplikací.}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> a <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

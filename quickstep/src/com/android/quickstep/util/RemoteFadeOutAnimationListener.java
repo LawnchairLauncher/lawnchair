@@ -15,14 +15,14 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
+import static android.view.RemoteAnimationTarget.MODE_CLOSING;
 
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.view.RemoteAnimationTarget;
+import android.view.SurfaceControl.Transaction;
 
 import com.android.quickstep.RemoteAnimationTargets;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.TransactionCompat;
 
 /**
  * Animation listener which fades out the closing targets
@@ -32,24 +32,24 @@ public class RemoteFadeOutAnimationListener implements AnimatorUpdateListener {
     private final RemoteAnimationTargets mTarget;
     private boolean mFirstFrame = true;
 
-    public RemoteFadeOutAnimationListener(RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets) {
+    public RemoteFadeOutAnimationListener(RemoteAnimationTarget[] appTargets,
+            RemoteAnimationTarget[] wallpaperTargets) {
         mTarget = new RemoteAnimationTargets(appTargets, wallpaperTargets,
-                new RemoteAnimationTargetCompat[0], MODE_CLOSING);
+                new RemoteAnimationTarget[0], MODE_CLOSING);
     }
 
     @Override
     public void onAnimationUpdate(ValueAnimator valueAnimator) {
-        TransactionCompat t = new TransactionCompat();
+        Transaction t = new Transaction();
         if (mFirstFrame) {
-            for (RemoteAnimationTargetCompat target : mTarget.unfilteredApps) {
+            for (RemoteAnimationTarget target : mTarget.unfilteredApps) {
                 t.show(target.leash);
             }
             mFirstFrame = false;
         }
 
         float alpha = 1 - valueAnimator.getAnimatedFraction();
-        for (RemoteAnimationTargetCompat app : mTarget.apps) {
+        for (RemoteAnimationTarget app : mTarget.apps) {
             t.setAlpha(app.leash, alpha);
         }
         t.apply();

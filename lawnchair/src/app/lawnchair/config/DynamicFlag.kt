@@ -9,13 +9,13 @@ class DynamicFlag(
     key: String,
     private val getValue: (Context?) -> Boolean,
     defaultValue: Boolean
-) : BooleanFlag(key, defaultValue) {
+) : BooleanFlag(defaultValue) {
 
     override fun get(): Boolean {
         return try {
             getValue(LawnchairApp.instance)
         } catch (t: Throwable) {
-            Log.d("DynamicFlag", "failed to get value for $key", t)
+            Log.d("DynamicFlag", "failed to get value for ", t)
             super.get()
         }
     }

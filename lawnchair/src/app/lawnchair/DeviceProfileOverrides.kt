@@ -9,8 +9,6 @@ import com.android.launcher3.InvariantDeviceProfile.INDEX_DEFAULT
 import com.android.launcher3.InvariantDeviceProfile.INDEX_LANDSCAPE
 import com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_PORTRAIT
 import com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_LANDSCAPE
-import com.android.launcher3.InvariantDeviceProfile.INDEX_ALL_APPS
-import com.android.launcher3.Utilities
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.opto.core.firstBlocking
 
@@ -107,12 +105,10 @@ class DeviceProfileOverrides(context: Context) {
 
             // apply icon and text size
             idp.iconSize[INDEX_DEFAULT] *= iconSizeFactor
+            idp.allAppsIconSize[INDEX_DEFAULT] *= allAppsIconSizeFactor
             idp.iconSize[INDEX_LANDSCAPE] *= iconSizeFactor
             idp.iconSize[INDEX_TWO_PANEL_PORTRAIT] *= iconSizeFactor
             idp.iconSize[INDEX_TWO_PANEL_LANDSCAPE] *= iconSizeFactor
-            idp.iconSize[INDEX_ALL_APPS] *= allAppsIconSizeFactor
-
-            idp.enableTaskbarOnPhone = Utilities.ATLEAST_S_V2 && enableTaskbarOnPhone
         }
     }
 

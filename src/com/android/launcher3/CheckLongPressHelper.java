@@ -16,12 +16,16 @@
 
 package com.android.launcher3;
 
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
+import com.android.launcher3.util.TouchUtil;
+
 /**
- * Utility class to handle tripper long press on a view with custom timeout and stylus event
+ * Utility class to handle tripper long press or right click on a view with custom timeout and
+ * stylus event
  */
 public class CheckLongPressHelper {
 
@@ -34,6 +38,7 @@ public class CheckLongPressHelper {
     private float mLongPressTimeoutFactor = DEFAULT_LONG_PRESS_TIMEOUT_FACTOR;
 
     private boolean mHasPerformedLongPress;
+    private boolean mIsInMouseRightClick;
 
     private Runnable mPendingCheckForLongPress;
 
@@ -59,6 +64,26 @@ public class CheckLongPressHelper {
                 // start fresh on touch down.
                 cancelLongPress();
 
+                // Mouse right click should immediately trigger a long press
+                if (TouchUtil.isMouseRightClickDownOrMove(ev)) {
+                    mIsInMouseRightClick = true;
+                    triggerLongPress();
+                    final Handler handler = mView.getHandler();
+                    if (handler != null) {
+                        // Send an ACTION_UP to end this click gesture to avoid user dragging with
+                        // mouse's right button. Note that we need to call
+                        // {@link Handler#postAtFrontOfQueue()} instead of {@link View#post()} to
+                        // make sure ACTION_UP is sent before any ACTION_MOVE if user is dragging.
+                        final MotionEvent actionUpEvent = MotionEvent.obtain(ev);
+                        actionUpEvent.setAction(MotionEvent.ACTION_UP);
+                        handler.postAtFrontOfQueue(() -> {
+                            mView.getRootView().dispatchTouchEvent(actionUpEvent);
+                            actionUpEvent.recycle();
+                        });
+                    }
+                    break;
+                }
+
                 postCheckForLongPress();
                 if (isStylusButtonPressed(ev)) {
                     triggerLongPress();
@@ -70,7 +95,8 @@ public class CheckLongPressHelper {
                 cancelLongPress();
                 break;
             case MotionEvent.ACTION_MOVE:
-                if (!Utilities.pointInView(mView, ev.getX(), ev.getY(), mSlop)) {
+                if (mIsInMouseRightClick
+                        || !Utilities.pointInView(mView, ev.getX(), ev.getY(), mSlop)) {
                     cancelLongPress();
                 } else if (mPendingCheckForLongPress != null && isStylusButtonPressed(ev)) {
                     // Only trigger long press if it has not been cancelled before
@@ -98,9 +124,10 @@ public class CheckLongPressHelper {
     }
 
     /**
-     * Cancels any pending long press
+     * Cancels any pending long press and right click
      */
     public void cancelLongPress() {
+        mIsInMouseRightClick = false;
         mHasPerformedLongPress = false;
         clearCallbacks();
     }

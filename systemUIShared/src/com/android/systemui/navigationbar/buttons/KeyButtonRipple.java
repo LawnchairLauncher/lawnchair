@@ -291,8 +291,10 @@ public class KeyButtonRipple extends Drawable {
     }
 
     private void endAnimations(String reason, boolean cancel) {
-        Trace.beginSection("KeyButtonRipple.endAnim: reason=" + reason + " cancel=" + cancel);
-        Trace.endSection();
+        if (Trace.isEnabled()) {
+            Trace.instant(Trace.TRACE_TAG_APP,
+                    "KeyButtonRipple.endAnim: reason=" + reason + " cancel=" + cancel);
+        }
         mVisible = false;
         mTmpArray.addAll(mRunningAnimations);
         int size = mTmpArray.size();
@@ -502,20 +504,23 @@ public class KeyButtonRipple extends Drawable {
 
         @Override
         public void onAnimationStart(Animator animation) {
-            Trace.beginSection("KeyButtonRipple.start." + mName);
-            Trace.endSection();
+            if (Trace.isEnabled()) {
+                Trace.instant(Trace.TRACE_TAG_APP, "KeyButtonRipple.start." + mName);
+            }
         }
 
         @Override
         public void onAnimationCancel(Animator animation) {
-            Trace.beginSection("KeyButtonRipple.cancel." + mName);
-            Trace.endSection();
+            if (Trace.isEnabled()) {
+                Trace.instant(Trace.TRACE_TAG_APP, "KeyButtonRipple.cancel." + mName);
+            }
         }
 
         @Override
         public void onAnimationEnd(Animator animation) {
-            Trace.beginSection("KeyButtonRipple.end." + mName);
-            Trace.endSection();
+            if (Trace.isEnabled()) {
+                Trace.instant(Trace.TRACE_TAG_APP, "KeyButtonRipple.end." + mName);
+            }
         }
     }
 

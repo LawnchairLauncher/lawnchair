@@ -19,7 +19,8 @@ package com.android.quickstep.util;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
+import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.Task;
 
 /**
@@ -27,23 +28,25 @@ import com.android.systemui.shared.recents.model.Task;
  * are represented as an app-pair in the recents task list.
  */
 public class GroupTask {
-    public @NonNull Task task1;
-    public @Nullable Task task2;
-    public @Nullable StagedSplitBounds mStagedSplitBounds;
+    @NonNull
+    public final Task task1;
+    @Nullable
+    public final Task task2;
+    @Nullable
+    public final SplitBounds mSplitBounds;
+    @TaskView.Type
+    public final int taskViewType;
 
-    public GroupTask(@NonNull Task t1, @Nullable Task t2,
-            @Nullable StagedSplitBounds stagedSplitBounds) {
-        task1 = t1;
-        task2 = t2;
-        mStagedSplitBounds = stagedSplitBounds;
+    public GroupTask(@NonNull Task t1, @Nullable Task t2, @Nullable SplitBounds splitBounds) {
+        this(t1, t2, splitBounds, t2 != null ? TaskView.Type.GROUPED : TaskView.Type.SINGLE);
     }
 
-    public GroupTask(@NonNull GroupTask group) {
-        task1 = new Task(group.task1);
-        task2 = group.task2 != null
-                ? new Task(group.task2)
-                : null;
-        mStagedSplitBounds = group.mStagedSplitBounds;
+    protected GroupTask(@NonNull Task t1, @Nullable Task t2, @Nullable SplitBounds splitBounds,
+            @TaskView.Type int taskViewType) {
+        task1 = t1;
+        task2 = t2;
+        mSplitBounds = splitBounds;
+        this.taskViewType = taskViewType;
     }
 
     public boolean containsTask(int taskId) {
@@ -52,5 +55,15 @@ public class GroupTask {
 
     public boolean hasMultipleTasks() {
         return task2 != null;
+    }
+
+    /**
+     * Create a copy of this instance
+     */
+    public GroupTask copy() {
+        return new GroupTask(
+                new Task(task1),
+                task2 != null ? new Task(task2) : null,
+                mSplitBounds);
     }
 }

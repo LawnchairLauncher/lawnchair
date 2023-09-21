@@ -45,8 +45,8 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.FragmentWithPreview;
 import com.android.launcher3.widget.util.WidgetSizes;
@@ -210,7 +210,7 @@ public class QsbContainerView extends FrameLayout {
             Context context = getContext();
             AppWidgetManager widgetManager = AppWidgetManager.getInstance(context);
 
-            int widgetId = Utilities.getPrefs(context).getInt(mKeyWidgetId, -1);
+            int widgetId = LauncherPrefs.getPrefs(context).getInt(mKeyWidgetId, -1);
             AppWidgetProviderInfo widgetInfo = widgetManager.getAppWidgetInfo(widgetId);
             boolean isWidgetBound = (widgetInfo != null) &&
                     widgetInfo.provider.equals(mWidgetInfo.provider);
@@ -254,7 +254,7 @@ public class QsbContainerView extends FrameLayout {
         }
 
         private void saveWidgetId(int widgetId) {
-            Utilities.getPrefs(getContext()).edit().putInt(mKeyWidgetId, widgetId).apply();
+            LauncherPrefs.getPrefs(getContext()).edit().putInt(mKeyWidgetId, widgetId).apply();
         }
 
         @Override

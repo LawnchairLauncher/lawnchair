@@ -56,6 +56,17 @@ public class Interpolators {
 
     public static final Interpolator DECELERATED_EASE = new PathInterpolator(0, 0, .2f, 1f);
     public static final Interpolator ACCELERATED_EASE = new PathInterpolator(0.4f, 0, 1f, 1f);
+    public static final Interpolator PREDICTIVE_BACK_DECELERATED_EASE =
+            new PathInterpolator(0, 0, 0, 1f);
+
+    /**
+     * The default emphasized interpolator. Used for hero / emphasized movement of content.
+     */
+    public static final Interpolator EMPHASIZED = createEmphasizedInterpolator();
+    public static final Interpolator EMPHASIZED_ACCELERATE = new PathInterpolator(
+            0.3f, 0f, 0.8f, 0.15f);
+    public static final Interpolator EMPHASIZED_DECELERATE = new PathInterpolator(
+            0.05f, 0.7f, 0.1f, 1f);
 
     public static final Interpolator EXAGGERATED_EASE;
 
@@ -74,6 +85,7 @@ public class Interpolators {
         EXAGGERATED_EASE = new PathInterpolator(exaggeratedEase);
     }
 
+    public static final Interpolator OVERSHOOT_0_75 = new OvershootInterpolator(0.75f);
     public static final Interpolator OVERSHOOT_1_2 = new OvershootInterpolator(1.2f);
     public static final Interpolator OVERSHOOT_1_7 = new OvershootInterpolator(1.7f);
 
@@ -81,7 +93,6 @@ public class Interpolators {
             new PathInterpolator(0.3f, 0f, 0.1f, 1f);
     public static final Interpolator TOUCH_RESPONSE_INTERPOLATOR_ACCEL_DEACCEL =
             v -> ACCEL_DEACCEL.getInterpolation(TOUCH_RESPONSE_INTERPOLATOR.getInterpolation(v));
-
 
     /**
      * Inversion of ZOOM_OUT, compounded with an ease-out.
@@ -145,8 +156,9 @@ public class Interpolators {
     }
 
     /**
-     * Runs the given interpolator such that the entire progress is set between the given bounds.
-     * That is, we set the interpolation to 0 until lowerBound and reach 1 by upperBound.
+     * Returns a function that runs the given interpolator such that the entire progress is set
+     * between the given bounds. That is, we set the interpolation to 0 until lowerBound and reach
+     * 1 by upperBound.
      */
     public static Interpolator clampToProgress(Interpolator interpolator, float lowerBound,
             float upperBound) {
@@ -155,18 +167,42 @@ public class Interpolators {
                     String.format("upperBound (%f) must be greater than lowerBound (%f)",
                             upperBound, lowerBound));
         }
-        return t -> {
-            if (t == lowerBound && t == upperBound) {
-                return t == 0f ? 0 : 1;
-            }
-            if (t < lowerBound) {
-                return 0;
-            }
-            if (t > upperBound) {
-                return 1;
-            }
-            return interpolator.getInterpolation((t - lowerBound) / (upperBound - lowerBound));
-        };
+        return t -> clampToProgress(interpolator, t, lowerBound, upperBound);
+    }
+
+    /**
+     * Returns the progress value's progress between the lower and upper bounds. That is, the
+     * progress will be 0f from 0f to lowerBound, and reach 1f by upperBound.
+     *
+     * Between lowerBound and upperBound, the progress value will be interpolated using the provided
+     * interpolator.
+     */
+    public static float clampToProgress(
+            Interpolator interpolator, float progress, float lowerBound, float upperBound) {
+        if (upperBound < lowerBound) {
+            throw new IllegalArgumentException(
+                    String.format("upperBound (%f) must be greater than lowerBound (%f)",
+                            upperBound, lowerBound));
+        }
+
+        if (progress == lowerBound && progress == upperBound) {
+            return progress == 0f ? 0 : 1;
+        }
+        if (progress < lowerBound) {
+            return 0;
+        }
+        if (progress > upperBound) {
+            return 1;
+        }
+        return interpolator.getInterpolation((progress - lowerBound) / (upperBound - lowerBound));
+    }
+
+    /**
+     * Returns the progress value's progress between the lower and upper bounds. That is, the
+     * progress will be 0f from 0f to lowerBound, and reach 1f by upperBound.
+     */
+    public static float clampToProgress(float progress, float lowerBound, float upperBound) {
+        return clampToProgress(Interpolators.LINEAR, progress, lowerBound, upperBound);
     }
 
     /**
@@ -177,5 +213,25 @@ public class Interpolators {
     public static Interpolator mapToProgress(Interpolator interpolator, float lowerBound,
             float upperBound) {
         return t -> Utilities.mapRange(interpolator.getInterpolation(t), lowerBound, upperBound);
+    }
+
+    /**
+     * Returns the reverse of the provided interpolator, following the formula: g(x) = 1 - f(1 - x).
+     * In practice, this means that if f is an interpolator used to model a value animating between
+     * m and n, g is the interpolator to use to obtain the specular behavior when animating from n
+     * to m.
+     */
+    public static Interpolator reverse(Interpolator interpolator) {
+        return t -> 1 - interpolator.getInterpolation(1 - t);
+    }
+
+    // Create the default emphasized interpolator
+    private static PathInterpolator createEmphasizedInterpolator() {
+        Path path = new Path();
+        // Doing the same as fast_out_extra_slow_in
+        path.moveTo(0f, 0f);
+        path.cubicTo(0.05f, 0f, 0.133333f, 0.06f, 0.166666f, 0.4f);
+        path.cubicTo(0.208333f, 0.82f, 0.25f, 1f, 1f, 1f);
+        return new PathInterpolator(path);
     }
 }

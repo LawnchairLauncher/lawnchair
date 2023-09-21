@@ -41,4 +41,8 @@
     <string name="tooltip_listen">Tap here to listen to text on this screen</string>
     <!-- Tooltip to highlight and explain the Translate button -->
     <string name="tooltip_translate">Tap here to translate text on this screen</string>
+
+    <!-- ******* Toast Messages ******* -->
+    <!-- Toast to indicate that an app cannot be shared -->
+    <string name="toast_p2p_app_not_shareable">This app can’t be shared</string>
 </resources>

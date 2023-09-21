@@ -17,9 +17,16 @@ package com.android.quickstep;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
+import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.FINISH_RECENTS_ANIMATION;
 
+import android.content.Context;
+import android.os.RemoteException;
+import android.util.Log;
 import android.view.IRecentsAnimationController;
+import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl;
+import android.view.WindowManagerGlobal;
 import android.window.PictureInPictureSurfaceTransaction;
 
 import androidx.annotation.NonNull;
@@ -27,10 +34,11 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RunnableList;
+import com.android.quickstep.util.ActiveGestureErrorDetector;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
 import com.android.systemui.shared.system.RecentsAnimationControllerCompat;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.util.function.Consumer;
 
@@ -39,6 +47,7 @@ import java.util.function.Consumer;
  */
 public class RecentsAnimationController {
 
+    private static final String TAG = "RecentsAnimationController";
     private final RecentsAnimationControllerCompat mController;
     private final Consumer<RecentsAnimationController> mOnFinishedListener;
     private final boolean mAllowMinimizeSplitScreen;
@@ -74,7 +83,16 @@ public class RecentsAnimationController {
         if (mUseLauncherSysBarFlags != useLauncherSysBarFlags) {
             mUseLauncherSysBarFlags = useLauncherSysBarFlags;
             UI_HELPER_EXECUTOR.execute(() -> {
-                mController.setAnimationTargetsBehindSystemBars(!useLauncherSysBarFlags);
+                if (!ENABLE_SHELL_TRANSITIONS) {
+                    mController.setAnimationTargetsBehindSystemBars(!useLauncherSysBarFlags);
+                } else {
+                    try {
+                        WindowManagerGlobal.getWindowManagerService().setRecentsAppBehindSystemBars(
+                                useLauncherSysBarFlags);
+                    } catch (RemoteException e) {
+                        Log.e(TAG, "Unable to reach window manager", e);
+                    }
+                }
             });
         }
     }
@@ -83,27 +101,21 @@ public class RecentsAnimationController {
      * Indicates that the gesture has crossed the window boundary threshold and we should minimize
      * if we are in splitscreen.
      */
-    public void setSplitScreenMinimized(boolean splitScreenMinimized) {
+    public void setSplitScreenMinimized(Context context, boolean splitScreenMinimized) {
         if (!mAllowMinimizeSplitScreen) {
             return;
         }
         if (mSplitScreenMinimized != splitScreenMinimized) {
             mSplitScreenMinimized = splitScreenMinimized;
-            UI_HELPER_EXECUTOR.execute(() -> {
-                SystemUiProxy p = SystemUiProxy.INSTANCE.getNoCreate();
-                if (p != null) {
-                    p.setSplitScreenMinimized(splitScreenMinimized);
-                }
-            });
         }
     }
 
     /**
      * Remove task remote animation target from
-     * {@link RecentsAnimationCallbacks#onTaskAppeared(RemoteAnimationTargetCompat)}}.
+     * {@link RecentsAnimationCallbacks#onTasksAppeared}}.
      */
     @UiThread
-    public void removeTaskTarget(@NonNull RemoteAnimationTargetCompat target) {
+    public void removeTaskTarget(@NonNull RemoteAnimationTarget target) {
         UI_HELPER_EXECUTOR.execute(() -> mController.removeTask(target.taskId));
     }
 
@@ -144,6 +156,10 @@ public class RecentsAnimationController {
             mPendingFinishCallbacks.add(callback);
             return;
         }
+        ActiveGestureLog.INSTANCE.addLog(
+                /* event= */ "finishRecentsAnimation",
+                /* extras= */ toRecents,
+                /* gestureEvent= */ FINISH_RECENTS_ANIMATION);
 
         // Finish not yet requested
         mFinishRequested = true;
@@ -154,6 +170,8 @@ public class RecentsAnimationController {
             mController.finish(toRecents, sendUserLeaveHint);
             InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
             InteractionJankMonitorWrapper.end(InteractionJankMonitorWrapper.CUJ_APP_CLOSE_TO_HOME);
+            InteractionJankMonitorWrapper.end(
+                    InteractionJankMonitorWrapper.CUJ_APP_SWIPE_TO_RECENTS);
             MAIN_EXECUTOR.execute(mPendingFinishCallbacks::executeAllAndDestroy);
         });
     }
@@ -163,7 +181,12 @@ public class RecentsAnimationController {
      */
     @UiThread
     public void cleanupScreenshot() {
-        UI_HELPER_EXECUTOR.execute(() -> mController.cleanupScreenshot());
+        UI_HELPER_EXECUTOR.execute(() -> {
+            ActiveGestureLog.INSTANCE.addLog(
+                    "cleanupScreenshot",
+                    ActiveGestureErrorDetector.GestureEvent.CLEANUP_SCREENSHOT);
+            mController.cleanupScreenshot();
+        });
     }
 
     /**
@@ -211,7 +234,6 @@ public class RecentsAnimationController {
      */
     public void enableInputConsumer() {
         UI_HELPER_EXECUTOR.submit(() -> {
-            mController.hideCurrentInputMethod();
             mController.setInputConsumerEnabled(true);
         });
     }

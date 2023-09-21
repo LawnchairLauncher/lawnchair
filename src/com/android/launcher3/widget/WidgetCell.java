@@ -22,10 +22,12 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_TRAY;
 import static com.android.launcher3.Utilities.ATLEAST_S;
+import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_WIDGET_CENTERING;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Process;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Size;
@@ -49,7 +51,6 @@ import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.RoundDrawableWrapper;
 import com.android.launcher3.icons.cache.HandlerRunnable;
@@ -63,12 +64,16 @@ import java.util.function.Consumer;
 import app.lawnchair.LawnchairAppWidgetHostView;
 
 /**
- * Represents the individual cell of the widget inside the widget tray. The preview is drawn
+ * Represents the individual cell of the widget inside the widget tray. The
+ * preview is drawn
  * horizontally centered, and scaled down if needed.
  *
- * This view does not support padding. Since the image is scaled down to fit the view, padding will
- * further decrease the scaling factor. Drag-n-drop uses the view bounds for showing a smooth
- * transition from the view to drag view, so when adding padding support, DnD would need to
+ * This view does not support padding. Since the image is scaled down to fit the
+ * view, padding will
+ * further decrease the scaling factor. Drag-n-drop uses the view bounds for
+ * showing a smooth
+ * transition from the view to drag view, so when adding padding support, DnD
+ * would need to
  * consider the appropriate scaling factor.
  */
 public class WidgetCell extends LinearLayout {
@@ -78,31 +83,42 @@ public class WidgetCell extends LinearLayout {
 
     private static final int FADE_IN_DURATION_MS = 90;
 
-    /** Widget cell width is calculated by multiplying this factor to grid cell width. */
+    /**
+     * Widget cell width is calculated by multiplying this factor to grid cell
+     * width.
+     */
     private static final float WIDTH_SCALE = 3f;
 
-    /** Widget preview width is calculated by multiplying this factor to the widget cell width. */
+    /**
+     * Widget preview width is calculated by multiplying this factor to the widget
+     * cell width.
+     */
     private static final float PREVIEW_SCALE = 0.8f;
 
     /**
      * The maximum dimension that can be used as the size in
      * {@link android.view.View.MeasureSpec#makeMeasureSpec(int, int)}.
      *
-     * <p>This is equal to (1 << MeasureSpec.MODE_SHIFT) - 1.
+     * <p>
+     * This is equal to (1 << MeasureSpec.MODE_SHIFT) - 1.
      */
     private static final int MAX_MEASURE_SPEC_DIMENSION = (1 << 30) - 1;
 
     /**
      * The target preview width, in pixels, of a widget or a shortcut.
      *
-     * <p>The actual preview width may be smaller than or equal to this value subjected to scaling.
+     * <p>
+     * The actual preview width may be smaller than or equal to this value subjected
+     * to scaling.
      */
     protected int mTargetPreviewWidth;
 
     /**
      * The target preview height, in pixels, of a widget or a shortcut.
      *
-     * <p>The actual preview height may be smaller than or equal to this value subjected to scaling.
+     * <p>
+     * The actual preview height may be smaller than or equal to this value
+     * subjected to scaling.
      */
     protected int mTargetPreviewHeight;
 
@@ -188,7 +204,9 @@ public class WidgetCell extends LinearLayout {
         return mRemoteViewsPreview;
     }
 
-    /** Returns the app widget host view scale, which is a value between [0f, 1f]. */
+    /**
+     * Returns the app widget host view scale, which is a value between [0f, 1f].
+     */
     public float getAppWidgetHostViewScale() {
         return mAppWidgetHostViewScale;
     }
@@ -244,9 +262,11 @@ public class WidgetCell extends LinearLayout {
 
     /**
      * Applies the item to this view
-     * @param item item to apply
-     * @param previewScale factor to scale the preview
-     * @param callback callback when preview is loaded in case the preview is being loaded or cached
+     * 
+     * @param item          item to apply
+     * @param previewScale  factor to scale the preview
+     * @param callback      callback when preview is loaded in case the preview is
+     *                      being loaded or cached
      * @param cachedPreview previously cached preview bitmap is present
      */
     public void applyFromCellItem(WidgetItem item, float previewScale,
@@ -288,6 +308,42 @@ public class WidgetCell extends LinearLayout {
         ensurePreviewWithCallback(callback, cachedPreview);
     }
 
+    private static class ScaledAppWidgetHostView extends LauncherAppWidgetHostView {
+        private boolean mKeepOrigForDragging = true;
+
+        ScaledAppWidgetHostView(Context context) {
+            super(context);
+        }
+
+        /**
+         * Set if the view will keep its original scale when dragged
+         * 
+         * @param isKeepOrig True if keep original scale when dragged, false otherwise
+         */
+        public void setKeepOrigForDragging(boolean isKeepOrig) {
+            mKeepOrigForDragging = isKeepOrig;
+        }
+
+        /**
+         * @return True if the view is set to preserve original scale when dragged,
+         *         false otherwise
+         */
+        public boolean isKeepOrigForDragging() {
+            return mKeepOrigForDragging;
+        }
+
+        @Override
+        public void startDrag() {
+            super.startDrag();
+            if (!isKeepOrigForDragging()) {
+                // restore to original scale when being dragged, if set to do so
+                setScaleToFit(1.0f);
+            }
+            // When the drag start, translations need to be set to zero to center the view
+            getTranslateDelegate().setTranslation(INDEX_WIDGET_CENTERING, 0f, 0f);
+        }
+    }
+
     private void applyPreviewOnAppWidgetHostView(WidgetItem item) {
         if (mRemoteViewsPreview != null) {
             mAppWidgetHostViewPreview = createAppWidgetHostView(getContext());
@@ -296,19 +352,24 @@ public class WidgetCell extends LinearLayout {
             return;
         }
 
-        if (!item.hasPreviewLayout()) return;
+        if (!item.hasPreviewLayout())
+            return;
 
         Context context = getContext();
-        // If the context is a Launcher activity, DragView will show mAppWidgetHostViewPreview as
-        // a preview during drag & drop. And thus, we should use LauncherAppWidgetHostView, which
+        // If the context is a Launcher activity, DragView will show
+        // mAppWidgetHostViewPreview as
+        // a preview during drag & drop. And thus, we should use
+        // LauncherAppWidgetHostView, which
         // supports applying local color extraction during drag & drop.
         mAppWidgetHostViewPreview = isLauncherContext(context)
                 ? new LawnchairAppWidgetHostView(context, true)
                 : createAppWidgetHostView(context);
-        LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo =
-                LauncherAppWidgetProviderInfo.fromProviderInfo(context, item.widgetInfo.clone());
-        // A hack to force the initial layout to be the preview layout since there is no API for
-        // rendering a preview layout for work profile apps yet. For non-work profile layout, a
+        LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo = LauncherAppWidgetProviderInfo
+                .fromProviderInfo(context, item.widgetInfo.clone());
+        // A hack to force the initial layout to be the preview layout since there is no
+        // API for
+        // rendering a preview layout for work profile apps yet. For non-work profile
+        // layout, a
         // proper solution is to use RemoteViews(PackageName, LayoutId).
         launcherAppWidgetProviderInfo.initialLayout = item.widgetInfo.previewLayout;
         setAppWidgetHostViewPreview(mAppWidgetHostViewPreview,
@@ -373,17 +434,15 @@ public class WidgetCell extends LinearLayout {
         }
     }
 
-    /** Used to show the badge when the widget is in the recommended section
+    /**
+     * Used to show the badge when the widget is in the recommended section
      */
     public void showBadge() {
-        Drawable badge = mWidgetPreviewLoader.getBadgeForUser(mItem.user,
-                BaseIconFactory.getBadgeSizeForIconSize(
-                        mActivity.getDeviceProfile().allAppsIconSizePx));
-        if (badge == null) {
+        if (Process.myUserHandle().equals(mItem.user)) {
             mWidgetBadge.setVisibility(View.GONE);
         } else {
             mWidgetBadge.setVisibility(View.VISIBLE);
-            mWidgetBadge.setImageDrawable(badge);
+            mWidgetBadge.setImageResource(R.drawable.ic_work_app_badge);
         }
     }
 
@@ -395,8 +454,10 @@ public class WidgetCell extends LinearLayout {
     }
 
     /**
-     * Ensures that the preview is already loaded or being loaded. If the preview is not loaded,
-     * it applies the provided cachedPreview. If that is null, it starts a loader and notifies the
+     * Ensures that the preview is already loaded or being loaded. If the preview is
+     * not loaded,
+     * it applies the provided cachedPreview. If that is null, it starts a loader
+     * and notifies the
      * callback on successful load.
      */
     private void ensurePreviewWithCallback(Consumer<Bitmap> callback,
@@ -405,23 +466,42 @@ public class WidgetCell extends LinearLayout {
             int containerWidth = (int) (mTargetPreviewWidth * mPreviewContainerScale);
             int containerHeight = (int) (mTargetPreviewHeight * mPreviewContainerScale);
             setContainerSize(containerWidth, containerHeight);
+            boolean shouldMeasureAndScale = false;
             if (mAppWidgetHostViewPreview.getChildCount() == 1) {
                 View widgetContent = mAppWidgetHostViewPreview.getChildAt(0);
                 ViewGroup.LayoutParams layoutParams = widgetContent.getLayoutParams();
-                // We only scale preview if both the width & height of the outermost view group are
+                // We only scale preview if both the width & height of the outermost view group
+                // are
                 // not set to MATCH_PARENT.
-                boolean shouldScale =
-                        layoutParams.width != MATCH_PARENT && layoutParams.height != MATCH_PARENT;
-                if (shouldScale) {
+                shouldMeasureAndScale = layoutParams.width != MATCH_PARENT && layoutParams.height != MATCH_PARENT;
+                if (shouldMeasureAndScale) {
                     setNoClip(mWidgetImageContainer);
                     setNoClip(mAppWidgetHostViewPreview);
                     mAppWidgetHostViewScale = measureAndComputeWidgetPreviewScale();
-                    mAppWidgetHostViewPreview.setScaleToFit(mAppWidgetHostViewScale);
                 }
             }
+
             FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                    containerWidth, containerHeight, Gravity.FILL);
+                    mTargetPreviewWidth, mTargetPreviewHeight, Gravity.FILL);
             mAppWidgetHostViewPreview.setLayoutParams(params);
+
+            if (!shouldMeasureAndScale
+                    && mAppWidgetHostViewPreview instanceof ScaledAppWidgetHostView) {
+                // If the view is not measured & scaled, at least one side will match the grid
+                // size,
+                // so it should be safe to restore the original scale once it is dragged.
+                ScaledAppWidgetHostView tempView = (ScaledAppWidgetHostView) mAppWidgetHostViewPreview;
+                tempView.setKeepOrigForDragging(false);
+                tempView.setScaleToFit(mPreviewContainerScale);
+            } else if (!shouldMeasureAndScale) {
+                mAppWidgetHostViewPreview.setScaleToFit(mPreviewContainerScale);
+            } else {
+                mAppWidgetHostViewPreview.setScaleToFit(mAppWidgetHostViewScale);
+            }
+            mAppWidgetHostViewPreview.getTranslateDelegate().setTranslation(
+                    INDEX_WIDGET_CENTERING,
+                    -(params.width - (params.width * mPreviewContainerScale)) / 2.0f,
+                    -(params.height - (params.height * mPreviewContainerScale)) / 2.0f);
             mWidgetImageContainer.addView(mAppWidgetHostViewPreview, /* index= */ 0);
             mWidgetImage.setVisibility(View.GONE);
             applyPreview(null);
@@ -485,13 +565,16 @@ public class WidgetCell extends LinearLayout {
             return 1f;
         }
 
-        // Measure the largest possible width & height that the app widget wants to display.
+        // Measure the largest possible width & height that the app widget wants to
+        // display.
         mAppWidgetHostViewPreview.measure(
                 makeMeasureSpec(MAX_MEASURE_SPEC_DIMENSION, MeasureSpec.UNSPECIFIED),
                 makeMeasureSpec(MAX_MEASURE_SPEC_DIMENSION, MeasureSpec.UNSPECIFIED));
         if (mRemoteViewsPreview != null) {
-            // If RemoteViews contains multiple sizes, the best fit sized RemoteViews will be
-            // selected in onLayout. To work out the right measurement, let's layout and then
+            // If RemoteViews contains multiple sizes, the best fit sized RemoteViews will
+            // be
+            // selected in onLayout. To work out the right measurement, let's layout and
+            // then
             // measure again.
             mAppWidgetHostViewPreview.layout(
                     /* left= */ 0,
@@ -510,10 +593,11 @@ public class WidgetCell extends LinearLayout {
             return 1f;
         }
 
-        // If the width / height of the widget content is set to wrap content, overrides the width /
-        // height with the measured dimension. This avoids incorrect measurement after scaling.
-        FrameLayout.LayoutParams layoutParam =
-                (FrameLayout.LayoutParams) widgetContent.getLayoutParams();
+        // If the width / height of the widget content is set to wrap content, overrides
+        // the width /
+        // height with the measured dimension. This avoids incorrect measurement after
+        // scaling.
+        FrameLayout.LayoutParams layoutParam = (FrameLayout.LayoutParams) widgetContent.getLayoutParams();
         if (layoutParam.width == WRAP_CONTENT) {
             layoutParam.width = widgetContent.getMeasuredWidth();
         }

@@ -75,7 +75,10 @@ public class IconRequestInfo<T extends ItemInfoWithIcon> {
         this.useLowResIcon = useLowResIcon;
     }
 
-    /** Loads  */
+    /**
+     * Loads this request's item info's title. This method should only be used on IconRequestInfos
+     * for WorkspaceItemInfos.
+     */
     public boolean loadWorkspaceIcon(Context context) {
         if (!(itemInfo instanceof WorkspaceItemInfo)) {
             throw new IllegalStateException(

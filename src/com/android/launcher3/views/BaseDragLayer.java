@@ -18,17 +18,15 @@ package com.android.launcher3.views;
 
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_OUTSIDE;
 import static android.view.MotionEvent.ACTION_UP;
 
-import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
+import static com.android.launcher3.util.window.RefreshRateTracker.getSingleFrameMs;
 
-import android.annotation.TargetApi;
-import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Insets;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.MotionEvent;
@@ -43,8 +41,8 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.MultiValueAlpha;
-import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.TouchController;
 
 import java.io.PrintWriter;
@@ -110,7 +108,6 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     protected final T mActivity;
     private final MultiValueAlpha mMultiValueAlpha;
-    private final WallpaperManager mWallpaperManager;
 
     // All the touch controllers for the view
     protected TouchController[] mControllers;
@@ -123,9 +120,8 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
 
     public BaseDragLayer(Context context, AttributeSet attrs, int alphaChannelCount) {
         super(context, attrs);
-        mActivity = (T) ActivityContext.lookupContext(context);
+        mActivity = ActivityContext.lookupContext(context);
         mMultiValueAlpha = new MultiValueAlpha(this, alphaChannelCount);
-        mWallpaperManager = context.getSystemService(WallpaperManager.class);
     }
 
     /**
@@ -265,7 +261,10 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
             mTouchCompleteListener = null;
         }
 
-        if (mActiveController != null) {
+        if (mActiveController != null && ev.getAction() != ACTION_OUTSIDE) {
+            // For some reason, once we intercept touches and have an mActiveController, we won't
+            // get onInterceptTouchEvent() for ACTION_OUTSIDE. Thus, we must recalculate a new
+            // TouchController (if any) to handle the ACTION_OUTSIDE here in onTouchEvent() as well.
             return mActiveController.onControllerTouchEvent(ev);
         } else {
             // In case no child view handled the touch event, we may not get onIntercept anymore
@@ -414,6 +413,14 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     /**
+     * Similar to {@link #mapCoordInSelfToDescendant(View descendant, float[] coord)}
+     * but accepts a Rect instead of float[].
+     */
+    public void mapRectInSelfToDescendant(View descendant, Rect rect) {
+        Utilities.mapRectInSelfToDescendant(descendant, this, rect);
+    }
+
+    /**
      * Inverse of {@link #getDescendantCoordRelativeToSelf(View, float[])}.
      */
     public void mapCoordInSelfToDescendant(View descendant, float[] coord) {
@@ -496,8 +503,8 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
         return new LayoutParams(p);
     }
 
-    public AlphaProperty getAlphaProperty(int index) {
-        return mMultiValueAlpha.getProperty(index);
+    public MultiProperty getAlphaProperty(int index) {
+        return mMultiValueAlpha.get(index);
     }
 
     public void dump(String prefix, PrintWriter writer) {
@@ -542,18 +549,24 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
     }
 
     @Override
-    @TargetApi(Build.VERSION_CODES.Q)
     public WindowInsets dispatchApplyWindowInsets(WindowInsets insets) {
         if (Utilities.ATLEAST_Q) {
             Insets gestureInsets = insets.getMandatorySystemGestureInsets();
             int gestureInsetBottom = gestureInsets.bottom;
+            Insets imeInset = Utilities.ATLEAST_R
+                    ? insets.getInsets(WindowInsets.Type.ime())
+                    : Insets.NONE;
             DeviceProfile dp = mActivity.getDeviceProfile();
             if (dp.isTaskbarPresent) {
                 // Ignore taskbar gesture insets to avoid interfering with TouchControllers.
-                gestureInsetBottom = Math.max(0, gestureInsetBottom - dp.taskbarSize);
+                gestureInsetBottom = Math.max(0, gestureInsetBottom - dp.taskbarHeight);
             }
-            mSystemGestureRegion.set(gestureInsets.left, gestureInsets.top,
-                    gestureInsets.right, gestureInsetBottom);
+            mSystemGestureRegion.set(
+                    Math.max(gestureInsets.left, imeInset.left),
+                    Math.max(gestureInsets.top, imeInset.top),
+                    Math.max(gestureInsets.right, imeInset.right),
+                    Math.max(gestureInsetBottom, imeInset.bottom)
+            );
         }
         return super.dispatchApplyWindowInsets(insets);
     }

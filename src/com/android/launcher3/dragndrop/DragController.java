@@ -18,7 +18,6 @@ package com.android.launcher3.dragndrop;
 
 import static com.android.launcher3.Utilities.ATLEAST_Q;
 
-import android.content.ComponentName;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -32,16 +31,17 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.testing.TestProtocol;
-import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * Class for initiating a drag within a view or across multiple views.
@@ -90,6 +90,8 @@ public abstract class DragController<T extends ActivityContext>
     protected int mDistanceSinceScroll = 0;
 
     protected boolean mIsInPreDrag;
+
+    private final int DRAG_VIEW_SCALE_DURATION_MS = 500;
 
     /**
      * Interface to receive notifications when a drag starts or stops
@@ -215,6 +217,15 @@ public abstract class DragController<T extends ActivityContext>
             mOptions.preDragCondition.onPreDragEnd(mDragObject, true /* dragStarted*/);
         }
         mIsInPreDrag = false;
+        if (mOptions.preDragEndScale != 0) {
+            mDragObject.dragView
+                    .animate()
+                    .scaleX(mOptions.preDragEndScale)
+                    .scaleY(mOptions.preDragEndScale)
+                    .setInterpolator(Interpolators.EMPHASIZED)
+                    .setDuration(DRAG_VIEW_SCALE_DURATION_MS)
+                    .start();
+        }
         mDragObject.dragView.onDragStart();
         for (DragListener listener : new ArrayList<>(mListeners)) {
             listener.onDragStart(mDragObject, mOptions);
@@ -275,15 +286,12 @@ public abstract class DragController<T extends ActivityContext>
 
     protected abstract void exitDrag();
 
-    public void onAppsRemoved(ItemInfoMatcher matcher) {
+    public void onAppsRemoved(Predicate<ItemInfo> matcher) {
         // Cancel the current drag if we are removing an app that we are dragging
         if (mDragObject != null) {
             ItemInfo dragInfo = mDragObject.dragInfo;
-            if (dragInfo instanceof WorkspaceItemInfo) {
-                ComponentName cn = dragInfo.getTargetComponent();
-                if (cn != null && matcher.matches(dragInfo, cn)) {
-                    cancelDrag();
-                }
+            if (dragInfo instanceof WorkspaceItemInfo && matcher.test(dragInfo)) {
+                cancelDrag();
             }
         }
     }
@@ -299,9 +307,9 @@ public abstract class DragController<T extends ActivityContext>
                 } else if (mIsInPreDrag) {
                     animateDragViewToOriginalPosition(null, null, -1);
                 }
+                mDragObject.dragView.clearAnimation();
                 mDragObject.dragView = null;
             }
-
             // Only end the drag if we are not deferred
             if (!isDeferred) {
                 callOnDragEnd();

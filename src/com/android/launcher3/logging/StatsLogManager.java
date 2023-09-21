@@ -32,8 +32,11 @@ import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.FromState;
 import com.android.launcher3.logger.LauncherAtom.ToState;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.ResourceBasedOverride;
 import com.android.launcher3.views.ActivityContext;
+
+import java.util.List;
 
 /**
  * Handles the user event logging in R+.
@@ -56,6 +59,7 @@ public class StatsLogManager implements ResourceBasedOverride {
     private InstanceId mInstanceId;
 
     protected @Nullable ActivityContext mActivityContext = null;
+    private KeyboardStateManager mKeyboardStateManager;
 
     /**
      * Returns event enum based on the two state transition information when swipe
@@ -258,6 +262,9 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User swipes or fling in DOWN direction to close apps drawer.")
         LAUNCHER_ALLAPPS_CLOSE_DOWN(569),
 
+        @UiEvent(doc = "User tap outside apps drawer sheet to close apps drawer.")
+        LAUNCHER_ALLAPPS_CLOSE_TAP_OUTSIDE(941),
+
         @UiEvent(doc = "User swipes or fling in UP direction and hold from the bottom bazel area")
         LAUNCHER_OVERVIEW_GESTURE(570),
 
@@ -371,6 +378,9 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "Notification dismissed by swiping right.")
         LAUNCHER_NOTIFICATION_DISMISSED(652),
+
+        @UiEvent(doc = "Current grid size is changed to 6.")
+        LAUNCHER_GRID_SIZE_6(930),
 
         @UiEvent(doc = "Current grid size is changed to 5.")
         LAUNCHER_GRID_SIZE_5(662),
@@ -521,7 +531,118 @@ public class StatsLogManager implements ResourceBasedOverride {
         LAUNCHER_TASKBAR_LONGPRESS_SHOW(897),
 
         @UiEvent(doc = "User clicks on the search icon on header to launch search in app.")
-        LAUNCHER_ALLAPPS_SEARCHINAPP_LAUNCH(913);
+        LAUNCHER_ALLAPPS_SEARCHINAPP_LAUNCH(913),
+
+        @UiEvent(doc = "User is shown the back gesture navigation tutorial step.")
+        LAUNCHER_GESTURE_TUTORIAL_BACK_STEP_SHOWN(959),
+
+        @UiEvent(doc = "User is shown the home gesture navigation tutorial step.")
+        LAUNCHER_GESTURE_TUTORIAL_HOME_STEP_SHOWN(960),
+
+        @UiEvent(doc = "User is shown the overview gesture navigation tutorial step.")
+        LAUNCHER_GESTURE_TUTORIAL_OVERVIEW_STEP_SHOWN(961),
+
+        @UiEvent(doc = "User completed the back gesture navigation tutorial step.")
+        LAUNCHER_GESTURE_TUTORIAL_BACK_STEP_COMPLETED(962),
+
+        @UiEvent(doc = "User completed the home gesture navigation tutorial step.")
+        LAUNCHER_GESTURE_TUTORIAL_HOME_STEP_COMPLETED(963),
+
+        @UiEvent(doc = "User completed the overview gesture navigation tutorial step.")
+        LAUNCHER_GESTURE_TUTORIAL_OVERVIEW_STEP_COMPLETED(964),
+
+        @UiEvent(doc = "User skips the gesture navigation tutorial.")
+        LAUNCHER_GESTURE_TUTORIAL_SKIPPED(965),
+
+        @UiEvent(doc = "User scrolled on one of the all apps surfaces such as A-Z list, search "
+                + "result page etc.")
+        LAUNCHER_ALLAPPS_SCROLLED(985),
+
+        @UiEvent(doc = "User scrolled up on the all apps personal A-Z list.")
+        LAUNCHER_ALLAPPS_PERSONAL_SCROLLED_UP(1287),
+
+        @UiEvent(doc = "User scrolled down on the all apps personal A-Z list.")
+        LAUNCHER_ALLAPPS_PERSONAL_SCROLLED_DOWN(1288),
+
+        @UiEvent(doc = "User scrolled on one of the all apps surfaces such as A-Z list, search "
+                + "result page etc and we don't know the direction since user came back to "
+                + "original position from which they scrolled.")
+        LAUNCHER_ALLAPPS_SCROLLED_UNKNOWN_DIRECTION(1231),
+
+        @UiEvent(doc = "User tapped taskbar home button")
+        LAUNCHER_TASKBAR_HOME_BUTTON_TAP(1003),
+
+        @UiEvent(doc = "User tapped taskbar back button")
+        LAUNCHER_TASKBAR_BACK_BUTTON_TAP(1004),
+
+        @UiEvent(doc = "User tapped taskbar overview/recents button")
+        LAUNCHER_TASKBAR_OVERVIEW_BUTTON_TAP(1005),
+
+        @UiEvent(doc = "User tapped taskbar IME switcher button")
+        LAUNCHER_TASKBAR_IME_SWITCHER_BUTTON_TAP(1006),
+
+        @UiEvent(doc = "User tapped taskbar a11y button")
+        LAUNCHER_TASKBAR_A11Y_BUTTON_TAP(1007),
+
+        @UiEvent(doc = "User tapped taskbar home button")
+        LAUNCHER_TASKBAR_HOME_BUTTON_LONGPRESS(1008),
+
+        @UiEvent(doc = "User tapped taskbar back button")
+        LAUNCHER_TASKBAR_BACK_BUTTON_LONGPRESS(1009),
+
+        @UiEvent(doc = "User tapped taskbar overview/recents button")
+        LAUNCHER_TASKBAR_OVERVIEW_BUTTON_LONGPRESS(1010),
+
+        @UiEvent(doc = "User tapped taskbar a11y button")
+        LAUNCHER_TASKBAR_A11Y_BUTTON_LONGPRESS(1011),
+
+        @UiEvent(doc = "Show an 'Undo' snackbar when users dismiss a predicted hotseat item")
+        LAUNCHER_DISMISS_PREDICTION_UNDO(1035),
+
+        @UiEvent(doc = "User clicked on IME quicksearch button.")
+        LAUNCHER_ALLAPPS_QUICK_SEARCH_WITH_IME(1047),
+
+        @UiEvent(doc = "User tapped taskbar All Apps button.")
+        LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP(1057),
+
+        @UiEvent(doc = "User tapped on Share app system shortcut.")
+        LAUNCHER_SYSTEM_SHORTCUT_APP_SHARE_TAP(1075),
+
+        @UiEvent(doc = "User has invoked split to right half from an app icon menu")
+        LAUNCHER_APP_ICON_MENU_SPLIT_RIGHT_BOTTOM(1199),
+
+        @UiEvent(doc = "User has invoked split to left half from an app icon menu")
+        LAUNCHER_APP_ICON_MENU_SPLIT_LEFT_TOP(1200),
+
+        @UiEvent(doc = "Number of apps in A-Z list (personal and work profile)")
+        LAUNCHER_ALLAPPS_COUNT(1225),
+
+        @UiEvent(doc = "User has invoked split to right half with a keyboard shortcut.")
+        LAUNCHER_KEYBOARD_SHORTCUT_SPLIT_RIGHT_BOTTOM(1232),
+
+        @UiEvent(doc = "User has invoked split to left half with a keyboard shortcut.")
+        LAUNCHER_KEYBOARD_SHORTCUT_SPLIT_LEFT_TOP(1233),
+
+        @UiEvent(doc = "User has collapsed the work FAB button by scrolling down in the all apps"
+                + " work A-Z list.")
+        LAUNCHER_WORK_FAB_BUTTON_COLLAPSE(1276),
+
+        @UiEvent(doc = "User has collapsed the work FAB button by scrolling up in the all apps"
+                + " work A-Z list.")
+        LAUNCHER_WORK_FAB_BUTTON_EXTEND(1277),
+
+        @UiEvent(doc = "User scrolled down on the search result page.")
+        LAUNCHER_ALLAPPS_SEARCH_SCROLLED_DOWN(1285),
+
+        @UiEvent(doc = "User scrolled up on the search result page.")
+        LAUNCHER_ALLAPPS_SEARCH_SCROLLED_UP(1286),
+
+        @UiEvent(doc = "User or automatic timeout has hidden transient taskbar.")
+        LAUNCHER_TRANSIENT_TASKBAR_HIDE(1330),
+
+        @UiEvent(doc = "User has swiped upwards from the gesture handle to show transient taskbar.")
+        LAUNCHER_TRANSIENT_TASKBAR_SHOW(1331),
+        ;
 
         // ADD MORE
 
@@ -556,7 +677,7 @@ public class StatsLogManager implements ResourceBasedOverride {
     }
 
     /**
-     * Helps to construct and write the log message.
+     * Helps to construct and log launcher event.
      */
     public interface StatsLogger {
 
@@ -642,6 +763,13 @@ public class StatsLogManager implements ResourceBasedOverride {
         }
 
         /**
+         * Sets cardinality of log message.
+         */
+        default StatsLogger withCardinality(int cardinality) {
+            return this;
+        }
+
+        /**
          * Builds the final message and logs it as {@link EventEnum}.
          */
         default void log(EventEnum event) {
@@ -656,6 +784,153 @@ public class StatsLogManager implements ResourceBasedOverride {
     }
 
     /**
+     * Helps to construct and log latency event.
+     */
+    public interface StatsLatencyLogger {
+
+        enum LatencyType {
+            UNKNOWN(0),
+            COLD(1),
+            HOT(2),
+            TIMEOUT(3),
+            FAIL(4),
+            COLD_USERWAITING(5),
+            ATOMIC(6),
+            CONTROLLED(7),
+            CACHED(8);
+            private final int mId;
+
+            LatencyType(int id) {
+                this.mId = id;
+            }
+
+            public int getId() {
+                return mId;
+            }
+        }
+
+        /**
+         * Sets {@link InstanceId} of log message.
+         */
+        default StatsLatencyLogger withInstanceId(InstanceId instanceId) {
+            return this;
+        }
+
+
+        /**
+         * Sets latency of the event.
+         */
+        default StatsLatencyLogger withLatency(long latencyInMillis) {
+            return this;
+        }
+
+        /**
+         * Sets {@link LatencyType} of log message.
+         */
+        default StatsLatencyLogger withType(LatencyType type) {
+            return this;
+        }
+
+        /**
+         * Sets query length of the event.
+         */
+        default StatsLatencyLogger withQueryLength(int queryLength) {
+            return this;
+        }
+
+        /**
+         * Sets sub event type.
+         */
+        default StatsLatencyLogger withSubEventType(int type) {
+            return this;
+        }
+
+        /**
+         * Sets packageId of log message.
+         */
+        default StatsLatencyLogger withPackageId(int packageId) {
+            return this;
+        }
+
+        /**
+         * Builds the final message and logs it as {@link EventEnum}.
+         */
+        default void log(EventEnum event) {
+        }
+    }
+
+    /**
+     * Helps to construct and log impression event.
+     */
+    public interface StatsImpressionLogger {
+
+        enum State {
+            UNKNOWN(0),
+            ALLAPPS(1),
+            SEARCHBOX_WIDGET(2);
+            private final int mLauncherState;
+
+            State(int id) {
+                this.mLauncherState = id;
+            }
+
+            public int getLauncherState() {
+                return mLauncherState;
+            }
+        }
+
+        /**
+         * Sets {@link InstanceId} of log message.
+         */
+        default StatsImpressionLogger withInstanceId(InstanceId instanceId) {
+            return this;
+        }
+
+        /**
+         * Sets {@link State} of impression event.
+         */
+        default StatsImpressionLogger withState(State state) {
+            return this;
+        }
+
+        /**
+         * Sets query length of the event.
+         */
+        default StatsImpressionLogger withQueryLength(int queryLength) {
+            return this;
+        }
+
+        /**
+         * Sets list of {@link com.android.app.search.ResultType} for the impression event.
+         */
+        default StatsImpressionLogger withResultType(IntArray resultType) {
+            return this;
+        }
+
+        /**
+         * Sets list of count for each of {@link com.android.app.search.ResultType} for the
+         * impression event.
+         */
+        default StatsImpressionLogger withResultCount(IntArray resultCount) {
+            return this;
+        }
+
+        /**
+         * Sets list of boolean for each of {@link com.android.app.search.ResultType} that indicates
+         * if this result is above keyboard or not for the impression event.
+         */
+        default StatsImpressionLogger withAboveKeyboard(List<Boolean> aboveKeyboard) {
+            return this;
+        }
+
+        /**
+         * Builds the final message and logs it as {@link EventEnum}.
+         */
+        default void log(EventEnum event) {
+        }
+    }
+
+    /**
      * Returns new logger object.
      */
     public StatsLogger logger() {
@@ -666,8 +941,50 @@ public class StatsLogManager implements ResourceBasedOverride {
         return logger;
     }
 
+    /**
+     * Returns new latency logger object.
+     */
+    public StatsLatencyLogger latencyLogger() {
+        StatsLatencyLogger logger = createLatencyLogger();
+        if (mInstanceId != null) {
+            logger.withInstanceId(mInstanceId);
+        }
+        return logger;
+    }
+
+    /**
+     * Returns new impression logger object.
+     */
+    public StatsImpressionLogger impressionLogger() {
+        StatsImpressionLogger logger = createImpressionLogger();
+        if (mInstanceId != null) {
+            logger.withInstanceId(mInstanceId);
+        }
+        return logger;
+    }
+
+    /**
+     * Returns a singleton KeyboardStateManager.
+     */
+    public KeyboardStateManager keyboardStateManager() {
+        if (mKeyboardStateManager == null) {
+            mKeyboardStateManager = new KeyboardStateManager();
+        }
+        return mKeyboardStateManager;
+    }
+
     protected StatsLogger createLogger() {
         return new StatsLogger() {
+        };
+    }
+
+    protected StatsLatencyLogger createLatencyLogger() {
+        return new StatsLatencyLogger() {
+        };
+    }
+
+    protected StatsImpressionLogger createImpressionLogger() {
+        return new StatsImpressionLogger() {
         };
     }
 

@@ -27,7 +27,7 @@ import androidx.test.uiautomator.Direction;
 import androidx.test.uiautomator.UiObject2;
 import androidx.test.uiautomator.Until;
 
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 
 import java.util.Collection;
 
@@ -115,6 +115,7 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
             final BySelector labelSelector = By.clazz("android.widget.TextView").text(labelText);
             final BySelector previewSelector = By.res(mLauncher.getLauncherPackageName(),
                     "widget_preview");
+            final int bottomGestureStartOnScreen = mLauncher.getBottomGestureStartOnScreen();
             int i = 0;
             for (; ; ) {
                 final Collection<UiObject2> tableRows = mLauncher.getChildren(widgetsContainer);
@@ -124,6 +125,9 @@ public final class Widgets extends LauncherInstrumentation.VisibleContainer {
                         final UiObject2 label = mLauncher.findObjectInContainer(widget,
                                 labelSelector);
                         if (label == null) {
+                            continue;
+                        }
+                        if (widget.getVisibleCenter().y >= bottomGestureStartOnScreen) {
                             continue;
                         }
                         mLauncher.assertEquals(

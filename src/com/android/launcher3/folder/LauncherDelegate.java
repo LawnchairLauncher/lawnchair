@@ -28,6 +28,7 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
@@ -100,7 +101,8 @@ public class LauncherDelegate {
                     }
 
                     // Remove the folder
-                    mLauncher.removeItem(folder.mFolderIcon, info, true /* deleteFromDb */);
+                    mLauncher.removeItem(folder.mFolderIcon, info, true /* deleteFromDb */,
+                            "folder removed because there's only 1 item in it");
                     if (folder.mFolderIcon instanceof DropTarget) {
                         folder.mDragController.removeDropTarget((DropTarget) folder.mFolderIcon);
                     }
@@ -176,7 +178,7 @@ public class LauncherDelegate {
         ModelWriter getModelWriter() {
             if (mWriter == null) {
                 mWriter = LauncherAppState.getInstance((Context) mContext).getModel()
-                        .getWriter(false, false, null);
+                        .getWriter(false, false, CellPosMapper.DEFAULT, null);
             }
             return mWriter;
         }

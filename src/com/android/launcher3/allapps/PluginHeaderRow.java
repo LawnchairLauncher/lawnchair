@@ -18,10 +18,8 @@ package com.android.launcher3.allapps;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
-import android.graphics.Rect;
 import android.view.View;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.systemui.plugins.AllAppsRow;
 
 /**
@@ -41,9 +39,6 @@ public class PluginHeaderRow implements FloatingHeaderRow {
     @Override
     public void setup(FloatingHeaderView parent, FloatingHeaderRow[] allRows,
             boolean tabsHidden) { }
-
-    @Override
-    public void setInsets(Rect insets, DeviceProfile grid) { }
 
     @Override
     public int getExpectedHeight() {

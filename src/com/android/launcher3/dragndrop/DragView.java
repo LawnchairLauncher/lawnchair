@@ -21,6 +21,7 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.Utilities.getBadge;
+import static com.android.launcher3.icons.FastBitmapDrawable.getDisabledColorFilter;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.animation.Animator;
@@ -31,9 +32,9 @@ import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.Path;
 import android.graphics.Picture;
 import android.graphics.Point;
@@ -55,7 +56,6 @@ import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
 
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
@@ -68,15 +68,21 @@ import com.android.launcher3.views.BaseDragLayer;
 
 import app.lawnchair.icons.CustomAdaptiveIconDrawable;
 
-/** A custom view for rendering an icon, folder, shortcut or widget during drag-n-drop. */
+/**
+ * A custom view for rendering an icon, folder, shortcut or widget during
+ * drag-n-drop.
+ */
 public abstract class DragView<T extends Context & ActivityContext> extends FrameLayout {
 
     public static final int VIEW_ZOOM_DURATION = 150;
 
     private final View mContent;
-    // The following are only used for rendering mContent directly during drag-n-drop.
-    @Nullable private ViewGroup.LayoutParams mContentViewLayoutParams;
-    @Nullable private ViewGroup mContentViewParent;
+    // The following are only used for rendering mContent directly during
+    // drag-n-drop.
+    @Nullable
+    private ViewGroup.LayoutParams mContentViewLayoutParams;
+    @Nullable
+    private ViewGroup mContentViewParent;
     private int mContentViewInParentViewIndex = -1;
     private final int mWidth;
     private final int mHeight;
@@ -85,6 +91,7 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
     protected final int mRegistrationX;
     protected final int mRegistrationY;
     private final float mInitialScale;
+    private final float mEndScale;
     protected final float mScaleOnDrop;
     protected final int[] mTempLoc = new int[2];
 
@@ -97,15 +104,18 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
     private boolean mHasDrawn = false;
 
     final ValueAnimator mAnim;
-    // Whether mAnim has started. Unlike mAnim.isStarted(), this is true even after mAnim ends.
+    // Whether mAnim has started. Unlike mAnim.isStarted(), this is true even after
+    // mAnim ends.
     private boolean mAnimStarted;
+    private Runnable mOnAnimEndCallback = null;
 
     private int mLastTouchX;
     private int mLastTouchY;
     private int mAnimatedShiftX;
     private int mAnimatedShiftY;
 
-    // Below variable only needed IF FeatureFlags.LAUNCHER3_SPRING_ICONS is {@code true}
+    // Below variable only needed IF FeatureFlags.LAUNCHER3_SPRING_ICONS is {@code
+    // true}
     private Drawable mBgSpringDrawable, mFgSpringDrawable;
     private SpringFloatValue mTranslateX, mTranslateY;
     private Path mScaledMaskPath;
@@ -122,17 +132,22 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
     /**
      * Construct the drag view.
      * <p>
-     * The registration point is the point inside our view that the touch events should
+     * The registration point is the point inside our view that the touch events
+     * should
      * be centered upon.
-     * @param activity The Launcher instance/ActivityContext this DragView is in.
-     * @param content the view content that is attached to the drag view.
-     * @param width the width of the dragView
-     * @param height the height of the dragView
-     * @param initialScale The view that we're dragging around.  We scale it up when we draw it.
+     * 
+     * @param activity      The Launcher instance/ActivityContext this DragView is
+     *                      in.
+     * @param content       the view content that is attached to the drag view.
+     * @param width         the width of the dragView
+     * @param height        the height of the dragView
+     * @param initialScale  The view that we're dragging around. We scale it up when
+     *                      we draw it.
      * @param registrationX The x coordinate of the registration point.
      * @param registrationY The y coordinate of the registration point.
-     * @param scaleOnDrop the scale used in the drop animation.
-     * @param finalScaleDps the scale used in the zoom out animation when the drag view is shown.
+     * @param scaleOnDrop   the scale used in the drop animation.
+     * @param finalScaleDps the scale used in the zoom out animation when the drag
+     *                      view is shown.
      */
     public DragView(T activity, View content, int width, int height, int registrationX,
             int registrationY, final float initialScale, final float scaleOnDrop,
@@ -153,13 +168,14 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
 
         addView(content, new LayoutParams(width, height));
 
-        // If there is already a scale set on the content, we don't want to clip the children.
+        // If there is already a scale set on the content, we don't want to clip the
+        // children.
         if (content.getScaleX() != 1 || content.getScaleY() != 1) {
             setClipChildren(false);
             setClipToPadding(false);
         }
 
-        final float scale = (width + finalScaleDps) / width;
+        mEndScale = (width + finalScaleDps) / width;
 
         // Set the initial scale to avoid any jumps
         setScaleX(initialScale);
@@ -170,8 +186,8 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         mAnim.setDuration(VIEW_ZOOM_DURATION);
         mAnim.addUpdateListener(animation -> {
             final float value = (Float) animation.getAnimatedValue();
-            setScaleX(initialScale + (value * (scale - initialScale)));
-            setScaleY(initialScale + (value * (scale - initialScale)));
+            setScaleX(Utilities.mapRange(value, initialScale, mEndScale));
+            setScaleY(Utilities.mapRange(value, initialScale, mEndScale));
             if (!isAttachedToWindow()) {
                 animation.cancel();
             }
@@ -180,6 +196,14 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
             @Override
             public void onAnimationStart(Animator animation) {
                 mAnimStarted = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (mOnAnimEndCallback != null) {
+                    mOnAnimEndCallback.run();
+                }
             }
         });
 
@@ -192,12 +216,17 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         mInitialScale = initialScale;
         mScaleOnDrop = scaleOnDrop;
 
-        // Force a measure, because Workspace uses getMeasuredHeight() before the layout pass
+        // Force a measure, because Workspace uses getMeasuredHeight() before the layout
+        // pass
         measure(makeMeasureSpec(width, EXACTLY), makeMeasureSpec(height, EXACTLY));
 
         mBlurSizeOutline = getResources().getDimensionPixelSize(R.dimen.blur_size_medium_outline);
         setElevation(getResources().getDimension(R.dimen.drag_elevation));
         setWillNotDraw(false);
+    }
+
+    public void setOnAnimationEndCallback(Runnable callback) {
+        mOnAnimEndCallback = callback;
     }
 
     /**
@@ -206,18 +235,13 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
      */
     @TargetApi(Build.VERSION_CODES.O)
     public void setItemInfo(final ItemInfo info) {
-        if (info.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
-                && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_SEARCH_ACTION
-                && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
-                && info.itemType != LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-            return;
-        }
         // Load the adaptive icon on a background thread and add the view in ui thread.
         MODEL_EXECUTOR.getHandler().postAtFrontOfQueue(() -> {
             Object[] outObj = new Object[1];
             int w = mWidth;
             int h = mHeight;
-            Drawable dr = Utilities.getFullDrawable(mActivity, info, w, h, outObj);
+            Drawable dr = Utilities.getFullDrawable(mActivity, info, w, h,
+                    true /* shouldThemeIcon */, outObj);
 
             if (dr instanceof AdaptiveIconDrawable) {
                 int blurMargin = (int) mActivity.getResources()
@@ -227,9 +251,8 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
                 bounds.inset(blurMargin, blurMargin);
                 // Badge is applied after icon normalization so the bounds for badge should not
                 // be scaled down due to icon normalization.
-                Rect badgeBounds = new Rect(bounds);
                 mBadge = getBadge(mActivity, info, outObj[0]);
-                mBadge.setBounds(badgeBounds);
+                FastBitmapDrawable.setBadgeBounds(mBadge, bounds);
 
                 // Do not draw the background in case of folder as its translucent
                 final boolean shouldDrawBackground = !(dr instanceof FolderAdaptiveIcon);
@@ -247,7 +270,8 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
                 }
                 AdaptiveIconDrawable adaptiveIcon = (AdaptiveIconDrawable) dr;
 
-                // Shrink very tiny bit so that the clip path is smaller than the original bitmap
+                // Shrink very tiny bit so that the clip path is smaller than the original
+                // bitmap
                 // that has anti aliased edges and shadows.
                 Rect shrunkBounds = new Rect(bounds);
                 Utilities.scaleRectAboutCenter(shrunkBounds, 0.98f);
@@ -261,8 +285,7 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
 
                 bounds.inset(
                         (int) (-bounds.width() * AdaptiveIconDrawable.getExtraInsetFraction()),
-                        (int) (-bounds.height() * AdaptiveIconDrawable.getExtraInsetFraction())
-                );
+                        (int) (-bounds.height() * AdaptiveIconDrawable.getExtraInsetFraction()));
                 mBgSpringDrawable = adaptiveIcon.getBackground();
                 if (mBgSpringDrawable == null) {
                     mBgSpringDrawable = new ColorDrawable(Color.TRANSPARENT);
@@ -282,11 +305,10 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
                     removeAllViewsInLayout();
 
                     if (info.isDisabled()) {
-                        FastBitmapDrawable d = new FastBitmapDrawable((Bitmap) null);
-                        d.setIsDisabled(true);
-                        mBgSpringDrawable.setColorFilter(d.getColorFilter());
-                        mFgSpringDrawable.setColorFilter(d.getColorFilter());
-                        mBadge.setColorFilter(d.getColorFilter());
+                        ColorFilter filter = getDisabledColorFilter();
+                        mBgSpringDrawable.setColorFilter(filter);
+                        mFgSpringDrawable.setColorFilter(filter);
+                        mBadge.setColorFilter(filter);
                     }
                     invalidate();
                 }));
@@ -352,7 +374,11 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
             // If the content is already removed, ignore
             return;
         }
-        View newContent = getViewFromDrawable(getContext(), crossFadeDrawable);
+        ImageView newContent = getViewFromDrawable(getContext(), crossFadeDrawable);
+        // We need to fill the ImageView with the content, otherwise the shapes of the
+        // final view
+        // and the drag view might not match exactly
+        newContent.setScaleType(ImageView.ScaleType.FIT_XY);
         newContent.measure(makeMeasureSpec(mWidth, EXACTLY), makeMeasureSpec(mHeight, EXACTLY));
         newContent.layout(0, 0, mWidth, mHeight);
         addViewInLayout(newContent, 0, new LayoutParams(mWidth, mHeight));
@@ -451,7 +477,9 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
     /**
      * Detaches {@link #mContent}, if previously attached, from this view.
      *
-     * <p>In the case of no change in the drop position, sets {@code reattachToPreviousParent} to
+     * <p>
+     * In the case of no change in the drop position, sets
+     * {@code reattachToPreviousParent} to
      * {@code true} to attach the {@link #mContent} back to its previous parent.
      */
     public void detachContentView(boolean reattachToPreviousParent) {
@@ -482,9 +510,12 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
     /**
      * Removes this view from the {@link DragLayer}.
      *
-     * <p>If the drag content is a {@link #mContent}, this call doesn't reattach the
-     * {@link #mContent} back to its previous parent. To reattach to previous parent, the caller
-     * should call {@link #detachContentView} with {@code reattachToPreviousParent} sets to true
+     * <p>
+     * If the drag content is a {@link #mContent}, this call doesn't reattach the
+     * {@link #mContent} back to its previous parent. To reattach to previous
+     * parent, the caller
+     * should call {@link #detachContentView} with {@code reattachToPreviousParent}
+     * sets to true
      * before this call.
      */
     public void remove() {
@@ -501,6 +532,10 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         return mInitialScale;
     }
 
+    public float getEndScale() {
+        return mEndScale;
+    }
+
     @Override
     public boolean hasOverlappingRendering() {
         return false;
@@ -512,7 +547,8 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
     }
 
     /**
-     * Returns the previous {@link ViewGroup} parent of the {@link #mContent} before the drag
+     * Returns the previous {@link ViewGroup} parent of the {@link #mContent} before
+     * the drag
      * content is attached to this view.
      */
     @Nullable
@@ -522,19 +558,19 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
 
     private static class SpringFloatValue {
 
-        private static final FloatPropertyCompat<SpringFloatValue> VALUE =
-                new FloatPropertyCompat<SpringFloatValue>("value") {
-                    @Override
-                    public float getValue(SpringFloatValue object) {
-                        return object.mValue;
-                    }
+        private static final FloatPropertyCompat<SpringFloatValue> VALUE = new FloatPropertyCompat<SpringFloatValue>(
+                "value") {
+            @Override
+            public float getValue(SpringFloatValue object) {
+                return object.mValue;
+            }
 
-                    @Override
-                    public void setValue(SpringFloatValue object, float value) {
-                        object.mValue = value;
-                        object.mView.invalidate();
-                    }
-                };
+            @Override
+            public void setValue(SpringFloatValue object, float value) {
+                object.mValue = value;
+                object.mView.invalidate();
+            }
+        };
 
         // Following three values are fine tuned with motion ux designer
         private static final int STIFFNESS = 4000;
@@ -554,7 +590,8 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
                     .setSpring(new SpringForce(0)
                             .setDampingRatio(DAMPENING_RATIO)
                             .setStiffness(STIFFNESS));
-            mDelta = Math.min(range, view.getResources().getDisplayMetrics().density * PARALLAX_MAX_IN_DP);
+            mDelta = Math.min(
+                    range, view.getResources().getDisplayMetrics().density * PARALLAX_MAX_IN_DP);
         }
 
         public void animateToPos(float value) {
@@ -562,7 +599,7 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
         }
     }
 
-    private static View getViewFromDrawable(Context context, Drawable drawable) {
+    private static ImageView getViewFromDrawable(Context context, Drawable drawable) {
         ImageView iv = new ImageView(context);
         iv.setImageDrawable(drawable);
         return iv;

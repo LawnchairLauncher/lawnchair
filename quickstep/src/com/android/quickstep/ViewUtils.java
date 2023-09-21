@@ -17,14 +17,13 @@ package com.android.quickstep;
 
 import android.graphics.HardwareRenderer;
 import android.os.Handler;
+import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewRootImpl;
 
 import com.android.launcher3.Utilities;
-import com.android.systemui.shared.system.ViewRootImplCompat;
 
 import java.util.function.BooleanSupplier;
-import java.util.function.LongConsumer;
 
 /**
  * Utility class for helpful methods related to {@link View} objects.
@@ -47,12 +46,15 @@ public class ViewUtils {
         return new FrameHandler(view, onFinishRunnable, canceled).schedule();
     }
 
-    private static class FrameHandler implements HardwareRenderer.FrameDrawingCallback {
+    private static class FrameHandler implements HardwareRenderer.FrameDrawingCallback,
+            ViewRootImpl.SurfaceChangedCallback {
 
         final ViewRootImpl mViewRoot;
         final Runnable mFinishCallback;
         final BooleanSupplier mCancelled;
         final Handler mHandler;
+        boolean mSurfaceCallbackRegistered = false;
+        boolean mFinished;
 
         int mDeferFrameCount = 1;
 
@@ -61,6 +63,23 @@ public class ViewUtils {
             mFinishCallback = finishCallback;
             mCancelled = cancelled;
             mHandler = new Handler();
+        }
+
+        @Override
+        public void surfaceCreated(SurfaceControl.Transaction t) {
+            // Do nothing
+        }
+
+        @Override
+        public void surfaceReplaced(SurfaceControl.Transaction t) {
+            // Do nothing
+        }
+
+        @Override
+        public void surfaceDestroyed() {
+            // If the root view is detached, then the app won't get any scheduled frames so we need
+            // to force-run any pending callbacks
+            finish();
         }
 
         @Override
@@ -79,18 +98,35 @@ public class ViewUtils {
                 return;
             }
 
-            if (mFinishCallback != null) {
-                mFinishCallback.run();
-            }
+            finish();
         }
 
         private boolean schedule() {
-            if (mViewRoot.getView() != null) {
+            if (mViewRoot != null && mViewRoot.getView() != null) {
+                if (!mSurfaceCallbackRegistered) {
+                    mSurfaceCallbackRegistered = true;
+                    mViewRoot.addSurfaceChangedCallback(this);
+                }
                 mViewRoot.registerRtFrameCallback(this);
                 mViewRoot.getView().invalidate();
                 return true;
             }
             return false;
+        }
+
+        private void finish() {
+            if (mFinished) {
+                return;
+            }
+            mFinished = true;
+            mDeferFrameCount = 0;
+            if (mFinishCallback != null) {
+                mFinishCallback.run();
+            }
+            if (mViewRoot != null) {
+                mViewRoot.removeSurfaceChangedCallback(this);
+                mSurfaceCallbackRegistered = false;
+            }
         }
     }
 }

@@ -17,61 +17,21 @@
 package com.android.launcher3.uioverrides;
 
 import android.app.Person;
-import android.content.Context;
 import android.content.pm.ShortcutInfo;
-import android.content.res.Resources;
-import android.view.Display;
 
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.SysUINavigationMode.Mode;
 
+/**
+ * A wrapper for the hidden API calls
+ */
 public class ApiWrapper {
 
     public static final boolean TASKBAR_DRAWN_IN_PROCESS = true;
 
     public static Person[] getPersons(ShortcutInfo si) {
-        if (!Utilities.ATLEAST_Q) return Utilities.EMPTY_PERSON_ARRAY;
+        if (!Utilities.ATLEAST_Q)
+            return Utilities.EMPTY_PERSON_ARRAY;
         Person[] persons = si.getPersons();
         return persons == null ? Utilities.EMPTY_PERSON_ARRAY : persons;
-    }
-
-    /**
-     * Returns true if the display is an internal displays
-     */
-    public static boolean isInternalDisplay(Display display) {
-        return display.getType() == Display.TYPE_INTERNAL;
-    }
-
-    /**
-     * Returns a unique ID representing the display
-     */
-    public static String getUniqueId(Display display) {
-        try {
-            return display.getUniqueId();
-        } catch (Throwable t) {
-            return "" + display.getDisplayId();
-        }
-    }
-
-    /**
-     * Returns the minimum space that should be left empty at the end of hotseat
-     */
-    public static int getHotseatEndOffset(Context context) {
-        if (SysUINavigationMode.INSTANCE.get(context).getMode() == Mode.THREE_BUTTONS) {
-            Resources res = context.getResources();
-            /*
-            * 3 nav buttons +
-            * Little space at the end for contextual buttons +
-            * Little space between icons and nav buttons
-            */
-            return 3 * res.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size)
-                    + res.getDimensionPixelSize(R.dimen.taskbar_contextual_button_margin)
-                    + res.getDimensionPixelSize(R.dimen.taskbar_hotseat_nav_spacing);
-        } else {
-            return 0;
-        }
-
     }
 }

@@ -16,8 +16,6 @@
 
 package com.android.launcher3.tapl;
 
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,16 +23,14 @@ import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiObject2;
 
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 
 import java.util.regex.Pattern;
 
 /**
- * App icon, whether in all apps or in workspace/
+ * App icon, whether in all apps, workspace or the taskbar.
  */
-public final class AppIcon extends Launchable implements FolderDragTarget {
-
-    private static final Pattern LONG_CLICK_EVENT = Pattern.compile("onAllAppsItemLongClick");
+public abstract class AppIcon extends Launchable {
 
     AppIcon(LauncherInstrumentation launcher, UiObject2 icon) {
         super(launcher, icon);
@@ -44,13 +40,19 @@ public final class AppIcon extends Launchable implements FolderDragTarget {
         return By.clazz(TextView.class).text(appName).pkg(launcher.getLauncherPackageName());
     }
 
+    static BySelector getAnyAppIconSelector() {
+        return By.clazz(TextView.class);
+    }
+
+    protected abstract Pattern getLongClickEvent();
+
     /**
      * Long-clicks the icon to open its menu.
      */
     public AppIconMenu openMenu() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            return new AppIconMenu(mLauncher, mLauncher.clickAndGet(
-                    mObject, "popup_container", LONG_CLICK_EVENT));
+            return createMenu(mLauncher.clickAndGet(
+                    mObject, /* resName= */ "popup_container", getLongClickEvent()));
         }
     }
 
@@ -59,42 +61,21 @@ public final class AppIcon extends Launchable implements FolderDragTarget {
      */
     public AppIconMenu openDeepShortcutMenu() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            return new AppIconMenu(mLauncher, mLauncher.clickAndGet(
-                    mObject, "deep_shortcuts_container", LONG_CLICK_EVENT));
+            return createMenu(mLauncher.clickAndGet(
+                    mObject, /* resName= */ "deep_shortcuts_container", getLongClickEvent()));
         }
     }
 
-    /**
-     * Drag the AppIcon to the given position of other icon. The drag must result in a folder.
-     *
-     * @param target the destination icon.
-     */
-    @NonNull
-    public FolderIcon dragToIcon(FolderDragTarget target) {
-        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
-             LauncherInstrumentation.Closable c = mLauncher.addContextLayer("want to drag icon")) {
-            final Rect dropBounds = target.getDropLocationBounds();
-            Workspace.dragIconToWorkspace(
-                    mLauncher, this,
-                    () -> {
-                        final Rect bounds = target.getDropLocationBounds();
-                        return new Point(bounds.centerX(), bounds.centerY());
-                    },
-                    getLongPressIndicator());
-            FolderIcon result = target.getTargetFolder(dropBounds);
-            mLauncher.assertTrue("Can't find the target folder.", result != null);
-            return result;
-        }
-    }
+    protected abstract AppIconMenu createMenu(UiObject2 menu);
 
     @Override
     protected void addExpectedEventsForLongClick() {
-        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, LONG_CLICK_EVENT);
+        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, getLongClickEvent());
     }
 
     @Override
-    protected String getLongPressIndicator() {
-        return "popup_container";
+    protected void waitForLongPressConfirmation() {
+        mLauncher.waitForLauncherObject("popup_container");
     }
 
     @Override
@@ -107,19 +88,9 @@ public final class AppIcon extends Launchable implements FolderDragTarget {
         return "app icon";
     }
 
-    @Override
-    public Rect getDropLocationBounds() {
-        return mLauncher.getVisibleBounds(mObject);
-    }
-
-    @Override
-    public FolderIcon getTargetFolder(Rect bounds) {
-        for (FolderIcon folderIcon : mLauncher.getWorkspace().getFolderIcons()) {
-            final Rect folderIconBounds = folderIcon.getDropLocationBounds();
-            if (bounds.contains(folderIconBounds.centerX(), folderIconBounds.centerY())) {
-                return folderIcon;
-            }
-        }
-        return null;
+    /** Return the app name of a icon */
+    @NonNull
+    public String getIconName() {
+        return getObject().getText();
     }
 }

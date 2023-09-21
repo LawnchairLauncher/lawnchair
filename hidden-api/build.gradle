@@ -4,6 +4,17 @@ plugins {
 
 android {
     namespace 'app.lawnchair.hidden_api'
+    buildFeatures {
+        aidl true
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            res.srcDirs = ['res']
+        }
+    }
 }
 
 dependencies {

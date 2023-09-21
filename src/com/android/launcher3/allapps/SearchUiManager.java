@@ -29,7 +29,7 @@ public interface SearchUiManager {
     /**
      * Initializes the search manager.
      */
-    void initializeSearch(AllAppsContainerView containerView);
+    void initializeSearch(ActivityAllAppsContainerView<?> containerView);
 
     /**
      * Notifies the search manager to close any active search session.
@@ -64,5 +64,14 @@ public interface SearchUiManager {
     /**
      * sets highlight result's title
      */
-    default void setFocusedResultTitle(@Nullable  CharSequence title) { }
+    default void setFocusedResultTitle(
+            @Nullable CharSequence title, @Nullable CharSequence subtitle) {}
+
+    /** Refresh the currently displayed list of results. */
+    default void refreshResults() {}
+
+    /** Returns whether search is in zero state. */
+    default boolean inZeroState() {
+        return false;
+    }
 }

@@ -22,9 +22,9 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.UserHandle;
 import android.view.MotionEvent;
+import com.android.internal.util.ScreenshotRequest;
 
 import com.android.systemui.shared.recents.model.Task;
-import com.android.systemui.shared.system.RemoteTransitionCompat;
 
 /**
  * Temporary callbacks into SystemUI.
@@ -40,18 +40,6 @@ interface ISystemUiProxy {
      * Notifies SystemUI that Overview is shown.
      */
     void onOverviewShown(boolean fromHome) = 6;
-
-    /**
-     * Get the secondary split screen app's rectangle when not minimized.
-     */
-    Rect getNonMinimizedSplitScreenSecondaryBounds() = 7;
-
-    /**
-     * Control the {@param alpha} of the option nav bar button (back-button in 2 button mode
-     * and home handle & background in gestural mode).  The {@param animate} is currently only
-     * supported for 2 button mode.
-     */
-    void setNavBarButtonAlpha(float alpha, boolean animate) = 19;
 
     /**
      * Proxies motion events from the homescreen UI to the status bar. Only called when
@@ -79,11 +67,6 @@ interface ISystemUiProxy {
     void startAssistant(in Bundle bundle) = 13;
 
     /**
-     * Creates a new gesture monitor
-     */
-    Bundle monitorGestureInput(String name, int displayId) = 14;
-
-    /**
      * Notifies that the accessibility button in the system's navigation area has been clicked
      */
     void notifyAccessibilityButtonClicked(int displayId) = 15;
@@ -99,41 +82,10 @@ interface ISystemUiProxy {
     void stopScreenPinning() = 17;
 
     /**
-     * Handle the provided image as if it was a screenshot.
-     *
-     * Deprecated, use handleImageBundleAsScreenshot with image bundle and UserTask
-     * @deprecated
-     */
-    void handleImageAsScreenshot(in Bitmap screenImage, in Rect locationInScreen,
-              in Insets visibleInsets, int taskId) = 21;
-
-    /**
-     * Sets the split-screen divider minimized state
-     */
-    void setSplitScreenMinimized(boolean minimized) = 22;
-
-    /*
-     * Notifies that the swipe-to-home (recents animation) is finished.
-     */
-    void notifySwipeToHomeFinished() = 23;
-
-    /**
      * Notifies that quickstep will switch to a new task
      * @param rotation indicates which Surface.Rotation the gesture was started in
      */
     void notifyPrioritizedRotation(int rotation) = 25;
-
-    /**
-     * Handle the provided image as if it was a screenshot.
-     */
-    void handleImageBundleAsScreenshotR(in Bundle screenImageBundle, in Rect locationInScreen,
-              in Insets visibleInsets, in Task.TaskKey task) = 26;
-
-    /**
-     * Handle the provided image as if it was a screenshot.
-     */
-    void handleImageBundleAsScreenshot(in Bundle screenImageBundle, in Rect locationInScreen,
-              in Insets visibleInsets, in Task.TaskKey task) = 28;
 
     /**
      * Notifies to expand notification panel.
@@ -147,9 +99,6 @@ interface ISystemUiProxy {
 
     /** Sets home rotation enabled. */
     void setHomeRotationEnabled(boolean enabled) = 45;
-
-    /** Notifies that a swipe-up gesture has started */
-    oneway void notifySwipeUpGestureStarted() = 46;
 
     /** Notifies when taskbar is enabled or disabled */
     oneway void setTaskbarEnabled(boolean enabled) = 500;
@@ -169,5 +118,15 @@ interface ISystemUiProxy {
      */
     void onImeSwitcherPressed() = 49;
 
-    // Next id = 50
+    /**
+     * Notifies to toggle notification panel.
+     */
+    void toggleNotificationPanel() = 50;
+
+    /**
+     * Handle the screenshot request.
+     */
+    void takeScreenshot(in ScreenshotRequest request) = 51;
+
+    // Next id = 52
 }

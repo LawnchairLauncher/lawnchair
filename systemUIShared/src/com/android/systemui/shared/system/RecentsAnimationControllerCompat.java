@@ -65,14 +65,6 @@ public class RecentsAnimationControllerCompat {
         }
     }
 
-    public void hideCurrentInputMethod() {
-        try {
-            mAnimationController.hideCurrentInputMethod();
-        } catch (RemoteException e) {
-            Log.e(TAG, "Failed to set hide input method", e);
-        }
-    }
-
     /**
      * Sets the final surface transaction on a Task. This is used by Launcher to notify the system
      * that animating Activity to PiP has completed and the associated task surface should be

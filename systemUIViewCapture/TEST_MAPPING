@@ -1,0 +1,15 @@
+{
+  "presubmit": [
+    {
+      "name": "view_capture_tests",
+      "options": [
+        {
+          "exclude-annotation": "org.junit.Ignore"
+        },
+        {
+          "exclude-annotation": "androidx.test.filters.FlakyTest"
+        }
+      ]
+    }
+  ]
+}

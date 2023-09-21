@@ -16,7 +16,9 @@
 
 package com.android.systemui.shared.system;
 
+import android.annotation.IntDef;
 import android.os.Build;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.android.internal.jank.InteractionJankMonitor;
@@ -41,11 +43,32 @@ public final class InteractionJankMonitorWrapper {
             InteractionJankMonitor.CUJ_LAUNCHER_QUICK_SWITCH;
     public static final int CUJ_OPEN_ALL_APPS =
             InteractionJankMonitor.CUJ_LAUNCHER_OPEN_ALL_APPS;
+    public static final int CUJ_CLOSE_ALL_APPS_SWIPE = 67;
+    public static final int CUJ_CLOSE_ALL_APPS_TO_HOME = 68;
     public static final int CUJ_ALL_APPS_SCROLL =
             InteractionJankMonitor.CUJ_LAUNCHER_ALL_APPS_SCROLL;
     public static final int CUJ_APP_LAUNCH_FROM_WIDGET =
             InteractionJankMonitor.CUJ_LAUNCHER_APP_LAUNCH_FROM_WIDGET;
+    public static final int CUJ_SPLIT_SCREEN_ENTER =
+            InteractionJankMonitor.CUJ_SPLIT_SCREEN_ENTER;
+    public static final int CUJ_LAUNCHER_UNLOCK_ENTRANCE_ANIMATION = 63;
+    public static final int CUJ_RECENTS_SCROLLING = 65;
+    public static final int CUJ_APP_SWIPE_TO_RECENTS = 66;
 
+    @IntDef({
+            CUJ_APP_LAUNCH_FROM_RECENTS,
+            CUJ_APP_LAUNCH_FROM_ICON,
+            CUJ_APP_CLOSE_TO_HOME,
+            CUJ_APP_CLOSE_TO_PIP,
+            CUJ_QUICK_SWITCH,
+            CUJ_APP_LAUNCH_FROM_WIDGET,
+            CUJ_LAUNCHER_UNLOCK_ENTRANCE_ANIMATION,
+            CUJ_RECENTS_SCROLLING,
+            CUJ_APP_SWIPE_TO_RECENTS,
+            CUJ_OPEN_ALL_APPS,
+            CUJ_CLOSE_ALL_APPS_SWIPE,
+            CUJ_CLOSE_ALL_APPS_TO_HOME
+    })
     @Retention(RetentionPolicy.SOURCE)
     public @interface CujType {
     }
@@ -57,7 +80,7 @@ public final class InteractionJankMonitorWrapper {
      * @param cujType the specific {@link InteractionJankMonitor.CujType}.
      */
     public static void begin(View v, @CujType int cujType) {
-        if (true) return;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return;
         InteractionJankMonitor.getInstance().begin(v, cujType);
     }
 
@@ -69,10 +92,27 @@ public final class InteractionJankMonitorWrapper {
      * @param timeout duration to cancel the instrumentation in ms
      */
     public static void begin(View v, @CujType int cujType, long timeout) {
-        if (true) return;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return;
         Configuration.Builder builder =
                 Configuration.Builder.withView(cujType, v)
                         .setTimeout(timeout);
+        InteractionJankMonitor.getInstance().begin(builder);
+    }
+
+    /**
+     * Begin a trace session.
+     *
+     * @param v       an attached view.
+     * @param cujType the specific {@link InteractionJankMonitor.CujType}.
+     * @param tag the tag to distinguish different flow of same type CUJ.
+     */
+    public static void begin(View v, @CujType int cujType, String tag) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return;
+        Configuration.Builder builder =
+                Configuration.Builder.withView(cujType, v);
+        if (!TextUtils.isEmpty(tag)) {
+            builder.setTag(tag);
+        }
         InteractionJankMonitor.getInstance().begin(builder);
     }
 
@@ -82,7 +122,7 @@ public final class InteractionJankMonitorWrapper {
      * @param cujType the specific {@link InteractionJankMonitor.CujType}.
      */
     public static void end(@CujType int cujType) {
-        if (true) return;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return;
         InteractionJankMonitor.getInstance().end(cujType);
     }
 
@@ -90,7 +130,7 @@ public final class InteractionJankMonitorWrapper {
      * Cancel the trace session.
      */
     public static void cancel(@CujType int cujType) {
-        if (true) return;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return;
         InteractionJankMonitor.getInstance().cancel(cujType);
     }
 }

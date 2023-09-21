@@ -12,6 +12,9 @@
         android:layout_marginHorizontal="@dimen/developer_options_filter_margins"
         android:hint="@string/developer_options_filter_hint"
         android:visibility="gone"
+        android:inputType="text"
+        android:maxLines="1"
+        android:imeOptions="actionDone"
         />
 
     <FrameLayout

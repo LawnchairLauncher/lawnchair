@@ -31,6 +31,7 @@ import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings;
@@ -50,7 +51,6 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.IntSparseArrayMap;
-import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 
@@ -66,6 +66,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -114,6 +115,11 @@ public class BgDataModel {
      * Entire list of widgets.
      */
     public final WidgetsModel widgetsModel = new WidgetsModel();
+
+    /**
+     * Cache for strings used in launcher
+     */
+    public final StringCache stringCache = new StringCache();
 
     /**
      * Id when the model was last bound
@@ -231,7 +237,6 @@ public class BgDataModel {
                     String.format("Adding item to ID map: %s", item.toString()),
                     /* stackTrace= */ null);
         }
-
         itemsIdMap.put(item.id, item);
         switch (item.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
@@ -430,26 +435,9 @@ public class BgDataModel {
         public final int containerId;
         public final List<ItemInfo> items;
 
-        public FixedContainerItems(int containerId) {
-            this(containerId, new ArrayList<>());
-        }
-
         public FixedContainerItems(int containerId, List<ItemInfo> items) {
             this.containerId = containerId;
-            this.items = items;
-        }
-
-        @Override
-        public FixedContainerItems clone() {
-            return new FixedContainerItems(containerId, new ArrayList<>(items));
-        }
-
-        public void setItems(List<ItemInfo> newItems) {
-            items.clear();
-            newItems.forEach(item -> {
-                item.container = containerId;
-                items.add(item);
-            });
+            this.items = Collections.unmodifiableList(items);
         }
     }
 
@@ -467,6 +455,7 @@ public class BgDataModel {
          * or an empty IntSet
          * @param orderedScreenIds All the page ids to be bound
          */
+        @NonNull
         default IntSet getPagesToBindSynchronously(IntArray orderedScreenIds) {
             return new IntSet();
         }
@@ -493,7 +482,7 @@ public class BgDataModel {
         default void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated) { }
         default void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets) { }
         default void bindRestoreItemsChange(HashSet<ItemInfo> updates) { }
-        default void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher) { }
+        default void bindWorkspaceComponentsRemoved(Predicate<ItemInfo> matcher) { }
         default void bindAllWidgets(List<WidgetsListBaseEntry> widgets) { }
 
         default void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks) {
@@ -508,5 +497,10 @@ public class BgDataModel {
         default void bindExtraContainerItems(FixedContainerItems item) { }
 
         default void bindAllApplications(AppInfo[] apps, int flags) { }
+
+        /**
+         * Binds the cache of string resources
+         */
+        default void bindStringCache(StringCache cache) { }
     }
 }

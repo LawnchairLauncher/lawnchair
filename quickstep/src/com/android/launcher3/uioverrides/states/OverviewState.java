@@ -26,7 +26,8 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
-import com.android.quickstep.SysUINavigationMode;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.Themes;
 import com.android.quickstep.util.LayoutUtils;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -38,6 +39,10 @@ import app.lawnchair.theme.color.ColorTokens;
  * Definition for overview state
  */
 public class OverviewState extends LauncherState {
+
+    private static final int OVERVIEW_SLIDE_IN_DURATION = 380;
+    private static final int OVERVIEW_POP_IN_DURATION = 250;
+    private static final int OVERVIEW_EXIT_DURATION = 250;
 
     protected static final Rect sTempRect = new Rect();
 
@@ -58,24 +63,41 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public int getTransitionDuration(Context context) {
-        // In gesture modes, overview comes in all the way from the side, so give it more time.
-        return SysUINavigationMode.INSTANCE.get(context).getMode().hasGestures ? 380 : 250;
+    public int getTransitionDuration(Context context, boolean isToState) {
+        if (isToState) {
+            // In gesture modes, overview comes in all the way from the side, so give it
+            // more time.
+            return DisplayController.getNavigationMode(context).hasGestures
+                    ? OVERVIEW_SLIDE_IN_DURATION
+                    : OVERVIEW_POP_IN_DURATION;
+        } else {
+            // When exiting Overview, exit quickly.
+            return OVERVIEW_EXIT_DURATION;
+        }
     }
 
     @Override
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
         RecentsView recentsView = launcher.getOverviewPanel();
-        float workspacePageWidth = launcher.getDeviceProfile().getWorkspaceWidth();
         recentsView.getTaskSize(sTempRect);
-        float scale = (float) sTempRect.width() / workspacePageWidth;
+        float scale;
+        DeviceProfile deviceProfile = launcher.getDeviceProfile();
+        if (deviceProfile.isTwoPanels) {
+            // In two panel layout, width does not include both panels or space between
+            // them, so
+            // use height instead. We do not use height for handheld, as cell layout can be
+            // shorter than a task and we want the workspace to scale down to task size.
+            scale = (float) sTempRect.height() / deviceProfile.getCellLayoutHeight();
+        } else {
+            scale = (float) sTempRect.width() / deviceProfile.getCellLayoutWidth();
+        }
         float parallaxFactor = 0.5f;
         return new ScaleAndTranslation(scale, 0, -getDefaultSwipeHeight(launcher) * parallaxFactor);
     }
 
     @Override
     public float[] getOverviewScaleAndOffset(Launcher launcher) {
-        return new float[] {NO_SCALE, NO_OFFSET};
+        return new float[] { NO_SCALE, NO_OFFSET };
     }
 
     @Override
@@ -97,8 +119,8 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
-    public boolean isTaskbarStashed(Launcher launcher) {
-        return true;
+    public boolean isTaskbarAlignedWithHotseat(Launcher launcher) {
+        return false;
     }
 
     @Override
@@ -108,7 +130,19 @@ public class OverviewState extends LauncherState {
 
     @Override
     public boolean displayOverviewTasksAsGrid(DeviceProfile deviceProfile) {
-        return deviceProfile.overviewShowAsGrid;
+        return deviceProfile.isTablet;
+    }
+
+    @Override
+    public boolean disallowTaskbarGlobalDrag() {
+        // Disable global drag in overview
+        return true;
+    }
+
+    @Override
+    public boolean allowTaskbarInitialSplitSelection() {
+        // Allow split select from taskbar items in overview
+        return true;
     }
 
     @Override
@@ -122,15 +156,20 @@ public class OverviewState extends LauncherState {
 
     @Override
     protected float getDepthUnchecked(Context context) {
-        //TODO revert when b/178661709 is fixed
+        // TODO revert when b/178661709 is fixed
         return SystemProperties.getBoolean("ro.launcher.depth.overview", true) ? 1 : 0;
     }
 
     @Override
     public void onBackPressed(Launcher launcher) {
-        TaskView taskView = launcher.<RecentsView>getOverviewPanel().getRunningTaskView();
+        RecentsView recentsView = launcher.getOverviewPanel();
+        TaskView taskView = recentsView.getRunningTaskView();
         if (taskView != null) {
-            taskView.launchTaskAnimated();
+            if (recentsView.isTaskViewFullyVisible(taskView)) {
+                taskView.launchTasks();
+            } else {
+                recentsView.snapToPage(recentsView.indexOfChild(taskView));
+            }
         } else {
             super.onBackPressed(launcher);
         }
@@ -145,14 +184,16 @@ public class OverviewState extends LauncherState {
     }
 
     /**
-     *  New Overview substate that represents the overview in modal mode (one task shown on its own)
+     * New Overview substate that represents the overview in modal mode (one task
+     * shown on its own)
      */
     public static OverviewState newModalTaskState(int id) {
         return new OverviewModalTaskState(id);
     }
 
     /**
-     * New Overview substate representing state where 1 app for split screen has been selected and
+     * New Overview substate representing state where 1 app for split screen has
+     * been selected and
      * pinned and user is selecting the second one
      */
     public static OverviewState newSplitSelectState(int id) {

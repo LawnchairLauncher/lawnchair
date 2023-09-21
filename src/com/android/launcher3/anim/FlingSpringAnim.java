@@ -41,11 +41,9 @@ public class FlingSpringAnim {
 
     public <K> FlingSpringAnim(K object, Context context, FloatPropertyCompat<K> property,
             float startPosition, float targetPosition, float startVelocityPxPerS,
-            float minVisChange, float minValue, float maxValue,
+            float minVisChange, float minValue, float maxValue, float damping, float stiffness,
             OnAnimationEndListener onEndListener) {
         ResourceProvider rp = DynamicResource.provider(context);
-        float damping = rp.getFloat(R.dimen.swipe_up_rect_xy_damping_ratio);
-        float stiffness = rp.getFloat(R.dimen.swipe_up_rect_xy_stiffness);
         float friction = rp.getFloat(R.dimen.swipe_up_rect_xy_fling_friction);
 
         mFlingAnim = new FlingAnimation(object, property)

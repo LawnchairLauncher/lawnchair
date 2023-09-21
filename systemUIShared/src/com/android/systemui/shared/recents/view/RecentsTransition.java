@@ -45,7 +45,7 @@ public class RecentsTransition {
             private boolean mHandled;
 
             @Override
-            public void onAnimationStarted() {
+            public void onAnimationStarted(long elapsedRealTime) {
                 // OnAnimationStartedListener can be called numerous times, so debounce here to
                 // prevent multiple callbacks
                 if (mHandled) {

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Jaa sovellus"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Kuuntele"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Käännä"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"OK"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"PERU"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"ASETUKSET"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Käännä tai kuuntele näytöllä oleva teksti"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Googlelle saatetaan jakaa näytöllä olevaa tekstiä, verkko-osoitteita, kuvakaappauksia ja muita tietoja.\n\nVoit valita jaettavat tiedot valitsemalla "<b>"Asetukset &gt; Sovellukset &gt; Oletussovellukset &gt; Digiavustajasovellus"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Valitse avustaja tämän ominaisuuden käyttöön"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Jos haluat kuunnella tai kääntää näytöllä näkyvää tekstiä, valitse digiavustajasovellus asetuksista"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Vaihda avustaja tämän ominaisuuden käyttöä varten"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Jos haluat kuunnella tai kääntää näytöllä näkyvää tekstiä, vaihda digiavustajasovellus asetuksista"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Kuuntele näytöllä näkyvä teksti napauttamalla tästä"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Käännä näytöllä näkyvä teksti napauttamalla tästä"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Tätä sovellusta ei voi jakaa"</string>
+</resources>

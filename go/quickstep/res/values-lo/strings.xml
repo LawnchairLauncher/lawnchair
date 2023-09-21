@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"ແບ່ງປັນແອັບ"</string>
+    <string name="action_listen" msgid="2370304050784689486">"ຟັງ"</string>
+    <string name="action_translate" msgid="8028378961867277746">"ແປພາສາ"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"ເຂົ້າໃຈແລ້ວ"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"ຍົກເລີກ"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"ການຕັ້ງຄ່າ"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"ແປພາສາ ຫຼື ຟັງຂໍ້ຄວາມຢູ່ໜ້າຈໍ"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"ຂໍ້ມູນ ເຊັ່ນ: ຂໍ້ຄວາມຢູ່ໜ້າຈໍຂອງທ່ານ, ທີ່ຢູ່ເວັບ ແລະ ຮູບໜ້າຈໍອາດຖືກແບ່ງປັນໃຫ້ກັບ Google.\n\nເພື່ອປ່ຽນແປງຂໍ້ມູນທີ່ທ່ານແບ່ງປັນ, ໃຫ້ເຂົ້າໄປ "<b>"ການຕັ້ງຄ່າ &gt; ແອັບ &gt; ແອັບເລີ່ມຕົ້ນ &gt; ແອັບຜູ້ຊ່ວຍດິຈິຕອນ"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"ເລືອກຜູ້ຊ່ວຍເພື່ອໃຊ້ຄຸນສົມບັດນີ້"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"ເພື່ອຟັງ ຫຼື ແປຂໍ້ຄວາມຢູ່ໜ້າຈໍຂອງທ່ານ, ໃຫ້ເລືອກຜູ້ຊ່ວຍດິຈິຕອນໃດໜຶ່ງໃນການຕັ້ງຄ່າ"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"ປ່ຽນຜູ້ຊ່ວຍຂອງທ່ານເພື່ອໃຊ້ຄຸນສົມບັດນີ້"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"ເພື່ອຟັງ ຫຼື ແປຂໍ້ຄວາມຢູ່ໜ້າຈໍຂອງທ່ານ, ໃຫ້ປ່ຽນຜູ້ຊ່ວຍດິຈິຕອນຂອງທ່ານໃນການຕັ້ງຄ່າ"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"ແຕະບ່ອນນີ້ເພື່ອຟັງຂໍ້ຄວາມຢູ່ໜ້າຈໍນີ້"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"ແຕະບ່ອນນີ້ເພື່ອແປຂໍ້ຄວາມຢູ່ໜ້າຈໍນີ້"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"ບໍ່ສາມາດແບ່ງປັນແອັບນີ້ໄດ້"</string>
+</resources>

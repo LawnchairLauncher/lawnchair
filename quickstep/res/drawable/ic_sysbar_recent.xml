@@ -16,12 +16,12 @@
   -->
 
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="28dp"
-    android:height="28dp"
-    android:viewportWidth="28"
-    android:viewportHeight="28">
+    android:width="20dp"
+    android:height="20dp"
+    android:viewportWidth="20"
+    android:viewportHeight="20">
 
     <path
         android:fillColor="@android:color/white"
-        android:pathData="M19.9,21.5H8.1c-0.88,0-1.6-0.72-1.6-1.6V8.1c0-0.88,0.72-1.6,1.6-1.6h11.8c0.88,0,1.6,0.72,1.6,1.6v11.8 C21.5,20.78,20.78,21.5,19.9,21.5z" />
+        android:pathData="M4.47634 2.5H15.5241C16.6164 2.5 17.5002 3.38382 17.5002 4.4761V15.5239C17.5002 16.6162 16.6164 17.5 15.5241 17.5H4.47634C3.38407 17.5 2.50024 16.6162 2.50024 15.5239V4.4761C2.50024 3.38382 3.38407 2.5 4.47634 2.5Z" />
 </vector>

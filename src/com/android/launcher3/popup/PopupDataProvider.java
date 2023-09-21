@@ -238,6 +238,15 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
                 .collect(Collectors.toList());
     }
 
+    /** Gets the WidgetsListContentEntry for the currently selected header. */
+    public WidgetsListContentEntry getSelectedAppWidgets(PackageUserKey packageUserKey) {
+        return (WidgetsListContentEntry) mAllWidgets.stream()
+                .filter(row -> row instanceof WidgetsListContentEntry
+                        && PackageUserKey.fromPackageItemInfo(row.mPkgItem).equals(packageUserKey))
+                .findAny()
+                .orElse(null);
+    }
+
     /**
      * Returns a list of notifications that are relevant to given ItemInfo.
      */
@@ -264,6 +273,13 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         writer.println(prefix + "\tmPackageUserToDotInfos:" + mPackageUserToDotInfos);
     }
 
+    /**
+     * Tells the listener that the system shortcuts have been updated, causing them to be redrawn.
+     */
+    public void redrawSystemShortcuts() {
+        mChangeListener.onSystemShortcutsUpdated();
+    }
+
     public interface PopupDataChangeListener {
 
         PopupDataChangeListener INSTANCE = new PopupDataChangeListener() { };
@@ -276,5 +292,8 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
         /** A callback to get notified when recommended widgets are bound. */
         default void onRecommendedWidgetsBound() { }
+
+        /** A callback to get notified when system shortcuts have been updated. */
+        default void onSystemShortcutsUpdated() { }
     }
 }

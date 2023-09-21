@@ -1,28 +1,34 @@
 package com.android.launcher3;
 
-import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Process;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.Log;
 
 import com.android.launcher3.LauncherSettings.Favorites;
+import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.util.Partner;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -43,14 +49,19 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
     private static final String ATTR_CONTAINER = "container";
     private static final String ATTR_SCREEN = "screen";
     private static final String ATTR_FOLDER_ITEMS = "folderItems";
+    private static final String ATTR_SHORTCUT_ID = "shortcutId";
+    private static final String ATTR_PACKAGE_NAME = "packageName";
+
+    public static final String RES_PARTNER_FOLDER = "partner_folder";
+    public static final String RES_PARTNER_DEFAULT_LAYOUT = "partner_default_layout";
 
     // TODO: Remove support for this broadcast, instead use widget options to send bind time options
     private static final String ACTION_APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE =
             "com.android.launcher.action.APPWIDGET_DEFAULT_WORKSPACE_CONFIGURE";
 
-    public DefaultLayoutParser(Context context, AppWidgetHost appWidgetHost,
+    public DefaultLayoutParser(Context context, LauncherWidgetHolder appWidgetHolder,
             LayoutParserCallback callback, Resources sourceRes, int layoutId) {
-        super(context, appWidgetHost, callback, sourceRes, layoutId, TAG_FAVORITES);
+        super(context, appWidgetHolder, callback, sourceRes, layoutId, TAG_FAVORITES);
     }
 
     @Override
@@ -178,7 +189,6 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
         }
     }
 
-
     /**
      * Shortcut parser which allows any uri and not just web urls.
      */
@@ -186,6 +196,35 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
 
         public UriShortcutParser(Resources iconRes) {
             super(iconRes);
+        }
+
+        @Override
+        public int parseAndAdd(XmlPullParser parser) {
+            final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
+            final String shortcutId = getAttributeValue(parser, ATTR_SHORTCUT_ID);
+            if (!TextUtils.isEmpty(packageName) && !TextUtils.isEmpty(shortcutId)) {
+                return parseAndAddDeepShortcut(shortcutId, packageName);
+            }
+            return super.parseAndAdd(parser);
+        }
+
+        /**
+         * This method parses and adds a deep shortcut.
+         * @return item id if the shortcut is successfully added else -1
+         */
+        private int parseAndAddDeepShortcut(String shortcutId, String packageName) {
+            try {
+                LauncherApps launcherApps = mContext.getSystemService(LauncherApps.class);
+                launcherApps.pinShortcuts(packageName, Collections.singletonList(shortcutId),
+                        Process.myUserHandle());
+                Intent intent = ShortcutKey.makeIntent(shortcutId, packageName);
+                mValues.put(Favorites.RESTORED, WorkspaceItemInfo.FLAG_RESTORED_ICON);
+                return addShortcut(null, intent, Favorites.ITEM_TYPE_DEEP_SHORTCUT);
+            } catch (Exception e) {
+                Log.e(TAG, "Unable to pin the shortcut for shortcut id = " + shortcutId
+                        + " and package name = " + packageName);
+            }
+            return -1;
         }
 
         @Override
@@ -243,10 +282,9 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
             // Folder contents come from an external XML resource
             final Partner partner = Partner.get(mPackageManager);
             if (partner != null) {
-                final Resources partnerRes = partner.getResources();
-                final int resId = partnerRes.getIdentifier(Partner.RES_FOLDER,
-                        "xml", partner.getPackageName());
+                final int resId = partner.getXmlResId(RES_PARTNER_FOLDER);
                 if (resId != 0) {
+                    final Resources partnerRes = partner.getResources();
                     final XmlPullParser partnerParser = partnerRes.getXml(resId);
                     beginDocument(partnerParser, TAG_FOLDER);
 
@@ -301,11 +339,11 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
             final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(mContext);
             int insertedId = -1;
             try {
-                int appWidgetId = mAppWidgetHost.allocateAppWidgetId();
+                int appWidgetId = mAppWidgetHolder.allocateAppWidgetId();
 
                 if (!appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, cn)) {
                     Log.e(TAG, "Unable to bind app widget id " + cn);
-                    mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+                    mAppWidgetHolder.deleteAppWidgetId(appWidgetId);
                     return -1;
                 }
 
@@ -314,7 +352,7 @@ public class DefaultLayoutParser extends AutoInstallsLayout {
                 mValues.put(Favorites._ID, mCallback.generateNewItemId());
                 insertedId = mCallback.insertAndCheck(mDb, mValues);
                 if (insertedId < 0) {
-                    mAppWidgetHost.deleteAppWidgetId(appWidgetId);
+                    mAppWidgetHolder.deleteAppWidgetId(appWidgetId);
                     return insertedId;
                 }
 

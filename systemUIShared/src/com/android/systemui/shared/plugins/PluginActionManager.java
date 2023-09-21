@@ -38,6 +38,7 @@ import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.messages.nano.SystemMessageProto.SystemMessage;
 import com.android.systemui.plugins.Plugin;
 import com.android.systemui.plugins.PluginListener;
+import com.android.systemui.plugins.PluginManager;
 import com.android.systemui.shared.plugins.VersionInfo.InvalidVersionException;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class PluginActionManager<T extends Plugin> {
 
     private static final boolean DEBUG = false;
 
-    private static final String TAG = "PluginInstanceManager";
+    private static final String TAG = "PluginActionManager";
     public static final String PLUGIN_PERMISSION = "com.android.systemui.permission.PLUGIN";
 
     private final Context mContext;
@@ -361,8 +362,7 @@ public class PluginActionManager<T extends Plugin> {
         nb.addAction(new Action.Builder(null, "Disable plugin", pi).build());
         mNotificationManager.notify(SystemMessage.NOTE_PLUGIN, nb.build());
         // TODO: Warn user.
-        Log.w(TAG, "Plugin has invalid interface version " + e.getActualVersion()
-                + ", expected " + e.getExpectedVersion());
+        Log.w(TAG, "Error loading plugin; " + e.getMessage());
     }
 
     /**

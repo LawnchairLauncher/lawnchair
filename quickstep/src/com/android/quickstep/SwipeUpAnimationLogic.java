@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import static com.android.launcher3.anim.Interpolators.ACCEL_1_5;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_SELECT;
 
 import android.animation.Animator;
 import android.content.Context;
@@ -25,25 +24,27 @@ import android.graphics.Matrix;
 import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.view.RemoteAnimationTarget;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.quickstep.RemoteTargetGluer.RemoteTargetHandle;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
-import com.android.quickstep.util.LauncherSplitScreenListener;
 import com.android.quickstep.util.RectFSpringAnim;
+import com.android.quickstep.util.RectFSpringAnim.DefaultSpringConfig;
+import com.android.quickstep.util.RectFSpringAnim.TaskbarHotseatSpringConfig;
+import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
 import com.android.quickstep.util.TransformParams.BuilderProxy;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
-import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplierCompat.SurfaceParams.Builder;
 
 import java.util.Arrays;
 import java.util.function.Consumer;
@@ -67,23 +68,21 @@ public abstract class SwipeUpAnimationLogic implements
     // 1 => preview snapShot is completely aligned with the recents view and hotseat is completely
     // visible.
     protected final AnimatedFloat mCurrentShift = new AnimatedFloat(this::updateFinalShift);
+    protected float mCurrentDisplacement;
 
     // The distance needed to drag to reach the task size in recents.
     protected int mTransitionDragLength;
     // How much further we can drag past recents, as a factor of mTransitionDragLength.
     protected float mDragLengthFactor = 1;
 
-    protected boolean mIsSwipeForStagedSplit;
+    protected boolean mIsSwipeForSplit;
 
     public SwipeUpAnimationLogic(Context context, RecentsAnimationDeviceState deviceState,
             GestureState gestureState) {
         mContext = context;
         mDeviceState = deviceState;
         mGestureState = gestureState;
-
-        mIsSwipeForStagedSplit = ENABLE_SPLIT_SELECT.get() &&
-                LauncherSplitScreenListener.INSTANCE.getNoCreate()
-                        .getRunningSplitTaskIds().length > 1;
+        mIsSwipeForSplit = TopTaskTracker.INSTANCE.get(context).getRunningSplitTaskIds().length > 1;
 
         mTargetGluer = new RemoteTargetGluer(mContext, mGestureState.getActivityInterface());
         mRemoteTargetHandles = mTargetGluer.getRemoteTargetHandles();
@@ -120,7 +119,9 @@ public abstract class SwipeUpAnimationLogic implements
     @UiThread
     public void updateDisplacement(float displacement) {
         // We are moving in the negative x/y direction
-        displacement = -displacement;
+        displacement = overrideDisplacementForTransientTaskbar(-displacement);
+        mCurrentDisplacement = displacement;
+
         float shift;
         if (displacement > mTransitionDragLength * mDragLengthFactor && mTransitionDragLength > 0) {
             shift = mDragLengthFactor;
@@ -130,6 +131,17 @@ public abstract class SwipeUpAnimationLogic implements
         }
 
         mCurrentShift.updateValue(shift);
+    }
+
+    /**
+     * When Transient Taskbar is enabled, subclasses can override the displacement to keep the app
+     * window at the bottom of the screen while taskbar is being swiped in.
+     * @param displacement The distance the user has swiped up from the bottom of the screen. This
+     *                     value will be positive unless the user swipe downwards.
+     * @return the overridden displacement.
+     */
+    protected float overrideDisplacementForTransientTaskbar(float displacement) {
+        return displacement;
     }
 
     /**
@@ -146,6 +158,13 @@ public abstract class SwipeUpAnimationLogic implements
 
     protected abstract class HomeAnimationFactory {
         protected float mSwipeVelocity;
+
+        /**
+         * Returns true if we know the home animation involves an item in the hotseat.
+         */
+        public boolean isInHotseat() {
+            return false;
+        }
 
         public @NonNull RectF getWindowTargetRect() {
             PagedOrientationHandler orientationHandler = getOrientationHandler();
@@ -177,23 +196,11 @@ public abstract class SwipeUpAnimationLogic implements
             // No-op
         }
 
-        public boolean shouldPlayAtomicWorkspaceReveal() {
-            return true;
-        }
-
         public void setAnimation(RectFSpringAnim anim) { }
 
         public void update(RectF currentRect, float progress, float radius) { }
 
         public void onCancel() { }
-
-        /**
-         * @return {@code true} if this factory supports animating an Activity to PiP window on
-         * swiping up to home.
-         */
-        public boolean supportSwipePipToHome() {
-            return false;
-        }
 
         /**
          * @param progress The progress of the animation to the home screen.
@@ -280,10 +287,21 @@ public abstract class SwipeUpAnimationLogic implements
         RectF cropRectF = new RectF(taskViewSimulator.getCurrentCropRect());
         // Move the startRect to Launcher space as floatingIconView runs in Launcher
         Matrix windowToHomePositionMap = new Matrix();
+
+        // If the start rect ends up overshooting too much to the left/right offscreen, bring it
+        // back to fullscreen. This can happen when the recentsScroll value isn't aligned with
+        // the pageScroll value for a given taskView, see b/228829958#comment12
+        mRemoteTargetHandles[0].getTaskViewSimulator().getOrientationState().getOrientationHandler()
+                .fixBoundsForHomeAnimStartRect(startRect, mDp);
+
         homeToWindowPositionMap.invert(windowToHomePositionMap);
         windowToHomePositionMap.mapRect(startRect);
 
-        RectFSpringAnim anim = new RectFSpringAnim(startRect, targetRect, mContext, mDp);
+        boolean useTaskbarHotseatParams = mDp.isTaskbarPresent
+                && homeAnimationFactory.isInHotseat();
+        RectFSpringAnim anim = new RectFSpringAnim(useTaskbarHotseatParams
+                ? new TaskbarHotseatSpringConfig(mContext, startRect, targetRect)
+                : new DefaultSpringConfig(mContext, mDp, startRect, targetRect));
         homeAnimationFactory.setAnimation(anim);
 
         SpringAnimationRunner runner = new SpringAnimationRunner(
@@ -345,11 +363,11 @@ public abstract class SwipeUpAnimationLogic implements
         }
 
         @Override
-        public void onBuildTargetParams(
-                Builder builder, RemoteAnimationTargetCompat app, TransformParams params) {
-            builder.withMatrix(mMatrix)
-                    .withWindowCrop(mCropRect)
-                    .withCornerRadius(params.getCornerRadius());
+        public void onBuildTargetParams(SurfaceProperties builder, RemoteAnimationTarget app,
+                TransformParams params) {
+            builder.setMatrix(mMatrix)
+                    .setWindowCrop(mCropRect)
+                    .setCornerRadius(params.getCornerRadius());
         }
 
         @Override

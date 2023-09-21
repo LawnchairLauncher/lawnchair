@@ -43,7 +43,7 @@ import java.util.Comparator;
 /**
  * Represents an app in AllAppsView.
  */
-public class AppInfo extends ItemInfoWithIcon {
+public class AppInfo extends ItemInfoWithIcon implements WorkspaceItemFactory {
 
     public static final AppInfo[] EMPTY_ARRAY = new AppInfo[0];
     public static final Comparator<AppInfo> COMPONENT_KEY_COMPARATOR = (a, b) -> {
@@ -56,6 +56,7 @@ public class AppInfo extends ItemInfoWithIcon {
      */
     public Intent intent;
 
+    @NonNull
     public ComponentName componentName;
 
     // Section name used for indexing.
@@ -66,6 +67,7 @@ public class AppInfo extends ItemInfoWithIcon {
     }
 
     @Override
+    @Nullable
     public Intent getIntent() {
         return intent;
     }
@@ -121,7 +123,12 @@ public class AppInfo extends ItemInfoWithIcon {
         return super.dumpProperties() + " componentName=" + componentName;
     }
 
-    public WorkspaceItemInfo makeWorkspaceItem() {
+    public ComponentKey toComponentKey() {
+        return new ComponentKey(componentName, user);
+    }
+
+    @Override
+    public WorkspaceItemInfo makeWorkspaceItem(Context context) {
         WorkspaceItemInfo workspaceItemInfo = new WorkspaceItemInfo(this);
 
         if ((runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) != 0) {
@@ -139,10 +146,6 @@ public class AppInfo extends ItemInfoWithIcon {
         return workspaceItemInfo;
     }
 
-    public ComponentKey toComponentKey() {
-        return new ComponentKey(componentName, user);
-    }
-
     public static Intent makeLaunchIntent(LauncherActivityInfo info) {
         return makeLaunchIntent(info.getComponentName());
     }
@@ -155,7 +158,7 @@ public class AppInfo extends ItemInfoWithIcon {
                         | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
     }
 
-    @Nullable
+    @NonNull
     @Override
     public ComponentName getTargetComponent() {
         return componentName;

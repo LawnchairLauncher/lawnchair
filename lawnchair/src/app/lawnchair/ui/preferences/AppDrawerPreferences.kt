@@ -25,7 +25,6 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.not
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
-import app.lawnchair.search.LawnchairSearchAlgorithm
 import app.lawnchair.ui.preferences.components.*
 import com.android.launcher3.R
 
@@ -82,7 +81,7 @@ fun AppDrawerPreferences() {
             }
         }
 
-        val deviceSearchEnabled = LawnchairSearchAlgorithm.isDeviceSearchEnabled(LocalContext.current)
+        val deviceSearchEnabled = false
         PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
             SwitchPreference(
                 label = stringResource(id = R.string.show_app_search_bar),

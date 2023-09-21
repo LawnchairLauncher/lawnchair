@@ -31,67 +31,96 @@
     <string name="time_left_for_app" msgid="3111996412933644358">"今日はあと <xliff:g id="TIME">%1$s</xliff:g>です"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"アプリの候補"</string>
     <string name="all_apps_prediction_tip" msgid="2672336544844936186">"予測されたアプリ"</string>
-    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"ホーム画面の一番下の行でアプリの候補を利用できます"</string>
+    <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"ホーム画面の一番下にアプリの候補を表示できます"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"ホーム画面のお気に入りの行でアプリの候補を利用できます"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"ホーム画面で、使用頻度の高いアプリに簡単にアクセスできるようになります。アプリの候補はルーティンに応じて変わります。一番下の行にあるアプリがホーム画面に移動します。"</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"ホーム画面で、使用頻度の高いアプリに簡単にアクセスできるようになります。アプリの候補はルーティンに応じて変わります。ホーム画面で今一番下の行にあるアプリは、一行上に移動します。"</string>
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"ホーム画面で、使用頻度の高いアプリに簡単にアクセスできるようになります。アプリの候補はルーティンに応じて変わります。お気に入りの行にあるアプリがホーム画面に移動します。"</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"ホーム画面で、使用頻度の高いアプリに簡単にアクセスできるようになります。アプリの候補はルーティンに応じて変わります。一番下の行にあるアプリが新しいフォルダに移動します。"</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"アプリの候補を利用"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"使用しない"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"設定"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"使用頻度の高いアプリがここに表示されます（ルーティンに応じて変わります）"</string>
     <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"一番下の行からアプリをドラッグするとアプリの候補が表示されます"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"空いたスペースにアプリの候補が追加されます"</string>
-    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"アプリの候補は有効です"</string>
+    <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"アプリの候補表示が有効です"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"アプリの候補は無効です"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"予測されたアプリ: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"一番左端からスワイプしてください。"</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"画面の左端から中央に向かってスワイプし、指を離してください。"</string>
-    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"そのとおりです。次に、右端からスワイプしてみましょう。"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"一番右端からスワイプしてください。"</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"画面の右端から中央に向かってスワイプし、指を離してください。"</string>
-    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"「戻る」操作を完了しました。次は、ホームに戻る方法を覚えましょう。"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"右端または左端からスワイプしてください。"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"画面の右端または左端から中央に向かってスワイプし、指を離してください。"</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"右側からスワイプして前の画面に戻る方法を学習しました。次は、アプリを切り替える方法を覚えましょう。"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"「戻る」操作を学習しました。"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"スワイプする際は画面の下部に近づきすぎないようにしましょう。"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"「戻る」操作の感度を変更するには [設定] に移動します"</string>
-    <string name="back_gesture_intro_title" msgid="19551256430224428">"スワイプで戻りましょう"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"スワイプで戻る"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"直前の画面に戻るには、画面の左端または右端から中央に向かってスワイプします。"</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"直前の画面に戻るには、2 本の指で画面の左端または右端から中央に向かってスワイプします。"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"戻る"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"画面の下端から上にスワイプしてください。"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"指を離す前にいったん止めないでください。"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"まっすぐ上にスワイプしてください。"</string>
-    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"「ホームに戻る」操作を完了しました。次は、アプリを切り替える方法を覚えましょう。"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"「ホームに戻る」操作を学習しました。次は、前の画面に戻る方法を覚えましょう。"</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"「ホームに戻る」操作を学習しました。"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"スワイプでホームに戻る"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"画面を下から上にスワイプします。この操作でいつでもホーム画面に戻れます。"</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2 本の指で画面下部から上にスワイプします。この操作で常にホーム画面に戻ります。"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"ホームに移動"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"画面を下から上にスワイプすると、ホーム画面にいつでも移動できます"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"画面の下端から上にスワイプしてください。"</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"指を離す前にウィンドウをもう少し長押ししてみましょう。"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"ウィンドウをもう少し長く押してから指を離すようにしてみましょう。"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"まっすぐ上にスワイプしてから、いったん指を止めてください。"</string>
-    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"「アプリを切り替える」操作を完了しました。スマートフォンをご利用いただけるようになりました。"</string>
-    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"スワイプでアプリを切り替え"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"画面を下から上にスワイプして長押しし、指を離します。"</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"主なジェスチャーについて学びました。ジェスチャーを OFF にするには、設定に移動してください。"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"「アプリを切り替える」操作を完了しました。"</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"スワイプでアプリを切り替える"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"アプリを切り替えるには、画面を下から上にスワイプして長押しし、指を離します。"</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"アプリを切り替えるには、2 本の指で画面下部から上にスワイプしたまま長押しし、指を離します。"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"アプリの切り替え"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"設定完了"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"次へ"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"完了"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"完了"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"設定"</string>
-    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"再試行"</string>
-    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"成功"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"もう一度"</string>
+    <string name="gesture_tutorial_nice" msgid="2936275692616928280">"その調子です！"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"チュートリアル <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <string name="allset_title" msgid="5021126669778966707">"設定完了"</string>
+    <string name="allset_hint" msgid="459504134589971527">"ホームに移動するには上にスワイプします"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"ホームボタンをタップすると、ホーム画面に移動します"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g> を使用する準備ができました"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"デバイス"</string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"システム ナビゲーションの設定"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"共有"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"スクリーンショット"</string>
     <string name="action_split" msgid="2098009717623550676">"分割"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"分割画面を使用するには、他のアプリをタップします"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"アプリで分割画面がサポートされていません。"</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"分割画面を使用するには、他のアプリをタップします"</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"分割画面にするには、別のアプリを選択してください"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"この操作はアプリまたは組織で許可されていません"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"操作チュートリアルをスキップしますか？"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"これは後から <xliff:g id="NAME">%1$s</xliff:g> アプリで確認できます"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"チュートリアルは後から <xliff:g id="NAME">%1$s</xliff:g> アプリで確認できます"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"キャンセル"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"スキップ"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"画面を回転"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"タスクバーの説明"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"タスクバーの説明を開きました"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"タスクバーの説明を閉じました"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"アプリを切り替えるには、タスクバーを使用します"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"2 個のアプリを同時に使用するには、横にドラッグします"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"タスクバーを長押しすると非表示になります"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"アプリを横にドラッグして 2 個のアプリを同時に使用できます"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"タスクバーを表示するには、上にゆっくりとスワイプします"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"毎日の使用状況に基づいてアプリの候補が表示されます"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"[設定] でジェスチャー ナビゲーションを ON にすると、タスクバーを自動的に非表示にできます"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"タスクバーの各種機能"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"次へ"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"戻る"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"閉じる"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"完了"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"ホーム"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"ユーザー補助"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"戻る"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME の切り替え"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"最近"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"通知"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"クイック設定"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"タスクバー"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"タスクバー表示"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"タスクバー非表示"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"ナビゲーション バー"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"上 / 左に移動"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"下 / 右に移動"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{他 # 件のアプリを表示できます。}other{他 # 件のアプリを表示できます。}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> と <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

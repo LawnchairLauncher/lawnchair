@@ -35,7 +35,6 @@
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"اپنی ہوم اسکرین کی پسندیدہ قطار پر ایپ کی تجاویز حاصل کریں"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"ہوم اسکرین پر آسانی سے اپنی سب سے زیادہ مستعمل ایپس تک رسائی حاصل کریں۔ آپ کی روٹینز کی بنیاد پر تجاویز تبدیل ہوں گی۔ نچلی قطار میں موجود ایپس آپ کی ہوم اسکرین کے اوپر منتقل ہوں گی۔"</string>
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"ہوم اسکرین پر آسانی سے اپنی سب سے زیادہ مستعمل ایپس تک رسائی حاصل کریں۔ آپ کی روٹینز کی بنیاد پر تجاویز تبدیل ہوں گی۔ پسندیدہ میں موجود ایپس آپ کی ہوم اسکرین کے اوپر منتقل ہوں گی۔"</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"ہوم اسکرین پر، آسانی سے اپنی سب سے زیادہ مستعمل ایپس تک رسائی حاصل کریں۔ آپ کی روٹینز کی بنیاد پر تجاویز تبدیل ہوں گی۔ نچلی قطار میں موجود ایپس نئے فولڈر میں منتقل ہوں گی۔"</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"ایپس کی تجاویز حاصل کریں"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"نہیں شکریہ"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"ترتیبات"</string>
@@ -45,53 +44,83 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"ایپ کی تجاویز فعال ہیں"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"ایپ کی تجاویز غیر فعال ہیں"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"پیشن گوئی کردہ ایپ: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"اس بات کو یقینی بنائیں کہ آپ بائیں کنارے سے دور سے سوائپ کریں۔"</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"یقینی طور پر بائیں کنارے سے اسکرین کے وسط تک سوائپ کریں اور پھر اپنی انگلی اٹھا لیں۔"</string>
-    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"بس اتنا ہی! اب دائیں کنارے سے سوائپ کرنا شروع کریں۔"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"اس بات کو یقینی بنائیں کہ آپ دائیں کنارے سے دور سے سوائپ کریں۔"</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"یقینی طور پر دائیں کنارے سے اسکرین کے وسط تک سوائپ کریں اور پھر اپنی انگلی اٹھا لیں۔"</string>
-    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"آپ نے واپس جائیں اشارے کو مکمل کر لیا۔ اس کے بعد آپ ہوم پر جانے کا طریقہ جانیں۔"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"یقینی بنائیں کہ آپ انتہائی دائیں یا انتہائی بائیں کنارے سے سوئپ کریں۔"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"یقینی بنائیں کہ آپ دائیں یا بائیں کنارے سے اسکرین کے وسط تک سوائپ کریں اور پھر اپنی انگلی اٹھا لیں۔"</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"آپ نے واپس جانے کے لیے دائیں کنارے سے سوائپ کرنے کا طریقہ سیکھ لیا۔ اس کے بعد ایپس سوئچ کرنے کا طریقہ جانیں۔"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"آپ نے واپس جائیں اشارے کو مکمل کر لیا۔"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"اس بات کو یقینی بنائیں کہ آپ اسکرین کے نچلے حصے سے زیادہ قریب سے سوائپ نہ کریں۔"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"پچھلے اشارے کی حساسیت تبدیل کرنے کے لیے ترتیبات پر جائیں"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"واپس جانے کے لیے سوائپ کریں"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"پچھلی اسکرین پر واپس جانے کے لیے بائیں یا دائیں کنارے سے اسکرین کے وسط تک سوائپ کریں۔"</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"آخری اسکرین پر واپس جانے کے لیے، 2 انگلیوں سے بائیں یا دائیں کنارے سے اسکرین کے وسط تک سوائپ کریں۔"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"واپس جائیں"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"اس بات کو یقینی بنائیں کہ آپ اسکرین کے نچلے کنارے سے اوپر کی طرف سوائپ کریں۔"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"اس بات کو یقینی بنائیں کہ آپ اپنی انگلی اوپر اٹھانے سے پہلے موقوف نہ کریں۔"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"اس بات کو یقینی بنائیں کہ آپ سیدھا اوپر کی طرف سوائپ کریں۔"</string>
-    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"آپ نے ہوم پر جانے کا اشارہ مکمل کر لیا۔ اس کے بعد ایپس سوئچ کرنے کا طریقہ جانیں۔"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"آپ نے ہوم پر جانے کا اشارہ مکمل کر لیا۔ اس کے بعد واپس جانے کا طریقہ جانیں۔"</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"آپ نے ہوم پر جانے کا اشارہ مکمل کر لیا۔"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"ہوم پر جانے کے لیے سوائپ کریں"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"اپنی اسکرین کے نیچے سے اوپر کی طرف سوائپ کریں۔ یہ اشارہ آپ کو ہمیشہ ہوم اسکرین پر لے جاتا ہے۔"</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"اسکرین کے نیچے سے 2 انگلیوں سے اوپر سوائپ کریں۔ یہ اشارہ آپ کو ہمیشہ ہوم اسکرین پر لے جاتا ہے۔"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"ہوم پر جائیں"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"کسی بھی وقت اپنی ہوم اسکرین پر جانے کے لیے، اپنی اسکرین کے نیچے سے اوپر سوائپ کریں"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"اس بات کو یقینی بنائیں کہ آپ اسکرین کے نچلے کنارے سے اوپر کی طرف سوائپ کریں۔"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"انگلی اٹھانے سے پہلے ونڈو کو زیادہ دیر تک پکڑنے کی کوشش کریں۔"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"اس بات کو یقینی بنائیں کہ آپ سیدھا اوپر کی طرف سوائپ کریں، پھر موقوف کریں۔"</string>
-    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"آپ نے ایپ کو سوئچ کرنے کا اشارہ مکمل کر لیا۔ آپ اپنا فون استعمال کرنے کے لیے تیار ہیں!"</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"آپ نے اشاروں کو استعمال کرنے کا طریقہ سیکھ لیا۔ اشاروں کو آف کرنے کے لیے ترتیبات پر جائیں۔"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"آپ نے ایپس کو سوئچ کرنے کا اشارہ مکمل کر لیا۔"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ایپس سوئچ کرنے کے لیے سوائپ کریں"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"اپنی اسکرین کے نچلے حصے سے اوپر کی طرف سوائپ کریں، پکڑ کر رکھیں، پھر چھوڑ دیں۔"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ایپس کے مابین سوئچ کرنے کے لیے، اپنی اسکرین کے نچلے حصے سے اوپر کی جانب سوائپ کریں، پکڑے رکھیں، پھر چھوڑ دیں۔"</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"ایپس کے مابین سوئچ کرنے کیلئے، اپنی اسکرین کے نیچے سے 2 انگلیوں سے اوپر سوائپ کریں، دبائے رکھیں پھر چھوڑ دیں۔"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"ایپس سوئچ کریں"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"سب ہو گیا"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"آگے"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"ہو گیا"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"ہو گیا"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ترتیبات"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"پھر کوشش کریں"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"عمدہ!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"ٹیوٹوریل <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <string name="allset_title" msgid="5021126669778966707">"سب کچھ تیار ہے!"</string>
+    <string name="allset_hint" msgid="459504134589971527">"ہوم پر جانے کے لیے اوپر سوائپ کریں"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"اپنی ہوم اسکرین پر جانے کے لیے ہوم بٹن پر تھپتھپائیں"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"آپ اپنے <xliff:g id="DEVICE">%1$s</xliff:g> کا استعمال شروع کرنے کے لیے تیار ہیں"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"آلہ"</string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"سسٹم نیویگیشن کی ترتیبات"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"اشتراک کریں"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"اسکرین شاٹ"</string>
     <string name="action_split" msgid="2098009717623550676">"اسپلٹ"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"اسپلٹ اسکرین کا استعمال کرنے کیلئے دوسری ایپ پر تھپتھپائیں"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"ایپ سپلٹ اسکرین کو سپورٹ نہیں کرتی۔"</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"اسپلٹ اسکرین کا استعمال کرنے کیلئے دوسری ایپ پر تھپتھپائیں"</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"اسپلٹ اسکرین کے استعمال کیلئے دوسری ایپ منتخب کریں"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ایپ یا آپ کی تنظیم کی جانب سے اس کارروائی کی اجازت نہیں ہے"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"نیویگیشن کا ٹیوٹوریل نظر انداز کریں؟"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"آپ اسے بعد میں <xliff:g id="NAME">%1$s</xliff:g> ایپ میں تلاش کر سکتے ہیں"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"منسوخ کریں"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"نظر انداز کریں"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"اسکرین کو گھمائیں"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"ٹاسک بار کی تعلیم"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"ٹاکس بار کا تعلیمی پینل ظاہر ہو گیا"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"ٹاسک بار کا تعلیمی پینل بند ہو گیا"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"ایپس کو سوئچ کرنے کیلئے ٹاسک بار کا استعمال کریں"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"ایک وقت میں دو ایپس استعمال کرنے کے لیے سائیڈ پر گھسیٹیں"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"ٹاسک بار کو کسی بھی وقت چھپانے کیلئے ٹچ کریں اور دبائے رکھیں"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ایک وقت میں 2 ایپس استعمال کرنے کیلئے ایپ سائیڈ پر گھسیٹیں"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ٹاسک بار دکھانے کے لیے آہستہ سے اوپر سوائپ کریں"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"اپنی روٹین پر مبنی ایپس کی تجاویز حاصل کریں"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"ٹاسک بار کو خودکار طور پر چھپانے کیلئے \'ترتیبات\' میں اشاروں والی نیویگیشن آن کریں"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"ٹاسک بار سے بہت کچھ کریں"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"آگے"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"پیچھے"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"بند کریں"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ہو گیا"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"ہوم"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"ایکسیسبیلٹی"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"پیچھے"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"‏IME سوئچر"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"حالیہ"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"اطلاعات"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"فوری ترتیبات"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"ٹاسک بار"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"ٹاشک بار دکھایا گیا"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"ٹاسک بار چھپایا گیا"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"نیویگیشن بار"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"اوپر/بائیں طرف منتقل کریں"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"نیچے/دائیں طرف منتقل کریں"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{# مزید ایپ دکھائیں۔}other{# مزید ایپس دکھائیں۔}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> اور <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

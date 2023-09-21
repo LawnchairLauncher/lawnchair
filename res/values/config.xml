@@ -1,3 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2022 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
 <resources>
     <!-- Miscellaneous -->
     <bool name="config_largeHeap">false</bool>
@@ -18,20 +33,17 @@
     <item type="id" name="drag_event_parity" />
 
     <!-- AllApps & Launcher transitions -->
-    <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
-    <integer name="config_workspaceSpringLoadShrinkPercentage">85</integer>
-
     <!-- The duration of the animation from search hint to text entry -->
     <integer name="config_searchHintAnimationDuration">50</integer>
+
+    <!-- The duration of the PagedView page snap animation -->
+    <integer name="config_pageSnapAnimationDuration">750</integer>
 
     <!-- View tag key used to store SpringAnimation data. -->
     <item type="id" name="spring_animation_tag" />
 
     <!-- View tag key used to determine if we should fade in the child views.. -->
     <string name="popup_container_iterate_children" translatable="false">popup_container_iterate_children</string>
-
-    <!-- config used to determine if header protection is supported in AllApps -->
-    <bool name="config_header_protection_supported">false</bool>
 
     <!-- Workspace -->
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
@@ -65,6 +77,9 @@
     <string name="test_information_handler_class" translatable="false"></string>
     <string name="launcher_activity_logic_class" translatable="false"></string>
     <string name="model_delegate_class" translatable="false"></string>
+    <string name="window_manager_proxy_class" translatable="false"></string>
+    <string name="secondary_display_predictions_class" translatable="false"></string>
+    <string name="widget_holder_factory_class" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
     <item type="id" name="qsb_widget" />
@@ -83,7 +98,10 @@
 
     <!-- Default packages -->
     <string name="wallpaper_picker_package" translatable="false"></string>
+    <string name="custom_activity_picker" translatable="false">
+        com.android.customization.picker.CustomizationPickerActivity</string>
     <string name="local_colors_extraction_class" translatable="false"></string>
+    <string name="search_session_manager_class" translatable="false"></string>
 
     <!-- Accessibility actions -->
     <item type="id" name="action_remove" />
@@ -107,6 +125,11 @@
     <item type="id" name="search_container_all_apps" />
     <item type="id" name="search_container_hotseat" />
 
+    <!-- Scalable Grid configuration -->
+    <!-- This is a float because it is converted to dp later in DeviceProfile -->
+    <dimen name="hotseat_bar_bottom_space_default">48</dimen>
+    <dimen name="hotseat_qsb_space_default">0</dimen>
+
     <!-- Recents -->
     <item type="id" name="overview_panel"/>
 
@@ -128,23 +151,25 @@
 
     <item name="swipe_up_rect_scale_damping_ratio" type="dimen" format="float">0.75</item>
     <item name="swipe_up_rect_scale_stiffness" type="dimen" format="float">200</item>
+    <item name="swipe_up_rect_scale_higher_stiffness" type="dimen" format="float">400</item>
 
     <item name="swipe_up_rect_xy_fling_friction" type="dimen" format="float">1.5</item>
 
     <item name="swipe_up_scale_start"  type="dimen" format="float">0.88</item>
 
-    <item name="swipe_up_trans_y_dp"  type="dimen" format="float">4.5</item>
-    <item name="swipe_up_trans_y_dp_per_s" type="dimen" format="float">3</item>
-
-    <item name="swipe_up_trans_y_damping" type="dimen" format="float">0.45</item>
-    <item name="swipe_up_trans_y_stiffness" type="dimen" format="float">200</item>
-
     <item name="swipe_up_rect_xy_damping_ratio" type="dimen" format="float">0.8</item>
     <item name="swipe_up_rect_xy_stiffness" type="dimen" format="float">200</item>
 
-    <item name="swipe_up_low_swipe_duration_multiplier"  type="dimen" format="float">1</item>
+    <!-- Taskbar -->
+    <!-- This is a float because it is converted to dp later in DeviceProfile -->
+    <item name="taskbar_icon_size" type="dimen" format="float">0</item>
 
-    <item name="swipe_up_launcher_alpha_max_progress" type="dimen" format="float">0.85</item>
+    <!-- These params are only used for hotseat items on devices that have a taskbar. -->
+    <item name="taskbar_swipe_up_rect_x_stiffness" type="dimen" format="float">350</item>
+    <item name="taskbar_swipe_up_rect_x_damping" type="dimen" format="float">0.9</item>
+    <item name="taskbar_swipe_up_rect_y_stiffness" type="dimen" format="float">200</item>
+    <item name="taskbar_swipe_up_rect_y_damping" type="dimen" format="float">0.78</item>
+    <item name="taskbar_swipe_up_rect_scale_stiffness" type="dimen" format="float">200</item>
 
     <item name="staggered_damping_ratio" type="dimen" format="float">0.7</item>
     <item name="staggered_stiffness" type="dimen" format="float">150</item>
@@ -161,12 +186,6 @@
 
     <array name="dynamic_resources">
         <item>@dimen/swipe_up_scale_start</item>
-        <item>@dimen/swipe_up_trans_y_dp</item>
-        <item>@dimen/swipe_up_trans_y_dp_per_s</item>
-        <item>@dimen/swipe_up_trans_y_damping</item>
-        <item>@dimen/swipe_up_trans_y_stiffness</item>
-        <item>@dimen/swipe_up_launcher_alpha_max_progress</item>
-        <item>@dimen/swipe_up_low_swipe_duration_multiplier</item>
         <item>@dimen/swipe_up_max_velocity</item>
     </array>
 
@@ -175,4 +194,23 @@
     <!-- Name of the class used to generate colors from the wallpaper colors. Must be implementing the LauncherAppWidgetHostView.ColorGenerator interface. -->
     <string name="color_generator_class" translatable="false"/>
 
+    <!-- Swipe back to home related -->
+    <dimen name="swipe_back_window_scale_x_margin">10dp</dimen>
+    <dimen name="swipe_back_window_max_delta_y">160dp</dimen>
+    <dimen name="swipe_back_window_corner_radius">40dp</dimen>
+
+    <!-- The duration of the bottom sheet opening and closing animation -->
+    <integer name="config_bottomSheetOpenDuration">267</integer>
+    <integer name="config_bottomSheetCloseDuration">267</integer>
+
+    <!-- The duration of the AllApps opening and closing animation -->
+    <integer name="config_allAppsOpenDuration">600</integer>
+    <integer name="config_allAppsCloseDuration">300</integer>
+
+    <!-- The max scale for the wallpaper when it's zoomed in -->
+    <item name="config_wallpaperMaxScale" format="float" type="dimen">0</item>
+
+    <!-- Whether the floating rotation button should be on the left/right in the device's natural
+         orientation -->
+    <bool name="floating_rotation_button_position_left">true</bool>
 </resources>

@@ -44,19 +44,29 @@ public class ModelDelegate implements ResourceBasedOverride {
             boolean isPrimaryInstance) {
         ModelDelegate delegate = Overrides.getObject(
                 ModelDelegate.class, context, R.string.model_delegate_class);
-        delegate.mApp = app;
-        delegate.mAppsList = appsList;
-        delegate.mDataModel = dataModel;
-        delegate.mIsPrimaryInstance = isPrimaryInstance;
+        delegate.init(context, app, appsList, dataModel, isPrimaryInstance);
         return delegate;
     }
 
+    protected Context mContext;
     protected LauncherAppState mApp;
     protected AllAppsList mAppsList;
     protected BgDataModel mDataModel;
     protected boolean mIsPrimaryInstance;
 
     public ModelDelegate() { }
+
+    /**
+     * Initializes the object with the given params.
+     */
+    private void init(Context context, LauncherAppState app, AllAppsList appsList,
+            BgDataModel dataModel, boolean isPrimaryInstance) {
+        this.mApp = app;
+        this.mAppsList = appsList;
+        this.mDataModel = dataModel;
+        this.mIsPrimaryInstance = isPrimaryInstance;
+        this.mContext = context;
+    }
 
     /**
      * Called periodically to validate and update any data
@@ -70,10 +80,37 @@ public class ModelDelegate implements ResourceBasedOverride {
     }
 
     /**
-     * Load delegate items if any in the data model
+     * Load hot seat items if any in the data model
      */
     @WorkerThread
-    public void loadItems(UserManagerState ums, Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) { }
+    public void loadHotseatItems(UserManagerState ums,
+            Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) { }
+
+    /**
+     * Load all apps items if any in the data model
+     */
+    @WorkerThread
+    public void loadAllAppsItems(UserManagerState ums,
+            Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) { }
+
+    /**
+     * Load widget recommendation items if any in the data model
+     */
+    @WorkerThread
+    public void loadWidgetsRecommendationItems() { }
+
+    /**
+     * Marks the ModelDelegate as active
+     */
+    public void markActive() { }
+
+    /**
+     * Load String cache
+     */
+    @WorkerThread
+    public void loadStringCache(StringCache cache) {
+        cache.loadStrings(mContext);
+    }
 
     /**
      * Called during loader after workspace loading is complete

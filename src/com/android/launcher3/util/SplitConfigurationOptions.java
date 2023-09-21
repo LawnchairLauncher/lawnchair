@@ -16,11 +16,20 @@
 
 package com.android.launcher3.util;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_ICON_MENU_SPLIT_LEFT_TOP;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_ICON_MENU_SPLIT_RIGHT_BOTTOM;
+
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
+import android.content.Intent;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
+import android.view.View;
 
 import androidx.annotation.IntDef;
+
+import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.model.data.ItemInfo;
 
 import java.lang.annotation.Retention;
 
@@ -95,8 +104,9 @@ public final class SplitConfigurationOptions {
      * with the same name/functionality in wm.shell.util (which launcher3 cannot be built against)
      *
      * If you make changes here, consider making the same changes there
+     * TODO(b/254378592): We really need to consolidate this
      */
-    public static class StagedSplitBounds {
+    public static class SplitBounds {
         public final Rect leftTopBounds;
         public final Rect rightBottomBounds;
         /** This rect represents the actual gap between the two apps */
@@ -113,10 +123,18 @@ public final class SplitConfigurationOptions {
          * the bounds were originally in
          */
         public final boolean appsStackedVertically;
+        /**
+         * If {@code true}, that means at the time of creation of this object, the phone was in
+         * seascape orientation. This is important on devices with insets, because they do not split
+         * evenly -- one of the insets must be slightly larger to account for the inset.
+         * From landscape, it is the leftTop task that expands slightly.
+         * From seascape, it is the rightBottom task that expands slightly.
+         */
+        public final boolean initiatedFromSeascape;
         public final int leftTopTaskId;
         public final int rightBottomTaskId;
 
-        public StagedSplitBounds(Rect leftTopBounds, Rect rightBottomBounds, int leftTopTaskId,
+        public SplitBounds(Rect leftTopBounds, Rect rightBottomBounds, int leftTopTaskId,
                 int rightBottomTaskId) {
             this.leftTopBounds = leftTopBounds;
             this.rightBottomBounds = rightBottomBounds;
@@ -128,25 +146,91 @@ public final class SplitConfigurationOptions {
                 this.visualDividerBounds = new Rect(leftTopBounds.left, leftTopBounds.bottom,
                         leftTopBounds.right, rightBottomBounds.top);
                 appsStackedVertically = true;
+                initiatedFromSeascape = false;
             } else {
                 // horizontal apps, vertical divider
                 this.visualDividerBounds = new Rect(leftTopBounds.right, leftTopBounds.top,
                         rightBottomBounds.left, leftTopBounds.bottom);
                 appsStackedVertically = false;
+                // The following check is unreliable on devices without insets
+                // (initiatedFromSeascape will always be set to false.) This happens to be OK for
+                // all our current uses, but should be refactored.
+                // TODO: Create a more reliable check, or refactor how splitting works on devices
+                //  with insets.
+                if (rightBottomBounds.width() > leftTopBounds.width()) {
+                    initiatedFromSeascape = true;
+                } else {
+                    initiatedFromSeascape = false;
+                }
             }
 
-            leftTaskPercent = this.leftTopBounds.width() / (float) rightBottomBounds.right;
-            topTaskPercent = this.leftTopBounds.height() / (float) rightBottomBounds.bottom;
-            dividerWidthPercent = visualDividerBounds.width() / (float) rightBottomBounds.right;
-            dividerHeightPercent = visualDividerBounds.height() / (float) rightBottomBounds.bottom;
+            float totalWidth = rightBottomBounds.right - leftTopBounds.left;
+            float totalHeight = rightBottomBounds.bottom - leftTopBounds.top;
+            leftTaskPercent = leftTopBounds.width() / totalWidth;
+            topTaskPercent = leftTopBounds.height() / totalHeight;
+            dividerWidthPercent = visualDividerBounds.width() / totalWidth;
+            dividerHeightPercent = visualDividerBounds.height() / totalHeight;
         }
     }
 
-    public static class StagedSplitTaskPosition {
+    public static class SplitStageInfo {
         public int taskId = -1;
         @StagePosition
         public int stagePosition = STAGE_POSITION_UNDEFINED;
         @StageType
         public int stageType = STAGE_TYPE_UNDEFINED;
+    }
+
+    public static StatsLogManager.EventEnum getLogEventForPosition(@StagePosition int position) {
+        return position == STAGE_POSITION_TOP_OR_LEFT
+                ? LAUNCHER_APP_ICON_MENU_SPLIT_LEFT_TOP
+                : LAUNCHER_APP_ICON_MENU_SPLIT_RIGHT_BOTTOM;
+    }
+
+    public static @StagePosition int getOppositeStagePosition(@StagePosition int position) {
+        if (position == STAGE_POSITION_UNDEFINED) {
+            return position;
+        }
+        return position == STAGE_POSITION_TOP_OR_LEFT ? STAGE_POSITION_BOTTOM_OR_RIGHT
+                : STAGE_POSITION_TOP_OR_LEFT;
+    }
+
+    public static class SplitSelectSource {
+
+        /** Keep in sync w/ ActivityTaskManager#INVALID_TASK_ID (unreference-able) */
+        private static final int INVALID_TASK_ID = -1;
+
+        private View view;
+        private Drawable drawable;
+        public final Intent intent;
+        public final SplitPositionOption position;
+        public final ItemInfo itemInfo;
+        public final StatsLogManager.EventEnum splitEvent;
+        /** Represents the taskId of the first app to start in split screen */
+        public int alreadyRunningTaskId = INVALID_TASK_ID;
+        /**
+         * If {@code true}, animates the view represented by {@link #alreadyRunningTaskId} into the
+         * split placeholder view
+         */
+        public boolean animateCurrentTaskDismissal;
+
+        public SplitSelectSource(View view, Drawable drawable, Intent intent,
+                SplitPositionOption position, ItemInfo itemInfo,
+                StatsLogManager.EventEnum splitEvent) {
+            this.view = view;
+            this.drawable = drawable;
+            this.intent = intent;
+            this.position = position;
+            this.itemInfo = itemInfo;
+            this.splitEvent = splitEvent;
+        }
+
+        public Drawable getDrawable() {
+            return drawable;
+        }
+
+        public View getView() {
+            return view;
+        }
     }
 }

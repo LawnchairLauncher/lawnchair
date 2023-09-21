@@ -39,10 +39,11 @@ import com.android.launcher3.R;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.graphics.DragPreviewProvider;
+import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.FastBitmapDrawable;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.icons.RoundDrawableWrapper;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.widget.dragndrop.AppWidgetHostViewDragListener;
 import com.android.launcher3.widget.util.WidgetSizes;
 
@@ -184,10 +185,11 @@ public class PendingItemDragHelper extends DragPreviewProvider {
             draggableView = DraggableView.ofType(DraggableView.DRAGGABLE_WIDGET);
         } else {
             PendingAddShortcutInfo createShortcutInfo = (PendingAddShortcutInfo) mAddInfo;
-            Drawable icon = createShortcutInfo.activityInfo.getFullResIcon(app.getIconCache());
+            Drawable icon = createShortcutInfo.getActivityInfo(launcher)
+                    .getFullResIcon(app.getIconCache());
             LauncherIcons li = LauncherIcons.obtain(launcher);
             preview = new FastBitmapDrawable(
-                    li.createScaledBitmapWithoutShadow(icon, 0));
+                    li.createScaledBitmap(icon, BaseIconFactory.MODE_DEFAULT));
             previewWidth = preview.getIntrinsicWidth();
             previewHeight = preview.getIntrinsicHeight();
             li.recycle();

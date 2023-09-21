@@ -27,16 +27,19 @@ import android.view.View;
 import android.view.ViewOutlineProvider;
 import android.widget.RemoteViews.RemoteViewOutlineProvider;
 
-import com.android.launcher3.Utilities;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.RoundedCornerEnforcement;
 
 import java.util.stream.IntStream;
 
 /**
- * Mimics the appearance of the background view of a {@link LauncherAppWidgetHostView} through a
+ * Mimics the appearance of the background view of a
+ * {@link LauncherAppWidgetHostView} through a
  * an App Widget activity launch animation.
  */
 @TargetApi(Build.VERSION_CODES.S)
@@ -66,29 +69,39 @@ final class FloatingWidgetBackgroundView extends View {
         setClipToOutline(true);
     }
 
-    void init(LauncherAppWidgetHostView hostView, View backgroundView, float finalRadius,
-            int fallbackBackgroundColor) {
+    void init(LauncherAppWidgetHostView hostView, @NonNull View backgroundView,
+            float finalRadius, int fallbackBackgroundColor) {
         mFinalRadius = finalRadius;
         mSourceView = backgroundView;
         mInitialOutlineRadius = getOutlineRadius(hostView, backgroundView);
         mIsUsingFallback = false;
         if (isSupportedDrawable(backgroundView.getForeground())) {
-            mOriginalForeground = backgroundView.getForeground();
+            if (backgroundView.getTag(R.id.saved_floating_widget_foreground) == null) {
+                mOriginalForeground = backgroundView.getForeground();
+                backgroundView.setTag(R.id.saved_floating_widget_foreground, mOriginalForeground);
+            } else {
+                mOriginalForeground = (Drawable) backgroundView.getTag(
+                        R.id.saved_floating_widget_foreground);
+            }
             mForegroundProperties.init(
                     mOriginalForeground.getConstantState().newDrawable().mutate());
             setForeground(mForegroundProperties.mDrawable);
-            Drawable clipPlaceholder =
-                    mOriginalForeground.getConstantState().newDrawable().mutate();
+            Drawable clipPlaceholder = mOriginalForeground.getConstantState().newDrawable().mutate();
             clipPlaceholder.setAlpha(0);
             mSourceView.setForeground(clipPlaceholder);
         }
         if (isSupportedDrawable(backgroundView.getBackground())) {
-            mOriginalBackground = backgroundView.getBackground();
+            if (backgroundView.getTag(R.id.saved_floating_widget_background) == null) {
+                mOriginalBackground = backgroundView.getBackground();
+                backgroundView.setTag(R.id.saved_floating_widget_background, mOriginalBackground);
+            } else {
+                mOriginalBackground = (Drawable) backgroundView.getTag(
+                        R.id.saved_floating_widget_background);
+            }
             mBackgroundProperties.init(
                     mOriginalBackground.getConstantState().newDrawable().mutate());
             setBackground(mBackgroundProperties.mDrawable);
-            Drawable clipPlaceholder =
-                    mOriginalBackground.getConstantState().newDrawable().mutate();
+            Drawable clipPlaceholder = mOriginalBackground.getConstantState().newDrawable().mutate();
             clipPlaceholder.setAlpha(0);
             mSourceView.setBackground(clipPlaceholder);
         } else if (mOriginalForeground == null) {
@@ -100,7 +113,8 @@ final class FloatingWidgetBackgroundView extends View {
 
     /** Update the animated properties of the drawables. */
     void update(float cornerRadiusProgress, float fallbackAlpha) {
-        if (isUninitialized()) return;
+        if (isUninitialized())
+            return;
         mOutlineRadius = mInitialOutlineRadius + (mFinalRadius - mInitialOutlineRadius)
                 * cornerRadiusProgress;
         mForegroundProperties.updateDrawable(mFinalRadius, cornerRadiusProgress);
@@ -110,12 +124,19 @@ final class FloatingWidgetBackgroundView extends View {
 
     /** Restores the drawables to the source view. */
     void finish() {
-        if (isUninitialized()) return;
-        if (mOriginalForeground != null) mSourceView.setForeground(mOriginalForeground);
-        if (mOriginalBackground != null) mSourceView.setBackground(mOriginalBackground);
+        if (isUninitialized())
+            return;
+        if (mOriginalForeground != null)
+            mSourceView.setForeground(mOriginalForeground);
+        if (mOriginalBackground != null)
+            mSourceView.setBackground(mOriginalBackground);
     }
 
     void recycle() {
+        if (mSourceView != null) {
+            mSourceView.setTag(R.id.saved_floating_widget_foreground, null);
+            mSourceView.setTag(R.id.saved_floating_widget_background, null);
+        }
         mSourceView = null;
         mOriginalForeground = null;
         mOriginalBackground = null;
@@ -125,9 +146,12 @@ final class FloatingWidgetBackgroundView extends View {
         setBackground(null);
     }
 
-    /** Get the largest of drawable corner radii or background view outline radius. */
+    /**
+     * Get the largest of drawable corner radii or background view outline radius.
+     */
     float getMaximumRadius() {
-        if (isUninitialized()) return 0;
+        if (isUninitialized())
+            return 0;
         return Math.max(mInitialOutlineRadius, Math.max(getMaxRadius(mOriginalForeground),
                 getMaxRadius(mOriginalBackground)));
     }
@@ -137,12 +161,14 @@ final class FloatingWidgetBackgroundView extends View {
     }
 
     /** Returns the maximum corner radius of {@param drawable}. */
-    private static float getMaxRadius(Drawable drawable) {
-        if (!(drawable instanceof GradientDrawable)) return 0;
+    private static float getMaxRadius(@Nullable Drawable drawable) {
+        if (!(drawable instanceof GradientDrawable))
+            return 0;
         float[] cornerRadii = ((GradientDrawable) drawable).getCornerRadii();
         float cornerRadius = ((GradientDrawable) drawable).getCornerRadius();
-        double radiiMax = cornerRadii == null ? 0 : IntStream.range(0, cornerRadii.length)
-                .mapToDouble(i -> cornerRadii[i]).max().orElse(0);
+        double radiiMax = cornerRadii == null ? 0
+                : IntStream.range(0, cornerRadii.length)
+                        .mapToDouble(i -> cornerRadii[i]).max().orElse(0);
         return Math.max(cornerRadius, (float) radiiMax);
     }
 
@@ -177,7 +203,8 @@ final class FloatingWidgetBackgroundView extends View {
         /** Store a drawable's animated properties. */
         void init(Drawable drawable) {
             mDrawable = drawable;
-            if (!(drawable instanceof GradientDrawable)) return;
+            if (!(drawable instanceof GradientDrawable))
+                return;
             mOriginalRadius = ((GradientDrawable) drawable).getCornerRadius();
             mOriginalRadii = ((GradientDrawable) drawable).getCornerRadii();
         }
@@ -186,11 +213,13 @@ final class FloatingWidgetBackgroundView extends View {
          * Update the drawable for the given animation state.
          *
          * @param finalRadius the radius of each corner when {@param progress} is 1
-         * @param progress    the linear progress of the corner radius from its original value to
+         * @param progress    the linear progress of the corner radius from its original
+         *                    value to
          *                    {@param finalRadius}
          */
         void updateDrawable(float finalRadius, float progress) {
-            if (!(mDrawable instanceof GradientDrawable)) return;
+            if (!(mDrawable instanceof GradientDrawable))
+                return;
             GradientDrawable d = (GradientDrawable) mDrawable;
             if (mOriginalRadii != null) {
                 for (int i = 0; i < mOriginalRadii.length; i++) {

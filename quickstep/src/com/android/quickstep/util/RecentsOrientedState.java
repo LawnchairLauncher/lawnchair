@@ -22,7 +22,7 @@ import static android.view.Surface.ROTATION_180;
 import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 
-import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
+import static com.android.launcher3.LauncherPrefs.ALLOW_ROTATION;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.ROTATION_SETTING_URI;
 import static com.android.quickstep.BaseActivityInterface.getTaskDimension;
@@ -45,14 +45,14 @@ import androidx.annotation.NonNull;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.LauncherPrefs;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SettingsCache;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.SystemUiProxy;
-import com.android.quickstep.views.TaskView;
+import com.android.quickstep.TaskAnimationManager;
 
 import java.lang.annotation.Retention;
 import java.util.function.IntConsumer;
@@ -101,6 +101,8 @@ public class RecentsOrientedState implements
     // Whether the swipe gesture is running, so the recents would stay locked in the
     // current orientation
     private static final int FLAG_SWIPE_UP_NOT_RUNNING = 1 << 8;
+    // Ignore shared prefs for home rotation rotation, allowing it in if the activity supports it
+    private static final int FLAG_IGNORE_ALLOW_HOME_ROTATION_PREF = 1 << 9;
 
     private static final int MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE =
             FLAG_MULTIPLE_ORIENTATION_SUPPORTED_BY_ACTIVITY
@@ -114,7 +116,6 @@ public class RecentsOrientedState implements
                     | FLAG_SWIPE_UP_NOT_RUNNING;
 
     private final Context mContext;
-    private final SharedPreferences mSharedPrefs;
     private final OrientationEventListener mOrientationListener;
     private final SettingsCache mSettingsCache;
     private final SettingsCache.OnChangeListener mRotationChangeListener =
@@ -137,7 +138,6 @@ public class RecentsOrientedState implements
     public RecentsOrientedState(Context context, BaseActivityInterface sizeStrategy,
             IntConsumer rotationChangeListener) {
         mContext = context;
-        mSharedPrefs = Utilities.getPrefs(context);
         mOrientationListener = new OrientationEventListener(context) {
             @Override
             public void onOrientationChanged(int degrees) {
@@ -218,8 +218,7 @@ public class RecentsOrientedState implements
 
     private boolean updateHandler() {
         mRecentsActivityRotation = inferRecentsActivityRotation(mDisplayRotation);
-        if (mRecentsActivityRotation == mTouchRotation || (isRecentsActivityRotationAllowed()
-                && (mFlags & FLAG_SWIPE_UP_NOT_RUNNING) != 0)) {
+        if (mRecentsActivityRotation == mTouchRotation || isRecentsActivityRotationAllowed()) {
             mOrientationHandler = PagedOrientationHandler.PORTRAIT;
         } else if (mTouchRotation == ROTATION_90) {
             mOrientationHandler = PagedOrientationHandler.LANDSCAPE;
@@ -277,7 +276,7 @@ public class RecentsOrientedState implements
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
-        if (ALLOW_ROTATION_PREFERENCE_KEY.equals(s)) {
+        if (LauncherPrefs.ALLOW_ROTATION.getSharedPrefKey().equals(s)) {
             updateHomeRotationSetting();
         }
     }
@@ -288,7 +287,7 @@ public class RecentsOrientedState implements
     }
 
     private void updateHomeRotationSetting() {
-        boolean homeRotationEnabled = mSharedPrefs.getBoolean(ALLOW_ROTATION_PREFERENCE_KEY, false);
+        boolean homeRotationEnabled = LauncherPrefs.get(mContext).get(ALLOW_ROTATION);
         setFlag(FLAG_HOME_ROTATION_ALLOWED_IN_PREFS, homeRotationEnabled);
         SystemUiProxy.INSTANCE.get(mContext).setHomeRotationEnabled(homeRotationEnabled);
     }
@@ -302,12 +301,13 @@ public class RecentsOrientedState implements
     }
 
     private void initMultipleOrientationListeners() {
-        mSharedPrefs.registerOnSharedPreferenceChangeListener(this);
+        LauncherPrefs.get(mContext).addListener(this, ALLOW_ROTATION);
         mSettingsCache.register(ROTATION_SETTING_URI, mRotationChangeListener);
+        updateAutoRotateSetting();
     }
 
     private void destroyMultipleOrientationListeners() {
-        mSharedPrefs.unregisterOnSharedPreferenceChangeListener(this);
+        LauncherPrefs.get(mContext).removeListener(this, ALLOW_ROTATION);
         mSettingsCache.unregister(ROTATION_SETTING_URI, mRotationChangeListener);
     }
 
@@ -340,6 +340,11 @@ public class RecentsOrientedState implements
 
     @SurfaceRotation
     public int getDisplayRotation() {
+        if (TaskAnimationManager.SHELL_TRANSITIONS_ROTATION) {
+            // When shell transitions are enabled, both the display and activity rotations should
+            // be the same once the gesture starts
+            return mRecentsActivityRotation;
+        }
         return mDisplayRotation;
     }
 
@@ -365,12 +370,17 @@ public class RecentsOrientedState implements
                 == MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE;
     }
 
+    public void ignoreAllowHomeRotationPreference() {
+        setFlag(FLAG_IGNORE_ALLOW_HOME_ROTATION_PREF, true);
+    }
+
     public boolean isRecentsActivityRotationAllowed() {
         // Activity rotation is allowed if the multi-simulated-rotation is not supported
         // (fallback recents or tablets) or activity rotation is enabled by various settings.
         return ((mFlags & MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE)
                 != MASK_MULTIPLE_ORIENTATION_SUPPORTED_BY_DEVICE)
-                || (mFlags & (FLAG_HOME_ROTATION_ALLOWED_IN_PREFS
+                || (mFlags & (FLAG_IGNORE_ALLOW_HOME_ROTATION_PREF
+                        | FLAG_HOME_ROTATION_ALLOWED_IN_PREFS
                         | FLAG_MULTIWINDOW_ROTATION_ALLOWED
                         | FLAG_HOME_ROTATION_FORCE_ENABLED_FOR_TESTING)) != 0;
     }
@@ -386,37 +396,10 @@ public class RecentsOrientedState implements
      * Returns the scale and pivot so that the provided taskRect can fit the provided full size
      */
     public float getFullScreenScaleAndPivot(Rect taskView, DeviceProfile dp, PointF outPivot) {
-        Rect insets = dp.getInsets();
-        float fullWidth = dp.widthPx;
-        float fullHeight = dp.heightPx;
-        if (TaskView.clipLeft(dp)) {
-            fullWidth -= insets.left;
-        }
-        if (TaskView.clipRight(dp)) {
-            fullWidth -= insets.right;
-        }
-        if (TaskView.clipTop(dp)) {
-            fullHeight -= insets.top;
-        }
-        if (TaskView.clipBottom(dp)) {
-            fullHeight -= insets.bottom;
-        }
-
         getTaskDimension(mContext, dp, outPivot);
         float scale = Math.min(outPivot.x / taskView.width(), outPivot.y / taskView.height());
-        // We also scale the preview as part of fullScreenParams, so account for that as well.
-        if (fullWidth > 0) {
-            scale = scale * dp.widthPx / fullWidth;
-        }
-
         if (scale == 1) {
-            outPivot.set(fullWidth / 2, fullHeight / 2);
-        } else if (dp.isMultiWindowMode) {
-            float denominator = 1 / (scale - 1);
-            // Ensure that the task aligns to right bottom for the root view
-            float y = (scale * taskView.bottom - fullHeight) * denominator;
-            float x = (scale * taskView.right - fullWidth) * denominator;
-            outPivot.set(x, y);
+            outPivot.set(taskView.centerX(), taskView.centerY());
         } else {
             float factor = scale / (scale - 1);
             outPivot.set(taskView.left * factor, taskView.top * factor);
@@ -593,7 +576,7 @@ public class RecentsOrientedState implements
             width = Math.min(currentSize.x, currentSize.y);
             height = Math.max(currentSize.x, currentSize.y);
         }
-        return idp.getBestMatch(width, height);
+        return idp.getBestMatch(width, height, mRecentsActivityRotation);
     }
 
     private static String nameAndAddress(Object obj) {

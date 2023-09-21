@@ -18,12 +18,12 @@ package com.android.launcher3.model;
 import static android.text.format.DateUtils.DAY_IN_MILLIS;
 import static android.text.format.DateUtils.formatElapsedTime;
 
+import static com.android.launcher3.LauncherPrefs.getDevicePrefs;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_WIDGETS_PREDICTION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
-import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.hybridhotseat.HotseatPredictionModel.convertDataModelToAppTargetBundle;
 import static com.android.launcher3.model.PredictionHelper.getAppTargetFromItemInfo;
 import static com.android.launcher3.model.PredictionHelper.wrapAppTargetWithItemLocation;
@@ -119,25 +119,46 @@ public class QuickstepModelDelegate extends ModelDelegate {
     }
 
     @Override
-    @WorkerThread
-    public void loadItems(UserManagerState ums, Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) {
+    public void loadHotseatItems(UserManagerState ums,
+            Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) {
         // TODO: Implement caching and preloading
-        super.loadItems(ums, pinnedShortcuts);
+        super.loadHotseatItems(ums, pinnedShortcuts);
 
-        WorkspaceItemFactory allAppsFactory = new WorkspaceItemFactory(
-                mApp, ums, pinnedShortcuts, mIDP.numDatabaseAllAppsColumns);
-        mAllAppsState.items.setItems(
-                mAllAppsState.storage.read(mApp.getContext(), allAppsFactory, ums.allUsers::get));
-        mDataModel.extraItems.put(CONTAINER_PREDICTION, mAllAppsState.items);
-
-        WorkspaceItemFactory hotseatFactory =
-                new WorkspaceItemFactory(mApp, ums, pinnedShortcuts, mIDP.numDatabaseHotseatIcons);
-        mHotseatState.items.setItems(
+        WorkspaceItemFactory hotseatFactory = new WorkspaceItemFactory(mApp, ums, pinnedShortcuts,
+                mIDP.numDatabaseHotseatIcons, mHotseatState.containerId);
+        FixedContainerItems hotseatItems = new FixedContainerItems(mHotseatState.containerId,
                 mHotseatState.storage.read(mApp.getContext(), hotseatFactory, ums.allUsers::get));
-        mDataModel.extraItems.put(CONTAINER_HOTSEAT_PREDICTION, mHotseatState.items);
+        mDataModel.extraItems.put(mHotseatState.containerId, hotseatItems);
+    }
+
+    @Override
+    public void loadAllAppsItems(UserManagerState ums,
+            Map<ShortcutKey, ShortcutInfo> pinnedShortcuts) {
+        // TODO: Implement caching and preloading
+        super.loadAllAppsItems(ums, pinnedShortcuts);
+
+        WorkspaceItemFactory allAppsFactory = new WorkspaceItemFactory(mApp, ums, pinnedShortcuts,
+                mIDP.numDatabaseAllAppsColumns, mAllAppsState.containerId);
+        FixedContainerItems allAppsPredictionItems = new FixedContainerItems(
+                mAllAppsState.containerId, mAllAppsState.storage.read(mApp.getContext(),
+                allAppsFactory, ums.allUsers::get));
+        mDataModel.extraItems.put(mAllAppsState.containerId, allAppsPredictionItems);
+    }
+
+    @Override
+    public void loadWidgetsRecommendationItems() {
+        // TODO: Implement caching and preloading
+        super.loadWidgetsRecommendationItems();
 
         // Widgets prediction isn't used frequently. And thus, it is not persisted on disk.
-        mDataModel.extraItems.put(CONTAINER_WIDGETS_PREDICTION, mWidgetsRecommendationState.items);
+        mDataModel.extraItems.put(mWidgetsRecommendationState.containerId,
+                new FixedContainerItems(mWidgetsRecommendationState.containerId,
+                        new ArrayList<>()));
+    }
+
+    @Override
+    public void markActive() {
+        super.markActive();
         mActive = true;
     }
 
@@ -240,9 +261,9 @@ public class QuickstepModelDelegate extends ModelDelegate {
                         "Item info: %s found with invalid container: %s",
                         info,
                         containerInfo));
-            } else {
-                return (FolderInfo) containerInfo;
             }
+            // Allow crash to help debug b/173838775
+            return (FolderInfo) containerInfo;
         }
         return null;
     }
@@ -313,6 +334,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
     }
 
     private void registerPredictor(PredictorState state, AppPredictor predictor) {
+        state.setTargets(Collections.emptyList());
         state.predictor = predictor;
         state.predictor.registerPredictionUpdates(
                 MODEL_EXECUTOR, new AppPredictor.Callback() {
@@ -391,14 +413,14 @@ public class QuickstepModelDelegate extends ModelDelegate {
 
     static class PredictorState {
 
-        public final FixedContainerItems items;
+        public final int containerId;
         public final PersistedItemArray<ItemInfo> storage;
         public AppPredictor predictor;
 
         private List<AppTarget> mLastTargets;
 
-        PredictorState(int container, String storageName) {
-            items = new FixedContainerItems(container);
+        PredictorState(int containerId, String storageName) {
+            this.containerId = containerId;
             storage = new PersistedItemArray<>(storageName);
             mLastTargets = Collections.emptyList();
         }
@@ -451,15 +473,17 @@ public class QuickstepModelDelegate extends ModelDelegate {
         private final UserManagerState mUMS;
         private final Map<ShortcutKey, ShortcutInfo> mPinnedShortcuts;
         private final int mMaxCount;
+        private final int mContainer;
 
         private int mReadCount = 0;
 
         protected WorkspaceItemFactory(LauncherAppState appState, UserManagerState ums,
-                Map<ShortcutKey, ShortcutInfo> pinnedShortcuts, int maxCount) {
+                Map<ShortcutKey, ShortcutInfo> pinnedShortcuts, int maxCount, int container) {
             mAppState = appState;
             mUMS = ums;
             mPinnedShortcuts = pinnedShortcuts;
             mMaxCount = maxCount;
+            mContainer = container;
         }
 
         @Nullable
@@ -477,9 +501,10 @@ public class QuickstepModelDelegate extends ModelDelegate {
                         return null;
                     }
                     AppInfo info = new AppInfo(lai, user, mUMS.isUserQuiet(user));
+                    info.container = mContainer;
                     mAppState.getIconCache().getTitleAndIcon(info, lai, false);
                     mReadCount++;
-                    return info.makeWorkspaceItem();
+                    return info.makeWorkspaceItem(mAppState.getContext());
                 }
                 case ITEM_TYPE_DEEP_SHORTCUT: {
                     ShortcutKey key = ShortcutKey.fromIntent(intent, user);
@@ -491,6 +516,7 @@ public class QuickstepModelDelegate extends ModelDelegate {
                         return null;
                     }
                     WorkspaceItemInfo wii = new WorkspaceItemInfo(si, mAppState.getContext());
+                    wii.container = mContainer;
                     mAppState.getIconCache().getShortcutIcon(wii, si);
                     mReadCount++;
                     return wii;

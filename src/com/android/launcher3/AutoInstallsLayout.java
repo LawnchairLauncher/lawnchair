@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.appwidget.AppWidgetHost;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -27,14 +26,12 @@ import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.util.Pair;
 import android.util.Patterns;
 import android.util.Xml;
 
@@ -48,8 +45,9 @@ import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.qsb.QsbContainerView;
 import com.android.launcher3.util.IntArray;
-import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.util.Partner;
 import com.android.launcher3.util.Thunk;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -65,36 +63,31 @@ public class AutoInstallsLayout {
     private static final String TAG = "AutoInstalls";
     private static final boolean LOGD = false;
 
-    /** Marker action used to discover a package which defines launcher customization */
-    static final String ACTION_LAUNCHER_CUSTOMIZATION =
-            "android.autoinstalls.config.action.PLAY_AUTO_INSTALL";
+    /**
+     * Marker action used to discover a package which defines launcher customization
+     */
+    static final String ACTION_LAUNCHER_CUSTOMIZATION = "android.autoinstalls.config.action.PLAY_AUTO_INSTALL";
 
     /**
-     * Layout resource which also includes grid size and hotseat count, e.g., default_layout_6x6_h5
+     * Layout resource which also includes grid size and hotseat count, e.g.,
+     * default_layout_6x6_h5
      */
     private static final String FORMATTED_LAYOUT_RES_WITH_HOSTEAT = "default_layout_%dx%d_h%s";
     private static final String FORMATTED_LAYOUT_RES = "default_layout_%dx%d";
     private static final String LAYOUT_RES = "default_layout";
 
-    static AutoInstallsLayout get(Context context, AppWidgetHost appWidgetHost,
+    static AutoInstallsLayout get(Context context, LauncherWidgetHolder appWidgetHolder,
             LayoutParserCallback callback) {
-        if (!BuildConfig.ENABLE_AUTO_INSTALLS_LAYOUT) {
+        Partner partner = Partner.get(context.getPackageManager(), ACTION_LAUNCHER_CUSTOMIZATION);
+        if (partner == null) {
             return null;
         }
-
-        Pair<String, Resources> customizationApkInfo = PackageManagerHelper.findSystemApk(
-                ACTION_LAUNCHER_CUSTOMIZATION, context.getPackageManager());
-        if (customizationApkInfo == null) {
-            return null;
-        }
-        String pkg = customizationApkInfo.first;
-        Resources targetRes = customizationApkInfo.second;
         InvariantDeviceProfile grid = LauncherAppState.getIDP(context);
 
         // Try with grid size and hotseat count
         String layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES_WITH_HOSTEAT,
                 grid.numColumns, grid.numRows, grid.numDatabaseHotseatIcons);
-        int layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
+        int layoutId = partner.getXmlResId(layoutName);
 
         // Try with only grid size
         if (layoutId == 0) {
@@ -102,21 +95,21 @@ public class AutoInstallsLayout {
                     + " not found. Trying layout without hosteat");
             layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES,
                     grid.numColumns, grid.numRows);
-            layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
+            layoutId = partner.getXmlResId(layoutName);
         }
 
         // Try the default layout
         if (layoutId == 0) {
             Log.d(TAG, "Formatted layout: " + layoutName + " not found. Trying the default layout");
-            layoutId = targetRes.getIdentifier(LAYOUT_RES, "xml", pkg);
+            layoutId = partner.getXmlResId(LAYOUT_RES);
         }
 
         if (layoutId == 0) {
-            Log.e(TAG, "Layout definition not found in package: " + pkg);
+            Log.e(TAG, "Layout definition not found in package: " + partner.getPackageName());
             return null;
         }
-        return new AutoInstallsLayout(context, appWidgetHost, callback, targetRes, layoutId,
-                TAG_WORKSPACE);
+        return new AutoInstallsLayout(context, appWidgetHolder, callback, partner.getResources(),
+                layoutId, TAG_WORKSPACE);
     }
 
     // Object Tags
@@ -139,7 +132,8 @@ public class AutoInstallsLayout {
     private static final String ATTR_TITLE_TEXT = "titleText";
     private static final String ATTR_SCREEN = "screen";
 
-    // x and y can be specified as negative integers, in which case -1 represents the
+    // x and y can be specified as negative integers, in which case -1 represents
+    // the
     // last row / column, -2 represents the second last, and so on.
     private static final String ATTR_X = "x";
     private static final String ATTR_Y = "y";
@@ -156,13 +150,12 @@ public class AutoInstallsLayout {
     private static final String ATTR_KEY = "key";
     private static final String ATTR_VALUE = "value";
 
-    private static final String HOTSEAT_CONTAINER_NAME =
-            Favorites.containerToString(Favorites.CONTAINER_HOTSEAT);
+    private static final String HOTSEAT_CONTAINER_NAME = Favorites.containerToString(Favorites.CONTAINER_HOTSEAT);
 
     @Thunk
     final Context mContext;
     @Thunk
-    final AppWidgetHost mAppWidgetHost;
+    final LauncherWidgetHolder mAppWidgetHolder;
     protected final LayoutParserCallback mCallback;
 
     protected final PackageManager mPackageManager;
@@ -180,17 +173,17 @@ public class AutoInstallsLayout {
 
     protected SQLiteDatabase mDb;
 
-    public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
+    public AutoInstallsLayout(Context context, LauncherWidgetHolder appWidgetHolder,
             LayoutParserCallback callback, Resources res,
             int layoutId, String rootTag) {
-        this(context, appWidgetHost, callback, res, () -> res.getXml(layoutId), rootTag);
+        this(context, appWidgetHolder, callback, res, () -> res.getXml(layoutId), rootTag);
     }
 
-    public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
+    public AutoInstallsLayout(Context context, LauncherWidgetHolder appWidgetHolder,
             LayoutParserCallback callback, Resources res,
             Supplier<XmlPullParser> initialLayoutSupplier, String rootTag) {
         mContext = context;
-        mAppWidgetHost = appWidgetHost;
+        mAppWidgetHolder = appWidgetHolder;
         mCallback = callback;
 
         mPackageManager = context.getPackageManager();
@@ -206,7 +199,8 @@ public class AutoInstallsLayout {
     }
 
     /**
-     * Loads the layout in the db and returns the number of entries added on the desktop.
+     * Loads the layout in the db and returns the number of entries added on the
+     * desktop.
      */
     public int loadLayout(SQLiteDatabase db, IntArray screenIds) {
         mDb = db;
@@ -240,7 +234,9 @@ public class AutoInstallsLayout {
     }
 
     /**
-     * Parses container and screenId attribute from the current tag, and puts it in the out.
+     * Parses container and screenId attribute from the current tag, and puts it in
+     * the out.
+     * 
      * @param out array of size 2.
      */
     protected void parseContainerAndScreen(XmlPullParser parser, int[] out) {
@@ -286,7 +282,8 @@ public class AutoInstallsLayout {
 
         TagParser tagParser = tagParserMap.get(parser.getName());
         if (tagParser == null) {
-            if (LOGD) Log.d(TAG, "Ignoring unknown element tag: " + parser.getName());
+            if (LOGD)
+                Log.d(TAG, "Ignoring unknown element tag: " + parser.getName());
             return 0;
         }
         int newElementId = tagParser.parseAndAdd(parser);
@@ -338,6 +335,7 @@ public class AutoInstallsLayout {
     protected interface TagParser {
         /**
          * Parses the tag and adds to the db
+         * 
          * @return the id of the row added or -1;
          */
         int parseAndAdd(XmlPullParser parser)
@@ -363,7 +361,7 @@ public class AutoInstallsLayout {
                         info = mPackageManager.getActivityInfo(cn, 0);
                     } catch (PackageManager.NameNotFoundException nnfe) {
                         String[] packages = mPackageManager.currentToCanonicalPackageNames(
-                                new String[]{packageName});
+                                new String[] { packageName });
                         cn = new ComponentName(packages[0], className);
                         info = mPackageManager.getActivityInfo(cn, 0);
                     }
@@ -403,7 +401,8 @@ public class AutoInstallsLayout {
             final String packageName = getAttributeValue(parser, ATTR_PACKAGE_NAME);
             final String className = getAttributeValue(parser, ATTR_CLASS_NAME);
             if (TextUtils.isEmpty(packageName) || TextUtils.isEmpty(className)) {
-                if (LOGD) Log.d(TAG, "Skipping invalid <favorite> with no component");
+                if (LOGD)
+                    Log.d(TAG, "Skipping invalid <favorite> with no component");
                 return -1;
             }
 
@@ -435,7 +434,8 @@ public class AutoInstallsLayout {
             final int iconId = getAttributeResourceValue(parser, ATTR_ICON, 0);
 
             if (titleResId == 0 || iconId == 0) {
-                if (LOGD) Log.d(TAG, "Ignoring shortcut");
+                if (LOGD)
+                    Log.d(TAG, "Ignoring shortcut");
                 return -1;
             }
 
@@ -446,14 +446,15 @@ public class AutoInstallsLayout {
 
             Drawable icon = mIconRes.getDrawable(iconId);
             if (icon == null) {
-                if (LOGD) Log.d(TAG, "Ignoring shortcut, can't load icon");
+                if (LOGD)
+                    Log.d(TAG, "Ignoring shortcut, can't load icon");
                 return -1;
             }
 
             // Auto installs should always support the current platform version.
             LauncherIcons li = LauncherIcons.obtain(mContext);
             mValues.put(LauncherSettings.Favorites.ICON, GraphicsUtils.flattenBitmap(
-                    li.createBadgedIconBitmap(icon, Process.myUserHandle(), VERSION.SDK_INT).icon));
+                    li.createBadgedIconBitmap(icon, Process.myUserHandle (), false).icon));
             li.recycle();
 
             mValues.put(Favorites.ICON_PACKAGE, mIconRes.getResourcePackageName(iconId));
@@ -468,7 +469,8 @@ public class AutoInstallsLayout {
         protected Intent parseIntent(XmlPullParser parser) {
             final String url = getAttributeValue(parser, ATTR_URL);
             if (TextUtils.isEmpty(url) || !Patterns.WEB_URL.matcher(url).matches()) {
-                if (LOGD) Log.d(TAG, "Ignoring shortcut, invalid url: " + url);
+                if (LOGD)
+                    Log.d(TAG, "Ignoring shortcut, invalid url: " + url);
                 return null;
             }
             return new Intent(Intent.ACTION_VIEW, null).setData(Uri.parse(url));
@@ -476,12 +478,16 @@ public class AutoInstallsLayout {
     }
 
     /**
-     * AppWidget parser: Required attributes packageName, className, spanX and spanY.
+     * AppWidget parser: Required attributes packageName, className, spanX and
+     * spanY.
      * Options child nodes: <extra key=... value=... />
-     * It adds a pending widget which allows the widget to come later. If there are extras, those
+     * It adds a pending widget which allows the widget to come later. If there are
+     * extras, those
      * are passed to widget options during bind.
-     * The config activity for the widget (if present) is not shown, so any optional configurations
-     * should be passed as extras and the widget should support reading these widget options.
+     * The config activity for the widget (if present) is not shown, so any optional
+     * configurations
+     * should be passed as extras and the widget should support reading these widget
+     * options.
      */
     protected class PendingWidgetParser implements TagParser {
 
@@ -495,13 +501,13 @@ public class AutoInstallsLayout {
             return new ComponentName(packageName, className);
         }
 
-
         @Override
         public int parseAndAdd(XmlPullParser parser)
                 throws XmlPullParserException, IOException {
             ComponentName cn = getComponentName(parser);
             if (cn == null) {
-                if (LOGD) Log.d(TAG, "Skipping invalid <appwidget> with no component");
+                if (LOGD)
+                    Log.d(TAG, "Skipping invalid <appwidget> with no component");
                 return -1;
             }
 
@@ -601,7 +607,8 @@ public class AutoInstallsLayout {
             mValues.put(Favorites._ID, mCallback.generateNewItemId());
             int folderId = mCallback.insertAndCheck(mDb, mValues);
             if (folderId < 0) {
-                if (LOGD) Log.e(TAG, "Unable to add folder");
+                if (LOGD)
+                    Log.e(TAG, "Unable to add folder");
                 return -1;
             }
 
@@ -666,7 +673,8 @@ public class AutoInstallsLayout {
             throws XmlPullParserException, IOException {
         int type;
         while ((type = parser.next()) != XmlPullParser.START_TAG
-                && type != XmlPullParser.END_DOCUMENT);
+                && type != XmlPullParser.END_DOCUMENT)
+            ;
 
         if (type != XmlPullParser.START_TAG) {
             throw new XmlPullParserException("No start tag found");

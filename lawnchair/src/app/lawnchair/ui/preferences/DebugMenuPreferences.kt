@@ -12,8 +12,8 @@ import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.ui.preferences.components.*
-import com.android.launcher3.settings.DeveloperOptionsFragment
 import com.android.launcher3.settings.SettingsActivity
+import com.android.launcher3.uioverrides.flags.DeveloperOptionsFragment
 import com.patrykmichalik.opto.domain.Preference
 
 fun NavGraphBuilder.debugMenuGraph(route: String) {

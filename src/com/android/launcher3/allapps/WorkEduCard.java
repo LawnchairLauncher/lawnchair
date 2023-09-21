@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.allapps;
 
+import static com.android.launcher3.LauncherPrefs.WORK_EDU_STEP;
+import static com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip.getTabWidth;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -27,9 +30,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.core.view.ViewCompat;
+import android.widget.TextView;
 
-import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
+import com.android.launcher3.model.StringCache;
+import com.android.launcher3.views.ActivityContext;
 
 import app.lawnchair.font.FontManager;
 import app.lawnchair.theme.color.ColorTokens;
@@ -38,10 +44,11 @@ import app.lawnchair.theme.drawable.DrawableTokens;
 /**
  * Work profile toggle switch shown at the bottom of AllApps work tab
  */
-public class WorkEduCard extends FrameLayout implements View.OnClickListener,
+public class WorkEduCard extends FrameLayout implements
+        View.OnClickListener,
         Animation.AnimationListener {
 
-    private final Launcher mLauncher;
+    private final ActivityContext mActivityContext;
     Animation mDismissAnim;
     private int mPosition = -1;
 
@@ -55,7 +62,7 @@ public class WorkEduCard extends FrameLayout implements View.OnClickListener,
 
     public WorkEduCard(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mLauncher = Launcher.getLauncher(getContext());
+        mActivityContext = ActivityContext.lookupContext(getContext());
         mDismissAnim = AnimationUtils.loadAnimation(context, android.R.anim.fade_out);
         mDismissAnim.setDuration(500);
         mDismissAnim.setAnimationListener(this);
@@ -76,24 +83,24 @@ public class WorkEduCard extends FrameLayout implements View.OnClickListener,
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+
         Button button = ViewCompat.requireViewById(this, R.id.action_btn);
         button.setOnClickListener(this);
         button.setAllCaps(false);
         FontManager.INSTANCE.get(getContext()).setCustomFont(button, R.id.font_button);
 
-        LinearLayout wrapper = ViewCompat.requireViewById(this, R.id.wrapper);
-        wrapper.setBackground(DrawableTokens.WorkCard.resolve(getContext()));
-        MarginLayoutParams lp = ((MarginLayoutParams) wrapper.getLayoutParams());
-        lp.width = mLauncher.getAppsView().getActiveRecyclerView().getTabWidth();
-
-        TextView title = ViewCompat.requireViewById(this, R.id.work_apps_paused_title);
-        title.setTextColor(ColorTokens.TextColorPrimary.resolveColor(getContext()));
+        StringCache cache = mActivityContext.getStringCache();
+        if (cache != null) {
+            TextView title = findViewById(R.id.work_apps_paused_title);
+            title.setText(cache.workProfileEdu);
+            title.setTextColor(ColorTokens.TextColorPrimary.resolveColor(getContext()));
+        }
     }
 
     @Override
     public void onClick(View view) {
         startAnimation(mDismissAnim);
-        mLauncher.getSharedPrefs().edit().putInt(WorkAdapterProvider.KEY_WORK_EDU_STEP, 1).apply();
+        LauncherPrefs.get(getContext()).put(WORK_EDU_STEP, 1);
     }
 
     @Override
@@ -103,27 +110,32 @@ public class WorkEduCard extends FrameLayout implements View.OnClickListener,
 
     @Override
     public void onAnimationRepeat(Animation animation) {
-
     }
 
     @Override
     public void onAnimationStart(Animation animation) {
-
     }
 
     private void removeCard() {
         if (mPosition == -1) {
-            if (getParent() != null) ((ViewGroup) getParent()).removeView(WorkEduCard.this);
+            if (getParent() != null)
+                ((ViewGroup) getParent()).removeView(WorkEduCard.this);
         } else {
-            AllAppsRecyclerView rv = mLauncher.getAppsView()
-                    .mAH[AllAppsContainerView.AdapterHolder.WORK].recyclerView;
+            AllAppsRecyclerView rv = mActivityContext.getAppsView().mAH.get(
+                    ActivityAllAppsContainerView.AdapterHolder.WORK).mRecyclerView;
             rv.getApps().getAdapterItems().remove(mPosition);
             rv.getAdapter().notifyItemRemoved(mPosition);
         }
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int size = MeasureSpec.getSize(widthMeasureSpec);
+        findViewById(R.id.wrapper).getLayoutParams().width = getTabWidth(getContext(), size);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
     public void setPosition(int position) {
         mPosition = position;
     }
-
 }

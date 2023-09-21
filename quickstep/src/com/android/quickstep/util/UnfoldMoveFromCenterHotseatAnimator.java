@@ -21,6 +21,7 @@ import android.view.WindowManager;
 
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
+import com.android.systemui.unfold.updates.RotationChangeProvider;
 
 /**
  * Animation that moves hotseat icons from center to the sides (final position)
@@ -29,8 +30,9 @@ public class UnfoldMoveFromCenterHotseatAnimator extends BaseUnfoldMoveFromCente
 
     private final Launcher mLauncher;
 
-    public UnfoldMoveFromCenterHotseatAnimator(Launcher launcher, WindowManager windowManager) {
-        super(windowManager);
+    public UnfoldMoveFromCenterHotseatAnimator(Launcher launcher, WindowManager windowManager,
+            RotationChangeProvider rotationChangeProvider) {
+        super(windowManager, rotationChangeProvider);
         mLauncher = launcher;
     }
 
@@ -39,7 +41,8 @@ public class UnfoldMoveFromCenterHotseatAnimator extends BaseUnfoldMoveFromCente
         Hotseat hotseat = mLauncher.getHotseat();
 
         ViewGroup hotseatIcons = hotseat.getShortcutsAndWidgets();
-        disableClipping(hotseat);
+        setClipChildren(hotseat, false);
+        setClipToPadding(hotseat, false);
 
         for (int i = 0; i < hotseatIcons.getChildCount(); i++) {
             View child = hotseatIcons.getChildAt(i);
@@ -49,7 +52,12 @@ public class UnfoldMoveFromCenterHotseatAnimator extends BaseUnfoldMoveFromCente
 
     @Override
     public void onTransitionFinished() {
-        restoreClipping(mLauncher.getHotseat());
+        restoreClippings();
         super.onTransitionFinished();
+    }
+
+    @Override
+    public void onTransitionFinishing() {
+
     }
 }

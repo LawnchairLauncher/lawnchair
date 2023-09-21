@@ -17,6 +17,8 @@ package com.android.launcher3.model;
 
 import android.os.UserHandle;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
@@ -31,19 +33,24 @@ import java.util.List;
  */
 public class PackageIncrementalDownloadUpdatedTask extends BaseModelUpdateTask {
 
+    @NonNull
     private final UserHandle mUser;
+
     private final int mProgress;
+
+    @NonNull
     private final String mPackageName;
 
-    public PackageIncrementalDownloadUpdatedTask(
-            String packageName, UserHandle user, float progress) {
+    public PackageIncrementalDownloadUpdatedTask(@NonNull final String packageName,
+            @NonNull final UserHandle user, final float progress) {
         mUser = user;
         mProgress = 1 - progress > 0.001 ? (int) (100 * progress) : 100;
         mPackageName = packageName;
     }
 
     @Override
-    public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList appsList) {
+    public void execute(@NonNull LauncherAppState app, @NonNull final BgDataModel dataModel,
+            @NonNull final AllAppsList appsList) {
         PackageInstallInfo downloadInfo = new PackageInstallInfo(
                 mPackageName,
                 PackageInstallInfo.STATUS_INSTALLED_DOWNLOADING,

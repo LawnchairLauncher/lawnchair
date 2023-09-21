@@ -18,6 +18,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/drag_layer"
+    android:clipChildren="false"
     android:padding="@dimen/dynamic_grid_edge_margin">
 
     <GridView
@@ -41,7 +42,7 @@
         android:contentDescription="@string/all_apps_button_label"
         android:onClick="onAppsButtonClicked" />
 
-    <com.android.launcher3.allapps.AllAppsContainerView
+    <com.android.launcher3.allapps.SecondaryLauncherAllAppsContainerView
         android:id="@+id/apps_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -51,75 +52,5 @@
         android:saveEnabled="false"
         android:layout_gravity="bottom|end"
         android:background="@drawable/round_rect_primary"
-        android:elevation="2dp"
-        android:visibility="invisible" >
-
-        <include
-            layout="@layout/all_apps_rv_layout"
-            android:visibility="gone" />
-
-        <com.android.launcher3.allapps.FloatingHeaderView
-            android:id="@+id/all_apps_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/search_container_all_apps"
-            android:clipToPadding="false"
-            android:paddingTop="@dimen/all_apps_header_top_padding"
-            android:orientation="vertical" >
-
-            <com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip
-                android:id="@+id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/all_apps_header_pill_height"
-                android:orientation="horizontal"
-                style="@style/TextHeadline">
-
-                <Button
-                    android:id="@+id/tab_personal"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:text="@string/all_apps_personal_tab"
-                    android:textAllCaps="true"
-                    android:textColor="@color/all_apps_tab_text"
-                    android:textSize="14sp" />
-
-                <Button
-                    android:id="@+id/tab_work"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:text="@string/all_apps_work_tab"
-                    android:textAllCaps="true"
-                    android:textColor="@color/all_apps_tab_text"
-                    android:textSize="14sp" />
-            </com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip>
-        </com.android.launcher3.allapps.FloatingHeaderView>
-
-        <com.android.launcher3.allapps.search.AppsSearchContainerLayout
-            android:id="@id/search_container_all_apps"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/all_apps_search_bar_field_height"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="top|center_horizontal"
-            android:background="@drawable/bg_all_apps_searchbox"
-            android:elevation="1dp"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            android:hint="@string/all_apps_search_bar_hint"
-            android:imeOptions="actionSearch|flagNoExtractUi"
-            android:inputType="text|textNoSuggestions|textCapWords"
-            android:maxLines="1"
-            android:padding="8dp"
-            android:saveEnabled="false"
-            android:scrollHorizontally="true"
-            android:singleLine="true"
-            android:textColor="?android:attr/textColorSecondary"
-            android:textColorHint="@drawable/all_apps_search_hint"
-            android:textSize="16sp" />
-
-        <include layout="@layout/all_apps_fast_scroller" />
-    </com.android.launcher3.allapps.AllAppsContainerView>
+        android:visibility="invisible" />
 </com.android.launcher3.secondarydisplay.SecondaryDragLayer>

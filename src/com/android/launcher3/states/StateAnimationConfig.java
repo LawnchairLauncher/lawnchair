@@ -53,6 +53,7 @@ public class StateAnimationConfig {
             ANIM_WORKSPACE_FADE,
             ANIM_HOTSEAT_SCALE,
             ANIM_HOTSEAT_TRANSLATE,
+            ANIM_HOTSEAT_FADE,
             ANIM_OVERVIEW_SCALE,
             ANIM_OVERVIEW_TRANSLATE_X,
             ANIM_OVERVIEW_TRANSLATE_Y,
@@ -62,6 +63,9 @@ public class StateAnimationConfig {
             ANIM_OVERVIEW_MODAL,
             ANIM_DEPTH,
             ANIM_OVERVIEW_ACTIONS_FADE,
+            ANIM_WORKSPACE_PAGE_TRANSLATE_X,
+            ANIM_OVERVIEW_SPLIT_SELECT_FLOATING_TASK_TRANSLATE_OFFSCREEN,
+            ANIM_OVERVIEW_SPLIT_SELECT_INSTRUCTIONS_FADE
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface AnimType {}
@@ -71,6 +75,7 @@ public class StateAnimationConfig {
     public static final int ANIM_WORKSPACE_FADE = 3;
     public static final int ANIM_HOTSEAT_SCALE = 4;
     public static final int ANIM_HOTSEAT_TRANSLATE = 5;
+    public static final int ANIM_HOTSEAT_FADE = 16;
     public static final int ANIM_OVERVIEW_SCALE = 6;
     public static final int ANIM_OVERVIEW_TRANSLATE_X = 7;
     public static final int ANIM_OVERVIEW_TRANSLATE_Y = 8;
@@ -80,8 +85,11 @@ public class StateAnimationConfig {
     public static final int ANIM_OVERVIEW_MODAL = 12;
     public static final int ANIM_DEPTH = 13;
     public static final int ANIM_OVERVIEW_ACTIONS_FADE = 14;
+    public static final int ANIM_WORKSPACE_PAGE_TRANSLATE_X = 15;
+    public static final int ANIM_OVERVIEW_SPLIT_SELECT_FLOATING_TASK_TRANSLATE_OFFSCREEN = 17;
+    public static final int ANIM_OVERVIEW_SPLIT_SELECT_INSTRUCTIONS_FADE = 18;
 
-    private static final int ANIM_TYPES_COUNT = 15;
+    private static final int ANIM_TYPES_COUNT = 19;
 
     protected final Interpolator[] mInterpolators = new Interpolator[ANIM_TYPES_COUNT];
 

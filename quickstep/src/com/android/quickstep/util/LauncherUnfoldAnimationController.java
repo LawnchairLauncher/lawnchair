@@ -15,19 +15,25 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.Utilities.comp;
+import static com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY;
+import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_UNFOLD_ANIMATION;
+import static com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_FACTORY;
 
 import android.annotation.Nullable;
+import android.os.Trace;
+import android.util.FloatProperty;
+import android.util.MathUtils;
 import android.view.WindowManager;
-import android.view.WindowManagerGlobal;
 
 import androidx.core.view.OneShotPreDrawListener;
 
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.util.HorizontalInsettableView;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
+import com.android.systemui.unfold.updates.RotationChangeProvider;
 import com.android.systemui.unfold.util.NaturalRotationUnfoldProgressProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 
@@ -38,36 +44,47 @@ public class LauncherUnfoldAnimationController {
 
     // Percentage of the width of the quick search bar that will be reduced
     // from the both sides of the bar when progress is 0
-    private static final float MAX_WIDTH_INSET_FRACTION = 0.15f;
+    private static final float MAX_WIDTH_INSET_FRACTION = 0.04f;
+    private static final FloatProperty<Workspace<?>> WORKSPACE_SCALE_PROPERTY =
+            WORKSPACE_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_UNFOLD_ANIMATION);
+    private static final FloatProperty<Hotseat> HOTSEAT_SCALE_PROPERTY =
+            HOTSEAT_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_UNFOLD_ANIMATION);
 
     private final Launcher mLauncher;
+    private final ScopedUnfoldTransitionProgressProvider mProgressProvider;
+    private final NaturalRotationUnfoldProgressProvider mNaturalOrientationProgressProvider;
+    private final UnfoldMoveFromCenterHotseatAnimator mUnfoldMoveFromCenterHotseatAnimator;
+    private final UnfoldMoveFromCenterWorkspaceAnimator mUnfoldMoveFromCenterWorkspaceAnimator;
+
+    private static final String TRACE_WAIT_TO_HANDLE_UNFOLD_TRANSITION =
+            "waitingOneFrameBeforeHandlingUnfoldAnimation";
 
     @Nullable
     private HorizontalInsettableView mQsbInsettable;
 
-    private final ScopedUnfoldTransitionProgressProvider mProgressProvider;
-    private final NaturalRotationUnfoldProgressProvider mNaturalOrientationProgressProvider;
-
     public LauncherUnfoldAnimationController(
             Launcher launcher,
             WindowManager windowManager,
-            UnfoldTransitionProgressProvider unfoldTransitionProgressProvider) {
+            UnfoldTransitionProgressProvider unfoldTransitionProgressProvider,
+            RotationChangeProvider rotationChangeProvider) {
         mLauncher = launcher;
         mProgressProvider = new ScopedUnfoldTransitionProgressProvider(
                 unfoldTransitionProgressProvider);
+        mUnfoldMoveFromCenterHotseatAnimator = new UnfoldMoveFromCenterHotseatAnimator(launcher,
+                windowManager, rotationChangeProvider);
+        mUnfoldMoveFromCenterWorkspaceAnimator = new UnfoldMoveFromCenterWorkspaceAnimator(launcher,
+                windowManager, rotationChangeProvider);
         mNaturalOrientationProgressProvider = new NaturalRotationUnfoldProgressProvider(launcher,
-                WindowManagerGlobal.getWindowManagerService(), mProgressProvider);
+                rotationChangeProvider, mProgressProvider);
         mNaturalOrientationProgressProvider.init();
 
         // Animated in all orientations
-        mProgressProvider.addCallback(new UnfoldMoveFromCenterWorkspaceAnimator(launcher,
-                windowManager));
+        mProgressProvider.addCallback(mUnfoldMoveFromCenterWorkspaceAnimator);
+        mProgressProvider.addCallback(new LauncherScaleAnimationListener());
 
         // Animated only in natural orientation
-        mNaturalOrientationProgressProvider
-                .addCallback(new QsbAnimationListener());
-        mNaturalOrientationProgressProvider
-                .addCallback(new UnfoldMoveFromCenterHotseatAnimator(launcher, windowManager));
+        mNaturalOrientationProgressProvider.addCallback(new QsbAnimationListener());
+        mNaturalOrientationProgressProvider.addCallback(mUnfoldMoveFromCenterHotseatAnimator);
     }
 
     /**
@@ -79,8 +96,18 @@ public class LauncherUnfoldAnimationController {
             mQsbInsettable = (HorizontalInsettableView) hotseat.getQsb();
         }
 
+        handleTransitionOnNextFrame();
+    }
+
+    private void handleTransitionOnNextFrame() {
+        Trace.asyncTraceBegin(Trace.TRACE_TAG_APP,
+                TRACE_WAIT_TO_HANDLE_UNFOLD_TRANSITION, /* cookie= */ 0);
         OneShotPreDrawListener.add(mLauncher.getWorkspace(),
-                () -> mProgressProvider.setReadyToHandleTransition(true));
+                () -> {
+                    Trace.asyncTraceEnd(Trace.TRACE_TAG_APP,
+                            TRACE_WAIT_TO_HANDLE_UNFOLD_TRANSITION, /* cookie= */ 0);
+                    mProgressProvider.setReadyToHandleTransition(true);
+                });
     }
 
     /**
@@ -99,6 +126,12 @@ public class LauncherUnfoldAnimationController {
         mNaturalOrientationProgressProvider.destroy();
     }
 
+    /** Called when launcher finished binding its items. */
+    public void updateRegisteredViewsIfNeeded() {
+        mUnfoldMoveFromCenterHotseatAnimator.updateRegisteredViewsIfNeeded();
+        mUnfoldMoveFromCenterWorkspaceAnimator.updateRegisteredViewsIfNeeded();
+    }
+
     private class QsbAnimationListener implements TransitionProgressListener {
 
         @Override
@@ -115,9 +148,42 @@ public class LauncherUnfoldAnimationController {
         @Override
         public void onTransitionProgress(float progress) {
             if (mQsbInsettable != null) {
-                float insetPercentage = comp(progress) * MAX_WIDTH_INSET_FRACTION;
+                float insetPercentage = (1 - progress) * MAX_WIDTH_INSET_FRACTION;
                 mQsbInsettable.setHorizontalInsets(insetPercentage);
             }
+        }
+
+        @Override
+        public void onTransitionFinishing() {
+        }
+    }
+
+    private class LauncherScaleAnimationListener implements TransitionProgressListener {
+
+        private static final float SCALE_LAUNCHER_FROM = 0.92f;
+
+        @Override
+        public void onTransitionStarted() {
+            mLauncher.getWorkspace().setPivotToScaleWithSelf(mLauncher.getHotseat());
+        }
+
+        @Override
+        public void onTransitionFinished() {
+            setScale(1);
+        }
+
+        @Override
+        public void onTransitionProgress(float progress) {
+            setScale(MathUtils.constrainedMap(SCALE_LAUNCHER_FROM, 1, 0, 1, progress));
+        }
+
+        private void setScale(float value) {
+            WORKSPACE_SCALE_PROPERTY.setValue(mLauncher.getWorkspace(), value);
+            HOTSEAT_SCALE_PROPERTY.setValue(mLauncher.getHotseat(), value);
+        }
+
+        @Override
+        public void onTransitionFinishing() {
         }
     }
 }

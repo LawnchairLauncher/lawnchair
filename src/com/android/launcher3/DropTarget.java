@@ -20,7 +20,6 @@ import android.content.Context;
 import android.graphics.Rect;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.dragndrop.DraggableView;
@@ -82,11 +81,8 @@ public interface DropTarget {
         public final InstanceId logInstanceId = new InstanceIdSequence().newInstanceId();
 
         public DragObject(Context context) {
-            if (FeatureFlags.FOLDER_NAME_SUGGEST.get()) {
-                Executors.MODEL_EXECUTOR.post(() -> {
-                    folderNameProvider = FolderNameProvider.newInstance(context);
-                });
-            }
+            Executors.MODEL_EXECUTOR.post(() ->
+                    folderNameProvider = FolderNameProvider.newInstance(context));
         }
 
         /**

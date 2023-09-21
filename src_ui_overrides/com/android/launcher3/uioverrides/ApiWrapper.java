@@ -17,38 +17,18 @@
 package com.android.launcher3.uioverrides;
 
 import android.app.Person;
-import android.content.Context;
 import android.content.pm.ShortcutInfo;
-import android.view.Display;
 
 import com.android.launcher3.Utilities;
 
+/**
+ * A wrapper for the hidden API calls
+ */
 public class ApiWrapper {
 
     public static final boolean TASKBAR_DRAWN_IN_PROCESS = false;
 
     public static Person[] getPersons(ShortcutInfo si) {
         return Utilities.EMPTY_PERSON_ARRAY;
-    }
-
-    /**
-     * Returns true if the display is an internal displays
-     */
-    public static boolean isInternalDisplay(Display display) {
-        return display.getDisplayId() == Display.DEFAULT_DISPLAY;
-    }
-
-    /**
-     * Returns a unique ID representing the display
-     */
-    public static String getUniqueId(Display display) {
-        return Integer.toString(display.getDisplayId());
-    }
-
-    /**
-     * Returns the minimum space that should be left empty at the end of hotseat
-     */
-    public static int getHotseatEndOffset(Context context) {
-        return 0;
     }
 }

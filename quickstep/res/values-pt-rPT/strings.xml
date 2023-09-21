@@ -35,7 +35,6 @@
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Receba sugestões de apps na fila dos favoritos do ecrã principal"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Aceda facilmente às suas apps mais utilizadas, diretamente no ecrã principal. As sugestões mudam em função das suas rotinas. As apps na última fila passam para o ecrã principal."</string>
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Aceda facilmente às suas apps mais utilizadas no ecrã principal. As sugestões mudam em função das suas rotinas. As apps na fila dos favoritos passam para o ecrã principal."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Aceda facilmente às suas apps mais utilizadas, diretamente no ecrã principal. As sugestões mudam em função das suas rotinas. As apps na última fila passam para uma nova pasta."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Obter sugestões de apps"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Não, obrigado"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Definições"</string>
@@ -45,53 +44,83 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Sugestões de apps ativadas"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"As sugestões de apps estão desativadas"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"App prevista: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Garanta que desliza rapidamente com o dedo a partir da extremidade esquerda."</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Garanta que desliza rapidamente com o dedo do limite esquerdo até ao centro do ecrã e solta."</string>
-    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"Já está! Agora deslize rapidamente do limite direito."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Garanta que desliza rapidamente com o dedo a partir da extremidade direita."</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Garanta que desliza rapidamente com o dedo do limite direito até ao centro do ecrã e solta."</string>
-    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"Concluiu o gesto para retroceder. A seguir, saiba como aceder à Página inicial."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Deslize rapidamente a partir da extremidade mais à direita ou mais à esquerda."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Deslize rapidamente a partir da extremidade esquerda ou direita até ao centro do ecrã e solte."</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Aprendeu a deslizar a partir da direita para retroceder. A seguir, saiba como alternar entre apps."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Concluiu o gesto para retroceder."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Garanta que não desliza rapidamente com o dedo demasiado perto da parte inferior do ecrã."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Altere a sensibilidade do gesto para voltar nas Definições."</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Deslize rapidamente com o dedo para retroceder"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Para voltar ao último ecrã, deslize rapidamente do limite esquerdo ou direito até ao centro do ecrã."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Para voltar ao último ecrã, deslize rapidamente com 2 dedos a partir da extremidade esquerda ou direita até ao centro do ecrã."</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Voltar"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Garanta que desliza rapidamente com o dedo a partir do limite inferior do ecrã."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Garanta que não faz uma pausa antes de soltar."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Garanta que desliza rapidamente com o dedo para cima."</string>
-    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"Concluiu o gesto para aceder à Página inicial. A seguir, saiba como alternar entre apps."</string>
-    <string name="home_gesture_intro_title" msgid="836590312858441830">"Deslize rapidamente com o dedo para aceder à Página inicial"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Concluiu o gesto para aceder ao ecrã principal. A seguir, saiba como retroceder."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Concluiu o gesto para aceder ao ecrã principal."</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Deslize rapidamente com o dedo para aceder ao ecrã principal"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Deslize rapidamente para cima a partir da parte inferior. Este gesto abre sempre o ecrã principal."</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Garanta que desliza rapidamente com o dedo a partir do limite inferior do ecrã."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Deslize rapidamente para cima com 2 dedos no fundo do ecrã. Este gesto abre sempre o ecrã principal."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Aceda ao ecrã principal"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Para aceder ao ecrã principal em qualquer altura, deslize rapidamente de baixo para cima no seu ecrã"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Deslize rapidamente com o dedo a partir do limite inferior do ecrã."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Experimente premir a janela durante mais tempo antes de soltar."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Garanta que desliza rapidamente com o dedo para cima e, em seguida, faz uma pausa."</string>
-    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Concluiu o gesto para alternar entre apps. Já pode utilizar o seu telemóvel!"</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Aprendeu a utilizar gestos. Para desativar os gestos, aceda às Definições."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Concluiu o gesto para alternar entre apps."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Deslize rapidamente com o dedo para alternar entre apps"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Deslize rapidamente para cima a partir da parte inferior do ecrã sem soltar e, em seguida, solte."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Para alternar entre apps, deslize para cima sem soltar a partir da parte inferior do ecrã e solte."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Para mudar de app, deslize rapidamente para cima com 2 dedos sem soltar no fundo do ecrã e solte."</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Mude de app"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Está tudo pronto"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Seguinte"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Concluído"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Concluído"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Definições"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Tente novamente"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Boa!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutorial <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <string name="allset_title" msgid="5021126669778966707">"Tudo pronto!"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Deslize rapidamente para cima para aceder ao ecrã principal"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"Toque no botão página inicial para aceder ao ecrã principal"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Já pode começar a usar o seu <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"dispositivo"</string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Definições de navegação do sistema"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Partilhar"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Fazer captura de ecrã"</string>
     <string name="action_split" msgid="2098009717623550676">"Dividir"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"Toque noutra app para utilizar o ecrã dividido"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"A app não é compatível com o ecrã dividido."</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"Toque noutra app para usar o ecrã dividido"</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Escolher outra app para usar o ecrã dividido"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Esta ação não é permitida pela app ou a sua entidade."</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Ignorar o tutorial de navegação?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Pode encontrar isto mais tarde na app <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Cancelar"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Ignorar"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Rodar ecrã"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Educação da Barra de tarefas"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Informação da barra de tarefas apresentada"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Informação da barra de tarefas fechada"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Utilize a barra de ferramentas para alternar entre apps"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Arraste para o lado para utilizar duas apps em simultâneo"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Toque sem soltar para ocultar a barra de tarefas"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Arraste uma app para o lado para usar 2 apps em simultâneo"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Deslize lentamente para cima para mostrar a Barra de tarefas"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Obtenha sugestões de apps baseadas na sua rotina"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Ative a navegação por gestos em Definições para ocultar automaticamente a Barra de tarefas"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Faça mais com a Barra de tarefas"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Seguinte"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Anterior"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Fechar"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Concluir"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Início"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Acessibilidade"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Voltar"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Comutador IME"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Recentes"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Notificações"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Definiç. rápidas"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"Barra de tarefas"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Barra de tarefas apresentada"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Barra de tarefas ocultada"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Barra de navegação"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mover para a parte superior esquerda"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mover para a part superior direita"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Mostrar mais # app.}other{Mostrar mais # apps.}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> e <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

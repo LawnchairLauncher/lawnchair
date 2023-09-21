@@ -19,7 +19,6 @@ package com.android.launcher3.appprediction;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -32,29 +31,28 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.FloatingHeaderRow;
 import com.android.launcher3.allapps.FloatingHeaderView;
 import com.android.launcher3.anim.AlphaUpdateListener;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusIndicatorHelper;
 import com.android.launcher3.keyboard.FocusIndicatorHelper.SimpleFocusIndicatorHelper;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @TargetApi(Build.VERSION_CODES.P)
-public class PredictionRowView extends LinearLayout implements
-        OnDeviceProfileChangeListener, FloatingHeaderRow {
+public class PredictionRowView<T extends Context & ActivityContext>
+        extends LinearLayout implements OnDeviceProfileChangeListener, FloatingHeaderRow {
 
-    private final Launcher mLauncher;
+    private final T mActivityContext;
     private int mNumPredictedAppsPerRow;
 
     // Helper to drawing the focus indicator.
@@ -64,12 +62,9 @@ public class PredictionRowView extends LinearLayout implements
     private final List<WorkspaceItemInfo> mPredictedApps = new ArrayList<>();
 
     private FloatingHeaderView mParent;
-    private boolean mScrolledOut;
 
     private boolean mPredictionsEnabled = false;
-
-    @Nullable
-    private List<ItemInfo> mPendingPredictedItems;
+    private OnLongClickListener mOnIconLongClickListener = ItemLongClickListener.INSTANCE_ALL_APPS;
 
     public PredictionRowView(@NonNull Context context) {
         this(context, null);
@@ -80,15 +75,21 @@ public class PredictionRowView extends LinearLayout implements
         setOrientation(LinearLayout.HORIZONTAL);
 
         mFocusHelper = new SimpleFocusIndicatorHelper(this);
-        mLauncher = Launcher.getLauncher(context);
-        mLauncher.addOnDeviceProfileChangeListener(this);
-        mNumPredictedAppsPerRow = mLauncher.getDeviceProfile().numShownAllAppsColumns;
+        mActivityContext = ActivityContext.lookupContext(context);
+        mNumPredictedAppsPerRow = mActivityContext.getDeviceProfile().numShownAllAppsColumns;
         updateVisibility();
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        mActivityContext.addOnDeviceProfileChangeListener(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mActivityContext.removeOnDeviceProfileChangeListener(this);
     }
 
     public void setup(FloatingHeaderView parent, FloatingHeaderRow[] rows, boolean tabsHidden) {
@@ -97,11 +98,11 @@ public class PredictionRowView extends LinearLayout implements
 
     private void updateVisibility() {
         setVisibility(mPredictionsEnabled ? VISIBLE : GONE);
-        if (mLauncher.getAppsView() != null) {
+        if (mActivityContext.getAppsView() != null) {
             if (mPredictionsEnabled) {
-                mLauncher.getAppsView().getAppsStore().registerIconContainer(this);
+                mActivityContext.getAppsView().getAppsStore().registerIconContainer(this);
             } else {
-                mLauncher.getAppsView().getAppsStore().unregisterIconContainer(this);
+                mActivityContext.getAppsView().getAppsStore().unregisterIconContainer(this);
             }
         }
     }
@@ -120,9 +121,14 @@ public class PredictionRowView extends LinearLayout implements
 
     @Override
     public int getExpectedHeight() {
-        return getVisibility() == GONE ? 0 :
-                Launcher.getLauncher(getContext()).getDeviceProfile().allAppsCellHeightPx
-                        + getPaddingTop() + getPaddingBottom();
+        DeviceProfile deviceProfile = mActivityContext.getDeviceProfile();
+        int iconHeight = deviceProfile.allAppsIconSizePx;
+        int iconPadding = deviceProfile.allAppsIconDrawablePaddingPx;
+        int textHeight = Utilities.calculateTextHeight(deviceProfile.allAppsIconTextSizePx);
+        int verticalPadding = getResources().getDimensionPixelSize(
+                R.dimen.all_apps_predicted_icon_vertical_padding);
+        int totalHeight = iconHeight + iconPadding + textHeight + verticalPadding * 2;
+        return getVisibility() == GONE ? 0 : totalHeight + getPaddingTop() + getPaddingBottom();
     }
 
     @Override
@@ -157,24 +163,24 @@ public class PredictionRowView extends LinearLayout implements
      * we can optimize by swapping them in place.
      */
     public void setPredictedApps(List<ItemInfo> items) {
-        if (!FeatureFlags.ENABLE_APP_PREDICTIONS_WHILE_VISIBLE.get()
-                && !mLauncher.isWorkspaceLoading()
-                && isShown()
-                && getWindowVisibility() == View.VISIBLE) {
-            mPendingPredictedItems = items;
-            return;
-        }
-
         applyPredictedApps(items);
     }
 
     private void applyPredictedApps(List<ItemInfo> items) {
-        mPendingPredictedItems = null;
         mPredictedApps.clear();
         mPredictedApps.addAll(items.stream()
                 .filter(itemInfo -> itemInfo instanceof WorkspaceItemInfo)
                 .map(itemInfo -> (WorkspaceItemInfo) itemInfo).collect(Collectors.toList()));
         applyPredictionApps();
+    }
+
+    /**
+     * Sets the long click listener for predictions for any future predictions.
+     *
+     * Existing predictions in the container are not updated with this new callback.
+     */
+    public void setOnIconLongClickListener(OnLongClickListener onIconLongClickListener) {
+        mOnIconLongClickListener = onIconLongClickListener;
     }
 
     @Override
@@ -189,18 +195,18 @@ public class PredictionRowView extends LinearLayout implements
             while (getChildCount() > mNumPredictedAppsPerRow) {
                 removeViewAt(0);
             }
-            LayoutInflater inflater = mLauncher.getAppsView().getLayoutInflater();
+            LayoutInflater inflater = mActivityContext.getAppsView().getLayoutInflater();
             while (getChildCount() < mNumPredictedAppsPerRow) {
                 BubbleTextView icon = (BubbleTextView) inflater.inflate(
                         R.layout.all_apps_icon, this, false);
-                icon.setOnClickListener(ItemClickHandler.INSTANCE);
-                icon.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);
+                icon.setOnClickListener(mActivityContext.getItemOnClickListener());
+                icon.setOnLongClickListener(mOnIconLongClickListener);
                 icon.setLongPressTimeoutFactor(1f);
                 icon.setOnFocusChangeListener(mFocusHelper);
 
                 LayoutParams lp = (LayoutParams) icon.getLayoutParams();
                 // Ensure the all apps icon height matches the workspace icons in portrait mode.
-                lp.height = mLauncher.getDeviceProfile().allAppsCellHeightPx;
+                lp.height = mActivityContext.getDeviceProfile().allAppsCellHeightPx;
                 lp.width = 0;
                 lp.weight = 1;
                 addView(icon);
@@ -223,7 +229,6 @@ public class PredictionRowView extends LinearLayout implements
         boolean predictionsEnabled = predictionCount > 0;
         if (predictionsEnabled != mPredictionsEnabled) {
             mPredictionsEnabled = predictionsEnabled;
-            mLauncher.reapplyUi(false /* cancelCurrentAnimation */);
             updateVisibility();
         }
         mParent.onHeightUpdated();
@@ -237,20 +242,13 @@ public class PredictionRowView extends LinearLayout implements
 
     @Override
     public void setVerticalScroll(int scroll, boolean isScrolledOut) {
-        mScrolledOut = isScrolledOut;
         if (!isScrolledOut) {
             setTranslationY(scroll);
         }
-        setAlpha(mScrolledOut ? 0 : 1);
+        setAlpha(isScrolledOut ? 0 : 1);
         if (getVisibility() != GONE) {
             AlphaUpdateListener.updateVisibility(this);
         }
-    }
-
-    @Override
-    public void setInsets(Rect insets, DeviceProfile grid) {
-        int leftRightPadding = grid.allAppsLeftRightPadding;
-        setPadding(leftRightPadding, getPaddingTop(), leftRightPadding, getPaddingBottom());
     }
 
     @Override
@@ -263,12 +261,4 @@ public class PredictionRowView extends LinearLayout implements
         return getChildAt(0);
     }
 
-    @Override
-    public void onVisibilityAggregated(boolean isVisible) {
-        super.onVisibilityAggregated(isVisible);
-
-        if (mPendingPredictedItems != null && !isVisible) {
-            applyPredictedApps(mPendingPredictedItems);
-        }
-    }
 }

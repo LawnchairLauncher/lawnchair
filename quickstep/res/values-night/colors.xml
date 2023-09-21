@@ -24,4 +24,6 @@
 
     <color name="all_set_page_background">#FF000000</color>
 
+    <!-- Turn on work apps button -->
+    <color name="work_turn_on_stroke">?attr/colorAccentPrimary</color>
 </resources>

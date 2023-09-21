@@ -84,8 +84,7 @@ fun QuickstepPreferences() {
             }
         }
 
-        val idp = LauncherAppState.getIDP(LocalContext.current)
-        if (Utilities.ATLEAST_S_V2 && idp.deviceType == InvariantDeviceProfile.TYPE_PHONE) {
+        if (Utilities.ATLEAST_S_V2) {
             PreferenceGroup(
                 heading = stringResource(id = R.string.taskbar_label)
             ) {

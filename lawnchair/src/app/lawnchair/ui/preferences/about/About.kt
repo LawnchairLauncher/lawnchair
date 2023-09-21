@@ -55,6 +55,7 @@ private enum class Role(val descriptionResId: Int) {
     QuickSwitchMaintenance(descriptionResId = R.string.quickswitch_maintenance),
     Support(descriptionResId = R.string.support),
     SupportAndPr(descriptionResId = R.string.support_and_pr),
+    UnofficialDev(descriptionResId = R.string.unofficial_dev)
 }
 
 private data class TeamMember(
@@ -166,6 +167,15 @@ private val supportAndPr = listOf(
     ),
 )
 
+private val unofficialDev = listOf(
+    TeamMember(
+        name = "MrSluffy",
+        role = Role.UnofficialDev,
+        photoUrl = "https://avatars.githubusercontent.com/u/36076410",
+        socialUrl = "https://github.com/MrSluffy",
+    ),
+)
+
 private val links = listOf(
     Link(
         iconResId = R.drawable.ic_new_releases,
@@ -175,7 +185,7 @@ private val links = listOf(
     Link(
         iconResId = R.drawable.ic_help,
         labelResId = R.string.support,
-        url = "https://t.me/lccommunity",
+        url = "https://t.me/bugreport_group",
     ),
     Link(
         iconResId = R.drawable.ic_twitter,
@@ -185,7 +195,7 @@ private val links = listOf(
     Link(
         iconResId = R.drawable.ic_github,
         labelResId = R.string.github,
-        url = "https://github.com/LawnchairLauncher/Lawnchair",
+        url = "https://github.com/MrSluffy/lawnchair",
     ),
     Link(
         iconResId = R.drawable.ic_discord,
@@ -235,10 +245,10 @@ fun About() {
                 color = LocalContentColor.current.copy(alpha = ContentAlpha.medium),
                 modifier = Modifier.combinedClickable(
                     onClick = {},
-                    onLongClick = {
-                        val commitUrl = "https://github.com/LawnchairLauncher/lawnchair/commit/${BuildConfig.COMMIT_HASH}"
-                        context.startActivity(Intent(Intent.ACTION_VIEW, commitUrl.toUri()))
-                    }
+//                    onLongClick = {
+//                        val commitUrl = "https://github.com/LawnchairLauncher/lawnchair/commit/${BuildConfig.COMMIT_HASH}"
+//                        context.startActivity(Intent(Intent.ACTION_VIEW, commitUrl.toUri()))
+//                    }
                 )
             )
             Spacer(modifier = Modifier.requiredHeight(16.dp))
@@ -255,6 +265,16 @@ fun About() {
                         url = link.url,
                     )
                 }
+            }
+        }
+        PreferenceGroup(heading = stringResource(id = R.string.unofficial_dev)) {
+            unofficialDev.forEach {
+                ContributorRow(
+                    name = it.name,
+                    description = stringResource(it.role.descriptionResId),
+                    url = it.socialUrl,
+                    photoUrl = it.photoUrl,
+                )
             }
         }
         PreferenceGroup(heading = stringResource(id = R.string.product)) {

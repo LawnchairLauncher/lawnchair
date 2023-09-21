@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"ਐਪ ਨੂੰ ਸਾਂਝਾ ਕਰੋ"</string>
+    <string name="action_listen" msgid="2370304050784689486">"ਸੁਣੋ"</string>
+    <string name="action_translate" msgid="8028378961867277746">"ਅਨੁਵਾਦ ਕਰੋ"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"ਸਮਝ ਲਿਆ"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"ਰੱਦ ਕਰੋ"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"ਸੈਟਿੰਗਾਂ"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"ਸਕ੍ਰੀਨ \'ਤੇ ਦਿੱਤੀ ਲਿਖਤ ਦਾ ਅਨੁਵਾਦ ਕਰੋ ਜਾਂ ਉਸਨੂੰ ਸੁਣੋ"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"ਤੁਹਾਡੀ ਸਕ੍ਰੀਨ \'ਤੇ ਦਿੱਤੀ ਲਿਖਤ, ਵੈੱਬ ਪਤਿਆਂ ਅਤੇ ਸਕ੍ਰੀਨਸ਼ਾਟਾਂ ਵਰਗੀ ਜਾਣਕਾਰੀ ਨੂੰ Google ਨਾਲ ਸਾਂਝਾ ਕੀਤਾ ਜਾ ਸਕਦਾ ਹੈ।\n\nਤੁਹਾਡੇ ਵੱਲੋਂ ਸਾਂਝੀ ਕੀਤੀ ਜਾਣਕਾਰੀ ਨੂੰ ਬਦਲਣ ਲਈ, "<b>"ਸੈਟਿੰਗਾਂ &gt; ਐਪਾਂ &gt; ਪੂਰਵ-ਨਿਰਧਾਰਿਤ ਐਪਾਂ &gt; ਡਿਜੀਟਲ ਸਹਾਇਕ ਐਪ"</b>" \'ਤੇ ਜਾਓ।"</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"ਇਸ ਵਿਸ਼ੇਸ਼ਤਾ ਨੂੰ ਵਰਤਣ ਲਈ ਸਹਾਇਕ ਐਪ ਚੁਣੋ"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"ਆਪਣੀ ਸਕ੍ਰੀਨ \'ਤੇ ਲਿਖਤ ਨੂੰ ਸੁਣਨ ਅਤੇ ਉਸਦਾ ਅਨੁਵਾਦ ਕਰਨ ਲਈ, ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਡਿਜੀਟਲ ਸਹਾਇਕ ਐਪ ਚੁਣੋ"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"ਇਸ ਵਿਸ਼ੇਸ਼ਤਾ ਨੂੰ ਵਰਤਣ ਲਈ ਆਪਣੀ ਸਹਾਇਕ ਐਪ ਬਦਲੋ"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"ਆਪਣੀ ਸਕ੍ਰੀਨ \'ਤੇ ਲਿਖਤ ਨੂੰ ਸੁਣਨ ਅਤੇ ਉਸਦਾ ਅਨੁਵਾਦ ਕਰਨ ਲਈ, ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਆਪਣੀ ਡਿਜੀਟਲ ਸਹਾਇਕ ਐਪ ਬਦਲੋ"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"ਇਸ ਸਕ੍ਰੀਨ \'ਤੇ ਲਿਖਤ ਨੂੰ ਸੁਣਨ ਲਈ ਇੱਥੇ ਟੈਪ ਕਰੋ"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"ਇਸ ਸਕ੍ਰੀਨ \'ਤੇ ਲਿਖਤ ਦਾ ਅਨੁਵਾਦ ਕਰਨ ਲਈ ਇੱਥੇ ਟੈਪ ਕਰੋ"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"ਇਸ ਐਪ ਨੂੰ ਸਾਂਝਾ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਦਾ"</string>
+</resources>

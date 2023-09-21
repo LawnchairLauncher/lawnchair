@@ -46,8 +46,8 @@ public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
     private final RemoteAction mAction;
 
     public RemoteActionShortcut(RemoteAction action,
-            BaseDraggingActivity activity, ItemInfo itemInfo) {
-        super(0, R.id.action_remote_action_shortcut, activity, itemInfo);
+            BaseDraggingActivity activity, ItemInfo itemInfo, View originalView) {
+        super(0, R.id.action_remote_action_shortcut, activity, itemInfo, originalView);
         mAction = action;
     }
 

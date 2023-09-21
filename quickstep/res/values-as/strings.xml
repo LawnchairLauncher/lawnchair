@@ -24,7 +24,7 @@
     <string name="recents_empty_message" msgid="7040467240571714191">"কোনো শেহতীয়া বস্তু নাই"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"এপে ব্যৱহাৰ কৰা ডেটাৰ ছেটিং"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"আটাইবোৰ মচক"</string>
-    <string name="accessibility_recent_apps" msgid="4058661986695117371">"শেহতীয়া এপসমূহ"</string>
+    <string name="accessibility_recent_apps" msgid="4058661986695117371">"শেহতীয়া এপ্‌সমূহ"</string>
     <string name="task_view_closed" msgid="9170038230110856166">"কাৰ্য বন্ধ কৰা হ’ল"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; ১ মিনিট"</string>
@@ -35,7 +35,6 @@
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"আপোনাৰ গৃহ স্ক্ৰীনৰ প্ৰিয় সমলৰ শাৰীটোত এপৰ পৰামর্শসমূহ পাওক"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"আপোনাৰ সকলোতকৈ বেছিকৈ ব্যৱহৃত এপ্‌সমূহ গৃহ স্ক্ৰীনতে সহজে এক্সেছ কৰক। আপোনাৰ ৰুটিনসমূহৰ ভিত্তিত পৰামর্শসমূহ সলনি হ\'ব। একেবাৰে তলৰ শাৰীটোত থকা এপ্‌সমূহ ওপৰৰ আপোনাৰ গৃহ স্ক্ৰীনলৈ যাব।"</string>
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"আপোনাৰ সকলোতকৈ বেছিকৈ ব্যৱহৃত এপ্‌সমূহ গৃহ স্ক্ৰীনতে সহজে এক্সেছ কৰক। আপোনাৰ ৰুটিনসমূহৰ ভিত্তিত পৰামর্শসমূহ সলনি হ’ব। প্ৰিয় সমলৰ শাৰীত থকা এপ্‌সমূহ আপোনাৰ গৃহ স্ক্রীনলৈ যাব।"</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"আপোনাৰ সকলোতকৈ বেছিকৈ ব্যৱহৃত এপ্‌সমূহ গৃহ স্ক্ৰীনতে সহজে এক্সেছ কৰক। আপোনাৰ ৰুটিনসমূহৰ ভিত্তিত পৰামর্শসমূহ সলনি হ\'ব। একেবাৰে তলৰ শাৰীটোত থকা এপ্‌সমূহ এটা নতুন ফ\'ল্ডাৰলৈ যাব।"</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"এপৰ পৰামর্শসমূহ পাওক"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"নালাগে, ধন্যবাদ"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"ছেটিং"</string>
@@ -45,53 +44,83 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"এপৰ পৰামৰ্শসমূহ সক্ষম কৰা আছে"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"এপৰ পৰামৰ্শসমূহ অক্ষম কৰা আছে"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"পূৰ্বানুমান কৰা এপ্: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"আপুনি বাওঁ প্ৰান্তৰৰ একেবাৰে সীমাৰ পৰা ছোৱাইপ কৰাটো নিশ্চিত কৰক।"</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"আপুনি স্ক্ৰীনৰ বাওঁ প্ৰান্তৰৰ পৰা সোঁ প্ৰান্তৰৰ ফালে মধ্যভাগলৈকে ছোৱাইপ কৰি এৰি দিয়াটো নিশ্চিত কৰক।"</string>
-    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"ইমানেই! এতিয়া বাওঁ প্ৰান্তৰৰ পৰা ছোৱাইপ কৰি চাওক।"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"আপুনি সোঁ প্ৰান্তৰৰ একেবাৰে সীমাৰ পৰা ছোৱাইপ কৰাটো নিশ্চিত কৰক।"</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"আপুনি স্ক্ৰীনৰ সোঁ প্ৰান্তৰৰ পৰা মধ্যভাগলৈকে ছোৱাইপ কৰি এৰি দিয়াটো নিশ্চিত কৰক।"</string>
-    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"আপুনি উভতি যাওক নিৰ্দেশটো সম্পূৰ্ণ কৰিলে। ইয়াৰ পাছত, গৃহ স্ক্ৰীনলৈ কেনেকৈ যাব সেয়া জানক।"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"আপুনি সোঁ অথবা বাওঁ প্ৰান্তৰৰ একেবাৰে সীমাৰ পৰা ছোৱাইপ কৰাটো নিশ্চিত কৰক।"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"আপুনি স্ক্ৰীনৰ সোঁ অথবা বাওঁ প্ৰান্তৰৰ পৰা মধ্যভাগলৈকে ছোৱাইপ কৰি এৰি দিয়াটো নিশ্চিত কৰক।"</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"সোঁফালৰ পৰা ছোৱাইপ কৰি কেনেকৈ উভতি যাব লাগে, সেইটো আপুনি জানিলে। ইয়াৰ পাছত, এপ্‌ কেনেকৈ সলনি কৰিব সেয়া জানক।"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"আপুনি উভতি যাওক নিৰ্দেশটো সম্পূৰ্ণ কৰিলে।"</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"আপুনি স্ক্ৰীনৰ তলৰ অংশৰ বেছি ওচৰলৈ ছোৱাইপ নকৰাটো নিশ্চিত কৰক।"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"উভতি যোৱাৰ নির্দেশটোৰ সংবেদনশীলতা সলনি কৰিবলৈ ছেটিঙলৈ যাওক"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"উভতি যাবলৈ ছোৱাইপ কৰক"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"অন্তিম স্ক্ৰীনখনলৈ উভতি যাবলৈ বাওঁ অথবা সোঁ প্ৰান্তৰৰ পৰা মাজলৈ ছোৱাইপ কৰক।"</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"অন্তিম স্ক্ৰীনখনলৈ উভতি যাবলৈ ২ টা আঙুলিৰে স্ক্ৰীনখনৰ বাওঁ অথবা সোঁ প্ৰান্তৰৰ পৰা মাজলৈ ছোৱাইপ কৰক।"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"উভতি যাওক"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"আপুনি স্ক্ৰীনৰ তলৰ প্ৰান্তৰ পৰা ওপৰলৈ ছোৱাইপ কৰাটো নিশ্চিত কৰক।"</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"আপুনি এৰি দিয়াৰ পূৰ্বে অলপো নোৰোৱাটো নিশ্চিত কৰক।"</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"আপুনি পোনকৈ ওপৰলৈ ছোৱাইপ কৰাটো নিশ্চিত কৰক।"</string>
-    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"আপুনি গৃহ স্ক্ৰীনলৈ যোৱাৰ নিৰ্দেশটো সম্পূৰ্ণ কৰিলে। ইয়াৰ পাছত, এপ্‌ কেনেকৈ সলনি কৰিব সেয়া জানক।"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"আপুনি গৃহ স্ক্ৰীনলৈ যোৱাৰ নিৰ্দেশটো সম্পূৰ্ণ কৰিলে। ইয়াৰ পাছত, গৃহ স্ক্ৰীনলৈ কেনেকৈ যাব সেয়া জানক।"</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"আপুনি গৃহ স্ক্ৰীনলৈ যোৱাৰ নিৰ্দেশটো সম্পূৰ্ণ কৰিলে।"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"গৃহ স্ক্ৰীনলৈ যাবলৈ ছোৱাইপ কৰক"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"আপোনাৰ স্ক্ৰীনৰ তলৰ অংশৰ পৰা ওপৰলৈ ছোৱাইপ কৰক। এই নিৰ্দেশটোৱে আপোনাক সদায় গৃহ স্ক্ৰীনলৈ লৈ যায়।"</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"স্ক্ৰীনখনৰ একেবাৰে তলৰ পৰা ২ টা আঙুলিৰে ওপৰলৈ ছোৱাইপ কৰক। এই নিৰ্দেশটোৱে আপোনাক সদায় গৃহ স্ক্ৰীনলৈ লৈ যায়।"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"গৃহ পৃষ্ঠালৈ যাওক"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"আপোনাৰ গৃহ স্ক্ৰীনলৈ যিকোনো সময়তে যাবলৈ, আপোনাৰ স্ক্ৰীনখনৰ একেবাৰে তলৰ পৰা ওপৰলৈ ছোৱাইপ কৰক"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"আপুনি স্ক্ৰীনৰ তলৰ প্ৰান্তৰ পৰা ওপৰলৈ ছোৱাইপ কৰাটো নিশ্চিত কৰক।"</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"এৰি দিয়াৰ পূৰ্বে ৱিণ্ডখন দীৰ্ঘ সময়ৰ বাবে ধৰি ৰাখিবলৈ চেষ্টা কৰক।"</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"আপুনি স্ক্ৰীনৰ ওপৰলৈ পোনকৈ ছোৱাইপ কৰি তাৰ পাছত ৰোৱাটো নিশ্চিত কৰক।"</string>
-    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"আপুনি এপ্‌ সলনি কৰাৰ নিৰ্দেশটো সম্পূৰ্ণ কৰিলে। আপুনি নিজৰ ফ’নটো ব্যৱহাৰ কৰিবলৈ সাজু!"</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"আপুনি নিৰ্দেশসমূহ কেনেকৈ ব্যৱহাৰ কৰিব লাগে সেয়া জানিলে। নিৰ্দেশসমূহ অফ কৰিবলৈ, ছেটিঙলৈ যাওক।"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"আপুনি এপ্‌ সলনি কৰাৰ নিৰ্দেশটো সম্পূৰ্ণ কৰিলে।"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"এপ্‌ সলনি কৰিবলৈ ছোৱাইপ কৰক"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"আপোনাৰ স্ক্ৰীনৰ একেবাৰে তলৰ অংশৰ পৰা ওপৰলৈ ছোৱাইপ কৰি ধৰি ৰাখক আৰু তাৰ পাছত এৰি দিয়ক।"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"এপ্‌সমূহ সালসলনিকৈ ব্যৱহাৰ কৰিবলৈ আপোনাৰ স্ক্ৰীনৰ একেবাৰে তলৰ অংশৰ পৰা ওপৰলৈ ছোৱাইপ কৰি ধৰি ৰাখক আৰু তাৰ পাছত এৰি দিয়ক।"</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"এপ্‌সমূহ সালসলনিকৈ ব্যৱহাৰ কৰিবলৈ ২ টা আঙুলিৰে আপোনাৰ স্ক্ৰীনৰ একেবাৰে তলৰ অংশৰ পৰা ওপৰলৈ ছোৱাইপ কৰি ধৰি ৰাখক আৰু তাৰ পাছত এৰি দিয়ক।"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"এপ্‌ সলনি কৰক"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"সম্পূৰ্ণ সাজু"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"পৰৱৰ্তী"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"হ’ল"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"হ’ল"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ছেটিং"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"পুনৰ চেষ্টা কৰক"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"সুন্দৰ!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"টিউট’ৰিয়েল <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <string name="allset_title" msgid="5021126669778966707">"সকলো সাজু!"</string>
+    <string name="allset_hint" msgid="459504134589971527">"গৃহ স্ক্ৰীনলৈ যাবলৈ ওপৰলৈ ছোৱাইপ কৰক"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"আপোনাৰ গৃহ স্ক্ৰীনলৈ যাবলৈ গৃহপৃষ্ঠা বুটামটো টিপক"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"আপুনি আপোনাৰ <xliff:g id="DEVICE">%1$s</xliff:g>টো ব্যৱহাৰ কৰিবলৈ সাজু"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"ডিভাইচ"</string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"ছিষ্টেম নেভিগেশ্বনৰ ছেটিং"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"শ্বেয়াৰ কৰক"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"স্ক্ৰীনশ্বট"</string>
     <string name="action_split" msgid="2098009717623550676">"বিভাজন কৰক"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"বিভাজিত স্ক্ৰীন ব্যৱহাৰ কৰিবলৈ অন্য এটা এপত টিপক"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"এপ্‌টোৱে বিভাজিত স্ক্ৰীন সমৰ্থন নকৰে।"</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"বিভাজিত স্ক্ৰীন ব্যৱহাৰ কৰিবলৈ অন্য এটা এপত টিপক"</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"বিভাজিত স্ক্ৰীন ব্যৱহাৰ কৰিবলৈ অন্য এটা এপ্ বাছক"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"এপ্‌টোৱে অথবা আপোনাৰ প্ৰতিষ্ঠানে এই কাৰ্যটোৰ অনুমতি নিদিয়ে"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"নেভিগেশ্বনৰ টিউট’ৰিয়েল এৰিব বিচাৰে নেকি?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"আপুনি এয়া পাছত <xliff:g id="NAME">%1$s</xliff:g> এপ্‌টোত বিচাৰিব পাৰিব"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"বাতিল কৰক"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"এৰি যাওক"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"স্ক্ৰীনখন ঘূৰাওক"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"টাস্কবাৰৰ শিক্ষা"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"টাস্কবাৰৰ শিক্ষাৰ পেনেলটো প্ৰদর্শিত হৈছে"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"টাস্কবাৰৰ শিক্ষাৰ পেনেলটো বন্ধ হৈছে"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"এপ্‌ সলনি কৰিবলৈ টাস্কবাৰডাল ব্যৱহাৰ কৰক"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"এবাৰতে দুটা এপ্‌ ব্যৱহাৰ কৰিবলৈ কাষলৈ টানি আনি এৰক"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"টাস্কবাৰডাল লুকুৱাবলৈ স্পৰ্শ কৰি ধৰি ৰাখক"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"এবাৰতে ২ টা এপ্‌ ব্যৱহাৰ কৰিবলৈ কোনো এপ্‌ কাষলৈ টানি আনি এৰক"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"টাস্কবাৰ দেখুৱাবলৈ লাহেকৈ ওপৰলৈ ছোৱাইপ কৰক"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"আপোনাৰ ৰুটিনৰ ওপৰত আধাৰিত এপৰ পৰামৰ্শ পাওক"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"টাস্কবাৰ স্বয়ংক্ৰিয়ভাৱে লুকুৱাবলৈ ছেটিঙত আঙুলিৰ স্পৰ্শৰ নিৰ্দেশেৰে কৰা নেভিগেশ্বন অন কৰক"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"টাস্কবাৰৰ জৰিয়তে অধিক কাৰ্য সম্পাদন কৰক"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"পৰৱৰ্তী"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"উভতি যাওক"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"বন্ধ কৰক"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"হ’ল"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"গৃহপৃষ্ঠা"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"সাধ্য সুবিধা"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"উভতি যাওক"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME ছুইচ্চাৰ"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"শেহতীয়া"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"জাননী"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"ক্ষিপ্ৰ ছেটিং"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"টাস্কবাৰ"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"টাস্কবাৰ দেখুওৱা হৈছে"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"টাস্কবাৰ লুকুৱাই থোৱা হৈছে"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"নেভিগেশ্বনৰ দণ্ড"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ওপৰৰ বাঁওফাললৈ নিয়ক"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"তলৰ সোঁফাললৈ নিয়ক"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{আৰু # টা এপ্‌ দেখুৱাওক।}one{আৰু # টা এপ্‌ দেখুৱাওক।}other{আৰু # টা এপ্‌ দেখুৱাওক।}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> আৰু <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

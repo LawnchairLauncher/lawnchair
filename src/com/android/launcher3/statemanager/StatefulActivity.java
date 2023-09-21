@@ -15,23 +15,27 @@
  */
 package com.android.launcher3.statemanager;
 
+import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
+import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
+
+import static com.android.launcher3.LauncherState.FLAG_CLOSE_POPUPS;
 import static com.android.launcher3.LauncherState.FLAG_NON_INTERACTIVE;
 
-import android.graphics.Insets;
-import android.os.Build;
+import android.content.res.Configuration;
+import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowInsets;
 
 import androidx.annotation.CallSuper;
-import androidx.annotation.RequiresApi;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.LauncherRootView;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.statemanager.StateManager.AtomicAnimationFactory;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
+import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.List;
@@ -48,6 +52,17 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
     private boolean mDeferredResumePending;
 
     private LauncherRootView mRootView;
+
+    protected Configuration mOldConfig;
+    private int mOldRotation;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mOldConfig = new Configuration(getResources().getConfiguration());
+        mOldRotation = WindowManagerProxy.INSTANCE.get(this).getRotation(this);
+    }
 
     /**
      * Create handlers to control the property changes for this activity
@@ -90,6 +105,10 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
     public void onStateSetStart(STATE_TYPE state) {
         if (mDeferredResumePending) {
             handleDeferredResume();
+        }
+
+        if (state.hasFlag(FLAG_CLOSE_POPUPS)) {
+            AbstractFloatingView.closeAllOpenViews(this, !state.hasFlag(FLAG_NON_INTERACTIVE));
         }
     }
 
@@ -152,7 +171,7 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
     /**
      * Called if the Activity UI changed while the activity was not visible
      */
-    protected void onUiChangedWhileSleeping() { }
+    public void onUiChangedWhileSleeping() { }
 
     private void handleDeferredResume() {
         if (hasBeenResumed() && !getStateManager().getState().hasFlag(FLAG_NON_INTERACTIVE)) {
@@ -179,17 +198,43 @@ public abstract class StatefulActivity<STATE_TYPE extends BaseState<STATE_TYPE>>
     }
 
     /**
-     * Gives subclasses a chance to override some window insets (via
-     * {@link android.view.WindowInsets.Builder#setInsets(int, Insets)}).
-     */
-    @RequiresApi(api = Build.VERSION_CODES.R)
-    public void updateWindowInsets(WindowInsets.Builder updatedInsetsBuilder,
-            WindowInsets oldInsets) { }
-
-    /**
      * Runs the given {@param r} runnable when this activity binds to the touch interaction service.
      */
     public void runOnBindToTouchInteractionService(Runnable r) {
         r.run();
     }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        handleConfigurationChanged(newConfig);
+        super.onConfigurationChanged(newConfig);
+    }
+
+    /**
+     * Handles configuration change when system calls {@link #onConfigurationChanged}, or on other
+     * situations that configuration might change.
+     */
+    public void handleConfigurationChanged(Configuration newConfig) {
+        int diff = newConfig.diff(mOldConfig);
+        int rotation = WindowManagerProxy.INSTANCE.get(this).getRotation(this);
+        if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0
+                || rotation != mOldRotation) {
+            onHandleConfigurationChanged();
+        }
+
+        mOldConfig.setTo(newConfig);
+        mOldRotation = rotation;
+    }
+
+    /**
+     * Logic for when device configuration changes (rotation, screen size change, multi-window,
+     * etc.)
+     */
+    protected abstract void onHandleConfigurationChanged();
+
+    /**
+     * Enter staged split directly from the current running app.
+     * @param leftOrTop if the staged split will be positioned left or top.
+     */
+    public void enterStageSplitFromRunningApp(boolean leftOrTop) { }
 }

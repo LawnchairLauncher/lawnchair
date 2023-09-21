@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Shiriki Programu"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Sikiliza"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Tafsiri"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lenzi"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"NIMEELEWA"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"GHAIRI"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"MIPANGILIO"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Tafsiri au usikilize maandishi kwenye skrini"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Maelezo kama vile maandishi kwenye skrini yako, anwani za wavuti na picha za skrini yanaweza kushirikiwa na Google.\n\nIli ubadilishe maelezo unayoshiriki, nenda kwenye "<b>"Mipangilio &gt; Programu &gt; Programu chaguomsingi &gt; Programu ya mratibu dijitali"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Chagua programu ya mratibu ili utumie kipengele hiki"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Ili usikilize au utafsiri maandishi kwenye skrini yako, chagua programu ya mratibu dijitali katika Mipangilio"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Badilisha programu yako ya mratibu ili utumie kipengele hiki"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Ili usikilize au utafsiri maandishi kwenye skrini yako, badilisha programu yako ya mratibu dijitali katika Mipangilio"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Gusa hapa ili usikilize maandishi kwenye skrini hii"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Gusa hapa ili utafsiri maandishi kwenye skrini hii"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Huwezi kushiriki programu hii"</string>
+</resources>

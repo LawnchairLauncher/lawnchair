@@ -18,10 +18,15 @@ package com.android.launcher3.model;
 
 import static com.android.launcher3.InvariantDeviceProfile.DeviceType;
 import static com.android.launcher3.InvariantDeviceProfile.TYPE_PHONE;
+import static com.android.launcher3.LauncherPrefs.DB_FILE;
+import static com.android.launcher3.LauncherPrefs.DEVICE_TYPE;
+import static com.android.launcher3.LauncherPrefs.HOTSEAT_COUNT;
+import static com.android.launcher3.LauncherPrefs.WORKSPACE_SIZE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_2;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_3;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_4;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_5;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_GRID_SIZE_6;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -29,6 +34,7 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager.LauncherEvent;
 
@@ -40,27 +46,31 @@ import app.lawnchair.LawnchairProto;
 /**
  * Utility class representing persisted grid properties.
  */
-public class DeviceGridState {
+public class DeviceGridState implements Comparable<DeviceGridState> {
 
     public static final String KEY_WORKSPACE_SIZE = "migration_src_workspace_size";
     public static final String KEY_HOTSEAT_COUNT = "migration_src_hotseat_count";
     public static final String KEY_DEVICE_TYPE = "migration_src_device_type";
+    public static final String KEY_DB_FILE = "migration_src_db_file";
 
     private final String mGridSizeString;
     private final int mNumHotseat;
     private final @DeviceType int mDeviceType;
+    private String mDbFile;
 
     public DeviceGridState(InvariantDeviceProfile idp) {
         mGridSizeString = String.format(Locale.ENGLISH, "%d,%d", idp.numColumns, idp.numRows);
         mNumHotseat = idp.numDatabaseHotseatIcons;
         mDeviceType = idp.deviceType;
+        mDbFile = idp.dbFile;
     }
 
     public DeviceGridState(Context context) {
-        SharedPreferences prefs = Utilities.getPrefs(context);
-        mGridSizeString = prefs.getString(KEY_WORKSPACE_SIZE, "");
-        mNumHotseat = prefs.getInt(KEY_HOTSEAT_COUNT, -1);
-        mDeviceType = prefs.getInt(KEY_DEVICE_TYPE, TYPE_PHONE);
+        LauncherPrefs lp = LauncherPrefs.get(context);
+        mGridSizeString = lp.get(WORKSPACE_SIZE);
+        mNumHotseat = lp.get(HOTSEAT_COUNT);
+        mDeviceType = lp.get(DEVICE_TYPE);
+        mDbFile = lp.get(DB_FILE);
     }
 
     @SuppressLint("WrongConstant")
@@ -78,11 +88,30 @@ public class DeviceGridState {
     }
 
     /**
+     * Returns the databaseFile for the grid.
+     */
+    public String getDbFile() {
+        return mDbFile;
+    }
+
+    /**
+     * Returns the number of hotseat icons.
+     */
+    public int getNumHotseat() {
+        return mNumHotseat;
+    }
+
+    /**
      * Stores the device state to shared preferences
      */
     public void writeToPrefs(Context context) {
-        writeToPrefs(context, false);
+        LauncherPrefs.get(context).put(
+                WORKSPACE_SIZE.to(mGridSizeString),
+                HOTSEAT_COUNT.to(mNumHotseat),
+                DEVICE_TYPE.to(mDeviceType),
+                DB_FILE.to(mDbFile));
     }
+
 
     public void writeToPrefs(Context context, boolean commit) {
         SharedPreferences.Editor editor = Utilities.getPrefs(context).edit()
@@ -109,14 +138,16 @@ public class DeviceGridState {
      */
     public LauncherEvent getWorkspaceSizeEvent() {
         if (!TextUtils.isEmpty(mGridSizeString)) {
-            switch (mGridSizeString.charAt(0)) {
-                case '5':
+            switch (getColumns()) {
+                case 6:
+                    return LAUNCHER_GRID_SIZE_6;
+                case 5:
                     return LAUNCHER_GRID_SIZE_5;
-                case '4':
+                case 4:
                     return LAUNCHER_GRID_SIZE_4;
-                case '3':
+                case 3:
                     return LAUNCHER_GRID_SIZE_3;
-                case '2':
+                case 2:
                     return LAUNCHER_GRID_SIZE_2;
             }
         }
@@ -129,17 +160,39 @@ public class DeviceGridState {
                 + "mGridSizeString='" + mGridSizeString + '\''
                 + ", mNumHotseat=" + mNumHotseat
                 + ", mDeviceType=" + mDeviceType
+                + ", mDbFile=" + mDbFile
                 + '}';
     }
 
     /**
-     * Returns true if the database from another DeviceGridState can be loaded into the current
+     * Returns true if the database from another DeviceGridState can be loaded into
+     * the current
      * DeviceGridState without migration, or false otherwise.
      */
     public boolean isCompatible(DeviceGridState other) {
-        if (this == other) return true;
-        if (other == null) return false;
-        return mNumHotseat == other.mNumHotseat
-                && Objects.equals(mGridSizeString, other.mGridSizeString);
+        if (this == other) {
+            return true;
+        }
+        if (other == null) {
+            return false;
+        }
+        return Objects.equals(mDbFile, other.mDbFile);
     }
+
+    public Integer getColumns() {
+        return Integer.parseInt(String.valueOf(mGridSizeString.charAt(0)));
+    }
+
+    public Integer getRows() {
+        return Integer.parseInt(String.valueOf(mGridSizeString.charAt(2)));
+    }
+
+    @Override
+    public int compareTo(DeviceGridState other) {
+        Integer size = getColumns() * getRows();
+        Integer otherSize = other.getColumns() * other.getRows();
+
+        return size.compareTo(otherSize);
+    }
+
 }

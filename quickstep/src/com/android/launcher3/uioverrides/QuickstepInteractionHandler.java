@@ -36,6 +36,7 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.util.ActivityOptionsWrapper;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
+import app.lawnchair.LawnchairApp;
 import dev.rikka.tools.refine.Refine;
 
 /** Provides a Quickstep specific animation when launching an activity from an app widget. */
@@ -68,7 +69,7 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
             launchCookie = mLauncher.getLaunchCookie((ItemInfo) itemInfo);
             activityOptions.options.setLaunchCookie(launchCookie);
         }
-        if (Utilities.ATLEAST_S && !pendingIntent.isActivity()) {
+        if (Utilities.ATLEAST_S && !pendingIntent.isActivity() && LawnchairApp.isRecentsEnabled ()) {
             // In the event this pending intent eventually launches an activity, i.e. a trampoline,
             // use the Quickstep transition animation.
             try {
@@ -86,9 +87,10 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
             } catch (RemoteException e) {
                 // Do nothing.
             }
+            activityOptions.options.setPendingIntentLaunchFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR);
         }
-        activityOptions.options.setPendingIntentLaunchFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        activityOptions.options.setSplashscreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_EMPTY);
+
         options = Pair.create(options.first, activityOptions.options);
         if (pendingIntent.isActivity()) {
             logAppLaunch(itemInfo);

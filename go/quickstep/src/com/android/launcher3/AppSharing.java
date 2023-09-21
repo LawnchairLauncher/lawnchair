@@ -16,20 +16,32 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_APP_SHARE_TAP;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Process;
+import android.os.UserHandle;
+import android.os.UserManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.core.content.FileProvider;
 
+import com.android.launcher3.model.AppShareabilityChecker;
+import com.android.launcher3.model.AppShareabilityJobService;
+import com.android.launcher3.model.AppShareabilityManager;
+import com.android.launcher3.model.AppShareabilityManager.ShareabilityStatus;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.views.ActivityContext;
 
 import java.io.File;
 
@@ -44,6 +56,11 @@ public final class AppSharing {
      * because it is unique to Go and not toggleable at runtime.
      */
     public static final boolean ENABLE_APP_SHARING = true;
+    /**
+     * With this flag enabled, the Share App button will be dynamically enabled/disabled based
+     * on each app's shareability status.
+     */
+    public static final boolean ENABLE_SHAREABILITY_CHECK = true;
 
     private static final String TAG = "AppSharing";
     private static final String FILE_PROVIDER_SUFFIX = ".overview.fileprovider";
@@ -51,20 +68,10 @@ public final class AppSharing {
     private static final String APP_MIME_TYPE = "application/application";
 
     private final String mSharingComponent;
+    private AppShareabilityManager mShareabilityMgr;
 
     private AppSharing(Launcher launcher) {
         mSharingComponent = launcher.getText(R.string.app_sharing_component).toString();
-    }
-
-    private boolean canShare(ItemInfo info) {
-        /**
-         * TODO: Implement once b/168831749 has been resolved
-         * The implementation should check the validity of the app.
-         * It should also check whether the app is free or paid, returning false in the latter case.
-         * For now, all checks occur in the sharing app.
-         * So, we simply check whether the sharing app is defined.
-         */
-        return !TextUtils.isEmpty(mSharingComponent);
     }
 
     private Uri getShareableUri(Context context, String path, String displayName) {
@@ -73,24 +80,58 @@ public final class AppSharing {
         return FileProvider.getUriForFile(context, authority, pathFile, displayName);
     }
 
-    private SystemShortcut<Launcher> getShortcut(Launcher launcher, ItemInfo info) {
-        if (!canShare(info)) {
+    private SystemShortcut<Launcher> getShortcut(Launcher launcher, ItemInfo info,
+            View originalView) {
+        if (TextUtils.isEmpty(mSharingComponent)) {
             return null;
         }
+        return new Share(launcher, info, originalView);
+    }
 
-        return new Share(launcher, info);
+    /**
+     * Instantiates AppShareabilityManager, which then reads app shareability data from disk
+     * Also schedules a job to update those data
+     * @param context The application context
+     * @param checker An implementation of AppShareabilityChecker to perform the actual checks
+     *                when updating the data
+     */
+    public static void setUpShareabilityCache(Context context, AppShareabilityChecker checker) {
+        AppShareabilityManager shareMgr = AppShareabilityManager.INSTANCE.get(context);
+        shareMgr.setShareabilityChecker(checker);
+        AppShareabilityJobService.schedule(context);
     }
 
     /**
      * The Share App system shortcut, used to initiate p2p sharing of a given app
      */
     public final class Share extends SystemShortcut<Launcher> {
-        public Share(Launcher target, ItemInfo itemInfo) {
-            super(R.drawable.ic_share, R.string.app_share_drop_target_label, target, itemInfo);
+        private final PopupDataProvider mPopupDataProvider;
+        private final boolean mSharingEnabledForUser;
+
+        public Share(Launcher target, ItemInfo itemInfo, View originalView) {
+            super(R.drawable.ic_share, R.string.app_share_drop_target_label, target, itemInfo,
+                    originalView);
+            mPopupDataProvider = target.getPopupDataProvider();
+
+            mSharingEnabledForUser = bluetoothSharingEnabled(target);
+            if (!mSharingEnabledForUser) {
+                setEnabled(false);
+            } else if (ENABLE_SHAREABILITY_CHECK) {
+                mShareabilityMgr =
+                        AppShareabilityManager.INSTANCE.get(target.getApplicationContext());
+                checkShareability(/* requestUpdateIfUnknown */ true);
+            }
         }
 
         @Override
         public void onClick(View view) {
+            ActivityContext.lookupContext(view.getContext())
+                    .getStatsLogManager().logger().log(LAUNCHER_SYSTEM_SHORTCUT_APP_SHARE_TAP);
+            if (!isEnabled()) {
+                showCannotShareToast(view.getContext());
+                return;
+            }
+
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
 
@@ -118,15 +159,60 @@ public final class AppSharing {
             sendIntent.setType(APP_MIME_TYPE);
             sendIntent.setComponent(ComponentName.unflattenFromString(mSharingComponent));
 
-            mTarget.startActivitySafely(view, sendIntent, mItemInfo);
+            UserHandle user = mItemInfo.user;
+            if (user != null && !user.equals(Process.myUserHandle())) {
+                mTarget.startActivityAsUser(sendIntent, user);
+            } else {
+                mTarget.startActivitySafely(view, sendIntent, mItemInfo);
+            }
 
             AbstractFloatingView.closeAllOpenViews(mTarget);
+        }
+
+        private void onStatusUpdated(boolean success) {
+            if (!success) {
+                // Something went wrong. Specific error logged in AppShareabilityManager.
+                return;
+            }
+            checkShareability(/* requestUpdateIfUnknown */ false);
+            mTarget.runOnUiThread(() -> {
+                mPopupDataProvider.redrawSystemShortcuts();
+            });
+        }
+
+        private void checkShareability(boolean requestUpdateIfUnknown) {
+            String packageName = mItemInfo.getTargetComponent().getPackageName();
+            @ShareabilityStatus int status = mShareabilityMgr.getStatus(packageName);
+            setEnabled(status == ShareabilityStatus.SHAREABLE);
+
+            if (requestUpdateIfUnknown && status == ShareabilityStatus.UNKNOWN) {
+                mShareabilityMgr.requestAppStatusUpdate(packageName, this::onStatusUpdated);
+            }
+        }
+
+        private boolean bluetoothSharingEnabled(Context context) {
+            return !context.getSystemService(UserManager.class)
+                    .hasUserRestriction(UserManager.DISALLOW_BLUETOOTH_SHARING, mItemInfo.user);
+        }
+
+        private void showCannotShareToast(Context context) {
+            ActivityContext activityContext = ActivityContext.lookupContext(context);
+            String blockedByMessage = activityContext.getStringCache() != null
+                    ? activityContext.getStringCache().disabledByAdminMessage
+                    : context.getString(R.string.blocked_by_policy);
+
+            CharSequence text = (mSharingEnabledForUser)
+                    ? context.getText(R.string.toast_p2p_app_not_shareable)
+                    : blockedByMessage;
+            int duration = Toast.LENGTH_SHORT;
+            Toast.makeText(context, text, duration).show();
         }
     }
 
     /**
      * Shortcut factory for generating the Share App button
      */
-    public static final SystemShortcut.Factory<Launcher> SHORTCUT_FACTORY = (launcher, itemInfo) ->
-            (new AppSharing(launcher)).getShortcut(launcher, itemInfo);
+    public static final SystemShortcut.Factory<Launcher> SHORTCUT_FACTORY =
+            (launcher, itemInfo, originalView) ->
+                    (new AppSharing(launcher)).getShortcut(launcher, itemInfo, originalView);
 }

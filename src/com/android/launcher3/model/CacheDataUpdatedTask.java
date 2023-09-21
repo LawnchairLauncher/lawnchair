@@ -18,6 +18,8 @@ package com.android.launcher3.model;
 import android.content.ComponentName;
 import android.os.UserHandle;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.icons.IconCache;
@@ -35,17 +37,23 @@ public class CacheDataUpdatedTask extends BaseModelUpdateTask {
     public static final int OP_SESSION_UPDATE = 2;
 
     private final int mOp;
+
+    @NonNull
     private final UserHandle mUser;
+
+    @NonNull
     private final HashSet<String> mPackages;
 
-    public CacheDataUpdatedTask(int op, UserHandle user, HashSet<String> packages) {
+    public CacheDataUpdatedTask(final int op, @NonNull final UserHandle user,
+            @NonNull final HashSet<String> packages) {
         mOp = op;
         mUser = user;
         mPackages = packages;
     }
 
     @Override
-    public void execute(LauncherAppState app, BgDataModel dataModel, AllAppsList apps) {
+    public void execute(@NonNull final LauncherAppState app, @NonNull final BgDataModel dataModel,
+            @NonNull final AllAppsList apps) {
         IconCache iconCache = app.getIconCache();
         ArrayList<WorkspaceItemInfo> updatedShortcuts = new ArrayList<>();
 
@@ -65,7 +73,7 @@ public class CacheDataUpdatedTask extends BaseModelUpdateTask {
         bindApplicationsIfNeeded();
     }
 
-    public boolean isValidShortcut(WorkspaceItemInfo si) {
+    public boolean isValidShortcut(@NonNull final WorkspaceItemInfo si) {
         switch (mOp) {
             case OP_CACHE_UPDATE:
                 return true;

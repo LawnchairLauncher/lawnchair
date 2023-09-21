@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.ui.widget;
 
+import static android.app.PendingIntent.FLAG_MUTABLE;
+import static android.app.PendingIntent.FLAG_ONE_SHOT;
+
 import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 
 import static org.junit.Assert.assertNotNull;
@@ -39,9 +42,11 @@ import com.android.launcher3.testcomponent.AppWidgetNoConfig;
 import com.android.launcher3.testcomponent.AppWidgetWithConfig;
 import com.android.launcher3.testcomponent.RequestPinItemActivity;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.Wait.Condition;
+import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
 import org.junit.Before;
@@ -71,12 +76,14 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         super.setUp();
         mCallbackAction = UUID.randomUUID().toString();
         mShortcutId = UUID.randomUUID().toString();
+        TaplTestsLauncher3.initialize(this);
     }
 
     @Test
     public void testEmpty() throws Throwable { /* needed while the broken tests are being fixed */ }
 
     @Test
+    @ScreenRecord // b/215673732
     public void testPinWidgetNoConfig() throws Throwable {
         runTest("pinWidgetNoConfig", true, (info, view) -> info instanceof LauncherAppWidgetInfo &&
                 ((LauncherAppWidgetInfo) info).appWidgetId == mAppWidgetId &&
@@ -85,6 +92,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @ScreenRecord // b/215673732
     public void testPinWidgetNoConfig_customPreview() throws Throwable {
         // Command to set custom preview
         Intent command = RequestPinItemActivity.getCommandIntent(
@@ -98,6 +106,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @ScreenRecord // b/215673732
     public void testPinWidgetWithConfig() throws Throwable {
         runTest("pinWidgetWithConfig", true,
                 (info, view) -> info instanceof LauncherAppWidgetInfo &&
@@ -140,7 +149,8 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
 
         // Set callback
         PendingIntent callback = PendingIntent.getBroadcast(mTargetContext, 0,
-                new Intent(mCallbackAction), PendingIntent.FLAG_ONE_SHOT);
+                new Intent(mCallbackAction).setPackage(mTargetContext.getPackageName()),
+                FLAG_ONE_SHOT | FLAG_MUTABLE);
         mTargetContext.sendBroadcast(RequestPinItemActivity.getCommandIntent(
                 RequestPinItemActivity.class, "setCallback").putExtra(
                 RequestPinItemActivity.EXTRA_PARAM + "0", callback));
@@ -165,7 +175,7 @@ public class RequestPinItemTest extends AbstractLauncherUiTest {
         }
 
         // Go back to home
-        mLauncher.pressHome();
+        mLauncher.goHome();
         Wait.atMost("", new ItemSearchCondition(itemMatcher), DEFAULT_ACTIVITY_TIMEOUT,
                 mLauncher);
     }

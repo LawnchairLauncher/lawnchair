@@ -16,6 +16,7 @@
 
 package com.android.systemui.shared.system;
 
+import android.annotation.NonNull;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.ActivityTaskManager;
 import android.app.TaskStackListener;
@@ -26,6 +27,8 @@ import android.os.Message;
 import android.os.Trace;
 import android.util.Log;
 import android.window.TaskSnapshot;
+
+import androidx.annotation.VisibleForTesting;
 
 import com.android.internal.os.SomeArgs;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -43,12 +46,48 @@ public class TaskStackChangeListeners {
 
     private final Impl mImpl;
 
+    /**
+     * Proxies calls to the given handler callback synchronously for testing purposes.
+     */
+    private static class TestSyncHandler extends Handler {
+        private Handler.Callback mCb;
+
+        public TestSyncHandler() {
+            super(Looper.getMainLooper());
+        }
+
+        public void setCallback(Handler.Callback cb) {
+            mCb = cb;
+        }
+
+        @Override
+        public boolean sendMessageAtTime(@NonNull Message msg, long uptimeMillis) {
+            return mCb.handleMessage(msg);
+        }
+    }
+
     private TaskStackChangeListeners() {
         mImpl = new Impl(Looper.getMainLooper());
     }
 
+    private TaskStackChangeListeners(Handler h) {
+        mImpl = new Impl(h);
+    }
+
     public static TaskStackChangeListeners getInstance() {
         return INSTANCE;
+    }
+
+    /**
+     * Returns an instance of the listeners that can be called upon synchronously for testsing
+     * purposes.
+     */
+    @VisibleForTesting
+    public static TaskStackChangeListeners getTestInstance() {
+        TestSyncHandler h = new TestSyncHandler();
+        TaskStackChangeListeners l = new TaskStackChangeListeners(h);
+        h.setCallback(l.mImpl);
+        return l;
     }
 
     /**
@@ -71,7 +110,15 @@ public class TaskStackChangeListeners {
         }
     }
 
-    private static class Impl extends TaskStackListener implements Handler.Callback {
+    /**
+     * Returns an instance of the listener to call upon from tests.
+     */
+    @VisibleForTesting
+    public TaskStackListener getListenerImpl() {
+        return mImpl;
+    }
+
+    private class Impl extends TaskStackListener implements Handler.Callback {
 
         private static final int ON_TASK_STACK_CHANGED = 1;
         private static final int ON_TASK_SNAPSHOT_CHANGED = 2;
@@ -104,8 +151,12 @@ public class TaskStackChangeListeners {
         private final Handler mHandler;
         private boolean mRegistered;
 
-        Impl(Looper looper) {
+        private Impl(Looper looper) {
             mHandler = new Handler(looper, this);
+        }
+
+        private Impl(Handler handler) {
+            mHandler = handler;
         }
 
         public void addListener(TaskStackChangeListener listener) {
@@ -211,8 +262,8 @@ public class TaskStackChangeListeners {
         }
 
         @Override
-        public void onTaskProfileLocked(int taskId, int userId) {
-            mHandler.obtainMessage(ON_TASK_PROFILE_LOCKED, taskId, userId).sendToTarget();
+        public void onTaskProfileLocked(RunningTaskInfo taskInfo) {
+            mHandler.obtainMessage(ON_TASK_PROFILE_LOCKED, taskInfo).sendToTarget();
         }
 
         @Override
@@ -294,8 +345,17 @@ public class TaskStackChangeListeners {
                         Trace.beginSection("onTaskSnapshotChanged");
                         final TaskSnapshot snapshot = (TaskSnapshot) msg.obj;
                         final ThumbnailData thumbnail = new ThumbnailData(snapshot);
+                        boolean snapshotConsumed = false;
                         for (int i = mTaskStackListeners.size() - 1; i >= 0; i--) {
-                            mTaskStackListeners.get(i).onTaskSnapshotChanged(msg.arg1, thumbnail);
+                            boolean consumed = mTaskStackListeners.get(i).onTaskSnapshotChanged(
+                                    msg.arg1, thumbnail);
+                            snapshotConsumed |= consumed;
+                        }
+                        if (!snapshotConsumed) {
+                            thumbnail.recycleBitmap();
+                            if (snapshot.getHardwareBuffer() != null) {
+                                snapshot.getHardwareBuffer().close();
+                            }
                         }
                         Trace.endSection();
                         break;
@@ -357,8 +417,9 @@ public class TaskStackChangeListeners {
                         break;
                     }
                     case ON_TASK_PROFILE_LOCKED: {
+                        final RunningTaskInfo info = (RunningTaskInfo) msg.obj;
                         for (int i = mTaskStackListeners.size() - 1; i >= 0; i--) {
-                            mTaskStackListeners.get(i).onTaskProfileLocked(msg.arg1, msg.arg2);
+                            mTaskStackListeners.get(i).onTaskProfileLocked(info);
                         }
                         break;
                     }

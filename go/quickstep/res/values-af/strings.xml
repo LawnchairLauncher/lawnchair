@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Deel program"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Luister"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Vertaal"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"HET DIT"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"KANSELLEER"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"INSTELLINGS"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Vertaal of luister na teks op skerm"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Inligting soos teks op jou skerm, webadresse en skermskote kan met Google gedeel word.\n\nGaan na "<b>"Instellings &gt; Programme &gt; Verstekprogramme &gt; Digitale Assistent-program"</b>" om te verander watter inligting jy deel."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Kies \'n assistent om hierdie kenmerk te gebruik"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Kies \'n digitalebystandprogram in Instellings om na teks op jou skerm te luister of dit te vertaal"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Verander jou assistent om hierdie kenmerk te gebruik"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Verander jou digitalebystandprogram in Instellings om na teks op jou skerm te luister of dit te vertaal"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Tik hier om na teks op hierdie skerm te luister"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Tik hier om teks op hierdie skerm te vertaal"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Hierdie program kan nie gedeel word nie"</string>
+</resources>

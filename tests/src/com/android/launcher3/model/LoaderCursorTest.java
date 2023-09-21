@@ -18,6 +18,9 @@ package com.android.launcher3.model;
 
 import static androidx.test.InstrumentationRegistry.getContext;
 
+import static com.android.launcher3.LauncherSettings.Favorites.APPWIDGET_ID;
+import static com.android.launcher3.LauncherSettings.Favorites.APPWIDGET_PROVIDER;
+import static com.android.launcher3.LauncherSettings.Favorites.APPWIDGET_SOURCE;
 import static com.android.launcher3.LauncherSettings.Favorites.CELLX;
 import static com.android.launcher3.LauncherSettings.Favorites.CELLY;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER;
@@ -30,9 +33,13 @@ import static com.android.launcher3.LauncherSettings.Favorites.INTENT;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+import static com.android.launcher3.LauncherSettings.Favorites.OPTIONS;
 import static com.android.launcher3.LauncherSettings.Favorites.PROFILE_ID;
+import static com.android.launcher3.LauncherSettings.Favorites.RANK;
 import static com.android.launcher3.LauncherSettings.Favorites.RESTORED;
 import static com.android.launcher3.LauncherSettings.Favorites.SCREEN;
+import static com.android.launcher3.LauncherSettings.Favorites.SPANX;
+import static com.android.launcher3.LauncherSettings.Favorites.SPANY;
 import static com.android.launcher3.LauncherSettings.Favorites.TITLE;
 import static com.android.launcher3.LauncherSettings.Favorites._ID;
 import static com.android.launcher3.util.LauncherModelHelper.TEST_ACTIVITY;
@@ -92,7 +99,9 @@ public class LoaderCursorTest {
         mCursor = new MatrixCursor(new String[] {
                 ICON, ICON_PACKAGE, ICON_RESOURCE, TITLE,
                 _ID, CONTAINER, ITEM_TYPE, PROFILE_ID,
-                SCREEN, CELLX, CELLY, RESTORED, INTENT
+                SCREEN, CELLX, CELLY, RESTORED, INTENT,
+                APPWIDGET_ID, APPWIDGET_PROVIDER, SPANX,
+                SPANY, RANK, OPTIONS, APPWIDGET_SOURCE
         });
 
         UserManagerState ums = new UserManagerState();

@@ -22,7 +22,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.IPackageManager;
 import android.content.pm.PackageManager;
-import android.content.pm.PackageManager.ResolveInfoFlags;
+import android.content.pm.PackageManager.ResolveInfoFlagsBits;
 import android.content.pm.ResolveInfo;
 import android.os.RemoteException;
 import android.os.UserHandle;
@@ -73,7 +73,7 @@ public class PackageManagerWrapper {
     /**
      * Determine the best Activity to perform for a given Intent.
      */
-    public ResolveInfo resolveActivity(Intent intent, @ResolveInfoFlags int flags) {
+    public ResolveInfo resolveActivity(Intent intent, @ResolveInfoFlagsBits int flags) {
         final String resolvedType =
                 intent.resolveTypeIfNeeded(AppGlobals.getInitialApplication().getContentResolver());
         try {

@@ -21,7 +21,7 @@
 -->
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-sdk android:targetSdkVersion="29" android:minSdkVersion="26"/>
+    <uses-sdk android:targetSdkVersion="33" android:minSdkVersion="26"/>
     <!--
     Manifest entries specific to Launcher3. This is merged with AndroidManifest-common.xml.
     Refer comments around specific entries on how to extend individual components.
@@ -59,6 +59,7 @@
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.SHOW_WORK_APPS" />
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.MONKEY"/>

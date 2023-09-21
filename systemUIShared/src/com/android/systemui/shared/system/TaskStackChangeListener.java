@@ -26,30 +26,37 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
  * An interface to track task stack changes. Classes should implement this instead of
  * {@link android.app.ITaskStackListener} to reduce IPC calls from system services.
  */
-public abstract class TaskStackChangeListener {
+public interface TaskStackChangeListener {
 
     // Binder thread callbacks
-    public void onTaskStackChangedBackground() { }
+    default void onTaskStackChangedBackground() { }
 
     // Main thread callbacks
-    public void onTaskStackChanged() { }
-    public void onTaskSnapshotChanged(int taskId, ThumbnailData snapshot) { }
-    public void onActivityPinned(String packageName, int userId, int taskId, int stackId) { }
-    public void onActivityUnpinned() { }
-    public void onActivityRestartAttempt(RunningTaskInfo task, boolean homeTaskVisible,
-            boolean clearedTask, boolean wasVisible) { }
-    public void onActivityForcedResizable(String packageName, int taskId, int reason) { }
-    public void onActivityDismissingDockedStack() { }
-    public void onActivityLaunchOnSecondaryDisplayFailed() { }
+    default void onTaskStackChanged() { }
 
-    public void onActivityLaunchOnSecondaryDisplayFailed(RunningTaskInfo taskInfo) {
+    /**
+     * @return whether the snapshot is consumed and the lifecycle of the snapshot extends beyond
+     *         the lifecycle of this callback.
+     */
+    default boolean onTaskSnapshotChanged(int taskId, ThumbnailData snapshot) {
+        return false;
+    }
+    default void onActivityPinned(String packageName, int userId, int taskId, int stackId) { }
+    default void onActivityUnpinned() { }
+    default void onActivityRestartAttempt(RunningTaskInfo task, boolean homeTaskVisible,
+            boolean clearedTask, boolean wasVisible) { }
+    default void onActivityForcedResizable(String packageName, int taskId, int reason) { }
+    default void onActivityDismissingDockedStack() { }
+    default void onActivityLaunchOnSecondaryDisplayFailed() { }
+
+    default void onActivityLaunchOnSecondaryDisplayFailed(RunningTaskInfo taskInfo) {
         onActivityLaunchOnSecondaryDisplayFailed();
     }
 
     /**
      * @see #onActivityLaunchOnSecondaryDisplayRerouted(RunningTaskInfo taskInfo)
      */
-    public void onActivityLaunchOnSecondaryDisplayRerouted() { }
+    default void onActivityLaunchOnSecondaryDisplayRerouted() { }
 
     /**
      * Called when an activity was requested to be launched on a secondary display but was rerouted
@@ -57,16 +64,16 @@ public abstract class TaskStackChangeListener {
      *
      * @param taskInfo info about the Activity's task
      */
-    public void onActivityLaunchOnSecondaryDisplayRerouted(RunningTaskInfo taskInfo) {
+    default void onActivityLaunchOnSecondaryDisplayRerouted(RunningTaskInfo taskInfo) {
         onActivityLaunchOnSecondaryDisplayRerouted();
     }
 
-    public void onTaskProfileLocked(int taskId, int userId) { }
-    public void onTaskCreated(int taskId, ComponentName componentName) { }
-    public void onTaskRemoved(int taskId) { }
-    public void onTaskMovedToFront(int taskId) { }
+    default void onTaskProfileLocked(RunningTaskInfo taskInfo) { }
+    default void onTaskCreated(int taskId, ComponentName componentName) { }
+    default void onTaskRemoved(int taskId) { }
+    default void onTaskMovedToFront(int taskId) { }
 
-    public void onTaskMovedToFront(RunningTaskInfo taskInfo) {
+    default void onTaskMovedToFront(RunningTaskInfo taskInfo) {
         onTaskMovedToFront(taskInfo.taskId);
     }
 
@@ -74,13 +81,14 @@ public abstract class TaskStackChangeListener {
      * Called when a task’s description is changed due to an activity calling
      * ActivityManagerService.setTaskDescription
      *
-     * @param taskInfo info about the task which changed, with {@link TaskInfo#taskDescription}
+     * @param taskInfo info about the task which changed, with
+     * {@link RunningTaskInfo#taskDescription}
      */
-    public void onTaskDescriptionChanged(RunningTaskInfo taskInfo) { }
+    default void onTaskDescriptionChanged(RunningTaskInfo taskInfo) { }
 
-    public void onActivityRequestedOrientationChanged(int taskId, int requestedOrientation) { }
+    default void onActivityRequestedOrientationChanged(int taskId, int requestedOrientation) { }
 
-    public void onBackPressedOnTaskRoot(RunningTaskInfo taskInfo) { }
+    default void onBackPressedOnTaskRoot(RunningTaskInfo taskInfo) { }
 
     /**
      * Called when a task is reparented to a stack on a different display.
@@ -88,22 +96,22 @@ public abstract class TaskStackChangeListener {
      * @param taskId id of the task which was moved to a different display.
      * @param newDisplayId id of the new display.
      */
-    public void onTaskDisplayChanged(int taskId, int newDisplayId) { }
+    default void onTaskDisplayChanged(int taskId, int newDisplayId) { }
 
     /**
      * Called when any additions or deletions to the recent tasks list have been made.
      */
-    public void onRecentTaskListUpdated() { }
+    default void onRecentTaskListUpdated() { }
 
     /** @see ITaskStackListener#onRecentTaskListFrozenChanged(boolean) */
-    public void onRecentTaskListFrozenChanged(boolean frozen) { }
+    default void onRecentTaskListFrozenChanged(boolean frozen) { }
 
     /** @see ITaskStackListener#onActivityRotation(int)*/
-    public void onActivityRotation(int displayId) { }
+    default void onActivityRotation(int displayId) { }
 
     /**
      * Called when the lock task mode changes. See ActivityManager#LOCK_TASK_MODE_* and
      * LockTaskController.
      */
-    public void onLockTaskModeChanged(int mode) { }
+    default void onLockTaskModeChanged(int mode) { }
 }

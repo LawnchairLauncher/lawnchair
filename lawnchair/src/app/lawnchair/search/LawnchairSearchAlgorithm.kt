@@ -10,12 +10,12 @@ import com.android.app.search.LayoutType.EMPTY_DIVIDER
 import com.android.app.search.LayoutType.ICON_SINGLE_VERTICAL_TEXT
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.Utilities
-import com.android.launcher3.allapps.AllAppsGridAdapter
+import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.search.SearchAlgorithm
 
 sealed class LawnchairSearchAlgorithm(
     protected val context: Context
-) : SearchAlgorithm<AllAppsGridAdapter.AdapterItem> {
+) : SearchAlgorithm<BaseAllAppsAdapter.AdapterItem> {
 
     private val iconBackground = SearchItemBackground(
         context, showBackground = false,

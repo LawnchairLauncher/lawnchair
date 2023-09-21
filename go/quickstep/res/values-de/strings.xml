@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"App teilen"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Anhören"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Übersetzen"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"OK"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"ABBRECHEN"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"EINSTELLUNGEN"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Text auf dem Bildschirm übersetzen oder anhören"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Informationen, wie Text auf deinem Bildschirm, Webadressen und Screenshots, werden möglicherweise an Google weitergegeben.\n\nWenn du ändern möchtest, welche Informationen weitergegeben werden, gehe zu "<b>"Einstellungen &gt; Apps &gt; Standard-Apps &gt; App für digitalen Assistenten"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Assistenten auswählen, um diese Funktion zu nutzen"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Wenn du dir auf deinem Display Text anhören oder übersetzen lassen möchtest, wähle in den Einstellungen eine App für einen digitalen Assistenten"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Assistenten ändern, um diese Funktion zu nutzen"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Wenn du dir auf deinem Display Text anhören oder übersetzen lassen möchtest, ändere in den Einstellungen deine App für den digitalen Assistenten"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Hier tippen, um dir Text auf diesem Display anzuhören"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Hier tippen, um dir Text auf diesem Display übersetzen zu lassen"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Diese App kann nicht gemeinsam genutzt werden"</string>
+</resources>

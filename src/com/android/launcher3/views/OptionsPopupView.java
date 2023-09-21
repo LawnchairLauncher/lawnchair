@@ -15,9 +15,9 @@
  */
 package com.android.launcher3.views;
 
-import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_FLAVOR;
-import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_LAUNCH_SOURCE;
-import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_OFFSET;
+import static androidx.core.content.ContextCompat.getColorStateList;
+
+import static com.android.launcher3.config.FeatureFlags.ENABLE_MATERIAL_U_POPUP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.IGNORE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS;
@@ -25,6 +25,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -35,6 +36,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -51,7 +53,8 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.testing.TestLogging;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.patrykmichalik.opto.domain.Preference;
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
@@ -66,6 +69,12 @@ import app.lawnchair.preferences2.PreferenceManager2;
  */
 public class OptionsPopupView extends ArrowPopup<Launcher>
         implements OnClickListener, OnLongClickListener {
+
+    // An intent extra to indicate the horizontal scroll of the wallpaper.
+    private static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
+    private static final String EXTRA_WALLPAPER_FLAVOR = "com.android.launcher3.WALLPAPER_FLAVOR";
+    // An intent extra to indicate the launch source by launcher.
+    private static final String EXTRA_WALLPAPER_LAUNCH_SOURCE = "com.android.wallpaper.LAUNCH_SOURCE";
 
     private final ArrayMap<View, OptionItem> mItemMap = new ArrayMap<>();
     private RectF mTargetRect;
@@ -139,22 +148,30 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         mTargetRect.roundOut(outPos);
     }
 
-    public static OptionsPopupView show(
-            Launcher launcher, RectF targetRect, List<OptionItem> items, boolean shouldAddArrow) {
+    @Override
+    public void assignMarginsAndBackgrounds(ViewGroup viewGroup) {
+        if (ENABLE_MATERIAL_U_POPUP.get()) {
+            assignMarginsAndBackgrounds(viewGroup,
+                    getColorStateList(getContext(), mColors[0]).getDefaultColor());
+        } else {
+            assignMarginsAndBackgrounds(viewGroup, Color.TRANSPARENT);
+        }
+    }
+
+    public static OptionsPopupView show(ActivityContext launcher, RectF targetRect,
+                                        List<OptionItem> items, boolean shouldAddArrow) {
         return show(launcher, targetRect, items, shouldAddArrow, 0 /* width */);
     }
 
-    public static OptionsPopupView show(
-            Launcher launcher, RectF targetRect, List<OptionItem> items, boolean shouldAddArrow,
-            int width) {
+    public static OptionsPopupView show(ActivityContext launcher, RectF targetRect,
+                                        List<OptionItem> items, boolean shouldAddArrow, int width) {
         OptionsPopupView popup = (OptionsPopupView) launcher.getLayoutInflater()
                 .inflate(R.layout.longpress_options_menu, launcher.getDragLayer(), false);
         popup.mTargetRect = targetRect;
         popup.setShouldAddArrow(shouldAddArrow);
 
         for (OptionItem item : items) {
-            DeepShortcutView view =
-                    (DeepShortcutView) popup.inflateAndAdd(R.layout.system_shortcut, popup);
+            DeepShortcutView view = (DeepShortcutView) popup.inflateAndAdd(R.layout.system_shortcut, popup);
             if (width > 0) {
                 view.getLayoutParams().width = width;
             }
@@ -165,19 +182,8 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
             popup.mItemMap.put(view, item);
         }
 
-        popup.addPreDrawForColorExtraction(launcher);
         popup.show();
         return popup;
-    }
-
-    @Override
-    protected List<View> getChildrenForColorExtraction() {
-        int childCount = getChildCount();
-        ArrayList<View> children = new ArrayList<>(childCount);
-        for (int i = 0; i < childCount; ++i) {
-            children.add(getChildAt(i));
-        }
-        return children;
     }
 
     /**
@@ -186,8 +192,10 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
     public static ArrayList<OptionItem> getOptions(Launcher launcher) {
         PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(launcher);
         boolean lockHomeScreen = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getLockHomeScreen());
-        boolean showLockToggle = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getLockHomeScreenButtonOnPopUp());
-        boolean showSystemSettings = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getShowSystemSettingsEntryOnPopUp());
+        boolean showLockToggle = PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getLockHomeScreenButtonOnPopUp());
+        boolean showSystemSettings = PreferenceExtensionsKt
+                .firstBlocking(preferenceManager2.getShowSystemSettingsEntryOnPopUp());
 
         ArrayList<OptionItem> options = new ArrayList<>();
         if (showLockToggle) {
@@ -199,16 +207,19 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         }
         if (showSystemSettings) {
             options.add(new OptionItem(launcher,
-                R.string.system_settings,
-                R.drawable.ic_setting,
-                IGNORE,
-                OptionsPopupView::startSystemSettings));
+                    R.string.system_settings,
+                    R.drawable.ic_setting,
+                    IGNORE,
+                    OptionsPopupView::startSystemSettings));
         }
+        boolean showStyleWallpapers = Utilities.showStyleWallpapers(launcher);
+        int resString = showStyleWallpapers ? R.string.styles_wallpaper_button_text : R.string.wallpaper_button_text;
+        int resDrawable = showStyleWallpapers ? R.drawable.ic_palette : R.drawable.ic_wallpaper;
         options.add(new OptionItem(launcher,
-                R.string.settings_button_text,
-                R.drawable.ic_home_screen,
-                LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
-                OptionsPopupView::startSettings));
+                resString,
+                resDrawable,
+                IGNORE,
+                OptionsPopupView::startWallpaperPicker));
         if (!lockHomeScreen && !WidgetsModel.GO_DISABLE_WIDGETS) {
             options.add(new OptionItem(launcher,
                     R.string.widget_button_text,
@@ -216,16 +227,11 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
                     LAUNCHER_WIDGETSTRAY_BUTTON_TAP_OR_LONGPRESS,
                     OptionsPopupView::onWidgetsClicked));
         }
-        boolean showStyleWallpapers = Utilities.showStyleWallpapers(launcher);
-        int resString = showStyleWallpapers ?
-                R.string.styles_wallpaper_button_text : R.string.wallpaper_button_text;
-        int resDrawable = showStyleWallpapers ?
-                R.drawable.ic_palette : R.drawable.ic_wallpaper;
         options.add(new OptionItem(launcher,
-                resString,
-                resDrawable,
-                IGNORE,
-                OptionsPopupView::startWallpaperPicker));
+                R.string.settings_button_text,
+                R.drawable.ic_setting,
+                LAUNCHER_SETTINGS_BUTTON_TAP_OR_LONGPRESS,
+                OptionsPopupView::startSettings));
         return options;
     }
 
@@ -254,7 +260,7 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         Launcher launcher = Launcher.getLauncher(view.getContext());
         Intent intent = new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
                 .setPackage(launcher.getPackageName())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         launcher.startActivitySafely(view, intent, placeholderInfo(intent));
         return true;
     }
@@ -266,7 +272,10 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
     private static boolean startWallpaperPicker(View v) {
         Launcher launcher = Launcher.getLauncher(v.getContext());
         if (!Utilities.isWallpaperAllowed(launcher)) {
-            Toast.makeText(launcher, R.string.msg_disabled_by_admin, Toast.LENGTH_SHORT).show();
+            String message = launcher.getStringCache() != null
+                    ? launcher.getStringCache().disabledByAdminMessage
+                    : launcher.getString(R.string.msg_disabled_by_admin);
+            Toast.makeText(launcher, message, Toast.LENGTH_SHORT).show();
             return false;
         }
         Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
@@ -316,7 +325,7 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         public final OnLongClickListener clickListener;
 
         public OptionItem(Context context, int labelRes, int iconRes, EventEnum eventId,
-                OnLongClickListener clickListener) {
+                          OnLongClickListener clickListener) {
             this.labelRes = labelRes;
             this.label = context.getText(labelRes);
             this.icon = ContextCompat.getDrawable(context, iconRes);
@@ -325,12 +334,17 @@ public class OptionsPopupView extends ArrowPopup<Launcher>
         }
 
         public OptionItem(CharSequence label, Drawable icon, EventEnum eventId,
-                OnLongClickListener clickListener) {
+                          OnLongClickListener clickListener) {
             this.labelRes = 0;
             this.label = label;
             this.icon = icon;
             this.eventId = eventId;
             this.clickListener = clickListener;
         }
+    }
+
+    private static boolean styleWallpapersExists(Context context) {
+        return context.getPackageManager().resolveActivity(
+                PackageManagerHelper.getStyleWallpapersIntent(context), 0) != null;
     }
 }

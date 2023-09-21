@@ -21,7 +21,7 @@ import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
 
-import static com.android.launcher3.ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE;
+import static com.android.systemui.shared.testing.ResourceUtils.NAVBAR_BOTTOM_GESTURE_SIZE;
 import static com.android.launcher3.Utilities.squaredHypot;
 
 import android.content.Context;
@@ -30,13 +30,13 @@ import android.graphics.PointF;
 import android.view.MotionEvent;
 
 import com.android.launcher3.R;
-import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.system.InputMonitorCompat;
+import com.android.systemui.shared.testing.ResourceUtils;
 
 /**
  * Touch consumer for handling gesture event to launch one handed

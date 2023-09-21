@@ -15,6 +15,8 @@
  */
 package com.android.quickstep.interaction;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_NEW_GESTURE_NAV_TUTORIAL;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
@@ -29,8 +31,9 @@ import android.view.ViewGroup.LayoutParams;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.ResourceUtils;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.DisplayController;
+import com.android.systemui.shared.testing.ResourceUtils;
 
 /**
  * Utility class to handle edge swipes for back gestures.
@@ -115,10 +118,9 @@ public class EdgeBackGestureHandler implements OnTouchListener {
             // Add a nav bar panel window.
             mEdgeBackPanel = new EdgeBackGesturePanel(mContext, parent, createLayoutParams());
             mEdgeBackPanel.setBackCallback(mBackCallback);
-            if (mContext.getDisplay() != null) {
-                mContext.getDisplay().getRealSize(mDisplaySize);
-                mEdgeBackPanel.setDisplaySize(mDisplaySize);
-            }
+            Point currentSize = DisplayController.INSTANCE.get(mContext).getInfo().currentSize;
+            mDisplaySize.set(currentSize.x, currentSize.y);
+            mEdgeBackPanel.setDisplaySize(mDisplaySize);
         }
     }
 
@@ -207,7 +209,11 @@ public class EdgeBackGestureHandler implements OnTouchListener {
                         mThresholdCrossed = true;
                     }
                 }
+            }
 
+            if (ENABLE_NEW_GESTURE_NAV_TUTORIAL.get()) {
+                mGestureCallback.onBackGestureProgress(ev.getX() - mDownPoint.x,
+                        ev.getY() - mDownPoint.y, mEdgeBackPanel.getIsLeftPanel());
             }
 
             // forward touch
@@ -242,5 +248,8 @@ public class EdgeBackGestureHandler implements OnTouchListener {
     interface BackGestureAttemptCallback {
         /** Called whenever any touch is completed. */
         void onBackGestureAttempted(BackGestureResult result);
+
+        /** Called when the back gesture is recognized and is in progress. */
+        default void onBackGestureProgress(float diffx, float diffy, boolean isLeftGesture) {}
     }
 }

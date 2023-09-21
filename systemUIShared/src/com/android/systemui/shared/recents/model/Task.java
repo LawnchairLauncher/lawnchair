@@ -16,13 +16,19 @@
 
 package com.android.systemui.shared.recents.model;
 
+import static android.app.WindowConfiguration.ACTIVITY_TYPE_UNDEFINED;
 import static android.view.Display.DEFAULT_DISPLAY;
+
+import static com.android.wm.shell.common.split.SplitScreenConstants.CONTROLLED_ACTIVITY_TYPES;
+import static com.android.wm.shell.common.split.SplitScreenConstants.CONTROLLED_WINDOWING_MODES_WHEN_ACTIVE;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.TaskDescription;
 import android.app.TaskInfo;
 import android.content.ComponentName;
 import android.content.Intent;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -30,6 +36,8 @@ import android.view.ViewDebug;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.android.internal.util.ArrayUtils;
 
 import java.io.PrintWriter;
 import java.util.Objects;
@@ -123,6 +131,10 @@ public class Task {
                 return this.baseIntent.getComponent().getPackageName();
             }
             return this.baseIntent.getPackage();
+        }
+
+        public int getId() {
+            return id;
         }
 
         @Override
@@ -227,6 +239,10 @@ public class Task {
     @ViewDebug.ExportedProperty(category="recents")
     public boolean isLocked;
 
+    public Point positionInParent;
+
+    public Rect appBounds;
+
     // Last snapshot data, only used for recent tasks
     public ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData lastSnapshotData =
             new ActivityManager.RecentTaskInfo.PersistedTaskSnapshotData();
@@ -240,10 +256,17 @@ public class Task {
      */
     public static Task from(TaskKey taskKey, TaskInfo taskInfo, boolean isLocked) {
         ActivityManager.TaskDescription td = taskInfo.taskDescription;
+        // Also consider undefined activity type to include tasks in overview right after rebooting
+        // the device.
+        final boolean isDockable = taskInfo.supportsMultiWindow
+                && ArrayUtils.contains(
+                        CONTROLLED_WINDOWING_MODES_WHEN_ACTIVE, taskInfo.getWindowingMode())
+                && (taskInfo.getActivityType() == ACTIVITY_TYPE_UNDEFINED
+                || ArrayUtils.contains(CONTROLLED_ACTIVITY_TYPES, taskInfo.getActivityType()));
         return new Task(taskKey,
                 td != null ? td.getPrimaryColor() : 0,
-                td != null ? td.getBackgroundColor() : 0,
-                taskInfo.supportsSplitScreenMultiWindow, isLocked, td, taskInfo.topActivity);
+                td != null ? td.getBackgroundColor() : 0, isDockable , isLocked, td,
+                taskInfo.topActivity);
     }
 
     public Task(TaskKey key) {
@@ -255,6 +278,8 @@ public class Task {
         this(other.key, other.colorPrimary, other.colorBackground, other.isDockable,
                 other.isLocked, other.taskDescription, other.topActivity);
         lastSnapshotData.set(other.lastSnapshotData);
+        positionInParent = other.positionInParent;
+        appBounds = other.appBounds;
     }
 
     /**
@@ -284,6 +309,10 @@ public class Task {
 
     public void setLastSnapshotData(ActivityManager.RecentTaskInfo rawTask) {
         lastSnapshotData.set(rawTask.lastSnapshotData);
+    }
+
+    public TaskKey getKey() {
+        return key;
     }
 
     /**

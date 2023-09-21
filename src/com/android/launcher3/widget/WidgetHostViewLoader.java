@@ -59,7 +59,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
 
         // Cleanup widget id
         if (mWidgetLoadingId != -1) {
-            mLauncher.getAppWidgetHost().deleteAppWidgetId(mWidgetLoadingId);
+            mLauncher.getAppWidgetHolder().deleteAppWidgetId(mWidgetLoadingId);
             mWidgetLoadingId = -1;
         }
 
@@ -69,7 +69,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
                 Log.d(TAG, "...removing widget from drag layer");
             }
             mLauncher.getDragLayer().removeView(mInfo.boundWidget);
-            mLauncher.getAppWidgetHost().deleteAppWidgetId(mInfo.boundWidget.getAppWidgetId());
+            mLauncher.getAppWidgetHolder().deleteAppWidgetId(mInfo.boundWidget.getAppWidgetId());
             mInfo.boundWidget = null;
         }
     }
@@ -94,7 +94,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
         mBindWidgetRunnable = new Runnable() {
             @Override
             public void run() {
-                mWidgetLoadingId = mLauncher.getAppWidgetHost().allocateAppWidgetId();
+                mWidgetLoadingId = mLauncher.getAppWidgetHolder().allocateAppWidgetId();
                 if (LOGD) {
                     Log.d(TAG, "Binding widget, id: " + mWidgetLoadingId);
                 }
@@ -116,7 +116,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
                 if (mWidgetLoadingId == -1) {
                     return;
                 }
-                AppWidgetHostView hostView = mLauncher.getAppWidgetHost().createView(
+                AppWidgetHostView hostView = mLauncher.getAppWidgetHolder().createView(
                         (Context) mLauncher, mWidgetLoadingId, pInfo);
                 mInfo.boundWidget = hostView;
 

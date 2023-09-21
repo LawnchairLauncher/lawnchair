@@ -15,8 +15,6 @@
  */
 package com.android.quickstep.fallback;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-
 import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
 import com.android.quickstep.RecentsActivity;
 
@@ -28,8 +26,7 @@ public class RecentsTaskController extends TaskViewTouchController<RecentsActivi
 
     @Override
     protected boolean isRecentsInteractive() {
-        return mActivity.hasWindowFocus() || (ENABLE_QUICKSTEP_LIVE_TILE.get()
-                && mActivity.getStateManager().getState().hasLiveTile());
+        return mActivity.hasWindowFocus() || mActivity.getStateManager().getState().hasLiveTile();
     }
 
     @Override

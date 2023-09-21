@@ -1,24 +1,28 @@
 package app.lawnchair.search
 
+import android.util.Log
 import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.util.contains
 import androidx.core.util.containsKey
+import androidx.core.view.get
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.allapps.SearchItemDecorator
 import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.allapps.SearchResultView.Companion.EXTRA_QUICK_LAUNCH
 import com.android.app.search.LayoutType
 import com.android.launcher3.R
-import com.android.launcher3.allapps.AllAppsContainerView
+import com.android.launcher3.allapps.ActivityAllAppsContainerView
 import com.android.launcher3.allapps.AllAppsGridAdapter
+import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.allapps.search.DefaultSearchAdapterProvider
 
 class LawnchairSearchAdapterProvider(
     launcher: LawnchairLauncher,
-    private val appsView: AllAppsContainerView
-) : DefaultSearchAdapterProvider(launcher, appsView) {
+    private val appsView: ActivityAllAppsContainerView<*>
+) : DefaultSearchAdapterProvider(launcher) {
 
     private val decorator = SearchItemDecorator(appsView)
     private val layoutIdMap = SparseIntArray().apply {
@@ -30,15 +34,14 @@ class LawnchairSearchAdapterProvider(
     private var quickLaunchItem: SearchResultView? = null
         set(value) {
             field = value
-            appsView.searchUiManager.setFocusedResultTitle(field?.titleText)
+            appsView.searchUiManager.setFocusedResultTitle(field?.titleText, field?.titleText)
         }
 
-    override fun isViewSupported(viewType: Int): Boolean = layoutIdMap.containsKey(viewType)
+    override fun isViewSupported(viewType: Int): Boolean = layoutIdMap.contains(viewType)
 
-    override fun onBindView(holder: AllAppsGridAdapter.ViewHolder, position: Int) {
-        val adapterItem = appsView.apps.adapterItems[position] as SearchAdapterItem
+    override fun onBindView(holder: BaseAllAppsAdapter.ViewHolder, position: Int) {
+        val adapterItem = appsView.mSearchRecyclerView.mApps.adapterItems[position] as SearchAdapterItem
         if ((adapterItem.viewType and SEARCH_RESULT_DIVIDER) != 0) return
-
         val itemView = holder.itemView as SearchResultView
         itemView.bind(adapterItem.searchTarget, emptyList())
         if (itemView.isQuickLaunch) {
@@ -50,8 +53,8 @@ class LawnchairSearchAdapterProvider(
         layoutInflater: LayoutInflater,
         parent: ViewGroup?,
         viewType: Int
-    ): AllAppsGridAdapter.ViewHolder =
-        AllAppsGridAdapter.ViewHolder(layoutInflater.inflate(layoutIdMap[viewType], parent, false))
+    ): BaseAllAppsAdapter.ViewHolder =
+        BaseAllAppsAdapter.ViewHolder(layoutInflater.inflate(layoutIdMap[viewType], parent, false))
 
     override fun getItemsPerRow(viewType: Int, appsPerRow: Int) =
         if (viewType != SEARCH_RESULT_ICON) 1 else super.getItemsPerRow(viewType, appsPerRow)

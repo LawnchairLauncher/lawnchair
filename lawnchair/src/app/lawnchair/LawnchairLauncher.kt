@@ -54,7 +54,7 @@ import app.lawnchair.ui.popup.LawnchairShortcut
 import app.lawnchair.util.getThemedIconPacksInstalled
 import com.android.launcher3.*
 import com.android.launcher3.R
-import com.android.launcher3.allapps.AllAppsContainerView
+import com.android.launcher3.allapps.ActivityAllAppsContainerView
 import com.android.launcher3.allapps.search.SearchAdapterProvider
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.statemanager.StateManager
@@ -253,7 +253,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     override fun getSupportedShortcuts(): Stream<SystemShortcut.Factory<*>> =
         Stream.concat(super.getSupportedShortcuts(), Stream.of(LawnchairShortcut.CUSTOMIZE))
 
-    override fun createSearchAdapterProvider(allapps: AllAppsContainerView): SearchAdapterProvider =
+     override fun createMainAdapterProvider(allapps: ActivityAllAppsContainerView<*>): SearchAdapterProvider<*> =
         LawnchairSearchAdapterProvider(this, allapps)
 
     override fun updateTheme() {
@@ -273,12 +273,12 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         gestureController.onHomePressed()
     }
 
-    override fun shouldBackButtonBeHidden(toState: LauncherState): Boolean {
-        if (toState == LauncherState.NORMAL && hasBackGesture) {
-            return false
-        }
-        return super.shouldBackButtonBeHidden(toState)
-    }
+//    fun shouldBackButtonBeHidden(toState: LauncherState): Boolean {
+//        if (toState == LauncherState.NORMAL && hasBackGesture) {
+//            return false
+//        }
+//        return super.shouldBackButtonBeHidden(toState)
+//    }
 
     override fun onStart() {
         super.onStart()
@@ -302,7 +302,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
                 dragLayer.post {
                     dragLayer.viewTreeObserver.removeOnDrawListener(this)
                 }
-                depthController.reapplyDepth()
+                depthController
             }
         })
     }

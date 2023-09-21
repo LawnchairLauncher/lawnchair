@@ -22,6 +22,7 @@ import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.app.KeyguardManager;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
@@ -36,10 +37,10 @@ import com.android.launcher3.icons.IconProvider.IconChangeListener;
 import com.android.launcher3.util.Executors.SimpleThreadFactory;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.quickstep.util.GroupTask;
+import com.android.quickstep.util.TaskVisualsChangeListener;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
@@ -49,6 +50,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 import app.lawnchair.LawnchairApp;
 import app.lawnchair.icons.LawnchairIconProvider;
@@ -57,7 +59,8 @@ import app.lawnchair.icons.LawnchairIconProvider;
  * Singleton class to load and manage recents model.
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class RecentsModel extends TaskStackChangeListener implements IconChangeListener {
+public class RecentsModel implements IconChangeListener, TaskStackChangeListener,
+        TaskVisualsChangeListener {
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<RecentsModel> INSTANCE =
@@ -76,10 +79,12 @@ public class RecentsModel extends TaskStackChangeListener implements IconChangeL
     private RecentsModel(Context context) {
         mContext = context;
         mTaskList = new RecentTasksList(MAIN_EXECUTOR,
-                new KeyguardManagerCompat(context), SystemUiProxy.INSTANCE.get(context));
+                context.getSystemService(KeyguardManager.class),
+                SystemUiProxy.INSTANCE.get(context));
 
         IconProvider iconProvider = new LawnchairIconProvider(context);
         mIconCache = new TaskIconCache(context, RECENTS_MODEL_EXECUTOR, iconProvider);
+        mIconCache.registerTaskVisualsChangeListener(this);
         mThumbnailCache = new TaskThumbnailCache(context, RECENTS_MODEL_EXECUTOR);
 
         if (LawnchairApp.isRecentsEnabled()) {
@@ -97,14 +102,30 @@ public class RecentsModel extends TaskStackChangeListener implements IconChangeL
     }
 
     /**
-     * Fetches the list of recent tasks.
+     * Fetches the list of recent tasks. Tasks are ordered by recency, with the latest active tasks
+     * at the end of the list.
      *
      * @param callback The callback to receive the task plan once its complete or null. This is
      *                always called on the UI thread.
      * @return the request id associated with this call.
      */
     public int getTasks(Consumer<ArrayList<GroupTask>> callback) {
-        return mTaskList.getTasks(false /* loadKeysOnly */, callback);
+        return mTaskList.getTasks(false /* loadKeysOnly */, callback,
+                RecentsFilterState.DEFAULT_FILTER);
+    }
+
+
+    /**
+     * Fetches the list of recent tasks, based on a filter
+     *
+     * @param callback The callback to receive the task plan once its complete or null. This is
+     *                always called on the UI thread.
+     * @param filter  Returns true if a GroupTask should be included into the list passed into
+     *                callback.
+     * @return the request id associated with this call.
+     */
+    public int getTasks(Consumer<ArrayList<GroupTask>> callback, Predicate<GroupTask> filter) {
+        return mTaskList.getTasks(false /* loadKeysOnly */, callback, filter);
     }
 
     /**
@@ -126,8 +147,9 @@ public class RecentsModel extends TaskStackChangeListener implements IconChangeL
      * Checks if a task has been removed or not.
      *
      * @param callback Receives true if task is removed, false otherwise
+     * @param filter Returns true if GroupTask should be in the list of considerations
      */
-    public void isTaskRemoved(int taskId, Consumer<Boolean> callback) {
+    public void isTaskRemoved(int taskId, Consumer<Boolean> callback, Predicate<GroupTask> filter) {
         mTaskList.getTasks(true /* loadKeysOnly */, (taskGroups) -> {
             for (GroupTask group : taskGroups) {
                 if (group.containsTask(taskId)) {
@@ -136,7 +158,7 @@ public class RecentsModel extends TaskStackChangeListener implements IconChangeL
                 }
             }
             callback.accept(true);
-        });
+        }, filter);
     }
 
     @Override
@@ -170,7 +192,7 @@ public class RecentsModel extends TaskStackChangeListener implements IconChangeL
     }
 
     @Override
-    public void onTaskSnapshotChanged(int taskId, ThumbnailData snapshot) {
+    public boolean onTaskSnapshotChanged(int taskId, ThumbnailData snapshot) {
         mThumbnailCache.updateTaskSnapShot(taskId, snapshot);
 
         for (int i = mThumbnailChangeListeners.size() - 1; i >= 0; i--) {
@@ -179,6 +201,7 @@ public class RecentsModel extends TaskStackChangeListener implements IconChangeL
                 task.thumbnail = snapshot;
             }
         }
+        return true;
     }
 
     @Override
@@ -208,6 +231,13 @@ public class RecentsModel extends TaskStackChangeListener implements IconChangeL
     }
 
     @Override
+    public void onTaskIconChanged(int taskId) {
+        for (TaskVisualsChangeListener listener : mThumbnailChangeListeners) {
+            listener.onTaskIconChanged(taskId);
+        }
+    }
+
+    @Override
     public void onSystemIconStateChanged(String iconState) {
         mIconCache.clearCache();
     }
@@ -232,18 +262,33 @@ public class RecentsModel extends TaskStackChangeListener implements IconChangeL
     }
 
     /**
-     * Listener for receiving various task properties changes
+     * Registers a listener for running tasks
      */
-    public interface TaskVisualsChangeListener {
+    public void registerRunningTasksListener(RunningTasksListener listener) {
+        mTaskList.registerRunningTasksListener(listener);
+    }
 
-        /**
-         * Called whn the task thumbnail changes
-         */
-        Task onTaskThumbnailChanged(int taskId, ThumbnailData thumbnailData);
+    /**
+     * Removes the previously registered running tasks listener
+     */
+    public void unregisterRunningTasksListener() {
+        mTaskList.unregisterRunningTasksListener();
+    }
 
+    /**
+     * Gets the set of running tasks.
+     */
+    public ArrayList<ActivityManager.RunningTaskInfo> getRunningTasks() {
+        return mTaskList.getRunningTasks();
+    }
+
+    /**
+     * Listener for receiving running tasks changes
+     */
+    public interface RunningTasksListener {
         /**
-         * Called when the icon for a task changes
+         * Called when there's a change to running tasks
          */
-        void onTaskIconChanged(String pkg, UserHandle user);
+        void onRunningTasksChanged();
     }
 }

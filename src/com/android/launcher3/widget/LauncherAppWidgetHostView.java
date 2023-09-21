@@ -16,12 +16,16 @@
 
 package com.android.launcher3.widget;
 
+import android.annotation.TargetApi;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.os.Trace;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
 import android.view.MotionEvent;
@@ -39,6 +43,7 @@ import com.android.launcher3.CheckLongPressHelper;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -52,6 +57,8 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         implements TouchCompleteListener, View.OnLongClickListener,
         LocalColorExtractor.Listener {
 
+    private static final String TAG = "LauncherAppWidgetHostView";
+
     // Related to the auto-advancing of widgets
     private static final long ADVANCE_INTERVAL = 20000;
     private static final long ADVANCE_STAGGER = 250;
@@ -60,6 +67,8 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     private static final SparseBooleanArray sAutoAdvanceWidgetIds = new SparseBooleanArray();
     // Maximum duration for which updates can be deferred.
     private static final long UPDATE_LOCK_TIMEOUT_MILLIS = 1000;
+
+    private static final String TRACE_METHOD_NAME = "appwidget load-widget ";
 
     private final Rect mTempRect = new Rect();
     private final CheckLongPressHelper mLongPressHelper;
@@ -77,16 +86,14 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     private Runnable mAutoAdvanceRunnable;
 
     private long mDeferUpdatesUntilMillis = 0;
-    private RemoteViews mDeferredRemoteViews;
+    RemoteViews mLastRemoteViews;
     private boolean mHasDeferredColorChange = false;
     private @Nullable SparseIntArray mDeferredColorChange = null;
 
     // The following member variables are only used during drag-n-drop.
     private boolean mIsInDragMode = false;
-    /** The drag content width which is only set when the drag content scale is not 1f. */
-    private int mDragContentWidth = 0;
-    /** The drag content height which is only set when the drag content scale is not 1f. */
-    private int mDragContentHeight = 0;
+
+    private boolean mTrackingWidgetUpdate = false;
 
     public LauncherAppWidgetHostView(Context context) {
         super(context);
@@ -121,12 +128,37 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     }
 
     @Override
-    public void updateAppWidget(RemoteViews remoteViews) {
-        if (isDeferringUpdates()) {
-            mDeferredRemoteViews = remoteViews;
-            return;
+    @TargetApi(Build.VERSION_CODES.Q)
+    public void setAppWidget(int appWidgetId, AppWidgetProviderInfo info) {
+        super.setAppWidget(appWidgetId, info);
+        if (!mTrackingWidgetUpdate && Utilities.ATLEAST_Q) {
+            mTrackingWidgetUpdate = true;
+            Trace.beginAsyncSection(TRACE_METHOD_NAME + info.provider, appWidgetId);
+            Log.i(TAG, "App widget created with id: " + appWidgetId);
         }
-        mDeferredRemoteViews = null;
+    }
+
+    @Override
+    @TargetApi(Build.VERSION_CODES.Q)
+    public void updateAppWidget(RemoteViews remoteViews) {
+        if (mTrackingWidgetUpdate && remoteViews != null && Utilities.ATLEAST_Q) {
+            Log.i(TAG, "App widget with id: " + getAppWidgetId() + " loaded");
+            Trace.endAsyncSection(
+                    TRACE_METHOD_NAME + getAppWidgetInfo().provider, getAppWidgetId());
+            mTrackingWidgetUpdate = false;
+        }
+        if (FeatureFlags.ENABLE_CACHED_WIDGET.get()) {
+            mLastRemoteViews = remoteViews;
+            if (isDeferringUpdates()) {
+                return;
+            }
+        } else {
+            if (isDeferringUpdates()) {
+                mLastRemoteViews = remoteViews;
+                return;
+            }
+            mLastRemoteViews = null;
+        }
 
         super.updateAppWidget(remoteViews);
 
@@ -190,8 +222,7 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         SparseIntArray deferredColors;
         boolean hasDeferredColors;
         mDeferUpdatesUntilMillis = 0;
-        remoteViews = mDeferredRemoteViews;
-        mDeferredRemoteViews = null;
+        remoteViews = mLastRemoteViews;
         deferredColors = mDeferredColorChange;
         hasDeferredColors = mHasDeferredColorChange;
         mDeferredColorChange = null;
@@ -279,27 +310,9 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         }
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        if (mIsInDragMode && mDragContentWidth > 0 && mDragContentHeight > 0
-                && getChildCount() == 1) {
-            measureChild(getChildAt(0), MeasureSpec.getSize(mDragContentWidth),
-                    MeasureSpec.getSize(mDragContentHeight));
-        }
-    }
-
     /** Starts the drag mode. */
     public void startDrag() {
         mIsInDragMode = true;
-        // In the case of dragging a scaled preview from widgets picker, we should reuse the
-        // previously measured dimension from WidgetCell#measureAndComputeWidgetPreviewScale, which
-        // measures the dimension of a widget preview without its parent's bound before scaling
-        // down.
-        if ((getScaleX() != 1f || getScaleY() != 1f) && getChildCount() == 1) {
-            mDragContentWidth = getChildAt(0).getMeasuredWidth();
-            mDragContentHeight = getChildAt(0).getMeasuredHeight();
-        }
     }
 
     /** Handles a drag event occurred on a workspace page corresponding to the {@code screenId}. */
@@ -312,8 +325,6 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
     /** Ends the drag mode. */
     public void endDrag() {
         mIsInDragMode = false;
-        mDragContentWidth = 0;
-        mDragContentHeight = 0;
         requestLayout();
     }
 
@@ -429,7 +440,8 @@ public class LauncherAppWidgetHostView extends BaseLauncherAppWidgetHostView
         }
         // Remove and rebind the current widget (which was inflated in the wrong
         // orientation), but don't delete it from the database
-        mLauncher.removeItem(this, info, false  /* deleteFromDb */);
+        mLauncher.removeItem(this, info, false  /* deleteFromDb */,
+                "widget removed because of configuration change");
         mLauncher.bindAppWidget(info);
     }
 

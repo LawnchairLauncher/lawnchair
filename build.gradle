@@ -3,8 +3,8 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "8.1.1"
-    id 'com.android.library' version "8.1.1" apply false
+    id 'com.android.application' version '8.1.2'
+    id 'com.android.library' version '8.1.2' apply false
     id 'org.jetbrains.kotlin.android' version "1.9.10"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.10"
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.10"
@@ -23,7 +23,7 @@ allprojects {
             compileSdk 34
             defaultConfig {
                 minSdk 26
-                targetSdk 32
+                targetSdk 33
                 vectorDrawables.useSupportLibrary = true
             }
             lint {
@@ -77,20 +77,20 @@ final def ciBuild = System.getenv("CI") == "true"
 final def ciRef = System.getenv("GITHUB_REF") ?: ""
 final def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
 final def isReleaseBuild = ciBuild && ciRef.contains("alpha")
-final def devReleaseName = ciBuild ? "Dev (#${ciRunNumber})" : "Dev (${buildCommit})"
+final def devReleaseName = ciBuild ? "Dev (#${ciRunNumber})" : "UnOfficial Dev (${buildCommit})"
 
-final def version = "12.1.0"
-final def releaseName = "Alpha 4"
+final def version = "13"
+final def releaseName = "Dev UnOfficial"
 final def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
 final def quickstepMinSdk = "32"
-final def quickstepMaxSdk = "32"
+final def quickstepMaxSdk = "33"
 
 android {
     namespace "com.android.launcher3"
     defaultConfig {
-        versionCode 12_01_00_05
+        versionCode 13
         versionName "${versionDisplayName}"
         buildConfigField "String", "VERSION_DISPLAY_NAME", "\"${versionDisplayName}\""
         buildConfigField "String", "MAJOR_VERSION", "\"${majorVersion}\""
@@ -165,7 +165,9 @@ android {
         debug {
             applicationIdSuffix ".debug"
             resValue("string", "derived_app_name", "Lawnchair (Debug)")
-            signingConfig releaseSigning
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles "proguard-android-optimize.txt", "proguard.pro"
         }
 
         release {
@@ -300,18 +302,27 @@ android {
         }
     }
 
-    addFrameworkJar('framework-12l.jar')
+    addFrameworkJar('android.jar')
 }
 
 dependencies {
     implementation projects.iconloaderlib
     implementation projects.searchuilib
+
     // Recents lib dependency
-    withQuickstepImplementation projects.systemUIShared
     withQuickstepCompileOnly projects.hiddenApi
+    withQuickstepImplementation projects.systemUIShared
+    withQuickstepImplementation projects.systemUIAnim
+    withQuickstepImplementation projects.systemUIUnFold
+    withQuickstepImplementation projects.systemUIViewCapture
 
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd.jar')
     implementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell.jar')
+    withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'seeder.jar')
+    withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'core.jar')
+    withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'core-all.jar')
+    withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-core.jar')
+    withQuickstepCompileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'framework-statsd.jar')
     // Required for AOSP to compile. This is already included in the sysui_shared.jar
     withoutQuickstepImplementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'plugin_core.jar')
 
@@ -324,7 +335,7 @@ dependencies {
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.3.0'
 
-    implementation platform("androidx.compose:compose-bom:2023.09.01")
+    implementation platform("androidx.compose:compose-bom:2023.09.00")
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.ui:ui-util"
     debugImplementation "androidx.compose.ui:ui-tooling"
@@ -337,7 +348,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.activity:activity-compose:1.7.2"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
-    implementation "androidx.navigation:navigation-compose:2.7.3"
+    implementation "androidx.navigation:navigation-compose:2.7.2"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanist_version"
@@ -345,7 +356,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-permissions:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
     implementation "com.google.android.material:material:1.9.0"
-    implementation "io.github.fornewid:material-motion-compose-core:1.1.0"
+    implementation "io.github.fornewid:material-motion-compose-core:1.0.6"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
     implementation 'io.coil-kt:coil-compose:2.4.0'
     implementation 'me.xdrop:fuzzywuzzy:1.4.0'
@@ -369,8 +380,6 @@ dependencies {
     implementation 'com.github.samanzamani:PersianDate:1.7.1'
 
     implementation 'com.airbnb.android:lottie:6.1.0'
-
-    debugImplementation "com.squareup.leakcanary:leakcanary-android:2.12"
 }
 
 ksp {

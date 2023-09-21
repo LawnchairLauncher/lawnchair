@@ -42,8 +42,7 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
      */
     public static LauncherIcons obtain(Context context, boolean shapeDetection) {
         if (context instanceof LauncherPreviewRenderer.PreviewContext) {
-            return ((LauncherPreviewRenderer.PreviewContext) context).newLauncherIcons(context,
-                    shapeDetection);
+            return ((LauncherPreviewRenderer.PreviewContext) context).newLauncherIcons(context);
         }
 
         int poolId;
@@ -74,7 +73,7 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
     private LauncherIcons next;
 
     protected LauncherIcons(Context context, int fillResIconDpi, int iconBitmapSize, int poolId,
-            boolean shapeDetection) {
+                            boolean shapeDetection) {
         super(context, fillResIconDpi, iconBitmapSize, shapeDetection);
         mPoolId = poolId;
     }

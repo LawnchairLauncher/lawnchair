@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"هم‌رسانی برنامه"</string>
+    <string name="action_listen" msgid="2370304050784689486">"گوش دادن"</string>
+    <string name="action_translate" msgid="8028378961867277746">"ترجمه"</string>
+    <string name="action_search" msgid="6269564710943755464">"لنز"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"متوجه‌ام"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"لغو"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"تنظیمات"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"ترجمه نوشتار روی صفحه‌نمایش یا گوش دادن به آن"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"‏ممکن است اطلاعاتی مثل نوشتار روی صفحه‌نمایش، نشانی‌های وب، و نماگرفت‌ها با Google هم‌رسانی شود.\n\nبرای تغییر اطلاعاتی که هم‌رسانی می‌کنید، به "<b>"تنظیمات &lt; برنامه‌ها &lt; برنامه‌های پیش‌فرض &lt; برنامه دستیار دیجیتال"</b>" بروید."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"برای استفاده از این ویژگی، دستیاری انتخاب کنید"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"برای گوش کردن به نوشتار در صفحه‌نمایش‌تان یا ترجمه کردن آن، یکی از برنامه‌های دستیار دیجیتالی را در «تنظیمات» انتخاب کنید"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"برای استفاده از این ویژگی، دستیارتان را تغییر دهید"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"برای گوش کردن به نوشتار در صفحه‌نمایش‌تان یا ترجمه کردن آن، برنامه دستیار دیجیتالی‌تان را در «تنظیمات» تغییر دهید"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"برای گوش کردن به نوشتار در این صفحه، اینجا ضربه بزنید"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"برای ترجمه نوشتار در این صفحه، اینجا ضربه بزنید"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"نمی‌توان این برنامه را هم‌رسانی کرد"</string>
+</resources>

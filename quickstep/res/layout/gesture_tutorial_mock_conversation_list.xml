@@ -35,7 +35,7 @@
             android:layout_marginTop="43dp"
             android:layout_marginBottom="22dp"
             android:layout_marginStart="34dp"
-            android:layout_marginEnd="35dp"
+            android:layout_marginEnd="34dp"
 
             app:cardElevation="0dp"
             app:cardCornerRadius="4dp"
@@ -51,337 +51,336 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/mock_list_background"
-        android:paddingBottom="66dp"
+        android:paddingTop="@dimen/gesture_tutorial_conversation_list_padding_top"
+        android:paddingStart="26dp"
 
         app:layout_constraintTop_toBottomOf="@id/top_bar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:paddingTop="@dimen/gesture_tutorial_conversation_list_padding_top"
-            android:paddingStart="26dp"
-            android:paddingBottom="14dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_icon_1"
+            android:layout_width="@dimen/gesture_tutorial_conversation_icon_size"
+            android:layout_height="@dimen/gesture_tutorial_conversation_icon_size"
 
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_conversation_icon_corner_radius"
+            app:cardBackgroundColor="@color/mock_list_profile_icon"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/mock_button">
+            app:layout_constraintStart_toStartOf="parent"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_icon_1"
-                android:layout_width="@dimen/gesture_tutorial_conversation_icon_size"
-                android:layout_height="@dimen/gesture_tutorial_conversation_icon_size"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_line_1"
+            android:layout_width="0dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
+            android:layout_marginEnd="@dimen/gesture_tutorial_conversation_line_1_margin_end"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="@dimen/gesture_tutorial_conversation_icon_corner_radius"
-                app:cardBackgroundColor="@color/mock_list_profile_icon"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="4dp"
+            app:cardBackgroundColor="@color/mock_list_preview_message"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="@id/conversation_icon_1"
+            app:layout_constraintStart_toEndOf="@id/conversation_icon_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/conversation_line_2"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_line_1"
-                android:layout_width="0dp"
-                android:layout_height="18dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
-                android:layout_marginEnd="217dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_line_2"
+            android:layout_width="0dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
+            android:layout_marginEnd="@dimen/gesture_tutorial_conversation_line_2_margin_end"
+            android:layout_marginTop="4dp"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="4dp"
-                app:cardBackgroundColor="@color/mock_list_preview_message"
-                app:layout_constraintVertical_chainStyle="packed"
-                app:layout_constraintTop_toTopOf="@id/conversation_icon_1"
-                app:layout_constraintStart_toEndOf="@id/conversation_icon_1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/conversation_line_2"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="4dp"
+            app:cardBackgroundColor="@color/mock_list_preview_message"
+            app:layout_constraintTop_toBottomOf="@id/conversation_line_1"
+            app:layout_constraintStart_toEndOf="@id/conversation_icon_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/conversation_icon_1"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_line_2"
-                android:layout_width="0dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
-                android:layout_marginEnd="142dp"
-                android:layout_marginTop="4dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_icon_2"
+            android:layout_width="@dimen/gesture_tutorial_conversation_icon_size"
+            android:layout_height="@dimen/gesture_tutorial_conversation_icon_size"
+            android:layout_marginTop="32dp"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="4dp"
-                app:cardBackgroundColor="@color/mock_list_preview_message"
-                app:layout_constraintTop_toBottomOf="@id/conversation_line_1"
-                app:layout_constraintStart_toEndOf="@id/conversation_icon_1"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/conversation_icon_1"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_conversation_icon_corner_radius"
+            app:cardBackgroundColor="@color/mock_list_profile_icon"
+            app:layout_constraintTop_toBottomOf="@id/conversation_icon_1"
+            app:layout_constraintStart_toStartOf="parent"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_icon_2"
-                android:layout_width="@dimen/gesture_tutorial_conversation_icon_size"
-                android:layout_height="@dimen/gesture_tutorial_conversation_icon_size"
-                android:layout_marginTop="32dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_line_3"
+            android:layout_width="0dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
+            android:layout_marginEnd="@dimen/gesture_tutorial_conversation_line_3_margin_end"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="@dimen/gesture_tutorial_conversation_icon_corner_radius"
-                app:cardBackgroundColor="@color/mock_list_profile_icon"
-                app:layout_constraintTop_toBottomOf="@id/conversation_icon_1"
-                app:layout_constraintStart_toStartOf="parent"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="4dp"
+            app:cardBackgroundColor="@color/mock_list_preview_message"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="@id/conversation_icon_2"
+            app:layout_constraintStart_toEndOf="@id/conversation_icon_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/conversation_line_4"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_line_3"
-                android:layout_width="0dp"
-                android:layout_height="18dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
-                android:layout_marginEnd="190dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_line_4"
+            android:layout_width="0dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
+            android:layout_marginEnd="@dimen/gesture_tutorial_conversation_line_4_margin_end"
+            android:layout_marginTop="4dp"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="4dp"
-                app:cardBackgroundColor="@color/mock_list_preview_message"
-                app:layout_constraintVertical_chainStyle="packed"
-                app:layout_constraintTop_toTopOf="@id/conversation_icon_2"
-                app:layout_constraintStart_toEndOf="@id/conversation_icon_2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/conversation_line_4"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="4dp"
+            app:cardBackgroundColor="@color/mock_list_preview_message"
+            app:layout_constraintTop_toBottomOf="@id/conversation_line_3"
+            app:layout_constraintStart_toEndOf="@id/conversation_icon_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/conversation_icon_2"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_line_4"
-                android:layout_width="0dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
-                android:layout_marginEnd="171dp"
-                android:layout_marginTop="4dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_icon_3"
+            android:layout_width="@dimen/gesture_tutorial_conversation_icon_size"
+            android:layout_height="@dimen/gesture_tutorial_conversation_icon_size"
+            android:layout_marginTop="32dp"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="4dp"
-                app:cardBackgroundColor="@color/mock_list_preview_message"
-                app:layout_constraintTop_toBottomOf="@id/conversation_line_3"
-                app:layout_constraintStart_toEndOf="@id/conversation_icon_2"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/conversation_icon_2"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_conversation_icon_corner_radius"
+            app:cardBackgroundColor="@color/mock_list_profile_icon"
+            app:layout_constraintTop_toBottomOf="@id/conversation_icon_2"
+            app:layout_constraintStart_toStartOf="parent"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_icon_3"
-                android:layout_width="@dimen/gesture_tutorial_conversation_icon_size"
-                android:layout_height="@dimen/gesture_tutorial_conversation_icon_size"
-                android:layout_marginTop="32dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_line_5"
+            android:layout_width="0dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
+            android:layout_marginEnd="@dimen/gesture_tutorial_conversation_line_5_margin_end"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="@dimen/gesture_tutorial_conversation_icon_corner_radius"
-                app:cardBackgroundColor="@color/mock_list_profile_icon"
-                app:layout_constraintTop_toBottomOf="@id/conversation_icon_2"
-                app:layout_constraintStart_toStartOf="parent"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="4dp"
+            app:cardBackgroundColor="@color/mock_list_preview_message"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="@id/conversation_icon_3"
+            app:layout_constraintStart_toEndOf="@id/conversation_icon_3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/conversation_line_6"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_line_5"
-                android:layout_width="0dp"
-                android:layout_height="18dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
-                android:layout_marginEnd="198dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_line_6"
+            android:layout_width="0dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
+            android:layout_marginEnd="@dimen/gesture_tutorial_conversation_line_6_margin_end"
+            android:layout_marginTop="4dp"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="4dp"
-                app:cardBackgroundColor="@color/mock_list_preview_message"
-                app:layout_constraintVertical_chainStyle="packed"
-                app:layout_constraintTop_toTopOf="@id/conversation_icon_3"
-                app:layout_constraintStart_toEndOf="@id/conversation_icon_3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/conversation_line_6"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="4dp"
+            app:cardBackgroundColor="@color/mock_list_preview_message"
+            app:layout_constraintTop_toBottomOf="@id/conversation_line_5"
+            app:layout_constraintStart_toEndOf="@id/conversation_icon_3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/conversation_icon_3"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_line_6"
-                android:layout_width="0dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
-                android:layout_marginEnd="79dp"
-                android:layout_marginTop="4dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_icon_4"
+            android:layout_width="@dimen/gesture_tutorial_conversation_icon_size"
+            android:layout_height="@dimen/gesture_tutorial_conversation_icon_size"
+            android:layout_marginTop="32dp"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="4dp"
-                app:cardBackgroundColor="@color/mock_list_preview_message"
-                app:layout_constraintTop_toBottomOf="@id/conversation_line_5"
-                app:layout_constraintStart_toEndOf="@id/conversation_icon_3"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/conversation_icon_3"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_conversation_icon_corner_radius"
+            app:cardBackgroundColor="@color/mock_list_profile_icon"
+            app:layout_constraintTop_toBottomOf="@id/conversation_icon_3"
+            app:layout_constraintStart_toStartOf="parent"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_icon_4"
-                android:layout_width="@dimen/gesture_tutorial_conversation_icon_size"
-                android:layout_height="@dimen/gesture_tutorial_conversation_icon_size"
-                android:layout_marginTop="32dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_line_7"
+            android:layout_width="0dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
+            android:layout_marginEnd="@dimen/gesture_tutorial_conversation_line_7_margin_end"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="@dimen/gesture_tutorial_conversation_icon_corner_radius"
-                app:cardBackgroundColor="@color/mock_list_profile_icon"
-                app:layout_constraintTop_toBottomOf="@id/conversation_icon_3"
-                app:layout_constraintStart_toStartOf="parent"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="4dp"
+            app:cardBackgroundColor="@color/mock_list_preview_message"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="@id/conversation_icon_4"
+            app:layout_constraintStart_toEndOf="@id/conversation_icon_4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/conversation_line_8"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_line_7"
-                android:layout_width="0dp"
-                android:layout_height="18dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
-                android:layout_marginEnd="174dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_line_8"
+            android:layout_width="0dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
+            android:layout_marginEnd="@dimen/gesture_tutorial_conversation_line_8_margin_end"
+            android:layout_marginTop="4dp"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="4dp"
-                app:cardBackgroundColor="@color/mock_list_preview_message"
-                app:layout_constraintVertical_chainStyle="packed"
-                app:layout_constraintTop_toTopOf="@id/conversation_icon_4"
-                app:layout_constraintStart_toEndOf="@id/conversation_icon_4"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/conversation_line_8"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="4dp"
+            app:cardBackgroundColor="@color/mock_list_preview_message"
+            app:layout_constraintTop_toBottomOf="@id/conversation_line_7"
+            app:layout_constraintStart_toEndOf="@id/conversation_icon_4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/conversation_icon_4"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_line_8"
-                android:layout_width="0dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
-                android:layout_marginEnd="117dp"
-                android:layout_marginTop="4dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_icon_5"
+            android:layout_width="@dimen/gesture_tutorial_conversation_icon_size"
+            android:layout_height="@dimen/gesture_tutorial_conversation_icon_size"
+            android:layout_marginTop="32dp"
+            android:visibility="@integer/gesture_tutorial_extra_conversations_visibility"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="4dp"
-                app:cardBackgroundColor="@color/mock_list_preview_message"
-                app:layout_constraintTop_toBottomOf="@id/conversation_line_7"
-                app:layout_constraintStart_toEndOf="@id/conversation_icon_4"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/conversation_icon_4"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_conversation_icon_corner_radius"
+            app:cardBackgroundColor="@color/mock_list_profile_icon"
+            app:layout_constraintTop_toBottomOf="@id/conversation_icon_4"
+            app:layout_constraintStart_toStartOf="parent"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_icon_5"
-                android:layout_width="@dimen/gesture_tutorial_conversation_icon_size"
-                android:layout_height="@dimen/gesture_tutorial_conversation_icon_size"
-                android:layout_marginTop="32dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_line_9"
+            android:layout_width="0dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
+            android:layout_marginEnd="244dp"
+            android:visibility="@integer/gesture_tutorial_extra_conversations_visibility"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="@dimen/gesture_tutorial_conversation_icon_corner_radius"
-                app:cardBackgroundColor="@color/mock_list_profile_icon"
-                app:layout_constraintTop_toBottomOf="@id/conversation_icon_4"
-                app:layout_constraintStart_toStartOf="parent"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="4dp"
+            app:cardBackgroundColor="@color/mock_list_preview_message"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="@id/conversation_icon_5"
+            app:layout_constraintStart_toEndOf="@id/conversation_icon_5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/conversation_line_10"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_line_9"
-                android:layout_width="0dp"
-                android:layout_height="18dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
-                android:layout_marginEnd="244dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_line_10"
+            android:layout_width="0dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
+            android:layout_marginEnd="143dp"
+            android:layout_marginTop="4dp"
+            android:visibility="@integer/gesture_tutorial_extra_conversations_visibility"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="4dp"
-                app:cardBackgroundColor="@color/mock_list_preview_message"
-                app:layout_constraintVertical_chainStyle="packed"
-                app:layout_constraintTop_toTopOf="@id/conversation_icon_5"
-                app:layout_constraintStart_toEndOf="@id/conversation_icon_5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/conversation_line_10"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="4dp"
+            app:cardBackgroundColor="@color/mock_list_preview_message"
+            app:layout_constraintTop_toBottomOf="@id/conversation_line_9"
+            app:layout_constraintStart_toEndOf="@id/conversation_icon_5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/conversation_icon_5"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_line_10"
-                android:layout_width="0dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
-                android:layout_marginEnd="143dp"
-                android:layout_marginTop="4dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_icon_6"
+            android:layout_width="@dimen/gesture_tutorial_conversation_icon_size"
+            android:layout_height="@dimen/gesture_tutorial_conversation_icon_size"
+            android:layout_marginTop="32dp"
+            android:visibility="@integer/gesture_tutorial_extra_conversations_visibility"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="4dp"
-                app:cardBackgroundColor="@color/mock_list_preview_message"
-                app:layout_constraintTop_toBottomOf="@id/conversation_line_9"
-                app:layout_constraintStart_toEndOf="@id/conversation_icon_5"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/conversation_icon_5"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_conversation_icon_corner_radius"
+            app:cardBackgroundColor="@color/mock_list_profile_icon"
+            app:layout_constraintTop_toBottomOf="@id/conversation_icon_5"
+            app:layout_constraintStart_toStartOf="parent"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_icon_6"
-                android:layout_width="@dimen/gesture_tutorial_conversation_icon_size"
-                android:layout_height="@dimen/gesture_tutorial_conversation_icon_size"
-                android:layout_marginTop="32dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_line_11"
+            android:layout_width="0dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
+            android:layout_marginEnd="177dp"
+            android:visibility="@integer/gesture_tutorial_extra_conversations_visibility"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="@dimen/gesture_tutorial_conversation_icon_corner_radius"
-                app:cardBackgroundColor="@color/mock_list_profile_icon"
-                app:layout_constraintTop_toBottomOf="@id/conversation_icon_5"
-                app:layout_constraintStart_toStartOf="parent"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="4dp"
+            app:cardBackgroundColor="@color/mock_list_preview_message"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="@id/conversation_icon_6"
+            app:layout_constraintStart_toEndOf="@id/conversation_icon_6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/conversation_line_12"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_line_11"
-                android:layout_width="0dp"
-                android:layout_height="18dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
-                android:layout_marginEnd="177dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_line_12"
+            android:layout_width="0dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
+            android:layout_marginEnd="117dp"
+            android:layout_marginTop="4dp"
+            android:visibility="@integer/gesture_tutorial_extra_conversations_visibility"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="4dp"
-                app:cardBackgroundColor="@color/mock_list_preview_message"
-                app:layout_constraintVertical_chainStyle="packed"
-                app:layout_constraintTop_toTopOf="@id/conversation_icon_6"
-                app:layout_constraintStart_toEndOf="@id/conversation_icon_6"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/conversation_line_12"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="4dp"
+            app:cardBackgroundColor="@color/mock_list_preview_message"
+            app:layout_constraintTop_toBottomOf="@id/conversation_line_11"
+            app:layout_constraintStart_toEndOf="@id/conversation_icon_6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/conversation_icon_6"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_line_12"
-                android:layout_width="0dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
-                android:layout_marginEnd="117dp"
-                android:layout_marginTop="4dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_icon_7"
+            android:layout_width="@dimen/gesture_tutorial_conversation_icon_size"
+            android:layout_height="@dimen/gesture_tutorial_conversation_icon_size"
+            android:layout_marginTop="32dp"
+            android:visibility="@integer/gesture_tutorial_extra_conversations_visibility"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="4dp"
-                app:cardBackgroundColor="@color/mock_list_preview_message"
-                app:layout_constraintTop_toBottomOf="@id/conversation_line_11"
-                app:layout_constraintStart_toEndOf="@id/conversation_icon_6"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/conversation_icon_6"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="@dimen/gesture_tutorial_conversation_icon_corner_radius"
+            app:cardBackgroundColor="@color/mock_list_profile_icon"
+            app:layout_constraintTop_toBottomOf="@id/conversation_icon_6"
+            app:layout_constraintStart_toStartOf="parent"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_icon_7"
-                android:layout_width="@dimen/gesture_tutorial_conversation_icon_size"
-                android:layout_height="@dimen/gesture_tutorial_conversation_icon_size"
-                android:layout_marginTop="32dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_line_13"
+            android:layout_width="0dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
+            android:layout_marginEnd="189dp"
+            android:visibility="@integer/gesture_tutorial_extra_conversations_visibility"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="@dimen/gesture_tutorial_conversation_icon_corner_radius"
-                app:cardBackgroundColor="@color/mock_list_profile_icon"
-                app:layout_constraintTop_toBottomOf="@id/conversation_icon_6"
-                app:layout_constraintStart_toStartOf="parent"/>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="4dp"
+            app:cardBackgroundColor="@color/mock_list_preview_message"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:layout_constraintTop_toTopOf="@id/conversation_icon_7"
+            app:layout_constraintStart_toEndOf="@id/conversation_icon_7"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/conversation_line_14"/>
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_line_13"
-                android:layout_width="0dp"
-                android:layout_height="18dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
-                android:layout_marginEnd="189dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/conversation_line_14"
+            android:layout_width="0dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
+            android:layout_marginEnd="166dp"
+            android:layout_marginTop="4dp"
+            android:visibility="@integer/gesture_tutorial_extra_conversations_visibility"
 
-                app:cardElevation="0dp"
-                app:cardCornerRadius="4dp"
-                app:cardBackgroundColor="@color/mock_list_preview_message"
-                app:layout_constraintVertical_chainStyle="packed"
-                app:layout_constraintTop_toTopOf="@id/conversation_icon_7"
-                app:layout_constraintStart_toEndOf="@id/conversation_icon_7"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/conversation_line_14"/>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/conversation_line_14"
-                android:layout_width="0dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="@dimen/gesture_tutorial_conversation_line_padding_start"
-                android:layout_marginEnd="166dp"
-                android:layout_marginTop="4dp"
-
-                app:cardElevation="0dp"
-                app:cardCornerRadius="4dp"
-                app:cardBackgroundColor="@color/mock_list_preview_message"
-                app:layout_constraintTop_toBottomOf="@id/conversation_line_13"
-                app:layout_constraintStart_toEndOf="@id/conversation_icon_7"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="@id/conversation_icon_7"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            app:cardElevation="0dp"
+            app:cardCornerRadius="4dp"
+            app:cardBackgroundColor="@color/mock_list_preview_message"
+            app:layout_constraintTop_toBottomOf="@id/conversation_line_13"
+            app:layout_constraintStart_toEndOf="@id/conversation_icon_7"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/conversation_icon_7"/>
 
         <androidx.cardview.widget.CardView
             android:id="@+id/mock_button"
             android:layout_width="149dp"
             android:layout_height="56dp"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="@dimen/gesture_tutorial_mock_button_margin_end"
+            android:layout_marginBottom="@dimen/gesture_tutorial_mock_button_margin_bottom"
 
             app:cardElevation="0dp"
             app:cardCornerRadius="164dp"

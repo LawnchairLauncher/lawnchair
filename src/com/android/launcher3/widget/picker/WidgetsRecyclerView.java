@@ -20,28 +20,19 @@ import android.content.Context;
 import android.graphics.Point;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.TableLayout;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.OnItemTouchListener;
 
-import com.android.launcher3.BaseRecyclerView;
-import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.FastScrollRecyclerView;
 import com.android.launcher3.R;
-import com.android.launcher3.views.ActivityContext;
-import com.android.launcher3.widget.model.WidgetListSpaceEntry;
-import com.android.launcher3.widget.model.WidgetsListBaseEntry;
-import com.android.launcher3.widget.model.WidgetsListContentEntry;
-import com.android.launcher3.widget.model.WidgetsListHeaderEntry;
-import com.android.launcher3.widget.model.WidgetsListSearchHeaderEntry;
-import com.android.launcher3.widget.picker.WidgetsSpaceViewHolderBinder.EmptySpaceView;
+import com.android.launcher3.util.ScrollableLayoutManager;
 
 /**
  * The widgets recycler view.
  */
-public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouchListener {
+public class WidgetsRecyclerView extends FastScrollRecyclerView implements OnItemTouchListener {
 
     private WidgetsListAdapter mAdapter;
 
@@ -50,13 +41,6 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     private final Point mFastScrollerOffset = new Point();
     private boolean mTouchDownOnScroller;
     private HeaderViewDimensionsProvider mHeaderViewDimensionsProvider;
-
-    // Cached sizes
-    private int mLastVisibleWidgetContentTableHeight = 0;
-    private int mWidgetHeaderHeight = 0;
-    private int mWidgetEmptySpaceHeight = 0;
-
-    private final int mSpacingBetweenEntries;
 
     public WidgetsRecyclerView(Context context) {
         this(context, null);
@@ -71,21 +55,12 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
         super(context, attrs, defStyleAttr);
         mScrollbarTop = getResources().getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         addOnItemTouchListener(this);
-
-        ActivityContext activity = ActivityContext.lookupContext(getContext());
-        DeviceProfile grid = activity.getDeviceProfile();
-
-        // The spacing used between entries.
-        mSpacingBetweenEntries =
-                getResources().getDimensionPixelSize(R.dimen.widget_list_entry_spacing);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        // create a layout manager with Launcher's context so that scroll position
-        // can be preserved during screen rotation.
-        setLayoutManager(new LinearLayoutManager(getContext()));
+        setLayoutManager(new ScrollableLayoutManager(getContext()));
     }
 
     @Override
@@ -129,74 +104,13 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
         }
 
         // Skip early if, there no child laid out in the container.
-        int scrollY = getCurrentScrollY();
+        int scrollY = computeVerticalScrollOffset();
         if (scrollY < 0) {
             mScrollbar.setThumbOffsetY(-1);
             return;
         }
 
         synchronizeScrollBarThumbOffsetToViewScroll(scrollY, getAvailableScrollHeight());
-    }
-
-    @Override
-    public int getCurrentScrollY() {
-        // Skip early if widgets are not bound.
-        if (isModelNotReady() || getChildCount() == 0) {
-            return -1;
-        }
-
-        int rowIndex = -1;
-        View child = null;
-
-        LayoutManager layoutManager = getLayoutManager();
-        if (layoutManager instanceof LinearLayoutManager) {
-            // Use the LayoutManager as the source of truth for visible positions. During
-            // animations, the view group child may not correspond to the visible views that appear
-            // at the top.
-            rowIndex = ((LinearLayoutManager) layoutManager).findFirstVisibleItemPosition();
-            child = layoutManager.findViewByPosition(rowIndex);
-        }
-
-        if (child == null) {
-            // If the layout manager returns null for any reason, which can happen before layout
-            // has occurred for the position, then look at the child of this view as a ViewGroup.
-            child = getChildAt(0);
-            rowIndex = getChildPosition(child);
-        }
-
-        for (int i = 0; i < getChildCount(); i++) {
-            View view = getChildAt(i);
-            if (view instanceof TableLayout) {
-                // This assumes there is ever only one content shown in this recycler view.
-                mLastVisibleWidgetContentTableHeight = view.getMeasuredHeight();
-            } else if (view instanceof WidgetsListHeader
-                    && mWidgetHeaderHeight == 0
-                    && view.getMeasuredHeight() > 0) {
-                // This assumes all header views are of the same height.
-                mWidgetHeaderHeight = view.getMeasuredHeight();
-            } else if (view instanceof EmptySpaceView && view.getMeasuredHeight() > 0) {
-                mWidgetEmptySpaceHeight = view.getMeasuredHeight();
-            }
-        }
-
-        int scrollPosition = getItemsHeight(rowIndex);
-        int offset = getLayoutManager().getDecoratedTop(child);
-
-        return getPaddingTop() + scrollPosition - offset;
-    }
-
-    /**
-     * Returns the available scroll height, in pixel.
-     *
-     * <p>If the recycler view can't be scrolled, returns 0.
-     */
-    @Override
-    protected int getAvailableScrollHeight() {
-        // AvailableScrollHeight = Total height of the all items - first page height
-        int firstPageHeight = getMeasuredHeight() - getPaddingTop() - getPaddingBottom();
-        int totalHeightOfAllItems = getItemsHeight(/* untilIndex= */ mAdapter.getItemCount());
-        int availableScrollHeight = totalHeightOfAllItems - firstPageHeight;
-        return Math.max(0, availableScrollHeight);
     }
 
     private boolean isModelNotReady() {
@@ -213,8 +127,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     @Override
     public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
         if (e.getAction() == MotionEvent.ACTION_DOWN) {
-            mTouchDownOnScroller =
-                    mScrollbar.isHitInParent(e.getX(), e.getY(), mFastScrollerOffset);
+            mTouchDownOnScroller = isHitOnScrollBar(e);
         }
         if (mTouchDownOnScroller) {
             final boolean result = mScrollbar.handleTouchEvent(e, mFastScrollerOffset);
@@ -230,6 +143,15 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
         }
     }
 
+    /**
+     * Detects whether a {@code MotionEvent} is on the scroll bar
+     * @param e The {@code MotionEvent} on the screen
+     * @return {@code true} if the motion is on the scroll bar
+     */
+    boolean isHitOnScrollBar(MotionEvent e) {
+        return mScrollbar.isHitInParent(e.getX(), e.getY(), mFastScrollerOffset);
+    }
+
     @Override
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
     }
@@ -237,54 +159,6 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
     public void setHeaderViewDimensionsProvider(
             HeaderViewDimensionsProvider headerViewDimensionsProvider) {
         mHeaderViewDimensionsProvider = headerViewDimensionsProvider;
-    }
-
-    @Override
-    public void scrollToTop() {
-        if (mScrollbar != null) {
-            mScrollbar.reattachThumbToScroll();
-        }
-
-        if (getLayoutManager() instanceof LinearLayoutManager) {
-            if (getCurrentScrollY() == 0) {
-                // We are at the top, so don't scrollToPosition (would cause unnecessary relayout).
-                return;
-            }
-        }
-        scrollToPosition(0);
-    }
-
-    /**
-     * Returns the sum of the height, in pixels, of this list adapter's items from index 0 until
-     * {@code untilIndex}.
-     *
-     * <p>If the untilIndex is larger than the total number of items in this adapter, returns the
-     * sum of all items' height.
-     */
-    private int getItemsHeight(int untilIndex) {
-        if (untilIndex > mAdapter.getItems().size()) {
-            untilIndex = mAdapter.getItems().size();
-        }
-        int totalItemsHeight = 0;
-        for (int i = 0; i < untilIndex; i++) {
-            WidgetsListBaseEntry entry = mAdapter.getItems().get(i);
-            if (entry instanceof WidgetsListHeaderEntry
-                    || entry instanceof WidgetsListSearchHeaderEntry) {
-                totalItemsHeight += mWidgetHeaderHeight;
-                if (i > 0) {
-                    // Each header contains the spacing between entries as top decoration, except
-                    // the first one.
-                    totalItemsHeight += mSpacingBetweenEntries;
-                }
-            } else if (entry instanceof WidgetsListContentEntry) {
-                totalItemsHeight += mLastVisibleWidgetContentTableHeight;
-            } else if (entry instanceof WidgetListSpaceEntry) {
-                totalItemsHeight += mWidgetEmptySpaceHeight;
-            } else {
-                throw new UnsupportedOperationException("Can't estimate height for " + entry);
-            }
-        }
-        return totalItemsHeight;
     }
 
     /**

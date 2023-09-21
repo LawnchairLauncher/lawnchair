@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"App delen"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Luisteren"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Vertalen"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lens"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"OK"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"ANNULEREN"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"INSTELLINGEN"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Tekst op het scherm vertalen of beluisteren"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Informatie zoals tekst op je scherm, webadressen en screenshots kan met Google worden gedeeld.\n\nAls je wilt aanpassen welke informatie je deelt, ga je naar "<b>"Instellingen &gt; Apps &gt; Standaard-apps &gt; Digitale-assistent-app"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Kies een assistent om deze functie te gebruiken"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Als je tekst op je scherm wilt beluisteren of vertalen, kies je een digitale-assistent-app in Instellingen"</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Wijzig de assistent om deze functie te gebruiken"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Als je tekst op je scherm wilt beluisteren of vertalen, wijzig je de digitale-assistent-app in Instellingen"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Tik hier om tekst op dit scherm te beluisteren"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Tik hier om tekst op dit scherm te vertalen"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Deze app kan niet worden gedeeld"</string>
+</resources>

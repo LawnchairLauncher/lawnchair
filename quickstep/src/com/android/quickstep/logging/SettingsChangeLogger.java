@@ -16,8 +16,9 @@
 
 package com.android.quickstep.logging;
 
-import static com.android.launcher3.Utilities.getDevicePrefs;
-import static com.android.launcher3.Utilities.getPrefs;
+import static com.android.launcher3.LauncherPrefs.THEMED_ICONS;
+import static com.android.launcher3.LauncherPrefs.getDevicePrefs;
+import static com.android.launcher3.LauncherPrefs.getPrefs;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_SCREEN_SUGGESTIONS_DISABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOME_SCREEN_SUGGESTIONS_ENABLED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_NOTIFICATION_DOT_DISABLED;
@@ -26,6 +27,7 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_THEMED_ICON_ENABLED;
 import static com.android.launcher3.model.DeviceGridState.KEY_WORKSPACE_SIZE;
 import static com.android.launcher3.model.QuickstepModelDelegate.LAST_PREDICTION_ENABLED_STATE;
+import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 import static com.android.launcher3.util.Themes.KEY_THEMED_ICONS;
 
@@ -38,17 +40,17 @@ import android.util.Log;
 import android.util.Xml;
 
 import com.android.launcher3.AutoInstallsLayout;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.DeviceGridState;
+import com.android.launcher3.util.DisplayController;
+import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.MainThreadInitializedObject;
+import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.SettingsCache;
-import com.android.quickstep.SysUINavigationMode;
-import com.android.quickstep.SysUINavigationMode.Mode;
-import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -60,8 +62,8 @@ import java.util.Optional;
  * Utility class to log launcher settings changes
  */
 public class SettingsChangeLogger implements
-        NavigationModeChangeListener, OnSharedPreferenceChangeListener {
-  
+        DisplayController.DisplayInfoChangeListener, OnSharedPreferenceChangeListener {
+
     /**
      * Singleton instance
      */
@@ -76,7 +78,7 @@ public class SettingsChangeLogger implements
     private final ArrayMap<String, LoggablePref> mLoggablePrefs;
     private final StatsLogManager mStatsLogManager;
 
-    private Mode mNavMode;
+    private NavigationMode mNavMode;
     private StatsLogManager.LauncherEvent mNotificationDotsEvent;
     private StatsLogManager.LauncherEvent mHomeScreenSuggestionEvent;
 
@@ -84,7 +86,8 @@ public class SettingsChangeLogger implements
         mContext = context;
         mStatsLogManager = StatsLogManager.newInstance(mContext);
         mLoggablePrefs = loadPrefKeys(context);
-        mNavMode = SysUINavigationMode.INSTANCE.get(context).addModeChangeListener(this);
+        DisplayController.INSTANCE.get(context).addChangeListener(this);
+        mNavMode = DisplayController.getNavigationMode(context);
 
         getPrefs(context).registerOnSharedPreferenceChangeListener(this);
         getDevicePrefs(context).registerOnSharedPreferenceChangeListener(this);
@@ -141,9 +144,11 @@ public class SettingsChangeLogger implements
     }
 
     @Override
-    public void onNavigationModeChanged(Mode newMode) {
-        mNavMode = newMode;
-        mStatsLogManager.logger().log(newMode.launcherEvent);
+    public void onDisplayInfoChanged(Context context, Info info, int flags) {
+        if ((flags & CHANGE_NAVIGATION_MODE) != 0) {
+            mNavMode = info.navigationMode;
+            mStatsLogManager.logger().log(mNavMode.launcherEvent);
+        }
     }
 
     @Override
@@ -175,11 +180,9 @@ public class SettingsChangeLogger implements
                 logger::log);
 
         SharedPreferences prefs = getPrefs(mContext);
-        if (FeatureFlags.ENABLE_THEMED_ICONS.get()) {
-            logger.log(prefs.getBoolean(KEY_THEMED_ICONS, false)
-                    ? LAUNCHER_THEMED_ICON_ENABLED
-                    : LAUNCHER_THEMED_ICON_DISABLED);
-        }
+        logger.log(LauncherPrefs.get(mContext).get(THEMED_ICONS)
+                ? LAUNCHER_THEMED_ICON_ENABLED
+                : LAUNCHER_THEMED_ICON_DISABLED);
 
         mLoggablePrefs.forEach((key, lp) -> logger.log(() ->
                 prefs.getBoolean(key, lp.defaultValue) ? lp.eventIdOn : lp.eventIdOff));

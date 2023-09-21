@@ -15,10 +15,10 @@
  */
 package com.android.launcher3.states;
 
+import static com.android.launcher3.config.FeatureFlags.SHOW_HOME_GARDENING;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 
 import android.content.Context;
-import android.graphics.Rect;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -32,52 +32,45 @@ public class SpringLoadedState extends LauncherState {
 
     private static final int STATE_FLAGS = FLAG_MULTI_PAGE
             | FLAG_WORKSPACE_INACCESSIBLE | FLAG_DISABLE_RESTORE
-            | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_WORKSPACE_HAS_BACKGROUNDS
-            | FLAG_HIDE_BACK_BUTTON;
+            | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_WORKSPACE_HAS_BACKGROUNDS;
 
     public SpringLoadedState(int id) {
         super(id, LAUNCHER_STATE_HOME, STATE_FLAGS);
     }
 
     @Override
-    public int getTransitionDuration(Context context) {
+    public int getTransitionDuration(Context context, boolean isToState) {
         return 150;
     }
 
     @Override
     public ScaleAndTranslation getWorkspaceScaleAndTranslation(Launcher launcher) {
+
+        if (SHOW_HOME_GARDENING.get()) {
+            return super.getWorkspaceScaleAndTranslation(launcher);
+        }
+
         DeviceProfile grid = launcher.getDeviceProfile();
-        Workspace ws = launcher.getWorkspace();
+        Workspace<?> ws = launcher.getWorkspace();
         if (ws.getChildCount() == 0) {
             return super.getWorkspaceScaleAndTranslation(launcher);
         }
 
-        if (grid.isVerticalBarLayout()) {
-            float scale = grid.workspaceSpringLoadShrinkFactor;
-            return new ScaleAndTranslation(scale, 0, 0);
-        }
-
-        float scale = grid.workspaceSpringLoadShrinkFactor;
-        Rect insets = launcher.getDragLayer().getInsets();
-
-        float scaledHeight = scale * ws.getNormalChildHeight();
-        float shrunkTop = insets.top + grid.dropTargetBarSizePx;
-        float shrunkBottom = ws.getMeasuredHeight() - insets.bottom
-                - grid.workspacePadding.bottom
-                - grid.workspaceSpringLoadedBottomSpace;
-        float totalShrunkSpace = shrunkBottom - shrunkTop;
-
-        float desiredCellTop = shrunkTop + (totalShrunkSpace - scaledHeight) / 2;
+        float shrunkTop = grid.getCellLayoutSpringLoadShrunkTop();
+        float scale = grid.getWorkspaceSpringLoadScale(launcher);
 
         float halfHeight = ws.getHeight() / 2;
         float myCenter = ws.getTop() + halfHeight;
         float cellTopFromCenter = halfHeight - ws.getChildAt(0).getTop();
         float actualCellTop = myCenter - cellTopFromCenter * scale;
-        return new ScaleAndTranslation(scale, 0, (desiredCellTop - actualCellTop) / scale);
+        return new ScaleAndTranslation(scale, 0, shrunkTop - actualCellTop);
     }
 
     @Override
     protected float getDepthUnchecked(Context context) {
+        if (SHOW_HOME_GARDENING.get()) {
+            return 0;
+        }
         return 0.5f;
     }
 
@@ -88,6 +81,10 @@ public class SpringLoadedState extends LauncherState {
 
     @Override
     public float getWorkspaceBackgroundAlpha(Launcher launcher) {
+        if (SHOW_HOME_GARDENING.get()) {
+            return 0;
+        }
+
         return 0.2f;
     }
 }

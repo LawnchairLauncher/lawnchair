@@ -42,7 +42,9 @@ class UnfoldMoveFromCenterAnimator @JvmOverloads constructor(
      * are different than actual bounds (e.g. view container may
      * have larger width than width of the items in the container)
      */
-    private val viewCenterProvider: ViewCenterProvider = object : ViewCenterProvider {}
+    private val viewCenterProvider: ViewCenterProvider = object : ViewCenterProvider {},
+    /** Allows to set the alpha based on the progress. */
+    private val alphaProvider: AlphaProvider? = null
 ) : UnfoldTransitionProgressProvider.TransitionProgressListener {
 
     private val screenSize = Point()
@@ -50,20 +52,20 @@ class UnfoldMoveFromCenterAnimator @JvmOverloads constructor(
 
     private val animatedViews: MutableList<AnimatedView> = arrayListOf()
 
-    private var lastAnimationProgress: Float = 0f
+    private var lastAnimationProgress: Float = 1f
 
     /**
      * Updates display properties in order to calculate the initial position for the views
      * Must be called before [registerViewForAnimation]
      */
-    fun updateDisplayProperties() {
+    @JvmOverloads
+    fun updateDisplayProperties(rotation: Int = windowManager.defaultDisplay.rotation) {
         windowManager.defaultDisplay.getSize(screenSize)
 
         // Simple implementation to get current fold orientation,
         // this might not be correct on all devices
         // TODO: use JetPack WindowManager library to get the fold orientation
-        isVerticalFold = windowManager.defaultDisplay.rotation == Surface.ROTATION_0 ||
-            windowManager.defaultDisplay.rotation == Surface.ROTATION_180
+        isVerticalFold = rotation == Surface.ROTATION_0 || rotation == Surface.ROTATION_180
     }
 
     /**
@@ -99,15 +101,25 @@ class UnfoldMoveFromCenterAnimator @JvmOverloads constructor(
 
     override fun onTransitionProgress(progress: Float) {
         animatedViews.forEach {
-            it.view.get()?.let { view ->
-                translationApplier.apply(
-                    view = view,
-                    x = it.startTranslationX * (1 - progress),
-                    y = it.startTranslationY * (1 - progress)
-                )
-            }
+            it.applyTransition(progress)
+            it.applyAlpha(progress)
         }
         lastAnimationProgress = progress
+    }
+
+    private fun AnimatedView.applyTransition(progress: Float) {
+        view.get()?.let { view ->
+            translationApplier.apply(
+                view = view,
+                x = startTranslationX * (1 - progress),
+                y = startTranslationY * (1 - progress)
+            )
+        }
+    }
+
+    private fun AnimatedView.applyAlpha(progress: Float) {
+        if (alphaProvider == null) return
+        view.get()?.alpha = alphaProvider.getAlpha(progress)
     }
 
     private fun createAnimatedView(view: View): AnimatedView =
@@ -146,6 +158,13 @@ class UnfoldMoveFromCenterAnimator @JvmOverloads constructor(
         }
     }
 
+    /** Allows to set a custom alpha based on the progress. */
+    interface AlphaProvider {
+
+        /** Returns the alpha views should have at a given progress. */
+        fun getAlpha(progress: Float): Float
+    }
+
     /**
      * Interface that allows to use custom logic to get the center of the view
      */
@@ -172,4 +191,4 @@ class UnfoldMoveFromCenterAnimator @JvmOverloads constructor(
     )
 }
 
-private const val TRANSLATION_PERCENTAGE = 0.3f
+private const val TRANSLATION_PERCENTAGE = 0.08f

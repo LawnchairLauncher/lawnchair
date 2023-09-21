@@ -21,15 +21,25 @@ import android.animation.AnimatorSet;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.quickstep.interaction.TutorialController.TutorialType;
 
 import java.util.ArrayList;
 
 /** Shows the Overview gesture interactive tutorial. */
 public class OverviewGestureTutorialFragment extends TutorialFragment {
+
+    public OverviewGestureTutorialFragment() {
+        this(false);
+    }
+
+    public OverviewGestureTutorialFragment(boolean fromTutorialMenu) {
+        super(fromTutorialMenu);
+    }
 
     @Nullable
     @Override
@@ -63,7 +73,7 @@ public class OverviewGestureTutorialFragment extends TutorialFragment {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
-                controller.animateTaskViewToOverview();
+                controller.animateTaskViewToOverview(null);
             }
         });
 
@@ -72,7 +82,7 @@ public class OverviewGestureTutorialFragment extends TutorialFragment {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                controller.resetFakeTaskView(false);
+                controller.resetFakeTaskViewFromOverview();
             }
         });
         ArrayList<Animator> animators = new ArrayList<>();
@@ -110,5 +120,17 @@ public class OverviewGestureTutorialFragment extends TutorialFragment {
     public boolean onTouch(View view, MotionEvent motionEvent) {
         releaseFeedbackAnimation();
         return super.onTouch(view, motionEvent);
+    }
+
+    @Override
+    void logTutorialStepShown(@NonNull StatsLogManager statsLogManager) {
+        statsLogManager.logger().log(
+                StatsLogManager.LauncherEvent.LAUNCHER_GESTURE_TUTORIAL_OVERVIEW_STEP_SHOWN);
+    }
+
+    @Override
+    void logTutorialStepCompleted(@NonNull StatsLogManager statsLogManager) {
+        statsLogManager.logger().log(
+                StatsLogManager.LauncherEvent.LAUNCHER_GESTURE_TUTORIAL_OVERVIEW_STEP_COMPLETED);
     }
 }

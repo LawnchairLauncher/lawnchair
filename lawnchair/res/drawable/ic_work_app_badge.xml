@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2021 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/profile_badge_size"
+    android:height="@dimen/profile_badge_size"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <path
+        android:fillColor="#11000000"
+        android:pathData="M.5,12.25
+        A11.5,11.5 0 1,1 23.5,12.25
+        A11.5,11.5 0 1,1 .5,12.25" />
+
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M1,12
+        A11,11 0 1,1 23,12
+        A11,11 0 1,1 1,12" />
+
+    <group android:scaleX=".6" android:scaleY=".6" android:pivotX="12" android:pivotY="12">
+        <path
+            android:fillColor="#1A73E8"
+            android:pathData="M20,6h-4L16,4c0,-1.11 -0.89,-2 -2,-2h-4c-1.11,0 -2,0.89 -2,2v2L4,6c-1.11,0 -1.99,0.89 -1.99,2L2,19c0,1.11 0.89,2 2,2h16c1.11,0 2,-0.89 2,-2L22,8c0,-1.11 -0.89,-2 -2,-2zM14,6h-4L10,4h4v2z" />
+    </group>
+</vector>

@@ -91,11 +91,11 @@ fun GeneralPreferences() {
 
     PreferenceLayout(label = stringResource(id = R.string.general_label)) {
         PreferenceGroup {
-            SwitchPreference(
-                adapter = prefs.allowRotation.getAdapter(),
-                label = stringResource(id = R.string.home_screen_rotation_label),
-                description = stringResource(id = R.string.home_screen_rotaton_description),
-            )
+//            SwitchPreference(
+//                adapter = prefs.allowRotation.getAdapter(),
+//                label = stringResource(id = R.string.home_screen_rotation_label),
+//                description = stringResource(id = R.string.home_screen_rotaton_description),
+//            )
             val enableFontSelection = prefs2.enableFontSelection.asState().value
             if (enableFontSelection) {
                 FontPreference(

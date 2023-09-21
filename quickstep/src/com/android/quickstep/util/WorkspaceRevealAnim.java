@@ -15,7 +15,9 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY;
+import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_REVEAL_ANIM;
+import static com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
@@ -27,9 +29,10 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.util.FloatProperty;
 import android.view.View;
 
-import com.android.launcher3.BaseQuickstepLauncher;
+import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Workspace;
@@ -37,6 +40,7 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.states.StateAnimationConfig;
+import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.DynamicResource;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.plugins.ResourceProvider;
@@ -49,6 +53,11 @@ public class WorkspaceRevealAnim {
 
     // Should be used for animations running alongside this WorkspaceRevealAnim.
     public static final int DURATION_MS = 350;
+    private static final FloatProperty<Workspace<?>> WORKSPACE_SCALE_PROPERTY =
+            WORKSPACE_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_REVEAL_ANIM);
+
+    private static final FloatProperty<Hotseat> HOTSEAT_SCALE_PROPERTY =
+            HOTSEAT_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_REVEAL_ANIM);
 
     private final float mScaleStart;
     private final AnimatorSet mAnimators = new AnimatorSet();
@@ -59,12 +68,12 @@ public class WorkspaceRevealAnim {
         ResourceProvider rp = DynamicResource.provider(launcher);
         mScaleStart = rp.getFloat(R.dimen.swipe_up_scale_start);
 
-        Workspace workspace = launcher.getWorkspace();
+        Workspace<?> workspace = launcher.getWorkspace();
         workspace.setPivotToScaleWithSelf(launcher.getHotseat());
 
         // Add reveal animations.
-        addRevealAnimatorsForView(workspace);
-        addRevealAnimatorsForView(launcher.getHotseat());
+        addRevealAnimatorsForView(workspace, WORKSPACE_SCALE_PROPERTY);
+        addRevealAnimatorsForView(launcher.getHotseat(), HOTSEAT_SCALE_PROPERTY);
 
         // Add overview scrim animation.
         if (animateOverviewScrim) {
@@ -75,9 +84,9 @@ public class WorkspaceRevealAnim {
         }
 
         // Add depth controller animation.
-        if (launcher instanceof BaseQuickstepLauncher) {
+        if (launcher instanceof QuickstepLauncher) {
             PendingAnimation depthBuilder = new PendingAnimation(DURATION_MS);
-            DepthController depth = ((BaseQuickstepLauncher) launcher).getDepthController();
+            DepthController depth = ((QuickstepLauncher) launcher).getDepthController();
             depth.setStateWithAnimation(NORMAL, new StateAnimationConfig(), depthBuilder);
             mAnimators.play(depthBuilder.buildAnim());
         }
@@ -89,8 +98,8 @@ public class WorkspaceRevealAnim {
         mAnimators.setInterpolator(Interpolators.DECELERATED_EASE);
     }
 
-    private void addRevealAnimatorsForView(View v) {
-        ObjectAnimator scale = ObjectAnimator.ofFloat(v, SCALE_PROPERTY, mScaleStart, 1f);
+    private <T extends View>  void addRevealAnimatorsForView(T v, FloatProperty<T> scaleProperty) {
+        ObjectAnimator scale = ObjectAnimator.ofFloat(v, scaleProperty, mScaleStart, 1f);
         scale.setDuration(DURATION_MS);
         scale.setInterpolator(Interpolators.DECELERATED_EASE);
         mAnimators.play(scale);
@@ -103,7 +112,7 @@ public class WorkspaceRevealAnim {
         mAnimators.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                SCALE_PROPERTY.set(v, 1f);
+                scaleProperty.set(v, 1f);
                 v.setAlpha(1f);
             }
         });

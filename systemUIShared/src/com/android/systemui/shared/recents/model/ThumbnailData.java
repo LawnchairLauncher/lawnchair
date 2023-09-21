@@ -17,10 +17,9 @@
 package com.android.systemui.shared.recents.model;
 
 import static android.app.WindowConfiguration.ROTATION_UNDEFINED;
+import static android.app.WindowConfiguration.WINDOWING_MODE_UNDEFINED;
 import static android.content.res.Configuration.ORIENTATION_UNDEFINED;
 import static android.graphics.Bitmap.Config.ARGB_8888;
-
-import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_UNDEFINED;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -63,6 +62,12 @@ public class ThumbnailData {
         isTranslucent = false;
         windowingMode = WINDOWING_MODE_UNDEFINED;
         snapshotId = 0;
+    }
+
+    public void recycleBitmap() {
+        if (thumbnail != null) {
+            thumbnail.recycle();
+        }
     }
 
     private static Bitmap makeThumbnail(TaskSnapshot snapshot) {

@@ -20,7 +20,6 @@ import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentat
 
 import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
 
-import android.appwidget.AppWidgetHost;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
@@ -32,8 +31,8 @@ import android.os.Process;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
-import com.android.launcher3.widget.LauncherAppWidgetHost;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.widget.LauncherWidgetHolder;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetManagerHelper;
 
@@ -71,14 +70,19 @@ public class WidgetUtils {
             pendingInfo.minSpanY = item.minSpanY;
             Bundle options = pendingInfo.getDefaultSizeOptions(targetContext);
 
-            AppWidgetHost host = new LauncherAppWidgetHost(targetContext);
-            int widgetId = host.allocateAppWidgetId();
-            if (!new WidgetManagerHelper(targetContext)
-                    .bindAppWidgetIdIfAllowed(widgetId, info, options)) {
-                host.deleteAppWidgetId(widgetId);
-                throw new IllegalArgumentException("Unable to bind widget id");
+            LauncherWidgetHolder holder = LauncherWidgetHolder.newInstance(targetContext);
+            try {
+                int widgetId = holder.allocateAppWidgetId();
+                if (!new WidgetManagerHelper(targetContext)
+                        .bindAppWidgetIdIfAllowed(widgetId, info, options)) {
+                    holder.deleteAppWidgetId(widgetId);
+                    throw new IllegalArgumentException("Unable to bind widget id");
+                }
+                item.appWidgetId = widgetId;
+            } finally {
+                // Necessary to destroy the holder to free up possible activity context
+                holder.destroy();
             }
-            item.appWidgetId = widgetId;
         }
         return item;
     }

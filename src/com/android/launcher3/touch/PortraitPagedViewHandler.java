@@ -18,6 +18,7 @@ package com.android.launcher3.touch;
 
 import static android.view.Gravity.BOTTOM;
 import static android.view.Gravity.CENTER_HORIZONTAL;
+import static android.view.Gravity.END;
 import static android.view.Gravity.START;
 import static android.view.Gravity.TOP;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
@@ -50,10 +51,9 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.SplitConfigurationOptions;
+import com.android.launcher3.util.SplitConfigurationOptions.SplitBounds;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
 import com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
-import com.android.launcher3.util.SplitConfigurationOptions.StagedSplitBounds;
-import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +101,15 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     @Override
     public void adjustFloatingIconStartVelocity(PointF velocity) {
         //no-op
+    }
+
+    @Override
+    public void fixBoundsForHomeAnimStartRect(RectF outStartRect, DeviceProfile deviceProfile) {
+        if (outStartRect.left > deviceProfile.widthPx) {
+            outStartRect.offsetTo(0, outStartRect.top);
+        } else if (outStartRect.left < -deviceProfile.widthPx) {
+            outStartRect.offsetTo(0, outStartRect.top);
+        }
     }
 
     @Override
@@ -180,24 +189,6 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public int getSplitTaskViewDismissDirection(@StagePosition int stagePosition,
-            DeviceProfile dp) {
-        if (stagePosition == STAGE_POSITION_TOP_OR_LEFT) {
-            if (dp.isLandscape) {
-                // Left side
-                return SPLIT_TRANSLATE_PRIMARY_NEGATIVE;
-            } else {
-                // Top side
-                return SPLIT_TRANSLATE_SECONDARY_NEGATIVE;
-            }
-        } else if (stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT) {
-            // We don't have a bottom option, so should be right
-            return SPLIT_TRANSLATE_PRIMARY_POSITIVE;
-        }
-        throw new IllegalStateException("Invalid split stage position: " + stagePosition);
-    }
-
-    @Override
     public int getPrimaryScroll(View view) {
         return view.getScrollX();
     }
@@ -272,26 +263,28 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public float getTaskMenuX(float x, View thumbnailView, int overScroll,
-            DeviceProfile deviceProfile) {
+    public float getTaskMenuX(float x, View thumbnailView,
+            DeviceProfile deviceProfile, float taskInsetMargin) {
         if (deviceProfile.isLandscape) {
-            return x + overScroll
+            return x + taskInsetMargin
                     + (thumbnailView.getMeasuredWidth() - thumbnailView.getMeasuredHeight()) / 2f;
         } else {
-            return x + overScroll;
+            return x + taskInsetMargin;
         }
     }
 
     @Override
-    public float getTaskMenuY(float y, View thumbnailView, int overScroll) {
-        return y;
+    public float getTaskMenuY(float y, View thumbnailView, int stagePosition,
+            View taskMenuView, float taskInsetMargin) {
+        return y + taskInsetMargin;
     }
 
     @Override
-    public int getTaskMenuWidth(View view, DeviceProfile deviceProfile) {
-        return deviceProfile.isLandscape && !deviceProfile.overviewShowAsGrid ?
-                view.getMeasuredHeight() :
-                view.getMeasuredWidth();
+    public int getTaskMenuWidth(View thumbnailView, DeviceProfile deviceProfile,
+            @StagePosition int stagePosition) {
+        return deviceProfile.isLandscape && !deviceProfile.isTablet
+                ? thumbnailView.getMeasuredHeight()
+                : thumbnailView.getMeasuredWidth();
     }
 
     @Override
@@ -312,20 +305,8 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void setTaskMenuAroundTaskView(LinearLayout taskView, float margin) {
-        BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) taskView.getLayoutParams();
-        lp.topMargin += margin;
-        lp.leftMargin += margin;
-    }
-
-    @Override
-    public PointF getAdditionalInsetForTaskMenu(float margin) {
-        return new PointF(0, 0);
-    }
-
-    @Override
-    public Pair<Float, Float> setDwbLayoutParamsAndGetTranslations(int taskViewWidth,
-            int taskViewHeight, StagedSplitBounds splitBounds, DeviceProfile deviceProfile,
+    public Pair<Float, Float> getDwbLayoutTranslations(int taskViewWidth,
+            int taskViewHeight, SplitBounds splitBounds, DeviceProfile deviceProfile,
             View[] thumbnailViews, int desiredTaskId, View banner) {
         float translationX = 0;
         float translationY = 0;
@@ -352,16 +333,25 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         // Set translations
         if (deviceProfile.isLandscape) {
             if (desiredTaskId == splitBounds.rightBottomTaskId) {
-                translationX = ((taskViewWidth * splitBounds.leftTaskPercent)
-                                + (taskViewWidth * splitBounds.dividerWidthPercent));
+                float leftTopTaskPercent = splitBounds.appsStackedVertically
+                        ? splitBounds.topTaskPercent
+                        : splitBounds.leftTaskPercent;
+                float dividerThicknessPercent = splitBounds.appsStackedVertically
+                        ? splitBounds.dividerHeightPercent
+                        : splitBounds.dividerWidthPercent;
+                translationX = ((taskViewWidth * leftTopTaskPercent)
+                        + (taskViewWidth * dividerThicknessPercent));
             }
         } else {
             if (desiredTaskId == splitBounds.leftTopTaskId) {
                 FrameLayout.LayoutParams snapshotParams =
                         (FrameLayout.LayoutParams) thumbnailViews[0]
                                 .getLayoutParams();
+                float bottomRightTaskPlusDividerPercent = splitBounds.appsStackedVertically
+                        ? (1f - splitBounds.topTaskPercent)
+                        : (1f - splitBounds.leftTaskPercent);
                 translationY = -((taskViewHeight - snapshotParams.topMargin)
-                        * (1f - splitBounds.topTaskPercent));
+                        * bottomRightTaskPlusDividerPercent);
             }
         }
         return new Pair<>(translationX, translationY);
@@ -414,59 +404,142 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public List<SplitPositionOption> getSplitPositionOptions(DeviceProfile dp) {
-        List<SplitPositionOption> options = new ArrayList<>(1);
-        // Add both left and right options if we're in tablet mode
-        if (dp.isTablet && dp.isLandscape) {
+        if (dp.isTablet) {
+            return Utilities.getSplitPositionOptions(dp);
+        }
+
+        List<SplitPositionOption> options = new ArrayList<>();
+        if (dp.isSeascape()) {
             options.add(new SplitPositionOption(
-                    R.drawable.ic_split_right, R.string.split_screen_position_right,
+                    R.drawable.ic_split_horizontal, R.string.recent_task_option_split_screen,
                     STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_MAIN));
+        } else if (dp.isLandscape) {
             options.add(new SplitPositionOption(
-                    R.drawable.ic_split_left, R.string.split_screen_position_left,
+                    R.drawable.ic_split_horizontal, R.string.recent_task_option_split_screen,
                     STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
         } else {
-            if (dp.isSeascape()) {
-                // Add left/right options
-                options.add(new SplitPositionOption(
-                        R.drawable.ic_split_right, R.string.split_screen_position_right,
-                        STAGE_POSITION_BOTTOM_OR_RIGHT, STAGE_TYPE_MAIN));
-            } else if (dp.isLandscape) {
-                options.add(new SplitPositionOption(
-                        R.drawable.ic_split_left, R.string.split_screen_position_left,
-                        STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
-            } else {
-                // Only add top option
-                options.add(new SplitPositionOption(
-                        R.drawable.ic_split_top, R.string.split_screen_position_top,
-                        STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
-            }
+            // Only add top option
+            options.add(new SplitPositionOption(
+                    R.drawable.ic_split_vertical, R.string.recent_task_option_split_screen,
+                    STAGE_POSITION_TOP_OR_LEFT, STAGE_TYPE_MAIN));
         }
         return options;
     }
 
     @Override
-    public void getInitialSplitPlaceholderBounds(int placeholderHeight, DeviceProfile dp,
-            @StagePosition int stagePosition, Rect out) {
-        int width = dp.widthPx;
-        out.set(0, 0, width, placeholderHeight);
+    public void getInitialSplitPlaceholderBounds(int placeholderHeight, int placeholderInset,
+            DeviceProfile dp, @StagePosition int stagePosition, Rect out) {
+        int screenWidth = dp.widthPx;
+        int screenHeight = dp.heightPx;
+        boolean pinToRight = stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT;
+        int insetSizeAdjustment = getPlaceholderSizeAdjustment(dp, pinToRight);
+
+        out.set(0, 0, screenWidth, placeholderHeight + insetSizeAdjustment);
         if (!dp.isLandscape) {
             // portrait, phone or tablet - spans width of screen, nothing else to do
+            out.inset(placeholderInset, 0);
+
+            // Adjust the top to account for content off screen. This will help to animate the view
+            // in with rounded corners.
+            int totalHeight = (int) (1.0f * screenHeight / 2 * (screenWidth - 2 * placeholderInset)
+                    / screenWidth);
+            out.top -= (totalHeight - placeholderHeight);
             return;
         }
 
         // Now we rotate the portrait rect depending on what side we want pinned
-        boolean pinToRight = stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT;
 
-        int screenHeight = dp.heightPx;
-        float postRotateScale = (float) screenHeight / width;
+        float postRotateScale = (float) screenHeight / screenWidth;
         mTmpMatrix.reset();
         mTmpMatrix.postRotate(pinToRight ? 90 : 270);
-        mTmpMatrix.postTranslate(pinToRight ? width : 0, pinToRight ? 0 : width);
+        mTmpMatrix.postTranslate(pinToRight ? screenWidth : 0, pinToRight ? 0 : screenWidth);
         // The placeholder height stays constant after rotation, so we don't change width scale
         mTmpMatrix.postScale(1, postRotateScale);
 
         mTmpRectF.set(out);
         mTmpMatrix.mapRect(mTmpRectF);
+        mTmpRectF.inset(0, placeholderInset);
         mTmpRectF.roundOut(out);
+
+        // Adjust the top to account for content off screen. This will help to animate the view in
+        // with rounded corners.
+        int totalWidth = (int) (1.0f * screenWidth / 2 * (screenHeight - 2 * placeholderInset)
+                / screenHeight);
+        int width = out.width();
+        if (pinToRight) {
+            out.right += totalWidth - width;
+        } else {
+            out.left -= totalWidth - width;
+        }
+    }
+
+    @Override
+    public void updateSplitIconParams(View out, float onScreenRectCenterX,
+            float onScreenRectCenterY, float fullscreenScaleX, float fullscreenScaleY,
+            int drawableWidth, int drawableHeight, DeviceProfile dp,
+            @StagePosition int stagePosition) {
+        boolean pinToRight = stagePosition == STAGE_POSITION_BOTTOM_OR_RIGHT;
+        float insetAdjustment = getPlaceholderSizeAdjustment(dp, pinToRight) / 2f;
+        if (!dp.isLandscape) {
+            out.setX(onScreenRectCenterX / fullscreenScaleX
+                    - 1.0f * drawableWidth / 2);
+            out.setY((onScreenRectCenterY + insetAdjustment) / fullscreenScaleY
+                    - 1.0f * drawableHeight / 2);
+        } else {
+            if (pinToRight) {
+                out.setX((onScreenRectCenterX - insetAdjustment) / fullscreenScaleX
+                        - 1.0f * drawableWidth / 2);
+            } else {
+                out.setX((onScreenRectCenterX + insetAdjustment) / fullscreenScaleX
+                        - 1.0f * drawableWidth / 2);
+            }
+            out.setY(onScreenRectCenterY / fullscreenScaleY
+                    - 1.0f * drawableHeight / 2);
+        }
+    }
+
+    /**
+     * The split placeholder comes with a default inset to buffer the icon from the top of the
+     * screen. But if the device already has a large inset (from cutouts etc), use that instead.
+     */
+    private int getPlaceholderSizeAdjustment(DeviceProfile dp, boolean pinToRight) {
+        int insetThickness;
+        if (!dp.isLandscape) {
+            insetThickness = dp.getInsets().top;
+        } else {
+            insetThickness = pinToRight ? dp.getInsets().right : dp.getInsets().left;
+        }
+        return Math.max(insetThickness - dp.splitPlaceholderInset, 0);
+    }
+
+    @Override
+    public void setSplitInstructionsParams(View out, DeviceProfile dp, int splitInstructionsHeight,
+            int splitInstructionsWidth) {
+        out.setPivotX(0);
+        out.setPivotY(splitInstructionsHeight);
+        out.setRotation(getDegreesRotated());
+        int distanceToEdge;
+        if (dp.isPhone) {
+            if (dp.isLandscape) {
+                distanceToEdge = out.getResources().getDimensionPixelSize(
+                        R.dimen.split_instructions_bottom_margin_phone_landscape);
+            } else {
+                distanceToEdge = out.getResources().getDimensionPixelSize(
+                        R.dimen.split_instructions_bottom_margin_phone_portrait);
+            }
+        } else {
+            distanceToEdge = dp.getOverviewActionsClaimedSpaceBelow();
+        }
+
+        // Center the view in case of unbalanced insets on left or right of screen
+        int insetCorrectionX = (dp.getInsets().right - dp.getInsets().left) / 2;
+        // Adjust for any insets on the bottom edge
+        int insetCorrectionY = dp.getInsets().bottom;
+        out.setTranslationX(insetCorrectionX);
+        out.setTranslationY(-distanceToEdge + insetCorrectionY);
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) out.getLayoutParams();
+        lp.gravity = CENTER_HORIZONTAL | BOTTOM;
+        out.setLayoutParams(lp);
     }
 
     @Override
@@ -501,34 +574,45 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void setSplitTaskSwipeRect(DeviceProfile dp, Rect outRect,
-            StagedSplitBounds splitInfo, int desiredStagePosition) {
-        boolean isLandscape = dp.isLandscape;
+            SplitBounds splitInfo, int desiredStagePosition) {
+        float topLeftTaskPercent = splitInfo.appsStackedVertically
+                ? splitInfo.topTaskPercent
+                : splitInfo.leftTaskPercent;
+        float dividerBarPercent = splitInfo.appsStackedVertically
+                ? splitInfo.dividerHeightPercent
+                : splitInfo.dividerWidthPercent;
+
+        float scale = (float) outRect.height() / dp.availableHeightPx;
+        float topTaskHeight = dp.availableHeightPx * topLeftTaskPercent;
+        float scaledTopTaskHeight = topTaskHeight * scale;
+        float dividerHeight = dp.availableHeightPx * dividerBarPercent;
+        float scaledDividerHeight = dividerHeight * scale;
+
         if (desiredStagePosition == SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT) {
-            if (isLandscape) {
-                outRect.right = outRect.left + (int) (outRect.width() * splitInfo.leftTaskPercent);
+            if (splitInfo.appsStackedVertically) {
+                outRect.bottom = Math.round(outRect.top + scaledTopTaskHeight);
             } else {
-                outRect.bottom = outRect.top + (int) (outRect.height() * splitInfo.topTaskPercent);
+                outRect.right = outRect.left + Math.round(outRect.width() * topLeftTaskPercent);
             }
         } else {
-            if (isLandscape) {
-                outRect.left += (int) (outRect.width() *
-                        (splitInfo.leftTaskPercent + splitInfo.dividerWidthPercent));
+            if (splitInfo.appsStackedVertically) {
+                outRect.top += Math.round(scaledTopTaskHeight + scaledDividerHeight);
             } else {
-                outRect.top += (int) (outRect.height() *
-                        (splitInfo.topTaskPercent + splitInfo.dividerHeightPercent));
+                outRect.left += Math.round(outRect.width()
+                        * (topLeftTaskPercent + dividerBarPercent));
             }
         }
     }
 
     @Override
     public void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
-            int parentWidth, int parentHeight,
-            StagedSplitBounds splitBoundsConfig, DeviceProfile dp) {
+            int parentWidth, int parentHeight, SplitBounds splitBoundsConfig,
+            DeviceProfile dp, boolean isRtl) {
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
-        int dividerBar = splitBoundsConfig.appsStackedVertically
-                ? (int) (splitBoundsConfig.dividerHeightPercent * parentHeight)
-                : (int) (splitBoundsConfig.dividerWidthPercent * parentWidth);
+        int dividerBar = Math.round(splitBoundsConfig.appsStackedVertically
+                ? splitBoundsConfig.dividerHeightPercent * dp.availableHeightPx
+                : splitBoundsConfig.dividerWidthPercent * parentWidth);
         int primarySnapshotHeight;
         int primarySnapshotWidth;
         int secondarySnapshotHeight;
@@ -537,22 +621,47 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                 splitBoundsConfig.topTaskPercent : splitBoundsConfig.leftTaskPercent;
         if (dp.isLandscape) {
             primarySnapshotHeight = totalThumbnailHeight;
-            primarySnapshotWidth = (int) (parentWidth * taskPercent);
+            primarySnapshotWidth = Math.round(parentWidth * taskPercent);
 
             secondarySnapshotHeight = totalThumbnailHeight;
             secondarySnapshotWidth = parentWidth - primarySnapshotWidth - dividerBar;
             int translationX = primarySnapshotWidth + dividerBar;
-            secondarySnapshot.setTranslationX(translationX);
+            if (isRtl) {
+                primarySnapshot.setTranslationX(-translationX);
+                secondarySnapshot.setTranslationX(0);
+            } else {
+                secondarySnapshot.setTranslationX(translationX);
+                primarySnapshot.setTranslationX(0);
+            }
             secondarySnapshot.setTranslationY(spaceAboveSnapshot);
+
+            // Reset unused translations
+            primarySnapshot.setTranslationY(0);
         } else {
+            float scale = (float) totalThumbnailHeight / dp.availableHeightPx;
+            float topTaskHeight = dp.availableHeightPx * taskPercent;
+            float finalDividerHeight = dividerBar * scale;
+            float scaledTopTaskHeight = topTaskHeight * scale;
             primarySnapshotWidth = parentWidth;
-            primarySnapshotHeight = (int) (totalThumbnailHeight * taskPercent);
+            primarySnapshotHeight = Math.round(scaledTopTaskHeight);
 
             secondarySnapshotWidth = parentWidth;
-            secondarySnapshotHeight = totalThumbnailHeight - primarySnapshotHeight - dividerBar;
-            int translationY = primarySnapshotHeight + spaceAboveSnapshot + dividerBar;
+            secondarySnapshotHeight = Math.round(totalThumbnailHeight - primarySnapshotHeight
+                    - finalDividerHeight);
+            float translationY = primarySnapshotHeight + spaceAboveSnapshot + finalDividerHeight;
             secondarySnapshot.setTranslationY(translationY);
+
+            FrameLayout.LayoutParams primaryParams =
+                    (FrameLayout.LayoutParams) primarySnapshot.getLayoutParams();
+            FrameLayout.LayoutParams secondaryParams =
+                    (FrameLayout.LayoutParams) secondarySnapshot.getLayoutParams();
+            secondaryParams.topMargin = 0;
+            primaryParams.topMargin = spaceAboveSnapshot;
+
+            // Reset unused translations
+            primarySnapshot.setTranslationY(0);
             secondarySnapshot.setTranslationX(0);
+            primarySnapshot.setTranslationX(0);
         }
         primarySnapshot.measure(
                 View.MeasureSpec.makeMeasureSpec(primarySnapshotWidth, View.MeasureSpec.EXACTLY),
@@ -561,46 +670,90 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
                 View.MeasureSpec.makeMeasureSpec(secondarySnapshotWidth, View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(secondarySnapshotHeight,
                         View.MeasureSpec.EXACTLY));
+        primarySnapshot.setScaleX(1);
+        secondarySnapshot.setScaleX(1);
+        primarySnapshot.setScaleY(1);
+        secondarySnapshot.setScaleY(1);
     }
 
     @Override
-    public void setIconAndSnapshotParams(View iconView, int taskIconMargin, int taskIconHeight,
-            FrameLayout.LayoutParams snapshotParams, boolean isRtl) {
-        FrameLayout.LayoutParams iconParams =
-                (FrameLayout.LayoutParams) iconView.getLayoutParams();
+    public void setTaskIconParams(FrameLayout.LayoutParams iconParams, int taskIconMargin,
+            int taskIconHeight, int thumbnailTopMargin, boolean isRtl) {
         iconParams.gravity = TOP | CENTER_HORIZONTAL;
+        // Reset margins, since they may have been set on rotation
         iconParams.leftMargin = iconParams.rightMargin = 0;
-        iconParams.topMargin = taskIconMargin;
+        iconParams.topMargin = iconParams.bottomMargin = 0;
     }
 
     @Override
     public void setSplitIconParams(View primaryIconView, View secondaryIconView,
             int taskIconHeight, int primarySnapshotWidth, int primarySnapshotHeight,
-            boolean isRtl, DeviceProfile deviceProfile, StagedSplitBounds splitConfig) {
+            int groupedTaskViewHeight, int groupedTaskViewWidth, boolean isRtl,
+            DeviceProfile deviceProfile, SplitBounds splitConfig) {
         FrameLayout.LayoutParams primaryIconParams =
                 (FrameLayout.LayoutParams) primaryIconView.getLayoutParams();
         FrameLayout.LayoutParams secondaryIconParams =
                 new FrameLayout.LayoutParams(primaryIconParams);
-        int dividerBar = (splitConfig.appsStackedVertically ?
-                splitConfig.visualDividerBounds.height() :
-                splitConfig.visualDividerBounds.width());
 
         if (deviceProfile.isLandscape) {
-            primaryIconParams.gravity = TOP | START;
-            primaryIconView.setTranslationX(
-                    primarySnapshotWidth - primaryIconView.getMeasuredWidth());
-            primaryIconView.setTranslationY(0);
-            secondaryIconParams.gravity = TOP | START;
-            secondaryIconView.setTranslationX(primarySnapshotWidth + dividerBar);
+            // We calculate the "midpoint" of the thumbnail area, and place the icons there.
+            // This is the place where the thumbnail area splits by default, in a near-50/50 split.
+            // It is usually not exactly 50/50, due to insets/screen cutouts.
+            int fullscreenInsetThickness = deviceProfile.isSeascape()
+                    ? deviceProfile.getInsets().right
+                    : deviceProfile.getInsets().left;
+            int fullscreenMidpointFromBottom = ((deviceProfile.widthPx
+                    - fullscreenInsetThickness) / 2);
+            float midpointFromEndPct = (float) fullscreenMidpointFromBottom
+                    / deviceProfile.widthPx;
+            float insetPct = (float) fullscreenInsetThickness / deviceProfile.widthPx;
+            int spaceAboveSnapshots = 0;
+            int overviewThumbnailAreaThickness = groupedTaskViewWidth - spaceAboveSnapshots;
+            int bottomToMidpointOffset = (int) (overviewThumbnailAreaThickness
+                    * midpointFromEndPct);
+            int insetOffset = (int) (overviewThumbnailAreaThickness * insetPct);
+
+            if (deviceProfile.isSeascape()) {
+                primaryIconParams.gravity = TOP | (isRtl ? END : START);
+                secondaryIconParams.gravity = TOP | (isRtl ? END : START);
+                if (splitConfig.initiatedFromSeascape) {
+                    // if the split was initiated from seascape,
+                    // the task on the right (secondary) is slightly larger
+                    primaryIconView.setTranslationX(bottomToMidpointOffset - taskIconHeight);
+                    secondaryIconView.setTranslationX(bottomToMidpointOffset);
+                } else {
+                    // if not,
+                    // the task on the left (primary) is slightly larger
+                    primaryIconView.setTranslationX(bottomToMidpointOffset + insetOffset
+                            - taskIconHeight);
+                    secondaryIconView.setTranslationX(bottomToMidpointOffset + insetOffset);
+                }
+            } else {
+                primaryIconParams.gravity = TOP | (isRtl ? START : END);
+                secondaryIconParams.gravity = TOP | (isRtl ? START : END);
+                if (!splitConfig.initiatedFromSeascape) {
+                    // if the split was initiated from landscape,
+                    // the task on the left (primary) is slightly larger
+                    primaryIconView.setTranslationX(-bottomToMidpointOffset);
+                    secondaryIconView.setTranslationX(-bottomToMidpointOffset + taskIconHeight);
+                } else {
+                    // if not,
+                    // the task on the right (secondary) is slightly larger
+                    primaryIconView.setTranslationX(-bottomToMidpointOffset - insetOffset);
+                    secondaryIconView.setTranslationX(-bottomToMidpointOffset - insetOffset
+                            + taskIconHeight);
+                }
+            }
         } else {
             primaryIconParams.gravity = TOP | CENTER_HORIZONTAL;
-            primaryIconView.setTranslationX(-(primaryIconView.getMeasuredWidth()) / 2f);
-            primaryIconView.setTranslationY(0);
-
+            // shifts icon half a width left (height is used here since icons are square)
+            primaryIconView.setTranslationX(-(taskIconHeight / 2f));
             secondaryIconParams.gravity = TOP | CENTER_HORIZONTAL;
-            secondaryIconView.setTranslationX(secondaryIconView.getMeasuredWidth() / 2f);
+            secondaryIconView.setTranslationX(taskIconHeight / 2f);
         }
+        primaryIconView.setTranslationY(0);
         secondaryIconView.setTranslationY(0);
+
         primaryIconView.setLayoutParams(primaryIconParams);
         secondaryIconView.setLayoutParams(secondaryIconParams);
     }
@@ -625,5 +778,37 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
         } else {
             return new Pair<>(secondary, primary);
         }
+    }
+
+    @Override
+    public float getFloatingTaskOffscreenTranslationTarget(View floatingTask, RectF onScreenRect,
+            @StagePosition int stagePosition, DeviceProfile dp) {
+        if (dp.isLandscape) {
+            float currentTranslationX = floatingTask.getTranslationX();
+            return stagePosition == STAGE_POSITION_TOP_OR_LEFT
+                    ? currentTranslationX - onScreenRect.width()
+                    : currentTranslationX + onScreenRect.width();
+        } else {
+            float currentTranslationY = floatingTask.getTranslationY();
+            return currentTranslationY - onScreenRect.height();
+        }
+    }
+
+    @Override
+    public void setFloatingTaskPrimaryTranslation(View floatingTask, float translation,
+            DeviceProfile dp) {
+        if (dp.isLandscape) {
+            floatingTask.setTranslationX(translation);
+        } else {
+            floatingTask.setTranslationY(translation);
+        }
+
+    }
+
+    @Override
+    public Float getFloatingTaskPrimaryTranslation(View floatingTask, DeviceProfile dp) {
+        return dp.isLandscape
+                ? floatingTask.getTranslationX()
+                : floatingTask.getTranslationY();
     }
 }

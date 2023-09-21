@@ -38,8 +38,8 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.util.TouchController;
+import com.android.launcher3.util.VibratorWrapper;
 import com.android.quickstep.SystemUiProxy;
-import com.android.quickstep.util.VibratorWrapper;
 
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;

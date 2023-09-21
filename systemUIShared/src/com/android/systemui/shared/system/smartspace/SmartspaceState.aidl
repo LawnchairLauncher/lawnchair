@@ -16,6 +16,4 @@
 
 package com.android.systemui.shared.system.smartspace;
 
-import com.android.systemui.shared.system.smartspace.SmartspaceState;
-
 parcelable SmartspaceState;

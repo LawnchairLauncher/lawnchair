@@ -15,6 +15,11 @@
  */
 package com.android.launcher3.widget.util;
 
+import android.content.Context;
+
+import androidx.annotation.Px;
+
+import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.model.WidgetItem;
 
 import java.util.ArrayList;
@@ -49,34 +54,41 @@ public final class WidgetsTableUtils {
      * Groups {@code widgetItems} items into a 2D array which matches their appearance in a UI
      * table. This takes liberty to rearrange widgets to make the table visually appealing.
      */
-    public static List<ArrayList<WidgetItem>> groupWidgetItemsIntoTableWithReordering(
-            List<WidgetItem> widgetItems, final int maxSpansPerRow) {
+    public static List<ArrayList<WidgetItem>> groupWidgetItemsUsingRowPxWithReordering(
+            List<WidgetItem> widgetItems, Context context, final DeviceProfile dp,
+            final @Px int rowPx, final @Px int cellPadding) {
         List<WidgetItem> sortedWidgetItems = widgetItems.stream().sorted(WIDGET_SHORTCUT_COMPARATOR)
                 .collect(Collectors.toList());
-        return groupWidgetItemsIntoTableWithoutReordering(sortedWidgetItems, maxSpansPerRow);
+        return groupWidgetItemsUsingRowPxWithoutReordering(sortedWidgetItems, context, dp, rowPx,
+                cellPadding);
     }
 
     /**
      * Groups {@code widgetItems} into a 2D array which matches their appearance in a UI table while
-     * maintaining their order.
+     * maintaining their order. This function is a variant of
+     * {@code groupWidgetItemsIntoTableWithoutReordering} in that this uses widget pixels for
+     * calculation.
      *
      * <p>Grouping:
      * 1. Widgets and shortcuts never group together in the same row.
-     * 2. The ordered widgets are grouped together in the same row until their total horizontal
-     *    spans exceed the {@code maxSpansPerRow} - 1.
-     * 3. The order shortcuts are grouped together in the same row until their total horizontal
-     *    spans exceed the {@code maxSpansPerRow} - 1.
-     * 4. If there is only one widget in a row, its width may exceed the {@code maxSpansPerRow}.
+     * 2. The ordered widgets are grouped together in the same row until their individual occupying
+     *    pixels exceed the total allowed pixels for the cell.
+     * 3. The ordered shortcuts are grouped together in the same row until their individual
+     *    occupying pixels exceed the total allowed pixels for the cell.
+     * 4. If there is only one widget in a row, its width may exceed the {@code rowPx}.
      *
-     * <p>Let's say the {@code maxSpansPerRow} is set to 6. Widgets can be grouped in the same row
-     * if their total horizontal spans added don't exceed 5.
-     * Example 1: Row 1: 2x2, 2x3, 1x1. Total horizontal spans is 5. This is okay.
-     * Example 2: Row 1: 2x2, 4x3, 1x1. the total horizontal spans is 7. This is wrong. 4x3 and 1x1
-     * should be moved to a new row.
-     * Example 3: Row 1: 6x4. This is okay because this is the only item in the row.
+     * <p>Let's say the {@code rowPx} is set to 600 and we have 5 widgets. Widgets can be grouped
+     * in the same row if each of their individual occupying pixels does not exceed
+     * {@code rowPx} / 5 - 2 * {@code cellPadding}.
+     * Example 1: Row 1: 200x200, 200x300, 100x100. Average horizontal pixels is 200 and no widgets
+     * exceed that width. This is okay.
+     * Example 2: Row 1: 200x200, 400x300, 100x100. Average horizontal pixels is 200 and one widget
+     * exceed that width. This is not allowed.
+     * Example 3: Row 1: 700x400. This is okay because this is the only item in the row.
      */
-    public static List<ArrayList<WidgetItem>> groupWidgetItemsIntoTableWithoutReordering(
-            List<WidgetItem> widgetItems, final int maxSpansPerRow) {
+    public static List<ArrayList<WidgetItem>> groupWidgetItemsUsingRowPxWithoutReordering(
+            List<WidgetItem> widgetItems, Context context, final DeviceProfile dp,
+            final @Px int rowPx, final @Px int cellPadding) {
 
         List<ArrayList<WidgetItem>> widgetItemsTable = new ArrayList<>();
         ArrayList<WidgetItem> widgetItemsAtRow = null;
@@ -86,23 +98,28 @@ public final class WidgetsTableUtils {
                 widgetItemsTable.add(widgetItemsAtRow);
             }
             int numOfWidgetItems = widgetItemsAtRow.size();
-            int totalHorizontalSpan = widgetItemsAtRow.stream().map(item -> item.spanX)
-                    .reduce(/* default= */ 0, Integer::sum);
-            int totalHorizontalSpanAfterAddingWidget = widgetItem.spanX + totalHorizontalSpan;
+            @Px int individualSpan = (rowPx / (numOfWidgetItems + 1)) - (2 * cellPadding);
             if (numOfWidgetItems == 0) {
                 widgetItemsAtRow.add(widgetItem);
             } else if (
-                    // The max spans per row is reduced by 1 to ensure we don't pack too many
-                    // 1xn widgets on the same row, which may reduce the space for rendering a
-                    // widget's description.
-                    totalHorizontalSpanAfterAddingWidget <= maxSpansPerRow - 1
-                            && widgetItem.hasSameType(widgetItemsAtRow.get(numOfWidgetItems - 1))) {
+                    // Since the size of the widget cell is determined by dividing the maximum span
+                    // pixels evenly, making sure that each widget would have enough span pixels to
+                    // show their contents.
+                    widgetItem.hasSameType(widgetItemsAtRow.get(numOfWidgetItems - 1))
+                    && widgetItemsAtRow.stream().allMatch(
+                            item -> WidgetSizes.getWidgetItemSizePx(context, dp, item)
+                                    .getWidth() <= individualSpan)
+                    && WidgetSizes.getWidgetItemSizePx(context, dp, widgetItem)
+                            .getWidth() <= individualSpan) {
                 // Group items in the same row if
                 // 1. they are with the same type, i.e. a row can only have widgets or shortcuts but
                 //    never a mix of both.
-                // 2. the total number of horizontal spans are smaller than or equal to
-                //    MAX_SPAN_PER_ROW. If an item has a horizontal span > MAX_SPAN_PER_ROW, we just
-                //    place it in its own row regardless of the horizontal span limit.
+                // 2. Each widget will have horizontal cell span pixels that is at least as large as
+                //    it is required to fit in the horizontal content, unless the widget horizontal
+                //    span pixels is larger than the maximum allowed.
+                //    If an item has horizontal span pixels larger than the maximum allowed pixels
+                //    per row, we just place it in its own row regardless of the horizontal span
+                //    limit.
                 widgetItemsAtRow.add(widgetItem);
             } else {
                 widgetItemsAtRow = new ArrayList<>();

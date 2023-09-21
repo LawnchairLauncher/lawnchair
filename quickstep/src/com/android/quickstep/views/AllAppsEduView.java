@@ -112,11 +112,6 @@ public class AllAppsEduView extends AbstractFloatingView {
     }
 
     @Override
-    public boolean onBackPressed() {
-        return true;
-    }
-
-    @Override
     public boolean canInterceptEventsInSystemGestureRegion() {
         return true;
     }

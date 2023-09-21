@@ -22,7 +22,7 @@
         <item>
             <shape android:shape="rectangle">
                 <corners android:radius="16dp"/>
-                <solid android:color="?androidprv:attr/colorAccentPrimary"/>
+                <solid android:color="?attr/colorAccentPrimary"/>
             </shape>
         </item>
     </ripple>

@@ -27,7 +27,6 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 
 import com.android.launcher3.CellLayout;
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.dragndrop.DragController;
@@ -36,7 +35,9 @@ import com.android.launcher3.folder.Folder;
 import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.testing.TestLogging;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
+import com.android.launcher3.views.BubbleTextHolder;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 /**
  * Class to handle long-clicks on workspace items and start drag as a result.
@@ -50,7 +51,11 @@ public class ItemLongClickListener {
             ItemLongClickListener::onAllAppsItemLongClick;
 
     private static boolean onWorkspaceItemLongClick(View v) {
-        TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onWorkspaceItemLongClick");
+        if (v instanceof LauncherAppWidgetHostView) {
+            TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Widgets.onLongClick");
+        } else {
+            TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onWorkspaceItemLongClick");
+        }
         Launcher launcher = Launcher.getLauncher(v.getContext());
         if (!canStartDrag(launcher)) return false;
         if (!launcher.isInState(NORMAL) && !launcher.isInState(OVERVIEW)) return false;
@@ -75,13 +80,17 @@ public class ItemLongClickListener {
             }
         }
 
-        CellLayout.CellInfo longClickCellInfo = new CellLayout.CellInfo(v, info);
+        CellLayout.CellInfo longClickCellInfo = new CellLayout.CellInfo(v, info,
+                launcher.getCellPosMapper().mapModelToPresenter(info));
         launcher.getWorkspace().startDrag(longClickCellInfo, dragOptions);
     }
 
-    private static boolean onAllAppsItemLongClick(View v) {
+    private static boolean onAllAppsItemLongClick(View view) {
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onAllAppsItemLongClick");
-        v.cancelLongPress();
+        view.cancelLongPress();
+        View v = (view instanceof BubbleTextHolder)
+                ? ((BubbleTextHolder) view).getBubbleText()
+                : view;
         Launcher launcher = Launcher.getLauncher(v.getContext());
         if (!canStartDrag(launcher)) return false;
         // When we have exited all apps or are in transition, disregard long clicks
@@ -109,10 +118,7 @@ public class ItemLongClickListener {
             }
         });
 
-        DeviceProfile grid = launcher.getDeviceProfile();
-        DragOptions options = new DragOptions();
-        options.intrinsicIconScaleFactor = (float) grid.allAppsIconSizePx / grid.iconSizePx;
-        launcher.getWorkspace().beginDragShared(v, launcher.getAppsView(), options);
+        launcher.getWorkspace().beginDragShared(v, launcher.getAppsView(), new DragOptions());
         return false;
     }
 

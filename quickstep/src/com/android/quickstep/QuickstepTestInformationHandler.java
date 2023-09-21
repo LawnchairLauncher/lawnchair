@@ -1,16 +1,30 @@
 package com.android.quickstep;
 
+import static com.android.launcher3.testing.shared.TestProtocol.NPE_TRANSIENT_TASKBAR;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.Log;
 
-import com.android.launcher3.LauncherState;
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.R;
+import com.android.launcher3.taskbar.TaskbarActivityContext;
 import com.android.launcher3.testing.TestInformationHandler;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.PagedOrientationHandler;
-import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
+import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.util.LayoutUtils;
+import com.android.quickstep.util.TISBindHelper;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class QuickstepTestInformationHandler extends TestInformationHandler {
 
@@ -21,18 +35,9 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
     }
 
     @Override
-    public Bundle call(String method, String arg) {
+    public Bundle call(String method, String arg, @Nullable Bundle extras) {
         final Bundle response = new Bundle();
         switch (method) {
-            case TestProtocol.REQUEST_ALL_APPS_TO_OVERVIEW_SWIPE_HEIGHT: {
-                return getLauncherUIProperty(Bundle::putInt, l -> {
-                    final float progress = LauncherState.OVERVIEW.getVerticalProgress(l)
-                            - LauncherState.ALL_APPS.getVerticalProgress(l);
-                    final float distance = l.getAllAppsController().getShiftRange() * progress;
-                    return (int) distance;
-                });
-            }
-
             case TestProtocol.REQUEST_HOME_TO_OVERVIEW_SWIPE_HEIGHT: {
                 final float swipeHeight =
                         LayoutUtils.getDefaultSwipeHeight(mContext, mDeviceProfile);
@@ -48,18 +53,13 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 return response;
             }
 
-            case TestProtocol.REQUEST_HOTSEAT_TOP: {
-                return getLauncherUIProperty(
-                        Bundle::putInt, PortraitStatesTouchController::getHotseatTop);
-            }
-
             case TestProtocol.REQUEST_GET_FOCUSED_TASK_HEIGHT_FOR_TABLET: {
                 if (!mDeviceProfile.isTablet) {
                     return null;
                 }
                 Rect focusedTaskRect = new Rect();
                 LauncherActivityInterface.INSTANCE.calculateTaskSize(mContext, mDeviceProfile,
-                        focusedTaskRect);
+                        focusedTaskRect, PagedOrientationHandler.PORTRAIT);
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD, focusedTaskRect.height());
                 return response;
             }
@@ -74,9 +74,79 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 response.putParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD, gridTaskRect);
                 return response;
             }
+
+            case TestProtocol.REQUEST_GET_OVERVIEW_PAGE_SPACING: {
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        mDeviceProfile.overviewPageSpacing);
+                return response;
+            }
+
+            case TestProtocol.REQUEST_HAS_TIS: {
+                response.putBoolean(
+                        TestProtocol.REQUEST_HAS_TIS, true);
+                return response;
+            }
+
+            case TestProtocol.REQUEST_ENABLE_MANUAL_TASKBAR_STASHING:
+                runOnTISBinder(tisBinder -> {
+                    enableManualTaskbarStashing(tisBinder, true);
+                });
+                return response;
+
+            case TestProtocol.REQUEST_DISABLE_MANUAL_TASKBAR_STASHING:
+                runOnTISBinder(tisBinder -> {
+                    enableManualTaskbarStashing(tisBinder, false);
+                });
+                return response;
+
+            case TestProtocol.REQUEST_UNSTASH_TASKBAR_IF_STASHED:
+                runOnTISBinder(tisBinder -> {
+                    enableManualTaskbarStashing(tisBinder, true);
+
+                    // Allow null-pointer to catch illegal states.
+                    tisBinder.getTaskbarManager().getCurrentActivityContext()
+                            .unstashTaskbarIfStashed();
+
+                    enableManualTaskbarStashing(tisBinder, false);
+                });
+                return response;
+
+            case TestProtocol.REQUEST_STASHED_TASKBAR_HEIGHT: {
+                final Resources resources = mContext.getResources();
+                response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                        resources.getDimensionPixelSize(R.dimen.taskbar_stashed_size));
+                return response;
+            }
+
+            case TestProtocol.REQUEST_TASKBAR_ALL_APPS_TOP_PADDING: {
+                return getTISBinderUIProperty(Bundle::putInt, tisBinder ->
+                        tisBinder.getTaskbarManager()
+                                .getCurrentActivityContext()
+                                .getTaskbarAllAppsTopPadding());
+            }
+
+            case TestProtocol.REQUEST_ENABLE_BLOCK_TIMEOUT:
+                runOnTISBinder(tisBinder -> {
+                    enableBlockingTimeout(tisBinder, true);
+                });
+                return response;
+
+            case TestProtocol.REQUEST_DISABLE_BLOCK_TIMEOUT:
+                runOnTISBinder(tisBinder -> {
+                    enableBlockingTimeout(tisBinder, false);
+                });
+                return response;
+
+            case TestProtocol.REQUEST_ENABLE_TRANSIENT_TASKBAR:
+                enableTransientTaskbar(true);
+                return response;
+
+            case TestProtocol.REQUEST_DISABLE_TRANSIENT_TASKBAR:
+                enableTransientTaskbar(false);
+                return response;
         }
 
-        return super.call(method, arg);
+        return super.call(method, arg, extras);
     }
 
     @Override
@@ -94,5 +164,60 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
     @Override
     protected boolean isLauncherInitialized() {
         return super.isLauncherInitialized() && TouchInteractionService.isInitialized();
+    }
+
+    private void enableManualTaskbarStashing(
+            TouchInteractionService.TISBinder tisBinder, boolean enable) {
+        // Allow null-pointer to catch illegal states.
+        tisBinder.getTaskbarManager().getCurrentActivityContext().enableManualStashingDuringTests(
+                enable);
+    }
+
+    private void enableBlockingTimeout(
+            TouchInteractionService.TISBinder tisBinder, boolean enable) {
+        TaskbarActivityContext context = tisBinder.getTaskbarManager().getCurrentActivityContext();
+        if (context == null) {
+            if (TestProtocol.sDebugTracing) {
+                Log.d(NPE_TRANSIENT_TASKBAR, "enableBlockingTimeout: enable=" + enable,
+                        new Exception());
+            }
+        } else {
+            context.enableBlockingTimeoutDuringTests(enable);
+        }
+    }
+
+    private void enableTransientTaskbar(boolean enable) {
+        DisplayController.INSTANCE.get(mContext).enableTransientTaskbarForTests(enable);
+    }
+
+    /**
+     * Runs the given command on the UI thread, after ensuring we are connected to
+     * TouchInteractionService.
+     */
+    protected void runOnTISBinder(Consumer<TouchInteractionService.TISBinder> connectionCallback) {
+        try {
+            CountDownLatch countDownLatch = new CountDownLatch(1);
+            TISBindHelper helper = MAIN_EXECUTOR.submit(() ->
+                    new TISBindHelper(mContext, tisBinder -> {
+                        connectionCallback.accept(tisBinder);
+                        countDownLatch.countDown();
+                    })).get();
+            countDownLatch.await();
+            MAIN_EXECUTOR.execute(helper::onDestroy);
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private <T> Bundle getTISBinderUIProperty(
+            BundleSetter<T> bundleSetter, Function<TouchInteractionService.TISBinder, T> provider) {
+        Bundle response = new Bundle();
+
+        runOnTISBinder(tisBinder -> bundleSetter.set(
+                response,
+                TestProtocol.TEST_INFO_RESPONSE_FIELD,
+                provider.apply(tisBinder)));
+
+        return response;
     }
 }

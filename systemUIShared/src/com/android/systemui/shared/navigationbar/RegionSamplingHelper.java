@@ -28,6 +28,8 @@ import android.view.View;
 import android.view.ViewRootImpl;
 import android.view.ViewTreeObserver;
 
+import androidx.annotation.VisibleForTesting;
+
 import java.io.PrintWriter;
 import java.util.concurrent.Executor;
 
@@ -60,6 +62,7 @@ public class RegionSamplingHelper implements View.OnAttachStateChangeListener,
     private final Rect mRegisteredSamplingBounds = new Rect();
     private final SamplingCallback mCallback;
     private final Executor mBackgroundExecutor;
+    private final SysuiCompositionSamplingListener mCompositionSamplingListener;
     private boolean mSamplingEnabled = false;
     private boolean mSamplingListenerRegistered = false;
 
@@ -89,15 +92,32 @@ public class RegionSamplingHelper implements View.OnAttachStateChangeListener,
         }
     };
 
+    /**
+     * @deprecated Pass a main executor.
+     */
     public RegionSamplingHelper(View sampledView, SamplingCallback samplingCallback,
             Executor backgroundExecutor) {
+        this(sampledView, samplingCallback, sampledView.getContext().getMainExecutor(),
+                backgroundExecutor);
+    }
+
+    public RegionSamplingHelper(View sampledView, SamplingCallback samplingCallback,
+            Executor mainExecutor, Executor backgroundExecutor) {
+        this(sampledView, samplingCallback, mainExecutor,
+                backgroundExecutor, new SysuiCompositionSamplingListener());
+    }
+
+    @VisibleForTesting
+    RegionSamplingHelper(View sampledView, SamplingCallback samplingCallback,
+            Executor mainExecutor, Executor backgroundExecutor,
+            SysuiCompositionSamplingListener compositionSamplingListener) {
         mBackgroundExecutor = backgroundExecutor;
-        mSamplingListener = new CompositionSamplingListener(
-                sampledView.getContext().getMainExecutor()) {
+        mCompositionSamplingListener = compositionSamplingListener;
+        mSamplingListener = new CompositionSamplingListener(mainExecutor) {
             @Override
             public void onSampleCollected(float medianLuma) {
                 if (mSamplingEnabled) {
-                    updateMediaLuma(medianLuma);
+                    updateMedianLuma(medianLuma);
                 }
             }
         };
@@ -108,6 +128,13 @@ public class RegionSamplingHelper implements View.OnAttachStateChangeListener,
         mCallback = samplingCallback;
     }
 
+    /**
+     * Make callback accessible
+     */
+    @VisibleForTesting
+    public SamplingCallback getCallback() {
+        return mCallback;
+    }
     private void onDraw() {
         if (mWaitingOnDraw) {
             mWaitingOnDraw = false;
@@ -136,7 +163,7 @@ public class RegionSamplingHelper implements View.OnAttachStateChangeListener,
 
     public void stopAndDestroy() {
         stop();
-        mSamplingListener.destroy();
+        mBackgroundExecutor.execute(mSamplingListener::destroy);
         mIsDestroyed = true;
     }
 
@@ -189,14 +216,17 @@ public class RegionSamplingHelper implements View.OnAttachStateChangeListener,
                 // We only want to re-register if something actually changed
                 unregisterSamplingListener();
                 mSamplingListenerRegistered = true;
-                SurfaceControl wrappedStopLayer = stopLayerControl == null
-                        ? null : new SurfaceControl(stopLayerControl, "regionSampling");
+                SurfaceControl wrappedStopLayer = wrap(stopLayerControl);
+
+                // pass this to background thread to avoid empty Rect race condition
+                final Rect boundsCopy = new Rect(mSamplingRequestBounds);
+
                 mBackgroundExecutor.execute(() -> {
                     if (wrappedStopLayer != null && !wrappedStopLayer.isValid()) {
                         return;
                     }
-                    CompositionSamplingListener.register(mSamplingListener, DEFAULT_DISPLAY,
-                            wrappedStopLayer, mSamplingRequestBounds);
+                    mCompositionSamplingListener.register(mSamplingListener, DEFAULT_DISPLAY,
+                            wrappedStopLayer, boundsCopy);
                 });
                 mRegisteredSamplingBounds.set(mSamplingRequestBounds);
                 mRegisteredStopLayer = stopLayerControl;
@@ -208,14 +238,21 @@ public class RegionSamplingHelper implements View.OnAttachStateChangeListener,
         }
     }
 
+    @VisibleForTesting
+    protected SurfaceControl wrap(SurfaceControl stopLayerControl) {
+        return stopLayerControl == null ? null : new SurfaceControl(stopLayerControl,
+                "regionSampling");
+    }
+
     private void unregisterSamplingListener() {
         if (mSamplingListenerRegistered) {
             mSamplingListenerRegistered = false;
             SurfaceControl wrappedStopLayer = mWrappedStopLayer;
             mRegisteredStopLayer = null;
+            mWrappedStopLayer = null;
             mRegisteredSamplingBounds.setEmpty();
             mBackgroundExecutor.execute(() -> {
-                CompositionSamplingListener.unregister(mSamplingListener);
+                mCompositionSamplingListener.unregister(mSamplingListener);
                 if (wrappedStopLayer != null && wrappedStopLayer.isValid()) {
                     wrappedStopLayer.release();
                 }
@@ -223,7 +260,7 @@ public class RegionSamplingHelper implements View.OnAttachStateChangeListener,
         }
     }
 
-    private void updateMediaLuma(float medianLuma) {
+    private void updateMedianLuma(float medianLuma) {
         mCurrentMedianLuma = medianLuma;
 
         // If the difference between the new luma and the current luma is larger than threshold
@@ -258,23 +295,27 @@ public class RegionSamplingHelper implements View.OnAttachStateChangeListener,
     }
 
     public void dump(PrintWriter pw) {
-        pw.println("RegionSamplingHelper:");
-        pw.println("  sampleView isAttached: " + mSampledView.isAttachedToWindow());
-        pw.println("  sampleView isScValid: " + (mSampledView.isAttachedToWindow()
+        dump("", pw);
+    }
+
+    public void dump(String prefix, PrintWriter pw) {
+        pw.println(prefix + "RegionSamplingHelper:");
+        pw.println(prefix + "\tsampleView isAttached: " + mSampledView.isAttachedToWindow());
+        pw.println(prefix + "\tsampleView isScValid: " + (mSampledView.isAttachedToWindow()
                 ? mSampledView.getViewRootImpl().getSurfaceControl().isValid()
                 : "notAttached"));
-        pw.println("  mSamplingEnabled: " + mSamplingEnabled);
-        pw.println("  mSamplingListenerRegistered: " + mSamplingListenerRegistered);
-        pw.println("  mSamplingRequestBounds: " + mSamplingRequestBounds);
-        pw.println("  mRegisteredSamplingBounds: " + mRegisteredSamplingBounds);
-        pw.println("  mLastMedianLuma: " + mLastMedianLuma);
-        pw.println("  mCurrentMedianLuma: " + mCurrentMedianLuma);
-        pw.println("  mWindowVisible: " + mWindowVisible);
-        pw.println("  mWindowHasBlurs: " + mWindowHasBlurs);
-        pw.println("  mWaitingOnDraw: " + mWaitingOnDraw);
-        pw.println("  mRegisteredStopLayer: " + mRegisteredStopLayer);
-        pw.println("  mWrappedStopLayer: " + mWrappedStopLayer);
-        pw.println("  mIsDestroyed: " + mIsDestroyed);
+        pw.println(prefix + "\tmSamplingEnabled: " + mSamplingEnabled);
+        pw.println(prefix + "\tmSamplingListenerRegistered: " + mSamplingListenerRegistered);
+        pw.println(prefix + "\tmSamplingRequestBounds: " + mSamplingRequestBounds);
+        pw.println(prefix + "\tmRegisteredSamplingBounds: " + mRegisteredSamplingBounds);
+        pw.println(prefix + "\tmLastMedianLuma: " + mLastMedianLuma);
+        pw.println(prefix + "\tmCurrentMedianLuma: " + mCurrentMedianLuma);
+        pw.println(prefix + "\tmWindowVisible: " + mWindowVisible);
+        pw.println(prefix + "\tmWindowHasBlurs: " + mWindowHasBlurs);
+        pw.println(prefix + "\tmWaitingOnDraw: " + mWaitingOnDraw);
+        pw.println(prefix + "\tmRegisteredStopLayer: " + mRegisteredStopLayer);
+        pw.println(prefix + "\tmWrappedStopLayer: " + mWrappedStopLayer);
+        pw.println(prefix + "\tmIsDestroyed: " + mIsDestroyed);
     }
 
     public interface SamplingCallback {
@@ -297,6 +338,21 @@ public class RegionSamplingHelper implements View.OnAttachStateChangeListener,
          */
         default boolean isSamplingEnabled() {
             return true;
+        }
+    }
+
+    @VisibleForTesting
+    public static class SysuiCompositionSamplingListener {
+        public void register(CompositionSamplingListener listener,
+                int displayId, SurfaceControl stopLayer, Rect samplingArea) {
+            CompositionSamplingListener.register(listener, displayId, stopLayer, samplingArea);
+        }
+
+        /**
+         * Unregisters a sampling listener.
+         */
+        public void unregister(CompositionSamplingListener listener) {
+            CompositionSamplingListener.unregister(listener);
         }
     }
 }

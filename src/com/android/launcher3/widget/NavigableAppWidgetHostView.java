@@ -19,7 +19,6 @@ package com.android.launcher3.widget;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.view.KeyEvent;
 import android.view.View;
@@ -29,6 +28,7 @@ import android.view.ViewGroup;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Reorderable;
 import com.android.launcher3.dragndrop.DraggableView;
+import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
@@ -39,20 +39,13 @@ import java.util.ArrayList;
 public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
         implements DraggableView, Reorderable {
 
+    private final MultiTranslateDelegate mTranslateDelegate = new MultiTranslateDelegate(this);
+
     /**
      * The scaleX and scaleY value such that the widget fits within its cellspans, scaleX = scaleY.
      */
     private float mScaleToFit = 1f;
 
-    /**
-     * The translation values to center the widget within its cellspans.
-     */
-    private final PointF mTranslationForCentering = new PointF(0, 0);
-
-    private final PointF mTranslationForMoveFromCenterAnimation = new PointF(0, 0);
-
-    private final PointF mTranslationForReorderBounce = new PointF(0, 0);
-    private final PointF mTranslationForReorderPreview = new PointF(0, 0);
     private float mScaleForReorderBounce = 1f;
 
     private final Rect mTempRect = new Rect();
@@ -163,57 +156,23 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
         setSelected(childIsFocused);
     }
 
-    public View getView() {
-        return this;
-    }
-
-    private void updateTranslation() {
-        super.setTranslationX(mTranslationForReorderBounce.x + mTranslationForReorderPreview.x
-                + mTranslationForCentering.x + mTranslationForMoveFromCenterAnimation.x);
-        super.setTranslationY(mTranslationForReorderBounce.y + mTranslationForReorderPreview.y
-                + mTranslationForCentering.y + mTranslationForMoveFromCenterAnimation.y);
-    }
-
-    public void setTranslationForCentering(float x, float y) {
-        mTranslationForCentering.set(x, y);
-        updateTranslation();
-    }
-
-    public void setTranslationForMoveFromCenterAnimation(float x, float y) {
-        mTranslationForMoveFromCenterAnimation.set(x, y);
-        updateTranslation();
-    }
-
-    public void setReorderBounceOffset(float x, float y) {
-        mTranslationForReorderBounce.set(x, y);
-        updateTranslation();
-    }
-
-    public void getReorderBounceOffset(PointF offset) {
-        offset.set(mTranslationForReorderBounce);
-    }
-
-    @Override
-    public void setReorderPreviewOffset(float x, float y) {
-        mTranslationForReorderPreview.set(x, y);
-        updateTranslation();
-    }
-
-    @Override
-    public void getReorderPreviewOffset(PointF offset) {
-        offset.set(mTranslationForReorderPreview);
-    }
-
     private void updateScale() {
         super.setScaleX(mScaleToFit * mScaleForReorderBounce);
         super.setScaleY(mScaleToFit * mScaleForReorderBounce);
     }
 
+    @Override
+    public MultiTranslateDelegate getTranslateDelegate() {
+        return mTranslateDelegate;
+    }
+
+    @Override
     public void setReorderBounceScale(float scale) {
         mScaleForReorderBounce = scale;
         updateScale();
     }
 
+    @Override
     public float getReorderBounceScale() {
         return mScaleForReorderBounce;
     }

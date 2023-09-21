@@ -20,6 +20,8 @@ import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import android.platform.test.annotations.IwTest;
+
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
@@ -31,6 +33,7 @@ import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.rule.ShellCommandRule;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,11 +48,14 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
     @Rule
     public ShellCommandRule mGrantWidgetRule = ShellCommandRule.grantWidgetBind();
 
+    @IwTest(focusArea="launcher")
     @Test
     @PortraitLandscape
     public void testDragIcon() throws Throwable {
         clearHomescreen();
         mDevice.pressHome();
+
+        waitForLauncherCondition("Workspace didn't finish loading", l -> !l.isWorkspaceLoading());
 
         final LauncherAppWidgetProviderInfo widgetInfo =
                 TestViewHelpers.findWidgetProvider(this, false /* hasConfigureScreen */);
@@ -80,6 +86,7 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
      * A custom shortcut is a 1x1 widget that launches a specific intent when user tap on it.
      * Custom shortcuts are replaced by deep shortcuts after api 25.
      */
+    @Ignore
     @Test
     @PortraitLandscape
     public void testDragCustomShortcut() throws Throwable {

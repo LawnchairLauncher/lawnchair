@@ -20,6 +20,7 @@ package com.android.launcher3;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,16 +30,12 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import androidx.annotation.Nullable;
-
 import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
-
-import java.util.function.Consumer;
 
 import app.lawnchair.hotseat.HotseatMode;
 import app.lawnchair.hotseat.LawnchairHotseat;
+import app.lawnchair.preferences.PreferenceManager;
 import app.lawnchair.preferences2.PreferenceManager2;
-import app.lawnchair.smartspace.model.LawnchairSmartspace;
 
 /**
  * View class that represents the bottom row of the home screen.
@@ -50,13 +47,13 @@ public class Hotseat extends CellLayout implements Insettable {
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
-    private Workspace mWorkspace;
+    private Workspace<?> mWorkspace;
     private boolean mSendTouchToWorkspace;
-    @Nullable
-    private Consumer<Boolean> mOnVisibilityAggregatedCallback;
 
     private final View mQsb;
     private final int mQsbHeight;
+
+    PreferenceManager2 preferenceManager2;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -69,13 +66,13 @@ public class Hotseat extends CellLayout implements Insettable {
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
+        preferenceManager2 = PreferenceManager2.getInstance(context);
         HotseatMode hotseatMode = PreferenceExtensionsKt.firstBlocking(preferenceManager2.getHotseatMode());
         if (!hotseatMode.isAvailable(context)) {
             // The current hotseat mode is not available,
             // setting the hotseat mode to one that is always available
             hotseatMode = LawnchairHotseat.INSTANCE;
-            PreferenceExtensionsKt.setBlocking(mPreferenceManager2.getHotseatMode(), hotseatMode);
+            PreferenceExtensionsKt.setBlocking(preferenceManager2.getHotseatMode(), hotseatMode);
         }
         int layoutId = hotseatMode.getLayoutResourceId();
 
@@ -102,6 +99,7 @@ public class Hotseat extends CellLayout implements Insettable {
         removeAllViewsInLayout();
         mHasVerticalHotseat = hasVerticalHotseat;
         DeviceProfile dp = mActivity.getDeviceProfile();
+        resetCellSize(dp);
         if (hasVerticalHotseat) {
             setGridSize(1, dp.numShownHotseatIcons);
         } else {
@@ -116,7 +114,7 @@ public class Hotseat extends CellLayout implements Insettable {
 
         if (grid.isVerticalBarLayout()) {
             mQsb.setVisibility(View.GONE);
-            lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            lp.height = LayoutParams.MATCH_PARENT;
             if (grid.isSeascape()) {
                 lp.gravity = Gravity.LEFT;
                 lp.width = grid.hotseatBarSizePx + insets.left;
@@ -127,27 +125,42 @@ public class Hotseat extends CellLayout implements Insettable {
         } else {
             mQsb.setVisibility(View.VISIBLE);
             lp.gravity = Gravity.BOTTOM;
-            lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            lp.height = (grid.isTaskbarPresent
-                    ? grid.workspacePadding.bottom
-                        : grid.hotseatBarSizePx)
-                    + (grid.isTaskbarPresent ? grid.taskbarSize : insets.bottom);
+            lp.width = LayoutParams.MATCH_PARENT;
+            lp.height = grid.hotseatBarSizePx;
+            lp.topMargin = grid.hotseatBarBottomSpacePx;
         }
 
         Rect padding = grid.getHotseatLayoutPadding(getContext());
         setPadding(padding.left, padding.top, padding.right, padding.bottom);
-        setLayoutParams(lp);
+        if(!PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableTaskbarOnPhone())){
+            FrameLayout.LayoutParams qsbLp = (FrameLayout.LayoutParams) getLayoutParams();
+            qsbLp.topMargin = grid.hotseatBarBottomSpacePx;
+            qsbLp.height = (grid.hotseatBarSizePx * 2) - (padding.bottom + grid.hotseatBarBottomSpacePx);
+            mQsb.setLayoutParams (qsbLp);
+            setLayoutParams(lp);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if(mQsb.getSourceLayoutResId () == R.layout.empty_view){
+                mQsb.setVisibility (View.GONE);
+                mQsb.setLayoutParams ((FrameLayout.LayoutParams) getLayoutParams());
+                FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) getLayoutParams();
+                layoutParams.height = grid.hotseatBarSizePx;
+                setLayoutParams(layoutParams);
+            }
+        }
         InsettableFrameLayout.dispatchInsets(this, insets);
     }
 
-    public void setWorkspace(Workspace w) {
+    public void setWorkspace(Workspace<?> w) {
         mWorkspace = w;
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        // We allow horizontal workspace scrolling from within the Hotseat. We do this by delegating
-        // touch intercept the Workspace, and if it intercepts, delegating touch to the Workspace
+        // We allow horizontal workspace scrolling from within the Hotseat. We do this
+        // by delegating
+        // touch intercept the Workspace, and if it intercepts, delegating touch to the
+        // Workspace
         // for the remainder of the this input stream.
         int yThreshold = getMeasuredHeight() - getPaddingBottom();
         if (mWorkspace != null && ev.getY() <= yThreshold) {
@@ -174,20 +187,6 @@ public class Hotseat extends CellLayout implements Insettable {
     }
 
     @Override
-    public void onVisibilityAggregated(boolean isVisible) {
-        super.onVisibilityAggregated(isVisible);
-
-        if (mOnVisibilityAggregatedCallback != null) {
-            mOnVisibilityAggregatedCallback.accept(isVisible);
-        }
-    }
-
-    /** Sets a callback to be called onVisibilityAggregated */
-    public void setOnVisibilityAggregatedCallback(@Nullable Consumer<Boolean> callback) {
-        mOnVisibilityAggregatedCallback = callback;
-    }
-
-    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
@@ -200,12 +199,20 @@ public class Hotseat extends CellLayout implements Insettable {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         super.onLayout(changed, l, t, r, b);
 
-        int qsbWidth = mQsb.getMeasuredWidth();
-        int left = (r - l - qsbWidth) / 2;
-        int right = left + qsbWidth;
+        int qsbMeasuredWidth = mQsb.getMeasuredWidth();
+        int left;
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        if (dp.isQsbInline) {
+            int qsbSpace = dp.hotseatBorderSpace;
+            left = Utilities.isRtl(getResources()) ? r - getPaddingRight() + qsbSpace
+                    : l + getPaddingLeft() - qsbMeasuredWidth - qsbSpace;
+        } else {
+            left = (r - l - qsbMeasuredWidth) / 2;
+        }
+        int right = left + qsbMeasuredWidth;
 
-        int bottom = b - t - mActivity.getDeviceProfile().getQsbOffsetY();
-        int top = bottom - mQsbHeight;
+        int bottom = b - t - dp.getQsbOffsetY();
+        int top = bottom - dp.hotseatQsbHeight;
         mQsb.layout(left, top, right, bottom);
     }
 
@@ -214,6 +221,13 @@ public class Hotseat extends CellLayout implements Insettable {
      */
     public void setIconsAlpha(float alpha) {
         getShortcutsAndWidgets().setAlpha(alpha);
+    }
+
+    /**
+     * Sets the alpha value of just our QSB.
+     */
+    public void setQsbAlpha(float alpha) {
+        mQsb.setAlpha(alpha);
     }
 
     public float getIconsAlpha() {

@@ -18,11 +18,14 @@ package com.android.quickstep.util;
 
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+import static android.view.WindowManager.ScreenshotSource.SCREENSHOT_OVERVIEW;
+import static android.view.WindowManager.TAKE_SCREENSHOT_PROVIDED_IMAGE;
 
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.THREAD_POOL_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
+import android.annotation.UiThread;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.prediction.AppTarget;
@@ -43,15 +46,14 @@ import android.net.Uri;
 import android.util.Log;
 import android.view.View;
 
-import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
 import androidx.core.content.FileProvider;
 
 import com.android.internal.app.ChooserActivity;
+import com.android.internal.util.ScreenshotRequest;
 import com.android.launcher3.BuildConfig;
 import com.android.quickstep.SystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
-import com.android.systemui.shared.recents.utilities.BitmapUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -75,77 +77,87 @@ public class ImageActionUtils {
      * Saves screenshot to location determine by SystemUiProxy
      */
     public static void saveScreenshot(SystemUiProxy systemUiProxy, Bitmap screenshot,
-            Rect screenshotBounds,
-            Insets visibleInsets, Task.TaskKey task) {
-        systemUiProxy.handleImageBundleAsScreenshot(BitmapUtil.hardwareBitmapToBundle(screenshot),
-                screenshotBounds, visibleInsets, task);
+            Rect screenshotBounds, Insets visibleInsets, Task.TaskKey task) {
+        ScreenshotRequest request =
+                new ScreenshotRequest.Builder(TAKE_SCREENSHOT_PROVIDED_IMAGE, SCREENSHOT_OVERVIEW)
+                .setTopComponent(task.sourceComponent)
+                .setTaskId(task.id)
+                .setUserId(task.userId)
+                .setBitmap(screenshot)
+                .setBoundsOnScreen(screenshotBounds)
+                .setInsets(visibleInsets)
+                .build();
+        systemUiProxy.takeScreenshot(request);
     }
 
     /**
      * Launch the activity to share image for overview sharing. This is to share cropped bitmap
      * with specific share targets (with shortcutInfo and appTarget) rendered in overview.
      */
-    @UiThread
     public static void shareImage(Context context, Supplier<Bitmap> bitmapSupplier, RectF rectF,
             ShortcutInfo shortcutInfo, AppTarget appTarget, String tag) {
-        if (bitmapSupplier.get() == null) {
-            return;
-        }
-        Rect crop = new Rect();
-        rectF.round(crop);
-        Intent intent = new Intent();
-        Uri uri =  getImageUri(bitmapSupplier.get(), crop, context, tag);
-        ClipData clipdata = new ClipData(new ClipDescription("content",
-                new String[]{"image/png"}),
-                new ClipData.Item(uri));
-        intent.setAction(Intent.ACTION_SEND)
-            .setComponent(new ComponentName(appTarget.getPackageName(), appTarget.getClassName()))
-            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            .addFlags(FLAG_GRANT_READ_URI_PERMISSION)
-            .setType("image/png")
-            .putExtra(Intent.EXTRA_STREAM, uri)
-            .putExtra(Intent.EXTRA_SHORTCUT_ID, shortcutInfo.getId())
-            .setClipData(clipdata);
+        UI_HELPER_EXECUTOR.execute(() -> {
+            Bitmap bitmap = bitmapSupplier.get();
+            if (bitmap == null) {
+                return;
+            }
+            Rect crop = new Rect();
+            rectF.round(crop);
+            Intent intent = new Intent();
+            Uri uri = getImageUri(bitmap, crop, context, tag);
+            ClipData clipdata = new ClipData(new ClipDescription("content",
+                    new String[]{"image/png"}),
+                    new ClipData.Item(uri));
+            intent.setAction(Intent.ACTION_SEND)
+                    .setComponent(
+                            new ComponentName(appTarget.getPackageName(), appTarget.getClassName()))
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .addFlags(FLAG_GRANT_READ_URI_PERMISSION)
+                    .setType("image/png")
+                    .putExtra(Intent.EXTRA_STREAM, uri)
+                    .putExtra(Intent.EXTRA_SHORTCUT_ID, shortcutInfo.getId())
+                    .setClipData(clipdata);
 
-        if (context.getUserId() != appTarget.getUser().getIdentifier()) {
-            intent.prepareToLeaveUser(context.getUserId());
-            intent.fixUris(context.getUserId());
-            context.startActivityAsUser(intent, appTarget.getUser());
-        } else {
-            context.startActivity(intent);
-        }
+            if (context.getUserId() != appTarget.getUser().getIdentifier()) {
+                intent.prepareToLeaveUser(context.getUserId());
+                intent.fixUris(context.getUserId());
+                context.startActivityAsUser(intent, appTarget.getUser());
+            } else {
+                context.startActivity(intent);
+            }
+        });
     }
 
     /**
      * Launch the activity to share image.
      */
-    @UiThread
     public static void startShareActivity(Context context, Supplier<Bitmap> bitmapSupplier,
             Rect crop, Intent intent, String tag) {
-        if (bitmapSupplier.get() == null) {
-            Log.e(tag, "No snapshot available, not starting share.");
-            return;
-        }
-
-        UI_HELPER_EXECUTOR.execute(() -> persistBitmapAndStartActivity(context,
-                bitmapSupplier.get(), crop, intent, ImageActionUtils::getShareIntentForImageUri,
-                tag));
+        UI_HELPER_EXECUTOR.execute(() -> {
+            Bitmap bitmap = bitmapSupplier.get();
+            if (bitmap == null) {
+                Log.e(tag, "No snapshot available, not starting share.");
+                return;
+            }
+            persistBitmapAndStartActivity(context, bitmap, crop, intent,
+                    ImageActionUtils::getShareIntentForImageUri, tag);
+        });
     }
 
     /**
      * Launch the activity to share image with shared element transition.
      */
-    @UiThread
     public static void startShareActivity(Context context, Supplier<Bitmap> bitmapSupplier,
             Rect crop, Intent intent, String tag, View sharedElement) {
-        if (bitmapSupplier.get() == null) {
-            Log.e(tag, "No snapshot available, not starting share.");
-            return;
-        }
-
-        UI_HELPER_EXECUTOR.execute(() -> persistBitmapAndStartActivity(context,
-                bitmapSupplier.get(), crop, intent, ImageActionUtils::getShareIntentForImageUri,
-                tag, sharedElement));
+        UI_HELPER_EXECUTOR.execute(() -> {
+            Bitmap bitmap = bitmapSupplier.get();
+            if (bitmap == null) {
+                Log.e(tag, "No snapshot available, not starting share.");
+                return;
+            }
+            persistBitmapAndStartActivity(context, bitmap,
+                    crop, intent, ImageActionUtils::getShareIntentForImageUri, tag, sharedElement);
+        });
     }
     
     @UiThread
@@ -167,6 +179,18 @@ public class ImageActionUtils {
     @WorkerThread
     public static void persistBitmapAndStartActivity(Context context, Bitmap bitmap, Rect crop,
             Intent intent, BiFunction<Uri, Intent, Intent[]> uriToIntentMap, String tag) {
+        persistBitmapAndStartActivity(context, bitmap, crop, intent, uriToIntentMap, tag,
+                (Runnable) null);
+    }
+
+    /**
+     * Starts activity based on given intent created from image uri.
+     * @param exceptionCallback An optional callback to be called when the intent can't be resolved
+     */
+    @WorkerThread
+    public static void persistBitmapAndStartActivity(Context context, Bitmap bitmap, Rect crop,
+            Intent intent, BiFunction<Uri, Intent, Intent[]> uriToIntentMap, String tag,
+            Runnable exceptionCallback) {
         Intent[] intents = uriToIntentMap.apply(getImageUri(bitmap, crop, context, tag), intent);
 
         try {
@@ -178,6 +202,9 @@ public class ImageActionUtils {
             }
         } catch (ActivityNotFoundException e) {
             Log.e(TAG, "No activity found to receive image intent");
+            if (exceptionCallback != null) {
+                exceptionCallback.run();
+            }
         }
     }
 

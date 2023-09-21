@@ -20,6 +20,7 @@ import static com.android.launcher3.touch.BaseSwipeDetector.calculateDuration;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.DIRECTION_POSITIVE;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.VERTICAL;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
+import static com.android.quickstep.OverviewComponentObserver.startHomeIntentSafely;
 import static com.android.quickstep.util.ActiveGestureLog.INTENT_EXTRA_LOG_TRACE_ID;
 
 import android.animation.ObjectAnimator;
@@ -28,12 +29,12 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.view.MotionEvent;
 
+import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.testing.TestLogging;
-import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.touch.SingleAxisSwipeDetector;
 import com.android.launcher3.util.DisplayController;
-import com.android.quickstep.AnimatedFloat;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.MultiStateCallback;
@@ -102,8 +103,7 @@ public class ProgressDelegateInputConsumer implements InputConsumer,
         mStateCallback = new MultiStateCallback(STATE_NAMES);
         mStateCallback.runOnceAtState(STATE_TARGET_RECEIVED | STATE_HANDLER_INVALIDATED,
                 this::endRemoteAnimation);
-        mStateCallback.runOnceAtState(STATE_TARGET_RECEIVED | STATE_FLING_FINISHED,
-                this::onFlingFinished);
+        mStateCallback.runOnceAtState(STATE_FLING_FINISHED, this::onFlingFinished);
 
         mSwipeDetector = new SingleAxisSwipeDetector(mContext, this, VERTICAL);
         mSwipeDetector.setDetectableScrollConditions(DIRECTION_POSITIVE, false);
@@ -159,10 +159,12 @@ public class ProgressDelegateInputConsumer implements InputConsumer,
     }
 
     private void onFlingFinished() {
+        boolean endToRecents = mFlingEndsOnHome == null ? true : mFlingEndsOnHome;
         if (mRecentsAnimationController != null) {
-            boolean endToRecents = mFlingEndsOnHome == null ? true : mFlingEndsOnHome;
             mRecentsAnimationController.finishController(endToRecents /* toRecents */,
                     null /* callback */, false /* sendUserLeaveHint */);
+        } else if (endToRecents) {
+            startHomeIntentSafely(mContext, null);
         }
     }
 

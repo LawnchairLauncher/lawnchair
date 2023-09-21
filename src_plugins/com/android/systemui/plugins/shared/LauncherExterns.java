@@ -40,10 +40,4 @@ public interface LauncherExterns {
      * Sets the overlay on the target activity
      */
     void setLauncherOverlay(LauncherOverlay overlay);
-
-    /**
-     * Executes the command, next time the overlay is hidden
-     */
-    void runOnOverlayHidden(Runnable runnable);
-
 }

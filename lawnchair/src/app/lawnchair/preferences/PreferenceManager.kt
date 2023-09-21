@@ -38,10 +38,10 @@ class PreferenceManager private constructor(private val context: Context) : Base
     }
 
     val iconPackPackage = StringPref("pref_iconPackPackage", "", reloadIcons)
-    val themedIconPackPackage = StringPref("pref_themedIconPackPackage", "", reloadIcons)
+    val themedIconPackPackage = StringPref("pref_themedIconPackPackage", "", recreate)
     val allowRotation = BoolPref("pref_allowRotation", false)
-    val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, reloadIcons)
-    val transparentIconBackground = BoolPref("prefs_transparentIconBackground", false, reloadIcons)
+    val wrapAdaptiveIcons = BoolPref("prefs_wrapAdaptive", false, recreate)
+    val transparentIconBackground = BoolPref("prefs_transparentIconBackground", false, recreate)
     val addIconToHome = BoolPref("pref_add_icon_to_home", true)
     val hotseatColumns = IntPref("pref_hotseatColumns", 4, reloadGrid)
     val workspaceColumns = IntPref("pref_workspaceColumns", 4)
@@ -50,7 +50,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val folderRows = IdpIntPref("pref_folderRows", { numFolderRows }, reloadGrid)
 
     val drawerOpacity = FloatPref("pref_drawerOpacity", 1F, recreate)
-    val coloredBackgroundLightness = FloatPref("pref_coloredBackgroundLightness", 0.9F, reloadIcons)
+    val coloredBackgroundLightness = FloatPref("pref_coloredBackgroundLightness", 0.9F, recreate)
     val feedProvider = StringPref("pref_feedProvider", "")
     val launcherTheme = StringPref("pref_launcherTheme", "system")
     val overrideWindowCornerRadius = BoolPref("pref_overrideWindowCornerRadius", false, recreate)
@@ -78,7 +78,7 @@ class PreferenceManager private constructor(private val context: Context) : Base
     val searchResultPixelTips = BoolPref("pref_searchResultPixelTips", false)
     val searchResultSettings = BoolPref("pref_searchResultSettings", false)
 
-    val themedIcons = BoolPref("themed_icons", false)
+    val themedIcons = BoolPref("themed_icons", true, recreate)
     val drawerThemedIcons = BoolPref("drawer_themed_icons", false, recreate)
     val hotseatQsbCornerRadius = FloatPref("pref_hotseatQsbCornerRadius", 1F, recreate)
 

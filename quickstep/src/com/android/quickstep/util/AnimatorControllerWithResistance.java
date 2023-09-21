@@ -158,7 +158,8 @@ public class AnimatorControllerWithResistance {
         Rect startRect = new Rect();
         PagedOrientationHandler orientationHandler = params.recentsOrientedState
                 .getOrientationHandler();
-        LauncherActivityInterface.INSTANCE.calculateTaskSize(params.context, params.dp, startRect);
+        LauncherActivityInterface.INSTANCE.calculateTaskSize(params.context, params.dp, startRect,
+                orientationHandler);
         long distanceToCover = startRect.bottom;
         PendingAnimation resistAnim = params.resistAnim != null
                 ? params.resistAnim

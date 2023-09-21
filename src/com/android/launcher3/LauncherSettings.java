@@ -30,6 +30,24 @@ import com.android.launcher3.model.data.ItemInfo;
 public class LauncherSettings {
 
     /**
+     * Types of animations.
+     */
+    public static final class Animation {
+        /**
+         * The default animation for a given view/item info type.
+         */
+        public static final int DEFAULT = 0;
+        /**
+         * An animation using the view's background.
+         */
+        public static final int VIEW_BACKGROUND = 1;
+        /**
+         * The default animation for a given view/item info type, but without the splash icon.
+         */
+        public static final int DEFAULT_NO_ICON = 2;
+    }
+
+    /**
      * Favorites.
      */
     public static final class Favorites implements BaseColumns {
@@ -94,15 +112,11 @@ public class LauncherSettings {
          */
         public static final int ITEM_TYPE_DEEP_SHORTCUT = 6;
 
-        /**
-         * The favroite is a search action
-         */
-        public static final int ITEM_TYPE_SEARCH_ACTION = 7;
 
+        // *** Below enum values are used for metrics purpose but not used in Favorites DB ***
 
         /**
          * Type of the item is recents task.
-         * TODO(hyunyoungs): move constants not related to Favorites DB to a better location.
          */
         public static final int ITEM_TYPE_TASK = 7;
 
@@ -110,6 +124,11 @@ public class LauncherSettings {
          * The item is QSB
          */
         public static final int ITEM_TYPE_QSB = 8;
+
+        /**
+         * The favorite is a search action
+         */
+        public static final int ITEM_TYPE_SEARCH_ACTION = 9;
 
         /**
          * The icon package name in Intent.ShortcutIconResource
@@ -206,12 +225,9 @@ public class LauncherSettings {
         public static final int CONTAINER_BOTTOM_WIDGETS_TRAY = -112;
         public static final int CONTAINER_PIN_WIDGETS = -113;
         public static final int CONTAINER_WALLPAPERS = -114;
-        // Represents search results view.
-        public static final int CONTAINER_SEARCH_RESULTS = -106;
         public static final int CONTAINER_SHORTCUTS = -107;
         public static final int CONTAINER_SETTINGS = -108;
         public static final int CONTAINER_TASKSWITCHER = -109;
-        public static final int CONTAINER_QSB = -110;
 
         // Represents any of the extended containers implemented in non-AOSP variants.
         public static final int EXTENDED_CONTAINERS = -200;
@@ -225,7 +241,6 @@ public class LauncherSettings {
                 case CONTAINER_PREDICTION: return "prediction";
                 case CONTAINER_ALL_APPS: return "all_apps";
                 case CONTAINER_WIDGETS_TRAY: return "widgets_tray";
-                case CONTAINER_SEARCH_RESULTS: return "search_result";
                 case CONTAINER_SHORTCUTS: return "shortcuts";
                 default: return String.valueOf(container);
             }
@@ -373,6 +388,15 @@ public class LauncherSettings {
         public static final String METHOD_NEW_SCREEN_ID = "generate_new_screen_id";
 
         public static final String METHOD_CREATE_EMPTY_DB = "create_empty_db";
+
+        public static final String METHOD_SET_USE_TEST_WORKSPACE_LAYOUT_FLAG =
+                "set_use_test_workspace_layout_flag";
+        public static final String ARG_DEFAULT_WORKSPACE_LAYOUT_TEST = "default_test_workspace";
+        public static final String ARG_DEFAULT_WORKSPACE_LAYOUT_TEST2 = "default_test2_workspace";
+        public static final String ARG_DEFAULT_WORKSPACE_LAYOUT_TAPL = "default_tapl_workspace";
+
+        public static final String METHOD_CLEAR_USE_TEST_WORKSPACE_LAYOUT_FLAG =
+                "clear_use_test_workspace_layout_flag";
 
         public static final String METHOD_LOAD_DEFAULT_FAVORITES = "load_default_favorites";
 

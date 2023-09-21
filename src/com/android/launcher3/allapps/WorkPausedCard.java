@@ -27,9 +27,10 @@ import android.widget.TextView;
 
 import androidx.core.view.ViewCompat;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.model.StringCache;
+import com.android.launcher3.views.ActivityContext;
 
 import app.lawnchair.font.FontManager;
 import app.lawnchair.theme.color.ColorTokens;
@@ -39,7 +40,7 @@ import app.lawnchair.theme.color.ColorTokens;
  */
 public class WorkPausedCard extends LinearLayout implements View.OnClickListener {
 
-    private final Launcher mLauncher;
+    private final ActivityContext mActivityContext;
     private Button mBtn;
 
     public WorkPausedCard(Context context) {
@@ -52,25 +53,41 @@ public class WorkPausedCard extends LinearLayout implements View.OnClickListener
 
     public WorkPausedCard(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mLauncher = Launcher.getLauncher(getContext());
+        mActivityContext = ActivityContext.lookupContext(getContext());
     }
-
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mBtn = findViewById(R.id.enable_work_apps);
         mBtn.setOnClickListener(this);
+
         mBtn.setAllCaps(false);
         FontManager.INSTANCE.get(getContext()).setCustomFont(mBtn, R.id.font_button);
+
+        StringCache cache = mActivityContext.getStringCache();
+        if (cache != null) {
+            setWorkProfilePausedResources(cache);
+        }
+    }
+
+    private void setWorkProfilePausedResources(StringCache cache) {
+        TextView title = findViewById(R.id.work_apps_paused_title);
+        title.setText(cache.workProfilePausedTitle);
+
+        TextView body = findViewById(R.id.work_apps_paused_content);
+        body.setText(cache.workProfilePausedDescription);
+
+        TextView button = findViewById(R.id.enable_work_apps);
+        button.setText(cache.workProfileEnableButton);
     }
 
     @Override
     public void onClick(View view) {
         if (Utilities.ATLEAST_P) {
             setEnabled(false);
-            mLauncher.getAppsView().getWorkManager().setWorkProfileEnabled(true);
-            mLauncher.getStatsLogManager().logger().log(LAUNCHER_TURN_ON_WORK_APPS_TAP);
+            mActivityContext.getAppsView().getWorkManager().setWorkProfileEnabled(true);
+            mActivityContext.getStatsLogManager().logger().log(LAUNCHER_TURN_ON_WORK_APPS_TAP);
         }
     }
 

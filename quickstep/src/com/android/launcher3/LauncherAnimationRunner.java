@@ -16,9 +16,9 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.Utilities.postAsyncCallback;
-import static com.android.launcher3.util.DisplayController.getSingleFrameMs;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
+import static com.android.launcher3.util.window.RefreshRateTracker.getSingleFrameMs;
 import static com.android.systemui.shared.recents.utilities.Utilities.postAtFrontOfQueueAsynchronously;
 
 import android.animation.Animator;
@@ -28,13 +28,16 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
+import android.os.RemoteException;
+import android.view.IRemoteAnimationFinishedCallback;
+import android.view.RemoteAnimationTarget;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
+import com.android.systemui.animation.RemoteAnimationDelegate;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.lang.ref.WeakReference;
 
@@ -55,7 +58,7 @@ import java.lang.ref.WeakReference;
  * reference to the runner, leaving only the weak ref from the runner.
  */
 @TargetApi(Build.VERSION_CODES.P)
-public class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
+public class LauncherAnimationRunner extends RemoteAnimationRunnerCompat {
 
     private static final RemoteAnimationFactory DEFAULT_FACTORY =
             (transit, appTargets, wallpaperTargets, nonAppTargets, result) ->
@@ -82,14 +85,14 @@ public class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
     @BinderThread
     public void onAnimationStart(
             int transit,
-            RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets,
-            RemoteAnimationTargetCompat[] nonAppTargets,
+            RemoteAnimationTarget[] appTargets,
+            RemoteAnimationTarget[] wallpaperTargets,
+            RemoteAnimationTarget[] nonAppTargets,
             Runnable runnable) {
         Runnable r = () -> {
             finishExistingAnimation();
             mAnimationResult = new AnimationResult(() -> mAnimationResult = null, runnable);
-            getFactory().onCreateAnimation(transit, appTargets, wallpaperTargets, nonAppTargets,
+            getFactory().onAnimationStart(transit, appTargets, wallpaperTargets, nonAppTargets,
                     mAnimationResult);
         };
         if (mStartAtFrontOfQueue) {
@@ -98,22 +101,6 @@ public class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
             postAsyncCallback(mHandler, r);
         }
     }
-
-    // Called only in R platform
-    @BinderThread
-    public void onAnimationStart(RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets, Runnable runnable) {
-        onAnimationStart(0 /* transit */, appTargets, wallpaperTargets,
-                new RemoteAnimationTargetCompat[0], runnable);
-    }
-
-    // Called only in Q platform
-    @BinderThread
-    @Deprecated
-    public void onAnimationStart(RemoteAnimationTargetCompat[] appTargets, Runnable runnable) {
-        onAnimationStart(appTargets, new RemoteAnimationTargetCompat[0], runnable);
-    }
-
 
     private RemoteAnimationFactory getFactory() {
         RemoteAnimationFactory factory = mFactory.get();
@@ -133,14 +120,18 @@ public class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
      */
     @BinderThread
     @Override
-    public void onAnimationCancelled() {
+    public void onAnimationCancelled(boolean isKeyguardOccluded) {
         postAsyncCallback(mHandler, () -> {
             finishExistingAnimation();
             getFactory().onAnimationCancelled();
         });
     }
 
-    public static final class AnimationResult {
+    /**
+     * Used by RemoteAnimationFactory implementations to run the actual animation and its lifecycle
+     * callbacks.
+     */
+    public static final class AnimationResult extends IRemoteAnimationFinishedCallback.Stub {
 
         private final Runnable mSyncFinishRunnable;
         private final Runnable mASyncFinishRunnable;
@@ -215,24 +206,40 @@ public class LauncherAnimationRunner implements RemoteAnimationRunnerCompat {
                 }
             }
         }
+
+        /**
+         * When used as a simple IRemoteAnimationFinishedCallback, this method is used to run the
+         * animation finished runnable.
+         */
+        @Override
+        public void onAnimationFinished() throws RemoteException {
+            mASyncFinishRunnable.run();
+        }
     }
 
     /**
      * Used with LauncherAnimationRunner as an interface for the runner to call back to the
      * implementation.
      */
-    @FunctionalInterface
-    public interface RemoteAnimationFactory {
+    public interface RemoteAnimationFactory extends RemoteAnimationDelegate<AnimationResult> {
 
         /**
          * Called on the UI thread when the animation targets are received. The implementation must
          * call {@link AnimationResult#setAnimation} with the target animation to be run.
          */
-        void onCreateAnimation(int transit,
-                RemoteAnimationTargetCompat[] appTargets,
-                RemoteAnimationTargetCompat[] wallpaperTargets,
-                RemoteAnimationTargetCompat[] nonAppTargets,
+        @Override
+        @UiThread
+        void onAnimationStart(int transit,
+                RemoteAnimationTarget[] appTargets,
+                RemoteAnimationTarget[] wallpaperTargets,
+                RemoteAnimationTarget[] nonAppTargets,
                 LauncherAnimationRunner.AnimationResult result);
+
+        @Override
+        @UiThread
+        default void onAnimationCancelled(boolean isKeyguardOccluded) {
+            onAnimationCancelled();
+        }
 
         /**
          * Called when the animation is cancelled. This can happen with or without

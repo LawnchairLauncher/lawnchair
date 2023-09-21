@@ -57,8 +57,8 @@
     <color name="workspace_text_color_light">#FFF</color>
     <color name="workspace_text_color_dark">#FF000000</color>
 
-    <color name="folder_hint_text_color_light">@color/system_neutral1_50</color>
-    <color name="folder_hint_text_color_dark">@color/system_neutral2_700</color>
+    <color name="folder_hint_text_color_light">#FFF</color>
+    <color name="folder_hint_text_color_dark">#FF000000</color>
 
     <color name="folder_background_light">#F9F9F9</color>
     <color name="folder_background_dark">#464746</color>
@@ -70,13 +70,22 @@
     <color name="folder_pagination_color_light">#ff006c5f</color>
     <color name="folder_pagination_color_dark">#ffbfebe3</color>
 
-    <color name="text_color_primary_dark">@color/system_neutral1_50</color>
-    <color name="text_color_secondary_dark">@color/system_neutral2_200</color>
-    <color name="text_color_tertiary_dark">@color/system_neutral2_400</color>
+    <color name="text_color_primary_dark">#FFFFFFFF</color>
+    <color name="text_color_secondary_dark">#FFFFFFFF</color>
+    <color name="text_color_tertiary_dark">#CCFFFFFF</color>
 
-    <color name="wallpaper_popup_scrim">@color/system_neutral1_900</color>
+    <color name="wallpaper_popup_scrim">?android:attr/colorAccent</color>
     <color name="wallpaper_scrim_color">#0D878787</color>
 
-    <color name="workspace_accent_color_light">@color/system_accent1_100</color>
-    <color name="workspace_accent_color_dark">@color/system_accent2_600</color>
+    <color name="workspace_accent_color_light">#ff8df5e3</color>
+    <color name="workspace_accent_color_dark">#ff3d665f</color>
+
+    <color name="all_apps_button_color">#40484B</color>
+
+    <color name="preload_icon_accent_color_light">#00668B</color>
+    <color name="preload_icon_background_color_light">#B5CAD7</color>
+    <color name="preload_icon_accent_color_dark">#4BB6E8</color>
+    <color name="preload_icon_background_color_dark">#40484D</color>
+
+    <color name="work_turn_on_stroke">?android:attr/colorAccent</color>
 </resources>

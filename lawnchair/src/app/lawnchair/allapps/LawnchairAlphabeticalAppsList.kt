@@ -6,30 +6,32 @@ import app.lawnchair.launcher
 import app.lawnchair.preferences2.PreferenceManager2
 import com.android.launcher3.allapps.AllAppsStore
 import com.android.launcher3.allapps.AlphabeticalAppsList
-import com.android.launcher3.allapps.WorkAdapterProvider
+import com.android.launcher3.allapps.WorkProfileManager
 import com.android.launcher3.model.data.AppInfo
-import com.android.launcher3.util.ItemInfoMatcher
+import com.android.launcher3.model.data.ItemInfo
+import com.android.launcher3.views.ActivityContext
 import com.patrykmichalik.opto.core.onEach
+import java.util.function.Predicate
 
-class LawnchairAlphabeticalAppsList(
-    context: Context,
-    appsStore: AllAppsStore,
-    adapterProvider: WorkAdapterProvider?,
-) : AlphabeticalAppsList(context, appsStore, adapterProvider) {
+class LawnchairAlphabeticalAppsList<T>(context: T,
+                                       appsStore: AllAppsStore?,
+                                       workProfileManager: WorkProfileManager?
+): AlphabeticalAppsList<T>(context, appsStore, workProfileManager)
+        where T : Context, T : ActivityContext {
 
     private var hiddenApps: Set<String> = setOf()
-    private var itemFilter: ItemInfoMatcher? = null
+
+    private var itemFilter: Predicate<ItemInfo>? = null;
 
     init {
-        super.updateItemFilter { info, cn ->
+        super.updateItemFilter { info ->
             require(info is AppInfo) { "`info` must be an instance of `AppInfo`." }
             when {
-                itemFilter?.matches(info, cn) == false -> false
+                itemFilter?.test(info) == false -> false
                 hiddenApps.contains(info.toComponentKey().toString()) -> false
                 else -> true
             }
         }
-
         val prefs = PreferenceManager2.getInstance(context)
         prefs.hiddenApps.onEach(launchIn = context.launcher.lifecycleScope) {
             hiddenApps = it
@@ -37,8 +39,8 @@ class LawnchairAlphabeticalAppsList(
         }
     }
 
-    override fun updateItemFilter(itemFilter: ItemInfoMatcher?) {
-        this.itemFilter = itemFilter
+    override fun updateItemFilter(itemFilter: Predicate<ItemInfo>?) {
+        this.mItemFilter = itemFilter
         onAppsUpdated()
     }
 }

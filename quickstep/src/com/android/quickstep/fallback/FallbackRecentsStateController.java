@@ -33,6 +33,7 @@ import static com.android.quickstep.views.RecentsView.TASK_MODALNESS;
 import static com.android.quickstep.views.RecentsView.TASK_PRIMARY_SPLIT_TRANSLATION;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_SPLIT_TRANSLATION;
 import static com.android.quickstep.views.RecentsView.TASK_SECONDARY_TRANSLATION;
+import static com.android.quickstep.views.RecentsView.TASK_THUMBNAIL_SPLASH_ALPHA;
 import static com.android.quickstep.views.TaskView.FLAG_UPDATE_ALL;
 
 import android.util.FloatProperty;
@@ -44,7 +45,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
-import com.android.launcher3.util.MultiValueAlpha;
+import com.android.launcher3.util.MultiPropertyFactory;
 import com.android.quickstep.RecentsActivity;
 import com.android.quickstep.views.ClearAllButton;
 
@@ -77,6 +78,11 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
         }
         // While animating into recents, update the visible task data as needed
         setter.addOnFrameCallback(() -> mRecentsView.loadVisibleTaskData(FLAG_UPDATE_ALL));
+        setter.addEndListener(success -> {
+            if (!success) {
+                mRecentsView.reset();
+            }
+        });
         mRecentsView.updateEmptyMessage();
 
         setProperties(toState, config, setter);
@@ -89,7 +95,7 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
                 clearAllButtonAlpha, LINEAR);
         float overviewButtonAlpha = state.hasOverviewActions() ? 1 : 0;
         setter.setFloat(mActivity.getActionsView().getVisibilityAlpha(),
-                MultiValueAlpha.VALUE, overviewButtonAlpha, LINEAR);
+                MultiPropertyFactory.MULTI_PROPERTY_VALUE, overviewButtonAlpha, LINEAR);
 
         float[] scaleAndOffset = state.getOverviewScaleAndOffset(mActivity);
         setter.setFloat(mRecentsView, RECENTS_SCALE_PROPERTY, scaleAndOffset[0],
@@ -105,28 +111,28 @@ public class FallbackRecentsStateController implements StateHandler<RecentsState
         boolean showAsGrid = state.displayOverviewTasksAsGrid(mActivity.getDeviceProfile());
         setter.setFloat(mRecentsView, RECENTS_GRID_PROGRESS, showAsGrid ? 1f : 0f,
                 showAsGrid ? INSTANT : FINAL_FRAME);
+        setter.setFloat(mRecentsView, TASK_THUMBNAIL_SPLASH_ALPHA,
+                state.showTaskThumbnailSplash() ? 1f : 0f, INSTANT);
 
         setter.setViewBackgroundColor(mActivity.getScrimView(), state.getScrimColor(mActivity),
                 config.getInterpolator(ANIM_SCRIM_FADE, LINEAR));
 
         RecentsState currentState = mActivity.getStateManager().getState();
         if (isSplitSelectionState(state) && !isSplitSelectionState(currentState)) {
-            setter.add(mRecentsView.createSplitSelectInitAnimation().buildAnim());
+            int duration = state.getTransitionDuration(mActivity, true /* isToState */);
+            // TODO (b/246851887): Pass in setter as a NO_ANIM PendingAnimation instead
+            PendingAnimation pa = new PendingAnimation(duration);
+            mRecentsView.createSplitSelectInitAnimation(pa, duration);
+            setter.add(pa.buildAnim());
         }
 
         Pair<FloatProperty, FloatProperty> taskViewsFloat =
                 mRecentsView.getPagedOrientationHandler().getSplitSelectTaskOffset(
                         TASK_PRIMARY_SPLIT_TRANSLATION, TASK_SECONDARY_SPLIT_TRANSLATION,
                         mActivity.getDeviceProfile());
+        setter.setFloat(mRecentsView, taskViewsFloat.first, isSplitSelectionState(state)
+                ? mRecentsView.getSplitSelectTranslation() : 0, LINEAR);
         setter.setFloat(mRecentsView, taskViewsFloat.second, 0, LINEAR);
-        if (isSplitSelectionState(state)) {
-            mRecentsView.applySplitPrimaryScrollOffset();
-            setter.setFloat(mRecentsView, taskViewsFloat.first,
-                    mRecentsView.getSplitSelectTranslation(), LINEAR);
-        } else {
-            mRecentsView.resetSplitPrimaryScrollOffset();
-            setter.setFloat(mRecentsView, taskViewsFloat.first, 0, LINEAR);
-        }
     }
 
     /**

@@ -28,7 +28,7 @@ import java.util.ArrayList;
 @ProvidesInterface(action = OneSearch.ACTION, version = OneSearch.VERSION)
 public interface OneSearch extends Plugin {
     String ACTION = "com.android.systemui.action.PLUGIN_ONE_SEARCH";
-    int VERSION = 5;
+    int VERSION = 6;
 
     /**
      * Get the content provider warmed up.
@@ -44,6 +44,8 @@ public interface OneSearch extends Plugin {
 
     /** Get image bitmap with the URL. */
     Parcelable getImageBitmap(String imageUrl);
+
+    void setSuggestOnChrome(boolean enable);
 
     /**
      * Notifies search events to plugin

@@ -21,13 +21,13 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.android.launcher3.Launcher;
 import com.android.launcher3.PagedView;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.workprofile.PersonalWorkPagedView;
 
 /**
- *  A {@link PagedView} for showing different views for the personal and work profile respectively
- *  in the {@link AllAppsContainerView}.
+ * A {@link PagedView} for showing different views for the personal and work profile respectively
+ * in the {@link BaseAllAppsContainerView}.
  */
 public class AllAppsPagedView extends PersonalWorkPagedView {
 
@@ -47,7 +47,7 @@ public class AllAppsPagedView extends PersonalWorkPagedView {
     protected boolean snapToPageWithVelocity(int whichPage, int velocity) {
         boolean resp = super.snapToPageWithVelocity(whichPage, velocity);
         if (resp && whichPage != mCurrentPage) {
-            Launcher.getLauncher(getContext()).getStatsLogManager().logger()
+            ActivityContext.lookupContext(getContext()).getStatsLogManager().logger()
                     .log(mCurrentPage < whichPage
                             ? LAUNCHER_ALLAPPS_SWIPE_TO_WORK_TAB
                             : LAUNCHER_ALLAPPS_SWIPE_TO_PERSONAL_TAB);

@@ -177,7 +177,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
         notifyApplied(si)
         val cache = LauncherAppState.getInstance(launcher).iconCache
         MODEL_EXECUTOR.handler.postAtFrontOfQueue {
-            cache.getUnbadgedShortcutIcon(si, shortcutInfo)
+            cache.getShortcutInfoBadge(shortcutInfo)
             runOnMainThread { applyFromWorkspaceItem(si) }
         }
     }
@@ -203,7 +203,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) : BubbleTextView(
 
             info.bitmap = when {
                 info.hasFlags(FLAG_PRIMARY_ICON_FROM_TITLE) ->
-                    li.createIconBitmap("${info.title[0]}", packageIcon.color)
+                    li.createIconBitmap("${info.title?.get(0)}", packageIcon.color)
                 icon == null -> packageIcon
                 else -> li.createBadgedIconBitmap(icon.loadDrawable(context), info.user, false)
             }

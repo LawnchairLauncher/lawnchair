@@ -15,34 +15,35 @@
  */
 package com.android.quickstep;
 
-import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
-import static android.content.pm.ActivityInfo.CONFIG_SCREEN_SIZE;
+import static android.os.Trace.TRACE_TAG_APP;
+import static android.view.RemoteAnimationTarget.MODE_CLOSING;
+import static android.view.RemoteAnimationTarget.MODE_OPENING;
 
 import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.STATUS_BAR_TRANSITION_PRE_DELAY;
-import static com.android.launcher3.Utilities.createHomeIntent;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
 import static com.android.launcher3.graphics.SysUiScrim.SYSUI_PROGRESS;
-import static com.android.launcher3.testing.TestProtocol.BAD_STATE;
-import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
+import static com.android.quickstep.OverviewComponentObserver.startHomeIntentSafely;
 import static com.android.quickstep.TaskUtils.taskIsATargetWithMode;
 import static com.android.quickstep.TaskViewUtils.createRecentsWindowAnimator;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
+import android.os.Trace;
 import android.view.Display;
+import android.view.RemoteAnimationAdapter;
+import android.view.RemoteAnimationTarget;
 import android.view.SurfaceControl.Transaction;
 import android.view.View;
+import android.window.RemoteTransition;
 import android.window.SplashScreen;
 
 import androidx.annotation.Nullable;
@@ -83,22 +84,19 @@ import com.android.quickstep.util.TISBindHelper;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.system.ActivityOptionsCompat;
-import com.android.systemui.shared.system.RemoteAnimationAdapterCompat;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.List;
 
 /**
- * A recents activity that shows the recently launched tasks as swipable task cards.
+ * A recents activity that shows the recently launched tasks as swipable task
+ * cards.
  * See {@link com.android.quickstep.views.RecentsView}.
  */
 public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
-    public static final ActivityTracker<RecentsActivity> ACTIVITY_TRACKER =
-            new ActivityTracker<>();
+    public static final ActivityTracker<RecentsActivity> ACTIVITY_TRACKER = new ActivityTracker<>();
 
     private Handler mUiHandler = new Handler(Looper.getMainLooper());
 
@@ -113,14 +111,13 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     private @Nullable TaskbarManager mTaskbarManager;
     private @Nullable FallbackTaskbarUIController mTaskbarUIController;
 
-    private Configuration mOldConfig;
-
     private StateManager<RecentsState> mStateManager;
 
     // Strong refs to runners which are cleared when the activity is destroyed
     private RemoteAnimationFactory mActivityLaunchAnimationRunner;
 
-    // For handling degenerate cases where starting an activity doesn't actually trigger the remote
+    // For handling degenerate cases where starting an activity doesn't actually
+    // trigger the remote
     // animation callback
     private final Handler mHandler = new Handler();
     private final Runnable mAnimationStartTimeoutRunnable = this::onAnimationStartTimeout;
@@ -137,9 +134,9 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         mActionsView = findViewById(R.id.overview_actions_view);
         SYSUI_PROGRESS.set(getRootView().getSysUiScrim(), 0f);
 
-        SplitSelectStateController controller =
-                new SplitSelectStateController(mHandler, SystemUiProxy.INSTANCE.get(this),
-                        getStateManager(), null /*depthController*/);
+        SplitSelectStateController controller = new SplitSelectStateController(this, mHandler, getStateManager(),
+                null /* depthController */, getStatsLogManager(),
+                SystemUiProxy.INSTANCE.get(this), RecentsModel.INSTANCE.get(this));
         mDragLayer.recreateControllers();
         mFallbackRecentsView.init(mActionsView, controller);
 
@@ -166,7 +163,7 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
     @Override
     public void onMultiWindowModeChanged(boolean isInMultiWindowMode, Configuration newConfig) {
-        onHandleConfigChanged();
+        onHandleConfigurationChanged();
         super.onMultiWindowModeChanged(isInMultiWindowMode, newConfig);
     }
 
@@ -176,11 +173,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
         ACTIVITY_TRACKER.handleNewIntent(this);
     }
 
-    /**
-         * Logic for when device configuration changes (rotation, screen size change, multi-window,
-         * etc.)
-         */
-    protected void onHandleConfigChanged() {
+    @Override
+    protected void onHandleConfigurationChanged() {
         initDeviceProfile();
 
         AbstractFloatingView.closeOpenViews(this, true,
@@ -193,12 +187,14 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
     /**
      * Generate the device profile to use in this activity.
+     * 
      * @return device profile
      */
     protected DeviceProfile createDeviceProfile() {
         DeviceProfile dp = InvariantDeviceProfile.INSTANCE.get(this).getDeviceProfile(this);
 
-        // In case we are reusing IDP, create a copy so that we don't conflict with Launcher
+        // In case we are reusing IDP, create a copy so that we don't conflict with
+        // Launcher
         // activity.
         return (mDragLayer != null) && isInMultiWindowMode()
                 ? dp.getMultiWindowProfile(this, getMultiWindowDisplaySize())
@@ -230,7 +226,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     }
 
     /**
-     * Called if the remote animation callback from #getActivityLaunchOptions() hasn't called back
+     * Called if the remote animation callback from #getActivityLaunchOptions()
+     * hasn't called back
      * in a reasonable time due to a conflict with the recents animation.
      */
     private void onAnimationStartTimeout() {
@@ -250,9 +247,9 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
         mActivityLaunchAnimationRunner = new RemoteAnimationFactory() {
             @Override
-            public void onCreateAnimation(int transit, RemoteAnimationTargetCompat[] appTargets,
-                    RemoteAnimationTargetCompat[] wallpaperTargets,
-                    RemoteAnimationTargetCompat[] nonAppTargets, AnimationResult result) {
+            public void onAnimationStart(int transit, RemoteAnimationTarget[] appTargets,
+                    RemoteAnimationTarget[] wallpaperTargets,
+                    RemoteAnimationTarget[] nonAppTargets, AnimationResult result) {
                 mHandler.removeCallbacks(mAnimationStartTimeoutRunnable);
                 AnimatorSet anim = composeRecentsLaunchAnimator(taskView, appTargets,
                         wallpaperTargets, nonAppTargets);
@@ -270,15 +267,18 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
         final LauncherAnimationRunner wrapper = new LauncherAnimationRunner(
                 mUiHandler, mActivityLaunchAnimationRunner, true /* startAtFrontOfQueue */);
-        RemoteAnimationAdapterCompat adapterCompat = new RemoteAnimationAdapterCompat(
-                wrapper, RECENTS_LAUNCH_DURATION,
-                RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION
-                        - STATUS_BAR_TRANSITION_PRE_DELAY, getIApplicationThread());
-        final ActivityOptionsWrapper activityOptions = new ActivityOptionsWrapper(
-                ActivityOptionsCompat.makeRemoteAnimation(adapterCompat),
+        final ActivityOptions options = ActivityOptions.makeRemoteAnimation(
+                new RemoteAnimationAdapter(wrapper, RECENTS_LAUNCH_DURATION,
+                        RECENTS_LAUNCH_DURATION - STATUS_BAR_TRANSITION_DURATION
+                                - STATUS_BAR_TRANSITION_PRE_DELAY),
+                new RemoteTransition(wrapper.toRemoteTransition(), getIApplicationThread()));
+        final ActivityOptionsWrapper activityOptions = new ActivityOptionsWrapper(options,
                 onEndCallback);
         if (Utilities.ATLEAST_S) {
-            activityOptions.options.setSplashscreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
+            activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
+            activityOptions.options.setLaunchDisplayId(
+                    (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
+                            : Display.DEFAULT_DISPLAY);
         }
         mHandler.postDelayed(mAnimationStartTimeoutRunnable, RECENTS_ANIMATION_TIMEOUT);
         return activityOptions;
@@ -287,10 +287,10 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     /**
      * Composes the animations for a launch from the recents list if possible.
      */
-    private AnimatorSet  composeRecentsLaunchAnimator(TaskView taskView,
-            RemoteAnimationTargetCompat[] appTargets,
-            RemoteAnimationTargetCompat[] wallpaperTargets,
-            RemoteAnimationTargetCompat[] nonAppTargets) {
+    private AnimatorSet composeRecentsLaunchAnimator(TaskView taskView,
+            RemoteAnimationTarget[] appTargets,
+            RemoteAnimationTarget[] wallpaperTargets,
+            RemoteAnimationTarget[] nonAppTargets) {
         AnimatorSet target = new AnimatorSet();
         boolean activityClosing = taskIsATargetWithMode(appTargets, getTaskId(), MODE_CLOSING);
         PendingAnimation pa = new PendingAnimation(RECENTS_LAUNCH_DURATION);
@@ -298,7 +298,8 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
                 wallpaperTargets, nonAppTargets, null /* depthController */, pa);
         target.play(pa.buildAnim());
 
-        // Found a visible recents task that matches the opening app, lets launch the app from there
+        // Found a visible recents task that matches the opening app, lets launch the
+        // app from there
         if (activityClosing) {
             Animator adjacentAnimation = mFallbackRecentsView
                     .createAdjacentPageAnimForTaskLaunch(taskView);
@@ -314,7 +315,6 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     protected void onStart() {
         // Set the alpha to 1 before calling super, as it may get set back to 0 due to
         // onActivityStart callback.
-        Log.d(BAD_STATE, "RecentsActivity onStart mFallbackRecentsView.setContentAlpha(1)");
         mFallbackRecentsView.setContentAlpha(1);
         super.onStart();
         mFallbackRecentsView.updateLocusId();
@@ -341,23 +341,12 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
 
         mStateManager = new StateManager<>(this, RecentsState.BG_LAUNCHER);
 
-        mOldConfig = new Configuration(getResources().getConfiguration());
         initDeviceProfile();
         setupViews();
 
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
         ACTIVITY_TRACKER.handleCreate(this);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        int diff = newConfig.diff(mOldConfig);
-        if ((diff & (CONFIG_ORIENTATION | CONFIG_SCREEN_SIZE)) != 0) {
-            onHandleConfigChanged();
-        }
-        mOldConfig.setTo(newConfig);
-        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -381,8 +370,10 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     @Override
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();
-        // After the transition to home, enable the high-res thumbnail loader if it wasn't enabled
-        // as a part of quickstep, so that high-res thumbnails can load the next time we enter
+        // After the transition to home, enable the high-res thumbnail loader if it
+        // wasn't enabled
+        // as a part of quickstep, so that high-res thumbnails can load the next time we
+        // enter
         // overview
         RecentsModel.INSTANCE.get(this).getThumbnailCache()
                 .getHighResLoadingState().setVisible(true);
@@ -413,47 +404,37 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     }
 
     public void startHome() {
-        if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-            RecentsView recentsView = getOverviewPanel();
-            recentsView.switchToScreenshot(() -> recentsView.finishRecentsAnimation(true,
-                    this::startHomeInternal));
-        } else {
-            startHomeInternal();
-        }
+        RecentsView recentsView = getOverviewPanel();
+        recentsView.switchToScreenshot(() -> recentsView.finishRecentsAnimation(true,
+                this::startHomeInternal));
     }
 
     private void startHomeInternal() {
         LauncherAnimationRunner runner = new LauncherAnimationRunner(
                 getMainThreadHandler(), mAnimationToHomeFactory, true);
-        RemoteAnimationAdapterCompat adapterCompat =
-                new RemoteAnimationAdapterCompat(runner, HOME_APPEAR_DURATION, 0,
-                        getIApplicationThread());
-        startActivity(createHomeIntent(),
-                ActivityOptionsCompat.makeRemoteAnimation(adapterCompat).toBundle());
+        ActivityOptions options = ActivityOptions.makeRemoteAnimation(
+                new RemoteAnimationAdapter(runner, HOME_APPEAR_DURATION, 0),
+                new RemoteTransition(runner.toRemoteTransition(), getIApplicationThread()));
+        startHomeIntentSafely(this, options.toBundle());
     }
 
-    private final RemoteAnimationFactory mAnimationToHomeFactory =
-            new RemoteAnimationFactory() {
-        @Override
-        public void onCreateAnimation(int transit, RemoteAnimationTargetCompat[] appTargets,
-                RemoteAnimationTargetCompat[] wallpaperTargets,
-                RemoteAnimationTargetCompat[] nonAppTargets, AnimationResult result) {
-            AnimatorPlaybackController controller = getStateManager()
-                    .createAnimationToNewWorkspace(RecentsState.BG_LAUNCHER, HOME_APPEAR_DURATION);
-            controller.dispatchOnStart();
+    private final RemoteAnimationFactory mAnimationToHomeFactory = (transit, appTargets, wallpaperTargets,
+            nonAppTargets, result) -> {
+        AnimatorPlaybackController controller = getStateManager().createAnimationToNewWorkspace(
+                RecentsState.BG_LAUNCHER, HOME_APPEAR_DURATION);
+        controller.dispatchOnStart();
 
-            RemoteAnimationTargets targets = new RemoteAnimationTargets(
-                    appTargets, wallpaperTargets, nonAppTargets, MODE_OPENING);
-            for (RemoteAnimationTargetCompat app : targets.apps) {
-                new Transaction().setAlpha(app.leash.getSurfaceControl(), 1).apply();
-            }
-            AnimatorSet anim = new AnimatorSet();
-            anim.play(controller.getAnimationPlayer());
-            anim.setDuration(HOME_APPEAR_DURATION);
-            result.setAnimation(anim, RecentsActivity.this,
-                    () -> getStateManager().goToState(RecentsState.HOME, false),
-                    true /* skipFirstFrame */);
+        RemoteAnimationTargets targets = new RemoteAnimationTargets(
+                appTargets, wallpaperTargets, nonAppTargets, MODE_OPENING);
+        for (RemoteAnimationTarget app : targets.apps) {
+            new Transaction().setAlpha(app.leash, 1).apply();
         }
+        AnimatorSet anim = new AnimatorSet();
+        anim.play(controller.getAnimationPlayer());
+        anim.setDuration(HOME_APPEAR_DURATION);
+        result.setAnimation(anim, RecentsActivity.this,
+                () -> getStateManager().goToState(RecentsState.HOME, false),
+                true /* skipFirstFrame */);
     };
 
     @Override
@@ -476,6 +457,13 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     @Override
     public AtomicAnimationFactory<RecentsState> createAtomicAnimationFactory() {
         return new RecentsAtomicAnimationFactory<>(this);
+    }
+
+    @Override
+    public void dispatchDeviceProfileChanged() {
+        super.dispatchDeviceProfileChanged();
+        Trace.instantForTrack(TRACE_TAG_APP, "RecentsActivity#DeviceProfileChanged",
+                getDeviceProfile().toSmallString());
     }
 
     private AnimatorListenerAdapter resetStateListener() {

@@ -35,7 +35,6 @@
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Получаване на предложения за приложения в реда с любими на началния екран"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Осъществявайте лесен достъп до най-използваните от вас приложения директно от началния екран. Предложенията ще се променят въз основа на действията ви. Приложенията на най-долния ред ще се преместят на началния ви екран."</string>
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Осъществявайте лесен достъп до най-използваните от вас приложения директно от началния екран. Предложенията ще се променят въз основа на действията ви. Приложенията в реда с любими ще бъдат преместени на началния екран."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Осъществявайте лесен достъп до най-използваните от вас приложения директно от началния екран. Предложенията ще се променят въз основа на действията ви. Приложенията на най-долния ред ще се преместят в нова папка."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Предложения"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Не, благодаря"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Настройки"</string>
@@ -45,53 +44,83 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Предложенията за приложения са активирани"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Функцията „Предложения за приложения“ е деактивирана"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Предвидено приложение: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Трябва да прекарате пръст от най-лявата част на екрана."</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Трябва да прекарате пръст от левия край на екрана до средата, след което да вдигнете пръста си."</string>
-    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"Това е всичко! Сега прекарайте пръст от десния край."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Трябва да прекарате пръст от най-дясната част на екрана."</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Трябва да прекарате пръст от десния край на екрана до средата, след което да вдигнете пръста си."</string>
-    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"Изпълнихте жеста за връщане назад. В следващия урок ще научите как се преминава към началния екран."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Трябва да прекарате пръст от най-дясната или най-лявата част на екрана."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Трябва да прекарате пръст от десния или левия край на екрана до средата, след което да освободите."</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Научихте жеста за връщане с плъзгане от дясно. Сега научете как се превключва между приложения."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Изпълнихте жеста за връщане назад."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Не прекарвайте пръст твърде близо до долната част на екрана."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Променете чувств. на жеста за връщане назад от настройките"</string>
-    <string name="back_gesture_intro_title" msgid="19551256430224428">"Прекарване на пръст за връщане назад"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Жест за връщане назад"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"За да се върнете на предишния екран, прекарайте пръст от левия или десния край на екрана до средата."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"За да се върнете към последния екран, прекарайте два пръста от левия или десния край на екрана до средата."</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Връщане назад"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Трябва да прекарате пръст нагоре от долния край на екрана."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Не задържайте, преди да вдигнете пръста си."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Трябва да прекарате пръст право нагоре."</string>
-    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"Изпълнихте жеста за преминаване към началния екран. В следващия урок ще научите как се превключва между приложенията."</string>
-    <string name="home_gesture_intro_title" msgid="836590312858441830">"Прекарване на пръст за преминаване към началния екран"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Изпълнихте жеста за преминаване към началния екран. В следващия урок ще научите как да се върнете назад."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Изпълнихте жеста за преминаване към началния екран."</string>
+    <string name="home_gesture_intro_title" msgid="836590312858441830">"Жест за преминаване към началния екран"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Прекарайте пръст нагоре от долната част на екрана. Този жест винаги ще ви отвежда до началния екран."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Прекарайте два пръста нагоре от долната част на екрана. Този жест винаги води до началния екран."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Отваряне на началния екран"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"За да отворите началния си екран по всяко време, прекарайте пръст нагоре от долната част на екрана"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Трябва да прекарате пръст нагоре от долния край на екрана."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Задръжте прозореца по-дълго, преди да вдигнете пръста си."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Прекарайте пръст право нагоре, след което задръжте."</string>
-    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Изпълнихте жеста за превключване между приложенията. Вече можете да използвате телефона си!"</string>
-    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Прекарване на пръст за превключване между приложенията"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Прекарайте пръст нагоре от долната част на екрана, задръжте и след това вдигнете пръста си."</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Научихте как да използвате жестовете. За да ги изключите, отворете настройките."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Изпълнихте жеста за превключване между приложения."</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Жест за превключване между приложенията"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"За превключване прекарайте пръст нагоре от долната част на екрана, задръжте и освободете"</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"За превключване на прил. плъзнете 2 пръста нагоре от долната част на екрана, задръжте и освободете."</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Превключване на приложенията"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Готово"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Напред"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Готово"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Готово"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Настройки"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Опитайте отново"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Чудесно!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Урок <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <string name="allset_title" msgid="5021126669778966707">"Готово!"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Прекарайте пръст нагоре, за да отворите началния екран"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"Докоснете бутона „Начало“, за да преминете към началния екран"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Можете да започнете да използвате <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"устройството"</string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Настройки за навигиране в системата"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Споделяне"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Екранна снимка"</string>
     <string name="action_split" msgid="2098009717623550676">"Разделяне на екрана"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"Докоснете друго прил., за да ползвате разд. екран"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"Приложението не поддържа разделен екран."</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"Докоснете друго прил., за да ползвате разд. екран"</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"За разделен екран изберете още едно приложение"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Това действие не е разрешено от приложението или организацията ви"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Пропускане на урока за навигиране?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Урокът е налице в приложението <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Отказ"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Пропускане"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Завъртане на екрана"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Урок за лентата на задачите"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Показва се урокът за лентата на задачите"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Урокът за лентата на задачите бе затворен"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Използвайте лентата на задачите за превключване между прил."</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Плъзнете встрани, за да използвате едновременно 2 приложения"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Докоснете и задръжте, за да скриете лентата на задачите"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Плъзнете приложение встрани, за да използвате едновременно 2"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Плъзнете бавно нагоре, за да видите лентата на задачите"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Получавайте предложения за приложения според навиците си"</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Включете навигирането с жестове от настройките с цел авт. скриване на лентата на задачите"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Правете повече неща с лентата на задачите"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Напред"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Назад"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Затваряне"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Готово"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Начало"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Достъпност"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Назад"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"Редактор за метода на въвежд.: Превключвател"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Скорошни"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Известия"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Бързи настройки"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"Лента на задачите"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Лентата на задачите се показва"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Лентата на задачите е скрита"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Лента за навигация"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Преместване горе/вляво"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Преместване долу/вдясно"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Показване на още # приложение.}other{Показване на още # приложения.}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> и <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

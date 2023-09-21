@@ -28,6 +28,8 @@ import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.FloatRange;
+
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
@@ -182,6 +184,13 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
     public void reapplyState(boolean cancelCurrentAnimation) {
         boolean wasInAnimation = mConfig.currentAnimation != null;
         if (cancelCurrentAnimation) {
+            // Animation canceling can trigger a cleanup routine, causing problems when we are in a
+            // launcher state that relies on member variable data. So if we are in one of those
+            // states, accelerate the current animation to its end point rather than canceling it
+            // outright.
+            if (mState.shouldPreserveDataStateOnReapply() && mConfig.currentAnimation != null) {
+                mConfig.currentAnimation.end();
+            }
             mAtomicAnimationFactory.cancelAllStateElementAnimation();
             cancelAnimation();
         }
@@ -192,6 +201,21 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
             if (wasInAnimation) {
                 onStateTransitionEnd(mState);
             }
+        }
+    }
+
+    /** Handles backProgress in predictive back gesture by passing it to state handlers. */
+    public void onBackProgressed(
+            STATE_TYPE toState, @FloatRange(from = 0.0, to = 1.0) float backProgress) {
+        for (StateHandler handler : getStateHandlers()) {
+            handler.onBackProgressed(toState, backProgress);
+        }
+    }
+
+    /** Handles back cancelled event in predictive back gesture by passing it to state handlers. */
+    public void onBackCancelled(STATE_TYPE toState) {
+        for (StateHandler handler : getStateHandlers()) {
+            handler.onBackCancelled(toState);
         }
     }
 
@@ -253,8 +277,8 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
         // Since state mBaseState can be reached from multiple states, just assume that the
         // transition plays in reverse and use the same duration as previous state.
         mConfig.duration = state == mBaseState
-                ? fromState.getTransitionDuration(mActivity)
-                : state.getTransitionDuration(mActivity);
+                ? fromState.getTransitionDuration(mActivity, false /* isToState */)
+                : state.getTransitionDuration(mActivity, true /* isToState */);
         prepareForAtomicAnimation(fromState, state, mConfig);
         AnimatorSet animation = createAnimationToNewWorkspaceInternal(state).buildAnim();
         if (listener != null) {
@@ -376,12 +400,16 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
     }
 
     public void moveToRestState() {
+        moveToRestState(shouldAnimateStateChange());
+    }
+
+    public void moveToRestState(boolean isAnimated) {
         if (mConfig.currentAnimation != null && mConfig.userControlled) {
             // The user is doing something. Lets not mess it up
             return;
         }
         if (mState.shouldDisableRestore()) {
-            goToState(getRestState());
+            goToState(getRestState(), isAnimated);
             // Reset history
             mLastStableState = mBaseState;
         }
@@ -582,6 +610,13 @@ public class StateManager<STATE_TYPE extends BaseState<STATE_TYPE>> {
          */
         void setStateWithAnimation(
                 STATE_TYPE toState, StateAnimationConfig config, PendingAnimation animation);
+
+        /** Handles backProgress in predictive back gesture for target state. */
+        default void onBackProgressed(
+                STATE_TYPE toState, @FloatRange(from = 0.0, to = 1.0) float backProgress) {};
+
+        /** Handles back cancelled event in predictive back gesture for target state.  */
+        default void onBackCancelled(STATE_TYPE toState) {};
     }
 
     public interface StateListener<STATE_TYPE> {

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_share_drop_target_label" msgid="5804774105974539508">"Ndaj aplikacionin"</string>
+    <string name="action_listen" msgid="2370304050784689486">"Dëgjo"</string>
+    <string name="action_translate" msgid="8028378961867277746">"Përkthe"</string>
+    <string name="action_search" msgid="6269564710943755464">"Lentja"</string>
+    <string name="dialog_acknowledge" msgid="2804025517675853172">"E KUPTOVA"</string>
+    <string name="dialog_cancel" msgid="6464336969134856366">"ANULO"</string>
+    <string name="dialog_settings" msgid="6564397136021186148">"CILËSIMET"</string>
+    <string name="niu_actions_confirmation_title" msgid="3863451714863526143">"Përkthe ose dëgjo tekstin në ekran"</string>
+    <string name="niu_actions_confirmation_text" msgid="2105271481950866089">"Informacionet si teksti në ekranin tënd, adresat e uebit dhe pamjet e ekranit mund të ndahen me Google.\n\nPër të ndryshuar se çfarë informacionesh ndahen, shko te "<b>"Cilësimet &gt; Aplikacionet &gt; Aplikacionet e parazgjedhura &gt; Aplikacioni i asistentit dixhital"</b>"."</string>
+    <string name="assistant_not_selected_title" msgid="5017072974603345228">"Zgjidh një asistent për të përdorur këtë veçori"</string>
+    <string name="assistant_not_selected_text" msgid="3244613673884359276">"Për të dëgjuar ose përkthyer tekstin në ekran, zgjidh një aplikacion të asistentit dixhital te \"Cilësimet\""</string>
+    <string name="assistant_not_supported_title" msgid="1675788067597484142">"Ndrysho asistentin për të përdorur këtë veçori"</string>
+    <string name="assistant_not_supported_text" msgid="1708031078549268884">"Për të dëgjuar ose përkthyer tekstin në ekran, ndrysho aplikacionin e asistentit dixhital te \"Cilësimet\""</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Trokit këtu për të dëgjuar tekstin në këtë ekran"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Trokit këtu për të përkthyer tekstin në këtë ekran"</string>
+    <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Ky aplikacion nuk mund të ndahet"</string>
+</resources>

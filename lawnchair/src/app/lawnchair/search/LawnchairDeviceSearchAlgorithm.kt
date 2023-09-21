@@ -14,6 +14,7 @@ import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.requireSystemService
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.allapps.AllAppsGridAdapter
+import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Executors
 import java.util.concurrent.atomic.AtomicBoolean
@@ -39,7 +40,7 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
         createSearchSession()
     }
 
-    override fun doSearch(query: String, callback: SearchCallback<AllAppsGridAdapter.AdapterItem>) {
+    override fun doSearch(query: String, callback: SearchCallback<BaseAllAppsAdapter.AdapterItem>) {
         activeQuery?.cancel()
         searchSession ?: return
         activeQuery = PendingQuery(query, callback)
@@ -97,7 +98,7 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
 
     private inner class PendingQuery(
         private val query: String,
-        private val callback: SearchCallback<AllAppsGridAdapter.AdapterItem>
+        private val callback: SearchCallback<BaseAllAppsAdapter.AdapterItem>
     ) : Consumer<List<SearchTarget>> {
         private var canceled = false
 
@@ -108,7 +109,7 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
                 LawnchairSearchAdapterProvider.setFirstItemQuickLaunch(adapterItems)
                 callback.onSearchResult(
                     query,
-                    ArrayList<AllAppsGridAdapter.AdapterItem>(adapterItems)
+                    ArrayList<BaseAllAppsAdapter.AdapterItem>(adapterItems)
                 )
             }
         }

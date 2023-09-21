@@ -18,6 +18,7 @@ package com.android.systemui.shared.recents.utilities;
 
 import static android.app.StatusBarManager.NAVIGATION_HINT_BACK_ALT;
 import static android.app.StatusBarManager.NAVIGATION_HINT_IME_SHOWN;
+import static android.app.StatusBarManager.NAVIGATION_HINT_IME_SWITCHER_SHOWN;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -35,10 +36,6 @@ import android.view.WindowManager;
 public class Utilities {
 
     private static final float TABLET_MIN_DPS = 600;
-
-    public static final boolean ATLEAST_S = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S;
-
-    public static final boolean ATLEAST_S_V2 = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S_V2;
 
     /**
      * Posts a runnable on a handler at the front of the queue ignoring any sync barriers.
@@ -63,6 +60,16 @@ public class Utilities {
         if (from == Surface.ROTATION_270 && to == Surface.ROTATION_90) return true; //180d so CCW
         if (from == Surface.ROTATION_270 && to == Surface.ROTATION_180) return true;
         return false; // Default
+    }
+
+    /**
+     * Compares the ratio of two quantities and returns whether that ratio is greater than the
+     * provided bound. Order of quantities does not matter. Bound should be a decimal representation
+     * of a percentage.
+     */
+    public static boolean isRelativePercentDifferenceGreaterThan(float first, float second,
+            float bound) {
+        return (Math.abs(first - second) / Math.abs((first + second) / 2.0f)) > bound;
     }
 
     /** Calculates the constrast between two colors, using the algorithm provided by the WCAG v2. */
@@ -114,10 +121,15 @@ public class Utilities {
                 hints &= ~NAVIGATION_HINT_BACK_ALT;
                 break;
         }
-        if (showImeSwitcher) {
+        if (imeShown) {
             hints |= NAVIGATION_HINT_IME_SHOWN;
         } else {
             hints &= ~NAVIGATION_HINT_IME_SHOWN;
+        }
+        if (showImeSwitcher) {
+            hints |= NAVIGATION_HINT_IME_SWITCHER_SHOWN;
+        } else {
+            hints &= ~NAVIGATION_HINT_IME_SWITCHER_SHOWN;
         }
 
         return hints;
@@ -125,7 +137,7 @@ public class Utilities {
 
     /** @return whether or not {@param context} represents that of a large screen device or not */
     @TargetApi(Build.VERSION_CODES.R)
-    public static boolean isTablet(Context context) {
+    public static boolean isLargeScreen(Context context) {
         final WindowManager windowManager = context.getSystemService(WindowManager.class);
         final Rect bounds = windowManager.getCurrentWindowMetrics().getBounds();
 

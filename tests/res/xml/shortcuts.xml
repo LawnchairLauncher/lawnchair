@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android" >
     <shortcut
-        android:shortcutId="shortcut1"
+        android:shortcutId="shortcut1_themed"
+        android:icon="@drawable/test_theme_icon"
         android:shortcutShortLabel="@string/shortcut1">
         <intent android:action="com.android.launcher3.intent.action.test_shortcut"/>
     </shortcut>

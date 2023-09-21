@@ -16,9 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_QUICKSTEP_LIVE_TILE;
-import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
-import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA;
 
 import android.animation.Animator;
@@ -26,7 +23,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Outline;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
@@ -35,7 +31,6 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewOutlineProvider;
-import android.view.ViewTreeObserver.OnScrollChangedListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -61,13 +56,12 @@ import app.lawnchair.theme.drawable.DrawableTokens;
 /**
  * Contains options for a recent task when long-pressing its icon.
  */
-public class TaskMenuView extends AbstractFloatingView implements OnScrollChangedListener {
+public class TaskMenuView extends AbstractFloatingView {
 
     private static final Rect sTempRect = new Rect();
 
     private static final int REVEAL_OPEN_DURATION = 150;
     private static final int REVEAL_CLOSE_DURATION = 100;
-    private final float mTaskInsetMargin;
 
     private BaseDraggingActivity mActivity;
     private TextView mTaskName;
@@ -86,7 +80,6 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
 
         mActivity = BaseDraggingActivity.fromContext(context);
         setClipToOutline(true);
-        mTaskInsetMargin = getResources().getDimension(R.dimen.task_card_margin);
     }
 
     @Override
@@ -135,50 +128,6 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         };
     }
 
-    private void setPosition(float x, float y, int overscrollShift) {
-        PagedOrientationHandler pagedOrientationHandler = mTaskView.getPagedOrientationHandler();
-        // Inset due to margin
-        PointF additionalInset = pagedOrientationHandler
-                .getAdditionalInsetForTaskMenu(mTaskInsetMargin);
-        DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        int taskTopMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
-
-        float adjustedY = y + taskTopMargin - additionalInset.y;
-        float adjustedX = x - additionalInset.x;
-        // Changing pivot to make computations easier
-        // NOTE: Changing the pivots means the rotated view gets rotated about the new pivots set,
-        // which would render the X and Y position set here incorrect
-        setPivotX(0);
-        if (deviceProfile.overviewShowAsGrid) {
-            // In tablet, set pivotY to original position without mThumbnailTopMargin adjustment.
-            setPivotY(-taskTopMargin);
-        } else {
-            setPivotY(0);
-        }
-        setRotation(pagedOrientationHandler.getDegreesRotated());
-        setX(pagedOrientationHandler.getTaskMenuX(adjustedX,
-                mTaskContainer.getThumbnailView(), overscrollShift, deviceProfile));
-        setY(pagedOrientationHandler.getTaskMenuY(
-                adjustedY, mTaskContainer.getThumbnailView(), overscrollShift));
-
-        // TODO(b/193432925) temporary menu placement for split screen task menus
-        TaskIdAttributeContainer[] taskIdAttributeContainers =
-                mTaskView.getTaskIdAttributeContainers();
-        if (taskIdAttributeContainers[0].getStagePosition() != STAGE_POSITION_UNDEFINED) {
-            if (mTaskContainer.getStagePosition() != STAGE_POSITION_BOTTOM_OR_RIGHT) {
-                return;
-            }
-            Rect r = new Rect();
-            mTaskContainer.getThumbnailView().getBoundsOnScreen(r);
-            if (deviceProfile.isLandscape) {
-                setX(r.left);
-            } else {
-                setY(r.top);
-
-            }
-        }
-    }
-
     public void onRotationChanged() {
         if (mOpenCloseAnimator != null && mOpenCloseAnimator.isRunning()) {
             mOpenCloseAnimator.end();
@@ -195,7 +144,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         BaseDraggingActivity activity = BaseDraggingActivity.fromContext(
                 taskContainer.getTaskView().getContext());
         final TaskMenuView taskMenuView = (TaskMenuView) activity.getLayoutInflater().inflate(
-                        R.layout.task_menu, activity.getDragLayer(), false);
+                R.layout.task_menu, activity.getDragLayer(), false);
         return taskMenuView.populateAndShowForTask(taskContainer);
     }
 
@@ -210,18 +159,12 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
             return false;
         }
         post(this::animateOpen);
-        ((RecentsView) mActivity.getOverviewPanel()).addOnScrollChangedListener(this);
         return true;
     }
 
-    @Override
-    public void onScrollChanged() {
-        RecentsView rv = mActivity.getOverviewPanel();
-        setPosition(mTaskView.getX() - rv.getScrollX(), mTaskView.getY() - rv.getScrollY(),
-                rv.getOverScrollShift());
-    }
-
-    /** @return true if successfully able to populate task view menu, false otherwise */
+    /**
+     * @return true if successfully able to populate task view menu, false otherwise
+     */
     private boolean populateAndLayoutMenu() {
         if (mTaskContainer.getTask().icon == null) {
             // Icon may not be loaded
@@ -235,8 +178,7 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
     private void addMenuOptions(TaskIdAttributeContainer taskContainer) {
         mTaskName.setText(TaskUtils.getTitle(getContext(), taskContainer.getTask()));
         mTaskName.setOnClickListener(v -> close(true));
-        TaskOverlayFactory.getEnabledShortcuts(mTaskView, mActivity.getDeviceProfile(),
-                taskContainer)
+        TaskOverlayFactory.getEnabledShortcuts(mTaskView, taskContainer)
                 .forEach(this::addMenuOption);
     }
 
@@ -248,17 +190,10 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         LayoutParams lp = (LayoutParams) menuOptionView.getLayoutParams();
         mTaskView.getPagedOrientationHandler().setLayoutParamsForTaskMenuOptionItem(lp,
                 menuOptionView, mActivity.getDeviceProfile());
-        menuOptionView.setOnClickListener(view -> {
-            if (ENABLE_QUICKSTEP_LIVE_TILE.get()) {
-                RecentsView recentsView = mTaskView.getRecentsView();
-                recentsView.switchToScreenshot(null,
-                        () -> recentsView.finishRecentsAnimation(true /* toRecents */,
-                                false /* shouldPip */,
-                                () -> menuOption.onClick(view)));
-            } else {
-                menuOption.onClick(view);
-            }
-        });
+        // Set an onClick listener on each menu option. The onClick method is
+        // responsible for
+        // ending LiveTile mode on the thumbnail if needed.
+        menuOptionView.setOnClickListener(menuOption::onClick);
         menuOptionView.setBackground(DrawableTokens.TaskMenuItemBg.resolve(mActivity));
         mOptionLayout.addView(menuOptionView);
     }
@@ -267,19 +202,21 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
         RecentsView recentsView = mActivity.getOverviewPanel();
         PagedOrientationHandler orientationHandler = recentsView.getPagedOrientationHandler();
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
-        orientationHandler.setTaskMenuAroundTaskView(this, mTaskInsetMargin);
 
         // Get Position
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-        mActivity.getDragLayer().getDescendantRectRelativeToSelf(mTaskView, sTempRect);
+        mActivity.getDragLayer().getDescendantRectRelativeToSelf(taskContainer.getThumbnailView(),
+                sTempRect);
         Rect insets = mActivity.getDragLayer().getInsets();
         BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) getLayoutParams();
         int padding = getResources()
                 .getDimensionPixelSize(R.dimen.task_menu_vertical_padding);
         params.width = orientationHandler
                 .getTaskMenuWidth(taskContainer.getThumbnailView(),
-                        deviceProfile) - (2 * padding);
-        // Gravity set to Left instead of Start as sTempRect.left measures Left distance not Start
+                        deviceProfile, taskContainer.getStagePosition())
+                - (2 * padding);
+        // Gravity set to Left instead of Start as sTempRect.left measures Left distance
+        // not Start
         params.gravity = Gravity.LEFT;
         setLayoutParams(params);
         setScaleX(mTaskView.getScaleX());
@@ -293,7 +230,23 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
 
         orientationHandler.setTaskOptionsMenuLayoutOrientation(
                 deviceProfile, mOptionLayout, dividerSpacing, divider);
-        setPosition(sTempRect.left - insets.left, sTempRect.top - insets.top, 0);
+        float thumbnailAlignedX = sTempRect.left - insets.left;
+        float thumbnailAlignedY = sTempRect.top - insets.top;
+        // Changing pivot to make computations easier
+        // NOTE: Changing the pivots means the rotated view gets rotated about the new
+        // pivots set,
+        // which would render the X and Y position set here incorrect
+        setPivotX(0);
+        setPivotY(0);
+        setRotation(orientationHandler.getDegreesRotated());
+
+        // Margin that insets the menuView inside the taskView
+        float taskInsetMargin = getResources().getDimension(R.dimen.task_card_margin);
+        setTranslationX(orientationHandler.getTaskMenuX(thumbnailAlignedX,
+                mTaskContainer.getThumbnailView(), deviceProfile, taskInsetMargin));
+        setTranslationY(orientationHandler.getTaskMenuY(
+                thumbnailAlignedY, mTaskContainer.getThumbnailView(),
+                mTaskContainer.getStagePosition(), this, taskInsetMargin));
     }
 
     private void animateOpen() {
@@ -332,14 +285,13 @@ public class TaskMenuView extends AbstractFloatingView implements OnScrollChange
                 }
             }
         });
-        mOpenCloseAnimator.setDuration(closing ? REVEAL_CLOSE_DURATION: REVEAL_OPEN_DURATION);
+        mOpenCloseAnimator.setDuration(closing ? REVEAL_CLOSE_DURATION : REVEAL_OPEN_DURATION);
         mOpenCloseAnimator.start();
     }
 
     private void closeComplete() {
         mIsOpen = false;
         mActivity.getDragLayer().removeView(this);
-        ((RecentsView) mActivity.getOverviewPanel()).removeOnScrollChangedListener(this);
     }
 
     private RoundedRectRevealOutlineProvider createOpenCloseOutlineProvider() {

@@ -24,7 +24,7 @@
     <string name="recents_empty_message" msgid="7040467240571714191">"Yaqinda ishlatilgan ilovalar yo‘q"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Ilovadan foydalanish sozlamalari"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Hammasini tozalash"</string>
-    <string name="accessibility_recent_apps" msgid="4058661986695117371">"Yaqinda ishlatilgan ilovalar"</string>
+    <string name="accessibility_recent_apps" msgid="4058661986695117371">"Oxirgi ilovalar"</string>
     <string name="task_view_closed" msgid="9170038230110856166">"Vazifalar yopildi"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g>, <xliff:g id="REMAINING_TIME">%2$s</xliff:g>"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 daqiqa"</string>
@@ -35,63 +35,92 @@
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"Tavsiya etiladigan ilovalar bosh ekranning saralanganlar ruknida chiqadi"</string>
     <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"Faol ishlatiladigan ilovalarga bosh ekrandan osongina kira olasiz. Tavsiyalar oxirgi faoliyatingiz asosida almashib boradi. Pastki qatordagi ilovalar bosh ekranga chiqadi."</string>
     <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"Faol ishlatiladigan ilovalarga bosh ekrandan osongina kira olasiz. Tavsiyalar oxirgi faoliyatingiz asosida almashib boradi. Saralanganlar qatoridagi ilovalar bosh ekranga chiqadi."</string>
-    <string name="hotseat_edu_message_migrate_alt" msgid="3042360119039646356">"Faol ishlatiladigan ilovalarga bosh ekrandan osongina kira olasiz. Tavsiyalar oxirgi faoliyatingiz asosida almashib boradi. Pastki qatordagi ilovalar yangi jildga chiqadi."</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"Tavsiyalarni chiqarish"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"Kerak emas"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"Sozlamalar"</string>
     <string name="hotseat_auto_enrolled" msgid="522100018967146807">"Faol ishlatiladigan ilovalar bu yerda chiqadi va oxirgi faoliyatingiz asosida almashadi"</string>
-    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Tavsiyalar olish uchun ilovalarni pastki qatordan tashqariga oling"</string>
+    <string name="hotseat_tip_no_empty_slots" msgid="1325212677738179185">"Ilova tavsiyalarini olish uchun ilovalarni pastki qatordan tashqariga ushlab torting"</string>
     <string name="hotseat_tip_gaps_filled" msgid="3035673010274223538">"Tavsiya etilgan ilovalarni ochiq joylarga kiriting"</string>
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Ilova tavsiyalari yoqildi"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Endi ilova takliflari chiqmaydi"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Taklif etilgan ilova: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_left_edge" msgid="340972404868601012">"Barmoqni chapdagi eng chekkadan suring."</string>
-    <string name="back_gesture_feedback_cancelled_left_edge" msgid="6671316150388702530">"Barmoqni ekranning chap chetidan oʻrtasigacha suring va ekrandan uzing."</string>
-    <string name="back_gesture_feedback_complete_left_edge" msgid="3220478647881674266">"Tamom! Endi oʻng chetidan surishga urining."</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_right_edge" msgid="4306700023773832353">"Barmoqni oʻngdagi eng chekkadan suring."</string>
-    <string name="back_gesture_feedback_cancelled_right_edge" msgid="4951916546256902552">"Barmoqni ekranning oʻng chetidan oʻrtasigacha suring va ekrandan uzing."</string>
-    <string name="back_gesture_feedback_complete" msgid="7261221999760772210">"Ortga qaytish ishorasi darsini tamomladingiz. Endi Bosh sahifaga qaytishni oʻrganamiz."</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Ekran chetidan boshlab oʻngdan yoki chapdan suring."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Ekranning oʻng yoki chap chetidan oʻrtasiga suring va qoʻyib yuboring."</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Ortga qaytish uchun oʻngdan surishni oʻrgandingiz. Endi ilovalarni almashtirishni oʻrganamiz."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Ortga qaytish ishorasi darsini tamomladingiz."</string>
     <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Barmoqni ekran pastiga yaqin surmaslikka harakat qiling."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Orqaga ishorasi sezuvchanligi Sozlamalardan oʻzgartiriladi"</string>
-    <string name="back_gesture_intro_title" msgid="19551256430224428">"Ortga qaytish uchun suring"</string>
+    <string name="back_gesture_intro_title" msgid="19551256430224428">"Orqaga qaytish"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Ortga qaytish uchun barmoqni ekranning yon chekkalaridan oʻrtasigacha suring."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Oxirgi ekranga qaytish uchun 2 barmoq bilan ekranning chap yoki oʻng chekkasidan oʻrtasigacha suring."</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Orqaga"</string>
     <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Barmoqni ekranning pastki chetidan yuqoriga suring."</string>
     <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Barmoqni ekrandan pauzasiz qoʻyib uzing."</string>
     <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Barmoqni tik tepaga suring."</string>
-    <string name="home_gesture_feedback_complete" msgid="2324789183070815517">"Bosh ekranni ochish ishorasi darsini tamomladingiz. Endi ilovalarni almashtirishni oʻrganamiz."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Bosh ekranni ochish ishorasi darsini tamomladingiz. Endi orqaga qaytishni oʻrganamiz."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Bosh ekranni ochish ishorasi darsini tamomladingiz."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Svayp bilan bosh ekranni ochish"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Ekranning pastidan tepaga qarab suring. Bu ishora doim Bosh ekranni ochadi."</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2 barmoq bilan ekranning quyidan tepasiga suring. Bu ishora har doim Bosh ekranni ochadi."</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Boshiga"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Istalgan vaqtda bosh ekranga oʻtish uchun ekranning pastidan tepaga suring"</string>
     <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Barmoqni ekranning pastki chetidan yuqoriga suring."</string>
     <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Barmoqni uzishdan oldin oynani biroz bosib turing."</string>
     <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Avval tik tepaga surib, keyin pauza qiling."</string>
-    <string name="overview_gesture_feedback_complete" msgid="5477014491632199169">"Ilovalarni almashtirish darsini tamomladingiz. Endi telefondan foydalana olasiz!"</string>
-    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Svayp bilan ilovalarni almashtirish"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="1579517193845186042">"Ekranning pastidan tepasiga suring, bosib turing va qoʻyib yuboring."</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Ishoralardan qanday foydalanishni oʻrganib oldingiz. Ishoralarni oʻchirish uchun Sozlamalarga kiring."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Ilovalarni almashtirish darsini tamomladingiz."</string>
+    <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Ilovalar orasida almashish"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Ilovalarni ochish uchun ekranning pastidan tepaga qarab suring, biroz ushlab turing va qoʻyib yuboring"</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Ilovalarni almashtirish uchun 2 barmoq bilan ekranning quyidan tepasiga surib turib, qoʻyib yuboring"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Ilovalarni almashtirish"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Tayyor"</string>
-    <string name="gesture_tutorial_action_button_label_next" msgid="2556263116424738762">"Keyingisi"</string>
-    <string name="gesture_tutorial_action_button_label_done" msgid="671834508127014231">"Tayyor"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Tayyor"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Sozlamalar"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Qayta urinish"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Yaxshi!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Darslik: <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
+    <string name="allset_title" msgid="5021126669778966707">"Hammasi tayyor!"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Boshiga qaytish uchun tepaga suring"</string>
+    <string name="allset_button_hint" msgid="2395219947744706291">"Bosh ekranga oʻtish uchun bosh ekran tugmasini bosing"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"<xliff:g id="DEVICE">%1$s</xliff:g> xizmatga tayyor"</string>
+    <string name="default_device_name" msgid="6660656727127422487">"qurilma"</string>
+    <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Tizim navigatsiya sozlamalari"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Ulashish"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Skrinshot"</string>
     <string name="action_split" msgid="2098009717623550676">"Ajratish"</string>
-    <string name="toast_split_select_app" msgid="5453865907322018352">"Ekranni ikkiga ajratish uchun boshqa ilovani bosing"</string>
-    <string name="toast_split_app_unsupported" msgid="3271526028981899666">"Bu ilovada ekranni ikkiga ajratish ishlamaydi."</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"Ekranni ikkiga ajratish uchun boshqa ilovani bosing"</string>
+    <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Ekranni ikkiga ajratish uchun boshqa ilovani tanlang"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Bu amal ilova yoki tashkilotingiz tomonidan taqiqlangan"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Navigatsiya darsi yopilsinmi?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Bu darslar <xliff:g id="NAME">%1$s</xliff:g> ilovasida chiqadi"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Bekor qilish"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Tashlab ketish"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Ekranni burish"</string>
+    <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Vazifalar paneli qoʻllanmasi"</string>
     <string name="taskbar_edu_opened" msgid="3950252793551919129">"Taʼlim vazifalar paneli chiqdi"</string>
     <string name="taskbar_edu_closed" msgid="126643734478892862">"Taʼlim vazifalar paneli yopildi"</string>
-    <string name="taskbar_edu_switch_apps" msgid="6942863327845784813">"Ilovalarni vazifalar panelida almashtirish mumkin"</string>
-    <string name="taskbar_edu_splitscreen" msgid="2663361731630346489">"Bir vaqtda ikkita ilova ochish uchun birini yoniga torting"</string>
-    <string name="taskbar_edu_stashing" msgid="5212374387411764031">"Vazifalar panelini ustiga bosib turib yashirish mumkin"</string>
+    <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Bitta ilovani yon tomonga sudrab, bir vaqtda 2 ta ilovadan foydalaning."</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Vazifalar panelini ochish uchun tepaga asta suring"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Harakatlaringiz asosida tavsiyalar oling."</string>
+    <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Vazifalar paneli avtomatik yopilishi uchun ishorali navigatsiyani yoqing"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Vazifalar panelidan maksimal darajada foydalaning"</string>
     <string name="taskbar_edu_next" msgid="4007618274426775841">"Keyingisi"</string>
     <string name="taskbar_edu_previous" msgid="459202320127201702">"Orqaga"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Yopish"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Tayyor"</string>
+    <string name="taskbar_button_home" msgid="2151398979630664652">"Bosh ekran"</string>
+    <string name="taskbar_button_a11y" msgid="5241161324875094465">"Qulayliklar"</string>
+    <string name="taskbar_button_back" msgid="8558862226461164514">"Orqaga"</string>
+    <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IME tugmasi"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Oxirgilar"</string>
+    <string name="taskbar_button_notifications" msgid="7471740351507357318">"Bildirishnomalar"</string>
+    <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Tezkor sozlamalar"</string>
+    <string name="taskbar_a11y_title" msgid="6432169809852243110">"Vazifalar paneli"</string>
+    <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Vazifalar paneli ochiq"</string>
+    <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Vazifalar paneli yopiq"</string>
+    <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigatsiya paneli"</string>
+    <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Yuqoriga yoki chapga oʻtkazish"</string>
+    <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Pastga yoki oʻngga oʻtkazish"</string>
+    <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Yana # ta ilovani chiqarish}other{Yana # ta ilovani chiqarish}}"</string>
+    <string name="quick_switch_split_task" msgid="5598194724255333896">"<xliff:g id="APP_NAME_1">%1$s</xliff:g> va <xliff:g id="APP_NAME_2">%2$s</xliff:g>"</string>
 </resources>

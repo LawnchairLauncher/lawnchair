@@ -20,6 +20,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
+import app.lawnchair.LawnchairLauncher
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
@@ -30,6 +31,7 @@ import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.*
+import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Themes
@@ -39,7 +41,7 @@ import kotlin.math.max
 
 class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs),
     Insettable, SearchUiManager,
-    SearchCallback<AllAppsGridAdapter.AdapterItem>,
+    SearchCallback<AdapterItem>,
     AllAppsStore.OnUpdateListener, ViewTreeObserver.OnGlobalLayoutListener {
 
     private lateinit var hint: TextView
@@ -55,8 +57,8 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
         Selection.setSelection(this, 0)
     }
 
-    private lateinit var apps: AlphabeticalAppsList
-    private lateinit var appsView: AllAppsContainerView
+    private lateinit var apps: AlphabeticalAppsList<*>
+    private lateinit var appsView: ActivityAllAppsContainerView<*>
 
     private var focusedResultTitle = ""
     private var canShowHint = false
@@ -116,7 +118,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
         }
     }
 
-    override fun setFocusedResultTitle(title: CharSequence?) {
+    fun setFocusedResultTitle(title: CharSequence?) {
         focusedResultTitle = title?.toString().orEmpty()
         updateHint()
     }
@@ -146,28 +148,28 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        appsView.appsStore.addUpdateListener(this)
+        appsView.appsStore?.addUpdateListener(this)
         input.viewTreeObserver.addOnGlobalLayoutListener(this)
     }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        appsView.appsStore.removeUpdateListener(this)
+        appsView.appsStore?.removeUpdateListener(this)
         input.viewTreeObserver.removeOnGlobalLayoutListener(this)
     }
 
-    override fun initializeSearch(appsView: AllAppsContainerView) {
-        apps = appsView.apps
+    override fun onAppsUpdated() {
+        searchBarController.refreshSearchResult()
+    }
+
+    override fun initializeSearch(appsView: ActivityAllAppsContainerView<*>) {
+        apps = appsView.searchResultList
         this.appsView = appsView
         searchBarController.initialize(
             LawnchairSearchAlgorithm.create(context),
             input, launcher, this
         )
         input.initialize(appsView)
-    }
-
-    override fun onAppsUpdated() {
-        searchBarController.refreshSearchResult()
     }
 
     override fun resetSearch() {
@@ -190,20 +192,20 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
         }
     }
 
-    override fun onSearchResult(query: String, items: ArrayList<AllAppsGridAdapter.AdapterItem>?) {
+    override fun onSearchResult(query: String, items: ArrayList<AdapterItem>?) {
         if (items != null) {
             apps.setSearchResults(items)
             notifyResultChanged()
-            appsView.setLastSearchQuery(query)
+            appsView.setSearchResults(items)
         }
     }
 
-    override fun onAppendSearchResult(
+     fun onAppendSearchResult(
         query: String,
-        items: ArrayList<AllAppsGridAdapter.AdapterItem>?
+        items: ArrayList<AdapterItem>?
     ) {
         if (items != null) {
-            apps.appendSearchResults(items)
+            apps.setSearchResults(items)
             notifyResultChanged()
         }
     }
@@ -218,11 +220,11 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
         searchQueryBuilder.clearSpans()
         Selection.setSelection(searchQueryBuilder, 0)
         appsView.onClearSearchResult()
-        appsView.floatingHeaderView?.setCollapsed(false)
+        appsView.floatingHeaderView?.setFloatingRowsCollapsed(false)
     }
 
     private fun notifyResultChanged() {
-        appsView.onSearchResultsChanged()
+//        appsView.onSearchResultsChanged()
     }
 
     override fun setInsets(insets: Rect) {
@@ -234,7 +236,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
         lp.topMargin = max(-allAppsSearchVerticalOffset, insets.top - qsbMarginTopAdjusting)
 
         val dp = launcher.deviceProfile
-        val horizontalPadding = dp.desiredWorkspaceHorizontalMarginPx + dp.cellLayoutPaddingLeftRightPx
+        val horizontalPadding = dp.desiredWorkspaceHorizontalMarginPx + dp.desiredWorkspaceHorizontalMarginPx
         setPadding(horizontalPadding, paddingTop, horizontalPadding, paddingBottom)
         requestLayout()
     }

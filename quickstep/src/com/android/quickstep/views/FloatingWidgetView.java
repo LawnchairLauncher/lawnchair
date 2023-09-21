@@ -25,6 +25,7 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Size;
 import android.view.GhostView;
+import android.view.RemoteAnimationTarget;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
@@ -41,7 +42,6 @@ import com.android.launcher3.views.FloatingView;
 import com.android.launcher3.views.ListenerView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.launcher3.widget.RoundedCornerEnforcement;
-import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 
 /** A view that mimics an App Widget through a launch animation. */
 @TargetApi(Build.VERSION_CODES.S)
@@ -122,7 +122,8 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
 
     @Override
     public void onGlobalLayout() {
-        if (isUninitialized()) return;
+        if (isUninitialized())
+            return;
         positionViews();
         if (mOnTargetChangeRunnable != null) {
             mOnTargetChangeRunnable.run();
@@ -142,7 +143,8 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
     /** Callback at the end or early exit of the animation. */
     @Override
     public void fastFinish() {
-        if (isUninitialized()) return;
+        if (isUninitialized())
+            return;
         Runnable fastFinishRunnable = mFastFinishRunnable;
         if (fastFinishRunnable != null) {
             fastFinishRunnable.run();
@@ -187,18 +189,23 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
     /**
      * Updates the position and opacity of the floating widget's components.
      *
-     * @param backgroundPosition      the new position of the widget's background relative to the
+     * @param backgroundPosition      the new position of the widget's background
+     *                                relative to the
      *                                {@link FloatingWidgetView}'s parent
-     * @param floatingWidgetAlpha     the overall opacity of the {@link FloatingWidgetView}
+     * @param floatingWidgetAlpha     the overall opacity of the
+     *                                {@link FloatingWidgetView}
      * @param foregroundAlpha         the opacity of the foreground layer
-     * @param fallbackBackgroundAlpha the opacity of the fallback background used when the App
+     * @param fallbackBackgroundAlpha the opacity of the fallback background used
+     *                                when the App
      *                                Widget doesn't have a background
-     * @param cornerRadiusProgress    progress of the corner radius animation, where 0 is the
+     * @param cornerRadiusProgress    progress of the corner radius animation, where
+     *                                0 is the
      *                                original radius and 1 is the window radius
      */
     public void update(RectF backgroundPosition, float floatingWidgetAlpha, float foregroundAlpha,
             float fallbackBackgroundAlpha, float cornerRadiusProgress) {
-        if (isUninitialized() || mAppTargetIsTranslucent) return;
+        if (isUninitialized() || mAppTargetIsTranslucent)
+            return;
         setAlpha(floatingWidgetAlpha);
         mBackgroundView.update(cornerRadiusProgress, fallbackBackgroundAlpha);
         mAppWidgetView.setAlpha(foregroundAlpha);
@@ -212,7 +219,10 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
         onGlobalLayout();
     }
 
-    /** Sets the layout parameters of the floating view and its background view child. */
+    /**
+     * Sets the layout parameters of the floating view and its background view
+     * child.
+     */
     private void positionViews() {
         LayoutParams layoutParams = (LayoutParams) getLayoutParams();
         layoutParams.setMargins(0, 0, 0, 0);
@@ -230,8 +240,7 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
 
         if (mForegroundOverlayView != null) {
             sTmpMatrix.reset();
-            float foregroundScale =
-                    mBackgroundPosition.width() / mAppWidgetBackgroundView.getWidth();
+            float foregroundScale = mBackgroundPosition.width() / mAppWidgetBackgroundView.getWidth();
             sTmpMatrix.setTranslate(-mBackgroundOffset.left - mAppWidgetView.getLeft(),
                     -mBackgroundOffset.top - mAppWidgetView.getTop());
             sTmpMatrix.postScale(foregroundScale, foregroundScale);
@@ -275,10 +284,12 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
     }
 
     /**
-     * Configures and returns a an instance of {@link FloatingWidgetView} matching the appearance of
+     * Configures and returns a an instance of {@link FloatingWidgetView} matching
+     * the appearance of
      * {@param originalView}.
      *
-     * @param widgetBackgroundPosition a {@link RectF} that will be updated with the widget's
+     * @param widgetBackgroundPosition a {@link RectF} that will be updated with the
+     *                                 widget's
      *                                 background bounds
      * @param windowSize               the size of the window when launched
      * @param windowCornerRadius       the corner radius of the window
@@ -289,8 +300,8 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
             int fallbackBackgroundColor) {
         final DragLayer dragLayer = launcher.getDragLayer();
         ViewGroup parent = (ViewGroup) dragLayer.getParent();
-        FloatingWidgetView floatingView =
-                launcher.getViewCache().getView(R.layout.floating_widget_view, launcher, parent);
+        FloatingWidgetView floatingView = launcher.getViewCache().getView(R.layout.floating_widget_view, launcher,
+                parent);
         floatingView.recycle();
 
         floatingView.init(dragLayer, originalView, widgetBackgroundPosition, windowSize,
@@ -300,18 +311,19 @@ public class FloatingWidgetView extends FrameLayout implements AnimatorListener,
     }
 
     /**
-     * Extract a background color from a target's task description, or fall back to the given
+     * Extract a background color from a target's task description, or fall back to
+     * the given
      * context's theme background color.
      */
     public static int getDefaultBackgroundColor(
-            Context context, RemoteAnimationTargetCompat target) {
-        return (target != null && target.taskInfo != null && target.taskInfo.taskDescription != null)
+            Context context, RemoteAnimationTarget target) {
+        return (target != null && target.taskInfo.taskDescription != null)
                 ? target.taskInfo.taskDescription.getBackgroundColor()
                 : Themes.getColorBackground(context);
     }
 
     private static void getRelativePosition(View descendant, View ancestor, RectF position) {
-        float[] points = new float[]{0, 0, descendant.getWidth(), descendant.getHeight()};
+        float[] points = new float[] { 0, 0, descendant.getWidth(), descendant.getHeight() };
         Utilities.getDescendantCoordRelativeToAncestor(descendant, ancestor, points,
                 false /* includeRootScroll */, true /* ignoreTransform */);
         position.set(

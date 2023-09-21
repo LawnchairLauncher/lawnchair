@@ -15,17 +15,16 @@
 -->
 
 <inset
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <ripple
         android:color="?android:attr/colorControlHighlight">
         <item>
             <shape android:shape="rectangle">
                 <corners android:radius="16dp"  />
-                <solid android:color="?androidprv:attr/colorSurface"/>
+                <solid android:color="?attr/colorSurface"/>
                 <stroke
                     android:width="1dp"
-                    android:color="?androidprv:attr/colorAccentPrimaryVariant"/>
+                    android:color="?attr/colorOnPrimarySurface"/>
             </shape>
         </item>
     </ripple>

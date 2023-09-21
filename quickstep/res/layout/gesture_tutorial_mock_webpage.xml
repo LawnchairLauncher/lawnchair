@@ -34,8 +34,8 @@
             android:layout_height="0dp"
             android:layout_marginTop="48dp"
             android:layout_marginBottom="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_webpage_url_margin_start_end"
+            android:layout_marginEnd="@dimen/gesture_tutorial_webpage_url_margin_start_end"
 
             app:cardElevation="0dp"
             app:cardCornerRadius="100dp"
@@ -63,7 +63,7 @@
             android:layout_height="0dp"
             android:layout_marginTop="22dp"
             android:layout_marginBottom="22dp"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_webpage_top_bar_button_margin_start"
 
             app:cardElevation="0dp"
             app:cardCornerRadius="8dp"
@@ -78,8 +78,8 @@
             android:layout_height="0dp"
             android:layout_marginTop="28dp"
             android:layout_marginBottom="28dp"
-            android:layout_marginStart="97dp"
-            android:layout_marginEnd="97dp"
+            android:layout_marginStart="@dimen/gesture_tutorial_webpage_top_bar_margin_start"
+            android:layout_marginEnd="@dimen/gesture_tutorial_webpage_top_bar_margin_end"
 
             app:cardElevation="0dp"
             app:cardCornerRadius="2dp"
@@ -107,7 +107,7 @@
             android:id="@+id/mock_line_1"
             android:layout_width="0dp"
             android:layout_height="@dimen/gesture_tutorial_webpage_large_line_height"
-            android:layout_marginEnd="126dp"
+            android:layout_marginEnd="@dimen/gesture_tutorial_webpage_line_1_margin_end"
 
             app:cardElevation="0dp"
             app:cardCornerRadius="@dimen/gesture_tutorial_webpage_small_corner_radius"
@@ -121,7 +121,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/gesture_tutorial_webpage_large_line_height"
             android:layout_marginTop="@dimen/gesture_tutorial_webpage_small_margin_top"
-            android:layout_marginEnd="64dp"
+            android:layout_marginEnd="@dimen/gesture_tutorial_webpage_line_2_margin_end"
 
             app:cardElevation="0dp"
             app:cardCornerRadius="@dimen/gesture_tutorial_webpage_small_corner_radius"
@@ -135,7 +135,7 @@
             android:layout_width="0dp"
             android:layout_height="@dimen/gesture_tutorial_webpage_large_line_height"
             android:layout_marginTop="@dimen/gesture_tutorial_webpage_small_margin_top"
-            android:layout_marginEnd="151dp"
+            android:layout_marginEnd="@dimen/gesture_tutorial_webpage_line_3_margin_end"
 
             app:cardElevation="0dp"
             app:cardCornerRadius="@dimen/gesture_tutorial_webpage_small_corner_radius"
@@ -174,7 +174,7 @@
             android:layout_width="0dp"
             android:layout_height="240dp"
             android:layout_marginTop="@dimen/gesture_tutorial_webpage_large_margin_top"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="@dimen/gesture_tutorial_webpage_block_margin_end"
 
             app:cardElevation="0dp"
             app:cardCornerRadius="@dimen/gesture_tutorial_webpage_large_corner_radius"
@@ -189,6 +189,7 @@
             android:layout_height="@dimen/gesture_tutorial_webpage_small_line_height"
             android:layout_marginTop="@dimen/gesture_tutorial_webpage_large_margin_top"
             android:layout_marginEnd="52dp"
+            android:visibility="@integer/gesture_tutorial_webpage_extra_lines_visibility"
 
             app:cardElevation="0dp"
             app:cardCornerRadius="@dimen/gesture_tutorial_webpage_medium_corner_radius"
@@ -203,6 +204,7 @@
             android:layout_height="@dimen/gesture_tutorial_webpage_small_line_height"
             android:layout_marginTop="@dimen/gesture_tutorial_webpage_small_margin_top"
             android:layout_marginEnd="41dp"
+            android:visibility="@integer/gesture_tutorial_webpage_extra_lines_visibility"
 
             app:cardElevation="0dp"
             app:cardCornerRadius="@dimen/gesture_tutorial_webpage_medium_corner_radius"
@@ -217,6 +219,7 @@
             android:layout_height="@dimen/gesture_tutorial_webpage_small_line_height"
             android:layout_marginTop="@dimen/gesture_tutorial_webpage_small_margin_top"
             android:layout_marginEnd="71dp"
+            android:visibility="@integer/gesture_tutorial_webpage_extra_lines_visibility"
 
             app:cardElevation="0dp"
             app:cardCornerRadius="@dimen/gesture_tutorial_webpage_medium_corner_radius"
@@ -231,6 +234,7 @@
             android:layout_height="@dimen/gesture_tutorial_webpage_small_line_height"
             android:layout_marginTop="@dimen/gesture_tutorial_webpage_small_margin_top"
             android:layout_marginEnd="198dp"
+            android:visibility="@integer/gesture_tutorial_webpage_extra_lines_visibility"
 
             app:cardElevation="0dp"
             app:cardCornerRadius="@dimen/gesture_tutorial_webpage_medium_corner_radius"
@@ -245,6 +249,7 @@
             android:layout_height="@dimen/gesture_tutorial_webpage_small_line_height"
             android:layout_marginTop="@dimen/gesture_tutorial_webpage_large_margin_top"
             android:layout_marginEnd="64dp"
+            android:visibility="@integer/gesture_tutorial_webpage_extra_lines_visibility"
 
             app:cardElevation="0dp"
             app:cardCornerRadius="@dimen/gesture_tutorial_webpage_medium_corner_radius"
@@ -258,6 +263,7 @@
             android:layout_height="@dimen/gesture_tutorial_webpage_small_line_height"
             android:layout_marginTop="@dimen/gesture_tutorial_webpage_small_margin_top"
             android:layout_marginEnd="71dp"
+            android:visibility="@integer/gesture_tutorial_webpage_extra_lines_visibility"
 
             app:cardElevation="0dp"
             app:cardCornerRadius="@dimen/gesture_tutorial_webpage_medium_corner_radius"
