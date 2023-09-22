@@ -71,6 +71,7 @@ import com.android.app.animation.Interpolators;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.celllayout.CellPosMapper.CellPos;
@@ -2856,6 +2857,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_FOLDER:
                     view = FolderIcon.inflateFolderAndIcon(R.layout.folder_icon, mLauncher, cellLayout,
+                            (FolderInfo) info);
+                    break;
+                case LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR:
+                    view = AppPairIcon.inflateIcon(R.layout.app_pair_icon, mLauncher, cellLayout,
                             (FolderInfo) info);
                     break;
                 default:

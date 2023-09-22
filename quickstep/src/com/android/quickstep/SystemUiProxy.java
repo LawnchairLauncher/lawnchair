@@ -78,7 +78,7 @@ import com.android.systemui.unfold.progress.IUnfoldTransitionListener;
 import com.android.wm.shell.back.IBackAnimation;
 import com.android.wm.shell.bubbles.IBubbles;
 import com.android.wm.shell.bubbles.IBubblesListener;
-import com.android.wm.shell.common.split.SplitScreenConstants.SnapPosition;
+import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosition;
 import com.android.wm.shell.desktopmode.IDesktopMode;
 import com.android.wm.shell.desktopmode.IDesktopTaskListener;
 import com.android.wm.shell.draganddrop.IDragAndDrop;
@@ -797,7 +797,7 @@ public class SystemUiProxy implements ISystemUiProxy {
 
     /** Start multiple tasks in split-screen simultaneously. */
     public void startTasks(int taskId1, Bundle options1, int taskId2, Bundle options2,
-            @StagePosition int splitPosition, @SnapPosition int snapPosition,
+            @StagePosition int splitPosition, @PersistentSnapPosition int snapPosition,
             RemoteTransition remoteTransition, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
@@ -811,7 +811,7 @@ public class SystemUiProxy implements ISystemUiProxy {
 
     public void startIntentAndTask(PendingIntent pendingIntent, int userId1, Bundle options1,
             int taskId, Bundle options2, @StagePosition int splitPosition,
-            @SnapPosition int snapPosition, RemoteTransition remoteTransition,
+            @PersistentSnapPosition int snapPosition, RemoteTransition remoteTransition,
             InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
@@ -826,7 +826,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     public void startIntents(PendingIntent pendingIntent1, int userId1,
             @Nullable ShortcutInfo shortcutInfo1, Bundle options1, PendingIntent pendingIntent2,
             int userId2, @Nullable ShortcutInfo shortcutInfo2, Bundle options2,
-            @StagePosition int splitPosition, @SnapPosition int snapPosition,
+            @StagePosition int splitPosition, @PersistentSnapPosition int snapPosition,
             RemoteTransition remoteTransition, InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
@@ -840,8 +840,9 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     public void startShortcutAndTask(ShortcutInfo shortcutInfo, Bundle options1, int taskId,
-            Bundle options2, @StagePosition int splitPosition, @SnapPosition int snapPosition,
-            RemoteTransition remoteTransition, InstanceId instanceId) {
+            Bundle options2, @StagePosition int splitPosition,
+            @PersistentSnapPosition int snapPosition, RemoteTransition remoteTransition,
+            InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
                 mSplitScreen.startShortcutAndTask(shortcutInfo, options1, taskId, options2,
@@ -856,8 +857,9 @@ public class SystemUiProxy implements ISystemUiProxy {
      * Start multiple tasks in split-screen simultaneously.
      */
     public void startTasksWithLegacyTransition(int taskId1, Bundle options1, int taskId2,
-            Bundle options2, @StagePosition int splitPosition, @SnapPosition int snapPosition,
-            RemoteAnimationAdapter adapter, InstanceId instanceId) {
+            Bundle options2, @StagePosition int splitPosition,
+            @PersistentSnapPosition int snapPosition, RemoteAnimationAdapter adapter,
+            InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
                 mSplitScreen.startTasksWithLegacyTransition(taskId1, options1, taskId2, options2,
@@ -871,7 +873,8 @@ public class SystemUiProxy implements ISystemUiProxy {
 
     public void startIntentAndTaskWithLegacyTransition(PendingIntent pendingIntent, int userId1,
             Bundle options1, int taskId, Bundle options2, @StagePosition int splitPosition,
-            @SnapPosition int snapPosition, RemoteAnimationAdapter adapter, InstanceId instanceId) {
+            @PersistentSnapPosition int snapPosition, RemoteAnimationAdapter adapter,
+            InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
                 mSplitScreen.startIntentAndTaskWithLegacyTransition(pendingIntent, userId1,
@@ -886,7 +889,8 @@ public class SystemUiProxy implements ISystemUiProxy {
 
     public void startShortcutAndTaskWithLegacyTransition(ShortcutInfo shortcutInfo, Bundle options1,
             int taskId, Bundle options2, @StagePosition int splitPosition,
-            @SnapPosition int snapPosition, RemoteAnimationAdapter adapter, InstanceId instanceId) {
+            @PersistentSnapPosition int snapPosition, RemoteAnimationAdapter adapter,
+            InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
                 mSplitScreen.startShortcutAndTaskWithLegacyTransition(shortcutInfo, options1,
@@ -906,7 +910,8 @@ public class SystemUiProxy implements ISystemUiProxy {
             @Nullable ShortcutInfo shortcutInfo1, @Nullable Bundle options1,
             PendingIntent pendingIntent2, int userId2, @Nullable ShortcutInfo shortcutInfo2,
             @Nullable Bundle options2, @StagePosition int sidePosition,
-            @SnapPosition int snapPosition, RemoteAnimationAdapter adapter, InstanceId instanceId) {
+            @PersistentSnapPosition int snapPosition, RemoteAnimationAdapter adapter,
+            InstanceId instanceId) {
         if (mSystemUiProxy != null) {
             try {
                 mSplitScreen.startIntentsWithLegacyTransition(pendingIntent1, userId1,

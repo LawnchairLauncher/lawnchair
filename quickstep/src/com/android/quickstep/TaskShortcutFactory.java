@@ -50,6 +50,7 @@ import com.android.launcher3.popup.SystemShortcut.AppInfo;
 import com.android.launcher3.touch.PagedOrientationHandler;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.SplitConfigurationOptions.SplitPositionOption;
+import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskThumbnailView;
 import com.android.quickstep.views.TaskView;
@@ -128,12 +129,12 @@ public interface TaskShortcutFactory {
 
     /**
      * A menu item, "Save app pair", that allows the user to preserve the current app combination as
-     * a single persistent icon on the Home screen, allowing for quick split screen initialization.
+     * one persistent icon on the Home screen, allowing for quick split screen launching.
      */
     class SaveAppPairSystemShortcut extends SystemShortcut<BaseDraggingActivity> {
-        private final TaskView mTaskView;
+        private final GroupedTaskView mTaskView;
 
-        public SaveAppPairSystemShortcut(BaseDraggingActivity activity, TaskView taskView) {
+        public SaveAppPairSystemShortcut(BaseDraggingActivity activity, GroupedTaskView taskView) {
             super(R.drawable.ic_save_app_pair, R.string.save_app_pair, activity,
                     taskView.getItemInfo(), taskView);
             mTaskView = taskView;
@@ -318,7 +319,8 @@ public interface TaskShortcutFactory {
                 return null;
             }
 
-            return Collections.singletonList(new SaveAppPairSystemShortcut(activity, taskView));
+            return Collections.singletonList(
+                    new SaveAppPairSystemShortcut(activity, (GroupedTaskView) taskView));
         }
 
         @Override
