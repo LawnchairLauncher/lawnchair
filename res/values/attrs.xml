@@ -86,6 +86,7 @@
             <enum name="search_result_tall" value="6" />
             <enum name="search_result_small" value="7" />
             <enum name="prediction_row" value="8" />
+            <enum name="search_result_app_row" value="9" />
         </attr>
         <attr name="centerVertically" format="boolean" />
     </declare-styleable>
