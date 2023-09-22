@@ -704,6 +704,7 @@ public final class LauncherInstrumentation {
 
     /**
      * Set the trackpad gesture type of the interaction.
+     *
      * @param trackpadGestureType whether it's not from trackpad, two-finger, three-finger, or
      *                            four-finger gesture.
      */
@@ -1821,8 +1822,8 @@ public final class LauncherInstrumentation {
 
         final MotionEvent event = isTrackpadGesture
                 ? getTrackpadMotionEvent(
-                        downTime, currentTime, action, point.x, point.y, pointerCount,
-                        mTrackpadGestureType)
+                downTime, currentTime, action, point.x, point.y, pointerCount,
+                mTrackpadGestureType)
                 : getMotionEvent(downTime, currentTime, action, point.x, point.y, source);
         if (action == MotionEvent.ACTION_BUTTON_PRESS
                 || action == MotionEvent.ACTION_BUTTON_RELEASE) {
@@ -2072,14 +2073,16 @@ public final class LauncherInstrumentation {
         return String.join(", ", getActivities());
     }
 
-    public boolean noLeakedActivities() {
+    /** Returns whether no leaked activities are detected. */
+    public boolean noLeakedActivities(boolean requireOneActiveActivity) {
         final String[] activities = getActivities();
+
         for (String activity : activities) {
             if (activity.contains("(destroyed)")) {
                 return false;
             }
         }
-        return activities.length <= 2;
+        return activities.length <= (requireOneActiveActivity ? 1 : 2);
     }
 
     public int getActivitiesCreated() {

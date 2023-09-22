@@ -30,10 +30,12 @@ import org.junit.runners.model.Statement;
  * Isolates tests from some of the state created by the previous test.
  */
 public class TestIsolationRule implements TestRule {
-    final LauncherInstrumentation mLauncher;
+    private final LauncherInstrumentation mLauncher;
+    private final boolean mRequireOneActiveActivity;
 
-    public TestIsolationRule(LauncherInstrumentation launcher) {
+    public TestIsolationRule(LauncherInstrumentation launcher, boolean requireOneActiveActivity) {
         mLauncher = launcher;
+        mRequireOneActiveActivity = requireOneActiveActivity;
     }
 
     @NonNull
@@ -46,7 +48,7 @@ public class TestIsolationRule implements TestRule {
                 // Make sure that Launcher workspace looks correct.
 
                 UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressHome();
-                AbstractLauncherUiTest.checkDetectedLeaks(mLauncher);
+                AbstractLauncherUiTest.checkDetectedLeaks(mLauncher, mRequireOneActiveActivity);
             }
         };
     }
