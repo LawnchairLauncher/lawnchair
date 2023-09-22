@@ -222,7 +222,7 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
             mNoIntercept = !mAppsView.shouldContainerScroll(ev)
                     || getTopOpenViewWithType(
-                            mActivityContext, TYPE_ACCESSIBLE & ~TYPE_TASKBAR_ALL_APPS) != null;
+                            mActivityContext, TYPE_ACCESSIBLE & ~TYPE_TASKBAR_OVERLAYS) != null;
         }
         return super.onControllerInterceptTouchEvent(ev);
     }
