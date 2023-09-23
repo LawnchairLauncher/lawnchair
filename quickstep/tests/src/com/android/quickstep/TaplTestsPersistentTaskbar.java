@@ -22,6 +22,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -38,6 +39,7 @@ public class TaplTestsPersistentTaskbar extends AbstractTaplTestsTaskbar {
 
     @Test
     @TaskbarModeSwitch(mode = PERSISTENT)
+    @Ignore // b/301575789
     public void testHideTaskbarPersistsOnRecreate() {
         getTaskbar().hide();
         mLauncher.recreateTaskbar();

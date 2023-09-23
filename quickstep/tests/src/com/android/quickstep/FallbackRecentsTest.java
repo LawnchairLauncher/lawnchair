@@ -177,7 +177,6 @@ public class FallbackRecentsTest {
 
     // b/143488140
     //@NavigationModeSwitch
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/266606727
     @Test
     public void goToOverviewFromHome() {
         mDevice.pressHome();
@@ -225,7 +224,6 @@ public class FallbackRecentsTest {
 
     // b/143488140
     //@NavigationModeSwitch
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/266606727
     @Test
     public void testOverview() {
         startAppFast(getAppPackageName());
