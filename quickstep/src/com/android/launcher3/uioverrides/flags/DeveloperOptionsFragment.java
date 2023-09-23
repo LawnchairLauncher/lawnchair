@@ -24,6 +24,8 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.LauncherPrefs.ALL_APPS_OVERVIEW_THRESHOLD;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_TIMEOUT_MS;
 import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.PLUGIN_CHANGED;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.pluginEnabledKey;
@@ -63,6 +65,7 @@ import androidx.preference.PreferenceViewHolder;
 import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreference;
 
+import com.android.launcher3.ConstantItem;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
@@ -110,6 +113,9 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         addOnboardingPrefsCatergory();
         if (FeatureFlags.ENABLE_ALL_APPS_FROM_OVERVIEW.get()) {
             addAllAppsFromOverviewCatergory();
+        }
+        if (FeatureFlags.CUSTOM_LPNH_THRESHOLDS.get()) {
+            addCustomLpnhCatergory();
         }
 
         if (getActivity() != null) {
@@ -400,29 +406,52 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
 
     private void addAllAppsFromOverviewCatergory() {
         PreferenceCategory category = newCategory("All Apps from Overview Config");
+        category.addPreference(createSeekBarPreference("Threshold to open All Apps from Overview",
+                105, 500, 100, ALL_APPS_OVERVIEW_THRESHOLD));
+    }
 
-        SeekBarPreference thresholdPref = new SeekBarPreference(getContext());
-        thresholdPref.setTitle("Threshold to open All Apps from Overview");
-        thresholdPref.setSingleLineTitle(false);
+    private void addCustomLpnhCatergory() {
+        PreferenceCategory category = newCategory("Long Press Nav Handle Config");
+        category.addPreference(createSeekBarPreference("Slop multiplier (applied to edge slop, "
+                        + "which is generally already 50% higher than touch slop)",
+                25, 200, 100, LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE));
+        category.addPreference(createSeekBarPreference("Trigger milliseconds",
+                100, 500, 1, LONG_PRESS_NAV_HANDLE_TIMEOUT_MS));
+    }
 
-        // These values are 100x swipe up shift value (100 = where overview sits).
-        thresholdPref.setMax(500);
-        thresholdPref.setMin(105);
-        thresholdPref.setUpdatesContinuously(true);
-        thresholdPref.setIconSpaceReserved(false);
+    /**
+     * Create a preference with text and a seek bar. Should be added to a PreferenceCategory.
+     *
+     * @param title text to show for this seek bar
+     * @param min min value for the seek bar
+     * @param max max value for the seek bar
+     * @param scale how much to divide the value to convert int to float
+     * @param launcherPref used to store the current value
+     */
+    private SeekBarPreference createSeekBarPreference(String title, int min, int max, int scale,
+            ConstantItem<Integer> launcherPref) {
+        SeekBarPreference seekBarPref = new SeekBarPreference(getContext());
+        seekBarPref.setTitle(title);
+        seekBarPref.setSingleLineTitle(false);
+
+        seekBarPref.setMax(max);
+        seekBarPref.setMin(min);
+        seekBarPref.setUpdatesContinuously(true);
+        seekBarPref.setIconSpaceReserved(false);
         // Don't directly save to shared prefs, use LauncherPrefs instead.
-        thresholdPref.setPersistent(false);
-        thresholdPref.setOnPreferenceChangeListener((preference, newValue) -> {
-            LauncherPrefs.get(getContext()).put(ALL_APPS_OVERVIEW_THRESHOLD, newValue);
-            preference.setSummary(String.valueOf((int) newValue / 100f));
+        seekBarPref.setPersistent(false);
+        seekBarPref.setOnPreferenceChangeListener((preference, newValue) -> {
+            LauncherPrefs.get(getContext()).put(launcherPref, newValue);
+            preference.setSummary(String.valueOf(scale == 1 ? newValue
+                    : (int) newValue / (float) scale));
             return true;
         });
-        int value = LauncherPrefs.get(getContext()).get(ALL_APPS_OVERVIEW_THRESHOLD);
-        thresholdPref.setValue(value);
+        int value = LauncherPrefs.get(getContext()).get(launcherPref);
+        seekBarPref.setValue(value);
         // For some reason the initial value is not triggering the summary update, so call manually.
-        thresholdPref.getOnPreferenceChangeListener().onPreferenceChange(thresholdPref, value);
+        seekBarPref.getOnPreferenceChangeListener().onPreferenceChange(seekBarPref, value);
 
-        category.addPreference(thresholdPref);
+        return seekBarPref;
     }
 
     private String toName(String action) {
