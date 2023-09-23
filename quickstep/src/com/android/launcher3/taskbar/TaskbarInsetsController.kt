@@ -198,24 +198,24 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         }
 
 
-        val imeInsetsSize = getInsetsForGravity(taskbarHeightForIme, gravity)
+        // When in gesture nav, report the stashed height to the IME, to allow hiding the
+        // IME navigation bar.
+        val imeInsetsSize = if (ENABLE_HIDE_IME_CAPTION_BAR && context.isGestureNav) {
+            getInsetsForGravity(controllers.taskbarStashController.stashedHeight, gravity);
+        } else {
+            getInsetsForGravity(taskbarHeightForIme, gravity)
+        }
         val imeInsetsSizeOverride =
-                if (!ENABLE_HIDE_IME_CAPTION_BAR) {
-                    arrayOf(
-                            InsetsFrameProvider.InsetsSizeOverride(
-                                    TYPE_INPUT_METHOD,
-                                    imeInsetsSize
-                            ),
-                    )
-                } else {
-                    arrayOf()
-                }
+                arrayOf(
+                        InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
+                )
         // Use 0 tappableElement insets for the VoiceInteractionWindow when gesture nav is enabled.
         val visInsetsSizeForTappableElement =
                 if (context.isGestureNav) getInsetsForGravity(0, gravity)
                 else getInsetsForGravity(tappableHeight, gravity)
         val insetsSizeOverrideForTappableElement =
-                imeInsetsSizeOverride + arrayOf(
+                arrayOf(
+                        InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
                         InsetsFrameProvider.InsetsSizeOverride(
                                 TYPE_VOICE_INTERACTION,
                                 visInsetsSizeForTappableElement
@@ -224,7 +224,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         if ((context.isGestureNav || TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
                 && provider.type == tappableElement()) {
             provider.insetsSizeOverrides = insetsSizeOverrideForTappableElement
-        } else if (provider.type != systemGestures() && imeInsetsSizeOverride.isNotEmpty()) {
+        } else if (provider.type != systemGestures()) {
             // We only override insets at the bottom of the screen
             provider.insetsSizeOverrides = imeInsetsSizeOverride
         }
