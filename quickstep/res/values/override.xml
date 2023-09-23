@@ -33,4 +33,6 @@
 
   <string name="taskbar_model_callbacks_factory_class" translatable="false">com.android.launcher3.taskbar.TaskbarModelCallbacksFactory</string>
 
+  <string name="assist_state_manager_class" translatable="false"></string>
+
 </resources>
