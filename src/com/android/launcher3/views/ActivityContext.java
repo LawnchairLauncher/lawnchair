@@ -273,13 +273,19 @@ public interface ActivityContext {
             final WindowInsetsController wic = root.getWindowInsetsController();
             WindowInsets insets = root.getRootWindowInsets();
             boolean isImeShown = insets != null && insets.isVisible(WindowInsets.Type.ime());
-            if (wic != null && isImeShown) {
-                StatsLogManager slm  = getStatsLogManager();
-                slm.keyboardStateManager().setKeyboardState(HIDE);
+            if (wic != null) {
+                // Only hide the keyboard if it is actually showing.
+                if (isImeShown) {
+                    StatsLogManager slm = getStatsLogManager();
+                    slm.keyboardStateManager().setKeyboardState(HIDE);
 
-                // this method cannot be called cross threads
-                wic.hide(WindowInsets.Type.ime());
-                slm.logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED);
+                    // this method cannot be called cross threads
+                    wic.hide(WindowInsets.Type.ime());
+                    slm.logger().log(LAUNCHER_ALLAPPS_KEYBOARD_CLOSED);
+                }
+
+                // If the WindowInsetsController is not null, we end here regardless of whether we
+                // hid the keyboard or not.
                 return;
             }
         }

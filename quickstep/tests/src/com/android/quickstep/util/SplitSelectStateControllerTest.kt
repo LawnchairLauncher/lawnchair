@@ -20,7 +20,6 @@ package com.android.quickstep.util
 import android.app.ActivityManager
 import android.app.PendingIntent
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Handler
@@ -38,7 +37,7 @@ import com.android.launcher3.util.withArgCaptor
 import com.android.quickstep.RecentsModel
 import com.android.quickstep.SystemUiProxy
 import com.android.systemui.shared.recents.model.Task
-import java.util.function.Consumer
+import com.android.wm.shell.common.split.SplitScreenConstants.SNAP_TO_50_50
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
@@ -50,6 +49,7 @@ import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import java.util.function.Consumer
 
 @RunWith(AndroidJUnit4::class)
 class SplitSelectStateControllerTest {
@@ -560,7 +560,7 @@ class SplitSelectStateControllerTest {
         return GroupTask(
             task1,
             task2,
-            SplitConfigurationOptions.SplitBounds(Rect(), Rect(), -1, -1)
+            SplitConfigurationOptions.SplitBounds(Rect(), Rect(), -1, -1, SNAP_TO_50_50)
         )
     }
 
@@ -592,7 +592,7 @@ class SplitSelectStateControllerTest {
         return GroupTask(
             task1,
             task2,
-            SplitConfigurationOptions.SplitBounds(Rect(), Rect(), -1, -1)
+            SplitConfigurationOptions.SplitBounds(Rect(), Rect(), -1, -1, SNAP_TO_50_50)
         )
     }
 }

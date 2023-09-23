@@ -16,6 +16,8 @@
 
 package com.android.launcher3.graphics;
 
+import static com.android.launcher3.BubbleTextView.DISPLAY_SEARCH_RESULT_APP_ROW;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -100,7 +102,8 @@ public class DragPreviewProvider {
             height = mView.getHeight();
         }
 
-        if (mView instanceof BubbleTextView) {
+        if (mView instanceof BubbleTextView btv
+                && btv.getIconDisplay() == DISPLAY_SEARCH_RESULT_APP_ROW) {
             FastBitmapDrawable icon = ((BubbleTextView) mView).getIcon();
             Drawable drawable = icon.getConstantState().newDrawable();
             float xInset = (float) blurSizeOutline / (float) (width + blurSizeOutline);

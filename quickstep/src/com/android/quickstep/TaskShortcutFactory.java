@@ -30,6 +30,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.os.SystemProperties;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
@@ -345,7 +346,9 @@ public interface TaskShortcutFactory {
         }
 
         private boolean isAvailable(BaseDraggingActivity activity, int displayId) {
-            return ActivityManagerWrapper.getInstance().supportsFreeformMultiWindow(activity)
+            return Settings.Global.getInt(
+                        activity.getContentResolver(),
+                        Settings.Global.DEVELOPMENT_ENABLE_FREEFORM_WINDOWS_SUPPORT, 0) != 0
                     && !SystemProperties.getBoolean("persist.wm.debug.desktop_mode_2", false);
         }
     };

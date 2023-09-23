@@ -24,7 +24,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.anim.AnimationSuccessListener;
+import com.android.launcher3.anim.AnimatorListeners;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayDragLayer;
 import com.android.quickstep.SystemUiProxy;
@@ -92,27 +92,19 @@ public class KeyboardQuickSwitchViewController {
 
     protected void closeQuickSwitchView(boolean animate) {
         if (mCloseAnimation != null) {
-            if (animate) {
-                // Let currently-running animation finish.
-                return;
-            } else {
-                mCloseAnimation.cancel();
+            // Let currently-running animation finish.
+            if (!animate) {
+                mCloseAnimation.end();
             }
+            return;
         }
         if (!animate) {
-            mCloseAnimation = null;
             onCloseComplete();
             return;
         }
         mCloseAnimation = mKeyboardQuickSwitchView.getCloseAnimation();
 
-        mCloseAnimation.addListener(new AnimationSuccessListener() {
-            @Override
-            public void onAnimationSuccess(Animator animator) {
-                mCloseAnimation = null;
-                onCloseComplete();
-            }
-        });
+        mCloseAnimation.addListener(AnimatorListeners.forEndCallback(this::onCloseComplete));
         mCloseAnimation.start();
     }
 
@@ -160,6 +152,7 @@ public class KeyboardQuickSwitchViewController {
     }
 
     private void onCloseComplete() {
+        mCloseAnimation = null;
         mOverlayContext.getDragLayer().removeView(mKeyboardQuickSwitchView);
         mControllerCallbacks.onCloseComplete();
     }

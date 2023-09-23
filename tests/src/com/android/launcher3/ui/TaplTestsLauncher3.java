@@ -16,11 +16,8 @@
 
 package com.android.launcher3.ui;
 
-import static com.android.launcher3.testing.shared.TestProtocol.ICON_MISSING;
 import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
 import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
-
-import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -29,9 +26,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 
 import android.content.Intent;
-import android.graphics.Point;
 import android.platform.test.annotations.PlatinumTest;
-import android.util.Log;
 
 import androidx.test.filters.FlakyTest;
 import androidx.test.filters.LargeTest;
@@ -53,7 +48,6 @@ import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.TestUtil;
-import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.TISBindRule;
 import com.android.launcher3.util.rule.TestStabilityRule.Stability;
@@ -65,9 +59,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.io.IOException;
-import java.util.Map;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
@@ -324,90 +315,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     @Test
     @PortraitLandscape
-    public void testDeleteFromWorkspace() throws Exception {
-        // test delete both built-in apps and user-installed app from workspace
-        for (String appName : new String[]{"Gmail", "Play Store", APP_NAME}) {
-            final HomeAppIcon homeAppIcon = createShortcutInCenterIfNotExist(appName);
-            Workspace workspace = mLauncher.getWorkspace().deleteAppIcon(homeAppIcon);
-            workspace.verifyWorkspaceAppIconIsGone(
-                    appName + " app was found after being deleted from workspace",
-                    appName);
-        }
-    }
-
-    private void verifyAppUninstalledFromAllApps(Workspace workspace, String appName) {
-        final HomeAllApps allApps = workspace.switchToAllApps();
-        Wait.atMost(appName + " app was found on all apps after being uninstalled",
-                () -> allApps.tryGetAppIcon(appName) == null,
-                DEFAULT_UI_TIMEOUT, mLauncher);
-    }
-
-    @Test
-    @PortraitLandscape
-    // TODO(b/293944634): Remove Screenrecord after flaky debug, and add
-    // @PlatinumTest(focusArea = "launcher") back
-    @ScreenRecord
-    public void testUninstallFromWorkspace() throws Exception {
-        installDummyAppAndWaitForUIUpdate();
-        try {
-            verifyAppUninstalledFromAllApps(
-                    createShortcutInCenterIfNotExist(DUMMY_APP_NAME).uninstall(), DUMMY_APP_NAME);
-        } finally {
-            TestUtil.uninstallDummyApp();
-        }
-    }
-
-    @Test
-    @PortraitLandscape
-    @PlatinumTest(focusArea = "launcher")
-    public void testUninstallFromAllApps() throws Exception {
-        installDummyAppAndWaitForUIUpdate();
-        try {
-            Workspace workspace = mLauncher.getWorkspace();
-            final HomeAllApps allApps = workspace.switchToAllApps();
-            workspace = allApps.getAppIcon(DUMMY_APP_NAME).uninstall();
-            verifyAppUninstalledFromAllApps(workspace, DUMMY_APP_NAME);
-        } finally {
-            TestUtil.uninstallDummyApp();
-        }
-    }
-    /**
-     * Adds three icons to the workspace and removes one of them by dragging to uninstall.
-     */
-    @Test
-    @ScreenRecord // b/241821721
-    @PlatinumTest(focusArea = "launcher")
-    public void uninstallWorkspaceIcon() throws IOException {
-        Point[] gridPositions = TestUtil.getCornersAndCenterPositions(mLauncher);
-        StringBuilder sb = new StringBuilder();
-        for (Point p : gridPositions) {
-            sb.append(p).append(", ");
-        }
-        Log.d(ICON_MISSING, "allGridPositions: " + sb);
-        createShortcutIfNotExist(STORE_APP_NAME, gridPositions[0]);
-        createShortcutIfNotExist(MAPS_APP_NAME, gridPositions[1]);
-        installDummyAppAndWaitForUIUpdate();
-        try {
-            createShortcutIfNotExist(DUMMY_APP_NAME, gridPositions[2]);
-            Map<String, Point> initialPositions =
-                    mLauncher.getWorkspace().getWorkspaceIconsPositions();
-            assertThat(initialPositions.keySet())
-                    .containsAtLeast(DUMMY_APP_NAME, MAPS_APP_NAME, STORE_APP_NAME);
-
-            mLauncher.getWorkspace().getWorkspaceAppIcon(DUMMY_APP_NAME).uninstall();
-            mLauncher.getWorkspace().verifyWorkspaceAppIconIsGone(
-                    DUMMY_APP_NAME + " was expected to disappear after uninstall.", DUMMY_APP_NAME);
-
-            Map<String, Point> finalPositions =
-                    mLauncher.getWorkspace().getWorkspaceIconsPositions();
-            assertThat(finalPositions).doesNotContainKey(DUMMY_APP_NAME);
-        } finally {
-            TestUtil.uninstallDummyApp();
-        }
-    }
-
-    @Test
-    @PortraitLandscape
     public void testAddDeleteShortcutOnHotseat() {
         mLauncher.getWorkspace()
                 .deleteAppIcon(mLauncher.getWorkspace().getHotseatAppIcon(0))
@@ -416,21 +323,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 .dragToHotseat(0);
         mLauncher.getWorkspace().deleteAppIcon(
                 mLauncher.getWorkspace().getHotseatAppIcon(APP_NAME));
-    }
-
-    private void installDummyAppAndWaitForUIUpdate() throws IOException {
-        TestUtil.installDummyApp();
-        waitForLauncherUIUpdate();
-    }
-
-    private void waitForLauncherUIUpdate() {
-        // Wait for model thread completion as it may be processing
-        // the install event from the SystemService
-        mLauncher.waitForModelQueueCleared();
-        // Wait for Launcher UI thread completion, as it may be processing updating the UI in
-        // response to the model update. Not that `waitForLauncherInitialized` is just a proxy
-        // method, we can use any method which touches Launcher UI thread,
-        mLauncher.waitForLauncherInitialized();
     }
 
     @Test

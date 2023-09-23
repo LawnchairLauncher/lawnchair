@@ -305,6 +305,10 @@ public abstract class BaseLauncherBinder {
             Executor pendingExecutor = pendingTasks::add;
             bindWorkspaceItems(otherWorkspaceItems, pendingExecutor);
             bindAppWidgets(otherAppWidgets, pendingExecutor);
+
+            StringCache cacheClone = mBgDataModel.stringCache.clone();
+            executeCallbacksTask(c -> c.bindStringCache(cacheClone), pendingExecutor);
+
             executeCallbacksTask(c -> c.finishBindingItems(currentScreenIds), pendingExecutor);
             pendingExecutor.execute(
                     () -> {
@@ -319,9 +323,6 @@ public abstract class BaseLauncherBinder {
                         c.onInitialBindComplete(
                                 currentScreenIds, pendingTasks, workspaceItemCount, isBindSync);
                     }, mUiExecutor);
-
-            StringCache cacheClone = mBgDataModel.stringCache.clone();
-            executeCallbacksTask(c -> c.bindStringCache(cacheClone), pendingExecutor);
         }
 
         private void bindWorkspaceItems(
