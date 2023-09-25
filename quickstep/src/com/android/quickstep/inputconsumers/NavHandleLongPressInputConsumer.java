@@ -80,4 +80,9 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
 
         return distFromMiddle < areaFromMiddle;
     }
+
+    @Override
+    protected String getDelegatorName() {
+        return "NavHandleLongPressInputConsumer";
+    }
 }
