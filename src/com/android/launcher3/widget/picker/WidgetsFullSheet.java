@@ -60,6 +60,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.UserManagerState;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.pm.UserCache;
@@ -681,7 +682,8 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         boolean isTwoPane = LARGE_SCREEN_WIDGET_PICKER.get()
                 && launcher.getDeviceProfile().isTablet
                 && launcher.getDeviceProfile().isLandscape
-                && !launcher.getDeviceProfile().isTwoPanels;
+                && (!launcher.getDeviceProfile().isTwoPanels
+                    || FeatureFlags.UNFOLDED_WIDGET_PICKER.get());
 
         WidgetsFullSheet sheet;
         if (isTwoPane) {
