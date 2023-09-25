@@ -425,7 +425,7 @@ public final class FeatureFlags {
     // Aconfig migration complete for ENABLE_RESPONSIVE_WORKSPACE.
     @VisibleForTesting
     public static final BooleanFlag ENABLE_RESPONSIVE_WORKSPACE = getDebugFlag(241386436,
-            "ENABLE_RESPONSIVE_WORKSPACE", DISABLED,
+            "ENABLE_RESPONSIVE_WORKSPACE", TEAMFOOD,
             "Enables new workspace grid calculations method.");
     public static boolean enableResponsiveWorkspace() {
         return ENABLE_RESPONSIVE_WORKSPACE.get() || Flags.enableResponsiveWorkspace();
