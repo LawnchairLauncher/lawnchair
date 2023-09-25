@@ -265,6 +265,11 @@ public final class FeatureFlags {
             "Enables taskbar pinning to allow user to switch between transient and persistent "
                     + "taskbar flavors");
 
+    public static final BooleanFlag ENABLE_BOOT_AWARE_STARTUP_DATA = getDebugFlag(251502424,
+            "ENABLE_BOOT_AWARE_STARTUP_DATA", DISABLED, "Marks LauncherPref data as (and allows it "
+                    + "to) available while the device is locked. Enabling this causes a 1-time "
+                    + "migration of certain SharedPreferences data. Improves startup latency.");
+
     // TODO(Block 18): Clean up flags
     public static final BooleanFlag ENABLE_APP_PAIRS = getDebugFlag(274189428,
             "ENABLE_APP_PAIRS", DISABLED,
