@@ -131,7 +131,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     protected final List<AdapterHolder> mAH;
     protected final Predicate<ItemInfo> mPersonalMatcher = ItemInfoMatcher.ofUser(
             Process.myUserHandle());
-    protected final WorkProfileManager mWorkManager;
+    protected WorkProfileManager mWorkManager;
     protected final Point mFastScrollerOffset = new Point();
     protected final int mScrimColor;
     protected final float mHeaderThreshold;
@@ -966,13 +966,14 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mBottomSheetAlpha = mActivityContext.getDeviceProfile().isTablet ? 1f : alpha;
     }
 
-    private void onAppsUpdated() {
-        mHasWorkApps = Stream.of(mAllAppsStore.getApps()).anyMatch(mWorkManager.getMatcher());
+    @VisibleForTesting
+    public void onAppsUpdated() {
+        mHasWorkApps = mWorkManager.hasWorkApps();
         if (!isSearching()) {
             rebindAdapters();
-            if (mHasWorkApps) {
-                mWorkManager.reset();
-            }
+        }
+        if (mHasWorkApps) {
+            mWorkManager.reset();
         }
 
         mActivityContext.getStatsLogManager().logger()
@@ -1214,6 +1215,11 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 }
             }
         }
+    }
+
+    @VisibleForTesting
+    public void setWorkManager(WorkProfileManager workManager) {
+        mWorkManager = workManager;
     }
 
     @VisibleForTesting

@@ -52,6 +52,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * Companion class for {@link ActivityAllAppsContainerView} to manage work tab and personal tab
@@ -213,6 +214,10 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
      */
     public boolean shouldShowWorkApps() {
         return mCurrentState != WorkProfileManager.STATE_DISABLED;
+    }
+
+    public boolean hasWorkApps() {
+        return Stream.of(mAllApps.getAppsStore().getApps()).anyMatch(mMatcher);
     }
 
     /**
