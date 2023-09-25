@@ -59,8 +59,12 @@ class LauncherPrefs(private val encryptedContext: Context) {
                 IS_STARTUP_DATA_MIGRATED.defaultValue
             )
 
+    // TODO: Remove `item == TASKBAR_PINNING` once isBootAwareStartupDataEnabled is always true
     private fun chooseSharedPreferences(item: Item): SharedPreferences =
-        if (isBootAwareStartupDataEnabled && item.isBootAware && isStartupDataMigrated)
+        if (
+            (isBootAwareStartupDataEnabled && item.isBootAware && isStartupDataMigrated) ||
+                item == TASKBAR_PINNING
+        )
             bootAwarePrefs
         else item.encryptedPrefs
 
