@@ -16,6 +16,7 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN;
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
@@ -57,6 +58,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
@@ -295,6 +297,19 @@ public class LoaderTask implements Runnable {
             mLauncherBinder.bindWidgets();
             logASplit("bindWidgets");
             verifyNotStopped();
+
+            if (LauncherPrefs.get(mApp.getContext()).get(LauncherPrefs.SHOULD_SHOW_SMARTSPACE)) {
+                mLauncherBinder.bindSmartspaceWidget();
+                // Turn off pref.
+                LauncherPrefs.get(mApp.getContext()).putSync(
+                        LauncherPrefs.backedUpItem(
+                                        LauncherPrefs.SHOULD_SHOW_SMARTSPACE_KEY,
+                                        WIDGET_ON_FIRST_SCREEN,
+                                        true)
+                                .to(false));
+                logASplit("bindSmartspaceWidget");
+                verifyNotStopped();
+            }
 
             if (FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
                 mModelDelegate.loadAndBindOtherItems(mLauncherBinder.mCallbacksList);
