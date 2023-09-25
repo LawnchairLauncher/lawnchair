@@ -17,10 +17,6 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_CURSOR_HOVER_STATES;
-import static com.android.launcher3.testing.shared.TestProtocol.FLAKY_QUICK_SWITCH_TO_PREVIOUS_APP;
-import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
-import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 import static com.android.quickstep.TaskbarModeSwitchRule.Mode.PERSISTENT;
 import static com.android.quickstep.TaskbarModeSwitchRule.Mode.TRANSIENT;
 
@@ -32,7 +28,6 @@ import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
 import android.platform.test.annotations.PlatinumTest;
-import android.util.Log;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -51,11 +46,9 @@ import com.android.launcher3.tapl.OverviewTask;
 import com.android.launcher3.tapl.OverviewTaskMenu;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TaplTestsLauncher3;
-import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
-import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 import com.android.quickstep.views.RecentsView;
@@ -320,7 +313,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @ScreenRecord // b/242163205
     @PlatinumTest(focusArea = "launcher")
-    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/286084688
+    @TaskbarModeSwitch(mode = PERSISTENT)
     public void testQuickSwitchToPreviousAppForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
         startTestActivity(2);
@@ -340,16 +333,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 "The first app we should have quick switched to is not running");
         // Expect task bar visible when the launched app was the test activity.
         launchedAppState = getAndAssertLaunchedApp();
-
-        Log.e(FLAKY_QUICK_SWITCH_TO_PREVIOUS_APP,
-                "is Taskbar Transient : " + DisplayController.isTransientTaskbar(mTargetContext));
-        // TODO(b/286084688): Remove this branching check after test corruption is resolved.
-        // Branching this check because of test corruption.
-        if (DisplayController.isTransientTaskbar(mTargetContext)) {
-            launchedAppState.assertTaskbarHidden();
-        } else {
-            launchedAppState.assertTaskbarVisible();
-        }
+        launchedAppState.assertTaskbarVisible();
     }
 
     @Test
