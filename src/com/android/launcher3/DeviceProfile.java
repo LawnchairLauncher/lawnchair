@@ -698,6 +698,17 @@ public class DeviceProfile {
     }
 
     /**
+     * Return maximum of all apps row count displayed on screen. Note that 1) Partially displayed
+     * row is counted as 1 row, and 2) we don't exclude the space of floating search bar. This
+     * method is used for calculating number of {@link BubbleTextView} we need to pre-inflate. Thus
+     * reasonable over estimation is fine.
+     */
+    public int getMaxAllAppsRowCount() {
+        return (int) (Math.ceil((availableHeightPx - allAppsTopPadding)
+                / (float) allAppsCellHeightPx));
+    }
+
+    /**
      * QSB width is always calculated because when in 3 button nav the width doesn't follow the
      * width of the hotseat.
      */
