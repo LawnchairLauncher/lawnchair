@@ -23,12 +23,14 @@ import kotlin.math.max
 
 class IconSizeSteps(res: Resources) {
     private val steps: List<Int>
+    val minimumIconLabelSize: Int
 
     init {
         steps =
             res.obtainTypedArray(R.array.icon_size_steps).use {
                 (0 until it.length()).map { step -> it.getDimensionOrThrow(step).toInt() }.sorted()
             }
+        minimumIconLabelSize = res.getDimensionPixelSize(R.dimen.minimum_icon_label_size)
     }
 
     fun minimumIconSize(): Int = steps[0]
@@ -43,5 +45,9 @@ class IconSizeSteps(res: Resources) {
 
     private fun getIndexForIconSize(iconSizePx: Int): Int {
         return max(0, steps.indexOfFirst { iconSizePx <= it })
+    }
+
+    companion object {
+        internal const val TEXT_STEP = 1
     }
 }
