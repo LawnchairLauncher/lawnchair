@@ -39,6 +39,7 @@ public class ActiveGestureErrorDetector {
         SET_ON_PAGE_TRANSITION_END_CALLBACK, CANCEL_CURRENT_ANIMATION, CLEANUP_SCREENSHOT,
         SCROLLER_ANIMATION_ABORTED, TASK_APPEARED, EXPECTING_TASK_APPEARED,
         FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER, LAUNCHER_DESTROYED, RECENT_TASKS_MISSING,
+        INVALID_VELOCITY_ON_SWIPE_UP,
 
         /**
          * These GestureEvents are specifically associated to state flags that get set in
@@ -264,6 +265,13 @@ public class ActiveGestureErrorDetector {
                             /* errorMessage= */ "ON_FINISH_RECENTS_ANIMATION "
                                     + "onAnimationFinished callback ran before onAnimationStart "
                                     + "callback",
+                            writer);
+                    break;
+                case INVALID_VELOCITY_ON_SWIPE_UP:
+                    errorDetected |= printErrorIfTrue(
+                            true,
+                            prefix,
+                            /* errorMessage= */ "invalid velocity on swipe up gesture.",
                             writer);
                     break;
                 case START_RECENTS_ANIMATION:
