@@ -613,6 +613,42 @@ public final class TaskViewUtils {
         animator.start();
     }
 
+    /**
+     * Start recents to desktop animation
+     */
+    public static void composeRecentsDesktopLaunchAnimator(
+            @NonNull DesktopTaskView launchingTaskView,
+            @NonNull StateManager stateManager, @Nullable DepthController depthController,
+            @NonNull TransitionInfo transitionInfo,
+            SurfaceControl.Transaction t, @NonNull Runnable finishCallback) {
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                t.apply();
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                finishCallback.run();
+            }
+        });
+
+        final RemoteAnimationTarget[] apps = RemoteAnimationTargetCompat.wrapApps(
+                transitionInfo, t, null /* leashMap */);
+        final RemoteAnimationTarget[] wallpaper = RemoteAnimationTargetCompat.wrapNonApps(
+                transitionInfo, true /* wallpapers */, t, null /* leashMap */);
+        final RemoteAnimationTarget[] nonApps = RemoteAnimationTargetCompat.wrapNonApps(
+                transitionInfo, false /* wallpapers */, t, null /* leashMap */);
+
+        composeRecentsLaunchAnimator(animatorSet, launchingTaskView, apps, wallpaper, nonApps,
+                true /* launcherClosing */, stateManager, launchingTaskView.getRecentsView(),
+                depthController);
+
+        animatorSet.start();
+    }
+
     public static void composeRecentsLaunchAnimator(@NonNull AnimatorSet anim, @NonNull View v,
             @NonNull RemoteAnimationTarget[] appTargets,
             @NonNull RemoteAnimationTarget[] wallpaperTargets,

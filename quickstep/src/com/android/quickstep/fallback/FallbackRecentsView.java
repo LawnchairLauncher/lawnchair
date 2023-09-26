@@ -36,6 +36,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.desktop.DesktopRecentsTransitionController;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.statemanager.StateManager.StateListener;
 import com.android.launcher3.util.SplitConfigurationOptions;
@@ -73,8 +74,9 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
     }
 
     @Override
-    public void init(OverviewActionsView actionsView, SplitSelectStateController splitController) {
-        super.init(actionsView, splitController);
+    public void init(OverviewActionsView actionsView, SplitSelectStateController splitController,
+            @Nullable DesktopRecentsTransitionController desktopRecentsTransitionController) {
+        super.init(actionsView, splitController, desktopRecentsTransitionController);
         setOverviewStateEnabled(true);
         setOverlayEnabled(true);
     }

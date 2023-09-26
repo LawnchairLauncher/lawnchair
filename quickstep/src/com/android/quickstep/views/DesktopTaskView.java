@@ -44,10 +44,10 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.desktop.DesktopRecentsTransitionController;
 import com.android.launcher3.icons.IconProvider;
 import com.android.launcher3.util.RunnableList;
 import com.android.quickstep.RecentsModel;
-import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskThumbnailCache;
 import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
@@ -331,17 +331,21 @@ public class DesktopTaskView extends TaskView {
         return false;
     }
 
-    @Override
-    public RunnableList launchTasks() {
-        SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps(mActivity.getDisplayId());
-        Launcher.getLauncher(mActivity).getStateManager().goToState(NORMAL, false /* animated */);
-        return null;
-    }
-
     @Nullable
     @Override
     public RunnableList launchTaskAnimated() {
-        return launchTasks();
+        RunnableList endCallback = new RunnableList();
+        endCallback.add(() -> Launcher.getLauncher(mActivity).getStateManager().goToState(NORMAL));
+
+        DesktopRecentsTransitionController recentsController =
+                getRecentsView().getDesktopRecentsController();
+        if (recentsController != null) {
+            recentsController.launchDesktopFromRecents(this, success -> {
+                endCallback.executeAllAndDestroy();
+            });
+        }
+
+        return endCallback;
     }
 
     @Override

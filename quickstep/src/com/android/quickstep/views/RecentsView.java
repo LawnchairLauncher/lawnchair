@@ -143,6 +143,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.desktop.DesktopRecentsTransitionController;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.statehandlers.DepthController;
@@ -722,6 +723,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private ObjectAnimator mActionsViewAlphaAnimator;
     private float mActionsViewAlphaAnimatorFinalValue;
 
+    @Nullable
+    private DesktopRecentsTransitionController mDesktopRecentsTransitionController;
+
     /**
      * Keeps track of the desktop task. Optional and only present when the feature flag is enabled.
      */
@@ -1042,10 +1046,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         updateTaskStackListenerState();
     }
 
-    public void init(OverviewActionsView actionsView, SplitSelectStateController splitController) {
+    public void init(OverviewActionsView actionsView, SplitSelectStateController splitController,
+            @Nullable DesktopRecentsTransitionController desktopRecentsTransitionController) {
         mActionsView = actionsView;
         mActionsView.updateHiddenFlags(HIDDEN_NO_TASKS, getTaskViewCount() == 0);
         mSplitSelectStateController = splitController;
+        mDesktopRecentsTransitionController = desktopRecentsTransitionController;
     }
 
     public SplitSelectStateController getSplitSelectController() {
@@ -5785,6 +5791,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Nullable
     protected DepthController getDepthController() {
         return null;
+    }
+
+    @Nullable
+    protected DesktopRecentsTransitionController getDesktopRecentsController() {
+        return mDesktopRecentsTransitionController;
     }
 
     /** Enables or disables modal state for RecentsView */

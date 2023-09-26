@@ -107,7 +107,6 @@ import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.util.TaskCornerRadius;
 import com.android.quickstep.util.TaskRemovedDuringLaunchListener;
-import com.android.quickstep.util.TransformParams;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -975,19 +974,17 @@ public class TaskView extends FrameLayout implements Reusable {
             if (remoteTargetHandles.length == 1) {
                 targets = remoteTargetHandles[0].getTransformParams().getTargetSet();
             } else {
-                TransformParams topLeftParams = remoteTargetHandles[0].getTransformParams();
-                TransformParams rightBottomParams = remoteTargetHandles[1].getTransformParams();
-                RemoteAnimationTarget[] apps = Stream.concat(
-                        Arrays.stream(topLeftParams.getTargetSet().apps),
-                        Arrays.stream(rightBottomParams.getTargetSet().apps))
+                RemoteAnimationTarget[] apps = Arrays.stream(remoteTargetHandles)
+                        .flatMap(handle -> Stream.of(
+                                handle.getTransformParams().getTargetSet().apps))
                         .toArray(RemoteAnimationTarget[]::new);
-                RemoteAnimationTarget[] wallpapers = Stream.concat(
-                        Arrays.stream(topLeftParams.getTargetSet().wallpapers),
-                        Arrays.stream(rightBottomParams.getTargetSet().wallpapers))
+                RemoteAnimationTarget[] wallpapers = Arrays.stream(remoteTargetHandles)
+                        .flatMap(handle -> Stream.of(
+                                handle.getTransformParams().getTargetSet().wallpapers))
                         .toArray(RemoteAnimationTarget[]::new);
                 targets = new RemoteAnimationTargets(apps, wallpapers,
-                        topLeftParams.getTargetSet().nonApps,
-                        topLeftParams.getTargetSet().targetMode);
+                        remoteTargetHandles[0].getTransformParams().getTargetSet().nonApps,
+                        remoteTargetHandles[0].getTransformParams().getTargetSet().targetMode);
             }
             if (targets == null) {
                 // If the recents animation is cancelled somehow between the parent if block and
