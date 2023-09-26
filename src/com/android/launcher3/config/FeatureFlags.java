@@ -243,6 +243,9 @@ public final class FeatureFlags {
     // Aconfig migration complete for ENABLE_TWOLINE_ALLAPPS.
     public static final BooleanFlag ENABLE_TWOLINE_ALLAPPS = getDebugFlag(270390937,
             "ENABLE_TWOLINE_ALLAPPS", DISABLED, "Enables two line label inside all apps.");
+    public static boolean enableTwolineAllapps() {
+        return ENABLE_TWOLINE_ALLAPPS.get() || Flags.enableTwolineAllapps();
+    }
 
     public static final BooleanFlag IME_STICKY_SNACKBAR_EDU = getDebugFlag(270391693,
             "IME_STICKY_SNACKBAR_EDU", ENABLED, "Show sticky IME edu in AllApps");

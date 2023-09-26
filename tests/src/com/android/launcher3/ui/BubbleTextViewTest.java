@@ -20,7 +20,6 @@ import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
 import static com.android.launcher3.BubbleTextView.DISPLAY_ALL_APPS;
 import static com.android.launcher3.BubbleTextView.DISPLAY_PREDICTION_ROW;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TWOLINE_ALLAPPS;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -36,7 +35,6 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.search.StringMatcherUtility;
 import com.android.launcher3.util.ActivityContextWrapper;
 import com.android.launcher3.util.IntArray;
-import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.rule.StaticMockitoRule;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -75,6 +73,10 @@ public class BubbleTextViewTest {
             "LEGO®\nBuilder";
     private static final String EMPTY_STRING = "";
     private static final int CHAR_CNT = 7;
+    private static final int MAX_HEIGHT = Integer.MAX_VALUE;
+    private static final int LIMITED_HEIGHT = 357; /* allowedHeight in Pixel6 */
+    private static final float SPACE_MULTIPLIER = 1;
+    private static final float SPACE_EXTRA = 0;
 
     private BubbleTextView mBubbleTextView;
     private ItemInfoWithIcon mItemInfoWithIcon;
@@ -111,160 +113,150 @@ public class BubbleTextViewTest {
 
     @Test
     public void testEmptyString_flagOn() {
-        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true)) {
-            mItemInfoWithIcon.title = EMPTY_STRING;
-            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
-            mBubbleTextView.applyLabel(mItemInfoWithIcon);
-            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-            mBubbleTextView.measure(mLimitedWidth, 0);
-            mBubbleTextView.onPreDraw();
-            assertNotEquals(TWO_LINE, mBubbleTextView.getMaxLines());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(true);
+        mItemInfoWithIcon.title = EMPTY_STRING;
+        mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
+        mBubbleTextView.applyLabel(mItemInfoWithIcon);
+        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+        mBubbleTextView.measure(mLimitedWidth, LIMITED_HEIGHT);
+
+        mBubbleTextView.onPreDraw();
+
+        assertNotEquals(TWO_LINE, mBubbleTextView.getMaxLines());
     }
 
     @Test
     public void testEmptyString_flagOff() {
-        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, false)) {
-            mItemInfoWithIcon.title = EMPTY_STRING;
-            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
-            mBubbleTextView.applyLabel(mItemInfoWithIcon);
-            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-            mBubbleTextView.measure(mLimitedWidth, 0);
-            mBubbleTextView.onPreDraw();
-            assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(false);
+        mItemInfoWithIcon.title = EMPTY_STRING;
+        mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
+        mBubbleTextView.applyLabel(mItemInfoWithIcon);
+        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+        mBubbleTextView.measure(mLimitedWidth, LIMITED_HEIGHT);
+
+        mBubbleTextView.onPreDraw();
+
+        assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
     }
 
     @Test
     public void testStringWithSpaceLongerThanCharLimit_flagOn() {
-        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true)) {
-            // test string: "Battery Stats"
-            mItemInfoWithIcon.title = TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
-            mBubbleTextView.applyLabel(mItemInfoWithIcon);
-            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
-            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-            mBubbleTextView.measure(mLimitedWidth, 0);
-            mBubbleTextView.onPreDraw();
-            assertEquals(TWO_LINE, mBubbleTextView.getLineCount());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(true);
+        // test string: "Battery Stats"
+        mItemInfoWithIcon.title = TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
+        mBubbleTextView.applyLabel(mItemInfoWithIcon);
+        mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
+        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+        mBubbleTextView.measure(mLimitedWidth, MAX_HEIGHT);
+
+        mBubbleTextView.onPreDraw();
+
+        assertEquals(TWO_LINE, mBubbleTextView.getLineCount());
     }
 
     @Test
     public void testStringWithSpaceLongerThanCharLimit_flagOff() {
-        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, false)) {
-            // test string: "Battery Stats"
-            mItemInfoWithIcon.title = TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
-            mBubbleTextView.applyLabel(mItemInfoWithIcon);
-            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
-            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-            mBubbleTextView.measure(mLimitedWidth, 0);
-            mBubbleTextView.onPreDraw();
-            assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(false);
+        // test string: "Battery Stats"
+        mItemInfoWithIcon.title = TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
+        mBubbleTextView.applyLabel(mItemInfoWithIcon);
+        mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
+        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+        mBubbleTextView.measure(mLimitedWidth, LIMITED_HEIGHT);
+
+        mBubbleTextView.onPreDraw();
+
+        assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
     }
 
     @Test
     public void testLongStringNoSpaceLongerThanCharLimit_flagOn() {
-        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true)) {
-            // test string: "flutterappflorafy"
-            mItemInfoWithIcon.title = TEST_LONG_STRING_NO_SPACE_LONGER_THAN_CHAR_LIMIT;
-            mBubbleTextView.applyLabel(mItemInfoWithIcon);
-            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
-            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-            mBubbleTextView.measure(mLimitedWidth, 0);
-            mBubbleTextView.onPreDraw();
-            assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(true);
+        // test string: "flutterappflorafy"
+        mItemInfoWithIcon.title = TEST_LONG_STRING_NO_SPACE_LONGER_THAN_CHAR_LIMIT;
+        mBubbleTextView.applyLabel(mItemInfoWithIcon);
+        mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
+        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+        mBubbleTextView.measure(mLimitedWidth, LIMITED_HEIGHT);
+
+        mBubbleTextView.onPreDraw();
+
+        assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
     }
 
     @Test
     public void testLongStringNoSpaceLongerThanCharLimit_flagOff() {
-        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, false)) {
-            // test string: "flutterappflorafy"
-            mItemInfoWithIcon.title = TEST_LONG_STRING_NO_SPACE_LONGER_THAN_CHAR_LIMIT;
-            mBubbleTextView.applyLabel(mItemInfoWithIcon);
-            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
-            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-            mBubbleTextView.measure(mLimitedWidth, 0);
-            mBubbleTextView.onPreDraw();
-            assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
-        } catch (Exception e) {
-            throw  new RuntimeException(e);
-        }
+        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(false);
+        // test string: "flutterappflorafy"
+        mItemInfoWithIcon.title = TEST_LONG_STRING_NO_SPACE_LONGER_THAN_CHAR_LIMIT;
+        mBubbleTextView.applyLabel(mItemInfoWithIcon);
+        mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
+        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+        mBubbleTextView.measure(mLimitedWidth, LIMITED_HEIGHT);
+
+        mBubbleTextView.onPreDraw();
+
+        assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
     }
 
     @Test
     public void testLongStringWithSpaceLongerThanCharLimit_flagOn() {
-        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true)) {
-            // test string: "System UWB Field Test"
-            mItemInfoWithIcon.title = TEST_LONG_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
-            mBubbleTextView.applyLabel(mItemInfoWithIcon);
-            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
-            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-            mBubbleTextView.measure(mLimitedWidth, 0);
-            mBubbleTextView.onPreDraw();
-            assertEquals(TWO_LINE, mBubbleTextView.getLineCount());
-        } catch (Exception e) {
-            throw  new RuntimeException(e);
-        }
+        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(true);
+        // test string: "System UWB Field Test"
+        mItemInfoWithIcon.title = TEST_LONG_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
+        mBubbleTextView.applyLabel(mItemInfoWithIcon);
+        mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
+        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+        mBubbleTextView.measure(mLimitedWidth, MAX_HEIGHT);
+
+        mBubbleTextView.onPreDraw();
+
+        assertEquals(TWO_LINE, mBubbleTextView.getLineCount());
     }
 
     @Test
     public void testLongStringWithSpaceLongerThanCharLimit_flagOff() {
-        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, false)) {
-            // test string: "System UWB Field Test"
-            mItemInfoWithIcon.title = TEST_LONG_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
-            mBubbleTextView.applyLabel(mItemInfoWithIcon);
-            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
-            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-            mBubbleTextView.measure(mLimitedWidth, 0);
-            mBubbleTextView.onPreDraw();
-            assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
-        } catch (Exception e) {
-            throw  new RuntimeException(e);
-        }
+        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(false);
+        // test string: "System UWB Field Test"
+        mItemInfoWithIcon.title = TEST_LONG_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
+        mBubbleTextView.applyLabel(mItemInfoWithIcon);
+        mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
+        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+        mBubbleTextView.measure(mLimitedWidth, LIMITED_HEIGHT);
+
+        mBubbleTextView.onPreDraw();
+
+        assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
     }
 
     @Test
     public void testLongStringSymbolLongerThanCharLimit_flagOn() {
-        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true)) {
-            // test string: "LEGO®Builder"
-            mItemInfoWithIcon.title = TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT;
-            mBubbleTextView.applyLabel(mItemInfoWithIcon);
-            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
-            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-            mBubbleTextView.measure(mLimitedWidth, 0);
-            mBubbleTextView.onPreDraw();
-            assertEquals(TWO_LINE, mBubbleTextView.getLineCount());
-        } catch (Exception e) {
-            throw  new RuntimeException(e);
-        }
+        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(true);
+        // test string: "LEGO®Builder"
+        mItemInfoWithIcon.title = TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT;
+        mBubbleTextView.applyLabel(mItemInfoWithIcon);
+        mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
+        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+        mBubbleTextView.measure(mLimitedWidth, MAX_HEIGHT);
+
+        mBubbleTextView.onPreDraw();
+
+        assertEquals(TWO_LINE, mBubbleTextView.getLineCount());
     }
 
     @Test
     public void testLongStringSymbolLongerThanCharLimit_flagOff() {
-        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, false)) {
-            // test string: "LEGO®Builder"
-            mItemInfoWithIcon.title = TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT;
-            mBubbleTextView.applyLabel(mItemInfoWithIcon);
-            mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
-            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-            mBubbleTextView.measure(mLimitedWidth, 0);
-            mBubbleTextView.onPreDraw();
-            assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
-        } catch (Exception e) {
-            throw  new RuntimeException(e);
-        }
+        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(false);
+        // test string: "LEGO®Builder"
+        mItemInfoWithIcon.title = TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT;
+        mBubbleTextView.applyLabel(mItemInfoWithIcon);
+        mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
+        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+        mBubbleTextView.measure(mLimitedWidth, LIMITED_HEIGHT);
+
+        mBubbleTextView.onPreDraw();
+
+        assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
     }
 
     @Test
@@ -273,8 +265,11 @@ public class BubbleTextViewTest {
         IntArray breakPoints = StringMatcherUtility.getListOfBreakpoints(
                 TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT, MATCHER);
         CharSequence newString = BubbleTextView.modifyTitleToSupportMultiLine(mLimitedWidth,
+                MAX_HEIGHT,
                 TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT, mBubbleTextView.getPaint(),
-                breakPoints);
+                breakPoints,
+                SPACE_MULTIPLIER,
+                SPACE_EXTRA);
         assertEquals(TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT_RESULT, newString);
     }
 
@@ -283,9 +278,11 @@ public class BubbleTextViewTest {
         // test string: "flutterappflorafy"
         IntArray breakPoints = StringMatcherUtility.getListOfBreakpoints(
                 TEST_LONG_STRING_NO_SPACE_LONGER_THAN_CHAR_LIMIT, MATCHER);
-        CharSequence newString = BubbleTextView.modifyTitleToSupportMultiLine(mLimitedWidth,
+        CharSequence newString = BubbleTextView.modifyTitleToSupportMultiLine(mLimitedWidth, 0,
                 TEST_LONG_STRING_NO_SPACE_LONGER_THAN_CHAR_LIMIT, mBubbleTextView.getPaint(),
-                breakPoints);
+                breakPoints,
+                SPACE_MULTIPLIER,
+                SPACE_EXTRA);
         assertEquals(TEST_LONG_STRING_NO_SPACE_LONGER_THAN_CHAR_LIMIT, newString);
     }
 
@@ -295,8 +292,11 @@ public class BubbleTextViewTest {
         IntArray breakPoints = StringMatcherUtility.getListOfBreakpoints(
                 TEST_LONG_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT, MATCHER);
         CharSequence newString = BubbleTextView.modifyTitleToSupportMultiLine(mLimitedWidth,
+                MAX_HEIGHT,
                 TEST_LONG_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT, mBubbleTextView.getPaint(),
-                breakPoints);
+                breakPoints,
+                SPACE_MULTIPLIER,
+                SPACE_EXTRA);
         assertEquals(TEST_LONG_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT_RESULT, newString);
     }
 
@@ -305,25 +305,57 @@ public class BubbleTextViewTest {
         // test string: "LEGO®Builder"
         IntArray breakPoints = StringMatcherUtility.getListOfBreakpoints(
                 TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT, MATCHER);
-        CharSequence newString = BubbleTextView.modifyTitleToSupportMultiLine(mLimitedWidth,
+        CharSequence newString = BubbleTextView.modifyTitleToSupportMultiLine(
+                mLimitedWidth,
+                MAX_HEIGHT,
                 TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT, mBubbleTextView.getPaint(),
-                breakPoints);
+                breakPoints,
+                SPACE_MULTIPLIER,
+                SPACE_EXTRA);
         assertEquals(TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT_RESULT, newString);
     }
 
     @Test
-    public void testEnsurePredictionRowIsOneLine() {
-        try (AutoCloseable flag = TestUtil.overrideFlag(ENABLE_TWOLINE_ALLAPPS, true)) {
-            // test string: "Battery Stats"
-            mItemInfoWithIcon.title = TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
-            mBubbleTextView.setDisplay(DISPLAY_PREDICTION_ROW);
-            mBubbleTextView.applyLabel(mItemInfoWithIcon);
-            mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-            mBubbleTextView.measure(mLimitedWidth, 0);
-            mBubbleTextView.onPreDraw();
-            assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    public void testEnsurePredictionRowIsTwoLine() {
+        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(true);
+        // test string: "Battery Stats"
+        mItemInfoWithIcon.title = TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
+        mBubbleTextView.setDisplay(DISPLAY_PREDICTION_ROW);
+        mBubbleTextView.applyLabel(mItemInfoWithIcon);
+        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+        mBubbleTextView.measure(mLimitedWidth, LIMITED_HEIGHT);
+
+        mBubbleTextView.onPreDraw();
+
+        assertEquals(TWO_LINE, mBubbleTextView.getLineCount());
+    }
+
+    @Test
+    public void modifyTitleToSupportMultiLine_whenLimitedHeight_shouldBeOneLine() {
+        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(true);
+        // test string: "LEGO®Builder"
+        mItemInfoWithIcon.title = TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT;
+        mBubbleTextView.applyLabel(mItemInfoWithIcon);
+        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+        mBubbleTextView.measure(mLimitedWidth, LIMITED_HEIGHT);
+
+        mBubbleTextView.onPreDraw();
+
+        assertEquals(ONE_LINE, mBubbleTextView.getLineCount());
+    }
+
+    @Test
+    public void modifyTitleToSupportMultiLine_whenUnlimitedHeight_shouldBeTwoLine() {
+        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(true);
+        // test string: "LEGO®Builder"
+        mItemInfoWithIcon.title = TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT;
+        mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
+        mBubbleTextView.applyLabel(mItemInfoWithIcon);
+        mBubbleTextView.setTypeface(Typeface.MONOSPACE);
+        mBubbleTextView.measure(mLimitedWidth, MAX_HEIGHT);
+
+        mBubbleTextView.onPreDraw();
+
+        assertEquals(TWO_LINE, mBubbleTextView.getLineCount());
     }
 }
