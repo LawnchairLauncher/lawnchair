@@ -26,6 +26,7 @@ import static org.junit.Assert.assertNotEquals;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.platform.test.flag.junit.SetFlagsRule;
 import android.view.ViewGroup;
 
 import com.android.launcher3.BubbleTextView;
@@ -35,13 +36,11 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.search.StringMatcherUtility;
 import com.android.launcher3.util.ActivityContextWrapper;
 import com.android.launcher3.util.IntArray;
-import com.android.launcher3.util.rule.StaticMockitoRule;
 import com.android.launcher3.views.BaseDragLayer;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 /**
@@ -53,7 +52,7 @@ import org.mockito.MockitoAnnotations;
  */
 public class BubbleTextViewTest {
 
-    @Rule public StaticMockitoRule mockitoRule = new StaticMockitoRule(Flags.class);
+    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
     private static final StringMatcherUtility.StringMatcher
             MATCHER = StringMatcherUtility.StringMatcher.getInstance();
     private static final int ONE_LINE = 1;
@@ -86,7 +85,8 @@ public class BubbleTextViewTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(false);
+        mSetFlagsRule.disableFlags(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS);
+        mSetFlagsRule.disableFlags(Flags.FLAG_ENABLE_CURSOR_HOVER_STATES);
         Utilities.enableRunningInTestHarnessForTests();
         mContext = new ActivityContextWrapper(getApplicationContext());
         mBubbleTextView = new BubbleTextView(mContext);
@@ -113,7 +113,7 @@ public class BubbleTextViewTest {
 
     @Test
     public void testEmptyString_flagOn() {
-        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(true);
+        mSetFlagsRule.enableFlags(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS);
         mItemInfoWithIcon.title = EMPTY_STRING;
         mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
         mBubbleTextView.applyLabel(mItemInfoWithIcon);
@@ -127,7 +127,7 @@ public class BubbleTextViewTest {
 
     @Test
     public void testEmptyString_flagOff() {
-        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(false);
+        mSetFlagsRule.disableFlags(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS);
         mItemInfoWithIcon.title = EMPTY_STRING;
         mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
         mBubbleTextView.applyLabel(mItemInfoWithIcon);
@@ -141,7 +141,7 @@ public class BubbleTextViewTest {
 
     @Test
     public void testStringWithSpaceLongerThanCharLimit_flagOn() {
-        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(true);
+        mSetFlagsRule.enableFlags(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS);
         // test string: "Battery Stats"
         mItemInfoWithIcon.title = TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
         mBubbleTextView.applyLabel(mItemInfoWithIcon);
@@ -156,7 +156,7 @@ public class BubbleTextViewTest {
 
     @Test
     public void testStringWithSpaceLongerThanCharLimit_flagOff() {
-        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(false);
+        mSetFlagsRule.disableFlags(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS);
         // test string: "Battery Stats"
         mItemInfoWithIcon.title = TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
         mBubbleTextView.applyLabel(mItemInfoWithIcon);
@@ -171,7 +171,7 @@ public class BubbleTextViewTest {
 
     @Test
     public void testLongStringNoSpaceLongerThanCharLimit_flagOn() {
-        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(true);
+        mSetFlagsRule.enableFlags(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS);
         // test string: "flutterappflorafy"
         mItemInfoWithIcon.title = TEST_LONG_STRING_NO_SPACE_LONGER_THAN_CHAR_LIMIT;
         mBubbleTextView.applyLabel(mItemInfoWithIcon);
@@ -186,7 +186,7 @@ public class BubbleTextViewTest {
 
     @Test
     public void testLongStringNoSpaceLongerThanCharLimit_flagOff() {
-        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(false);
+        mSetFlagsRule.disableFlags(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS);
         // test string: "flutterappflorafy"
         mItemInfoWithIcon.title = TEST_LONG_STRING_NO_SPACE_LONGER_THAN_CHAR_LIMIT;
         mBubbleTextView.applyLabel(mItemInfoWithIcon);
@@ -201,7 +201,7 @@ public class BubbleTextViewTest {
 
     @Test
     public void testLongStringWithSpaceLongerThanCharLimit_flagOn() {
-        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(true);
+        mSetFlagsRule.enableFlags(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS);
         // test string: "System UWB Field Test"
         mItemInfoWithIcon.title = TEST_LONG_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
         mBubbleTextView.applyLabel(mItemInfoWithIcon);
@@ -216,7 +216,7 @@ public class BubbleTextViewTest {
 
     @Test
     public void testLongStringWithSpaceLongerThanCharLimit_flagOff() {
-        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(false);
+        mSetFlagsRule.disableFlags(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS);
         // test string: "System UWB Field Test"
         mItemInfoWithIcon.title = TEST_LONG_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
         mBubbleTextView.applyLabel(mItemInfoWithIcon);
@@ -231,7 +231,7 @@ public class BubbleTextViewTest {
 
     @Test
     public void testLongStringSymbolLongerThanCharLimit_flagOn() {
-        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(true);
+        mSetFlagsRule.enableFlags(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS);
         // test string: "LEGO®Builder"
         mItemInfoWithIcon.title = TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT;
         mBubbleTextView.applyLabel(mItemInfoWithIcon);
@@ -246,7 +246,7 @@ public class BubbleTextViewTest {
 
     @Test
     public void testLongStringSymbolLongerThanCharLimit_flagOff() {
-        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(false);
+        mSetFlagsRule.disableFlags(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS);
         // test string: "LEGO®Builder"
         mItemInfoWithIcon.title = TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT;
         mBubbleTextView.applyLabel(mItemInfoWithIcon);
@@ -317,7 +317,7 @@ public class BubbleTextViewTest {
 
     @Test
     public void testEnsurePredictionRowIsTwoLine() {
-        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(true);
+        mSetFlagsRule.enableFlags(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS);
         // test string: "Battery Stats"
         mItemInfoWithIcon.title = TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT;
         mBubbleTextView.setDisplay(DISPLAY_PREDICTION_ROW);
@@ -332,7 +332,7 @@ public class BubbleTextViewTest {
 
     @Test
     public void modifyTitleToSupportMultiLine_whenLimitedHeight_shouldBeOneLine() {
-        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(true);
+        mSetFlagsRule.enableFlags(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS);
         // test string: "LEGO®Builder"
         mItemInfoWithIcon.title = TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT;
         mBubbleTextView.applyLabel(mItemInfoWithIcon);
@@ -346,7 +346,7 @@ public class BubbleTextViewTest {
 
     @Test
     public void modifyTitleToSupportMultiLine_whenUnlimitedHeight_shouldBeTwoLine() {
-        Mockito.when(Flags.enableTwolineAllapps()).thenReturn(true);
+        mSetFlagsRule.enableFlags(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS);
         // test string: "LEGO®Builder"
         mItemInfoWithIcon.title = TEST_LONG_STRING_SYMBOL_LONGER_THAN_CHAR_LIMIT;
         mBubbleTextView.setDisplay(DISPLAY_ALL_APPS);
