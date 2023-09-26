@@ -152,4 +152,9 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
             mDelegate.onMotionEvent(ev);
         }
     }
+
+    @Override
+    protected String getDelegatorName() {
+        return "AccessibilityInputConsumer";
+    }
 }
