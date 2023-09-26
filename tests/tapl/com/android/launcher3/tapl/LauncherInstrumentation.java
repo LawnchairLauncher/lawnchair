@@ -755,6 +755,17 @@ public final class LauncherInstrumentation {
         return isTablet() ? getLauncherPackageName() : SYSTEMUI_PACKAGE;
     }
 
+    /**
+     * Resets the frozen recent tasks list if necessary from a previous quickswitch.
+     */
+    public void resetFreezeRecentTaskList() {
+        try {
+            mDevice.executeShellCommand("wm reset-freeze-recent-tasks");
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to reset fozen recent tasks list", e);
+        }
+    }
+
     private UiObject2 verifyContainerType(ContainerType containerType) {
         waitForLauncherInitialized();
 

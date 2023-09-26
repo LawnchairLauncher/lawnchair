@@ -89,6 +89,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     public static void initialize(
             AbstractLauncherUiTest test, boolean clearWorkspace) throws Exception {
         test.reinitializeLauncherData(clearWorkspace);
+        test.mLauncher.resetFreezeRecentTaskList();
         test.mDevice.pressHome();
         test.waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
         test.waitForState("Launcher internal state didn't switch to Home",
