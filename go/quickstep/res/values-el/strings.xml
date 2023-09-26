@@ -14,7 +14,7 @@
     <string name="assistant_not_selected_text" msgid="3244613673884359276">"Για να ακούσετε ή να μεταφράσετε κείμενο στην οθόνη σας, επιλέξτε μια εφαρμογή ψηφιακού βοηθού στις Ρυθμίσεις."</string>
     <string name="assistant_not_supported_title" msgid="1675788067597484142">"Αλλάξτε τον βοηθό σας για να χρησιμοποιήσετε αυτήν τη λειτουργία"</string>
     <string name="assistant_not_supported_text" msgid="1708031078549268884">"Για να ακούσετε ή να μεταφράσετε κείμενο στην οθόνη σας, αλλάξτε την εφαρμογή ψηφιακού βοηθού στις Ρυθμίσεις."</string>
-    <string name="tooltip_listen" msgid="7634466447860989102">"Πατήστε εδώ για να ακούσετε το κείμενο σε αυτήν την οθόνη"</string>
-    <string name="tooltip_translate" msgid="4184845868901542567">"Πατήστε εδώ για να μεταφράσετε το κείμενο σε αυτήν την οθόνη"</string>
+    <string name="tooltip_listen" msgid="7634466447860989102">"Πατήστε εδώ για να ακούσετε το κείμενο σε αυτή την οθόνη"</string>
+    <string name="tooltip_translate" msgid="4184845868901542567">"Πατήστε εδώ για να μεταφράσετε το κείμενο σε αυτή την οθόνη"</string>
     <string name="toast_p2p_app_not_shareable" msgid="7229739094132131536">"Δεν είναι δυνατή η κοινή χρήση της εφαρμογής"</string>
 </resources>

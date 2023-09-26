@@ -21,7 +21,15 @@ import android.util.Log
 import com.android.launcher3.R
 import com.android.launcher3.util.ResourceHelper
 
-class HotseatSpecs(val widthSpecs: List<HotseatSpec>, val heightSpecs: List<HotseatSpec>) {
+class HotseatSpecs(widthSpecs: List<HotseatSpec>, heightSpecs: List<HotseatSpec>) {
+
+    val widthSpecs: List<HotseatSpec>
+    val heightSpecs: List<HotseatSpec>
+
+    init {
+        this.widthSpecs = widthSpecs.sortedBy { it.maxAvailableSize }
+        this.heightSpecs = heightSpecs.sortedBy { it.maxAvailableSize }
+    }
 
     fun getCalculatedHeightSpec(availableHeight: Int): CalculatedHotseatSpec {
         val spec = heightSpecs.firstOrNull { availableHeight <= it.maxAvailableSize }

@@ -172,6 +172,10 @@ public final class FeatureFlags {
             "LARGE_SCREEN_WIDGET_PICKER", ENABLED, "Enable new widget picker that takes "
                     + "advantage of large screen format");
 
+    public static final BooleanFlag UNFOLDED_WIDGET_PICKER = getDebugFlag(301918659,
+            "UNFOLDED_WIDGET_PICKER", DISABLED, "Enable new widget picker that takes "
+                    + "advantage of the unfolded foldable format");
+
     public static final BooleanFlag MULTI_SELECT_EDIT_MODE = getDebugFlag(270709220,
             "MULTI_SELECT_EDIT_MODE", DISABLED, "Enable new multi-select edit mode "
                     + "for home screen");
@@ -264,6 +268,11 @@ public final class FeatureFlags {
             "ENABLE_TASKBAR_PINNING", DISABLED,
             "Enables taskbar pinning to allow user to switch between transient and persistent "
                     + "taskbar flavors");
+
+    public static final BooleanFlag ENABLE_BOOT_AWARE_STARTUP_DATA = getDebugFlag(251502424,
+            "ENABLE_BOOT_AWARE_STARTUP_DATA", DISABLED, "Marks LauncherPref data as (and allows it "
+                    + "to) available while the device is locked. Enabling this causes a 1-time "
+                    + "migration of certain SharedPreferences data. Improves startup latency.");
 
     // TODO(Block 18): Clean up flags
     public static final BooleanFlag ENABLE_APP_PAIRS = getDebugFlag(274189428,

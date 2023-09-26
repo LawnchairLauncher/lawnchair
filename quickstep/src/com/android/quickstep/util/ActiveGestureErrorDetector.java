@@ -34,6 +34,7 @@ public class ActiveGestureErrorDetector {
     public enum GestureEvent {
         MOTION_DOWN, MOTION_UP, MOTION_MOVE, SET_END_TARGET, SET_END_TARGET_HOME,
         SET_END_TARGET_NEW_TASK, SET_END_TARGET_ALL_APPS, ON_SETTLED_ON_END_TARGET,
+        ON_START_RECENTS_ANIMATION, ON_FINISH_RECENTS_ANIMATION, ON_CANCEL_RECENTS_ANIMATION,
         START_RECENTS_ANIMATION, FINISH_RECENTS_ANIMATION, CANCEL_RECENTS_ANIMATION,
         SET_ON_PAGE_TRANSITION_END_CALLBACK, CANCEL_CURRENT_ANIMATION, CLEANUP_SCREENSHOT,
         SCROLLER_ANIMATION_ABORTED, TASK_APPEARED, EXPECTING_TASK_APPEARED,
@@ -226,6 +227,32 @@ public class ActiveGestureErrorDetector {
                                     + " couldn't start the recents activity",
                             writer);
                     break;
+                case ON_START_RECENTS_ANIMATION:
+                    errorDetected |= printErrorIfTrue(
+                            !encounteredEvents.contains(GestureEvent.START_RECENTS_ANIMATION),
+                            prefix,
+                            /* errorMessage= */ "ON_START_RECENTS_ANIMATION "
+                                    + "onAnimationStart callback ran before startRecentsAnimation",
+                            writer);
+                    break;
+                case ON_CANCEL_RECENTS_ANIMATION:
+                    errorDetected |= printErrorIfTrue(
+                            !encounteredEvents.contains(GestureEvent.ON_START_RECENTS_ANIMATION),
+                            prefix,
+                            /* errorMessage= */ "ON_CANCEL_RECENTS_ANIMATION "
+                                    + "onAnimationCanceled callback ran before onAnimationStart "
+                                    + "callback",
+                            writer);
+                    break;
+                case ON_FINISH_RECENTS_ANIMATION:
+                    errorDetected |= printErrorIfTrue(
+                            !encounteredEvents.contains(GestureEvent.ON_START_RECENTS_ANIMATION),
+                            prefix,
+                            /* errorMessage= */ "ON_FINISH_RECENTS_ANIMATION "
+                                    + "onAnimationFinished callback ran before onAnimationStart "
+                                    + "callback",
+                            writer);
+                    break;
                 case MOTION_DOWN:
                 case SET_END_TARGET:
                 case SET_END_TARGET_HOME:
@@ -355,6 +382,30 @@ public class ActiveGestureErrorDetector {
                         && !encounteredEvents.contains(GestureEvent.TASK_APPEARED),
                 prefix,
                 /* errorMessage= */ "onTaskAppeared was expected to be called but wasn't.",
+                writer);
+
+        errorDetected |= printErrorIfTrue(
+                /* condition= */ encounteredEvents.contains(GestureEvent.START_RECENTS_ANIMATION)
+                        && !encounteredEvents.contains(GestureEvent.ON_START_RECENTS_ANIMATION),
+                prefix,
+                /* errorMessage= */
+                "startRecentAnimation was called but onAnimationStart callback was not",
+                writer);
+        errorDetected |= printErrorIfTrue(
+                /* condition= */
+                encounteredEvents.contains(GestureEvent.FINISH_RECENTS_ANIMATION)
+                        && !encounteredEvents.contains(GestureEvent.ON_FINISH_RECENTS_ANIMATION),
+                prefix,
+                /* errorMessage= */
+                "finishController was called but onAnimationFinished callback was not",
+                writer);
+        errorDetected |= printErrorIfTrue(
+                /* condition= */
+                encounteredEvents.contains(GestureEvent.CANCEL_RECENTS_ANIMATION)
+                        && !encounteredEvents.contains(GestureEvent.ON_CANCEL_RECENTS_ANIMATION),
+                prefix,
+                /* errorMessage= */
+                "onRecentsAnimationCanceled was called but onAnimationCanceled was not",
                 writer);
 
         if (!errorDetected) {

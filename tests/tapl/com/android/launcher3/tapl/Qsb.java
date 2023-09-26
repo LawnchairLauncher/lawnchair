@@ -29,6 +29,8 @@ public abstract class Qsb {
 
     private static final String ASSISTANT_APP_PACKAGE = "com.google.android.googlequicksearchbox";
     private static final String ASSISTANT_ICON_RES_ID = "mic_icon";
+    private static final String LENS_ICON_RES_ID = "lens_icon";
+    private static final String LENS_APP_TEXT_RES_ID = "lens_camera_cutout_text";
     protected final LauncherInstrumentation mLauncher;
     private final UiObject2 mContainer;
     private final String mQsbResName;
@@ -67,6 +69,37 @@ public abstract class Qsb {
                 BySelector selector = By.pkg(ASSISTANT_APP_PACKAGE);
                 mLauncher.assertTrue(
                         "assistant app didn't start: (" + selector + ")",
+                        mLauncher.getDevice().wait(Until.hasObject(selector),
+                                LauncherInstrumentation.WAIT_TIME_MS)
+                );
+                return new LaunchedAppState(mLauncher);
+            }
+        }
+    }
+
+    /**
+     * Launches lens app by tapping lens icon on qsb.
+     */
+    @NonNull
+    public LaunchedAppState launchLens() {
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to click lens icon button");
+             LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            UiObject2 lensIcon = mLauncher.waitForLauncherObject(LENS_ICON_RES_ID);
+
+            LauncherInstrumentation.log("Qsb.launchLens before click "
+                    + lensIcon.getVisibleCenter() + " in "
+                    + mLauncher.getVisibleBounds(lensIcon));
+
+            mLauncher.clickLauncherObject(lensIcon);
+
+            try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("clicked")) {
+                // Package name is not enough to check if the app is launched, because many
+                // elements are having googlequicksearchbox as package name. So it checks if the
+                // corresponding text resource is displayed
+                BySelector selector = By.res(ASSISTANT_APP_PACKAGE, LENS_APP_TEXT_RES_ID);
+                mLauncher.assertTrue(
+                        "Lens app didn't start: (" + selector + ")",
                         mLauncher.getDevice().wait(Until.hasObject(selector),
                                 LauncherInstrumentation.WAIT_TIME_MS)
                 );
