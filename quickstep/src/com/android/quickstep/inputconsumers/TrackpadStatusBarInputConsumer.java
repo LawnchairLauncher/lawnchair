@@ -82,4 +82,9 @@ public class TrackpadStatusBarInputConsumer extends DelegateInputConsumer {
             mSystemUiProxy.onStatusBarTrackpadEvent(ev);
         }
     }
+
+    @Override
+    protected String getDelegatorName() {
+        return "TrackpadStatusBarInputConsumer";
+    }
 }

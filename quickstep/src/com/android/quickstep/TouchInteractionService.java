@@ -893,7 +893,7 @@ public class TouchInteractionService extends Service {
         }
         if (mDeviceState.isFullyGesturalNavMode() || newGestureState.isTrackpadGesture()) {
             String reasonPrefix = "device is in gesture navigation mode or 3-button mode with a"
-                    + "trackpad gesture";
+                    + " trackpad gesture";
             if (mDeviceState.canTriggerAssistantAction(event)) {
                 reasonString.append(NEWLINE_PREFIX)
                         .append(reasonPrefix)
@@ -921,6 +921,11 @@ public class TouchInteractionService extends Service {
                 }
             } else if (canStartSystemGesture && FeatureFlags.ENABLE_LONG_PRESS_NAV_HANDLE.get()
                     && !previousGestureState.isRecentsAnimationRunning()) {
+                reasonString.append(NEWLINE_PREFIX)
+                        .append(reasonPrefix)
+                        .append(SUBSTRING_PREFIX)
+                        .append("Long press nav handle enabled, "
+                                + "using NavHandleLongPressInputConsumer");
                 base = new NavHandleLongPressInputConsumer(this, base, mInputMonitorCompat);
             }
 

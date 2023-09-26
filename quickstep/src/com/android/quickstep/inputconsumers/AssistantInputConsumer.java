@@ -278,4 +278,9 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
             return true;
         }
     }
+
+    @Override
+    protected String getDelegatorName() {
+        return "AssistantInputConsumer";
+    }
 }
