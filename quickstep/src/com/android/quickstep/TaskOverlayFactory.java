@@ -34,8 +34,8 @@ import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.Flags;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
@@ -80,7 +80,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
         boolean isInLandscape = orientedState.getTouchRotation() != ROTATION_0;
         boolean isTablet = activity.getDeviceProfile().isTablet;
 
-        boolean isGridOnlyOverview = isTablet && FeatureFlags.enableGridOnlyOverview();
+        boolean isGridOnlyOverview = isTablet && Flags.enableGridOnlyOverview();
         // Add overview actions to the menu when in in-place rotate landscape mode, or in
         // grid-only overview.
         if ((!canLauncherRotate && isInLandscape) || isGridOnlyOverview) {
