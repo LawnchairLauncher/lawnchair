@@ -10,7 +10,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.10"
     id "com.google.devtools.ksp" version "1.9.10-1.0.13"
     id 'com.google.protobuf' version "0.9.4"
-    id 'app.cash.licensee' version "1.7.0"
+    id 'app.cash.licensee' version "1.8.0"
     id 'dev.rikka.tools.refine' version "4.3.0"
     id 'org.gradle.android.cache-fix' version '2.8.0'
 }
@@ -105,7 +105,7 @@ android {
 
     applicationVariants.configureEach { variant ->
         def copyArtifactList = tasks.register("copy${variant.name.capitalize()}ArtifactList", Copy) {
-            dependsOn tasks.named("licensee${variant.name.capitalize()}")
+            dependsOn tasks.named("licenseeAndroid${variant.name.capitalize()}")
             from reporting.file("licensee/${variant.name}/artifacts.json")
             into layout.buildDirectory.dir("generated/dependencyAssets/")
         }
@@ -398,9 +398,8 @@ protobuf {
 licensee {
     allow("Apache-2.0")
     allow("BSD-3-Clause")
-    allowUrl("https://api.github.com/licenses/apache-2.0")
-    allowUrl("https://api.github.com/licenses/bsd-3-clause")
+    allow("GPL-2.0-or-later")
     allowUrl("https://github.com/patrykmichalik/opto/blob/master/LICENSE")
     allowUrl("https://github.com/RikkaApps/HiddenApiRefinePlugin/blob/main/LICENSE")
-    allowUrl("https://www.gnu.org/licenses/old-licenses/gpl-2.0.html")
+    allowUrl("https://opensource.org/licenses/mit-license.php")
 }
