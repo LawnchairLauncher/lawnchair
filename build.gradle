@@ -105,7 +105,7 @@ android {
 
     applicationVariants.configureEach { variant ->
         def copyArtifactList = tasks.register("copy${variant.name.capitalize()}ArtifactList", Copy) {
-            dependsOn tasks.named("licensee${variant.name.capitalize()}")
+            dependsOn tasks.named("licenseeAndroid${variant.name.capitalize()}")
             from reporting.file("licensee/${variant.name}/artifacts.json")
             into layout.buildDirectory.dir("generated/dependencyAssets/")
         }
@@ -401,4 +401,5 @@ licensee {
     allow("GPL-2.0-or-later")
     allowUrl("https://github.com/patrykmichalik/opto/blob/master/LICENSE")
     allowUrl("https://github.com/RikkaApps/HiddenApiRefinePlugin/blob/main/LICENSE")
+    allowUrl("https://opensource.org/licenses/mit-license.php")
 }
