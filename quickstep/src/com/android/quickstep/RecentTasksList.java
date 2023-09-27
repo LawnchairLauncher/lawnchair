@@ -353,7 +353,8 @@ public class RecentTasksList {
         writer.println(prefix + "  ]");
     }
 
-    private static class TaskLoadResult extends ArrayList<GroupTask> {
+    @VisibleForTesting
+    static class TaskLoadResult extends ArrayList<GroupTask> {
 
         final int mRequestId;
 
