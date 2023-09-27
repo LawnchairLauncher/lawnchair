@@ -155,15 +155,8 @@ public class PackageManagerHelper {
     public boolean hasPermissionForActivity(Intent intent, String srcPackage) {
         // b/270152142
         if (Intent.ACTION_CHOOSER.equals(intent.getAction())) {
-            final Bundle extras = intent.getExtras();
-            if (extras == null) {
-                return true;
-            }
-            // If given intent is ACTION_CHOOSER, verify srcPackage has permission over EXTRA_INTENT
-            intent = (Intent) extras.getParcelable(Intent.EXTRA_INTENT);
-            if (intent == null) {
-                return true;
-            }
+            // Chooser shortcuts is not a valid target
+            return false;
         }
         ResolveInfo target = mPm.resolveActivity(intent, 0);
         if (target == null) {
