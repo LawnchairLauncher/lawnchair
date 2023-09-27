@@ -49,6 +49,12 @@ public class Executors {
             POOL_SIZE, POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
     /**
+     * An {@link LooperExecutor} to be used with async task where order is important.
+     */
+    public static final LooperExecutor ORDERED_BG_EXECUTOR = new LooperExecutor(
+            createAndStartNewLooper("BackgroundExecutor", THREAD_PRIORITY_BACKGROUND));
+
+    /**
      * Returns the executor for running tasks on the main thread.
      */
     public static final LooperExecutor MAIN_EXECUTOR =
