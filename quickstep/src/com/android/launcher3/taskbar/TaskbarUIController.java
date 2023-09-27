@@ -155,13 +155,21 @@ public class TaskbarUIController {
         mControllers.taskbarActivityContext.startTranslationSpring();
     }
 
-    /*
+    /**
      * @param ev MotionEvent in screen coordinates.
      * @return Whether any Taskbar item could handle the given MotionEvent if given the chance.
      */
     public boolean isEventOverAnyTaskbarItem(MotionEvent ev) {
         return mControllers.taskbarViewController.isEventOverAnyItem(ev)
                 || mControllers.navbarButtonsViewController.isEventOverAnyItem(ev);
+    }
+
+    /** Checks if the given {@link MotionEvent} is over the bubble bar stash handle. */
+    public boolean isEventOverBubbleBarStashHandle(MotionEvent ev) {
+        return mControllers.bubbleControllers.map(
+                bubbleControllers ->
+                        bubbleControllers.bubbleStashController.isEventOverStashHandle(ev))
+                .orElse(false);
     }
 
     /**

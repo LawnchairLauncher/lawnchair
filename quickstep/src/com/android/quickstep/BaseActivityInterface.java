@@ -191,8 +191,11 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public abstract boolean allowAllAppsFromOverview();
 
     public boolean deferStartingActivity(RecentsAnimationDeviceState deviceState, MotionEvent ev) {
+        TaskbarUIController controller = getTaskbarController();
+        boolean isEventOverBubbleBarStashHandle =
+                controller != null && controller.isEventOverBubbleBarStashHandle(ev);
         return deviceState.isInDeferredGestureRegion(ev) || deviceState.isImeRenderingNavButtons()
-                || isTrackpadMultiFingerSwipe(ev);
+                || isTrackpadMultiFingerSwipe(ev) || isEventOverBubbleBarStashHandle;
     }
 
     /**
