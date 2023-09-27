@@ -422,9 +422,14 @@ public final class FeatureFlags {
     // TODO(Block 31): Clean up flags
 
     // TODO(Block 32): Clean up flags
+    // Aconfig migration complete for ENABLE_RESPONSIVE_WORKSPACE.
+    @VisibleForTesting
     public static final BooleanFlag ENABLE_RESPONSIVE_WORKSPACE = getDebugFlag(241386436,
-            "ENABLE_RESPONSIVE_WORKSPACE", DISABLED,
+            "ENABLE_RESPONSIVE_WORKSPACE", TEAMFOOD,
             "Enables new workspace grid calculations method.");
+    public static boolean enableResponsiveWorkspace() {
+        return ENABLE_RESPONSIVE_WORKSPACE.get() || Flags.enableResponsiveWorkspace();
+    }
 
     // TODO(Block 33): Clean up flags
     public static final BooleanFlag ENABLE_ALL_APPS_RV_PREINFLATION = getDebugFlag(288161355,

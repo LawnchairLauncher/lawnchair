@@ -923,8 +923,8 @@ public class TouchInteractionService extends Service {
             handleOrientationSetup(base);
         }
         if (mDeviceState.isFullyGesturalNavMode() || newGestureState.isTrackpadGesture()) {
-            String reasonPrefix = "device is in gesture navigation mode or 3-button mode with a"
-                    + "trackpad gesture";
+            String reasonPrefix =
+                    "device is in gesture navigation mode or 3-button mode with a trackpad gesture";
             if (mDeviceState.canTriggerAssistantAction(event)) {
                 reasonString.append(NEWLINE_PREFIX)
                         .append(reasonPrefix)
@@ -945,13 +945,18 @@ public class TouchInteractionService extends Service {
                     reasonString.append(NEWLINE_PREFIX)
                             .append(reasonPrefix)
                             .append(SUBSTRING_PREFIX)
-                            .append("TaskbarActivityContext != null, "
-                                    + "using TaskbarUnstashInputConsumer");
+                            .append("TaskbarActivityContext != null, ")
+                            .append("using TaskbarUnstashInputConsumer");
                     base = new TaskbarUnstashInputConsumer(this, base, mInputMonitorCompat, tac,
                             mOverviewCommandHelper);
                 }
             } else if (canStartSystemGesture && FeatureFlags.ENABLE_LONG_PRESS_NAV_HANDLE.get()
                     && !previousGestureState.isRecentsAnimationRunning()) {
+                reasonString.append(NEWLINE_PREFIX)
+                        .append(reasonPrefix)
+                        .append(SUBSTRING_PREFIX)
+                        .append("Long press nav handle enabled, ")
+                        .append("using NavHandleLongPressInputConsumer");
                 base = new NavHandleLongPressInputConsumer(this, base, mInputMonitorCompat);
             }
 
@@ -1144,8 +1149,8 @@ public class TouchInteractionService extends Service {
         if ((mDeviceState.isFullyGesturalNavMode() || gestureState.isTrackpadGesture())
                 && gestureState.getRunningTask() != null) {
             reasonString.append(SUBSTRING_PREFIX)
-                    .append("device is in gesture nav mode or 3-button mode with a trackpad gesture"
-                            + "and running task != null")
+                    .append("device is in gesture nav mode or 3-button mode with a trackpad")
+                    .append(" gesture and running task != null")
                     .append(", using DeviceLockedInputConsumer");
             return new DeviceLockedInputConsumer(
                     this, mDeviceState, mTaskAnimationManager, gestureState, mInputMonitorCompat);

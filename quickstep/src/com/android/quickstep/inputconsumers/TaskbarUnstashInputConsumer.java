@@ -346,4 +346,9 @@ public class TaskbarUnstashInputConsumer extends DelegateInputConsumer {
     private boolean isMouseEvent(MotionEvent event) {
         return event.getSource() == InputDevice.SOURCE_MOUSE;
     }
+
+    @Override
+    protected String getDelegatorName() {
+        return "TaskbarUnstashInputConsumer";
+    }
 }
