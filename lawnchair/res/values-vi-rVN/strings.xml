@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Tap this card to set Lawnchair as your default launcher.</string>
+    <string name="set_default_launcher_tip">Nhấn vào thẻ này để đặt Lawnchair làm trình khởi chạy mặc định của bạn.</string>
     <string name="settings">Cài đặt</string>
     <string name="general_label">Chung</string>
     <string name="general_description">Màu sắc, Gói biểu tượng, Dấu chấm thông báo</string>
@@ -183,7 +183,7 @@
     <string name="home_screen_locked">Đã khoá màn hình chính.</string>
     <string name="popup_menu">Pop-up Menu</string>
     <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="show_system_settings_entry">Hiển thị mục cài đặt hệ thống</string>
     <string name="status_bar_label">Thanh trạng thái</string>
     <string name="show_status_bar">Hiện thanh trạng thái</string>
     <string name="dark_status_bar_label">Thanh trạng thái tối màu</string>
@@ -240,10 +240,10 @@
     <string name="smartspace_mode_google_search">Google Tìm kiếm</string>
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
-    <string name="hotseat_mode_label">Search Bar Widget</string>
-    <string name="hotseat_mode_disabled">Disabled</string>
+    <string name="hotseat_mode_label">Tiện ích thanh tìm kiếm</string>
+    <string name="hotseat_mode_disabled">Đã vô hiệu hoá</string>
     <string name="hotseat_mode_lawnchair">Lawnchair</string>
-    <string name="hotseat_mode_google_search">Google Search Bar</string>
+    <string name="hotseat_mode_google_search">Thanh Tìm kiếm Google</string>
     <string name="search_bar_label">Thanh tìm kiếm</string>
     <string name="corner_radius_label">Độ cong của góc</string>
     <string name="apply_accent_color_label">Áp dụng màu nhấn</string>
@@ -269,7 +269,7 @@
     <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
     <string name="fuzzy_search_title">Tìm kiếm Fuzzy</string>
     <string name="fuzzy_search_desc">Cho kết quả tìm kiếm ứng dụng gần đúng.</string>
-    <string name="max_search_result_count_title">Max Search Result Count</string>
+    <string name="max_search_result_count_title">Số lượng kết quả tìm kiếm tối đa</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">Số cột của trang ứng dụng</string>
     <string name="row_height_label">Chiều cao hàng</string>
@@ -402,5 +402,5 @@
     <string name="invalid_backup_file">Tệp sao lưu không hợp lệ.</string>
     <string name="x_by_y">%1$d × %2$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="system_settings">System Settings</string>
+    <string name="system_settings">Cài đặt hệ thống</string>
 </resources>

@@ -49,7 +49,7 @@
     <string name="smartspace_calendar_label">资讯一览日历自定义</string>
     <string name="smartspace_calendar_description">允许显示非公历日期</string>
     <string name="workspace_increase_max_grid_size_label">提高主屏幕最大网格大小</string>
-    <string name="workspace_increase_max_grid_size_description">将最大允许的主屏幕网格大小从10 x 10增加到20x 20。</string>
+    <string name="workspace_increase_max_grid_size_description">将最大允许的主屏幕网格大小从 10 x 10 增加到 20 x 20。</string>
     <string name="always_reload_icons_label">总是重新加载图标</string>
     <string name="always_reload_icons_description">避免在图标包中使用缓存图标</string>
     <string name="transparent_background_icons">透明的主题图标</string>
@@ -58,7 +58,7 @@
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">主屏幕旋转</string>
     <string name="home_screen_rotaton_description">当设备旋转时</string>
-    <string name="font_label">字体(实验性功能)</string>
+    <string name="font_label">字体 (实验性功能)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">图标风格</string>
     <string name="icon_shape_label">图标形状</string>
@@ -349,7 +349,7 @@
     <string name="item_removed">项目已移除。</string>
     <string name="all_apps_no_search_results">没有找到匹配 “<xliff:g example="Android" id="query">%1$s</xliff:g>” 的应用。</string>
     <string name="dt2s_admin_hint_title">需要管理员权限</string>
-    <string name="dt2s_admin_hint">若要使用双击息屏，请设置Lawnchair 为设备管理应用。点击\"打开设置\"，然后点击\"启用此设备管理应用\"。</string>
+    <string name="dt2s_admin_hint">若要使用双击息屏，请设置 Lawnchair 为设备管理应用。点击\"打开设置\"，然后点击\"启用此设备管理应用\"。</string>
     <string name="dt2s_admin_warning">双击息屏功能将被关闭。</string>
     <string name="dt2s_a11y_hint_title">启用无障碍服务</string>
     <string name="dt2s_a11y_hint">若要使用双击息屏，请先启用 Lawnchair 无障碍服务。点击\"打开设置\"，然后选择 \"Lawnchair \"并启用 Lawnchair 无障碍服务。</string>

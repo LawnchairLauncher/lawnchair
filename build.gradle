@@ -1,21 +1,24 @@
-import com.android.build.gradle.BasePlugin
+import com.android.build.gradle.api.AndroidBasePlugin
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version "8.1.0"
-    id 'com.android.library' version "8.1.0" apply false
-    id 'org.jetbrains.kotlin.android' version "1.9.0"
-    id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.0"
-    id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.0"
-    id "com.google.devtools.ksp" version "1.9.0-1.0.13"
+    id 'com.android.application' version "8.1.1"
+    id 'com.android.library' version "8.1.1" apply false
+    id 'org.jetbrains.kotlin.android' version "1.9.10"
+    id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.10"
+    id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.10"
+    id "com.google.devtools.ksp" version "1.9.10-1.0.13"
     id 'com.google.protobuf' version "0.9.4"
     id 'app.cash.licensee' version "1.8.0-SNAPSHOT"
     id 'dev.rikka.tools.refine' version "4.3.0"
+    id 'org.gradle.android.cache-fix' version '2.8.0'
 }
 
 allprojects {
-    plugins.withType(BasePlugin).configureEach {
+    plugins.withType(AndroidBasePlugin).configureEach {
+        apply plugin: 'org.gradle.android.cache-fix'
+
         project.android {
             compileSdk 34
             defaultConfig {
@@ -23,27 +26,22 @@ allprojects {
                 targetSdk 32
                 vectorDrawables.useSupportLibrary = true
             }
-            // Can remove this once https://issuetracker.google.com/issues/260059413 is fixed.
-            // https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
-            compileOptions {
-                sourceCompatibility JavaVersion.VERSION_1_8
-                targetCompatibility JavaVersion.VERSION_1_8
-            }
             lint {
                 abortOnError true
                 checkReleaseBuilds false
             }
         }
         project.dependencies {
-            implementation 'androidx.core:core-ktx:1.10.1'
+            implementation 'androidx.core:core-ktx:1.12.0'
             implementation 'androidx.appcompat:appcompat:1.6.1'
         }
     }
 
-    tasks.withType(KotlinCompile).configureEach {
-        compilerOptions.jvmTarget = JvmTarget.JVM_1_8
+    plugins.withType(JavaBasePlugin).configureEach {
+        java {
+            toolchain.languageVersion = JavaLanguageVersion.of(17)
+        }
     }
-
 
     ext.addFrameworkJar = { String name ->
         def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
@@ -52,10 +50,10 @@ allprojects {
         }
         gradle.projectsEvaluated {
             tasks.withType(JavaCompile).configureEach {
-                options.bootstrapClasspath = files(frameworkJar, options.bootstrapClasspath)
+                classpath = files(frameworkJar, classpath)
             }
             tasks.withType(KotlinCompile).configureEach {
-                it.libraries.from(files(frameworkJar))
+                libraries.from(files(frameworkJar))
             }
         }
     }
@@ -64,9 +62,9 @@ allprojects {
 // todo remove ext block after migrating to version catalog
 ext {
     FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
-    accompanist_version = '0.30.1'
-    libsu_version = '5.2.0'
-    protocVersion = '3.24.0'
+    accompanist_version = '0.32.0'
+    libsu_version = '5.2.1'
+    protocVersion = '3.24.3'
     room_version = '2.5.2'
     optoVersion = "1.0.18"
 }
@@ -128,7 +126,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.3"
     }
 
     final def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -322,11 +320,11 @@ dependencies {
     implementation "androidx.preference:preference-ktx:1.2.1"
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0'
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.3.0'
 
-    implementation platform("androidx.compose:compose-bom:2023.08.00")
+    implementation platform("androidx.compose:compose-bom:2023.09.01")
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.ui:ui-util"
     debugImplementation "androidx.compose.ui:ui-tooling"
@@ -338,8 +336,8 @@ dependencies {
     implementation 'androidx.compose.material3:material3'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.activity:activity-compose:1.7.2"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1"
-    implementation "androidx.navigation:navigation-compose:2.7.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
+    implementation "androidx.navigation:navigation-compose:2.7.3"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanist_version"
@@ -347,7 +345,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-permissions:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
     implementation "com.google.android.material:material:1.9.0"
-    implementation "io.github.fornewid:material-motion-compose-core:1.0.6"
+    implementation "io.github.fornewid:material-motion-compose-core:1.1.0"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
     implementation 'io.coil-kt:coil-compose:2.4.0'
     implementation 'me.xdrop:fuzzywuzzy:1.4.0'
@@ -368,7 +366,7 @@ dependencies {
     implementation "com.google.protobuf:protobuf-javalite:$protocVersion"
 
     // Persian Date
-    implementation 'com.github.samanzamani:PersianDate:1.6.1'
+    implementation 'com.github.samanzamani:PersianDate:1.7.1'
 
     implementation 'com.airbnb.android:lottie:6.1.0'
 

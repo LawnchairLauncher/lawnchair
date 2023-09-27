@@ -105,7 +105,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">حزمة أيقونات</string>
-    <string name="themed_icon_pack">Themed Icon Source</string>
+    <string name="themed_icon_pack">مصدر أيقونة السمة</string>
     <string name="system_icons">أيقونات النظام</string>
     <string name="themed_icon_title">أيقونات تستمد خصائصها و لونها من الثيم</string>
     <string name="themed_icons_off_label">معطل</string>
@@ -152,7 +152,7 @@
     <string name="rgb_red">الأحمر</string>
     <string name="rgb_green">الأخضر</string>
     <string name="rgb_blue">الأزرق</string>
-    <string name="hsb">نشاط جنسي ضار</string>
+    <string name="hsb">ح س ب</string>
     <string name="hsb_hue">مسحة</string>
     <string name="hsb_saturation">التشبع</string>
     <string name="hsb_brightness">السطوع</string>
@@ -181,9 +181,9 @@
     <string name="home_screen_unlock">فتح الشاشة الرئيسية</string>
     <!-- used in popup menu-->
     <string name="home_screen_locked">الشاشة الرئيسية مقفلة.</string>
-    <string name="popup_menu">Pop-up Menu</string>
+    <string name="popup_menu">قائمة منبثقة</string>
     <string name="home_screen_lock_toggle_from_home_popup">عرض زر القُفل</string>
-    <string name="show_system_settings_entry">Show System Settings Entry</string>
+    <string name="show_system_settings_entry">إظهار إدخال إعدادات النظام</string>
     <string name="status_bar_label">شريط الحالة</string>
     <string name="show_status_bar">إظهار شريط الحالة</string>
     <string name="dark_status_bar_label">شريط الحالة المظلم</string>
@@ -269,7 +269,7 @@
     <string name="pref_search_auto_show_keyboard">إظهار لوحة المفاتيح تلقائياً</string>
     <string name="fuzzy_search_title">بحث غامض</string>
     <string name="fuzzy_search_desc">قارب التطابقات لعمليات البحث عن التطبيقات.</string>
-    <string name="max_search_result_count_title">Max Search Result Count</string>
+    <string name="max_search_result_count_title">الحد الأقصى لعدد نتائج البحث</string>
     <!-- <string name="grid" /> -->
     <string name="app_drawer_columns">أعمدة قائمة التطبيقات</string>
     <string name="row_height_label">ارتفاع الصف</string>
@@ -407,5 +407,5 @@
     <string name="invalid_backup_file">ملف النسخ الاحتياطي غير صحيح.</string>
     <string name="x_by_y">%١$d × %٢$d</string>
     <string name="x_and_y">%s &amp; %s</string>
-    <string name="system_settings">System Settings</string>
+    <string name="system_settings">إعدادات النظام</string>
 </resources>

@@ -72,7 +72,7 @@
     <string name="notification_dots_color">알림 배지 색상</string>
     <string name="notification_dots_text_color">알림 갯수 색상</string>
     <string name="notification_dots_color_contrast_warning_always">경고: 알림 배지 및 알림 갯수 색상의 대비가 충분하지 않습니다.</string>
-    <string name="notification_dots_color_contrast_warning_sometimes">경고: 알림 배지와 알림 갯수의 색상 대비가 충분하지 않을 수 있습니다.</string>
+    <string name="notification_dots_color_contrast_warning_sometimes">경고: 알림 배지와 알림 개수의 색상 대비가 충분하지 않을 수 있습니다.</string>
     <!-- Notification popup -->
     <string name="missing_notification_access_label">알림 권한이 필요함</string>
     <string name="missing_notification_access_description">알림 권한이 필요함</string>
@@ -108,7 +108,7 @@
     <string name="themed_icon_pack">테마 아이콘 소스</string>
     <string name="system_icons">시스템 아이콘</string>
     <string name="themed_icon_title">테마가 적용된 아이콘</string>
-    <string name="themed_icons_off_label">사용 않함</string>
+    <string name="themed_icons_off_label">사용 안함</string>
     <string name="themed_icons_home_label">홈 화면</string>
     <string name="themed_icons_home_and_drawer_label">홈 화면과 앱 서랍</string>
     <string name="lawnicons_not_installed_description">Lawnicons가 설치되지 않았습니다.</string>

@@ -57,18 +57,18 @@
     <string name="smartspace_mode_selection">การเลือกผู้ให้บริการข้อมูลโดยย่อ</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">อนุญาตให้หมุนหน้าจอหลัก</string>
-    <string name="home_screen_rotaton_description">เมื่อหมุนโทรศัพท์</string>
+    <string name="home_screen_rotaton_description">เมื่อโทรศัพท์หมุน</string>
     <string name="font_label">แบบอักษร (อยู่ในการทดลอง)</string>
     <!-- <string name="icons" /> -->
     <string name="icon_style">รูปแบบไอคอน</string>
-    <string name="icon_shape_label">รูปร่างของไอคอน</string>
-    <string name="auto_adaptive_icons_label">ใช้ไอคอนแบบปรับอัตโนมัติ</string>
+    <string name="icon_shape_label">รูปร่างไอคอน</string>
+    <string name="auto_adaptive_icons_label">ไอคอนปรับใช้อัตโนมัติ</string>
     <string name="auto_adaptive_icons_description">สำหรับไอคอนธรรมดา</string>
-    <string name="background_lightness_label">ความสว่างของพื้นหลัง</string>
+    <string name="background_lightness_label">ความสว่างพื้นหลัง</string>
     <string name="adaptive_icon_background_description">ใช้ความสว่าง 100% สำหรับสีขาว</string>
-    <string name="notification_dots">เครื่องหมายจุดแสดงการแจ้งเตือน</string>
+    <string name="notification_dots">จุดแสดงการแจ้งเตือน</string>
     <!-- <string name="notification_dots" />-->
-    <string name="show_notification_count">แสดงตัวเลขจากการนับแจ้งเตือน</string>
+    <string name="show_notification_count">แสดงตัวเลขจากการแจ้งเตือน</string>
     <string name="notification_dots_color">สีจุดการแจ้งเตือน</string>
     <string name="notification_dots_text_color">สีการนับการแจ้งเตือน</string>
     <string name="notification_dots_color_contrast_warning_always">คำเตือน: จุดแจ้งเตือน &amp; สีของตัวนับไม่มีความต่างเพียงพอ</string>
