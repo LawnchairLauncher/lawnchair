@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.util;
 
+import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
+
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Process;
@@ -62,7 +64,9 @@ public class Executors {
 
     /** A background executor to preinflate views. */
     public static final ExecutorService VIEW_PREINFLATION_EXECUTOR =
-            java.util.concurrent.Executors.newSingleThreadExecutor();
+            java.util.concurrent.Executors.newSingleThreadExecutor(
+                    new SimpleThreadFactory(
+                            "preinflate-allapps-icons", THREAD_PRIORITY_BACKGROUND));
 
     /**
      * Utility method to get a started handler thread statically
