@@ -427,6 +427,10 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     private final List<BackPressHandler> mBackPressedHandlers = new ArrayList<>();
 
+    public static Launcher getLauncher(Context context) {
+        return fromContext(context);
+    }
+
     @Override
     @TargetApi(Build.VERSION_CODES.S)
     protected void onCreate(Bundle savedInstanceState) {
@@ -672,10 +676,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         return new OnboardingPrefs<>(this, sharedPrefs);
     }
 
-    public OnboardingPrefs<? extends Launcher> getOnboardingPrefs() {
-        return mOnboardingPrefs;
-    }
-
     @Override
     public void onPluginConnected(LauncherOverlayPlugin overlayManager, Context context) {
         switchOverlay(() -> overlayManager.createOverlayManager(this, this));
@@ -789,55 +789,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         return true;
     }
 
-    @Override
-    public CellPosMapper getCellPosMapper() {
-        return mCellPosMapper;
-    }
-
-    public RotationHelper getRotationHelper() {
-        return mRotationHelper;
-    }
-
-    public ViewGroupFocusHelper getFocusHandler() {
-        return mFocusHandler;
-    }
-
-    @Override
-    public StateManager<LauncherState> getStateManager() {
-        return mStateManager;
-    }
-
     private LauncherCallbacks mLauncherCallbacks;
-
-    /**
-     * Call this after onCreate to set or clear overlay.
-     */
-    @Override
-    public void setLauncherOverlay(LauncherOverlay overlay) {
-        mWorkspace.setLauncherOverlay(overlay);
-    }
-
-    public boolean setLauncherCallbacks(LauncherCallbacks callbacks) {
-        mLauncherCallbacks = callbacks;
-        return true;
-    }
-
-    public boolean isDraggingEnabled() {
-        // We prevent dragging when we are loading the workspace as it is possible to pick up a view
-        // that is subsequently removed from the workspace in startBinding().
-        return !isWorkspaceLoading();
-    }
-
-    @NonNull
-    @Override
-    public PopupDataProvider getPopupDataProvider() {
-        return mPopupDataProvider;
-    }
-
-    @Override
-    public DotInfo getDotInfoForItem(ItemInfo info) {
-        return mPopupDataProvider.getDotInfoForItem(info);
-    }
 
     @Override
     public void invalidateParent(ItemInfo info) {
@@ -1176,10 +1128,6 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     public void deferOverlayCallbacksUntilNextResumeOrStop() {
         mDeferOverlayCallbacks = true;
-    }
-
-    public LauncherOverlayManager getOverlayManager() {
-        return mOverlayManager;
     }
 
     @Override
@@ -1589,77 +1537,9 @@ public class Launcher extends StatefulActivity<LauncherState>
         return instance;
     }
 
-    public AllAppsTransitionController getAllAppsController() {
-        return mAllAppsController;
-    }
-
-    @Override
-    public DragLayer getDragLayer() {
-        return mDragLayer;
-    }
-
-    @Override
-    public ActivityAllAppsContainerView<Launcher> getAppsView() {
-        return mAppsView;
-    }
-
-    public Workspace<?> getWorkspace() {
-        return mWorkspace;
-    }
-
-    public Hotseat getHotseat() {
-        return mHotseat;
-    }
-
-    public <T extends View> T getOverviewPanel() {
-        return (T) mOverviewPanel;
-    }
-
-    public DropTargetBar getDropTargetBar() {
-        return mDropTargetBar;
-    }
-
-    @Override
-    public ScrimView getScrimView() {
-        return mScrimView;
-    }
-
-    public LauncherWidgetHolder getAppWidgetHolder() {
-        return mAppWidgetHolder;
-    }
-
     protected LauncherWidgetHolder createAppWidgetHolder() {
         return LauncherWidgetHolder.HolderFactory.newFactory(this).newInstance(
                 this, appWidgetId -> getWorkspace().removeWidget(appWidgetId));
-    }
-
-    public LauncherModel getModel() {
-        return mModel;
-    }
-
-    /**
-     * Returns the ModelWriter writer, make sure to call the function every time you want to use it.
-     */
-    public ModelWriter getModelWriter() {
-        return mModelWriter;
-    }
-
-    @Override
-    public SharedPreferences getSharedPrefs() {
-        return mSharedPrefs;
-    }
-
-    @Override
-    public SharedPreferences getDevicePrefs() {
-        return LauncherPrefs.getDevicePrefs(this);
-    }
-
-    public int getOrientation() {
-        return mOldConfig.orientation;
-    }
-
-    public BaseSearchConfig getSearchConfig() {
-        return mBaseSearchConfig;
     }
 
     @Override
@@ -1895,27 +1775,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         mStateManager.goToState(NORMAL);
     }
 
-    public boolean isWorkspaceLocked() {
-        return mWorkspaceLoading || mPendingRequestArgs != null;
-    }
-
-    public boolean isWorkspaceLoading() {
-        return mWorkspaceLoading;
-    }
-
-    @Override
-    public boolean isBindingItems() {
-        return mWorkspaceLoading;
-    }
-
-    private void setWorkspaceLoading(boolean value) {
-        mWorkspaceLoading = value;
-    }
-
-    public void setWaitingForResult(PendingRequestArgs args) {
-        mPendingRequestArgs = args;
-    }
-
     void addAppWidgetFromDropImpl(int appWidgetId, ItemInfo info, AppWidgetHostView boundWidget,
             WidgetAddFlowHandler addFlowHandler) {
         if (LOGD) {
@@ -2145,13 +2004,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         return super.dispatchTouchEvent(ev);
     }
 
-    /**
-     * Returns true if a touch interaction is in progress
-     */
-    public boolean isTouchInProgress() {
-        return mTouchInProgress;
-    }
-
     @Override
     @TargetApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     public void onBackPressed() {
@@ -2213,16 +2065,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         return mHotseat != null && (layout == mHotseat);
     }
 
-    /**
-     * Returns the CellLayout of the specified container at the specified screen.
-     *
-     * @param screenId must be presenterPos and not modelPos.
-     */
-    public CellLayout getCellLayout(int container, int screenId) {
-        return (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT)
-                ? mHotseat : mWorkspace.getScreenWithId(screenId);
-    }
-
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
@@ -2247,22 +2089,6 @@ public class Launcher extends StatefulActivity<LauncherState>
                 ? getString(R.string.home_screen)
                 : mStateManager.getState().getDescription(this));
         return result;
-    }
-
-    /**
-     * Persistant callback which notifies when an activity launch is deferred because the activity
-     * was not yet resumed.
-     */
-    public void setOnDeferredActivityLaunchCallback(Runnable callback) {
-        mOnDeferredActivityLaunchCallback = callback;
-    }
-
-    /**
-     * Sets the next pages to bind synchronously on next bind.
-     * @param pages should not be null.
-     */
-    public void setPagesToBindSynchronously(@NonNull IntSet pages) {
-        mPagesToBindSynchronously = pages;
     }
 
     @Override
@@ -3110,11 +2936,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         mAppsView.updateWorkUI();
     }
 
-    @Override
-    public StringCache getStringCache() {
-        return mStringCache;
-    }
-
     /**
      * @param packageUser if null, refreshes all widgets and shortcuts, otherwise only
      *                    refreshes the widgets and shortcuts associated with the given package/user
@@ -3271,18 +3092,6 @@ public class Launcher extends StatefulActivity<LauncherState>
                 false);
     }
 
-    /**
-     * Returns target rectangle for anchoring a popup menu.
-     */
-    protected RectF getPopupTarget(float x, float y) {
-        float halfSize = getResources().getDimension(R.dimen.options_menu_thumb_size) / 2;
-        if (x < 0 || y < 0) {
-            x = mDragLayer.getWidth() / 2;
-            y = mDragLayer.getHeight() / 2;
-        }
-        return new RectF(x - halfSize, y - halfSize, x + halfSize, y + halfSize);
-    }
-
     @Override
     public boolean canUseMultipleShadesForPopup() {
         return getTopOpenViewWithType(this, TYPE_FOLDER) == null
@@ -3346,10 +3155,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         AbstractFloatingView.closeAllOpenViews(this, animate);
     }
 
-    public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
-        return Stream.of(APP_INFO, WIDGETS, INSTALL);
-    }
-
     protected LauncherAccessibilityDelegate createAccessibilityDelegate() {
         return new LauncherAccessibilityDelegate(this);
     }
@@ -3358,16 +3163,6 @@ public class Launcher extends StatefulActivity<LauncherState>
     @VisibleForTesting
     public void enableHotseatEdu(boolean enable) {}
 
-    /**
-     * @see LauncherState#getOverviewScaleAndOffset(Launcher)
-     */
-    public float[] getNormalOverviewScaleAndOffset() {
-        return new float[] {NO_SCALE, NO_OFFSET};
-    }
-
-    public static Launcher getLauncher(Context context) {
-        return fromContext(context);
-    }
 
     /**
      * Just a wrapper around the type cast to allow easier tracking of calls.
@@ -3405,20 +3200,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         public Configuration config;
     }
 
-    @Override
-    public StatsLogManager getStatsLogManager() {
-        return super.getStatsLogManager().withDefaultInstanceId(mAllAppsSessionLogId);
-    }
-
-    /**
-     * Returns the current popup for testing, if any.
-     */
-    @VisibleForTesting
-    @Nullable
-    public ArrowPopup<?> getOptionsPopup() {
-        return findViewById(R.id.popup_container);
-    }
-
     /** Pauses view updates that should not be run during the app launch animation. */
     public void pauseExpensiveViewUpdates() {
         // Pause page indicator animations as they lead to layer trashing.
@@ -3452,9 +3233,212 @@ public class Launcher extends StatefulActivity<LauncherState>
         return false; // Base launcher does not track freeform tasks
     }
 
+    // Getters and Setters
+
+    private void setWorkspaceLoading(boolean value) {
+        mWorkspaceLoading = value;
+    }
+
+    public boolean isWorkspaceLocked() {
+        return mWorkspaceLoading || mPendingRequestArgs != null;
+    }
+
+    public boolean isWorkspaceLoading() {
+        return mWorkspaceLoading;
+    }
+
     @Override
-    public View.OnLongClickListener getAllAppsItemLongClickListener() {
-        return ItemLongClickListener.INSTANCE_ALL_APPS;
+    public boolean isBindingItems() {
+        return mWorkspaceLoading;
+    }
+
+    /**
+     * Returns true if a touch interaction is in progress
+     */
+    public boolean isTouchInProgress() {
+        return mTouchInProgress;
+    }
+
+    public boolean isDraggingEnabled() {
+        // We prevent dragging when we are loading the workspace as it is possible to pick up a view
+        // that is subsequently removed from the workspace in startBinding().
+        return !isWorkspaceLoading();
+    }
+
+    public void setWaitingForResult(PendingRequestArgs args) {
+        mPendingRequestArgs = args;
+    }
+
+    /**
+     * Call this after onCreate to set or clear overlay.
+     */
+    @Override
+    public void setLauncherOverlay(LauncherOverlay overlay) {
+        mWorkspace.setLauncherOverlay(overlay);
+    }
+
+    public boolean setLauncherCallbacks(LauncherCallbacks callbacks) {
+        mLauncherCallbacks = callbacks;
+        return true;
+    }
+
+    /**
+     * Persistent callback which notifies when an activity launch is deferred because the activity
+     * was not yet resumed.
+     */
+    public void setOnDeferredActivityLaunchCallback(Runnable callback) {
+        mOnDeferredActivityLaunchCallback = callback;
+    }
+
+    /**
+     * Sets the next pages to bind synchronously on next bind.
+     * @param pages should not be null.
+     */
+    public void setPagesToBindSynchronously(@NonNull IntSet pages) {
+        mPagesToBindSynchronously = pages;
+    }
+
+    public OnboardingPrefs<? extends Launcher> getOnboardingPrefs() {
+        return mOnboardingPrefs;
+    }
+
+    @Override
+    public CellPosMapper getCellPosMapper() {
+        return mCellPosMapper;
+    }
+
+    public RotationHelper getRotationHelper() {
+        return mRotationHelper;
+    }
+
+    public ViewGroupFocusHelper getFocusHandler() {
+        return mFocusHandler;
+    }
+
+    @Override
+    public StateManager<LauncherState> getStateManager() {
+        return mStateManager;
+    }
+
+    @NonNull
+    @Override
+    public PopupDataProvider getPopupDataProvider() {
+        return mPopupDataProvider;
+    }
+
+    @Override
+    public DotInfo getDotInfoForItem(ItemInfo info) {
+        return mPopupDataProvider.getDotInfoForItem(info);
+    }
+
+    public LauncherOverlayManager getOverlayManager() {
+        return mOverlayManager;
+    }
+
+    public AllAppsTransitionController getAllAppsController() {
+        return mAllAppsController;
+    }
+
+    @Override
+    public DragLayer getDragLayer() {
+        return mDragLayer;
+    }
+
+    @Override
+    public ActivityAllAppsContainerView<Launcher> getAppsView() {
+        return mAppsView;
+    }
+
+    public Workspace<?> getWorkspace() {
+        return mWorkspace;
+    }
+
+    public Hotseat getHotseat() {
+        return mHotseat;
+    }
+
+    public <T extends View> T getOverviewPanel() {
+        return (T) mOverviewPanel;
+    }
+
+    public DropTargetBar getDropTargetBar() {
+        return mDropTargetBar;
+    }
+
+    @Override
+    public ScrimView getScrimView() {
+        return mScrimView;
+    }
+
+    public LauncherWidgetHolder getAppWidgetHolder() {
+        return mAppWidgetHolder;
+    }
+
+    public LauncherModel getModel() {
+        return mModel;
+    }
+
+    /**
+     * Returns the ModelWriter writer, make sure to call the function every time you want to use it.
+     */
+    public ModelWriter getModelWriter() {
+        return mModelWriter;
+    }
+
+    @Override
+    public SharedPreferences getSharedPrefs() {
+        return mSharedPrefs;
+    }
+
+    @Override
+    public SharedPreferences getDevicePrefs() {
+        return LauncherPrefs.getDevicePrefs(this);
+    }
+
+    public int getOrientation() {
+        return mOldConfig.orientation;
+    }
+
+    public BaseSearchConfig getSearchConfig() {
+        return mBaseSearchConfig;
+    }
+
+    /**
+     * Returns the CellLayout of the specified container at the specified screen.
+     *
+     * @param screenId must be presenterPos and not modelPos.
+     */
+    public CellLayout getCellLayout(int container, int screenId) {
+        return (container == LauncherSettings.Favorites.CONTAINER_HOTSEAT)
+                ? mHotseat : mWorkspace.getScreenWithId(screenId);
+    }
+
+    @Override
+    public StringCache getStringCache() {
+        return mStringCache;
+    }
+
+    /**
+     * Returns target rectangle for anchoring a popup menu.
+     */
+    protected RectF getPopupTarget(float x, float y) {
+        float halfSize = getResources().getDimension(R.dimen.options_menu_thumb_size) / 2;
+        if (x < 0 || y < 0) {
+            x = mDragLayer.getWidth() / 2;
+            y = mDragLayer.getHeight() / 2;
+        }
+        return new RectF(x - halfSize, y - halfSize, x + halfSize, y + halfSize);
+    }
+
+    public Stream<SystemShortcut.Factory> getSupportedShortcuts() {
+        return Stream.of(APP_INFO, WIDGETS, INSTALL);
+    }
+
+    /**
+     * @see LauncherState#getOverviewScaleAndOffset(Launcher)
+     */
+    public float[] getNormalOverviewScaleAndOffset() {
+        return new float[] {NO_SCALE, NO_OFFSET};
     }
 
     /**
@@ -3471,4 +3455,25 @@ public class Launcher extends StatefulActivity<LauncherState>
     public CannedAnimationCoordinator getAnimationCoordinator() {
         return mAnimationCoordinator;
     }
+
+    @Override
+    public View.OnLongClickListener getAllAppsItemLongClickListener() {
+        return ItemLongClickListener.INSTANCE_ALL_APPS;
+    }
+
+    @Override
+    public StatsLogManager getStatsLogManager() {
+        return super.getStatsLogManager().withDefaultInstanceId(mAllAppsSessionLogId);
+    }
+
+    /**
+     * Returns the current popup for testing, if any.
+     */
+    @VisibleForTesting
+    @Nullable
+    public ArrowPopup<?> getOptionsPopup() {
+        return findViewById(R.id.popup_container);
+    }
+
+    // End of Getters and Setters
 }
