@@ -104,9 +104,10 @@ android {
     }
 
     applicationVariants.configureEach { variant ->
-        def copyArtifactList = tasks.register("copy${variant.name.capitalize()}ArtifactList", Copy) {
-            dependsOn tasks.named("licenseeAndroid${variant.name.capitalize()}")
-            from reporting.file("licensee/${variant.name}/artifacts.json")
+        def capitalizedName = variant.name.capitalize()
+        def copyArtifactList = tasks.register("copy${capitalizedName}ArtifactList", Copy) {
+            dependsOn tasks.named("licenseeAndroid${capitalizedName}")
+            from reporting.file("licensee/android${capitalizedName}/artifacts.json")
             into layout.buildDirectory.dir("generated/dependencyAssets/")
         }
         tasks.named("merge${variant.name.capitalize()}Assets").configure {
