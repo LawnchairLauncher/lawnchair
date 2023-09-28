@@ -21,6 +21,7 @@ import static android.content.pm.PackageManager.DONT_KILL_APP;
 import static android.content.pm.PackageManager.MATCH_ALL;
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 import static android.view.MotionEvent.AXIS_GESTURE_SWIPE_FINGER_COUNT;
+
 import static com.android.launcher3.tapl.Folder.FOLDER_CONTENT_RES_ID;
 import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
@@ -977,6 +978,25 @@ public final class LauncherInstrumentation {
      */
     @Deprecated
     public Workspace pressHome() {
+        return goHome();
+    }
+
+    /**
+     * Goes to home from immersive fullscreen app by first swiping up to bring navbar, and then
+     * performing {@code goHome()} action.
+     * Currently only supports gesture navigation mode.
+     *
+     * @return the Workspace object.
+     */
+    public Workspace goHomeFromImmersiveFullscreenApp() {
+        assertTrue("expected gesture navigation mode",
+                getNavigationModel() == NavigationModel.ZERO_BUTTON);
+        final Point displaySize = getRealDisplaySize();
+        linearGesture(
+                displaySize.x / 2, displaySize.y - 1,
+                displaySize.x / 2, 0,
+                ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
+                false, GestureScope.EXPECT_PILFER);
         return goHome();
     }
 
