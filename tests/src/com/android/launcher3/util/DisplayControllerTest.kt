@@ -30,8 +30,10 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.android.launcher3.LauncherPrefs
+import com.android.launcher3.LauncherPrefs.Companion.TASKBAR_PINNING
 import com.android.launcher3.util.DisplayController.CHANGE_DENSITY
 import com.android.launcher3.util.DisplayController.CHANGE_ROTATION
+import com.android.launcher3.util.DisplayController.CHANGE_TASKBAR_PINNING
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener
 import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext
 import com.android.launcher3.util.window.CachedDisplayInfo
@@ -89,6 +91,7 @@ class DisplayControllerTest {
         MockitoAnnotations.initMocks(this)
         whenever(context.getObject(eq(WindowManagerProxy.INSTANCE))).thenReturn(windowManagerProxy)
         whenever(context.getObject(eq(LauncherPrefs.INSTANCE))).thenReturn(launcherPrefs)
+        whenever(launcherPrefs.get(TASKBAR_PINNING)).thenReturn(false)
 
         // Mock WindowManagerProxy
         val displayInfo =
@@ -107,6 +110,7 @@ class DisplayControllerTest {
             bounds[i.getArgument<CachedDisplayInfo>(1).rotation]
         }
 
+        whenever(windowManagerProxy.getNavigationMode(any())).thenReturn(NavigationMode.NO_BUTTON)
         // Mock context
         whenever(context.createWindowContext(any(), any(), nullable())).thenReturn(context)
         whenever(context.getSystemService(eq(DisplayManager::class.java)))
@@ -155,5 +159,14 @@ class DisplayControllerTest {
         displayController.onConfigurationChanged(configuration)
 
         verify(displayInfoChangeListener).onDisplayInfoChanged(any(), any(), eq(CHANGE_DENSITY))
+    }
+
+    @Test
+    @UiThreadTest
+    fun testTaskbarPinning() {
+        whenever(launcherPrefs.get(TASKBAR_PINNING)).thenReturn(true)
+        displayController.handleInfoChange(display)
+        verify(displayInfoChangeListener)
+            .onDisplayInfoChanged(any(), any(), eq(CHANGE_TASKBAR_PINNING))
     }
 }

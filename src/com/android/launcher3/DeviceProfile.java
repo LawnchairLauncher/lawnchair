@@ -300,7 +300,6 @@ public class DeviceProfile {
     // If true, used to layout taskbar in 3 button navigation mode.
     public final boolean startAlignTaskbar;
     public final boolean isTransientTaskbar;
-
     // DragController
     public int flingToDeleteThresholdVelocity;
 
@@ -309,7 +308,8 @@ public class DeviceProfile {
             SparseArray<DotRenderer> dotRendererCache, boolean isMultiWindowMode,
             boolean transposeLayoutWithOrientation, boolean isMultiDisplay, boolean isGestureMode,
             @NonNull final ViewScaleProvider viewScaleProvider,
-            @NonNull final Consumer<DeviceProfile> dimensionOverrideProvider) {
+            @NonNull final Consumer<DeviceProfile> dimensionOverrideProvider,
+            boolean isTransientTaskbar) {
 
         this.inv = inv;
         this.isLandscape = windowBounds.isLandscape();
@@ -367,7 +367,7 @@ public class DeviceProfile {
             }
         }
 
-        isTransientTaskbar = DisplayController.isTransientTaskbar(context);
+        this.isTransientTaskbar = isTransientTaskbar;
         if (!isTaskbarPresent) {
             taskbarIconSize = taskbarHeight = stashedTaskbarHeight = taskbarBottomMargin = 0;
             startAlignTaskbar = false;
@@ -2123,10 +2123,13 @@ public class DeviceProfile {
 
         private Consumer<DeviceProfile> mOverrideProvider;
 
+        private boolean mIsTransientTaskbar;
+
         public Builder(Context context, InvariantDeviceProfile inv, Info info) {
             mContext = context;
             mInv = inv;
             mInfo = info;
+            mIsTransientTaskbar = info.isTransientTaskbar();
         }
 
         public Builder setMultiWindowMode(boolean isMultiWindowMode) {
@@ -2177,6 +2180,15 @@ public class DeviceProfile {
             return this;
         }
 
+        /**
+         * Set the isTransientTaskbar for the builder
+         * @return This Builder
+         */
+        public Builder setIsTransientTaskbar(boolean isTransientTaskbar) {
+            mIsTransientTaskbar = isTransientTaskbar;
+            return this;
+        }
+
         public DeviceProfile build() {
             if (mWindowBounds == null) {
                 throw new IllegalArgumentException("Window bounds not set");
@@ -2198,7 +2210,7 @@ public class DeviceProfile {
             }
             return new DeviceProfile(mContext, mInv, mInfo, mWindowBounds, mDotRendererCache,
                     mIsMultiWindowMode, mTransposeLayoutWithOrientation, mIsMultiDisplay,
-                    mIsGestureMode, mViewScaleProvider, mOverrideProvider);
+                    mIsGestureMode, mViewScaleProvider, mOverrideProvider, mIsTransientTaskbar);
         }
     }
 }

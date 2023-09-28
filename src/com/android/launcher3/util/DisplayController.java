@@ -20,6 +20,7 @@ import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 
 import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
+import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING_KEY;
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_PINNING;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TRANSIENT_TASKBAR;
@@ -32,6 +33,7 @@ import android.annotation.TargetApi;
 import android.content.ComponentCallbacks;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -82,9 +84,11 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
     public static final int CHANGE_DENSITY = 1 << 2;
     public static final int CHANGE_SUPPORTED_BOUNDS = 1 << 3;
     public static final int CHANGE_NAVIGATION_MODE = 1 << 4;
+    public static final int CHANGE_TASKBAR_PINNING = 1 << 5;
 
     public static final int CHANGE_ALL = CHANGE_ACTIVE_SCREEN | CHANGE_ROTATION
-            | CHANGE_DENSITY | CHANGE_SUPPORTED_BOUNDS | CHANGE_NAVIGATION_MODE;
+            | CHANGE_DENSITY | CHANGE_SUPPORTED_BOUNDS | CHANGE_NAVIGATION_MODE
+            | CHANGE_TASKBAR_PINNING;
 
     private static final String ACTION_OVERLAY_CHANGED = "android.intent.action.OVERLAY_CHANGED";
     private static final String TARGET_OVERLAY_PACKAGE = "android";
@@ -104,13 +108,17 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
     private Info mInfo;
     private boolean mDestroyed = false;
 
-    private final LauncherPrefs mPrefs;
+    private SharedPreferences.OnSharedPreferenceChangeListener
+            mTaskbarPinningPreferenceChangeListener;
 
     @VisibleForTesting
     protected DisplayController(Context context) {
         mContext = context;
         mDM = context.getSystemService(DisplayManager.class);
-        mPrefs = LauncherPrefs.get(context);
+
+        if (ENABLE_TASKBAR_PINNING.get()) {
+            attachTaskbarPinningSharedPreferenceChangeListener(mContext);
+        }
 
         Display display = mDM.getDisplay(DEFAULT_DISPLAY);
         if (Utilities.ATLEAST_S) {
@@ -131,6 +139,21 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         FileLog.i(TAG, "(CTOR) perDisplayBounds: " + mInfo.mPerDisplayBounds);
     }
 
+    private void attachTaskbarPinningSharedPreferenceChangeListener(Context context) {
+        mTaskbarPinningPreferenceChangeListener =
+                (sharedPreferences, key) -> {
+                    if (TASKBAR_PINNING_KEY.equals(key)
+                            && mInfo.mIsTaskbarPinned != LauncherPrefs.get(mContext).get(
+                            TASKBAR_PINNING)
+                    ) {
+                        handleInfoChange(mWindowContext.getDisplay());
+                    }
+                };
+
+        LauncherPrefs.get(context).addListener(
+                mTaskbarPinningPreferenceChangeListener, TASKBAR_PINNING);
+    }
+
     /**
      * Returns the current navigation mode
      */
@@ -142,25 +165,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
      * Returns whether taskbar is transient.
      */
     public static boolean isTransientTaskbar(Context context) {
-        return INSTANCE.get(context).isTransientTaskbar();
-    }
-
-    /**
-     * Returns whether taskbar is transient.
-     */
-    public boolean isTransientTaskbar() {
-        // TODO(b/258604917): When running in test harness, use !sTransientTaskbarStatusForTests
-        //  once tests are updated to expect new persistent behavior such as not allowing long press
-        //  to stash.
-        if (!Utilities.isRunningInTestHarness()
-                && ENABLE_TASKBAR_PINNING.get()
-                && mPrefs.get(TASKBAR_PINNING)) {
-            return false;
-        }
-        return getInfo().navigationMode == NavigationMode.NO_BUTTON
-                && (Utilities.isRunningInTestHarness()
-                    ? sTransientTaskbarStatusForTests
-                    : ENABLE_TRANSIENT_TASKBAR.get());
+        return INSTANCE.get(context).getInfo().isTransientTaskbar();
     }
 
     /**
@@ -174,6 +179,10 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
     @Override
     public void close() {
         mDestroyed = true;
+        if (ENABLE_TASKBAR_PINNING.get()) {
+            LauncherPrefs.get(mContext).removeListener(
+                    mTaskbarPinningPreferenceChangeListener, TASKBAR_PINNING);
+        }
         if (mWindowContext != null) {
             mWindowContext.unregisterComponentCallbacks(this);
         } else {
@@ -256,7 +265,8 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
     }
 
     @AnyThread
-    private void handleInfoChange(Display display) {
+    @VisibleForTesting
+    public void handleInfoChange(Display display) {
         WindowManagerProxy wmProxy = WindowManagerProxy.INSTANCE.get(mContext);
         Info oldInfo = mInfo;
 
@@ -288,6 +298,9 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
             change |= CHANGE_SUPPORTED_BOUNDS;
             FileLog.w(TAG,
                     "(CHANGE_SUPPORTED_BOUNDS) perDisplayBounds: " + newInfo.mPerDisplayBounds);
+        }
+        if (newInfo.mIsTaskbarPinned != oldInfo.mIsTaskbarPinned) {
+            change |= CHANGE_TASKBAR_PINNING;
         }
         if (DEBUG) {
             Log.d(TAG, "handleInfoChange - change: " + getChangeFlagsString(change));
@@ -330,6 +343,8 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         public final Set<WindowBounds> supportedBounds = new ArraySet<>();
         private final ArrayMap<CachedDisplayInfo, List<WindowBounds>> mPerDisplayBounds =
                 new ArrayMap<>();
+
+        private final boolean mIsTaskbarPinned;
 
         public Info(Context displayInfoContext) {
             /* don't need system overrides for external displays */
@@ -387,6 +402,26 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
                 Log.d(TAG, "normalizedDisplayInfo: " + normalizedDisplayInfo);
                 Log.d(TAG, "perDisplayBounds: " + mPerDisplayBounds);
             }
+
+            mIsTaskbarPinned = LauncherPrefs.get(displayInfoContext).get(TASKBAR_PINNING);
+        }
+
+        /**
+         * Returns whether taskbar is transient.
+         */
+        public boolean isTransientTaskbar() {
+            // TODO(b/258604917): Once ENABLE_TASKBAR_PINNING is enabled, remove usage of
+            //  sTransientTaskbarStatusForTests and update test to directly
+            //  toggle shred preference to switch transient taskbar on/of
+            if (!Utilities.isRunningInTestHarness()
+                    && ENABLE_TASKBAR_PINNING.get()
+                    && mIsTaskbarPinned) {
+                return false;
+            }
+            return navigationMode == NavigationMode.NO_BUTTON
+                    && (Utilities.isRunningInTestHarness()
+                    ? sTransientTaskbarStatusForTests
+                    : ENABLE_TRANSIENT_TASKBAR.get() && !mIsTaskbarPinned);
         }
 
         /**
@@ -426,6 +461,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         appendFlag(result, change, CHANGE_DENSITY, "CHANGE_DENSITY");
         appendFlag(result, change, CHANGE_SUPPORTED_BOUNDS, "CHANGE_SUPPORTED_BOUNDS");
         appendFlag(result, change, CHANGE_NAVIGATION_MODE, "CHANGE_NAVIGATION_MODE");
+        appendFlag(result, change, CHANGE_TASKBAR_PINNING, "CHANGE_TASKBAR_VARIANT");
         return result.toString();
     }
 
@@ -440,6 +476,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         pw.println("  fontScale=" + info.fontScale);
         pw.println("  densityDpi=" + info.densityDpi);
         pw.println("  navigationMode=" + info.navigationMode.name());
+        pw.println("  isTaskbarPinned=" + info.mIsTaskbarPinned);
         pw.println("  currentSize=" + info.currentSize);
         info.mPerDisplayBounds.forEach((key, value) -> pw.println(
                 "  perDisplayBounds - " + key + ": " + value));
