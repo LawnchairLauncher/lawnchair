@@ -19,7 +19,6 @@ package com.android.launcher3.taskbar.navbutton
 import android.content.res.Resources
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import com.android.launcher3.DeviceProfile
 
 class PhoneSeascapeNavLayoutter(
         resources: Resources,
@@ -34,10 +33,7 @@ class PhoneSeascapeNavLayoutter(
                 startContextualContainer
         ) {
 
-    override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
-        // TODO(b/230395757): Polish pending, this is just to make it usable
-        super.layoutButtons(dp, isContextualButtonShowing)
-        navButtonContainer.removeAllViews()
+    override fun addThreeButtons() {
         // Flip ordering of back and recents buttons
         navButtonContainer.addView(backButton)
         navButtonContainer.addView(homeButton)

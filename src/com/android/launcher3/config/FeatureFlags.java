@@ -35,13 +35,7 @@ import java.util.function.ToIntFunction;
 
 /**
  * Defines a set of flags used to control various launcher behaviors.
- *
- * Please only add flags to your assigned block to prevent merge conflicts. If you do not have
- * a block, please update the current empty block and add a new empty block below to prevent
- * merge conflicts with the previous block.
- * List of blocks can be found:
- * <a href="http://go/gnl-flags-block-directory">here</a>
- *
+ * <p>
  * <p>All the flags should be defined here with appropriate default values.
  */
 public final class FeatureFlags {
@@ -243,6 +237,9 @@ public final class FeatureFlags {
     // Aconfig migration complete for ENABLE_TWOLINE_ALLAPPS.
     public static final BooleanFlag ENABLE_TWOLINE_ALLAPPS = getDebugFlag(270390937,
             "ENABLE_TWOLINE_ALLAPPS", DISABLED, "Enables two line label inside all apps.");
+    public static boolean enableTwolineAllapps() {
+        return ENABLE_TWOLINE_ALLAPPS.get() || Flags.enableTwolineAllapps();
+    }
 
     public static final BooleanFlag IME_STICKY_SNACKBAR_EDU = getDebugFlag(270391693,
             "IME_STICKY_SNACKBAR_EDU", ENABLED, "Show sticky IME edu in AllApps");
@@ -435,13 +432,19 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_ALL_APPS_RV_PREINFLATION = getDebugFlag(288161355,
             "ENABLE_ALL_APPS_RV_PREINFLATION", ENABLED,
             "Enables preinflating all apps icons to avoid scrolling jank.");
-
-    // TODO(Block 34): Clean up flags
     public static final BooleanFlag ALL_APPS_GONE_VISIBILITY = getDebugFlag(291651514,
             "ALL_APPS_GONE_VISIBILITY", ENABLED,
             "Set all apps container view's hidden visibility to GONE instead of INVISIBLE.");
 
-    // TODO(Block 35): Empty block
+    // TODO(Block 34): Empty block
+    // Please only add flags to your assigned block. If you do not have a block:
+    // 1. Assign yourself this block
+    // 2. Add your flag to this block
+    // 3. Add a new empty block below this one
+    // 4. Move this comment to that new empty block
+    // This is all to prevent merge conflicts in the future and help keep track of who owns which
+    // flags.
+    // List of assigned blocks can be found: http://go/gnl-flags-block-directory
 
     public static class BooleanFlag {
 

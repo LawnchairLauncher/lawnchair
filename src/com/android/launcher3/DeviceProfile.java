@@ -1133,6 +1133,10 @@ public class DeviceProfile {
         if (isVerticalBarLayout()) {
             hideWorkspaceLabelsIfNotEnoughSpace();
         }
+        if (FeatureFlags.enableTwolineAllapps()) {
+            // Add extra textHeight to the existing allAppsCellHeight.
+            allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx);
+        }
 
         updateHotseatSizes(iconSizePx);
 

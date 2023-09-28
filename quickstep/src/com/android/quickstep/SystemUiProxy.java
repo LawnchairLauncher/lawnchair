@@ -1268,10 +1268,10 @@ public class SystemUiProxy implements ISystemUiProxy {
     //
 
     /** Call shell to show all apps active on the desktop */
-    public void showDesktopApps(int displayId) {
+    public void showDesktopApps(int displayId, @Nullable RemoteTransition transition) {
         if (mDesktopMode != null) {
             try {
-                mDesktopMode.showDesktopApps(displayId);
+                mDesktopMode.showDesktopApps(displayId, transition);
             } catch (RemoteException e) {
                 Log.w(TAG, "Failed call showDesktopApps", e);
             }

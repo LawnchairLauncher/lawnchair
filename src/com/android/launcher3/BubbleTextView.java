@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static android.text.Layout.Alignment.ALIGN_NORMAL;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_DOWNLOAD_APP_UX_V2;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ICON_LABEL_AUTO_SCALING;
 import static com.android.launcher3.config.FeatureFlags.enableCursorHoverStates;
@@ -39,6 +40,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.icu.text.MessageFormat;
+import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
@@ -148,6 +150,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     private final MultiTranslateDelegate mTranslateDelegate = new MultiTranslateDelegate(this);
     private final ActivityContext mActivity;
     private FastBitmapDrawable mIcon;
+    private DeviceProfile mDeviceProfile;
     private boolean mCenterVertically;
 
     protected int mDisplay;
@@ -206,35 +209,35 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
         mIsRtl = (getResources().getConfiguration().getLayoutDirection()
                 == View.LAYOUT_DIRECTION_RTL);
-        DeviceProfile grid = mActivity.getDeviceProfile();
+        mDeviceProfile = mActivity.getDeviceProfile();
 
         mDisplay = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         final int defaultIconSize;
         if (mDisplay == DISPLAY_WORKSPACE) {
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
-            setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
-            defaultIconSize = grid.iconSizePx;
-            setCenterVertically(grid.iconCenterVertically);
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, mDeviceProfile.iconTextSizePx);
+            setCompoundDrawablePadding(mDeviceProfile.iconDrawablePaddingPx);
+            defaultIconSize = mDeviceProfile.iconSizePx;
+            setCenterVertically(mDeviceProfile.iconCenterVertically);
         } else if (mDisplay == DISPLAY_ALL_APPS || mDisplay == DISPLAY_PREDICTION_ROW
                 || mDisplay == DISPLAY_SEARCH_RESULT_APP_ROW) {
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
-            setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
-            defaultIconSize = grid.allAppsIconSizePx;
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, mDeviceProfile.allAppsIconTextSizePx);
+            setCompoundDrawablePadding(mDeviceProfile.allAppsIconDrawablePaddingPx);
+            defaultIconSize = mDeviceProfile.allAppsIconSizePx;
         } else if (mDisplay == DISPLAY_FOLDER) {
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.folderChildTextSizePx);
-            setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
-            defaultIconSize = grid.folderChildIconSizePx;
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, mDeviceProfile.folderChildTextSizePx);
+            setCompoundDrawablePadding(mDeviceProfile.folderChildDrawablePaddingPx);
+            defaultIconSize = mDeviceProfile.folderChildIconSizePx;
         } else if (mDisplay == DISPLAY_SEARCH_RESULT) {
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, mDeviceProfile.allAppsIconTextSizePx);
             defaultIconSize = getResources().getDimensionPixelSize(R.dimen.search_row_icon_size);
         } else if (mDisplay == DISPLAY_SEARCH_RESULT_SMALL) {
             defaultIconSize = getResources().getDimensionPixelSize(
                     R.dimen.search_row_small_icon_size);
         } else if (mDisplay == DISPLAY_TASKBAR) {
-            defaultIconSize = grid.iconSizePx;
+            defaultIconSize = mDeviceProfile.iconSizePx;
         } else {
             // widget_selection or shortcut_popup
-            defaultIconSize = grid.iconSizePx;
+            defaultIconSize = mDeviceProfile.iconSizePx;
         }
 
         mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
@@ -274,8 +277,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         mDotParams.scale = 0f;
         mForceHideDot = false;
         setBackground(null);
-        if (Flags.enableTwolineAllapps() || FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get()
-                || FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()) {
+        if (FeatureFlags.enableTwolineAllapps() || FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()) {
             setMaxLines(1);
         }
 
@@ -407,8 +409,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
      *  Only if actual text can be displayed in two line, the {@code true} value will be effective.
      */
     protected boolean shouldUseTwoLine() {
-        return ((Flags.enableTwolineAllapps() || FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get())
-                && mDisplay == DISPLAY_ALL_APPS)
+        return ((FeatureFlags.enableTwolineAllapps())
+                && (mDisplay == DISPLAY_ALL_APPS || mDisplay == DISPLAY_PREDICTION_ROW))
                 || (FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()
                 && mDisplay == DISPLAY_SEARCH_RESULT);
     }
@@ -691,21 +693,28 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int height = MeasureSpec.getSize(heightMeasureSpec);
         if (mCenterVertically) {
             Paint.FontMetrics fm = getPaint().getFontMetrics();
             int cellHeightPx = mIconSize + getCompoundDrawablePadding() +
                     (int) Math.ceil(fm.bottom - fm.top);
-            int height = MeasureSpec.getSize(heightMeasureSpec);
             setPadding(getPaddingLeft(), (height - cellHeightPx) / 2, getPaddingRight(),
                     getPaddingBottom());
         }
         // Only apply two line for all_apps and device search only if necessary.
         if (shouldUseTwoLine() && (mLastOriginalText != null)) {
+            int allowedVerticalSpace = height - getPaddingTop() - getPaddingBottom()
+                    - mDeviceProfile.allAppsIconSizePx
+                    - mDeviceProfile.allAppsIconDrawablePaddingPx;
             CharSequence modifiedString = modifyTitleToSupportMultiLine(
                     MeasureSpec.getSize(widthMeasureSpec) - getCompoundPaddingLeft()
                             - getCompoundPaddingRight(),
+                    allowedVerticalSpace,
                     mLastOriginalText,
-                    getPaint(), mBreakPointsIntArray);
+                    getPaint(),
+                    mBreakPointsIntArray,
+                    getLineSpacingMultiplier(),
+                    getLineSpacingExtra());
             if (!TextUtils.equals(modifiedString, mLastModifiedText)) {
                 mLastModifiedText = modifiedString;
                 setText(modifiedString);
@@ -785,7 +794,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
      * many words as it can until the limit is reached. Once the limit is reached, we decide to
      * either return the original title or continue on a new line. How to get the new string is by
      * iterating through the list of break points and determining if the strings between the break
-     * points can fit within the line it is in.
+     * points can fit within the line it is in. We will show the modified string if there is enough
+     * horizontal and vertical space, otherwise this method will just return the original string.
      *  Example assuming each character takes up one spot:
      *  title = "Battery Stats", breakpoint = [6], stringPtr = 0, limitedWidth = 7
      *  We get the current word -> from sublist(0, breakpoint[i]+1) so sublist (0,7) -> Battery,
@@ -794,8 +804,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
      *  if the first char is a SPACE, we trim to append "Stats". So resulting string would be
      *  "Battery\nStats"
      */
-    public static CharSequence modifyTitleToSupportMultiLine(int limitedWidth, CharSequence title,
-            TextPaint paint, IntArray breakPoints) {
+    public static CharSequence modifyTitleToSupportMultiLine(int limitedWidth, int limitedHeight,
+            CharSequence title, TextPaint paint, IntArray breakPoints, float spacingMultiplier,
+            float spacingExtra) {
         // current title is less than the width allowed so we can just skip
         if (title == null || paint.measureText(title, 0, title.length()) <= limitedWidth) {
             return title;
@@ -816,11 +827,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             if (runningWidth <= limitedWidth) {
                 newString.append(currentWord);
             } else {
-                // there is no more space
-                if (i == 0) {
-                    // if the first words exceeds width, just return as the first line will ellipse
-                    return title;
-                } else {
+                if (i != 0)  {
                     // If putting word onto a new line, make sure there is no space or new line
                     // character in the beginning of the current word and just put in the rest of
                     // the characters.
@@ -834,8 +841,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
                                 : EMPTY;
                     }
                     newString.append(NEW_LINE).append(lastCharacters);
-                    return newString.toString();
+                    StaticLayout staticLayout = new StaticLayout(newString, paint, limitedWidth,
+                            ALIGN_NORMAL, spacingMultiplier, spacingExtra, false);
+                    if (staticLayout.getHeight() < limitedHeight) {
+                        return newString.toString();
+                    }
                 }
+                // if the first words exceeds width, just return as the first line will ellipse
+                return title;
             }
             if (i >= breakPoints.size()) {
                 // no need to look forward into the string if we've already finished processing

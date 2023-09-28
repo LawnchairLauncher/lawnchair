@@ -143,6 +143,7 @@ import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.anim.SpringProperty;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.desktop.DesktopRecentsTransitionController;
 import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.statehandlers.DepthController;
@@ -722,6 +723,9 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     private ObjectAnimator mActionsViewAlphaAnimator;
     private float mActionsViewAlphaAnimatorFinalValue;
 
+    @Nullable
+    private DesktopRecentsTransitionController mDesktopRecentsTransitionController;
+
     /**
      * Keeps track of the desktop task. Optional and only present when the feature flag is enabled.
      */
@@ -1042,10 +1046,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         updateTaskStackListenerState();
     }
 
-    public void init(OverviewActionsView actionsView, SplitSelectStateController splitController) {
+    public void init(OverviewActionsView actionsView, SplitSelectStateController splitController,
+            @Nullable DesktopRecentsTransitionController desktopRecentsTransitionController) {
         mActionsView = actionsView;
         mActionsView.updateHiddenFlags(HIDDEN_NO_TASKS, getTaskViewCount() == 0);
         mSplitSelectStateController = splitController;
+        mDesktopRecentsTransitionController = desktopRecentsTransitionController;
     }
 
     public SplitSelectStateController getSplitSelectController() {
@@ -2271,10 +2277,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         if (showAsGrid()) {
             int screenStart = mOrientationHandler.getPrimaryScroll(this);
             int pageOrientedSize = mOrientationHandler.getMeasuredSize(this);
-            int halfScreenSize = pageOrientedSize / 2;
-            // Use +/- 50% screen width as visible area.
-            visibleStart = screenStart - halfScreenSize;
-            visibleEnd = screenStart + pageOrientedSize + halfScreenSize;
+            // For GRID_ONLY_OVERVIEW, use +/- 1 task column as visible area for preloading
+            // adjacent thumbnails, otherwise use +/-50% screen width
+            int extraWidth = enableGridOnlyOverview() ? getLastComputedTaskSize().width()
+                    + getPageSpacing() : pageOrientedSize / 2;
+            visibleStart = screenStart - extraWidth;
+            visibleEnd = screenStart + pageOrientedSize + extraWidth;
         } else {
             int centerPageIndex = getPageNearestToCenterOfScreen();
             int numChildren = getChildCount();
@@ -2355,6 +2363,12 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     @Override
     public void onHighResLoadingStateChanged(boolean enabled) {
+        // Preload cache when no overview task is visible (e.g. not in overview page), so when
+        // user goes to overview next time, the task thumbnails would show up without delay
+        if (mHasVisibleTaskData.size() == 0) {
+            mModel.preloadCacheIfNeeded();
+        }
+
         // Whenever the high res loading state changes, poke each of the visible tasks to see if
         // they want to updated their thumbnail state
         for (int i = 0; i < mHasVisibleTaskData.size(); i++) {
@@ -5785,6 +5799,11 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @Nullable
     protected DepthController getDepthController() {
         return null;
+    }
+
+    @Nullable
+    protected DesktopRecentsTransitionController getDesktopRecentsController() {
+        return mDesktopRecentsTransitionController;
     }
 
     /** Enables or disables modal state for RecentsView */

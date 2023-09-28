@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.celllayout;
 
+import static android.platform.uiautomator_helpers.DeviceHelpers.getContext;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -28,13 +30,16 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.MultipageCellLayout;
 import com.android.launcher3.tapl.Widget;
 import com.android.launcher3.tapl.WidgetResizeFrame;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TaplTestsLauncher3;
+import com.android.launcher3.util.ModelTestExtensions;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
@@ -66,6 +71,13 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
     public void setup() throws Throwable {
         mWorkspaceBuilder = new TestWorkspaceBuilder(mTargetContext);
         TaplTestsLauncher3.initialize(this);
+    }
+
+    @After
+    public void tearDown() {
+        ModelTestExtensions.INSTANCE.clearModelDb(
+                LauncherAppState.getInstance(getContext()).getModel()
+        );
     }
 
     /**
