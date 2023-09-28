@@ -266,6 +266,10 @@ public class ActiveGestureLog {
             time = System.currentTimeMillis();
             duplicateCount = 0;
         }
+
+        public long getTime() {
+            return time;
+        }
     }
 
     /** An entire log of entries associated with a single log ID */
