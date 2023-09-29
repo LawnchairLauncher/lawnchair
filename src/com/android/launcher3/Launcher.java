@@ -43,7 +43,6 @@ import static com.android.launcher3.LauncherState.NO_OFFSET;
 import static com.android.launcher3.LauncherState.NO_SCALE;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
-import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
 import static com.android.launcher3.config.FeatureFlags.SHOW_DOT_PAGINATION;
@@ -114,7 +113,6 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.KeyboardShortcutGroup;
-import android.view.KeyboardShortcutInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
@@ -137,7 +135,6 @@ import androidx.annotation.UiThread;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.accessibility.BaseAccessibilityDelegate.LauncherAction;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
@@ -205,6 +202,7 @@ import com.android.launcher3.util.CannedAnimationCoordinator;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
+import com.android.launcher3.util.KeyboardShortcutsDelegate;
 import com.android.launcher3.util.LockedUserState;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PackageUserKey;
@@ -335,6 +333,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     private static final boolean DESKTOP_MODE_SUPPORTED =
             "1".equals(Utilities.getSystemProperty("persist.wm.debug.desktop_mode_2", "0"));
 
+    KeyboardShortcutsDelegate mKeyboardShortcutsDelegate = new KeyboardShortcutsDelegate(this);
     @Thunk
     Workspace<?> mWorkspace;
     @Thunk
@@ -3004,84 +3003,51 @@ public class Launcher extends StatefulActivity<LauncherState>
         mOverlayManager.dump(prefix, writer);
     }
 
+    /**
+     * Populates the list of shortcuts. Logic delegated to {@Link KeyboardShortcutsDelegate}.
+     *
+     * @param data The data list to populate with shortcuts.
+     * @param menu The current menu, which may be null.
+     * @param deviceId The id for the connected device the shortcuts should be provided for.
+     */
     @Override
     public void onProvideKeyboardShortcuts(
             List<KeyboardShortcutGroup> data, Menu menu, int deviceId) {
-
-        ArrayList<KeyboardShortcutInfo> shortcutInfos = new ArrayList<>();
-        if (isInState(NORMAL)) {
-            shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.all_apps_button_label),
-                    KeyEvent.KEYCODE_A, KeyEvent.META_CTRL_ON));
-            shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.widget_button_text),
-                    KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON));
-        }
-        getSupportedActions(this,  getCurrentFocus()).forEach(la ->
-                shortcutInfos.add(new KeyboardShortcutInfo(
-                        la.accessibilityAction.getLabel(), la.keyCode, KeyEvent.META_CTRL_ON)));
-        if (!shortcutInfos.isEmpty()) {
-            data.add(new KeyboardShortcutGroup(getString(R.string.home_screen), shortcutInfos));
-        }
-
+        mKeyboardShortcutsDelegate.onProvideKeyboardShortcuts(data, menu, deviceId);
         super.onProvideKeyboardShortcuts(data, menu, deviceId);
     }
 
+    /**
+     * Logic delegated to {@Link KeyboardShortcutsDelegate}.
+     * @param keyCode The value in event.getKeyCode().
+     * @param event Description of the key event.
+     */
     @Override
     public boolean onKeyShortcut(int keyCode, KeyEvent event) {
-        if (event.hasModifiers(KeyEvent.META_CTRL_ON)) {
-            switch (keyCode) {
-                case KeyEvent.KEYCODE_A:
-                    if (isInState(NORMAL)) {
-                        getStateManager().goToState(ALL_APPS);
-                        return true;
-                    }
-                    break;
-                case KeyEvent.KEYCODE_W:
-                    if (isInState(NORMAL)) {
-                        OptionsPopupView.openWidgets(this);
-                        return true;
-                    }
-                    break;
-                default:
-                    for (LauncherAction la : getSupportedActions(this, getCurrentFocus())) {
-                        if (la.keyCode == keyCode) {
-                            return la.invokeFromKeyboard(getCurrentFocus());
-                        }
-                    }
-            }
-        }
-        return super.onKeyShortcut(keyCode, event);
+        Boolean result = mKeyboardShortcutsDelegate.onKeyShortcut(keyCode, event);
+        return result != null ? result : super.onKeyShortcut(keyCode, event);
     }
 
+    /**
+     * Logic delegated to {@Link KeyboardShortcutsDelegate}.
+     * @param keyCode The value in event.getKeyCode().
+     * @param event Description of the key event.
+     */
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_ESCAPE) {
-            // Close any open floating views.
-            closeOpenViews();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
+        Boolean result = mKeyboardShortcutsDelegate.onKeyDown(keyCode, event);
+        return result != null ? result : super.onKeyDown(keyCode, event);
     }
 
+    /**
+     * Logic delegated to {@Link KeyboardShortcutsDelegate}.
+     * @param keyCode The value in event.getKeyCode().
+     * @param event Description of the key event.
+     */
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
-            // KEYCODE_MENU is sent by some tests, for example
-            // LauncherJankTests#testWidgetsContainerFling. Don't just remove its handling.
-            if (!mDragController.isDragging() && !mWorkspace.isSwitchingState() &&
-                    isInState(NORMAL)) {
-                // Close any open floating views.
-                closeOpenViews();
-
-                // Setting the touch point to (-1, -1) will show the options popup in the center of
-                // the screen.
-                if (Utilities.isRunningInTestHarness()) {
-                    Log.d(TestProtocol.PERMANENT_DIAG_TAG, "Opening options popup on key up");
-                }
-                showDefaultOptions(-1, -1);
-            }
-            return true;
-        }
-        return super.onKeyUp(keyCode, event);
+        Boolean result = mKeyboardShortcutsDelegate.onKeyUp(keyCode, event);
+        return result != null ? result : super.onKeyUp(keyCode, event);
     }
 
     /**
@@ -3147,7 +3113,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         getStateManager().goToState(LauncherState.NORMAL);
     }
 
-    private void closeOpenViews() {
+    public void closeOpenViews() {
         closeOpenViews(true);
     }
 
