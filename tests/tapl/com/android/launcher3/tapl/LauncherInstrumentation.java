@@ -995,6 +995,25 @@ public final class LauncherInstrumentation {
     }
 
     /**
+     * Goes to home from immersive fullscreen app by first swiping up to bring navbar, and then
+     * performing {@code goHome()} action.
+     * Currently only supports gesture navigation mode.
+     *
+     * @return the Workspace object.
+     */
+    public Workspace goHomeFromImmersiveFullscreenApp() {
+        assertTrue("expected gesture navigation mode",
+                getNavigationModel() == NavigationModel.ZERO_BUTTON);
+        final Point displaySize = getRealDisplaySize();
+        linearGesture(
+                displaySize.x / 2, displaySize.y - 1,
+                displaySize.x / 2, 0,
+                ZERO_BUTTON_STEPS_FROM_BACKGROUND_TO_HOME,
+                false, GestureScope.EXPECT_PILFER);
+        return goHome();
+    }
+
+    /**
      * Goes to home by swiping up in zero-button mode or pressing Home button.
      * Calling it after another TAPL call is safe because all TAPL methods wait for the animations
      * to finish.
