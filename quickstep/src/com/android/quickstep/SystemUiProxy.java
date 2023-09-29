@@ -137,6 +137,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     private ISplitSelectListener mSplitSelectListener;
     private IStartingWindowListener mStartingWindowListener;
     private ILauncherUnlockAnimationController mLauncherUnlockAnimationController;
+    private String mLauncherActivityClass;
     private IRecentTasksListener mRecentTasksListener;
     private IUnfoldTransitionListener mUnfoldAnimationListener;
     private IDesktopTaskListener mDesktopTaskListener;
@@ -248,7 +249,8 @@ public class SystemUiProxy implements ISystemUiProxy {
         registerSplitScreenListener(mSplitScreenListener);
         registerSplitSelectListener(mSplitSelectListener);
         setStartingWindowListener(mStartingWindowListener);
-        setLauncherUnlockAnimationController(mLauncherUnlockAnimationController);
+        setLauncherUnlockAnimationController(
+                mLauncherActivityClass, mLauncherUnlockAnimationController);
         new LinkedHashMap<>(mRemoteTransitions).forEach(this::registerRemoteTransition);
         setupTransactionQueue();
         registerRecentTasksListener(mRecentTasksListener);
@@ -1109,11 +1111,11 @@ public class SystemUiProxy implements ISystemUiProxy {
      * changes).
      */
     public void setLauncherUnlockAnimationController(
-            ILauncherUnlockAnimationController controller) {
+            String activityClass, ILauncherUnlockAnimationController controller) {
         if (mSysuiUnlockAnimationController != null) {
             try {
-                mSysuiUnlockAnimationController.setLauncherUnlockController(controller);
-
+                mSysuiUnlockAnimationController.setLauncherUnlockController(
+                        activityClass, controller);
                 if (controller != null) {
                     controller.dispatchSmartspaceStateToSysui();
                 }
@@ -1121,7 +1123,7 @@ public class SystemUiProxy implements ISystemUiProxy {
                 Log.w(TAG, "Failed call setLauncherUnlockAnimationController", e);
             }
         }
-
+        mLauncherActivityClass = activityClass;
         mLauncherUnlockAnimationController = controller;
     }
 
