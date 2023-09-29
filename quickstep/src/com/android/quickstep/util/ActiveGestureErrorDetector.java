@@ -39,6 +39,7 @@ public class ActiveGestureErrorDetector {
         SET_ON_PAGE_TRANSITION_END_CALLBACK, CANCEL_CURRENT_ANIMATION, CLEANUP_SCREENSHOT,
         SCROLLER_ANIMATION_ABORTED, TASK_APPEARED, EXPECTING_TASK_APPEARED,
         FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER, LAUNCHER_DESTROYED, RECENT_TASKS_MISSING,
+        INVALID_VELOCITY_ON_SWIPE_UP,
 
         /**
          * These GestureEvents are specifically associated to state flags that get set in
@@ -66,6 +67,8 @@ public class ActiveGestureErrorDetector {
 
     private ActiveGestureErrorDetector() {}
 
+    private static final long ON_START_RECENT_ANIMATION_TIME_LIMIT = 500;
+
     protected static void analyseAndDump(
             @NonNull String prefix,
             @NonNull PrintWriter writer,
@@ -76,6 +79,7 @@ public class ActiveGestureErrorDetector {
         // Use a Set since the order is inherently checked in the loop.
         final Set<GestureEvent> encounteredEvents = new ArraySet<>();
         // Set flags and check order of operations.
+        long lastStartRecentAnimationEventEntryTime = 0;
         for (ActiveGestureLog.EventEntry eventEntry : eventLog.eventEntries) {
             GestureEvent gestureEvent = eventEntry.getGestureEvent();
             if (gestureEvent == null) {
@@ -234,6 +238,16 @@ public class ActiveGestureErrorDetector {
                             /* errorMessage= */ "ON_START_RECENTS_ANIMATION "
                                     + "onAnimationStart callback ran before startRecentsAnimation",
                             writer);
+                    errorDetected |= printErrorIfTrue(
+                            eventEntry.getTime() - lastStartRecentAnimationEventEntryTime
+                                    > ON_START_RECENT_ANIMATION_TIME_LIMIT,
+                            prefix,
+                            /* errorMessage= */"ON_START_RECENTS_ANIMATION "
+                                    + "startRecentsAnimation was never called or onAnimationStart "
+                                    + "callback was called more than 500 ms after "
+                                    + "startRecentsAnimation.",
+                            writer);
+                    lastStartRecentAnimationEventEntryTime = 0;
                     break;
                 case ON_CANCEL_RECENTS_ANIMATION:
                     errorDetected |= printErrorIfTrue(
@@ -253,12 +267,21 @@ public class ActiveGestureErrorDetector {
                                     + "callback",
                             writer);
                     break;
+                case INVALID_VELOCITY_ON_SWIPE_UP:
+                    errorDetected |= printErrorIfTrue(
+                            true,
+                            prefix,
+                            /* errorMessage= */ "invalid velocity on swipe up gesture.",
+                            writer);
+                    break;
+                case START_RECENTS_ANIMATION:
+                    lastStartRecentAnimationEventEntryTime = eventEntry.getTime();
+                    break;
                 case MOTION_DOWN:
                 case SET_END_TARGET:
                 case SET_END_TARGET_HOME:
                 case SET_END_TARGET_ALL_APPS:
                 case SET_END_TARGET_NEW_TASK:
-                case START_RECENTS_ANIMATION:
                 case SET_ON_PAGE_TRANSITION_END_CALLBACK:
                 case CANCEL_CURRENT_ANIMATION:
                 case FLAG_USING_OTHER_ACTIVITY_INPUT_CONSUMER:

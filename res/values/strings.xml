@@ -433,7 +433,7 @@
     <!-- button string shown to dismiss work tab education -->
     <string name="work_apps_paused_edu_accept">Got it</string>
 
-    <!-- button string shown pause work profile -->
+    <!-- button string shown pause work profile [CHAR LIMIT=28] -->
     <string name="work_apps_pause_btn_text">Pause work apps</string>
     <!-- button string shown enable work profile -->
     <string name="work_apps_enable_btn_text">Unpause</string>
