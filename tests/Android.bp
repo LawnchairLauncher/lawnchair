@@ -43,6 +43,7 @@ filegroup {
     name: "launcher-oop-tests-src",
     srcs: [
       "src/com/android/launcher3/allapps/OopTaplOpenCloseAllApps.java",
+      "src/com/android/launcher3/appiconmenu/TaplAppIconMenuTest.java",
       "src/com/android/launcher3/dragging/TaplDragTest.java",
       "src/com/android/launcher3/dragging/TaplUninstallRemove.java",
       "src/com/android/launcher3/ui/AbstractLauncherUiTest.java",
