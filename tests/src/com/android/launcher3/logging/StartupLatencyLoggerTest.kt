@@ -357,6 +357,7 @@ class StartupLatencyLoggerTest {
         assertThat(underTest.startTimeByEvent.size()).isEqualTo(4)
         assertThat(underTest.endTimeByEvent.size()).isEqualTo(4)
         assertThat(underTest.cardinality).isEqualTo(235)
+        assertThat(underTest.isTornDown).isFalse()
 
         underTest.reset()
 
@@ -364,5 +365,26 @@ class StartupLatencyLoggerTest {
         assertThat(underTest.endTimeByEvent.isEmpty()).isTrue()
         assertThat(underTest.cardinality).isEqualTo(StartupLatencyLogger.UNSET_INT)
         assertThat(underTest.workspaceLoadStartTime).isEqualTo(StartupLatencyLogger.UNSET_LONG)
+        assertThat(underTest.isTornDown).isTrue()
+    }
+
+    @Test
+    @UiThreadTest
+    fun tornDown_rejectLogs() {
+        underTest.reset()
+
+        underTest
+            .logStart(
+                StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION,
+                100
+            )
+            .logEnd(
+                StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION,
+                200
+            )
+            .logCardinality(123)
+        assertThat(underTest.startTimeByEvent.isEmpty()).isTrue()
+        assertThat(underTest.endTimeByEvent.isEmpty()).isTrue()
+        assertThat(underTest.cardinality).isEqualTo(StartupLatencyLogger.UNSET_INT)
     }
 }
