@@ -30,6 +30,7 @@ import com.android.app.animation.Interpolators
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.Utilities
 import com.android.launcher3.anim.PendingAnimation
+import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.statemanager.StatefulActivity
 import com.android.launcher3.util.SplitConfigurationOptions.SplitSelectSource
 import com.android.launcher3.views.BaseDragLayer
@@ -40,6 +41,7 @@ import com.android.quickstep.views.TaskThumbnailView
 import com.android.quickstep.views.TaskView
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer
 import com.android.quickstep.views.TaskViewIcon
+import java.util.Optional
 import java.util.function.Supplier
 
 /**
@@ -268,6 +270,45 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
     /** Removes the split instructions view from [launcher] drag layer. */
     fun removeSplitInstructionsView(launcher: StatefulActivity<*>) {
         safeRemoveViewFromDragLayer(launcher, splitSelectStateController.splitInstructionsView)
+    }
+
+    /**
+     * Animates the first placeholder view to fullscreen and launches its task.
+     * TODO(b/276361926): Remove the [resetCallback] option once contextual launches
+     */
+    fun playAnimPlaceholderToFullscreen(launcher: StatefulActivity<*>, view: View,
+                                        resetCallback: Optional<Runnable>) {
+        val stagedTaskView = view as FloatingTaskView
+
+        val isTablet: Boolean = launcher.deviceProfile.isTablet
+        val duration = if (isTablet) SplitAnimationTimings.TABLET_CONFIRM_DURATION else
+            SplitAnimationTimings.PHONE_CONFIRM_DURATION
+        val pendingAnimation = PendingAnimation(duration.toLong())
+        val firstTaskStartingBounds = Rect()
+        val firstTaskEndingBounds = Rect()
+
+        stagedTaskView.getBoundsOnScreen(firstTaskStartingBounds)
+        launcher.dragLayer.getBoundsOnScreen(firstTaskEndingBounds)
+        splitSelectStateController.setLaunchingFirstAppFullscreen()
+
+        stagedTaskView.addConfirmAnimation(
+                pendingAnimation,
+                RectF(firstTaskStartingBounds),
+                firstTaskEndingBounds,
+                false /* fadeWithThumbnail */,
+                true /* isStagedTask */)
+
+        pendingAnimation.addEndListener {
+            splitSelectStateController.launchInitialAppFullscreen {
+                if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+                    splitSelectStateController.resetState()
+                } else if (resetCallback.isPresent) {
+                    resetCallback.get().run()
+                }
+            }
+        }
+
+        pendingAnimation.buildAnim().start()
     }
 
     private fun safeRemoveViewFromDragLayer(launcher: StatefulActivity<*>, view: View?) {

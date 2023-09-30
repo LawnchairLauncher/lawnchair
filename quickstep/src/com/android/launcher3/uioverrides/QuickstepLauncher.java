@@ -186,6 +186,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -675,6 +676,9 @@ public class QuickstepLauncher extends Launcher {
         floatingTaskView.setAlpha(1);
         floatingTaskView.addStagingAnimation(anim, startingTaskRect, tempRect,
                 false /* fadeWithThumbnail */, true /* isStagedTask */);
+        floatingTaskView.setOnClickListener(view ->
+                mSplitSelectStateController.getSplitAnimationController().
+                        playAnimPlaceholderToFullscreen(this, view, Optional.empty()));
         mSplitSelectStateController.setFirstFloatingTaskView(floatingTaskView);
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -714,7 +718,8 @@ public class QuickstepLauncher extends Launcher {
 
         if (ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
             // If Launcher pauses before both split apps are selected, exit split screen.
-            if (!mSplitSelectStateController.isBothSplitAppsConfirmed()) {
+            if (!mSplitSelectStateController.isBothSplitAppsConfirmed() &&
+                    !mSplitSelectStateController.isLaunchingFirstAppFullscreen()) {
                 mSplitSelectStateController.getSplitAnimationController()
                         .playPlaceholderDismissAnim(this);
             }

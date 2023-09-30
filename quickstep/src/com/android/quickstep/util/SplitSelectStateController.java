@@ -140,6 +140,9 @@ public class SplitSelectStateController {
     @Nullable
     private GroupedTaskView mLaunchingTaskView;
 
+    /** True when the first selected split app is being launched in fullscreen. */
+    private boolean mLaunchingFirstAppFullscreen;
+
     private FloatingTaskView mFirstFloatingTaskView;
     private SplitInstructionsView mSplitInstructionsView;
 
@@ -690,6 +693,7 @@ public class SplitSelectStateController {
         mDismissingFromSplitPair = false;
         mFirstFloatingTaskView = null;
         mSplitInstructionsView = null;
+        mLaunchingFirstAppFullscreen = false;
     }
 
     /**
@@ -708,6 +712,10 @@ public class SplitSelectStateController {
         return mSplitSelectDataHolder.isBothSplitAppsConfirmed();
     }
 
+    public boolean isLaunchingFirstAppFullscreen() {
+        return mLaunchingFirstAppFullscreen;
+    }
+
     public int getInitialTaskId() {
         return mSplitSelectDataHolder.getInitialTaskId();
     }
@@ -716,6 +724,9 @@ public class SplitSelectStateController {
         return mSplitSelectDataHolder.getSecondTaskId();
     }
 
+    public void setLaunchingFirstAppFullscreen() {
+        mLaunchingFirstAppFullscreen = true;
+    }
     public void setFirstFloatingTaskView(FloatingTaskView floatingTaskView) {
         mFirstFloatingTaskView = floatingTaskView;
     }
