@@ -1829,7 +1829,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     return null;
                 }
 
-                current = (View) view.getParent();
+                current = (View) current.getParent();
             }
 
             return (T) current;
