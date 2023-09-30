@@ -82,17 +82,29 @@ public class AllAppsStore<T extends Context & ActivityContext> {
     }
 
     /**
+     * Calling {@link #setApps(AppInfo[], int, Map, boolean)} with shouldPreinflate set to
+     * {@code true}. This method should be called in launcher (not for taskbar).
+     */
+    public void setApps(@Nullable AppInfo[] apps, int flags, Map<PackageUserKey, Integer> map) {
+        setApps(apps, flags, map, /* shouldPreinflate= */ true);
+    }
+
+    /**
      * Sets the current set of apps and sets mapping for {@link PackageUserKey} to Uid for
      * the current set of apps.
+     *
+     * <p> Note that shouldPreinflate param should be set to {@code false} for taskbar, because this
+     * method is too late to preinflate all apps, as user will open all apps in the same frame.
      */
-    public void setApps(@Nullable AppInfo[] apps, int flags, Map<PackageUserKey, Integer> map)  {
+    public void setApps(@Nullable AppInfo[] apps, int flags, Map<PackageUserKey, Integer> map,
+            boolean shouldPreinflate)  {
         mApps = apps == null ? EMPTY_ARRAY : apps;
         mModelFlags = flags;
         notifyUpdate();
         mPackageUserKeytoUidMap = map;
         // Preinflate all apps RV when apps has changed, which can happen after unlocking screen,
         // rotating screen, or downloading/upgrading apps.
-        if (ENABLE_ALL_APPS_RV_PREINFLATION.get()) {
+        if (shouldPreinflate && ENABLE_ALL_APPS_RV_PREINFLATION.get()) {
             mAllAppsRecyclerViewPool.preInflateAllAppsViewHolders(mContext);
         }
     }

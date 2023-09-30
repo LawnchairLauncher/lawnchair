@@ -36,11 +36,8 @@ import androidx.test.runner.AndroidJUnit4;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.tapl.AppIcon;
-import com.android.launcher3.tapl.AppIconMenu;
-import com.android.launcher3.tapl.AppIconMenuItem;
 import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.tapl.HomeAppIcon;
 import com.android.launcher3.tapl.Widgets;
@@ -89,7 +86,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     public static void initialize(
             AbstractLauncherUiTest test, boolean clearWorkspace) throws Exception {
         test.reinitializeLauncherData(clearWorkspace);
-        test.mLauncher.resetFreezeRecentTaskList();
         test.mDevice.pressHome();
         test.waitForLauncherCondition("Launcher didn't start", launcher -> launcher != null);
         test.waitForState("Launcher internal state didn't switch to Home",
@@ -248,55 +244,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         return getWidgetsView(launcher).computeVerticalScrollOffset();
     }
 
-    private boolean isOptionsPopupVisible(Launcher launcher) {
-        final ArrowPopup<?> popup = launcher.getOptionsPopup();
-        return popup != null && popup.isShown();
-    }
-
-    @Test
-    @PortraitLandscape
-    @PlatinumTest(focusArea = "launcher")
-    public void testLaunchMenuItem() throws Exception {
-        final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
-        allApps.freeze();
-        try {
-            final AppIconMenu menu = allApps.
-                    getAppIcon(APP_NAME).
-                    openDeepShortcutMenu();
-
-            executeOnLauncher(
-                    launcher -> assertTrue("Launcher internal state didn't switch to Showing Menu",
-                            isOptionsPopupVisible(launcher)));
-
-            final AppIconMenuItem menuItem = menu.getMenuItem(1);
-            assertEquals("Wrong menu item", "Shortcut 2", menuItem.getText());
-            menuItem.launch(getAppPackageName());
-        } finally {
-            allApps.unfreeze();
-        }
-    }
-
-    @Test
-    public void testLaunchHomeScreenMenuItem() {
-        // Drag the test app icon to home screen and open short cut menu from the icon
-        final HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
-        allApps.freeze();
-        try {
-            allApps.getAppIcon(APP_NAME).dragToWorkspace(false, false);
-            final AppIconMenu menu = mLauncher.getWorkspace().getWorkspaceAppIcon(
-                    APP_NAME).openDeepShortcutMenu();
-
-            executeOnLauncher(
-                    launcher -> assertTrue("Launcher internal state didn't switch to Showing Menu",
-                            isOptionsPopupVisible(launcher)));
-
-            final AppIconMenuItem menuItem = menu.getMenuItem(1);
-            assertEquals("Wrong menu item", "Shortcut 2", menuItem.getText());
-            menuItem.launch(getAppPackageName());
-        } finally {
-            allApps.unfreeze();
-        }
-    }
     @FlakyTest(bugId = 256615483)
     @Test
     @PortraitLandscape

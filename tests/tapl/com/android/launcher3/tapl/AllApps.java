@@ -42,7 +42,8 @@ import java.util.stream.Collectors;
 /**
  * Operations on AllApps opened from Home. Also a parent for All Apps opened from Overview.
  */
-public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
+public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
+        implements KeyboardQuickSwitchSource {
     // Defer updates flag used to defer all apps updates by a test's request.
     private static final int DEFER_UPDATES_TEST = 1 << 1;
 
@@ -63,6 +64,16 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer {
         verifyNotFrozen("All apps freeze flags upon opening all apps");
         mIconHeight = mLauncher.getTestInfo(TestProtocol.REQUEST_ICON_HEIGHT)
                 .getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    @Override
+    public LauncherInstrumentation getLauncher() {
+        return mLauncher;
+    }
+
+    @Override
+    public LauncherInstrumentation.ContainerType getStartingContainerType() {
+        return getContainerType();
     }
 
     private boolean hasClickableIcon(UiObject2 allAppsContainer, UiObject2 appListRecycler,

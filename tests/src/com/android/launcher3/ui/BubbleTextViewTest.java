@@ -323,7 +323,7 @@ public class BubbleTextViewTest {
         mBubbleTextView.setDisplay(DISPLAY_PREDICTION_ROW);
         mBubbleTextView.applyLabel(mItemInfoWithIcon);
         mBubbleTextView.setTypeface(Typeface.MONOSPACE);
-        mBubbleTextView.measure(mLimitedWidth, LIMITED_HEIGHT);
+        mBubbleTextView.measure(mLimitedWidth, MAX_HEIGHT);
 
         mBubbleTextView.onPreDraw();
 

@@ -19,7 +19,7 @@ import android.graphics.Point;
 
 import java.util.function.Supplier;
 
-/** Launchable that can serve as a source for dragging and dropping to the workspace. */
+/** {@link Launchable} that can serve as a source for dragging and dropping to the workspace. */
 interface WorkspaceDragSource {
 
     /**
