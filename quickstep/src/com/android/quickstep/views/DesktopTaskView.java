@@ -62,6 +62,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 
+import kotlin.Unit;
+
 /**
  * TaskView that contains all tasks that are part of the desktop.
  */
@@ -142,9 +144,10 @@ public class DesktopTaskView extends TaskView {
     }
 
     @Override
-    protected void updateBorderBounds(Rect bounds) {
+    protected Unit updateBorderBounds(@NonNull Rect bounds) {
         bounds.set(mBackgroundView.getLeft(), mBackgroundView.getTop(), mBackgroundView.getRight(),
                 mBackgroundView.getBottom());
+        return Unit.INSTANCE;
     }
 
     @Override
