@@ -197,7 +197,7 @@
     <string name="color_light">Vaalea</string>
     <string name="color_dark">Tumma</string>
     <!-- <string name="widget_button_text" /> (unknown source)-->
-    <string name="force_rounded_widgets">Pyöristetyt Kulmat</string>
+    <string name="force_rounded_widgets">Pyöristetyt kulmat</string>
     <string name="allow_widget_overlap">Salli päällekkäisyys</string>
     <!-- HomeScreenGridPreferences -->
     <!-- <string name="home_screen_grid" /> -->
@@ -246,7 +246,7 @@
     <string name="hotseat_mode_google_search">Googlen hakupalkki</string>
     <string name="search_bar_label">Hakupalkki</string>
     <string name="corner_radius_label">Kulman pyöristys</string>
-    <string name="apply_accent_color_label">Käytä Korostettua Väriä</string>
+    <string name="apply_accent_color_label">Käytä korostettua väriä</string>
     <string name="search_provider">Haun tarjoaja</string>
     <string name="grid">Ruudukko</string>
     <string name="dock_icons">Telakan kuvakkeet</string>
@@ -262,7 +262,7 @@
     <string name="background_opacity">Taustan läpinäkyvyys</string>
     <!-- hiddenApps_label -->
     <string name="hidden_apps_label">Piilotetut sovellukset</string>
-    <string name="show_enable_smart_hide">Näytä kun koko nimi on kirjoitettu</string>
+    <string name="show_enable_smart_hide">Näytä, kun koko nimi on kirjoitettu</string>
     <string name="hide_hidden_apps_search">Piilota hakutuloksissa</string>
     <string name="pref_category_search">Hae</string>
     <string name="show_app_search_bar">Näytä hakupalkki</string>
@@ -341,19 +341,19 @@
     <!-- IconPickerPreference -->
     <string name="icon_picker_default_category">Kuvakkeet</string>
     <string name="icon_picker_reset_to_default">Palauta oletus</string>
-    <string name="icon_pack_external_picker">Avaa Ulkoinen Valitsin</string>
-    <string name="pick_icon_from_label">Valitse Kuvake</string>
+    <string name="icon_pack_external_picker">Avaa ulkoinen valitsin</string>
+    <string name="pick_icon_from_label">Valitse kuvake</string>
     <string name="icon_picker_load_failed">Ei voitu ladata enempää kuvakkeita.</string>
     <!-- Misc -->
     <string name="all_apps_search_bar_hint">Hae sovelluksia</string>
     <string name="settings_button_text">Aloitussivun asetukset</string>
     <string name="item_removed">Kohde poistettu.</string>
     <string name="all_apps_no_search_results">Yhtään sovellusta ei löytynyt haulle “<xliff:g example="Android" id="query">%1$s</xliff:g>”.</string>
-    <string name="dt2s_admin_hint_title">Admin permission required</string>
+    <string name="dt2s_admin_hint_title">Järjestelmänvalvojan oikeudet vaaditaan</string>
     <string name="dt2s_admin_hint">Jotta voit käyttää \"Kaksoisnapauta lepotilaan\"-toimintoa, lisää Lawnchair laitteen hallintasovellukseksi. Paina \"Avaa asetukset\", ja sitten \"Aktivoi\"</string>
-    <string name="dt2s_admin_warning">Double Tap to Sleep will be disabled.</string>
-    <string name="dt2s_a11y_hint_title">Accessibility service required</string>
-    <string name="dt2s_a11y_hint">Ota Lawnchairin esteettömyyspalvelu käyttöön kaksoisnapauttamalla Open Settingsia, valitse Lawnchair ja valitse Lawnchair ja ota käyttöön Lawnchair.</string>
+    <string name="dt2s_admin_warning">Kaksoisnapautus lepotilaan tulee olemaan pois päältä.</string>
+    <string name="dt2s_a11y_hint_title">Ota käyttöön esteettömyyspalvelu</string>
+    <string name="dt2s_a11y_hint">Jotta voit käyttää \"Kaksoisnapauta lepotilaan\"-toimintoa, ota Lawnchairin esteettömyyspalvelu käyttöön napauttamalla \"Avaa asetukset\", valitse Lawnchair ja ota käyttöön Lawnchair.</string>
     <string name="dt2s_warning_open_settings">Avaa asetukset</string>
     <string name="loading">Ladataan…</string>
     <string name="system">Järjestelmä</string>
@@ -362,30 +362,30 @@
     <string name="hide_from_drawer">Piilota sovellusvalikosta</string>
     <string name="suggestion_pref_screen_title">Ehdotukset</string>
     <!-- Bug reporting -->
-    <string name="lawnchair_bug_report">Lawnchair Virheraportti</string>
+    <string name="lawnchair_bug_report">Tee Lawnchairista virheraportti</string>
     <string name="crash_report_notif_title">%1$s Kaatui</string>
     <string name="action_upload_crash_report">Lähetä kaatumisloki</string>
     <string name="action_copy_link">Kopioi Linkki</string>
     <string name="action_upload_error">Lähetys epäonnistui</string>
     <string name="dogbin_uploading">Lähetetään…</string>
     <string name="bugreport_channel_name">Virheraportit</string>
-    <string name="status_channel_name">Lähetyksen Tila</string>
+    <string name="status_channel_name">Lähetyksen tila</string>
     <string name="bugreport_group_summary">%d uusia raportteja.</string>
     <string name="bugreport_group_summary_multiple">Useita uusia raportteja.</string>
     <!-- Search ig -->
     <string name="show_search_result_types">Näytä hakutuloksissa</string>
     <string name="search_pref_result_people_title">Ihmiset</string>
-    <string name="search_pref_result_shortcuts_title">Sovellusten Pikakuvakkeet</string>
-    <string name="search_pref_result_tips_title">Pixel Vinkkejä</string>
+    <string name="search_pref_result_shortcuts_title">Sovellusten pikakuvakkeet</string>
+    <string name="search_pref_result_tips_title">Pixel-vinkkejä</string>
     <string name="all_apps_device_search_hint">Hae</string>
-    <string name="search_input_action_clear_results">Tyhjennä Hakukenttä</string>
+    <string name="search_input_action_clear_results">Tyhjennä hakukenttä</string>
     <string name="label_search">Hae</string>
     <string name="label_lens">Google Lens</string>
     <string name="label_voice_search">Puhehaku</string>
     <string name="all_apps_search_market_message">Etsi lisää sovelluksia</string>
     <string name="error_no_market_or_browser_installed">Sovelluskauppaa tai selainta ei ole asennettu.</string>
     <string name="quickstep_incompatible">Yhteensopimaton järjestelmäintegrointi</string>
-    <string name="quickstep_incompatible_description">Laitteesi on konfiguroitu, jotta järjestelmän eleet (tunnetaan nimellä Quickstep) on %1$s, mutta tämä %1$s -versio ei ole yhteensopiva Android-version kanssa. Jatkaaksesi laitteen käyttöä, poista %1$s päivitystä tai poista %1$s käytöstä järjestelmä-eleen tarjoajana.</string>
+    <string name="quickstep_incompatible_description">Laitteesi on konfiguroitu, jotta järjestelmän eleet (tunnetaan nimellä Quickstep) on %1$s, mutta tämä versio %1$ssta ei ole yhteensopiva Android-version kanssa. Jatkaaksesi laitteen käyttöä, poista %1$s päivitystä tai poista %1$s käytöstä järjestelmä-eleen tarjoajana.</string>
     <string name="delete">Poista</string>
     <!-- Backup -->
     <string name="create_backup">Luo varmuuskopio</string>
