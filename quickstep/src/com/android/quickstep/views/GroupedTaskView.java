@@ -37,6 +37,8 @@ import com.android.wm.shell.common.split.SplitScreenConstants.SnapPosition;
 import java.util.HashMap;
 import java.util.function.Consumer;
 
+import kotlin.Unit;
+
 /**
  * TaskView that contains and shows thumbnails for not one, BUT TWO(!!) tasks
  *
@@ -76,10 +78,10 @@ public class GroupedTaskView extends TaskView {
     }
 
     @Override
-    protected void updateBorderBounds(Rect bounds) {
+    protected Unit updateBorderBounds(@NonNull Rect bounds) {
         if (mSplitBoundsConfig == null) {
             super.updateBorderBounds(bounds);
-            return;
+            return Unit.INSTANCE;
         }
         bounds.set(
                 Math.min(mSnapshotView.getLeft() + Math.round(mSnapshotView.getTranslationX()),
@@ -90,6 +92,7 @@ public class GroupedTaskView extends TaskView {
                         mSnapshotView2.getRight() + Math.round(mSnapshotView2.getTranslationX())),
                 Math.max(mSnapshotView.getBottom() + Math.round(mSnapshotView.getTranslationY()),
                         mSnapshotView2.getBottom() + Math.round(mSnapshotView2.getTranslationY())));
+        return Unit.INSTANCE;
     }
 
     @Override
