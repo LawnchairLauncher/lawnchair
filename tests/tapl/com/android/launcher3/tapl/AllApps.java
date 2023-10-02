@@ -16,6 +16,8 @@
 
 package com.android.launcher3.tapl;
 
+import static android.view.KeyEvent.KEYCODE_META_RIGHT;
+
 import static com.android.launcher3.tapl.LauncherInstrumentation.DEFAULT_POLL_INTERVAL;
 import static com.android.launcher3.tapl.LauncherInstrumentation.WAIT_TIME_MS;
 
@@ -365,6 +367,17 @@ public abstract class AllApps extends LauncherInstrumentation.VisibleContainer
             mLauncher.touchOutsideContainer(allAppsBottomSheet, tapRight);
             try (LauncherInstrumentation.Closable tapped = mLauncher.addContextLayer(
                     "tapped outside AllApps bottom sheet")) {
+                verifyVisibleContainerOnDismiss();
+            }
+        }
+    }
+
+    /** Presses the meta keyboard shortcut to dismiss AllApps. */
+    public void dismissByKeyboardShortcut() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            mLauncher.getDevice().pressKeyCode(KEYCODE_META_RIGHT);
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "pressed meta key")) {
                 verifyVisibleContainerOnDismiss();
             }
         }

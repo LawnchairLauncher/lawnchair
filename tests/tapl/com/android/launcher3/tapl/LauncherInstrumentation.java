@@ -1343,6 +1343,16 @@ public final class LauncherInstrumentation {
         }
     }
 
+    void waitForObjectFocused(UiObject2 object, String waitReason) {
+        try {
+            assertTrue("Timed out waiting for object to be focused for " + waitReason + " "
+                            + object.getResourceName(),
+                    object.wait(Until.focused(true), WAIT_TIME_MS));
+        } catch (StaleObjectException e) {
+            fail("The object disappeared from screen");
+        }
+    }
+
     @NonNull
     UiObject2 waitForObjectInContainer(UiObject2 container, BySelector selector) {
         return waitForObjectsInContainer(container, selector).get(0);
@@ -2041,6 +2051,12 @@ public final class LauncherInstrumentation {
      */
     public void recreateTaskbar() {
         getTestInfo(TestProtocol.REQUEST_RECREATE_TASKBAR);
+    }
+
+    // TODO(b/270393900): Remove with ENABLE_ALL_APPS_SEARCH_IN_TASKBAR flag cleanup.
+    /** Refreshes the known overview target in TIS. */
+    public void refreshOverviewTarget() {
+        getTestInfo(TestProtocol.REQUEST_REFRESH_OVERVIEW_TARGET);
     }
 
     public List<String> getHotseatIconNames() {

@@ -25,7 +25,7 @@ import androidx.test.uiautomator.Until;
 /**
  * Operations on qsb from either Home screen or AllApp screen.
  */
-public abstract class Qsb {
+public abstract class Qsb implements SearchInputSource {
 
     private static final String ASSISTANT_APP_PACKAGE = "com.google.android.googlequicksearchbox";
     private static final String ASSISTANT_ICON_RES_ID = "mic_icon";
@@ -123,6 +123,16 @@ public abstract class Qsb {
                 return createSearchResult();
             }
         }
+    }
+
+    @Override
+    public LauncherInstrumentation getLauncher() {
+        return mLauncher;
+    }
+
+    @Override
+    public SearchResultFromQsb getSearchResultForInput() {
+        return createSearchResult();
     }
 
     protected SearchResultFromQsb createSearchResult() {

@@ -161,6 +161,10 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
                         SystemUiProxy.INSTANCE.get(mContext).isDragAndDropReady());
                 return response;
+
+            case TestProtocol.REQUEST_REFRESH_OVERVIEW_TARGET:
+                runOnTISBinder(TouchInteractionService.TISBinder::refreshOverviewTarget);
+                return response;
         }
 
         return super.call(method, arg, extras);
