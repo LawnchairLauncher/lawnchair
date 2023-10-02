@@ -74,6 +74,11 @@ public class ActiveGestureErrorDetector {
             @NonNull PrintWriter writer,
             @NonNull ActiveGestureLog.EventLog eventLog) {
         writer.println(prefix + "Error messages for gesture ID: " + eventLog.logId);
+        if (!eventLog.mIsFullyGesturalNavMode) {
+            writer.println(prefix
+                    + "\tSkipping gesture error detection because gesture navigation not enabled");
+            return;
+        }
 
         boolean errorDetected = false;
         // Use a Set since the order is inherently checked in the loop.
