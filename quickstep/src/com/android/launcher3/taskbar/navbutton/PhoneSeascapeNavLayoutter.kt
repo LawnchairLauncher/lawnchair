@@ -17,20 +17,30 @@
 package com.android.launcher3.taskbar.navbutton
 
 import android.content.res.Resources
+import android.view.Gravity
 import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.LinearLayout
+import com.android.systemui.shared.rotation.RotationButton
 
 class PhoneSeascapeNavLayoutter(
         resources: Resources,
         navBarContainer: LinearLayout,
         endContextualContainer: ViewGroup,
-        startContextualContainer: ViewGroup
+        startContextualContainer: ViewGroup,
+        imeSwitcher: ImageView?,
+        rotationButton: RotationButton?,
+        a11yButton: ImageView
 ) :
         PhoneLandscapeNavLayoutter(
                 resources,
                 navBarContainer,
                 endContextualContainer,
-                startContextualContainer
+                startContextualContainer,
+                imeSwitcher,
+                rotationButton,
+                a11yButton
         ) {
 
     override fun addThreeButtons() {
@@ -38,5 +48,23 @@ class PhoneSeascapeNavLayoutter(
         navButtonContainer.addView(backButton)
         navButtonContainer.addView(homeButton)
         navButtonContainer.addView(recentsButton)
+
+        endContextualContainer.removeAllViews()
+        startContextualContainer.removeAllViews()
+
+        val endContextualContainerParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        endContextualContainerParams.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+        endContextualContainer.layoutParams = endContextualContainerParams
+
+        if (imeSwitcher != null) {
+            endContextualContainer.addView(imeSwitcher)
+            imeSwitcher.layoutParams = getParamsToCenterView()
+        }
+        endContextualContainer.addView(a11yButton)
+        if (rotationButton != null) {
+            endContextualContainer.addView(rotationButton.currentView)
+            rotationButton.currentView.layoutParams = getParamsToCenterView()
+        }
     }
 }

@@ -191,6 +191,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     private MultiValueAlpha mBackButtonAlpha;
     private MultiValueAlpha mHomeButtonAlpha;
     private FloatingRotationButton mFloatingRotationButton;
+    private ImageView mImeSwitcherButton;
 
     // Variables for moving nav buttons to a separate window above IME
     private boolean mAreNavButtonsInSeparateWindow = false;
@@ -237,10 +238,10 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                 InputMethodService.canImeRenderGesturalNavButtons() && mContext.imeDrawsImeNavBar();
         if (!mIsImeRenderingNavButtons) {
             // IME switcher
-            View imeSwitcherButton = addButton(R.drawable.ic_ime_switcher, BUTTON_IME_SWITCH,
+            mImeSwitcherButton = addButton(R.drawable.ic_ime_switcher, BUTTON_IME_SWITCH,
                     isThreeButtonNav ? mStartContextualContainer : mEndContextualContainer,
                     mControllers.navButtonController, R.id.ime_switcher);
-            mPropertyHolders.add(new StatePropertyHolder(imeSwitcherButton,
+            mPropertyHolders.add(new StatePropertyHolder(mImeSwitcherButton,
                     flags -> ((flags & FLAG_SWITCHER_SHOWING) != 0)
                             && ((flags & FLAG_ROTATION_BUTTON_VISIBLE) == 0)));
         }
@@ -736,7 +737,9 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         if (TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW) {
             NavButtonLayoutter navButtonLayoutter =
                     NavButtonLayoutFactory.Companion.getUiLayoutter(
-                            dp, mNavButtonsView, res, isInKidsMode, isInSetup, isThreeButtonNav,
+                            dp, mNavButtonsView, mImeSwitcherButton,
+                            mControllers.rotationButtonController.getRotationButton(),
+                            mA11yButton, res, isInKidsMode, isInSetup, isThreeButtonNav,
                             TaskbarManager.isPhoneMode(dp),
                             mWindowManagerProxy.getRotation(mContext));
             navButtonLayoutter.layoutButtons(dp, isContextualButtonShowing());
