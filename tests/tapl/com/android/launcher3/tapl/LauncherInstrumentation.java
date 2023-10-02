@@ -1789,7 +1789,6 @@ public final class LauncherInstrumentation {
     private void injectEvent(InputEvent event) {
         assertTrue("injectInputEvent failed: event=" + event,
                 mInstrumentation.getUiAutomation().injectInputEvent(event, true, false));
-        event.recycle();
     }
 
     public void sendPointer(long downTime, long currentTime, int action, Point point,
