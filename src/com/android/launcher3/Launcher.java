@@ -2988,6 +2988,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         mStateManager.dump(prefix, writer);
         mPopupDataProvider.dump(prefix, writer);
         mDeviceProfile.dump(this, prefix, writer);
+        mAppsView.getAppsStore().dump(prefix, writer);
 
         try {
             FileLog.flushAll(writer);
