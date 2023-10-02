@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.ui.widget;
 
-import static com.android.launcher3.ui.TaplTestsLauncher3.getAppPackageName;
 import static org.junit.Assert.assertNotNull;
 
 import android.platform.test.annotations.PlatinumTest;
@@ -99,6 +98,7 @@ public class AddWidgetTest extends AbstractLauncherUiTest {
     /**
      * Test dragging a widget to the workspace and resize it.
      */
+    @PlatinumTest(focusArea = "launcher")
     @Test
     public void testResizeWidget() throws Throwable {
         new FavoriteItemsTransaction(mTargetContext).commitAndLoadHome(mLauncher);

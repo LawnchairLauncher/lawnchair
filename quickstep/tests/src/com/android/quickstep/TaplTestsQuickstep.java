@@ -196,6 +196,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     }
 
 
+    @PlatinumTest(focusArea = "launcher")
     @Test
     public void testOverviewActionsMenu() throws Exception {
         startTestAppsWithCheck();
