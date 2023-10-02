@@ -66,17 +66,15 @@
         android:importantForAccessibility="no"
         android:src="@drawable/ic_select_windows" />
 
-    <com.android.quickstep.views.IconView
+    <ViewStub
         android:id="@+id/icon"
-        android:layout_width="@dimen/task_thumbnail_icon_size"
-        android:layout_height="@dimen/task_thumbnail_icon_size"
-        android:focusable="false"
-        android:importantForAccessibility="no"/>
+        android:inflatedId="@id/icon"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
 
-    <com.android.quickstep.views.IconView
+    <ViewStub
         android:id="@+id/bottomRight_icon"
-        android:layout_width="@dimen/task_thumbnail_icon_size"
-        android:layout_height="@dimen/task_thumbnail_icon_size"
-        android:focusable="false"
-        android:importantForAccessibility="no"/>
+        android:inflatedId="@id/bottomRight_icon"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content" />
 </com.android.quickstep.views.GroupedTaskView>

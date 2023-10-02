@@ -34,3 +34,10 @@ flag {
     description: "Enables new workspace grid calculations method."
     bug: "241386436"
 }
+
+flag {
+    name: "enable_overview_icon_menu"
+    namespace: "launcher"
+    description: "Enable updated overview icon and menu within task."
+    bug: "257950105"
+}

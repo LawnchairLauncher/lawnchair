@@ -327,6 +327,15 @@ public final class FeatureFlags {
         return ENABLE_GRID_ONLY_OVERVIEW.get() || Flags.enableGridOnlyOverview();
     }
 
+    // Aconfig migration complete for ENABLE_OVERVIEW_ICON_MENU.
+    @VisibleForTesting
+    public static final BooleanFlag ENABLE_OVERVIEW_ICON_MENU = getDebugFlag(257950105,
+            "ENABLE_OVERVIEW_ICON_MENU", TEAMFOOD,
+            "Enable updated overview icon and menu within task.");
+    public static boolean enableOverviewIconMenu() {
+        return ENABLE_OVERVIEW_ICON_MENU.get() || Flags.enableOverviewIconMenu();
+    }
+
     // Aconfig migration complete for ENABLE_CURSOR_HOVER_STATES.
     @VisibleForTesting
     public static final BooleanFlag ENABLE_CURSOR_HOVER_STATES = getDebugFlag(243191650,
