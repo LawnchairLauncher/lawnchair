@@ -151,13 +151,6 @@ public final class FeatureFlags {
     // TODO(Block 8): Clean up flags
 
     // TODO(Block 9): Clean up flags
-    public static final BooleanFlag ENABLE_DOWNLOAD_APP_UX_V2 = getReleaseFlag(270395134,
-            "ENABLE_DOWNLOAD_APP_UX_V2", ENABLED, "Updates the download app UX"
-                    + " to have better visuals");
-
-    public static final BooleanFlag ENABLE_DOWNLOAD_APP_UX_V3 = getDebugFlag(270395186,
-            "ENABLE_DOWNLOAD_APP_UX_V3", ENABLED, "Updates the download app UX"
-                    + " to have better visuals, improve contrast, and color");
 
     public static final BooleanFlag SHOW_DOT_PAGINATION = getDebugFlag(270395278,
             "SHOW_DOT_PAGINATION", ENABLED, "Enable showing dot pagination in workspace");

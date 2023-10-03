@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import static android.text.Layout.Alignment.ALIGN_NORMAL;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_DOWNLOAD_APP_UX_V2;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ICON_LABEL_AUTO_SCALING;
 import static com.android.launcher3.config.FeatureFlags.enableCursorHoverStates;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
@@ -878,7 +877,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             if ((info.runtimeStatusFlags & FLAG_INCREMENTAL_DOWNLOAD_ACTIVE) != 0
                     || info.hasPromiseIconUi()
                     || (info.runtimeStatusFlags & FLAG_INSTALL_SESSION_ACTIVE) != 0
-                    || (ENABLE_DOWNLOAD_APP_UX_V2.get() && icon != null)) {
+                    || (icon != null)) {
                 updateProgressBarUi(info.getProgressLevel() == 100 ? icon : null);
             }
         }
@@ -915,9 +914,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             if (mIcon instanceof PreloadIconDrawable) {
                 preloadIconDrawable = (PreloadIconDrawable) mIcon;
                 preloadIconDrawable.setLevel(progressLevel);
-                preloadIconDrawable.setIsDisabled(ENABLE_DOWNLOAD_APP_UX_V2.get()
-                        ? info.getProgressLevel() == 0
-                        : !info.isAppStartable());
+                preloadIconDrawable.setIsDisabled(info.getProgressLevel() == 0);
             } else {
                 preloadIconDrawable = makePreloadIcon();
                 setIcon(preloadIconDrawable);
@@ -942,9 +939,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         final PreloadIconDrawable preloadDrawable = newPendingIcon(getContext(), info);
 
         preloadDrawable.setLevel(progressLevel);
-        preloadDrawable.setIsDisabled(ENABLE_DOWNLOAD_APP_UX_V2.get()
-                ? info.getProgressLevel() == 0
-                : !info.isAppStartable());
+        preloadDrawable.setIsDisabled(info.getProgressLevel() == 0);
         return preloadDrawable;
     }
 
