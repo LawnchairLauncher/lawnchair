@@ -22,9 +22,11 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.util.DisplayController;
@@ -38,6 +40,8 @@ import com.android.systemui.shared.system.InputMonitorCompat;
  * Listens for a long press
  */
 public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
+
+    private static final String TAG = "NavHandleLongPressIC";
 
     private final NavHandleLongPressHandler mNavHandleLongPressHandler;
     private final float mNavHandleWidth;
@@ -175,6 +179,14 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
 
     private boolean isInNavBarHorizontalArea(float x) {
         float areaFromMiddle = mNavHandleWidth / 2.0f;
+        if (FeatureFlags.CUSTOM_LPNH_THRESHOLDS.get()) {
+            areaFromMiddle += Utilities.dpToPx(FeatureFlags.LPNH_EXTRA_TOUCH_WIDTH_DP.get());
+        }
+        int minAccessibleSize = Utilities.dpToPx(24);  // Half of 48dp because this is per side.
+        if (areaFromMiddle < minAccessibleSize) {
+            Log.w(TAG, "Custom nav handle region is too small - resetting to 48dp");
+            areaFromMiddle = minAccessibleSize;
+        }
         float distFromMiddle = Math.abs(mScreenWidth / 2.0f - x);
 
         return distFromMiddle < areaFromMiddle;

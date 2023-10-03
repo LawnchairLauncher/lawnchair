@@ -22,6 +22,7 @@ import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.LauncherPrefs.ALL_APPS_OVERVIEW_THRESHOLD;
 import static com.android.launcher3.LauncherPrefs.PRIVATE_SPACE_APPS;
+import static com.android.launcher3.config.FeatureFlags.LPNH_EXTRA_TOUCH_WIDTH_DP;
 import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_DELAY;
 import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_END_SCALE_PERCENT;
 import static com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_ITERATIONS;
@@ -359,6 +360,10 @@ public class DeveloperOptionsUI {
                     "Slop multiplier (applied to edge slop, "
                             + "which is generally already 50% higher than touch slop)",
                     25, 200, 100, LPNH_SLOP_PERCENTAGE));
+            category.addPreference(createSeekBarPreference(
+                    "Extra width DP (how far outside the sides of the nav bar to trigger)",
+                    // Stashed taskbar is currently 220dp; -86 (x2) would result in 48dp touch area.
+                    -86, 100, 1, LPNH_EXTRA_TOUCH_WIDTH_DP));
             category.addPreference(createSeekBarPreference("LPNH timeout",
                     100, 500, 1, LPNH_TIMEOUT_MS));
         }
