@@ -42,7 +42,7 @@ filegroup {
 filegroup {
     name: "launcher-oop-tests-src",
     srcs: [
-      "src/com/android/launcher3/allapps/OopTaplOpenCloseAllApps.java",
+      "src/com/android/launcher3/allapps/TaplOpenCloseAllApps.java",
       "src/com/android/launcher3/appiconmenu/TaplAppIconMenuTest.java",
       "src/com/android/launcher3/dragging/TaplDragTest.java",
       "src/com/android/launcher3/dragging/TaplUninstallRemove.java",
@@ -50,6 +50,7 @@ filegroup {
       "src/com/android/launcher3/ui/PortraitLandscapeRunner.java",
       "src/com/android/launcher3/ui/TaplTestsLauncher3.java",
       "src/com/android/launcher3/ui/widget/TaplWidgetPickerTest.java",
+      "src/com/android/launcher3/ui/workspace/TaplWorkspaceTest.java",
       "src/com/android/launcher3/util/LauncherLayoutBuilder.java",
       "src/com/android/launcher3/util/TestUtil.java",
       "src/com/android/launcher3/util/Wait.java",
