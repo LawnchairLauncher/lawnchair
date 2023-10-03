@@ -107,17 +107,14 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
         mControllers = controllers;
         DeviceProfile deviceProfile = mActivity.getDeviceProfile();
         Resources resources = mActivity.getResources();
-        final int stashedTaskbarHeight;
         if (isPhoneGestureNavMode(mActivity.getDeviceProfile())) {
             mTaskbarSize = resources.getDimensionPixelSize(R.dimen.taskbar_size);
             mStashedHandleWidth =
                     resources.getDimensionPixelSize(R.dimen.taskbar_stashed_small_screen);
-            stashedTaskbarHeight = resources.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
         } else {
             mTaskbarSize = deviceProfile.taskbarHeight;
             mStashedHandleWidth = resources
                     .getDimensionPixelSize(R.dimen.taskbar_stashed_handle_width);
-            stashedTaskbarHeight = mControllers.taskbarStashController.getStashedHeight();
         }
         int taskbarBottomMargin = deviceProfile.taskbarBottomMargin;
         mStashedHandleView.getLayoutParams().height = mTaskbarSize + taskbarBottomMargin;
@@ -126,6 +123,7 @@ public class StashedHandleViewController implements TaskbarControllers.LoggableT
                 isPhoneGestureNavMode(deviceProfile) ? 1 : 0);
         mTaskbarStashedHandleHintScale.updateValue(1f);
 
+        final int stashedTaskbarHeight = mControllers.taskbarStashController.getStashedHeight();
         mStashedHandleView.setOutlineProvider(new ViewOutlineProvider() {
             @Override
             public void getOutline(View view, Outline outline) {
