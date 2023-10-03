@@ -144,7 +144,7 @@ public class FallbackRecentsTest {
                 .around(new NavigationModeSwitchRule(mLauncher))
                 .around(new FailureWatcher(mLauncher, viewCaptureRule::getViewCaptureData))
                 .around(viewCaptureRule)
-                .around(new TestIsolationRule(mLauncher))
+                .around(new TestIsolationRule(mLauncher, false))
                 .around(setLauncherCommand);
 
         mOtherLauncherActivity = context.getPackageManager().queryIntentActivities(

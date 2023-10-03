@@ -111,15 +111,22 @@ public abstract class AbstractLauncherUiTest {
     protected String mTargetPackage;
     private int mLauncherPid;
 
+    /** Detects activity leaks and throws an exception if a leak is found. */
     public static void checkDetectedLeaks(LauncherInstrumentation launcher) {
+        checkDetectedLeaks(launcher, false);
+    }
+
+    /** Detects activity leaks and throws an exception if a leak is found. */
+    public static void checkDetectedLeaks(LauncherInstrumentation launcher,
+            boolean requireOneActiveActivity) {
         if (sActivityLeakReported) return;
 
         // Check whether activity leak detector has found leaked activities.
-        Wait.atMost(() -> getActivityLeakErrorMessage(launcher),
+        Wait.atMost(() -> getActivityLeakErrorMessage(launcher, requireOneActiveActivity),
                 () -> {
                     launcher.forceGc();
                     return MAIN_EXECUTOR.submit(
-                            () -> launcher.noLeakedActivities()).get();
+                            () -> launcher.noLeakedActivities(requireOneActiveActivity)).get();
                 }, DEFAULT_UI_TIMEOUT, launcher);
     }
 
@@ -127,13 +134,16 @@ public abstract class AbstractLauncherUiTest {
         return getInstrumentation().getContext().getPackageName();
     }
 
-    private static String getActivityLeakErrorMessage(LauncherInstrumentation launcher) {
+    private static String getActivityLeakErrorMessage(LauncherInstrumentation launcher,
+            boolean requireOneActiveActivity) {
         sActivityLeakReported = true;
-        return "Activity leak detector has found leaked activities, "
-                + dumpHprofData(launcher, false) + ".";
+        return "Activity leak detector has found leaked activities, requirining 1 activity: "
+                + requireOneActiveActivity + "; "
+                + dumpHprofData(launcher, false, requireOneActiveActivity) + ".";
     }
 
-    public static String dumpHprofData(LauncherInstrumentation launcher, boolean intentionalLeak) {
+    private static String dumpHprofData(LauncherInstrumentation launcher, boolean intentionalLeak,
+            boolean requireOneActiveActivity) {
         if (intentionalLeak) return "intentional leak; not generating dump";
 
         String result;
@@ -152,7 +162,7 @@ public abstract class AbstractLauncherUiTest {
                             "am dumpheap " + device.getLauncherPackageName() + " " + fileName);
                 }
                 Log.d(TAG, "Saved leak dump, the leak is still present: "
-                        + !launcher.noLeakedActivities());
+                        + !launcher.noLeakedActivities(requireOneActiveActivity));
                 sDumpWasGenerated = true;
                 result = "saved memory dump as an artifact";
             } catch (Throwable e) {
@@ -211,7 +221,7 @@ public abstract class AbstractLauncherUiTest {
                 .outerRule(new PortraitLandscapeRunner(this))
                 .around(new FailureWatcher(mLauncher, viewCaptureRule::getViewCaptureData))
                 .around(viewCaptureRule)
-                .around(new TestIsolationRule(mLauncher));
+                .around(new TestIsolationRule(mLauncher, true));
 
         return TestHelpers.isInLauncherProcess()
                 ? RuleChain.outerRule(ShellCommandRule.setDefaultLauncher()).around(inner)
