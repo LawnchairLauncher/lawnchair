@@ -17,10 +17,13 @@ package com.android.launcher3.allapps;
 
 import static com.android.launcher3.ui.TaplTestsLauncher3.expectFail;
 import static com.android.launcher3.ui.TaplTestsLauncher3.initialize;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
+
+import android.platform.test.annotations.PlatinumTest;
 
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.tapl.AllApps;
@@ -88,6 +91,7 @@ public class OopTaplOpenCloseAllApps extends AbstractLauncherUiTest {
     /**
      * Make sure the swipe up gesture can take us back to the workspace from AllApps
      */
+    @PlatinumTest(focusArea = "launcher")
     @Test
     @PortraitLandscape
     public void testAllAppsSwipeUpToWorkspace() {
