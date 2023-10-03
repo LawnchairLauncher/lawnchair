@@ -90,6 +90,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private final FullscreenDrawParams mCurrentFullscreenParams;
     public final AnimatedFloat taskPrimaryTranslation = new AnimatedFloat();
     public final AnimatedFloat taskSecondaryTranslation = new AnimatedFloat();
+    public final AnimatedFloat scrollScale = new AnimatedFloat();
 
     // RecentsView properties
     public final AnimatedFloat recentsViewScale = new AnimatedFloat();
@@ -119,6 +120,9 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mOrientationStateId = mOrientationState.getStateId();
         Resources resources = context.getResources();
         mIsRecentsRtl = mOrientationState.getOrientationHandler().getRecentsRtlSetting(resources);
+        //nick@lmo-20231004 this does belong here to avoid flicker in animation due to race of setting
+        // value to 1. other code assumes it starts with 1 anyway, so let's just do it here
+        this.scrollScale.value = 1;
     }
 
     /**
@@ -344,6 +348,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         }
 
         float fullScreenProgress = Utilities.boundToRange(this.fullScreenProgress.value, 0, 1);
+        float scrollScale = this.scrollScale.value * (1f - fullScreenProgress) + fullScreenProgress;
         mCurrentFullscreenParams.setProgress(fullScreenProgress, recentsViewScale.value,
                 /* taskViewScale= */1f, mTaskRect.width(), mDp, mPositionHelper);
 
@@ -355,6 +360,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
 
         // Apply TaskView matrix: taskRect, translate
         mMatrix.postTranslate(mTaskRect.left, mTaskRect.top);
+        mMatrix.postScale(scrollScale, scrollScale, mTaskRect.left + (mTaskRect.width() / 2),
+                mTaskRect.top + (mTaskRect.height() / 2));
         mOrientationState.getOrientationHandler().setPrimary(mMatrix, MATRIX_POST_TRANSLATE,
                 taskPrimaryTranslation.value);
         mOrientationState.getOrientationHandler().setSecondary(mMatrix, MATRIX_POST_TRANSLATE,
@@ -392,6 +399,8 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
                 + " recentsSecondaryT: " + recentsViewSecondaryTranslation.value
                 + " taskSecondaryT: " + taskSecondaryTranslation.value
                 + " recentsScroll: " + recentsViewScroll.value
+                + " scrollScale: " + scrollScale
+                + " this.scrollScale.value: " + this.scrollScale.value
                 + " pivot: " + mPivot
         );
     }
