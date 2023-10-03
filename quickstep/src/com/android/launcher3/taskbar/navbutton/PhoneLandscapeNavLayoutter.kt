@@ -90,6 +90,17 @@ open class PhoneLandscapeNavLayoutter(
             }
         }
 
+        repositionContextualButtons()
+    }
+
+    open fun addThreeButtons() {
+        // Swap recents and back button
+        navButtonContainer.addView(recentsButton)
+        navButtonContainer.addView(homeButton)
+        navButtonContainer.addView(backButton)
+    }
+
+    open fun repositionContextualButtons() {
         endContextualContainer.removeAllViews()
         startContextualContainer.removeAllViews()
 
@@ -107,12 +118,5 @@ open class PhoneLandscapeNavLayoutter(
             startContextualContainer.addView(rotationButton.currentView)
             rotationButton.currentView.layoutParams = getParamsToCenterView()
         }
-    }
-
-    open fun addThreeButtons() {
-        // Swap recents and back button
-        navButtonContainer.addView(recentsButton)
-        navButtonContainer.addView(homeButton)
-        navButtonContainer.addView(backButton)
     }
 }

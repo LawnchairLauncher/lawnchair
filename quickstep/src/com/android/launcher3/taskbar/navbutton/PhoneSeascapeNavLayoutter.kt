@@ -48,7 +48,9 @@ class PhoneSeascapeNavLayoutter(
         navButtonContainer.addView(backButton)
         navButtonContainer.addView(homeButton)
         navButtonContainer.addView(recentsButton)
+    }
 
+    override fun repositionContextualButtons() {
         endContextualContainer.removeAllViews()
         startContextualContainer.removeAllViews()
 
