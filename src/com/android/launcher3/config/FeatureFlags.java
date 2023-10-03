@@ -16,6 +16,7 @@
 
 package com.android.launcher3.config;
 
+import static com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN;
 import static com.android.launcher3.config.FeatureFlags.FlagState.DISABLED;
 import static com.android.launcher3.config.FeatureFlags.FlagState.ENABLED;
 import static com.android.launcher3.config.FeatureFlags.FlagState.TEAMFOOD;
@@ -164,6 +165,10 @@ public final class FeatureFlags {
 
     public static final BooleanFlag SMARTSPACE_AS_A_WIDGET = getDebugFlag(299181941,
             "SMARTSPACE_AS_A_WIDGET", DISABLED, "Enable SmartSpace as a widget");
+
+    public static boolean shouldShowFirstPageWidget() {
+        return SMARTSPACE_AS_A_WIDGET.get() && WIDGET_ON_FIRST_SCREEN;
+    }
 
     // TODO(Block 10): Clean up flags
     public static final BooleanFlag ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION = getDebugFlag(270614790,

@@ -172,6 +172,11 @@ public abstract class BaseLauncherBinder {
     public abstract void bindWidgets();
 
     /**
+     * bindWidgets is abstract because it is a no-op for the go launcher.
+     */
+    public abstract void bindSmartspaceWidget();
+
+    /**
      * Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to right)
      */
     protected void sortWorkspaceItemsSpatially(InvariantDeviceProfile profile,

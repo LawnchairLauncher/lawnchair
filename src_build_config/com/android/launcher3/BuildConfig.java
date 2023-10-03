@@ -27,6 +27,11 @@ public final class BuildConfig {
     public static final boolean QSB_ON_FIRST_SCREEN = true;
 
     /**
+     * Flag to state if the widget on the top of the first screen should be shown.
+     */
+    public static final boolean WIDGET_ON_FIRST_SCREEN = false;
+
+    /**
      * Flag to control various developer centric features
      */
     public static final boolean IS_DEBUG_DEVICE = false;

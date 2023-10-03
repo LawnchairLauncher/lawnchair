@@ -18,6 +18,7 @@ package com.android.launcher3.model;
 
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
 import static com.android.launcher3.LauncherSettings.Favorites.TMP_TABLE;
+import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
 import static com.android.launcher3.provider.LauncherDbUtils.copyTable;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
@@ -327,7 +328,9 @@ public class GridSizeMigrationUtil {
             @NonNull final List<DbEntry> sortedItemsToPlace, final boolean matchingScreenIdOnly) {
         final GridOccupancy occupied = new GridOccupancy(trgX, trgY);
         final Point trg = new Point(trgX, trgY);
-        final Point next = new Point(0, screenId == 0 && FeatureFlags.QSB_ON_FIRST_SCREEN
+        final Point next = new Point(0, screenId == 0
+                && (FeatureFlags.QSB_ON_FIRST_SCREEN
+                && !shouldShowFirstPageWidget())
                 ? 1 /* smartspace */ : 0);
         List<DbEntry> existedEntries = destReader.mWorkspaceEntriesByScreenId.get(screenId);
         if (existedEntries != null) {
