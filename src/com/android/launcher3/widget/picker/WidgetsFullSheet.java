@@ -18,7 +18,6 @@ package com.android.launcher3.widget.picker;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
-import static com.android.launcher3.config.FeatureFlags.LARGE_SCREEN_WIDGET_PICKER;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_SEARCHED;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
@@ -679,8 +678,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     /** Shows the {@link WidgetsFullSheet} on the launcher. */
     public static WidgetsFullSheet show(Launcher launcher, boolean animate) {
-        boolean isTwoPane = LARGE_SCREEN_WIDGET_PICKER.get()
-                && launcher.getDeviceProfile().isTablet
+        boolean isTwoPane = launcher.getDeviceProfile().isTablet
                 && launcher.getDeviceProfile().isLandscape
                 && (!launcher.getDeviceProfile().isTwoPanels
                     || FeatureFlags.UNFOLDED_WIDGET_PICKER.get());
@@ -798,8 +796,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         // Checks the orientation of the screen
         if (mOrientation != newConfig.orientation) {
             mOrientation = newConfig.orientation;
-            if (LARGE_SCREEN_WIDGET_PICKER.get()
-                    && mDeviceProfile.isTablet && !mDeviceProfile.isTwoPanels) {
+            if (mDeviceProfile.isTablet && !mDeviceProfile.isTwoPanels) {
                 handleClose(false);
                 show(Launcher.getLauncher(getContext()), false);
             } else {
