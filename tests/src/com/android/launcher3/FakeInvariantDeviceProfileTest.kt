@@ -27,9 +27,9 @@ import com.android.launcher3.util.WindowBounds
 import java.io.PrintWriter
 import java.io.StringWriter
 import org.junit.Before
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when` as whenever
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 /**
  * This is an abstract class for DeviceProfile tests that don't need the real Context and mock an
@@ -41,7 +41,7 @@ abstract class FakeInvariantDeviceProfileTest {
 
     protected var context: Context? = null
     protected var inv: InvariantDeviceProfile? = null
-    protected var info: Info = mock(Info::class.java)
+    protected val info: Info = mock()
     protected var windowBounds: WindowBounds? = null
     protected var isMultiWindowMode: Boolean = false
     protected var transposeLayoutWithOrientation: Boolean = false

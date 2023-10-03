@@ -19,32 +19,29 @@ import org.junit.Assume.assumeTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mock
-import org.mockito.Mockito.`when` as whenever
-import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.whenever
 
 @RunWith(AndroidJUnit4::class)
 class NavButtonLayoutFactoryTest {
 
-    @Mock lateinit var mockDeviceProfile: DeviceProfile
-    @Mock lateinit var mockParentButtonContainer: FrameLayout
-    @Mock lateinit var mockNavLayout: LinearLayout
-    @Mock lateinit var mockStartContextualLayout: ViewGroup
-    @Mock lateinit var mockEndContextualLayout: ViewGroup
-    @Mock lateinit var mockResources: Resources
-    @Mock lateinit var mockBackButton: ImageView
-    @Mock lateinit var mockRecentsButton: ImageView
-    @Mock lateinit var mockHomeButton: ImageView
-    @Mock lateinit var mockImeSwitcher: ImageView
-    @Mock lateinit var mockRotationButton: RotationButton
-    @Mock lateinit var mockA11yButton: ImageView
+    private val mockDeviceProfile: DeviceProfile = mock()
+    private val mockParentButtonContainer: FrameLayout = mock()
+    private val mockNavLayout: LinearLayout = mock()
+    private val mockStartContextualLayout: ViewGroup = mock()
+    private val mockEndContextualLayout: ViewGroup = mock()
+    private val mockResources: Resources = mock()
+    private val mockBackButton: ImageView = mock()
+    private val mockRecentsButton: ImageView = mock()
+    private val mockHomeButton: ImageView = mock()
+    private val mockImeSwitcher: ImageView = mock()
+    private val mockRotationButton: RotationButton = mock()
+    private val mockA11yButton: ImageView = mock()
 
     private var surfaceRotation = Surface.ROTATION_0
 
     @Before
     fun setup() {
-        MockitoAnnotations.initMocks(this)
-
         // Init end nav buttons
         whenever(mockNavLayout.childCount).thenReturn(3)
         whenever(mockNavLayout.findViewById<View>(R.id.back)).thenReturn(mockBackButton)
@@ -155,13 +152,13 @@ class NavButtonLayoutFactoryTest {
         mockDeviceProfile.isTaskbarPresent = false
         setDeviceProfileLandscape()
         val layoutter: NavButtonLayoutFactory.NavButtonLayoutter =
-                getLayoutter(
-                        isKidsMode = false,
-                        isInSetup = false,
-                        isThreeButtonNav = true,
-                        phoneMode = true,
-                        surfaceRotation = ROTATION_270
-                )
+            getLayoutter(
+                isKidsMode = false,
+                isInSetup = false,
+                isThreeButtonNav = true,
+                phoneMode = true,
+                surfaceRotation = ROTATION_270
+            )
         assert(layoutter is PhoneSeascapeNavLayoutter)
     }
 
