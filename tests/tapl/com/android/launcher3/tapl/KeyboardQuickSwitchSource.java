@@ -32,7 +32,8 @@ interface KeyboardQuickSwitchSource {
         LauncherInstrumentation launcher = getLauncher();
 
         try (LauncherInstrumentation.Closable c1 = launcher.addContextLayer(
-                "want to show keyboard quick switch object")) {
+                "want to show keyboard quick switch object");
+             LauncherInstrumentation.Closable e = launcher.eventsCheck()) {
             launcher.pressAndHoldKeyCode(KeyEvent.KEYCODE_TAB, KeyEvent.META_ALT_LEFT_ON);
 
             try (LauncherInstrumentation.Closable c2 = launcher.addContextLayer(
