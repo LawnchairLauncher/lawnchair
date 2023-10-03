@@ -16,7 +16,7 @@
 package com.android.quickstep.views;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
-import static com.android.launcher3.config.FeatureFlags.enableOverviewIconMenu;
+import static com.android.launcher3.Flags.enableOverviewIconMenu;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

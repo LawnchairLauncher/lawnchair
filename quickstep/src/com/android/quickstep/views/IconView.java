@@ -15,7 +15,7 @@
  */
 package com.android.quickstep.views;
 
-import static com.android.launcher3.config.FeatureFlags.enableOverviewIconMenu;
+import static com.android.launcher3.Flags.enableOverviewIconMenu;
 
 import android.content.Context;
 import android.graphics.Canvas;
