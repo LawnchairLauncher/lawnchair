@@ -30,6 +30,11 @@ open class StartupLatencyLogger(val latencyType: LatencyType) {
     @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
     var workspaceLoadStartTime: Long = UNSET_LONG
 
+    // StartupLatencyLogger should only send launcher startup logs once in each launcher activity
+    // lifecycle. After launcher activity startup is completed, the logger should be torn down and
+    // reject all logging calls. This flag should be checked at all APIs to prevent logging invalid
+    // startup metrics (such as loading workspace in screen rotation).
+    var isTornDown = false
     private var isInTest = false
 
     /** Subclass can override this method to handle collected latency metrics. */
@@ -45,6 +50,9 @@ open class StartupLatencyLogger(val latencyType: LatencyType) {
     @MainThread
     fun logWorkspaceLoadStartTime(startTimeMs: Long): StartupLatencyLogger {
         Preconditions.assertUIThread()
+        if (isTornDown) {
+            return this
+        }
         workspaceLoadStartTime = startTimeMs
         return this
     }
@@ -56,6 +64,9 @@ open class StartupLatencyLogger(val latencyType: LatencyType) {
     @MainThread
     fun logCardinality(cardinality: Int): StartupLatencyLogger {
         Preconditions.assertUIThread()
+        if (isTornDown) {
+            return this
+        }
         this.cardinality = cardinality
         return this
     }
@@ -67,6 +78,9 @@ open class StartupLatencyLogger(val latencyType: LatencyType) {
     fun logStart(event: LauncherLatencyEvent, startTimeMs: Long): StartupLatencyLogger {
         // In unit test no looper is attached to current thread
         Preconditions.assertUIThread()
+        if (isTornDown) {
+            return this
+        }
         if (validateLoggingEventAtStart(event)) {
             startTimeByEvent.put(event.id, startTimeMs)
         }
@@ -80,6 +94,9 @@ open class StartupLatencyLogger(val latencyType: LatencyType) {
     fun logEnd(event: LauncherLatencyEvent, endTimeMs: Long): StartupLatencyLogger {
         // In unit test no looper is attached to current thread
         Preconditions.assertUIThread()
+        if (isTornDown) {
+            return this
+        }
         maybeLogStartOfWorkspaceLoadTime(event)
         if (validateLoggingEventAtEnd(event)) {
             endTimeByEvent.put(event.id, endTimeMs)
@@ -96,6 +113,7 @@ open class StartupLatencyLogger(val latencyType: LatencyType) {
         endTimeByEvent.clear()
         cardinality = UNSET_INT
         workspaceLoadStartTime = UNSET_LONG
+        isTornDown = true
     }
 
     @MainThread
@@ -179,6 +197,15 @@ open class StartupLatencyLogger(val latencyType: LatencyType) {
             Log.e(
                 TAG,
                 "Cannot end ${event.name} event after ${LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION.name}",
+            )
+            return false
+        } else if (
+            latencyType == LatencyType.COLD_DEVICE_REBOOTING &&
+                event == LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC
+        ) {
+            Log.e(
+                TAG,
+                "Cannot have ${LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC.name} in ${LatencyType.COLD_DEVICE_REBOOTING.name} startup type"
             )
             return false
         }
