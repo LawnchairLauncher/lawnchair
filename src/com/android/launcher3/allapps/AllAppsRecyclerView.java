@@ -16,6 +16,7 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.config.FeatureFlags.ALL_APPS_GONE_VISIBILITY;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_ALL_APPS_RV_PREINFLATION;
 import static com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import static com.android.launcher3.logger.LauncherAtom.SearchResultContainer;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_PERSONAL_SCROLLED_DOWN;
@@ -96,16 +97,17 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
     protected void updatePoolSize() {
         DeviceProfile grid = ActivityContext.lookupContext(getContext()).getDeviceProfile();
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
-        int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER, 1);
 
-        // If all apps' hidden visibility is INVISIBLE, we will need to preinflate one page of
-        // all apps icons for smooth scrolling.
-        int maxPoolSizeForAppIcons = (approxRows + 1) * grid.numShownAllAppsColumns;
-        if (ALL_APPS_GONE_VISIBILITY.get()) {
-            // If all apps' hidden visibility is GONE, we need to increase prefinated icons number
-            // by [PREINFLATE_ICONS_ROW_COUNT] rows + [EXTRA_ICONS_COUNT] for fast opening all apps.
+        // By default the max num of pool size for app icons is num of app icons in one page of
+        // all apps.
+        int maxPoolSizeForAppIcons = grid.getMaxAllAppsRowCount()
+                * grid.numShownAllAppsColumns;
+        if (ALL_APPS_GONE_VISIBILITY.get() && ENABLE_ALL_APPS_RV_PREINFLATION.get()) {
+            // If we set all apps' hidden visibility to GONE and enable pre-inflation, we want to
+            // preinflate one page of all apps icons plus [PREINFLATE_ICONS_ROW_COUNT] rows +
+            // [EXTRA_ICONS_COUNT]. Thus we need to bump the max pool size of app icons accordingly.
             maxPoolSizeForAppIcons +=
                     PREINFLATE_ICONS_ROW_COUNT * grid.numShownAllAppsColumns + EXTRA_ICONS_COUNT;
         }
