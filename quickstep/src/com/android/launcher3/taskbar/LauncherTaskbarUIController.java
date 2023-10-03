@@ -337,7 +337,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     public boolean isBubbleBarEnabled() {
-        return BubbleBarController.BUBBLE_BAR_ENABLED;
+        return BubbleBarController.isBubbleBarEnabled();
     }
 
     /** Whether the bubble bar has any bubbles. */
