@@ -43,6 +43,7 @@ filegroup {
     name: "launcher-oop-tests-src",
     srcs: [
       "src/com/android/launcher3/allapps/TaplOpenCloseAllApps.java",
+      "src/com/android/launcher3/allapps/TaplTestsAllAppsIconsWorking.java",
       "src/com/android/launcher3/appiconmenu/TaplAppIconMenuTest.java",
       "src/com/android/launcher3/dragging/TaplDragTest.java",
       "src/com/android/launcher3/dragging/TaplUninstallRemove.java",
@@ -62,7 +63,6 @@ filegroup {
       "src/com/android/launcher3/util/rule/ShellCommandRule.java",
       "src/com/android/launcher3/util/rule/TestIsolationRule.java",
       "src/com/android/launcher3/util/rule/TestStabilityRule.java",
-      "src/com/android/launcher3/util/rule/TISBindRule.java",
       "src/com/android/launcher3/util/viewcapture_analysis/*.java",
       "src/com/android/launcher3/testcomponent/BaseTestingActivity.java",
       "src/com/android/launcher3/testcomponent/OtherBaseTestingActivity.java",
