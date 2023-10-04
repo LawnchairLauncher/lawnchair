@@ -39,6 +39,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.Button;
@@ -818,7 +819,10 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     @Override
     public void onDragStart(boolean start, float startDisplacement) {
         super.onDragStart(start, startDisplacement);
-        getWindowInsetsController().hide(WindowInsets.Type.ime());
+        WindowInsetsController insetsController = getWindowInsetsController();
+        if (insetsController != null) {
+            insetsController.hide(WindowInsets.Type.ime());
+        }
     }
 
     @Nullable private View getViewToShowEducationTip() {
