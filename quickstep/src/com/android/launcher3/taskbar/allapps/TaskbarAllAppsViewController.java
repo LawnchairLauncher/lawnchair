@@ -18,16 +18,21 @@ package com.android.launcher3.taskbar.allapps;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_STASHED_IN_TASKBAR_ALL_APPS;
 import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.allapps.AllAppsTransitionListener;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.appprediction.AppsDividerView;
 import com.android.launcher3.taskbar.NavbarButtonsViewController;
 import com.android.launcher3.taskbar.TaskbarControllers;
+import com.android.launcher3.taskbar.TaskbarSharedState;
 import com.android.launcher3.taskbar.TaskbarStashController;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayController;
 import com.android.launcher3.util.DisplayController;
+
+import java.util.Optional;
 
 /**
  * Handles the {@link TaskbarAllAppsContainerView} behavior and synchronizes its transitions with
@@ -41,6 +46,7 @@ final class TaskbarAllAppsViewController {
     private final TaskbarStashController mTaskbarStashController;
     private final NavbarButtonsViewController mNavbarButtonsViewController;
     private final TaskbarOverlayController mOverlayController;
+    private final @Nullable TaskbarSharedState mTaskbarSharedState;
     private final boolean mShowKeyboard;
 
     TaskbarAllAppsViewController(
@@ -56,6 +62,7 @@ final class TaskbarAllAppsViewController {
         mTaskbarStashController = taskbarControllers.taskbarStashController;
         mNavbarButtonsViewController = taskbarControllers.navbarButtonsViewController;
         mOverlayController = taskbarControllers.taskbarOverlayController;
+        mTaskbarSharedState = taskbarControllers.getSharedState();
         mShowKeyboard = showKeyboard;
 
         mSlideInView.init(new TaskbarAllAppsCallbacks(searchSessionController));
@@ -87,8 +94,10 @@ final class TaskbarAllAppsViewController {
             mTaskbarStashController.applyState();
         }
 
+        Optional.ofNullable(mTaskbarSharedState).ifPresent(s -> s.allAppsVisible = true);
         mNavbarButtonsViewController.setSlideInViewVisible(true);
         mSlideInView.setOnCloseBeginListener(() -> {
+            Optional.ofNullable(mTaskbarSharedState).ifPresent(s -> s.allAppsVisible = false);
             mNavbarButtonsViewController.setSlideInViewVisible(false);
             AbstractFloatingView.closeOpenContainer(
                     mContext, AbstractFloatingView.TYPE_ACTION_POPUP);
