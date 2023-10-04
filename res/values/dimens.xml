@@ -245,8 +245,7 @@
     <dimen name="keyboard_drag_stroke_width">4dp</dimen>
 
     <!-- Folders -->
-    <dimen name="page_indicator_dot_size">8dp</dimen>
-    <dimen name="page_indicator_dot_size_v2">6dp</dimen>
+    <dimen name="page_indicator_dot_size">6dp</dimen>
     <dimen name="page_indicator_size">10dp</dimen>
 
 
