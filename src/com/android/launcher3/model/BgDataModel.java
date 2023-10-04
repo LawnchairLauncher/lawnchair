@@ -17,6 +17,8 @@ package com.android.launcher3.model;
 
 import static android.content.pm.LauncherApps.ShortcutQuery.FLAG_GET_KEY_FIELDS_ONLY;
 
+import static com.android.launcher3.BuildConfig.QSB_ON_FIRST_SCREEN;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
 import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
 import static com.android.launcher3.shortcuts.ShortcutRequest.PINNED;
@@ -130,6 +132,8 @@ public class BgDataModel {
      * Load id for which the callbacks were successfully bound
      */
     public int lastLoadId = -1;
+    public boolean isFirstPagePinnedItemEnabled = QSB_ON_FIRST_SCREEN
+            && !ENABLE_SMARTSPACE_REMOVAL.get();
 
     /**
      * Clears all the data
@@ -489,6 +493,7 @@ public class BgDataModel {
 
         default void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons) { }
         default void bindScreens(IntArray orderedScreenIds) { }
+        default void setIsFirstPagePinnedItemEnabled(boolean isFirstPagePinnedItemEnabled) { }
         default void finishBindingItems(IntSet pagesBoundFirst) { }
         default void preAddApps() { }
         default void bindAppsAdded(IntArray newScreens,

@@ -16,6 +16,7 @@
 
 package com.android.launcher3.model;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.model.ItemInstallQueue.FLAG_LOADER_RUNNING;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
@@ -293,6 +294,10 @@ public abstract class BaseLauncherBinder {
             executeCallbacksTask(c -> {
                 c.clearPendingBinds();
                 c.startBinding();
+                if (ENABLE_SMARTSPACE_REMOVAL.get()) {
+                    c.setIsFirstPagePinnedItemEnabled(
+                            mBgDataModel.isFirstPagePinnedItemEnabled);
+                }
             }, mUiExecutor);
 
             // Bind workspace screens
