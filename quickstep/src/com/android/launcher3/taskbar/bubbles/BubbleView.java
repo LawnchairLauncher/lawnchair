@@ -163,6 +163,7 @@ public class BubbleView extends ConstraintLayout {
         mBubble = overflow;
         mBubbleIcon.setImageBitmap(bitmap);
         mAppIcon.setVisibility(GONE); // Overflow doesn't show the app badge
+        setContentDescription(getResources().getString(R.string.bubble_bar_overflow_description));
     }
 
     /** Returns the bubble being rendered in this view. */
