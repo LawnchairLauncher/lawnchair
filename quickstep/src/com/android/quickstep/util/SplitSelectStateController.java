@@ -98,7 +98,7 @@ import com.android.quickstep.views.SplitInstructionsView;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.RemoteAnimationRunnerCompat;
-import com.android.wm.shell.common.split.SplitScreenConstants.SnapPosition;
+import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosition;
 import com.android.wm.shell.splitscreen.ISplitSelectListener;
 
 import java.io.PrintWriter;
@@ -289,7 +289,7 @@ public class SplitSelectStateController {
      * To be called when the both split tasks are ready to be launched. Call after launcher side
      * animations are complete.
      */
-    public void launchSplitTasks(@SnapPosition int snapPosition,
+    public void launchSplitTasks(@PersistentSnapPosition int snapPosition,
             @Nullable Consumer<Boolean> callback) {
         Pair<InstanceId, com.android.launcher3.logging.InstanceId> instanceIds =
                 LogUtils.getShellShareableInstanceId();
@@ -299,6 +299,14 @@ public class SplitSelectStateController {
                 .withItemInfo(mSplitSelectDataHolder.getItemInfo())
                 .withInstanceId(instanceIds.second)
                 .log(mSplitSelectDataHolder.getSplitEvent());
+    }
+
+    /**
+     * A version of {@link #launchTasks(Consumer, boolean, int, InstanceId)} with no success
+     * callback.
+     */
+    public void launchSplitTasks(@PersistentSnapPosition int snapPosition) {
+        launchSplitTasks(snapPosition, /* callback */ null);
     }
 
     /**
@@ -350,7 +358,7 @@ public class SplitSelectStateController {
      *                   foreground (quickswitch, launching previous pairs from overview)
      */
     public void launchTasks(@Nullable Consumer<Boolean> callback, boolean freezeTaskList,
-            @SnapPosition int snapPosition, @Nullable InstanceId shellInstanceId) {
+            @PersistentSnapPosition int snapPosition, @Nullable InstanceId shellInstanceId) {
         TestLogging.recordEvent(
                 TestProtocol.SEQUENCE_MAIN, "launchSplitTasks");
         final ActivityOptions options1 = ActivityOptions.makeBasic();
@@ -455,7 +463,8 @@ public class SplitSelectStateController {
      */
     public void launchExistingSplitPair(@Nullable GroupedTaskView groupedTaskView,
             int firstTaskId, int secondTaskId, @StagePosition int stagePosition,
-            Consumer<Boolean> callback, boolean freezeTaskList, @SnapPosition int snapPosition) {
+            Consumer<Boolean> callback, boolean freezeTaskList,
+            @PersistentSnapPosition int snapPosition) {
         mLaunchingTaskView = groupedTaskView;
         final ActivityOptions options1 = ActivityOptions.makeBasic();
         if (freezeTaskList) {
