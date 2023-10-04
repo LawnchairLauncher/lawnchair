@@ -87,6 +87,7 @@ public class BubbleTextViewTest {
         MockitoAnnotations.initMocks(this);
         mSetFlagsRule.disableFlags(Flags.FLAG_ENABLE_TWOLINE_ALLAPPS);
         mSetFlagsRule.disableFlags(Flags.FLAG_ENABLE_CURSOR_HOVER_STATES);
+        mSetFlagsRule.disableFlags(Flags.FLAG_ENABLE_OVERVIEW_ICON_MENU);
         Utilities.enableRunningInTestHarnessForTests();
         mContext = new ActivityContextWrapper(getApplicationContext());
         mBubbleTextView = new BubbleTextView(mContext);

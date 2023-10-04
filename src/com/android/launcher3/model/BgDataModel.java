@@ -17,6 +17,7 @@ package com.android.launcher3.model;
 
 import static android.content.pm.LauncherApps.ShortcutQuery.FLAG_GET_KEY_FIELDS_ONLY;
 
+import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
 import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
 import static com.android.launcher3.shortcuts.ShortcutRequest.PINNED;
 
@@ -152,7 +153,9 @@ public class BgDataModel {
                 screenSet.add(item.screenId);
             }
         }
-        if (FeatureFlags.QSB_ON_FIRST_SCREEN || screenSet.isEmpty()) {
+        if ((FeatureFlags.QSB_ON_FIRST_SCREEN
+                && !shouldShowFirstPageWidget())
+                || screenSet.isEmpty()) {
             screenSet.add(Workspace.FIRST_SCREEN_ID);
         }
         return screenSet.getArray();
@@ -505,6 +508,7 @@ public class BgDataModel {
         default void bindRestoreItemsChange(HashSet<ItemInfo> updates) { }
         default void bindWorkspaceComponentsRemoved(Predicate<ItemInfo> matcher) { }
         default void bindAllWidgets(List<WidgetsListBaseEntry> widgets) { }
+        default void bindSmartspaceWidget() { }
 
         /** Called when workspace has been bound. */
         default void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks,

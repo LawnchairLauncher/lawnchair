@@ -27,6 +27,7 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
+import static com.android.launcher3.config.FeatureFlags.enableOverviewIconMenu;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
@@ -267,13 +268,19 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public float getTaskMenuX(float x, View thumbnailView,
-            DeviceProfile deviceProfile, float taskInsetMargin) {
+            DeviceProfile deviceProfile, float taskInsetMargin, View taskViewIcon) {
+        if (enableOverviewIconMenu()) {
+            return x - (taskInsetMargin / 2f);
+        }
         return thumbnailView.getMeasuredWidth() + x - taskInsetMargin;
     }
 
     @Override
     public float getTaskMenuY(float y, View thumbnailView, int stagePosition,
-            View taskMenuView, float taskInsetMargin) {
+            View taskMenuView, float taskInsetMargin, View taskViewIcon) {
+        if (enableOverviewIconMenu()) {
+            return y - taskMenuView.getMeasuredHeight() - taskInsetMargin;
+        }
         BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) taskMenuView.getLayoutParams();
         int taskMenuWidth = lp.width;
         if (stagePosition == STAGE_POSITION_UNDEFINED) {
@@ -537,14 +544,25 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
+    public void setTaskIconMenuParams(FrameLayout.LayoutParams iconMenuParams, int iconMenuMargin,
+            int thumbnailTopMargin) {
+        iconMenuParams.gravity = END | TOP;
+        iconMenuParams.setMarginStart(0);
+        iconMenuParams.topMargin = iconMenuParams.width + iconMenuMargin;
+        iconMenuParams.bottomMargin = 0;
+        iconMenuParams.setMarginEnd(iconMenuMargin);
+    }
+
+    @Override
     public void setSplitIconParams(View primaryIconView, View secondaryIconView,
             int taskIconHeight, int primarySnapshotWidth, int primarySnapshotHeight,
             int groupedTaskViewHeight, int groupedTaskViewWidth, boolean isRtl,
             DeviceProfile deviceProfile, SplitBounds splitConfig) {
         FrameLayout.LayoutParams primaryIconParams =
                 (FrameLayout.LayoutParams) primaryIconView.getLayoutParams();
-        FrameLayout.LayoutParams secondaryIconParams =
-                new FrameLayout.LayoutParams(primaryIconParams);
+        FrameLayout.LayoutParams secondaryIconParams = enableOverviewIconMenu()
+                ? (FrameLayout.LayoutParams) secondaryIconView.getLayoutParams()
+                : new FrameLayout.LayoutParams(primaryIconParams);
 
         // We calculate the "midpoint" of the thumbnail area, and place the icons there.
         // This is the place where the thumbnail area splits by default, in a near-50/50 split.
@@ -560,11 +578,17 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         int bottomToMidpointOffset = (int) (overviewThumbnailAreaThickness * midpointFromBottomPct);
         int insetOffset = (int) (overviewThumbnailAreaThickness * insetPct);
 
-        primaryIconParams.gravity = BOTTOM | (isRtl ? START : END);
-        secondaryIconParams.gravity = BOTTOM | (isRtl ? START : END);
+        primaryIconParams.gravity = enableOverviewIconMenu() ? TOP | (isRtl ? START : END)
+                : BOTTOM | (isRtl ? START : END);
+        secondaryIconParams.gravity = enableOverviewIconMenu() ? TOP | (isRtl ? START : END)
+                : BOTTOM | (isRtl ? START : END);
         primaryIconView.setTranslationX(0);
         secondaryIconView.setTranslationX(0);
-        if (splitConfig.initiatedFromSeascape) {
+        if (enableOverviewIconMenu()) {
+            int dividerThickness = Math.min(splitConfig.visualDividerBounds.width(),
+                    splitConfig.visualDividerBounds.height());
+            secondaryIconView.setTranslationY(primarySnapshotHeight + dividerThickness);
+        } else if (splitConfig.initiatedFromSeascape) {
             // if the split was initiated from seascape,
             // the task on the right (secondary) is slightly larger
             primaryIconView.setTranslationY(-bottomToMidpointOffset - insetOffset);

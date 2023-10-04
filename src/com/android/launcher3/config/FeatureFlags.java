@@ -16,6 +16,7 @@
 
 package com.android.launcher3.config;
 
+import static com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN;
 import static com.android.launcher3.config.FeatureFlags.FlagState.DISABLED;
 import static com.android.launcher3.config.FeatureFlags.FlagState.ENABLED;
 import static com.android.launcher3.config.FeatureFlags.FlagState.TEAMFOOD;
@@ -136,7 +137,7 @@ public final class FeatureFlags {
 
     // TODO(Block 6): Clean up flags
     public static final BooleanFlag ENABLE_ALL_APPS_SEARCH_IN_TASKBAR = getDebugFlag(270393900,
-            "ENABLE_ALL_APPS_SEARCH_IN_TASKBAR", TEAMFOOD,
+            "ENABLE_ALL_APPS_SEARCH_IN_TASKBAR", ENABLED,
             "Enables Search box in Taskbar All Apps.");
 
     public static final BooleanFlag SECONDARY_DRAG_N_DROP_TO_PIN = getDebugFlag(270395140,
@@ -151,21 +152,9 @@ public final class FeatureFlags {
     // TODO(Block 8): Clean up flags
 
     // TODO(Block 9): Clean up flags
-    public static final BooleanFlag ENABLE_DOWNLOAD_APP_UX_V2 = getReleaseFlag(270395134,
-            "ENABLE_DOWNLOAD_APP_UX_V2", ENABLED, "Updates the download app UX"
-                    + " to have better visuals");
-
-    public static final BooleanFlag ENABLE_DOWNLOAD_APP_UX_V3 = getDebugFlag(270395186,
-            "ENABLE_DOWNLOAD_APP_UX_V3", ENABLED, "Updates the download app UX"
-                    + " to have better visuals, improve contrast, and color");
 
     public static final BooleanFlag SHOW_DOT_PAGINATION = getDebugFlag(270395278,
             "SHOW_DOT_PAGINATION", ENABLED, "Enable showing dot pagination in workspace");
-
-    public static final BooleanFlag LARGE_SCREEN_WIDGET_PICKER = getDebugFlag(270395809,
-            "LARGE_SCREEN_WIDGET_PICKER", ENABLED, "Enable new widget picker that takes "
-                    + "advantage of large screen format");
-
     public static final BooleanFlag UNFOLDED_WIDGET_PICKER = getDebugFlag(301918659,
             "UNFOLDED_WIDGET_PICKER", DISABLED, "Enable new widget picker that takes "
                     + "advantage of the unfolded foldable format");
@@ -176,6 +165,10 @@ public final class FeatureFlags {
 
     public static final BooleanFlag SMARTSPACE_AS_A_WIDGET = getDebugFlag(299181941,
             "SMARTSPACE_AS_A_WIDGET", DISABLED, "Enable SmartSpace as a widget");
+
+    public static boolean shouldShowFirstPageWidget() {
+        return SMARTSPACE_AS_A_WIDGET.get() && WIDGET_ON_FIRST_SCREEN;
+    }
 
     // TODO(Block 10): Clean up flags
     public static final BooleanFlag ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION = getDebugFlag(270614790,
@@ -325,6 +318,15 @@ public final class FeatureFlags {
             "Enable a grid-only overview without a focused task.");
     public static boolean enableGridOnlyOverview() {
         return ENABLE_GRID_ONLY_OVERVIEW.get() || Flags.enableGridOnlyOverview();
+    }
+
+    // Aconfig migration complete for ENABLE_OVERVIEW_ICON_MENU.
+    @VisibleForTesting
+    public static final BooleanFlag ENABLE_OVERVIEW_ICON_MENU = getDebugFlag(257950105,
+            "ENABLE_OVERVIEW_ICON_MENU", TEAMFOOD,
+            "Enable updated overview icon and menu within task.");
+    public static boolean enableOverviewIconMenu() {
+        return ENABLE_OVERVIEW_ICON_MENU.get() || Flags.enableOverviewIconMenu();
     }
 
     // Aconfig migration complete for ENABLE_CURSOR_HOVER_STATES.

@@ -21,6 +21,7 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.util.Log
 import androidx.annotation.VisibleForTesting
+import com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN
 import com.android.launcher3.LauncherFiles.DEVICE_PREFERENCES_KEY
 import com.android.launcher3.LauncherFiles.SHARED_PREFERENCES_KEY
 import com.android.launcher3.allapps.WorkProfileManager
@@ -278,6 +279,7 @@ class LauncherPrefs(private val encryptedContext: Context) {
         @JvmStatic fun get(context: Context): LauncherPrefs = INSTANCE.get(context)
 
         const val TASKBAR_PINNING_KEY = "TASKBAR_PINNING_KEY"
+        const val SHOULD_SHOW_SMARTSPACE_KEY = "SHOULD_SHOW_SMARTSPACE_KEY"
         @JvmField val ICON_STATE = nonRestorableItem(LauncherAppState.KEY_ICON_STATE, "", true)
         @JvmField
         val ALL_APPS_OVERVIEW_THRESHOLD =
@@ -292,6 +294,9 @@ class LauncherPrefs(private val encryptedContext: Context) {
         @JvmField
         val DEVICE_TYPE =
             backedUpItem(DeviceGridState.KEY_DEVICE_TYPE, InvariantDeviceProfile.TYPE_PHONE, true)
+        @JvmField
+        val SHOULD_SHOW_SMARTSPACE =
+            backedUpItem("SHOULD_SHOW_SMARTSPACE_KEY", WIDGET_ON_FIRST_SCREEN, true)
         @JvmField val DB_FILE = backedUpItem(DeviceGridState.KEY_DB_FILE, "", true)
         @JvmField
         val RESTORE_DEVICE =

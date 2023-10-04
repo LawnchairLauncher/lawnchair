@@ -16,9 +16,6 @@
 
 package com.android.launcher3.ui;
 
-import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -40,16 +37,11 @@ import com.android.launcher3.tapl.AllApps;
 import com.android.launcher3.tapl.AppIcon;
 import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.tapl.HomeAppIcon;
-import com.android.launcher3.tapl.Widgets;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.TestUtil;
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 import com.android.launcher3.util.rule.TISBindRule;
-import com.android.launcher3.util.rule.TestStabilityRule.Stability;
-import com.android.launcher3.widget.picker.WidgetsFullSheet;
-import com.android.launcher3.widget.picker.WidgetsRecyclerView;
 
 import org.junit.After;
 import org.junit.Before;
@@ -93,7 +85,7 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         test.waitForResumed("Launcher internal state is still Background");
         // Check that we switched to home.
         test.mLauncher.getWorkspace();
-        AbstractLauncherUiTest.checkDetectedLeaks(test.mLauncher);
+        AbstractLauncherUiTest.checkDetectedLeaks(test.mLauncher, true);
     }
 
     @After
@@ -120,10 +112,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
 
     private int getCurrentWorkspacePage(Launcher launcher) {
         return launcher.getWorkspace().getCurrentPage();
-    }
-
-    private WidgetsRecyclerView getWidgetsView(Launcher launcher) {
-        return WidgetsFullSheet.getWidgetsView(launcher);
     }
 
     @Test
@@ -206,42 +194,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
                 isInState(() -> LauncherState.ALL_APPS));
 
         runIconLaunchFromAllAppsTest(this, allApps);
-    }
-
-    @Test
-    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/293191790
-    @ScreenRecord
-    @PortraitLandscape
-    public void testWidgets() throws Exception {
-        // Test opening widgets.
-        executeOnLauncher(launcher ->
-                assertTrue("Widgets is initially opened", getWidgetsView(launcher) == null));
-        Widgets widgets = mLauncher.getWorkspace().openAllWidgets();
-        assertNotNull("openAllWidgets() returned null", widgets);
-        widgets = mLauncher.getAllWidgets();
-        assertNotNull("getAllWidgets() returned null", widgets);
-        executeOnLauncher(launcher ->
-                assertTrue("Widgets is not shown", getWidgetsView(launcher).isShown()));
-        executeOnLauncher(launcher -> assertEquals("Widgets is scrolled upon opening",
-                0, getWidgetsScroll(launcher)));
-
-        // Test flinging widgets.
-        widgets.flingForward();
-        Integer flingForwardY = getFromLauncher(launcher -> getWidgetsScroll(launcher));
-        executeOnLauncher(launcher -> assertTrue("Flinging forward didn't scroll widgets",
-                flingForwardY > 0));
-
-        widgets.flingBackward();
-        executeOnLauncher(launcher -> assertTrue("Flinging backward didn't scroll widgets",
-                getWidgetsScroll(launcher) < flingForwardY));
-
-        mLauncher.goHome();
-        waitForLauncherCondition("Widgets were not closed",
-                launcher -> getWidgetsView(launcher) == null);
-    }
-
-    private int getWidgetsScroll(Launcher launcher) {
-        return getWidgetsView(launcher).computeVerticalScrollOffset();
     }
 
     @FlakyTest(bugId = 256615483)

@@ -330,7 +330,7 @@ public class DesktopTaskView extends TaskView {
     }
 
     @Override
-    protected boolean showTaskMenuWithContainer(IconView iconView) {
+    protected boolean showTaskMenuWithContainer(TaskViewIcon iconView) {
         return false;
     }
 

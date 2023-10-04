@@ -17,7 +17,7 @@ package com.android.launcher3.taskbar;
 
 import static android.view.View.VISIBLE;
 
-import static com.android.launcher3.taskbar.bubbles.BubbleBarController.BUBBLE_BAR_ENABLED;
+import static com.android.launcher3.taskbar.bubbles.BubbleBarController.isBubbleBarEnabled;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_EXPANDED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_MANAGE_MENU_EXPANDED;
 import static com.android.wm.shell.common.bubbles.BubbleConstants.BUBBLE_EXPANDED_SCRIM_ALPHA;
@@ -83,7 +83,7 @@ public class TaskbarScrimViewController implements TaskbarControllers.LoggableTa
      * Updates the scrim state based on the flags.
      */
     public void updateStateForSysuiFlags(int stateFlags, boolean skipAnim) {
-        if (BUBBLE_BAR_ENABLED && DisplayController.isTransientTaskbar(mActivity)) {
+        if (isBubbleBarEnabled() && DisplayController.isTransientTaskbar(mActivity)) {
             // These scrims aren't used if bubble bar & transient taskbar are active.
             return;
         }

@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.tapl;
 
+import static android.view.KeyEvent.KEYCODE_META_RIGHT;
+
 import static com.android.launcher3.tapl.LauncherInstrumentation.TASKBAR_RES_ID;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_DISABLE_MANUAL_TASKBAR_STASHING;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_ENABLE_MANUAL_TASKBAR_STASHING;
@@ -102,6 +104,17 @@ public final class Taskbar {
                     getAllAppsButtonSelector()));
 
             return getAllApps();
+        }
+    }
+
+    /** Opens the Taskbar all apps page with the meta keyboard shortcut. */
+    public TaskbarAllApps openAllAppsFromKeyboardShortcut() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            mLauncher.getDevice().pressKeyCode(KEYCODE_META_RIGHT);
+            try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                    "pressed meta key")) {
+                return getAllApps();
+            }
         }
     }
 

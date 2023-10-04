@@ -17,6 +17,7 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_CURSOR_HOVER_STATES;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ICON_MENU;
 import static com.android.quickstep.TaskbarModeSwitchRule.Mode.PERSISTENT;
 import static com.android.quickstep.TaskbarModeSwitchRule.Mode.TRANSIENT;
 
@@ -82,6 +83,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @After
     public void tearDown() {
         executeOnLauncher(launcher -> {
+            if (launcher == null) return;
             RecentsView recentsView = launcher.getOverviewPanel();
             recentsView.getPagedViewOrientedState().forceAllowRotationForTesting(false);
         });
@@ -207,6 +209,23 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         executeOnLauncher(launcher -> assertTrue(
                 "Launcher activity is the top activity; expecting another activity to be the top",
                 isInLaunchedApp(launcher)));
+    }
+
+
+    @Test
+    public void testOverviewActionsMenu_iconAppChipMenu() throws Exception {
+        try (AutoCloseable c = TestUtil.overrideFlag(ENABLE_OVERVIEW_ICON_MENU, true)) {
+            startTestAppsWithCheck();
+
+            OverviewTaskMenu menu =
+                    mLauncher.goHome().switchToOverview().getCurrentTask().tapMenu();
+
+            assertNotNull("Tapping App info menu item returned null", menu.tapAppInfoMenuItem());
+            executeOnLauncher(launcher -> assertTrue(
+                    "Launcher activity is the top activity; expecting another activity to be the "
+                            + "top",
+                    isInLaunchedApp(launcher)));
+        }
     }
 
     private int getCurrentOverviewPage(Launcher launcher) {

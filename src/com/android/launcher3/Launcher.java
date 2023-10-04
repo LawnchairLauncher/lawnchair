@@ -28,6 +28,7 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_ICON_SURFACE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_SNACKBAR;
 import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
+import static com.android.launcher3.BuildConfig.APPLICATION_ID;
 import static com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_WIDGET_TRANSITION;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
@@ -43,9 +44,12 @@ import static com.android.launcher3.LauncherState.NO_OFFSET;
 import static com.android.launcher3.LauncherState.NO_SCALE;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
+import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
+import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
 import static com.android.launcher3.config.FeatureFlags.SHOW_DOT_PAGINATION;
+import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
 import static com.android.launcher3.logging.StatsLogManager.EventEnum;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_BACKGROUND;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
@@ -2177,11 +2181,14 @@ public class Launcher extends StatefulActivity<LauncherState>
     public void bindScreens(IntArray orderedScreenIds) {
         mWorkspace.mPageIndicator.setAreScreensBinding(true);
         int firstScreenPosition = 0;
-        if (FeatureFlags.QSB_ON_FIRST_SCREEN &&
-                orderedScreenIds.indexOf(Workspace.FIRST_SCREEN_ID) != firstScreenPosition) {
-            orderedScreenIds.removeValue(Workspace.FIRST_SCREEN_ID);
-            orderedScreenIds.add(firstScreenPosition, Workspace.FIRST_SCREEN_ID);
-        } else if (!FeatureFlags.QSB_ON_FIRST_SCREEN && orderedScreenIds.isEmpty()) {
+        if ((FeatureFlags.QSB_ON_FIRST_SCREEN
+                && !shouldShowFirstPageWidget())
+                && orderedScreenIds.indexOf(FIRST_SCREEN_ID) != firstScreenPosition) {
+            orderedScreenIds.removeValue(FIRST_SCREEN_ID);
+            orderedScreenIds.add(firstScreenPosition, FIRST_SCREEN_ID);
+        } else if ((!FeatureFlags.QSB_ON_FIRST_SCREEN
+                || shouldShowFirstPageWidget())
+                && orderedScreenIds.isEmpty()) {
             // If there are no screens, we need to have an empty screen
             mWorkspace.addExtraEmptyScreens();
         }
@@ -2229,7 +2236,9 @@ public class Launcher extends StatefulActivity<LauncherState>
         int count = orderedScreenIds.size();
         for (int i = 0; i < count; i++) {
             int screenId = orderedScreenIds.get(i);
-            if (FeatureFlags.QSB_ON_FIRST_SCREEN && screenId == Workspace.FIRST_SCREEN_ID) {
+            if (FeatureFlags.QSB_ON_FIRST_SCREEN
+                    && !shouldShowFirstPageWidget()
+                    && screenId == FIRST_SCREEN_ID) {
                 // No need to bind the first screen, as its always bound.
                 continue;
             }
@@ -2930,6 +2939,36 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     @Override
+    public void bindSmartspaceWidget() {
+        CellLayout cl = mWorkspace.getScreenWithId(FIRST_SCREEN_ID);
+        int spanX = InvariantDeviceProfile.INSTANCE.get(this).numSearchContainerColumns;
+        if (cl != null) {
+            for (int col = 0; col < spanX; col++) {
+                if (cl.isOccupied(col, 0)) {
+                    return;
+                }
+            }
+        } else {
+            return;
+        }
+
+        WidgetsListBaseEntry widgetsListBaseEntry = getPopupDataProvider()
+                .getAllWidgets().stream().filter(
+                        item -> item.mPkgItem.packageName.equals(
+                                APPLICATION_ID))
+                .findFirst()
+                .orElse(null);
+        if (widgetsListBaseEntry != null) {
+            LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo =
+                    widgetsListBaseEntry.mWidgets.get(0).widgetInfo;
+            PendingAddWidgetInfo info = new PendingAddWidgetInfo(launcherAppWidgetProviderInfo,
+                    CONTAINER_DESKTOP);
+            addPendingItem(info, info.container, FIRST_SCREEN_ID, new int[]{0, 0}, info.spanX,
+                    info.spanY);
+        }
+    }
+
+    @Override
     public void bindStringCache(StringCache cache) {
         mStringCache = cache;
         mAppsView.updateWorkUI();
@@ -2988,6 +3027,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         mStateManager.dump(prefix, writer);
         mPopupDataProvider.dump(prefix, writer);
         mDeviceProfile.dump(this, prefix, writer);
+        mAppsView.getAppsStore().dump(prefix, writer);
 
         try {
             FileLog.flushAll(writer);

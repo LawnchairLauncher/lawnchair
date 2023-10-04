@@ -24,6 +24,7 @@ import static com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_PORTR
 import static com.android.launcher3.Utilities.dpiFromPx;
 import static com.android.launcher3.Utilities.pxFromSp;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_MULTI_DISPLAY_PARTIAL_DEPTH;
+import static com.android.launcher3.config.FeatureFlags.enableOverviewIconMenu;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
 import static com.android.launcher3.icons.GraphicsUtils.getShapePath;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
@@ -250,6 +251,7 @@ public class DeviceProfile {
     public int overviewTaskIconSizePx;
     public int overviewTaskIconDrawableSizePx;
     public int overviewTaskIconDrawableSizeGridPx;
+    public int overviewTaskIconAppChipMenuDrawableSizePx;
     public int overviewTaskThumbnailTopMarginPx;
     public final int overviewActionsHeight;
     public final int overviewActionsTopMarginPx;
@@ -614,12 +616,17 @@ public class DeviceProfile {
         desiredWorkspaceHorizontalMarginOriginalPx = desiredWorkspaceHorizontalMarginPx;
 
         overviewTaskMarginPx = res.getDimensionPixelSize(R.dimen.overview_task_margin);
-        overviewTaskIconSizePx = res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_size);
+        overviewTaskIconSizePx = enableOverviewIconMenu() ? res.getDimensionPixelSize(
+                R.dimen.task_thumbnail_icon_menu_drawable_touch_size) : res.getDimensionPixelSize(
+                R.dimen.task_thumbnail_icon_size);
         overviewTaskIconDrawableSizePx =
                 res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_drawable_size);
         overviewTaskIconDrawableSizeGridPx =
                 res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_drawable_size_grid);
-        overviewTaskThumbnailTopMarginPx = overviewTaskIconSizePx + overviewTaskMarginPx;
+        overviewTaskIconAppChipMenuDrawableSizePx = res.getDimensionPixelSize(
+                R.dimen.task_thumbnail_icon_menu_drawable_size);
+        overviewTaskThumbnailTopMarginPx =
+                enableOverviewIconMenu() ? 0 : overviewTaskIconSizePx + overviewTaskMarginPx;
         // Don't add margin with floating search bar to minimize risk of overlapping.
         overviewActionsTopMarginPx = FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get() ? 0
                 : res.getDimensionPixelSize(R.dimen.overview_actions_top_margin);
@@ -695,6 +702,17 @@ public class DeviceProfile {
             cache.put(size, renderer);
         }
         return renderer;
+    }
+
+    /**
+     * Return maximum of all apps row count displayed on screen. Note that 1) Partially displayed
+     * row is counted as 1 row, and 2) we don't exclude the space of floating search bar. This
+     * method is used for calculating number of {@link BubbleTextView} we need to pre-inflate. Thus
+     * reasonable over estimation is fine.
+     */
+    public int getMaxAllAppsRowCount() {
+        return (int) (Math.ceil((availableHeightPx - allAppsTopPadding)
+                / (float) allAppsCellHeightPx));
     }
 
     /**
@@ -2016,6 +2034,8 @@ public class DeviceProfile {
                 overviewTaskIconDrawableSizePx));
         writer.println(prefix + pxToDpStr("overviewTaskIconDrawableSizeGridPx",
                 overviewTaskIconDrawableSizeGridPx));
+        writer.println(prefix + pxToDpStr("overviewTaskIconAppChipMenuDrawableSizePx",
+                overviewTaskIconAppChipMenuDrawableSizePx));
         writer.println(prefix + pxToDpStr("overviewTaskThumbnailTopMarginPx",
                 overviewTaskThumbnailTopMarginPx));
         writer.println(prefix + pxToDpStr("overviewActionsTopMarginPx",

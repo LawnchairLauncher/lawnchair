@@ -16,6 +16,7 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
+import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
 
 import android.util.LongSparseArray;
 
@@ -66,7 +67,8 @@ public class WorkspaceItemSpaceFinder {
         int screenCount = workspaceScreens.size();
         // First check the preferred screen.
         IntSet screensToExclude = new IntSet();
-        if (FeatureFlags.QSB_ON_FIRST_SCREEN) {
+        if (FeatureFlags.QSB_ON_FIRST_SCREEN
+                && !shouldShowFirstPageWidget()) {
             screensToExclude.add(FIRST_SCREEN_ID);
         }
 

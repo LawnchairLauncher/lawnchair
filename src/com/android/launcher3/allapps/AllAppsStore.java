@@ -37,6 +37,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.views.ActivityContext;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -237,5 +238,14 @@ public class AllAppsStore<T extends Context & ActivityContext> {
 
     public interface OnUpdateListener {
         void onAppsUpdated();
+    }
+
+    /** Generate a dumpsys for each app package name and position in the apps list */
+    public void dump(String prefix, PrintWriter writer) {
+        writer.println(prefix + "\tAllAppsStore Apps[] size: " + mApps.length);
+        for (int i = 0; i < mApps.length; i++) {
+            writer.println(String.format("%s\tPackage index and name: %d/%s", prefix, i,
+                    mApps[i].componentName.getPackageName()));
+        }
     }
 }

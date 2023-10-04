@@ -13,6 +13,7 @@ import androidx.test.runner.AndroidJUnit4
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.taskbar.TaskbarManager
+import com.android.systemui.shared.rotation.RotationButton
 import java.lang.IllegalStateException
 import org.junit.Assume.assumeTrue
 import org.junit.Before
@@ -34,6 +35,9 @@ class NavButtonLayoutFactoryTest {
     @Mock lateinit var mockBackButton: ImageView
     @Mock lateinit var mockRecentsButton: ImageView
     @Mock lateinit var mockHomeButton: ImageView
+    @Mock lateinit var mockImeSwitcher: ImageView
+    @Mock lateinit var mockRotationButton: RotationButton
+    @Mock lateinit var mockA11yButton: ImageView
 
     private var surfaceRotation = Surface.ROTATION_0
 
@@ -196,7 +200,10 @@ class NavButtonLayoutFactoryTest {
             isInSetup = isInSetup,
             isThreeButtonNav = isThreeButtonNav,
             phoneMode = phoneMode,
-            surfaceRotation = surfaceRotation
+            surfaceRotation = surfaceRotation,
+            imeSwitcher = mockImeSwitcher,
+            rotationButton = mockRotationButton,
+            a11yButton = mockA11yButton
         )
     }
 }

@@ -20,16 +20,12 @@ import android.widget.TextView;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiObject2;
 
-import com.android.launcher3.testing.shared.TestProtocol;
-
 import java.util.ArrayList;
 
 /**
  * Operations on search result page opened from qsb.
  */
-public class SearchResultFromQsb {
-    // The input resource id in the search box.
-    private static final String INPUT_RES = "input";
+public class SearchResultFromQsb implements SearchInputSource {
     private static final String BOTTOM_SHEET_RES_ID = "bottom_sheet_background";
 
     // This particular ID change should happen with caution
@@ -39,18 +35,6 @@ public class SearchResultFromQsb {
     SearchResultFromQsb(LauncherInstrumentation launcher) {
         mLauncher = launcher;
         mLauncher.waitForLauncherObject("search_container_all_apps");
-    }
-
-    /** Set the input to the search input edit text and update search results. */
-    public void searchForInput(String input) {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
-                "want to search for result with an input");
-            LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-            mLauncher.executeAndWaitForLauncherEvent(
-                    () -> mLauncher.waitForLauncherObject(INPUT_RES).setText(input),
-                    event -> TestProtocol.SEARCH_RESULT_COMPLETE.equals(event.getClassName()),
-                    () -> "Didn't receive a search result completed message", "searching");
-        }
     }
 
     /** Find the app from search results with app name. */
@@ -113,5 +97,15 @@ public class SearchResultFromQsb {
 
     protected void verifyVisibleContainerOnDismiss() {
         mLauncher.getWorkspace();
+    }
+
+    @Override
+    public LauncherInstrumentation getLauncher() {
+        return mLauncher;
+    }
+
+    @Override
+    public SearchResultFromQsb getSearchResultForInput() {
+        return this;
     }
 }

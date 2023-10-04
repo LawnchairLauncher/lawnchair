@@ -704,6 +704,7 @@ public final class LauncherInstrumentation {
 
     /**
      * Set the trackpad gesture type of the interaction.
+     *
      * @param trackpadGestureType whether it's not from trackpad, two-finger, three-finger, or
      *                            four-finger gesture.
      */
@@ -1343,6 +1344,16 @@ public final class LauncherInstrumentation {
         }
     }
 
+    void waitForObjectFocused(UiObject2 object, String waitReason) {
+        try {
+            assertTrue("Timed out waiting for object to be focused for " + waitReason + " "
+                            + object.getResourceName(),
+                    object.wait(Until.focused(true), WAIT_TIME_MS));
+        } catch (StaleObjectException e) {
+            fail("The object disappeared from screen");
+        }
+    }
+
     @NonNull
     UiObject2 waitForObjectInContainer(UiObject2 container, BySelector selector) {
         return waitForObjectsInContainer(container, selector).get(0);
@@ -1779,7 +1790,6 @@ public final class LauncherInstrumentation {
     private void injectEvent(InputEvent event) {
         assertTrue("injectInputEvent failed: event=" + event,
                 mInstrumentation.getUiAutomation().injectInputEvent(event, true, false));
-        event.recycle();
     }
 
     public void sendPointer(long downTime, long currentTime, int action, Point point,
@@ -1812,8 +1822,8 @@ public final class LauncherInstrumentation {
 
         final MotionEvent event = isTrackpadGesture
                 ? getTrackpadMotionEvent(
-                        downTime, currentTime, action, point.x, point.y, pointerCount,
-                        mTrackpadGestureType)
+                downTime, currentTime, action, point.x, point.y, pointerCount,
+                mTrackpadGestureType)
                 : getMotionEvent(downTime, currentTime, action, point.x, point.y, source);
         if (action == MotionEvent.ACTION_BUTTON_PRESS
                 || action == MotionEvent.ACTION_BUTTON_RELEASE) {
@@ -2043,6 +2053,12 @@ public final class LauncherInstrumentation {
         getTestInfo(TestProtocol.REQUEST_RECREATE_TASKBAR);
     }
 
+    // TODO(b/270393900): Remove with ENABLE_ALL_APPS_SEARCH_IN_TASKBAR flag cleanup.
+    /** Refreshes the known overview target in TIS. */
+    public void refreshOverviewTarget() {
+        getTestInfo(TestProtocol.REQUEST_REFRESH_OVERVIEW_TARGET);
+    }
+
     public List<String> getHotseatIconNames() {
         return getTestInfo(TestProtocol.REQUEST_HOTSEAT_ICON_NAMES)
                 .getStringArrayList(TestProtocol.TEST_INFO_RESPONSE_FIELD);
@@ -2057,14 +2073,16 @@ public final class LauncherInstrumentation {
         return String.join(", ", getActivities());
     }
 
-    public boolean noLeakedActivities() {
+    /** Returns whether no leaked activities are detected. */
+    public boolean noLeakedActivities(boolean requireOneActiveActivity) {
         final String[] activities = getActivities();
+
         for (String activity : activities) {
             if (activity.contains("(destroyed)")) {
                 return false;
             }
         }
-        return activities.length <= 2;
+        return activities.length <= (requireOneActiveActivity ? 1 : 2);
     }
 
     public int getActivitiesCreated() {
@@ -2202,6 +2220,8 @@ public final class LauncherInstrumentation {
                     containerBounds.bottom,
                     getRealDisplaySize().y - getImeInsets().bottom);
             int y = (bottomBound - containerBounds.top) / 2;
+            // Do not tap in the status bar.
+            y = Math.max(y, getWindowInsets().top);
 
             final long downTime = SystemClock.uptimeMillis();
             final Point tapTarget = new Point(x, y);

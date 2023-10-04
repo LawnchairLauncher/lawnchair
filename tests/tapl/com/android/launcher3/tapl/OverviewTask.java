@@ -168,7 +168,7 @@ public final class OverviewTask {
         }
     }
 
-    /** Taps the task menu. */
+    /** Taps the task menu. Returns the task menu object. */
     @NonNull
     public OverviewTaskMenu tapMenu() {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
@@ -179,6 +179,22 @@ public final class OverviewTask {
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "tapped the task menu")) {
+                return new OverviewTaskMenu(mLauncher);
+            }
+        }
+    }
+
+    /** Taps the task menu of the split task. Returns the split task's menu object. */
+    @NonNull
+    public OverviewTaskMenu tapSplitTaskMenu() {
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck();
+             LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                     "want to tap the split task's menu")) {
+            mLauncher.clickLauncherObject(
+                    mLauncher.waitForObjectInContainer(mTask.getParent(), "bottomRight_icon"));
+
+            try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
+                    "tapped the split task's menu")) {
                 return new OverviewTaskMenu(mLauncher);
             }
         }

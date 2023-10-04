@@ -44,7 +44,6 @@ import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.pm.PackageInstallInfo;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.shortcuts.ShortcutRequest;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -68,7 +67,8 @@ import java.util.stream.Collectors;
  */
 public class PackageUpdatedTask extends BaseModelUpdateTask {
 
-    private static boolean DEBUG = false;
+    // TODO(b/290090023): Set to false after root causing is done.
+    private static final boolean DEBUG = true;
     private static final String TAG = "PackageUpdatedTask";
 
     public static final int OP_NONE = 0;
