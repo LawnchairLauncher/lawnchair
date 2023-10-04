@@ -224,6 +224,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         private LauncherAtom.Slice mSlice;
         private Optional<Integer> mCardinality = Optional.empty();
         private int mInputType = SysUiStatsLog.LAUNCHER_UICHANGED__INPUT_TYPE__UNKNOWN;
+        private Optional<Integer> mFeatures = Optional.empty();
 
         StatsCompatLogger(Context context, ActivityContext activityContext) {
             mContext = context;
@@ -319,6 +320,12 @@ public class StatsLogCompatManager extends StatsLogManager {
         @Override
         public StatsLogger withInputType(int inputType) {
             this.mInputType = inputType;
+            return this;
+        }
+
+        @Override
+        public StatsLogger withFeatures(int feature) {
+            this.mFeatures = Optional.of(feature);
             return this;
         }
 
@@ -451,6 +458,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                 return;
             }
             int cardinality = mCardinality.orElseGet(() -> getCardinality(atomInfo));
+            int features = mFeatures.orElseGet(() -> getFeatures(atomInfo));
             SysUiStatsLog.write(
                     SysUiStatsLog.LAUNCHER_EVENT,
                     SysUiStatsLog.LAUNCHER_UICHANGED__ACTION__DEFAULT_ACTION /* deprecated */,
@@ -477,7 +485,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                     atomInfo.getFolderIcon().getToLabelState().getNumber() /* toState */,
                     atomInfo.getFolderIcon().getLabelInfo() /* edittext */,
                     cardinality /* cardinality */,
-                    getFeatures(atomInfo) /* features */,
+                    features /* features */,
                     getSearchAttributes(atomInfo) /* searchAttributes */,
                     getAttributes(atomInfo) /* attributes */,
                     inputType /* input_type */
