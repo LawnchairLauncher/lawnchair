@@ -37,7 +37,6 @@ public final class KeyboardQuickSwitch {
     private static final Pattern EVENT_ALT_TAB_UP = Pattern.compile(
             "KeyboardQuickSwitchView key event: KeyEvent.*?action=ACTION_UP.*?keyCode=KEYCODE_TAB"
                     + ".*?metaState=META_ALT_ON");
-
     private static final Pattern EVENT_ALT_SHIFT_TAB_DOWN = Pattern.compile(
             "KeyboardQuickSwitchView key event: KeyEvent.*?action=ACTION_DOWN.*?keyCode=KEYCODE_TAB"
                     + ".*?metaState=META_ALT_ON|META_SHIFT_ON");
@@ -50,7 +49,10 @@ public final class KeyboardQuickSwitch {
     private static final Pattern EVENT_ALT_ESC_UP = Pattern.compile(
             "KeyboardQuickSwitchView key event: KeyEvent.*?action=ACTION_UP"
                     + ".*?keyCode=KEYCODE_ESCAPE.*?metaState=META_ALT_ON");
-    private static final Pattern EVENT_ALT_LEFT_UP = Pattern.compile(
+    private static final Pattern EVENT_KQS_ALT_LEFT_UP = Pattern.compile(
+            "KeyboardQuickSwitchView key event: KeyEvent.*?action=ACTION_UP"
+                    + ".*?keyCode=KEYCODE_ALT_LEFT");
+    private static final Pattern EVENT_HOME_ALT_LEFT_UP = Pattern.compile(
             "Key event: KeyEvent.*?action=ACTION_UP"
                     + ".*?keyCode=KEYCODE_ALT_LEFT");
 
@@ -82,22 +84,21 @@ public final class KeyboardQuickSwitch {
      */
     public KeyboardQuickSwitch moveFocusForward() {
         try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
-                "want to move keyboard quick switch focus forward")) {
+                "want to move keyboard quick switch focus forward");
+             LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             mLauncher.waitForLauncherObject(KEYBOARD_QUICK_SWITCH_RES_ID);
 
-            try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_TAB_DOWN);
-                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_TAB_UP);
-                mLauncher.assertTrue("Failed to press alt+tab",
-                        mLauncher.getDevice().pressKeyCode(
-                                KeyEvent.KEYCODE_TAB, KeyEvent.META_ALT_ON));
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_TAB_DOWN);
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_TAB_UP);
+            mLauncher.assertTrue("Failed to press alt+tab",
+                    mLauncher.getDevice().pressKeyCode(
+                            KeyEvent.KEYCODE_TAB, KeyEvent.META_ALT_ON));
 
-                try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
-                        "pressed alt+tab")) {
-                    mLauncher.waitForLauncherObject(KEYBOARD_QUICK_SWITCH_RES_ID);
+            try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
+                    "pressed alt+tab")) {
+                mLauncher.waitForLauncherObject(KEYBOARD_QUICK_SWITCH_RES_ID);
 
-                    return this;
-                }
+                return this;
             }
         }
     }
@@ -117,23 +118,22 @@ public final class KeyboardQuickSwitch {
      */
     public KeyboardQuickSwitch moveFocusBackward() {
         try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
-                "want to move keyboard quick switch focus backward")) {
+                "want to move keyboard quick switch focus backward");
+             LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             mLauncher.waitForLauncherObject(KEYBOARD_QUICK_SWITCH_RES_ID);
 
-            try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_SHIFT_TAB_DOWN);
-                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_SHIFT_TAB_UP);
-                mLauncher.assertTrue("Failed to press alt+shift+tab",
-                        mLauncher.getDevice().pressKeyCode(
-                                KeyEvent.KEYCODE_TAB,
-                                KeyEvent.META_ALT_ON | KeyEvent.META_SHIFT_ON));
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_SHIFT_TAB_DOWN);
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_SHIFT_TAB_UP);
+            mLauncher.assertTrue("Failed to press alt+shift+tab",
+                    mLauncher.getDevice().pressKeyCode(
+                            KeyEvent.KEYCODE_TAB,
+                            KeyEvent.META_ALT_ON | KeyEvent.META_SHIFT_ON));
 
-                try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
-                        "pressed alt+shift+tab")) {
-                    mLauncher.waitForLauncherObject(KEYBOARD_QUICK_SWITCH_RES_ID);
+            try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
+                    "pressed alt+shift+tab")) {
+                mLauncher.waitForLauncherObject(KEYBOARD_QUICK_SWITCH_RES_ID);
 
-                    return this;
-                }
+                return this;
             }
         }
     }
@@ -146,27 +146,28 @@ public final class KeyboardQuickSwitch {
      */
     public void dismiss() {
         try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
-                "want to dismiss keyboard quick switch view")) {
+                "want to dismiss keyboard quick switch view");
+             LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
             mLauncher.waitForLauncherObject(KEYBOARD_QUICK_SWITCH_RES_ID);
 
-            try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
-                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_DOWN);
-                mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_UP);
-                mLauncher.assertTrue("Failed to press alt+tab",
-                        mLauncher.getDevice().pressKeyCode(
-                                KeyEvent.KEYCODE_ESCAPE, KeyEvent.META_ALT_ON));
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_DOWN);
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_ESC_UP);
+            mLauncher.assertTrue("Failed to press alt+tab",
+                    mLauncher.getDevice().pressKeyCode(
+                            KeyEvent.KEYCODE_ESCAPE, KeyEvent.META_ALT_ON));
 
-                try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
-                        "pressed alt+esc")) {
-                    mLauncher.waitUntilLauncherObjectGone(KEYBOARD_QUICK_SWITCH_RES_ID);
-                    if (mExpectHomeKeyEventsOnDismiss) {
-                        mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_ALT_LEFT_UP);
-                    }
-                    mLauncher.unpressKeyCode(KeyEvent.KEYCODE_ALT_LEFT, 0);
+            try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
+                    "pressed alt+esc")) {
+                mLauncher.waitUntilLauncherObjectGone(KEYBOARD_QUICK_SWITCH_RES_ID);
 
-                    // Verify the final state is the same as the initial state
-                    mLauncher.verifyContainerType(mStartingContainerType);
+                // Verify the final state is the same as the initial state
+                mLauncher.verifyContainerType(mStartingContainerType);
+
+                // Wait until the device has fully settled before unpressing the key code
+                if (mExpectHomeKeyEventsOnDismiss) {
+                    mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_HOME_ALT_LEFT_UP);
                 }
+                mLauncher.unpressKeyCode(KeyEvent.KEYCODE_ALT_LEFT, 0);
             }
         }
     }
@@ -180,7 +181,9 @@ public final class KeyboardQuickSwitch {
      * @param expectedPackageName the package name of the expected launched app
      */
     public LaunchedAppState launchFocusedAppTask(@NonNull String expectedPackageName) {
-        return (LaunchedAppState) launchFocusedTask(expectedPackageName);
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            return (LaunchedAppState) launchFocusedTask(expectedPackageName);
+        }
     }
 
     /**
@@ -190,22 +193,29 @@ public final class KeyboardQuickSwitch {
      * {@link #launchFocusedAppTask(String)}.
      */
     public Overview launchFocusedOverviewTask() {
-        return (Overview) launchFocusedTask(null);
+        try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
+            return (Overview) launchFocusedTask(null);
+        }
     }
 
     private LauncherInstrumentation.VisibleContainer launchFocusedTask(
             @Nullable String expectedPackageName) {
-        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+        try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                 "want to launch focused task: "
                         + (expectedPackageName == null ? "Overview" : expectedPackageName))) {
+            mLauncher.expectEvent(TestProtocol.SEQUENCE_MAIN, EVENT_KQS_ALT_LEFT_UP);
             mLauncher.unpressKeyCode(KeyEvent.KEYCODE_ALT_LEFT, 0);
-            mLauncher.waitUntilLauncherObjectGone(KEYBOARD_QUICK_SWITCH_RES_ID);
 
-            if (expectedPackageName != null) {
-                mLauncher.assertAppLaunched(expectedPackageName);
-                return mLauncher.getLaunchedAppState();
-            } else {
-                return mLauncher.getOverview();
+            try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer(
+                    "un-pressed left alt")) {
+                mLauncher.waitUntilLauncherObjectGone(KEYBOARD_QUICK_SWITCH_RES_ID);
+
+                if (expectedPackageName != null) {
+                    mLauncher.assertAppLaunched(expectedPackageName);
+                    return mLauncher.getLaunchedAppState();
+                } else {
+                    return mLauncher.getOverview();
+                }
             }
         }
     }
