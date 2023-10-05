@@ -458,7 +458,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      */
     private AnimatorPlaybackController createIconAlignmentController(DeviceProfile launcherDp) {
         PendingAnimation setter = new PendingAnimation(100);
-        if (TaskbarManager.isPhoneButtonNavMode(mActivity)) {
+        if (TaskbarManager.isPhoneMode(launcherDp)) {
             // No animation for icons in small-screen
             return setter.createPlaybackController();
         }
