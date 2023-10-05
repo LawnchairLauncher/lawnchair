@@ -217,6 +217,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -3263,7 +3264,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSplitSelectStateController.setFirstFloatingTaskView(firstFloatingTaskView);
 
         // Allow user to click staged app to launch into fullscreen
-        firstFloatingTaskView.setOnClickListener(this::animateToFullscreen);
+        firstFloatingTaskView.setOnClickListener(view ->
+                mSplitSelectStateController.getSplitAnimationController().
+                        playAnimPlaceholderToFullscreen(mActivity, view,
+                                Optional.of(() -> resetFromSplitSelectionState())));
 
         // SplitInstructionsView: animate in
         safeRemoveDragLayerView(mSplitSelectStateController.getSplitInstructionsView());
@@ -3314,41 +3318,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
             updateCurrentTaskActionsVisibility();
         });
-    }
-
-    private void animateToFullscreen(View view) {
-        FloatingTaskView stagedTaskView = (FloatingTaskView) view;
-
-        boolean isTablet = mActivity.getDeviceProfile().isTablet;
-        int duration = isTablet
-                ? SplitAnimationTimings.TABLET_CONFIRM_DURATION
-                : SplitAnimationTimings.PHONE_CONFIRM_DURATION;
-
-        PendingAnimation pendingAnimation = new PendingAnimation(duration);
-
-        Rect firstTaskStartingBounds = new Rect();
-        Rect firstTaskEndingBounds = new Rect();
-
-        stagedTaskView.getBoundsOnScreen(firstTaskStartingBounds);
-        mActivity.getDragLayer().getBoundsOnScreen(firstTaskEndingBounds);
-
-        stagedTaskView.addConfirmAnimation(
-                pendingAnimation,
-                new RectF(firstTaskStartingBounds),
-                firstTaskEndingBounds,
-                false /* fadeWithThumbnail */,
-                true /* isStagedTask */);
-
-        pendingAnimation.addEndListener(animationSuccess ->
-                mSplitSelectStateController.launchInitialAppFullscreen(launchSuccess -> {
-                    if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
-                        mSplitSelectStateController.resetState();
-                    } else {
-                        resetFromSplitSelectionState();
-                    }
-                }));
-
-        pendingAnimation.buildAnim().start();
     }
 
     /**
