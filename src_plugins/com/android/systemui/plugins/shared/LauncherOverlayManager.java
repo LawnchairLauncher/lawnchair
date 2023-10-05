@@ -41,10 +41,6 @@ public interface LauncherOverlayManager extends Application.ActivityLifecycleCal
 
     default void hideOverlay(int duration) { }
 
-    default boolean startSearch(byte[] config, Bundle extras) {
-        return false;
-    }
-
     @Override
     default void onActivityCreated(Activity activity, Bundle bundle) { }
 

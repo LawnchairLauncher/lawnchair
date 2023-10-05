@@ -591,9 +591,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
 
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onCreate(savedInstanceState);
-        }
         mOverlayManager = getDefaultOverlay();
         PluginManagerWrapper.INSTANCE.get(this).addPluginListener(this,
                 LauncherOverlayPlugin.class, false /* allowedMultiple */);
@@ -806,8 +803,6 @@ public class Launcher extends StatefulActivity<LauncherState>
                 mCellPosMapper, this);
         return true;
     }
-
-    private LauncherCallbacks mLauncherCallbacks;
 
     @Override
     public void invalidateParent(ItemInfo info) {
@@ -1596,9 +1591,6 @@ public class Launcher extends StatefulActivity<LauncherState>
                 }
             }
 
-            if (mLauncherCallbacks != null) {
-                mLauncherCallbacks.onHomeIntent(internalStateHandled);
-            }
             if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
                 handleSplitAnimationGoingToHome();
             }
@@ -1765,28 +1757,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         } catch (IntentSender.SendIntentException e) {
             throw new ActivityNotFoundException();
         }
-    }
-
-    /**
-     * Indicates that we want global search for this activity by setting the globalSearch
-     * argument for {@link #startSearch} to true.
-     */
-    @Override
-    public void startSearch(String initialQuery, boolean selectInitialQuery,
-            Bundle appSearchData, boolean globalSearch) {
-        if (appSearchData == null) {
-            appSearchData = new Bundle();
-            appSearchData.putString("source", "launcher-search");
-        }
-
-        if (mLauncherCallbacks == null ||
-                !mLauncherCallbacks.startSearch(initialQuery, selectInitialQuery, appSearchData)) {
-            // Starting search from the callbacks failed. Start the default global search.
-            super.startSearch(initialQuery, selectInitialQuery, appSearchData, true);
-        }
-
-        // We need to show the workspace after starting the search
-        mStateManager.goToState(NORMAL);
     }
 
     void addAppWidgetFromDropImpl(int appWidgetId, ItemInfo info, AppWidgetHostView boundWidget,
@@ -3026,10 +2996,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
 
         mModel.dumpState(prefix, fd, writer, args);
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.dump(prefix, fd, writer, args);
-        }
         mOverlayManager.dump(prefix, writer);
     }
 
@@ -3271,11 +3237,6 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Override
     public void setLauncherOverlay(LauncherOverlay overlay) {
         mWorkspace.setLauncherOverlay(overlay);
-    }
-
-    public boolean setLauncherCallbacks(LauncherCallbacks callbacks) {
-        mLauncherCallbacks = callbacks;
-        return true;
     }
 
     /**
