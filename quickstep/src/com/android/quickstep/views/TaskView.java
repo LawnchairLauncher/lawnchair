@@ -1010,14 +1010,6 @@ public class TaskView extends FrameLayout implements Reusable {
                     mActivity.getStateManager(), recentsView,
                     recentsView.getDepthController());
             anim.addListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationStart(Animator animation) {
-                    recentsView.runActionOnRemoteHandles(
-                            (Consumer<RemoteTargetHandle>) remoteTargetHandle ->
-                                    remoteTargetHandle
-                                            .getTaskViewSimulator()
-                                            .setDrawsBelowRecents(false));
-                }
 
                 @Override
                 public void onAnimationEnd(Animator animator) {
