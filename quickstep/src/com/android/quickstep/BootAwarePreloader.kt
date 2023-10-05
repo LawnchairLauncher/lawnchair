@@ -19,7 +19,7 @@ import android.content.Context
 import android.util.Log
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherPrefs
-import com.android.launcher3.isBootAwareStartupDataEnabled
+import com.android.launcher3.moveStartupDataToDeviceProtectedStorageIsEnabled
 import com.android.launcher3.util.LockedUserState
 
 /**
@@ -33,7 +33,8 @@ object BootAwarePreloader {
     fun start(context: Context) {
         val lp = LauncherPrefs.get(context)
         when {
-            LockedUserState.get(context).isUserUnlocked || !isBootAwareStartupDataEnabled -> {
+            LockedUserState.get(context).isUserUnlocked ||
+                !moveStartupDataToDeviceProtectedStorageIsEnabled -> {
                 /* No-Op */
             }
             lp.isStartupDataMigrated -> {
