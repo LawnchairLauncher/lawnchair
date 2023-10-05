@@ -73,6 +73,8 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     private SafeCloseable mViewCaptureCloseable;
 
     private float mTaskbarBackgroundOffset;
+    private float mTaskbarBackgroundProgress;
+    private boolean mIsAnimatingTaskbarPinning = false;
 
     private final MultiPropertyFactory<TaskbarDragLayer> mTaskbarBackgroundAlpha;
 
@@ -162,8 +164,17 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
         float backgroundHeight = mControllerCallbacks.getTaskbarBackgroundHeight()
                 * (1f - mTaskbarBackgroundOffset);
         mBackgroundRenderer.setBackgroundHeight(backgroundHeight);
+        mBackgroundRenderer.setBackgroundProgress(mTaskbarBackgroundProgress);
         mBackgroundRenderer.draw(canvas);
         super.dispatchDraw(canvas);
+    }
+
+    /**
+     * Sets animation boolean when taskbar pinning animation starts or stops.
+     */
+    public void setAnimatingTaskbarPinning(boolean animatingTaskbarPinning) {
+        mIsAnimatingTaskbarPinning = animatingTaskbarPinning;
+        mBackgroundRenderer.setAnimatingPinning(mIsAnimatingTaskbarPinning);
     }
 
     protected MultiProperty getBackgroundRendererAlpha() {
@@ -172,6 +183,15 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
     protected MultiProperty getBackgroundRendererAlphaForStash() {
         return mTaskbarBackgroundAlpha.get(INDEX_STASH_ANIM);
+    }
+
+    /**
+     * Sets the value for taskbar background switching between persistent and transient backgrounds.
+     * @param progress 0 is transient background, 1 is persistent background.
+     */
+    protected void setTaskbarBackgroundProgress(float progress) {
+        mTaskbarBackgroundProgress = progress;
+        invalidate();
     }
 
     /**

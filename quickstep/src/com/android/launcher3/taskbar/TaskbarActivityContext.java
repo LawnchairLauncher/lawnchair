@@ -173,13 +173,16 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     private final TaskbarShortcutMenuAccessibilityDelegate mAccessibilityDelegate;
 
+    private DeviceProfile mTransientTaskbarDeviceProfile;
+
+    private DeviceProfile mPersistentTaskbarDeviceProfile;
+
     public TaskbarActivityContext(Context windowContext, DeviceProfile launcherDp,
             TaskbarNavButtonController buttonController, ScopedUnfoldTransitionProgressProvider
             unfoldTransitionProgressProvider) {
         super(windowContext);
 
         applyDeviceProfile(launcherDp);
-
         final Resources resources = getResources();
 
         mImeDrawsImeNavBar = getBoolByName(IME_DRAWS_IME_NAV_BAR_RES_NAME, resources, false);
@@ -254,9 +257,9 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new TaskbarViewController(this, taskbarView),
                 new TaskbarScrimViewController(this, taskbarScrimView),
                 new TaskbarUnfoldAnimationController(this, unfoldTransitionProgressProvider,
-                    mWindowManager,
-                    new RotationChangeProvider(c.getSystemService(DisplayManager.class), this,
-                        getMainThreadHandler())),
+                        mWindowManager,
+                        new RotationChangeProvider(c.getSystemService(DisplayManager.class), this,
+                                getMainThreadHandler())),
                 new TaskbarKeyguardController(this),
                 new StashedHandleViewController(this, stashedHandleView),
                 new TaskbarStashController(this),
@@ -274,7 +277,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                         : TaskbarRecentAppsController.DEFAULT,
                 new TaskbarEduTooltipController(this),
                 new KeyboardQuickSwitchController(),
-                new TaskbarDividerPopupController(this),
+                new TaskbarPinningController(this),
                 bubbleControllersOptional);
     }
 
@@ -306,6 +309,30 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                     deviceProfile.iconSizePx = deviceProfile.taskbarIconSize;
                     deviceProfile.updateIconSize(1f, getResources());
                 }).build();
+
+        if (DisplayController.isTransientTaskbar(this)) {
+            mTransientTaskbarDeviceProfile = mDeviceProfile;
+            mPersistentTaskbarDeviceProfile = mDeviceProfile
+                    .toBuilder(this)
+                    .withDimensionsOverride(deviceProfile -> {
+                        // Update icon size
+                        deviceProfile.iconSizePx = deviceProfile.taskbarIconSize;
+                        deviceProfile.updateIconSize(1f, getResources());
+                    })
+                    .setIsTransientTaskbar(false)
+                    .build();
+        } else {
+            mPersistentTaskbarDeviceProfile = mDeviceProfile;
+            mTransientTaskbarDeviceProfile = mDeviceProfile
+                    .toBuilder(this)
+                    .withDimensionsOverride(deviceProfile -> {
+                        // Update icon size
+                        deviceProfile.iconSizePx = deviceProfile.taskbarIconSize;
+                        deviceProfile.updateIconSize(1f, getResources());
+                    })
+                    .setIsTransientTaskbar(true)
+                    .build();
+        }
         mNavMode = DisplayController.getNavigationMode(this);
     }
 
@@ -391,7 +418,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     /**
      * Creates LayoutParams for adding a view directly to WindowManager as a new window.
-     * @param type The window type to pass to the created WindowManager.LayoutParams.
+     *
+     * @param type  The window type to pass to the created WindowManager.LayoutParams.
      * @param title The window title to pass to the created WindowManager.LayoutParams.
      */
     public WindowManager.LayoutParams createDefaultWindowLayoutParams(int type, String title) {
@@ -794,7 +822,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         // Overlay AFVs are in a separate window and do not require Taskbar to be fullscreen.
         if (!isDragInProgress
                 && !AbstractFloatingView.hasOpenView(
-                        this, TYPE_ALL & ~TYPE_TASKBAR_OVERLAY_PROXY)) {
+                this, TYPE_ALL & ~TYPE_TASKBAR_OVERLAY_PROXY)) {
             // Reverts Taskbar window to its original size
             setTaskbarWindowFullscreen(false);
         }
@@ -853,7 +881,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 ? resources.getDimensionPixelSize(R.dimen.arrow_toast_arrow_height)
                 + (resources.getDimensionPixelSize(R.dimen.taskbar_tooltip_vertical_padding) * 2)
                 + calculateTextHeight(
-                        resources.getDimensionPixelSize(R.dimen.arrow_toast_text_size))
+                resources.getDimensionPixelSize(R.dimen.arrow_toast_text_size))
                 : 0;
 
         // Return transient taskbar window height when pinning feature is enabled, so taskbar view
@@ -865,7 +893,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             return transientTaskbarDp.taskbarHeight
                     + (2 * transientTaskbarDp.taskbarBottomMargin)
                     + Math.max(extraHeightForTaskbarTooltips, resources.getDimensionPixelSize(
-                            R.dimen.transient_taskbar_shadow_blur));
+                    R.dimen.transient_taskbar_shadow_blur));
         }
 
 
@@ -876,6 +904,14 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     public int getSetupWindowHeight() {
         return getResources().getDimensionPixelSize(R.dimen.taskbar_suw_frame);
+    }
+
+    public DeviceProfile getTransientTaskbarDeviceProfile() {
+        return mTransientTaskbarDeviceProfile;
+    }
+
+    public DeviceProfile getPersistentTaskbarDeviceProfile() {
+        return mPersistentTaskbarDeviceProfile;
     }
 
     /**
