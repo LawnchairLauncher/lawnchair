@@ -15,8 +15,10 @@
  */
 package com.android.launcher3.statehandlers;
 
+import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
+import android.os.Debug;
 import android.os.SystemProperties;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +48,7 @@ public class DesktopVisibilityController {
 
     private boolean mFreeformTasksVisible;
     private boolean mInOverviewState;
+    private boolean mBackgroundStateEnabled;
     private boolean mGestureInProgress;
 
     @Nullable
@@ -113,7 +116,11 @@ public class DesktopVisibilityController {
      * Whether freeform windows are visible in desktop mode.
      */
     public boolean areFreeformTasksVisible() {
-        return mFreeformTasksVisible;
+        if (DEBUG) {
+            Log.d(TAG, "areFreeformTasksVisible: freeformVisible=" + mFreeformTasksVisible
+                    + " overview=" + mInOverviewState);
+        }
+        return mFreeformTasksVisible && !mInOverviewState;
     }
 
     /**
@@ -121,7 +128,8 @@ public class DesktopVisibilityController {
      */
     public void setFreeformTasksVisible(boolean freeformTasksVisible) {
         if (DEBUG) {
-            Log.d(TAG, "setFreeformTasksVisible: visible=" + freeformTasksVisible);
+            Log.d(TAG, "setFreeformTasksVisible: visible=" + freeformTasksVisible
+                    + " currentValue=" + mFreeformTasksVisible);
         }
         if (!isDesktopModeSupported()) {
             return;
@@ -146,11 +154,21 @@ public class DesktopVisibilityController {
     }
 
     /**
-     * Sets whether the overview is visible and updates launcher visibility based on that.
+     * Process launcher state change and update launcher view visibility based on desktop state
      */
-    public void setOverviewStateEnabled(boolean overviewStateEnabled) {
+    public void onLauncherStateChanged(LauncherState state) {
         if (DEBUG) {
-            Log.d(TAG, "setOverviewStateEnabled: enabled=" + overviewStateEnabled);
+            Log.d(TAG, "onLauncherStateChanged: newState=" + state);
+        }
+        setBackgroundStateEnabled(state == BACKGROUND_APP);
+        // Desktop visibility tracks overview and background state separately
+        setOverviewStateEnabled(state != BACKGROUND_APP && state.overviewUi);
+    }
+
+    private void setOverviewStateEnabled(boolean overviewStateEnabled) {
+        if (DEBUG) {
+            Log.d(TAG, "setOverviewStateEnabled: enabled=" + overviewStateEnabled
+                    + " currentValue=" + mInOverviewState);
         }
         if (!isDesktopModeSupported()) {
             return;
@@ -160,9 +178,30 @@ public class DesktopVisibilityController {
             if (mInOverviewState) {
                 setLauncherViewsVisibility(View.VISIBLE);
                 markLauncherResumed();
-            } else if (mFreeformTasksVisible && !mGestureInProgress) {
+            } else if (areFreeformTasksVisible() && !mGestureInProgress) {
                 // Switching out of overview state and gesture finished.
                 // If freeform tasks are still visible, hide launcher again.
+                setLauncherViewsVisibility(View.INVISIBLE);
+                markLauncherPaused();
+            }
+        }
+    }
+
+    private void setBackgroundStateEnabled(boolean backgroundStateEnabled) {
+        if (DEBUG) {
+            Log.d(TAG, "setBackgroundStateEnabled: enabled=" + backgroundStateEnabled
+                    + " currentValue=" + mBackgroundStateEnabled);
+        }
+        if (!isDesktopModeSupported()) {
+            return;
+        }
+        if (backgroundStateEnabled != mBackgroundStateEnabled) {
+            mBackgroundStateEnabled = backgroundStateEnabled;
+            if (mBackgroundStateEnabled) {
+                setLauncherViewsVisibility(View.VISIBLE);
+                markLauncherResumed();
+            } else if (areFreeformTasksVisible() && !mGestureInProgress) {
+                // Switching out of background state. If freeform tasks are visible, pause launcher.
                 setLauncherViewsVisibility(View.INVISIBLE);
                 markLauncherPaused();
             }
@@ -183,6 +222,9 @@ public class DesktopVisibilityController {
         if (!isDesktopModeSupported()) {
             return;
         }
+        if (DEBUG) {
+            Log.d(TAG, "setRecentsGestureStart");
+        }
         setRecentsGestureInProgress(true);
     }
 
@@ -194,6 +236,9 @@ public class DesktopVisibilityController {
         if (!isDesktopModeSupported()) {
             return;
         }
+        if (DEBUG) {
+            Log.d(TAG, "setRecentsGestureEnd: endTarget=" + endTarget);
+        }
         setRecentsGestureInProgress(false);
 
         if (endTarget == null) {
@@ -203,9 +248,6 @@ public class DesktopVisibilityController {
     }
 
     private void setRecentsGestureInProgress(boolean gestureInProgress) {
-        if (DEBUG) {
-            Log.d(TAG, "setGestureInProgress: inProgress=" + gestureInProgress);
-        }
         if (gestureInProgress != mGestureInProgress) {
             mGestureInProgress = gestureInProgress;
         }
@@ -222,7 +264,8 @@ public class DesktopVisibilityController {
 
     private void setLauncherViewsVisibility(int visibility) {
         if (DEBUG) {
-            Log.d(TAG, "setLauncherViewsVisibility: visibility=" + visibility);
+            Log.d(TAG, "setLauncherViewsVisibility: visibility=" + visibility + " "
+                    + Debug.getCaller());
         }
         View workspaceView = mLauncher.getWorkspace();
         if (workspaceView != null) {
@@ -236,7 +279,7 @@ public class DesktopVisibilityController {
 
     private void markLauncherPaused() {
         if (DEBUG) {
-            Log.d(TAG, "markLauncherPaused");
+            Log.d(TAG, "markLauncherPaused " + Debug.getCaller());
         }
         StatefulActivity<LauncherState> activity =
                 QuickstepLauncher.ACTIVITY_TRACKER.getCreatedActivity();
@@ -247,7 +290,7 @@ public class DesktopVisibilityController {
 
     private void markLauncherResumed() {
         if (DEBUG) {
-            Log.d(TAG, "markLauncherResumed");
+            Log.d(TAG, "markLauncherResumed " + Debug.getCaller());
         }
         StatefulActivity<LauncherState> activity =
                 QuickstepLauncher.ACTIVITY_TRACKER.getCreatedActivity();
