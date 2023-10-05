@@ -31,7 +31,7 @@ class PhoneGestureLayoutter(
         startContextualContainer: ViewGroup,
         imeSwitcher: ImageView?,
         rotationButton: RotationButton?,
-        a11yButton: ImageView
+        a11yButton: ImageView?
 ) :
         AbstractNavButtonLayoutter(
                 resources,

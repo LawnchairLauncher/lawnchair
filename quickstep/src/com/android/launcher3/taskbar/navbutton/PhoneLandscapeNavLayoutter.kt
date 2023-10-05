@@ -36,7 +36,7 @@ open class PhoneLandscapeNavLayoutter(
         startContextualContainer: ViewGroup,
         imeSwitcher: ImageView?,
         rotationButton: RotationButton?,
-        a11yButton: ImageView,
+        a11yButton: ImageView?,
 ) :
     AbstractNavButtonLayoutter(
             resources,
@@ -113,7 +113,9 @@ open class PhoneLandscapeNavLayoutter(
             startContextualContainer.addView(imeSwitcher)
             imeSwitcher.layoutParams = getParamsToCenterView()
         }
-        startContextualContainer.addView(a11yButton)
+        if (a11yButton != null) {
+            startContextualContainer.addView(a11yButton)
+        }
         if (rotationButton != null) {
             startContextualContainer.addView(rotationButton.currentView)
             rotationButton.currentView.layoutParams = getParamsToCenterView()
