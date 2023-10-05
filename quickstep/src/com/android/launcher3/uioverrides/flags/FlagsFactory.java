@@ -116,8 +116,9 @@ public class FlagsFactory {
         boolean defaultValue = DeviceConfig.getBoolean(NAMESPACE_LAUNCHER, key, defaultValueInCode);
         if (IS_DEBUG_DEVICE) {
             boolean currentValue = getSharedPreferences().getBoolean(key, defaultValue);
-            DebugFlag flag = new DeviceFlag(key, description, flagState, currentValue,
-                    defaultValueInCode);
+            DebugFlag flag = new DeviceFlag(key, description,
+                    (defaultValue == defaultValueInCode) ? flagState
+                            : defaultValue ? ENABLED : DISABLED, currentValue, defaultValueInCode);
             sDebugFlags.add(flag);
             return flag;
         } else {
