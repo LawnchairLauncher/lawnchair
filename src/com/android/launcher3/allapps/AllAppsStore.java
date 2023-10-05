@@ -27,7 +27,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView.RecycledViewPool;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.model.data.AppInfo;
@@ -110,7 +109,7 @@ public class AllAppsStore<T extends Context & ActivityContext> {
         }
     }
 
-    RecycledViewPool getRecyclerViewPool() {
+    AllAppsRecyclerViewPool getRecyclerViewPool() {
         return mAllAppsRecyclerViewPool;
     }
 

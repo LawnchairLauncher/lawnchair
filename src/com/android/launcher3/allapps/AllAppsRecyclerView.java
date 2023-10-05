@@ -94,6 +94,10 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
     }
 
     protected void updatePoolSize() {
+        updatePoolSize(false);
+    }
+
+    void updatePoolSize(boolean hasWorkProfile) {
         DeviceProfile grid = ActivityContext.lookupContext(getContext()).getDeviceProfile();
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
@@ -108,6 +112,9 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
             // by [PREINFLATE_ICONS_ROW_COUNT] rows + [EXTRA_ICONS_COUNT] for fast opening all apps.
             maxPoolSizeForAppIcons +=
                     PREINFLATE_ICONS_ROW_COUNT * grid.numShownAllAppsColumns + EXTRA_ICONS_COUNT;
+        }
+        if (hasWorkProfile) {
+            maxPoolSizeForAppIcons *= 2;
         }
         pool.setMaxRecycledViews(
                 AllAppsGridAdapter.VIEW_TYPE_ICON, maxPoolSizeForAppIcons);
