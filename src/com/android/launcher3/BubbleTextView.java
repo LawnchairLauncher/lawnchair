@@ -386,10 +386,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         setTag(itemInfo);
     }
 
+    @VisibleForTesting
     @UiThread
-    protected void applyIconAndLabel(ItemInfoWithIcon info) {
+    public void applyIconAndLabel(ItemInfoWithIcon info) {
         int flags = shouldUseTheme() ? FLAG_THEMED : 0;
-        if (mHideBadge) {
+        // Remove badge on icons smaller than 48dp.
+        if (mHideBadge || mDisplay == DISPLAY_SEARCH_RESULT_SMALL) {
             flags |= FLAG_NO_BADGE;
         }
         FastBitmapDrawable iconDrawable = info.newIcon(getContext(), flags);

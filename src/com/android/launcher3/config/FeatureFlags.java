@@ -152,9 +152,6 @@ public final class FeatureFlags {
     // TODO(Block 8): Clean up flags
 
     // TODO(Block 9): Clean up flags
-
-    public static final BooleanFlag SHOW_DOT_PAGINATION = getDebugFlag(270395278,
-            "SHOW_DOT_PAGINATION", ENABLED, "Enable showing dot pagination in workspace");
     public static final BooleanFlag UNFOLDED_WIDGET_PICKER = getDebugFlag(301918659,
             "UNFOLDED_WIDGET_PICKER", DISABLED, "Enable new widget picker that takes "
                     + "advantage of the unfolded foldable format");

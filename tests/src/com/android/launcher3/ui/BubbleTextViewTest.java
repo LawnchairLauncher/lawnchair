@@ -20,21 +20,30 @@ import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
 import static com.android.launcher3.BubbleTextView.DISPLAY_ALL_APPS;
 import static com.android.launcher3.BubbleTextView.DISPLAY_PREDICTION_ROW;
+import static com.android.launcher3.BubbleTextView.DISPLAY_SEARCH_RESULT;
+import static com.android.launcher3.BubbleTextView.DISPLAY_SEARCH_RESULT_SMALL;
+
+import static com.google.common.truth.Truth.assertThat;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.platform.test.flag.junit.SetFlagsRule;
+import android.os.UserHandle;
 import android.view.ViewGroup;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Flags;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.search.StringMatcherUtility;
 import com.android.launcher3.util.ActivityContextWrapper;
+import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.views.BaseDragLayer;
 
@@ -55,6 +64,8 @@ public class BubbleTextViewTest {
     @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
     private static final StringMatcherUtility.StringMatcher
             MATCHER = StringMatcherUtility.StringMatcher.getInstance();
+    private static final UserHandle WORK_HANDLE = new UserHandle(13);
+    private static final int WORK_FLAG = 1;
     private static final int ONE_LINE = 1;
     private static final int TWO_LINE = 2;
     private static final String TEST_STRING_WITH_SPACE_LONGER_THAN_CHAR_LIMIT = "Battery Stats";
@@ -81,6 +92,7 @@ public class BubbleTextViewTest {
     private ItemInfoWithIcon mItemInfoWithIcon;
     private Context mContext;
     private int mLimitedWidth;
+    private AppInfo mGmailAppInfo;
 
     @Before
     public void setUp() throws Exception {
@@ -110,6 +122,9 @@ public class BubbleTextViewTest {
                 return null;
             }
         };
+        ComponentName componentName = new ComponentName(mContext,
+                "com.android.launcher3.tests.Activity" + "Gmail");
+        mGmailAppInfo = new AppInfo(componentName, "Gmail", WORK_HANDLE, new Intent());
     }
 
     @Test
@@ -358,5 +373,29 @@ public class BubbleTextViewTest {
         mBubbleTextView.onPreDraw();
 
         assertEquals(TWO_LINE, mBubbleTextView.getLineCount());
+    }
+
+    @Test
+    public void applyIconAndLabel_whenDisplay_DISPLAY_SEARCH_RESULT_SMALL_noBadge() {
+        FlagOp op = FlagOp.NO_OP;
+        // apply the WORK bitmap flag to show work badge
+        mGmailAppInfo.bitmap.flags = op.apply(WORK_FLAG);
+        mBubbleTextView.setDisplay(DISPLAY_SEARCH_RESULT_SMALL);
+
+        mBubbleTextView.applyIconAndLabel(mGmailAppInfo);
+
+        assertThat(mBubbleTextView.getIcon().hasBadge()).isEqualTo(false);
+    }
+
+    @Test
+    public void applyIconAndLabel_whenDisplay_DISPLAY_SEARCH_RESULT_hasBadge() {
+        FlagOp op = FlagOp.NO_OP;
+        // apply the WORK bitmap flag to show work badge
+        mGmailAppInfo.bitmap.flags = op.apply(WORK_FLAG);
+        mBubbleTextView.setDisplay(DISPLAY_SEARCH_RESULT);
+
+        mBubbleTextView.applyIconAndLabel(mGmailAppInfo);
+
+        assertThat(mBubbleTextView.getIcon().hasBadge()).isEqualTo(true);
     }
 }

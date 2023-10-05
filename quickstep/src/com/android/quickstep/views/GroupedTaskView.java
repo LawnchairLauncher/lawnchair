@@ -35,7 +35,7 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.recents.utilities.PreviewPositionHelper;
 import com.android.systemui.shared.system.InteractionJankMonitorWrapper;
-import com.android.wm.shell.common.split.SplitScreenConstants.SnapPosition;
+import com.android.wm.shell.common.split.SplitScreenConstants.PersistentSnapPosition;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
@@ -200,9 +200,9 @@ public class GroupedTaskView extends TaskView {
     }
 
     /**
-     * Returns the {@link SnapPosition} of this pair of tasks.
+     * Returns the {@link PersistentSnapPosition} of this pair of tasks.
      */
-    public int getSnapPosition() {
+    public @PersistentSnapPosition int getSnapPosition() {
         if (mSplitBoundsConfig == null) {
             throw new IllegalStateException("mSplitBoundsConfig is null");
         }
