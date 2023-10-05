@@ -24,14 +24,12 @@ import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.ItemInstallQueue;
 import com.android.launcher3.pm.InstallSessionHelper;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.Executors;
 
 /**
@@ -53,9 +51,6 @@ public class SessionCommitReceiver extends BroadcastReceiver {
     private static void processIntent(Context context, Intent intent) {
         if (!isEnabled(context)) {
             // User has decided to not add icons on homescreen.
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.MISSING_PROMISE_ICON, LOG + " not enabled");
-            }
             return;
         }
 
@@ -64,27 +59,14 @@ public class SessionCommitReceiver extends BroadcastReceiver {
         if (!PackageInstaller.ACTION_SESSION_COMMITTED.equals(intent.getAction())
                 || info == null || user == null) {
             // Invalid intent.
-            if (TestProtocol.sDebugTracing) {
-                Log.d(TestProtocol.MISSING_PROMISE_ICON, LOG + " invalid intent");
-            }
             return;
         }
 
         InstallSessionHelper packageInstallerCompat = InstallSessionHelper.INSTANCE.get(context);
-        packageInstallerCompat.restoreDbIfApplicable(info);
         if (TextUtils.isEmpty(info.getAppPackageName())
                 || info.getInstallReason() != PackageManager.INSTALL_REASON_USER
                 || packageInstallerCompat.promiseIconAddedForId(info.getSessionId())) {
             packageInstallerCompat.removePromiseIconId(info.getSessionId());
-            if (TestProtocol.sDebugTracing) {
-                int id = info.getSessionId();
-                Log.d(TestProtocol.MISSING_PROMISE_ICON, LOG
-                        + ", TextUtils.isEmpty=" + TextUtils.isEmpty(info.getAppPackageName())
-                        + ", info.getInstallReason()=" + info.getInstallReason()
-                        + ", INSTALL_REASON_USER=" + PackageManager.INSTALL_REASON_USER
-                        + ", icon added=" + packageInstallerCompat.promiseIconAddedForId(id)
-                );
-            }
             return;
         }
 

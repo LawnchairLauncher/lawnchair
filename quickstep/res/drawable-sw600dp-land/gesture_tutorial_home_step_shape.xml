@@ -17,11 +17,7 @@
     android:height="67dp"
     android:viewportWidth="232"
     android:viewportHeight="67">
-  <group>
-    <clip-path
-        android:pathData="M0,0h232v67h-232z"/>
-    <path
-        android:pathData="M180.9,0.6H51.1C22.9,0.6 0,23.4 0,51.7V67.6H232V51.7C232,23.4 209.1,0.6 180.9,0.6Z"
-        android:fillColor="#4B67AE"/>
-  </group>
+  <path
+      android:pathData="M180.9,0.6H51.1C22.9,0.6 0,23.4 0,51.7V67.6H232V51.7C232,23.4 209.1,0.6 180.9,0.6Z"
+      android:fillColor="?attr/onSurfaceHome"/>
 </vector>

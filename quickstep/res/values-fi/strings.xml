@@ -44,35 +44,41 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Sovellusehdotukset käytössä"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Sovellusehdotukset on poistettu käytöstä"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Ennakoitu sovellus: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Muista pyyhkäistä aivan oikeasta tai vasemmasta reunasta."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Pyyhkäise näytön oikeasta tai vasemmasta reunasta keskelle ja päästä irti."</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Käännä laite"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Käännä laite, niin voit katsoa esittelyn eleillä navigoinnista"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Pyyhkäise aivan oikeasta tai vasemmasta reunasta"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Pyyhkäise näytön oikeasta tai vasemmasta reunasta keskelle ja päästä irti"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Osaat palata takaisin pyyhkäisemällä oikeasta reunasta. Opettele seuraavaksi vaihtamaan sovellusta."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Olet oppinut Takaisin-eleen."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Varo, ettet pyyhkäise liian lähellä alareunaa."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Olet oppinut takaisin-eleen"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Varo, ettet pyyhkäise liian lähellä alareunaa"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Voit muuttaa Takaisin-eleen herkkyyttä asetuksista"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Siirry takaisin pyyhkäisemällä"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Voit palata edelliseen näkymään pyyhkäisemällä näytön vasemmasta tai oikeasta reunasta keskelle."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Palaa takaisin edelliselle näytölle pyyhkäisemällä kahdella sormella vasemmasta tai oikeasta reunasta näytön keskikohtaan."</string>
-    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Takaisin"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pyyhkäise ylös näytön alareunasta."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Varo keskeyttämästä ennen kuin päästät irti."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Muista pyyhkäistä suoraan ylöspäin."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Olet oppinut aloitusnäytölle palaamisen eleen. Opettele seuraavaksi siirtymään takaisin."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Olet oppinut aloitusnäytölle palaamisen eleen."</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Edelliseen siirtyminen"</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Pyyhkäise vasemmasta tai oikeasta reunasta näytön keskelle"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Pyyhkäise ylös näytön alareunasta"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Varo pysähtymästä ennen kuin päästät irti"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Pyyhkäise suoraan ylöspäin"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Olet oppinut aloitusnäytölle palaamiseleen. Opettele seuraavaksi siirtymään takaisin."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Olet oppinut aloitusnäytölle palaamiseleen"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Siirry aloitusnäytölle pyyhkäisemällä"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Pyyhkäise ylös näytön alareunasta. Tämä ele vie sinut aina aloitusnäytölle."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Pyyhkäise näytön alareunasta ylöspäin kahdella sormella. Tämä ele vie sinut aina aloitusnäytölle."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Aloitusnäytölle siirtyminen"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Voit siirtyä aloitusnäytölle milloin tahansa pyyhkäisemällä ylös näytön alareunasta"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Pyyhkäise ylös näytön alareunasta."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Kokeile pitää ikkunaa painettuna pidempään ennen kuin päästät irti."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Muista pyyhkäistä suoraan ylöspäin ja keskeytä sitten."</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Pyyhkäise ylös näytön alareunasta"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Hienoa!"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Pyyhkäise ylös näytön alareunasta"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Kokeile pitää ikkunaa painettuna pidempään ennen kuin päästät irti"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Muista pyyhkäistä suoraan ylöspäin ja pysähdy sitten"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Olet oppinut käyttämään eleitä. Jos haluat laittaa eleet pois päältä, avaa Asetukset."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Olet oppinut sovellusten vaihtamiseleen."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Olet oppinut sovellusten vaihtamiseleen"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Vaihda sovellusta pyyhkäisemällä"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Voit vaihtaa sovelluksesta toiseen pyyhkäisemällä ylöspäin näytön alareunasta ja päästämällä sitten irti."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Vaihda sovelluksia pyyhkäisemällä ylös näytön alareunasta kahdella sormella ja päästä sitten irti."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Sovelluksen vaihtaminen"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Pyyhkäise ylöspäin näytön alareunasta ja päästä irti"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Hienoa!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Valmista"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Valmis"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Asetukset"</string>
@@ -97,15 +103,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Ohita"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Käännä näyttö"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Tehtäväpalkin ohje"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Tehtäväpalkin ohje näkyvissä"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Tehtäväpalkin ohje suljettu"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Vedä sovellus sivuun, ja voit käyttää kahta sovellusta"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Näytä tehtäväpalkki pyyhkäisemällä ylös hitaasti"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Sovellussuosituksia käytön perusteella"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Laita eleillä navigointi päälle Asetuksista Tehtäväpalkin piilottamiseksi automaattisesti"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Vinkkejä tehtäväpalkin tehokkaampaan käyttöön"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Seuraava"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Takaisin"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Sulje"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Valmis"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Etusivu"</string>
@@ -119,6 +121,9 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Tehtäväpalkki näkyvissä"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Tehtäväpalkki piilotettu"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigointipalkki"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Näytä tehtäväpalkki aina"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Vaihda navigointitilaa"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Tehtäväpalkin jakaja"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Siirrä ylös tai vasemmalle"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Siirrä alas tai oikealle"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Näytä # muu sovellus.}other{Näytä # muuta sovellusta.}}"</string>

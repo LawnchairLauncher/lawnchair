@@ -36,13 +36,14 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.UserHandle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewRootImpl;
-import android.window.SurfaceSyncer;
+import android.window.SurfaceSyncGroup;
 
 import androidx.annotation.Nullable;
 
@@ -55,7 +56,6 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragDriver;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -88,6 +88,7 @@ import java.util.function.Predicate;
  */
 public class TaskbarDragController extends DragController<BaseTaskbarContext> implements
         TaskbarControllers.LoggableTaskbarController {
+    private static final String TAG = "TaskbarDragController";
 
     private static final boolean DEBUG_DRAG_SHADOW_SURFACE = false;
     private static final int ANIM_DURATION_RETURN_ICON_TO_TASKBAR = 300;
@@ -152,6 +153,11 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
             return false;
         }
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "onTaskbarItemLongClick");
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.TWO_TASKBAR_LONG_CLICKS,
+                    "TaskbarDragController.startDragOnLongClick",
+                    new Throwable());
+        }
         BubbleTextView btv = (BubbleTextView) view;
         mActivity.onDragStart();
         btv.post(() -> {
@@ -188,12 +194,10 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
 
         DragOptions dragOptions = new DragOptions();
         dragOptions.preDragCondition = null;
-        if (FeatureFlags.ENABLE_TASKBAR_POPUP_MENU.get()) {
-            PopupContainerWithArrow<BaseTaskbarContext> popupContainer =
-                    mControllers.taskbarPopupController.showForIcon(btv);
-            if (popupContainer != null) {
-                dragOptions.preDragCondition = popupContainer.createPreDragCondition(false);
-            }
+        PopupContainerWithArrow<BaseTaskbarContext> popupContainer =
+                mControllers.taskbarPopupController.showForIcon(btv);
+        if (popupContainer != null) {
+            dragOptions.preDragCondition = popupContainer.createPreDragCondition(false);
         }
         if (dragOptions.preDragCondition == null) {
             dragOptions.preDragCondition = new DragOptions.PreDragCondition() {
@@ -201,15 +205,14 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
 
                 @Override
                 public boolean shouldStartDrag(double distanceDragged) {
-                    return mDragView != null && mDragView.isAnimationFinished();
+                    return mDragView != null && mDragView.isScaleAnimationFinished();
                 }
 
                 @Override
                 public void onPreDragStart(DropTarget.DragObject dragObject) {
                     mDragView = dragObject.dragView;
 
-                    if (FeatureFlags.ENABLE_TASKBAR_POPUP_MENU.get()
-                            && !shouldStartDrag(0)) {
+                    if (!shouldStartDrag(0)) {
                         mDragView.setOnAnimationEndCallback(() -> {
                             // Drag might be cancelled during the DragView animation, so check
                             // mIsPreDrag again.
@@ -235,7 +238,6 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 dragLayerY,
                 (View target, DropTarget.DragObject d, boolean success) -> {} /* DragSource */,
                 (ItemInfo) btv.getTag(),
-                /* dragVisualizeOffset = */ null,
                 dragRect,
                 scale * iconScale,
                 scale,
@@ -245,7 +247,7 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
     @Override
     protected DragView startDrag(@Nullable Drawable drawable, @Nullable View view,
             DraggableView originalView, int dragLayerX, int dragLayerY, DragSource source,
-            ItemInfo dragInfo, Point dragOffset, Rect dragRegion, float initialDragViewScale,
+            ItemInfo dragInfo, Rect dragRegion, float initialDragViewScale,
             float dragViewScaleOnDrop, DragOptions options) {
         mOptions = options;
 
@@ -312,26 +314,37 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
         // Pre-drag has ended, start the global system drag.
         if (mDisallowGlobalDrag) {
             AbstractFloatingView.closeAllOpenViewsExcept(mActivity, TYPE_TASKBAR_ALL_APPS);
-        } else {
-            AbstractFloatingView.closeAllOpenViews(mActivity);
+            return;
         }
-
         startSystemDrag((BubbleTextView) mDragObject.originalView);
     }
 
     private void startSystemDrag(BubbleTextView btv) {
-        if (mDisallowGlobalDrag) return;
         View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(btv) {
 
             @Override
             public void onProvideShadowMetrics(Point shadowSize, Point shadowTouchPoint) {
                 int iconSize = Math.max(mDragIconSize, btv.getWidth());
-                shadowSize.set(iconSize, iconSize);
+                if (iconSize > 0) {
+                    shadowSize.set(iconSize, iconSize);
+                } else {
+                    Log.d(TAG, "Invalid icon size, dragSize=" + mDragIconSize
+                            + " viewWidth=" + btv.getWidth());
+                }
+
                 // The registration point was taken before the icon scaled to mDragIconSize, so
                 // offset the registration to where the touch is on the new size.
                 int offsetX = (mDragIconSize - mDragObject.dragView.getDragRegionWidth()) / 2;
                 int offsetY = (mDragIconSize - mDragObject.dragView.getDragRegionHeight()) / 2;
-                shadowTouchPoint.set(mRegistrationX + offsetX, mRegistrationY + offsetY);
+                int touchX = mRegistrationX + offsetX;
+                int touchY = mRegistrationY + offsetY;
+                if (touchX >= 0 && touchY >= 0) {
+                    shadowTouchPoint.set(touchX, touchY);
+                } else {
+                    Log.d(TAG, "Invalid touch point, "
+                            + "registrationXY=(" + mRegistrationX + ", " + mRegistrationY + ") "
+                            + "offsetXY=(" + offsetX + ", " + offsetY + ")");
+                }
             }
 
             @Override
@@ -416,6 +429,9 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                         .log(StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED);
             }
         }
+
+        // Wait to close until after system drag has started, if applicable.
+        AbstractFloatingView.closeAllOpenViews(mActivity);
     }
 
     private void onSystemDragStarted(BubbleTextView btv) {
@@ -555,11 +571,11 @@ public class TaskbarDragController extends DragController<BaseTaskbarContext> im
                 // maybeOnDragEnd()
                 SurfaceControl.Transaction transaction = new SurfaceControl.Transaction();
                 transaction.remove(dragSurface);
-                SurfaceSyncer syncer = new SurfaceSyncer();
-                int syncId = syncer.setupSync(transaction::close);
-                syncer.addToSync(syncId, viewRoot.getView());
-                syncer.addTransactionToSync(syncId, transaction);
-                syncer.markSyncReady(syncId);
+                SurfaceSyncGroup syncGroup = new SurfaceSyncGroup("TaskBarController");
+                syncGroup.addSyncCompleteCallback(mActivity.getMainExecutor(), transaction::close);
+                syncGroup.add(viewRoot, null /* runnable */);
+                syncGroup.addTransaction(transaction);
+                syncGroup.markSyncReady();
                 // Do this after maybeOnDragEnd(), because we use mReturnAnimator != null to imply
                 // the drag was canceled rather than successful.
                 mReturnAnimator = null;

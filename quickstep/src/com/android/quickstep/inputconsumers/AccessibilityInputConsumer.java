@@ -29,6 +29,7 @@ import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
 import com.android.launcher3.R;
+import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
 import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.quickstep.SystemUiProxy;
@@ -46,6 +47,7 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
     private final VelocityTracker mVelocityTracker;
     private final MotionPauseDetector mMotionPauseDetector;
     private final RecentsAnimationDeviceState mDeviceState;
+    private final GestureState mGestureState;
 
     private final float mMinGestureDistance;
     private final float mMinFlingVelocity;
@@ -55,7 +57,7 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
     private float mTotalY;
 
     public AccessibilityInputConsumer(Context context, RecentsAnimationDeviceState deviceState,
-            InputConsumer delegate, InputMonitorCompat inputMonitor) {
+            GestureState gestureState, InputConsumer delegate, InputMonitorCompat inputMonitor) {
         super(delegate, inputMonitor);
         mContext = context;
         mVelocityTracker = VelocityTracker.obtain();
@@ -63,6 +65,7 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
                 .getDimension(R.dimen.accessibility_gesture_min_swipe_distance);
         mMinFlingVelocity = ViewConfiguration.get(context).getScaledMinimumFlingVelocity();
         mDeviceState = deviceState;
+        mGestureState = gestureState;
 
         mMotionPauseDetector = new MotionPauseDetector(context);
     }
@@ -99,8 +102,8 @@ public class AccessibilityInputConsumer extends DelegateInputConsumer {
             case ACTION_POINTER_DOWN: {
                 if (mState == STATE_INACTIVE) {
                     int pointerIndex = ev.getActionIndex();
-                    if (mDeviceState.getRotationTouchHelper()
-                            .isInSwipeUpTouchRegion(ev, pointerIndex)
+                    if (mDeviceState.getRotationTouchHelper().isInSwipeUpTouchRegion(ev,
+                            pointerIndex, mGestureState.getActivityInterface())
                             && mDelegate.allowInterceptByParent()) {
                         setActive(ev);
 

@@ -46,10 +46,10 @@ import android.util.SparseArray;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.core.util.Pair;
 
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.ComponentWithLabel.ComponentCachingLogic;
 import com.android.launcher3.icons.cache.BaseIconCache;
@@ -100,14 +100,11 @@ public class IconCache extends BaseIconCache {
     private final UserCache mUserManager;
     private final InstantAppResolver mInstantAppResolver;
     private final IconProvider mIconProvider;
+    private final HandlerRunnable mCancelledRunnable;
 
     private final SparseArray<BitmapInfo> mWidgetCategoryBitmapInfos;
 
     private int mPendingIconRequestCount = 0;
-
-    public IconCache(Context context, InvariantDeviceProfile idp) {
-        this(context, idp, LauncherFiles.APP_ICONS_DB, new IconProvider(context));
-    }
 
     public IconCache(Context context, InvariantDeviceProfile idp, String dbFileName,
             IconProvider iconProvider) {
@@ -121,6 +118,10 @@ public class IconCache extends BaseIconCache {
         mInstantAppResolver = InstantAppResolver.newInstance(mContext);
         mIconProvider = iconProvider;
         mWidgetCategoryBitmapInfos = new SparseArray<>();
+
+        mCancelledRunnable = new HandlerRunnable(
+                mWorkerHandler, () -> null, MAIN_EXECUTOR, c -> { });
+        mCancelledRunnable.cancel();
     }
 
     @Override
@@ -176,23 +177,30 @@ public class IconCache extends BaseIconCache {
     public HandlerRunnable updateIconInBackground(final ItemInfoUpdateReceiver caller,
             final ItemInfoWithIcon info) {
         Preconditions.assertUIThread();
+        Supplier<ItemInfoWithIcon> task;
+        if (info instanceof AppInfo || info instanceof WorkspaceItemInfo) {
+            task = () -> {
+                getTitleAndIcon(info, false);
+                return info;
+            };
+        } else if (info instanceof PackageItemInfo pii) {
+            task = () -> {
+                getTitleAndIconForApp(pii, false);
+                return pii;
+            };
+        } else {
+            Log.i(TAG, "Icon update not supported for "
+                    + info == null ? "null" : info.getClass().getName());
+            return mCancelledRunnable;
+        }
+
         if (mPendingIconRequestCount <= 0) {
             MODEL_EXECUTOR.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
         }
         mPendingIconRequestCount++;
 
         HandlerRunnable<ItemInfoWithIcon> request = new HandlerRunnable<>(mWorkerHandler,
-                () -> {
-                    if (info instanceof AppInfo || info instanceof WorkspaceItemInfo) {
-                        getTitleAndIcon(info, false);
-                    } else if (info instanceof PackageItemInfo) {
-                        getTitleAndIconForApp((PackageItemInfo) info, false);
-                    }
-                    return info;
-                },
-                MAIN_EXECUTOR,
-                caller::reapplyItemInfo,
-                this::onIconRequestEnd);
+                task, MAIN_EXECUTOR, caller::reapplyItemInfo, this::onIconRequestEnd);
         Utilities.postAsyncCallback(mWorkerHandler, request);
         return request;
     }
@@ -254,30 +262,37 @@ public class IconCache extends BaseIconCache {
      * Returns the badging info for the shortcut
      */
     public BitmapInfo getShortcutInfoBadge(ShortcutInfo shortcutInfo) {
-        ComponentName cn = shortcutInfo.getActivity();
-        if (cn != null) {
-            // Get the app info for the source activity.
-            AppInfo appInfo = new AppInfo();
-            appInfo.user = shortcutInfo.getUserHandle();
-            appInfo.componentName = cn;
-            appInfo.intent = new Intent(Intent.ACTION_MAIN)
-                    .addCategory(Intent.CATEGORY_LAUNCHER)
-                    .setComponent(cn);
-            getTitleAndIcon(appInfo, false);
-            return appInfo.bitmap;
+        return getShortcutInfoBadgeItem(shortcutInfo).bitmap;
+    }
+
+    @VisibleForTesting
+    protected ItemInfoWithIcon getShortcutInfoBadgeItem(ShortcutInfo shortcutInfo) {
+        // Check for badge override first.
+        String pkg = shortcutInfo.getPackage();
+        String override = shortcutInfo.getExtras() == null ? null
+                : shortcutInfo.getExtras().getString(EXTRA_SHORTCUT_BADGE_OVERRIDE_PACKAGE);
+        if (!TextUtils.isEmpty(override)
+                && InstallSessionHelper.INSTANCE.get(mContext)
+                .isTrustedPackage(pkg, shortcutInfo.getUserHandle())) {
+            pkg = override;
         } else {
-            String pkg = shortcutInfo.getPackage();
-            String override = shortcutInfo.getExtras() == null ? null
-                    : shortcutInfo.getExtras().getString(EXTRA_SHORTCUT_BADGE_OVERRIDE_PACKAGE);
-            if (!TextUtils.isEmpty(override)
-                    && InstallSessionHelper.INSTANCE.get(mContext)
-                            .isTrustedPackage(pkg, shortcutInfo.getUserHandle())) {
-                pkg = override;
+            // Try component based badge before trying the normal package badge
+            ComponentName cn = shortcutInfo.getActivity();
+            if (cn != null) {
+                // Get the app info for the source activity.
+                AppInfo appInfo = new AppInfo();
+                appInfo.user = shortcutInfo.getUserHandle();
+                appInfo.componentName = cn;
+                appInfo.intent = new Intent(Intent.ACTION_MAIN)
+                        .addCategory(Intent.CATEGORY_LAUNCHER)
+                        .setComponent(cn);
+                getTitleAndIcon(appInfo, false);
+                return appInfo;
             }
-            PackageItemInfo pkgInfo = new PackageItemInfo(pkg, shortcutInfo.getUserHandle());
-            getTitleAndIconForApp(pkgInfo, false);
-            return pkgInfo.bitmap;
         }
+        PackageItemInfo pkgInfo = new PackageItemInfo(pkg, shortcutInfo.getUserHandle());
+        getTitleAndIconForApp(pkgInfo, false);
+        return pkgInfo;
     }
 
     /**

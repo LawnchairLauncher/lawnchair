@@ -114,6 +114,17 @@ public class FolderInfo extends ItemInfo {
     }
 
     /**
+     * Create an app pair, a type of app collection that launches multiple apps into split screen
+     */
+    public static FolderInfo createAppPair(WorkspaceItemInfo app1, WorkspaceItemInfo app2) {
+        FolderInfo newAppPair = new FolderInfo();
+        newAppPair.itemType = LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR;
+        newAppPair.contents.add(app1);
+        newAppPair.contents.add(app2);
+        return newAppPair;
+    }
+
+    /**
      * Add an app or shortcut
      *
      * @param item

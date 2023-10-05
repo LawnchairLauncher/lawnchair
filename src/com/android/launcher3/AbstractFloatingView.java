@@ -24,7 +24,9 @@ import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessib
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.MotionEvent;
@@ -32,6 +34,7 @@ import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
+import android.window.OnBackAnimationCallback;
 
 import androidx.annotation.IntDef;
 
@@ -46,8 +49,9 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * Base class for a View which shows a floating UI on top of the launcher UI.
  */
+@TargetApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
 public abstract class AbstractFloatingView extends LinearLayout implements TouchController,
-        OnBackPressedHandler {
+        OnBackAnimationCallback {
 
     @IntDef(flag = true, value = {
             TYPE_FOLDER,
@@ -70,7 +74,8 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             TYPE_TASKBAR_EDUCATION_DIALOG,
             TYPE_TASKBAR_ALL_APPS,
             TYPE_ADD_TO_HOME_CONFIRMATION,
-            TYPE_TASKBAR_OVERLAY_PROXY
+            TYPE_TASKBAR_OVERLAY_PROXY,
+            TYPE_TASKBAR_PINNING_POPUP
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface FloatingViewType {}
@@ -98,6 +103,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_TASKBAR_ALL_APPS = 1 << 18;
     public static final int TYPE_ADD_TO_HOME_CONFIRMATION = 1 << 19;
     public static final int TYPE_TASKBAR_OVERLAY_PROXY = 1 << 20;
+    public static final int TYPE_TASKBAR_PINNING_POPUP = 1 << 21;
 
     public static final int TYPE_ALL = TYPE_FOLDER | TYPE_ACTION_POPUP
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET
@@ -106,7 +112,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             | TYPE_ICON_SURFACE | TYPE_DRAG_DROP_POPUP | TYPE_PIN_WIDGET_FROM_EXTERNAL_POPUP
             | TYPE_WIDGETS_EDUCATION_DIALOG | TYPE_TASKBAR_EDUCATION_DIALOG | TYPE_TASKBAR_ALL_APPS
             | TYPE_OPTIONS_POPUP_DIALOG | TYPE_ADD_TO_HOME_CONFIRMATION
-            | TYPE_TASKBAR_OVERLAY_PROXY;
+            | TYPE_TASKBAR_OVERLAY_PROXY | TYPE_TASKBAR_PINNING_POPUP;
 
     // Type of popups which should be kept open during launcher rebind
     public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
@@ -122,6 +128,10 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_STATUS_BAR_SWIPE_DOWN_DISALLOW = TYPE_WIDGETS_BOTTOM_SHEET |
             TYPE_WIDGETS_FULL_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_ON_BOARD_POPUP |
             TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU | TYPE_DRAG_DROP_POPUP;
+
+    // Floating views that are exclusive to the taskbar overlay window.
+    public static final int TYPE_TASKBAR_OVERLAYS =
+            TYPE_TASKBAR_ALL_APPS | TYPE_TASKBAR_EDUCATION_DIALOG;
 
     protected boolean mIsOpen;
 

@@ -44,35 +44,41 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"已启用应用建议"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"已停用应用建议"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"预测的应用：<xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"请从最右侧或最左侧边缘开始滑动。"</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"请从右侧或左侧边缘滑动到屏幕中间位置后再松开手指。"</string>
-    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"您已了解如何使用“从右侧向左滑动”手势返回。接下来了解如何切换应用。"</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"您完成了“返回”手势教程。"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"请确保滑动时手的位置不要太靠近屏幕底部。"</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"请旋转设备"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"请旋转设备，完成手势导航教程"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"确保从最右侧或最左侧边缘开始滑动"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"确保从右侧或左侧边缘滑动到屏幕中间位置后再松开手指"</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"您已了解如何使用“从右侧向左滑动”手势返回。接下来学习切换应用吧！"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"您完成了“返回”手势"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"确保滑动时手的位置不要太靠近屏幕底部"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"如要调节“返回”手势的灵敏度，请转到“设置”"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"滑动即可返回"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"如要返回上一个屏幕，请从屏幕左侧或右侧边缘往屏幕中间滑动。"</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"若要返回上一个屏幕，请用两根手指从屏幕左侧或右侧边缘向中间滑动。"</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"返回"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"请确保从屏幕底部边缘向上滑动。"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"松开手指前，请确保不要停下来。"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"请确保直接向上滑动。"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"您完成了“转到主屏幕”手势教程。接下来了解如何返回。"</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"您完成了“转到主屏幕”手势教程。"</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"从屏幕左侧或右侧边缘滑动到中间"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"确保从屏幕底部边缘向上滑动"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"松开手指前，请勿中途停顿"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"确保笔直向上滑动"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"您完成了“转到主屏幕”手势。接下来了解如何返回。"</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"您完成了“转到主屏幕”手势"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"上滑可转到主屏幕"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"从屏幕底部向上滑动，即可随时回到主屏幕。"</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"用两根手指从屏幕底部向上滑动，这个手势会一律使您回到主屏幕。"</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"前往主屏幕"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"从屏幕的底部向上滑动，即可随时前往主屏幕"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"请确保从屏幕底部边缘向上滑动。"</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"请尝试按住窗口较长时间，然后再松开手指。"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"请确保直接向上滑动，然后停住。"</string>
-    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"您已了解如何使用手势了。如要关闭手势，请转到“设置”。"</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"您完成了“切换应用”手势教程。"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"从屏幕底部向上滑动"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"太棒了！"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"确保从屏幕底部边缘向上滑动"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"尝试按住窗口较长时间，然后再松开手指"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"确保笔直向上滑动，然后停住"</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"您已了解如何使用手势了。如要关闭手势，请前往“设置”。"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"您完成了应用切换手势"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"滑动即可切换应用"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"如需在应用之间切换，请从屏幕底部向上滑动后按住，然后松开。"</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"若要在应用之间切换，请用两根手指从屏幕底部向上滑动并按住，然后松开。"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"如需在应用之间切换，请从屏幕底部向上滑动，按住，然后松开。"</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"如需在应用之间切换，请从屏幕底部向上滑动，按住，然后松开。"</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"切换应用"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"从屏幕底部向上滑动后按住，然后松开"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"恭喜！"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"大功告成"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"完成"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"设置"</string>
@@ -80,7 +86,7 @@
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"很好！"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"教程 <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"大功告成！"</string>
-    <string name="allset_hint" msgid="459504134589971527">"向上滑动可转到主屏幕"</string>
+    <string name="allset_hint" msgid="459504134589971527">"向上滑动可前往主屏幕"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"点按主屏幕按钮即可前往主屏幕"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"您可以开始使用<xliff:g id="DEVICE">%1$s</xliff:g>了"</string>
     <string name="default_device_name" msgid="6660656727127422487">"设备"</string>
@@ -97,15 +103,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"跳过"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"旋转屏幕"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"任务栏教程"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"任务栏教程已显示"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"任务栏教程已关闭"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"将一个应用拖到一侧，即可一次使用两个应用"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"缓慢向上滑动即可显示任务栏"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"根据您的日常安排获取应用建议"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"在设置中开启手势导航后，任务栏会自动隐藏"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"体验任务栏的更多功能"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"继续"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"返回"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"关闭"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"完成"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"主屏幕"</string>
@@ -119,6 +121,9 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"任务栏已显示"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"任务栏已隐藏"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"导航栏"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"始终显示任务栏"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"更改导航模式"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"任务栏分隔线"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"移到顶部/左侧"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"移到底部/右侧"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{显示另外 # 个应用。}other{显示另外 # 个应用。}}"</string>

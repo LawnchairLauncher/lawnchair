@@ -25,7 +25,6 @@ import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 
-import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Reorderable;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.util.MultiTranslateDelegate;
@@ -48,12 +47,12 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
 
     private float mScaleForReorderBounce = 1f;
 
-    private final Rect mTempRect = new Rect();
-
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mChildrenFocused;
 
     protected final ActivityContext mActivity;
+
+    private boolean mDisableSetPadding = false;
 
     public NavigableAppWidgetHostView(Context context) {
         super(context);
@@ -147,6 +146,22 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
     }
 
     @Override
+    public void setAppWidget(int appWidgetId, AppWidgetProviderInfo info) {
+        // Prevent default padding being set on the view based on provider info. Launcher manages
+        // its own widget spacing
+        mDisableSetPadding = true;
+        super.setAppWidget(appWidgetId, info);
+        mDisableSetPadding = false;
+    }
+
+    @Override
+    public void setPadding(int left, int top, int right, int bottom) {
+        if (!mDisableSetPadding) {
+            super.setPadding(left, top, right, bottom);
+        }
+    }
+
+    @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
         return mChildrenFocused;
     }
@@ -195,26 +210,6 @@ public abstract class NavigableAppWidgetHostView extends AppWidgetHostView
     public void getWorkspaceVisualDragBounds(Rect bounds) {
         int width = (int) (getMeasuredWidth() * mScaleToFit);
         int height = (int) (getMeasuredHeight() * mScaleToFit);
-
-        getWidgetInset(mActivity.getDeviceProfile(), mTempRect);
-        bounds.set(mTempRect.left, mTempRect.top, width - mTempRect.right,
-                height - mTempRect.bottom);
-    }
-
-    /**
-     * Widgets have padding added by the system. We may choose to inset this padding if the grid
-     * supports it.
-     */
-    public void getWidgetInset(DeviceProfile grid, Rect out) {
-        if (!grid.shouldInsetWidgets()) {
-            out.setEmpty();
-            return;
-        }
-        AppWidgetProviderInfo info = getAppWidgetInfo();
-        if (info == null) {
-            out.set(grid.inv.defaultWidgetPadding);
-        } else {
-            AppWidgetHostView.getDefaultPaddingForWidget(getContext(), info.provider, out);
-        }
+        bounds.set(0, 0, width, height);
     }
 }

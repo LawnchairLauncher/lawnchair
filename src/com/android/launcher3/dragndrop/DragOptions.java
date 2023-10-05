@@ -78,5 +78,12 @@ public class DragOptions {
          *                    This will be true if the condition was met, otherwise false.
          */
         void onPreDragEnd(DropTarget.DragObject dragObject, boolean dragStarted);
+
+        /**
+         * The offset points that should be overridden to update the dragLayer.
+         */
+        default Point getDragOffset() {
+            return new Point(0,0);
+        }
     }
 }

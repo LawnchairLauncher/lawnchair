@@ -29,6 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"主畫面"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"分割畫面"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"「%1$s」的應用程式資訊"</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"儲存應用程式配對"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"按住即可移動小工具。"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"輕觸兩下並按住即可移動小工具或使用自訂操作。"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -49,6 +50,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"個人"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"工作"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"對話"</string>
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"做筆記"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"實用資訊隨手可得"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"只要將小工具新增到主畫面，就可以直接查看資訊，不必開啟應用程式"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"輕觸即可變更小工具設定"</string>
@@ -80,7 +82,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"允許應用程式讀取主畫面中的設定和捷徑。"</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"寫入主畫面設定和捷徑"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"允許應用程式變更主畫面中的設定和捷徑。"</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> 無法撥打電話"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"無法載入小工具"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"小工具設定"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"輕觸即可完成設定"</string>
@@ -100,6 +101,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"資料夾：<xliff:g id="NAME">%1$s</xliff:g>，<xliff:g id="SIZE">%2$d</xliff:g> 個以上的項目"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"桌布"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"桌布和樣式"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"編輯主畫面"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"主畫面設定"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"已由你的管理員停用"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"允許旋轉主畫面"</string>
@@ -161,12 +163,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"工作應用程式會加上標記，且你的 IT 管理員可以看到這類應用程式"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"我知道了"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"系統已暫停工作應用程式"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"你將不會收到工作應用程式的通知"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"工作應用程式不會消耗電量、無法傳送通知，也無法存取你的位置資訊"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"工作應用程式已關閉。工作應用程式不會消耗電量、無法傳送通知，也無法存取你的位置資訊"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"你將不會收到工作應用程式的訊息或通知，也無法使用工作應用程式接聽來電"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"工作應用程式會加上標記，且你的 IT 管理員可以看到這類應用程式"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"我知道了"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"暫停工作應用程式"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"開啟工作應用程式"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"取消暫停"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"篩選器"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"搜尋手機內容"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"搜尋平板電腦內容"</string>

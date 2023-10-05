@@ -44,43 +44,49 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Saran aplikasi diaktifkan"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Saran aplikasi dinonaktifkan"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Aplikasi yang diprediksi: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Pastikan Anda menggeser dari tepi ujung kanan atau ujung kiri."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Pastikan Anda menggeser dari tepi kanan atau kiri ke tengah layar, lalu lepaskan."</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Putar perangkat Anda"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Putar perangkat Anda untuk menyelesaikan tutorial navigasi gestur"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Pastikan Anda menggeser dari tepi ujung kanan atau ujung kiri"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Pastikan Anda menggeser dari tepi kanan atau kiri ke tengah layar, lalu lepaskan"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Anda telah belajar cara geser dari kanan untuk kembali. Berikutnya, pelajari cara beralih aplikasi."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Anda telah menyelesaikan gestur kembali."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Pastikan Anda tidak menggeser terlalu dekat ke bagian bawah layar."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Anda telah menyelesaikan gestur kembali"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Pastikan Anda tidak menggeser terlalu dekat ke bagian bawah layar"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Untuk mengubah sensitivitas gestur kembali, buka Setelan"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Geser untuk kembali"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Untuk kembali ke layar yang sebelumnya dibuka, geser dari tepi kiri atau kanan ke tengah layar."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Untuk kembali ke layar terakhir, geser dengan 2 jari dari tepi kiri atau kanan ke tengah layar."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Kembali"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pastikan Anda menggeser ke atas dari tepi bawah layar."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pastikan Anda tidak menjeda sebelum melepaskan."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Pastikan Anda menggeser lurus ke atas."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Anda telah menyelesaikan gestur menuju Layar utama. Selanjutnya, pelajari cara beralih kembali."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Anda telah menyelesaikan gestur menuju Layar utama."</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Geser dari tepi kiri atau kanan ke tengah layar"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Pastikan Anda menggeser ke atas dari tepi bawah layar"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Pastikan Anda tidak berhenti sebelum melepaskan sentuhan"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Pastikan Anda menggeser lurus ke atas"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Anda telah menyelesaikan gestur buka layar utama. Berikutnya, pelajari cara melakukan gestur kembali."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Anda telah menyelesaikan gestur buka layar utama"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Geser untuk beralih ke layar utama"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Geser ke atas dari bagian bawah layar. Gestur ini akan selalu membawa Anda ke Layar utama."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Geser ke atas dengan 2 jari dari bawah layar. Gestur ini akan selalu membawa Anda ke Layar utama."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Buka layar utama"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Untuk membuka layar utama kapan saja, geser ke atas dari bagian bawah layar"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Pastikan Anda menggeser ke atas dari tepi bawah layar."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Coba tahan jendela lebih lama sebelum melepaskan."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Pastikan Anda menggeser lurus ke atas, lalu menjedanya."</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Geser ke atas dari bagian bawah layar"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Bagus."</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Pastikan Anda menggeser ke atas dari tepi bawah layar"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Coba tahan jendela lebih lama sebelum melepaskan"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Pastikan Anda menggeser lurus ke atas, lalu berhenti sejenak"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Anda telah mempelajari cara menggunakan gestur. Untuk menonaktifkan gestur, buka Setelan."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Anda telah menyelesaikan gestur beralih aplikasi."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Anda telah menyelesaikan gestur beralih aplikasi"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Geser untuk beralih aplikasi"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Untuk beralih dari satu aplikasi ke aplikasi lain, geser ke atas dari bagian bawah layar, tahan, lalu lepaskan."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Untuk beralih antar-aplikasi, geser ke atas dengan 2 jari dari bawah layar, tahan, lalu lepaskan."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Beralih aplikasi"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Geser ke atas dari bagian bawah layar, tahan, kemudian lepaskan"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Bagus."</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Semua siap"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Selesai"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Setelan"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Coba lagi"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Bagus!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Tutorial <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
-    <string name="allset_title" msgid="5021126669778966707">"Semua siap."</string>
-    <string name="allset_hint" msgid="459504134589971527">"Geser ke atas untuk beralih ke layar utama"</string>
+    <string name="allset_title" msgid="5021126669778966707">"Selesai!"</string>
+    <string name="allset_hint" msgid="459504134589971527">"Geser ke atas untuk membuka Layar utama"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Ketuk tombol layar utama untuk membuka layar utama"</string>
     <string name="allset_description_generic" msgid="5385500062202019855">"Anda sudah siap untuk mulai menggunakan <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"perangkat"</string>
@@ -97,15 +103,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Lewati"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Putar layar"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Pengantar Taskbar"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Edukasi taskbar ditampilkan"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Edukasi taskbar ditutup"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Tarik aplikasi ke samping untuk menggunakan 2 aplikasi sekaligus"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Geser perlahan ke atas untuk menampilkan Taskbar"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Dapatkan saran aplikasi berdasarkan rutinitas Anda"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Aktifkan navigasi gestur di Setelan untuk menyembunyikan otomatis Taskbar"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Lakukan lebih banyak dengan Taskbar"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Berikutnya"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Kembali"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Tutup"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Selesai"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Layar utama"</string>
@@ -119,6 +121,9 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Taskbar ditampilkan"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Taskbar disembunyikan"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Menu navigasi"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Selalu tampilkan Taskbar"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Ubah mode navigasi"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Pemisah Taskbar"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Pindahkan ke atas/kiri"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Pindahkan ke bawah/kanan"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Tampilkan # aplikasi lain.}other{Tampilkan # aplikasi lain.}}"</string>

@@ -572,6 +572,13 @@ public class FloatingIconView extends FrameLayout implements
     }
 
     /**
+     * Resets the static icon load result used for preloading the icon for a launching app.
+     */
+    public static void resetIconLoadResult() {
+        sIconLoadResult = null;
+    }
+
+    /**
      * Creates a floating icon view for {@param originalView}.
      * @param originalView The view to copy
      * @param visibilitySyncView A view whose visibility should update in sync with originalView.
@@ -608,7 +615,7 @@ public class FloatingIconView extends FrameLayout implements
             }
             view.setOriginalDrawableBackground(view.mIconLoadResult.btvDrawable);
         }
-        sIconLoadResult = null;
+        resetIconLoadResult();
 
         // Match the position of the original view.
         view.matchPositionOf(launcher, originalView, isOpening, positionOut);

@@ -44,35 +44,41 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Programvoorstelle is geaktiveer"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Programvoorstelle is gedeaktiveer"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Voorspelde program: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Maak seker dat jy van die rand heel regs of heel links af swiep."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Maak seker dat jy van die regter- of linkerrand na die middel van die skerm swiep en laat los."</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Draai jou toestel"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Draai asseblief jou toestel om die tutoriaal oor gebaarnavigasie te voltooi"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Maak seker dat jy van die rand heel regs of heel links af swiep"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Maak seker dat jy van die regter- of linkerrand af na die middel van die skerm toe swiep en laat los"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Jy het geleer hoe om van regs af te swiep om terug te gaan. Nou kan jy leer hoe om tussen apps te wissel."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Jy het die \"gaan terug\"-gebaar voltooi."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Maak seker dat jy nie te naby aan die onderkant van die skerm swiep nie."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Jy het die Gaan Terug-gebaar voltooi"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Maak seker dat jy nie te naby aan die onderkant van die skerm swiep nie"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Gaan na Instellings om sensitiwiteit van teruggebaar te verander"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Swiep om terug te gaan"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Swiep van die linker- of regterrand na die middel van die skerm om na die vorige skerm terug te gaan."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Swiep met 2 vingers van die linker- of regterkant van die skerm af na die middel toe om terug te keer na die vorige skerm."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Gaan terug"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Maak seker dat jy van die onderrand van die skerm af opswiep."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Maak seker jy onderbreek nie voordat jy laat los nie."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Maak seker jy swiep reguit op."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Jy het die \"gaan na tuisskerm\"-gebaar voltooi. Nou kan jy leer hoe om terug te gaan."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Jy het die \"gaan na tuisskerm\"-gebaar voltooi."</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Swiep van die linker- of regterrand af na die middel van die skerm toe"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Maak seker dat jy van die onderrand van die skerm af opswiep"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Maak seker jy hou nie stil voordat jy laat los nie"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Maak seker jy swiep reguit op"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Jy het die Gaan na Tuisskerm-gebaar voltooi. Nou kan jy leer hoe om terug te gaan."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Jy het die Gaan na Tuisskerm-gebaar voltooi"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Swiep om na tuisskerm toe te gaan"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Swiep op van die onderkant van jou skerm af. Hierdie gebaar neem jou altyd na die tuisskerm toe."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Swiep met 2 vingers op van die onderkant van die skerm af. Dié gebaar neem jou altyd na die tuisskerm toe."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Gaan na tuisskerm"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Swiep enige tyd van die onderkant van jou skerm af op om na jou tuisskerm toe te gaan"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Maak seker dat jy van die onderrand van die skerm af opswiep."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Probeer om die venster langer te hou voordat jy laat los."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Maak seker dat jy reguit opswiep en dan onderbreek."</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Swiep van die onderkant van jou skerm af op"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Knap gedaan!"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Maak seker dat jy van die onderrand van die skerm af opswiep"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Probeer om die venster langer te hou voordat jy laat los"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Maak seker dat jy reguit opswiep en dan stilhou"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Jy het geleer hoe om gebare te gebruik. Gaan na Instellings om gebare af te skakel."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Jy het die \"wissel tussen programme\"-gebaar voltooi."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Jy het die Wissel Apps-gebaar voltooi"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Swiep om tussen programme te wissel"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Swiep van die onderkant van jou skerm af op, hou en laat los dan om tussen programme te wissel."</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Swiep met 2 vingers op van die onderkant van jou skerm af, hou en laat los dan om tussen programme te wissel."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Swiep van die onderkant van jou skerm af op, hou en laat los dan om tussen apps te wissel."</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Swiep met 2 vingers op van die onderkant van jou skerm af, hou en laat los dan om tussen apps te wissel."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Wissel apps"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Swiep van die onderkant van jou skerm af op, hou, en los dan"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Welgedaan!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Gereed"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Klaar"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Instellings"</string>
@@ -97,15 +103,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Slaan oor"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Draai skerm"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Taakbalkopvoeding"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Taakbalkopvoeding het verskyn"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Taakbalkopvoeding is toegemaak"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Sleep ’n app na die kant toe om 2 apps tegelyk te gebruik"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Stadigswiep op om die Taakbalk te wys"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Kry appvoorstelle op grond van jou roetine"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Skakel gebaarnavigasie in Instellings aan om die Taakbalk outomaties te versteek"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Doen meer met die Taakbalk"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Volgende"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Terug"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Maak toe"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Klaar"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Tuis"</string>
@@ -119,6 +121,9 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Taakbalk word gewys"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Taakbalk is versteek"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Navigasiebalk"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Wys Taakbalk altyd"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Verander navigasiemodus"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Taakbalkverdeler"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Skuif na links bo"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Skuif na regs onder"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Wys nog # app.}other{Wys nog # apps.}}"</string>

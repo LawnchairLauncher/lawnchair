@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android">
+    <item android:state_hovered="false" android:color="?androidprv:attr/materialColorSurfaceBright" />
+    <item android:state_hovered="true" android:color="?androidprv:attr/materialColorSurfaceVariant" />
+</selector>

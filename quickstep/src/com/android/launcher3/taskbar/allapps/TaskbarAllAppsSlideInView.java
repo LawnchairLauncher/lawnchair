@@ -19,14 +19,17 @@ import static com.android.launcher3.anim.Interpolators.EMPHASIZED;
 
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.animation.Interpolator;
+import android.window.OnBackInvokedDispatcher;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsViewController.TaskbarAllAppsCallbacks;
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayContext;
 import com.android.launcher3.views.AbstractSlideInView;
@@ -97,6 +100,11 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
         mAppsView = findViewById(R.id.apps_view);
         mContent = mAppsView;
 
+        // Setup header protection for search bar, if enabled.
+        if (FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR.get()) {
+            mAppsView.setOnInvalidateHeaderListener(this::invalidate);
+        }
+
         DeviceProfile dp = mActivityContext.getDeviceProfile();
         setShiftRange(dp.allAppsShiftRange);
     }
@@ -105,12 +113,42 @@ public class TaskbarAllAppsSlideInView extends AbstractSlideInView<TaskbarOverla
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         mActivityContext.addOnDeviceProfileChangeListener(this);
+        if (FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
+            mAppsView.getAppsRecyclerViewContainer().setOutlineProvider(mViewOutlineProvider);
+            mAppsView.getAppsRecyclerViewContainer().setClipToOutline(true);
+            OnBackInvokedDispatcher dispatcher = findOnBackInvokedDispatcher();
+            if (dispatcher != null) {
+                dispatcher.registerOnBackInvokedCallback(
+                        OnBackInvokedDispatcher.PRIORITY_DEFAULT, this);
+            }
+        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mActivityContext.removeOnDeviceProfileChangeListener(this);
+        if (FeatureFlags.ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION.get()) {
+            mAppsView.getAppsRecyclerViewContainer().setOutlineProvider(null);
+            mAppsView.getAppsRecyclerViewContainer().setClipToOutline(false);
+            OnBackInvokedDispatcher dispatcher = findOnBackInvokedDispatcher();
+            if (dispatcher != null) {
+                dispatcher.unregisterOnBackInvokedCallback(this);
+            }
+        }
+    }
+
+    @Override
+    protected void dispatchDraw(Canvas canvas) {
+        mAppsView.drawOnScrimWithScale(canvas, mSlideInViewScale.value);
+        super.dispatchDraw(canvas);
+    }
+
+    @Override
+    protected void onScaleProgressChanged() {
+        super.onScaleProgressChanged();
+        mAppsView.setClipChildren(!mIsBackProgressing);
+        mAppsView.getAppsRecyclerViewContainer().setClipChildren(!mIsBackProgressing);
     }
 
     @Override

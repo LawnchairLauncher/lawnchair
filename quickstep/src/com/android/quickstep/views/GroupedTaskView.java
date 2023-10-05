@@ -223,13 +223,11 @@ public class GroupedTaskView extends TaskView {
         // Callbacks run from remote animation when recents animation not currently running
         InteractionJankMonitorWrapper.begin(this,
                 InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER, "Enter form GroupedTaskView");
-        recentsView.getSplitSelectController().launchTasks(this /*groupedTaskView*/,
-                success -> {
-                    endCallback.executeAllAndDestroy();
-                    InteractionJankMonitorWrapper.end(
-                            InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
-                },
-                false /* freezeTaskList */);
+        launchTask(success -> {
+            endCallback.executeAllAndDestroy();
+            InteractionJankMonitorWrapper.end(
+                    InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
+        }, false /* freezeTaskList */);
 
         // Callbacks get run from recentsView for case when recents animation already running
         recentsView.addSideTaskLaunchCallback(endCallback);
@@ -237,10 +235,10 @@ public class GroupedTaskView extends TaskView {
     }
 
     @Override
-    public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
-        getRecentsView().getSplitSelectController().launchTasks(mTask.key.id, mSecondaryTask.key.id,
-                SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT, callback, freezeTaskList,
-                getSplitRatio());
+    public void launchTask(@NonNull Consumer<Boolean> callback, boolean isQuickswitch) {
+        getRecentsView().getSplitSelectController().launchExistingSplitPair(this, mTask.key.id,
+                mSecondaryTask.key.id, SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT,
+                callback, isQuickswitch, getSplitRatio());
     }
 
     @Override

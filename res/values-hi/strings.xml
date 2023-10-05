@@ -29,6 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"होम स्क्रीन"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"स्प्लिट स्क्रीन"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s के लिए ऐप्लिकेशन की जानकारी"</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"साथ में इस्तेमाल किए जा सकने वाले ऐप्लिकेशन की जानकारी सेव करें"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"किसी विजेट को एक से दूसरी जगह ले जाने के लिए, उसे दबाकर रखें."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"किसी विजेट को एक से दूसरी जगह ले जाने के लिए, उस पर दो बार टैप करके दबाकर रखें या पसंद के मुताबिक कार्रवाइयां इस्तेमाल करें."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -47,14 +48,15 @@
     <string name="no_widgets_available" msgid="4337693382501046170">"विजेट और शॉर्टकट उपलब्ध नहीं हैं"</string>
     <string name="no_search_results" msgid="3787956167293097509">"कोई विजेट या शॉर्टकट नहीं मिला"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"निजी विजेट"</string>
-    <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ऑफ़िस"</string>
+    <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"वर्क विजेट"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"बातचीत"</string>
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"नोट बनाने से जुड़े विजेट"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"काम की जानकारी आसानी से पाएं"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"ऐप्लिकेशन को खोले बिना उनकी जानकारी पाने के लिए, होम स्क्रीन पर विजेट जोड़े जा सकते हैं"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेट की सेटिंग में बदलाव करने के लिए टैप करें"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"ठीक है"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"विजेट की सेटिंग में बदलाव करें"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ऐप सर्च करें"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ऐप्लिकेशन खोजें"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ऐप्लिकेशन लोड हो रहे हैं…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" से मिलता-जुलता कोई ऐप्लिकेशन नहीं मिला"</string>
     <string name="label_application" msgid="8531721983832654978">"ऐप्लिकेशन"</string>
@@ -80,7 +82,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"इससे ऐप्लिकेशन, होम स्क्रीन की सेटिंग और शॉर्टकट पढ़ पाएगा."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"होम स्क्रीन की सेटिंग और शॉर्टकट में बदलाव करने की अनुमति"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"इससे ऐप्लिकेशन, होम स्क्रीन की सेटिंग और शॉर्टकट बदल पाएगा."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> को फ़ोन कॉल करने की अनुमति नहीं है"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"विजेट को लोड नहीं किया जा सका"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"विजेट की सेटिंग"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"सेट अप पूरा करने के लिए टैप करें"</string>
@@ -100,6 +101,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"फ़ोल्डर: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> या इससे ज़्यादा आइटम"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"वॉलपेपर"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"वॉलपेपर और स्टाइल"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"होम स्क्रीन में बदलाव करें"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"होम स्क्रीन की सेटिंग"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपके एडमिन ने बंद किया हुआ है"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"होम स्क्रीन घुमाने की अनुमति दें"</string>
@@ -161,12 +163,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"वर्क ऐप्लिकेशन बैज किए गए हैं. आईटी एडमिन इन्हें देख सकता है"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ठीक है"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"वर्क ऐप्लिकेशन रोके गए"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"आपको वर्क ऐप्लिकेशन से सूचनाएं नहीं मिलेंगी"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"आपके वर्क ऐप्लिकेशन, आपको सूचनाएं नहीं भेज सकते. साथ ही, आपकी बैटरी का इस्तेमाल या आपकी जगह की जानकारी को ऐक्सेस भी नहीं कर सकते"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन बंद हैं. ये ऐप्लिकेशन, आपको सूचनाएं नहीं भेज सकते. साथ ही, आपकी बैटरी का इस्तेमाल या आपकी जगह की जानकारी को ऐक्सेस भी नहीं कर सकते"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"आपको वर्क ऐप्लिकेशन से फ़ोन कॉल, टेक्स्ट मैसेज या सूचनाएं नहीं मिलेंगी"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन बैज किए गए हैं और आईटी एडमिन को दिख रहे हैं"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ठीक है"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"वर्क ऐप्लिकेशन रोकें"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"ऑफ़िस के काम से जुड़े ऐप्लिकेशन चालू करें"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"चालू करें"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फ़िल्टर"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"अपने फ़ोन में खोजें"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"अपने टैबलेट में खोजें"</string>

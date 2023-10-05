@@ -16,6 +16,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -30,7 +31,7 @@
       android:layout_height="@dimen/system_shortcut_icon_size"
       android:layout_marginStart="@dimen/task_menu_option_start_margin"
       android:layout_gravity="center_horizontal"
-      android:backgroundTint="?android:attr/textColorPrimary"/>
+      android:backgroundTint="?androidprv:attr/materialColorOnSurface"/>
 
     <TextView
         style="@style/BaseIcon"
@@ -39,7 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/task_menu_option_start_margin"
         android:textSize="14sp"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="?androidprv:attr/materialColorOnSurface"
         android:focusable="false" />
 
 </LinearLayout>

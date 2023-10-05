@@ -16,8 +16,10 @@
 package com.android.launcher3.taskbar
 
 import com.android.launcher3.taskbar.allapps.TaskbarAllAppsController
+import com.android.launcher3.taskbar.bubbles.BubbleControllers
 import com.android.launcher3.taskbar.overlay.TaskbarOverlayController
 import com.android.systemui.shared.rotation.RotationButtonController
+import java.util.Optional
 import org.junit.Before
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
@@ -40,7 +42,6 @@ abstract class TaskbarBaseTestCase {
     @Mock lateinit var taskbarKeyguardController: TaskbarKeyguardController
     @Mock lateinit var stashedHandleViewController: StashedHandleViewController
     @Mock lateinit var taskbarStashController: TaskbarStashController
-    @Mock lateinit var taskbarEduController: TaskbarEduController
     @Mock lateinit var taskbarAutohideSuspendController: TaskbarAutohideSuspendController
     @Mock lateinit var taskbarPopupController: TaskbarPopupController
     @Mock
@@ -54,6 +55,8 @@ abstract class TaskbarBaseTestCase {
     @Mock lateinit var taskbarOverlayController: TaskbarOverlayController
     @Mock lateinit var taskbarEduTooltipController: TaskbarEduTooltipController
     @Mock lateinit var keyboardQuickSwitchController: KeyboardQuickSwitchController
+    @Mock lateinit var taskbarPinningController: TaskbarDividerPopupController
+    @Mock lateinit var optionalBubbleControllers: Optional<BubbleControllers>
 
     lateinit var taskbarControllers: TaskbarControllers
 
@@ -81,7 +84,6 @@ abstract class TaskbarBaseTestCase {
                 taskbarKeyguardController,
                 stashedHandleViewController,
                 taskbarStashController,
-                taskbarEduController,
                 taskbarAutohideSuspendController,
                 taskbarPopupController,
                 taskbarForceVisibleImmersiveController,
@@ -93,7 +95,9 @@ abstract class TaskbarBaseTestCase {
                 taskbarSpringOnStashController,
                 taskbarRecentAppsController,
                 taskbarEduTooltipController,
-                keyboardQuickSwitchController
+                keyboardQuickSwitchController,
+                taskbarPinningController,
+                optionalBubbleControllers,
             )
     }
 }

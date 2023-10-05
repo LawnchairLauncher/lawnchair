@@ -61,7 +61,7 @@ public class PluginManagerWrapper {
         List<String> privilegedPlugins = Collections.emptyList();
         PluginInstance.Factory instanceFactory = new PluginInstance.Factory(
                 getClass().getClassLoader(), new PluginInstance.InstanceFactory<>(),
-                new PluginInstance.VersionChecker(), privilegedPlugins,
+                new PluginInstance.VersionCheckerImpl(), privilegedPlugins,
                 Utilities.IS_DEBUG_DEVICE);
         PluginActionManager.Factory instanceManagerFactory = new PluginActionManager.Factory(
                 c, c.getPackageManager(), c.getMainExecutor(), MODEL_EXECUTOR,

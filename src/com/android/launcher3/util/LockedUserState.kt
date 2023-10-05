@@ -7,6 +7,7 @@ import android.os.UserManager
 import androidx.annotation.VisibleForTesting
 
 class LockedUserState(private val mContext: Context) : SafeCloseable {
+    val isUserUnlockedAtLauncherStartup: Boolean
     var isUserUnlocked: Boolean
         private set
     private val mUserUnlockedActions: RunnableList = RunnableList()
@@ -20,10 +21,17 @@ class LockedUserState(private val mContext: Context) : SafeCloseable {
     }
 
     init {
+        // 1) when user reboots devices, launcher process starts at lock screen and both
+        // isUserUnlocked and isUserUnlockedAtLauncherStartup are init as false. After user unlocks
+        // screen, isUserUnlocked will be updated to true via Intent.ACTION_USER_UNLOCKED,
+        // yet isUserUnlockedAtLauncherStartup will remains as false.
+        // 2) when launcher process restarts after user has unlocked screen, both variable are
+        // init as true and will not change.
         isUserUnlocked =
             mContext
                 .getSystemService(UserManager::class.java)!!
                 .isUserUnlocked(Process.myUserHandle())
+        isUserUnlockedAtLauncherStartup = isUserUnlocked
         if (isUserUnlocked) {
             notifyUserUnlocked()
         } else {

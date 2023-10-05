@@ -18,30 +18,29 @@ package com.android.launcher3;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROPPED_ON_CANCEL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ITEM_DROPPED_ON_REMOVE;
-import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_UNDO;
 
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.logging.StatsLogManager;
-import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
-import com.android.launcher3.util.IntSet;
-import com.android.launcher3.views.Snackbar;
 
 public class DeleteDropTarget extends ButtonDropTarget {
 
     private final StatsLogManager mStatsLogManager;
 
     private StatsLogManager.LauncherEvent mLauncherEvent;
+
+    public DeleteDropTarget(Context context) {
+        this(context, null, 0);
+    }
 
     public DeleteDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -120,7 +119,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
     @Override
     public void onDrop(DragObject d, DragOptions options) {
         if (canRemove(d.dragInfo)) {
-            mLauncher.getModelWriter().prepareToUndoDelete();
+            mDropTargetHandler.prepareToUndoDelete();
         }
         super.onDrop(d, options);
         mStatsLogManager.logger().withInstanceId(d.logInstanceId)
@@ -131,26 +130,8 @@ public class DeleteDropTarget extends ButtonDropTarget {
     public void completeDrop(DragObject d) {
         ItemInfo item = d.dragInfo;
         if (canRemove(item)) {
-            ItemInfo pageItem = item;
-            if (item.container <= 0) {
-                View v = mLauncher.getWorkspace().getHomescreenIconByItemId(item.container);
-                if (v != null) {
-                    pageItem = (ItemInfo) v.getTag();
-                }
-            }
-            IntSet pageIds = pageItem.container == Favorites.CONTAINER_DESKTOP
-                    ? IntSet.wrap(pageItem.screenId)
-                    : mLauncher.getWorkspace().getCurrentPageScreenIds();
-
             onAccessibilityDrop(null, item);
-            ModelWriter modelWriter = mLauncher.getModelWriter();
-            Runnable onUndoClicked = () -> {
-                mLauncher.setPagesToBindSynchronously(pageIds);
-                modelWriter.abortDelete();
-                mLauncher.getStatsLogManager().logger().log(LAUNCHER_UNDO);
-            };
-            Snackbar.show(mLauncher, R.string.item_removed, R.string.undo,
-                    modelWriter::commitDelete, onUndoClicked);
+            mDropTargetHandler.onDeleteComplete(item);
         }
     }
 
@@ -162,9 +143,7 @@ public class DeleteDropTarget extends ButtonDropTarget {
         // Remove the item from launcher and the db, we can ignore the containerInfo in this call
         // because we already remove the drag view from the folder (if the drag originated from
         // a folder) in Folder.beginDrag()
-        mLauncher.removeItem(view, item, true /* deleteFromDb */, "removed by accessibility drop");
-        mLauncher.getWorkspace().stripEmptyScreens();
-        mLauncher.getDragLayer()
-                .announceForAccessibility(getContext().getString(R.string.item_removed));
+        CharSequence announcement = getContext().getString(R.string.item_removed);
+        mDropTargetHandler.onAccessibilityDelete(view, item, announcement);
     }
 }

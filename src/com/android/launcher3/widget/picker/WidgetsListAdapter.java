@@ -42,7 +42,6 @@ import androidx.recyclerview.widget.RecyclerView.Adapter;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
 import com.android.launcher3.R;
-import com.android.launcher3.model.data.PackageItemInfo;
 import com.android.launcher3.recyclerview.ViewHolderBinder;
 import com.android.launcher3.util.LabelComparator;
 import com.android.launcher3.util.PackageUserKey;
@@ -58,7 +57,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.OptionalInt;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
@@ -89,7 +87,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     private final SparseArray<ViewHolderBinder> mViewHolderBinders = new SparseArray<>();
     private final WidgetListBaseRowEntryComparator mRowComparator =
             new WidgetListBaseRowEntryComparator();
-    @Nullable private final WidgetsFullSheet.HeaderChangeListener mHeaderChangeListener;
+    @Nullable private WidgetsTwoPaneSheet.HeaderChangeListener mHeaderChangeListener;
 
     private final List<WidgetsListBaseEntry> mAllEntries = new ArrayList<>();
     private ArrayList<WidgetsListBaseEntry> mVisibleEntries = new ArrayList<>();
@@ -107,8 +105,7 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     public WidgetsListAdapter(Context context, LayoutInflater layoutInflater,
             IntSupplier emptySpaceHeightProvider, OnClickListener iconClickListener,
             OnLongClickListener iconLongClickListener,
-            WidgetsFullSheet.HeaderChangeListener headerChangeListener) {
-        mHeaderChangeListener = headerChangeListener;
+            boolean isTwoPane) {
         mContext = context;
         mMaxHorizontalSpan = WidgetSizes.getWidgetSizePx(
                 ActivityContext.lookupContext(context).getDeviceProfile(),
@@ -122,10 +119,15 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
                 VIEW_TYPE_WIDGETS_HEADER,
                 new WidgetsListHeaderViewHolderBinder(
                         layoutInflater, /* onHeaderClickListener= */ this,
-                        headerChangeListener != null));
+                        isTwoPane));
         mViewHolderBinders.put(
                 VIEW_TYPE_WIDGETS_SPACE,
                 new WidgetsSpaceViewHolderBinder(emptySpaceHeightProvider));
+    }
+
+    public void setHeaderChangeListener(WidgetsTwoPaneSheet.HeaderChangeListener
+            headerChangeListener) {
+        mHeaderChangeListener = headerChangeListener;
     }
 
     @Override
@@ -170,9 +172,6 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
         mAllEntries.clear();
         mAllEntries.add(new WidgetListSpaceEntry());
         tempEntries.stream().sorted(mRowComparator).forEach(mAllEntries::add);
-        if (shouldClearVisibleEntries()) {
-            mVisibleEntries.clear();
-        }
         updateVisibleEntries();
     }
 
@@ -420,29 +419,6 @@ public class WidgetsListAdapter extends Adapter<ViewHolder> implements OnHeaderC
     public void setMaxHorizontalSpansPxPerRow(@Px int maxHorizontalSpan) {
         mMaxHorizontalSpan = maxHorizontalSpan;
         updateVisibleEntries();
-    }
-
-    /**
-     * Returns {@code true} if there is a change in {@link #mAllEntries} that results in an
-     * invalidation of {@link #mVisibleEntries}. e.g. there is change in the device language.
-     */
-    private boolean shouldClearVisibleEntries() {
-        Map<PackageUserKey, PackageItemInfo> packagesInfo =
-                mAllEntries.stream()
-                        .filter(entry -> entry instanceof WidgetsListHeaderEntry)
-                        .map(entry -> entry.mPkgItem)
-                        .collect(Collectors.toMap(
-                                entry -> PackageUserKey.fromPackageItemInfo(entry),
-                                entry -> entry));
-        for (WidgetsListBaseEntry visibleEntry: mVisibleEntries) {
-            PackageUserKey key = PackageUserKey.fromPackageItemInfo(visibleEntry.mPkgItem);
-            PackageItemInfo packageItemInfo = packagesInfo.get(key);
-            if (packageItemInfo != null
-                    && !visibleEntry.mPkgItem.title.equals(packageItemInfo.title)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /** Comparator for sorting WidgetListRowEntry based on package title. */

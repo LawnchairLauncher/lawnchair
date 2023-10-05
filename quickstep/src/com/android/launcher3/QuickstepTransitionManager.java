@@ -18,6 +18,7 @@ package com.android.launcher3;
 
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_HOME;
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_STANDARD;
+import static android.app.WindowConfiguration.WINDOWING_MODE_MULTI_WINDOW;
 import static android.provider.Settings.Secure.LAUNCHER_TASKBAR_EDUCATION_SHOWING;
 import static android.view.RemoteAnimationTarget.MODE_CLOSING;
 import static android.view.RemoteAnimationTarget.MODE_OPENING;
@@ -57,6 +58,7 @@ import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VAL
 import static com.android.launcher3.util.window.RefreshRateTracker.getSingleFrameMs;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.launcher3.views.FloatingIconView.getFloatingIconView;
+import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
 import static com.android.quickstep.TaskViewUtils.findTaskViewToLaunch;
 import static com.android.systemui.shared.system.QuickStepContract.getWindowCornerRadius;
 import static com.android.systemui.shared.system.QuickStepContract.supportsRoundedCornersOnWindows;
@@ -143,6 +145,7 @@ import com.android.quickstep.util.StaggeredWorkspaceAnim;
 import com.android.quickstep.util.SurfaceTransaction;
 import com.android.quickstep.util.SurfaceTransaction.SurfaceProperties;
 import com.android.quickstep.util.SurfaceTransactionApplier;
+import com.android.quickstep.util.TaskRestartedDuringLaunchListener;
 import com.android.quickstep.util.WorkspaceRevealAnim;
 import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
@@ -228,6 +231,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private RemoteAnimationProvider mRemoteAnimationProvider;
     // Strong refs to runners which are cleared when the launcher activity is destroyed
     private RemoteAnimationFactory mWallpaperOpenRunner;
+    private RemoteAnimationFactory mAppLaunchRunner;
     private RemoteAnimationFactory mKeyguardGoingAwayRunner;
 
     private RemoteAnimationFactory mWallpaperOpenTransitionRunner;
@@ -297,17 +301,23 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         boolean fromRecents = isLaunchingFromRecents(v, null /* targets */);
         RunnableList onEndCallback = new RunnableList();
 
-        RemoteAnimationFactory delegateRunner = new AppLaunchAnimationRunner(v, onEndCallback);
+        // Handle the case where an already visible task is launched which results in no transition
+        TaskRestartedDuringLaunchListener restartedListener =
+                new TaskRestartedDuringLaunchListener();
+        restartedListener.register(onEndCallback::executeAllAndDestroy);
+        onEndCallback.add(restartedListener::unregister);
+
+        mAppLaunchRunner = new AppLaunchAnimationRunner(v, onEndCallback);
         ItemInfo tag = (ItemInfo) v.getTag();
         if (tag != null && tag.shouldUseBackgroundAnimation()) {
             ContainerAnimationRunner containerAnimationRunner =
                     ContainerAnimationRunner.from(v, mStartingWindowListener, onEndCallback);
             if (containerAnimationRunner != null) {
-                delegateRunner = containerAnimationRunner;
+                mAppLaunchRunner = containerAnimationRunner;
             }
         }
         RemoteAnimationRunnerCompat runner = new LauncherAnimationRunner(
-                mHandler, delegateRunner, true /* startAtFrontOfQueue */);
+                mHandler, mAppLaunchRunner, true /* startAtFrontOfQueue */);
 
         // Note that this duration is a guess as we do not know if the animation will be a
         // recents launch or not for sure until we know the opening app targets.
@@ -320,7 +330,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         ActivityOptions options = ActivityOptions.makeRemoteAnimation(
                 new RemoteAnimationAdapter(runner, duration, statusBarTransitionDelay),
                 new RemoteTransition(runner.toRemoteTransition(),
-                        mLauncher.getIApplicationThread()));
+                        mLauncher.getIApplicationThread(), "QuickstepLaunch"));
         return new ActivityOptionsWrapper(options, onEndCallback);
     }
 
@@ -1036,7 +1046,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         boolean allowBlurringLauncher = mLauncher.getStateManager().getState() != OVERVIEW
                 && BlurUtils.supportsBlursOnWindows();
 
-        MyDepthController depthController = new MyDepthController(mLauncher);
+        LaunchDepthController depthController = new LaunchDepthController(mLauncher);
         ObjectAnimator backgroundRadiusAnim = ObjectAnimator.ofFloat(depthController.stateDepth,
                         MULTI_PROPERTY_VALUE, BACKGROUND_APP.getDepth(mLauncher))
                 .setDuration(APP_LAUNCH_DURATION);
@@ -1064,6 +1074,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     new SurfaceControl.Transaction().remove(dimLayer).apply()));
         }
 
+        backgroundRadiusAnim.addListener(
+                AnimatorListeners.forEndCallback(depthController::dispose));
+
         return backgroundRadiusAnim;
     }
 
@@ -1085,7 +1098,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * Adds remote animations to a {@link RemoteAnimationDefinition}. May be overridden to add
      * additional animations.
      */
-    protected void addRemoteAnimations(RemoteAnimationDefinition definition) {
+    private void addRemoteAnimations(RemoteAnimationDefinition definition) {
         mWallpaperOpenRunner = createWallpaperOpenRunner(false /* fromUnlock */);
         definition.addRemoteAnimation(WindowManager.TRANSIT_OLD_WALLPAPER_OPEN,
                 WindowConfiguration.ACTIVITY_TYPE_STANDARD,
@@ -1110,6 +1123,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * Registers remote animations used when closing apps to home screen.
      */
     public void registerRemoteTransitions() {
+        if (ENABLE_SHELL_TRANSITIONS) {
+            SystemUiProxy.INSTANCE.get(mLauncher).shareTransactionQueue();
+        }
         if (SEPARATE_RECENTS_ACTIVITY.get()) {
             return;
         }
@@ -1118,7 +1134,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             mLauncherOpenTransition = new RemoteTransition(
                     new LauncherAnimationRunner(mHandler, mWallpaperOpenTransitionRunner,
                             false /* startAtFrontOfQueue */).toRemoteTransition(),
-                    mLauncher.getIApplicationThread());
+                    mLauncher.getIApplicationThread(), "QuickstepLaunchHome");
 
             TransitionFilter homeCheck = new TransitionFilter();
             // No need to handle the transition that also dismisses keyguard.
@@ -1147,7 +1163,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         SystemUiProxy.INSTANCE.get(mLauncher).setStartingWindowListener(null);
     }
 
-    protected void unregisterRemoteAnimations() {
+    private void unregisterRemoteAnimations() {
         if (SEPARATE_RECENTS_ACTIVITY.get()) {
             return;
         }
@@ -1157,11 +1173,15 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             // Also clear strong references to the runners registered with the remote animation
             // definition so we don't have to wait for the system gc
             mWallpaperOpenRunner = null;
+            mAppLaunchRunner = null;
             mKeyguardGoingAwayRunner = null;
         }
     }
 
-    private void unregisterRemoteTransitions() {
+    protected void unregisterRemoteTransitions() {
+        if (ENABLE_SHELL_TRANSITIONS) {
+            SystemUiProxy.INSTANCE.get(mLauncher).unshareTransactionQueue();
+        }
         if (SEPARATE_RECENTS_ACTIVITY.get()) {
             return;
         }
@@ -1191,14 +1211,15 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         return false;
     }
 
-    private boolean hasMultipleTargetsWithMode(RemoteAnimationTarget[] targets, int mode) {
+    private boolean shouldPlayFallbackClosingAnimation(RemoteAnimationTarget[] targets) {
         int numTargets = 0;
         for (RemoteAnimationTarget target : targets) {
-            if (target.mode == mode) {
+            if (target.mode == MODE_CLOSING) {
                 numTargets++;
-            }
-            if (numTargets > 1) {
-                return true;
+                if (numTargets > 1 || target.windowConfiguration.getWindowingMode()
+                        == WINDOWING_MODE_MULTI_WINDOW) {
+                    return true;
+                }
             }
         }
         return false;
@@ -1465,13 +1486,13 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     RemoteAnimationTarget target = appTargets[i];
                     SurfaceProperties builder = transaction.forSurface(target.leash);
 
-                    if (target.localBounds != null) {
-                        tmpPos.set(target.localBounds.left, target.localBounds.top);
+                    if (target.screenSpaceBounds != null) {
+                        tmpPos.set(target.screenSpaceBounds.left, target.screenSpaceBounds.top);
                     } else {
                         tmpPos.set(target.position.x, target.position.y);
                     }
 
-                    final Rect crop = new Rect(target.screenSpaceBounds);
+                    final Rect crop = new Rect(target.localBounds);
                     crop.offsetTo(0, 0);
                     if (target.mode == MODE_CLOSING) {
                         tmpRect.set(target.screenSpaceBounds);
@@ -1585,7 +1606,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             boolean playFallBackAnimation = (launcherView == null
                     && launcherIsForceInvisibleOrOpening)
                     || mLauncher.getWorkspace().isOverlayShown()
-                    || hasMultipleTargetsWithMode(appTargets, MODE_CLOSING);
+                    || shouldPlayFallbackClosingAnimation(appTargets);
 
             boolean playWorkspaceReveal = true;
             boolean skipAllAppsScale = false;
@@ -1695,6 +1716,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                     QuickStepContract.getWindowCornerRadius(mLauncher),
                     false /* fromPredictiveBack */);
 
+            TaskViewUtils.createSplitAuxiliarySurfacesAnimator(nonAppTargets, false, null);
             mLauncher.clearForceInvisibleFlag(INVISIBLE_ALL);
             result.setAnimation(pair.second, mLauncher);
         }
@@ -1778,7 +1800,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 viewToUse = v;
             }
 
-            // TODO(b/265134143): create a CUJ type for interaction jank monitoring.
+            // The CUJ is logged by the click handler, so we don't log it inside the animation
+            // library.
             ActivityLaunchAnimator.Controller controllerDelegate =
                     ActivityLaunchAnimator.Controller.fromView(viewToUse, null /* cujType */);
 
@@ -1834,8 +1857,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
 
         @Override
-        public void onAnimationCancelled(boolean isKeyguardOccluded) {
-            mDelegate.onAnimationCancelled(isKeyguardOccluded);
+        public void onAnimationCancelled() {
+            mDelegate.onAnimationCancelled();
         }
     }
 
@@ -2024,16 +2047,14 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         }
     }
 
-    private static class MyDepthController extends DepthController {
-        MyDepthController(Launcher l) {
-            super(l);
+    private static class LaunchDepthController extends DepthController {
+        LaunchDepthController(QuickstepLauncher launcher) {
+            super(launcher);
             setCrossWindowBlursEnabled(
                     CrossWindowBlurListeners.getInstance().isCrossWindowBlurEnabled());
-        }
-
-        @Override
-        public void setSurface(SurfaceControl surface) {
-            super.setSurface(surface);
+            // Make sure that the starting value matches the current depth set by the main
+            // controller.
+            stateDepth.setValue(launcher.getDepthController().stateDepth.getValue());
         }
     }
 }

@@ -47,11 +47,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.LauncherProvider;
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.popup.RemoteActionShortcut;
 import com.android.launcher3.popup.SystemShortcut;
@@ -73,21 +69,14 @@ public final class WellbeingModel extends BgObjectWithLooper {
     private static final int[] RETRY_TIMES_MS = {5000, 15000, 30000};
     private static final boolean DEBUG = false;
 
-    private static final int UNKNOWN_MINIMAL_DEVICE_STATE = 0;
-    private static final int IN_MINIMAL_DEVICE = 2;
-
     // Welbeing contract
     private static final String PATH_ACTIONS = "actions";
-    private static final String PATH_MINIMAL_DEVICE = "minimal_device";
-    private static final String METHOD_GET_MINIMAL_DEVICE_CONFIG = "get_minimal_device_config";
     private static final String METHOD_GET_ACTIONS = "get_actions";
     private static final String EXTRA_ACTIONS = "actions";
     private static final String EXTRA_ACTION = "action";
     private static final String EXTRA_MAX_NUM_ACTIONS_SHOWN = "max_num_actions_shown";
     private static final String EXTRA_PACKAGES = "packages";
     private static final String EXTRA_SUCCESS = "success";
-    private static final String EXTRA_MINIMAL_DEVICE_STATE = "minimal_device_state";
-    private static final String DB_NAME_MINIMAL_DEVICE = "minimal.db";
 
     public static final MainThreadInitializedObject<WellbeingModel> INSTANCE =
             new MainThreadInitializedObject<>(WellbeingModel::new);
@@ -137,36 +126,7 @@ public final class WellbeingModel extends BgObjectWithLooper {
     @WorkerThread
     private void onWellbeingUriChanged(Uri uri) {
         Preconditions.assertNonUiThread();
-        if (DEBUG || mIsInTest) {
-            Log.d(TAG, "ContentObserver.onChange() called with: uri = [" + uri + "]");
-        }
-        if (uri.getPath().contains(PATH_ACTIONS)) {
-            // Wellbeing reports that app actions have changed.
-            updateAllPackages();
-        } else if (uri.getPath().contains(PATH_MINIMAL_DEVICE)) {
-            // Wellbeing reports that minimal device state or config is changed.
-            if (!FeatureFlags.ENABLE_MINIMAL_DEVICE.get()) {
-                return;
-            }
-
-            // Temporary bug fix for b/169771796. Wellbeing provides the layout configuration when
-            // minimal device is enabled. We always want to reload the configuration from Wellbeing
-            // since the layout configuration might have changed.
-            mContext.deleteDatabase(DB_NAME_MINIMAL_DEVICE);
-
-            final Bundle extras = new Bundle();
-            String dbFile;
-            if (isInMinimalDeviceMode()) {
-                dbFile = DB_NAME_MINIMAL_DEVICE;
-                extras.putString(LauncherProvider.KEY_LAYOUT_PROVIDER_AUTHORITY,
-                        mWellbeingProviderPkg + ".api");
-            } else {
-                dbFile = InvariantDeviceProfile.INSTANCE.get(mContext).dbFile;
-            }
-            LauncherSettings.Settings.call(mContext.getContentResolver(),
-                    LauncherSettings.Settings.METHOD_SWITCH_DATABASE,
-                    dbFile, extras);
-        }
+        updateAllPackages();
     }
 
     public void setInTest(boolean inTest) {
@@ -178,12 +138,9 @@ public final class WellbeingModel extends BgObjectWithLooper {
         final ContentResolver resolver = mContext.getContentResolver();
         resolver.unregisterContentObserver(mContentObserver);
         Uri actionsUri = apiBuilder().path(PATH_ACTIONS).build();
-        Uri minimalDeviceUri = apiBuilder().path(PATH_MINIMAL_DEVICE).build();
         try {
             resolver.registerContentObserver(
                     actionsUri, true /* notifyForDescendants */, mContentObserver);
-            resolver.registerContentObserver(
-                    minimalDeviceUri, true /* notifyForDescendants */, mContentObserver);
         } catch (Exception e) {
             Log.e(TAG, "Failed to register content observer for " + actionsUri + ": " + e);
             if (mIsInTest) throw new RuntimeException(e);
@@ -225,32 +182,6 @@ public final class WellbeingModel extends BgObjectWithLooper {
         return new Uri.Builder()
                 .scheme(SCHEME_CONTENT)
                 .authority(mWellbeingProviderPkg + ".api");
-    }
-
-    @WorkerThread
-    private boolean isInMinimalDeviceMode() {
-        if (!FeatureFlags.ENABLE_MINIMAL_DEVICE.get()) {
-            return false;
-        }
-        if (DEBUG || mIsInTest) {
-            Log.d(TAG, "isInMinimalDeviceMode() called");
-        }
-        Preconditions.assertNonUiThread();
-
-        final Uri contentUri = apiBuilder().build();
-        try (ContentProviderClient client = mContext.getContentResolver()
-                .acquireUnstableContentProviderClient(contentUri)) {
-            final Bundle remoteBundle = client == null ? null : client.call(
-                    METHOD_GET_MINIMAL_DEVICE_CONFIG, null /* args */, null /* extras */);
-            return remoteBundle != null
-                    && remoteBundle.getInt(EXTRA_MINIMAL_DEVICE_STATE,
-                    UNKNOWN_MINIMAL_DEVICE_STATE) == IN_MINIMAL_DEVICE;
-        } catch (Exception e) {
-            Log.e(TAG, "Failed to retrieve data from " + contentUri + ": " + e);
-            if (mIsInTest) throw new RuntimeException(e);
-        }
-        if (DEBUG || mIsInTest) Log.i(TAG, "isInMinimalDeviceMode(): finished");
-        return false;
     }
 
     @WorkerThread

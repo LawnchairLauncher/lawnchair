@@ -44,35 +44,41 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Uygulama önerileri etkinleştirildi"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Uygulama önerileri devre dışı bırakıldı"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Tahmin edilen uygulama: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"En sağ veya en sol kenardan kaydırdığınızdan emin olun."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Ekranın sağ veya sol kenarından ortasına doğru sürükleyip bıraktığınızdan emin olun."</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Cihazınızı döndürün"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Hareketle gezinme eğitimini tamamlamak için lütfen cihazınızı döndürün"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"En sağ veya en sol kenardan kaydırdığınızdan emin olun"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Ekranın sağ veya sol kenarından ortasına doğru sürükleyip bıraktığınızdan emin olun."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Geri dönmek için sağdan kaydırmayı öğrendiniz. Sırada uygulamalar arasında geçiş yapma var."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Geri dön hareketini tamamladınız."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Ekranın alt kısmına çok yakın bir şekilde kaydırmadığınızdan emin olun."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Geri dön hareketini tamamladınız"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Ekranın alt kısmına çok yakın bir şekilde kaydırmadığınızdan emin olun"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Geri hareketinin hassasiyetini değiştirmek için Ayarlar\'a gidin"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Geri dönmek için kaydırma"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Son ekrana geri gitmek için sol veya sağ kenardan ekranın ortasına doğru kaydırın."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Son ekrana geri gitmek için sol veya sağ kenardan ekranın ortasına doğru 2 parmağınızla kaydırın."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Geri dönme"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Ekranın alt kenarından yukarı kaydırdığınızdan emin olun."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Bırakmadan önce parmağınızı duraklatmadığınızdan emin olun."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Düz bir şekilde yukarı kaydırdığınızdan emin olun."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Ana ekrana git hareketini tamamladınız. Şimdi nasıl geri döneceğinizi öğreneceksiniz."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Ana ekrana git hareketini tamamladınız."</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Sol veya sağ kenardan ekranın ortasına doğru kaydırın"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Ekranın alt kenarından yukarı kaydırdığınızdan emin olun"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Bırakmadan önce parmağınızı duraklatmadığınızdan emin olun"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Düz bir şekilde yukarı kaydırdığınızdan emin olun"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Ana ekrana git hareketini tamamladınız. Şimdi ana ekrana nasıl gideceğinizi öğreneceksiniz."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Ana ekrana git hareketini tamamladınız"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Ana ekrana gitmek için kaydırma"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Ekranın alt kısmından yukarıya doğru kaydırın. Bu hareket sizi her zaman Ana ekrana götürür."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Ekranın alt kısmından 2 parmağınızla yukarı kaydırın. Bu hareket sizi her zaman Ana ekrana götürür."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Ana sayfaya gitme"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"İstediğiniz zaman ana ekrana gitmek için ekranınızın altından yukarı doğru kaydırın."</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Ekranın alt kenarından yukarı kaydırdığınızdan emin olun."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Bırakmadan önce pencereyi daha uzun süre tutmayı deneyin."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Düz bir şekilde yukarı kaydırıp ardından parmağınızı duraklattığınızdan emin olun."</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Parmağınızı ekranın alt kısmından yukarıya doğru kaydırın"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Tebrikler!"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Ekranın alt kenarından yukarı kaydırdığınızdan emin olun"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Bırakmadan önce pencereyi daha uzun süre tutmayı deneyin"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Düz bir şekilde yukarı kaydırıp ardından parmağınızı duraklattığınızdan emin olun"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Hareketleri nasıl kullanacağınızı öğrendiniz. Hareketleri kapatmak için Ayarlar\'a gidin."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Uygulamalar arasında geçiş yapma hareketini tamamladınız."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Uygulamalar arasında geçiş yapma hareketini tamamladınız"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Uygulamalar arasında geçiş yapmak için kaydırma"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Uygulamalar arasında geçiş yapmak için ekranınızın altından yukarı kaydırıp basılı tutun ve sonra bırakın."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Uygulamalara geçiş yapmak için ekranın altından 2 parmakla yukarı kaydırıp basılı tutun ve bırakın."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Uygulamalar arasında geçiş yapma"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Ekranınızın alt tarafından yukarı doğru kaydırın, tutun ve sonra bırakın"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Tebrikler!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Hepsi bu kadar"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Bitti"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Ayarlar"</string>
@@ -97,15 +103,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Atla"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Ekranı döndür"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Görev çubuğu eğitimi"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Görev çubuğu eğitimi görüntülendi"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Görev çubuğu eğitimi kapatıldı"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Aynı anda iki uygulama kullanmak için birini yana sürükleyin"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Görev çubuğunu göstermek için yukarı doğru yavaşça kaydırın"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Rutininize göre uygulama önerileri alın"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Görev çubuğunu otomatik olarak gizlemek için Ayarlar\'dan hareketle gezinmeyi etkinleştirin"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Görev çubuğuyla daha fazla şey yapın"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"İleri"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Geri"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Kapat"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Bitti"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Ana ekran"</string>
@@ -119,6 +121,9 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Görev çubuğu gösteriliyor"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Görev çubuğu gizlendi"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Gezinme çubuğu"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Görev çubuğunu daima göster"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Gezinme modunu değiştir"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Görev Çubuğu Ayırıcısı"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Sol üste taşı"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Sağ alta taşı"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{# uygulama daha göster.}other{# uygulama daha göster}}"</string>

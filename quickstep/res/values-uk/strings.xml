@@ -44,35 +44,41 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Рекомендовані додатки ввімкнено"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Рекомендовані додатки вимкнено"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Передбачений додаток: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Проведіть пальцем саме від правого або лівого краю екрана."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Проведіть пальцем від правого або лівого краю до середини екрана й підніміть палець."</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Оберніть пристрій"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Обертайте пристрій, щоб ознайомитися з посібником із навігації за допомогою жестів"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Проведіть пальцем від самого краю екрана (правого або лівого)"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Проведіть пальцем від правого або лівого краю до середини екрана й підніміть палець"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Тепер ви знаєте, як повернутися на попередній екран, провівши пальцем справа наліво. Дізнайтеся, як переключатися між додатками."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Ви виконали жест \"Назад\"."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Не проводьте пальцем надто близько до нижнього краю екрана."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Ви виконали жест \"Назад\""</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Не проводьте пальцем надто близько до нижнього краю екрана"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Щоб змінити чутливість жесту \"Назад\", відкрийте налаштування"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Щоб повернутися, проведіть пальцем по екрану"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Щоб перейти на попередній екран, проведіть пальцем від лівого чи правого краю до середини екрана."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Щоб перейти на попередній екран, проведіть двома пальцями від лівого чи правого краю до середини екрана."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Повернення на попередній екран"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Проведіть пальцем угору від нижнього краю екрана."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Не робіть паузу перед тим, як відірвати палець від екрана."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Проводьте пальцем вертикально вгору."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Ви виконали жест переходу на головний екран. Тепер дізнайтеся, як повернутися."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Ви виконали жест переходу на головний екран."</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Проведіть пальцем від лівого чи правого краю до середини екрана"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Проведіть пальцем угору від нижнього краю екрана"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Не робіть паузу перед тим, як відірвати палець від екрана"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Проводьте пальцем вертикально вгору"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Ви виконали жест переходу на головний екран. Тепер дізнайтеся, як повернутися."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Ви виконали жест переходу на головний екран"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Проведіть пальцем, щоб перейти на головний екран"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Проведіть пальцем по екрану знизу вгору. Цей жест завжди повертатиме вас на головний екран."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Проведіть двома пальцями вгору від низу екрана. Цей жест завжди спрямовує вас на головний екран."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Перехід на головний екран"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Щоб будь-коли перейти на головний екран, проведіть пальцем угору від низу екрана"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Проведіть пальцем угору від нижнього краю екрана."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Спробуйте втримувати вікно довше, перш ніж відпустити."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Проведіть пальцем вертикально вгору, а тоді зробіть паузу."</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Проведіть пальцем угору від низу екрана"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Чудово!"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Проведіть пальцем угору від нижнього краю екрана"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Спробуйте втримувати вікно довше, перш ніж відпустити"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Проведіть пальцем вертикально вгору, а тоді зробіть паузу"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Ви вивчили жести. Щоб вимкнути їх, перейдіть у налаштування."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Ви виконали жест переходу в інший додаток."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Ви виконали жест переходу в інший додаток"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Проведіть пальцем, щоб перейти в інший додаток"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Щоб переключатися між додатками, проведіть знизу вгору по екрану, утримуйте палець, а потім відпустіть."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Щоб перейти в інший додаток, проведіть 2 пальцями від низу екрана, потримайте й відпустіть палець."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Перемикання між додатками"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Проведіть пальцем знизу вгору, утримуйте палець на екрані, а потім відпустіть"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Чудово!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Усе готово!"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Готово"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Налаштування"</string>
@@ -97,15 +103,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Пропустити"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Обернути екран"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Панель завдань Education"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Панель завдань Education відкрито"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Панель завдань Education закрито"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Перетягніть убік, щоб використовувати 2 додатки одночасно"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Щоб відкрити панель завдань, повільно проведіть угору"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Отримуйте рекомендації додатків залежно від їх використання"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Увімкніть навігацію жестами в налаштуваннях, щоб автоматично приховувати панель завдань"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Більше можливостей завдяки панелі завдань"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Далі"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Назад"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Закрити"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Готово"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Головний екран"</string>
@@ -119,6 +121,9 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Панель завдань показано"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Панель завдань приховано"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Панель навігації"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Завжди показув. панель завдань"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Змінити режим навігації"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Розділювач панелі завдань"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Перемістити вгору або вліво"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Перемістити вниз або вправо"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Показати ще # додаток.}one{Показати ще # додаток.}few{Показати ще # додатки.}many{Показати ще # додатків.}other{Показати ще # додатка.}}"</string>

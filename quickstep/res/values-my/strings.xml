@@ -44,35 +44,41 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"အက်ပ်အကြံပြုချက်များ ဖွင့်ထားသည်"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"အက်ပ်အကြံပြုချက်များကို ပိတ်ထားသည်"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"ကြိုတင်မှန်းဆထားသော အက်ပ်− <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"ညာ သို့မဟုတ် ဘယ်ဘက်အစွန်မှ ပွတ်ဆွဲကြောင်း သေချာပါစေ။"</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"စခရင်၏ ညာ သို့မဟုတ် ဘက်ဘက်အစွန်မှ အလယ်သို့ ပွတ်ဆွဲပြီး လွှတ်လိုက်ကြောင်း သေချာပါစေ။"</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"သင့်စက်ကို လှည့်ပါ"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"လက်ဟန်ဖြင့် လမ်းညွှန်ခြင်း ရှင်းလင်းပို့ချချက်အား အပြီးသတ်ရန် သင့်စက်ကို လှည့်ပါ"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"ညာ (သို့) ဘယ်အစွန်း၏ ခပ်လှမ်းလှမ်းမှ ပွတ်ဆွဲကြောင်း သေချာပါစေ"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"ဖန်သားပြင်၏ ညာ (သို့) ဘယ်အစွန်းမှ အလယ်သို့ ပွတ်ဆွဲပြီး လွှတ်လိုက်ကြောင်း သေချာပါစေ"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"နောက်ပြန်သွားရန် ညာဘက်မှပွတ်ဆွဲနည်းကို သိသွားပါပြီ။ နောက်အဆင့်တွင် အက်ပ်များပြောင်းနည်းကို လေ့လာပါ။"</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"နောက်ဆုတ် လက်ဟန် သုံးနည်း သင်သိသွားပါပြီ။"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"ဖန်သားပြင် အောက်ခြေနှင့် အလွန်နီးကပ်စွာ ပွတ်ဆွဲခြင်းမရှိကြောင်း သေချာပါစေ။"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"နောက်သို့ လက်ဟန် အပြီးသတ်လိုက်ပါပြီ"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"ဖန်သားပြင် အောက်ခြေနှင့် အလွန်နီးကပ်စွာ ပွတ်ဆွဲခြင်းမရှိကြောင်း သေချာပါစေ"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"နောက်ဆုတ်လက်ဟန်၏ အာရုံခံစွမ်းကိုပြောင်းရန် ‘ဆက်တင်များ’ သို့ သွားပါ"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"နောက်ပြန်သွားရန် ပွတ်ဆွဲပါ"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"နောက်ဆုံးဖန်သားပြင်သို့ ပြန်သွားရန် ဘယ်ဘက် (သို့) ညာဘက်အစွန်မှ ဖန်သားပြင်အလယ်သို့ ပွတ်ဆွဲပါ။"</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"ပြီးခဲ့သည့်ဖန်သားပြင်သို့သွားရန် ဘယ်ဘက် (သို့) ညာဘက်အစွန်းမှ ဖန်သားပြင်အလယ်သို့ လက် ၂ ချောင်းဖြင့် ပွတ်ဆွဲပါ။"</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"နောက်သို့"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ဖန်သားပြင် အောက်ခြေအစွန်မှ အပေါ်သို့ ပွတ်ဆွဲကြောင်း သေချာပါစေ။"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"လက်မလွှတ်ခင် ခဏရပ်ခြင်းမရှိကြောင်း သေချာပါစေ။"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"အပေါ်တည့်တည့်သို့ ပွတ်ဆွဲကြောင်း သေချာပါစေ။"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"ပင်မစာမျက်နှာသို့သွားသည့် လက်ဟန် သုံးနည်း သင်သိသွားပါပြီ။ ဆက်လက်၍ နောက်သို့ပြန်သွားနည်းကို လေ့လာပါ။"</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"ပင်မစာမျက်နှာသို့သွားသည့် လက်ဟန် သုံးနည်း သင်သိသွားပါပြီ။"</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"ဖန်သားပြင်၏ ဘယ် (သို့) ညာအစွန်းမှ အလယ်သို့ ပွတ်ဆွဲပါ"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"ဖန်သားပြင် အောက်ခြေအစွန်းမှ အပေါ်သို့ ပွတ်ဆွဲကြောင်း သေချာပါစေ"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"လက်မလွှတ်ခင် ခဏရပ်ခြင်းမရှိကြောင်း သေချာပါစေ"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"အပေါ်တည့်တည့်သို့ ပွတ်ဆွဲကြောင်း သေချာပါစေ"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"ပင်မစာမျက်နှာသို့သွားသည့် လက်ဟန် အပြီးသတ်လိုက်ပါပြီ။ နောက်အဆင့်တွင် နောက်သို့ပြန်သွားပုံကို လေ့လာပါ။"</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"ပင်မစာမျက်နှာသို့သွားသည့် လက်ဟန် အပြီးသတ်လိုက်ပါပြီ"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"ပင်မစာမျက်နှာသို့သွားရန် ပွတ်ဆွဲပါ"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"သင့်ဖန်သားပြင် အောက်ခြေမှ အပေါ်သို့ပွတ်ဆွဲပါ။ ဤလက်ဟန်ဖြင့် ပင်မစာမျက်နှာသို့ အမြဲပြန်သွားနိုင်သည်။"</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"ဖန်သားပြင်အောက်မှ အပေါ်သို့ လက် ၂ ချောင်းဖြင့် ပွတ်ဆွဲပါ။ ဤလက်ဟန်က ပင်မစာမျက်နှာသို့ အမြဲပို့ပေးမည်။"</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"ပင်မစာမျက်နှာသို့ သွားပါ"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"ပင်မစာမျက်နှာသို့ အချိန်မရွေး ပြန်သွားရန် စခရင်အောက်ခြေမှ အပေါ်သို့ ပွတ်ဆွဲပါ"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ဖန်သားပြင် အောက်ခြေအစွန်မှ အပေါ်သို့ ပွတ်ဆွဲကြောင်း သေချာပါစေ။"</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"မလွှတ်ခင် ဝင်းဒိုးကို အချိန်ကြာကြာ ဖိထားကြည့်ပါ။"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"အပေါ်တည့်တည့်သို့ ပွတ်ဆွဲပြီးနောက် ခဏရပ်ကြောင်း သေချာပါစေ။"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"ပင်မစာမျက်နှာသွားရန်"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"သင့်ဖန်သားပြင် အောက်ခြေမှ အပေါ်သို့ ပွတ်ဆွဲပါ"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"တော်ပါပေသည်။"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"ဖန်သားပြင် အောက်ခြေအစွန်းမှ အပေါ်သို့ ပွတ်ဆွဲကြောင်း သေချာပါစေ"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"မလွှတ်ခင် ဝင်းဒိုးကို အချိန်ကြာကြာ ဖိထားကြည့်ပါ"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"အပေါ်တည့်တည့်သို့ ပွတ်ဆွဲပြီးနောက် ခဏရပ်ကြောင်း သေချာပါစေ"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"လက်ဟန်များသုံးနည်းကို သင်သိသွားပါပြီ။ လက်ဟန်များကို ပိတ်ရန် ဆက်တင်များသို့ သွားပါ။"</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"အက်ပ်များပြောင်းသည့် လက်ဟန် သုံးနည်း သင်သိသွားပါပြီ။"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"အက်ပ်များပြောင်းသည့် လက်ဟန် အပြီးသတ်လိုက်ပါပြီ"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"အက်ပ်များပြောင်းရန် ပွတ်ဆွဲပါ"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"အက်ပ်တစ်ခုမှတစ်ခုသို့ ပြောင်းရန် စခရင်အောက်ခြေမှ အပေါ်သို့ ပွတ်ဆွဲ၍ ဖိထားပြီးနောက် လွှတ်ပါ။"</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"အက်ပ်များကြားပြောင်းရန် ဖန်သားပြင်အောက်မှ အပေါ်သို့ လက် ၂ ချောင်းဖြင့်ဆွဲ၍ ထိန်းထားပြီး လွှတ်ပါ။"</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"အက်ပ်များ ကူးပြောင်းရန်"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"သင့်ဖန်သားပြင် အောက်ခြေမှ အပေါ်သို့ ပွတ်ဆွဲ၍ ဖိထားပြီးလွှတ်လိုက်ပါ"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"အလွန်ကောင်းပါသည်။"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"အားလုံးအဆင်သင့်ဖြစ်ပါပြီ"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"ပြီးပြီ"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ဆက်တင်များ"</string>
@@ -97,15 +103,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ကျော်ရန်"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ဖန်သားပြင်လှည့်ရန်"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"လုပ်ဆောင်စရာဘား ပညာပေး"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"ပညာရေး လုပ်ဆောင်စရာဘား ပြထားသည်"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"ပညာရေး လုပ်ဆောင်စရာဘား ပိတ်ထားသည်"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"အက်ပ် ၂ ခု တစ်ပြိုင်တည်းသုံးရန် အက်ပ်ကို ဘေးသို့ ဖိဆွဲပါ"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Taskbar ပြရန် အပေါ်သို့ ဖြည်းဖြည်းပွတ်ဆွဲပါ"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ပုံမှန်အစီအစဉ်ပေါ် အခြေခံ၍ အက်ပ်အကြံပြုချက်များကို ရယူပါ"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Taskbar ကို အော်တိုဝှက်ရန် ဆက်တင်များတွင် လက်ဟန်ဖြင့်လမ်းညွှန်ခြင်း ဖွင့်နိုင်သည်"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Taskbar ဖြင့် ပိုမိုလုပ်ဆောင်နိုင်ခြင်း"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"ရှေ့သို့"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"နောက်သို့"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ပိတ်ရန်"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ပြီးပြီ"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ပင်မစာမျက်နှာ"</string>
@@ -119,6 +121,9 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Taskbar ပြထားသည်"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Taskbar ဖျောက်ထားသည်"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"လမ်းညွှန်ဘား"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"‘လုပ်ဆောင်စရာဘား’ အမြဲပြပါ"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"ရွှေ့ကြည့်သည့်မုဒ် ပြောင်းရန်"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"လုပ်ဆောင်စရာဘား ပိုင်းခြားစနစ်"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"အပေါ်/ဘယ်ဘက်သို့ ရွှေ့ရန်"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"အောက်ခြေ/ညာဘက်သို့ ရွှေ့ရန်"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{နောက်ထပ်အက်ပ် # ခု ပြပါ။}other{နောက်ထပ်အက်ပ် # ခု ပြပါ။}}"</string>

@@ -107,6 +107,8 @@ public final class LauncherInstrumentation {
     static final Pattern EVENT_TOUCH_DOWN_TIS = getTouchEventPatternTIS("ACTION_DOWN");
     static final Pattern EVENT_TOUCH_UP_TIS = getTouchEventPatternTIS("ACTION_UP");
     static final Pattern EVENT_TOUCH_CANCEL_TIS = getTouchEventPatternTIS("ACTION_CANCEL");
+    static final Pattern EVENT_HOVER_ENTER_TIS = getTouchEventPatternTIS("ACTION_HOVER_ENTER");
+    static final Pattern EVENT_HOVER_EXIT_TIS = getTouchEventPatternTIS("ACTION_HOVER_EXIT");
 
     private static final Pattern EVENT_KEY_BACK_DOWN =
             getKeyEventPattern("ACTION_DOWN", "KEYCODE_BACK");
@@ -140,7 +142,9 @@ public final class LauncherInstrumentation {
      * Represents a point in the code at which a callback can run.
      */
     public enum CALLBACK_RUN_POINT {
-        CALLBACK_HOLD_BEFORE_DROP
+        CALLBACK_HOLD_BEFORE_DROP,
+        CALLBACK_HOVER_ENTER,
+        CALLBACK_HOVER_EXIT,
     }
 
     private Consumer<CALLBACK_RUN_POINT> mCallbackAtRunPoint = null;
@@ -177,6 +181,7 @@ public final class LauncherInstrumentation {
     private static final String OVERVIEW_RES_ID = "overview_panel";
     private static final String WIDGETS_RES_ID = "primary_widgets_list_view";
     private static final String CONTEXT_MENU_RES_ID = "popup_container";
+    private static final String OPEN_FOLDER_RES_ID = "folder_content";
     static final String TASKBAR_RES_ID = "taskbar_view";
     private static final String SPLIT_PLACEHOLDER_RES_ID = "split_placeholder";
     public static final int WAIT_TIME_MS = 30000;
@@ -189,6 +194,7 @@ public final class LauncherInstrumentation {
     private final UiDevice mDevice;
     private final Instrumentation mInstrumentation;
     private Integer mExpectedRotation = null;
+    private boolean mExpectedRotationCheckEnabled = true;
     private final Uri mTestProviderUri;
     private final Deque<String> mDiagnosticContext = new LinkedList<>();
     private Function<Long, String> mSystemHealthSupplier;
@@ -559,6 +565,7 @@ public final class LauncherInstrumentation {
 
     private String getVisibleStateMessage() {
         if (hasLauncherObject(CONTEXT_MENU_RES_ID)) return "Context Menu";
+        if (hasLauncherObject(OPEN_FOLDER_RES_ID)) return "Open Folder";
         if (hasLauncherObject(WIDGETS_RES_ID)) return "Widgets";
         if (hasSystemLauncherObject(OVERVIEW_RES_ID)) return "Overview";
         if (hasLauncherObject(WORKSPACE_RES_ID)) return "Workspace";
@@ -716,6 +723,10 @@ public final class LauncherInstrumentation {
         mExpectedRotation = expectedRotation;
     }
 
+    public void setExpectedRotationCheckEnabled(boolean expectedRotationCheckEnabled) {
+        mExpectedRotationCheckEnabled = expectedRotationCheckEnabled;
+    }
+
     public String getNavigationModeMismatchError(boolean waitForCorrectState) {
         final int waitTime = waitForCorrectState ? WAIT_TIME_MS : 0;
         final NavigationModel navigationModel = getNavigationModel();
@@ -749,7 +760,7 @@ public final class LauncherInstrumentation {
     private UiObject2 verifyContainerType(ContainerType containerType) {
         waitForLauncherInitialized();
 
-        if (mExpectedRotation != null) {
+        if (mExpectedRotationCheckEnabled && mExpectedRotation != null) {
             assertEquals("Unexpected display rotation",
                     mExpectedRotation, mDevice.getDisplayRotation());
         }
@@ -1007,8 +1018,6 @@ public final class LauncherInstrumentation {
                 if (hasLauncherObject(WORKSPACE_RES_ID)) {
                     log(action = "already at home");
                 } else {
-                    log("Hierarchy before swiping up to home:");
-                    dumpViewHierarchy();
                     action = "swiping up to home";
 
                     swipeToState(
@@ -1677,6 +1686,12 @@ public final class LauncherInstrumentation {
                                     ? EVENT_TOUCH_CANCEL_TIS : EVENT_TOUCH_UP_TIS);
                 }
                 break;
+            case MotionEvent.ACTION_HOVER_ENTER:
+                expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_HOVER_ENTER_TIS);
+                break;
+            case MotionEvent.ACTION_HOVER_EXIT:
+                expectEvent(TestProtocol.SEQUENCE_TIS, EVENT_HOVER_EXIT_TIS);
+                break;
         }
 
         final MotionEvent event = getMotionEvent(downTime, currentTime, action, point.x, point.y);
@@ -1826,14 +1841,6 @@ public final class LauncherInstrumentation {
         return testInfo != null ? testInfo.getInt(TestProtocol.TEST_INFO_RESPONSE_FIELD) : null;
     }
 
-    public void produceViewLeak() {
-        getTestInfo(TestProtocol.REQUEST_VIEW_LEAK);
-    }
-
-    public void printViewLeak() {
-        getTestInfo(TestProtocol.PRINT_VIEW_LEAK);
-    }
-
     public ArrayList<ComponentName> getRecentTasks() {
         ArrayList<ComponentName> tasks = new ArrayList<>();
         ArrayList<String> components = getTestInfo(TestProtocol.REQUEST_RECENT_TASKS_LIST)
@@ -1846,36 +1853,6 @@ public final class LauncherInstrumentation {
 
     public void clearLauncherData() {
         getTestInfo(TestProtocol.REQUEST_CLEAR_DATA);
-    }
-
-    /**
-     * Reloads the workspace with a test layout that includes the Test Activity app icon on the
-     * hotseat.
-     */
-    public void useTestWorkspaceLayoutOnReload() {
-        getTestInfo(TestProtocol.REQUEST_USE_TEST_WORKSPACE_LAYOUT);
-    }
-
-    /**
-     * Reloads the workspace with a test layout that includes Maps/Play on workspace, and
-     * Dialer/Messaging/Chrome/Camera on hotseat.
-     */
-    public void useTest2WorkspaceLayoutOnReload() {
-        getTestInfo(TestProtocol.REQUEST_USE_TEST2_WORKSPACE_LAYOUT);
-    }
-
-
-    /**
-     * Reloads the workspace with a test layout that includes the chrome Activity app icon on the
-     * hotseat.
-     */
-    public void useTaplWorkspaceLayoutOnReload() {
-        getTestInfo(TestProtocol.REQUEST_USE_TAPL_WORKSPACE_LAYOUT);
-    }
-
-    /** Reloads the workspace with the default layout defined by the user's grid size selection. */
-    public void useDefaultWorkspaceLayoutOnReload() {
-        getTestInfo(TestProtocol.REQUEST_USE_DEFAULT_WORKSPACE_LAYOUT);
     }
 
     /** Shows the taskbar if it is hidden, otherwise does nothing. */
@@ -2029,21 +2006,41 @@ public final class LauncherInstrumentation {
     }
 
     /**
-     * Taps outside container to dismiss.
+     * Taps outside container to dismiss, centered vertically and halfway to the edge of the screen.
      *
      * @param container container to be dismissed
      * @param tapRight  tap on the right of the container if true, or left otherwise
      */
     void touchOutsideContainer(UiObject2 container, boolean tapRight) {
+        touchOutsideContainer(container, tapRight, true);
+    }
+
+    /**
+     * Taps outside the container, to the right or left, and centered vertically.
+     *
+     * @param tapRight      if true touches to the right of the container, otherwise touches on left
+     * @param halfwayToEdge if true touches halfway to the screen edge, if false touches 1 px from
+     *                      container
+     */
+    void touchOutsideContainer(UiObject2 container, boolean tapRight, boolean halfwayToEdge) {
         try (LauncherInstrumentation.Closable c = addContextLayer(
                 "want to tap outside container on the " + (tapRight ? "right" : "left"))) {
             Rect containerBounds = getVisibleBounds(container);
+
+            int x;
+            if (halfwayToEdge) {
+                x = tapRight
+                        ? (containerBounds.right + getRealDisplaySize().x) / 2
+                        : containerBounds.left / 2;
+            } else {
+                x = tapRight
+                        ? containerBounds.right + 1
+                        : containerBounds.left - 1;
+            }
+            int y = containerBounds.top + containerBounds.height() / 2;
+
             final long downTime = SystemClock.uptimeMillis();
-            final Point tapTarget = new Point(
-                    tapRight
-                            ? (containerBounds.right + getRealDisplaySize().x) / 2
-                            : containerBounds.left / 2,
-                    containerBounds.top + 1);
+            final Point tapTarget = new Point(x, y);
             sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, tapTarget,
                     LauncherInstrumentation.GestureScope.INSIDE);
             sendPointer(downTime, downTime, MotionEvent.ACTION_UP, tapTarget,

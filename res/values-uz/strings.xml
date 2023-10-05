@@ -29,6 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"Bosh ekran"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Ekranni ikkiga ajratish"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s ilovasi axboroti"</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"Ilova juftini saqlash"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Vidjetni bosib turgan holatda suring."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Ikki marta bosib va bosib turgan holatda vidjetni tanlang yoki maxsus amaldan foydalaning."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -49,6 +50,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Shaxsiy"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Ish"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Suhbatlar"</string>
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"Qayd olish"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Barcha kerakli axborot doim yoningizda"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Kerakli ilovalarni ochmasdan turib ulardan axborot olish uchun vidjetlarni bosh ekranga chiqaring"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Vidjet sozlamalarini oʻzgartirish uchun bosing"</string>
@@ -80,7 +82,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"Ilovaga bosh ekrandagi yorliqlar va sozlamalarni oʻqish uchun ruxsat beradi."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"Bosh ekrandagi sozlamalar va yorliqlarni oʻzgartirish"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"Ilova bosh ekrandagi yorliqlar va sozlamalarni oʻzgartirishi mumkin."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> ilovasiga qo‘ng‘iroqlarni amalga oshirishga ruxsat berilmagan"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Vidjet yuklanmadi"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Vidjet sozlamalari"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Sozlashni yakunlash uchun bosing"</string>
@@ -100,6 +101,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Jild: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> va undan ortiq fayllar"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Fon rasmlari"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Fon rasmi va uslubi"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"Bosh ekranni tahrirlash"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Bosh ekran sozlamalari"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Administrator tomonidan o‘chirilgan"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Bosh ekranni burishga ruxsat"</string>
@@ -161,12 +163,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Ishga oid ilovalarning maxsus belgisi bor hamda ular administratoringizga koʻrinadi"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Ishga oid ilovalar pauza qilingan"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Ishga oid ilovalardan bildirishnomalar kelmaydi"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Ishga oid ilovalar batareya sarfi haqida bildirishnomalar yubora olmaydi va joylashuv axborotidan foydalana olmaydi"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Ishga oid ilovalar faolsizlantirilgan. Ular batareya sarfi haqida bildirishnomalar yubora olmaydi va joylashuv axborotidan foydalana olmaydi"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Ishga oid ilovalardan telefon chaqiruvi, SMS xabar yoki bildirishnoma kelmaydi"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Ishga oid ilovalarning maxsus belgisi bor hamda ular administratoringizga koʻrinadi"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Ishga oid ilovalarni pauza qilish"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Ishga oid ilovalarni yoqish"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Pauzadan chiqarish"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Saralash"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Telefondan qidirish"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Planshetingizni qidiring"</string>

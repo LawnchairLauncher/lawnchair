@@ -44,35 +44,41 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Санал болгож буй аппуудыг идэвхжүүлсэн"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Санал болгож буй аппуудыг идэвхгүй болгосон"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Таамаглаж буй апп: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Та баруун зах эсвэл зүүн захын булангаас шударна уу."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Та баруун эсвэл зүүн булангаас дэлгэцийн дунд хэсэг хүртэл шударч, суллана уу."</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Төхөөрөмжөө эргүүлэх"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Зангааны навигацын практик хичээлийг дуусгахын тулд төхөөрөмжөө эргүүлнэ үү"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Та баруун зах эсвэл зүүн захын ирмэгээс шударна уу"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Та баруун эсвэл зүүн ирмэгээс дэлгэцийн дунд хэсэг хүртэл шударч, суллана уу"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Та буцахын тулд баруунаас хэрхэн шудрахыг мэдэж авлаа. Дараа нь аппууд хооронд хэрхэн сэлгэхийг мэдэж аваарай."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Та буцах зангааг гүйцэтгэлээ."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Та дэлгэцийн доод хэсэгтэй хэт ойр бүү шудраарай."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Та буцах зангааг гүйцэтгэлээ"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Та дэлгэцийн доод хэсэгтэй хэт ойр бүү шудраарай"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Буцах зангааны мэдрэгшлийг өөрчлөх бол Тохиргоо руу очно уу"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Буцахын тулд шудрах"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Сүүлийн дэлгэц рүү буцахын тулд дэлгэцийн зүүн эсвэл баруун булангаас дунд хэсэг рүү шударна уу."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Сүүлийн дэлгэц рүү буцахын тулд 2 хуруугаараа дэлгэцийн голоос зүүн эсвэл баруун ирмэг рүү шударна уу."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Буцах"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Та дэлгэцийн доод булангаас дээш шударна уу."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Та суллахаасаа өмнө түр зогсоож болохгүй."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Та чигээрээ шударна уу."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Та Нүүр лүү очих зангааг гүйцэтгэлээ. Дараа нь хэрхэн буцахыг мэдэж авна уу."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Та Нүүр лүү очих зангааг гүйцэтгэлээ."</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Зүүн эсвэл баруун ирмэгээс дэлгэцийн дунд хэсэг хүртэл шударна уу"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Та дэлгэцийн доод ирмэгээс дээш шударна уу"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Та суллахаасаа өмнө түр зогсоож болохгүй"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Та дээш чигээрээ шударна уу"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Та үндсэн нүүр лүү очих зангааг гүйцэтгэлээ. Дараа нь хэрхэн буцахыг мэдэж авна уу."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Та үндсэн нүүр лүү очих зангааг гүйцэтгэлээ."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Нүүр лүү очихын тулд шудрах"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Дэлгэцийнхээ доороос дээш шударна уу. Энэ зангаа таныг тогтмол Үндсэн нүүрэнд аваачна."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"2 хуруугаараа дэлгэцийн доороос дээш шударна уу. Энэ зангаа таныг тогтмол Үндсэн нүүрэнд аваачна."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Үндсэн нүүр лүү очих"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Үндсэн нүүр лүүгээ хүссэн үедээ очихын тулд дэлгэцийн доороос дээш шударна уу"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Та дэлгэцийн доод булангаас дээш шударна уу."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Суллахаасаа өмнө цонхыг илүү удаан дарж үзнэ үү."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Та чигээрээ шударч, дараа нь түр зогсооно уу."</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Дэлгэцийнхээ доороос дээш шударна уу"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Үнэхээр сайн ажиллалаа!"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Та дэлгэцийн доод ирмэгээс дээш шударна уу"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Суллахаасаа өмнө цонхыг илүү удаан дарж үзнэ үү"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Та дээш чигээрээ шударч, дараа нь түр зогсооно уу"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Та зангааг хэрхэн ашиглахыг мэдэж авлаа. Зангааг унтраахын тулд Тохиргоо руу очно уу."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Та аппуудыг сэлгэх зангааг гүйцэтгэлээ."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Та аппуудыг сэлгэх зангааг гүйцэтгэлээ"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Аппуудыг сэлгэхийн тулд шудрах"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Аппуудын хооронд сэлгэхийн тулд дэлгэцийнхээ доод хэсгээс дээш шударч, удаан дараад, суллана уу."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Аппуудын хооронд сэлгэхийн тулд 2 хуруугаараа дэлгэцийнхээ доод хэсгээс дээш шударч, удаан дараад, суллана уу."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Аппуудыг сэлгэх"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Дэлгэцийнхээ доод хэсгээс дээш шударч, удаан дараад суллана уу"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Сайн байна!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Бүгдийг тохируулсан"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Дууссан"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Тохиргоо"</string>
@@ -97,15 +103,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Алгасах"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Дэлгэцийг эргүүлэх"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Ажлын хэсгийн боловсрол"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Боловсролын ажлын талбар гарч ирсэн"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Боловсролын ажлын талбарыг хаасан"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"2 аппыг зэрэг ашиглахын тулд аппыг хажуу тийш чирнэ үү"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Ажлын хэсгийг харуулахын тулд аажмаар дээш шударна уу"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Таны хэвшилд тулгуурлан санал болгож буй аппуудыг аваарай"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Ажлын хэсгийг автоматаар хаахын тулд Тохиргоонд зангааны навигацыг асаана уу"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Ажлын хэсгийн тусламжтай илүү ихийг хийгээрэй"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Дараах"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Буцах"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Хаах"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Дууссан"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Гэр"</string>
@@ -119,6 +121,9 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Ажлын хэсгийг харуулсан"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Ажлын хэсгийг нуусан"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Навигацын самбар"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Ажлын хэсгийг үргэлж харуулах"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Навигацын горимыг өөрчлөх"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Ажлын хэсгийг хуваагч"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Зүүн дээд хэсэг рүү зөөх"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Баруун доод хэсэг рүү зөөх"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Өөр # аппыг харуулна уу.}other{Өөр # аппыг харуулна уу.}}"</string>

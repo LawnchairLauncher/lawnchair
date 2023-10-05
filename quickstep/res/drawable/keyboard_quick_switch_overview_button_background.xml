@@ -17,6 +17,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
     android:shape="rectangle">
-    <solid android:color="?androidprv:attr/colorSurfaceVariant" />
+    <solid android:color="?androidprv:attr/materialColorSurfaceBright" />
     <corners android:radius="@dimen/keyboard_quick_switch_task_view_radius" />
 </shape>

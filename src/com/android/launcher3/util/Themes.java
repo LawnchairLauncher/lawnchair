@@ -32,10 +32,13 @@ import android.util.AttributeSet;
 import android.util.SparseArray;
 import android.util.TypedValue;
 
+import androidx.annotation.ColorInt;
+
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.icons.GraphicsUtils;
+import com.android.launcher3.views.ActivityContext;
 
 /**
  * Various utility methods associated with theming.
@@ -197,5 +200,13 @@ public class Themes {
         }
 
         return result;
+    }
+
+    /** Returns the desired navigation bar scrim color depending on the {@code DeviceProfile}. */
+    @ColorInt
+    public static <T extends Context & ActivityContext> int getNavBarScrimColor(T context) {
+        return context.getDeviceProfile().isTaskbarPresent
+                ? context.getColor(R.color.taskbar_background)
+                : Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor);
     }
 }

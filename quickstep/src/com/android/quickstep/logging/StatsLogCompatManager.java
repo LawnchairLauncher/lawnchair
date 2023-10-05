@@ -227,6 +227,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         private SliceItem mSliceItem;
         private LauncherAtom.Slice mSlice;
         private Optional<Integer> mCardinality = Optional.empty();
+        private int mInputType = SysUiStatsLog.LAUNCHER_UICHANGED__INPUT_TYPE__UNKNOWN;
 
         StatsCompatLogger(Context context, ActivityContext activityContext) {
             mContext = context;
@@ -316,6 +317,12 @@ public class StatsLogCompatManager extends StatsLogManager {
         @Override
         public StatsLogger withCardinality(int cardinality) {
             this.mCardinality = Optional.of(cardinality);
+            return this;
+        }
+
+        @Override
+        public StatsLogger withInputType(int inputType) {
+            this.mInputType = inputType;
             return this;
         }
 
@@ -413,6 +420,7 @@ public class StatsLogCompatManager extends StatsLogManager {
             InstanceId instanceId = mInstanceId;
             int srcState = mSrcState;
             int dstState = mDstState;
+            int inputType = mInputType;
             if (IS_VERBOSE) {
                 String name = (event instanceof Enum) ? ((Enum) event).name() :
                         event.getId() + "";
@@ -470,7 +478,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                     cardinality /* cardinality */,
                     getFeatures(atomInfo) /* features */,
                     getSearchAttributes(atomInfo) /* searchAttributes */,
-                    getAttributes(atomInfo) /* attributes */
+                    getAttributes(atomInfo) /* attributes */,
+                    inputType /* input_type */
             );
         }
     }
@@ -485,6 +494,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         private long mLatencyInMillis;
         private int mQueryLength = -1;
         private int mSubEventType = 0;
+        private int mCardinality = -1;
 
         @Override
         public StatsLatencyLogger withInstanceId(InstanceId instanceId) {
@@ -523,6 +533,12 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
 
         @Override
+        public StatsLatencyLogger withCardinality(int cardinality) {
+            this.mCardinality = cardinality;
+            return this;
+        }
+
+        @Override
         public void log(EventEnum event) {
             if (IS_VERBOSE) {
                 String name = (event instanceof Enum) ? ((Enum) event).name() :
@@ -540,7 +556,8 @@ public class StatsLogCompatManager extends StatsLogManager {
                     mLatencyInMillis, // latency_in_millis
                     mType.getId(), //type
                     mQueryLength, // query_length
-                    mSubEventType // sub_event_type
+                    mSubEventType, // sub_event_type
+                    mCardinality // cardinality
             );
         }
     }
@@ -549,9 +566,10 @@ public class StatsLogCompatManager extends StatsLogManager {
      * Helps to construct and log statsd compatible impression events.
      */
     private static class StatsCompatImpressionLogger implements StatsImpressionLogger {
-        private final IntArray mResultTypeList = new IntArray();
-        private final IntArray mResultCountList = new IntArray();
+        private int[] mResultTypeList = new int[]{};
+        private int[] mResultCountList = new int[]{};
         private final List<Boolean> mAboveKeyboardList = new ArrayList<>();
+        private int[] mUidList = new int[]{};
         private InstanceId mInstanceId = DEFAULT_INSTANCE_ID;
         private State mLauncherState = State.UNKNOWN;
         private int mQueryLength = -1;
@@ -576,28 +594,32 @@ public class StatsLogCompatManager extends StatsLogManager {
 
         @Override
         public StatsImpressionLogger withResultType(IntArray resultType) {
-            this.mResultTypeList.clear();
-            this.mResultTypeList.addAll(resultType);
+            mResultTypeList = resultType.toArray();
             return this;
         }
 
         @Override
         public StatsImpressionLogger withResultCount(IntArray resultCount) {
-            this.mResultCountList.clear();
-            this.mResultCountList.addAll(resultCount);
+            mResultCountList = resultCount.toArray();
             return this;
         }
 
         @Override
         public StatsImpressionLogger withAboveKeyboard(List<Boolean> aboveKeyboard) {
-            this.mAboveKeyboardList.clear();
+            mAboveKeyboardList.clear();
             this.mAboveKeyboardList.addAll(aboveKeyboard);
             return this;
         }
 
         @Override
+        public StatsImpressionLogger withUids(IntArray uid) {
+            mUidList = uid.toArray();
+            return this;
+        }
+
+        @Override
         public void log(EventEnum event) {
-            boolean [] mAboveKeyboard = new boolean[mAboveKeyboardList.size()];
+            boolean[] mAboveKeyboard = new boolean[mAboveKeyboardList.size()];
             for (int i = 0; i < mAboveKeyboardList.size(); i++) {
                 mAboveKeyboard[i] = mAboveKeyboardList.get(i);
             }
@@ -609,11 +631,12 @@ public class StatsLogCompatManager extends StatsLogManager {
                 logStringBuilder.append(String.format("ImpressionEvent:%s ", name));
                 logStringBuilder.append(String.format("LauncherState = %s ", mLauncherState));
                 logStringBuilder.append(String.format("QueryLength = %s ", mQueryLength));
-                for (int i = 0; i < mResultTypeList.size(); i++) {
+                for (int i = 0; i < mResultTypeList.length; i++) {
                     logStringBuilder.append(String.format(
-                            "\n ResultType = %s with ResultCount = %s with is_above_keyboard = %s",
-                            mResultTypeList.get(i), mResultCountList.get(i),
-                            mAboveKeyboard[i]));
+                            "\n ResultType = %s with ResultCount = %s with is_above_keyboard = %s"
+                                    + " with uid = %s",
+                            mResultTypeList[i], mResultCountList[i],
+                            mAboveKeyboard[i], mUidList[i]));
                 }
                 Log.d(IMPRESSION_TAG, logStringBuilder.toString());
             }
@@ -626,11 +649,13 @@ public class StatsLogCompatManager extends StatsLogManager {
                     mLauncherState.getLauncherState(), // state
                     mQueryLength, // query_length
                     //result type list
-                    mResultTypeList.toArray(),
+                    mResultTypeList,
                     // result count list
-                    mResultCountList.toArray(),
+                    mResultCountList,
                     // above keyboard list
-                    mAboveKeyboard
+                    mAboveKeyboard,
+                    // uid list
+                    mUidList
             );
         }
     }

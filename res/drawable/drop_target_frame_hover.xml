@@ -16,6 +16,6 @@
 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="?attr/workspaceAccentColor" />
-    <corners android:radius="28dp" />
+    <solid android:color="?attr/dropTargetHoverButtonColor" />
+    <corners android:radius="@dimen/drop_target_button_frame_radius" />
 </shape>

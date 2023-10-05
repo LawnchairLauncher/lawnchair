@@ -27,10 +27,15 @@ import android.view.WindowManager;
 
 import androidx.core.view.OneShotPreDrawListener;
 
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.HorizontalInsettableView;
+import com.android.quickstep.SystemUiProxy;
+import com.android.quickstep.util.unfold.PreemptiveUnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider.TransitionProgressListener;
 import com.android.systemui.unfold.updates.RotationChangeProvider;
@@ -40,7 +45,7 @@ import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 /**
  * Controls animations that are happening during unfolding foldable devices
  */
-public class LauncherUnfoldAnimationController {
+public class LauncherUnfoldAnimationController implements OnDeviceProfileChangeListener {
 
     // Percentage of the width of the quick search bar that will be reduced
     // from the both sides of the bar when progress is 0
@@ -55,9 +60,13 @@ public class LauncherUnfoldAnimationController {
     private final NaturalRotationUnfoldProgressProvider mNaturalOrientationProgressProvider;
     private final UnfoldMoveFromCenterHotseatAnimator mUnfoldMoveFromCenterHotseatAnimator;
     private final UnfoldMoveFromCenterWorkspaceAnimator mUnfoldMoveFromCenterWorkspaceAnimator;
+    private final TransitionStatusProvider mExternalTransitionStatusProvider =
+            new TransitionStatusProvider();
+    private PreemptiveUnfoldTransitionProgressProvider mPreemptiveProgressProvider = null;
+    private Boolean mIsTablet = null;
 
     private static final String TRACE_WAIT_TO_HANDLE_UNFOLD_TRANSITION =
-            "waitingOneFrameBeforeHandlingUnfoldAnimation";
+            "LauncherUnfoldAnimationController#waitingForTheNextFrame";
 
     @Nullable
     private HorizontalInsettableView mQsbInsettable;
@@ -68,8 +77,21 @@ public class LauncherUnfoldAnimationController {
             UnfoldTransitionProgressProvider unfoldTransitionProgressProvider,
             RotationChangeProvider rotationChangeProvider) {
         mLauncher = launcher;
-        mProgressProvider = new ScopedUnfoldTransitionProgressProvider(
-                unfoldTransitionProgressProvider);
+
+        if (FeatureFlags.PREEMPTIVE_UNFOLD_ANIMATION_START.get()) {
+            mPreemptiveProgressProvider = new PreemptiveUnfoldTransitionProgressProvider(
+                    unfoldTransitionProgressProvider, launcher.getMainThreadHandler());
+            mPreemptiveProgressProvider.init();
+
+            mProgressProvider = new ScopedUnfoldTransitionProgressProvider(
+                    mPreemptiveProgressProvider);
+        } else {
+            mProgressProvider = new ScopedUnfoldTransitionProgressProvider(
+                    unfoldTransitionProgressProvider);
+        }
+
+        unfoldTransitionProgressProvider.addCallback(mExternalTransitionStatusProvider);
+
         mUnfoldMoveFromCenterHotseatAnimator = new UnfoldMoveFromCenterHotseatAnimator(launcher,
                 windowManager, rotationChangeProvider);
         mUnfoldMoveFromCenterWorkspaceAnimator = new UnfoldMoveFromCenterWorkspaceAnimator(launcher,
@@ -85,6 +107,8 @@ public class LauncherUnfoldAnimationController {
         // Animated only in natural orientation
         mNaturalOrientationProgressProvider.addCallback(new QsbAnimationListener());
         mNaturalOrientationProgressProvider.addCallback(mUnfoldMoveFromCenterHotseatAnimator);
+
+        mLauncher.addOnDeviceProfileChangeListener(this);
     }
 
     /**
@@ -96,17 +120,21 @@ public class LauncherUnfoldAnimationController {
             mQsbInsettable = (HorizontalInsettableView) hotseat.getQsb();
         }
 
-        handleTransitionOnNextFrame();
+        mProgressProvider.setReadyToHandleTransition(true);
     }
 
-    private void handleTransitionOnNextFrame() {
+    private void preemptivelyStartAnimationOnNextFrame() {
         Trace.asyncTraceBegin(Trace.TRACE_TAG_APP,
                 TRACE_WAIT_TO_HANDLE_UNFOLD_TRANSITION, /* cookie= */ 0);
+
+        // Start the animation (and apply the transformations) in pre-draw listener to make sure
+        // that the views are laid out as some transformations depend on the view sizes and position
         OneShotPreDrawListener.add(mLauncher.getWorkspace(),
                 () -> {
                     Trace.asyncTraceEnd(Trace.TRACE_TAG_APP,
                             TRACE_WAIT_TO_HANDLE_UNFOLD_TRANSITION, /* cookie= */ 0);
-                    mProgressProvider.setReadyToHandleTransition(true);
+                    mPreemptiveProgressProvider.preemptivelyStartTransition(
+                            /* initialProgress= */ 0f);
                 });
     }
 
@@ -124,12 +152,47 @@ public class LauncherUnfoldAnimationController {
     public void onDestroy() {
         mProgressProvider.destroy();
         mNaturalOrientationProgressProvider.destroy();
+        mLauncher.removeOnDeviceProfileChangeListener(this);
     }
 
-    /** Called when launcher finished binding its items. */
+    /**
+     * Called when launcher has finished binding its items
+     */
     public void updateRegisteredViewsIfNeeded() {
         mUnfoldMoveFromCenterHotseatAnimator.updateRegisteredViewsIfNeeded();
         mUnfoldMoveFromCenterWorkspaceAnimator.updateRegisteredViewsIfNeeded();
+    }
+
+    @Override
+    public void onDeviceProfileChanged(DeviceProfile dp) {
+        if (!FeatureFlags.PREEMPTIVE_UNFOLD_ANIMATION_START.get()) {
+            return;
+        }
+
+        if (mIsTablet != null && dp.isTablet != mIsTablet) {
+            // We should preemptively start the animation only if:
+            // - We changed to the unfolded screen
+            // - SystemUI IPC connection is alive, so we won't end up in a situation that we won't
+            //   receive transition progress events from SystemUI later because there was no
+            //   IPC connection established (e.g. because of SystemUI crash)
+            // - SystemUI has not already sent unfold animation progress events. This might happen
+            //   if Launcher was not open during unfold, in this case we receive the configuration
+            //   change only after we went back to home screen and we don't want to start the
+            //   animation in this case.
+            if (dp.isTablet
+                    && SystemUiProxy.INSTANCE.get(mLauncher).isActive()
+                    && !mExternalTransitionStatusProvider.hasRun()) {
+                // Preemptively start the unfold animation to make sure that we have drawn
+                // the first frame of the animation before the screen gets unblocked
+                preemptivelyStartAnimationOnNextFrame();
+            }
+
+            if (!dp.isTablet) {
+                mExternalTransitionStatusProvider.onFolded();
+            }
+        }
+
+        mIsTablet = dp.isTablet;
     }
 
     private class QsbAnimationListener implements TransitionProgressListener {
@@ -176,6 +239,50 @@ public class LauncherUnfoldAnimationController {
         private void setScale(float value) {
             WORKSPACE_SCALE_PROPERTY.setValue(mLauncher.getWorkspace(), value);
             HOTSEAT_SCALE_PROPERTY.setValue(mLauncher.getHotseat(), value);
+        }
+    }
+
+    /**
+     * Class to track the current status of the external transition provider (the events are coming
+     * from the SystemUI side through IPC), it allows to check if the transition has already
+     * finished or currently running on the SystemUI side since last unfold.
+     */
+    private static class TransitionStatusProvider implements TransitionProgressListener {
+
+        private boolean mHasRun = false;
+
+        @Override
+        public void onTransitionStarted() {
+            markAsRun();
+        }
+
+        @Override
+        public void onTransitionProgress(float progress) {
+            markAsRun();
+        }
+
+        @Override
+        public void onTransitionFinished() {
+            markAsRun();
+        }
+
+        /**
+         * Called when the device is folded, so we can reset the status of the animation
+         */
+        public void onFolded() {
+            mHasRun = false;
+        }
+
+        /**
+         * Returns true if there was an animation already (or it is currently running) after
+         * unfolding the device
+         */
+        public boolean hasRun() {
+            return mHasRun;
+        }
+
+        private void markAsRun() {
+            mHasRun = true;
         }
     }
 }

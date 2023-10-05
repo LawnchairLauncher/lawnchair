@@ -26,6 +26,5 @@
     <dimen name="gesture_tutorial_menu_button_spacing">24dp</dimen>
     <dimen name="gesture_tutorial_menu_done_button_top_spacing">40dp</dimen>
     <dimen name="gesture_tutorial_menu_back_shape_bottom_margin">49dp</dimen>
-    <dimen name="gesture_tutorial_menu_done_button_margin">16dp</dimen>
 
 </resources>

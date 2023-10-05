@@ -86,7 +86,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         setWillNotDraw(false);
 
         super.updateAppWidget(null);
-        setOnClickListener(ItemClickHandler.INSTANCE);
+        setOnClickListener(mLauncher.getItemOnClickListener());
 
         if (info.pendingItemInfo == null) {
             info.pendingItemInfo = new PackageItemInfo(info.providerName.getPackageName(),

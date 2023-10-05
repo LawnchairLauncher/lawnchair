@@ -15,10 +15,8 @@
  */
 package com.android.launcher3.taskbar;
 
-import static android.view.InsetsState.ITYPE_EXTRA_NAVIGATION_BAR;
-
 import static com.android.launcher3.QuickstepTransitionManager.TRANSIENT_TASKBAR_TRANSITION_DURATION;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_EDU_TOOLTIP;
+import static com.android.launcher3.statemanager.BaseState.FLAG_NON_INTERACTIVE;
 import static com.android.launcher3.taskbar.TaskbarEduTooltipControllerKt.TOOLTIP_STEP_FEATURES;
 import static com.android.launcher3.taskbar.TaskbarLauncherStateController.FLAG_RESUMED;
 import static com.android.quickstep.TaskAnimationManager.ENABLE_SHELL_TRANSITIONS;
@@ -52,7 +50,7 @@ import com.android.quickstep.util.GroupTask;
 import com.android.quickstep.views.RecentsView;
 
 import java.io.PrintWriter;
-import java.util.Set;
+import java.util.Arrays;
 
 /**
  * A data source which integrates with a Launcher instance
@@ -96,19 +94,22 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     protected void init(TaskbarControllers taskbarControllers) {
         super.init(taskbarControllers);
 
-        mTaskbarLauncherStateController.init(mControllers, mLauncher);
+        mTaskbarLauncherStateController.init(mControllers, mLauncher,
+                mControllers.getSharedState().sysuiStateFlags);
 
         mLauncher.setTaskbarUIController(this);
 
         onLauncherResumedOrPaused(mLauncher.hasBeenResumed(), true /* fromInit */);
 
         onStashedInAppChanged(mLauncher.getDeviceProfile());
-        mTaskbarLauncherStateController.updateStateForSysuiFlags(
-                mControllers.getSharedState().sysuiStateFlags, true /* fromInit */);
         mLauncher.addOnDeviceProfileChangeListener(mOnDeviceProfileChangeListener);
 
         // Restore the in-app display progress from before Taskbar was recreated.
         float[] prevProgresses = mControllers.getSharedState().inAppDisplayProgressMultiPropValues;
+        // Make a copy of the previous progress to set since updating the multiprop will update
+        // the property which also calls onInAppDisplayProgressChanged() which writes the current
+        // values into the shared state
+        prevProgresses = Arrays.copyOf(prevProgresses, prevProgresses.length);
         for (int i = 0; i < prevProgresses.length; i++) {
             mTaskbarInAppDisplayProgressMultiProp.get(i).setValue(prevProgresses[i]);
         }
@@ -188,15 +189,21 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     @Nullable
     private Animator onLauncherResumedOrPaused(
             boolean isResumed, boolean fromInit, boolean startAnimation, int duration) {
+        // Launcher is resumed during the swipe-to-overview gesture under shell-transitions, so
+        // avoid updating taskbar state in that situation (when it's non-interactive -- or
+        // "background") to avoid premature animations.
         if (ENABLE_SHELL_TRANSITIONS && isResumed
+                && mLauncher.getStateManager().getState().hasFlag(FLAG_NON_INTERACTIVE)
                 && !mLauncher.getStateManager().getState().isTaskbarAlignedWithHotseat(mLauncher)) {
-            // Launcher is resumed, but in a state where taskbar is still independent, so
-            // ignore the state change.
             return null;
         }
 
         mTaskbarLauncherStateController.updateStateForFlag(FLAG_RESUMED, isResumed);
         return mTaskbarLauncherStateController.applyState(fromInit ? 0 : duration, startAnimation);
+    }
+
+    public void refreshResumedState() {
+        onLauncherResumedOrPaused(mLauncher.hasBeenResumed());
     }
 
     /**
@@ -234,8 +241,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
                 // Adjust task transition spec to account for taskbar being visible
                 WindowManagerGlobal.getWindowManagerService().setTaskTransitionSpec(
                         new TaskTransitionSpec(
-                                mLauncher.getColor(R.color.taskbar_background),
-                                Set.of(ITYPE_EXTRA_NAVIGATION_BAR)));
+                                mLauncher.getColor(R.color.taskbar_background)));
             }
         } catch (RemoteException e) {
             // This shouldn't happen but if it does task animations won't look good until the
@@ -250,13 +256,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
      */
     public void showEduOnAppLaunch() {
         if (!shouldShowEduOnAppLaunch()) {
-            return;
-        }
-
-        // Transient and persistent bottom sheet.
-        if (!ENABLE_TASKBAR_EDU_TOOLTIP.get()) {
-            mLauncher.getOnboardingPrefs().markChecked(OnboardingPrefs.TASKBAR_EDU_SEEN);
-            mControllers.taskbarEduController.showEdu();
             return;
         }
 
@@ -276,11 +275,6 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     public boolean shouldShowEduOnAppLaunch() {
         if (Utilities.isRunningInTestHarness()) {
             return false;
-        }
-
-        // Transient and persistent bottom sheet.
-        if (!ENABLE_TASKBAR_EDU_TOOLTIP.get()) {
-            return !mLauncher.getOnboardingPrefs().getBoolean(OnboardingPrefs.TASKBAR_EDU_SEEN);
         }
 
         // Persistent features EDU tooltip.
@@ -339,8 +333,8 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
     }
 
     @Override
-    public void updateStateForSysuiFlags(int sysuiFlags, boolean skipAnim) {
-        mTaskbarLauncherStateController.updateStateForSysuiFlags(sysuiFlags, skipAnim);
+    public void updateStateForSysuiFlags(int sysuiFlags) {
+        mTaskbarLauncherStateController.updateStateForSysuiFlags(sysuiFlags);
     }
 
     @Override

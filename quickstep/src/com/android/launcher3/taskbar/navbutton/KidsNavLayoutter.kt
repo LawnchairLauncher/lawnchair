@@ -25,14 +25,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.android.launcher3.DeviceProfile
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DIMEN_TASKBAR_BACK_BUTTON_LEFT_MARGIN_KIDS
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DIMEN_TASKBAR_HOME_BUTTON_LEFT_MARGIN_KIDS
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DIMEN_TASKBAR_ICON_SIZE_KIDS
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DIMEN_TASKBAR_NAV_BUTTONS_CORNER_RADIUS_KIDS
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DIMEN_TASKBAR_NAV_BUTTONS_HEIGHT_KIDS
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DIMEN_TASKBAR_NAV_BUTTONS_WIDTH_KIDS
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DRAWABLE_SYSBAR_BACK_KIDS
-import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.DRAWABLE_SYSBAR_HOME_KIDS
+import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.*
 
 class KidsNavLayoutter(
     resources: Resources,

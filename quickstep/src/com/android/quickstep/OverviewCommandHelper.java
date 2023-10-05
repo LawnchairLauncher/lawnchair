@@ -248,7 +248,8 @@ public class OverviewCommandHelper {
                     InteractionJankMonitorWrapper.CUJ_QUICK_SWITCH);
         }
 
-        GestureState gestureState = mService.createGestureState(GestureState.DEFAULT_STATE);
+        GestureState gestureState = mService.createGestureState(GestureState.DEFAULT_STATE,
+                GestureState.TrackpadGestureType.NONE);
         gestureState.setHandlingAtomicEvent(true);
         AbsSwipeUpHandler interactionHandler = mService.getSwipeUpHandlerFactory()
                 .newHandler(gestureState, cmd.createTime);
@@ -261,7 +262,7 @@ public class OverviewCommandHelper {
             public void onRecentsAnimationStart(RecentsAnimationController controller,
                     RecentsAnimationTargets targets) {
                 activityInterface.runOnInitBackgroundStateUI(() ->
-                        interactionHandler.onGestureEnded(0, new PointF(), new PointF()));
+                        interactionHandler.onGestureEnded(0, new PointF()));
                 cmd.removeListener(this);
             }
 
