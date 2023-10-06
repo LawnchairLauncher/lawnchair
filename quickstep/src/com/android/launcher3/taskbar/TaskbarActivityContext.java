@@ -27,6 +27,7 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_OVERLAY_PROXY;
 import static com.android.launcher3.Utilities.isRunningInTestHarness;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_PINNING;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NO_RECREATION;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING;
@@ -843,9 +844,17 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             return getSetupWindowHeight();
         }
 
-        if (DisplayController.isTransientTaskbar(this)) {
-            return mDeviceProfile.taskbarHeight
-                    + (2 * mDeviceProfile.taskbarBottomMargin)
+        boolean shouldTreatAsTransient = DisplayController.isTransientTaskbar(this)
+                || (ENABLE_TASKBAR_PINNING.get() && !isThreeButtonNav());
+
+        // Return transient taskbar window height when pinning feature is enabled, so taskbar view
+        // does not get cut off during pinning animation.
+        if (shouldTreatAsTransient) {
+            DeviceProfile transientTaskbarDp = mDeviceProfile.toBuilder(this)
+                    .setIsTransientTaskbar(true).build();
+
+            return transientTaskbarDp.taskbarHeight
+                    + (2 * transientTaskbarDp.taskbarBottomMargin)
                     + resources.getDimensionPixelSize(R.dimen.transient_taskbar_shadow_blur);
         }
 
