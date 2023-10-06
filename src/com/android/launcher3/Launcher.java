@@ -26,7 +26,6 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_FOLDER;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ICON_SURFACE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
-import static com.android.launcher3.AbstractFloatingView.TYPE_SNACKBAR;
 import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
 import static com.android.launcher3.BuildConfig.APPLICATION_ID;
 import static com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY;
@@ -185,7 +184,6 @@ import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.pageindicators.WorkspacePageIndicator;
 import com.android.launcher3.pm.PinRequestHelper;
 import com.android.launcher3.popup.ArrowPopup;
-import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.qsb.QsbContainerView;
@@ -210,7 +208,6 @@ import com.android.launcher3.util.LockedUserState;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
-import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.ScreenOnTracker;
 import com.android.launcher3.util.ScreenOnTracker.ScreenOnListener;
@@ -324,9 +321,11 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Thunk @VisibleForTesting public static final int NEW_APPS_ANIMATION_DELAY = 500;
 
     private static final String DISPLAY_WORKSPACE_TRACE_METHOD_NAME = "DisplayWorkspaceFirstFrame";
-    private static final String DISPLAY_ALL_APPS_TRACE_METHOD_NAME = "DisplayAllApps";
+    public static final String DISPLAY_ALL_APPS_TRACE_METHOD_NAME = "DisplayAllApps";
     public static final int DISPLAY_WORKSPACE_TRACE_COOKIE = 0;
     public static final int DISPLAY_ALL_APPS_TRACE_COOKIE = 1;
+    private static final String COLD_STARTUP_TRACE_METHOD_NAME = "LauncherColdStartup";
+    public static final int COLD_STARTUP_TRACE_COOKIE = 2;
 
     private static final FloatProperty<Workspace<?>> WORKSPACE_WIDGET_SCALE =
             WORKSPACE_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_WIDGET_TRANSITION);
@@ -336,7 +335,11 @@ public class Launcher extends StatefulActivity<LauncherState>
     private static final boolean DESKTOP_MODE_SUPPORTED =
             "1".equals(Utilities.getSystemProperty("persist.wm.debug.desktop_mode_2", "0"));
 
-    KeyboardShortcutsDelegate mKeyboardShortcutsDelegate = new KeyboardShortcutsDelegate(this);
+    private final ModelCallbacks mModelCallbacks = createModelCallbacks();
+
+    private final KeyboardShortcutsDelegate mKeyboardShortcutsDelegate =
+            new KeyboardShortcutsDelegate(this);
+
     @Thunk
     Workspace<?> mWorkspace;
     @Thunk
@@ -428,6 +431,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             new CannedAnimationCoordinator(this);
 
     private final List<BackPressHandler> mBackPressedHandlers = new ArrayList<>();
+    private boolean mIsColdStartupAfterReboot;
 
     public static Launcher getLauncher(Context context) {
         return fromContext(context);
@@ -442,6 +446,14 @@ public class Launcher extends StatefulActivity<LauncherState>
                             ? COLD
                             : COLD_DEVICE_REBOOTING
                         : WARM);
+
+        mIsColdStartupAfterReboot = sIsNewProcess
+            && !LockedUserState.get(this).isUserUnlockedAtLauncherStartup();
+        if (mIsColdStartupAfterReboot) {
+            Trace.beginAsyncSection(
+                    COLD_STARTUP_TRACE_METHOD_NAME, COLD_STARTUP_TRACE_COOKIE);
+        }
+
         sIsNewProcess = false;
         mStartupLatencyLogger
                 .logStart(LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION)
@@ -594,6 +606,10 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
         setTitle(R.string.home_screen);
         mStartupLatencyLogger.logEnd(LAUNCHER_LATENCY_STARTUP_ACTIVITY_ON_CREATE);
+    }
+
+    protected ModelCallbacks createModelCallbacks() {
+        return new ModelCallbacks(this);
     }
 
     /**
@@ -2243,13 +2259,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public void preAddApps() {
-        // If there's an undo snackbar, force it to complete to ensure empty screens are removed
-        // before trying to add new items.
-        mModelWriter.commitDelete();
-        AbstractFloatingView snackbar = AbstractFloatingView.getOpenView(this, TYPE_SNACKBAR);
-        if (snackbar != null) {
-            snackbar.post(() -> snackbar.close(true));
-        }
+        mModelCallbacks.preAddApps();
     }
 
     @Override
@@ -2663,6 +2673,11 @@ public class Launcher extends StatefulActivity<LauncherState>
                                 .logEnd(LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION)
                                 .log()
                                 .reset();
+                        if (mIsColdStartupAfterReboot) {
+                            Trace.endAsyncSection(COLD_STARTUP_TRACE_METHOD_NAME,
+                                    COLD_STARTUP_TRACE_COOKIE);
+                        }
+
                         MAIN_EXECUTOR.getHandler().postAtFrontOfQueue(
                                 () -> getRootView().getViewTreeObserver()
                                         .removeOnDrawListener(this));
@@ -2847,90 +2862,70 @@ public class Launcher extends StatefulActivity<LauncherState>
     public void onPageEndTransition() {}
 
     /**
-     * Add the icons for all apps.
-     *
-     * Implementation of the method from LauncherModel.Callbacks.
+     * See {@code LauncherBindingDelegate}
      */
     @Override
     @TargetApi(Build.VERSION_CODES.S)
     @UiThread
     public void bindAllApplications(AppInfo[] apps, int flags,
             Map<PackageUserKey, Integer> packageUserKeytoUidMap) {
-        Preconditions.assertUIThread();
-        boolean hadWorkApps = mAppsView.shouldShowTabs();
-        AllAppsStore<Launcher> appsStore = mAppsView.getAppsStore();
-        appsStore.setApps(apps, flags, packageUserKeytoUidMap);
-        PopupContainerWithArrow.dismissInvalidPopup(this);
-        if (hadWorkApps != mAppsView.shouldShowTabs()) {
-            getStateManager().goToState(NORMAL);
-        }
-
+        mModelCallbacks.bindAllApplications(apps, flags, packageUserKeytoUidMap);
         if (Utilities.ATLEAST_S) {
-            Trace.endAsyncSection(DISPLAY_ALL_APPS_TRACE_METHOD_NAME,
-                    DISPLAY_ALL_APPS_TRACE_COOKIE);
+            Trace.endAsyncSection(
+                    Launcher.DISPLAY_ALL_APPS_TRACE_METHOD_NAME,
+                    Launcher.DISPLAY_ALL_APPS_TRACE_COOKIE
+            );
         }
     }
 
     /**
-     * Copies LauncherModel's map of activities to shortcut counts to Launcher's. This is necessary
-     * because LauncherModel's map is updated in the background, while Launcher runs on the UI.
+     * See {@code LauncherBindingDelegate}
      */
     @Override
     public void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMapCopy) {
-        mPopupDataProvider.setDeepShortcutMap(deepShortcutMapCopy);
+        mModelCallbacks.bindDeepShortcutMap(deepShortcutMapCopy);
     }
 
     @Override
     public void bindIncrementalDownloadProgressUpdated(AppInfo app) {
-        mAppsView.getAppsStore().updateProgressBar(app);
+        mModelCallbacks.bindIncrementalDownloadProgressUpdated(app);
     }
 
     @Override
     public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets) {
-        mWorkspace.widgetsRestored(widgets);
+        mModelCallbacks.bindWidgetsRestored(widgets);
     }
 
     /**
-     * Some shortcuts were updated in the background.
-     * Implementation of the method from LauncherModel.Callbacks.
-     *
-     * @param updated list of shortcuts which have changed.
+     * See {@code LauncherBindingDelegate}
      */
     @Override
     public void bindWorkspaceItemsChanged(List<WorkspaceItemInfo> updated) {
-        if (!updated.isEmpty()) {
-            mWorkspace.updateWorkspaceItems(updated, this);
-            PopupContainerWithArrow.dismissInvalidPopup(this);
-        }
+        mModelCallbacks.bindWorkspaceItemsChanged(updated);
     }
 
     /**
-     * Update the state of a package, typically related to install state.
-     *
-     * Implementation of the method from LauncherModel.Callbacks.
+     * See {@code LauncherBindingDelegate}
      */
     @Override
     public void bindRestoreItemsChange(HashSet<ItemInfo> updates) {
-        mWorkspace.updateRestoreItems(updates, this);
+        mModelCallbacks.bindRestoreItemsChange(updates);
     }
 
     /**
-     * A package was uninstalled/updated.  We take both the super set of packageNames
-     * in addition to specific applications to remove, the reason being that
-     * this can be called when a package is updated as well.  In that scenario,
-     * we only remove specific components from the workspace and hotseat, where as
-     * package-removal should clear all items by package name.
+     * See {@code LauncherBindingDelegate}
      */
     @Override
     public void bindWorkspaceComponentsRemoved(Predicate<ItemInfo> matcher) {
-        mWorkspace.removeItemsByMatcher(matcher);
-        mDragController.onAppsRemoved(matcher);
-        PopupContainerWithArrow.dismissInvalidPopup(this);
+        mModelCallbacks.bindWorkspaceComponentsRemoved(matcher);
     }
 
+    /**
+     * See {@code LauncherBindingDelegate}
+     */
     @Override
     public void bindAllWidgets(final List<WidgetsListBaseEntry> allWidgets) {
-        mPopupDataProvider.setAllWidgets(allWidgets);
+        mModelCallbacks.bindAllWidgets(allWidgets);
     }
 
     @Override

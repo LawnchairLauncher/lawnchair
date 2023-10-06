@@ -42,7 +42,7 @@ import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
-import static com.android.launcher3.config.FeatureFlags.enableGridOnlyOverview;
+import static com.android.launcher3.Flags.enableGridOnlyOverview;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_ACTIONS_SPLIT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_CLEAR_ALL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
@@ -217,6 +217,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -3263,7 +3264,10 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mSplitSelectStateController.setFirstFloatingTaskView(firstFloatingTaskView);
 
         // Allow user to click staged app to launch into fullscreen
-        firstFloatingTaskView.setOnClickListener(this::animateToFullscreen);
+        firstFloatingTaskView.setOnClickListener(view ->
+                mSplitSelectStateController.getSplitAnimationController().
+                        playAnimPlaceholderToFullscreen(mActivity, view,
+                                Optional.of(() -> resetFromSplitSelectionState())));
 
         // SplitInstructionsView: animate in
         safeRemoveDragLayerView(mSplitSelectStateController.getSplitInstructionsView());
@@ -3314,41 +3318,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
             updateCurrentTaskActionsVisibility();
         });
-    }
-
-    private void animateToFullscreen(View view) {
-        FloatingTaskView stagedTaskView = (FloatingTaskView) view;
-
-        boolean isTablet = mActivity.getDeviceProfile().isTablet;
-        int duration = isTablet
-                ? SplitAnimationTimings.TABLET_CONFIRM_DURATION
-                : SplitAnimationTimings.PHONE_CONFIRM_DURATION;
-
-        PendingAnimation pendingAnimation = new PendingAnimation(duration);
-
-        Rect firstTaskStartingBounds = new Rect();
-        Rect firstTaskEndingBounds = new Rect();
-
-        stagedTaskView.getBoundsOnScreen(firstTaskStartingBounds);
-        mActivity.getDragLayer().getBoundsOnScreen(firstTaskEndingBounds);
-
-        stagedTaskView.addConfirmAnimation(
-                pendingAnimation,
-                new RectF(firstTaskStartingBounds),
-                firstTaskEndingBounds,
-                false /* fadeWithThumbnail */,
-                true /* isStagedTask */);
-
-        pendingAnimation.addEndListener(animationSuccess ->
-                mSplitSelectStateController.launchInitialAppFullscreen(launchSuccess -> {
-                    if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
-                        mSplitSelectStateController.resetState();
-                    } else {
-                        resetFromSplitSelectionState();
-                    }
-                }));
-
-        pendingAnimation.buildAnim().start();
     }
 
     /**
@@ -4980,12 +4949,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
 
     protected void maybeDrawEmptyMessage(Canvas canvas) {
         if (mShowEmptyMessage && mEmptyTextLayout != null) {
-            // Offset to center in the visible (non-padded) part of RecentsView
-            mTempRect.set(mInsets.left + getPaddingLeft(), mInsets.top + getPaddingTop(),
-                    mInsets.right + getPaddingRight(), mInsets.bottom + getPaddingBottom());
+            // Offsets icon and text up so that the vertical center of screen (accounting for
+            // insets) is between icon and text.
+            int offset = (mEmptyIcon.getIntrinsicHeight() + mEmptyMessagePadding) / 2;
+
             canvas.save();
-            canvas.translate(getScrollX() + (mTempRect.left - mTempRect.right) / 2,
-                    (mTempRect.top - mTempRect.bottom) / 2);
+            canvas.translate(getScrollX() + (mInsets.left - mInsets.right) / 2f,
+                    (mInsets.top - mInsets.bottom) / 2f - offset);
             mEmptyIcon.draw(canvas);
             canvas.translate(mEmptyMessagePadding,
                     mEmptyIcon.getBounds().bottom + mEmptyMessagePadding);

@@ -815,6 +815,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         float currentWordWidth, runningWidth = 0;
         CharSequence currentWord;
         StringBuilder newString = new StringBuilder();
+        // TODO: Remove when ENABLE_ICON_LABEL_AUTO_SCALING feature flag is being cleaned up.
+        paint.setLetterSpacing(MIN_LETTER_SPACING);
         int stringPtr = 0;
         for (int i = 0; i < breakPoints.size()+1; i++) {
             if (i < breakPoints.size()) {
