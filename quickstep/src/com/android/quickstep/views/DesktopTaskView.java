@@ -309,7 +309,7 @@ public class DesktopTaskView extends TaskView {
 
     @Override
     public RunnableList launchTasks() {
-        SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps();
+        SystemUiProxy.INSTANCE.get(getContext()).showDesktopApps(mActivity.getDisplayId());
         Launcher.getLauncher(mActivity).getStateManager().goToState(NORMAL, false /* animated */);
         return null;
     }
@@ -321,7 +321,7 @@ public class DesktopTaskView extends TaskView {
     }
 
     @Override
-    public void launchTask(@NonNull Consumer<Boolean> callback, boolean freezeTaskList) {
+    public void launchTask(@NonNull Consumer<Boolean> callback, boolean isQuickswitch) {
         launchTasks();
         callback.accept(true);
     }

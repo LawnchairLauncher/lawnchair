@@ -243,7 +243,17 @@ public final class TaskViewUtils {
                     TOUCH_RESPONSE_INTERPOLATOR);
             out.setFloat(tvsLocal.recentsViewScroll, AnimatedFloat.VALUE, 0,
                     TOUCH_RESPONSE_INTERPOLATOR);
-
+            out.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    super.onAnimationStart(animation);
+                    final SurfaceTransaction showTransaction = new SurfaceTransaction();
+                    for (int i = targets.apps.length - 1; i >= 0; --i) {
+                        showTransaction.getTransaction().show(targets.apps[i].leash);
+                    }
+                    applier.scheduleApply(showTransaction);
+                }
+            });
             out.addOnFrameCallback(() -> {
                 for (RemoteTargetHandle handle : remoteTargetHandles) {
                     handle.getTaskViewSimulator().apply(handle.getTransformParams());
@@ -463,16 +473,14 @@ public final class TaskViewUtils {
                     throw new IllegalStateException(
                             "Expected task to be showing, but it is " + mode);
                 }
-                if (change.getParent() == null) {
-                    throw new IllegalStateException("Initiating multi-split launch but the split"
-                            + "root of " + taskId + " is already visible or has broken hierarchy.");
-                }
             }
             if (taskId == initialTaskId) {
-                splitRoot1 = transitionInfo.getChange(change.getParent());
+                splitRoot1 = change.getParent() == null ? change :
+                        transitionInfo.getChange(change.getParent());
             }
             if (taskId == secondTaskId) {
-                splitRoot2 = transitionInfo.getChange(change.getParent());
+                splitRoot2 = change.getParent() == null ? change :
+                        transitionInfo.getChange(change.getParent());
             }
         }
 

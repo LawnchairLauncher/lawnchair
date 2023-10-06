@@ -249,6 +249,8 @@ public class SettingsActivity extends FragmentActivity
                         bottomPadding + insets.getSystemWindowInsetBottom());
                 return insets.consumeSystemWindowInsets();
             });
+            // Overriding Text Direction in the Androidx preference library to support RTL
+            view.setTextDirection(View.TEXT_DIRECTION_LOCALE);
         }
 
         @Override

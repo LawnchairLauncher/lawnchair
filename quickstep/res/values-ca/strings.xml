@@ -44,35 +44,41 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Els suggeriments d\'aplicacions estan activats"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Els suggeriments d\'aplicacions estan desactivats"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Predicció d\'aplicació: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Assegura\'t de lliscar des de l\'extrem dret o esquerre de la pantalla."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Assegura\'t de lliscar des de la vora dreta o esquerra cap al centre de la pantalla i deixar anar."</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Gira el dispositiu"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Gira el dispositiu per completar el tutorial de navegació amb gestos"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Assegura\'t de lliscar des de l\'extrem dret o esquerre de la pantalla."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Assegura\'t de lliscar des de la vora dreta o esquerra cap al centre de la pantalla i deixar anar"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Has après a lliscar des de la dreta per tornar enrere. Ara, descobreix com pots canviar d\'aplicació."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Has completat el gest per tornar enrere."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Assegura\'t de no lliscar massa a prop de la part inferior de la pantalla."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Has completat el gest per tornar enrere"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Assegura\'t de no lliscar massa a prop de la part inferior de la pantalla."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Per canviar la sensibilitat del gest, ves a Configuració"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Llisca per anar enrere"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Per tornar a la darrera pantalla, llisca des de la vora esquerra o dreta cap al centre de la pantalla."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Per tornar a la pantalla anterior, llisca amb dos dits des de l\'extrem esquerre o dret cap al centre de la pantalla."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Torna enrere"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Assegura\'t de lliscar cap amunt des de la vora inferior de la pantalla."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Assegura\'t de no aturar-te abans de deixar anar."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Assegura\'t de lliscar directament cap amunt."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Has completat el gest per anar a la pantalla d\'inici. Ara, descobreix com pots tornar enrere."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Has completat el gest per anar a la pantalla d\'inici."</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Llisca des de la vora esquerra o dreta cap al centre de la pantalla."</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Assegura\'t de lliscar cap amunt des de la part inferior de la pantalla"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Assegura\'t de no aturar-te abans de deixar anar."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Assegura\'t de lliscar recte cap amunt."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Has completat el gest per anar a la pantalla d\'inici. Ara, descobreix com pots tornar enrere."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Has completat el gest per anar a la pantalla d\'inici"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Llisca per anar a la pantalla d\'inici"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Llisca cap amunt des de la part inferior de la pantalla. Aquest gest et porta a la pantalla d\'inici."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Llisca amb dos dits cap amunt des de la part inferior. Aquest gest sempre porta a la pantalla d\'inici."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Ves a la pàgina d\'inici"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Per anar a la pantalla d\'inici en qualsevol moment, llisca cap amunt des la part inferior."</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Assegura\'t de lliscar cap amunt des de la vora inferior de la pantalla."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Prova de mantenir premuda la finestra durant més temps abans de deixar-la anar."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Assegura\'t de lliscar directament cap amunt i després aturar-te."</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Llisca cap amunt des de la part inferior de la pantalla."</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Ben fet!"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Assegura\'t de lliscar cap amunt des de la part inferior de la pantalla."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Prova de mantenir premuda la finestra durant més temps abans de deixar-la anar"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Assegura\'t de lliscar directament cap amunt i després aturar-te"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Has après a utilitzar els gestos. Per desactivar-los, ves a Configuració."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Has completat el gest per canviar d\'aplicació."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Has completat el gest per canviar d\'aplicació"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Llisca per canviar d\'aplicació"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Per canviar entre aplicacions, llisca cap amunt des de la part inferior, mantén premut i deixa anar."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Per canviar entre apps, llisca amb dos dits cap amunt des de la part inferior, mantén i deixa anar."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Canvia d\'aplicació"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Llisca cap amunt des de la part inferior de la pantalla, mantén premut i, a continuació, deixa anar."</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Ben fet!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Tot a punt"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Fet"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Configuració"</string>
@@ -97,15 +103,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Omet"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Gira la pantalla"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Informació sobre Barra de tasques"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Ha aparegut el tauler educatiu de la barra de tasques"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"S\'ha tancat el tauler educatiu de la barra de tasques"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Arrossega una aplicació al costat per utilitzar-ne dues alhora"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Llisca lentament cap amunt per mostrar la Barra de tasques"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Obtén suggeriments d\'aplicacions basats en la teva rutina"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"A Configuració, activa la navegació amb gestos per amagar la Barra de tasques automàticament"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Treu més partit de la Barra de tasques"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Següent"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Enrere"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Tanca"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Fet"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Inici"</string>
@@ -119,6 +121,9 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Es mostra la Barra de tasques"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"S\'ha amagat la Barra de tasques"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Barra de navegació"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Mostra sempre Barra de tasques"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Canvia el mode de navegació"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Separador de la Barra de tasques"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mou a la part superior o a l\'esquerra"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mou a la part inferior o a la dreta"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Mostra # aplicació més.}other{Mostra # aplicacions més.}}"</string>

@@ -20,7 +20,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
-    <string name="work_folder_name" msgid="3753320833950115786">"ስራ"</string>
+    <string name="work_folder_name" msgid="3753320833950115786">"ሥራ"</string>
     <string name="activity_not_found" msgid="8071924732094499514">"መተግበሪያ አልተጫነም።"</string>
     <string name="activity_not_available" msgid="7456344436509528827">"መተግበሪያ አይገኝም"</string>
     <string name="safemode_shortcut_error" msgid="9160126848219158407">"የወረደው መተግበሪያ ደህንነቱ በተጠበቀ ሁኔታ ውስጥ ተሰናክሏል"</string>
@@ -29,6 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"መነሻ"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"የተከፈለ ማያ ገፅ"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"የመተግበሪያ መረጃ ለ%1$s"</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"የመተግበሪያ ጥምረትን ያስቀምጡ"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ምግብርን ለማንቀሳቀስ ይንኩ እና ይያዙ።"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ምግብርን ለማንቀሳቀስ ወይም ብጁ እርምጃዎችን ለመጠቀም ሁለቴ መታ ያድርጉ እና ይያዙ።"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -47,8 +48,9 @@
     <string name="no_widgets_available" msgid="4337693382501046170">"መግብሮች እና አቋራጮች አይገኙም"</string>
     <string name="no_search_results" msgid="3787956167293097509">"ምንም መግብሮች ወይም አቋራጮች አልተገኙም"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"የግል"</string>
-    <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ስራ"</string>
+    <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ሥራ"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"ውይይቶች"</string>
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"የማስታወሻ አያያዝ"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"በጣቶችዎ ጫፎች ላይ ጠቃሚ መረጃ"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"መተግበሪያዎችን ሳይከፍቱ መረጃ ለማግኘት በመነሻ ማያ ገጽዎ ላይ ምግብሮችን ማከል ይችላሉ"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"የምግብር ቅንብሮችን ለመለወጥ መታ ያድርጉ"</string>
@@ -80,7 +82,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"ቅንብሮችን እና አቋራጮችን በመነሻ ለማንበብ ለትግበራ ይፈቅዳል።"</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"መነሻ ቅንብሮች እና አቋራጮች ጻፍ"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"ቅንብሮችን እና አቋራጮችን በመነሻ ለመለወጥ ለመተግበሪያ ይፈቅዳል።"</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> የስልክ ጥሪዎችን ለማድረግ አልተፈቀደለትም"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"ምግብርን መጫን አልተቻለም"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"የምግብር ቅንብሮች"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"ማዋቀርን ለመጨረስ መታ ያድርጉ"</string>
@@ -100,6 +101,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"አቃፊ፦ <xliff:g id="NAME">%1$s</xliff:g>፣ <xliff:g id="SIZE">%2$d</xliff:g> ወይም ተጨማሪ ንጥሎች"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"የግድግዳ ወረቀቶች"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ልጣፍ እና ቅጥ"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"መነሻ ማያ ገጽን አርትዕ"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"የመነሻ ቅንብሮች"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"በእርስዎ አስተዳዳሪ የተሰናከለ"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"የመነሻ ማያ ገፅ ማሽከርከርን ይፍቀዱ"</string>
@@ -161,12 +163,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"የሥራ መተግበሪያዎች ባጅ የተደረገባቸው እና ለእርስዎ የአይቲ አስተዳዳሪ የሚታዩ ናቸው"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ገባኝ"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"የስራ መተግበሪያዎች ባሉበት ቆመዋል"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"ከሥራ መተግበሪያዎችዎ ማሳወቂያዎች አይደርሱዎትም"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"የስራ መተግበሪያዎችዎ ማሳወቂያዎችን ሊልክልዎ፣ ባትሪዎን መጠቀም ወይም አካባቢዎን መድረስ አይችሉም"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"የሥራ መተግበሪያዎች ጠፍተዋል። የስራ መተግበሪያዎችዎ ማሳወቂያዎችን ሊልክልዎ፣ ባትሪዎን መጠቀም ወይም አካባቢዎን መድረስ አይችሉም"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"ከሥራ መተግበሪያዎችዎ የስልክ ጥሪዎች፣ ኤስኤምኤሶች ወይም ማሳወቂያዎች አይደርሱዎትም"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"የሥራ መተግበሪያዎች ባጅ የተደረገባቸው ሲሆን ለእርስዎ IT ቡድን ታይ ናቸው"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ገባኝ"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"የሥራ መተግበሪያዎችን ባሉበት አቁም"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"የሥራ መተግበሪያዎችን ያብሩ"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"ካቆመበት ቀጥል"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"አጣራ"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"ስልክዎን ይፈልጉ"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"ጡባዊዎን ይፈልጉ"</string>

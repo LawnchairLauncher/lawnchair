@@ -35,7 +35,7 @@
         android:singleLine="true"
         android:ellipsize="end"
         android:textSize="14sp"
-        android:textColor="?android:attr/textColorPrimary"
+        android:textColor="?attr/popupTextColor"
         launcher:layoutHorizontal="true"
         launcher:iconDisplay="shortcut_popup"
         launcher:iconSizeOverride="@dimen/deep_shortcut_icon_size" />

@@ -14,33 +14,43 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<FrameLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/root_view"
-    android:background="@color/all_set_page_background" >
+    android:fitsSystemWindows="false"
+    android:background="@color/all_set_page_background">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animated_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/content_view"
-        android:fitsSystemWindows="false">
+        android:gravity="center"
+        android:scaleType="centerCrop"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/animated_background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:scaleType="centerCrop"
-            app:lottie_autoPlay="true"
-            app:lottie_loop="true" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/text_content_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/allset_page_margin_horizontal"
             android:layout_marginEnd="@dimen/allset_page_margin_horizontal"
             android:layoutDirection="locale"
@@ -78,10 +88,24 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:gravity="start"/>
 
-            <include layout="@layout/allset_navigation_and_hint"/>
+            <include layout="@layout/allset_navigation"/>
+
+            <TextView
+                android:id="@+id/hint"
+                style="@style/TextAppearance.GestureTutorial.Feedback.Subtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:text="@string/allset_hint"
+                android:textSize="@dimen/allset_page_swipe_up_text_size"
+                android:gravity="center_horizontal"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

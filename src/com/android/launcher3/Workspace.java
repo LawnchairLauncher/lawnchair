@@ -19,12 +19,14 @@ package com.android.launcher3;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.EDIT_MODE;
 import static com.android.launcher3.LauncherState.FLAG_MULTI_PAGE;
 import static com.android.launcher3.LauncherState.FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED;
 import static com.android.launcher3.LauncherState.FLAG_WORKSPACE_INACCESSIBLE;
 import static com.android.launcher3.LauncherState.HINT_STATE;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
+import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
 import static com.android.launcher3.anim.AnimatorListeners.forSuccessCallback;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
@@ -493,8 +495,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             }
         }
 
-        // Always enter the spring loaded mode
-        mLauncher.getStateManager().goToState(SPRING_LOADED);
+        if (!mLauncher.isInState(EDIT_MODE)) {
+            mLauncher.getStateManager().goToState(SPRING_LOADED);
+        }
         mStatsLogManager.logger().withItemInfo(dragObject.dragInfo)
                 .withInstanceId(dragObject.logInstanceId)
                 .log(LauncherEvent.LAUNCHER_ITEM_DRAG_STARTED);
@@ -951,10 +954,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         return mScreenOrder;
     }
 
-    protected View getFirstPagePinnedItem() {
-        return mFirstPagePinnedItem;
-    }
-
     /**
      * Returns the screen ID of a page that is shown together with the given page screen ID when the
      * two panel UI is enabled.
@@ -1062,6 +1061,29 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         if (pageShift >= 0) {
             setCurrentPage(currentPage - pageShift);
         }
+    }
+
+    /**
+     * Needed here because launcher has a fullscreen exclusion rect and doesn't pilfer the pointers.
+     */
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (isTrackpadMultiFingerSwipe(ev)) {
+            return false;
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    /**
+     * Needed here because launcher has a fullscreen exclusion rect and doesn't pilfer the pointers.
+     */
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (isTrackpadMultiFingerSwipe(ev)) {
+            return false;
+        }
+        return super.onTouchEvent(ev);
     }
 
     /**
@@ -1412,7 +1434,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     }
 
     private boolean workspaceInScrollableState() {
-        return mLauncher.isInState(SPRING_LOADED) || !workspaceInModalState();
+        return mLauncher.isInState(SPRING_LOADED) || mLauncher.isInState(EDIT_MODE)
+                || !workspaceInModalState();
     }
 
     /**
@@ -1506,6 +1529,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     @Override
     public void setState(LauncherState toState) {
         onStartStateTransition();
+        mLauncher.getStateManager().getState().onLeavingState(mLauncher, toState);
         mStateTransitionAnimation.setState(toState);
         onEndStateTransition();
     }
@@ -1517,6 +1541,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     public void setStateWithAnimation(
             LauncherState toState, StateAnimationConfig config, PendingAnimation animation) {
         StateTransitionListener listener = new StateTransitionListener();
+        mLauncher.getStateManager().getState().onLeavingState(mLauncher, toState);
         mStateTransitionAnimation.setStateWithAnimation(toState, config, animation);
 
         // Invalidate the pages now, so that we have the visible pages before the
@@ -1641,17 +1666,14 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             scale = previewProvider.getScaleAndPosition(contentView, mTempXY);
         }
 
-        int halfPadding = previewProvider.previewPadding / 2;
         int dragLayerX = mTempXY[0];
         int dragLayerY = mTempXY[1];
 
-        Point dragVisualizeOffset = null;
         Rect dragRect = new Rect();
 
         if (draggableView != null) {
             draggableView.getSourceVisualDragBounds(dragRect);
             dragLayerY += dragRect.top;
-            dragVisualizeOffset = new Point(-halfPadding, halfPadding);
         }
 
 
@@ -1669,6 +1691,15 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             }
         }
 
+        if (dragOptions.preDragCondition != null) {
+            int xDragOffSet = dragOptions.preDragCondition.getDragOffset().x;
+            int yDragOffSet = dragOptions.preDragCondition.getDragOffset().y;
+            if (xDragOffSet != 0 || yDragOffSet != 0) {
+                dragLayerX += xDragOffSet;
+                dragLayerY += yDragOffSet;
+            }
+        }
+
         final DragView dv;
         if (contentView instanceof View) {
             if (contentView instanceof LauncherAppWidgetHostView) {
@@ -1681,7 +1712,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     dragLayerY,
                     source,
                     dragObject,
-                    dragVisualizeOffset,
                     dragRect,
                     scale * iconScale,
                     scale,
@@ -1694,7 +1724,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     dragLayerY,
                     source,
                     dragObject,
-                    dragVisualizeOffset,
                     dragRect,
                     scale * iconScale,
                     scale,
@@ -1975,7 +2004,9 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                         distance, false, d)
                         || addToExistingFolderIfNecessary(cell, dropTargetLayout, mTargetCell,
                         distance, d, false)) {
-                    mLauncher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
+                    if (!mLauncher.isInState(EDIT_MODE)) {
+                        mLauncher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
+                    }
                     return;
                 }
 
@@ -2104,14 +2135,19 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     // spring-loaded mode so the page meets the icon where it was picked up.
                     final RunnableList callbackList = new RunnableList();
                     final Runnable onCompleteCallback = onCompleteRunnable;
+                    LauncherState currentState = mLauncher.getStateManager().getState();
                     mLauncher.getDragController().animateDragViewToOriginalPosition(
                             /* onComplete= */ callbackList::executeAllAndDestroy, cell,
-                            SPRING_LOADED.getTransitionDuration(mLauncher, true /* isToState */));
-                    mLauncher.getStateManager().goToState(NORMAL, /* delay= */ 0,
-                            onCompleteCallback == null
-                                    ? null
-                                    : forSuccessCallback(
-                                            () -> callbackList.add(onCompleteCallback)));
+                            currentState.getTransitionDuration(mLauncher, true /* isToState */));
+                    if (!mLauncher.isInState(EDIT_MODE)) {
+                        mLauncher.getStateManager().goToState(NORMAL, /* delay= */ 0,
+                                onCompleteCallback == null
+                                        ? null
+                                        : forSuccessCallback(
+                                                () -> callbackList.add(onCompleteCallback)));
+                    } else if (onCompleteCallback != null) {
+                        forSuccessCallback(() -> callbackList.add(onCompleteCallback));
+                    }
                     mLauncher.getDropTargetBar().onDragEnd();
                     parent.onDropChild(cell);
                     return;
@@ -2135,8 +2171,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             }
             parent.onDropChild(cell);
 
-            mLauncher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY,
-                    onCompleteRunnable == null ? null : forSuccessCallback(onCompleteRunnable));
+            if (!mLauncher.isInState(EDIT_MODE)) {
+                mLauncher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY,
+                        onCompleteRunnable == null ? null : forSuccessCallback(onCompleteRunnable));
+            } else if (onCompleteRunnable != null) {
+                forSuccessCallback(onCompleteRunnable);
+            }
             mStatsLogManager.logger().withItemInfo(d.dragInfo).withInstanceId(d.logInstanceId)
                     .log(LauncherEvent.LAUNCHER_ITEM_DROP_COMPLETED);
         }
@@ -2710,7 +2750,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         final int screenId = getIdForScreen(cellLayout);
         if (!mLauncher.isHotseatLayout(cellLayout)
                 && screenId != getScreenIdForPageIndex(mCurrentPage)
-                && !mLauncher.isInState(SPRING_LOADED)) {
+                && !mLauncher.isInState(SPRING_LOADED)
+                && !mLauncher.isInState(EDIT_MODE)) {
             snapToPage(getPageIndexForScreenId(screenId));
         }
 
@@ -2788,7 +2829,6 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         } else {
             // This is for other drag/drop cases, like dragging from All Apps
             mLauncher.getStateManager().goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
-
             View view;
 
             switch (info.itemType) {
@@ -2892,9 +2932,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         Rect r = estimateItemPosition(layout, targetCell[0], targetCell[1], spanX, spanY);
         if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET) {
             DeviceProfile profile = mLauncher.getDeviceProfile();
-            if (profile.shouldInsetWidgets() && finalView instanceof NavigableAppWidgetHostView) {
-                Rect widgetPadding = new Rect();
-                ((NavigableAppWidgetHostView) finalView).getWidgetInset(profile, widgetPadding);
+            if (finalView instanceof NavigableAppWidgetHostView) {
+                Rect widgetPadding = profile.widgetPadding;
                 r.left -= widgetPadding.left;
                 r.right += widgetPadding.right;
                 r.top -= widgetPadding.top;

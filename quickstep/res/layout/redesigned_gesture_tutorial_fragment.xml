@@ -42,8 +42,6 @@
         android:id="@+id/gesture_tutorial_fake_previous_task_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleX="0.98"
-        android:scaleY="0.98"
         android:visibility="invisible">
 
         <View
@@ -63,7 +61,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginBottom="@dimen/gesture_tutorial_multi_row_task_view_spacing"
-            android:background="@drawable/top_task_view"
+            android:background="@drawable/redesigned_top_task_view"
             android:clipToOutline="true"
             android:visibility="invisible"
 
@@ -76,7 +74,7 @@
             android:id="@+id/bottom_task_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@drawable/top_task_view"
+            android:background="@drawable/redesigned_top_task_view"
             android:clipToOutline="true"
             android:visibility="invisible"
 
@@ -98,15 +96,6 @@
         android:layout_height="match_parent"
         android:background="@drawable/gesture_tutorial_ripple" />
 
-    <include
-        android:id="@+id/gesture_tutorial_fake_taskbar_view"
-        layout="@layout/gesture_tutorial_tablet_mock_taskbar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="@dimen/gesture_tutorial_taskbar_margin_bottom" />
-
     <ImageView
         android:id="@+id/gesture_tutorial_edge_gesture_video"
         android:layout_width="match_parent"
@@ -123,7 +112,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerVertical="true"
-        android:background="@color/gesture_back_tutorial_exiting_app"
         android:visibility="gone" />
 
     <RelativeLayout
@@ -136,7 +124,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:scaleType="centerCrop"
+            android:scaleType="matrix"
             app:lottie_loop="true" />
 
     </RelativeLayout>
@@ -205,25 +193,26 @@
             android:id="@+id/checkmark_animation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="44dp"
             android:gravity="center"
             android:scaleType="centerCrop"
             app:lottie_loop="false"
             android:visibility="gone"
 
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_subtitle" />
+            app:layout_constraintTop_toBottomOf="@id/gesture_tutorial_fragment_feedback_subtitle"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
         <Button
             android:id="@+id/gesture_tutorial_fragment_action_button"
-            style="@style/TextAppearance.GestureTutorial.ButtonLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/gesture_tutorial_action_button_background"
             android:stateListAnimator="@null"
             android:text="@string/gesture_tutorial_action_button_label"
             android:visibility="invisible"
+            android:layout_marginBottom="60dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -32,7 +32,6 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.accessibility.BaseAccessibilityDelegate;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
@@ -75,7 +74,7 @@ public class TaskbarShortcutMenuAccessibilityDelegate
 
     @Override
     protected void getSupportedActions(View host, ItemInfo item, List<LauncherAction> out) {
-        if (ShortcutUtil.supportsShortcuts(item) && FeatureFlags.ENABLE_TASKBAR_POPUP_MENU.get()) {
+        if (ShortcutUtil.supportsShortcuts(item)) {
             out.add(mActions.get(NotificationListener.getInstanceIfConnected() != null
                     ? SHORTCUTS_AND_NOTIFICATIONS : DEEP_SHORTCUTS));
         }
@@ -112,7 +111,8 @@ public class TaskbarShortcutMenuAccessibilityDelegate
                                 item.getIntent().getComponent(),
                                 /* startActivityOptions= */null,
                                 item.user),
-                        new Intent(), side, null, instanceIds.first);
+                        item.user.getIdentifier(), new Intent(), side, null,
+                        instanceIds.first);
             }
             return true;
         } else if (action == DEEP_SHORTCUTS || action == SHORTCUTS_AND_NOTIFICATIONS) {

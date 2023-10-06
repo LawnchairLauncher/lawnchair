@@ -16,6 +16,7 @@
 package com.android.launcher3.testing;
 
 import static com.android.launcher3.allapps.AllAppsStore.DEFER_UPDATES_TEST;
+import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.annotation.TargetApi;
@@ -156,7 +157,7 @@ public class TestInformationHandler implements ResourceBasedOverride {
 
             case TestProtocol.REQUEST_IS_TWO_PANELS:
                 response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        mDeviceProfile.isTwoPanels);
+                        FOLDABLE_SINGLE_PAGE.get() ? false : mDeviceProfile.isTwoPanels);
                 return response;
 
             case TestProtocol.REQUEST_GET_HAD_NONTEST_EVENTS:

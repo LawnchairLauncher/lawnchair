@@ -29,6 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"Главный экран"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Разделить экран"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Сведения о приложении \"%1$s\""</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"Сохранить настройки одновременного использования двух приложений"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Чтобы переместить виджет, нажмите на него и удерживайте"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Чтобы использовать специальные действия или перенести виджет, нажмите на него дважды и удерживайте."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d x %2$d"</string>
@@ -49,6 +50,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Личные виджеты"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Рабочие виджеты"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Разговоры"</string>
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"Создание заметок"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Вся нужная информация перед глазами"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Чтобы не открывать приложения каждый раз, когда нужна информация, добавьте виджеты на главный экран."</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Нажмите, чтобы изменить настройки виджета"</string>
@@ -80,7 +82,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"Приложение получит доступ к данным о настройках и ярлыках на главном экране."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"Изменение настроек и ярлыков на главном экране"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"Приложение сможет изменять настройки и ярлыки на главном экране."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"Приложение <xliff:g id="APP_NAME">%1$s</xliff:g> не может делать телефонные звонки"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Не удается загрузить виджет."</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Настройки виджета"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Нажмите, чтобы завершить настройку."</string>
@@ -100,6 +101,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Папка \"<xliff:g id="NAME">%1$s</xliff:g>\" (объектов: <xliff:g id="SIZE">%2$d</xliff:g> или больше)"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Обои"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Обои и стиль"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"Изменить главный экран"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Главный экран"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Функция отключена администратором"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Разрешить поворачивать главный экран"</string>
@@ -161,12 +163,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"У рабочих приложений есть специальный значок. Они видны системному администратору."</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ОК"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Рабочие приложения приостановлены"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Вы не будете получать уведомления от рабочих приложений."</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Рабочие приложения не могут отправлять уведомления, расходовать заряд батареи и получать доступ к данным о вашем местоположении."</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Рабочие приложения отключены. Они не могут отправлять уведомления, расходовать заряд батареи и получать доступ к вашему местоположению."</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Вы не будете получать вызовы, текстовые сообщения и уведомления от рабочих приложений."</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"У рабочих приложений есть специальный значок. Они видны системному администратору."</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"ОК"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Приостановить рабочие приложения"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Включить рабочие приложения"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Возобновить"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Фильтр"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Поиск на телефоне"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Поиск на планшете"</string>

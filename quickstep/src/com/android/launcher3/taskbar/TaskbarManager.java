@@ -20,6 +20,8 @@ import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
+import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
+import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING_KEY;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.DisplayController.TASKBAR_NOT_DESTROYED_TAG;
@@ -32,6 +34,7 @@ import android.content.ComponentCallbacks;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.hardware.display.DisplayManager;
@@ -48,6 +51,7 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.unfold.NonDestroyableScopedUnfoldTransitionProgressProvider;
@@ -133,6 +137,13 @@ public class TaskbarManager {
     private final SimpleBroadcastReceiver mTaskbarBroadcastReceiver =
             new SimpleBroadcastReceiver(this::showTaskbarFromBroadcast);
 
+    private final SharedPreferences.OnSharedPreferenceChangeListener
+            mTaskbarPinningPreferenceChangeListener = (sharedPreferences, key) -> {
+                if (TASKBAR_PINNING_KEY.equals(key)) {
+                    recreateTaskbar();
+                }
+            };
+
     @SuppressLint("WrongConstant")
     public TaskbarManager(TouchInteractionService service) {
         mDisplayController = DisplayController.INSTANCE.get(service);
@@ -168,9 +179,14 @@ public class TaskbarManager {
                     DeviceProfile oldDp = mTaskbarActivityContext.getDeviceProfile();
                     boolean isOrientationChange =
                             (configDiff & ActivityInfo.CONFIG_ORIENTATION) != 0;
+
+                    int newOrientation = newConfig.windowConfiguration.getRotation();
+                    int oldOrientation = mOldConfig.windowConfiguration.getRotation();
                     int oldWidth = isOrientationChange ? oldDp.heightPx : oldDp.widthPx;
                     int oldHeight = isOrientationChange ? oldDp.widthPx : oldDp.heightPx;
-                    if (dp.widthPx == oldWidth && dp.heightPx == oldHeight) {
+
+                    if ((dp.widthPx == oldWidth && dp.heightPx == oldHeight)
+                            || (newOrientation == oldOrientation)) {
                         configDiffForRecreate &= ~ActivityInfo.CONFIG_SCREEN_SIZE;
                     }
                 }
@@ -244,6 +260,8 @@ public class TaskbarManager {
     private void destroyExistingTaskbar() {
         debugWhyTaskbarNotDestroyed("destroyExistingTaskbar: " + mTaskbarActivityContext);
         if (mTaskbarActivityContext != null) {
+            LauncherPrefs.get(mContext).removeListener(mTaskbarPinningPreferenceChangeListener,
+                    TASKBAR_PINNING);
             mTaskbarActivityContext.onDestroy();
             if (!FLAG_HIDE_NAVBAR_WINDOW) {
                 mTaskbarActivityContext = null;
@@ -380,6 +398,10 @@ public class TaskbarManager {
             mTaskbarActivityContext.setUIController(
                     createTaskbarUIControllerForActivity(mActivity));
         }
+
+        // We to wait until user unlocks the device to attach listener.
+        LauncherPrefs.get(mContext).addListener(mTaskbarPinningPreferenceChangeListener,
+                TASKBAR_PINNING);
     }
 
     public void onSystemUiFlagsChanged(int systemUiStateFlags) {

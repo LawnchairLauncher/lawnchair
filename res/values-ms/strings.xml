@@ -29,6 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"Rumah"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Skrin pisah"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Maklumat apl untuk %1$s"</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"Simpan gandingan apl"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Sentuh &amp; tahan untuk menggerakkan widget."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Ketik dua kali &amp; tahan untuk menggerakkan widget atau menggunakan tindakan tersuai."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -49,6 +50,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Peribadi"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Tempat kerja"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Perbualan"</string>
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"Pengambilan nota"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Maklumat berguna di hujung jari anda"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Untuk mendapatkan maklumat tanpa membuka apl, anda boleh menambahkan widget pada skrin utama anda"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Ketik untuk menukar tetapan widget"</string>
@@ -80,7 +82,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"Membenarkan apl membaca tetapan dan pintasan di skrin utama."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"menulis tetapan dan pintasan skrin utama"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"Membenarkan apl menukar tetapan dan pintasan di skrin utama."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> tidak dibenarkan membuat panggilan telefon"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Tidak dapat memuatkan widget"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Tetapan widget"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Ketik untuk menyelesaikan persediaan"</string>
@@ -100,6 +101,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> atau lebih banyak item"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Hiasan latar"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Hiasan latar &amp; gaya"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"Edit Skrin Utama"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Tetapan skrin utama"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Dilumpuhkan oleh pentadbir anda"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Benarkan putaran skrin utama"</string>
@@ -161,12 +163,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Apl kerja mempunyai lencana dan kelihatan kepada pentadbir IT anda"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"OK"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Apl kerja dijeda"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Anda tidak akan menerima pemberitahuan daripada apl kerja anda"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Apl kerja anda tidak boleh menghantar pemberitahuan kepada anda, menggunakan bateri anda atau mengakses lokasi anda"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Apl kerja dimatikan. Apl kerja anda tidak boleh menghantar pemberitahuan kepada anda, menggunakan bateri anda atau mengakses lokasi anda"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Anda tidak akan menerima panggilan telefon, mesej teks atau pemberitahuan daripada apl kerja anda"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Apl kerja mempunyai lencana dan kelihatan kepada pentadbir IT anda"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"OK"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Jeda apl kerja"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Hidupkan apl kerja"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Nyahjeda"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Tapis"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Cari pada telefon"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Cari pada tablet anda"</string>

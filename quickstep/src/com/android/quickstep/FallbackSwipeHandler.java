@@ -139,6 +139,7 @@ public class FallbackSwipeHandler extends
         mTmpMatrix.setScale(scale, scale,
                 app.localBounds.exactCenterX(), app.localBounds.exactCenterY());
         builder.setMatrix(mTmpMatrix).setAlpha(alpha);
+        builder.setShow();
     }
 
     @Override

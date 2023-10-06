@@ -21,6 +21,7 @@ import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_HOME;
 import static com.android.launcher3.logging.StatsLogManager.LAUNCHER_STATE_OVERVIEW;
 import static com.android.launcher3.testing.shared.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.EDIT_MODE_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.HINT_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.HINT_STATE_TWO_BUTTON_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
@@ -38,6 +39,7 @@ import androidx.annotation.FloatRange;
 
 import com.android.launcher3.statemanager.BaseState;
 import com.android.launcher3.statemanager.StateManager;
+import com.android.launcher3.states.EditModeState;
 import com.android.launcher3.states.HintState;
 import com.android.launcher3.states.SpringLoadedState;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -103,7 +105,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
                 }
             };
 
-    private static final LauncherState[] sAllStates = new LauncherState[10];
+    private static final LauncherState[] sAllStates = new LauncherState[11];
 
     /**
      * TODO: Create a separate class for NORMAL state.
@@ -123,6 +125,7 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      */
     public static final LauncherState SPRING_LOADED = new SpringLoadedState(
             SPRING_LOADED_STATE_ORDINAL);
+    public static final LauncherState EDIT_MODE = new EditModeState(EDIT_MODE_STATE_ORDINAL);
     public static final LauncherState ALL_APPS = new AllAppsState(ALL_APPS_STATE_ORDINAL);
     public static final LauncherState HINT_STATE = new HintState(HINT_STATE_ORDINAL);
     public static final LauncherState HINT_STATE_TWO_BUTTON = new HintState(
@@ -328,7 +331,8 @@ public abstract class LauncherState implements BaseState<LauncherState> {
      * Gets the translation provider for workspace pages.
      */
     public PageTranslationProvider getWorkspacePageTranslationProvider(Launcher launcher) {
-        if (this != SPRING_LOADED || !launcher.getDeviceProfile().isTwoPanels) {
+        if (!(this == SPRING_LOADED || this == EDIT_MODE)
+                || !launcher.getDeviceProfile().isTwoPanels) {
             return DEFAULT_PAGE_TRANSLATION_PROVIDER;
         }
         final float quarterPageSpacing = launcher.getWorkspace().getPageSpacing() / 4f;
@@ -341,6 +345,16 @@ public abstract class LauncherState implements BaseState<LauncherState> {
                         : quarterPageSpacing;
             }
         };
+    }
+
+    /**
+     * Called when leaving this LauncherState
+     * @param launcher - Launcher instance
+     * @param toState - New LauncherState that is being entered
+     */
+    public void onLeavingState(Launcher launcher, LauncherState toState) {
+        // no-op
+        // override to handle when leaving current LauncherState
     }
 
     @Override

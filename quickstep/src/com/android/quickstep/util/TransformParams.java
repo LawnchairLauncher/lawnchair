@@ -17,11 +17,9 @@ package com.android.quickstep.util;
 
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_ASSISTANT;
 import static android.app.WindowConfiguration.ACTIVITY_TYPE_HOME;
-import static android.app.WindowConfiguration.ACTIVITY_TYPE_RECENTS;
 
 import android.util.FloatProperty;
 import android.view.RemoteAnimationTarget;
-import android.view.SurfaceControl;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
@@ -61,7 +59,6 @@ public class TransformParams {
     private float mCornerRadius;
     private RemoteAnimationTargets mTargetSet;
     private SurfaceTransactionApplier mSyncTransactionApplier;
-    private SurfaceControl mRecentsSurface;
 
     private BuilderProxy mHomeBuilderProxy = BuilderProxy.ALWAYS_VISIBLE;
     private BuilderProxy mBaseBuilderProxy = BuilderProxy.ALWAYS_VISIBLE;
@@ -141,8 +138,9 @@ public class TransformParams {
     public SurfaceTransaction createSurfaceParams(BuilderProxy proxy) {
         RemoteAnimationTargets targets = mTargetSet;
         SurfaceTransaction transaction = new SurfaceTransaction();
-        mRecentsSurface = getRecentsSurface(targets);
-
+        if (targets == null) {
+            return transaction;
+        }
         for (int i = 0; i < targets.unfilteredApps.length; i++) {
             RemoteAnimationTarget app = targets.unfilteredApps[i];
             SurfaceProperties builder = transaction.forSurface(app.leash);
@@ -176,20 +174,6 @@ public class TransformParams {
         return transaction;
     }
 
-    private static SurfaceControl getRecentsSurface(RemoteAnimationTargets targets) {
-        for (int i = 0; i < targets.unfilteredApps.length; i++) {
-            RemoteAnimationTarget app = targets.unfilteredApps[i];
-            if (app.mode == targets.targetMode) {
-                if (app.windowConfiguration.getActivityType() == ACTIVITY_TYPE_RECENTS) {
-                    return app.leash;
-                }
-            } else {
-                return app.leash;
-            }
-        }
-        return null;
-    }
-
     // Pubic getters so outside packages can read the values.
 
     public float getProgress() {
@@ -202,10 +186,6 @@ public class TransformParams {
 
     public float getCornerRadius() {
         return mCornerRadius;
-    }
-
-    public SurfaceControl getRecentsSurface() {
-        return mRecentsSurface;
     }
 
     public RemoteAnimationTargets getTargetSet() {

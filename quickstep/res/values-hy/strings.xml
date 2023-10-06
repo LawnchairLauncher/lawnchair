@@ -44,37 +44,43 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"«Առաջարկվող հավելվածներ» գործառույթը միացված է"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"«Առաջարկվող հավելվածներ» գործառույթն անջատված է"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Առաջարկվող հավելված՝ <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Համոզվեք, որ մատը սահեցնում եք էկրանի աջ կամ ձախ եզրից։"</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Մատը սահեցրեք էկրանի աջ կամ ձախ եզրից դեպի կենտրոն և բաց թողեք։"</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Պտտեք սարքը"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Պտտեք սարքը՝ ժեստերով նավիգացիայի ուղեցույցն ավարտելու համար"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Համոզվեք, որ մատը սահեցնում եք էկրանի աջ կամ ձախ եզրից"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Մատը սահեցրեք էկրանի աջ կամ ձախ եզրից դեպի կենտրոն և բաց թողեք"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Դուք սովորեցիք՝ ինչպես մատը աջից սահեցնելով հետ գնալ։ Այժմ սովորենք՝ ինչպես անցնել մի հավելվածից մյուսը։"</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Դուք սովորեցիք հետ գնալու ժեստը։"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Համոզվեք, որ մատը չափազանց մոտ չեք սահեցնում էկրանին ներքևի հատվածին։"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Դուք սովորեցիք հետ գնալու ժեստը"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Համոզվեք, որ մատը չափազանց մոտ չեք սահեցնում էկրանի ներքևի հատվածին"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Հետ գնալու ժեստի զգայունությունը փոփոխեք կարգավորումներում"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Սահեցրեք մատը՝ հետ գնալու համար"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Վերջին էկրանին վերադառնալու համար էկրանի աջ կամ ձախ եզրից մատը սահեցրեք դեպի կենտրոն։"</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Վերջին էկրանին վերադառնալու համար 2 մատը սահեցրեք ձախ կամ աջ եզրից դեպի կենտրոն։"</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Հետ գնալ"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Համոզվեք, որ մատն էկրանի ներքևի եզրից վերև եք սահեցնում։"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Համոզվեք, որ դադար չեք տալիս նախքան բաց թողնելը։"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Համոզվեք, որ մատն ուղիղ վերև եք սահեցնում։"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Դուք սովորեցիք հիմնական էկրան անցնելու ժեստը։ Այժմ սովորենք՝ ինչպես հետ գնալ։"</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Դուք սովորեցիք հիմնական էկրան անցնելու ժեստը։"</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Էկրանի աջ կամ ձախ եզրից մատը սահեցրեք դեպի կենտրոն"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Համոզվեք, որ մատն էկրանի ներքևի եզրից վերև եք սահեցնում"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Համոզվեք, որ դադար չեք տալիս նախքան բաց թողնելը"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Համոզվեք, որ մատն ուղիղ վերև եք սահեցնում"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Դուք սովորեցիք հիմնական էկրան անցնելու ժեստը։ Այժմ սովորենք՝ ինչպես հետ գնալ։"</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Դուք սովորեցիք հիմնական էկրան անցնելու ժեստը"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Սահեցրեք մատը՝ հիմնական էկրան անցնելու համար"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Մատը սահեցրեք էկրանի ներքևից վերև։ Այս ժեստը բացում է հիմնական էկրանը։"</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Երկու մատը էկրանի ներքևից սահեցրեք վերև։ Այս ժեստը բացում է հիմնական էկրանը։"</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Անցնել հիմնական էկրան"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Հիմնական էկրան վերադառնալու համար մատը էկրանի ներքևից սահեցրեք վերև"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Համոզվեք, որ մատն էկրանի ներքևի եզրից վերև եք սահեցնում։"</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Նախքան բաց թողնելը փորձեք հնարավորինս երկար պահել պատուհանը։"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Համոզվեք, որ մատն ուղիղ վերև եք սահեցնում, այնուհետև դադար տվեք։"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Մատը սահեցրեք էկրանի ներքևից վերև"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Կեցցե՛ք"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Համոզվեք, որ մատն էկրանի ներքևի եզրից վերև եք սահեցնում"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Նախքան բաց թողնելը փորձեք հնարավորինս երկար պահել պատուհանը"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Համոզվեք, որ մատն ուղիղ վերև եք սահեցնում, այնուհետև դադար տվեք"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Դուք սովորեցիք՝ ինչպես օգտագործել ժեստերը։ Ժեստերը կարող եք անջատել կարգավորումներում։"</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Դուք սովորեցիք մի հավելվածից մյուսն անցնելու ժեստը։"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Դուք սովորեցիք մի հավելվածից մյուսն անցնելու ժեստը"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Մատը սահեցրեք՝ մյուս հավելվածին անցնելու համար"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Մեկ հավելվածից մյուսն անցնելու համար մատը էկրանի ներքևից սահեցրեք վերև, ապա հեռացրեք այն էկրանից։"</string>
-    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Մեկ հավելվածից մյուսն անցնելու համար 2 մատը էկրանի ներքևից սահեցրեք վերև, ապա հեռացրեք այն էկրանից։"</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Մեկ հավելվածից մյուսն անցնելու համար մատը էկրանի ներքևից սահեցրեք վերև, պահեք, ապա բաց թողեք։"</string>
+    <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Մեկ հավելվածից մյուսն անցնելու համար 2 մատը էկրանի ներքևից սահեցրեք վերև, պահեք, ապա բաց թողեք։"</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Անցում մեկ հավելվածից մյուսին"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Մատը սահեցրեք էկրանի ներքևից վերև, պահեք և բաց թողեք"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Հիանալի՛ է"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Պատրաստ է"</string>
-    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Պատրաստ է"</string>
+    <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Ավարտել"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Կարգավորումներ"</string>
     <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Նորից փորձեք"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"Գերազանց է"</string>
@@ -82,7 +88,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Պատրաստ է"</string>
     <string name="allset_hint" msgid="459504134589971527">"Մատը սահեցրեք վերև՝ հիմնական էկրան անցնելու համար"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Հիմնական էկրան վերադառնալու համար սեղմեք գլխավոր էկրանի կոճակը"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"Դուք արդեն կարող եք օգտագործել ձեր <xliff:g id="DEVICE">%1$s</xliff:g> սարքը"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Դուք արդեն կարող եք օգտագործել ձեր <xliff:g id="DEVICE">%1$s</xliff:g>ը"</string>
     <string name="default_device_name" msgid="6660656727127422487">"սարք"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Նավիգացիայի համակարգային կարգավորումներ"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Կիսվել"</string>
@@ -97,15 +103,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Բաց թողնել"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Պտտել էկրանը"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Խնդրագոտու «Կրթություն» պատուհան"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Խնդրագոտու «Կրթություն» վահանակը բացվեց"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Խնդրագոտու «Կրթություն» վահանակը փակվեց"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Միաժամանակ օգտագործեք երկու հավելված՝ մեկը մի կողմ քաշելով"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Հավելվածների վահանակը բացելու համար մատը դանդաղ սահեցրեք վեր"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Ստացեք առաջարկներ ձեր գործողությունների հիման վրա"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Կարգավորումներում միացրեք ժեստերով նավիգացիան՝ հավելվածների վահանակը թաքցնելու համար"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Օգտվեք հավելվածների վահանակի բոլոր հնարավորություններից"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Առաջ"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Հետ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Փակել"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Պատրաստ է"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Սկիզբ"</string>
@@ -119,6 +121,9 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Խնդրագոտին ցուցադրվում է"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Խնդրագոտին թաքցված է"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Նավիգացիայի գոտի"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Միշտ ցուցադրել հավելվածները"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Փոխել նավիգացիայի ռեժիմը"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Հավելվածների վահանակի բաժանիչ"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Տեղափոխել վերևի ձախ անկյուն"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Տեղափոխել ներքևի աջ անկյուն"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Ցուցադրել ևս # հավելված։}one{Ցուցադրել ևս # հավելված։}other{Ցուցադրել ևս # հավելված։}}"</string>

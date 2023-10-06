@@ -18,6 +18,8 @@ package com.android.launcher3.taskbar;
 import android.util.SparseArray;
 import android.view.View;
 
+import androidx.annotation.UiThread;
+
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
@@ -29,6 +31,8 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LauncherBindableItemsContainer;
+import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.RecentsModel;
 
 import java.io.PrintWriter;
@@ -37,6 +41,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 /**
@@ -53,6 +58,10 @@ public class TaskbarModelCallbacks implements
 
     // Initialized in init.
     private TaskbarControllers mControllers;
+
+    // Used to defer any UI updates during the SUW unstash animation.
+    private boolean mDeferUpdatesForSUW;
+    private Runnable mDeferredUpdates;
 
     public TaskbarModelCallbacks(
             TaskbarActivityContext context, TaskbarView container) {
@@ -194,8 +203,36 @@ public class TaskbarModelCallbacks implements
         }
         hotseatItemInfos = mControllers.taskbarRecentAppsController
                 .updateHotseatItemInfos(hotseatItemInfos);
+
+        if (mDeferUpdatesForSUW) {
+            ItemInfo[] finalHotseatItemInfos = hotseatItemInfos;
+            mDeferredUpdates = () -> {
+                updateHotseatItemsAndBackground(finalHotseatItemInfos);
+            };
+        } else {
+            updateHotseatItemsAndBackground(hotseatItemInfos);
+        }
+    }
+
+    private void updateHotseatItemsAndBackground(ItemInfo[] hotseatItemInfos) {
         mContainer.updateHotseatItems(hotseatItemInfos);
         mControllers.taskbarViewController.updateIconsBackground();
+    }
+
+    /**
+     * This is used to defer UI updates after SUW builds the unstash animation.
+     * @param defer if true, defers updates to the UI
+     *              if false, posts updates (if any) to the UI
+     */
+    public void setDeferUpdatesForSUW(boolean defer) {
+        mDeferUpdatesForSUW = defer;
+
+        if (!mDeferUpdatesForSUW) {
+            if (mDeferredUpdates != null) {
+                mContainer.post(mDeferredUpdates);
+                mDeferredUpdates = null;
+            }
+        }
     }
 
     @Override
@@ -218,9 +255,12 @@ public class TaskbarModelCallbacks implements
         mControllers.taskbarPopupController.setDeepShortcutMap(deepShortcutMapCopy);
     }
 
+    @UiThread
     @Override
-    public void bindAllApplications(AppInfo[] apps, int flags) {
-        mControllers.taskbarAllAppsController.setApps(apps, flags);
+    public void bindAllApplications(AppInfo[] apps, int flags,
+            Map<PackageUserKey, Integer> packageUserKeytoUidMap) {
+        Preconditions.assertUIThread();
+        mControllers.taskbarAllAppsController.setApps(apps, flags, packageUserKeytoUidMap);
         mControllers.taskbarRecentAppsController.setApps(apps);
     }
 
@@ -232,5 +272,7 @@ public class TaskbarModelCallbacks implements
             pw.println(
                     String.format("%s\tpredicted items count=%s", prefix, mPredictedItems.size()));
         }
+        pw.println(String.format("%s\tmDeferUpdatesForSUW=%b", prefix, mDeferUpdatesForSUW));
+        pw.println(String.format("%s\tupdates pending=%b", prefix, (mDeferredUpdates != null)));
     }
 }

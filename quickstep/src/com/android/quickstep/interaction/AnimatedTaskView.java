@@ -24,16 +24,11 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.ColorInt;
 import android.content.Context;
-import android.graphics.Matrix;
 import android.graphics.Outline;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewOutlineProvider;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
-import android.widget.ViewAnimator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -60,17 +55,16 @@ public class AnimatedTaskView extends ConstraintLayout {
     private float mTaskViewAnimatedRadius;
 
     public AnimatedTaskView(@NonNull Context context) {
-        super(context);
+        this(context, null);
     }
 
-    public AnimatedTaskView(@NonNull Context context,
-            @Nullable AttributeSet attrs) {
-        super(context, attrs);
+    public AnimatedTaskView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs, 0);
     }
 
     public AnimatedTaskView(
             @NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+        this(context, attrs, defStyleAttr, 0);
     }
 
     public AnimatedTaskView(
@@ -90,45 +84,6 @@ public class AnimatedTaskView extends ConstraintLayout {
         mBottomTaskView = findViewById(R.id.bottom_task_view);
 
         setToSingleRowLayout(false);
-    }
-
-    void animateToFillScreen(@Nullable  Runnable onAnimationEndCallback) {
-
-        AnimatorSet set = new AnimatorSet();
-        ArrayList<Animator> animations = new ArrayList<>();
-
-        // center view
-        animations.add(ObjectAnimator.ofFloat(this, TRANSLATION_X, 0));
-
-        // calculate full screen scaling, scale should be 1:1 for x and y
-        Matrix matrix = getAnimationMatrix();
-        float[] matrixValues = new float[9];
-        matrix.getValues(matrixValues);
-        float scaleX = matrixValues[Matrix.MSCALE_X];
-        float scaleToFullScreen = 1 / scaleX;
-
-        // scale view to full screen
-        ValueAnimator scale = ValueAnimator.ofFloat(1f, scaleToFullScreen);
-        scale.addUpdateListener(animation -> {
-            float value = (float) animation.getAnimatedValue();
-            mFullTaskView.setScaleX(value);
-            mFullTaskView.setScaleY(value);
-        });
-
-        animations.add(scale);
-        set.playSequentially(animations);
-
-        set.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                if (onAnimationEndCallback != null) {
-                    onAnimationEndCallback.run();
-                }
-            }
-        });
-
-        set.start();
     }
 
     AnimatorSet createAnimationToMultiRowLayout() {
@@ -158,17 +113,7 @@ public class AnimatedTaskView extends ConstraintLayout {
             @Override
             public void onAnimationStart(Animator animation) {
                 super.onAnimationStart(animation);
-
-                mTaskViewAnimatedRect.set(outlineStartRect);
-                mTaskViewAnimatedRadius = outlineStartRadius;
-
-                mFullTaskView.setClipToOutline(true);
-                mFullTaskView.setOutlineProvider(new ViewOutlineProvider() {
-                    @Override
-                    public void getOutline(View view, Outline outline) {
-                        outline.setRoundRect(mTaskViewAnimatedRect, mTaskViewAnimatedRadius);
-                    }
-                });
+                addAnimatedOutlineProvider(mFullTaskView, outlineStartRect, outlineStartRadius);
             }
 
             @Override
@@ -246,5 +191,18 @@ public class AnimatedTaskView extends ConstraintLayout {
     public void setOutlineProvider(ViewOutlineProvider provider) {
         mTaskViewOutlineProvider = provider;
         mFullTaskView.setOutlineProvider(mTaskViewOutlineProvider);
+    }
+
+    private void addAnimatedOutlineProvider(View view,
+            Rect outlineStartRect, float outlineStartRadius){
+        mTaskViewAnimatedRect.set(outlineStartRect);
+        mTaskViewAnimatedRadius = outlineStartRadius;
+        view.setClipToOutline(true);
+        view.setOutlineProvider(new ViewOutlineProvider() {
+            @Override
+            public void getOutline(View view, Outline outline) {
+                outline.setRoundRect(mTaskViewAnimatedRect, mTaskViewAnimatedRadius);
+            }
+        });
     }
 }

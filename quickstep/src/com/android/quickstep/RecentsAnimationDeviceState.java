@@ -33,6 +33,7 @@ import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ALLOW_GESTURE_IGNORING_BAR_VISIBILITY;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_ASSIST_GESTURE_CONSTRAINED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_BUBBLES_EXPANDED;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DEVICE_DREAMING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DIALOG_SHOWING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_HOME_DISABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_IME_SHOWING;
@@ -57,6 +58,7 @@ import android.os.SystemProperties;
 import android.os.UserManager;
 import android.provider.Settings;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.NonNull;
@@ -86,6 +88,10 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
     static final String SUPPORT_ONE_HANDED_MODE = "ro.support_one_handed_mode";
 
+    // TODO: Move to quickstep contract
+    private static final float QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON = 9;
+    private static final float QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL = 2;
+
     private final Context mContext;
     private final DisplayController mDisplayController;
     private final int mDisplayId;
@@ -97,7 +103,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
     private final ArrayList<Runnable> mOnDestroyActions = new ArrayList<>();
 
-    private @SystemUiStateFlags int mSystemUiStateFlags;
+    private @SystemUiStateFlags int mSystemUiStateFlags = QuickStepContract.SYSUI_STATE_AWAKE;
     private NavigationMode mMode = THREE_BUTTONS;
     private NavBarPosition mNavBarPosition;
 
@@ -386,7 +392,8 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
                 && (mSystemUiStateFlags & SYSUI_STATE_QUICK_SETTINGS_EXPANDED) == 0
                 && (mSystemUiStateFlags & SYSUI_STATE_MAGNIFICATION_OVERLAP) == 0
                 && ((mSystemUiStateFlags & SYSUI_STATE_HOME_DISABLED) == 0
-                        || (mSystemUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0);
+                        || (mSystemUiStateFlags & SYSUI_STATE_OVERVIEW_DISABLED) == 0)
+                && (mSystemUiStateFlags & SYSUI_STATE_DEVICE_DREAMING) == 0;
     }
 
     /**
@@ -573,6 +580,19 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     public boolean isImeRenderingNavButtons() {
         return mCanImeRenderGesturalNavButtons && mMode == NO_BUTTON
                 && ((mSystemUiStateFlags & SYSUI_STATE_IME_SHOWING) != 0);
+    }
+
+    /**
+     * Returns the touch slop for {@link InputConsumer}s to compare against before pilfering
+     * pointers. Note that this is squared because it expects to be compared against
+     * {@link com.android.launcher3.Utilities#squaredHypot} (to avoid square root on each event).
+     */
+    public float getSquaredTouchSlop() {
+        float slopMultiplier = isFullyGesturalNavMode()
+                ? QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL
+                : QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON;
+        float touchSlop = ViewConfiguration.get(mContext).getScaledTouchSlop();
+        return slopMultiplier * touchSlop * touchSlop;
     }
 
     public String getSystemUiStateString() {

@@ -86,9 +86,7 @@ public class MultiStateCallback {
             Log.d(TAG, "[" + System.identityHashCode(this) + "] Adding "
                     + convertToFlagNames(stateFlag) + " to " + convertToFlagNames(mState));
         }
-        if (FeatureFlags.ENABLE_GESTURE_ERROR_DETECTION.get()) {
-            trackGestureEvents(stateFlag);
-        }
+        trackGestureEvents(stateFlag);
         final int oldState = mState;
         mState = mState | stateFlag;
 

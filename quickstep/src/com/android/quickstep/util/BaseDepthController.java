@@ -74,6 +74,10 @@ public class BaseDepthController {
     // Hints that there is potentially content behind Launcher and that we shouldn't optimize by
     // marking the launcher surface as opaque.  Only used in certain Launcher states.
     private boolean mHasContentBehindLauncher;
+
+    /** Pause blur but allow transparent, can be used when launch something behind the Launcher. */
+    protected boolean mPauseBlurs;
+
     /**
      * Last blur value, in pixels, that was applied.
      * For debugging purposes.
@@ -83,6 +87,8 @@ public class BaseDepthController {
      * If we requested early wake-up offsets to SurfaceFlinger.
      */
     protected boolean mInEarlyWakeUp;
+
+    private boolean mWaitingOnSurfaceValidity;
 
     public BaseDepthController(Launcher activity) {
         mLauncher = activity;
@@ -104,6 +110,15 @@ public class BaseDepthController {
         mHasContentBehindLauncher = hasContentBehindLauncher;
     }
 
+    public void pauseBlursOnWindows(boolean pause) {
+        if (pause != mPauseBlurs) {
+            mPauseBlurs = pause;
+            applyDepthAndBlur();
+        }
+    }
+
+    protected void onInvalidSurface() { }
+
     protected void applyDepthAndBlur() {
         float depth = mDepth;
         IBinder windowToken = mLauncher.getRootView().getWindowToken();
@@ -117,13 +132,19 @@ public class BaseDepthController {
         if (!BlurUtils.supportsBlursOnWindows()) {
             return;
         }
-        if (mSurface == null || !mSurface.isValid()) {
+        if (mSurface == null) {
             return;
         }
+        if (!mSurface.isValid()) {
+            mWaitingOnSurfaceValidity = true;
+            onInvalidSurface();
+            return;
+        }
+        mWaitingOnSurfaceValidity = false;
         boolean hasOpaqueBg = mLauncher.getScrimView().isFullyOpaque();
-        boolean isSurfaceOpaque = !mHasContentBehindLauncher && hasOpaqueBg;
+        boolean isSurfaceOpaque = !mHasContentBehindLauncher && hasOpaqueBg && !mPauseBlurs;
 
-        mCurrentBlur = !mCrossWindowBlursEnabled || hasOpaqueBg
+        mCurrentBlur = !mCrossWindowBlursEnabled || hasOpaqueBg || mPauseBlurs
                 ? 0 : (int) (depth * mMaxBlurRadius);
         SurfaceControl.Transaction transaction = new SurfaceControl.Transaction()
                 .setBackgroundBlurRadius(mSurface, mCurrentBlur)
@@ -163,7 +184,7 @@ public class BaseDepthController {
      * Sets the specified app target surface to apply the blur to.
      */
     protected void setSurface(SurfaceControl surface) {
-        if (mSurface != surface) {
+        if (mSurface != surface || mWaitingOnSurfaceValidity) {
             mSurface = surface;
             applyDepthAndBlur();
         }

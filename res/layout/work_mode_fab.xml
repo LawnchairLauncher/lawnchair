@@ -21,7 +21,7 @@
     android:layout_width="wrap_content"
     android:minHeight="@dimen/work_fab_height"
     android:gravity="center_vertical"
-    android:background="@drawable/work_apps_toggle_background"
+    android:background="@drawable/work_mode_fab_background"
     android:forceHasOverlappingRendering="false"
     android:contentDescription="@string/work_apps_pause_btn_text"
     android:animateLayoutChanges="true">
@@ -31,12 +31,13 @@
         android:layout_height="@dimen/work_fab_icon_size"
         android:importantForAccessibility="no"
         android:src="@drawable/ic_corp_off"
+        android:tint="@color/work_fab_icon_color"
         android:scaleType="center"/>
     <TextView
         android:id="@+id/pause_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/all_apps_tab_text"
+        android:textColor="@color/work_fab_icon_color"
         android:textSize="14sp"
         android:includeFontPadding="false"
         android:textDirection="locale"

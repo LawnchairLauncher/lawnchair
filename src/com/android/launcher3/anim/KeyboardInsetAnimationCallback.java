@@ -27,7 +27,16 @@ import com.android.launcher3.Utilities;
 import java.util.List;
 
 /**
- * Callback that animates views above the IME
+ * Callback that animates views above the IME.
+ * <p>
+ * The expected stages of a keyboard transition are:
+ * <p>
+ * <ul>
+ *   <li>PREPARING: Keyboard insets haven't changed yet, but are about to.</li>
+ *   <li>STARTED: Keyboard insets have temporarily changed to the end state, but not drawn.</li>
+ *   <li>PROGRESSING: At least one frame of the animation has been drawn.</li>
+ *   <li>FINISHED: Keyboard has reached its end state, and animation is complete.</li>
+ * </ul>
  */
 @RequiresApi(api = Build.VERSION_CODES.R)
 public class KeyboardInsetAnimationCallback extends WindowInsetsAnimation.Callback {
@@ -46,6 +55,18 @@ public class KeyboardInsetAnimationCallback extends WindowInsetsAnimation.Callba
         mInitialTranslation = mView.getTranslationY();
     }
 
+    @Override
+    public WindowInsetsAnimation.Bounds onStart(WindowInsetsAnimation animation,
+            WindowInsetsAnimation.Bounds bounds) {
+        // Final insets have temporarily been applied, so store the current translation as final.
+        mTerminalTranslation = mView.getTranslationY();
+        // Reset the translation in case the view is drawn before onProgress gets called.
+        mView.setTranslationY(mInitialTranslation);
+        if (mView instanceof KeyboardInsetListener) {
+            ((KeyboardInsetListener) mView).onTranslationStart();
+        }
+        return super.onStart(animation, bounds);
+    }
 
     @Override
     public WindowInsets onProgress(WindowInsets windowInsets, List<WindowInsetsAnimation> list) {
@@ -73,18 +94,7 @@ public class KeyboardInsetAnimationCallback extends WindowInsetsAnimation.Callba
     }
 
     @Override
-    public WindowInsetsAnimation.Bounds onStart(WindowInsetsAnimation animation,
-            WindowInsetsAnimation.Bounds bounds) {
-        mTerminalTranslation = mView.getTranslationY();
-        if (mView instanceof KeyboardInsetListener) {
-            ((KeyboardInsetListener) mView).onTranslationStart();
-        }
-        return super.onStart(animation, bounds);
-    }
-
-    @Override
     public void onEnd(WindowInsetsAnimation animation) {
-        mView.setTranslationY(mTerminalTranslation);
         if (mView instanceof KeyboardInsetListener) {
             ((KeyboardInsetListener) mView).onTranslationEnd();
         }

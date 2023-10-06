@@ -15,8 +15,12 @@
  */
 package com.android.launcher3.views;
 
+import static android.window.SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR;
+
+import static com.android.launcher3.LauncherSettings.Animation.DEFAULT_NO_ICON;
 import static com.android.launcher3.logging.KeyboardStateManager.KeyboardState.HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_KEYBOARD_CLOSED;
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_PENDING_INTENT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.model.WidgetsModel.GO_DISABLE_WIDGETS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -45,7 +49,6 @@ import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
-import android.window.SplashScreen;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,6 +56,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
+import com.android.launcher3.DropTargetHandler;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -189,6 +193,13 @@ public interface ActivityContext {
     }
 
     /**
+     * Handler for actions taken on drop targets that require launcher
+     */
+    default DropTargetHandler getDropTargetHandler() {
+        return null;
+    }
+
+    /**
      * Returns the FolderIcon with the given item id, if it exists.
      */
     default @Nullable FolderIcon findFolderIcon(final int folderIconId) {
@@ -281,27 +292,32 @@ public interface ActivityContext {
         }
     }
 
-
     /**
      * Sends a pending intent animating from a view.
      *
      * @param v View to animate.
      * @param intent The pending intent being launched.
      * @param item Item associated with the view.
-     * @return {@code true} if the intent is sent successfully.
+     * @return RunnableList for listening for animation finish if the activity was properly
+     *         or started, {@code null} if the launch finished
      */
-    default boolean sendPendingIntentWithAnimation(
+    default RunnableList sendPendingIntentWithAnimation(
             @NonNull View v, PendingIntent intent, @Nullable ItemInfo item) {
-        Bundle optsBundle = getActivityLaunchOptions(v, item).toBundle();
+        ActivityOptionsWrapper options = getActivityLaunchOptions(v, item);
         try {
-            intent.send(null, 0, null, null, null, null, optsBundle);
-            return true;
+            intent.send(null, 0, null, null, null, null, options.toBundle());
+            if (item != null) {
+                InstanceId instanceId = new InstanceIdSequence().newInstanceId();
+                getStatsLogManager().logger().withItemInfo(item).withInstanceId(instanceId)
+                        .log(LAUNCHER_APP_LAUNCH_PENDING_INTENT);
+            }
+            return options.onEndCallback;
         } catch (PendingIntent.CanceledException e) {
             Toast.makeText(v.getContext(),
                     v.getContext().getResources().getText(R.string.shortcut_not_available),
                     Toast.LENGTH_SHORT).show();
         }
-        return false;
+        return null;
     }
 
     /**
@@ -310,28 +326,23 @@ public interface ActivityContext {
      * @param v View starting the activity.
      * @param intent Base intent being launched.
      * @param item Item associated with the view.
-     * @return {@code true} if the activity starts successfully.
+     * @return RunnableList for listening for animation finish if the activity was properly
+     *         or started, {@code null} if the launch finished
      */
-    default boolean startActivitySafely(
+    default RunnableList startActivitySafely(
             View v, Intent intent, @Nullable ItemInfo item) {
         Preconditions.assertUIThread();
         Context context = (Context) this;
         if (isAppBlockedForSafeMode() && !PackageManagerHelper.isSystemApp(context, intent)) {
             Toast.makeText(context, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
-            return false;
+            return null;
         }
 
-        Bundle optsBundle = null;
-        if (v != null) {
-            optsBundle = getActivityLaunchOptions(v, item).toBundle();
-        } else if (android.os.Build.VERSION.SDK_INT >= 33
-                && item != null
-                && item.animationType == LauncherSettings.Animation.DEFAULT_NO_ICON) {
-            optsBundle = ActivityOptions.makeBasic()
-                    .setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR).toBundle();
-        }
+        ActivityOptionsWrapper options = v != null ? getActivityLaunchOptions(v, item)
+                : makeDefaultActivityOptions(item != null && item.animationType == DEFAULT_NO_ICON
+                        ? SPLASH_SCREEN_STYLE_SOLID_COLOR : -1 /* SPLASH_SCREEN_STYLE_UNDEFINED */);
         UserHandle user = item == null ? null : item.user;
-
+        Bundle optsBundle = options.toBundle();
         // Prepare intent
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (v != null) {
@@ -356,12 +367,12 @@ public interface ActivityContext {
                 InstanceId instanceId = new InstanceIdSequence().newInstanceId();
                 logAppLaunch(getStatsLogManager(), item, instanceId);
             }
-            return true;
+            return options.onEndCallback;
         } catch (NullPointerException | ActivityNotFoundException | SecurityException e) {
             Toast.makeText(context, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Unable to launch. tag=" + item + " intent=" + intent, e);
         }
-        return false;
+        return null;
     }
 
     /** Returns {@code true} if an app launch is blocked due to safe mode. */
@@ -409,6 +420,17 @@ public interface ActivityContext {
     }
 
     /**
+     * Creates a default activity option and we do not want association with any launcher element.
+     */
+    default ActivityOptionsWrapper makeDefaultActivityOptions(int splashScreenStyle) {
+        ActivityOptions options = ActivityOptions.makeBasic();
+        if (Utilities.ATLEAST_T) {
+            options.setSplashScreenStyle(splashScreenStyle);
+        }
+        return new ActivityOptionsWrapper(options, new RunnableList());
+    }
+
+    /**
      * Safely launches an intent for a shortcut.
      *
      * @param intent Intent to start.
@@ -437,9 +459,7 @@ public interface ActivityContext {
                 StrictMode.setVmPolicy(oldPolicy);
             }
         } catch (SecurityException e) {
-            if (!onErrorStartingShortcut(intent, info)) {
-                throw e;
-            }
+            throw e;
         }
     }
 
@@ -457,16 +477,6 @@ public interface ActivityContext {
         } catch (SecurityException | IllegalStateException e) {
             Log.e(TAG, "Failed to start shortcut", e);
         }
-    }
-
-    /**
-     * Invoked when a shortcut fails to launch.
-     * @param intent Shortcut intent that failed to start.
-     * @param info Shortcut information.
-     * @return {@code true} if the error is handled by this callback.
-     */
-    default boolean onErrorStartingShortcut(Intent intent, ItemInfo info) {
-        return false;
     }
 
     default CellPosMapper getCellPosMapper() {

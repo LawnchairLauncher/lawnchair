@@ -136,16 +136,19 @@ public class MainThreadInitializedObject<T> {
                 if (mDestroyed) {
                     Log.e(TAG, "Static object access with a destroyed context");
                 }
-                if (!mAllowedObjects.contains(object)) {
-                    throw new IllegalStateException(
-                            "Leaking unknown objects " + object + "  " + provider);
-                }
+
                 T t = (T) mObjectMap.get(object);
                 if (t != null) {
                     return t;
                 }
                 if (Looper.myLooper() == Looper.getMainLooper()) {
                     t = createObject(provider);
+                    // Check if we've explicitly allowed the object or if it's a SafeCloseable,
+                    // it will get destroyed in onDestroy()
+                    if (!mAllowedObjects.contains(object) && !(t instanceof SafeCloseable)) {
+                        throw new IllegalStateException(
+                                "Leaking unknown objects " + object + "  " + provider + " " + t);
+                    }
                     mObjectMap.put(object, t);
                     mOrderedObjects.add(t);
                     return t;

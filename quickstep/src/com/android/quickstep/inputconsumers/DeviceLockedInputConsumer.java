@@ -20,7 +20,6 @@ import static android.view.MotionEvent.ACTION_POINTER_DOWN;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Utilities.squaredHypot;
-import static com.android.launcher3.Utilities.squaredTouchSlop;
 import static com.android.launcher3.util.VelocityUtils.PX_PER_MS;
 import static com.android.quickstep.AbsSwipeUpHandler.MIN_PROGRESS_FOR_OVERVIEW;
 import static com.android.quickstep.MultiStateCallback.DEBUG_STATES;
@@ -115,7 +114,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
         mDeviceState = deviceState;
         mTaskAnimationManager = taskAnimationManager;
         mGestureState = gestureState;
-        mTouchSlopSquared = squaredTouchSlop(context);
+        mTouchSlopSquared = mDeviceState.getSquaredTouchSlop();
         mTransformParams = new TransformParams();
         mInputMonitorCompat = inputMonitorCompat;
         mMaxTranslationY = context.getResources().getDimensionPixelSize(
@@ -154,7 +153,8 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                 if (!mThresholdCrossed) {
                     // Cancel interaction in case of multi-touch interaction
                     int ptrIdx = ev.getActionIndex();
-                    if (!mDeviceState.getRotationTouchHelper().isInSwipeUpTouchRegion(ev, ptrIdx)) {
+                    if (!mDeviceState.getRotationTouchHelper().isInSwipeUpTouchRegion(ev, ptrIdx,
+                            mGestureState.getActivityInterface())) {
                         int action = ev.getAction();
                         ev.setAction(ACTION_CANCEL);
                         finishTouchTracking(ev);

@@ -44,35 +44,41 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Mapendekezo ya programu yamewashwa"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Umezima mapendekezo ya programu"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Programu iliyotabiriwa: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Hakikisha unatelezesha kidole kuanzia ukingo wa kulia kabisa au ukingo wa kushoto kabisa."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Hakikisha unatelezesha kidole kuanzia ukingo wa kulia au kushoto kuelekea katikati ya skrini na uachilie."</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Zungusha kifaa chako"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Tafadhali zungusha kifaa chako ili ukamilishe mafunzo ya usogezaji kwa kutumia ishara"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Hakikisha unatelezesha kidole kutoka ukingo wa kulia au kushoto kabisa"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Hakikisha unatelezesha kidole kutoka ukingo wa kulia au kushoto hadi katikati ya skrini na uachilie"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Umejifunza jinsi ya kutelezesha kidole kuanzia kulia ili kurudi nyuma. Sasa jifunze jinsi ya kubadilisha programu."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Umekamilisha ishara ya kurudi nyuma."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Hakikisha hutelezeshi kidole karibu sana na sehemu ya chini ya skrini."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Umeweka ishara ya kurudi nyuma"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Hakikisha hutelezeshi kidole karibu sana na sehemu ya chini ya skrini"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Kubadilisha hisi ya ishara ya nyuma, nenda kwenye Mipangilio"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Telezesha kidole ili urudi nyuma"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Ili urudi kwenye skrini iliyotangulia, telezesha kidole kuanzia ukingo wa kushoto au wa kulia kuelekea katikati ya skrini."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Ili urudi kwenye skrini iliyopita, telezesha vidole viwili kuanzia ukingo wa kushoto au wa kulia kuelekea katikati ya skrini."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Rudi nyuma"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Hakikisha unatelezesha kidole juu kuanzia ukingo wa chini wa skrini."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Hakikisha kuwa husimamishi kabla ya kuachilia."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Hakikisha unatelezesha kidole kuelekea juu."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Umekamilisha ishara ya kwenda kwenye Skrini ya kwanza. Sasa jifunze jinsi ya kurudi nyuma."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Umekamilisha ishara ya kwenda kwenye Skrini ya kwanza."</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Telezesha kidole kutoka ukingo wa kushoto au kulia hadi katikati ya skrini"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Hakikisha unatelezesha kidole juu kuanzia ukingo wa chini wa skrini"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Hakikisha husitishi kabla ya kuachilia"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Hakikisha unatelezesha kidole juu"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Umeweka ishara ya kwenda kwenye Skrini ya kwanza. Inayofuata, jifunze jinsi ya kurudi nyuma."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Umeweka ishara ya kwenda kwenye skrini ya kwanza"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Telezesha kidole ili uende kwenye skrini ya kwanza"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Telezesha kidole juu kuanzia chini ya skrini yako. Ishara hii kila wakati hukupeleka kwenye Skrini ya kwanza."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Telezesha vidole viwili kuelekea juu kuanzia sehemu ya chini ya skrini. Ishara hii kila wakati hukupeleka kwenye Skrini ya kwanza."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Nenda kwenye ukurasa wa mwanzo"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Ili uende kwenye skrini ya kwanza muda wowote, telezesha kidole juu kutoka sehemu ya chini ya skrini"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Hakikisha unatelezesha kidole juu kuanzia ukingo wa chini wa skrini."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Jaribu kushikilia dirisha kwa muda mrefu kabla ya kuachilia."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Hakikisha unatelezesha kidole kuelekea juu, kisha usimamishe."</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Telezesha kidole juu kutoka sehemu ya chini ya skrini yako"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Kazi nzuri!"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Hakikisha unatelezesha kidole juu kuanzia ukingo wa chini wa skrini"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Jaribu kushikilia dirisha kwa muda mrefu kabla ya kuachilia"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Hakikisha unatelezesha kidole juu, kisha usitishe"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Umejifunza jinsi ya kutumia ishara. Ili uzime ishara, nenda kwenye Mipangilio."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Umekamilisha ishara ya kubadilisha programu."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Umeweka ishara ya kubadilisha programu"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Telezesha kidole ili ubadilishe programu"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Ili ubadili kati ya programu, telezesha kidole juu kuanzia sehemu ya chini ya skrini yako, ushikilie, kisha uachilie."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Ili ubadilishe kati ya programu, telezesha vidole viwili kuelekea juu kuanzia sehemu ya chini ya skrini yako, ushikilie, kisha uachilie."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Badilisha programu"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Telezesha kidole juu kutoka sehemu ya chini ya skrini yako, shikilia kisha uachilie"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Hongera!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Kila kitu kiko tayari"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Nimemaliza"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Mipangilio"</string>
@@ -82,7 +88,7 @@
     <string name="allset_title" msgid="5021126669778966707">"Tayari!"</string>
     <string name="allset_hint" msgid="459504134589971527">"Telezesha kidole juu ili uende kwenye skrini ya kwanza"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"Gusa kitufe cha ukurasa wa mwanzo ili uende kwenye skrini ya kwanza"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"Uko tayari kuanza kutumia <xliff:g id="DEVICE">%1$s</xliff:g> yako"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"Uko tayari kuanza kutumia <xliff:g id="DEVICE">%1$s</xliff:g>"</string>
     <string name="default_device_name" msgid="6660656727127422487">"kifaa"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"Mipangilio ya usogezaji kwenye mfumo"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"Shiriki"</string>
@@ -97,15 +103,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"Ruka"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Zungusha skrini"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Elimu ya Upauzana"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"Paneli ya elimu kwenye upau wa shughuli inaonyeshwa"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"Paneli ya elimu kwenye upau wa shughuli imefungwa"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Buruta programu pembeni ili utumie programu 2 kwa wakati mmoja"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Telezesha kidole juu taratibu ili ufungue Upauzana"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Pata mapendekezo ya programu kulingana na ratiba yako"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Washa usogezaji kwa kutumia ishara kwenye Mipangilio ili ufiche Upauzana kiotomatiki"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Kamilisha mengi kwa kutumia Upauzana huu"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"Endelea"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"Nyuma"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Funga"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Imemaliza"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Mwanzo"</string>
@@ -119,6 +121,9 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Upauzana umeonyeshwa"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Upauzana umefichwa"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Sehemu ya viungo muhimu"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"Onyesha Upauzana kila wakati"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"Badilisha hali ya usogezaji"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Kitenganishi cha Upauzana"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Sogeza juu/kushoto"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Sogeza chini/kulia"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Onyesha programu # zaidi.}other{Onyesha programu # zaidi.}}"</string>

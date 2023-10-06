@@ -155,15 +155,13 @@ public class ActiveGestureLog {
     }
 
     public void dump(String prefix, PrintWriter writer) {
-        if (FeatureFlags.ENABLE_GESTURE_ERROR_DETECTION.get()) {
-            writer.println(prefix + "ActiveGestureErrorDetector:");
-            for (int i = 0; i < logs.length; i++) {
-                EventLog eventLog = logs[(nextIndex + i) % logs.length];
-                if (eventLog == null) {
-                    continue;
-                }
-                ActiveGestureErrorDetector.analyseAndDump(prefix + '\t', writer, eventLog);
+        writer.println(prefix + "ActiveGestureErrorDetector:");
+        for (int i = 0; i < logs.length; i++) {
+            EventLog eventLog = logs[(nextIndex + i) % logs.length];
+            if (eventLog == null) {
+                continue;
             }
+            ActiveGestureErrorDetector.analyseAndDump(prefix + '\t', writer, eventLog);
         }
 
         writer.println(prefix + "ActiveGestureLog history:");

@@ -16,7 +16,7 @@
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle" >
-    <solid android:color="?android:attr/colorBackground" />
+    <solid android:color="?attr/widgetPickerPrimarySurfaceColor" />
     <corners
         android:topLeftRadius="@dimen/dialogCornerRadius"
         android:topRightRadius="@dimen/dialogCornerRadius" />

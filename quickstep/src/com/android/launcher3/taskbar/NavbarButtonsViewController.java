@@ -714,6 +714,8 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
      * setup wizard, or normal 3 button nav.
      */
     private void updateButtonLayoutSpacing() {
+        boolean isThreeButtonNav = mContext.isThreeButtonNav();
+
         DeviceProfile dp = mContext.getDeviceProfile();
         Resources res = mContext.getResources();
         boolean isInSetup = !mContext.isUserSetupComplete();
@@ -721,7 +723,9 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         boolean isInKidsMode = mContext.isNavBarKidsModeActive();
 
         if (TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW) {
-            boolean isThreeButtonNav = mContext.isThreeButtonNav();
+            if (!isThreeButtonNav) {
+                return;
+            }
 
             NavButtonLayoutter navButtonLayoutter =
                     NavButtonLayoutFactory.Companion.getUiLayoutter(
@@ -803,7 +807,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             mNavButtonContainer.requestLayout();
 
             mHomeButton.setOnLongClickListener(null);
-        } else if (mContext.isThreeButtonNav()) {
+        } else if (isThreeButtonNav) {
             final RotateDrawable rotateDrawable = new RotateDrawable();
             rotateDrawable.setDrawable(mContext.getDrawable(R.drawable.ic_sysbar_back));
             rotateDrawable.setFromDegrees(0f);
@@ -917,6 +921,15 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     private void onComputeInsetsForSeparateWindow(ViewTreeObserver.InternalInsetsInfo insetsInfo) {
         addVisibleButtonsRegion(mSeparateWindowParent, insetsInfo.touchableRegion);
         insetsInfo.setTouchableInsets(TOUCHABLE_INSETS_REGION);
+    }
+
+    /**
+     * Called whenever a new ui controller is set, and should update anything that depends on the
+     * ui controller.
+     */
+    public void onUiControllerChanged() {
+        updateNavButtonInAppDisplayProgressForSysui();
+        updateNavButtonTranslationY();
     }
 
     @Override

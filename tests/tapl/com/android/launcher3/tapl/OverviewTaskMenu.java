@@ -49,4 +49,18 @@ public class OverviewTaskMenu {
             }
         }
     }
+
+    /** Returns true if an item matching the given string is present in the menu. */
+    public boolean hasMenuItem(String expectedMenuItemText) {
+        UiObject2 menuItem = mLauncher.findObjectInContainer(mMenu, By.text(expectedMenuItemText));
+        return menuItem != null;
+    }
+
+    /**
+     * Returns the menu item specified by name if present.
+     */
+    public OverviewTaskMenuItem getMenuItemByName(String menuItemName) {
+        return new OverviewTaskMenuItem(mLauncher,
+                mLauncher.waitForObjectInContainer(mMenu, By.text(menuItemName)));
+    }
 }

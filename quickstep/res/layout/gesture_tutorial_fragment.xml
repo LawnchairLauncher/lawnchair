@@ -175,6 +175,7 @@
             android:paddingEnd="26dp"
             android:text="@string/gesture_tutorial_action_button_label"
             android:background="@drawable/gesture_tutorial_action_button_background"
+            android:backgroundTint="?android:attr/colorAccent"
             android:stateListAnimator="@null"
             android:visibility="invisible"
 

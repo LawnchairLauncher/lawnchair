@@ -15,13 +15,13 @@
  */
 package com.android.launcher3.taskbar;
 
+import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.taskbar.TaskbarKeyguardController.MASK_ANY_SYSUI_LOCKED;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
 import static com.android.launcher3.taskbar.TaskbarViewController.ALPHA_INDEX_HOME;
 import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
 import static com.android.launcher3.util.FlagDebugUtils.formatFlagChange;
-import static com.android.systemui.animation.Interpolators.EMPHASIZED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_AWAKE;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_DEVICE_DREAMING;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_WAKEFULNESS_MASK;
@@ -202,6 +202,11 @@ public class TaskbarLauncherStateController {
                 public void onStateTransitionComplete(LauncherState finalState) {
                     mLauncherState = finalState;
                     updateStateForFlag(FLAG_LAUNCHER_IN_STATE_TRANSITION, false);
+                    // TODO(b/279514548) Cleans up bad state that can occur when user interacts with
+                    // taskbar on top of transparent activity.
+                    if (finalState == LauncherState.NORMAL && mLauncher.isResumed()) {
+                        updateStateForFlag(FLAG_RESUMED, true);
+                    }
                     applyState();
                     boolean disallowLongClick = finalState == LauncherState.OVERVIEW_SPLIT_SELECT;
                     com.android.launcher3.taskbar.Utilities.setOverviewDragState(
@@ -210,7 +215,9 @@ public class TaskbarLauncherStateController {
                 }
             };
 
-    public void init(TaskbarControllers controllers, QuickstepLauncher launcher) {
+    /** Initializes the controller instance, and applies the initial state immediately. */
+    public void init(TaskbarControllers controllers, QuickstepLauncher launcher,
+            int sysuiStateFlags) {
         mCanSyncViews = false;
 
         mControllers = controllers;
@@ -229,6 +236,8 @@ public class TaskbarLauncherStateController {
 
         mLauncher.getStateManager().addStateListener(mStateListener);
         mLauncherState = launcher.getStateManager().getState();
+        updateStateForSysuiFlags(sysuiStateFlags, /*applyState*/ false);
+
         applyState(0);
 
         mCanSyncViews = true;
@@ -298,7 +307,11 @@ public class TaskbarLauncherStateController {
     }
 
     /** SysUI flags updated, see QuickStepContract.SYSUI_STATE_* values. */
-    public void updateStateForSysuiFlags(int systemUiStateFlags, boolean skipAnim) {
+    public void updateStateForSysuiFlags(int systemUiStateFlags) {
+        updateStateForSysuiFlags(systemUiStateFlags, /* applyState */ true);
+    }
+
+    private  void updateStateForSysuiFlags(int systemUiStateFlags, boolean applyState) {
         final boolean prevIsAwake = hasAnyFlag(FLAG_AWAKE);
         final boolean currIsAwake = hasAnyFlag(systemUiStateFlags, SYSUI_STATE_AWAKE);
 
@@ -322,9 +335,7 @@ public class TaskbarLauncherStateController {
                 || (systemUiStateFlags & SYSUI_STATE_WAKEFULNESS_MASK) != WAKEFULNESS_AWAKE;
         updateStateForFlag(FLAG_TASKBAR_HIDDEN, isTaskbarHidden);
 
-        if (skipAnim) {
-            applyState(0);
-        } else {
+        if (applyState) {
             applyState();
         }
     }
@@ -359,10 +370,6 @@ public class TaskbarLauncherStateController {
 
     public void applyState(long duration) {
         applyState(duration, true);
-    }
-
-    public Animator applyState(boolean start) {
-        return applyState(mControllers.taskbarStashController.getStashDuration(), start);
     }
 
     public Animator applyState(long duration, boolean start) {
@@ -418,9 +425,13 @@ public class TaskbarLauncherStateController {
                 // We're changing state to home, should close open popups e.g. Taskbar AllApps
                 handleOpenFloatingViews = true;
             }
+            if (mLauncherState == LauncherState.OVERVIEW) {
+                // Calling to update the insets in TaskbarInsetController#updateInsetsTouchability
+                mControllers.taskbarActivityContext.notifyUpdateLayoutParams();
+            }
         }
 
-        if (hasAnyFlag(changedFlags, FLAGS_LAUNCHER_ACTIVE | FLAG_AWAKE)) {
+        if (hasAnyFlag(changedFlags, FLAGS_LAUNCHER_ACTIVE)) {
             animatorSet.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -468,8 +479,7 @@ public class TaskbarLauncherStateController {
                     public void onAnimationEnd(Animator animation) {
                         TaskbarStashController stashController =
                                 mControllers.taskbarStashController;
-                        stashController.updateAndAnimateTransientTaskbar(
-                                /* stash */ true, /* duration */ 0);
+                        stashController.updateAndAnimateTransientTaskbar(/* stash */ true);
                     }
                 });
             } else {
@@ -546,6 +556,12 @@ public class TaskbarLauncherStateController {
             // updateValue ensures onIconAlignmentRatioChanged will be called if there is an actual
             // change in value
             mIconAlignment.updateValue(toAlignment);
+
+            // Make sure FLAG_IN_APP is set when launching applications from keyguard.
+            if (!isInLauncher) {
+                mControllers.taskbarStashController.updateStateForFlag(FLAG_IN_APP, true);
+                mControllers.taskbarStashController.applyState(0);
+            }
         } else if (mIconAlignment.isAnimatingToValue(toAlignment)
                 || mIconAlignment.isSettledOnValue(toAlignment)) {
             // Already at desired value, but make sure we run the callback at the end.
@@ -642,14 +658,8 @@ public class TaskbarLauncherStateController {
         long resetDuration = mControllers.taskbarStashController.isInApp()
                 ? duration
                 : duration / 2;
-        boolean shouldReset =
-                mControllers.taskbarTranslationController.shouldResetBackToZero(resetDuration);
-        boolean goingToLauncher = isAnimatingToLauncher();
-        boolean isNormalState = mLauncherState == LauncherState.NORMAL;
-        // Taskbar should always reset when animating to launcher in normal state to ensure there
-        // is no jump during the handoff to the hotseat.
-        if ((goingToLauncher && isNormalState)
-                || (shouldReset && (goingToLauncher || isNormalState))) {
+        if (!mControllers.taskbarTranslationController.willAnimateToZeroBefore(resetDuration)
+                && (isAnimatingToLauncher() || mLauncherState == LauncherState.NORMAL)) {
             animatorSet.play(mControllers.taskbarTranslationController
                     .createAnimToResetTranslation(resetDuration));
         }

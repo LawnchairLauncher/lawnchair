@@ -26,6 +26,7 @@ import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_MULTI_DISPLAY_PARTIAL_DEPTH;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ICON_OVERLAP_FACTOR;
 import static com.android.launcher3.icons.GraphicsUtils.getShapePath;
+import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 import static com.android.launcher3.testing.shared.ResourceUtils.INVALID_RESOURCE_HANDLE;
 import static com.android.launcher3.testing.shared.ResourceUtils.pxFromDp;
 import static com.android.launcher3.testing.shared.ResourceUtils.roundPxValueFromFloat;
@@ -55,7 +56,10 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.uioverrides.ApiWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
+import com.android.launcher3.util.ResourceHelper;
 import com.android.launcher3.util.WindowBounds;
+import com.android.launcher3.workspace.CalculatedWorkspaceSpec;
+import com.android.launcher3.workspace.WorkspaceSpecs;
 
 import java.io.PrintWriter;
 import java.util.Locale;
@@ -67,13 +71,11 @@ public class DeviceProfile {
     private static final int DEFAULT_DOT_SIZE = 100;
     private static final float ALL_APPS_TABLET_MAX_ROWS = 5.5f;
     private static final float MIN_FOLDER_TEXT_SIZE_SP = 16f;
+    private static final float MIN_WIDGET_PADDING_DP = 6f;
 
     public static final PointF DEFAULT_SCALE = new PointF(1.0f, 1.0f);
     public static final ViewScaleProvider DEFAULT_PROVIDER = itemInfo -> DEFAULT_SCALE;
     public static final Consumer<DeviceProfile> DEFAULT_DIMENSION_PROVIDER = dp -> {};
-
-    // Ratio of empty space, qsb should take up to appear visually centered.
-    private final float mQsbCenterFactor;
 
     public final InvariantDeviceProfile inv;
     private final Info mInfo;
@@ -104,6 +106,12 @@ public class DeviceProfile {
 
     public final boolean isScalableGrid;
     private final int mTypeIndex;
+
+    // Responsive grid
+    private final boolean mIsResponsiveGrid;
+    private WorkspaceSpecs mWorkspaceSpecs;
+    private CalculatedWorkspaceSpec mResponsiveWidthSpec;
+    private CalculatedWorkspaceSpec mResponsiveHeightSpec;
 
     /**
      * The maximum amount of left/right workspace padding as a percentage of the screen width.
@@ -252,6 +260,10 @@ public class DeviceProfile {
     // Insets
     private final Rect mInsets = new Rect();
     public final Rect workspacePadding = new Rect();
+    // Additional padding added to the widget inside its cellSpace. It is applied outside
+    // the widgetView, such that the actual view size is same as the widget size.
+    public final Rect widgetPadding = new Rect();
+
     // When true, nav bar is on the left side of the screen.
     private boolean mIsSeascape;
 
@@ -291,6 +303,9 @@ public class DeviceProfile {
         this.rotationHint = windowBounds.rotationHint;
         mInsets.set(windowBounds.insets);
 
+        // TODO(b/241386436): shouldn't change any launcher behaviour
+        mIsResponsiveGrid = inv.workspaceSpecsId != INVALID_RESOURCE_HANDLE;
+
         isScalableGrid = inv.isScalable && !isVerticalBarLayout() && !isMultiWindowMode;
         // Determine device posture.
         mInfo = info;
@@ -314,9 +329,6 @@ public class DeviceProfile {
         availableHeightPx = windowBounds.availableSize.y;
 
         aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
-        boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
-        mQsbCenterFactor = res.getFloat(R.dimen.qsb_center_factor);
-
         if (isTwoPanels) {
             if (isLandscape) {
                 mTypeIndex = INDEX_TWO_PANEL_LANDSCAPE;
@@ -331,11 +343,19 @@ public class DeviceProfile {
             }
         }
 
+        if (mIsResponsiveGrid) {
+            mWorkspaceSpecs = new WorkspaceSpecs(new ResourceHelper(context, inv.workspaceSpecsId));
+            mResponsiveWidthSpec = mWorkspaceSpecs.getCalculatedWidthSpec(inv.numColumns,
+                    availableWidthPx);
+            mResponsiveHeightSpec = mWorkspaceSpecs.getCalculatedHeightSpec(inv.numRows,
+                    availableHeightPx);
+        }
+
         if (DisplayController.isTransientTaskbar(context)) {
             float invTransientIconSizeDp = inv.transientTaskbarIconSize[mTypeIndex];
             taskbarIconSize = pxFromDp(invTransientIconSizeDp, mMetrics);
-            taskbarHeight = taskbarIconSize
-                    + (2 * res.getDimensionPixelSize(R.dimen.transient_taskbar_padding));
+            taskbarHeight = Math.round((taskbarIconSize * ICON_VISIBLE_AREA_FACTOR)
+                    + (2 * res.getDimensionPixelSize(R.dimen.transient_taskbar_padding)));
             stashedTaskbarHeight =
                     res.getDimensionPixelSize(R.dimen.transient_taskbar_stashed_height);
             taskbarBottomMargin =
@@ -730,22 +750,6 @@ public class DeviceProfile {
         return mInfo;
     }
 
-    /**
-     * We inset the widget padding added by the system and instead rely on the border spacing
-     * between cells to create reliable consistency between widgets
-     */
-    public boolean shouldInsetWidgets() {
-        Rect widgetPadding = inv.defaultWidgetPadding;
-
-        // Check all sides to ensure that the widget won't overlap into another cell, or into
-        // status bar.
-        return workspaceTopPadding > widgetPadding.top
-                && cellLayoutBorderSpacePx.x > widgetPadding.left
-                && cellLayoutBorderSpacePx.y > widgetPadding.top
-                && cellLayoutBorderSpacePx.x > widgetPadding.right
-                && cellLayoutBorderSpacePx.y > widgetPadding.bottom;
-    }
-
     public Builder toBuilder(Context context) {
         WindowBounds bounds = new WindowBounds(
                 widthPx, heightPx, availableWidthPx, availableHeightPx, rotationHint);
@@ -999,6 +1003,18 @@ public class DeviceProfile {
         // Folder icon
         folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
         folderIconOffsetYPx = (iconSizePx - folderIconSizePx) / 2;
+
+        // Update widget padding:
+        float minSpacing = pxFromDp(MIN_WIDGET_PADDING_DP, mMetrics);
+        if (cellLayoutBorderSpacePx.x < minSpacing
+                || cellLayoutBorderSpacePx.y < minSpacing) {
+            widgetPadding.left = widgetPadding.right =
+                    Math.round(Math.max(0, minSpacing - cellLayoutBorderSpacePx.x));
+            widgetPadding.top = widgetPadding.bottom =
+                    Math.round(Math.max(0, minSpacing - cellLayoutBorderSpacePx.y));
+        } else {
+            widgetPadding.setEmpty();
+        }
     }
 
     /**
@@ -1582,6 +1598,7 @@ public class DeviceProfile {
 
         writer.println(prefix + "\taspectRatio:" + aspectRatio);
 
+        writer.println(prefix + "\tisResponsiveGrid:" + mIsResponsiveGrid);
         writer.println(prefix + "\tisScalableGrid:" + isScalableGrid);
 
         writer.println(prefix + "\tinv.numRows: " + inv.numRows);

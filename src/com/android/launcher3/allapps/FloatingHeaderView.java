@@ -228,7 +228,7 @@ public class FloatingHeaderView extends LinearLayout implements
         updateExpectedHeight();
 
         mTabsHidden = tabsHidden;
-        mTabLayout.setVisibility(tabsHidden ? View.GONE : View.VISIBLE);
+        maybeSetTabVisibility(VISIBLE);
         mMainRV = mainRV;
         mWorkRV = workRV;
         mSearchRV = searchRV;
@@ -250,6 +250,12 @@ public class FloatingHeaderView extends LinearLayout implements
                 rvType == AdapterHolder.MAIN ? mMainRV
                 : rvType == AdapterHolder.WORK ? mWorkRV : mSearchRV;
         mCurrentRV.addOnScrollListener(mOnScrollListener);
+        maybeSetTabVisibility(rvType == AdapterHolder.SEARCH ? GONE : VISIBLE);
+    }
+
+    /** Update tab visibility to the given state, only if tabs are active (work profile exists). */
+    void maybeSetTabVisibility(int visibility) {
+        mTabLayout.setVisibility(mTabsHidden ? GONE : visibility);
     }
 
     private void updateExpectedHeight() {

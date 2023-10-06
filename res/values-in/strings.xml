@@ -29,6 +29,7 @@
     <string name="home_screen" msgid="5629429142036709174">"Layar utama"</string>
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Layar terpisah"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Info aplikasi untuk %1$s"</string>
+    <string name="save_app_pair" msgid="5647523853662686243">"Simpan pasangan aplikasi"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Sentuh lama untuk memindahkan widget."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Ketuk dua kali &amp; tahan untuk memindahkan widget atau gunakan tindakan khusus."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -49,6 +50,7 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Pribadi"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Kerja"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Percakapan"</string>
+    <string name="widget_category_note_taking" msgid="3469689394504266039">"Pembuatan catatan"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Info bermanfaat mudah dilihat"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Untuk mendapatkan info tanpa membuka aplikasi, Anda dapat menambahkan widget ke layar utama"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Ketuk untuk mengubah setelan widget"</string>
@@ -80,7 +82,6 @@
     <string name="permdesc_read_settings" msgid="4208061150510996676">"Mengizinkan aplikasi membaca setelan dan pintasan di layar utama."</string>
     <string name="permlab_write_settings" msgid="4820028712156303762">"menulis setelan dan pintasan layar utama"</string>
     <string name="permdesc_write_settings" msgid="726859348127868466">"Mengizinkan aplikasi mengubah setelan dan pintasan di layar utama."</string>
-    <string name="msg_no_phone_permission" msgid="9208659281529857371">"<xliff:g id="APP_NAME">%1$s</xliff:g> tidak diizinkan untuk melakukan panggilan telepon"</string>
     <string name="gadget_error_text" msgid="740356548025791839">"Tidak dapat memuat widget"</string>
     <string name="gadget_setup_text" msgid="8348374825537681407">"Setelan widget"</string>
     <string name="gadget_complete_setup_text" msgid="309040266978007925">"Ketuk untuk menyelesaikan penyiapan"</string>
@@ -100,6 +101,7 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Folder: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> item atau lebih"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Wallpaper"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Wallpaper &amp; gaya"</string>
+    <string name="edit_home_screen" msgid="8947858375782098427">"Edit Layar Utama"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Setelan layar utama"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Dinonaktifkan oleh admin"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Izinkan layar utama diputar"</string>
@@ -161,12 +163,13 @@
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"Aplikasi kerja diberi badge dan terlihat oleh admin IT"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"Oke"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"Aplikasi kerja dijeda"</string>
+    <string name="work_apps_paused_info_body" msgid="1687828929959237477">"Anda tidak akan menerima notifikasi dari aplikasi kerja"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"Aplikasi kerja tidak dapat mengirimkan notifikasi, menggunakan baterai, atau mengakses lokasi Anda"</string>
-    <string name="work_apps_paused_content_description" msgid="5149623040804051095">"Aplikasi kerja dinonaktifkan. Aplikasi kerja tidak dapat mengirimkan notifikasi, menggunakan baterai, atau mengakses lokasi Anda"</string>
+    <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"Anda tidak akan menerima panggilan telepon, pesan teks, atau notifikasi dari aplikasi kerja"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"Aplikasi kerja diberi badge dan terlihat oleh admin IT"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"Oke"</string>
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"Jeda aplikasi kerja"</string>
-    <string name="work_apps_enable_btn_text" msgid="1156432622148413741">"Aktifkan aplikasi kerja"</string>
+    <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Aktifkan lagi"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filter"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Telusuri di ponsel"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Telusuri di tablet"</string>

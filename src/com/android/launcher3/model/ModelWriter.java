@@ -33,7 +33,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherProvider;
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.Utilities;
@@ -267,8 +266,7 @@ public class ModelWriter {
             item.onAddToDatabase(writer);
             writer.put(Favorites._ID, item.id);
 
-            cr.insert(Favorites.CONTENT_URI, writer.getValues(mContext));
-
+            mModel.getModelDbController().insert(Favorites.TABLE_NAME, writer.getValues(mContext));
             synchronized (mBgDataModel) {
                 checkItemInfoLocked(item.id, item, stackTrace);
                 mBgDataModel.addItem(mContext, item, true);
@@ -324,13 +322,13 @@ public class ModelWriter {
         notifyDelete(Collections.singleton(info));
 
         enqueueDeleteRunnable(() -> {
-            ContentResolver cr = mContext.getContentResolver();
-            cr.delete(LauncherSettings.Favorites.CONTENT_URI,
-                    LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
+            mModel.getModelDbController().delete(Favorites.TABLE_NAME,
+                    Favorites.CONTAINER + "=" + info.id, null);
             mBgDataModel.removeItem(mContext, info.contents);
             info.contents.clear();
 
-            cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null, null);
+            mModel.getModelDbController().delete(Favorites.TABLE_NAME,
+                    Favorites._ID + "=" + info.id, null);
             mBgDataModel.removeItem(mContext, info);
             verifier.verifyModel();
         });

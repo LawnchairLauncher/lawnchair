@@ -56,6 +56,10 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
             return RemoteViews.startPendingIntent(hostView, pendingIntent,
                     remoteResponse.getLaunchOptions(view));
         }
+        if (mLauncher.getSplitToWorkspaceController().handleSecondWidgetSelectionForSplit(view,
+                pendingIntent)) {
+            return true;
+        }
         Pair<Intent, ActivityOptions> options = remoteResponse.getLaunchOptions(view);
         ActivityOptionsWrapper activityOptions = mLauncher.getAppTransitionManager()
                 .getActivityLaunchOptions(hostView);
@@ -80,6 +84,8 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
         }
         activityOptions.options.setPendingIntentLaunchFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR);
+        activityOptions.options.setPendingIntentBackgroundActivityStartMode(
+                ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED);
         options = Pair.create(options.first, activityOptions.options);
         if (pendingIntent.isActivity()) {
             logAppLaunch(itemInfo);

@@ -47,6 +47,7 @@ import com.android.launcher3.views.FloatingView;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 import com.android.quickstep.util.RectFSpringAnim;
 import com.android.quickstep.util.StaggeredWorkspaceAnim;
+import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.views.FloatingWidgetView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
@@ -160,13 +161,16 @@ public class LauncherSwipeHandlerV2 extends
         Rect crop = new Rect();
         // We can assume there is only one remote target here because staged split never animates
         // into the app icon, only into the homescreen
-        mRemoteTargetHandles[0].getTaskViewSimulator().getCurrentCropRect().roundOut(crop);
+        RemoteTargetGluer.RemoteTargetHandle remoteTargetHandle = mRemoteTargetHandles[0];
+        TaskViewSimulator tvs = remoteTargetHandle.getTaskViewSimulator();
+        // This is to set up the inverse matrix in the simulator
+        tvs.apply(remoteTargetHandle.getTransformParams());
+        tvs.getCurrentCropRect().roundOut(crop);
         Size windowSize = new Size(crop.width(), crop.height());
         int fallbackBackgroundColor =
                 FloatingWidgetView.getDefaultBackgroundColor(mContext, runningTaskTarget);
         FloatingWidgetView floatingWidgetView = FloatingWidgetView.getFloatingWidgetView(mActivity,
-                hostView, backgroundLocation, windowSize,
-                mRemoteTargetHandles[0].getTaskViewSimulator().getCurrentCornerRadius(),
+                hostView, backgroundLocation, windowSize, tvs.getCurrentCornerRadius(),
                 isTargetTranslucent, fallbackBackgroundColor);
 
         return new FloatingViewHomeAnimationFactory(floatingWidgetView) {

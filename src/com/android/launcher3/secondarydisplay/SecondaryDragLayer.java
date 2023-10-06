@@ -236,7 +236,7 @@ public class SecondaryDragLayer extends BaseDragLayer<SecondaryDisplayLauncher> 
 
                 @Override
                 public boolean shouldStartDrag(double distanceDragged) {
-                    return mDragView != null && mDragView.isAnimationFinished();
+                    return mDragView != null && mDragView.isScaleAnimationFinished();
                 }
 
                 @Override

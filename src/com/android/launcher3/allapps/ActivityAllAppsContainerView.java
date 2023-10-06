@@ -40,13 +40,14 @@ import android.os.Parcelable;
 import android.os.Process;
 import android.os.UserManager;
 import android.util.AttributeSet;
+import android.util.FloatProperty;
 import android.util.Log;
 import android.util.SparseArray;
-import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewOutlineProvider;
 import android.view.WindowInsets;
 import android.widget.Button;
@@ -99,6 +100,20 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         extends SpringRelativeLayout implements DragSource, Insettable,
         OnDeviceProfileChangeListener, PersonalWorkSlidingTabStrip.OnActivePageChangedListener,
         ScrimView.ScrimDrawingController {
+
+
+    public static final FloatProperty<ActivityAllAppsContainerView<?>> BOTTOM_SHEET_ALPHA =
+            new FloatProperty<>("bottomSheetAlpha") {
+                @Override
+                public Float get(ActivityAllAppsContainerView<?> containerView) {
+                    return containerView.mBottomSheetAlpha;
+                }
+
+                @Override
+                public void setValue(ActivityAllAppsContainerView<?> containerView, float v) {
+                    containerView.setBottomSheetAlpha(v);
+                }
+            };
 
     public static final float PULL_MULTIPLIER = .02f;
     public static final float FLING_VELOCITY_MULTIPLIER = 1200f;
@@ -158,6 +173,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     private ScrimView mScrimView;
     private int mHeaderColor;
     private int mBottomSheetBackgroundColor;
+    private float mBottomSheetAlpha = 1f;
+    private boolean mForceBottomSheetVisible;
     private int mTabsProtectionAlpha;
     @Nullable private AllAppsTransitionController mAllAppsTransitionController;
 
@@ -183,7 +200,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 this, mActivityContext.getStatsLogManager());
         mAH = Arrays.asList(null, null, null);
         mNavBarScrimPaint = new Paint();
-        mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
+        mNavBarScrimPaint.setColor(Themes.getNavBarScrimColor(mActivityContext));
 
         AllAppsStore.OnUpdateListener onAppsUpdated = this::onAppsUpdated;
         if (TestProtocol.sDebugTracing) {
@@ -254,10 +271,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 0,
                 0 // Bottom left
         };
-        final TypedValue value = new TypedValue();
-        getContext().getTheme().resolveAttribute(android.R.attr.colorBackground, value, true);
-        mBottomSheetBackgroundColor = value.data;
-        updateBackground(mActivityContext.getDeviceProfile());
+        mBottomSheetBackgroundColor =
+                Themes.getAttrColor(getContext(), R.attr.materialColorSurfaceDim);
+        updateBackgroundVisibility(mActivityContext.getDeviceProfile());
         mSearchUiManager.initializeSearch(this);
     }
 
@@ -275,6 +291,20 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     public SearchUiManager getSearchUiManager() {
         return mSearchUiManager;
+    }
+
+    public View getBottomSheetBackground() {
+        return mBottomSheetBackground;
+    }
+
+    /**
+     * Temporarily force the bottom sheet to be visible on non-tablets.
+     *
+     * @param force {@code true} means bottom sheet will be visible on phones until {@code reset()}.
+     **/
+    public void forceBottomSheetVisible(boolean force) {
+        mForceBottomSheetVisible = force;
+        updateBackgroundVisibility(mActivityContext.getDeviceProfile());
     }
 
     public View getSearchView() {
@@ -375,7 +405,23 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         return rv.shouldContainerScroll(ev, dragLayer);
     }
 
+    /**
+     * Resets the UI to be ready for fresh interactions in the future. Exits search and returns to
+     * A-Z apps list.
+     *
+     * @param animate Whether to animate the header during the reset (e.g. switching profile tabs).
+     **/
     public void reset(boolean animate) {
+        reset(animate, true);
+    }
+
+    /**
+     * Resets the UI to be ready for fresh interactions in the future.
+     *
+     * @param animate Whether to animate the header during the reset (e.g. switching profile tabs).
+     * @param exitSearch Whether to force exit the search state and return to A-Z apps list.
+     **/
+    public void reset(boolean animate, boolean exitSearch) {
         for (int i = 0; i < mAH.size(); i++) {
             if (mAH.get(i).mRecyclerView != null) {
                 mAH.get(i).mRecyclerView.scrollToTop();
@@ -387,12 +433,18 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         if (mHeader != null && mHeader.getVisibility() == VISIBLE) {
             mHeader.reset(animate);
         }
+        forceBottomSheetVisible(false);
         // Reset the base recycler view after transitioning home.
         updateHeaderScroll(0);
-        // Reset the search bar after transitioning home.
-        mSearchUiManager.resetSearch();
-        // Animate to A-Z with 0 time to reset the animation with proper state management.
-        animateToSearchState(false, 0);
+        if (exitSearch) {
+            // Reset the search bar after transitioning home.
+            mSearchUiManager.resetSearch();
+            // Animate to A-Z with 0 time to reset the animation with proper state management.
+            animateToSearchState(false, 0);
+        }
+        if (isSearching()) {
+            mWorkManager.reset();
+        }
     }
 
     @Override
@@ -436,7 +488,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         }
         // Header keeps track of active recycler view to properly render header protection.
         mHeader.setActiveRV(currentActivePage);
-        reset(true /* animate */);
+        reset(true /* animate */, !isSearching() /* exitSearch */);
 
         mWorkManager.onActivePageChanged(currentActivePage);
     }
@@ -454,12 +506,6 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
         boolean showTabs = shouldShowTabs();
         if (showTabs == mUsingTabs && !force) {
-            return;
-        }
-
-        if (isSearching()) {
-            mUsingTabs = showTabs;
-            mWorkManager.detachWorkModeSwitch();
             return;
         }
 
@@ -527,7 +573,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mAllAppsStore.registerIconContainer(mAH.get(AdapterHolder.SEARCH).mRecyclerView);
     }
 
-    protected View replaceAppsRVContainer(boolean showTabs) {
+    private void replaceAppsRVContainer(boolean showTabs) {
         for (int i = AdapterHolder.MAIN; i <= AdapterHolder.WORK; i++) {
             AdapterHolder adapterHolder = mAH.get(i);
             if (adapterHolder.mRecyclerView != null) {
@@ -581,7 +627,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             layoutBelowSearchContainer(getSearchRecyclerView(), /* tabs= */ false);
         }
 
-        return rvContainer;
+        updateSearchResultsVisibility();
     }
 
     void setupHeader() {
@@ -813,14 +859,26 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
                 holder.mRecyclerView.getRecycledViewPool().clear();
             }
         }
-        updateBackground(dp);
+        updateBackgroundVisibility(dp);
+
+        int navBarScrimColor = Themes.getNavBarScrimColor(mActivityContext);
+        if (mNavBarScrimPaint.getColor() != navBarScrimColor) {
+            mNavBarScrimPaint.setColor(navBarScrimColor);
+            invalidate();
+        }
     }
 
-    protected void updateBackground(DeviceProfile deviceProfile) {
-        mBottomSheetBackground.setVisibility(deviceProfile.isTablet ? View.VISIBLE : View.GONE);
+    protected void updateBackgroundVisibility(DeviceProfile deviceProfile) {
+        boolean visible = deviceProfile.isTablet || mForceBottomSheetVisible;
+        mBottomSheetBackground.setVisibility(visible ? View.VISIBLE : View.GONE);
         // Note: For tablets, the opaque background and header protection are added in drawOnScrim.
-        // For the taskbar entrypoint, the scrim is drawn differently, so a static background is
-        // added in TaskbarAllAppsContainerView and header protection is not yet supported.
+        // For the taskbar entrypoint, the scrim is drawn by its abstract slide in view container,
+        // so its header protection is derived from this scrim instead.
+    }
+
+    private void setBottomSheetAlpha(float alpha) {
+        // Bottom sheet alpha is always 1 for tablets.
+        mBottomSheetAlpha = mActivityContext.getDeviceProfile().isTablet ? 1f : alpha;
     }
 
     private void onAppsUpdated() {
@@ -914,7 +972,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      * The container for A-Z apps (the ViewPager for main+work tabs, or main RV). This is currently
      * hidden while searching.
      **/
-    protected View getAppsRecyclerViewContainer() {
+    public ViewGroup getAppsRecyclerViewContainer() {
         return mViewPager != null ? mViewPager : findViewById(R.id.apps_list_view);
     }
 
@@ -1125,8 +1183,8 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
 
     @Override
     public void drawOnScrimWithScale(Canvas canvas, float scale) {
-        final boolean isTablet = mActivityContext.getDeviceProfile().isTablet;
         final View panel = mBottomSheetBackground;
+        final boolean hasBottomSheet = panel.getVisibility() == VISIBLE;
         final float translationY = ((View) panel.getParent()).getTranslationY();
 
         final float horizontalScaleOffset = (1 - scale) * panel.getWidth() / 2;
@@ -1137,8 +1195,9 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         final float leftWithScale = panel.getLeft() + horizontalScaleOffset;
         final float rightWithScale = panel.getRight() - horizontalScaleOffset;
         // Draw full background panel for tablets.
-        if (isTablet) {
+        if (hasBottomSheet) {
             mHeaderPaint.setColor(mBottomSheetBackgroundColor);
+            mHeaderPaint.setAlpha((int) (255 * mBottomSheetAlpha));
 
             mTmpRectF.set(
                     leftWithScale,
@@ -1169,7 +1228,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         final float headerBottomOffset = (getVisibleContainerView().getHeight() * (1 - scale) / 2);
         final float headerBottomWithScaleOnPhone = headerBottomNoScale * scale + headerBottomOffset;
         final FloatingHeaderView headerView = getFloatingHeaderView();
-        if (isTablet) {
+        if (hasBottomSheet) {
             // Start adding header protection if search bar or tabs will attach to the top.
             if (!FeatureFlags.ENABLE_FLOATING_SEARCH_BAR.get() || mUsingTabs) {
                 mTmpRectF.set(
@@ -1196,12 +1255,12 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             }
             float left = 0f;
             float right = canvas.getWidth();
-            if (isTablet) {
+            if (hasBottomSheet) {
                 left = mBottomSheetBackground.getLeft() + horizontalScaleOffset;
                 right = mBottomSheetBackground.getRight() - horizontalScaleOffset;
             }
 
-            final float tabTopWithScale = isTablet
+            final float tabTopWithScale = hasBottomSheet
                     ? headerBottomWithScaleOnTablet
                     : headerBottomWithScaleOnPhone;
             final float tabBottomWithScale = tabTopWithScale + tabsHeight * scale;
@@ -1240,11 +1299,16 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
      * Returns a view that denotes the visible part of all apps container view.
      */
     public View getVisibleContainerView() {
-        return mActivityContext.getDeviceProfile().isTablet ? mBottomSheetBackground : this;
+        return mBottomSheetBackground.getVisibility() == VISIBLE ? mBottomSheetBackground : this;
     }
 
     protected void onInitializeRecyclerView(RecyclerView rv) {
         rv.addOnScrollListener(mScrollListener);
+    }
+
+    /** Returns the instance of @{code SearchTransitionController}. */
+    public SearchTransitionController getSearchTransitionController() {
+        return mSearchTransitionController;
     }
 
     /** Holds a {@link BaseAllAppsAdapter} and related fields. */

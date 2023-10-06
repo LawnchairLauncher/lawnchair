@@ -24,7 +24,7 @@
     <!-- SINGLE : L L L L -->
     <item android:state_single="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/surface" />
+            <solid android:color="?attr/widgetPickerSecondarySurfaceColor" />
             <corners
                 android:topLeftRadius="@dimen/widget_list_top_bottom_corner_radius"
                 android:topRightRadius="@dimen/widget_list_top_bottom_corner_radius"
@@ -36,7 +36,7 @@
     <!-- FIRST_EXPANDED : L L 0 0 -->
     <item android:state_first="true" android:state_expanded="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/surface" />
+            <solid android:color="?attr/widgetPickerSecondarySurfaceColor" />
             <corners
                 android:topLeftRadius="@dimen/widget_list_top_bottom_corner_radius"
                 android:topRightRadius="@dimen/widget_list_top_bottom_corner_radius"
@@ -48,7 +48,7 @@
     <!-- FIRST : L L s s -->
     <item android:state_first="true" >
         <shape android:shape="rectangle">
-            <solid android:color="@color/surface" />
+            <solid android:color="?attr/widgetPickerSecondarySurfaceColor" />
             <corners
                 android:topLeftRadius="@dimen/widget_list_top_bottom_corner_radius"
                 android:topRightRadius="@dimen/widget_list_top_bottom_corner_radius"
@@ -60,7 +60,7 @@
     <!-- MIDDLE_EXPANDED : s s 0 0 -->
     <item android:state_middle="true" android:state_expanded="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/surface" />
+            <solid android:color="?attr/widgetPickerSecondarySurfaceColor" />
             <corners
                 android:topLeftRadius="@dimen/widget_list_content_corner_radius"
                 android:topRightRadius="@dimen/widget_list_content_corner_radius"
@@ -72,7 +72,7 @@
     <!-- MIDDLE : s s s s -->
     <item android:state_middle="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/surface" />
+            <solid android:color="?attr/widgetPickerSecondarySurfaceColor" />
             <corners
                 android:topLeftRadius="@dimen/widget_list_content_corner_radius"
                 android:topRightRadius="@dimen/widget_list_content_corner_radius"
@@ -84,7 +84,7 @@
     <!-- LAST : s s L L -->
     <item android:state_last="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/surface" />
+            <solid android:color="?attr/widgetPickerSecondarySurfaceColor" />
             <corners
                 android:topLeftRadius="@dimen/widget_list_content_corner_radius"
                 android:topRightRadius="@dimen/widget_list_content_corner_radius"

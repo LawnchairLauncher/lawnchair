@@ -77,6 +77,7 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.MultiTranslateDelegate;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.ShortcutUtil;
+import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.IconLabelDotView;
 
@@ -387,8 +388,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         }
         FastBitmapDrawable iconDrawable = info.newIcon(getContext(), flags);
         mDotParams.appColor = iconDrawable.getIconColor();
-        mDotParams.dotColor = getContext().getResources()
-                .getColor(android.R.color.system_accent3_200, getContext().getTheme());
+        mDotParams.dotColor = Themes.getAttrColor(getContext(), R.attr.notificationDotColor);
         setIcon(iconDrawable);
         applyLabel(info);
     }
@@ -396,6 +396,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     protected boolean shouldUseTheme() {
         return mDisplay == DISPLAY_WORKSPACE || mDisplay == DISPLAY_FOLDER
                 || mDisplay == DISPLAY_TASKBAR;
+    }
+
+    /**
+     *  Only if actual text can be displayed in two line, the {@code true} value will be effective.
+     */
+    protected boolean shouldUseTwoLine() {
+        return (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() && mDisplay == DISPLAY_ALL_APPS)
+                || (FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()
+                && mDisplay == DISPLAY_SEARCH_RESULT);
     }
 
     @UiThread
@@ -667,10 +676,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             setPadding(getPaddingLeft(), (height - cellHeightPx) / 2, getPaddingRight(),
                     getPaddingBottom());
         }
-        // only apply two line for all_apps
-        if (((FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() && mDisplay == DISPLAY_ALL_APPS)
-                || (FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()
-                && mDisplay == DISPLAY_SEARCH_RESULT)) && (mLastOriginalText != null)) {
+        // Only apply two line for all_apps and device search only if necessary.
+        if (shouldUseTwoLine() && (mLastOriginalText != null)) {
             CharSequence modifiedString = modifyTitleToSupportMultiLine(
                     MeasureSpec.getSize(widthMeasureSpec) - getCompoundPaddingLeft()
                             - getCompoundPaddingRight(),
@@ -872,7 +879,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             if (mIcon instanceof PreloadIconDrawable) {
                 preloadIconDrawable = (PreloadIconDrawable) mIcon;
                 preloadIconDrawable.setLevel(progressLevel);
-                preloadIconDrawable.setIsDisabled(!info.isAppStartable());
+                preloadIconDrawable.setIsDisabled(ENABLE_DOWNLOAD_APP_UX_V2.get()
+                        ? info.getProgressLevel() == 0
+                        : !info.isAppStartable());
             } else {
                 preloadIconDrawable = makePreloadIcon();
                 setIcon(preloadIconDrawable);
@@ -897,8 +906,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         final PreloadIconDrawable preloadDrawable = newPendingIcon(getContext(), info);
 
         preloadDrawable.setLevel(progressLevel);
-        preloadDrawable.setIsDisabled(!info.isAppStartable());
-
+        preloadDrawable.setIsDisabled(ENABLE_DOWNLOAD_APP_UX_V2.get()
+                ? info.getProgressLevel() == 0
+                : !info.isAppStartable());
         return preloadDrawable;
     }
 

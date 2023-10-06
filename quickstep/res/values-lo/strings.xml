@@ -44,35 +44,41 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"ເປີດການນຳໃຊ້ການແນະນຳແອັບແລ້ວ"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"ປິດການນຳໃຊ້ການແນະນຳແອັບແລ້ວ"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"ແອັບທີ່ຄາດເດົາໄວ້: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"ກະລຸນາກວດສອບວ່າທ່ານປັດຈາກຂອບຂວາສຸດ ຫຼື ຊ້າຍສຸດ."</string>
-    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"ກະລຸນາກວດສອບວ່າທ່ານປັດຈາກຂອບຂວາ ຫຼື ຊ້າຍໄປຫາທາງກາງຂອງໜ້າຈໍແລ້ວປ່ອຍນິ້ວ."</string>
+    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"ໝຸນອຸປະກອນຂອງທ່ານ"</string>
+    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"ກະລຸນາໝຸນອຸປະກອນຂອງທ່ານເພື່ອເຮັດຕາມການສອນການນຳໃຊ້ກ່ຽວກັບການນຳທາງແບບທ່າທາງໃຫ້ສຳເລັດ"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"ກະລຸນາກວດສອບວ່າທ່ານປັດຈາກຂອບຂວາສຸດ ຫຼື ຊ້າຍສຸດ"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"ກະລຸນາກວດສອບວ່າທ່ານປັດຈາກຂອບຂວາ ຫຼື ຊ້າຍໄປຫາທາງກາງຂອງໜ້າຈໍແລ້ວປ່ອຍນິ້ວ"</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"ທ່ານຮຽນຮູ້ວິທີປັດຈາກຂວາເພື່ອກັບຄືນແລ້ວ. ຕໍ່ໄປ, ມາສຶກສາວິທີສະຫຼັບແອັບ."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"ທ່ານໃຊ້ທ່າທາງກັບຄືນສຳເລັດແລ້ວ."</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"ກະລຸນາກວດສອບວ່າທ່ານບໍ່ໄດ້ປັດໃກ້ກັບທາງລຸ່ມຂອງໜ້າຈໍເກີນໄປ."</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"ທ່ານໃຊ້ທ່າທາງກັບຄືນສຳເລັດແລ້ວ"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"ກະລຸນາກວດສອບວ່າທ່ານບໍ່ໄດ້ປັດໃກ້ກັບທາງລຸ່ມຂອງໜ້າຈໍເກີນໄປ"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"ເພື່ອປ່ຽນຄວາມລະອຽດອ່ອນຂອງທ່າທາງກັບຄືນ, ໃຫ້ໄປຫາການຕັ້ງຄ່າ"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"ປັດເພື່ອກັບຄືນ"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"ເພື່ອກັບໄປໜ້າຈໍຫຼ້າສຸດ, ໃຫ້ປັດຈາກຂອບຊ້າຍ ຫຼື ຂວາໄປຫາທາງກາງຂອງໜ້າຈໍ."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"ເພື່ອກັບໄປໜ້າຈໍຫຼ້າສຸດ, ໃຫ້ປັດດ້ວຍ 2 ນິ້ວຈາກຂອບຊ້າຍ ຫຼື ຂວາໄປຫາທາງກາງຂອງໜ້າຈໍ."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"ກັບຄືນ"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນຈາກຂອບລຸ່ມສຸດຂອງໜ້າຈໍ."</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"ກະລຸນາກວດສອບວ່າທ່ານບໍ່ຢຸດຊົ່ວຄາວກ່ອນປ່ອຍນິ້ວ."</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນໄປຊື່ໆ."</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"ທ່ານໃຊ້ທ່າທາງໄປໜ້າຫຼັກສຳເລັດແລ້ວ. ຕໍ່ໄປ, ມາສຶກສາວິທີກັບຄືນ."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"ທ່ານໃຊ້ທ່າທາງໄປໜ້າຫຼັກສຳເລັດແລ້ວ."</string>
+    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"ປັດຈາກຂອບຊ້າຍ ຫຼື ຂວາໄປຫາກາງໜ້າຈໍ"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນຈາກຂອບລຸ່ມສຸດຂອງໜ້າຈໍ"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"ກະລຸນາກວດສອບວ່າທ່ານບໍ່ຢຸດຊົ່ວຄາວກ່ອນປ່ອຍນິ້ວ"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນໄປຊື່ໆ"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"ທ່ານໃຊ້ທ່າທາງໄປໜ້າຫຼັກສຳເລັດແລ້ວ. ຕໍ່ໄປ, ມາສຶກສາວິທີກັບຄືນ."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"ທ່ານໃຊ້ທ່າທາງໄປໜ້າຫຼັກສຳເລັດແລ້ວ"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"ປັດເພື່ອໄປໜ້າຫຼັກ"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"ປັດຂຶ້ນມາຈາກລຸ່ມສຸດຂອງໜ້າຈໍທ່ານ. ທ່າທາງນີ້ຈະພາທ່ານໄປໂຮມສະກຣີນສະເໝີ."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"ປັດຂຶ້ນດ້ວຍ 2 ນິ້ວຈາກລຸ່ມສຸດຂອງໜ້າຈໍ. ທ່າທາງນີ້ຈະພາທ່ານໄປໂຮມສະກຣີນສະເໝີ."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"ໄປໜ້າຫຼັກ"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"ປັດຂຶ້ນຈາກລຸ່ມສຸດຂອງໜ້າຈໍຂອງທ່ານເພື່ອກັບໄປໂຮມສະກຣີນຂອງທ່ານໄດ້ທຸກເວລາ"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນຈາກຂອບລຸ່ມສຸດຂອງໜ້າຈໍ."</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"ລອງກົດໃສ່ໜ້າຈໍຄ້າງໄວ້ດົນຂຶ້ນກ່ອນປ່ອຍນິ້ວ."</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນຊື່ໆ, ຈາກນັ້ນຢຸດຊົ່ວຄາວ."</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"ປັດຂຶ້ນຈາກລຸ່ມສຸດຂອງໜ້າຈໍທ່ານ"</string>
+    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"ດີຫຼາຍ!"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນຈາກຂອບລຸ່ມສຸດຂອງໜ້າຈໍ"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"ລອງກົດໃສ່ໜ້າຈໍຄ້າງໄວ້ດົນຂຶ້ນກ່ອນປ່ອຍນິ້ວ"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"ກະລຸນາກວດສອບວ່າທ່ານປັດຂຶ້ນຊື່ໆ, ຈາກນັ້ນຢຸດຊົ່ວຄາວ"</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"ທ່ານໄດ້ສຶກສາວິທີໃຊ້ທ່າທາງແລ້ວ. ເພື່ອປິດທ່າທາງຕ່າງໆ, ໃຫ້ເຂົ້າໄປຫາການຕັ້ງຄ່າ."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"ທ່ານໃຊ້ທ່າທາງສະຫຼັບແອັບສຳເລັດແລ້ວ."</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"ທ່ານໃຊ້ທ່າທາງສະຫຼັບແອັບສຳເລັດແລ້ວ"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"ປັດເພື່ອສະຫຼັບແອັບ"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"ເພື່ອສະຫຼັບລະຫວ່າງແອັບ, ໃຫ້ປັດຂຶ້ນຈາກລຸ່ມສຸດຂອງໜ້າຈໍທ່ານ, ກົດຄ້າງໄວ້, ຈາກນັ້ນປ່ອຍ."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"ເພື່ອສະຫຼັບລະຫວ່າງແອັບ, ໃຫ້ປັດຂຶ້ນດ້ວຍ 2 ນິ້ວຈາກລຸ່ມສຸດຂອງໜ້າຈໍທ່ານ, ກົດຄ້າງໄວ້ແລ້ວປ່ອຍ."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"ສະຫຼັບແອັບ"</string>
+    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"ປັດຂຶ້ນຈາກລຸ່ມສຸດຂອງໜ້າຈໍຂອງທ່ານຄ້າງໄວ້ແລ້ວປ່ອຍ"</string>
+    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"ດີຫຼາຍ!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"ທຸກຢ່າງພ້ອມແລ້ວ"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"ແລ້ວໆ"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"ການຕັ້ງຄ່າ"</string>
@@ -97,15 +103,11 @@
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"ຂ້າມ"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"ໝຸນໜ້າຈໍ"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"ແຖບໜ້າວຽກ Education"</string>
-    <string name="taskbar_edu_opened" msgid="3950252793551919129">"ສະແດງການສຶກສາແຖບໜ້າວຽກແລ້ວ"</string>
-    <string name="taskbar_edu_closed" msgid="126643734478892862">"ປິດການສຶກສາແຖບໜ້າວຽກແລ້ວ"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"ລາກແອັບໄປດ້ານຂ້າງເພື່ອໃຊ້ 2 ແອັບໃນເວລາດຽວກັນ"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"ປັດຂຶ້ນຊ້າໆເພື່ອສະແດງແຖບໜ້າວຽກ"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"ຮັບການແນະນຳແອັບໂດຍອີງໃສ່ສິ່ງທີ່ເຮັດປະຈຳຂອງທ່ານ"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"ເປີດການນຳທາງແບບທ່າທາງໃນການຕັ້ງຄ່າເພື່ອເຊື່ອງແຖບໜ້າວຽກໄວ້ໂດຍອັດຕະໂນມັດ"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"ເຮັດສິ່ງຕ່າງໆໄດ້ຫຼາຍຂຶ້ນດ້ວຍແຖບໜ້າວຽກ"</string>
-    <string name="taskbar_edu_next" msgid="4007618274426775841">"ຕໍ່ໄປ"</string>
-    <string name="taskbar_edu_previous" msgid="459202320127201702">"ກັບຄືນ"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"ປິດ"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"ແລ້ວໆ"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"ໜ້າຫຼັກ"</string>
@@ -119,6 +121,9 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"ແຖບໜ້າວຽກທີ່ສະແດງຢູ່"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"ແຖບໜ້າວຽກທີ່ເຊື່ອງໄວ້ຢູ່"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"ແຖບການນຳທາງ"</string>
+    <string name="always_show_taskbar" msgid="3608801276107751229">"ສະແດງແຖບໜ້າວຽກສະເໝີ"</string>
+    <string name="change_navigation_mode" msgid="9088393078736808968">"ປ່ຽນໂໝດການນຳທາງ"</string>
+    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"ເສັ້ນແບ່ງແຖບໜ້າວຽກ"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"ຍ້າຍໄປຊ້າຍ/ເທິງ"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"ຍ້າຍໄປຂວາ/ລຸ່ມ"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{ສະແດງອີກ # ແອັບ.}other{ສະແດງອີກ # ແອັບ.}}"</string>

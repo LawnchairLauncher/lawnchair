@@ -33,11 +33,14 @@ import java.io.PrintWriter;
 public class TaskbarUnfoldAnimationController implements
         TaskbarControllers.LoggableTaskbarController {
 
+    private static final float MAX_WIDTH_INSET_FRACTION = 0.035f;
+
     private final ScopedUnfoldTransitionProgressProvider mScopedUnfoldTransitionProgressProvider;
     private final NaturalRotationUnfoldProgressProvider mNaturalUnfoldTransitionProgressProvider;
     private final UnfoldMoveFromCenterAnimator mMoveFromCenterAnimator;
     private final TransitionListener mTransitionListener = new TransitionListener();
     private TaskbarViewController mTaskbarViewController;
+    private TaskbarDragLayerController mTaskbarDragLayerController;
 
     public TaskbarUnfoldAnimationController(BaseTaskbarContext context,
             ScopedUnfoldTransitionProgressProvider source,
@@ -63,6 +66,7 @@ public class TaskbarUnfoldAnimationController implements
         mTaskbarViewController.addOneTimePreDrawListener(() ->
                 mScopedUnfoldTransitionProgressProvider.setReadyToHandleTransition(true));
         mNaturalUnfoldTransitionProgressProvider.addCallback(mTransitionListener);
+        mTaskbarDragLayerController = taskbarControllers.taskbarDragLayerController;
     }
 
     /**
@@ -99,11 +103,14 @@ public class TaskbarUnfoldAnimationController implements
         public void onTransitionFinished() {
             mMoveFromCenterAnimator.onTransitionFinished();
             mMoveFromCenterAnimator.clearRegisteredViews();
+            mTaskbarDragLayerController.setBackgroundHorizontalInsets(0f);
         }
 
         @Override
         public void onTransitionProgress(float progress) {
             mMoveFromCenterAnimator.onTransitionProgress(progress);
+            float insetPercentage = (1 - progress) * MAX_WIDTH_INSET_FRACTION;
+            mTaskbarDragLayerController.setBackgroundHorizontalInsets(insetPercentage);
         }
     }
 }
