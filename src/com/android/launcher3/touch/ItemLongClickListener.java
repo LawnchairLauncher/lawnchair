@@ -30,6 +30,7 @@ import android.view.View.OnLongClickListener;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
@@ -136,6 +137,9 @@ public class ItemLongClickListener {
         if (launcher.isWorkspaceLocked()) return false;
         // Return early if an item is already being dragged (e.g. when long-pressing two shortcuts)
         if (launcher.getDragController().isDragging()) return false;
+        // Return early if user is in the middle of selecting split-screen apps
+        if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get() &&
+                launcher.isSplitSelectionEnabled()) return false;
 
         return true;
     }
