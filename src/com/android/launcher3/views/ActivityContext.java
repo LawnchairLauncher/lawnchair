@@ -74,7 +74,6 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.util.ActivityOptionsWrapper;
-import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.RunnableList;
@@ -230,12 +229,6 @@ public interface ActivityContext {
      * Called just before logging the given item.
      */
     default void applyOverwritesToLogItem(LauncherAtom.ItemInfo.Builder itemInfoBuilder) { }
-
-    /** Onboarding preferences for any onboarding data within this context. */
-    @Nullable
-    default OnboardingPrefs<?> getOnboardingPrefs() {
-        return null;
-    }
 
     /** Returns {@code true} if items are currently being bound within this context. */
     default boolean isBindingItems() {

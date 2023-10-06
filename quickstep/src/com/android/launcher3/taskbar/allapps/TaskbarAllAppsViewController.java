@@ -83,9 +83,8 @@ final class TaskbarAllAppsViewController {
     private void setUpAppDivider() {
         mAppsView.getFloatingHeaderView()
                 .findFixedRowByType(AppsDividerView.class)
-                .setShowAllAppsLabel(!mContext.getOnboardingPrefs().hasReachedMaxCount(
-                        ALL_APPS_VISITED_COUNT));
-        mContext.getOnboardingPrefs().incrementEventCount(ALL_APPS_VISITED_COUNT);
+                .setShowAllAppsLabel(!ALL_APPS_VISITED_COUNT.hasReachedMax(mContext));
+        ALL_APPS_VISITED_COUNT.increment(mContext);
     }
 
     private void setUpTaskbarStashing() {

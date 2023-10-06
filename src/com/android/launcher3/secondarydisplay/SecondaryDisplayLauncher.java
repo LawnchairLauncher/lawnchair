@@ -36,7 +36,6 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.ActivityAllAppsContainerView;
@@ -56,7 +55,6 @@ import com.android.launcher3.popup.PopupDataProvider;
 import com.android.launcher3.touch.ItemClickHandler.ItemClickProxy;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntSet;
-import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Themes;
@@ -82,7 +80,6 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
     private boolean mAppDrawerShown = false;
 
     private StringCache mStringCache;
-    private OnboardingPrefs<?> mOnboardingPrefs;
     private boolean mBindingItems = false;
     private SecondaryDisplayPredictions mSecondaryDisplayPredictions;
 
@@ -93,7 +90,6 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
         super.onCreate(savedInstanceState);
         mModel = LauncherAppState.getInstance(this).getModel();
         mDragController = new SecondaryDragController(this);
-        mOnboardingPrefs = new OnboardingPrefs<>(this, LauncherPrefs.getPrefs(this));
         mSecondaryDisplayPredictions = SecondaryDisplayPredictions.newInstance(this);
         if (getWindow().getDecorView().isAttachedToWindow()) {
             initUi();
@@ -269,11 +265,6 @@ public class SecondaryDisplayLauncher extends BaseDraggingActivity
             });
         }
         animator.start();
-    }
-
-    @Override
-    public OnboardingPrefs<?> getOnboardingPrefs() {
-        return mOnboardingPrefs;
     }
 
     @Override
