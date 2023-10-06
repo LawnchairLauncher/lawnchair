@@ -62,8 +62,6 @@ import java.util.stream.Stream;
 public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActivePageChangedListener {
     private static final String TAG = "WorkProfileManager";
 
-    public static final String KEY_WORK_EDU_STEP = "showed_work_profile_edu";
-
     public static final int STATE_ENABLED = 1;
     public static final int STATE_DISABLED = 2;
     public static final int STATE_TRANSITION = 3;
