@@ -38,10 +38,10 @@ import kotlin.math.min
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
-import org.mockito.ArgumentMatchers
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.spy
-import org.mockito.Mockito.`when` as whenever
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.whenever
 
 /**
  * This is an abstract class for DeviceProfile tests that create an InvariantDeviceProfile based on
@@ -52,8 +52,8 @@ import org.mockito.Mockito.`when` as whenever
 abstract class AbstractDeviceProfileTest {
     protected var context: Context? = null
     protected open val runningContext: Context = ApplicationProvider.getApplicationContext()
-    private var displayController: DisplayController = mock(DisplayController::class.java)
-    private var windowManagerProxy: WindowManagerProxy = mock(WindowManagerProxy::class.java)
+    private val displayController: DisplayController = mock()
+    private val windowManagerProxy: WindowManagerProxy = mock()
     private lateinit var originalDisplayController: DisplayController
     private lateinit var originalWindowManagerProxy: WindowManagerProxy
 
@@ -288,11 +288,10 @@ abstract class AbstractDeviceProfileTest {
     ) {
         val windowsBounds = perDisplayBoundsCache[displayInfo]!!
         val realBounds = windowsBounds[rotation]
-        whenever(windowManagerProxy.getDisplayInfo(ArgumentMatchers.any())).thenReturn(displayInfo)
-        whenever(windowManagerProxy.getRealBounds(ArgumentMatchers.any(), ArgumentMatchers.any()))
-            .thenReturn(realBounds)
-        whenever(windowManagerProxy.getRotation(ArgumentMatchers.any())).thenReturn(rotation)
-        whenever(windowManagerProxy.getNavigationMode(ArgumentMatchers.any()))
+        whenever(windowManagerProxy.getDisplayInfo(any())).thenReturn(displayInfo)
+        whenever(windowManagerProxy.getRealBounds(any(), any())).thenReturn(realBounds)
+        whenever(windowManagerProxy.getRotation(any())).thenReturn(rotation)
+        whenever(windowManagerProxy.getNavigationMode(any()))
             .thenReturn(
                 if (isGestureMode) NavigationMode.NO_BUTTON else NavigationMode.THREE_BUTTONS
             )

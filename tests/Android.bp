@@ -90,6 +90,7 @@ android_library {
         "androidx.test.espresso.contrib",
         "androidx.test.espresso.intents",
         "androidx.test.uiautomator_uiautomator",
+        "mockito-kotlin2",
         "mockito-target-extended-minus-junit4",
         "launcher_log_protos_lite",
         "truth-prebuilt",
