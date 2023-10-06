@@ -62,18 +62,6 @@ final class AlphaJumpDetector extends AnomalyDetector {
                     + "NexusOverviewActionsView:id/overview_actions_view|FrameLayout:id"
                     + "/select_mode_buttons|ImageButton:id/close",
             DRAG_LAYER
-                    + "NexusOverviewActionsView:id/overview_actions_view|LinearLayout:id"
-                    + "/action_buttons|Button:id/action_screenshot",
-            DRAG_LAYER
-                    + "NexusOverviewActionsView:id/overview_actions_view|LinearLayout:id"
-                    + "/action_buttons|Button:id/action_select",
-            DRAG_LAYER
-                    + "NexusOverviewActionsView:id/overview_actions_view|LinearLayout:id"
-                    + "/action_buttons|Button:id/action_split",
-            DRAG_LAYER
-                    + "NexusOverviewActionsView:id/overview_actions_view|LinearLayout:id"
-                    + "/action_buttons|Space:id/action_split_space",
-            DRAG_LAYER
                     + "PopupContainerWithArrow:id/popup_container|LinearLayout:id"
                     + "/deep_shortcuts_container|DeepShortcutView:id/deep_shortcut_material"
                     + "|DeepShortcutTextView:id/bubble_text",
@@ -116,23 +104,14 @@ final class AlphaJumpDetector extends AnomalyDetector {
             RECENTS_DRAG_LAYER + "FallbackRecentsView:id/overview_panel",
             DRAG_LAYER
                     + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|Button:id/action_screenshot",
+                    + "|LinearLayout:id/action_buttons",
             RECENTS_DRAG_LAYER
                     + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|Button:id/action_screenshot",
+                    + "|LinearLayout:id/action_buttons",
+            DRAG_LAYER + "IconView",
             DRAG_LAYER
-                    + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|Button:id/action_select",
-            RECENTS_DRAG_LAYER
-                    + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|Button:id/action_select",
-            DRAG_LAYER
-                    + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|Button:id/action_split",
-            RECENTS_DRAG_LAYER
-                    + "NexusOverviewActionsView:id/overview_actions_view"
-                    + "|LinearLayout:id/action_buttons|Button:id/action_split",
-            DRAG_LAYER + "IconView"
+                    + "OptionsPopupView:id/popup_container|DeepShortcutView:id/system_shortcut"
+                    + "|BubbleTextView:id/bubble_text"
     ));
 
     // Minimal increase or decrease of view's alpha between frames that triggers the error.
