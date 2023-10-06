@@ -219,8 +219,6 @@ public class QuickstepLauncher extends Launcher {
     private SplitWithKeyboardShortcutController mSplitWithKeyboardShortcutController;
     private SplitToWorkspaceController mSplitToWorkspaceController;
 
-    private AsyncClockEventDelegate mAsyncClockEventDelegate;
-
     /**
      * If Launcher restarted while in the middle of an Overview split select, it needs this data to
      * recover. In all other cases this will remain null.
@@ -496,10 +494,6 @@ public class QuickstepLauncher extends Launcher {
 
         if (mSplitSelectStateController != null) {
             mSplitSelectStateController.onDestroy();
-        }
-
-        if (mAsyncClockEventDelegate != null) {
-            mAsyncClockEventDelegate.onDestroy();
         }
 
         super.onDestroy();
@@ -1351,18 +1345,12 @@ public class QuickstepLauncher extends Launcher {
         switch (name) {
             case "TextClock", "android.widget.TextClock" -> {
                 TextClock tc = new TextClock(context, attrs);
-                if (mAsyncClockEventDelegate == null) {
-                    mAsyncClockEventDelegate = new AsyncClockEventDelegate(this);
-                }
-                tc.setClockEventDelegate(mAsyncClockEventDelegate);
+                tc.setClockEventDelegate(AsyncClockEventDelegate.INSTANCE.get(this));
                 return tc;
             }
             case "AnalogClock", "android.widget.AnalogClock" -> {
                 AnalogClock ac = new AnalogClock(context, attrs);
-                if (mAsyncClockEventDelegate == null) {
-                    mAsyncClockEventDelegate = new AsyncClockEventDelegate(this);
-                }
-                ac.setClockEventDelegate(mAsyncClockEventDelegate);
+                ac.setClockEventDelegate(AsyncClockEventDelegate.INSTANCE.get(this));
                 return ac;
             }
         }
