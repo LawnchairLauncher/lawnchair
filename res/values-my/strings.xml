@@ -30,6 +30,8 @@
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"မျက်နှာပြင် ခွဲ၍ပြသခြင်း"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s အတွက် အက်ပ်အချက်အလက်"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"အက်ပ်တွဲချိတ်ခြင်း သိမ်းရန်"</string>
+    <!-- no translation found for app_pair_default_title (4045241727446873529) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ဝိဂျက်ကို ရွှေ့ရန် တို့ပြီး ဖိထားပါ။"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ဝိဂျက်ကို ရွှေ့ရန် (သို့) စိတ်ကြိုက်လုပ်ဆောင်ချက်များကို သုံးရန် နှစ်ချက်တို့ပြီး ဖိထားပါ။"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
