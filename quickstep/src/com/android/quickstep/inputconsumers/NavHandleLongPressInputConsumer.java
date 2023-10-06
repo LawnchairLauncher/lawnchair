@@ -52,9 +52,15 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
                 if (isInArea(motionEvent.getRawX())) {
                     Runnable longPressRunnable = mNavHandleLongPressHandler.getLongPressRunnable();
                     if (longPressRunnable != null) {
-                        setActive(motionEvent);
-
-                        MAIN_EXECUTOR.post(longPressRunnable);
+                        OtherActivityInputConsumer oaic = getInputConsumerOfClass(
+                                OtherActivityInputConsumer.class);
+                        if (oaic != null) {
+                            oaic.setForceFinishRecentsTransitionCallback(longPressRunnable);
+                            setActive(motionEvent);
+                        } else {
+                            setActive(motionEvent);
+                            MAIN_EXECUTOR.post(longPressRunnable);
+                        }
                     }
                 }
             }
