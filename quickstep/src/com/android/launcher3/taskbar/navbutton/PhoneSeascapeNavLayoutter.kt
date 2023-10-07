@@ -31,7 +31,7 @@ class PhoneSeascapeNavLayoutter(
         startContextualContainer: ViewGroup,
         imeSwitcher: ImageView?,
         rotationButton: RotationButton?,
-        a11yButton: ImageView
+        a11yButton: ImageView?
 ) :
         PhoneLandscapeNavLayoutter(
                 resources,
@@ -63,7 +63,9 @@ class PhoneSeascapeNavLayoutter(
             endContextualContainer.addView(imeSwitcher)
             imeSwitcher.layoutParams = getParamsToCenterView()
         }
-        endContextualContainer.addView(a11yButton)
+        if (a11yButton != null) {
+            endContextualContainer.addView(a11yButton)
+        }
         if (rotationButton != null) {
             endContextualContainer.addView(rotationButton.currentView)
             rotationButton.currentView.layoutParams = getParamsToCenterView()

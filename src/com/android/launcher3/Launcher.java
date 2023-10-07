@@ -28,6 +28,7 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_ICON_SURFACE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
 import static com.android.launcher3.BuildConfig.APPLICATION_ID;
+import static com.android.launcher3.BuildConfig.QSB_ON_FIRST_SCREEN;
 import static com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_WIDGET_TRANSITION;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
@@ -44,7 +45,7 @@ import static com.android.launcher3.LauncherState.NO_SCALE;
 import static com.android.launcher3.LauncherState.SPRING_LOADED;
 import static com.android.launcher3.Utilities.postAsyncCallback;
 import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
-import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.getSupportedActions;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.config.FeatureFlags.MULTI_SELECT_EDIT_MODE;
 import static com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget;
@@ -426,6 +427,8 @@ public class Launcher extends StatefulActivity<LauncherState>
     private BaseSearchConfig mBaseSearchConfig;
     private StartupLatencyLogger mStartupLatencyLogger;
     private CellPosMapper mCellPosMapper = CellPosMapper.DEFAULT;
+    private boolean mIsFirstPagePinnedItemEnabled = QSB_ON_FIRST_SCREEN
+            && !ENABLE_SMARTSPACE_REMOVAL.get();
 
     private final CannedAnimationCoordinator mAnimationCoordinator =
             new CannedAnimationCoordinator(this);
@@ -591,9 +594,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW,
                 Themes.getAttrBoolean(this, R.attr.isWorkspaceDarkText));
 
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onCreate(savedInstanceState);
-        }
         mOverlayManager = getDefaultOverlay();
         PluginManagerWrapper.INSTANCE.get(this).addPluginListener(this,
                 LauncherOverlayPlugin.class, false /* allowedMultiple */);
@@ -806,8 +806,6 @@ public class Launcher extends StatefulActivity<LauncherState>
                 mCellPosMapper, this);
         return true;
     }
-
-    private LauncherCallbacks mLauncherCallbacks;
 
     @Override
     public void invalidateParent(ItemInfo info) {
@@ -1323,7 +1321,9 @@ public class Launcher extends StatefulActivity<LauncherState>
         // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
         // default state, otherwise we will update to the wrong offsets in RTL
         mWorkspace.lockWallpaperToDefaultPage();
-        mWorkspace.bindAndInitFirstWorkspaceScreen();
+        if (!ENABLE_SMARTSPACE_REMOVAL.get()) {
+            mWorkspace.bindAndInitFirstWorkspaceScreen();
+        }
         mDragController.addDragListener(mWorkspace);
 
         // Get the search/delete/uninstall bar
@@ -1596,9 +1596,6 @@ public class Launcher extends StatefulActivity<LauncherState>
                 }
             }
 
-            if (mLauncherCallbacks != null) {
-                mLauncherCallbacks.onHomeIntent(internalStateHandled);
-            }
             if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
                 handleSplitAnimationGoingToHome();
             }
@@ -1765,28 +1762,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         } catch (IntentSender.SendIntentException e) {
             throw new ActivityNotFoundException();
         }
-    }
-
-    /**
-     * Indicates that we want global search for this activity by setting the globalSearch
-     * argument for {@link #startSearch} to true.
-     */
-    @Override
-    public void startSearch(String initialQuery, boolean selectInitialQuery,
-            Bundle appSearchData, boolean globalSearch) {
-        if (appSearchData == null) {
-            appSearchData = new Bundle();
-            appSearchData.putString("source", "launcher-search");
-        }
-
-        if (mLauncherCallbacks == null ||
-                !mLauncherCallbacks.startSearch(initialQuery, selectInitialQuery, appSearchData)) {
-            // Starting search from the callbacks failed. Start the default global search.
-            super.startSearch(initialQuery, selectInitialQuery, appSearchData, true);
-        }
-
-        // We need to show the workspace after starting the search
-        mStateManager.goToState(NORMAL);
     }
 
     void addAppWidgetFromDropImpl(int appWidgetId, ItemInfo info, AppWidgetHostView boundWidget,
@@ -2189,15 +2164,22 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     @Override
+    public void setIsFirstPagePinnedItemEnabled(boolean isFirstPagePinnedItemEnabled) {
+        mIsFirstPagePinnedItemEnabled = isFirstPagePinnedItemEnabled;
+        mWorkspace.bindAndInitFirstWorkspaceScreen();
+    }
+
+    @Override
     public void bindScreens(IntArray orderedScreenIds) {
         mWorkspace.mPageIndicator.setAreScreensBinding(true);
         int firstScreenPosition = 0;
         if ((FeatureFlags.QSB_ON_FIRST_SCREEN
+                && mIsFirstPagePinnedItemEnabled
                 && !shouldShowFirstPageWidget())
                 && orderedScreenIds.indexOf(FIRST_SCREEN_ID) != firstScreenPosition) {
             orderedScreenIds.removeValue(FIRST_SCREEN_ID);
             orderedScreenIds.add(firstScreenPosition, FIRST_SCREEN_ID);
-        } else if ((!FeatureFlags.QSB_ON_FIRST_SCREEN
+        } else if (((!FeatureFlags.QSB_ON_FIRST_SCREEN && !mIsFirstPagePinnedItemEnabled)
                 || shouldShowFirstPageWidget())
                 && orderedScreenIds.isEmpty()) {
             // If there are no screens, we need to have an empty screen
@@ -2248,6 +2230,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         for (int i = 0; i < count; i++) {
             int screenId = orderedScreenIds.get(i);
             if (FeatureFlags.QSB_ON_FIRST_SCREEN
+                    && mIsFirstPagePinnedItemEnabled
                     && !shouldShowFirstPageWidget()
                     && screenId == FIRST_SCREEN_ID) {
                 // No need to bind the first screen, as its always bound.
@@ -3026,10 +3009,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
 
         mModel.dumpState(prefix, fd, writer, args);
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.dump(prefix, fd, writer, args);
-        }
         mOverlayManager.dump(prefix, writer);
     }
 
@@ -3273,11 +3252,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         mWorkspace.setLauncherOverlay(overlay);
     }
 
-    public boolean setLauncherCallbacks(LauncherCallbacks callbacks) {
-        mLauncherCallbacks = callbacks;
-        return true;
-    }
-
     /**
      * Persistent callback which notifies when an activity launch is deferred because the activity
      * was not yet resumed.
@@ -3443,6 +3417,10 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     public void launchAppPair(WorkspaceItemInfo app1, WorkspaceItemInfo app2) {
         // Overridden
+    }
+
+    public boolean getIsFirstPagePinnedItemEnabled() {
+        return mIsFirstPagePinnedItemEnabled;
     }
 
     /**

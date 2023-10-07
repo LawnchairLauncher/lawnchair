@@ -42,7 +42,6 @@ import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
 import com.android.quickstep.util.ActiveGestureLog;
-import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
@@ -119,7 +118,8 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             }
         }
         // But force-finish it anyways
-        finishRunningRecentsAnimation(false /* toHome */, true /* forceFinish */);
+        finishRunningRecentsAnimation(false /* toHome */, true /* forceFinish */,
+                null /* forceFinishCb */);
 
         if (mCallbacks != null) {
             // If mCallbacks still != null, that means we are getting this startRecentsAnimation()
@@ -261,12 +261,6 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             // to let the transition controller collect Home activity.
             CachedTaskInfo cti = gestureState.getRunningTask();
             boolean homeIsOnTop = cti != null && cti.isHomeTask();
-            if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
-                if (cti != null && cti.isFreeformTask()) {
-                    // No transient launch when desktop task is on top
-                    homeIsOnTop = true;
-                }
-            }
             if (activityInterface.allowAllAppsFromOverview()) {
                 homeIsOnTop = true;
             }
@@ -325,19 +319,20 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
      * Finishes the running recents animation.
      */
     public void finishRunningRecentsAnimation(boolean toHome) {
-        finishRunningRecentsAnimation(toHome, false /* forceFinish */);
+        finishRunningRecentsAnimation(toHome, false /* forceFinish */, null /* forceFinishCb */);
     }
 
     /**
      * Finishes the running recents animation.
      * @param forceFinish will synchronously finish the controller
      */
-    public void finishRunningRecentsAnimation(boolean toHome, boolean forceFinish) {
+    public void finishRunningRecentsAnimation(boolean toHome, boolean forceFinish,
+            Runnable forceFinishCb) {
         if (mController != null) {
             ActiveGestureLog.INSTANCE.addLog(
                     /* event= */ "finishRunningRecentsAnimation", toHome);
             if (forceFinish) {
-                mController.finishController(toHome, null, false /* sendUserLeaveHint */,
+                mController.finishController(toHome, forceFinishCb, false /* sendUserLeaveHint */,
                         true /* forceFinish */);
             } else {
                 Utilities.postAsyncCallback(MAIN_EXECUTOR.getHandler(), toHome

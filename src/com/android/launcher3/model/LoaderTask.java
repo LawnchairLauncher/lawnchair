@@ -17,7 +17,9 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN;
+import static com.android.launcher3.LauncherPrefs.SHOULD_SHOW_SMARTSPACE;
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.config.FeatureFlags.SMARTSPACE_AS_A_WIDGET;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
@@ -118,6 +120,7 @@ import java.util.concurrent.CancellationException;
  */
 public class LoaderTask implements Runnable {
     private static final String TAG = "LoaderTask";
+    public static final String SMARTSPACE_ON_HOME_SCREEN = "pref_smartspace_home_screen";
 
     private static final boolean DEBUG = true;
 
@@ -299,28 +302,17 @@ public class LoaderTask implements Runnable {
             logASplit("bindWidgets");
             verifyNotStopped();
 
-            if (SMARTSPACE_AS_A_WIDGET.get() && LauncherPrefs.get(mApp.getContext())
-                    .get(LauncherPrefs.SHOULD_SHOW_SMARTSPACE)) {
+            LauncherPrefs prefs = LauncherPrefs.get(mApp.getContext());
+            if (SMARTSPACE_AS_A_WIDGET.get() && prefs.get(SHOULD_SHOW_SMARTSPACE)) {
                 mLauncherBinder.bindSmartspaceWidget();
                 // Turn off pref.
-                LauncherPrefs.get(mApp.getContext()).putSync(
-                        LauncherPrefs.backedUpItem(
-                                        LauncherPrefs.SHOULD_SHOW_SMARTSPACE_KEY,
-                                        WIDGET_ON_FIRST_SCREEN,
-                                        true)
-                                .to(false));
+                prefs.putSync(SHOULD_SHOW_SMARTSPACE.to(false));
                 logASplit("bindSmartspaceWidget");
                 verifyNotStopped();
             } else if (!SMARTSPACE_AS_A_WIDGET.get() && WIDGET_ON_FIRST_SCREEN
-                    && !LauncherPrefs.get(mApp.getContext())
-                    .get(LauncherPrefs.SHOULD_SHOW_SMARTSPACE)) {
+                    && !prefs.get(LauncherPrefs.SHOULD_SHOW_SMARTSPACE)) {
                 // Turn on pref.
-                LauncherPrefs.get(mApp.getContext()).putSync(
-                        LauncherPrefs.backedUpItem(
-                                        LauncherPrefs.SHOULD_SHOW_SMARTSPACE_KEY,
-                                        WIDGET_ON_FIRST_SCREEN,
-                                        true)
-                                .to(true));
+                prefs.putSync(SHOULD_SHOW_SMARTSPACE.to(true));
             }
 
             if (FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) {
@@ -378,6 +370,9 @@ public class LoaderTask implements Runnable {
             mModelDelegate.markActive();
             logASplit("workspaceDelegateItems");
         }
+        mBgDataModel.isFirstPagePinnedItemEnabled = FeatureFlags.QSB_ON_FIRST_SCREEN
+                && (!ENABLE_SMARTSPACE_REMOVAL.get() || LauncherPrefs.getPrefs(
+                mApp.getContext()).getBoolean(SMARTSPACE_ON_HOME_SCREEN, true));
     }
 
     private void loadWorkspaceImpl(

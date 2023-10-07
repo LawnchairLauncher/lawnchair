@@ -602,7 +602,7 @@ public class SplitSelectStateController {
 
         private final int mInitialTaskId;
         private final int mSecondTaskId;
-        private final Consumer<Boolean> mSuccessCallback;
+        private Consumer<Boolean> mSuccessCallback;
 
         RemoteSplitLaunchTransitionRunner(int initialTaskId, int secondTaskId,
                 @Nullable Consumer<Boolean> callback) {
@@ -629,6 +629,7 @@ public class SplitSelectStateController {
                             finishAdapter.run();
                             if (mSuccessCallback != null) {
                                 mSuccessCallback.accept(true);
+                                mSuccessCallback = null;
                             }
                             resetState();
                         });

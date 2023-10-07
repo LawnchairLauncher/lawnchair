@@ -18,7 +18,6 @@ package com.android.quickstep.views;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
-import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 
 import android.content.Context;
@@ -41,7 +40,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.desktop.DesktopRecentsTransitionController;
@@ -338,16 +336,18 @@ public class DesktopTaskView extends TaskView {
     @Override
     public RunnableList launchTaskAnimated() {
         RunnableList endCallback = new RunnableList();
-        endCallback.add(() -> Launcher.getLauncher(mActivity).getStateManager().goToState(NORMAL));
 
+        RecentsView recentsView = getRecentsView();
         DesktopRecentsTransitionController recentsController =
-                getRecentsView().getDesktopRecentsController();
+                recentsView.getDesktopRecentsController();
         if (recentsController != null) {
             recentsController.launchDesktopFromRecents(this, success -> {
                 endCallback.executeAllAndDestroy();
             });
         }
 
+        // Callbacks get run from recentsView for case when recents animation already running
+        recentsView.addSideTaskLaunchCallback(endCallback);
         return endCallback;
     }
 

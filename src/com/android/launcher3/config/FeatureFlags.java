@@ -167,6 +167,10 @@ public final class FeatureFlags {
         return SMARTSPACE_AS_A_WIDGET.get() && WIDGET_ON_FIRST_SCREEN;
     }
 
+    public static final BooleanFlag ENABLE_SMARTSPACE_REMOVAL = getDebugFlag(290799975,
+            "ENABLE_SMARTSPACE_REMOVAL", DISABLED, "Enable SmartSpace removal for "
+            + "home screen");
+
     // TODO(Block 10): Clean up flags
     public static final BooleanFlag ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION = getDebugFlag(270614790,
             "ENABLE_BACK_SWIPE_LAUNCHER_ANIMATION", DISABLED,
@@ -260,10 +264,11 @@ public final class FeatureFlags {
             "Enables taskbar pinning to allow user to switch between transient and persistent "
                     + "taskbar flavors");
 
-    public static final BooleanFlag ENABLE_BOOT_AWARE_STARTUP_DATA = getDebugFlag(251502424,
-            "ENABLE_BOOT_AWARE_STARTUP_DATA", DISABLED, "Marks LauncherPref data as (and allows it "
-                    + "to) available while the device is locked. Enabling this causes a 1-time "
-                    + "migration of certain SharedPreferences data. Improves startup latency.");
+    public static final BooleanFlag MOVE_STARTUP_DATA_TO_DEVICE_PROTECTED_STORAGE = getDebugFlag(
+            251502424, "ENABLE_BOOT_AWARE_STARTUP_DATA", DISABLED,
+            "Marks LauncherPref data as (and allows it to) available while the device is"
+                    + " locked. Enabling this causes a 1-time movement of certain SharedPreferences"
+                    + " data. Improves startup latency.");
 
     // TODO(Block 18): Clean up flags
     public static final BooleanFlag ENABLE_APP_PAIRS = getDebugFlag(274189428,

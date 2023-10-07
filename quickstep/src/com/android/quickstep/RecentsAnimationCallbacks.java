@@ -115,7 +115,8 @@ public class RecentsAnimationCallbacks implements
                     /* extras= */ 0,
                     /* gestureEvent= */ ON_START_RECENTS_ANIMATION);
             notifyAnimationCanceled();
-            animationController.finish(false /* toHome */, false /* sendUserLeaveHint */);
+            animationController.finish(false /* toHome */, false /* sendUserLeaveHint */,
+                    null /* finishCb */);
             return;
         }
 

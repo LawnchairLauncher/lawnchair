@@ -54,6 +54,7 @@ import com.android.launcher3.AutoInstallsLayout;
 import com.android.launcher3.AutoInstallsLayout.SourceResources;
 import com.android.launcher3.ConstantItem;
 import com.android.launcher3.DefaultLayoutParser;
+import com.android.launcher3.EncryptionType;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherFiles;
@@ -499,11 +500,11 @@ public class ModelDbController {
     private ConstantItem<Boolean> getEmptyDbCreatedKey(String dbName) {
         if (mContext instanceof SandboxContext) {
             return LauncherPrefs.nonRestorableItem(EMPTY_DATABASE_CREATED,
-                    false /* default value */, false /* boot aware */);
+                    false /* default value */, EncryptionType.ENCRYPTED);
         }
         String key = TextUtils.equals(dbName, LauncherFiles.LAUNCHER_DB)
                 ? EMPTY_DATABASE_CREATED : EMPTY_DATABASE_CREATED + "@" + dbName;
-        return LauncherPrefs.backedUpItem(key, false /* default value */, false /* boot aware */);
+        return LauncherPrefs.backedUpItem(key, false /* default value */, EncryptionType.ENCRYPTED);
     }
 
     /**

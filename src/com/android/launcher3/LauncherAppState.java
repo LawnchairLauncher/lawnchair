@@ -21,6 +21,8 @@ import static android.content.Context.RECEIVER_EXPORTED;
 
 import static com.android.launcher3.LauncherPrefs.ICON_STATE;
 import static com.android.launcher3.LauncherPrefs.THEMED_ICONS;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
+import static com.android.launcher3.model.LoaderTask.SMARTSPACE_ON_HOME_SCREEN;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 
@@ -122,6 +124,23 @@ public class LauncherAppState implements SafeCloseable {
         SafeCloseable userChangeListener = UserCache.INSTANCE.get(mContext)
                 .addUserEventListener(mModel::onUserEvent);
         mOnTerminateCallback.add(userChangeListener::close);
+
+        if (ENABLE_SMARTSPACE_REMOVAL.get()) {
+            OnSharedPreferenceChangeListener firstPagePinnedItemListener =
+                    new OnSharedPreferenceChangeListener() {
+                        @Override
+                        public void onSharedPreferenceChanged(
+                                SharedPreferences sharedPreferences, String key) {
+                            if (SMARTSPACE_ON_HOME_SCREEN.equals(key)) {
+                                mModel.forceReload();
+                            }
+                        }
+                    };
+            LauncherPrefs.getPrefs(mContext).registerOnSharedPreferenceChangeListener(
+                    firstPagePinnedItemListener);
+            mOnTerminateCallback.add(() -> LauncherPrefs.getPrefs(mContext)
+                    .unregisterOnSharedPreferenceChangeListener(firstPagePinnedItemListener));
+        }
 
         LockedUserState.get(context).runOnUserUnlocked(() -> {
             CustomWidgetManager cwm = CustomWidgetManager.INSTANCE.get(mContext);

@@ -60,11 +60,11 @@ class LauncherPrefs(private val encryptedContext: Context) {
                 IS_STARTUP_DATA_MIGRATED.defaultValue
             )
 
-    // TODO: Remove `item == TASKBAR_PINNING` once isBootAwareStartupDataEnabled is always true
     private fun chooseSharedPreferences(item: Item): SharedPreferences =
         if (
-            (isBootAwareStartupDataEnabled && item.isBootAware && isStartupDataMigrated) ||
-                item == TASKBAR_PINNING
+            (moveStartupDataToDeviceProtectedStorageIsEnabled &&
+                item.encryptionType == EncryptionType.MOVE_TO_DEVICE_PROTECTED &&
+                isStartupDataMigrated) || item.encryptionType == EncryptionType.DEVICE_PROTECTED
         )
             bootAwarePrefs
         else item.encryptedPrefs
@@ -139,13 +139,20 @@ class LauncherPrefs(private val encryptedContext: Context) {
     private fun prepareToPutValues(
         updates: Array<out Pair<Item, Any>>
     ): List<SharedPreferences.Editor> {
-        val updatesPerPrefFile = updates.groupBy { it.first.encryptedPrefs }.toMutableMap()
+        val updatesPerPrefFile =
+            updates
+                .filter { it.first.encryptionType != EncryptionType.DEVICE_PROTECTED }
+                .groupBy { it.first.encryptedPrefs }
+                .toMutableMap()
 
-        if (isBootAwareStartupDataEnabled) {
-            val bootAwareUpdates = updates.filter { it.first.isBootAware }
-            if (bootAwareUpdates.isNotEmpty()) {
-                updatesPerPrefFile[bootAwarePrefs] = bootAwareUpdates
+        val bootAwareUpdates =
+            updates.filter {
+                (it.first.encryptionType == EncryptionType.MOVE_TO_DEVICE_PROTECTED &&
+                    moveStartupDataToDeviceProtectedStorageIsEnabled) ||
+                    it.first.encryptionType == EncryptionType.DEVICE_PROTECTED
             }
+        if (bootAwareUpdates.isNotEmpty()) {
+            updatesPerPrefFile[bootAwarePrefs] = bootAwareUpdates
         }
 
         return updatesPerPrefFile.map { prefToItemValueList ->
@@ -238,13 +245,20 @@ class LauncherPrefs(private val encryptedContext: Context) {
      *   .apply() or .commit()
      */
     private fun prepareToRemove(items: Array<out Item>): List<SharedPreferences.Editor> {
-        val itemsPerFile = items.groupBy { it.encryptedPrefs }.toMutableMap()
+        val itemsPerFile =
+            items
+                .filter { it.encryptionType != EncryptionType.DEVICE_PROTECTED }
+                .groupBy { it.encryptedPrefs }
+                .toMutableMap()
 
-        if (isBootAwareStartupDataEnabled) {
-            val bootAwareUpdates = items.filter { it.isBootAware }
-            if (bootAwareUpdates.isNotEmpty()) {
-                itemsPerFile[bootAwarePrefs] = bootAwareUpdates
+        val bootAwareUpdates =
+            items.filter {
+                (it.encryptionType == EncryptionType.MOVE_TO_DEVICE_PROTECTED &&
+                    moveStartupDataToDeviceProtectedStorageIsEnabled) ||
+                    it.encryptionType == EncryptionType.DEVICE_PROTECTED
             }
+        if (bootAwareUpdates.isNotEmpty()) {
+            itemsPerFile[bootAwarePrefs] = bootAwareUpdates
         }
 
         return itemsPerFile.map { (prefs, items) ->
@@ -255,7 +269,7 @@ class LauncherPrefs(private val encryptedContext: Context) {
     }
 
     fun migrateStartupDataToDeviceProtectedStorage() {
-        if (!isBootAwareStartupDataEnabled) return
+        if (!moveStartupDataToDeviceProtectedStorageIsEnabled) return
 
         Log.d(
             TAG,
@@ -264,7 +278,7 @@ class LauncherPrefs(private val encryptedContext: Context) {
         )
 
         with(bootAwarePrefs.edit()) {
-            BOOT_AWARE_ITEMS.forEach { putValue(it, get(it)) }
+            ITEMS_TO_MOVE_TO_DEVICE_PROTECTED_STORAGE.forEach { putValue(it, get(it)) }
             putBoolean(IS_STARTUP_DATA_MIGRATED.sharedPrefKey, true)
             apply()
         }
@@ -280,30 +294,66 @@ class LauncherPrefs(private val encryptedContext: Context) {
 
         const val TASKBAR_PINNING_KEY = "TASKBAR_PINNING_KEY"
         const val SHOULD_SHOW_SMARTSPACE_KEY = "SHOULD_SHOW_SMARTSPACE_KEY"
-        @JvmField val ICON_STATE = nonRestorableItem(LauncherAppState.KEY_ICON_STATE, "", true)
+        @JvmField
+        val ICON_STATE =
+            nonRestorableItem(
+                LauncherAppState.KEY_ICON_STATE,
+                "",
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
         @JvmField
         val ALL_APPS_OVERVIEW_THRESHOLD =
-            nonRestorableItem(LauncherAppState.KEY_ALL_APPS_OVERVIEW_THRESHOLD, 180, true)
-        @JvmField val THEMED_ICONS = backedUpItem(Themes.KEY_THEMED_ICONS, false, true)
+            nonRestorableItem(
+                LauncherAppState.KEY_ALL_APPS_OVERVIEW_THRESHOLD,
+                180,
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
+        @JvmField
+        val THEMED_ICONS =
+            backedUpItem(Themes.KEY_THEMED_ICONS, false, EncryptionType.MOVE_TO_DEVICE_PROTECTED)
         @JvmField val PROMISE_ICON_IDS = backedUpItem(InstallSessionHelper.PROMISE_ICON_IDS, "")
         @JvmField val WORK_EDU_STEP = backedUpItem(WorkProfileManager.KEY_WORK_EDU_STEP, 0)
-        @JvmField val WORKSPACE_SIZE = backedUpItem(DeviceGridState.KEY_WORKSPACE_SIZE, "", true)
-        @JvmField val HOTSEAT_COUNT = backedUpItem(DeviceGridState.KEY_HOTSEAT_COUNT, -1, true)
-        @JvmField val TASKBAR_PINNING = backedUpItem(TASKBAR_PINNING_KEY, false, true)
+        @JvmField
+        val WORKSPACE_SIZE =
+            backedUpItem(
+                DeviceGridState.KEY_WORKSPACE_SIZE,
+                "",
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
+        @JvmField
+        val HOTSEAT_COUNT =
+            backedUpItem(
+                DeviceGridState.KEY_HOTSEAT_COUNT,
+                -1,
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
+        @JvmField
+        val TASKBAR_PINNING =
+            backedUpItem(TASKBAR_PINNING_KEY, false, EncryptionType.DEVICE_PROTECTED)
 
         @JvmField
         val DEVICE_TYPE =
-            backedUpItem(DeviceGridState.KEY_DEVICE_TYPE, InvariantDeviceProfile.TYPE_PHONE, true)
+            backedUpItem(
+                DeviceGridState.KEY_DEVICE_TYPE,
+                InvariantDeviceProfile.TYPE_PHONE,
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
+        @JvmField
+        val DB_FILE =
+            backedUpItem(DeviceGridState.KEY_DB_FILE, "", EncryptionType.MOVE_TO_DEVICE_PROTECTED)
         @JvmField
         val SHOULD_SHOW_SMARTSPACE =
-            backedUpItem("SHOULD_SHOW_SMARTSPACE_KEY", WIDGET_ON_FIRST_SCREEN, true)
-        @JvmField val DB_FILE = backedUpItem(DeviceGridState.KEY_DB_FILE, "", true)
+            backedUpItem(
+                SHOULD_SHOW_SMARTSPACE_KEY,
+                WIDGET_ON_FIRST_SCREEN,
+                EncryptionType.DEVICE_PROTECTED
+            )
         @JvmField
         val RESTORE_DEVICE =
             backedUpItem(
                 RestoreDbTask.RESTORED_DEVICE_TYPE,
                 InvariantDeviceProfile.TYPE_PHONE,
-                true
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
             )
         @JvmField val APP_WIDGET_IDS = backedUpItem(RestoreDbTask.APPWIDGET_IDS, "")
         @JvmField val OLD_APP_WIDGET_IDS = backedUpItem(RestoreDbTask.APPWIDGET_OLD_IDS, "")
@@ -313,7 +363,7 @@ class LauncherPrefs(private val encryptedContext: Context) {
                 "idp_grid_name",
                 isBackedUp = true,
                 defaultValue = null,
-                isBootAware = true,
+                encryptionType = EncryptionType.MOVE_TO_DEVICE_PROTECTED,
                 type = String::class.java
             )
         @JvmField
@@ -327,7 +377,7 @@ class LauncherPrefs(private val encryptedContext: Context) {
                 "is_startup_data_boot_aware",
                 isBackedUp = false,
                 defaultValue = false,
-                isBootAware = true
+                encryptionType = EncryptionType.DEVICE_PROTECTED
             )
 
         @VisibleForTesting
@@ -335,22 +385,22 @@ class LauncherPrefs(private val encryptedContext: Context) {
         fun <T> backedUpItem(
             sharedPrefKey: String,
             defaultValue: T,
-            isBootAware: Boolean = false
+            encryptionType: EncryptionType = EncryptionType.ENCRYPTED
         ): ConstantItem<T> =
-            ConstantItem(sharedPrefKey, isBackedUp = true, defaultValue, isBootAware)
+            ConstantItem(sharedPrefKey, isBackedUp = true, defaultValue, encryptionType)
 
         @JvmStatic
         fun <T> backedUpItem(
             sharedPrefKey: String,
             type: Class<out T>,
-            isBootAware: Boolean = false,
+            encryptionType: EncryptionType = EncryptionType.ENCRYPTED,
             defaultValueFromContext: (c: Context) -> T
         ): ContextualItem<T> =
             ContextualItem(
                 sharedPrefKey,
                 isBackedUp = true,
                 defaultValueFromContext,
-                isBootAware,
+                encryptionType,
                 type
             )
 
@@ -359,9 +409,9 @@ class LauncherPrefs(private val encryptedContext: Context) {
         fun <T> nonRestorableItem(
             sharedPrefKey: String,
             defaultValue: T,
-            isBootAware: Boolean = false
+            encryptionType: EncryptionType = EncryptionType.ENCRYPTED
         ): ConstantItem<T> =
-            ConstantItem(sharedPrefKey, isBackedUp = false, defaultValue, isBootAware)
+            ConstantItem(sharedPrefKey, isBackedUp = false, defaultValue, encryptionType)
 
         @Deprecated("Don't use shared preferences directly. Use other LauncherPref methods.")
         @JvmStatic
@@ -386,17 +436,16 @@ class LauncherPrefs(private val encryptedContext: Context) {
 }
 
 // It is a var because the unit tests are setting this to true so they can run.
-@VisibleForTesting
-var isBootAwareStartupDataEnabled: Boolean =
-    com.android.launcher3.config.FeatureFlags.ENABLE_BOOT_AWARE_STARTUP_DATA.get()
+var moveStartupDataToDeviceProtectedStorageIsEnabled: Boolean =
+    com.android.launcher3.config.FeatureFlags.MOVE_STARTUP_DATA_TO_DEVICE_PROTECTED_STORAGE.get()
 
-private val BOOT_AWARE_ITEMS: MutableSet<ConstantItem<*>> = mutableSetOf()
+private val ITEMS_TO_MOVE_TO_DEVICE_PROTECTED_STORAGE: MutableSet<ConstantItem<*>> = mutableSetOf()
 
 abstract class Item {
     abstract val sharedPrefKey: String
     abstract val isBackedUp: Boolean
     abstract val type: Class<*>
-    abstract val isBootAware: Boolean
+    abstract val encryptionType: EncryptionType
     val sharedPrefFile: String
         get() = if (isBackedUp) SHARED_PREFERENCES_KEY else DEVICE_PREFERENCES_KEY
 
@@ -407,13 +456,16 @@ data class ConstantItem<T>(
     override val sharedPrefKey: String,
     override val isBackedUp: Boolean,
     val defaultValue: T,
-    override val isBootAware: Boolean,
+    override val encryptionType: EncryptionType,
     // The default value can be null. If so, the type needs to be explicitly stated, or else NPE
     override val type: Class<out T> = defaultValue!!::class.java
 ) : Item() {
     init {
-        if (isBootAware && isBootAwareStartupDataEnabled) {
-            BOOT_AWARE_ITEMS.add(this)
+        if (
+            encryptionType == EncryptionType.MOVE_TO_DEVICE_PROTECTED &&
+                moveStartupDataToDeviceProtectedStorageIsEnabled
+        ) {
+            ITEMS_TO_MOVE_TO_DEVICE_PROTECTED_STORAGE.add(this)
         }
     }
 }
@@ -422,7 +474,7 @@ data class ContextualItem<T>(
     override val sharedPrefKey: String,
     override val isBackedUp: Boolean,
     private val defaultSupplier: (c: Context) -> T,
-    override val isBootAware: Boolean,
+    override val encryptionType: EncryptionType,
     override val type: Class<out T>
 ) : Item() {
     private var default: T? = null
@@ -433,4 +485,10 @@ data class ContextualItem<T>(
         }
         return default!!
     }
+}
+
+enum class EncryptionType {
+    ENCRYPTED,
+    DEVICE_PROTECTED,
+    MOVE_TO_DEVICE_PROTECTED
 }

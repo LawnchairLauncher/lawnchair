@@ -38,7 +38,8 @@ final class FlashDetector extends AnomalyDetector {
 
     private static final IgnoreNode IGNORED_NODES_ROOT = buildIgnoreNodesTree(List.of(
             CONTENT + "LauncherRootView:id/launcher|FloatingIconView",
-            DRAG_LAYER + "LauncherRecentsView:id/overview_panel|TaskView|TextView",
+            DRAG_LAYER + "LauncherRecentsView:id/overview_panel|TaskView",
+            DRAG_LAYER + "LauncherRecentsView:id/overview_panel|ClearAllButton:id/clear_all",
             DRAG_LAYER
                     + "LauncherAllAppsContainerView:id/apps_view|AllAppsRecyclerView:id"
                     + "/apps_list_view|BubbleTextView:id/icon",
@@ -54,6 +55,8 @@ final class FlashDetector extends AnomalyDetector {
                     + "|ScrollView:id/widget_preview_scroll_view|WidgetCell:id/widget_cell"
                     + "|WidgetCellPreview:id/widget_preview_container|ImageView:id/widget_badge",
             RECENTS_DRAG_LAYER + "FallbackRecentsView:id/overview_panel|TaskView",
+            RECENTS_DRAG_LAYER
+                    + "FallbackRecentsView:id/overview_panel|ClearAllButton:id/clear_all",
             DRAG_LAYER + "SearchContainerView:id/apps_view",
             DRAG_LAYER + "LauncherDragView",
             DRAG_LAYER + "FloatingTaskView|FloatingTaskThumbnailView:id/thumbnail",
@@ -64,7 +67,8 @@ final class FlashDetector extends AnomalyDetector {
                     + "WidgetsTwoPaneSheet|SpringRelativeLayout:id/container|LinearLayout:id"
                     + "/linear_layout_container|FrameLayout:id/recycler_view_container"
                     + "|FrameLayout:id/widgets_two_pane_sheet_recyclerview|WidgetsRecyclerView:id"
-                    + "/primary_widgets_list_view|WidgetsListHeader:id/widgets_list_header"
+                    + "/primary_widgets_list_view|WidgetsListHeader:id/widgets_list_header",
+            DRAG_LAYER + "NexusOverviewActionsView:id/overview_actions_view"
     ));
 
     // Per-AnalysisNode data that's specific to this detector.

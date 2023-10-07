@@ -158,10 +158,6 @@ public final class TaskbarAllAppsController {
         if (mAppsView != null) {
             return;
         }
-        // mControllers and getSharedState should never be null here. Do not handle null-pointer
-        // to catch invalid states.
-        mControllers.getSharedState().allAppsVisible = true;
-
         mOverlayContext = mControllers.taskbarOverlayController.requestWindow();
 
         // Initialize search session for All Apps.
@@ -178,10 +174,7 @@ public final class TaskbarAllAppsController {
         // Ensures All Apps gets touch events in case it is not the top floating view. Floating
         // views above it may not be able to intercept the touch, so All Apps should try to.
         mOverlayContext.getDragLayer().addTouchController(mSlideInView);
-        mSlideInView.addOnCloseListener(() -> {
-            mControllers.getSharedState().allAppsVisible = false;
-            cleanUpOverlay();
-        });
+        mSlideInView.addOnCloseListener(this::cleanUpOverlay);
         TaskbarAllAppsViewController viewController = new TaskbarAllAppsViewController(
                 mOverlayContext,
                 mSlideInView,
