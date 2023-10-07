@@ -45,6 +45,7 @@ import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimatorListeners;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statemanager.StateManager;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
@@ -209,7 +210,10 @@ public class TaskbarLauncherStateController {
                         updateStateForFlag(FLAG_RESUMED, true);
                     }
                     applyState();
-                    boolean disallowLongClick = finalState == LauncherState.OVERVIEW_SPLIT_SELECT;
+                    boolean disallowLongClick =
+                            FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()
+                                    ? mLauncher.isSplitSelectionEnabled()
+                                    : finalState == LauncherState.OVERVIEW_SPLIT_SELECT;
                     com.android.launcher3.taskbar.Utilities.setOverviewDragState(
                             mControllers, finalState.disallowTaskbarGlobalDrag(),
                             disallowLongClick, finalState.allowTaskbarInitialSplitSelection());

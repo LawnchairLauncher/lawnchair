@@ -146,6 +146,15 @@ public interface ActivityContext {
     }
 
     /**
+     * @return {@code true} if user has selected the first split app and is in the process of
+     *         selecting the second
+     */
+    default boolean isSplitSelectionEnabled() {
+        // Overridden
+        return false;
+    }
+
+    /**
      * The root view to support drag-and-drop and popup support.
      */
     BaseDragLayer getDragLayer();

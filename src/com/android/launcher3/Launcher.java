@@ -3111,7 +3111,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     /** To be overridden by subclasses */
-    protected boolean isSplitSelectionEnabled() {
+    public boolean isSplitSelectionEnabled() {
         // Overridden
         return false;
     }

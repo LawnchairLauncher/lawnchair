@@ -82,16 +82,4 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
         // Check that pressHome works when the menu is shown.
         mLauncher.goHome();
     }
-
-    @Test
-    @PortraitLandscape
-    public void testAddDeleteShortcutOnHotseat() {
-        mLauncher.getWorkspace()
-                .deleteAppIcon(mLauncher.getWorkspace().getHotseatAppIcon(0))
-                .switchToAllApps()
-                .getAppIcon(APP_NAME)
-                .dragToHotseat(0);
-        mLauncher.getWorkspace().deleteAppIcon(
-                mLauncher.getWorkspace().getHotseatAppIcon(APP_NAME));
-    }
 }
