@@ -24,7 +24,7 @@
     <string name="recents_empty_message" msgid="7040467240571714191">"Ez dago azkenaldi honetako ezer"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Aplikazioen erabileraren ezarpenak"</string>
     <string name="recents_clear_all" msgid="5328176793634888831">"Garbitu guztiak"</string>
-    <string name="accessibility_recent_apps" msgid="4058661986695117371">"Azken aplikazioak"</string>
+    <string name="accessibility_recent_apps" msgid="4058661986695117371">"Azkenaldiko aplikazioak"</string>
     <string name="task_view_closed" msgid="9170038230110856166">"Itxi da zeregina"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g> (<xliff:g id="REMAINING_TIME">%2$s</xliff:g>)"</string>
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"&lt; 1 min"</string>
