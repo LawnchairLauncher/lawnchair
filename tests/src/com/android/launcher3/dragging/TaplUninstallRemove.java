@@ -45,7 +45,7 @@ import java.util.Map;
 
 /**
  * Test runs in Out of process (Oop) and In process (Ipc)
- * Test the behaviour of uninstalling and removing apps both from AllApps and from the Workspace.
+ * Test the behaviour of uninstalling and removing apps both from AllApps, Workspace and Hotseat.
  */
 public class TaplUninstallRemove extends AbstractLauncherUiTest {
 
@@ -163,5 +163,20 @@ public class TaplUninstallRemove extends AbstractLauncherUiTest {
         } finally {
             TestUtil.uninstallDummyApp();
         }
+    }
+
+    /**
+     * Drag icon from the Hotseat to the delete drop target
+     */
+    @Test
+    @PortraitLandscape
+    public void testAddDeleteShortcutOnHotseat() {
+        mLauncher.getWorkspace()
+                .deleteAppIcon(mLauncher.getWorkspace().getHotseatAppIcon(0))
+                .switchToAllApps()
+                .getAppIcon(APP_NAME)
+                .dragToHotseat(0);
+        mLauncher.getWorkspace().deleteAppIcon(
+                mLauncher.getWorkspace().getHotseatAppIcon(APP_NAME));
     }
 }
