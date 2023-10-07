@@ -118,7 +118,7 @@ public class SplitSelectStateController {
     private final Handler mHandler;
     private final RecentsModel mRecentTasksModel;
     @Nullable
-    private final Runnable mActivityBackCallback;
+    private Runnable mActivityBackCallback;
     private final SplitAnimationController mSplitAnimationController;
     private final AppPairsController mAppPairsController;
     private final SplitSelectDataHolder mSplitSelectDataHolder;
@@ -185,6 +185,7 @@ public class SplitSelectStateController {
 
     public void onDestroy() {
         mContext = null;
+        mActivityBackCallback = null;
     }
 
     /**
