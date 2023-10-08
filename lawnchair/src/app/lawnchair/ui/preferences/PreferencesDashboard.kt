@@ -118,8 +118,7 @@ fun PreferencesDashboard() {
                 route = Routes.QUICKSTEP
             )
         }
-
-        val context = LocalContext.current
+        
         PreferenceCategory(
             label = stringResource(R.string.about_label),
             description = "${context.getString(R.string.derived_app_name)} ${BuildConfig.MAJOR_VERSION}",
