@@ -49,7 +49,7 @@
     <string name="smartspace_calendar_label">Calendar Customization ng At a Glance</string>
     <string name="smartspace_calendar_description">Payagan ang pagpapakita ng petsa sa mga sistema ng kalendaryong hindi Gregorian.</string>
     <string name="workspace_increase_max_grid_size_label">Increased Max Home Screen Grid Size</string>
-    <string name="workspace_increase_max_grid_size_description">Taasan sa max ang pinapayagang laki ng grid ng Home Screen mula 10 x 10 hanggang 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_description">Damihan ang pinapayagang laki ng grid ng Home Screen bilang 20 x 20 mula 10 x 10.</string>
     <string name="always_reload_icons_label">Palaging I-reload Ang Mga Icon</string>
     <string name="always_reload_icons_description">Iwasang gumamit ng mga naka-cache na icon mula sa mga icon pack</string>
     <string name="transparent_background_icons">Transparent Themed Icons</string>
@@ -90,7 +90,7 @@
     <string name="custom_icon_shape_create">Create Custom Icon Shape</string>
     <string name="custom_icon_shape_edit">Edit Custom Icon Shape</string>
     <string name="icon_shape_corner">Corner Shape</string>
-    <string name="icon_shape_corner_round">Round</string>
+    <string name="icon_shape_corner_round">Bilog</string>
     <string name="icon_shape_corner_squircle">Smooth</string>
     <string name="icon_shape_corner_cut">Cut</string>
     <string name="icon_shape_top_left">Top Left</string>
@@ -100,14 +100,14 @@
     <string name="create">Create</string>
     <string name="clipboard">Clipboard</string>
     <string name="export_to_clipboard">Export to Clipboard</string>
-    <string name="import_from_clipboard">Import from Clipboard</string>
+    <string name="import_from_clipboard">Kunin galing Clipboard</string>
     <string name="icon_shape_clipboard_import_error">Clipboard does not contain a valid icon shape</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Icon Pack</string>
     <string name="themed_icon_pack">Themed Icon Source</string>
     <string name="system_icons">Icons ng System</string>
-    <string name="themed_icon_title">Mga Icon na may tema</string>
+    <string name="themed_icon_title">May Temang Mga Icon</string>
     <string name="themed_icons_off_label">Patayin</string>
     <string name="themed_icons_home_label">Home Screen</string>
     <string name="themed_icons_home_and_drawer_label">Home Screen at App Drawer</string>
@@ -155,14 +155,14 @@
     <string name="hsb">HSB</string>
     <string name="hsb_hue">Hue</string>
     <string name="hsb_saturation">Saturation</string>
-    <string name="hsb_brightness">Brightness</string>
+    <string name="hsb_brightness">Tingkad</string>
     <string name="hex">Hex</string>
     <string name="color_sliders">Sliders</string>
     <string name="action_copy">Kopya</string>
     <string name="action_paste">Paste</string>
     <string name="copied_toast">Kinopya sa clipboard.</string>
     <string name="invalid_color">Invalid Color</string>
-    <string name="launcher_default_color">Managed by Lawnchair</string>
+    <string name="launcher_default_color">Pinamamahalaan ng Lawnchair</string>
     <!-- HomeScreenPreferences -->
     <!-- <string name="general_label" /> -->
     <string name="auto_add_shortcuts_label">Ilagay ang mga Bagong App sa Home Screen</string>
@@ -182,7 +182,7 @@
     <!-- used in popup menu-->
     <string name="home_screen_locked">Naka-lock ang Home Screen.</string>
     <string name="popup_menu">Pop-up Menu</string>
-    <string name="home_screen_lock_toggle_from_home_popup">Show Lock Button</string>
+    <string name="home_screen_lock_toggle_from_home_popup">Ipakita ang Lock Button</string>
     <string name="show_system_settings_entry">Show System Settings Entry</string>
     <string name="status_bar_label">Status Bar</string>
     <string name="show_status_bar">Ipakita ang Search Bar</string>
@@ -206,27 +206,27 @@
     <string name="apply_grid">Ilapat</string>
     <!-- Smartspace -->
     <string name="generic_smartspace_concatenated_desc">%1$s, %2$s</string>
-    <string name="smartspace_battery_charging">Charging</string>
-    <string name="smartspace_battery_full">Charged</string>
+    <string name="smartspace_battery_charging">Pinupuno</string>
+    <string name="smartspace_battery_full">Puno na</string>
     <string name="smartspace_battery_low">Battery Low</string>
     <string name="battery_charging_percentage_charging_time">"%1$d%% — Mapuno sa loob ng %2$s"</string>
     <string name="accessibility_smartspace_page">Pahinang %1$d ng %2$d</string>
     <string name="smartspace_widget">At a Glance</string>
     <string name="smartspace_widget_description">Ano ang Ipapakita</string>
-    <string name="smartspace_widget_placeholder_date">Fri, Mar 3</string>
+    <string name="smartspace_widget_placeholder_date">Biy, Mar 3</string>
     <string name="preview_label">Preview</string>
     <string name="smartspace_calendar">Kalendaryo</string>
     <string name="smartspace_date_and_time">Petsa &amp; Oras</string>
     <string name="smartspace_date">Petsa</string>
     <string name="smartspace_time">Oras</string>
-    <string name="smartspace_time_format">Time Format</string>
+    <string name="smartspace_time_format">Format ng Oras</string>
     <string name="smartspace_time_follow_system">Sundan ang System</string>
     <string name="smartspace_time_12_hour_format">12-Hour Format</string>
     <string name="smartspace_time_24_hour_format">24-Hour Format</string>
-    <string name="smartspace_weather">Weather</string>
-    <string name="smartspace_battery_status">Battery Status</string>
-    <string name="smartspace_now_playing">Now Playing</string>
-    <string name="smartspace_requires_setup">Tap to Set Up</string>
+    <string name="smartspace_weather">Panahon</string>
+    <string name="smartspace_battery_status">Kalagayan ng Baterya</string>
+    <string name="smartspace_now_playing">Tumutugtog</string>
+    <string name="smartspace_requires_setup">Pindutin upang Pamahalaan</string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, enable Notification Dots.</string>
     <string name="smartspace_media_info_separator">" — "</string>
     <string name="smartspace_calendar_gregorian">Gregorian</string>
@@ -322,7 +322,7 @@
     <string name="override_window_corner_radius_label">Sariling corner radius ng Screen</string>
     <string name="window_corner_radius_description">Kapag nag-swipe ka pataas para buksan ang Recents, sinusundan ng kasalukuyang app ang iyong daliri, lumiliit sa isang card. Gamitin ang slider na ito upang isaayos ang radius ng sulok ng card kapag halos full-screen na ito upang tumugma ito sa mga sulok ng iyong screen.</string>
     <string name="taskbar_label">Taskbar</string>
-    <string name="enable_taskbar_experimental">Enable Taskbar (Experimental)</string>
+    <string name="enable_taskbar_experimental">Paganahin ang Taskbar (Eksperimento)</string>
     <!-- about/About.kt -->
     <string name="news">Mga Balita</string>
     <string name="support">Tulong</string>
@@ -340,7 +340,7 @@
     <string name="translate">Isalin</string>
     <!-- IconPickerPreference -->
     <string name="icon_picker_default_category">Mga Icon</string>
-    <string name="icon_picker_reset_to_default">Reset to Default</string>
+    <string name="icon_picker_reset_to_default">Ibalik sa Orihinal</string>
     <string name="icon_pack_external_picker">Buksan ang External Picker</string>
     <string name="pick_icon_from_label">Kunin ang Icon sa</string>
     <string name="icon_picker_load_failed">Couldn’t load more icons.</string>
@@ -386,7 +386,7 @@
     <string name="error_no_market_or_browser_installed">Walang naka-install na app store o browser.</string>
     <string name="quickstep_incompatible">Incompatible System Integration</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
-    <string name="delete">Delete</string>
+    <string name="delete">Alisin</string>
     <!-- Backup -->
     <string name="create_backup">Create Backup</string>
     <string name="create_backup_action">Create</string>
