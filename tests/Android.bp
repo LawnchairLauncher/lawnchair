@@ -53,6 +53,7 @@ filegroup {
       "src/com/android/launcher3/ui/widget/TaplWidgetPickerTest.java",
       "src/com/android/launcher3/ui/workspace/TaplWorkspaceTest.java",
       "src/com/android/launcher3/util/LauncherLayoutBuilder.java",
+      "src/com/android/launcher3/util/TestConstants.java",
       "src/com/android/launcher3/util/TestUtil.java",
       "src/com/android/launcher3/util/Wait.java",
       "src/com/android/launcher3/util/WidgetUtils.java",

@@ -64,7 +64,6 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
-    private static final String APP_NAME = "LauncherTestApp";
     private static final String CALCULATOR_APP_PACKAGE =
             resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR);
     private static final String READ_DEVICE_CONFIG_PERMISSION =
