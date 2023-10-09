@@ -3116,6 +3116,11 @@ public class Launcher extends StatefulActivity<LauncherState>
         return false;
     }
 
+    /** Call to dismiss the intermediary split selection state. */
+    public void dismissSplitSelection() {
+        // Overridden; move this into ActivityContext if necessary for Taskbar
+    }
+
     @Override
     public void returnToHomescreen() {
         super.returnToHomescreen();
