@@ -230,7 +230,7 @@ public final class FeatureFlags {
 
     // Aconfig migration complete for ENABLE_TWOLINE_ALLAPPS.
     public static final BooleanFlag ENABLE_TWOLINE_ALLAPPS = getDebugFlag(270390937,
-            "ENABLE_TWOLINE_ALLAPPS", DISABLED, "Enables two line label inside all apps.");
+            "ENABLE_TWOLINE_ALLAPPS", ENABLED, "Enables two line label inside all apps.");
     public static boolean enableTwolineAllapps() {
         return ENABLE_TWOLINE_ALLAPPS.get() || Flags.enableTwolineAllapps();
     }

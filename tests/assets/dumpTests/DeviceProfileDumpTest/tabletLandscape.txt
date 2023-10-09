@@ -61,7 +61,7 @@ DeviceProfile:
 	allAppsIconSizePx: 120.0px (60.0dp)
 	allAppsIconTextSizePx: 28.0px (14.0dp)
 	allAppsIconDrawablePaddingPx: 9.0px (4.5dp)
-	allAppsCellHeightPx: 284.0px (142.0dp)
+	allAppsCellHeightPx: 322.0px (161.0dp)
 	allAppsCellWidthPx: 252.0px (126.0dp)
 	allAppsBorderSpacePxX: 32.0px (16.0dp)
 	allAppsBorderSpacePxY: 32.0px (16.0dp)
