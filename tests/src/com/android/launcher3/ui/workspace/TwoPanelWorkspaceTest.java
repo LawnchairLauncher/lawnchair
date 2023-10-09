@@ -83,7 +83,7 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
 
     @After
     public void tearDown() throws Exception {
-        executeOnLauncher(launcher -> launcher.enableHotseatEdu(true));
+        executeOnLauncherInTearDown(launcher -> launcher.enableHotseatEdu(true));
         if (mLauncherLayout != null) {
             mLauncherLayout.close();
         }

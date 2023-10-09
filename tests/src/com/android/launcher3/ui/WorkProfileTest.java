@@ -89,8 +89,8 @@ public class WorkProfileTest extends AbstractLauncherUiTest {
 
     @After
     public void removeWorkProfile() throws Exception {
-        executeOnLauncher(launcher -> {
-            if (launcher == null || launcher.getAppsView() == null) {
+        executeOnLauncherInTearDown(launcher -> {
+            if (launcher.getAppsView() == null) {
                 return;
             }
             launcher.getAppsView().getAppsStore().disableDeferUpdates(DEFER_UPDATES_TEST);

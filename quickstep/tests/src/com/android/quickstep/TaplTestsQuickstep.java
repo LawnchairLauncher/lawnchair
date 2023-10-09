@@ -82,8 +82,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @After
     public void tearDown() {
-        executeOnLauncher(launcher -> {
-            if (launcher == null) return;
+        executeOnLauncherInTearDown(launcher -> {
             RecentsView recentsView = launcher.getOverviewPanel();
             recentsView.getPagedViewOrientedState().forceAllowRotationForTesting(false);
         });
