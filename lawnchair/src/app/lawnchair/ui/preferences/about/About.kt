@@ -178,9 +178,9 @@ private val links = listOf(
         url = "https://t.me/lccommunity",
     ),
     Link(
-        iconResId = R.drawable.ic_twitter,
-        labelResId = R.string.twitter,
-        url = "https://twitter.com/lawnchairapp",
+        iconResId = R.drawable.ic_x_twitter,
+        labelResId = R.string.x_twitter,
+        url = "https://x.com/lawnchairapp",
     ),
     Link(
         iconResId = R.drawable.ic_github,
