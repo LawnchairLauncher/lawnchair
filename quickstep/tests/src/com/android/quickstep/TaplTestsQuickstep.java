@@ -212,6 +212,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
 
     @Test
+    @ScreenRecord // b/303329286
     public void testOverviewActionsMenu_iconAppChipMenu() throws Exception {
         try (AutoCloseable c = TestUtil.overrideFlag(ENABLE_OVERVIEW_ICON_MENU, true)) {
             startTestAppsWithCheck();
