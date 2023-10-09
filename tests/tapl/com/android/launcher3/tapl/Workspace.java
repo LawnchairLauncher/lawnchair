@@ -28,7 +28,6 @@ import static junit.framework.TestCase.assertTrue;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.SystemClock;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 
@@ -302,10 +301,6 @@ public final class Workspace extends Home {
         final UiObject2 workspace = verifyActiveContainer();
         List<UiObject2> workspaceIcons =
                 mLauncher.waitForObjectsInContainer(workspace, AppIcon.getAnyAppIconSelector());
-        Log.d("b/288944469", "List size = " + workspaceIcons.size());
-        for (int i = 0; i < workspaceIcons.size(); i++) {
-            Log.d("b/288944469", "index = " + i + " tesxt = " + workspaceIcons.get(i).getText());
-        }
         return workspaceIcons.stream()
                 .collect(
                         Collectors.toMap(
