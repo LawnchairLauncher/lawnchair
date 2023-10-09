@@ -146,4 +146,8 @@ public class TestStabilityRule implements TestRule {
 
         return sRunFlavor;
     }
+
+    public static boolean isPresubmit() {
+        return getRunFlavor() == PLATFORM_PRESUBMIT;
+    }
 }
