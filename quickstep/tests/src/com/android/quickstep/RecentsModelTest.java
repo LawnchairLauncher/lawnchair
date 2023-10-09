@@ -42,6 +42,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.icons.IconProvider;
 import com.android.quickstep.util.GroupTask;
 import com.android.systemui.shared.recents.model.Task;
+import com.android.systemui.shared.system.TaskStackChangeListeners;
 
 import org.junit.After;
 import org.junit.Before;
@@ -93,7 +94,7 @@ public class RecentsModelTest {
         when(mThumbnailCache.isPreloadingEnabled()).thenReturn(true);
 
         mRecentsModel = new RecentsModel(mContext, mTasksList, mock(TaskIconCache.class),
-                mThumbnailCache, mock(IconProvider.class));
+                mThumbnailCache, mock(IconProvider.class), mock(TaskStackChangeListeners.class));
 
         mResource = mock(Resources.class);
         when(mResource.getInteger((R.integer.recentsThumbnailCacheSize))).thenReturn(3);

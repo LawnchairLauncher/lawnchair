@@ -78,6 +78,8 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
     private final TaskThumbnailCache mThumbnailCache;
     private final ComponentCallbacks mCallbacks;
 
+    private final TaskStackChangeListeners mTaskStackChangeListeners;
+
     private RecentsModel(Context context) {
         this(context, new IconProvider(context));
     }
@@ -89,13 +91,14 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
                         SystemUiProxy.INSTANCE.get(context)),
                 new TaskIconCache(context, RECENTS_MODEL_EXECUTOR, iconProvider),
                 new TaskThumbnailCache(context, RECENTS_MODEL_EXECUTOR),
-                iconProvider);
+                iconProvider,
+                TaskStackChangeListeners.getInstance());
     }
 
     @VisibleForTesting
     RecentsModel(Context context, RecentTasksList taskList, TaskIconCache iconCache,
-            TaskThumbnailCache thumbnailCache,
-            IconProvider iconProvider) {
+            TaskThumbnailCache thumbnailCache, IconProvider iconProvider,
+            TaskStackChangeListeners taskStackChangeListeners) {
         mContext = context;
         mTaskList = taskList;
         mIconCache = iconCache;
@@ -117,7 +120,8 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
             mCallbacks = null;
         }
 
-        TaskStackChangeListeners.getInstance().registerTaskStackListener(this);
+        mTaskStackChangeListeners = taskStackChangeListeners;
+        mTaskStackChangeListeners.registerTaskStackListener(this);
         iconProvider.registerIconChangeListener(this, MAIN_EXECUTOR.getHandler());
     }
 
@@ -358,6 +362,8 @@ public class RecentsModel implements IconChangeListener, TaskStackChangeListener
         if (mCallbacks != null) {
             mContext.unregisterComponentCallbacks(mCallbacks);
         }
+        mIconCache.removeTaskVisualsChangeListener();
+        mTaskStackChangeListeners.unregisterTaskStackListener(this);
     }
 
     /**
