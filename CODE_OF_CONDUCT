@@ -60,7 +60,7 @@ representative at an online or offline event.
 
 Instances of abusive, harassing, or otherwise unacceptable behavior may be
 reported to the community leaders responsible for enforcement at
-[@lawnchairapp](https://twitter.com/lawnchairapp), [Telegram](https://t.co/qYev4OkvpT), or [Discord](https://discord.com/invite/3x8qNWxgGZ).
+[@lawnchairapp](https://x.com/lawnchairapp), [Telegram](https://t.co/qYev4OkvpT), or [Discord](https://discord.com/invite/3x8qNWxgGZ).
 All complaints will be reviewed and investigated promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the
