@@ -24,7 +24,6 @@ import androidx.annotation.VisibleForTesting
 import com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN
 import com.android.launcher3.LauncherFiles.DEVICE_PREFERENCES_KEY
 import com.android.launcher3.LauncherFiles.SHARED_PREFERENCES_KEY
-import com.android.launcher3.allapps.WorkProfileManager
 import com.android.launcher3.model.DeviceGridState
 import com.android.launcher3.pm.InstallSessionHelper
 import com.android.launcher3.provider.RestoreDbTask
@@ -312,7 +311,7 @@ class LauncherPrefs(private val encryptedContext: Context) {
         val THEMED_ICONS =
             backedUpItem(Themes.KEY_THEMED_ICONS, false, EncryptionType.MOVE_TO_DEVICE_PROTECTED)
         @JvmField val PROMISE_ICON_IDS = backedUpItem(InstallSessionHelper.PROMISE_ICON_IDS, "")
-        @JvmField val WORK_EDU_STEP = backedUpItem(WorkProfileManager.KEY_WORK_EDU_STEP, 0)
+        @JvmField val WORK_EDU_STEP = backedUpItem("showed_work_profile_edu", 0)
         @JvmField
         val WORKSPACE_SIZE =
             backedUpItem(
@@ -379,6 +378,16 @@ class LauncherPrefs(private val encryptedContext: Context) {
                 defaultValue = false,
                 encryptionType = EncryptionType.DEVICE_PROTECTED
             )
+
+        // Preferences for widget configurations
+        @JvmField
+        val RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN =
+            backedUpItem("launcher.reconfigurable_widget_education_tip_seen", false)
+        @JvmField
+        val WIDGETS_EDUCATION_DIALOG_SEEN =
+            backedUpItem("launcher.widgets_education_dialog_seen", false)
+        @JvmField
+        val WIDGETS_EDUCATION_TIP_SEEN = backedUpItem("launcher.widgets_education_tip_seen", false)
 
         @VisibleForTesting
         @JvmStatic

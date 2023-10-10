@@ -18,6 +18,7 @@ package com.android.launcher3.widget.picker;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
+import static com.android.launcher3.LauncherPrefs.WIDGETS_EDUCATION_DIALOG_SEEN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGETSTRAY_SEARCHED;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 
@@ -56,6 +57,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
@@ -98,8 +100,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     // resolution or landscape on phone. This ratio defines the max percentage of content area that
     // the table can display.
     private static final float RECOMMENDATION_TABLE_HEIGHT_RATIO = 0.75f;
-    private static final String KEY_WIDGETS_EDUCATION_DIALOG_SEEN =
-            "launcher.widgets_education_dialog_seen";
 
     private final UserManagerState mUserManagerState = new UserManagerState();
     private final UserHandle mCurrentUser = Process.myUserHandle();
@@ -853,15 +853,13 @@ public class WidgetsFullSheet extends BaseWidgetSheet
 
     /** Shows education dialog for widgets. */
     private WidgetsEduView showEducationDialog() {
-        mActivityContext.getSharedPrefs().edit()
-                .putBoolean(KEY_WIDGETS_EDUCATION_DIALOG_SEEN, true).apply();
+        LauncherPrefs.get(getContext()).put(WIDGETS_EDUCATION_DIALOG_SEEN, true);
         return WidgetsEduView.showEducationDialog(mActivityContext);
     }
 
     /** Returns {@code true} if education dialog has previously been shown. */
     protected boolean hasSeenEducationDialog() {
-        return mActivityContext.getSharedPrefs()
-                .getBoolean(KEY_WIDGETS_EDUCATION_DIALOG_SEEN, false)
+        return LauncherPrefs.get(getContext()).get(WIDGETS_EDUCATION_DIALOG_SEEN)
                 || Utilities.isRunningInTestHarness();
     }
 

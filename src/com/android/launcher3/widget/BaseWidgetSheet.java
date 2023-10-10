@@ -16,6 +16,7 @@
 package com.android.launcher3.widget;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
+import static com.android.launcher3.LauncherPrefs.WIDGETS_EDUCATION_TIP_SEEN;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -40,6 +41,7 @@ import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -63,8 +65,6 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
     /** The default number of cells that can fit horizontally in a widget sheet. */
     public static final int DEFAULT_MAX_HORIZONTAL_SPANS = 4;
 
-    protected static final String KEY_WIDGETS_EDUCATION_TIP_SEEN =
-            "launcher.widgets_education_tip_seen";
     protected final Rect mInsets = new Rect();
 
     /* Touch handling related member variables. */
@@ -330,15 +330,14 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<Launcher>
                         /* arrowXCoord= */coords[0] + view.getWidth() / 2,
                         /* yCoord= */coords[1]);
         if (arrowTipView != null) {
-            mActivityContext.getSharedPrefs().edit()
-                    .putBoolean(KEY_WIDGETS_EDUCATION_TIP_SEEN, true).apply();
+            LauncherPrefs.get(getContext()).put(WIDGETS_EDUCATION_TIP_SEEN, true);
         }
         return arrowTipView;
     }
 
     /** Returns {@code true} if tip has previously been shown on any of {@link BaseWidgetSheet}. */
     protected boolean hasSeenEducationTip() {
-        return mActivityContext.getSharedPrefs().getBoolean(KEY_WIDGETS_EDUCATION_TIP_SEEN, false)
+        return LauncherPrefs.get(getContext()).get(WIDGETS_EDUCATION_TIP_SEEN)
                 || Utilities.isRunningInTestHarness();
     }
 
