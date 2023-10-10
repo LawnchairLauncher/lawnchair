@@ -30,6 +30,7 @@
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Razdeljen zaslon"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Podatki o aplikaciji za: %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Shrani par aplikacij"</string>
+    <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Pridržite pripomoček, da ga premaknete."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Dvakrat se dotaknite pripomočka in ga pridržite, da ga premaknete, ali pa uporabite dejanja po meri."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>

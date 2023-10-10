@@ -30,6 +30,8 @@
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"Écran partagé"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"Renseignements sur l\'appli pour %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"Enregistrer la paire d\'applications"</string>
+    <!-- no translation found for app_pair_default_title (4045241727446873529) -->
+    <skip />
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"Maintenez le doigt sur un widget pour le déplacer."</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"Touchez 2x un widget et maintenez le doigt dessus pour le déplacer ou utiliser des actions personnalisées."</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
