@@ -175,6 +175,7 @@ android_library {
         "androidx.preference_preference",
         "androidx.slice_slice-view",
         "androidx.cardview_cardview",
+        "androidx.window_window",
         "com.google.android.material_material",
         "iconloader_base",
         "view_capture",
