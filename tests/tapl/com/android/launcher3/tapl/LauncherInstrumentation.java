@@ -27,6 +27,7 @@ import static android.view.MotionEvent.AXIS_GESTURE_SWIPE_FINGER_COUNT;
 import static com.android.launcher3.tapl.Folder.FOLDER_CONTENT_RES_ID;
 import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_NUM_ALL_APPS_COLUMNS;
 
 import android.app.ActivityManager;
 import android.app.Instrumentation;
@@ -351,6 +352,11 @@ public final class LauncherInstrumentation {
     Insets getImeInsets() {
         return getTestInfo(TestProtocol.REQUEST_IME_INSETS)
                 .getParcelable(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
+    public int getNumAllAppsColumns() {
+        return getTestInfo(REQUEST_NUM_ALL_APPS_COLUMNS).getInt(
+                TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
     public boolean isTablet() {
