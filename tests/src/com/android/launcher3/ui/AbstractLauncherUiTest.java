@@ -242,8 +242,6 @@ public abstract class AbstractLauncherUiTest {
     public void setUp() throws Exception {
         mLauncher.onTestStart();
 
-        verifyKeyguardInvisible();
-
         final String launcherPackageName = mDevice.getLauncherPackageName();
         try {
             final Context context = InstrumentationRegistry.getContext();
@@ -273,6 +271,8 @@ public abstract class AbstractLauncherUiTest {
                 }
             }
         }
+
+        verifyKeyguardInvisible();
     }
 
     private static void verifyKeyguardInvisible() {
