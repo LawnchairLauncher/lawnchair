@@ -1573,7 +1573,9 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
     @Override
     public void requestChildFocus(View child, View focused) {
         super.requestChildFocus(child, focused);
-
+        if (!shouldHandleRequestChildFocus()) {
+            return;
+        }
         // In case the device is controlled by a controller, mCurrentPage isn't updated properly
         // which results in incorrect navigation
         int nextPage = getNextPage();
@@ -1585,6 +1587,10 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         if (page >= 0 && !isVisible(page) && !isInTouchMode()) {
             snapToPage(page);
         }
+    }
+
+    protected boolean shouldHandleRequestChildFocus() {
+        return true;
     }
 
     public int getDestinationPage() {
