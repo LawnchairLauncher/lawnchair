@@ -183,8 +183,8 @@ public abstract class AbstractLauncherUiTest {
         if (TestHelpers.isInLauncherProcess()) {
             Utilities.enableRunningInTestHarnessForTests();
             mLauncher.setSystemHealthSupplier(startTime -> TestCommandReceiver.callCommand(
-                    TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE, startTime.toString()).
-                    getString("result"));
+                            TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE, startTime.toString())
+                            .getString("result"));
             mLauncher.setOnSettledStateAction(
                     containerType -> executeOnLauncher(
                             launcher ->
@@ -207,7 +207,7 @@ public abstract class AbstractLauncherUiTest {
         final SimpleBroadcastReceiver broadcastReceiver =
                 new SimpleBroadcastReceiver(i -> count.countDown());
         broadcastReceiver.registerPkgActions(mTargetContext, pkg,
-                        Intent.ACTION_PACKAGE_RESTARTED, Intent.ACTION_PACKAGE_DATA_CLEARED);
+                Intent.ACTION_PACKAGE_RESTARTED, Intent.ACTION_PACKAGE_DATA_CLEARED);
 
         mDevice.executeShellCommand("pm clear " + pkg);
         assertTrue(pkg + " didn't restart", count.await(10, TimeUnit.SECONDS));
@@ -341,6 +341,15 @@ public abstract class AbstractLauncherUiTest {
         getFromLauncher(launcher -> {
             f.accept(launcher);
             return null;
+        });
+    }
+
+    // Execute an action on Launcher, but forgive it when launcher is null.
+    // Launcher can be null if teardown is happening after a failed setup step where launcher
+    // activity failed to be created.
+    protected void executeOnLauncherInTearDown(Consumer<Launcher> f) {
+        executeOnLauncher(launcher -> {
+            if (launcher != null) f.accept(launcher);
         });
     }
 

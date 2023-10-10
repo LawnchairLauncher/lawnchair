@@ -987,6 +987,13 @@ public class QuickstepLauncher extends Launcher {
                 .playPlaceholderDismissAnim(this);
     }
 
+    @Override
+    public void dismissSplitSelection() {
+        super.dismissSplitSelection();
+        mSplitSelectStateController.getSplitAnimationController()
+                .playPlaceholderDismissAnim(this);
+    }
+
     public <T extends OverviewActionsView> T getActionsView() {
         return (T) mActionsView;
     }

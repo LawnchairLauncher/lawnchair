@@ -82,8 +82,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @After
     public void tearDown() {
-        executeOnLauncher(launcher -> {
-            if (launcher == null) return;
+        executeOnLauncherInTearDown(launcher -> {
             RecentsView recentsView = launcher.getOverviewPanel();
             recentsView.getPagedViewOrientedState().forceAllowRotationForTesting(false);
         });
@@ -213,6 +212,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
 
     @Test
+    @ScreenRecord // b/303329286
     public void testOverviewActionsMenu_iconAppChipMenu() throws Exception {
         try (AutoCloseable c = TestUtil.overrideFlag(ENABLE_OVERVIEW_ICON_MENU, true)) {
             startTestAppsWithCheck();
