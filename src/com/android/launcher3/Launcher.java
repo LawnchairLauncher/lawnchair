@@ -143,7 +143,6 @@ import com.android.launcher3.allapps.ActivityAllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
-import com.android.launcher3.allapps.BaseSearchConfig;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.PropertyListBuilder;
@@ -418,7 +417,6 @@ public class Launcher extends StatefulActivity<LauncherState>
     private LauncherState mPrevLauncherState;
 
     private StringCache mStringCache;
-    private BaseSearchConfig mBaseSearchConfig;
     private StartupLatencyLogger mStartupLatencyLogger;
     private CellPosMapper mCellPosMapper = CellPosMapper.DEFAULT;
     private boolean mIsFirstPagePinnedItemEnabled = QSB_ON_FIRST_SCREEN
@@ -531,9 +529,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         initDragController();
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new StateManager<>(this, NORMAL);
-
-        // TODO: move the SearchConfig to SearchState when new LauncherState is created.
-        mBaseSearchConfig = new BaseSearchConfig();
 
         setupViews();
 
@@ -3314,10 +3309,6 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     public int getOrientation() {
         return mOldConfig.orientation;
-    }
-
-    public BaseSearchConfig getSearchConfig() {
-        return mBaseSearchConfig;
     }
 
     /**
