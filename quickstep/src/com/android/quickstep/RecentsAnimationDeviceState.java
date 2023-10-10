@@ -66,6 +66,7 @@ import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.util.SettingsCache;
 import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
@@ -239,6 +240,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     public void onDisplayInfoChanged(Context context, Info info, int flags) {
         if ((flags & (CHANGE_ROTATION | CHANGE_NAVIGATION_MODE)) != 0) {
             mMode = info.navigationMode;
+            ActiveGestureLog.INSTANCE.setIsFullyGesturalNavMode(isFullyGesturalNavMode());
             mNavBarPosition = new NavBarPosition(mMode, info);
 
             if (mMode == NO_BUTTON) {
