@@ -27,6 +27,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.LauncherBindableItemsContainer.ItemOperator;
+import com.android.launcher3.util.rule.ViewCaptureRule;
 
 import org.junit.After;
 import org.junit.Test;
@@ -95,6 +96,7 @@ public class PromiseIconUiTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @ViewCaptureRule.MayProduceNoFrames
     public void testPromiseIcon_notAddedFromIneligibleSession() throws Throwable {
         final String appLabel = "Test Promise App " + UUID.randomUUID().toString();
         final ItemOperator findPromiseApp = (info, view) ->
