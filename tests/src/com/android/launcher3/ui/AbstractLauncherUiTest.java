@@ -275,7 +275,8 @@ public abstract class AbstractLauncherUiTest {
         }
     }
 
-    private static void verifyKeyguardInvisible() {
+    /** Fail if lock screen is present */
+    public static void verifyKeyguardInvisible() {
         final boolean keyguardAlreadyVisible = sSeenKeyguard;
 
         sSeenKeyguard = sSeenKeyguard
