@@ -278,8 +278,14 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         mSystemUiProxy = SystemUiProxy.INSTANCE.get(activity);
         mAccessibilityManager = mActivity.getSystemService(AccessibilityManager.class);
 
-        mUnstashedHeight = mActivity.getDeviceProfile().taskbarHeight;
-        mStashedHeight = mActivity.getDeviceProfile().stashedTaskbarHeight;
+        if (isPhoneMode()) {
+            mUnstashedHeight = mActivity.getResources().getDimensionPixelSize(R.dimen.taskbar_size);
+            mStashedHeight = mActivity.getResources().getDimensionPixelSize(
+                    R.dimen.taskbar_stashed_size);
+        } else {
+            mUnstashedHeight = mActivity.getDeviceProfile().taskbarHeight;
+            mStashedHeight = mActivity.getDeviceProfile().stashedTaskbarHeight;
+        }
     }
 
     /**
