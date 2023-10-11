@@ -48,6 +48,7 @@ import android.os.Trace;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Display;
+import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
@@ -211,7 +212,18 @@ public class TaskbarManager {
         mContext = service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null);
         if (ENABLE_TASKBAR_NO_RECREATION.get()) {
             mWindowManager = mContext.getSystemService(WindowManager.class);
-            mTaskbarRootLayout = new FrameLayout(mContext);
+            mTaskbarRootLayout = new FrameLayout(mContext) {
+                @Override
+                public boolean dispatchTouchEvent(MotionEvent ev) {
+                    // The motion events can be outside the view bounds of task bar, and hence
+                    // manually dispatching them to the drag layer here.
+                    if (mTaskbarActivityContext != null
+                            && mTaskbarActivityContext.getDragLayer().isAttachedToWindow()) {
+                        return mTaskbarActivityContext.getDragLayer().dispatchTouchEvent(ev);
+                    }
+                    return super.dispatchTouchEvent(ev);
+                }
+            };
         }
         mNavButtonController = new TaskbarNavButtonController(service,
                 SystemUiProxy.INSTANCE.get(mContext), new Handler(),
