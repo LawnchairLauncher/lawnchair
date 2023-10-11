@@ -95,10 +95,11 @@
         </provider>
 
         <activity android:name="com.android.launcher3.proxy.ProxyActivityStarter"
-             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"
-             android:launchMode="singleTask"
-             android:clearTaskOnLaunch="true"
-             android:exported="false"/>
+            android:theme="@style/ProxyActivityStarterTheme"
+            android:launchMode="singleTask"
+            android:clearTaskOnLaunch="true"
+            android:exported="false"
+            />
 
         <activity android:name="com.android.quickstep.interaction.GestureSandboxActivity"
             android:autoRemoveFromRecents="true"
