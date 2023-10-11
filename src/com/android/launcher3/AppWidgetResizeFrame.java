@@ -3,6 +3,7 @@ package com.android.launcher3;
 import static com.android.launcher3.CellLayout.SPRING_LOADED_PROGRESS;
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_HEIGHT;
 import static com.android.launcher3.LauncherAnimUtils.LAYOUT_WIDTH;
+import static com.android.launcher3.LauncherPrefs.RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_RESIZE_COMPLETED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WIDGET_RESIZE_STARTED;
 import static com.android.launcher3.views.BaseDragLayer.LAYOUT_X;
@@ -55,8 +56,6 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     private static final float RESIZE_THRESHOLD = 0.66f;
     private static final int RESIZE_TRANSITION_DURATION_MS = 150;
 
-    private static final String KEY_RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN =
-            "launcher.reconfigurable_widget_education_tip_seen";
     private static final Rect sTmpRect = new Rect();
     private static final Rect sTmpRect2 = new Rect();
 
@@ -276,9 +275,8 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
             if (!hasSeenReconfigurableWidgetEducationTip()) {
                 post(() -> {
                     if (showReconfigurableWidgetEducationTip() != null) {
-                        mLauncher.getSharedPrefs().edit()
-                                .putBoolean(KEY_RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN,
-                                        true).apply();
+                        LauncherPrefs.get(getContext()).put(
+                                RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN, true);
                     }
                 });
             }
@@ -872,8 +870,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     private boolean hasSeenReconfigurableWidgetEducationTip() {
-        return mLauncher.getSharedPrefs()
-                .getBoolean(KEY_RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN, false)
+        return LauncherPrefs.get(getContext()).get(RECONFIGURABLE_WIDGET_EDUCATION_TIP_SEEN)
                 || Utilities.isRunningInTestHarness();
     }
 }

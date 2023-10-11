@@ -50,10 +50,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.statehandlers.DepthController;
 import com.android.launcher3.statehandlers.DesktopVisibilityController;
 import com.android.launcher3.statemanager.BaseState;
@@ -242,7 +242,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public final void calculateTaskSize(Context context, DeviceProfile dp, Rect outRect,
             PagedOrientationHandler orientedState) {
         if (dp.isTablet) {
-            if (Flags.enableGridOnlyOverview()) {
+            if (FeatureFlags.enableGridOnlyOverview()) {
                 calculateGridTaskSize(context, dp, outRect, orientedState);
             } else {
                 calculateFocusTaskSize(context, dp, outRect);
@@ -339,7 +339,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
             PagedOrientationHandler orientedState) {
         Resources res = context.getResources();
         Rect potentialTaskRect = new Rect();
-        if (Flags.enableGridOnlyOverview()) {
+        if (FeatureFlags.enableGridOnlyOverview()) {
             calculateGridSize(dp, potentialTaskRect);
         } else {
             calculateFocusTaskSize(context, dp, potentialTaskRect);
@@ -371,7 +371,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     public final void calculateModalTaskSize(Context context, DeviceProfile dp, Rect outRect,
             PagedOrientationHandler orientedState) {
         calculateTaskSize(context, dp, outRect, orientedState);
-        boolean isGridOnlyOverview = dp.isTablet && Flags.enableGridOnlyOverview();
+        boolean isGridOnlyOverview = dp.isTablet && FeatureFlags.enableGridOnlyOverview();
         int claimedSpaceBelow = isGridOnlyOverview
                 ? dp.overviewActionsTopMarginPx + dp.overviewActionsHeight + dp.stashedTaskbarHeight
                 : (dp.heightPx - outRect.bottom - dp.getInsets().bottom);

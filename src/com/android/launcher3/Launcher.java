@@ -237,7 +237,6 @@ import com.android.launcher3.widget.model.WidgetsListBaseEntry;
 import com.android.launcher3.widget.picker.WidgetsFullSheet;
 import com.android.systemui.plugins.LauncherOverlayPlugin;
 import com.android.systemui.plugins.PluginListener;
-import com.android.systemui.plugins.shared.LauncherExterns;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay;
 
@@ -259,7 +258,7 @@ import java.util.stream.Stream;
  * Default launcher application.
  */
 public class Launcher extends StatefulActivity<LauncherState>
-        implements LauncherExterns, Callbacks, InvariantDeviceProfile.OnIDPChangeListener,
+        implements Callbacks, InvariantDeviceProfile.OnIDPChangeListener,
         PluginListener<LauncherOverlayPlugin> {
     public static final String TAG = "Launcher";
 
@@ -696,7 +695,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public void onPluginConnected(LauncherOverlayPlugin overlayManager, Context context) {
-        switchOverlay(() -> overlayManager.createOverlayManager(this, this));
+        switchOverlay(() -> overlayManager.createOverlayManager(this));
     }
 
     @Override
@@ -2971,7 +2970,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 for (int j = 0; j < layout.getChildCount(); j++) {
                     Object tag = layout.getChildAt(j).getTag();
                     if (tag != null) {
-                        writer.println(prefix + "    " + tag.toString());
+                        writer.println(prefix + "    " + tag);
                     }
                 }
             }
@@ -2981,7 +2980,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             for (int j = 0; j < layout.getChildCount(); j++) {
                 Object tag = layout.getChildAt(j).getTag();
                 if (tag != null) {
-                    writer.println(prefix + "    " + tag.toString());
+                    writer.println(prefix + "    " + tag);
                 }
             }
         }
@@ -3252,7 +3251,6 @@ public class Launcher extends StatefulActivity<LauncherState>
     /**
      * Call this after onCreate to set or clear overlay.
      */
-    @Override
     public void setLauncherOverlay(LauncherOverlay overlay) {
         mWorkspace.setLauncherOverlay(overlay);
     }
@@ -3360,14 +3358,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         return mModelWriter;
     }
 
-    @Override
     public SharedPreferences getSharedPrefs() {
         return mSharedPrefs;
-    }
-
-    @Override
-    public SharedPreferences getDevicePrefs() {
-        return LauncherPrefs.getDevicePrefs(this);
     }
 
     public int getOrientation() {

@@ -77,7 +77,6 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.app.animation.Interpolators;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -115,8 +114,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 
-import kotlin.Unit;
-
 import java.lang.annotation.Retention;
 import java.util.Arrays;
 import java.util.Collections;
@@ -124,6 +121,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+
+import kotlin.Unit;
 
 /**
  * A task in the Recents view.
@@ -1146,7 +1145,7 @@ public class TaskView extends FrameLayout implements Reusable {
         } else if (dp.isTablet) {
             int alignedOptionIndex = 0;
             if (getRecentsView().isOnGridBottomRow(menuContainer.getTaskView()) && dp.isLandscape) {
-                if (Flags.enableGridOnlyOverview()) {
+                if (FeatureFlags.enableGridOnlyOverview()) {
                     // With no focused task, there is less available space below the tasks, so align
                     // the arrow to the third option in the menu.
                     alignedOptionIndex = 2;
