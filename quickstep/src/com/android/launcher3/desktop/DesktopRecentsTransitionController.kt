@@ -98,6 +98,9 @@ class DesktopRecentsTransitionController(
             mergeTarget: IBinder,
             finishCallback: IRemoteTransitionFinishedCallback
         ) {}
+
+        override fun onTransitionConsumed(transition: IBinder?, aborted: Boolean) {
+        }
     }
 
     companion object {
