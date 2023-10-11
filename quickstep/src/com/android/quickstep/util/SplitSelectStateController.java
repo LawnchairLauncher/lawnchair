@@ -186,6 +186,8 @@ public class SplitSelectStateController {
     public void onDestroy() {
         mContext = null;
         mActivityBackCallback = null;
+        mAppPairsController.onDestroy();
+        mSplitSelectDataHolder.onDestroy();
     }
 
     /**
