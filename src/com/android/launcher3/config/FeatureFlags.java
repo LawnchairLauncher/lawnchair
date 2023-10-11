@@ -119,6 +119,10 @@ public final class FeatureFlags {
             getDebugFlag(275132633, "ENABLE_ALL_APPS_FROM_OVERVIEW", DISABLED,
                     "Allow entering All Apps from Overview (e.g. long swipe up from app)");
 
+    public static final BooleanFlag CUSTOM_LPNH_THRESHOLDS =
+            getDebugFlag(301680992, "CUSTOM_LPNH_THRESHOLDS", DISABLED,
+                    "Add dev options to customize the LPNH trigger slop and milliseconds");
+
     public static final BooleanFlag ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS = getReleaseFlag(
             270394468, "ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS", ENABLED,
             "Enable option to show keyboard when going to all-apps");
