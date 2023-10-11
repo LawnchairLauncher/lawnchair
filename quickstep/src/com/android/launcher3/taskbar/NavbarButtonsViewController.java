@@ -471,7 +471,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
     /**
      * @return {@code true} if A11y is showing in 3 button nav taskbar
      */
-    private boolean isContextualButtonShowing() {
+    private boolean isA11yButtonPersistent() {
         return mContext.isThreeButtonNav() && (mState & FLAG_A11Y_VISIBLE) != 0;
     }
 
@@ -742,7 +742,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
                             mA11yButton, res, isInKidsMode, isInSetup, isThreeButtonNav,
                             TaskbarManager.isPhoneMode(dp),
                             mWindowManagerProxy.getRotation(mContext));
-            navButtonLayoutter.layoutButtons(dp, isContextualButtonShowing());
+            navButtonLayoutter.layoutButtons(dp, isA11yButtonPersistent());
             updateNavButtonColor();
             return;
         }
@@ -838,7 +838,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
             int contextualWidth = mEndContextualContainer.getWidth();
             // If contextual buttons are showing, we check if the end margin is enough for the
             // contextual button to be showing - if not, move the nav buttons over a smidge
-            if (isContextualButtonShowing() && navMarginEnd < contextualWidth) {
+            if (isA11yButtonPersistent() && navMarginEnd < contextualWidth) {
                 // Additional spacing, eat up half of space between last icon and nav button
                 navMarginEnd += res.getDimensionPixelSize(R.dimen.taskbar_hotseat_nav_spacing) / 2;
             }
