@@ -37,6 +37,7 @@ import static com.android.wm.shell.common.split.SplitScreenConstants.SNAP_TO_50_
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.NonNull;
+import android.annotation.UiThread;
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.app.ActivityThread;
@@ -605,13 +606,13 @@ public class SplitSelectStateController {
 
         private final int mInitialTaskId;
         private final int mSecondTaskId;
-        private Consumer<Boolean> mSuccessCallback;
+        private Consumer<Boolean> mFinishCallback;
 
         RemoteSplitLaunchTransitionRunner(int initialTaskId, int secondTaskId,
                 @Nullable Consumer<Boolean> callback) {
             mInitialTaskId = initialTaskId;
             mSecondTaskId = secondTaskId;
-            mSuccessCallback = callback;
+            mFinishCallback = callback;
         }
 
         @Override
@@ -630,11 +631,7 @@ public class SplitSelectStateController {
                 TaskViewUtils.composeRecentsSplitLaunchAnimator(mLaunchingTaskView, mStateManager,
                         mDepthController, mInitialTaskId, mSecondTaskId, info, t, () -> {
                             finishAdapter.run();
-                            if (mSuccessCallback != null) {
-                                mSuccessCallback.accept(true);
-                                mSuccessCallback = null;
-                            }
-                            resetState();
+                            cleanup(true /*success*/);
                         });
             });
         }
@@ -647,6 +644,22 @@ public class SplitSelectStateController {
         @Override
         public void onTransitionConsumed(IBinder transition, boolean aborted)
                 throws RemoteException {
+            MAIN_EXECUTOR.execute(() -> {
+                cleanup(false /*success*/);
+            });
+        }
+
+        /**
+         * Must be called on UI thread.
+         * @param success if launching the split apps occurred successfully or not
+         */
+        @UiThread
+        private void cleanup(boolean success) {
+            if (mFinishCallback != null) {
+                mFinishCallback.accept(success);
+                mFinishCallback = null;
+            }
+            resetState();
         }
     }
 
