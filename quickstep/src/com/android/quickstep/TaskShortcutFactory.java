@@ -20,6 +20,7 @@ import static android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM;
 import static android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS;
 
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_FREE_FORM_TAP;
+import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -29,7 +30,6 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
-import android.os.SystemProperties;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -351,7 +351,7 @@ public interface TaskShortcutFactory {
             return Settings.Global.getInt(
                         activity.getContentResolver(),
                         Settings.Global.DEVELOPMENT_ENABLE_FREEFORM_WINDOWS_SUPPORT, 0) != 0
-                    && !SystemProperties.getBoolean("persist.wm.debug.desktop_mode_2", false);
+                    && !isDesktopModeSupported();
         }
     };
 

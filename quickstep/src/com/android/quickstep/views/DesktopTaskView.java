@@ -17,7 +17,6 @@
 package com.android.quickstep.views;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
 
 import android.content.Context;
@@ -52,6 +51,7 @@ import com.android.quickstep.util.RecentsOrientedState;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.QuickStepContract;
+import com.android.wm.shell.Flags;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -68,9 +68,10 @@ import kotlin.Unit;
 // TODO(b/249371338): TaskView needs to be refactored to have better support for N tasks.
 public class DesktopTaskView extends TaskView {
 
-    /** Flag to indicate whether desktop windowing proto 2 is enabled */
-    public static final boolean DESKTOP_MODE_SUPPORTED = SystemProperties.getBoolean(
+    private static final boolean DESKTOP_MODE_SUPPORTED = SystemProperties.getBoolean(
             "persist.wm.debug.desktop_mode_2", false);
+
+    private static final boolean ENABLE_DESKTOP_WINDOWING = Flags.enableDesktopWindowing();
 
     private static final String TAG = DesktopTaskView.class.getSimpleName();
 
@@ -89,6 +90,17 @@ public class DesktopTaskView extends TaskView {
     private final TaskView.FullscreenDrawParams mSnapshotDrawParams;
 
     private View mBackgroundView;
+
+    /** Check whether desktop windowing is enabled */
+    public static boolean isDesktopModeSupported() {
+        // Check for aconfig flag first
+        if (ENABLE_DESKTOP_WINDOWING) {
+            return true;
+        }
+        // Fall back to sysprop flag
+        // TODO(b/304778354): remove sysprop once desktop aconfig flag supports dynamic overriding
+        return DESKTOP_MODE_SUPPORTED;
+    }
 
     public DesktopTaskView(Context context) {
         this(context, null);

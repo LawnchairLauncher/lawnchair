@@ -25,6 +25,7 @@ import static com.android.quickstep.GestureState.GestureEndTarget.LAST_TASK;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
 import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_FADE_ANIM;
 import static com.android.quickstep.util.RecentsAtomicAnimationFactory.INDEX_RECENTS_TRANSLATE_X_ANIM;
+import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 import static com.android.quickstep.views.RecentsView.ADJACENT_PAGE_HORIZONTAL_OFFSET;
 import static com.android.quickstep.views.RecentsView.FULLSCREEN_PROGRESS;
 import static com.android.quickstep.views.RecentsView.RECENTS_SCALE_PROPERTY;
@@ -65,7 +66,6 @@ import com.android.launcher3.util.NavigationMode;
 import com.android.launcher3.views.ScrimView;
 import com.android.quickstep.util.ActivityInitListener;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
-import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
@@ -111,7 +111,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         if (endTarget != null) {
             // We were on our way to this state when we got canceled, end there instead.
             startState = stateFromGestureEndTarget(endTarget);
-            if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+            if (isDesktopModeSupported()) {
                 DesktopVisibilityController controller = getDesktopVisibilityController();
                 if (controller != null && controller.areFreeformTasksVisible()
                         && endTarget == LAST_TASK) {
