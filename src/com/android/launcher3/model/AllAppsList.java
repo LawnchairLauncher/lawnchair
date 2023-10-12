@@ -79,6 +79,8 @@ public class AllAppsList {
      * @see Callbacks#FLAG_HAS_SHORTCUT_PERMISSION
      * @see Callbacks#FLAG_QUIET_MODE_ENABLED
      * @see Callbacks#FLAG_QUIET_MODE_CHANGE_PERMISSION
+     * @see Callbacks#FLAG_WORK_PROFILE_QUIET_MODE_ENABLED
+     * @see Callbacks#FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED
      */
     private int mFlags;
 

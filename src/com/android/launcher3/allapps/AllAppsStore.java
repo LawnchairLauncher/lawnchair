@@ -124,6 +124,9 @@ public class AllAppsStore<T extends Context & ActivityContext> {
      * @see com.android.launcher3.model.BgDataModel.Callbacks#FLAG_QUIET_MODE_ENABLED
      * @see com.android.launcher3.model.BgDataModel.Callbacks#FLAG_HAS_SHORTCUT_PERMISSION
      * @see com.android.launcher3.model.BgDataModel.Callbacks#FLAG_QUIET_MODE_CHANGE_PERMISSION
+     * @see com.android.launcher3.model.BgDataModel.Callbacks#FLAG_WORK_PROFILE_QUIET_MODE_ENABLED
+     * @see
+     * com.android.launcher3.model.BgDataModel.Callbacks#FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED
      */
     public boolean hasModelFlag(int mask) {
         return (mModelFlags & mask) != 0;

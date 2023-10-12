@@ -477,6 +477,10 @@ public class BgDataModel {
         int FLAG_QUIET_MODE_ENABLED = 1 << 1;
         // If launcher can change quiet mode
         int FLAG_QUIET_MODE_CHANGE_PERMISSION = 1 << 2;
+        // If quiet mode is enabled for work profile user
+        int FLAG_WORK_PROFILE_QUIET_MODE_ENABLED = 1 << 3;
+        // If quiet mode is enabled for private profile user
+        int FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED = 1 << 4;
 
         /**
          * Returns an IntSet of page ids to bind first, synchronously if possible
