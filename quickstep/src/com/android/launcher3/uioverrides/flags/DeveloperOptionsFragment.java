@@ -29,6 +29,12 @@ import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_TIMEOUT_
 import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.PLUGIN_CHANGED;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.pluginEnabledKey;
+import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
+import static com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_COUNT;
+import static com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_SEEN;
+import static com.android.launcher3.util.OnboardingPrefs.HOTSEAT_DISCOVERY_TIP_COUNT;
+import static com.android.launcher3.util.OnboardingPrefs.HOTSEAT_LONGPRESS_TIP_SEEN;
+import static com.android.launcher3.util.OnboardingPrefs.TASKBAR_EDU_TOOLTIP_STEP;
 
 import android.annotation.TargetApi;
 import android.content.ComponentName;
@@ -71,12 +77,10 @@ import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.secondarydisplay.SecondaryDisplayLauncher;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
-import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -384,24 +388,33 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
     private void addOnboardingPrefsCatergory() {
         PreferenceCategory onboardingCategory = newCategory("Onboarding Flows");
         onboardingCategory.setSummary("Reset these if you want to see the education again.");
-        for (Map.Entry<String, String[]> titleAndKeys : OnboardingPrefs.ALL_PREF_KEYS.entrySet()) {
-            String title = titleAndKeys.getKey();
-            String[] keys = titleAndKeys.getValue();
-            Preference onboardingPref = new Preference(getContext());
-            onboardingPref.setTitle(title);
-            onboardingPref.setSummary("Tap to reset");
-            onboardingPref.setOnPreferenceClickListener(preference -> {
-                SharedPreferences.Editor sharedPrefsEdit = LauncherPrefs.getPrefs(getContext())
-                        .edit();
-                for (String key : keys) {
-                    sharedPrefsEdit.remove(key);
-                }
-                sharedPrefsEdit.apply();
-                Toast.makeText(getContext(), "Reset " + title, Toast.LENGTH_SHORT).show();
-                return true;
-            });
-            onboardingCategory.addPreference(onboardingPref);
-        }
+
+        onboardingCategory.addPreference(createOnboardPref("All Apps Bounce",
+                HOME_BOUNCE_SEEN.getSharedPrefKey(), HOME_BOUNCE_COUNT.getSharedPrefKey()));
+        onboardingCategory.addPreference(createOnboardPref("Hybrid Hotseat Education",
+                HOTSEAT_DISCOVERY_TIP_COUNT.getSharedPrefKey(),
+                HOTSEAT_LONGPRESS_TIP_SEEN.getSharedPrefKey()));
+        onboardingCategory.addPreference(createOnboardPref("Taskbar Education",
+                TASKBAR_EDU_TOOLTIP_STEP.getSharedPrefKey()));
+        onboardingCategory.addPreference(createOnboardPref("All Apps Visited Count",
+                ALL_APPS_VISITED_COUNT.getSharedPrefKey()));
+    }
+
+    private Preference createOnboardPref(String title, String... keys) {
+        Preference onboardingPref = new Preference(getContext());
+        onboardingPref.setTitle(title);
+        onboardingPref.setSummary("Tap to reset");
+        onboardingPref.setOnPreferenceClickListener(preference -> {
+            SharedPreferences.Editor sharedPrefsEdit = LauncherPrefs.getPrefs(getContext())
+                    .edit();
+            for (String key : keys) {
+                sharedPrefsEdit.remove(key);
+            }
+            sharedPrefsEdit.apply();
+            Toast.makeText(getContext(), "Reset " + title, Toast.LENGTH_SHORT).show();
+            return true;
+        });
+        return onboardingPref;
     }
 
     private void addAllAppsFromOverviewCatergory() {

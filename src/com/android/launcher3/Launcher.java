@@ -206,7 +206,6 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.KeyboardShortcutsDelegate;
 import com.android.launcher3.util.LockedUserState;
-import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.RunnableList;
@@ -390,7 +389,6 @@ public class Launcher extends StatefulActivity<LauncherState>
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
     private SharedPreferences mSharedPrefs;
-    private OnboardingPrefs<? extends Launcher> mOnboardingPrefs;
 
     // Activity result which needs to be processed after workspace has loaded.
     private ActivityResultInfo mPendingActivityResult;
@@ -536,8 +534,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         initDragController();
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new StateManager<>(this, NORMAL);
-
-        mOnboardingPrefs = createOnboardingPrefs(mSharedPrefs);
 
         // TODO: move the SearchConfig to SearchState when new LauncherState is created.
         mBaseSearchConfig = new BaseSearchConfig();
@@ -686,11 +682,6 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     protected LauncherOverlayManager getDefaultOverlay() {
         return new LauncherOverlayManager() { };
-    }
-
-    protected OnboardingPrefs<? extends Launcher> createOnboardingPrefs(
-            SharedPreferences sharedPrefs) {
-        return new OnboardingPrefs<>(this, sharedPrefs);
     }
 
     @Override
@@ -3269,10 +3260,6 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     public void setPagesToBindSynchronously(@NonNull IntSet pages) {
         mPagesToBindSynchronously = pages;
-    }
-
-    public OnboardingPrefs<? extends Launcher> getOnboardingPrefs() {
-        return mOnboardingPrefs;
     }
 
     @Override

@@ -404,7 +404,6 @@ class LauncherPrefs(private val encryptedContext: Context) {
         @JvmField
         val WIDGETS_EDUCATION_TIP_SEEN = backedUpItem("launcher.widgets_education_tip_seen", false)
 
-        @VisibleForTesting
         @JvmStatic
         fun <T> backedUpItem(
             sharedPrefKey: String,
@@ -491,6 +490,8 @@ data class ConstantItem<T>(
             ITEMS_TO_MOVE_TO_DEVICE_PROTECTED_STORAGE.add(this)
         }
     }
+
+    fun get(c: Context): T = LauncherPrefs.get(c).get(this)
 }
 
 data class ContextualItem<T>(
@@ -508,6 +509,8 @@ data class ContextualItem<T>(
         }
         return default!!
     }
+
+    fun get(c: Context): T = LauncherPrefs.get(c).get(this)
 }
 
 enum class EncryptionType {

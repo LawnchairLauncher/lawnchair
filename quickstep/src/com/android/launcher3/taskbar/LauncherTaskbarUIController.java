@@ -288,8 +288,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
         // Persistent features EDU tooltip.
         if (!DisplayController.isTransientTaskbar(mLauncher)) {
-            return !mLauncher.getOnboardingPrefs().hasReachedMaxCount(
-                    OnboardingPrefs.TASKBAR_EDU_TOOLTIP_STEP);
+            return !OnboardingPrefs.TASKBAR_EDU_TOOLTIP_STEP.hasReachedMax(mLauncher);
         }
 
         // Transient swipe EDU tooltip.

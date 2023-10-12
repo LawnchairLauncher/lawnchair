@@ -67,11 +67,10 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
     @TaskbarEduTooltipStep
     var tooltipStep: Int
         get() {
-            return activityContext.onboardingPrefs?.getCount(TASKBAR_EDU_TOOLTIP_STEP)
-                ?: TOOLTIP_STEP_NONE
+            return TASKBAR_EDU_TOOLTIP_STEP.get(activityContext)
         }
         private set(step) {
-            activityContext.onboardingPrefs?.setEventCount(step, TASKBAR_EDU_TOOLTIP_STEP)
+            TASKBAR_EDU_TOOLTIP_STEP.set(step, activityContext)
         }
 
     private var tooltip: TaskbarEduTooltip? = null
