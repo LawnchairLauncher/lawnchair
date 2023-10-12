@@ -132,7 +132,9 @@ class ViewCaptureRule(var alreadyOpenActivitySupplier: Supplier<Activity?>) : Te
         for (i in 0 until viewCaptureData!!.windowDataCount) {
             frameCount += viewCaptureData!!.getWindowData(i).frameDataCount
         }
-        assertTrue("Empty ViewCapture data", frameCount > 0)
+
+        val mayProduceNoFrames = description.getAnnotation(MayProduceNoFrames::class.java) != null
+        assertTrue("Empty ViewCapture data", mayProduceNoFrames || frameCount > 0)
 
         val anomalies: Map<String, String> = ViewCaptureAnalyzer.getAnomalies(viewCaptureData)
         if (!anomalies.isEmpty()) {
@@ -159,4 +161,8 @@ class ViewCaptureRule(var alreadyOpenActivitySupplier: Supplier<Activity?>) : Te
             )
         }
     }
+
+    @Retention(AnnotationRetention.RUNTIME)
+    @Target(AnnotationTarget.FUNCTION)
+    annotation class MayProduceNoFrames
 }
