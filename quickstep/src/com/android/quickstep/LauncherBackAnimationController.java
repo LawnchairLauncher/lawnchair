@@ -185,6 +185,13 @@ public class LauncherBackAnimationController {
         @Override
         public void onBackProgressed(BackMotionEvent backMotionEvent) {
             mHandler.post(() -> {
+                LauncherBackAnimationController controller = mControllerRef.get();
+                if (controller == null
+                        || controller.mLauncher == null
+                        || !controller.mLauncher.isStarted()) {
+                    // Skip animating back progress if Launcher isn't visible yet.
+                    return;
+                }
                 mProgressAnimator.onBackProgressed(backMotionEvent);
             });
         }
@@ -294,6 +301,10 @@ public class LauncherBackAnimationController {
         SurfaceControl parent = viewRootImpl != null
                 ? viewRootImpl.getSurfaceControl()
                 : null;
+        if (parent == null || !parent.isValid()) {
+            // Parent surface is not ready at the moment. Retry later.
+            return;
+        }
         boolean isDarkTheme = Utilities.isDarkTheme(mLauncher);
         mScrimLayer = new SurfaceControl.Builder()
                 .setName("Back to launcher background scrim")
@@ -325,6 +336,10 @@ public class LauncherBackAnimationController {
     private void updateBackProgress(float progress, BackEvent event) {
         if (!mBackInProgress || mBackTarget == null) {
             return;
+        }
+        if (mScrimLayer == null) {
+            // Scrim hasn't been attached yet. Let's attach it.
+            addScrimLayer();
         }
         float screenWidth = mStartRect.width();
         float screenHeight = mStartRect.height();
@@ -445,6 +460,9 @@ public class LauncherBackAnimationController {
         if (mScrimAlphaAnimator != null && mScrimAlphaAnimator.isRunning()) {
             mScrimAlphaAnimator.cancel();
             mScrimAlphaAnimator = null;
+        }
+        if (mScrimLayer != null) {
+            removeScrimLayer();
         }
     }
 
