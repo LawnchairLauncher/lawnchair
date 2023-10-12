@@ -17,7 +17,7 @@ package com.android.quickstep;
 
 import static android.os.Process.THREAD_PRIORITY_BACKGROUND;
 
-import static com.android.launcher3.config.FeatureFlags.enableGridOnlyOverview;
+import static com.android.launcher3.Flags.enableGridOnlyOverview;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 

@@ -119,6 +119,10 @@ public final class FeatureFlags {
             getDebugFlag(275132633, "ENABLE_ALL_APPS_FROM_OVERVIEW", DISABLED,
                     "Allow entering All Apps from Overview (e.g. long swipe up from app)");
 
+    public static final BooleanFlag CUSTOM_LPNH_THRESHOLDS =
+            getDebugFlag(301680992, "CUSTOM_LPNH_THRESHOLDS", DISABLED,
+                    "Add dev options to customize the LPNH trigger slop and milliseconds");
+
     public static final BooleanFlag ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS = getReleaseFlag(
             270394468, "ENABLE_SHOW_KEYBOARD_OPTION_IN_ALL_APPS", ENABLED,
             "Enable option to show keyboard when going to all-apps");
@@ -311,16 +315,6 @@ public final class FeatureFlags {
             "Enables starting the unfold animation preemptively when unfolding, without"
                     + "waiting for SystemUI and then merging the SystemUI progress whenever we "
                     + "start receiving the events");
-
-    // TODO(Block 23): Clean up flags
-    // Aconfig migration complete for ENABLE_GRID_ONLY_OVERVIEW.
-    @VisibleForTesting
-    public static final BooleanFlag ENABLE_GRID_ONLY_OVERVIEW = getDebugFlag(270397206,
-            "ENABLE_GRID_ONLY_OVERVIEW", TEAMFOOD,
-            "Enable a grid-only overview without a focused task.");
-    public static boolean enableGridOnlyOverview() {
-        return ENABLE_GRID_ONLY_OVERVIEW.get() || Flags.enableGridOnlyOverview();
-    }
 
     // Aconfig migration complete for ENABLE_OVERVIEW_ICON_MENU.
     @VisibleForTesting

@@ -15,7 +15,7 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.config.FeatureFlags.enableGridOnlyOverview;
+import static com.android.launcher3.Flags.enableGridOnlyOverview;
 
 import android.content.Context;
 import android.content.res.Resources;

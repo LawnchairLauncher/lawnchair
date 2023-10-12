@@ -61,7 +61,7 @@ public class AppPairsController {
     private static final int BITMASK_SIZE = 16;
     private static final int BITMASK_FOR_SNAP_POSITION = (1 << BITMASK_SIZE) - 1;
 
-    private final Context mContext;
+    private Context mContext;
     private final SplitSelectStateController mSplitSelectStateController;
     private final StatsLogManager mStatsLogManager;
     public AppPairsController(Context context,
@@ -70,6 +70,10 @@ public class AppPairsController {
         mContext = context;
         mSplitSelectStateController = splitSelectStateController;
         mStatsLogManager = statsLogManager;
+    }
+
+    void onDestroy() {
+        mContext = null;
     }
 
     /**

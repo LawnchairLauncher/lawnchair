@@ -54,7 +54,7 @@ import java.io.PrintWriter
  * state
  */
 class SplitSelectDataHolder(
-        val context: Context
+        var context: Context?
 ) {
     val TAG = SplitSelectDataHolder::class.simpleName
 
@@ -99,6 +99,10 @@ class SplitSelectDataHolder(
     private var secondPendingIntent: PendingIntent? = null
     private var initialShortcut: ShortcutInfo? = null
     private var secondShortcut: ShortcutInfo? = null
+
+    fun onDestroy() {
+        context = null
+    }
 
     /**
      * @param alreadyRunningTask if set to [android.app.ActivityTaskManager.INVALID_TASK_ID]
@@ -164,18 +168,15 @@ class SplitSelectDataHolder(
     }
 
     private fun getShortcutInfo(intent: Intent?, user: UserHandle?): ShortcutInfo? {
-        val intentPackage = intent?.getPackage()
-        if (intentPackage == null) {
-            return null
-        }
+        val intentPackage = intent?.getPackage() ?: return null
         val shortcutId = intent.getStringExtra(ShortcutKey.EXTRA_SHORTCUT_ID)
                 ?: return null
         try {
             val context: Context =
                 if (user != null) {
-                    context.createPackageContextAsUser(intentPackage, 0 /* flags */, user)
+                    context!!.createPackageContextAsUser(intentPackage, 0 /* flags */, user)
                 } else {
-                    context.createPackageContext(intentPackage, 0 /* *flags */)
+                    context!!.createPackageContext(intentPackage, 0 /* *flags */)
                 }
             return ShortcutInfo.Builder(context, shortcutId).build()
         } catch (e: PackageManager.NameNotFoundException) {

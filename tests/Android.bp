@@ -93,7 +93,7 @@ android_library {
         "mockito-kotlin2",
         "mockito-target-extended-minus-junit4",
         "launcher_log_protos_lite",
-        "truth-prebuilt",
+        "truth",
         "platform-test-rules",
         "testables",
         "com_android_launcher3_flags_lib",

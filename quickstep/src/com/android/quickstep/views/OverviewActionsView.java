@@ -29,9 +29,9 @@ import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Flags;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.MultiPropertyFactory.MultiProperty;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -289,7 +289,7 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
             return 0;
         }
 
-        if (mDp.isTablet && FeatureFlags.enableGridOnlyOverview()) {
+        if (mDp.isTablet && Flags.enableGridOnlyOverview()) {
             return mDp.stashedTaskbarHeight;
         }
 

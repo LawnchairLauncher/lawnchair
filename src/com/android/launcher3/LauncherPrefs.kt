@@ -20,6 +20,7 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.util.Log
+import android.view.ViewConfiguration
 import androidx.annotation.VisibleForTesting
 import com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN
 import com.android.launcher3.LauncherFiles.DEVICE_PREFERENCES_KEY
@@ -305,6 +306,20 @@ class LauncherPrefs(private val encryptedContext: Context) {
             nonRestorableItem(
                 LauncherAppState.KEY_ALL_APPS_OVERVIEW_THRESHOLD,
                 180,
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
+        @JvmField
+        val LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE =
+            nonRestorableItem(
+                LauncherAppState.KEY_LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE,
+                100,
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
+        @JvmField
+        val LONG_PRESS_NAV_HANDLE_TIMEOUT_MS =
+            nonRestorableItem(
+                LauncherAppState.KEY_LONG_PRESS_NAV_HANDLE_TIMEOUT_MS,
+                ViewConfiguration.getLongPressTimeout(),
                 EncryptionType.MOVE_TO_DEVICE_PROTECTED
             )
         @JvmField
