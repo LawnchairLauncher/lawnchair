@@ -16,6 +16,7 @@
 package com.android.quickstep;
 
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_OVERVIEW_ICON_MENU;
 import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
 import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
@@ -30,8 +31,10 @@ import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.tapl.OverviewTaskMenu;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TaplTestsLauncher3;
+import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 
@@ -137,6 +140,42 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
                         .getCurrentTask()
                         .tapMenu()
                         .hasMenuItem("Save app pair"));
+    }
+
+    @Test
+    public void testTapBothIconMenus() {
+        createAndLaunchASplitPair();
+
+        OverviewTaskMenu taskMenu =
+                mLauncher.goHome().switchToOverview().getCurrentTask().tapMenu();
+        assertTrue("App info item not appearing in expanded task menu.",
+                taskMenu.hasMenuItem("App info"));
+        taskMenu.touchOutsideTaskMenuToDismiss();
+
+        OverviewTaskMenu splitMenu =
+                mLauncher.getOverview().getCurrentTask().tapSplitTaskMenu();
+        assertTrue("App info item not appearing in expanded split task's menu.",
+                splitMenu.hasMenuItem("App info"));
+        splitMenu.touchOutsideTaskMenuToDismiss();
+    }
+
+    @Test
+    public void testTapBothIconMenus_iconAppChipMenu() throws Exception {
+        try (AutoCloseable c = TestUtil.overrideFlag(ENABLE_OVERVIEW_ICON_MENU, true)) {
+            createAndLaunchASplitPair();
+
+            OverviewTaskMenu taskMenu =
+                    mLauncher.goHome().switchToOverview().getCurrentTask().tapMenu();
+            assertTrue("App info item not appearing in expanded task menu.",
+                    taskMenu.hasMenuItem("App info"));
+            taskMenu.touchOutsideTaskMenuToDismiss();
+
+            OverviewTaskMenu splitMenu =
+                    mLauncher.getOverview().getCurrentTask().tapSplitTaskMenu();
+            assertTrue("App info item not appearing in expanded split task's menu.",
+                    splitMenu.hasMenuItem("App info"));
+            splitMenu.touchOutsideTaskMenuToDismiss();
+        }
     }
 
     private void createAndLaunchASplitPair() {
