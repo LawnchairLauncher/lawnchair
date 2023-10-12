@@ -31,6 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.PathInterpolator;
@@ -42,6 +43,8 @@ import androidx.test.runner.AndroidJUnit4;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 
 /**
@@ -56,9 +59,11 @@ public class FastBitmapDrawableTest {
     @Spy
     FastBitmapDrawable mFastBitmapDrawable =
             spy(new FastBitmapDrawable(Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)));
+    @Mock Drawable mBadge;
 
     @Before
     public void setUp() {
+        MockitoAnnotations.initMocks(this);
         FastBitmapDrawable.setFlagHoverEnabled(true);
         when(mFastBitmapDrawable.isVisible()).thenReturn(true);
         mFastBitmapDrawable.mIsPressed = false;
@@ -325,5 +330,16 @@ public class FastBitmapDrawableTest {
         assertNull("Scale animation not null.", mFastBitmapDrawable.mScaleAnimation);
         assertEquals("End value not correct.", (float) SCALE.get(mFastBitmapDrawable), 1f, EPSILON);
         verify(mFastBitmapDrawable).invalidateSelf();
+    }
+
+    @Test
+    public void testUpdateBadgeAlpha() {
+        mFastBitmapDrawable.setBadge(mBadge);
+
+        mFastBitmapDrawable.setAlpha(1);
+        mFastBitmapDrawable.setAlpha(0);
+
+        verify(mBadge).setAlpha(1);
+        verify(mBadge).setAlpha(0);
     }
 }
