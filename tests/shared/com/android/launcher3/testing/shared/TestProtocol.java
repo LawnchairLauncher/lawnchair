@@ -115,6 +115,7 @@ public final class TestProtocol {
     public static final String REQUEST_CLEAR_DATA = "clear-data";
     public static final String REQUEST_HOTSEAT_ICON_NAMES = "get-hotseat-icon-names";
     public static final String REQUEST_IS_TABLET = "is-tablet";
+    public static final String REQUEST_NUM_ALL_APPS_COLUMNS = "num-all-apps-columns";
     public static final String REQUEST_IS_TWO_PANELS = "is-two-panel";
     public static final String REQUEST_START_DRAG_THRESHOLD = "start-drag-threshold";
     public static final String REQUEST_SHELL_DRAG_READY = "shell-drag-ready";
