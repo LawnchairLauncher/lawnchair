@@ -55,6 +55,7 @@ import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.OverviewTask;
 import com.android.launcher3.tapl.TestHelpers;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
+import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.FailureWatcher;
 import com.android.launcher3.util.rule.SamplerRule;
@@ -161,6 +162,7 @@ public class FallbackRecentsTest {
     @Before
     public void setUp() {
         mLauncher.onTestStart();
+        AbstractLauncherUiTest.verifyKeyguardInvisible();
     }
 
     @After

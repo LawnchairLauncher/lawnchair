@@ -5945,6 +5945,13 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         dispatchScrollChanged();
     }
 
+    @Override
+    protected boolean shouldHandleRequestChildFocus() {
+        // If we are already scrolling to a task view, then the focus request has already been
+        // handled
+        return mScroller.isFinished();
+    }
+
     private void dispatchScrollChanged() {
         runActionOnRemoteHandles(remoteTargetHandle ->
                 remoteTargetHandle.getTaskViewSimulator().setScroll(getScrollOffset()));

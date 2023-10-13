@@ -428,7 +428,6 @@ class LauncherPrefs(private val encryptedContext: Context) {
                 type
             )
 
-        @VisibleForTesting
         @JvmStatic
         fun <T> nonRestorableItem(
             sharedPrefKey: String,

@@ -39,6 +39,7 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.platform.test.flag.junit.SetFlagsRule;
 import android.system.OsConstants;
 import android.util.Log;
 
@@ -48,6 +49,7 @@ import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.Until;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Utilities;
@@ -202,6 +204,22 @@ public abstract class AbstractLauncherUiTest {
     @Rule
     public ScreenRecordRule mScreenRecordRule = new ScreenRecordRule();
 
+    @Rule
+    public SetFlagsRule mSetFlagsRule = getFlagsRule();
+
+    // TODO(b/301555714): Remove when SetFlagsRule initializes flags to their default values.
+    private SetFlagsRule getFlagsRule() {
+        SetFlagsRule flagsRule = new SetFlagsRule();
+        flagsRule.disableFlags(
+                Flags.FLAG_ENABLE_GRID_ONLY_OVERVIEW,
+                Flags.FLAG_ENABLE_OVERVIEW_ICON_MENU,
+                Flags.FLAG_ENABLE_RESPONSIVE_WORKSPACE,
+                Flags.FLAG_ENABLE_CURSOR_HOVER_STATES,
+                Flags.FLAG_ENABLE_TWOLINE_ALLAPPS,
+                Flags.FLAG_ENABLE_EXPANDING_PAUSE_WORK_BUTTON);
+        return flagsRule;
+    }
+
     protected void clearPackageData(String pkg) throws IOException, InterruptedException {
         final CountDownLatch count = new CountDownLatch(2);
         final SimpleBroadcastReceiver broadcastReceiver =
@@ -242,8 +260,6 @@ public abstract class AbstractLauncherUiTest {
     public void setUp() throws Exception {
         mLauncher.onTestStart();
 
-        verifyKeyguardInvisible();
-
         final String launcherPackageName = mDevice.getLauncherPackageName();
         try {
             final Context context = InstrumentationRegistry.getContext();
@@ -273,9 +289,12 @@ public abstract class AbstractLauncherUiTest {
                 }
             }
         }
+
+        verifyKeyguardInvisible();
     }
 
-    private static void verifyKeyguardInvisible() {
+    /** Fail if lock screen is present */
+    public static void verifyKeyguardInvisible() {
         final boolean keyguardAlreadyVisible = sSeenKeyguard;
 
         sSeenKeyguard = sSeenKeyguard
