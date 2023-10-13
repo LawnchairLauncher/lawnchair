@@ -17,7 +17,6 @@
 package com.android.quickstep.util;
 
 import static com.android.launcher3.Utilities.postAsyncCallback;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_DESKTOP_TO_WORKSPACE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_DESKTOP_MODE_SPLIT_LEFT_TOP;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_DESKTOP_MODE_SPLIT_RIGHT_BOTTOM;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -92,6 +91,7 @@ import com.android.quickstep.SplitSelectionListener;
 import com.android.quickstep.SystemUiProxy;
 import com.android.quickstep.TaskAnimationManager;
 import com.android.quickstep.TaskViewUtils;
+import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.GroupedTaskView;
 import com.android.quickstep.views.RecentsView;
@@ -815,7 +815,7 @@ public class SplitSelectStateController {
                 @Override
                 public boolean onRequestSplitSelect(ActivityManager.RunningTaskInfo taskInfo,
                         int splitPosition, Rect taskBounds) {
-                    if (!ENABLE_SPLIT_FROM_DESKTOP_TO_WORKSPACE.get()) return false;
+                    if (!DesktopTaskView.DESKTOP_MODE_SUPPORTED) return false;
                     MAIN_EXECUTOR.execute(() -> enterSplitSelect(taskInfo, splitPosition,
                             taskBounds));
                     return true;
