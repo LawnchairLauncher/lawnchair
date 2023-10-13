@@ -122,7 +122,9 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     private AnimatorPlaybackController mIconAlignControllerLazy = null;
     private Runnable mOnControllerPreCreateCallback = NO_OP;
 
+    // Stored here as signals to determine if the mIconAlignController needs to be recreated.
     private boolean mIsHotseatIconOnTopWhenAligned;
+    private boolean mIsStashed;
 
     private final DeviceProfile.OnDeviceProfileChangeListener mDeviceProfileChangeListener =
             dp -> commitRunningAppsToUI();
@@ -435,10 +437,13 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     public void setLauncherIconAlignment(float alignmentRatio, DeviceProfile launcherDp) {
         boolean isHotseatIconOnTopWhenAligned =
                 mControllers.uiController.isHotseatIconOnTopWhenAligned();
-        // When mIsHotseatIconOnTopWhenAligned changes, animation needs to be re-created.
+        boolean isStashed = mControllers.taskbarStashController.isStashed();
+        // Re-create animation when mIsHotseatIconOnTopWhenAligned or mIsStashed changes.
         if (mIconAlignControllerLazy == null
-                || mIsHotseatIconOnTopWhenAligned != isHotseatIconOnTopWhenAligned) {
+                || mIsHotseatIconOnTopWhenAligned != isHotseatIconOnTopWhenAligned
+                || mIsStashed != isStashed) {
             mIsHotseatIconOnTopWhenAligned = isHotseatIconOnTopWhenAligned;
+            mIsStashed = isStashed;
             mIconAlignControllerLazy = createIconAlignmentController(launcherDp);
         }
         mIconAlignControllerLazy.setPlayFraction(alignmentRatio);
@@ -500,7 +505,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                     || (isTaskbarDividerView && FeatureFlags.ENABLE_TASKBAR_PINNING.get())) {
                 if (!isToHome
                         && mIsHotseatIconOnTopWhenAligned
-                        && mControllers.taskbarStashController.isStashed()) {
+                        && mIsStashed) {
                     // Prevent All Apps icon from appearing when going from hotseat to nav handle.
                     setter.setViewAlpha(child, 0, Interpolators.clampToProgress(LINEAR, 0f, 0f));
                 } else {
