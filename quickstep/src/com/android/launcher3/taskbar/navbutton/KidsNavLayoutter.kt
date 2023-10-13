@@ -47,7 +47,7 @@ class KidsNavLayoutter(
             a11yButton
     ) {
 
-    override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
+    override fun layoutButtons(dp: DeviceProfile, isA11yButtonPersistent: Boolean) {
         val iconSize: Int = resources.getDimensionPixelSize(DIMEN_TASKBAR_ICON_SIZE_KIDS)
         val buttonWidth: Int = resources.getDimensionPixelSize(DIMEN_TASKBAR_NAV_BUTTONS_WIDTH_KIDS)
         val buttonHeight: Int =

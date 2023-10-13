@@ -48,7 +48,7 @@ open class PhoneLandscapeNavLayoutter(
             a11yButton
     ) {
 
-    override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
+    override fun layoutButtons(dp: DeviceProfile, isA11yButtonPersistent: Boolean) {
         // TODO(b/230395757): Polish pending, this is just to make it usable
         val endStartMargins = resources.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size)
         val taskbarDimensions = DimensionUtils.getTaskbarPhoneDimensions(dp, resources,
