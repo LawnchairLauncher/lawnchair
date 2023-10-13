@@ -30,13 +30,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.tapl.OverviewTaskMenu;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
+import com.android.wm.shell.Flags;
 
 import org.junit.After;
 import org.junit.Before;
@@ -114,7 +114,7 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
     @Ignore("Enable once App Pairs flagged on. These cause memory leaks b/297135374")
     public void testSaveAppPairMenuItemExistsOnSplitPair() throws Exception {
         assumeTrue("App pairs feature is currently not enabled, no test needed",
-                FeatureFlags.ENABLE_APP_PAIRS.get());
+                Flags.enableAppPairs());
 
         createAndLaunchASplitPair();
 
@@ -130,7 +130,7 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
     @Ignore("Enable once App Pairs flagged on. These cause memory leaks b/297135374")
     public void testSaveAppPairMenuItemDoesNotExistOnSingleTask() throws Exception {
         assumeTrue("App pairs feature is currently not enabled, no test needed",
-                FeatureFlags.ENABLE_APP_PAIRS.get());
+                Flags.enableAppPairs());
 
         startAppFast(CALCULATOR_APP_PACKAGE);
 
