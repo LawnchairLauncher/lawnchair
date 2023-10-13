@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.ui.workspace;
 
+import static com.android.launcher3.util.TestConstants.AppNames.TEST_APP_NAME;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -51,7 +53,6 @@ import java.util.Queue;
 public class ThemeIconsTest extends AbstractLauncherUiTest {
 
     private static final String APP_NAME = "IconThemedActivity";
-    private static final String SHORTCUT_APP_NAME = "LauncherTestApp";
     private static final String SHORTCUT_NAME = "Shortcut 1";
 
     @Test
@@ -81,7 +82,7 @@ public class ThemeIconsTest extends AbstractLauncherUiTest {
         allApps.freeze();
 
         try {
-            HomeAppIcon icon = allApps.getAppIcon(SHORTCUT_APP_NAME);
+            HomeAppIcon icon = allApps.getAppIcon(TEST_APP_NAME);
             HomeAppIconMenuItem shortcutItem =
                     (HomeAppIconMenuItem) icon.openDeepShortcutMenu().getMenuItem(SHORTCUT_NAME);
             shortcutItem.dragToWorkspace(false, false);
@@ -118,7 +119,7 @@ public class ThemeIconsTest extends AbstractLauncherUiTest {
         allApps.freeze();
 
         try {
-            HomeAppIcon icon = allApps.getAppIcon(SHORTCUT_APP_NAME);
+            HomeAppIcon icon = allApps.getAppIcon(TEST_APP_NAME);
             HomeAppIconMenuItem shortcutItem =
                     (HomeAppIconMenuItem) icon.openDeepShortcutMenu().getMenuItem(SHORTCUT_NAME);
             shortcutItem.dragToWorkspace(false, false);

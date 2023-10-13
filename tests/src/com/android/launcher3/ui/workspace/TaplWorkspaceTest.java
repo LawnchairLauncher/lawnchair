@@ -16,6 +16,7 @@
 package com.android.launcher3.ui.workspace;
 
 import static com.android.launcher3.ui.TaplTestsLauncher3.initialize;
+import static com.android.launcher3.util.TestConstants.AppNames.CHROME_APP_NAME;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -85,7 +86,8 @@ public class TaplWorkspaceTest extends AbstractLauncherUiTest {
                 isWorkspaceScrollable(launcher)));
         assertEquals("Initial workspace doesn't have the correct page", workspace.pagesPerScreen(),
                 workspace.getPageCount());
-        workspace.verifyWorkspaceAppIconIsGone("Chrome app was found on empty workspace", "Chrome");
+        workspace.verifyWorkspaceAppIconIsGone("Chrome app was found on empty workspace",
+                CHROME_APP_NAME);
         workspace.ensureWorkspaceIsScrollable();
 
         executeOnLauncher(
@@ -96,7 +98,7 @@ public class TaplWorkspaceTest extends AbstractLauncherUiTest {
                 launcher -> assertTrue("ensureScrollable didn't make workspace scrollable",
                         isWorkspaceScrollable(launcher)));
         assertNotNull("ensureScrollable didn't add Chrome app",
-                workspace.getWorkspaceAppIcon("Chrome"));
+                workspace.getWorkspaceAppIcon(CHROME_APP_NAME));
 
         // Test flinging workspace.
         workspace.flingBackward();
@@ -112,7 +114,7 @@ public class TaplWorkspaceTest extends AbstractLauncherUiTest {
         assertTrue("Launcher internal state is not Home", isInState(() -> LauncherState.NORMAL));
 
         // Test starting a workspace app.
-        final HomeAppIcon app = workspace.getWorkspaceAppIcon("Chrome");
+        final HomeAppIcon app = workspace.getWorkspaceAppIcon(CHROME_APP_NAME);
         assertNotNull("No Chrome app in workspace", app);
     }
 

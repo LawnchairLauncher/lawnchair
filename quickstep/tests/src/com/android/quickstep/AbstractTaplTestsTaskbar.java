@@ -37,7 +37,6 @@ import java.util.List;
 
 public class AbstractTaplTestsTaskbar extends AbstractQuickStepTest {
 
-    protected static final String TEST_APP_NAME = "LauncherTestApp";
     protected static final String TEST_APP_PACKAGE =
             getInstrumentation().getContext().getPackageName();
     protected static final String CALCULATOR_APP_PACKAGE =

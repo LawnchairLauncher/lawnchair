@@ -15,10 +15,10 @@
  */
 package com.android.launcher3.dragging;
 
-import static com.android.launcher3.ui.TaplTestsLauncher3.APP_NAME;
-import static com.android.launcher3.ui.TaplTestsLauncher3.GMAIL_APP_NAME;
-import static com.android.launcher3.ui.TaplTestsLauncher3.MAPS_APP_NAME;
-import static com.android.launcher3.ui.TaplTestsLauncher3.STORE_APP_NAME;
+import static com.android.launcher3.util.TestConstants.AppNames.TEST_APP_NAME;
+import static com.android.launcher3.util.TestConstants.AppNames.GMAIL_APP_NAME;
+import static com.android.launcher3.util.TestConstants.AppNames.MAPS_APP_NAME;
+import static com.android.launcher3.util.TestConstants.AppNames.STORE_APP_NAME;
 import static com.android.launcher3.ui.TaplTestsLauncher3.initialize;
 
 import static org.junit.Assert.assertEquals;
@@ -118,7 +118,7 @@ public class TaplDragTest extends AbstractLauncherUiTest {
         allApps.freeze();
         try {
             final HomeAppIconMenuItem menuItem = allApps
-                    .getAppIcon(APP_NAME)
+                    .getAppIcon(TEST_APP_NAME)
                     .openDeepShortcutMenu()
                     .getMenuItem(0);
             final String actualShortcutName = menuItem.getText();
@@ -147,7 +147,7 @@ public class TaplDragTest extends AbstractLauncherUiTest {
             final HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
             allApps.freeze();
             try {
-                allApps.getAppIcon(APP_NAME)
+                allApps.getAppIcon(TEST_APP_NAME)
                         .openDeepShortcutMenu()
                         .getMenuItem(0)
                         .dragToWorkspace(target.x, target.y);
@@ -194,8 +194,8 @@ public class TaplDragTest extends AbstractLauncherUiTest {
         final HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
         allApps.freeze();
         try {
-            allApps.getAppIcon(APP_NAME).dragToWorkspace(false, false);
-            mLauncher.getWorkspace().getWorkspaceAppIcon(APP_NAME).launch(getAppPackageName());
+            allApps.getAppIcon(TEST_APP_NAME).dragToWorkspace(false, false);
+            mLauncher.getWorkspace().getWorkspaceAppIcon(TEST_APP_NAME).launch(getAppPackageName());
         } finally {
             allApps.unfreeze();
         }
@@ -222,7 +222,7 @@ public class TaplDragTest extends AbstractLauncherUiTest {
             final HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
             allApps.freeze();
             try {
-                allApps.getAppIcon(APP_NAME).dragToWorkspace(target.x, target.y);
+                allApps.getAppIcon(TEST_APP_NAME).dragToWorkspace(target.x, target.y);
             } finally {
                 allApps.unfreeze();
             }
@@ -235,7 +235,7 @@ public class TaplDragTest extends AbstractLauncherUiTest {
         }
 
         // test to move a shortcut to other cell.
-        final HomeAppIcon launcherTestAppIcon = createShortcutInCenterIfNotExist(APP_NAME);
+        final HomeAppIcon launcherTestAppIcon = createShortcutInCenterIfNotExist(TEST_APP_NAME);
         for (Point target : targets) {
             startTime = SystemClock.uptimeMillis();
             launcherTestAppIcon.dragToWorkspace(target.x, target.y);
