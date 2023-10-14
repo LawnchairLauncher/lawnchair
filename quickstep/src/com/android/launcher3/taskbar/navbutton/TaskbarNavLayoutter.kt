@@ -92,15 +92,10 @@ class TaskbarNavLayoutter(
         startContextualContainer.removeAllViews()
 
         if (!dp.isGestureMode) {
-            val endContextualContainerParams = FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
-            endContextualContainerParams.gravity = Gravity.END or Gravity.CENTER_VERTICAL
-            endContextualContainer.layoutParams = endContextualContainerParams
-
-            val startContextualContainerParams = FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
-            startContextualContainerParams.gravity = Gravity.START or Gravity.CENTER_VERTICAL
-            startContextualContainer.layoutParams = startContextualContainerParams
+            val contextualMargin = resources.getDimensionPixelSize(
+                    R.dimen.taskbar_contextual_button_padding)
+            repositionContextualContainer(endContextualContainer, 0, Gravity.END)
+            repositionContextualContainer(startContextualContainer, contextualMargin, Gravity.START)
 
             if (imeSwitcher != null) {
                 startContextualContainer.addView(imeSwitcher)

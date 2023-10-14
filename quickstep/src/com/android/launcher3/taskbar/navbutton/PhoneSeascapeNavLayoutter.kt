@@ -19,9 +19,9 @@ package com.android.launcher3.taskbar.navbutton
 import android.content.res.Resources
 import android.view.Gravity
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import com.android.launcher3.R
 import com.android.systemui.shared.rotation.RotationButton
 
 class PhoneSeascapeNavLayoutter(
@@ -54,10 +54,9 @@ class PhoneSeascapeNavLayoutter(
         endContextualContainer.removeAllViews()
         startContextualContainer.removeAllViews()
 
-        val endContextualContainerParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        endContextualContainerParams.gravity = Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
-        endContextualContainer.layoutParams = endContextualContainerParams
+        val contextualMargin = resources.getDimensionPixelSize(
+                R.dimen.taskbar_contextual_button_padding)
+        repositionContextualContainer(endContextualContainer, contextualMargin, Gravity.BOTTOM)
 
         if (imeSwitcher != null) {
             endContextualContainer.addView(imeSwitcher)
