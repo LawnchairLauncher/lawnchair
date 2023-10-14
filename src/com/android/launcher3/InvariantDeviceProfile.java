@@ -486,9 +486,7 @@ public class InvariantDeviceProfile {
                 iconBitmapSize, fillResIconDpi, numDatabaseAllAppsColumns, dbFile};
     }
 
-    /** Updates IDP using the provided context. Notifies listeners of change. */
-    @VisibleForTesting
-    public void onConfigChanged(Context context) {
+    private void onConfigChanged(Context context) {
         Object[] oldState = toModelState();
 
         // Re-init grid

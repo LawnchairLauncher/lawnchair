@@ -315,7 +315,7 @@ public interface TaskShortcutFactory {
                 TaskIdAttributeContainer taskContainer) {
             final TaskView taskView = taskContainer.getTaskView();
 
-            if (!FeatureFlags.ENABLE_APP_PAIRS.get() || !taskView.containsMultipleTasks()) {
+            if (!FeatureFlags.enableAppPairs() || !taskView.containsMultipleTasks()) {
                 return null;
             }
 

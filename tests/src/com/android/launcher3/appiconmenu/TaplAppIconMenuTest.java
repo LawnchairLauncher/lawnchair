@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.appiconmenu;
 
-import static com.android.launcher3.ui.TaplTestsLauncher3.APP_NAME;
+import static com.android.launcher3.util.TestConstants.AppNames.TEST_APP_NAME;
 import static com.android.launcher3.ui.TaplTestsLauncher3.initialize;
 
 import static org.junit.Assert.assertEquals;
@@ -64,7 +64,7 @@ public class TaplAppIconMenuTest extends AbstractLauncherUiTest {
         final AllApps allApps = mLauncher.getWorkspace().switchToAllApps();
         allApps.freeze();
         try {
-            final AppIconMenu menu = allApps.getAppIcon(APP_NAME).openDeepShortcutMenu();
+            final AppIconMenu menu = allApps.getAppIcon(TEST_APP_NAME).openDeepShortcutMenu();
 
             executeOnLauncher(
                     launcher -> assertTrue("Launcher internal state didn't switch to Showing Menu",
@@ -89,9 +89,9 @@ public class TaplAppIconMenuTest extends AbstractLauncherUiTest {
         final HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
         allApps.freeze();
         try {
-            allApps.getAppIcon(APP_NAME).dragToWorkspace(false, false);
+            allApps.getAppIcon(TEST_APP_NAME).dragToWorkspace(false, false);
             final AppIconMenu menu = mLauncher.getWorkspace().getWorkspaceAppIcon(
-                    APP_NAME).openDeepShortcutMenu();
+                    TEST_APP_NAME).openDeepShortcutMenu();
 
             executeOnLauncher(
                     launcher -> assertTrue("Launcher internal state didn't switch to Showing Menu",

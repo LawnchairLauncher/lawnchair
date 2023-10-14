@@ -274,11 +274,14 @@ public final class FeatureFlags {
                     + " locked. Enabling this causes a 1-time movement of certain SharedPreferences"
                     + " data. Improves startup latency.");
 
-    // TODO(Block 18): Clean up flags
+    // Aconfig migration complete for ENABLE_APP_PAIRS.
     public static final BooleanFlag ENABLE_APP_PAIRS = getDebugFlag(274189428,
             "ENABLE_APP_PAIRS", DISABLED,
             "Enables the ability to create and save app pairs on the Home screen for easy"
                     + " split screen launching.");
+    public static boolean enableAppPairs() {
+        return ENABLE_APP_PAIRS.get() || com.android.wm.shell.Flags.enableAppPairs();
+    }
 
     // TODO(Block 19): Clean up flags
     public static final BooleanFlag SCROLL_TOP_TO_RESET = getReleaseFlag(270395177,
@@ -393,10 +396,6 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE = getDebugFlag(
             270393453, "ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE", DISABLED,
             "Enable initiating split screen from workspace to workspace.");
-
-    public static final BooleanFlag ENABLE_SPLIT_FROM_DESKTOP_TO_WORKSPACE = getDebugFlag(
-            279586624, "ENABLE_SPLIT_FROM_DESKTOP_TO_WORKSPACE", DISABLED,
-            "Enable initiating split screen from desktop mode to workspace.");
 
     public static final BooleanFlag ENABLE_TRACKPAD_GESTURE = getDebugFlag(271010401,
             "ENABLE_TRACKPAD_GESTURE", ENABLED, "Enables trackpad gesture.");

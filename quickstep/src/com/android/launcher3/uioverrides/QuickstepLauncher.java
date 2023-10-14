@@ -61,7 +61,6 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Rect;
@@ -344,11 +343,6 @@ public class QuickstepLauncher extends Launcher {
     }
 
     @Override
-    protected QuickstepOnboardingPrefs createOnboardingPrefs(SharedPreferences sharedPrefs) {
-        return new QuickstepOnboardingPrefs(this, sharedPrefs);
-    }
-
-    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         onStateOrResumeChanging(false /* inTransition */);
@@ -619,6 +613,7 @@ public class QuickstepLauncher extends Launcher {
             mViewCapture = SettingsAwareViewCapture.getInstance(this).startCapture(getWindow());
         }
         getWindow().addPrivateFlags(PRIVATE_FLAG_OPTIMIZE_MEASURE);
+        QuickstepOnboardingPrefs.setup(this);
         View.setTraceLayoutSteps(TRACE_LAYOUTS);
         View.setTracedRequestLayoutClassClass(TRACE_RELAYOUT_CLASS);
     }

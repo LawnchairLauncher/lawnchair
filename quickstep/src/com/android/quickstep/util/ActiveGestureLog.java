@@ -31,7 +31,7 @@ import java.util.Objects;
  */
 public class ActiveGestureLog {
 
-    private static final int MAX_GESTURES_TRACKED = 10;
+    private static final int MAX_GESTURES_TRACKED = 15;
 
     public static final ActiveGestureLog INSTANCE = new ActiveGestureLog();
 

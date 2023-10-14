@@ -206,7 +206,6 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.KeyboardShortcutsDelegate;
 import com.android.launcher3.util.LockedUserState;
-import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.RunnableList;
@@ -384,13 +383,9 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     private PopupDataProvider mPopupDataProvider;
 
-    private IntSet mSynchronouslyBoundPages = new IntSet();
-    @NonNull private IntSet mPagesToBindSynchronously = new IntSet();
-
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
     private SharedPreferences mSharedPrefs;
-    private OnboardingPrefs<? extends Launcher> mOnboardingPrefs;
 
     // Activity result which needs to be processed after workspace has loaded.
     private ActivityResultInfo mPendingActivityResult;
@@ -537,8 +532,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new StateManager<>(this, NORMAL);
 
-        mOnboardingPrefs = createOnboardingPrefs(mSharedPrefs);
-
         // TODO: move the SearchConfig to SearchState when new LauncherState is created.
         mBaseSearchConfig = new BaseSearchConfig();
 
@@ -564,7 +557,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (savedInstanceState != null) {
             int[] pageIds = savedInstanceState.getIntArray(RUNTIME_STATE_CURRENT_SCREEN_IDS);
             if (pageIds != null) {
-                mPagesToBindSynchronously = IntSet.wrap(pageIds);
+                mModelCallbacks.setPagesToBindSynchronously(IntSet.wrap(pageIds));
             }
         }
 
@@ -686,11 +679,6 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     protected LauncherOverlayManager getDefaultOverlay() {
         return new LauncherOverlayManager() { };
-    }
-
-    protected OnboardingPrefs<? extends Launcher> createOnboardingPrefs(
-            SharedPreferences sharedPrefs) {
-        return new OnboardingPrefs<>(this, sharedPrefs);
     }
 
     @Override
@@ -1657,8 +1645,9 @@ public class Launcher extends StatefulActivity<LauncherState>
     @Override
     public void onRestoreInstanceState(Bundle state) {
         super.onRestoreInstanceState(state);
-        if (mSynchronouslyBoundPages != null) {
-            mSynchronouslyBoundPages.forEach(screenId -> {
+        IntSet synchronouslyBoundPages = mModelCallbacks.getSynchronouslyBoundPages();
+        if (synchronouslyBoundPages != null) {
+            synchronouslyBoundPages.forEach(screenId -> {
                 int pageIndex = mWorkspace.getPageIndexForScreenId(screenId);
                 if (pageIndex != PagedView.INVALID_PAGE) {
                     mWorkspace.restoreInstanceStateForChild(pageIndex);
@@ -2081,41 +2070,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public IntSet getPagesToBindSynchronously(IntArray orderedScreenIds) {
-        IntSet visibleIds;
-        if (!mPagesToBindSynchronously.isEmpty()) {
-            visibleIds = mPagesToBindSynchronously;
-        } else if (!mWorkspaceLoading) {
-            visibleIds = mWorkspace.getCurrentPageScreenIds();
-        } else {
-            // If workspace binding is still in progress, getCurrentPageScreenIds won't be accurate,
-            // and we should use mSynchronouslyBoundPages that's set during initial binding.
-            visibleIds = mSynchronouslyBoundPages;
-        }
-        IntArray actualIds = new IntArray();
-
-        IntSet result = new IntSet();
-        if (visibleIds.isEmpty()) {
-            return result;
-        }
-        for (int id : orderedScreenIds.toArray()) {
-            actualIds.add(id);
-        }
-        int firstId = visibleIds.getArray().get(0);
-        int pairId = mWorkspace.getScreenPair(firstId);
-        // Double check that actual screenIds contains the visibleId, as empty screens are hidden
-        // in single panel.
-        if (actualIds.contains(firstId)) {
-            result.add(firstId);
-            if (mDeviceProfile.isTwoPanels && actualIds.contains(pairId)) {
-                result.add(pairId);
-            }
-        } else if (LauncherAppState.getIDP(this).supportedProfiles.stream().anyMatch(
-                deviceProfile -> deviceProfile.isTwoPanels) && actualIds.contains(pairId)) {
-            // Add the right panel if left panel is hidden when switching display, due to empty
-            // pages being hidden in single panel.
-            result.add(pairId);
-        }
-        return result;
+        return mModelCallbacks.getPagesToBindSynchronously(orderedScreenIds);
     }
 
     /**
@@ -2617,8 +2572,8 @@ public class Launcher extends StatefulActivity<LauncherState>
     @TargetApi(Build.VERSION_CODES.S)
     public void onInitialBindComplete(IntSet boundPages, RunnableList pendingTasks,
             int workspaceItemCount, boolean isBindSync) {
-        mSynchronouslyBoundPages = boundPages;
-        mPagesToBindSynchronously = new IntSet();
+        mModelCallbacks.setSynchronouslyBoundPages(boundPages);
+        mModelCallbacks.setPagesToBindSynchronously(new IntSet());
 
         clearPendingBinds();
         ViewOnDrawExecutor executor = new ViewOnDrawExecutor(pendingTasks);
@@ -2691,7 +2646,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         // Since we are just resetting the current page without user interaction,
         // override the previous page so we don't log the page switch.
         mWorkspace.setCurrentPage(currentPage, currentPage /* overridePrevPage */);
-        mPagesToBindSynchronously = new IntSet();
+        mModelCallbacks.setPagesToBindSynchronously(new IntSet());
 
         // Cache one page worth of icons
         getViewCache().setCacheSize(R.layout.folder_application,
@@ -3268,11 +3223,7 @@ public class Launcher extends StatefulActivity<LauncherState>
      * @param pages should not be null.
      */
     public void setPagesToBindSynchronously(@NonNull IntSet pages) {
-        mPagesToBindSynchronously = pages;
-    }
-
-    public OnboardingPrefs<? extends Launcher> getOnboardingPrefs() {
-        return mOnboardingPrefs;
+        mModelCallbacks.setPagesToBindSynchronously(pages);
     }
 
     @Override

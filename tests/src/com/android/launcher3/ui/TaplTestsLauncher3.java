@@ -23,7 +23,6 @@ import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,11 +31,6 @@ import org.junit.runner.RunWith;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
-    public static final String APP_NAME = "LauncherTestApp";
-    public static final String DUMMY_APP_NAME = "Aardwolf";
-    public static final String MAPS_APP_NAME = "Maps";
-    public static final String STORE_APP_NAME = "Play Store";
-    public static final String GMAIL_APP_NAME = "Gmail";
 
     @Before
     public void setUp() throws Exception {

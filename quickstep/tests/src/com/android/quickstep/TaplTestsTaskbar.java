@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.util.TestConstants.AppNames.TEST_APP_NAME;
 import static com.android.quickstep.TaplTestsTaskbar.TaskbarMode.PERSISTENT;
 import static com.android.quickstep.TaplTestsTaskbar.TaskbarMode.TRANSIENT;
 

@@ -24,10 +24,12 @@ import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
 import static com.android.launcher3.Launcher.INTENT_ACTION_ALL_APPS_TOGGLE;
+import static com.android.launcher3.LauncherPrefs.backedUpItem;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMultiFingerSwipe;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TRACKPAD_GESTURE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.OnboardingPrefs.HOME_BOUNCE_SEEN;
 import static com.android.launcher3.util.window.WindowManagerProxy.MIN_TABLET_WIDTH;
 import static com.android.quickstep.GestureState.DEFAULT_STATE;
 import static com.android.quickstep.GestureState.TrackpadGestureType.getTrackpadGestureType;
@@ -60,7 +62,6 @@ import android.app.Service;
 import android.content.IIntentReceiver;
 import android.content.IIntentSender;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Region;
 import android.graphics.drawable.Icon;
@@ -84,7 +85,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.ConstantItem;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.EncryptionType;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatedFloat;
@@ -100,7 +103,6 @@ import com.android.launcher3.uioverrides.flags.FlagsFactory;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.LockedUserState;
-import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.ScreenOnTracker;
 import com.android.launcher3.util.TraceHelper;
@@ -158,7 +160,8 @@ public class TouchInteractionService extends Service {
 
     private static final String TAG = "TouchInteractionService";
 
-    private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
+    private static final ConstantItem<Boolean> HAS_ENABLED_QUICKSTEP_ONCE = backedUpItem(
+            "launcher.has_enabled_quickstep_once", false, EncryptionType.ENCRYPTED);
 
     private final TISBinder mTISBinder = new TISBinder(this);
 
@@ -569,12 +572,11 @@ public class TouchInteractionService extends Service {
         }
 
         // Reset home bounce seen on quick step enabled for first time
-        SharedPreferences sharedPrefs = LauncherPrefs.getPrefs(this);
-        if (!sharedPrefs.getBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)) {
-            sharedPrefs.edit()
-                    .putBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)
-                    .putBoolean(OnboardingPrefs.HOME_BOUNCE_SEEN, false)
-                    .apply();
+        LauncherPrefs prefs = LauncherPrefs.get(this);
+        if (!prefs.get(HAS_ENABLED_QUICKSTEP_ONCE)) {
+            prefs.put(
+                    HAS_ENABLED_QUICKSTEP_ONCE.to(true),
+                    HOME_BOUNCE_SEEN.to(false));
         }
     }
 

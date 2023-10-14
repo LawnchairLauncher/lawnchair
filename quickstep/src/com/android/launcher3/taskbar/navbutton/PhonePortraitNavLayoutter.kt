@@ -47,7 +47,7 @@ class PhonePortraitNavLayoutter(
             a11yButton
     ) {
 
-    override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
+    override fun layoutButtons(dp: DeviceProfile, isA11yButtonPersistent: Boolean) {
         // TODO(b/230395757): Polish pending, this is just to make it usable
         val taskbarDimensions =
             DimensionUtils.getTaskbarPhoneDimensions(dp, resources,

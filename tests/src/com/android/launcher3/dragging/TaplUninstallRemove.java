@@ -16,11 +16,12 @@
 package com.android.launcher3.dragging;
 
 import static com.android.launcher3.testing.shared.TestProtocol.ICON_MISSING;
-import static com.android.launcher3.ui.TaplTestsLauncher3.APP_NAME;
-import static com.android.launcher3.ui.TaplTestsLauncher3.DUMMY_APP_NAME;
-import static com.android.launcher3.ui.TaplTestsLauncher3.MAPS_APP_NAME;
-import static com.android.launcher3.ui.TaplTestsLauncher3.STORE_APP_NAME;
 import static com.android.launcher3.ui.TaplTestsLauncher3.initialize;
+import static com.android.launcher3.util.TestConstants.AppNames.DUMMY_APP_NAME;
+import static com.android.launcher3.util.TestConstants.AppNames.GMAIL_APP_NAME;
+import static com.android.launcher3.util.TestConstants.AppNames.MAPS_APP_NAME;
+import static com.android.launcher3.util.TestConstants.AppNames.STORE_APP_NAME;
+import static com.android.launcher3.util.TestConstants.AppNames.TEST_APP_NAME;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -62,7 +63,7 @@ public class TaplUninstallRemove extends AbstractLauncherUiTest {
     @Test
     @PortraitLandscape
     public void testDeleteFromWorkspace() {
-        for (String appName : new String[]{"Gmail", "Play Store", APP_NAME}) {
+        for (String appName : new String[]{GMAIL_APP_NAME, STORE_APP_NAME, TEST_APP_NAME}) {
             final HomeAppIcon homeAppIcon = createShortcutInCenterIfNotExist(appName);
             Workspace workspace = mLauncher.getWorkspace().deleteAppIcon(homeAppIcon);
             workspace.verifyWorkspaceAppIconIsGone(
@@ -174,9 +175,9 @@ public class TaplUninstallRemove extends AbstractLauncherUiTest {
         mLauncher.getWorkspace()
                 .deleteAppIcon(mLauncher.getWorkspace().getHotseatAppIcon(0))
                 .switchToAllApps()
-                .getAppIcon(APP_NAME)
+                .getAppIcon(TEST_APP_NAME)
                 .dragToHotseat(0);
         mLauncher.getWorkspace().deleteAppIcon(
-                mLauncher.getWorkspace().getHotseatAppIcon(APP_NAME));
+                mLauncher.getWorkspace().getHotseatAppIcon(TEST_APP_NAME));
     }
 }
