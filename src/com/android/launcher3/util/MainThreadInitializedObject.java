@@ -93,7 +93,7 @@ public class MainThreadInitializedObject<T> {
      * Abstract Context which allows custom implementations for
      * {@link MainThreadInitializedObject} providers
      */
-    public static abstract class SandboxContext extends ContextWrapper {
+    public static class SandboxContext extends ContextWrapper {
 
         private static final String TAG = "SandboxContext";
 
@@ -164,6 +164,15 @@ public class MainThreadInitializedObject<T> {
         @UiThread
         protected <T> T createObject(MainThreadInitializedObject<T> object) {
             return object.mProvider.get(this);
+        }
+
+        /**
+         * Put a value into mObjectMap, can be used to put mocked MainThreadInitializedObject
+         * instances into SandboxContext.
+         */
+        @VisibleForTesting
+        public <T> void putObject(MainThreadInitializedObject<T> object, T value) {
+            mObjectMap.put(object, value);
         }
     }
 }
