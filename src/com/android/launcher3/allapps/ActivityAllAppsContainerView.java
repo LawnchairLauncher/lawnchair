@@ -80,6 +80,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.model.StringCache;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.recyclerview.AllAppsRecyclerViewPool;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ActivityContext;
@@ -93,7 +94,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 /**
  * All apps container view with search support for use in a dragging activity.
@@ -623,16 +623,18 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     private static void setUpCustomRecyclerViewPool(
             @NonNull AllAppsRecyclerView mainRecyclerView,
             @Nullable AllAppsRecyclerView workRecyclerView,
-            @NonNull RecyclerView.RecycledViewPool recycledViewPool) {
+            @NonNull AllAppsRecyclerViewPool recycledViewPool) {
         if (!ENABLE_ALL_APPS_RV_PREINFLATION.get()) {
             return;
         }
+        final boolean hasWorkProfile = workRecyclerView != null;
+        recycledViewPool.setHasWorkProfile(hasWorkProfile);
         mainRecyclerView.setRecycledViewPool(recycledViewPool);
         if (workRecyclerView != null) {
             workRecyclerView.setRecycledViewPool(recycledViewPool);
         }
         if (ALL_APPS_GONE_VISIBILITY.get()) {
-            mainRecyclerView.updatePoolSize();
+            mainRecyclerView.updatePoolSize(hasWorkProfile);
         }
     }
 
