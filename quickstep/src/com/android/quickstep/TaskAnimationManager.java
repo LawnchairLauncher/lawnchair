@@ -21,6 +21,7 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.NavigationMode.NO_BUTTON;
 import static com.android.quickstep.GestureState.GestureEndTarget.RECENTS;
+import static com.android.quickstep.GestureState.STATE_END_TARGET_ANIMATION_FINISHED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_INITIALIZED;
 import static com.android.quickstep.GestureState.STATE_RECENTS_ANIMATION_STARTED;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.START_RECENTS_ANIMATION;
@@ -40,7 +41,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.DisplayController;
-import com.android.quickstep.TopTaskTracker.CachedTaskInfo;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -154,6 +154,24 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                     mLastAppearedTaskTargets[i] = task;
                 }
                 mLastGestureState.updateLastAppearedTaskTargets(mLastAppearedTaskTargets);
+
+                if (ENABLE_SHELL_TRANSITIONS && mTargets.hasRecents
+                        // The filtered (MODE_CLOSING) targets only contain 1 home activity.
+                        && mTargets.apps.length == 1
+                        && mTargets.apps[0].windowConfiguration.getActivityType()
+                        == ACTIVITY_TYPE_HOME) {
+                    // This is launching RecentsActivity on top of a 3p launcher. There are no
+                    // other apps need to keep visible so finish the animating state after the
+                    // enter animation of overview is done. Then 3p launcher can be stopped.
+                    mLastGestureState.runOnceAtState(STATE_END_TARGET_ANIMATION_FINISHED, () -> {
+                        // Only finish if the end target is RECENTS. Otherwise, if the target is
+                        // NEW_TASK, startActivityFromRecents will be skipped.
+                        if (mLastGestureState.getEndTarget() == RECENTS) {
+                            finishRunningRecentsAnimation(false /* toHome */,
+                                    true /* forceFinish */, null /* forceFinishCb */);
+                        }
+                    });
+                }
             }
 
             @Override
@@ -256,15 +274,8 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
 
         if (ENABLE_SHELL_TRANSITIONS) {
             final ActivityOptions options = ActivityOptions.makeBasic();
-            // Allowing to pause Home if Home is top activity and Recents is not Home. So when user
-            // start home when recents animation is playing, the home activity can be resumed again
-            // to let the transition controller collect Home activity.
-            CachedTaskInfo cti = gestureState.getRunningTask();
-            boolean homeIsOnTop = cti != null && cti.isHomeTask();
-            if (activityInterface.allowAllAppsFromOverview()) {
-                homeIsOnTop = true;
-            }
-            if (!homeIsOnTop) {
+            // Use regular (non-transient) launch for all apps page to control IME.
+            if (!activityInterface.allowAllAppsFromOverview()) {
                 options.setTransientLaunch();
             }
             options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_RECENTS_ANIMATION, eventTime);
