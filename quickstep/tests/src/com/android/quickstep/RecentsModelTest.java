@@ -101,11 +101,6 @@ public class RecentsModelTest {
         when(mContext.getResources()).thenReturn(mResource);
     }
 
-    @After
-    public void tearDown() throws Exception {
-        mSetFlagsRule.disableFlags(Flags.FLAG_ENABLE_GRID_ONLY_OVERVIEW);
-    }
-
     @Test
     @UiThreadTest
     public void preloadOnHighResolutionEnabled() {
