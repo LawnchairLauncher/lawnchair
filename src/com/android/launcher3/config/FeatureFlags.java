@@ -262,6 +262,10 @@ public final class FeatureFlags {
             getReleaseFlag(282993230, "ENABLE_LONG_PRESS_NAV_HANDLE", TEAMFOOD,
                     "Enables long pressing on the bottom bar nav handle to trigger events.");
 
+    public static final BooleanFlag ENABLE_SEARCH_HAPTIC_HINT =
+            getReleaseFlag(303023676, "ENABLE_SEARCH_HAPTIC_HINT", TEAMFOOD,
+                    "Enables haptic hint when long pressing on the bottom bar nav handle.");
+
     // TODO(Block 17): Clean up flags
     public static final BooleanFlag ENABLE_TASKBAR_PINNING = getDebugFlag(270396583,
             "ENABLE_TASKBAR_PINNING", DISABLED,

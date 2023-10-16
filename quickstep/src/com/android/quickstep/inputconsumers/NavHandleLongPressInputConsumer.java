@@ -80,7 +80,8 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
                     mCurrentDownEvent.recycle();
                 }
                 mCurrentDownEvent = MotionEvent.obtain(ev);
-                if (isInNavBarHorizontalArea(ev.getRawX())) {
+                if (isInNavBarHorizontalArea(ev.getRawX())
+                        && mNavHandleLongPressHandler.canStartTouch()) {
                     MAIN_EXECUTOR.getHandler().postDelayed(mTriggerLongPress,
                             mLongPressTimeout);
                 }
@@ -133,6 +134,7 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
 
     private void cancelLongPress() {
         MAIN_EXECUTOR.getHandler().removeCallbacks(mTriggerLongPress);
+        mNavHandleLongPressHandler.onTouchFinished();
     }
 
     private boolean isInNavBarHorizontalArea(float x) {

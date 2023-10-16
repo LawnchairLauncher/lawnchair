@@ -46,4 +46,19 @@ public class NavHandleLongPressHandler implements ResourceBasedOverride {
     public @Nullable Runnable getLongPressRunnable() {
         return null;
     }
+
+    /**
+     * Called when nav handle gesture starts. Returns true if long press nav handle is enabled and
+     * supported.
+     */
+    public boolean canStartTouch() {
+        return false;
+    }
+
+    /**
+     * Called when nav handle gesture is finished by the user lifting their finger or the system
+     * cancelling the touch for some other reason.
+     */
+    public void onTouchFinished() {
+    }
 }
