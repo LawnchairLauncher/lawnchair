@@ -46,7 +46,7 @@ final class PositionJumpDetector extends AnomalyDetector {
             DRAG_LAYER + "WidgetsTwoPaneSheet|SpringRelativeLayout:id/container",
             DRAG_LAYER + "WidgetsFullSheet|SpringRelativeLayout:id/container",
             DRAG_LAYER + "LauncherDragView",
-            RECENTS_DRAG_LAYER + "FallbackRecentsView:id/overview_panel|TaskView",
+            RECENTS_DRAG_LAYER + "FallbackRecentsView:id/overview_panel",
             CONTENT + "LauncherRootView:id/launcher|FloatingIconView",
             DRAG_LAYER + "FloatingTaskView",
             DRAG_LAYER + "LauncherRecentsView:id/overview_panel"
