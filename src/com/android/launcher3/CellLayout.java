@@ -117,6 +117,8 @@ public class CellLayout extends ViewGroup {
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     @Thunk final int[] mTmpPoint = new int[2];
     @Thunk final int[] mTempLocation = new int[2];
+
+    @Thunk final Rect mTempOnDrawCellToRect = new Rect();
     final PointF mTmpPointF = new PointF();
 
     protected GridOccupancy mOccupied;
@@ -600,23 +602,18 @@ public class CellLayout extends ViewGroup {
         DeviceProfile dp = mActivity.getDeviceProfile();
         int paddingX = Math.min((mCellWidth - dp.iconSizePx) / 2, dp.gridVisualizationPaddingX);
         int paddingY = Math.min((mCellHeight - dp.iconSizePx) / 2, dp.gridVisualizationPaddingY);
-        mVisualizeGridRect.set(paddingX, paddingY,
-                mCellWidth - paddingX,
-                mCellHeight - paddingY);
 
         mVisualizeGridPaint.setStrokeWidth(8);
-        int paintAlpha = (int) (120 * mGridAlpha);
-        mVisualizeGridPaint.setColor(ColorUtils.setAlphaComponent(mGridColor, paintAlpha));
 
+        // This is used for debugging purposes only
         if (mVisualizeCells) {
+            int paintAlpha = (int) (120 * mGridAlpha);
+            mVisualizeGridPaint.setColor(ColorUtils.setAlphaComponent(mGridColor, paintAlpha));
             for (int i = 0; i < mCountX; i++) {
                 for (int j = 0; j < mCountY; j++) {
-                    int transX = i * mCellWidth + (i * mBorderSpace.x) + getPaddingLeft()
-                            + paddingX;
-                    int transY = j * mCellHeight + (j * mBorderSpace.y) + getPaddingTop()
-                            + paddingY;
-
-                    mVisualizeGridRect.offsetTo(transX, transY);
+                    cellToRect(i, j, 1, 1, mTempOnDrawCellToRect);
+                    mVisualizeGridRect.set(mTempOnDrawCellToRect);
+                    mVisualizeGridRect.inset(paddingX, paddingY);
                     mVisualizeGridPaint.setStyle(Paint.Style.FILL);
                     canvas.drawRoundRect(mVisualizeGridRect, mGridVisualizationRoundingRadius,
                             mGridVisualizationRoundingRadius, mVisualizeGridPaint);
@@ -628,25 +625,13 @@ public class CellLayout extends ViewGroup {
             for (int i = 0; i < mDragOutlines.length; i++) {
                 final float alpha = mDragOutlineAlphas[i];
                 if (alpha <= 0) continue;
+                CellLayoutLayoutParams params = mDragOutlines[i];
+                cellToRect(params.getCellX(), params.getCellY(), params.cellHSpan, params.cellVSpan,
+                        mTempOnDrawCellToRect);
+                mVisualizeGridRect.set(mTempOnDrawCellToRect);
+                mVisualizeGridRect.inset(paddingX, paddingY);
 
                 mVisualizeGridPaint.setAlpha(255);
-                int x = mDragOutlines[i].getCellX();
-                int y = mDragOutlines[i].getCellY();
-                int spanX = mDragOutlines[i].cellHSpan;
-                int spanY = mDragOutlines[i].cellVSpan;
-
-                // TODO b/194414754 clean this up, reconcile with cellToRect
-                mVisualizeGridRect.set(paddingX, paddingY,
-                        mCellWidth * spanX + mBorderSpace.x * (spanX - 1) - paddingX,
-                        mCellHeight * spanY + mBorderSpace.y * (spanY - 1) - paddingY);
-
-                int transX = x * mCellWidth + (x * mBorderSpace.x)
-                        + getPaddingLeft() + paddingX;
-                int transY = y * mCellHeight + (y * mBorderSpace.y)
-                        + getPaddingTop() + paddingY;
-
-                mVisualizeGridRect.offsetTo(transX, transY);
-
                 mVisualizeGridPaint.setStyle(Paint.Style.STROKE);
                 mVisualizeGridPaint.setColor(Color.argb((int) (alpha),
                         Color.red(mGridColor), Color.green(mGridColor), Color.blue(mGridColor)));

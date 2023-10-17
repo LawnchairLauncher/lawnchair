@@ -24,6 +24,7 @@ import android.view.Surface
 import androidx.test.core.app.ApplicationProvider
 import com.android.launcher3.testing.shared.ResourceUtils
 import com.android.launcher3.util.DisplayController
+import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext
 import com.android.launcher3.util.NavigationMode
 import com.android.launcher3.util.WindowBounds
 import com.android.launcher3.util.rule.TestStabilityRule
@@ -35,8 +36,6 @@ import java.io.PrintWriter
 import java.io.StringWriter
 import kotlin.math.max
 import kotlin.math.min
-import org.junit.After
-import org.junit.Before
 import org.junit.Rule
 import org.mockito.kotlin.any
 import org.mockito.kotlin.mock
@@ -50,29 +49,13 @@ import org.mockito.kotlin.whenever
  * For an implementation that mocks InvariantDeviceProfile, use [FakeInvariantDeviceProfileTest]
  */
 abstract class AbstractDeviceProfileTest {
-    protected var context: Context? = null
+    protected lateinit var context: SandboxContext
     protected open val runningContext: Context = ApplicationProvider.getApplicationContext()
     private val displayController: DisplayController = mock()
     private val windowManagerProxy: WindowManagerProxy = mock()
-    private lateinit var originalDisplayController: DisplayController
-    private lateinit var originalWindowManagerProxy: WindowManagerProxy
+    private val launcherPrefs: LauncherPrefs = mock()
 
     @Rule @JvmField val testStabilityRule = TestStabilityRule()
-
-    @Before
-    open fun setUp() {
-        val appContext: Context = ApplicationProvider.getApplicationContext()
-        originalWindowManagerProxy = WindowManagerProxy.INSTANCE.get(appContext)
-        originalDisplayController = DisplayController.INSTANCE.get(appContext)
-        WindowManagerProxy.INSTANCE.initializeForTesting(windowManagerProxy)
-        DisplayController.INSTANCE.initializeForTesting(displayController)
-    }
-
-    @After
-    open fun tearDown() {
-        WindowManagerProxy.INSTANCE.initializeForTesting(originalWindowManagerProxy)
-        DisplayController.INSTANCE.initializeForTesting(originalDisplayController)
-    }
 
     class DeviceSpec(
         val naturalSize: Pair<Int, Int>,
@@ -304,8 +287,19 @@ abstract class AbstractDeviceProfileTest {
                 screenHeightDp = (realBounds.bounds.height() / density).toInt()
                 smallestScreenWidthDp = min(screenWidthDp, screenHeightDp)
             }
-        context = runningContext.createConfigurationContext(config)
+        val configurationContext = runningContext.createConfigurationContext(config)
+        context =
+            SandboxContext(
+                configurationContext,
+                DisplayController.INSTANCE,
+                WindowManagerProxy.INSTANCE,
+                LauncherPrefs.INSTANCE
+            )
+        context.putObject(DisplayController.INSTANCE, displayController)
+        context.putObject(WindowManagerProxy.INSTANCE, windowManagerProxy)
+        context.putObject(LauncherPrefs.INSTANCE, launcherPrefs)
 
+        whenever(launcherPrefs.get(LauncherPrefs.TASKBAR_PINNING)).thenReturn(false)
         val info = spy(DisplayController.Info(context, windowManagerProxy, perDisplayBoundsCache))
         whenever(displayController.info).thenReturn(info)
         whenever(info.isTransientTaskbar).thenReturn(isGestureMode)

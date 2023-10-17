@@ -54,13 +54,13 @@ public final class LaunchedAppState extends Background {
     private static final int STASHED_TASKBAR_BOTTOM_EDGE_DP = 1;
 
     private final Condition<UiDevice, Boolean> mStashedTaskbarHintScaleCondition =
-            device -> mLauncher.getTestInfo(REQUEST_STASHED_TASKBAR_SCALE).getFloat(
-                    TestProtocol.TEST_INFO_RESPONSE_FIELD) - UNSTASHED_TASKBAR_HANDLE_HINT_SCALE
+            device -> Math.abs(mLauncher.getTestInfo(REQUEST_STASHED_TASKBAR_SCALE).getFloat(
+                    TestProtocol.TEST_INFO_RESPONSE_FIELD) - UNSTASHED_TASKBAR_HANDLE_HINT_SCALE)
                     < 0.00001f;
 
     private final Condition<UiDevice, Boolean> mStashedTaskbarDefaultScaleCondition =
-            device -> mLauncher.getTestInfo(REQUEST_STASHED_TASKBAR_SCALE).getFloat(
-                    TestProtocol.TEST_INFO_RESPONSE_FIELD) - 1f < 0.00001f;
+            device -> Math.abs(mLauncher.getTestInfo(REQUEST_STASHED_TASKBAR_SCALE).getFloat(
+                    TestProtocol.TEST_INFO_RESPONSE_FIELD) - 1f) < 0.00001f;
 
     LaunchedAppState(LauncherInstrumentation launcher) {
         super(launcher);
@@ -284,7 +284,8 @@ public final class LaunchedAppState extends Background {
             Point stashedTaskbarHintArea = new Point(mLauncher.getRealDisplaySize().x / 2,
                     mLauncher.getRealDisplaySize().y - 1);
             mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_HOVER_ENTER,
-                    new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y), null);
+                    new Point(stashedTaskbarHintArea.x, stashedTaskbarHintArea.y), null,
+                    InputDevice.SOURCE_MOUSE);
 
             mLauncher.getDevice().wait(mStashedTaskbarHintScaleCondition,
                     LauncherInstrumentation.WAIT_TIME_MS);
@@ -296,7 +297,7 @@ public final class LaunchedAppState extends Background {
                         mLauncher.getRealDisplaySize().y - 500);
                 mLauncher.sendPointer(downTime, downTime, MotionEvent.ACTION_HOVER_EXIT,
                         new Point(outsideStashedTaskbarHintArea.x, outsideStashedTaskbarHintArea.y),
-                        null);
+                        null, InputDevice.SOURCE_MOUSE);
 
                 mLauncher.getDevice().wait(mStashedTaskbarDefaultScaleCondition,
                         LauncherInstrumentation.WAIT_TIME_MS);

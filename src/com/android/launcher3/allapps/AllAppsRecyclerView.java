@@ -95,6 +95,10 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
     }
 
     protected void updatePoolSize() {
+        updatePoolSize(false);
+    }
+
+    void updatePoolSize(boolean hasWorkProfile) {
         DeviceProfile grid = ActivityContext.lookupContext(getContext()).getDeviceProfile();
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH, 1);
@@ -110,6 +114,9 @@ public class AllAppsRecyclerView extends FastScrollRecyclerView {
             // [EXTRA_ICONS_COUNT]. Thus we need to bump the max pool size of app icons accordingly.
             maxPoolSizeForAppIcons +=
                     PREINFLATE_ICONS_ROW_COUNT * grid.numShownAllAppsColumns + EXTRA_ICONS_COUNT;
+        }
+        if (hasWorkProfile) {
+            maxPoolSizeForAppIcons *= 2;
         }
         pool.setMaxRecycledViews(
                 AllAppsGridAdapter.VIEW_TYPE_ICON, maxPoolSizeForAppIcons);
