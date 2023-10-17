@@ -39,6 +39,7 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.UserManager;
+import android.platform.test.flag.junit.SetFlagsRule;
 import android.system.OsConstants;
 import android.util.Log;
 
@@ -201,6 +202,15 @@ public abstract class AbstractLauncherUiTest {
 
     @Rule
     public ScreenRecordRule mScreenRecordRule = new ScreenRecordRule();
+
+    @Rule
+    public SetFlagsRule mSetFlagsRule = getFlagsRule();
+
+    private SetFlagsRule getFlagsRule() {
+        SetFlagsRule flagsRule = new SetFlagsRule();
+        flagsRule.initAllFlagsToReleaseConfigDefault();
+        return flagsRule;
+    }
 
     protected void clearPackageData(String pkg) throws IOException, InterruptedException {
         final CountDownLatch count = new CountDownLatch(2);
