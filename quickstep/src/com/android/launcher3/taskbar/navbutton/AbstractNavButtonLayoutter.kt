@@ -69,4 +69,18 @@ abstract class AbstractNavButtonLayoutter(
         params.gravity = Gravity.CENTER
         return params;
     }
+
+    open fun repositionContextualContainer(contextualContainer: ViewGroup, barAxisMargin: Int,
+                                           gravity: Int) {
+        val contextualContainerParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        contextualContainerParams.apply {
+            marginStart = barAxisMargin
+            marginEnd = barAxisMargin
+            topMargin = 0
+            bottomMargin = 0
+        }
+        contextualContainerParams.gravity = gravity or Gravity.CENTER_VERTICAL
+        contextualContainer.layoutParams = contextualContainerParams
+    }
 }
