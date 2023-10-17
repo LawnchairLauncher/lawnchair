@@ -23,7 +23,7 @@ import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.util.Executors
 import com.android.launcher3.util.IntArray
-import com.android.launcher3.util.IntSet
+import com.android.launcher3.util.TestUtil.runOnExecutorSync
 import com.android.launcher3.util.any
 import com.android.launcher3.util.eq
 import com.android.launcher3.util.same
@@ -32,8 +32,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
 import org.mockito.Mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
@@ -46,11 +44,7 @@ import org.mockito.MockitoAnnotations
 @RunWith(AndroidJUnit4::class)
 class AddWorkspaceItemsTaskTest : AbstractWorkspaceModelTest() {
 
-    @Captor private lateinit var mAnimatedItemArgumentCaptor: ArgumentCaptor<ArrayList<ItemInfo>>
-
-    @Captor private lateinit var mNotAnimatedItemArgumentCaptor: ArgumentCaptor<ArrayList<ItemInfo>>
-
-    @Mock private lateinit var mDataModelCallbacks: BgDataModel.Callbacks
+    private lateinit var mDataModelCallbacks: MyCallbacks
 
     @Mock private lateinit var mWorkspaceItemSpaceFinder: WorkspaceItemSpaceFinder
 
@@ -58,7 +52,7 @@ class AddWorkspaceItemsTaskTest : AbstractWorkspaceModelTest() {
     override fun setup() {
         super.setup()
         MockitoAnnotations.initMocks(this)
-        whenever(mDataModelCallbacks.getPagesToBindSynchronously(any())).thenReturn(IntSet())
+        mDataModelCallbacks = MyCallbacks()
         Executors.MAIN_EXECUTOR.submit { mModelHelper.model.addCallbacks(mDataModelCallbacks) }
             .get()
     }
@@ -105,7 +99,7 @@ class AddWorkspaceItemsTaskTest : AbstractWorkspaceModelTest() {
         val addedItems = testAddItems(nonEmptyScreenIds, itemToAdd)
 
         assertThat(addedItems.size).isEqualTo(0)
-        verifyZeroInteractions(mWorkspaceItemSpaceFinder, mDataModelCallbacks)
+        verifyZeroInteractions(mWorkspaceItemSpaceFinder)
     }
 
     @Test
@@ -191,22 +185,14 @@ class AddWorkspaceItemsTaskTest : AbstractWorkspaceModelTest() {
     ): List<AddedItem> {
         setupWorkspaces(nonEmptyScreenIds)
         val task = newTask(*itemsToAdd)
-        var updateCount = 0
-        mModelHelper.executeTaskForTest(task).forEach {
-            updateCount++
-            it.run()
-        }
 
         val addedItems = mutableListOf<AddedItem>()
-        if (updateCount > 0) {
-            verify(mDataModelCallbacks)
-                .bindAppsAdded(
-                    any(),
-                    mNotAnimatedItemArgumentCaptor.capture(),
-                    mAnimatedItemArgumentCaptor.capture()
-                )
-            addedItems.addAll(mAnimatedItemArgumentCaptor.value.map { AddedItem(it, true) })
-            addedItems.addAll(mNotAnimatedItemArgumentCaptor.value.map { AddedItem(it, false) })
+
+        runOnExecutorSync(Executors.MODEL_EXECUTOR) {
+            mDataModelCallbacks.addedItems.clear()
+            mModelHelper.model.enqueueModelUpdateTask(task)
+            runOnExecutorSync(Executors.MAIN_EXECUTOR) {}
+            addedItems.addAll(mDataModelCallbacks.addedItems)
         }
 
         return addedItems
@@ -224,3 +210,17 @@ class AddWorkspaceItemsTaskTest : AbstractWorkspaceModelTest() {
 }
 
 private data class AddedItem(val itemInfo: ItemInfo, val isAnimated: Boolean)
+
+private class MyCallbacks : BgDataModel.Callbacks {
+
+    val addedItems = mutableListOf<AddedItem>()
+
+    override fun bindAppsAdded(
+        newScreens: IntArray?,
+        addNotAnimated: ArrayList<ItemInfo>,
+        addAnimated: ArrayList<ItemInfo>
+    ) {
+        addedItems.addAll(addAnimated.map { AddedItem(it, true) })
+        addedItems.addAll(addNotAnimated.map { AddedItem(it, false) })
+    }
+}

@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.uioverrides;
 
-import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
+import static com.android.app.animation.Interpolators.ACCELERATE_DECELERATE;
 import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;
 import static com.android.launcher3.icons.FastBitmapDrawable.getDisabledColorFilter;
 
@@ -260,8 +260,8 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
                 Keyframe.ofFloat(0.82f, finalTrans - getOutlineOffsetY() / 2f), // Overshoot
                 Keyframe.ofFloat(1f, finalTrans) // Ease back into the final position
         };
-        keyframes[1].setInterpolator(ACCEL_DEACCEL);
-        keyframes[2].setInterpolator(ACCEL_DEACCEL);
+        keyframes[1].setInterpolator(ACCELERATE_DECELERATE);
+        keyframes[2].setInterpolator(ACCELERATE_DECELERATE);
 
         mSlotMachineAnim = ObjectAnimator.ofPropertyValuesHolder(this,
                 PropertyValuesHolder.ofKeyframe(SLOT_MACHINE_TRANSLATION_Y, keyframes));
@@ -337,7 +337,6 @@ public class PredictedAppIcon extends DoubleShadowBubbleTextView {
         if (getTag() instanceof WorkspaceItemInfo) {
             WorkspaceItemInfo info = (WorkspaceItemInfo) getTag();
             isBadged = !Process.myUserHandle().equals(info.user)
-                    || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
                     || info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
         }
 

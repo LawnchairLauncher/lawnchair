@@ -48,15 +48,14 @@
     <string name="no_widgets_available" msgid="4337693382501046170">"विजेट और शॉर्टकट उपलब्ध नहीं हैं"</string>
     <string name="no_search_results" msgid="3787956167293097509">"कोई विजेट या शॉर्टकट नहीं मिला"</string>
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"निजी विजेट"</string>
-    <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"वर्क विजेट"</string>
+    <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ऑफ़िस"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"बातचीत"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"नोट बनाने से जुड़े विजेट"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"काम की जानकारी आसानी से पाएं"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"ऐप्लिकेशन को खोले बिना उनकी जानकारी पाने के लिए, होम स्क्रीन पर विजेट जोड़े जा सकते हैं"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेट की सेटिंग में बदलाव करने के लिए टैप करें"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"ठीक है"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"विजेट की सेटिंग में बदलाव करें"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ऐप्लिकेशन खोजें"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"ऐप सर्च करें"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"ऐप्लिकेशन लोड हो रहे हैं…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" से मिलता-जुलता कोई ऐप्लिकेशन नहीं मिला"</string>
     <string name="label_application" msgid="8531721983832654978">"ऐप्लिकेशन"</string>
@@ -101,8 +100,9 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"फ़ोल्डर: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> या इससे ज़्यादा आइटम"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"वॉलपेपर"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"वॉलपेपर और स्टाइल"</string>
-    <string name="edit_home_screen" msgid="8947858375782098427">"होम स्क्रीन में बदलाव करें"</string>
-    <string name="settings_button_text" msgid="8873672322605444408">"होम स्क्रीन की सेटिंग"</string>
+    <!-- no translation found for edit_home_screen (8947858375782098427) -->
+    <skip />
+    <string name="settings_button_text" msgid="8873672322605444408">"होम पेज की सेटिंग"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"आपके एडमिन ने बंद किया हुआ है"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"होम स्क्रीन घुमाने की अनुमति दें"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"फ़ोन घुुमाए जाने पर"</string>
@@ -160,7 +160,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"निजी ऐप्लिकेशन"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"वर्क ऐप्लिकेशन"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"वर्क प्रोफ़ाइल"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"वर्क ऐप्लिकेशन बैज किए गए हैं. आईटी एडमिन इन्हें देख सकता है"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"वर्क ऐप्लिकेशन बैज किए गए हैं और आईटी एडमिन को दिख रहे हैं"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"ठीक है"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"वर्क ऐप्लिकेशन रोके गए"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"आपको वर्क ऐप्लिकेशन से सूचनाएं नहीं मिलेंगी"</string>

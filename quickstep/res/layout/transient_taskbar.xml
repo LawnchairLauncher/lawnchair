@@ -44,12 +44,12 @@
         android:layout_height="@dimen/bubblebar_size"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/transient_taskbar_bottom_margin"
-        android:layout_marginBottom="@dimen/transient_taskbar_bottom_margin"
         android:paddingEnd="@dimen/taskbar_icon_spacing"
         android:paddingStart="@dimen/taskbar_icon_spacing"
         android:visibility="gone"
         android:gravity="center"
         android:clipChildren="false"
+        android:elevation="@dimen/bubblebar_elevation"
         />
 
     <FrameLayout

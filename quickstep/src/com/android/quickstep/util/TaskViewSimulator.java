@@ -112,8 +112,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mContext = context;
         mSizeStrategy = sizeStrategy;
 
-        // TODO(b/187074722): Don't create this per-TaskViewSimulator
-        mOrientationState = TraceHelper.allowIpcs("",
+        mOrientationState = TraceHelper.allowIpcs("TaskViewSimulator.init",
                 () -> new RecentsOrientedState(context, sizeStrategy, i -> { }));
         mOrientationState.setGestureActive(true);
         mCurrentFullscreenParams = new FullscreenDrawParams(context);
@@ -376,6 +375,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
         mInversePositionMatrix.mapRect(mTempRectF);
         mTempRectF.roundOut(mTmpCropRect);
 
+        params.setProgress(1f - fullScreenProgress);
         params.applySurfaceParams(params.createSurfaceParams(this));
 
         if (!DEBUG) {

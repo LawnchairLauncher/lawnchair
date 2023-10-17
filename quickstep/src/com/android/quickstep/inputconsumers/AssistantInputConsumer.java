@@ -42,9 +42,9 @@ import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.BaseActivityInterface;
 import com.android.quickstep.GestureState;
 import com.android.quickstep.InputConsumer;
@@ -209,7 +209,7 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
                             SystemUiProxy.INSTANCE.get(mContext).onAssistantProgress(0f);
                         }
                     });
-                    animator.setInterpolator(Interpolators.DEACCEL_2);
+                    animator.setInterpolator(Interpolators.DECELERATE_2);
                     animator.start();
                 }
                 mPassedSlop = false;
@@ -277,5 +277,10 @@ public class AssistantInputConsumer extends DelegateInputConsumer {
             }
             return true;
         }
+    }
+
+    @Override
+    protected String getDelegatorName() {
+        return "AssistantInputConsumer";
     }
 }

@@ -140,6 +140,7 @@ public interface TaskShortcutFactory {
 
         @Override
         public void onClick(View view) {
+            dismissTaskMenuView(mTarget);
             ((RecentsView) mTarget.getOverviewPanel())
                     .getSplitSelectController().getAppPairsController().saveAppPair(mTaskView);
         }
@@ -396,11 +397,12 @@ public interface TaskShortcutFactory {
         @Override
         public List<SystemShortcut> getShortcuts(BaseDraggingActivity activity,
                 TaskIdAttributeContainer taskContainer) {
-            return InstantAppResolver.newInstance(activity).isInstantApp(activity,
-                    taskContainer.getTask().getTopComponent().getPackageName()) ?
-                    Collections.singletonList(new SystemShortcut.Install(activity,
-                            taskContainer.getItemInfo(), taskContainer.getTaskView())) :
-                    null;
+            Task t = taskContainer.getTask();
+            return InstantAppResolver.newInstance(activity).isInstantApp(
+                    t.getTopComponent().getPackageName(), t.getKey().userId)
+                    ? Collections.singletonList(new SystemShortcut.Install(activity,
+                            taskContainer.getItemInfo(), taskContainer.getTaskView()))
+                    : null;
         }
     };
 

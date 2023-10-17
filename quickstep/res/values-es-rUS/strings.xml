@@ -23,7 +23,7 @@
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Formato libre"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"No hay elementos recientes"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Configuración de uso de la app"</string>
-    <string name="recents_clear_all" msgid="5328176793634888831">"Cerrar todo"</string>
+    <string name="recents_clear_all" msgid="5328176793634888831">"Borrar todo"</string>
     <string name="accessibility_recent_apps" msgid="4058661986695117371">"Apps recientes"</string>
     <string name="task_view_closed" msgid="9170038230110856166">"Se cerró la tarea"</string>
     <string name="task_contents_description_with_remaining_time" msgid="4479688746574672685">"<xliff:g id="TASK_DESCRIPTION">%1$s</xliff:g> (<xliff:g id="REMAINING_TIME">%2$s</xliff:g>)"</string>
@@ -44,45 +44,39 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Sugerencias de apps habilitadas"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Las sugerencias de aplicaciones están inhabilitadas"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Predicción de app: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Rota el dispositivo"</string>
-    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Rota el dispositivo para completar el instructivo de la navegación por gestos"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Asegúrate de deslizar desde el extremo derecho o izquierdo"</string>
-    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Recuerda deslizar desde el borde izquierdo o derecho hacia el centro de la pantalla y, luego, soltar"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Asegúrate de deslizar desde el extremo derecho o izquierdo."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Asegúrate de deslizar desde borde izquierdo o derecho hacia centro de la pantalla y, luego, soltar."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Ya sabes deslizar el dedo desde la derecha para ir atrás. Ahora, descubre cómo cambiar de app."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Completaste el gesto para ir atrás"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Asegúrate de no deslizar muy cerca de la parte inferior de la pantalla"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Completaste el gesto \"Atrás\"."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Asegúrate de no hacerlo muy cerca de la parte inferior de la pantalla."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Cambia sensibilidad de gesto \"Atrás\" en Configuración"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Desliza para ir atrás"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Desliza el dedo desde el borde derecho o izquierdo hasta el centro para volver a la última pantalla."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Para volver la pantalla anterior, desliza 2 dedos desde el borde izquierdo o derecho hacia el centro de la pantalla."</string>
-    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Volver atrás"</string>
-    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Desliza desde el borde izquierdo o derecho hacia el centro de la pantalla"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Asegúrate de deslizar hacia arriba desde el borde inferior de la pantalla"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Asegúrate de no detenerte antes de soltar"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Asegúrate de deslizar el dedo directamente hacia arriba"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Completaste el gesto para ir a la página principal. A continuación, obtén información para volver."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Completaste el gesto para ir a la página principal"</string>
+    <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Atrás"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Desliza el dedo hacia arriba desde el borde inferior de la pantalla."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Asegúrate de no detenerte antes de soltarlo."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Desliza el dedo directamente hacia arriba."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Completaste el gesto para ir a la página principal. Ahora, descubre cómo ir hacia atrás."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Completaste el gesto para ir a la página principal."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Desliza para ir a la página principal"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Desliza hacia arriba desde la parte inferior de la pantalla. Este gesto te llevará a la pantalla principal."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Desliza hacia arriba desde la parte inferior. Este gesto te llevará siempre a la pantalla principal."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Ve a la pantalla principal"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Desliza hacia arriba desde la parte inferior de la pantalla"</string>
-    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"¡Bien hecho!"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Asegúrate de deslizar hacia arriba desde el borde inferior de la pantalla"</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Intenta mantener presionada la ventana más tiempo antes de soltarla"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Asegúrate de deslizar directamente hacia arriba y detenerte"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Ir a la pantalla principal"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Para ir a la pantalla principal en cualquier momento, desliza desde la parte inferior de la pantalla"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Desliza el dedo hacia arriba desde el borde inferior de la pantalla."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Prueba mantener presionada la ventana más tiempo antes de soltarla."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Desliza el dedo directamente hacia arriba y luego detente."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Ya sabes cómo usar los gestos. Para desactivarlos, ve a Configuración."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Completaste el gesto para cambiar de app"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Completaste el gesto para cambiar de app."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Desliza para cambiar de app"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Desliza el dedo hacia arriba desde la parte inferior, mantenlo presionado y suéltalo."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Para alternar entre apps, desliza el dedo hacia arriba, mantén presionado y, luego, suelta."</string>
-    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Cambia de app"</string>
-    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Desliza hacia arriba desde la parte inferior de la pantalla, mantenla presionada y, luego, suelta"</string>
-    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"¡Bien hecho!"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Cambiar de app"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Listo"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Listo"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Configuración"</string>
-    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Vuelve a intentarlo"</string>
+    <string name="gesture_tutorial_try_again" msgid="65962545858556697">"Reintentar"</string>
     <string name="gesture_tutorial_nice" msgid="2936275692616928280">"¡Genial!"</string>
     <string name="gesture_tutorial_step" msgid="1279786122817620968">"Instructivo <xliff:g id="CURRENT">%1$d</xliff:g>/<xliff:g id="TOTAL">%2$d</xliff:g>"</string>
     <string name="allset_title" msgid="5021126669778966707">"Todo listo"</string>
@@ -107,7 +101,7 @@
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Desliza despacio hacia arriba para ver la Barra de tareas"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Recibe sugerencias de aplicaciones basadas en tu rutina"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Activa la navegación por gestos en la Configuración y la Barra de tareas se ocultará sola"</string>
-    <string name="taskbar_edu_features" msgid="3320337287472848162">"Aprovecha mejor la Barra de tareas"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"Haz más con la Barra de tareas"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"Cerrar"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"Listo"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"Botón de inicio"</string>
@@ -121,9 +115,6 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Barra de tareas visible"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Barra de tareas oculta"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Barra de navegación"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"Ver siempre la Barra de tareas"</string>
-    <string name="change_navigation_mode" msgid="9088393078736808968">"Cambiar el modo de navegación"</string>
-    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Divisor de la Barra de tareas"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Mover a la parte superior o izquierda"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Mover a la parte inferior o derecha"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Mostrar # app más.}other{Mostrar # apps más.}}"</string>

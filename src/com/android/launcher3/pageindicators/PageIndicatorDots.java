@@ -130,6 +130,7 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
      */
     private float mCurrentPosition;
     private float mFinalPosition;
+    private boolean mAreScreensBinding;
     private ObjectAnimator mAnimator;
     private @Nullable ObjectAnimator mAlphaAnimator;
 
@@ -163,12 +164,17 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
     @Override
     public void setScroll(int currentScroll, int totalScroll) {
-        if (SHOW_DOT_PAGINATION.get() && mActivePage != 0 && currentScroll == 0) {
+        if (SHOW_DOT_PAGINATION.get() && currentScroll == 0 && totalScroll == 0) {
             CURRENT_POSITION.set(this, (float) mActivePage);
             return;
         }
 
         if (mNumPages <= 1) {
+            return;
+        }
+
+        // Skip scroll update during binding. We will update it when binding completes.
+        if (mAreScreensBinding) {
             return;
         }
 
@@ -359,6 +365,16 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
     }
 
     @Override
+    public void setAreScreensBinding(boolean areScreensBinding) {
+        // Reapply correct current position which was skipped during setScroll.
+        if (mAreScreensBinding && !areScreensBinding) {
+            CURRENT_POSITION.set(this, (float) mActivePage);
+        }
+
+        mAreScreensBinding = areScreensBinding;
+    }
+
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         // Add extra spacing of mDotRadius on all sides so than entry animation could be run.
         int width = MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY ?
@@ -381,7 +397,9 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
 
         // Draw all page indicators;
         float circleGap = mCircleGap;
-        float startX = (getWidth() - (mNumPages * circleGap) + mDotRadius) / 2;
+        float startX = ((float) getWidth() / 2)
+                - (mCircleGap * (((float) mNumPages - 1) / 2))
+                - mDotRadius;
 
         float x = startX + mDotRadius;
         float y = getHeight() / 2;
@@ -420,9 +438,9 @@ public class PageIndicatorDots extends View implements Insettable, PageIndicator
         float startCircle = (int) mCurrentPosition;
         float delta = mCurrentPosition - startCircle;
         float diameter = 2 * mDotRadius;
-        float startX;
-
-        startX = ((getWidth() - (mNumPages * mCircleGap) + mDotRadius) / 2);
+        float startX = ((float) getWidth() / 2)
+                - (mCircleGap * (((float) mNumPages - 1) / 2))
+                - mDotRadius;
         sTempRect.top = (getHeight() * 0.5f) - mDotRadius;
         sTempRect.bottom = (getHeight() * 0.5f) + mDotRadius;
         sTempRect.left = startX + (startCircle * mCircleGap);

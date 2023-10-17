@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Asmeniniai"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Darbas"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Pokalbiai"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"Užrašų kūrimas"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Lengvai pasiekiama naudinga informacija"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Jei norite gauti informacijos neatidarę programų, galite pridėti valdiklių pagrindiniame ekrane"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Palieskite, kad pakeistumėte valdiklio nustatymus"</string>
@@ -70,7 +69,7 @@
     <string name="all_apps_search_results" msgid="5889367432531296759">"Paieškos rezultatai"</string>
     <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Asmeninių programų sąrašas"</string>
     <string name="all_apps_button_work_label" msgid="7270707118948892488">"Darbo programų sąrašas"</string>
-    <string name="remove_drop_target_label" msgid="7812859488053230776">"Pašalinti"</string>
+    <string name="remove_drop_target_label" msgid="7812859488053230776">"Ištrinti"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Pašalinti"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"Programos inform."</string>
     <string name="install_drop_target_label" msgid="2539096853673231757">"Įdiegti"</string>

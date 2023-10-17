@@ -15,34 +15,31 @@
  */
 package com.android.launcher3.util;
 
-import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
+import static android.content.pm.PackageInstaller.SessionParams.MODE_FULL_INSTALL;
+
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
-import static com.android.launcher3.LauncherSettings.Favorites.CONTENT_URI;
+import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
+import static com.android.launcher3.util.TestUtil.runOnExecutorSync;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 
-import android.content.ComponentName;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.Intent;
+import android.content.pm.PackageInstaller;
+import android.content.pm.PackageInstaller.SessionParams;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
-import android.content.res.Resources;
-import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.os.ParcelFileDescriptor.AutoCloseOutputStream;
-import android.os.Process;
 import android.provider.Settings;
 import android.test.mock.MockContentResolver;
 import android.util.ArrayMap;
@@ -56,14 +53,10 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherPrefs;
-import com.android.launcher3.LauncherProvider;
-import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.model.AllAppsList;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.BgDataModel.Callbacks;
 import com.android.launcher3.model.ItemInstallQueue;
-import com.android.launcher3.model.data.AppInfo;
-import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.pm.InstallSessionHelper;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.testing.TestInformationProvider;
@@ -72,37 +65,25 @@ import com.android.launcher3.util.MainThreadInitializedObject.SandboxContext;
 import com.android.launcher3.util.window.WindowManagerProxy;
 import com.android.launcher3.widget.custom.CustomWidgetManager;
 
-import org.mockito.ArgumentCaptor;
-
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-import java.util.function.Function;
 
 /**
  * Utility class to help manage Launcher Model and related objects for test.
  */
 public class LauncherModelHelper {
 
-    public static final int DESKTOP = LauncherSettings.Favorites.CONTAINER_DESKTOP;
-    public static final int HOTSEAT = LauncherSettings.Favorites.CONTAINER_HOTSEAT;
-
-    public static final int APP_ICON = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
-    public static final int SHORTCUT = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
-    public static final int NO__ICON = -1;
-
-    public static final String TEST_PACKAGE = testContext().getPackageName();
+    public static final String TEST_PACKAGE = getInstrumentation().getContext().getPackageName();
     public static final String TEST_ACTIVITY = "com.android.launcher3.tests.Activity2";
+    public static final String TEST_ACTIVITY2 = "com.android.launcher3.tests.Activity3";
+    public static final String TEST_ACTIVITY3 = "com.android.launcher3.tests.Activity4";
 
     // Authority for providing a test default-workspace-layout data.
     private static final String TEST_PROVIDER_AUTHORITY =
@@ -110,39 +91,18 @@ public class LauncherModelHelper {
     private static final int DEFAULT_BITMAP_SIZE = 10;
     private static final int DEFAULT_GRID_SIZE = 4;
 
-    private final HashMap<Class, HashMap<String, Field>> mFieldCache = new HashMap<>();
-    private final MockContentResolver mMockResolver = new MockContentResolver();
-    public final TestLauncherProvider provider;
     public final SandboxModelContext sandboxContext;
 
-    public final long defaultProfileId;
+    private final RunnableList mDestroyTask = new RunnableList();
 
     private BgDataModel mDataModel;
-    private AllAppsList mAllAppsList;
 
     public LauncherModelHelper() {
-        Context context = getApplicationContext();
-        // System settings cache content provider. Ensure that they are statically initialized
-        Settings.Secure.getString(context.getContentResolver(), "test");
-        Settings.System.getString(context.getContentResolver(), "test");
-        Settings.Global.getString(context.getContentResolver(), "test");
-
-        provider = new TestLauncherProvider();
         sandboxContext = new SandboxModelContext();
-        defaultProfileId = UserCache.INSTANCE.get(sandboxContext)
-                .getSerialNumberForUser(Process.myUserHandle());
-        setupProvider(LauncherProvider.AUTHORITY, provider);
     }
 
     public void setupProvider(String authority, ContentProvider provider) {
-        ProviderInfo providerInfo = new ProviderInfo();
-        providerInfo.authority = authority;
-        providerInfo.applicationInfo = sandboxContext.getApplicationInfo();
-        provider.attachInfo(sandboxContext, providerInfo);
-        mMockResolver.addProvider(providerInfo.authority, provider);
-        doReturn(providerInfo)
-                .when(sandboxContext.mPm)
-                .resolveContentProvider(eq(authority), anyInt());
+        sandboxContext.setupProvider(authority, provider);
     }
 
     public LauncherModel getModel() {
@@ -151,16 +111,35 @@ public class LauncherModelHelper {
 
     public synchronized BgDataModel getBgDataModel() {
         if (mDataModel == null) {
-            mDataModel = ReflectionHelpers.getField(getModel(), "mBgDataModel");
+            getModel().enqueueModelUpdateTask(new ModelUpdateTask() {
+                @Override
+                public void init(@NonNull LauncherAppState app, @NonNull LauncherModel model,
+                        @NonNull BgDataModel dataModel, @NonNull AllAppsList allAppsList,
+                        @NonNull Executor uiExecutor) {
+                    mDataModel = dataModel;
+                }
+
+                @Override
+                public void run() { }
+            });
         }
         return mDataModel;
     }
 
-    public synchronized AllAppsList getAllAppsList() {
-        if (mAllAppsList == null) {
-            mAllAppsList = ReflectionHelpers.getField(getModel(), "mBgAllAppsList");
-        }
-        return mAllAppsList;
+    /**
+     * Creates a installer session for the provided package.
+     */
+    public int createInstallerSession(String pkg) throws IOException {
+        SessionParams sp = new SessionParams(MODE_FULL_INSTALL);
+        sp.setAppPackageName(pkg);
+        Bitmap icon = Bitmap.createBitmap(100, 100, Config.ARGB_8888);
+        icon.eraseColor(Color.RED);
+        sp.setAppIcon(icon);
+        sp.setAppLabel(pkg);
+        PackageInstaller pi = sandboxContext.getPackageManager().getPackageInstaller();
+        int sessionId = pi.createSession(sp);
+        mDestroyTask.add(() -> pi.abandonSession(sessionId));
+        return sessionId;
     }
 
     public void destroy() {
@@ -175,6 +154,8 @@ public class LauncherModelHelper {
         waitOrThrow(l1);
         sandboxContext.onDestroy();
         l2.countDown();
+
+        mDestroyTask.executeAllAndDestroy();
     }
 
     private void waitOrThrow(CountDownLatch latch) {
@@ -183,184 +164,6 @@ public class LauncherModelHelper {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * Synchronously executes the task and returns all the UI callbacks posted.
-     */
-    public List<Runnable> executeTaskForTest(ModelUpdateTask task) throws Exception {
-        LauncherModel model = getModel();
-        if (!model.isModelLoaded()) {
-            ReflectionHelpers.setField(model, "mModelLoaded", true);
-        }
-        Executor mockExecutor = mock(Executor.class);
-        model.enqueueModelUpdateTask(new ModelUpdateTask() {
-            @Override
-            public void init(@NonNull final LauncherAppState app,
-                    @NonNull final LauncherModel model, @NonNull final BgDataModel dataModel,
-                    @NonNull final AllAppsList allAppsList, @NonNull final Executor uiExecutor) {
-                task.init(app, model, dataModel, allAppsList, mockExecutor);
-            }
-
-            @Override
-            public void run() {
-                task.run();
-            }
-        });
-        MODEL_EXECUTOR.submit(() -> null).get();
-
-        ArgumentCaptor<Runnable> captor = ArgumentCaptor.forClass(Runnable.class);
-        verify(mockExecutor, atLeast(0)).execute(captor.capture());
-        return captor.getAllValues();
-    }
-
-    /**
-     * Synchronously executes a task on the model
-     */
-    public <T> T executeSimpleTask(Function<BgDataModel, T> task) throws Exception {
-        BgDataModel dataModel = getBgDataModel();
-        return MODEL_EXECUTOR.submit(() -> task.apply(dataModel)).get();
-    }
-
-    /**
-     * Initializes mock data for the test.
-     */
-    public void initializeData(String resourceName) throws Exception {
-        BgDataModel bgDataModel = getBgDataModel();
-        AllAppsList allAppsList = getAllAppsList();
-
-        MODEL_EXECUTOR.submit(() -> {
-            // Copy apk from resources to a local file and install from there.
-            Resources resources = testContext().getResources();
-            int resId = resources.getIdentifier(
-                    resourceName, "raw", testContext().getPackageName());
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    resources.openRawResource(resId)))) {
-                String line;
-                HashMap<String, Class> classMap = new HashMap<>();
-                while ((line = reader.readLine()) != null) {
-                    line = line.trim();
-                    if (line.startsWith("#") || line.isEmpty()) {
-                        continue;
-                    }
-                    String[] commands = line.split(" ");
-                    switch (commands[0]) {
-                        case "classMap":
-                            classMap.put(commands[1], Class.forName(commands[2]));
-                            break;
-                        case "bgItem":
-                            bgDataModel.addItem(sandboxContext,
-                                    (ItemInfo) initItem(classMap.get(commands[1]), commands, 2),
-                                    false);
-                            break;
-                        case "allApps":
-                            allAppsList.add((AppInfo) initItem(AppInfo.class, commands, 1), null);
-                            break;
-                    }
-                }
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).get();
-    }
-
-    private Object initItem(Class clazz, String[] fieldDef, int startIndex) throws Exception {
-        HashMap<String, Field> cache = mFieldCache.get(clazz);
-        if (cache == null) {
-            cache = new HashMap<>();
-            Class c = clazz;
-            while (c != null) {
-                for (Field f : c.getDeclaredFields()) {
-                    f.setAccessible(true);
-                    cache.put(f.getName(), f);
-                }
-                c = c.getSuperclass();
-            }
-            mFieldCache.put(clazz, cache);
-        }
-
-        Object item = clazz.newInstance();
-        for (int i = startIndex; i < fieldDef.length; i++) {
-            String[] fieldData = fieldDef[i].split("=", 2);
-            Field f = cache.get(fieldData[0]);
-            Class type = f.getType();
-            if (type == int.class || type == long.class) {
-                f.set(item, Integer.parseInt(fieldData[1]));
-            } else if (type == CharSequence.class || type == String.class) {
-                f.set(item, fieldData[1]);
-            } else if (type == Intent.class) {
-                if (!fieldData[1].startsWith("#Intent")) {
-                    fieldData[1] = "#Intent;" + fieldData[1] + ";end";
-                }
-                f.set(item, Intent.parseUri(fieldData[1], 0));
-            } else if (type == ComponentName.class) {
-                f.set(item, ComponentName.unflattenFromString(fieldData[1]));
-            } else {
-                throw new Exception("Added parsing logic for "
-                        + f.getName() + " of type " + f.getType());
-            }
-        }
-        return item;
-    }
-
-    public int addItem(int type, int screen, int container, int x, int y) {
-        return addItem(type, screen, container, x, y, defaultProfileId, TEST_PACKAGE);
-    }
-
-    public int addItem(int type, int screen, int container, int x, int y, long profileId) {
-        return addItem(type, screen, container, x, y, profileId, TEST_PACKAGE);
-    }
-
-    public int addItem(int type, int screen, int container, int x, int y, String packageName) {
-        return addItem(type, screen, container, x, y, defaultProfileId, packageName);
-    }
-
-    public int addItem(int type, int screen, int container, int x, int y, String packageName,
-            int id, Uri contentUri) {
-        addItem(type, screen, container, x, y, defaultProfileId, packageName, id, contentUri);
-        return id;
-    }
-
-    /**
-     * Adds a mock item in the DB.
-     * @param type {@link #APP_ICON} or {@link #SHORTCUT} or >= 2 for
-     *             folder (where the type represents the number of items in the folder).
-     */
-    public int addItem(int type, int screen, int container, int x, int y, long profileId,
-            String packageName) {
-        int id = LauncherSettings.Settings.call(sandboxContext.getContentResolver(),
-                LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
-                .getInt(LauncherSettings.Settings.EXTRA_VALUE);
-        addItem(type, screen, container, x, y, profileId, packageName, id, CONTENT_URI);
-        return id;
-    }
-
-    public void addItem(int type, int screen, int container, int x, int y, long profileId,
-            String packageName, int id, Uri contentUri) {
-        ContentValues values = new ContentValues();
-        values.put(LauncherSettings.Favorites._ID, id);
-        values.put(LauncherSettings.Favorites.CONTAINER, container);
-        values.put(LauncherSettings.Favorites.SCREEN, screen);
-        values.put(LauncherSettings.Favorites.CELLX, x);
-        values.put(LauncherSettings.Favorites.CELLY, y);
-        values.put(LauncherSettings.Favorites.SPANX, 1);
-        values.put(LauncherSettings.Favorites.SPANY, 1);
-        values.put(LauncherSettings.Favorites.PROFILE_ID, profileId);
-
-        if (type == APP_ICON || type == SHORTCUT) {
-            values.put(LauncherSettings.Favorites.ITEM_TYPE, type);
-            values.put(LauncherSettings.Favorites.INTENT,
-                    new Intent(Intent.ACTION_MAIN).setPackage(packageName).toUri(0));
-        } else {
-            values.put(LauncherSettings.Favorites.ITEM_TYPE,
-                    LauncherSettings.Favorites.ITEM_TYPE_FOLDER);
-            // Add folder items.
-            for (int i = 0; i < type; i++) {
-                addItem(APP_ICON, 0, id, 0, 0, profileId);
-            }
-        }
-
-        sandboxContext.getContentResolver().insert(contentUri, values);
     }
 
     /**
@@ -394,6 +197,9 @@ public class LauncherModelHelper {
             }
         };
         setupProvider(TEST_PROVIDER_AUTHORITY, cp);
+        mDestroyTask.add(() -> runOnExecutorSync(MODEL_EXECUTOR, () ->
+                UiDevice.getInstance(getInstrumentation()).executeShellCommand(
+                        "settings delete secure launcher3.layout.provider")));
         return this;
     }
 
@@ -402,46 +208,16 @@ public class LauncherModelHelper {
      */
     public void loadModelSync() throws ExecutionException, InterruptedException {
         Callbacks mockCb = new Callbacks() { };
-        Executors.MAIN_EXECUTOR.submit(() -> getModel().addCallbacksAndLoad(mockCb)).get();
+        MAIN_EXECUTOR.submit(() -> getModel().addCallbacksAndLoad(mockCb)).get();
 
         Executors.MODEL_EXECUTOR.submit(() -> { }).get();
-        Executors.MAIN_EXECUTOR.submit(() -> { }).get();
-        Executors.MAIN_EXECUTOR.submit(() -> getModel().removeCallbacks(mockCb)).get();
+        MAIN_EXECUTOR.submit(() -> { }).get();
+        MAIN_EXECUTOR.submit(() -> getModel().removeCallbacks(mockCb)).get();
     }
 
-    /**
-     * An extension of LauncherProvider backed up by in-memory database.
-     */
-    public static class TestLauncherProvider extends LauncherProvider {
+    public static class SandboxModelContext extends SandboxContext {
 
-        @Override
-        public boolean onCreate() {
-            return true;
-        }
-
-        public SQLiteDatabase getDb() {
-            return getModelDbController().getDb();
-        }
-    }
-
-    public static boolean deleteContents(File dir) {
-        File[] files = dir.listFiles();
-        boolean success = true;
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    success &= deleteContents(file);
-                }
-                if (!file.delete()) {
-                    success = false;
-                }
-            }
-        }
-        return success;
-    }
-
-    public class SandboxModelContext extends SandboxContext {
-
+        private final MockContentResolver mMockResolver = new MockContentResolver();
         private final ArrayMap<String, Object> mSpiedServices = new ArrayMap<>();
         private final PackageManager mPm;
         private final File mDbDir;
@@ -451,10 +227,28 @@ public class LauncherModelHelper {
                     UserCache.INSTANCE, InstallSessionHelper.INSTANCE, LauncherPrefs.INSTANCE,
                     LauncherAppState.INSTANCE, InvariantDeviceProfile.INSTANCE,
                     DisplayController.INSTANCE, CustomWidgetManager.INSTANCE,
-                    SettingsCache.INSTANCE, PluginManagerWrapper.INSTANCE, LockedUserState.INSTANCE,
+                    SettingsCache.INSTANCE, PluginManagerWrapper.INSTANCE,
+                    LockedUserState.INSTANCE, WallpaperColorHints.INSTANCE,
                     ItemInstallQueue.INSTANCE, WindowManagerProxy.INSTANCE);
+
+            // System settings cache content provider. Ensure that they are statically initialized
+            Settings.Secure.getString(
+                    ApplicationProvider.getApplicationContext().getContentResolver(), "test");
+            Settings.System.getString(
+                    ApplicationProvider.getApplicationContext().getContentResolver(), "test");
+            Settings.Global.getString(
+                    ApplicationProvider.getApplicationContext().getContentResolver(), "test");
+
             mPm = spy(getBaseContext().getPackageManager());
             mDbDir = new File(getCacheDir(), UUID.randomUUID().toString());
+        }
+
+        @Override
+        protected <T> T createObject(MainThreadInitializedObject<T> object) {
+            if (object == LauncherAppState.INSTANCE) {
+                return (T) new LauncherAppState(this, null /* iconCacheFileName */);
+            }
+            return super.createObject(object);
         }
 
         public SandboxModelContext allow(MainThreadInitializedObject object) {
@@ -505,9 +299,30 @@ public class LauncherModelHelper {
             mSpiedServices.put(name, result);
             return result;
         }
-    }
 
-    private static Context testContext() {
-        return getInstrumentation().getContext();
+        public void setupProvider(String authority, ContentProvider provider) {
+            ProviderInfo providerInfo = new ProviderInfo();
+            providerInfo.authority = authority;
+            providerInfo.applicationInfo = getApplicationInfo();
+            provider.attachInfo(this, providerInfo);
+            mMockResolver.addProvider(providerInfo.authority, provider);
+            doReturn(providerInfo).when(mPm).resolveContentProvider(eq(authority), anyInt());
+        }
+
+        private static boolean deleteContents(File dir) {
+            File[] files = dir.listFiles();
+            boolean success = true;
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        success &= deleteContents(file);
+                    }
+                    if (!file.delete()) {
+                        success = false;
+                    }
+                }
+            }
+            return success;
+        }
     }
 }

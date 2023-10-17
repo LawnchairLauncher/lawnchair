@@ -35,7 +35,7 @@ import android.widget.TextView;
 
 import androidx.annotation.VisibleForTesting;
 
-import com.android.launcher3.anim.Interpolators;
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -258,7 +258,7 @@ public abstract class ButtonDropTarget extends TextView
 
         dragLayer.animateView(d.dragView, to, scale, 0.1f, 0.1f,
                 DRAG_VIEW_DROP_DURATION,
-                Interpolators.DEACCEL_2, onAnimationEndRunnable,
+                Interpolators.DECELERATE_2, onAnimationEndRunnable,
                 DragLayer.ANIMATION_END_DISAPPEAR, null);
     }
 

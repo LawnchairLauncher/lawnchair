@@ -30,10 +30,10 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.dragndrop.DragLayer;
 
@@ -175,7 +175,7 @@ public class Snackbar extends AbstractFloatingView {
                 .scaleX(1)
                 .scaleY(1)
                 .setDuration(SHOW_DURATION_MS)
-                .setInterpolator(Interpolators.ACCEL_DEACCEL)
+                .setInterpolator(Interpolators.ACCELERATE_DECELERATE)
                 .start();
         int timeout = AccessibilityManagerCompat.getRecommendedTimeoutMillis(activity,
                 TIMEOUT_DURATION_MS, FLAG_CONTENT_TEXT | FLAG_CONTENT_CONTROLS);
@@ -190,7 +190,7 @@ public class Snackbar extends AbstractFloatingView {
                         .withLayer()
                         .setStartDelay(0)
                         .setDuration(HIDE_DURATION_MS)
-                        .setInterpolator(Interpolators.ACCEL)
+                        .setInterpolator(Interpolators.ACCELERATE)
                         .withEndAction(this::onClosed)
                         .start();
             } else {

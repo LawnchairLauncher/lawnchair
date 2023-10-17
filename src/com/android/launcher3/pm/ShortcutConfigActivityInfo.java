@@ -16,8 +16,11 @@
 
 package com.android.launcher3.pm;
 
+import static com.android.launcher3.Utilities.allowBGLaunch;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
@@ -72,7 +75,7 @@ public abstract class ShortcutConfigActivityInfo implements ComponentWithLabelAn
     }
 
     public int getItemType() {
-        return LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        return LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT;
     }
 
     @Override
@@ -138,8 +141,10 @@ public abstract class ShortcutConfigActivityInfo implements ComponentWithLabelAn
             }
             IntentSender is = activity.getSystemService(LauncherApps.class)
                     .getShortcutConfigActivityIntent(mInfo);
+            ActivityOptions options = allowBGLaunch(ActivityOptions.makeBasic());
             try {
-                activity.startIntentSenderForResult(is, requestCode, null, 0, 0, 0);
+                activity.startIntentSenderForResult(is, requestCode, null, 0, 0, 0,
+                        options.toBundle());
                 return true;
             } catch (IntentSender.SendIntentException e) {
                 Toast.makeText(activity, R.string.activity_not_found, Toast.LENGTH_SHORT).show();

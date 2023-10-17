@@ -48,8 +48,8 @@ public class MainThreadInitializedObject<T> {
     }
 
     public T get(Context context) {
-        if (context instanceof SandboxContext) {
-            return ((SandboxContext) context).getObject(this, mProvider);
+        if (context instanceof SandboxContext sc) {
+            return sc.getObject(this);
         }
 
         if (mValue == null) {
@@ -131,23 +131,22 @@ public class MainThreadInitializedObject<T> {
          * Find a cached object from mObjectMap if we have already created one. If not, generate
          * an object using the provider.
          */
-        private <T> T getObject(MainThreadInitializedObject<T> object, ObjectProvider<T> provider) {
+        protected <T> T getObject(MainThreadInitializedObject<T> object) {
             synchronized (mDestroyLock) {
                 if (mDestroyed) {
                     Log.e(TAG, "Static object access with a destroyed context");
                 }
-
                 T t = (T) mObjectMap.get(object);
                 if (t != null) {
                     return t;
                 }
                 if (Looper.myLooper() == Looper.getMainLooper()) {
-                    t = createObject(provider);
+                    t = createObject(object);
                     // Check if we've explicitly allowed the object or if it's a SafeCloseable,
                     // it will get destroyed in onDestroy()
                     if (!mAllowedObjects.contains(object) && !(t instanceof SafeCloseable)) {
-                        throw new IllegalStateException(
-                                "Leaking unknown objects " + object + "  " + provider + " " + t);
+                        throw new IllegalStateException("Leaking unknown objects "
+                                + object + "  " + object.mProvider + " " + t);
                     }
                     mObjectMap.put(object, t);
                     mOrderedObjects.add(t);
@@ -156,15 +155,15 @@ public class MainThreadInitializedObject<T> {
             }
 
             try {
-                return MAIN_EXECUTOR.submit(() -> getObject(object, provider)).get();
+                return MAIN_EXECUTOR.submit(() -> getObject(object)).get();
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
         }
 
         @UiThread
-        protected <T> T createObject(ObjectProvider<T> provider) {
-            return provider.get(this);
+        protected <T> T createObject(MainThreadInitializedObject<T> object) {
+            return object.mProvider.get(this);
         }
     }
 }

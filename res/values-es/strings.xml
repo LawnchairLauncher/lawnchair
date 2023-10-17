@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"Personales"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"Trabajo"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversaciones"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"Toma de notas"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Información útil al alcance de la mano"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"Para ver información sin abrir una aplicación, puedes añadir widgets a la pantalla de inicio"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Toca para cambiar los ajustes del widget"</string>
@@ -106,7 +105,7 @@
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Inhabilitado por el administrador"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"Permitir rotación de la pantalla de inicio"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"Al girar el teléfono"</string>
-    <string name="notification_dots_title" msgid="9062440428204120317">"Burbujas de notificación"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"Puntos de notificación"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"Activado"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"Desactivadas"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Se necesita acceso a las notificaciones"</string>
@@ -172,6 +171,6 @@
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"Reanudar"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"Filtro"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Busca en tu teléfono"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Buscar en tu tablet"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Busca en tu tablet"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Se ha producido un error: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

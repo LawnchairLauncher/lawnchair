@@ -21,6 +21,7 @@ import static android.view.ViewTreeObserver.InternalInsetsInfo.TOUCHABLE_INSETS_
 
 import android.content.Context;
 import android.graphics.Insets;
+import android.media.permission.SafeCloseable;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,6 +30,7 @@ import android.view.WindowInsets;
 
 import androidx.annotation.NonNull;
 
+import com.android.app.viewcapture.SettingsAwareViewCapture;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.testing.TestLogging;
 import com.android.launcher3.testing.shared.TestProtocol;
@@ -44,6 +46,7 @@ public class TaskbarOverlayDragLayer extends
         BaseDragLayer<TaskbarOverlayContext> implements
         ViewTreeObserver.OnComputeInternalInsetsListener {
 
+    private SafeCloseable mViewCaptureCloseable;
     private final List<OnClickListener> mOnClickListeners = new CopyOnWriteArrayList<>();
     private final TouchController mClickListenerTouchController = new TouchController() {
         @Override
@@ -77,12 +80,15 @@ public class TaskbarOverlayDragLayer extends
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         getViewTreeObserver().addOnComputeInternalInsetsListener(this);
+        mViewCaptureCloseable = SettingsAwareViewCapture.getInstance(getContext())
+                .startCapture(getRootView(), ".TaskbarOverlay");
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         getViewTreeObserver().removeOnComputeInternalInsetsListener(this);
+        mViewCaptureCloseable.close();
     }
 
     @Override

@@ -18,7 +18,7 @@ package com.android.quickstep.interaction;
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
-import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.app.animation.Interpolators.ACCELERATE;
 import static com.android.launcher3.util.window.RefreshRateTracker.getSingleFrameMs;
 import static com.android.launcher3.views.FloatingIconView.SHAPE_PROGRESS_DURATION;
 import static com.android.quickstep.AbsSwipeUpHandler.MAX_SWIPE_DURATION;
@@ -171,14 +171,14 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
         PendingAnimation anim = new PendingAnimation(300);
         if (toOverviewFirst) {
             anim.setFloat(mTaskViewSwipeUpAnimation
-                    .getCurrentShift(), AnimatedFloat.VALUE, 1, ACCEL);
+                    .getCurrentShift(), AnimatedFloat.VALUE, 1, ACCELERATE);
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation, boolean isReverse) {
                     PendingAnimation fadeAnim =
                             new PendingAnimation(TASK_VIEW_END_ANIMATION_DURATION_MILLIS);
                     fadeAnim.setFloat(mTaskViewSwipeUpAnimation
-                            .getCurrentShift(), AnimatedFloat.VALUE, 0, ACCEL);
+                            .getCurrentShift(), AnimatedFloat.VALUE, 0, ACCELERATE);
                     if (resetViews) {
                         fadeAnim.addListener(mResetTaskView);
                     }
@@ -213,7 +213,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
             });
         } else {
             anim.setFloat(mTaskViewSwipeUpAnimation
-                    .getCurrentShift(), AnimatedFloat.VALUE, 0, ACCEL);
+                    .getCurrentShift(), AnimatedFloat.VALUE, 0, ACCELERATE);
             if (resetViews) {
                 anim.addListener(mResetTaskView);
             }
@@ -239,8 +239,8 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
         mFakeTaskView.setVisibility(View.VISIBLE);
         PendingAnimation anim = new PendingAnimation(300);
         anim.setFloat(mTaskViewSwipeUpAnimation
-                .getCurrentShift(), AnimatedFloat.VALUE, 0, ACCEL);
-        anim.setViewAlpha(mFakeTaskView, 1, ACCEL);
+                .getCurrentShift(), AnimatedFloat.VALUE, 0, ACCELERATE);
+        anim.setViewAlpha(mFakeTaskView, 1, ACCELERATE);
         anim.addListener(mResetTaskView);
         AnimatorSet animset = anim.buildAnim();
         if (animateTaskbar) {
@@ -260,7 +260,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
                 mTaskViewSwipeUpAnimation.handleSwipeUpToHome(finalVelocity);
         // After home animation finishes, fade out and run onEndRunnable.
         PendingAnimation fadeAnim = new PendingAnimation(300);
-        fadeAnim.setViewAlpha(mFakeIconView, 0, ACCEL);
+        fadeAnim.setViewAlpha(mFakeIconView, 0, ACCELERATE);
         final View hotseatIconView = mHotseatIconView;
         if (hotseatIconView != null) {
             hotseatIconView.setVisibility(INVISIBLE);
@@ -282,7 +282,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
 
     @Override
     public void setNavBarGestureProgress(@Nullable Float displacement) {
-        if (skipGestureAttempt()) {
+        if (isGestureCompleted()) {
             return;
         }
         if (mTutorialType == HOME_NAVIGATION_COMPLETE
@@ -303,7 +303,7 @@ abstract class SwipeUpGestureTutorialController extends TutorialController {
 
     @Override
     public void onMotionPaused(boolean unused) {
-        if (skipGestureAttempt()) {
+        if (isGestureCompleted()) {
             return;
         }
         if (mShowTasks) {

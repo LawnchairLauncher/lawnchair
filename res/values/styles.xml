@@ -32,7 +32,8 @@
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
         <item name="android:textColorSecondary">#DE000000</item>
         <item name="allAppsScrimColor">?attr/materialColorSurfaceDim</item>
-        <item name="allappsHeaderProtectionColor">@color/popup_color_tertiary_light</item>
+        <item name="allappsHeaderProtectionColor">
+            @color/material_color_surface_container_highest</item>
         <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
         <item name="popupColorPrimary">@color/popup_color_primary_light</item>
         <item name="popupColorSecondary">@color/popup_color_secondary_light</item>
@@ -50,7 +51,6 @@
         <item name="workspaceShadowColor">#B0000000</item>
         <item name="workspaceAmbientShadowColor">#40000000</item>
         <item name="workspaceKeyShadowColor">#89000000</item>
-        <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
         <item name="folderPaginationColor">@color/folder_pagination_color_light</item>
         <item name="folderPreviewColor">@color/folder_preview_light</item>
@@ -137,7 +137,6 @@
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
         <item name="workspaceKeyShadowColor">@android:color/transparent</item>
         <item name="isWorkspaceDarkText">true</item>
-        <item name="workspaceStatusBarScrim">@null</item>
         <item name="workspaceAccentColor">@color/workspace_accent_color_dark</item>
         <item name="dropTargetHoverTextColor">@color/drop_target_hover_text_color_dark</item>
         <item name="dropTargetHoverButtonColor">@color/drop_target_hover_button_color_dark</item>
@@ -151,6 +150,7 @@
         <item name="android:colorControlHighlight">#19FFFFFF</item>
         <item name="android:colorPrimary">#FF212121</item>
         <item name="allAppsScrimColor">?attr/materialColorSurfaceDim</item>
+        <item name="allappsHeaderProtectionColor">@color/material_color_surface_container_low</item>
         <item name="allAppsNavBarScrimColor">#80000000</item>
         <item name="popupColorPrimary">@color/popup_color_primary_dark</item>
         <item name="popupColorSecondary">@color/popup_color_secondary_dark</item>
@@ -188,7 +188,6 @@
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
         <item name="workspaceKeyShadowColor">@android:color/transparent</item>
         <item name="isWorkspaceDarkText">true</item>
-        <item name="workspaceStatusBarScrim">@null</item>
         <item name="workspaceAccentColor">@color/workspace_accent_color_dark</item>
         <item name="dropTargetHoverTextColor">@color/drop_target_hover_text_color_dark</item>
         <item name="dropTargetHoverButtonColor">@color/drop_target_hover_button_color_dark</item>
@@ -426,4 +425,8 @@
         <item name="horizontalPadding">16dp</item>
     </style>
 
+    <style name="ArrowTipStyle">
+        <item name="arrowTipBackground">@color/arrow_tip_view_bg</item>
+        <item name="arrowTipTextColor">@color/arrow_tip_view_content</item>
+    </style>
 </resources>

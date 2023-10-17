@@ -44,41 +44,35 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Прапановы праграм уключаны"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Прапановы праграм выключаны"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Праграма з падказкі: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Павярніце прыладу"</string>
-    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Каб пачаць азнаямленне з дапаможнікам па навігацыі жэстамі, павярніце прыладу"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Правядзіце пальцам справа налева ці злева направа ад самага краю экрана"</string>
-    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Правядзіце пальцам ад правага або левага краю экрана ў цэнтр і адпусціце палец"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Пераканайцеся, што вы праводзіце пальцам ад самага вугла (правага ці левага) экрана."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Пераканайцеся, што праводзіце пальцам з правага ці левага вугла ў цэнтр экрана, а потым адпускаеце."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Вы даведаліся, як гартаць справа для вяртання. Цяпер даведайцеся, як пераключацца паміж праграмамі."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Вы навучыліся рабіць жэст для пераходу назад"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Не праводзьце пальцам занадта блізка да ніжняга краю экрана"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Вы навучыліся рабіць жэст вяртання."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Пераканайцеся, што вы не праводзіце пальцам занадта блізка да ніжняга краю экрана."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Каб змяніць адчувальнасць жэста вяртання, адкрыйце налады"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Правядзіце пальцам, каб вярнуцца"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Каб вярнуцца на папярэдні экран, правядзіце пальцам ад левага ці правага краю да цэнтра экрана."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Каб вярнуцца на папярэдні экран, правядзіце двума пальцамі ад левага ці правага краю ў цэнтр экрана."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Назад"</string>
-    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Правядзіце пальцам па экране злева направа ці справа налева ў цэнтр экрана"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Правядзіце пальцам знізу ўверх з ніжняга краю экрана"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Перш чым адпусціць палец, не затрымлівайце яго на адным месцы"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Правядзіце пальцам па экране роўна ўверх"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Вы навучыліся рабіць жэст для пераходу на галоўны экран. Зараз вы даведаецеся, як пераходзіць назад."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Вы навучыліся рабіць жэст для пераходу на галоўны экран"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Пераканайцеся, што праводзіце пальцам па экране знізу ўверх."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Пераканайцеся, што не затрымліваецеся перад адпусканнем."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Пераканайцеся, што праводзіце пальцам вертыкальна."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Вы навучыліся рабіць жэст пераходу на галоўны экран. А зараз даведайцеся, як вярнуцца назад."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Вы навучыліся рабіць жэст пераходу на галоўны экран."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Правядзіце пальцам для пераходу на галоўны экран"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Правядзіце пальцам па экране знізу ўверх. Гэты жэст дазваляе вярнуцца на Галоўны экран."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Правядзіце двума пальцамі па экране знізу ўверх. Гэты жэст дазваляе вярнуцца на Галоўны экран."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Пераход на галоўны экран"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Правядзіце пальцам па экране знізу ўверх"</string>
-    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"У вас добра атрымліваецца!"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Правядзіце пальцам знізу ўверх з ніжняга краю экрана"</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Перш чым адпусціць палец, паспрабуйце даўжэй утрымліваць акно націснутым"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Правядзіце пальцам па экране роўна ўверх, а потым затрымайце палец"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Перайсці на галоўны экран"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Каб у любы час адкрыць галоўны экран, правядзіце пальцам па экране знізу ўверх"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Пераканайцеся, што праводзіце пальцам па экране знізу ўверх."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Перш чым адпусціць палец, паспрабуйце даўжэй утрымліваць акно націснутым."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Пераканайцеся, што праводзіце пальцам вертыкальна, а потым затрымліваеце яго."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Вы навучыліся выкарыстоўваць жэсты. Каб выключыць жэсты, адкрыйце Налады."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Вы навучыліся рабіць жэст для пераключэння паміж праграмамі"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Вы навучыліся рабіць жэст пераключэння паміж праграмамі."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Правядзіце пальцам для пераключэння паміж праграмамі"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Каб пераключыцца на іншую праграму, правядзіце па экране знізу ўверх, патрымайце палец і адпусціце."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Каб пераключыцца на іншую праграму, правядзіце двума пальцамі знізу ўверх, патрымайце і адпусціце."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Пераключэнне праграм"</string>
-    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Правядзіце пальцам уверх ад ніжняга краю экрана, затрымайце палец, а потым адпусціце"</string>
-    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Выдатна!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Гатова"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Гатова"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Налады"</string>
@@ -121,9 +115,6 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Панэль задач паказана"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Панэль задач схавана"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Панэль навігацыі"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"Заўсёды паказваць панэль задач"</string>
-    <string name="change_navigation_mode" msgid="9088393078736808968">"Змяніць рэжым навігацыі"</string>
-    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Раздзяляльнік панэлі задач"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Перамясціць уверх/улева"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Перамясціць уніз/управа"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Паказаць ячшэ # праграму.}one{Паказаць ячшэ # праграму.}few{Паказаць ячшэ # праграмы.}many{Паказаць ячшэ # праграм.}other{Паказаць ячшэ # праграмы.}}"</string>

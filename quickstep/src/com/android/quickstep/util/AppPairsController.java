@@ -17,19 +17,30 @@
 
 package com.android.quickstep.util;
 
+import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_PAIR_LAUNCH;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
+import android.app.ActivityTaskManager;
 import android.content.Context;
+import android.content.Intent;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
+import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.views.TaskView;
+import com.android.systemui.shared.recents.model.Task;
+
+import java.util.Arrays;
 
 /**
  * Mini controller class that handles app pair interactions: saving, modifying, deleting, etc.
@@ -52,10 +63,13 @@ public class AppPairsController {
 
     private final Context mContext;
     private final SplitSelectStateController mSplitSelectStateController;
+    private final StatsLogManager mStatsLogManager;
     public AppPairsController(Context context,
-            SplitSelectStateController splitSelectStateController) {
+            SplitSelectStateController splitSelectStateController,
+            StatsLogManager statsLogManager) {
         mContext = context;
         mSplitSelectStateController = splitSelectStateController;
+        mStatsLogManager = statsLogManager;
     }
 
     /**
@@ -84,11 +98,51 @@ public class AppPairsController {
                 LauncherAccessibilityDelegate delegate =
                         Launcher.getLauncher(mContext).getAccessibilityDelegate();
                 if (delegate != null) {
-                    MAIN_EXECUTOR.execute(() -> delegate.addToWorkspace(newAppPair, true));
+                    delegate.addToWorkspace(newAppPair, true);
+                    mStatsLogManager.logger().withItemInfo(newAppPair)
+                            .log(StatsLogManager.LauncherEvent.LAUNCHER_APP_PAIR_SAVE);
                 }
             });
         });
+    }
 
+    /**
+     * Launches an app pair by searching the RecentsModel for running instances of each app, and
+     * staging either those running instances or launching the apps as new Intents.
+     */
+    public void launchAppPair(WorkspaceItemInfo app1, WorkspaceItemInfo app2) {
+        ComponentKey app1Key = new ComponentKey(app1.getTargetComponent(), app1.user);
+        ComponentKey app2Key = new ComponentKey(app2.getTargetComponent(), app2.user);
+        mSplitSelectStateController.findLastActiveTasksAndRunCallback(
+                Arrays.asList(app1Key, app2Key),
+                foundTasks -> {
+                    @Nullable Task foundTask1 = foundTasks.get(0);
+                    Intent task1Intent;
+                    int task1Id;
+                    if (foundTask1 != null) {
+                        task1Id = foundTask1.key.id;
+                        task1Intent = null;
+                    } else {
+                        task1Id = ActivityTaskManager.INVALID_TASK_ID;
+                        task1Intent = app1.intent;
+                    }
+
+                    mSplitSelectStateController.setInitialTaskSelect(task1Intent,
+                            SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT,
+                            app1,
+                            LAUNCHER_APP_PAIR_LAUNCH,
+                            task1Id);
+
+                    @Nullable Task foundTask2 = foundTasks.get(1);
+                    if (foundTask2 != null) {
+                        mSplitSelectStateController.setSecondTask(foundTask2);
+                    } else {
+                        mSplitSelectStateController.setSecondTask(
+                                app2.intent, app2.user);
+                    }
+
+                    mSplitSelectStateController.launchSplitTasks();
+                });
     }
 
     /**

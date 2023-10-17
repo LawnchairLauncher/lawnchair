@@ -41,27 +41,31 @@ class PhonePortraitNavLayoutter(
 
     override fun layoutButtons(dp: DeviceProfile, isContextualButtonShowing: Boolean) {
         // TODO(b/230395757): Polish pending, this is just to make it usable
-        val navContainerParams = navButtonContainer.layoutParams as FrameLayout.LayoutParams
         val taskbarDimensions =
-            DimensionUtils.getTaskbarPhoneDimensions(dp, resources, TaskbarManager.isPhoneMode(dp))
+            DimensionUtils.getTaskbarPhoneDimensions(dp, resources,
+                    TaskbarManager.isPhoneMode(dp))
         val endStartMargins = resources.getDimensionPixelSize(R.dimen.taskbar_nav_buttons_size)
-        navContainerParams.width = taskbarDimensions.x
-        navContainerParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-        navContainerParams.gravity = Gravity.CENTER_VERTICAL
 
         // Ensure order of buttons is correct
         navButtonContainer.removeAllViews()
         navButtonContainer.orientation = LinearLayout.HORIZONTAL
-        navContainerParams.topMargin = 0
-        navContainerParams.bottomMargin = 0
-        navContainerParams.marginEnd = endStartMargins
-        navContainerParams.marginStart = endStartMargins
+
+        val navContainerParams = FrameLayout.LayoutParams(
+                taskbarDimensions.x, ViewGroup.LayoutParams.MATCH_PARENT)
+        navContainerParams.apply {
+            topMargin = 0
+            bottomMargin = 0
+            marginEnd = endStartMargins
+            marginStart = endStartMargins
+        }
+
         // Swap recents and back button in case we were landscape prior to this
         navButtonContainer.addView(backButton)
         navButtonContainer.addView(homeButton)
         navButtonContainer.addView(recentsButton)
 
         navButtonContainer.layoutParams = navContainerParams
+        navButtonContainer.gravity = Gravity.CENTER
 
         // Add the spaces in between the nav buttons
         val spaceInBetween =

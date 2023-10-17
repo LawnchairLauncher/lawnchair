@@ -15,11 +15,11 @@
  */
 package com.android.quickstep.util;
 
+import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_DEPTH_CONTROLLER;
 import static com.android.launcher3.states.StateAnimationConfig.SKIP_OVERVIEW;
@@ -177,8 +177,8 @@ public class StaggeredWorkspaceAnim {
 
         addDepthAnimationForState(launcher, NORMAL, duration);
 
-        mAnimators.play(launcher.getRootView().getSysUiScrim().createSysuiMultiplierAnim(0f, 1f)
-                .setDuration(duration));
+        mAnimators.play(launcher.getRootView().getSysUiScrim().getSysUIMultiplier()
+                .animateToValue(0f, 1f).setDuration(duration));
     }
 
     private void addAnimationForPage(CellLayout page, int totalRows, long duration) {

@@ -16,10 +16,12 @@
 
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.Utilities.allowBGLaunch;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_SYSTEM_SHORTCUT_PAUSE_TAP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.annotation.TargetApi;
+import android.app.ActivityOptions;
 import android.app.PendingIntent;
 import android.app.RemoteAction;
 import android.content.Context;
@@ -84,6 +86,8 @@ public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
         final WeakReference<BaseDraggingActivity> weakTarget = new WeakReference<>(mTarget);
         final String actionIdentity = mAction.getTitle() + ", "
                 + mItemInfo.getTargetComponent().getPackageName();
+
+        ActivityOptions options = allowBGLaunch(ActivityOptions.makeBasic());
         try {
             if (DEBUG) Log.d(TAG, "Sending action: " + actionIdentity);
             mAction.getActionIntent().send(
@@ -103,7 +107,9 @@ public class RemoteActionShortcut extends SystemShortcut<BaseDraggingActivity> {
                             }
                         }
                     },
-                    MAIN_EXECUTOR.getHandler());
+                    MAIN_EXECUTOR.getHandler(),
+                    null,
+                    options.toBundle());
         } catch (PendingIntent.CanceledException e) {
             Log.e(TAG, "Remote action canceled: " + actionIdentity, e);
             Toast.makeText(mTarget, mTarget.getString(

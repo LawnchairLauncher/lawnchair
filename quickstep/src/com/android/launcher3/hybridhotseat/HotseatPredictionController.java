@@ -22,11 +22,13 @@ import static com.android.launcher3.hybridhotseat.HotseatEduController.getSettin
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_PREDICTION_PINNED;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_HOTSEAT_RANKED;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.ComponentName;
+import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,9 +62,11 @@ import com.android.launcher3.uioverrides.QuickstepLauncher;
 import com.android.launcher3.util.OnboardingPrefs;
 import com.android.launcher3.views.Snackbar;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -74,6 +78,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         SystemShortcut.Factory<QuickstepLauncher>, DeviceProfile.OnDeviceProfileChangeListener,
         DragSource, ViewGroup.OnHierarchyChangeListener {
 
+    private static final String TAG = "HotseatPredictionController";
     private static final int FLAG_UPDATE_PAUSED = 1 << 0;
     private static final int FLAG_DRAG_IN_PROGRESS = 1 << 1;
     private static final int FLAG_FILL_IN_PROGRESS = 1 << 2;
@@ -114,8 +119,7 @@ public class HotseatPredictionController implements DragController.DragListener,
         WorkspaceItemInfo dragItem = new WorkspaceItemInfo((WorkspaceItemInfo) v.getTag());
         v.setVisibility(View.INVISIBLE);
         mLauncher.getWorkspace().beginDragShared(
-                v, null, this, dragItem, new DragPreviewProvider(v),
-                mLauncher.getDefaultWorkspaceDragOptions());
+                v, null, this, dragItem, new DragPreviewProvider(v), new DragOptions());
         return true;
     };
 
@@ -184,6 +188,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     private void fillGapsWithPrediction(boolean animate) {
+        Log.d(TAG, "fillGapsWithPrediction flags: " + getStateString(mPauseFlags));
         if (mPauseFlags != 0) {
             return;
         }
@@ -208,12 +213,16 @@ public class HotseatPredictionController implements DragController.DragListener,
             View child = mHotseat.getChildAt(
                     mHotseat.getCellXFromOrder(rank),
                     mHotseat.getCellYFromOrder(rank));
+            Log.d(TAG, "Hotseat app child is: " + child + " and isPredictedIcon() evaluates to"
+                    + ": " + isPredictedIcon(child));
 
             if (child != null && !isPredictedIcon(child)) {
                 continue;
             }
             if (mPredictedItems.size() <= predictionIndex) {
                 // Remove predicted apps from the past
+                Log.d(TAG, "Remove predicted apps from the past\nPrediction Index: "
+                        + predictionIndex);
                 if (isPredictedIcon(child)) {
                     mHotseat.removeView(child);
                 }
@@ -221,6 +230,11 @@ public class HotseatPredictionController implements DragController.DragListener,
             }
             WorkspaceItemInfo predictedItem =
                     (WorkspaceItemInfo) mPredictedItems.get(predictionIndex++);
+            Log.d(TAG, "Predicted item is: " + predictedItem);
+            if (child != null) {
+                Log.d(TAG, "Predicted item is enabled: " + child.isEnabled());
+            }
+
             if (isPredictedIcon(child) && child.isEnabled()) {
                 PredictedAppIcon icon = (PredictedAppIcon) child;
                 boolean animateIconChange = icon.shouldAnimateIconChange(predictedItem);
@@ -240,6 +254,7 @@ public class HotseatPredictionController implements DragController.DragListener,
     }
 
     private void bindItems(List<WorkspaceItemInfo> itemsToAdd, boolean animate) {
+        Log.d(TAG, "bindItems to hotseat: " + itemsToAdd);
         AnimatorSet animationSet = new AnimatorSet();
         for (WorkspaceItemInfo item : itemsToAdd) {
             PredictedAppIcon icon = PredictedAppIcon.createIcon(mHotseat, item);
@@ -279,6 +294,7 @@ public class HotseatPredictionController implements DragController.DragListener,
      * start and pauses predicted apps update on the hotseat
      */
     public void setPauseUIUpdate(boolean paused) {
+        Log.d(TAG, "setPauseUIUpdate parameter `paused` is " + paused);
         mPauseFlags = paused
                 ? (mPauseFlags | FLAG_UPDATE_PAUSED)
                 : (mPauseFlags & ~FLAG_UPDATE_PAUSED);
@@ -293,8 +309,10 @@ public class HotseatPredictionController implements DragController.DragListener,
     public void setPredictedItems(FixedContainerItems items) {
         mPredictedItems = new ArrayList(items.items);
         if (mPredictedItems.isEmpty()) {
+            Log.d(TAG, "Predicted items is initially empty");
             HotseatRestoreHelper.restoreBackup(mLauncher);
         }
+        Log.d(TAG, "Predicted items: " + mPredictedItems);
         fillGapsWithPrediction();
     }
 
@@ -500,5 +518,22 @@ public class HotseatPredictionController implements DragController.DragListener,
         return view instanceof PredictedAppIcon && view.getTag() instanceof WorkspaceItemInfo
                 && ((WorkspaceItemInfo) view.getTag()).container
                 == LauncherSettings.Favorites.CONTAINER_HOTSEAT_PREDICTION;
+    }
+
+    private static String getStateString(int flags) {
+        StringJoiner str = new StringJoiner("|");
+        appendFlag(str, flags, FLAG_UPDATE_PAUSED, "FLAG_UPDATE_PAUSED");
+        appendFlag(str, flags, FLAG_DRAG_IN_PROGRESS, "FLAG_DRAG_IN_PROGRESS");
+        appendFlag(str, flags, FLAG_FILL_IN_PROGRESS, "FLAG_FILL_IN_PROGRESS");
+        appendFlag(str, flags, FLAG_REMOVING_PREDICTED_ICON,
+                "FLAG_REMOVING_PREDICTED_ICON");
+        return str.toString();
+    }
+
+    public void dump(String prefix, PrintWriter writer) {
+        writer.println(prefix + this.getClass().getSimpleName());
+        writer.println(prefix + "\tFlags: " + getStateString(mPauseFlags));
+        writer.println(prefix + "\tmHotSeatItemsCount: " + mHotSeatItemsCount);
+        writer.println(prefix + "\tmPredictedItems: " + mPredictedItems);
     }
 }

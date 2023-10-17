@@ -27,7 +27,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"సురక్షిత మోడ్‌లో విడ్జెట్‌లు నిలిపివేయబడ్డాయి"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"షార్ట్‌కట్ అందుబాటులో లేదు"</string>
     <string name="home_screen" msgid="5629429142036709174">"మొదటి ట్యాబ్"</string>
-    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"స్ప్లిట్ స్క్రీన్"</string>
+    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"స్క్రీన్‌ను విభజించు"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s కోసం యాప్ సమాచారం"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"యాప్ పెయిర్‌ను సేవ్ చేయండి"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"విడ్జెట్‌ను తరలించడానికి తాకి &amp; నొక్కి ఉంచండి."</string>
@@ -35,7 +35,7 @@
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
     <string name="widget_accessible_dims_format" msgid="3640149169885301790">"%1$d వెడల్పు X %2$d ఎత్తు"</string>
     <string name="widget_preview_context_description" msgid="9045841361655787574">"<xliff:g id="WIDGET_NAME">%1$s</xliff:g> విడ్జెట్"</string>
-    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"విడ్జెట్‌ను మొదటి స్క్రీన్‌లో తిప్పడానికి దాన్ని తాకి, &amp; నొక్కి పట్టుకోండి"</string>
+    <string name="add_item_request_drag_hint" msgid="8730547755622776606">"విడ్జెట్‌ను మొదటి స్క్రీన్ చుట్టూ తిప్పడానికి దాన్ని తాకి, &amp; నొక్కి ఉంచండి"</string>
     <string name="add_to_home_screen" msgid="9168649446635919791">"మొదటి స్క్రీన్‌కు జోడించండి"</string>
     <string name="added_to_home_screen_accessibility_text" msgid="4451545765448884415">"మొదటి స్క్రీన్‌కు <xliff:g id="WIDGET_NAME">%1$s</xliff:g> విడ్జెట్ జోడించబడింది"</string>
     <string name="suggested_widgets_header_title" msgid="1844314680798145222">"సూచనలు"</string>
@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"వ్యక్తిగత గ్యాడ్జెట్స్"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"ఆఫీస్"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"సంభాషణలు"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"నోట్-టేకింగ్"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"మీ చేతివేళ్ల మీద ఉపయోగకరమైన సమాచారం"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"యాప్‌లను తెరవకుండా సమాచారాన్ని పొందడానికి, మీరు మీ మొదటి స్క్రీన్‌కు విడ్జెట్‌లను జోడించవచ్చు"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"విడ్జెట్ సెట్టింగ్‌లను మార్చడానికి ట్యాప్ చేయండి"</string>
@@ -168,7 +167,7 @@
     <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"మీ వర్క్ యాప్‌ల నుండి మీకు ఫోన్ కాల్స్, టెక్స్ట్ మెసేజ్‌లు, లేదా నోటిఫికేషన్‌లు అందవు"</string>
     <string name="work_apps_paused_edu_banner" msgid="8872412121608402058">"వర్క్ యాప్‌లకు బ్యాడ్జ్ ఉంటుంది, అవి మీ IT అడ్మిన్‌కు కనిపిస్తాయి"</string>
     <string name="work_apps_paused_edu_accept" msgid="6377476824357318532">"అర్థమైంది"</string>
-    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"వర్క్ యాప్‌లను పాజ్ చేయండి"</string>
+    <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"వర్క్ యాప్‌లను పాజ్ చేయి"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"పాజ్ నుండి తీసివేయండి"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ఫిల్టర్ చేయి"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"మీ ఫోన్‌లో సెర్చ్ చేయండి"</string>

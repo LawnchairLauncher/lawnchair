@@ -16,10 +16,7 @@
 
 package com.android.launcher3;
 
-import android.content.ContentResolver;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
-import android.os.Bundle;
 import android.provider.BaseColumns;
 
 import com.android.launcher3.model.data.ItemInfo;
@@ -89,7 +86,9 @@ public class LauncherSettings {
 
         /**
          * The gesture is an application created shortcut
+         * @deprecated This is no longer supported. Use {@link #ITEM_TYPE_DEEP_SHORTCUT} instead
          */
+        @Deprecated
         public static final int ITEM_TYPE_SHORTCUT = 1;
 
         /**
@@ -153,24 +152,6 @@ public class LauncherSettings {
         public static final String TMP_TABLE = "favorites_tmp";
 
         /**
-         * The content:// style URL for "favorites" table
-         */
-        public static final Uri CONTENT_URI = Uri.parse("content://"
-                + LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
-
-        /**
-         * The content:// style URL for a given row, identified by its id.
-         *
-         * @param id The row id.
-         *
-         * @return The unique content URL for the specified row.
-         */
-        public static Uri getContentUri(int id) {
-            return Uri.parse("content://" + LauncherProvider.AUTHORITY
-                    + "/" + TABLE_NAME + "/" + id);
-        }
-
-        /**
          * The container holding the favorite
          * <P>Type: INTEGER</P>
          */
@@ -213,7 +194,6 @@ public class LauncherSettings {
         public static final String itemTypeToString(int type) {
             switch(type) {
                 case ITEM_TYPE_APPLICATION: return "APP";
-                case ITEM_TYPE_SHORTCUT: return "SHORTCUT";
                 case ITEM_TYPE_FOLDER: return "FOLDER";
                 case ITEM_TYPE_APPWIDGET: return "WIDGET";
                 case ITEM_TYPE_CUSTOM_APPWIDGET: return "CUSTOMWIDGET";
@@ -338,42 +318,8 @@ public class LauncherSettings {
      * Launcher settings
      */
     public static final class Settings {
-
-        public static final Uri CONTENT_URI = Uri.parse("content://" +
-                LauncherProvider.AUTHORITY + "/settings");
-
-        public static final String METHOD_CLEAR_EMPTY_DB_FLAG = "clear_empty_db_flag";
-
-        public static final String METHOD_DELETE_EMPTY_FOLDERS = "delete_empty_folders";
-
-        public static final String METHOD_NEW_ITEM_ID = "generate_new_item_id";
-        public static final String METHOD_NEW_SCREEN_ID = "generate_new_screen_id";
-
-        public static final String METHOD_CREATE_EMPTY_DB = "create_empty_db";
-
-        public static final String METHOD_LOAD_DEFAULT_FAVORITES = "load_default_favorites";
-
-        public static final String METHOD_REMOVE_GHOST_WIDGETS = "remove_ghost_widgets";
-
-        public static final String METHOD_NEW_TRANSACTION = "new_db_transaction";
-
-        public static final String METHOD_REFRESH_HOTSEAT_RESTORE_TABLE = "restore_hotseat_table";
-
-        public static final String EXTRA_VALUE = "value";
-
-        public static final String EXTRA_DB_NAME = "db_name";
-
         public static final String LAYOUT_DIGEST_KEY = "launcher3.layout.provider.blob";
         public static final String LAYOUT_DIGEST_LABEL = "launcher-layout";
         public static final String LAYOUT_DIGEST_TAG = "ignore";
-
-        public static Bundle call(ContentResolver cr, String method) {
-            return call(cr, method, null /* arg */);
-        }
-
-        public static Bundle call(ContentResolver cr, String method, String arg) {
-            return cr.call(CONTENT_URI, method, arg, null);
-        }
-
     }
 }

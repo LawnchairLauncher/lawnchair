@@ -44,41 +44,35 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Kveikt á tillögum að forritum"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Slökkt er á tillögðum forritum"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Tillaga að forriti: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Snúðu tækinu"</string>
-    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Snúðu tækinu til að ljúka leiðsögn um bendingastjórnun"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Passaðu að strjúka frá jaðri hægri eða vinstri brúnar"</string>
-    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Passaðu að strjúka frá jaðri hægri eða vinstri brúnar að miðju skjásins og sleppa síðan"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Passaðu að strjúka frá jaðri hægri eða vinstri brúnar."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Passaðu að strjúka frá jaðri hægri eða vinstri brúnar að miðju skjásins og sleppa síðan."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Þú lærðir að strjúka frá hægri til að bakka. Næst skaltu læra hvernig þú skiptir á milli forrita."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Þú laukst við að kynna þér bendinguna „til baka“"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Passaðu að strjúka ekki of nálægt neðri brún skjásins"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Þú laukst við að kynna þér bendinguna „til baka“."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Passaðu að strjúka ekki of nálægt neðri brún skjásins."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Til að breyta næmi til baka-bendingar ferðu í stillingar"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Strjúktu til að fara til baka"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Til að fara til baka á síðasta skjá skaltu strjúka frá vinstri eða hægri brún að miðju skjásins."</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Strjúktu frá vinstri eða hægri brún að miðju skjásins með 2 fingrum til að fara aftur á síðasta skjá."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Til baka"</string>
-    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Strjúktu frá vinstri eða hægri brún að miðju skjásins"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Passaðu að strjúka upp frá neðri brún skjásins"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Passaðu að stoppa ekki áður en þú sleppir"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Passaðu að strjúka beint upp"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Þú laukst við að kynna þér bendinguna „heim“. Næst skaltu læra hvernig þú ferð „til baka“."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Þú laukst við að kynna þér bendinguna „heim“"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Passaðu að strjúka upp frá neðri brún skjásins."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Passaðu að stoppa ekki áður en þú sleppir."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Passaðu að strjúka beint upp."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Þú laukst við að kynna þér bendinguna „heim“. Næst skaltu læra hvernig þú ferð „til baka“."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Þú laukst við að kynna þér bendinguna „heim“."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Strjúktu til að fara heim"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Strjúktu upp frá neðri hluta skjásins. Þetta flytur þig alltaf á heimaskjáinn."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Strjúktu frá neðri brún skjásins með 2 fingrum. Þessi bending opnar ávallt heimaskjáinn."</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Fara á heimaskjá"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Strjúktu upp frá neðri hluta skjásins"</string>
-    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Vel gert!"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Passaðu að strjúka upp frá neðri brún skjásins"</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Prófaðu að halda fingrinum lengur á glugganum áður en þú sleppir"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Passaðu að strjúka beint upp og stoppa svo"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Strjúktu upp frá neðsta hluta skjásins til að opna heimskjáinn hvenær sem er"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Passaðu að strjúka upp frá neðri brún skjásins."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Prófaðu að halda fingrinum lengur á glugganum áður en þú sleppir."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Passaðu að strjúka beint upp og stoppa svo."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Þú kynntir þér hvernig á að nota bendingar. Opnaðu stillingar til að slökkva á bendingum."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Þú laukst við að kynna þér bendinguna „skipta um forrit“"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Þú laukst við að kynna þér bendinguna „skipta um forrit“."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Strjúktu til að skipta á milli forrita"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Strjúktu upp frá neðri hluta skjásins, haltu og slepptu svo til að skipta á milli forrita."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Strjúktu upp frá neðri brún skjásins með 2 fingrum, haltu og slepptu til að skipta á milli forrita."</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Skipta um forrit"</string>
-    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Strjúktu upp frá neðri hluta skjásins, haltu inni og slepptu svo"</string>
-    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Vel gert!"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Allt til reiðu"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Lokið"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Stillingar"</string>
@@ -121,9 +115,6 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Forritastika sýnd"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Forritastika falin"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Yfirlitsstika"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"Alltaf sýna forritastiku"</string>
-    <string name="change_navigation_mode" msgid="9088393078736808968">"Breyta leiðsagnarstillingu"</string>
-    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Skipting forritastiku"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Færa efst/til vinstri"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Færa neðst/til hægri"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Sýna # forrit í viðbót.}one{Sýna # forrit í viðbót.}other{Sýna # forrit í viðbót.}}"</string>

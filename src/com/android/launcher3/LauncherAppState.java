@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import static android.app.admin.DevicePolicyManager.ACTION_DEVICE_POLICY_RESOURCE_UPDATED;
+import static android.content.Context.RECEIVER_EXPORTED;
 
 import static com.android.launcher3.LauncherPrefs.ICON_STATE;
 import static com.android.launcher3.LauncherPrefs.THEMED_ICONS;
@@ -26,6 +27,7 @@ import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.LauncherApps;
@@ -38,7 +40,6 @@ import androidx.annotation.GuardedBy;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.icons.IconProvider;
@@ -62,6 +63,7 @@ public class LauncherAppState implements SafeCloseable {
 
     public static final String ACTION_FORCE_ROLOAD = "force-reload-launcher";
     public static final String KEY_ICON_STATE = "pref_icon_shape_path";
+    public static final String KEY_ALL_APPS_OVERVIEW_THRESHOLD = "pref_all_apps_overview_threshold";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<LauncherAppState> INSTANCE =
@@ -104,27 +106,27 @@ public class LauncherAppState implements SafeCloseable {
         });
 
         mContext.getSystemService(LauncherApps.class).registerCallback(mModel);
+        mOnTerminateCallback.add(() ->
+                mContext.getSystemService(LauncherApps.class).unregisterCallback(mModel));
 
         SimpleBroadcastReceiver modelChangeReceiver =
                 new SimpleBroadcastReceiver(mModel::onBroadcastIntent);
         modelChangeReceiver.register(mContext, Intent.ACTION_LOCALE_CHANGED,
-                Intent.ACTION_MANAGED_PROFILE_AVAILABLE,
-                Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE,
-                Intent.ACTION_MANAGED_PROFILE_UNLOCKED,
-                Intent.ACTION_PROFILE_INACCESSIBLE,
                 ACTION_DEVICE_POLICY_RESOURCE_UPDATED);
-        if (FeatureFlags.IS_STUDIO_BUILD) {
-            modelChangeReceiver.register(mContext, ACTION_FORCE_ROLOAD);
+        if (BuildConfig.IS_STUDIO_BUILD) {
+            mContext.registerReceiver(modelChangeReceiver, new IntentFilter(ACTION_FORCE_ROLOAD),
+                    RECEIVER_EXPORTED);
         }
         mOnTerminateCallback.add(() -> mContext.unregisterReceiver(modelChangeReceiver));
 
         SafeCloseable userChangeListener = UserCache.INSTANCE.get(mContext)
-                .addUserChangeListener(mModel::forceReload);
+                .addUserEventListener(mModel::onUserEvent);
         mOnTerminateCallback.add(userChangeListener::close);
 
         LockedUserState.get(context).runOnUserUnlocked(() -> {
-            CustomWidgetManager.INSTANCE.get(mContext)
-                    .setWidgetRefreshCallback(mModel::refreshAndBindWidgetsAndShortcuts);
+            CustomWidgetManager cwm = CustomWidgetManager.INSTANCE.get(mContext);
+            cwm.setWidgetRefreshCallback(mModel::refreshAndBindWidgetsAndShortcuts);
+            mOnTerminateCallback.add(() -> cwm.setWidgetRefreshCallback(null));
 
             IconObserver observer = new IconObserver();
             SafeCloseable iconChangeTracker = mIconProvider.registerIconChangeListener(
@@ -159,6 +161,7 @@ public class LauncherAppState implements SafeCloseable {
         mModel = new LauncherModel(context, this, mIconCache, new AppFilter(mContext),
                 iconCacheFileName != null);
         mOnTerminateCallback.add(mIconCache::close);
+        mOnTerminateCallback.add(mModel::destroy);
     }
 
     private void onNotificationSettingsChanged(boolean areNotificationDotsEnabled) {
@@ -180,9 +183,6 @@ public class LauncherAppState implements SafeCloseable {
      */
     @Override
     public void close() {
-        mModel.destroy();
-        mContext.getSystemService(LauncherApps.class).unregisterCallback(mModel);
-        CustomWidgetManager.INSTANCE.get(mContext).setWidgetRefreshCallback(null);
         mOnTerminateCallback.executeAllAndDestroy();
     }
 

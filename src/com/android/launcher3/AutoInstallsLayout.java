@@ -17,6 +17,8 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
+import static com.android.launcher3.provider.LauncherDbUtils.itemIdMatch;
 
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -30,7 +32,6 @@ import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.content.res.XmlResourceParser;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Process;
 import android.text.TextUtils;
@@ -44,7 +45,6 @@ import androidx.annotation.StringRes;
 import androidx.annotation.WorkerThread;
 import androidx.annotation.XmlRes;
 
-import com.android.launcher3.LauncherProvider.SqlArguments;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
@@ -619,9 +619,7 @@ public class AutoInstallsLayout {
             // failed to add, and less than 2 were actually added
             if (folderItems.size() < 2) {
                 // Delete the folder
-                Uri uri = Favorites.getContentUri(folderId);
-                SqlArguments args = new SqlArguments(uri, null, null);
-                mDb.delete(args.table, args.where, args.args);
+                mDb.delete(TABLE_NAME, itemIdMatch(folderId), null);
                 addedId = -1;
 
                 // If we have a single item, promote it to where the folder
@@ -634,7 +632,7 @@ public class AutoInstallsLayout {
                     copyInteger(myValues, childValues, Favorites.CELLY);
 
                     addedId = folderItems.get(0);
-                    mDb.update(Favorites.TABLE_NAME, childValues,
+                    mDb.update(TABLE_NAME, childValues,
                             Favorites._ID + "=" + addedId, null);
                 }
             }

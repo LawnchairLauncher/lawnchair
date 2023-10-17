@@ -37,8 +37,12 @@ public abstract class AppIcon extends Launchable {
     }
 
     static BySelector getAppIconSelector(String appName, LauncherInstrumentation launcher) {
-        return By.clazz(TextView.class).textContains(appName)
+        return By.clazz(TextView.class).desc(makeMultilinePattern(appName))
                 .pkg(launcher.getLauncherPackageName());
+    }
+
+    static BySelector getMenuItemSelector(String text, LauncherInstrumentation launcher) {
+        return By.clazz(TextView.class).text(text).pkg(launcher.getLauncherPackageName());
     }
 
     static BySelector getAnyAppIconSelector() {
@@ -93,5 +97,25 @@ public abstract class AppIcon extends Launchable {
     @NonNull
     public String getIconName() {
         return getObject().getText();
+    }
+
+    /**
+     * Return the app name of a icon by the content description. This should be used when trying to
+     * get the name of an app where the text of it is multiline.
+     */
+    @NonNull
+    String getAppName() {
+        return getObject().getContentDescription();
+    }
+
+    /**
+     * Create a regular expression pattern that matches strings starting with the app name, where
+     * spaces in the app name are replaced with zero or more occurrences of the "\s" character
+     * (which represents a whitespace character in regular expressions), followed by any characters
+     * after the app name.
+     */
+    static Pattern makeMultilinePattern(String appName) {
+        return Pattern.compile(appName.replaceAll("\\s+", "\\\\s*") + ".*",
+                Pattern.DOTALL);
     }
 }

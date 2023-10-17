@@ -17,8 +17,8 @@ package com.android.quickstep;
 
 import static androidx.test.InstrumentationRegistry.getContext;
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
-import static androidx.test.InstrumentationRegistry.getTargetContext;
 
+import static com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID;
 import static com.android.launcher3.testcomponent.TestCommandReceiver.EXTRA_VALUE;
 import static com.android.launcher3.testcomponent.TestCommandReceiver.SET_LIST_VIEW_SERVICE_BINDER;
 import static com.android.launcher3.util.WidgetUtils.createWidgetInfo;
@@ -32,7 +32,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.spy;
 
 import android.appwidget.AppWidgetManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,14 +41,16 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.RemoteViews;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.filters.Suppress;
-import androidx.test.runner.AndroidJUnit4;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.Until;
 
-import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
+import com.android.launcher3.celllayout.FavoriteItemsTransaction;
 import com.android.launcher3.model.data.LauncherAppWidgetInfo;
 import com.android.launcher3.tapl.LaunchedAppState;
 import com.android.launcher3.testcomponent.ListViewService;
@@ -57,6 +58,7 @@ import com.android.launcher3.testcomponent.ListViewService.SimpleViewsFactory;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.ui.TestViewHelpers;
+import com.android.launcher3.util.Executors;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 
@@ -67,6 +69,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntConsumer;
 
 /**
@@ -84,9 +87,9 @@ import java.util.function.IntConsumer;
 @RunWith(AndroidJUnit4.class)
 public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
 
-    private ContentResolver mResolver;
     private SparseArray<ViewConfiguration> mConfigMap;
     private InitTracker mInitTracker;
+    private LauncherModel mModel;
 
     @Before
     public void setUp() throws Exception {
@@ -101,8 +104,8 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
 
         TaplTestsLauncher3.initialize(this);
 
-        mResolver = mTargetContext.getContentResolver();
-        LauncherSettings.Settings.call(mResolver, LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
+        mModel = LauncherAppState.getInstance(mTargetContext).getModel();
+        Executors.MODEL_EXECUTOR.submit(mModel.getModelDbController()::createEmptyDB).get();
 
         // Get static configuration map
         Field field = ViewConfiguration.class.getDeclaredField("sConfigurations");
@@ -182,26 +185,30 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
     private void executeSwipeUpTestWithWidget(IntConsumer widgetIdCreationCallback,
             IntConsumer updateBeforeSwipeUp, String finalWidgetText) {
         try {
-            // Clear all existing data
-            LauncherSettings.Settings.call(mResolver,
-                    LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
-            LauncherSettings.Settings.call(mResolver,
-                    LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG);
-            LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(this, false);
+            LauncherAppWidgetProviderInfo info = TestViewHelpers.findWidgetProvider(false);
+
             // Make sure the widget is big enough to show a list of items
             info.minSpanX = 2;
             info.minSpanY = 2;
             info.spanX = 2;
             info.spanY = 2;
-            LauncherAppWidgetInfo item = createWidgetInfo(info, getTargetContext(), true);
+            AtomicInteger widgetId = new AtomicInteger();
+            new FavoriteItemsTransaction(mTargetContext)
+                    .addItem(() -> {
+                        LauncherAppWidgetInfo item = createWidgetInfo(info, mTargetContext, true);
+                        item.screenId = FIRST_SCREEN_ID;
+                        widgetId.set(item.appWidgetId);
+                        return item;
+                    })
+                    .commitAndLoadHome(mLauncher);
 
-            addItemToScreen(item);
+
+
             assertTrue("Widget is not present",
                     mLauncher.goHome().tryGetWidget(info.label, DEFAULT_UI_TIMEOUT) != null);
-            int widgetId = item.appWidgetId;
 
             // Verify widget id
-            widgetIdCreationCallback.accept(widgetId);
+            widgetIdCreationCallback.accept(widgetId.get());
 
             // Go to overview once so that all views are initialized and cached
             startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
@@ -214,7 +221,7 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
             LaunchedAppState launchedAppState = mLauncher.getLaunchedAppState();
 
             // Update widget
-            updateBeforeSwipeUp.accept(widgetId);
+            updateBeforeSwipeUp.accept(widgetId.get());
 
             launchedAppState.switchToOverview();
             assertEquals("Views inflated during swipe up", 0, mInitTracker.viewInitCount);

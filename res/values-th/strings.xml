@@ -27,7 +27,7 @@
     <string name="safemode_widget_error" msgid="4863470563535682004">"มีการปิดใช้งานวิดเจ็ตในเซฟโหมด"</string>
     <string name="shortcut_not_available" msgid="2536503539825726397">"ทางลัดไม่พร้อมใช้งาน"</string>
     <string name="home_screen" msgid="5629429142036709174">"หน้าแรก"</string>
-    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"แยกหน้าจอ"</string>
+    <string name="recent_task_option_split_screen" msgid="6690461455618725183">"แบ่งหน้าจอ"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"ข้อมูลแอปสำหรับ %1$s"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"บันทึกคู่แอป"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"แตะค้างไว้เพื่อย้ายวิดเจ็ต"</string>
@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ส่วนตัว"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"งาน"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"การสนทนา"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"การจดบันทึก"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"เข้าถึงข้อมูลที่เป็นประโยชน์ได้จากปลายนิ้ว"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"หากต้องการรับข้อมูลโดยไม่เปิดแอป ให้เพิ่มวิดเจ็ตลงในหน้าจอหลัก"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"แตะเพื่อเปลี่ยนการตั้งค่าวิดเจ็ต"</string>
@@ -162,7 +161,7 @@
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"โปรไฟล์งาน"</string>
     <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"แอปงานจะติดป้ายไว้และผู้ดูแลระบบไอทีจะมองเห็น"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"รับทราบ"</string>
-    <string name="work_apps_paused_title" msgid="3040901117349444598">"แอปงานหยุดชั่วคราว"</string>
+    <string name="work_apps_paused_title" msgid="3040901117349444598">"แอปงานปิดอยู่"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"คุณจะไม่ได้รับการแจ้งเตือนจากแอปงาน"</string>
     <string name="work_apps_paused_body" msgid="261634750995824906">"แอปงานจะส่งการแจ้งเตือน ใช้แบตเตอรี่ หรือเข้าถึงตำแหน่งของคุณไม่ได้"</string>
     <string name="work_apps_paused_telephony_unavailable_body" msgid="8358872357502756790">"คุณจะไม่ได้รับสายโทรเข้า, SMS หรือการแจ้งเตือนจากแอปงาน"</string>

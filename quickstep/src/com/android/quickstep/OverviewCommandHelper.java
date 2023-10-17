@@ -37,7 +37,6 @@ import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.util.RunnableList;
 import com.android.quickstep.RecentsAnimationCallbacks.RecentsAnimationListener;
-import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.systemui.shared.recents.model.ThumbnailData;
@@ -141,6 +140,11 @@ public class OverviewCommandHelper {
         mPendingCommands.clear();
     }
 
+    @UiThread
+    public boolean canStartHomeSafely() {
+        return mPendingCommands.isEmpty() || mPendingCommands.get(0).type == TYPE_HOME;
+    }
+
     @Nullable
     private TaskView getNextTask(RecentsView view) {
         final TaskView runningTaskView = view.getRunningTaskView();
@@ -185,11 +189,6 @@ public class OverviewCommandHelper {
                     && uiController != null
                     && dp != null
                     && (dp.isTablet || dp.isTwoPanels);
-
-            if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
-                // TODO(b/268075592): add support for quickswitch to/from desktop
-                allowQuickSwitch = false;
-            }
 
             if (cmd.type == TYPE_HIDE) {
                 if (!allowQuickSwitch) {

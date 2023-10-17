@@ -16,13 +16,16 @@
 
 package com.android.launcher3.uioverrides;
 
+import android.app.ActivityOptions;
 import android.app.Person;
 import android.content.Context;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.LauncherApps;
 import android.content.pm.ShortcutInfo;
+import android.window.RemoteTransition;
 
 import com.android.launcher3.Utilities;
+import com.android.quickstep.util.FadeOutRemoteTransition;
 
 import java.util.Map;
 
@@ -40,5 +43,14 @@ public class ApiWrapper {
 
     public static Map<String, LauncherActivityInfo> getActivityOverrides(Context context) {
         return context.getSystemService(LauncherApps.class).getActivityOverrides();
+    }
+
+    /**
+     * Creates an ActivityOptions to play fade-out animation on closing targets
+     */
+    public static ActivityOptions createFadeOutAnimOptions(Context context) {
+        ActivityOptions options = ActivityOptions.makeBasic();
+        options.setRemoteTransition(new RemoteTransition(new FadeOutRemoteTransition()));
+        return options;
     }
 }

@@ -42,10 +42,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
-import com.android.launcher3.anim.Interpolators;
 import com.android.quickstep.util.GroupTask;
 
 import java.util.HashMap;
@@ -190,8 +190,12 @@ public class KeyboardQuickSwitchView extends ConstraintLayout {
 
         ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(
                 width, mTaskViewHeight);
-        lp.endToEnd = PARENT_ID;
-        lp.startToEnd = previousView.getId();
+        if (previousView == null) {
+            lp.startToStart = PARENT_ID;
+        } else {
+            lp.endToEnd = PARENT_ID;
+            lp.startToEnd = previousView.getId();
+        }
         lp.topToTop = PARENT_ID;
         lp.bottomToBottom = PARENT_ID;
         lp.setMarginEnd(mSpacing);

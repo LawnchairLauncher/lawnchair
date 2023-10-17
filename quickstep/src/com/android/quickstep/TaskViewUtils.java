@@ -21,6 +21,9 @@ import static android.view.WindowManager.LayoutParams.TYPE_DOCK_DIVIDER;
 import static android.view.WindowManager.TRANSIT_OPEN;
 import static android.view.WindowManager.TRANSIT_TO_FRONT;
 
+import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.app.animation.Interpolators.TOUCH_RESPONSE;
+import static com.android.app.animation.Interpolators.clampToProgress;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
@@ -35,9 +38,8 @@ import static com.android.launcher3.QuickstepTransitionManager.RECENTS_LAUNCH_DU
 import static com.android.launcher3.QuickstepTransitionManager.SPLIT_DIVIDER_ANIM_DURATION;
 import static com.android.launcher3.QuickstepTransitionManager.SPLIT_LAUNCH_DURATION;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
-import static com.android.launcher3.anim.Interpolators.clampToProgress;
+import static com.android.launcher3.testing.shared.TestProtocol.LAUNCH_SPLIT_PAIR;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 import static com.android.quickstep.views.DesktopTaskView.DESKTOP_MODE_SUPPORTED;
 
@@ -61,12 +63,12 @@ import android.window.TransitionInfo;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.app.animation.Interpolators;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.AnimatedFloat;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.statehandlers.DepthController;
@@ -160,13 +162,14 @@ public final class TaskViewUtils {
     }
 
     public static void createRecentsWindowAnimator(
-            @NonNull TaskView v, boolean skipViewChanges,
+            @NonNull RecentsView recentsView,
+            @NonNull TaskView v,
+            boolean skipViewChanges,
             @NonNull RemoteAnimationTarget[] appTargets,
             @NonNull RemoteAnimationTarget[] wallpaperTargets,
             @NonNull RemoteAnimationTarget[] nonAppTargets,
             @Nullable DepthController depthController,
             PendingAnimation out) {
-        RecentsView recentsView = v.getRecentsView();
         boolean isQuickSwitch = v.isEndQuickswitchCuj();
         v.setEndQuickswitchCuj(false);
 
@@ -237,12 +240,12 @@ public final class TaskViewUtils {
         for (RemoteTargetHandle targetHandle : remoteTargetHandles) {
             TaskViewSimulator tvsLocal = targetHandle.getTaskViewSimulator();
             out.setFloat(tvsLocal.fullScreenProgress,
-                    AnimatedFloat.VALUE, 1, TOUCH_RESPONSE_INTERPOLATOR);
+                    AnimatedFloat.VALUE, 1, TOUCH_RESPONSE);
             out.setFloat(tvsLocal.recentsViewScale,
                     AnimatedFloat.VALUE, tvsLocal.getFullScreenScale(),
-                    TOUCH_RESPONSE_INTERPOLATOR);
+                    TOUCH_RESPONSE);
             out.setFloat(tvsLocal.recentsViewScroll, AnimatedFloat.VALUE, 0,
-                    TOUCH_RESPONSE_INTERPOLATOR);
+                    TOUCH_RESPONSE);
             out.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationStart(Animator animation) {
@@ -355,9 +358,9 @@ public final class TaskViewUtils {
                 float fullScreenScale =
                         topMostSimulators[i].getTaskViewSimulator().getFullScreenScale();
                 out.addFloat(ttv, VIEW_TRANSLATE_Y, translationY,
-                        translationY / fullScreenScale, TOUCH_RESPONSE_INTERPOLATOR);
+                        translationY / fullScreenScale, TOUCH_RESPONSE);
                 out.addFloat(ttv, VIEW_TRANSLATE_X, translationX,
-                         translationX / fullScreenScale, TOUCH_RESPONSE_INTERPOLATOR);
+                         translationX / fullScreenScale, TOUCH_RESPONSE);
             }
 
             Matrix[] k0i = new Matrix[matrixSize];
@@ -405,31 +408,26 @@ public final class TaskViewUtils {
 
         if (depthController != null) {
             out.setFloat(depthController.stateDepth, MULTI_PROPERTY_VALUE,
-                    BACKGROUND_APP.getDepth(baseActivity), TOUCH_RESPONSE_INTERPOLATOR);
+                    BACKGROUND_APP.getDepth(baseActivity), TOUCH_RESPONSE);
         }
     }
 
     /**
-     * TODO: This doesn't animate at present. Feel free to blow out everyhing in this method
-     * if needed
+     * If {@param launchingTaskView} is not null, then this will play the tasks launch animation
+     * from the position of the GroupedTaskView (when user taps on the TaskView to start it).
+     * Technically this case should be taken care of by
+     * {@link #composeRecentsSplitLaunchAnimatorLegacy} below, but the way we launch tasks whether
+     * it's a single task or multiple tasks results in different entry-points.
      *
-     * We could manually try to animate the just the bounds for the leashes we get back, but we try
-     * to do it through TaskViewSimulator(TVS) since that handles a lot of the recents UI stuff for
-     * us.
-     *
-     * First you have to call TVS#setPreview() to indicate which leash it will operate one
-     * Then operations happen in TVS#apply() on each frame callback.
-     *
-     * TVS uses DeviceProfile to try to figure out things like task height and such based on if the
-     * device is in multiWindowMode or not. It's unclear given the two calls to startTask() when the
-     * device is considered in multiWindowMode and things like insets and stuff change
-     * and calculations have to be adjusted in the animations for that
+     * If it is null, then it will simply fade in the starting apps and fade out launcher (for the
+     * case where launcher handles animating starting split tasks from app icon)
      */
     public static void composeRecentsSplitLaunchAnimator(GroupedTaskView launchingTaskView,
             @NonNull StateManager stateManager, @Nullable DepthController depthController,
             int initialTaskId, int secondTaskId, @NonNull TransitionInfo transitionInfo,
             SurfaceControl.Transaction t, @NonNull Runnable finishCallback) {
         if (launchingTaskView != null) {
+            testLogD(LAUNCH_SPLIT_PAIR, "composeRecentsSplitLaunchAnimator taskView not-null");
             AnimatorSet animatorSet = new AnimatorSet();
             animatorSet.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -457,12 +455,15 @@ public final class TaskViewUtils {
             return;
         }
 
-        // TODO: consider initialTaskPendingIntent
         TransitionInfo.Change splitRoot1 = null;
         TransitionInfo.Change splitRoot2 = null;
+        final ArrayList<SurfaceControl> openingTargets = new ArrayList<>();
         for (int i = 0; i < transitionInfo.getChanges().size(); ++i) {
             final TransitionInfo.Change change = transitionInfo.getChanges().get(i);
-            if (change.getTaskInfo() == null) continue;
+            if (change.getTaskInfo() == null) {
+                testLogD(LAUNCH_SPLIT_PAIR, "changeTaskInfo null; change: " + change);
+                continue;
+            }
             final int taskId = change.getTaskInfo().taskId;
             final int mode = change.getMode();
 
@@ -477,31 +478,48 @@ public final class TaskViewUtils {
             if (taskId == initialTaskId) {
                 splitRoot1 = change.getParent() == null ? change :
                         transitionInfo.getChange(change.getParent());
+                openingTargets.add(splitRoot1.getLeash());
             }
             if (taskId == secondTaskId) {
                 splitRoot2 = change.getParent() == null ? change :
                         transitionInfo.getChange(change.getParent());
+                openingTargets.add(splitRoot2.getLeash());
             }
         }
 
-        // This is where we should animate the split roots. For now, though, just make them visible.
-        animateSplitRoot(t, splitRoot1);
-        animateSplitRoot(t, splitRoot2);
+        SurfaceControl.Transaction animTransaction = new SurfaceControl.Transaction();
+        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
+        animator.setDuration(SPLIT_LAUNCH_DURATION);
+        animator.addUpdateListener(valueAnimator -> {
+            float progress = valueAnimator.getAnimatedFraction();
+            for (SurfaceControl leash: openingTargets) {
+                animTransaction.setAlpha(leash, progress);
+            }
+            animTransaction.apply();
+        });
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                for (SurfaceControl leash: openingTargets) {
+                    animTransaction.show(leash)
+                            .setAlpha(leash, 0.0f);
+                }
+                animTransaction.apply();
+            }
 
-        // This contains the initial state (before animation), so apply this at the beginning of
-        // the animation.
-        t.apply();
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                finishCallback.run();
+            }
+        });
 
-        // Once there is an animation, this should be called AFTER the animation completes.
-        finishCallback.run();
-    }
-
-    private static void animateSplitRoot(SurfaceControl.Transaction t,
-            TransitionInfo.Change splitRoot) {
-        if (splitRoot != null) {
-            t.show(splitRoot.getLeash());
-            t.setAlpha(splitRoot.getLeash(), 1.f);
+        if (splitRoot1 != null && splitRoot1.getParent() != null) {
+            // Set the highest level split root alpha; we could technically use the parent of either
+            // splitRoot1 or splitRoot2
+            t.setAlpha(transitionInfo.getChange(splitRoot1.getParent()).getLeash(), 1f);
         }
+        t.apply();
+        animator.start();
     }
 
     /**
@@ -514,7 +532,9 @@ public final class TaskViewUtils {
      * it's a single task or multiple tasks results in different entry-points.
      *
      * If it is null, then it will simply fade in the starting apps and fade out launcher (for the
-     * case where launcher handles animating starting split tasks from app icon) */
+     * case where launcher handles animating starting split tasks from app icon)
+     * @deprecated with shell transitions
+     */
     public static void composeRecentsSplitLaunchAnimatorLegacy(
             @Nullable GroupedTaskView launchingTaskView, int initialTaskId, int secondTaskId,
             @NonNull RemoteAnimationTarget[] appTargets,
@@ -606,8 +626,8 @@ public final class TaskViewUtils {
 
         TaskView taskView = findTaskViewToLaunch(recentsView, v, appTargets);
         PendingAnimation pa = new PendingAnimation(RECENTS_LAUNCH_DURATION);
-        createRecentsWindowAnimator(taskView, skipLauncherChanges, appTargets, wallpaperTargets,
-                nonAppTargets, depthController, pa);
+        createRecentsWindowAnimator(recentsView, taskView, skipLauncherChanges, appTargets,
+                wallpaperTargets, nonAppTargets, depthController, pa);
         if (launcherClosing) {
             // TODO(b/182592057): differentiate between "restore split" vs "launch fullscreen app"
             TaskViewUtils.createSplitAuxiliarySurfacesAnimator(nonAppTargets, true /*shown*/,
@@ -637,7 +657,7 @@ public final class TaskViewUtils {
                 raController.setWillFinishToHome(false);
             }
             launcherAnim = recentsView.createAdjacentPageAnimForTaskLaunch(taskView);
-            launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE_INTERPOLATOR);
+            launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE);
             launcherAnim.setDuration(RECENTS_LAUNCH_DURATION);
 
             windowAnimEndListener = new AnimatorListenerAdapter() {

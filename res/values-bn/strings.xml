@@ -50,7 +50,6 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"ব্যক্তিগত"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"অফিস"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"কথোপকথন"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"নোট নেওয়া"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"সহজেই দরকারি তথ্য পান"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"অ্যাপ না খুলেই তথ্য পাওয়ার জন্য, হোম স্ক্রিনে উইজেট যোগ করতে পারবেন"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"উইজেট সেটিংস পরিবর্তন করতে ট্যাপ করুন"</string>
@@ -101,7 +100,8 @@
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ফোল্ডার: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g>টি বা তার বেশি আইটেম"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"ওয়ালপেপারগুলি"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ওয়ালপেপার এবং স্টাইল"</string>
-    <string name="edit_home_screen" msgid="8947858375782098427">"হোম স্ক্রিন এডিট করুন"</string>
+    <!-- no translation found for edit_home_screen (8947858375782098427) -->
+    <skip />
     <string name="settings_button_text" msgid="8873672322605444408">"হোম সেটিংস"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"আপনার প্রশাসক দ্বারা অক্ষম করা হয়েছে"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"হোম স্ক্রিন রোটেট করার অনুমতি দিন"</string>
@@ -160,7 +160,7 @@
     <string name="all_apps_personal_tab" msgid="4190252696685155002">"ব্যক্তিগত"</string>
     <string name="all_apps_work_tab" msgid="4884822796154055118">"অফিস"</string>
     <string name="work_profile_toggle_label" msgid="3081029915775481146">"অফিসের প্রোফাইল"</string>
-    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"অফিস অ্যাপে ব্যাজ যোগ করা হয়েছে এবং আপনার আইটি অ্যাডমিন সেগুলি দেখতে পাবেন"</string>
+    <string name="work_profile_edu_work_apps" msgid="7895468576497746520">"অফিসের অ্যাপে ব্যাজ যোগ করা হয়েছে এবং আপনার আইটি অ্যাডমিন সেগুলি দেখতে পাবেন"</string>
     <string name="work_profile_edu_accept" msgid="6069788082535149071">"বুঝেছি"</string>
     <string name="work_apps_paused_title" msgid="3040901117349444598">"অফিস অ্যাপ বন্ধ করা আছে"</string>
     <string name="work_apps_paused_info_body" msgid="1687828929959237477">"আপনার অফিসের অ্যাপ থেকে আপনি কোনও বিজ্ঞপ্তি পাবেন না"</string>

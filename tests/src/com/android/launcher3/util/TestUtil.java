@@ -18,14 +18,13 @@ package com.android.launcher3.util;
 import static android.util.Base64.NO_PADDING;
 import static android.util.Base64.NO_WRAP;
 
-import static androidx.test.InstrumentationRegistry.getContext;
-import static androidx.test.InstrumentationRegistry.getInstrumentation;
-import static androidx.test.InstrumentationRegistry.getTargetContext;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 
 import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_KEY;
 import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_LABEL;
 import static com.android.launcher3.LauncherSettings.Settings.LAYOUT_DIGEST_TAG;
 
+import android.app.Instrumentation;
 import android.app.blob.BlobHandle;
 import android.app.blob.BlobStoreManager;
 import android.content.Context;
@@ -35,9 +34,12 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor.AutoCloseOutputStream;
+import android.os.Process;
 import android.os.UserHandle;
 import android.provider.Settings;
+import android.system.OsConstants;
 import android.util.Base64;
+import android.util.Log;
 
 import androidx.test.uiautomator.UiDevice;
 
@@ -52,26 +54,36 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.MessageDigest;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 
 public class TestUtil {
+    private static final String TAG = "TestUtil";
+
     public static final String DUMMY_PACKAGE = "com.example.android.aardwolf";
-    public static final int DEFAULT_USER_ID = 0;
+    public static final String DUMMY_CLASS_NAME = "com.example.android.aardwolf.Activity1";
+    public static final long DEFAULT_UI_TIMEOUT = 10000;
 
     public static void installDummyApp() throws IOException {
-        installDummyAppForUser(DEFAULT_USER_ID);
+        final int defaultUserId = getMainUserId();
+        installDummyAppForUser(defaultUserId);
     }
 
     public static void installDummyAppForUser(int userId) throws IOException {
+        Instrumentation instrumentation = getInstrumentation();
         // Copy apk from resources to a local file and install from there.
-        final Resources resources = getContext().getResources();
+        final Resources resources = instrumentation.getContext().getResources();
         final InputStream in = resources.openRawResource(
                 resources.getIdentifier("aardwolf_dummy_app",
-                        "raw", getContext().getPackageName()));
-        final String apkFilename = getInstrumentation().getTargetContext().
-                getFilesDir().getPath() + "/dummy_app.apk";
+                        "raw", instrumentation.getContext().getPackageName()));
+        final String apkFilename = instrumentation.getTargetContext()
+                        .getFilesDir().getPath() + "/dummy_app.apk";
 
         try (PackageInstallCheck pic = new PackageInstallCheck()) {
             final FileOutputStream out = new FileOutputStream(apkFilename);
@@ -84,7 +96,7 @@ public class TestUtil {
             in.close();
             out.close();
 
-            final String result = UiDevice.getInstance(getInstrumentation())
+            final String result = UiDevice.getInstance(instrumentation)
                     .executeShellCommand("pm install --user " + userId + " " + apkFilename);
             Assert.assertTrue(
                     "Failed to install wellbeing test apk; make sure the device is rooted",
@@ -92,6 +104,23 @@ public class TestUtil {
             pic.mAddWait.await();
         } catch (InterruptedException e) {
             throw new IOException(e);
+        }
+    }
+
+    /**
+     * Returns the main user ID. NOTE: For headless system it is NOT 0. Returns 0 by default, if
+     * there is no main user.
+     *
+     * @return a main user ID
+     */
+    public static int getMainUserId() throws IOException {
+        Instrumentation instrumentation = getInstrumentation();
+        final String result = UiDevice.getInstance(instrumentation)
+                .executeShellCommand("cmd user get-main-user");
+        try {
+            return Integer.parseInt(result.trim());
+        } catch (NumberFormatException e) {
+            return 0;
         }
     }
 
@@ -159,6 +188,50 @@ public class TestUtil {
             Settings.Secure.putString(context.getContentResolver(), LAYOUT_DIGEST_KEY, null);
     }
 
+    /**
+     * Utility method to run a task synchronously which converts any exceptions to RuntimeException
+     */
+    public static void runOnExecutorSync(ExecutorService executor, UncheckedRunnable task) {
+        try {
+            executor.submit(() -> {
+                try {
+                    task.run();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            }).get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Runs the callback on the UI thread and returns the result.
+     */
+    public static <T> T getOnUiThread(final Callable<T> callback) {
+        try {
+            FutureTask<T> task = new FutureTask<>(callback);
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                task.run();
+            } else {
+                new Handler(Looper.getMainLooper()).post(task);
+            }
+            return task.get(DEFAULT_UI_TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            Log.e(TAG, "Timeout in getOnUiThread, sending SIGABRT", e);
+            Process.sendSignal(Process.myPid(), OsConstants.SIGABRT);
+            throw new RuntimeException(e);
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /** Interface to indicate a runnable which can throw any exception. */
+    public interface UncheckedRunnable {
+        /** Method to run the task */
+        void run() throws Exception;
+    }
+
     private static class PackageInstallCheck extends LauncherApps.Callback
             implements AutoCloseable {
 
@@ -166,7 +239,8 @@ public class TestUtil {
         final LauncherApps mLauncherApps;
 
         PackageInstallCheck() {
-            mLauncherApps = getTargetContext().getSystemService(LauncherApps.class);
+            mLauncherApps = getInstrumentation().getTargetContext()
+                    .getSystemService(LauncherApps.class);
             mLauncherApps.registerCallback(this, new Handler(Looper.getMainLooper()));
         }
 

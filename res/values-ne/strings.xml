@@ -50,13 +50,12 @@
     <string name="widgets_full_sheet_personal_tab" msgid="2743540105607120182">"व्यक्तिगत"</string>
     <string name="widgets_full_sheet_work_tab" msgid="3767150027110633765">"कामसम्बन्धी"</string>
     <string name="widget_category_conversations" msgid="8894438636213590446">"वार्तालापहरू"</string>
-    <string name="widget_category_note_taking" msgid="3469689394504266039">"नोट लेख्ने कार्य"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"उपयोगी जानकारी सजिलै प्राप्त गर्नुहोस्"</string>
     <string name="widget_education_content" msgid="1731667670753497052">"एपहरू नखोलिकनै जानकारी प्राप्त गर्न तपाईं आफ्नो होम स्क्रिनमा विजेटहरू हाल्न सक्नुहुन्छ"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"विजेटका सेटिङ बदल्न ट्याप गर्नुहोस्"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"बुझेँ"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"विजेटका सेटिङ बदल्नुहोस्"</string>
-    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"एपहरू खोज्नुहोस्"</string>
+    <string name="all_apps_search_bar_hint" msgid="1390553134053255246">"खोजसम्बन्धी एपहरू"</string>
     <string name="all_apps_loading_message" msgid="5813968043155271636">"एपहरू लोड गर्दै…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"\"<xliff:g id="QUERY">%1$s</xliff:g>\" सँग मिल्दो कुनै एप भेटिएन"</string>
     <string name="label_application" msgid="8531721983832654978">"एप"</string>
@@ -105,7 +104,7 @@
     <string name="settings_button_text" msgid="8873672322605444408">"होम पेजका सेटिङहरू"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"तपाईँको प्रशासकद्वारा असक्षम गरिएको"</string>
     <string name="allow_rotation_title" msgid="7222049633713050106">"होम स्क्रिन रोटेट हुन दिइयोस्"</string>
-    <string name="allow_rotation_desc" msgid="8662546029078692509">"फोन घुमाउँदा"</string>
+    <string name="allow_rotation_desc" msgid="8662546029078692509">"फोनलाई घुमाइँदा"</string>
     <string name="notification_dots_title" msgid="9062440428204120317">"सूचनाको प्रतीक जनाउने थोप्लाहरू"</string>
     <string name="notification_dots_desc_on" msgid="1679848116452218908">"सक्रिय"</string>
     <string name="notification_dots_desc_off" msgid="1760796511504341095">"निष्क्रिय"</string>
@@ -172,6 +171,6 @@
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"सुचारु गर्नुहोस्"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"फिल्टर"</string>
     <string name="search_pref_screen_title" msgid="3258959643336315962">"आफ्नो फोन खोज्नुहोस्"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"आफ्नो ट्याबलेटमा खोज्नुहोस्"</string>
+    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"आफ्नो ट्याब्लेट खोज्नुहोस्"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"कार्य पूरा गर्न सकिएन: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

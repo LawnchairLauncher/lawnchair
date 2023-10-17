@@ -44,41 +44,35 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"Włączono sugestie aplikacji"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"Sugestie aplikacji są wyłączone"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"Przewidywana aplikacja: <xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"Obróć urządzenie"</string>
-    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"Obróć urządzenie, aby ukończyć samouczek nawigacji przy użyciu gestów"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"Pamiętaj, aby przesuwać palcem od samej krawędzi (prawej lub lewej)"</string>
-    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"Pamiętaj, aby przesuwać palcem od prawej lub lewej krawędzi do środka ekranu i podnieść palec"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"Pamiętaj, aby przesuwać palcem od samej krawędzi (prawej lub lewej)."</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"Pamiętaj, aby przesuwać palcem od prawej lub lewej krawędzi do środka ekranu i podnieść palec."</string>
     <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"Wiesz już, jak przesuwać palcem, aby przejść wstecz. Poćwicz teraz przełączanie aplikacji."</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"Gest przejścia wstecz został opanowany"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"Pamiętaj, aby nie przesuwać palcem zbyt blisko dolnej części ekranu"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"Gest przejścia wstecz został opanowany."</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"Pamiętaj, aby nie przesuwać palcem zbyt blisko dolnej części ekranu."</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"Czułość gestu cofania możesz zmienić w Ustawieniach"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"Przesuń palcem, aby przejść wstecz"</string>
-    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Aby wrócić do poprzedniego ekranu, przesuń palcem od lewej lub prawej krawędzi do środka ekranu."</string>
-    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Aby wrócić do poprzedniego ekranu, przesuń 2 palcami od lewej lub prawej krawędzi do środka ekranu."</string>
+    <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"Aby wrócić do ostatniego ekranu, przesuń palcem od lewej lub prawej krawędzi do środka ekranu."</string>
+    <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"Aby wrócić do ostatniego ekranu, przesuń 2 palcami od lewej lub prawej krawędzi do środka ekranu."</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"Przejście wstecz"</string>
-    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"Przesuń palcem od lewej lub prawej krawędzi do środka ekranu"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"Pamiętaj, aby przesuwać palcem od dolnej krawędzi ekranu"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"Pamiętaj, aby przed podniesieniem palca nie było przerwy"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"Pamiętaj, aby przesuwać palcem prosto do góry"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"Gest przechodzenia na ekran główny został opanowany. Poćwicz teraz wracanie do poprzedniego ekranu."</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"Gest przechodzenia na ekran główny został opanowany"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"Pamiętaj, aby przesuwać palcem od dolnej krawędzi ekranu."</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"Pamiętaj, aby przed podniesieniem palca nie było przerwy."</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"Pamiętaj, aby przesuwać palcem prosto do góry."</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"Potrafisz już przejść na ekran główny. Teraz naucz się, jak wrócić do poprzedniego ekranu."</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"Gest przechodzenia na ekran główny został opanowany."</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"Przesuń palcem, aby przejść na ekran główny"</string>
     <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"Przesuń palcem od dołu ekranu. Ten gest zawsze powoduje przejście na ekran główny."</string>
     <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"Przesuń 2 palcami od dołu ekranu. Ten gest zawsze powoduje przejście do ekranu głównego."</string>
-    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Przejście na ekran główny"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"Przesuń palcem z dołu ekranu w górę"</string>
-    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"Brawo!"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"Pamiętaj, aby przesuwać palcem od dolnej krawędzi ekranu"</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"Przytrzymaj okno dłużej, zanim podniesiesz palec"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"Pamiętaj, aby przesuwać palcem prosto do góry, a potem przerwać ruch"</string>
+    <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"Otwórz ekran główny"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"Aby wyświetlić ekran główny w dowolnym momencie, przesuń od dołu do góry ekranu"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"Pamiętaj, aby przesuwać palcem od dolnej krawędzi ekranu."</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"Przytrzymaj okno dłużej, zanim podniesiesz palec."</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"Pamiętaj, aby przesuwać palcem prosto do góry, a potem przerwać ruch."</string>
     <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"Wiesz już, jak używać gestów. Aby wyłączyć gesty, przejdź do Ustawień."</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"Gest przełączania aplikacji został opanowany"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"Gest przełączania aplikacji został opanowany."</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"Przesuń palcem, aby przełączać aplikacje"</string>
-    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Aby przełączać się między aplikacjami, przesuń palcem od dołu do góry ekranu, przytrzymaj i puść."</string>
+    <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"Aby przełączać się między aplikacjami, przesuń palcem od dołu ekranu, przytrzymaj i puść."</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"Aby przełączać się między aplikacjami, przesuń 2 palcami od dołu ekranu, przytrzymaj i puść."</string>
-    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Przełącz aplikację"</string>
-    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"Przesuń palcem z dołu ekranu w górę, przytrzymaj i puść"</string>
-    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"Brawo!"</string>
+    <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"Przełączanie aplikacji"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"Wszystko gotowe"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"Gotowe"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"Ustawienia"</string>
@@ -94,7 +88,7 @@
     <string name="action_share" msgid="2648470652637092375">"Udostępnij"</string>
     <string name="action_screenshot" msgid="8171125848358142917">"Zrzut ekranu"</string>
     <string name="action_split" msgid="2098009717623550676">"Podziel"</string>
-    <string name="toast_split_select_app" msgid="8464310533320556058">"Aby podzielić ekran, kliknij drugą aplikację"</string>
+    <string name="toast_split_select_app" msgid="8464310533320556058">"Kliknij drugą aplikację, aby podzielić ekran"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Wybierz drugą aplikację, aby podzielić ekran"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Nie możesz wykonać tego działania, bo nie zezwala na to aplikacja lub Twoja organizacja"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Pominąć samouczek nawigacji?"</string>
@@ -104,7 +98,7 @@
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"Obróć ekran"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"Informacje o pasku aplikacji"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"Przeciągnij aplikację w bok, aby używać 2 aplikacji naraz"</string>
-    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Aby wyświetlić pasek aplikacji, przesuń palcem krótko w górę"</string>
+    <string name="taskbar_edu_stashing" msgid="5645461372669217294">"Przesuń palcem krótko w górę, aby wyświetlić pasek aplikacji"</string>
     <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"Otrzymuj sugestie aplikacji na podstawie rutyny"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"Włącz nawigację przy użyciu gestów w Ustawieniach, aby automatycznie ukrywać pasek aplikacji"</string>
     <string name="taskbar_edu_features" msgid="3320337287472848162">"Wykorzystaj potencjał paska aplikacji"</string>
@@ -121,9 +115,6 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"Pasek aplikacji widoczny"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"Pasek aplikacji ukryty"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"Pasek nawigacyjny"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"Zawsze pokazuj pasek aplikacji"</string>
-    <string name="change_navigation_mode" msgid="9088393078736808968">"Zmień tryb nawigacji"</string>
-    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"Linia dzielenia paska aplikacji"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"Przesuń w górny lewy róg"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"Przesuń w dolny prawy róg"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{Pokaż jeszcze # aplikację.}few{Pokaż jeszcze # aplikacje.}many{Pokaż jeszcze # aplikacji.}other{Pokaż jeszcze # aplikacji.}}"</string>

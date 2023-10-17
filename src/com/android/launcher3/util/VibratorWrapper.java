@@ -17,6 +17,7 @@ package com.android.launcher3.util;
 
 import static android.os.VibrationEffect.createPredefined;
 import static android.provider.Settings.System.HAPTIC_FEEDBACK_ENABLED;
+
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
@@ -67,6 +68,9 @@ public class VibratorWrapper {
     private final VibrationEffect mCommitEffect;
     @Nullable
     private final VibrationEffect mBumpEffect;
+
+    @Nullable
+    private final VibrationEffect mAssistEffect;
 
     private long mLastDragTime;
     private final int mThresholdUntilNextDragCallMillis;
@@ -125,12 +129,25 @@ public class VibratorWrapper {
             mBumpEffect = null;
             mThresholdUntilNextDragCallMillis = 0;
         }
+
+        if (Utilities.ATLEAST_R && mVibrator.areAllPrimitivesSupported(
+                VibrationEffect.Composition.PRIMITIVE_QUICK_RISE,
+                VibrationEffect.Composition.PRIMITIVE_TICK)) {
+            // quiet ramp, short pause, then sharp tick
+            mAssistEffect = VibrationEffect.startComposition()
+                    .addPrimitive(VibrationEffect.Composition.PRIMITIVE_QUICK_RISE, 0.25f)
+                    .addPrimitive(VibrationEffect.Composition.PRIMITIVE_TICK, 1f, 50)
+                    .compose();
+        } else {
+            // fallback for devices without composition support
+            mAssistEffect = VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK);
+        }
     }
 
     /**
-     *  This is called when the user swipes to/from all apps. This is meant to be used in between
-     *  long animation progresses so that it gives a dragging texture effect. For a better
-     *  experience, this should be used in combination with vibrateForDragCommit().
+     * This is called when the user swipes to/from all apps. This is meant to be used in between
+     * long animation progresses so that it gives a dragging texture effect. For a better
+     * experience, this should be used in combination with vibrateForDragCommit().
      */
     public void vibrateForDragTexture() {
         if (mDragEffect == null) {
@@ -145,7 +162,7 @@ public class VibratorWrapper {
     }
 
     /**
-     *  This is used when user reaches the commit threshold when swiping to/from from all apps.
+     * This is used when user reaches the commit threshold when swiping to/from from all apps.
      */
     public void vibrateForDragCommit() {
         if (mCommitEffect != null) {
@@ -156,13 +173,22 @@ public class VibratorWrapper {
     }
 
     /**
-     *  The bump haptic is used to be called at the end of a swipe and only if it the gesture is a
-     *  FLING going to/from all apps. Client can just call this method elsewhere just for the
-     *  effect.
+     * The bump haptic is used to be called at the end of a swipe and only if it the gesture is a
+     * FLING going to/from all apps. Client can just call this method elsewhere just for the
+     * effect.
      */
     public void vibrateForDragBump() {
         if (mBumpEffect != null) {
             vibrate(mBumpEffect);
+        }
+    }
+
+    /**
+     * The assist haptic is used to be called when an assistant is invoked
+     */
+    public void vibrateForAssist() {
+        if (mAssistEffect != null) {
+            vibrate(mAssistEffect);
         }
     }
 
@@ -176,6 +202,7 @@ public class VibratorWrapper {
         // reset dragTexture timestamp to be able to play dragTexture again whenever cancelled
         mLastDragTime = 0;
     }
+
     private boolean isHapticFeedbackEnabled(ContentResolver resolver) {
         return Settings.System.getInt(resolver, HAPTIC_FEEDBACK_ENABLED, 0) == 1;
     }

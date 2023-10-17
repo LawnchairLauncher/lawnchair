@@ -30,11 +30,11 @@
     <string name="shorter_duration_less_than_one_minute" msgid="4722015666335015336">"少於 1 分鐘"</string>
     <string name="time_left_for_app" msgid="3111996412933644358">"今天剩餘時間：<xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="title_app_suggestions" msgid="4185902664111965088">"應用程式建議"</string>
-    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"你的預測應用程式"</string>
+    <string name="all_apps_prediction_tip" msgid="2672336544844936186">"您的預測應用程式"</string>
     <string name="hotseat_edu_title_migrate" msgid="306578144424489980">"在主畫面底部取得應用程式建議"</string>
     <string name="hotseat_edu_title_migrate_landscape" msgid="3633942953997845243">"在主畫面「我的最愛」列取得應用程式建議"</string>
-    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"在主畫面輕鬆存取常用的應用程式。系統會根據你的日常安排更改建議，並將底部的應用程式移到主畫面。"</string>
-    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"在主畫面輕鬆存取最常用的應用程式。系統會根據你的日常安排變更建議，「我的最愛」列中的應用程式會移至主畫面。"</string>
+    <string name="hotseat_edu_message_migrate" msgid="8927179260533775320">"在主畫面輕鬆存取常用的應用程式。系統會根據您的日常安排更改建議，並將底部的應用程式移到主畫面。"</string>
+    <string name="hotseat_edu_message_migrate_landscape" msgid="4248943380443387697">"在主畫面輕鬆存取最常用的應用程式。系統會根據您的日常安排變更建議，「我的最愛」列中的應用程式會移至主畫面。"</string>
     <string name="hotseat_edu_accept" msgid="1611544083278999837">"取得應用程式建議"</string>
     <string name="hotseat_edu_dismiss" msgid="2781161822780201689">"不用了，謝謝"</string>
     <string name="hotseat_prediction_settings" msgid="6246554993566070818">"設定"</string>
@@ -44,41 +44,35 @@
     <string name="hotsaet_tip_prediction_enabled" msgid="2233554377501347650">"已啟用應用程式建議"</string>
     <string name="hotsaet_tip_prediction_disabled" msgid="1506426298884658491">"已停用應用程式建議"</string>
     <string name="hotseat_prediction_content_description" msgid="4582028296938078419">"預測應用程式：<xliff:g id="TITLE">%1$s</xliff:g>"</string>
-    <string name="gesture_tutorial_rotation_prompt_title" msgid="7537946781362766964">"旋轉裝置方向"</string>
-    <string name="gesture_tutorial_rotation_prompt" msgid="1664493449851960691">"請旋轉裝置方向以完成手勢導覽教學課程"</string>
-    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="4175100312909721217">"請確保從螢幕最右側或最左側邊緣滑動"</string>
-    <string name="back_gesture_feedback_cancelled" msgid="762621530959111290">"請確保從螢幕右側或左側邊緣往中央滑動，然後放開手指"</string>
-    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"你已瞭解如何透過「由右向左滑動」手勢返回。接下來一起瞭解如何切換應用程式。"</string>
-    <string name="back_gesture_feedback_complete_without_follow_up" msgid="197189945858268342">"你已完成「返回」手勢的教學課程"</string>
-    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="9157480023651452969">"滑動時，手的位置不要太接近螢幕底部"</string>
+    <string name="back_gesture_feedback_swipe_too_far_from_edge" msgid="1711645592102201538">"請從螢幕右側或左側邊緣滑動。"</string>
+    <string name="back_gesture_feedback_cancelled" msgid="3274382913290074496">"請從螢幕右側或左側邊緣往中央滑動，然後放開手指。"</string>
+    <string name="back_gesture_feedback_complete_with_overview_follow_up" msgid="9176400654037014471">"您已瞭解如何透過「由右向左滑動」手勢返回。接下來一起瞭解如何切換應用程式。"</string>
+    <string name="back_gesture_feedback_complete_without_follow_up" msgid="6405649621667113830">"您已完成「返回」手勢的教學課程。"</string>
+    <string name="back_gesture_feedback_swipe_in_nav_bar" msgid="1148198467090405643">"滑動時，手的位置不要太接近螢幕底部。"</string>
     <string name="back_gesture_tutorial_confirm_subtitle" msgid="5181305411668713250">"如要變更「返回」手勢的敏感度，請前往「設定」"</string>
     <string name="back_gesture_intro_title" msgid="19551256430224428">"滑動即可返回"</string>
     <string name="back_gesture_intro_subtitle" msgid="7912576483031802797">"如要返回上一個畫面，請從螢幕左側或右側邊緣往中央滑動。"</string>
     <string name="back_gesture_spoken_intro_subtitle" msgid="2162043199263088592">"如要返回上一個畫面，請用 2 隻手指從螢幕左側或右側邊緣往中央滑動。"</string>
     <string name="back_gesture_tutorial_title" msgid="1944737946101059789">"返回"</string>
-    <string name="back_gesture_tutorial_subtitle" msgid="6639993416000920142">"從螢幕左側或右側邊緣往中央滑動"</string>
-    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="4816365433160895458">"請確保從螢幕底部邊緣向上滑動"</string>
-    <string name="home_gesture_feedback_overview_detected" msgid="5177627157303895077">"放開手指前請勿停下來"</string>
-    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="8328465201424027148">"請確保向上滑動"</string>
-    <string name="home_gesture_feedback_complete_with_follow_up" msgid="8766981412895888417">"你已完成「返回主畫面」手勢的教學課程。接著，一起來瞭解如何返回上一個畫面。"</string>
-    <string name="home_gesture_feedback_complete_without_follow_up" msgid="2978063221383413443">"你已完成「返回主畫面」手勢的教學課程"</string>
+    <string name="home_gesture_feedback_swipe_too_far_from_edge" msgid="1446774096007065298">"請從螢幕底部邊緣向上滑動。"</string>
+    <string name="home_gesture_feedback_overview_detected" msgid="1557523944897393013">"放開手指前請勿停下來。"</string>
+    <string name="home_gesture_feedback_wrong_swipe_direction" msgid="6993979358080825438">"請向上滑動。"</string>
+    <string name="home_gesture_feedback_complete_with_follow_up" msgid="1427872029729605034">"您已完成「返回主畫面」手勢的教學課程。接著，一起來瞭解如何返回上一個畫面。"</string>
+    <string name="home_gesture_feedback_complete_without_follow_up" msgid="8049099486868933882">"您已完成「返回主畫面」手勢的教學課程。"</string>
     <string name="home_gesture_intro_title" msgid="836590312858441830">"向上滑動即可返回主畫面"</string>
-    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"從螢幕底部向上滑動。這個手勢在所有畫面下都可讓你返回主畫面。"</string>
-    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"請用 2 隻手指從螢幕底部向上滑動。這個手勢在所有畫面下都可讓你返回主畫面。"</string>
+    <string name="home_gesture_intro_subtitle" msgid="2632238748497975326">"從螢幕底部向上滑動。這個手勢在所有畫面下都可讓您返回主畫面。"</string>
+    <string name="home_gesture_spoken_intro_subtitle" msgid="1030987707382031750">"請用 2 隻手指從螢幕底部向上滑動。這個手勢在所有畫面下都可讓您返回主畫面。"</string>
     <string name="home_gesture_tutorial_title" msgid="3126834347496917376">"返回主畫面"</string>
-    <string name="home_gesture_tutorial_subtitle" msgid="7245995490408668778">"從螢幕底部向上滑動"</string>
-    <string name="home_gesture_tutorial_success" msgid="1736295017642244751">"太好了！"</string>
-    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="6402349235265407385">"請確保從螢幕底部邊緣向上滑動"</string>
-    <string name="overview_gesture_feedback_home_detected" msgid="663432226180397138">"請嘗試按住視窗更長時間，然後再放開"</string>
-    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="1191055451018584958">"請向上滑動，然後停住"</string>
-    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"你已學會如何使用手勢。如要關閉手勢，請前往「設定」。"</string>
-    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="2903050864432331629">"你已完成「切換應用程式」手勢的教學課程"</string>
+    <string name="home_gesture_tutorial_subtitle" msgid="8979014952569486971">"只要從螢幕底部向上滑動，隨時可以返回主畫面"</string>
+    <string name="overview_gesture_feedback_swipe_too_far_from_edge" msgid="3032757898111577225">"請從螢幕底部邊緣向上滑動。"</string>
+    <string name="overview_gesture_feedback_home_detected" msgid="1411130969354020489">"請嘗試按住視窗更長時間，然後再放開。"</string>
+    <string name="overview_gesture_feedback_wrong_swipe_direction" msgid="6725820500906747925">"請向上滑動，然後停住。"</string>
+    <string name="overview_gesture_feedback_complete_with_follow_up" msgid="3544611727467765026">"您已學會如何使用手勢。如要關閉手勢，請前往「設定」。"</string>
+    <string name="overview_gesture_feedback_complete_without_follow_up" msgid="3199486203448379152">"您已完成「切換應用程式」手勢的教學課程。"</string>
     <string name="overview_gesture_intro_title" msgid="2902054412868489378">"滑動即可切換應用程式"</string>
     <string name="overview_gesture_intro_subtitle" msgid="4968091015637850859">"如要切換應用程式，請從螢幕底部向上滑動並按住，然後放開。"</string>
     <string name="overview_gesture_spoken_intro_subtitle" msgid="3853371838260201751">"如要切換應用程式，請用 2 隻手指從螢幕底部向上滑動並按住，然後放開手指。"</string>
     <string name="overview_gesture_tutorial_title" msgid="4125835002668708720">"切換應用程式"</string>
-    <string name="overview_gesture_tutorial_subtitle" msgid="5253549754058973071">"從螢幕底部向上滑動並按住，然後放開"</string>
-    <string name="overview_gesture_tutorial_success" msgid="1910267697807973076">"做得好！"</string>
     <string name="gesture_tutorial_confirm_title" msgid="6201516182040074092">"大功告成"</string>
     <string name="gesture_tutorial_action_button_label" msgid="6249846312991332122">"完成"</string>
     <string name="gesture_tutorial_action_button_label_settings" msgid="2923621047916486604">"設定"</string>
@@ -88,7 +82,7 @@
     <string name="allset_title" msgid="5021126669778966707">"設定完成！"</string>
     <string name="allset_hint" msgid="459504134589971527">"向上滑動即可前往主畫面"</string>
     <string name="allset_button_hint" msgid="2395219947744706291">"輕按主按鈕即可前往主畫面"</string>
-    <string name="allset_description_generic" msgid="5385500062202019855">"你可以開始使用<xliff:g id="DEVICE">%1$s</xliff:g>了"</string>
+    <string name="allset_description_generic" msgid="5385500062202019855">"您可以開始使用 <xliff:g id="DEVICE">%1$s</xliff:g> 了"</string>
     <string name="default_device_name" msgid="6660656727127422487">"裝置"</string>
     <string name="allset_navigation_settings" msgid="4713404605961476027"><annotation id="link">"系統導覽設定"</annotation></string>
     <string name="action_share" msgid="2648470652637092375">"分享"</string>
@@ -96,18 +90,18 @@
     <string name="action_split" msgid="2098009717623550676">"分割"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"輕按其他應用程式以使用分割螢幕"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"選擇其他應用程式才能使用分割螢幕"</string>
-    <string name="blocked_by_policy" msgid="2071401072261365546">"應用程式或你的機構不允許此操作"</string>
+    <string name="blocked_by_policy" msgid="2071401072261365546">"應用程式或您的機構不允許此操作"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"要略過手勢操作教學課程嗎？"</string>
-    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"你之後可以在「<xliff:g id="NAME">%1$s</xliff:g>」應用程式找到這些說明"</string>
+    <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"您之後可以在「<xliff:g id="NAME">%1$s</xliff:g>」應用程式找到這些說明"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"取消"</string>
     <string name="gesture_tutorial_action_button_label_skip" msgid="394452764989751960">"略過"</string>
     <string name="accessibility_rotate_button" msgid="4771825231336502943">"旋轉螢幕"</string>
     <string name="taskbar_edu_a11y_title" msgid="5417986057866415355">"工作列教學"</string>
     <string name="taskbar_edu_splitscreen" msgid="5605512479258053350">"將應用程式拖曳到一邊，即可同時使用 2 個應用程式"</string>
     <string name="taskbar_edu_stashing" msgid="5645461372669217294">"慢慢向上滑動即可顯示工作列"</string>
-    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"根據你的日常安排提供應用程式建議"</string>
+    <string name="taskbar_edu_suggestions" msgid="8215044496435527982">"根據您的日常安排提供應用程式建議"</string>
     <string name="taskbar_edu_settings_persistent" msgid="1387372982791296151">"在「設定」中啟用手勢操作後，工作列就會自動隱藏"</string>
-    <string name="taskbar_edu_features" msgid="3320337287472848162">"工作列助你事半功倍"</string>
+    <string name="taskbar_edu_features" msgid="3320337287472848162">"工作列助您事半功倍"</string>
     <string name="taskbar_edu_close" msgid="887022990168191073">"關閉"</string>
     <string name="taskbar_edu_done" msgid="6880178093977704569">"完成"</string>
     <string name="taskbar_button_home" msgid="2151398979630664652">"住宅"</string>
@@ -121,9 +115,6 @@
     <string name="taskbar_a11y_shown_title" msgid="6842833581088937713">"顯示咗工作列"</string>
     <string name="taskbar_a11y_hidden_title" msgid="9154903639589659284">"隱藏咗工作列"</string>
     <string name="taskbar_phone_a11y_title" msgid="4933360237131229395">"導覽列"</string>
-    <string name="always_show_taskbar" msgid="3608801276107751229">"一律顯示工作列"</string>
-    <string name="change_navigation_mode" msgid="9088393078736808968">"變更導覽模式"</string>
-    <string name="taskbar_divider_a11y_title" msgid="6608690309720242080">"工作列分隔線"</string>
     <string name="move_drop_target_top_or_left" msgid="2988702185049595807">"移至上方/左側"</string>
     <string name="move_drop_target_bottom_or_right" msgid="5431393418797620162">"移至底部/右側"</string>
     <string name="quick_switch_overflow" msgid="6935266023013283353">"{count,plural, =1{顯示另外 # 個應用程式。}other{顯示另外 # 個應用程式。}}"</string>

@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_CURSOR_HOVER_STATES;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_DOWNLOAD_APP_UX_V2;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ICON_LABEL_AUTO_SCALING;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
@@ -94,11 +95,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         IconLabelDotView, DraggableView, Reorderable {
 
     private static final int DISPLAY_WORKSPACE = 0;
-    private static final int DISPLAY_ALL_APPS = 1;
+    public static final int DISPLAY_ALL_APPS = 1;
     private static final int DISPLAY_FOLDER = 2;
     protected static final int DISPLAY_TASKBAR = 5;
-    private static final int DISPLAY_SEARCH_RESULT = 6;
-    private static final int DISPLAY_SEARCH_RESULT_SMALL = 7;
+    public static final int DISPLAY_SEARCH_RESULT = 6;
+    public static final int DISPLAY_SEARCH_RESULT_SMALL = 7;
+    public static final int DISPLAY_PREDICTION_ROW = 8;
+    public static final int DISPLAY_SEARCH_RESULT_APP_ROW = 9;
 
     private static final float MIN_LETTER_SPACING = -0.05f;
     private static final int MAX_SEARCH_LOOP_COUNT = 20;
@@ -151,7 +154,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
 
     private final CheckLongPressHelper mLongPressHelper;
 
-    private final boolean mLayoutHorizontal;
+    private boolean mLayoutHorizontal;
     private final boolean mIsRtl;
     private final int mIconSize;
 
@@ -196,6 +199,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mActivity = ActivityContext.lookupContext(context);
+        FastBitmapDrawable.setFlagHoverEnabled(ENABLE_CURSOR_HOVER_STATES.get());
 
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);
@@ -210,8 +214,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
             defaultIconSize = grid.iconSizePx;
-            setCenterVertically(grid.isScalableGrid);
-        } else if (mDisplay == DISPLAY_ALL_APPS) {
+            setCenterVertically(grid.iconCenterVertically);
+        } else if (mDisplay == DISPLAY_ALL_APPS || mDisplay == DISPLAY_PREDICTION_ROW
+                || mDisplay == DISPLAY_SEARCH_RESULT_APP_ROW) {
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
@@ -402,7 +407,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
      *  Only if actual text can be displayed in two line, the {@code true} value will be effective.
      */
     protected boolean shouldUseTwoLine() {
-        return (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() && mDisplay == DISPLAY_ALL_APPS)
+        return  (FeatureFlags.ENABLE_TWOLINE_ALLAPPS.get() && mDisplay == DISPLAY_ALL_APPS)
                 || (FeatureFlags.ENABLE_TWOLINE_DEVICESEARCH.get()
                 && mDisplay == DISPLAY_SEARCH_RESULT);
     }
@@ -424,10 +429,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         }
     }
 
-    /** This is used for testing to forcefully set the display to ALL_APPS */
+    /** This is used for testing to forcefully set the display. */
     @VisibleForTesting
-    public void setDisplayAllApps() {
-        mDisplay = DISPLAY_ALL_APPS;
+    public void setDisplay(int display) {
+        mDisplay = display;
     }
 
     /**
@@ -631,6 +636,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         }
     }
 
+    @VisibleForTesting
+    public boolean getForceHideDot() {
+        return mForceHideDot;
+    }
+
     private boolean hasDot() {
         return mDotInfo != null;
     }
@@ -657,6 +667,18 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         } else {
             outBounds.offset((getWidth() - iconSize) / 2, getPaddingTop());
         }
+    }
+
+    /**
+     * Sets whether the layout is horizontal.
+     */
+    public void setLayoutHorizontal(boolean layoutHorizontal) {
+        if (mLayoutHorizontal == layoutHorizontal) {
+            return;
+        }
+
+        mLayoutHorizontal = layoutHorizontal;
+        applyCompoundDrawables(getIconOrTransparentColor());
     }
 
     /**
@@ -985,8 +1007,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         if (!mIsIconVisible) {
             resetIconScale();
         }
-        Drawable icon = visible ? mIcon : new ColorDrawable(Color.TRANSPARENT);
+        Drawable icon = getIconOrTransparentColor();
         applyCompoundDrawables(icon);
+    }
+
+    private Drawable getIconOrTransparentColor() {
+        return mIsIconVisible ? mIcon : new ColorDrawable(Color.TRANSPARENT);
     }
 
     /** Sets the icon visual state to disabled or not. */
@@ -1080,8 +1106,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
     }
 
     public boolean isDisplaySearchResult() {
-        return mDisplay == DISPLAY_SEARCH_RESULT ||
-                mDisplay == DISPLAY_SEARCH_RESULT_SMALL;
+        return mDisplay == DISPLAY_SEARCH_RESULT
+                || mDisplay == DISPLAY_SEARCH_RESULT_SMALL
+                || mDisplay == DISPLAY_SEARCH_RESULT_APP_ROW;
+    }
+
+    public int getIconDisplay() {
+        return mDisplay;
     }
 
     @Override
