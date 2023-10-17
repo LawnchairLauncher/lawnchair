@@ -1796,7 +1796,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
                 StartingWindowListener startingWindowListener, RunnableList onEndCallback) {
             View viewToUse = findLaunchableViewWithBackground(v);
             if (viewToUse == null) {
-                viewToUse = v;
+                return null;
             }
 
             // The CUJ is logged by the click handler, so we don't log it inside the animation
