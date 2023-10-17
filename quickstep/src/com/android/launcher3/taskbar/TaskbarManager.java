@@ -18,6 +18,7 @@ package com.android.launcher3.taskbar;
 import static android.content.Context.RECEIVER_NOT_EXPORTED;
 import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.Display.DEFAULT_DISPLAY;
+import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
@@ -209,7 +210,8 @@ public class TaskbarManager {
     public TaskbarManager(TouchInteractionService service) {
         Display display =
                 service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
-        mContext = service.createWindowContext(display, TYPE_NAVIGATION_BAR_PANEL, null);
+        mContext = service.createWindowContext(display,
+                FLAG_HIDE_NAVBAR_WINDOW ? TYPE_NAVIGATION_BAR : TYPE_NAVIGATION_BAR_PANEL, null);
         if (enableTaskbarNoRecreate()) {
             mWindowManager = mContext.getSystemService(WindowManager.class);
             mTaskbarRootLayout = new FrameLayout(mContext) {

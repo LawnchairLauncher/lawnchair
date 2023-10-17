@@ -20,6 +20,7 @@ import static android.os.Trace.TRACE_TAG_APP;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
 import static android.view.WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
+import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 import static android.window.SplashScreen.SPLASH_SCREEN_STYLE_UNDEFINED;
 
@@ -430,9 +431,10 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * for taskbar showing as navigation bar
      */
     private WindowManager.LayoutParams createAllWindowParams() {
+        final int windowType =
+                FLAG_HIDE_NAVBAR_WINDOW ? TYPE_NAVIGATION_BAR : TYPE_NAVIGATION_BAR_PANEL;
         WindowManager.LayoutParams windowLayoutParams =
-                createDefaultWindowLayoutParams(TYPE_NAVIGATION_BAR_PANEL,
-                        TaskbarActivityContext.WINDOW_TITLE);
+                createDefaultWindowLayoutParams(windowType, TaskbarActivityContext.WINDOW_TITLE);
         boolean isPhoneNavMode = TaskbarManager.isPhoneButtonNavMode(this);
         if (!isPhoneNavMode) {
             return windowLayoutParams;
@@ -445,7 +447,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         windowLayoutParams.paramsForRotation = new WindowManager.LayoutParams[4];
         for (int rot = Surface.ROTATION_0; rot <= Surface.ROTATION_270; rot++) {
             WindowManager.LayoutParams lp =
-                    createDefaultWindowLayoutParams(TYPE_NAVIGATION_BAR_PANEL,
+                    createDefaultWindowLayoutParams(windowType,
                             TaskbarActivityContext.WINDOW_TITLE);
             switch (rot) {
                 case Surface.ROTATION_0, Surface.ROTATION_180 -> {
