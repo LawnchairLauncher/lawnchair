@@ -835,6 +835,13 @@ public class StatsLogManager implements ResourceBasedOverride {
         }
 
         /**
+         * Set the features of the log message.
+         */
+        default StatsLogger withFeatures(int feature) {
+            return this;
+        }
+
+        /**
          * Builds the final message and logs it as {@link EventEnum}.
          */
         default void log(EventEnum event) {
