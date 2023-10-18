@@ -5270,8 +5270,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         cleanupRemoteTargets();
 
         if (mRecentsAnimationController == null) {
-            Log.d(TestProtocol.INCORRECT_HOME_STATE, "finish recents animation but recents "
-                    + "animation controller was null. returning.");
             if (onFinishComplete != null) {
                 onFinishComplete.run();
             }

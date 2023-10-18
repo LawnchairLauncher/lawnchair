@@ -158,7 +158,6 @@ public final class TestProtocol {
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
     public static final String TWO_TASKBAR_LONG_CLICKS = "b/262282528";
     public static final String ICON_MISSING = "b/282963545";
-    public static final String INCORRECT_HOME_STATE = "b/293191790";
 
     public static final String REQUEST_EMULATE_DISPLAY = "emulate-display";
     public static final String REQUEST_STOP_EMULATE_DISPLAY = "stop-emulate-display";

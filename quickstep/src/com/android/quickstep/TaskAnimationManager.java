@@ -39,7 +39,6 @@ import androidx.annotation.UiThread;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.testing.shared.TestProtocol;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.util.ActiveGestureLog;
 import com.android.quickstep.views.RecentsView;
@@ -199,9 +198,6 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
                         RecentsView recentsView =
                                 activityInterface.getCreatedActivity().getOverviewPanel();
                         if (recentsView != null) {
-                            Log.d(TestProtocol.INCORRECT_HOME_STATE,
-                                    "finish recents animation on "
-                                            + compat.taskInfo.description);
                             recentsView.finishRecentsAnimation(true, null);
                         }
                         return;
