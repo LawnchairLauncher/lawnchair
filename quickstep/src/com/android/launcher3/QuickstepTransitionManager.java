@@ -77,7 +77,6 @@ import android.app.ActivityOptions;
 import android.app.WindowConfiguration;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.ContentObserver;
 import android.graphics.Color;
@@ -187,9 +186,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      */
     public static final int STATUS_BAR_TRANSITION_PRE_DELAY = 96;
 
-    private static final String CONTROL_REMOTE_APP_TRANSITION_PERMISSION =
-            "android.permission.CONTROL_REMOTE_APP_TRANSITION_ANIMATIONS";
-
     public static final long APP_LAUNCH_DURATION = 500;
 
     private static final long APP_LAUNCH_ALPHA_DURATION = 50;
@@ -292,8 +288,8 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         mLauncher.addOnDeviceProfileChangeListener(this);
 
-        if (supportsSSplashScreen()) {
-            mTaskStartParams = new LinkedHashMap<Integer, Pair<Integer, Integer>>(MAX_NUM_TASKS) {
+        if (ENABLE_SHELL_STARTING_SURFACE) {
+            mTaskStartParams = new LinkedHashMap<>(MAX_NUM_TASKS) {
                 @Override
                 protected boolean removeEldestEntry(Entry<Integer, Pair<Integer, Integer>> entry) {
                     return size() > MAX_NUM_TASKS;
@@ -681,7 +677,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         mDragLayer.getLocationOnScreen(dragLayerBounds);
 
         final boolean hasSplashScreen;
-        if (supportsSSplashScreen()) {
+        if (ENABLE_SHELL_STARTING_SURFACE) {
             int taskId = openingTargets.getFirstAppTargetTaskId();
             Pair<Integer, Integer> defaultParams = Pair.create(STARTING_WINDOW_TYPE_NONE, 0);
             Pair<Integer, Integer> taskParams =
@@ -926,7 +922,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         RemoteAnimationTarget openingTarget = openingTargets.getFirstAppTarget();
         int fallbackBackgroundColor = 0;
-        if (openingTarget != null && supportsSSplashScreen()) {
+        if (openingTarget != null && ENABLE_SHELL_STARTING_SURFACE) {
             fallbackBackgroundColor = mTaskStartParams.containsKey(openingTarget.taskId)
                     ? mTaskStartParams.get(openingTarget.taskId).second : 0;
             mTaskStartParams.remove(openingTarget.taskId);
@@ -1102,11 +1098,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         if (SEPARATE_RECENTS_ACTIVITY.get()) {
             return;
         }
-        if (hasControlRemoteAppTransitionPermission()) {
-            RemoteAnimationDefinition definition = new RemoteAnimationDefinition();
-            addRemoteAnimations(definition);
-            mLauncher.registerRemoteAnimations(definition);
-        }
+        RemoteAnimationDefinition definition = new RemoteAnimationDefinition();
+        addRemoteAnimations(definition);
+        mLauncher.registerRemoteAnimations(definition);
     }
 
     /**
@@ -1144,28 +1138,27 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         if (SEPARATE_RECENTS_ACTIVITY.get()) {
             return;
         }
-        if (hasControlRemoteAppTransitionPermission()) {
-            mWallpaperOpenTransitionRunner = createWallpaperOpenRunner(false /* fromUnlock */);
-            mLauncherOpenTransition = new RemoteTransition(
-                    new LauncherAnimationRunner(mHandler, mWallpaperOpenTransitionRunner,
-                            false /* startAtFrontOfQueue */).toRemoteTransition(),
-                    mLauncher.getIApplicationThread(), "QuickstepLaunchHome");
 
-            TransitionFilter homeCheck = new TransitionFilter();
-            // No need to handle the transition that also dismisses keyguard.
-            homeCheck.mNotFlags = TRANSIT_FLAG_KEYGUARD_GOING_AWAY;
-            homeCheck.mRequirements =
-                    new TransitionFilter.Requirement[]{new TransitionFilter.Requirement(),
-                            new TransitionFilter.Requirement()};
-            homeCheck.mRequirements[0].mActivityType = ACTIVITY_TYPE_HOME;
-            homeCheck.mRequirements[0].mTopActivity = mLauncher.getComponentName();
-            homeCheck.mRequirements[0].mModes = new int[]{TRANSIT_OPEN, TRANSIT_TO_FRONT};
-            homeCheck.mRequirements[0].mOrder = CONTAINER_ORDER_TOP;
-            homeCheck.mRequirements[1].mActivityType = ACTIVITY_TYPE_STANDARD;
-            homeCheck.mRequirements[1].mModes = new int[]{TRANSIT_CLOSE, TRANSIT_TO_BACK};
-            SystemUiProxy.INSTANCE.get(mLauncher)
-                    .registerRemoteTransition(mLauncherOpenTransition, homeCheck);
-        }
+        mWallpaperOpenTransitionRunner = createWallpaperOpenRunner(false /* fromUnlock */);
+        mLauncherOpenTransition = new RemoteTransition(
+                new LauncherAnimationRunner(mHandler, mWallpaperOpenTransitionRunner,
+                        false /* startAtFrontOfQueue */).toRemoteTransition(),
+                mLauncher.getIApplicationThread(), "QuickstepLaunchHome");
+
+        TransitionFilter homeCheck = new TransitionFilter();
+        // No need to handle the transition that also dismisses keyguard.
+        homeCheck.mNotFlags = TRANSIT_FLAG_KEYGUARD_GOING_AWAY;
+        homeCheck.mRequirements =
+                new TransitionFilter.Requirement[]{new TransitionFilter.Requirement(),
+                        new TransitionFilter.Requirement()};
+        homeCheck.mRequirements[0].mActivityType = ACTIVITY_TYPE_HOME;
+        homeCheck.mRequirements[0].mTopActivity = mLauncher.getComponentName();
+        homeCheck.mRequirements[0].mModes = new int[]{TRANSIT_OPEN, TRANSIT_TO_FRONT};
+        homeCheck.mRequirements[0].mOrder = CONTAINER_ORDER_TOP;
+        homeCheck.mRequirements[1].mActivityType = ACTIVITY_TYPE_STANDARD;
+        homeCheck.mRequirements[1].mModes = new int[]{TRANSIT_CLOSE, TRANSIT_TO_BACK};
+        SystemUiProxy.INSTANCE.get(mLauncher)
+                .registerRemoteTransition(mLauncherOpenTransition, homeCheck);
         if (mBackAnimationController != null) {
             mBackAnimationController.registerBackCallbacks(mHandler);
         }
@@ -1183,15 +1176,13 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         if (SEPARATE_RECENTS_ACTIVITY.get()) {
             return;
         }
-        if (hasControlRemoteAppTransitionPermission()) {
-            mLauncher.unregisterRemoteAnimations();
+        mLauncher.unregisterRemoteAnimations();
 
-            // Also clear strong references to the runners registered with the remote animation
-            // definition so we don't have to wait for the system gc
-            mWallpaperOpenRunner = null;
-            mAppLaunchRunner = null;
-            mKeyguardGoingAwayRunner = null;
-        }
+        // Also clear strong references to the runners registered with the remote animation
+        // definition so we don't have to wait for the system gc
+        mWallpaperOpenRunner = null;
+        mAppLaunchRunner = null;
+        mKeyguardGoingAwayRunner = null;
     }
 
     protected void unregisterRemoteTransitions() {
@@ -1201,13 +1192,11 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         if (SEPARATE_RECENTS_ACTIVITY.get()) {
             return;
         }
-        if (hasControlRemoteAppTransitionPermission()) {
-            if (mLauncherOpenTransition == null) return;
-            SystemUiProxy.INSTANCE.get(mLauncher).unregisterRemoteTransition(
-                    mLauncherOpenTransition);
-            mLauncherOpenTransition = null;
-            mWallpaperOpenTransitionRunner = null;
-        }
+        if (mLauncherOpenTransition == null) return;
+        SystemUiProxy.INSTANCE.get(mLauncher).unregisterRemoteTransition(
+                mLauncherOpenTransition);
+        mLauncherOpenTransition = null;
+        mWallpaperOpenTransitionRunner = null;
         if (mBackAnimationController != null) {
             mBackAnimationController.unregisterBackCallbacks();
             mBackAnimationController = null;
@@ -1551,20 +1540,6 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         });
 
         return closingAnimator;
-    }
-
-    private boolean supportsSSplashScreen() {
-        return hasControlRemoteAppTransitionPermission()
-                && Utilities.ATLEAST_S
-                && ENABLE_SHELL_STARTING_SURFACE;
-    }
-
-    /**
-     * Returns true if we have permission to control remote app transisions
-     */
-    public boolean hasControlRemoteAppTransitionPermission() {
-        return mLauncher.checkSelfPermission(CONTROL_REMOTE_APP_TRANSITION_PERMISSION)
-                == PackageManager.PERMISSION_GRANTED;
     }
 
     private void addCujInstrumentation(Animator anim, int cuj) {

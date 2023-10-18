@@ -1021,7 +1021,7 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     public boolean supportsAdaptiveIconAnimation(View clickedView) {
-        return mAppTransitionManager.hasControlRemoteAppTransitionPermission();
+        return true;
     }
 
     @Override
@@ -1056,10 +1056,7 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     public ActivityOptionsWrapper getActivityLaunchOptions(View v, @Nullable ItemInfo item) {
-        ActivityOptionsWrapper activityOptions =
-                mAppTransitionManager.hasControlRemoteAppTransitionPermission()
-                        ? mAppTransitionManager.getActivityLaunchOptions(v)
-                        : super.getActivityLaunchOptions(v, item);
+        ActivityOptionsWrapper activityOptions = mAppTransitionManager.getActivityLaunchOptions(v);
         if (mLastTouchUpTime > 0) {
             activityOptions.options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_LAUNCHER,
                     mLastTouchUpTime);
