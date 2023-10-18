@@ -1092,7 +1092,9 @@ public class TaskView extends FrameLayout implements Reusable {
                 mIconLoadRequest = iconCache.updateIconInBackground(mTask,
                         (task) -> {
                             setIcon(mIconView, task.icon);
-                            setText(mIconView, TaskUtils.getTitle(getContext(), task));
+                            if (enableOverviewIconMenu()) {
+                                setText(mIconView, TaskUtils.getTitle(getContext(), task));
+                            }
                             mDigitalWellBeingToast.initialize(task);
                         });
             }
@@ -1108,7 +1110,9 @@ public class TaskView extends FrameLayout implements Reusable {
             }
             if (needsUpdate(changes, FLAG_UPDATE_ICON)) {
                 setIcon(mIconView, null);
-                setText(mIconView, null);
+                if (enableOverviewIconMenu()) {
+                    setText(mIconView, null);
+                }
             }
         }
     }
