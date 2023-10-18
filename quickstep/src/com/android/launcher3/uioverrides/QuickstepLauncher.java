@@ -33,6 +33,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_HOME_TRANSITION_LISTENER;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
@@ -92,6 +93,7 @@ import androidx.annotation.RequiresApi;
 import com.android.app.viewcapture.SettingsAwareViewCapture;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.HomeTransitionController;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherState;
@@ -231,6 +233,8 @@ public class QuickstepLauncher extends Launcher {
 
     private boolean mEnableWidgetDepth;
 
+    private HomeTransitionController mHomeTransitionController;
+
     @Override
     protected void setupViews() {
         super.setupViews();
@@ -260,6 +264,11 @@ public class QuickstepLauncher extends Launcher {
         mAppTransitionManager = buildAppTransitionManager();
         mAppTransitionManager.registerRemoteAnimations();
         mAppTransitionManager.registerRemoteTransitions();
+
+        if (ENABLE_HOME_TRANSITION_LISTENER.get()) {
+            mHomeTransitionController = new HomeTransitionController(this);
+            mHomeTransitionController.registerHomeTransitionListener();
+        }
 
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
         mDepthController = new DepthController(this);
@@ -368,8 +377,8 @@ public class QuickstepLauncher extends Launcher {
         }
 
         if ((changeBits & ACTIVITY_STATE_RESUMED) != 0) {
-            if (mTaskbarUIController != null) {
-                mTaskbarUIController.onLauncherResumedOrPaused(hasBeenResumed());
+            if (!ENABLE_HOME_TRANSITION_LISTENER.get() && mTaskbarUIController != null) {
+                mTaskbarUIController.onLauncherVisibilityChanged(hasBeenResumed());
             }
         }
 
@@ -480,6 +489,10 @@ public class QuickstepLauncher extends Launcher {
 
         if (mLauncherUnfoldAnimationController != null) {
             mLauncherUnfoldAnimationController.onDestroy();
+        }
+
+        if (mHomeTransitionController != null) {
+            mHomeTransitionController.unregisterHomeTransitionListener();
         }
 
         if (mDesktopVisibilityController != null) {

@@ -1236,7 +1236,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
         TaskbarUIController uiController = mControllers.uiController;
         if (uiController instanceof LauncherTaskbarUIController) {
-            ((LauncherTaskbarUIController) uiController).addLauncherResumeAnimation(
+            ((LauncherTaskbarUIController) uiController).addLauncherVisibilityChangedAnimation(
                     fullAnimation, duration);
         }
         mControllers.taskbarStashController.addUnstashToHotseatAnimation(fullAnimation, duration);

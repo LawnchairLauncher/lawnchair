@@ -68,13 +68,13 @@ public class TaskbarLauncherStateController {
     private static final String TAG = TaskbarLauncherStateController.class.getSimpleName();
     private static final boolean DEBUG = false;
 
-    /** Launcher activity is resumed and focused. */
-    public static final int FLAG_RESUMED = 1 << 0;
+    /** Launcher activity is visible and focused. */
+    public static final int FLAG_VISIBLE = 1 << 0;
 
     /**
-     * A external transition / animation is running that will result in FLAG_RESUMED being set.
+     * A external transition / animation is running that will result in FLAG_VISIBLE being set.
      **/
-    public static final int FLAG_TRANSITION_TO_RESUMED = 1 << 1;
+    public static final int FLAG_TRANSITION_TO_VISIBLE = 1 << 1;
 
     /**
      * Set while the launcher state machine is performing a state transition, see {@link
@@ -118,7 +118,7 @@ public class TaskbarLauncherStateController {
      */
     private static final int FLAG_TASKBAR_HIDDEN = 1 << 6;
 
-    private static final int FLAGS_LAUNCHER_ACTIVE = FLAG_RESUMED | FLAG_TRANSITION_TO_RESUMED;
+    private static final int FLAGS_LAUNCHER_ACTIVE = FLAG_VISIBLE | FLAG_TRANSITION_TO_VISIBLE;
     /** Equivalent to an int with all 1s for binary operation purposes */
     private static final int FLAGS_ALL = ~0;
 
@@ -207,7 +207,7 @@ public class TaskbarLauncherStateController {
                     // TODO(b/279514548) Cleans up bad state that can occur when user interacts with
                     // taskbar on top of transparent activity.
                     if (finalState == LauncherState.NORMAL && mLauncher.hasBeenResumed()) {
-                        updateStateForFlag(FLAG_RESUMED, true);
+                        updateStateForFlag(FLAG_VISIBLE, true);
                     }
                     applyState();
                     boolean disallowLongClick =
@@ -282,7 +282,7 @@ public class TaskbarLauncherStateController {
         }
         stashController.updateStateForFlag(FLAG_IN_APP, false);
 
-        updateStateForFlag(FLAG_TRANSITION_TO_RESUMED, true);
+        updateStateForFlag(FLAG_TRANSITION_TO_VISIBLE, true);
         animatorSet.play(stashController.createApplyStateAnimator(duration));
         animatorSet.play(applyState(duration, false));
 
@@ -433,7 +433,7 @@ public class TaskbarLauncherStateController {
             if (launcherTransitionCompleted
                     && mLauncherState == LauncherState.QUICK_SWITCH_FROM_HOME) {
                 // We're about to be paused, set immediately to ensure seamless handoff.
-                updateStateForFlag(FLAG_RESUMED, false);
+                updateStateForFlag(FLAG_VISIBLE, false);
                 applyState(0 /* duration */);
             }
             if (mLauncherState == LauncherState.NORMAL) {
@@ -759,10 +759,10 @@ public class TaskbarLauncherStateController {
             mTaskBarRecentsAnimationListener = null;
             ((RecentsView) mLauncher.getOverviewPanel()).setTaskLaunchListener(null);
 
-            // Update the resumed state immediately to ensure a seamless handoff
-            boolean launcherResumed = !finishedToApp;
-            updateStateForFlag(FLAG_TRANSITION_TO_RESUMED, false);
-            updateStateForFlag(FLAG_RESUMED, launcherResumed);
+            // Update the visible state immediately to ensure a seamless handoff
+            boolean launcherVisible = !finishedToApp;
+            updateStateForFlag(FLAG_TRANSITION_TO_VISIBLE, false);
+            updateStateForFlag(FLAG_VISIBLE, launcherVisible);
             applyState();
 
             TaskbarStashController controller = mControllers.taskbarStashController;
@@ -776,8 +776,8 @@ public class TaskbarLauncherStateController {
 
     private static String getStateString(int flags) {
         StringJoiner result = new StringJoiner("|");
-        appendFlag(result, flags, FLAG_RESUMED, "resumed");
-        appendFlag(result, flags, FLAG_TRANSITION_TO_RESUMED, "transition_to_resumed");
+        appendFlag(result, flags, FLAG_VISIBLE, "flag_visible");
+        appendFlag(result, flags, FLAG_TRANSITION_TO_VISIBLE, "transition_to_visible");
         appendFlag(result, flags, FLAG_LAUNCHER_IN_STATE_TRANSITION,
                 "launcher_in_state_transition");
         appendFlag(result, flags, FLAG_AWAKE, "awake");

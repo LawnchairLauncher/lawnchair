@@ -17,6 +17,7 @@ package com.android.quickstep;
 
 import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 
+import static com.android.launcher3.config.FeatureFlags.ENABLE_HOME_TRANSITION_LISTENER;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
@@ -92,6 +93,7 @@ import com.android.wm.shell.splitscreen.ISplitScreenListener;
 import com.android.wm.shell.splitscreen.ISplitSelectListener;
 import com.android.wm.shell.startingsurface.IStartingWindow;
 import com.android.wm.shell.startingsurface.IStartingWindowListener;
+import com.android.wm.shell.transition.IHomeTransitionListener;
 import com.android.wm.shell.transition.IShellTransitions;
 import com.android.wm.shell.util.GroupedRecentTaskInfo;
 
@@ -147,6 +149,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     private IOnBackInvokedCallback mBackToLauncherCallback;
     private IRemoteAnimationRunner mBackToLauncherRunner;
     private IDragAndDrop mDragAndDrop;
+    private IHomeTransitionListener mHomeTransitionListener;
 
     // Used to dedupe calls to SystemUI
     private int mLastShelfHeight;
@@ -248,6 +251,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         setBubblesListener(mBubblesListener);
         registerSplitScreenListener(mSplitScreenListener);
         registerSplitSelectListener(mSplitSelectListener);
+        setHomeTransitionListener(mHomeTransitionListener);
         setStartingWindowListener(mStartingWindowListener);
         setLauncherUnlockAnimationController(
                 mLauncherActivityClass, mLauncherUnlockAnimationController);
@@ -1041,6 +1045,24 @@ public class SystemUiProxy implements ISystemUiProxy {
             }
         }
         mRemoteTransitions.remove(remoteTransition);
+    }
+
+    public void setHomeTransitionListener(IHomeTransitionListener listener) {
+        if (!ENABLE_HOME_TRANSITION_LISTENER.get()) {
+            return;
+        }
+
+        mHomeTransitionListener = listener;
+
+        if (mShellTransitions != null) {
+            try {
+                mShellTransitions.setHomeTransitionListener(listener);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call setHomeTransitionListener", e);
+            }
+        } else  {
+            Log.w(TAG, "Unable to call setHomeTransitionListener because ShellTransitions is null");
+        }
     }
 
     /**
