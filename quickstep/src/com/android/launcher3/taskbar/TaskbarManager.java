@@ -21,6 +21,7 @@ import static android.view.Display.DEFAULT_DISPLAY;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR;
 import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
+import static com.android.launcher3.BaseActivity.EVENT_DESTROYED;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.config.FeatureFlags.enableTaskbarNoRecreate;
 import static com.android.launcher3.util.DisplayController.TASKBAR_NOT_DESTROYED_TAG;
@@ -30,7 +31,6 @@ import static com.android.quickstep.util.SystemActionConstants.ACTION_SHOW_TASKB
 import static com.android.quickstep.util.SystemActionConstants.SYSTEM_ACTION_ID_TASKBAR;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ComponentCallbacks;
 import android.content.Context;
@@ -61,7 +61,6 @@ import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.unfold.NonDestroyableScopedUnfoldTransitionProgressProvider;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
-import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
@@ -145,27 +144,25 @@ public class TaskbarManager {
     private final SimpleBroadcastReceiver mTaskbarBroadcastReceiver =
             new SimpleBroadcastReceiver(this::showTaskbarFromBroadcast);
 
-    private final ActivityLifecycleCallbacksAdapter mLifecycleCallbacks =
-            new ActivityLifecycleCallbacksAdapter() {
-                @Override
-                public void onActivityDestroyed(Activity activity) {
-                    if (mActivity != activity) return;
-                    if (mActivity != null) {
-                        mActivity.removeOnDeviceProfileChangeListener(
-                                mDebugActivityDeviceProfileChanged);
-                        Log.d(TASKBAR_NOT_DESTROYED_TAG,
-                                "unregistering activity lifecycle callbacks from "
-                                        + "onActivityDestroyed.");
-                        mActivity.unregisterActivityLifecycleCallbacks(this);
-                    }
-                    mActivity = null;
-                    debugWhyTaskbarNotDestroyed("clearActivity");
-                    if (mTaskbarActivityContext != null) {
-                        mTaskbarActivityContext.setUIController(TaskbarUIController.DEFAULT);
-                    }
-                    mUnfoldProgressProvider.setSourceProvider(null);
-                }
-            };
+    private final Runnable mActivityOnDestroyCallback = new Runnable() {
+        @Override
+        public void run() {
+            if (mActivity != null) {
+                mActivity.removeOnDeviceProfileChangeListener(
+                        mDebugActivityDeviceProfileChanged);
+                Log.d(TASKBAR_NOT_DESTROYED_TAG,
+                        "unregistering activity lifecycle callbacks from "
+                                + "onActivityDestroyed.");
+                mActivity.removeEventCallback(EVENT_DESTROYED, this);
+            }
+            mActivity = null;
+            debugWhyTaskbarNotDestroyed("clearActivity");
+            if (mTaskbarActivityContext != null) {
+                mTaskbarActivityContext.setUIController(TaskbarUIController.DEFAULT);
+            }
+            mUnfoldProgressProvider.setSourceProvider(null);
+        }
+    };
 
     UnfoldTransitionProgressProvider.TransitionProgressListener mUnfoldTransitionProgressListener =
             new UnfoldTransitionProgressProvider.TransitionProgressListener() {
@@ -371,7 +368,7 @@ public class TaskbarManager {
         mActivity.addOnDeviceProfileChangeListener(mDebugActivityDeviceProfileChanged);
         Log.d(TASKBAR_NOT_DESTROYED_TAG,
                 "registering activity lifecycle callbacks from setActivity().");
-        mActivity.registerActivityLifecycleCallbacks(mLifecycleCallbacks);
+        mActivity.addEventCallback(EVENT_DESTROYED, mActivityOnDestroyCallback);
         UnfoldTransitionProgressProvider unfoldTransitionProgressProvider =
                 getUnfoldTransitionProgressProviderForActivity(activity);
         if (unfoldTransitionProgressProvider != null) {
@@ -547,7 +544,7 @@ public class TaskbarManager {
             Log.d(TASKBAR_NOT_DESTROYED_TAG,
                     "unregistering activity lifecycle callbacks from "
                             + "removeActivityCallbackAndListeners().");
-            mActivity.unregisterActivityLifecycleCallbacks(mLifecycleCallbacks);
+            mActivity.removeEventCallback(EVENT_DESTROYED, mActivityOnDestroyCallback);
             UnfoldTransitionProgressProvider unfoldTransitionProgressProvider =
                     getUnfoldTransitionProgressProviderForActivity(mActivity);
             if (unfoldTransitionProgressProvider != null) {

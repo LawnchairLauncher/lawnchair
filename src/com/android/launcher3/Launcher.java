@@ -688,7 +688,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     private void switchOverlay(Supplier<LauncherOverlayManager> overlaySupplier) {
         if (mOverlayManager != null) {
-            mOverlayManager.onActivityDestroyed(this);
+            mOverlayManager.onActivityDestroyed();
         }
         mOverlayManager = overlaySupplier.get();
         if (getRootView().isAttachedToWindow()) {
@@ -1029,7 +1029,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (mDeferOverlayCallbacks) {
             checkIfOverlayStillDeferred();
         } else {
-            mOverlayManager.onActivityStopped(this);
+            mOverlayManager.onActivityStopped();
         }
         hideKeyboard();
         logStopAndResume(false /* isResume */);
@@ -1043,7 +1043,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         TraceHelper.INSTANCE.beginSection(ON_START_EVT);
         super.onStart();
         if (!mDeferOverlayCallbacks) {
-            mOverlayManager.onActivityStarted(this);
+            mOverlayManager.onActivityStarted();
         }
 
         mAppWidgetHolder.setActivityStarted(true);
@@ -1112,15 +1112,15 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         // Move the client to the correct state. Calling the same method twice is no-op.
         if (isStarted()) {
-            mOverlayManager.onActivityStarted(this);
+            mOverlayManager.onActivityStarted();
         }
         if (hasBeenResumed()) {
-            mOverlayManager.onActivityResumed(this);
+            mOverlayManager.onActivityResumed();
         } else {
-            mOverlayManager.onActivityPaused(this);
+            mOverlayManager.onActivityPaused();
         }
         if (!isStarted()) {
-            mOverlayManager.onActivityStopped(this);
+            mOverlayManager.onActivityStopped();
         }
     }
 
@@ -1220,7 +1220,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (mDeferOverlayCallbacks) {
             scheduleDeferredCheck();
         } else {
-            mOverlayManager.onActivityResumed(this);
+            mOverlayManager.onActivityResumed();
         }
 
         DragView.removeAllViews(this);
@@ -1238,7 +1238,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         mDropTargetBar.animateToVisibility(false);
 
         if (!mDeferOverlayCallbacks) {
-            mOverlayManager.onActivityPaused(this);
+            mOverlayManager.onActivityPaused();
         }
         mAppWidgetHolder.setActivityResumed(false);
     }
@@ -1683,7 +1683,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
 
         super.onSaveInstanceState(outState);
-        mOverlayManager.onActivitySaveInstanceState(this, outState);
     }
 
     @Override
@@ -1709,7 +1708,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         clearPendingBinds();
         LauncherAppState.getIDP(this).removeOnChangeListener(this);
 
-        mOverlayManager.onActivityDestroyed(this);
+        mOverlayManager.onActivityDestroyed();
     }
 
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
@@ -1742,7 +1741,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         try {
             super.startIntentSenderForResult(intent, requestCode,
                     fillInIntent, flagsMask, flagsValues, extraFlags, options);
-        } catch (IntentSender.SendIntentException e) {
+        } catch (Exception e) {
             throw new ActivityNotFoundException();
         }
     }
@@ -2004,7 +2003,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             // Workaround an issue where the WM launch animation is clobbered when finishing the
             // recents animation into launcher. Defer launching the activity until Launcher is
             // next resumed.
-            addOnResumeCallback(() -> {
+            addEventCallback(EVENT_RESUMED, () -> {
                 RunnableList actualResult = startActivitySafely(v, intent, item);
                 if (actualResult != null) {
                     actualResult.add(result::executeAllAndDestroy);
