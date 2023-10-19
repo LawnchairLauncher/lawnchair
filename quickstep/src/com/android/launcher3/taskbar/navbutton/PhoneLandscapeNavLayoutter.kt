@@ -104,10 +104,9 @@ open class PhoneLandscapeNavLayoutter(
         endContextualContainer.removeAllViews()
         startContextualContainer.removeAllViews()
 
-        val startContextualContainerParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        startContextualContainerParams.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-        startContextualContainer.layoutParams = startContextualContainerParams
+        val contextualMargin = resources.getDimensionPixelSize(
+                R.dimen.taskbar_contextual_button_padding)
+        repositionContextualContainer(startContextualContainer, contextualMargin, Gravity.TOP)
 
         if (imeSwitcher != null) {
             startContextualContainer.addView(imeSwitcher)
@@ -120,5 +119,19 @@ open class PhoneLandscapeNavLayoutter(
             startContextualContainer.addView(rotationButton.currentView)
             rotationButton.currentView.layoutParams = getParamsToCenterView()
         }
+    }
+
+    override fun repositionContextualContainer(contextualContainer: ViewGroup, barAxisMargin: Int,
+                                               gravity: Int) {
+        val contextualContainerParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        contextualContainerParams.apply {
+            marginStart = 0
+            marginEnd = 0
+            topMargin = barAxisMargin
+            bottomMargin = barAxisMargin
+        }
+        contextualContainerParams.gravity = gravity or Gravity.CENTER_HORIZONTAL
+        contextualContainer.layoutParams = contextualContainerParams
     }
 }

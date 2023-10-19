@@ -25,6 +25,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.android.launcher3.DeviceProfile
+import com.android.launcher3.R
 import com.android.launcher3.taskbar.navbutton.LayoutResourceHelper.*
 import com.android.systemui.shared.rotation.RotationButton
 
@@ -100,15 +101,10 @@ class KidsNavLayoutter(
         endContextualContainer.removeAllViews()
         startContextualContainer.removeAllViews()
 
-        val endContextualContainerParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        endContextualContainerParams.gravity = Gravity.END or Gravity.CENTER_VERTICAL
-        endContextualContainer.layoutParams = endContextualContainerParams
-
-        val startContextualContainerParams = FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        startContextualContainerParams.gravity = Gravity.START or Gravity.CENTER_VERTICAL
-        startContextualContainer.layoutParams = startContextualContainerParams
+        val contextualMargin = resources.getDimensionPixelSize(
+                R.dimen.taskbar_contextual_button_padding)
+        repositionContextualContainer(endContextualContainer, 0, Gravity.END)
+        repositionContextualContainer(startContextualContainer, contextualMargin, Gravity.START)
 
         if (imeSwitcher != null) {
             startContextualContainer.addView(imeSwitcher)

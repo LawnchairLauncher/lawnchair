@@ -20,8 +20,6 @@ import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_TIMEOUT_
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.content.Context;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
@@ -37,51 +35,36 @@ import com.android.systemui.shared.system.InputMonitorCompat;
  */
 public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
 
-    private final GestureDetector mLongPressDetector;
     private final NavHandleLongPressHandler mNavHandleLongPressHandler;
     private final float mNavHandleWidth;
     private final float mScreenWidth;
+    private final ViewConfiguration mViewConfiguration;
 
-    // Below are only used if CUSTOM_LPNH_THRESHOLDS is enabled.
-    private final float mCustomTouchSlopSquared;
-    private final int mCustomLongPressTimeout;
-    private final Runnable mTriggerCustomLongPress = this::triggerCustomLongPress;
-    private MotionEvent mCurrentCustomDownEvent;
+    private final Runnable mTriggerLongPress = this::triggerLongPress;
+    private final float mTouchSlopSquared;
+    private final int mLongPressTimeout;
+
+    private MotionEvent mCurrentDownEvent;
 
     public NavHandleLongPressInputConsumer(Context context, InputConsumer delegate,
             InputMonitorCompat inputMonitor) {
         super(delegate, inputMonitor);
+        mViewConfiguration = ViewConfiguration.get(context);
         mNavHandleWidth = context.getResources().getDimensionPixelSize(
                 R.dimen.navigation_home_handle_width);
         mScreenWidth = DisplayController.INSTANCE.get(context).getInfo().currentSize.x;
-        float customSlopMultiplier =
-                LauncherPrefs.get(context).get(LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE) / 100f;
-        float customTouchSlop =
-                ViewConfiguration.get(context).getScaledEdgeSlop() * customSlopMultiplier;
-        mCustomTouchSlopSquared = customTouchSlop * customTouchSlop;
-        mCustomLongPressTimeout = LauncherPrefs.get(context).get(LONG_PRESS_NAV_HANDLE_TIMEOUT_MS);
-
+        float touchSlop;
+        if (FeatureFlags.CUSTOM_LPNH_THRESHOLDS.get()) {
+            float customSlopMultiplier =
+                    LauncherPrefs.get(context).get(LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE) / 100f;
+            touchSlop = mViewConfiguration.getScaledEdgeSlop() * customSlopMultiplier;
+            mLongPressTimeout = LauncherPrefs.get(context).get(LONG_PRESS_NAV_HANDLE_TIMEOUT_MS);
+        } else {
+            touchSlop = mViewConfiguration.getScaledTouchSlop();
+            mLongPressTimeout = ViewConfiguration.getLongPressTimeout();
+        }
+        mTouchSlopSquared = touchSlop * touchSlop;
         mNavHandleLongPressHandler = NavHandleLongPressHandler.newInstance(context);
-
-        mLongPressDetector = new GestureDetector(context, new SimpleOnGestureListener() {
-            @Override
-            public void onLongPress(MotionEvent motionEvent) {
-                if (isInNavBarHorizontalArea(motionEvent.getRawX())) {
-                    Runnable longPressRunnable = mNavHandleLongPressHandler.getLongPressRunnable();
-                    if (longPressRunnable != null) {
-                        OtherActivityInputConsumer oaic = getInputConsumerOfClass(
-                                OtherActivityInputConsumer.class);
-                        if (oaic != null) {
-                            oaic.setForceFinishRecentsTransitionCallback(longPressRunnable);
-                            setActive(motionEvent);
-                        } else {
-                            setActive(motionEvent);
-                            MAIN_EXECUTOR.post(longPressRunnable);
-                        }
-                    }
-                }
-            }
-        });
     }
 
     @Override
@@ -91,30 +74,41 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
 
     @Override
     public void onMotionEvent(MotionEvent ev) {
-        if (!FeatureFlags.CUSTOM_LPNH_THRESHOLDS.get()) {
-            mLongPressDetector.onTouchEvent(ev);
-        } else {
-            switch (ev.getAction()) {
-                case MotionEvent.ACTION_DOWN -> {
-                    if (mCurrentCustomDownEvent != null) {
-                        mCurrentCustomDownEvent.recycle();
-                    }
-                    mCurrentCustomDownEvent = MotionEvent.obtain(ev);
-                    if (isInNavBarHorizontalArea(ev.getRawX())) {
-                        MAIN_EXECUTOR.getHandler().postDelayed(mTriggerCustomLongPress,
-                                mCustomLongPressTimeout);
-                    }
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN -> {
+                if (mCurrentDownEvent != null) {
+                    mCurrentDownEvent.recycle();
                 }
-                case MotionEvent.ACTION_MOVE -> {
-                    double touchDeltaSquared =
-                            Math.pow(ev.getX() - mCurrentCustomDownEvent.getX(), 2)
-                            + Math.pow(ev.getY() - mCurrentCustomDownEvent.getY(), 2);
-                    if (touchDeltaSquared > mCustomTouchSlopSquared) {
-                        cancelCustomLongPress();
-                    }
+                mCurrentDownEvent = MotionEvent.obtain(ev);
+                if (isInNavBarHorizontalArea(ev.getRawX())) {
+                    MAIN_EXECUTOR.getHandler().postDelayed(mTriggerLongPress,
+                            mLongPressTimeout);
                 }
-                case MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> cancelCustomLongPress();
             }
+            case MotionEvent.ACTION_MOVE -> {
+                float touchSlopSquared = mTouchSlopSquared;
+                float dx = ev.getX() - mCurrentDownEvent.getX();
+                float dy = ev.getY() - mCurrentDownEvent.getY();
+                double distanceSquared = (dx * dx) + (dy * dy);
+                // If the gesture is ambiguous then require more movement before classifying this
+                // as a NON long press gesture.
+                if (ev.getClassification() == MotionEvent.CLASSIFICATION_AMBIGUOUS_GESTURE) {
+                    float ambiguousGestureMultiplier =
+                            mViewConfiguration.getScaledAmbiguousGestureMultiplier();
+                    touchSlopSquared *= ambiguousGestureMultiplier * ambiguousGestureMultiplier;
+                }
+                if (distanceSquared > touchSlopSquared) {
+                    cancelLongPress();
+                }
+            }
+            case MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> cancelLongPress();
+        }
+
+        // If the gesture is deep press then trigger long press asap
+        if (MAIN_EXECUTOR.getHandler().hasCallbacks(mTriggerLongPress)
+                && ev.getClassification() == MotionEvent.CLASSIFICATION_DEEP_PRESS) {
+            MAIN_EXECUTOR.getHandler().removeCallbacks(mTriggerLongPress);
+            MAIN_EXECUTOR.getHandler().post(mTriggerLongPress);
         }
 
         if (mState != STATE_ACTIVE) {
@@ -122,17 +116,23 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
         }
     }
 
-    private void triggerCustomLongPress() {
+    private void triggerLongPress() {
         Runnable longPressRunnable = mNavHandleLongPressHandler.getLongPressRunnable();
         if (longPressRunnable != null) {
-            setActive(mCurrentCustomDownEvent);
-
-            MAIN_EXECUTOR.post(longPressRunnable);
+            OtherActivityInputConsumer oaic = getInputConsumerOfClass(
+                    OtherActivityInputConsumer.class);
+            if (oaic != null) {
+                oaic.setForceFinishRecentsTransitionCallback(longPressRunnable);
+                setActive(mCurrentDownEvent);
+            } else {
+                setActive(mCurrentDownEvent);
+                MAIN_EXECUTOR.post(longPressRunnable);
+            }
         }
     }
 
-    private void cancelCustomLongPress() {
-        MAIN_EXECUTOR.getHandler().removeCallbacks(mTriggerCustomLongPress);
+    private void cancelLongPress() {
+        MAIN_EXECUTOR.getHandler().removeCallbacks(mTriggerLongPress);
     }
 
     private boolean isInNavBarHorizontalArea(float x) {
