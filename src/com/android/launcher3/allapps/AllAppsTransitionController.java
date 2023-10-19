@@ -373,7 +373,9 @@ public class AllAppsTransitionController
                         new VibrationAnimatorUpdateListener(this, mVibratorWrapper,
                                 0, SWIPE_DRAG_COMMIT_THRESHOLD));
             }
-            builder.addEndListener(mVibratorWrapper::cancelVibrate);
+            builder.addEndListener((unused) -> {
+                mVibratorWrapper.cancelVibrate();
+            });
         }
 
         float targetProgress = toState.getVerticalProgress(mLauncher);
