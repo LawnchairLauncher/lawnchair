@@ -323,15 +323,6 @@ public final class FeatureFlags {
                     + "waiting for SystemUI and then merging the SystemUI progress whenever we "
                     + "start receiving the events");
 
-    // Aconfig migration complete for ENABLE_CURSOR_HOVER_STATES.
-    @VisibleForTesting
-    public static final BooleanFlag ENABLE_CURSOR_HOVER_STATES = getDebugFlag(243191650,
-            "ENABLE_CURSOR_HOVER_STATES", TEAMFOOD,
-            "Enables cursor hover states for certain elements.");
-    public static boolean enableCursorHoverStates() {
-        return ENABLE_CURSOR_HOVER_STATES.get() || Flags.enableCursorHoverStates();
-    }
-
     // TODO(Block 24): Clean up flags
     public static final BooleanFlag ENABLE_NEW_MIGRATION_LOGIC = getDebugFlag(270393455,
             "ENABLE_NEW_MIGRATION_LOGIC", ENABLED,

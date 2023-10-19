@@ -18,9 +18,9 @@ package com.android.launcher3.taskbar;
 import static android.content.pm.PackageManager.FEATURE_PC;
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
 
+import static com.android.launcher3.Flags.enableCursorHoverStates;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_PINNING;
-import static com.android.launcher3.config.FeatureFlags.enableCursorHoverStates;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
 import android.content.Context;

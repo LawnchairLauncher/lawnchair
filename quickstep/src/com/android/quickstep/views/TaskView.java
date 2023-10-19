@@ -23,9 +23,10 @@ import static android.widget.Toast.LENGTH_SHORT;
 import static com.android.app.animation.Interpolators.ACCELERATE_DECELERATE;
 import static com.android.app.animation.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.app.animation.Interpolators.LINEAR;
+import static com.android.launcher3.Flags.enableCursorHoverStates;
+import static com.android.launcher3.Flags.enableOverviewIconMenu;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
-import static com.android.launcher3.Flags.enableOverviewIconMenu;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_ICON_TAP_OR_LONGPRESS;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_LAUNCH_TAP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
@@ -115,8 +116,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 
-import kotlin.Unit;
-
 import java.lang.annotation.Retention;
 import java.util.Arrays;
 import java.util.Collections;
@@ -124,6 +123,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+
+import kotlin.Unit;
 
 /**
  * A task in the Recents view.
@@ -445,7 +446,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
         boolean keyboardFocusHighlightEnabled = FeatureFlags.ENABLE_KEYBOARD_QUICK_SWITCH.get()
                 || DesktopTaskView.DESKTOP_MODE_SUPPORTED;
-        boolean cursorHoverStatesEnabled = FeatureFlags.enableCursorHoverStates();
+        boolean cursorHoverStatesEnabled = enableCursorHoverStates();
 
         setWillNotDraw(!keyboardFocusHighlightEnabled && !cursorHoverStatesEnabled);
 
@@ -561,7 +562,7 @@ public class TaskView extends FrameLayout implements Reusable {
 
     @Override
     public boolean onInterceptHoverEvent(MotionEvent event) {
-        if (FeatureFlags.enableCursorHoverStates()) {
+        if (enableCursorHoverStates()) {
             // avoid triggering hover event on child elements which would cause HOVER_EXIT for this
             // task view
             return true;
