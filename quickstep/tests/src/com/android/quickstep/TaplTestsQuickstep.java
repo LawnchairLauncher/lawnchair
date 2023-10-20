@@ -356,6 +356,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @PortraitLandscape
     @TaskbarModeSwitch(mode = PERSISTENT)
     @PlatinumTest(focusArea = "launcher")
+    @ScreenRecord
     public void testOverviewForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
 
