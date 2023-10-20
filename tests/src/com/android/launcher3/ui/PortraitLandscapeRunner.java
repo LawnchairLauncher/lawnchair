@@ -1,7 +1,5 @@
 package com.android.launcher3.ui;
 
-import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_PRESUBMIT;
-
 import android.util.Log;
 import android.view.Surface;
 
@@ -38,7 +36,7 @@ public class PortraitLandscapeRunner implements TestRule {
                 // If running in presubmit, don't run in both orientations.
                 // It's important to keep presubmits fast even if we will occasionally miss
                 // regressions in presubmit.
-                || TestStabilityRule.getRunFlavor() == PLATFORM_PRESUBMIT) {
+                || TestStabilityRule.isPresubmit()) {
             return base;
         }
 
