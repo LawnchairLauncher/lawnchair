@@ -15,8 +15,13 @@
  */
 package com.android.launcher3.uioverrides.flags;
 
+import androidx.preference.PreferenceCategory;
+import androidx.preference.PreferenceFragmentCompat;
+
 /**
  * Place holder class for developer options.
  */
-public class DeveloperOptionsFragment {
+public class DeveloperOptionsUI {
+
+    public DeveloperOptionsUI(PreferenceFragmentCompat fragment, PreferenceCategory flags) { }
 }
