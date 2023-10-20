@@ -52,7 +52,7 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversas"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Anotações"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Informações úteis ao seu alcance"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"Para ver informações sem precisar abrir os apps, adicione widgets à sua tela inicial"</string>
+    <string name="widget_education_content" msgid="1731667670753497052">"Para acessar informações sem precisar abrir os apps, adicione widgets à sua tela inicial"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Toque para mudar as configurações do widget"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Ok"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Mudar as configurações do widget"</string>
