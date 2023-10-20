@@ -2595,12 +2595,13 @@ public class Launcher extends StatefulActivity<LauncherState>
             Trace.endAsyncSection(DISPLAY_WORKSPACE_TRACE_METHOD_NAME,
                     DISPLAY_WORKSPACE_TRACE_COOKIE);
         }
+        mStartupLatencyLogger
+                .logCardinality(workspaceItemCount)
+                .logEnd(isBindSync
+                        ? LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC
+                        : LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC);
         MAIN_EXECUTOR.getHandler().postAtFrontOfQueue(() -> {
             mStartupLatencyLogger
-                    .logCardinality(workspaceItemCount)
-                    .logEnd(isBindSync
-                            ? LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC
-                            : LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC)
                     .logEnd(LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION)
                     .log()
                     .reset();
