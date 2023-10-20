@@ -2,7 +2,7 @@ package com.android.quickstep.views;
 
 import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 
-import static com.android.launcher3.config.FeatureFlags.enableOverviewIconMenu;
+import static com.android.launcher3.Flags.enableOverviewIconMenu;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.quickstep.util.SplitScreenUtils.convertLauncherSplitBoundsToShell;
 

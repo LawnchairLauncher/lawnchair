@@ -67,7 +67,8 @@ public class WindowBounds {
             return false;
         }
         WindowBounds other = (WindowBounds) obj;
-        return other.bounds.equals(bounds) && other.insets.equals(insets);
+        return other.bounds.equals(bounds) && other.insets.equals(insets)
+                && other.rotationHint == rotationHint;
     }
 
     @Override

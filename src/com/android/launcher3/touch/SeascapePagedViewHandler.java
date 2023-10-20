@@ -22,7 +22,7 @@ import static android.view.Gravity.END;
 import static android.view.Gravity.RIGHT;
 import static android.view.Gravity.START;
 
-import static com.android.launcher3.config.FeatureFlags.enableOverviewIconMenu;
+import static com.android.launcher3.Flags.enableOverviewIconMenu;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_UNDEFINED;
