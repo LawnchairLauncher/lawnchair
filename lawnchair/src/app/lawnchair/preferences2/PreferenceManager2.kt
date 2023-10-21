@@ -162,6 +162,7 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val hiddenApps = preference(
         key = stringSetPreferencesKey(name = "hidden_apps"),
         defaultValue = setOf(),
+        onSet = { reloadHelper.recreate() },
     )
 
     val roundedWidgets = preference(
