@@ -145,6 +145,12 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             sourceRectHint = null;
         }
 
+        if (sourceRectHint != null && !appBounds.contains(sourceRectHint)) {
+            // This is a situation in which the source hint rect is outside the app bounds, so it is
+            // not a valid rectangle to use for cropping app surface
+            sourceRectHint = null;
+        }
+
         if (sourceRectHint == null) {
             mSourceRectHint.setEmpty();
             mSourceHintRectInsets = null;
