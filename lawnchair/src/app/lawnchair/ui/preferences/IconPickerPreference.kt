@@ -160,7 +160,7 @@ fun IconPickerGrid(
             .catch { loadFailed = true }
     }
     val categories by categoriesFlow.collectAsState(emptyList())
-    val filteredCategories by remember {
+    val filteredCategories by remember(searchQuery) {
         derivedStateOf {
             categories.asSequence()
                 .map { it.filter(searchQuery) }
