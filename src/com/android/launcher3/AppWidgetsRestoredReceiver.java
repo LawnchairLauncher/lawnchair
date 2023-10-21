@@ -1,17 +1,20 @@
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherPrefs.APP_WIDGET_IDS;
+import static com.android.launcher3.LauncherPrefs.OLD_APP_WIDGET_IDS;
+
 import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.android.launcher3.provider.RestoreDbTask;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.widget.LauncherWidgetHolder;
 
 public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
 
-    private static final String TAG = "AWRestoredReceiver";
+    private static final String TAG = "AppWidgetsRestoredReceiver";
 
     @Override
     public void onReceive(final Context context, Intent intent) {
@@ -25,7 +28,9 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
             final int[] oldIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_OLD_IDS);
             final int[] newIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
             if (oldIds != null && newIds != null && oldIds.length == newIds.length) {
-                RestoreDbTask.setRestoredAppWidgetIds(context, oldIds, newIds);
+                LauncherPrefs.get(context).putSync(
+                        OLD_APP_WIDGET_IDS.to(IntArray.wrap(oldIds).toConcatString()),
+                        APP_WIDGET_IDS.to(IntArray.wrap(newIds).toConcatString()));
             } else {
                 Log.e(TAG, "Invalid host restored received");
             }
