@@ -2600,21 +2600,20 @@ public class Launcher extends StatefulActivity<LauncherState>
                 .logEnd(isBindSync
                         ? LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC
                         : LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC);
-        // In the first rootview's onDraw after onInitialBindComplete(), log end of startup latency.
+        MAIN_EXECUTOR.getHandler().postAtFrontOfQueue(() -> {
+            mStartupLatencyLogger
+                    .logEnd(LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION)
+                    .log()
+                    .reset();
+            if (mIsColdStartupAfterReboot) {
+                Trace.endAsyncSection(COLD_STARTUP_TRACE_METHOD_NAME,
+                        COLD_STARTUP_TRACE_COOKIE);
+            }
+        });
         getRootView().getViewTreeObserver().addOnDrawListener(
                 new ViewTreeObserver.OnDrawListener() {
-
                     @Override
                     public void onDraw() {
-                        mStartupLatencyLogger
-                                .logEnd(LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION)
-                                .log()
-                                .reset();
-                        if (mIsColdStartupAfterReboot) {
-                            Trace.endAsyncSection(COLD_STARTUP_TRACE_METHOD_NAME,
-                                    COLD_STARTUP_TRACE_COOKIE);
-                        }
-
                         MAIN_EXECUTOR.getHandler().postAtFrontOfQueue(
                                 () -> getRootView().getViewTreeObserver()
                                         .removeOnDrawListener(this));

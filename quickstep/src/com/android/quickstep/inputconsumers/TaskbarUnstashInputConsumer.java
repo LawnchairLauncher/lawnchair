@@ -20,9 +20,9 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_UP;
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 
+import static com.android.launcher3.Flags.enableCursorHoverStates;
 import static com.android.launcher3.MotionEventsUtils.isTrackpadMotionEvent;
 import static com.android.launcher3.Utilities.squaredHypot;
-import static com.android.launcher3.config.FeatureFlags.enableCursorHoverStates;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_TOUCHING;
 
 import android.content.Context;

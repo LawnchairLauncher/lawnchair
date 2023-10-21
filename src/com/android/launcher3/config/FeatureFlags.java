@@ -262,6 +262,10 @@ public final class FeatureFlags {
             getReleaseFlag(282993230, "ENABLE_LONG_PRESS_NAV_HANDLE", TEAMFOOD,
                     "Enables long pressing on the bottom bar nav handle to trigger events.");
 
+    public static final BooleanFlag ENABLE_SEARCH_HAPTIC_HINT =
+            getReleaseFlag(303023676, "ENABLE_SEARCH_HAPTIC_HINT", TEAMFOOD,
+                    "Enables haptic hint when long pressing on the bottom bar nav handle.");
+
     // TODO(Block 17): Clean up flags
     public static final BooleanFlag ENABLE_TASKBAR_PINNING = getDebugFlag(270396583,
             "ENABLE_TASKBAR_PINNING", DISABLED,
@@ -318,15 +322,6 @@ public final class FeatureFlags {
             "Enables starting the unfold animation preemptively when unfolding, without"
                     + "waiting for SystemUI and then merging the SystemUI progress whenever we "
                     + "start receiving the events");
-
-    // Aconfig migration complete for ENABLE_CURSOR_HOVER_STATES.
-    @VisibleForTesting
-    public static final BooleanFlag ENABLE_CURSOR_HOVER_STATES = getDebugFlag(243191650,
-            "ENABLE_CURSOR_HOVER_STATES", TEAMFOOD,
-            "Enables cursor hover states for certain elements.");
-    public static boolean enableCursorHoverStates() {
-        return ENABLE_CURSOR_HOVER_STATES.get() || Flags.enableCursorHoverStates();
-    }
 
     // TODO(Block 24): Clean up flags
     public static final BooleanFlag ENABLE_NEW_MIGRATION_LOGIC = getDebugFlag(270393455,

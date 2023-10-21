@@ -89,7 +89,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Base class for all instrumentation tests providing various utility methods.
+ * Base class for all instrumentation tests providing various utility methods. RUN 4
  */
 public abstract class AbstractLauncherUiTest {
 
@@ -252,6 +252,12 @@ public abstract class AbstractLauncherUiTest {
     public void setUp() throws Exception {
         mLauncher.onTestStart();
 
+        if (TestStabilityRule.isPresubmit()) {
+            aggressivelyUnlockSysUi();
+        } else {
+            verifyKeyguardInvisible();
+        }
+
         final String launcherPackageName = mDevice.getLauncherPackageName();
         try {
             final Context context = InstrumentationRegistry.getContext();
@@ -285,7 +291,27 @@ public abstract class AbstractLauncherUiTest {
         verifyKeyguardInvisible();
     }
 
-    /** Fail if lock screen is present */
+    private boolean hasSystemUiObject(String resId) {
+        return mDevice.hasObject(By.res(SYSTEMUI_PACKAGE, resId));
+    }
+
+    // Seeing if this will decrease: b/303755862
+    void aggressivelyUnlockSysUi() {
+        for (int i = 0; i < 10 && hasSystemUiObject("keyguard_status_view"); ++i) {
+            Log.d(TAG, "Before attempting to unlock the phone");
+            try {
+                mDevice.executeShellCommand("input keyevent 82");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            mDevice.waitForIdle();
+        }
+        Assert.assertTrue("Keyguard still visible",
+                TestHelpers.wait(
+                        Until.gone(By.res(SYSTEMUI_PACKAGE, "keyguard_status_view")), 60000));
+        Log.d(TAG, "Keyguard is not visible");
+    }
+
     public static void verifyKeyguardInvisible() {
         final boolean keyguardAlreadyVisible = sSeenKeyguard;
 

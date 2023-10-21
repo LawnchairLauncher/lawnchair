@@ -17,8 +17,9 @@
 package com.android.launcher3;
 
 import static android.text.Layout.Alignment.ALIGN_NORMAL;
+
+import static com.android.launcher3.Flags.enableCursorHoverStates;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ICON_LABEL_AUTO_SCALING;
-import static com.android.launcher3.config.FeatureFlags.enableCursorHoverStates;
 import static com.android.launcher3.graphics.PreloadIconDrawable.newPendingIcon;
 import static com.android.launcher3.icons.BitmapInfo.FLAG_NO_BADGE;
 import static com.android.launcher3.icons.BitmapInfo.FLAG_THEMED;

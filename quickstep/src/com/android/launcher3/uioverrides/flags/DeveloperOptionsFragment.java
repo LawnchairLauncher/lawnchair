@@ -24,6 +24,10 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.LauncherPrefs.ALL_APPS_OVERVIEW_THRESHOLD;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_START_SCALE_PERCENT;
 import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE;
 import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_TIMEOUT_MS;
 import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY;
@@ -118,9 +122,7 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         if (FeatureFlags.ENABLE_ALL_APPS_FROM_OVERVIEW.get()) {
             addAllAppsFromOverviewCatergory();
         }
-        if (FeatureFlags.CUSTOM_LPNH_THRESHOLDS.get()) {
-            addCustomLpnhCatergory();
-        }
+        addCustomLpnhCategory();
 
         if (getActivity() != null) {
             getActivity().setTitle("Developer Options");
@@ -423,13 +425,25 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
                 105, 500, 100, ALL_APPS_OVERVIEW_THRESHOLD));
     }
 
-    private void addCustomLpnhCatergory() {
+    private void addCustomLpnhCategory() {
         PreferenceCategory category = newCategory("Long Press Nav Handle Config");
-        category.addPreference(createSeekBarPreference("Slop multiplier (applied to edge slop, "
-                        + "which is generally already 50% higher than touch slop)",
-                25, 200, 100, LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE));
-        category.addPreference(createSeekBarPreference("Trigger milliseconds",
-                100, 500, 1, LONG_PRESS_NAV_HANDLE_TIMEOUT_MS));
+        if (FeatureFlags.CUSTOM_LPNH_THRESHOLDS.get()) {
+            category.addPreference(createSeekBarPreference("Slop multiplier (applied to edge slop, "
+                            + "which is generally already 50% higher than touch slop)",
+                    25, 200, 100, LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE));
+            category.addPreference(createSeekBarPreference("Trigger milliseconds",
+                    100, 500, 1, LONG_PRESS_NAV_HANDLE_TIMEOUT_MS));
+        }
+        if (FeatureFlags.ENABLE_SEARCH_HAPTIC_HINT.get()) {
+            category.addPreference(createSeekBarPreference("Haptic hint start scale",
+                    0, 100, 100, LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_START_SCALE_PERCENT));
+            category.addPreference(createSeekBarPreference("Haptic hint end scale",
+                    0, 100, 100, LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT));
+            category.addPreference(createSeekBarPreference("Haptic hint scale exponent",
+                    1, 5, 1, LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT));
+            category.addPreference(createSeekBarPreference("Haptic hint iterations (12 ms each)",
+                    0, 100, 1, LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS));
+        }
     }
 
     /**
