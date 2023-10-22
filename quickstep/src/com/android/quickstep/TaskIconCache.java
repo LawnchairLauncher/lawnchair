@@ -40,6 +40,7 @@ import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.icons.BaseIconFactory.IconOptions;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconProvider;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
@@ -233,7 +234,9 @@ public class TaskIconCache implements DisplayInfoChangeListener {
             } else {
                 try (BaseIconFactory li = getIconFactory()) {
                     BitmapInfo info = mDefaultIconBase.withFlags(
-                            li.getBitmapFlagOp(new IconOptions().setUser(UserHandle.of(userId))));
+                            li.getBitmapFlagOp(new IconOptions()
+                                    .setUser(UserCache.INSTANCE.get(mContext)
+                                            .getUserInfo(UserHandle.of(userId)))));
                     mDefaultIcons.put(userId, info);
                     return info.newIcon(mContext);
                 }
@@ -249,7 +252,9 @@ public class TaskIconCache implements DisplayInfoChangeListener {
 
             // User version code O, so that the icon is always wrapped in an adaptive icon container
             return bif.createBadgedIconBitmap(drawable,
-                    new IconOptions().setUser(UserHandle.of(userId))
+                    new IconOptions()
+                            .setUser(UserCache.INSTANCE.get(mContext)
+                                    .getUserInfo(UserHandle.of(userId)))
                             .setInstantApp(isInstantApp)
                             .setExtractedColor(0));
         }
