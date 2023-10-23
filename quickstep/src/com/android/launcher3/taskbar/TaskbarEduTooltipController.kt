@@ -31,6 +31,7 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_EDU_OPEN
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
+import com.android.launcher3.taskbar.TaskbarManager.isPhoneMode
 import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.OnboardingPrefs.TASKBAR_EDU_TOOLTIP_STEP
 import com.android.quickstep.util.LottieAnimationColorUtils
@@ -57,7 +58,7 @@ class TaskbarEduTooltipController(val activityContext: TaskbarActivityContext) :
     LoggableTaskbarController {
 
     private val isTooltipEnabled: Boolean
-        get() = !Utilities.isRunningInTestHarness()
+        get() = !Utilities.isRunningInTestHarness() && !isPhoneMode(activityContext.deviceProfile)
     private val isOpen: Boolean
         get() = tooltip?.isOpen ?: false
     val isBeforeTooltipFeaturesStep: Boolean
