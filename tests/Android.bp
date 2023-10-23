@@ -45,7 +45,6 @@ filegroup {
       "src/com/android/launcher3/allapps/TaplOpenCloseAllApps.java",
       "src/com/android/launcher3/allapps/TaplTestsAllAppsIconsWorking.java",
       "src/com/android/launcher3/appiconmenu/TaplAppIconMenuTest.java",
-      "src/com/android/launcher3/appiconmenu/TaplOverviewIconTest.java",
       "src/com/android/launcher3/dragging/TaplDragTest.java",
       "src/com/android/launcher3/dragging/TaplUninstallRemove.java",
       "src/com/android/launcher3/ui/AbstractLauncherUiTest.java",

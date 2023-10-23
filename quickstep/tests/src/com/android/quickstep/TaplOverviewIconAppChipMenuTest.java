@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.appiconmenu;
+package com.android.quickstep;
 
 import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
