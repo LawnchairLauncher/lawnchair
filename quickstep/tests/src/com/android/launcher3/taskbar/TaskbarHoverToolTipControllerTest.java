@@ -22,12 +22,10 @@ import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLA
 import static com.google.common.truth.Truth.assertThat;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -125,7 +123,6 @@ public class TaskbarHoverToolTipControllerTest extends TaskbarBaseTestCase {
     public void onHover_hoverEnterIcon_revealToolTip() {
         when(mMotionEvent.getAction()).thenReturn(MotionEvent.ACTION_HOVER_ENTER);
         when(mMotionEvent.getActionMasked()).thenReturn(MotionEvent.ACTION_HOVER_ENTER);
-        when(taskbarActivityContext.isTaskbarWindowFullscreen()).thenReturn(true);
 
         boolean hoverHandled =
                 mTaskbarHoverToolTipController.onHover(mHoverBubbleTextView, mMotionEvent);
@@ -134,23 +131,6 @@ public class TaskbarHoverToolTipControllerTest extends TaskbarBaseTestCase {
         assertThat(hoverHandled).isTrue();
         verify(taskbarActivityContext).setAutohideSuspendFlag(FLAG_AUTOHIDE_SUSPEND_HOVERING_ICONS,
                 true);
-        verify(taskbarActivityContext, never()).setTaskbarWindowFullscreen(anyBoolean());
-    }
-
-    @Test
-    public void onHover_hoverEnterIcon_setFullScreenFirstHover() {
-        when(mMotionEvent.getAction()).thenReturn(MotionEvent.ACTION_HOVER_ENTER);
-        when(mMotionEvent.getActionMasked()).thenReturn(MotionEvent.ACTION_HOVER_ENTER);
-        when(taskbarActivityContext.isTaskbarWindowFullscreen()).thenReturn(false);
-
-        boolean hoverHandled =
-                mTaskbarHoverToolTipController.onHover(mHoverBubbleTextView, mMotionEvent);
-        waitForIdleSync();
-
-        assertThat(hoverHandled).isFalse();
-        verify(taskbarActivityContext, never()).setAutohideSuspendFlag(
-                FLAG_AUTOHIDE_SUSPEND_HOVERING_ICONS, true);
-        verify(taskbarActivityContext).setTaskbarWindowFullscreen(true);
     }
 
     @Test
@@ -171,7 +151,6 @@ public class TaskbarHoverToolTipControllerTest extends TaskbarBaseTestCase {
     public void onHover_hoverEnterFolderIcon_revealToolTip() {
         when(mMotionEvent.getAction()).thenReturn(MotionEvent.ACTION_HOVER_ENTER);
         when(mMotionEvent.getActionMasked()).thenReturn(MotionEvent.ACTION_HOVER_ENTER);
-        when(taskbarActivityContext.isTaskbarWindowFullscreen()).thenReturn(true);
 
         boolean hoverHandled =
                 mTaskbarHoverToolTipController.onHover(mHoverFolderIcon, mMotionEvent);
@@ -180,7 +159,6 @@ public class TaskbarHoverToolTipControllerTest extends TaskbarBaseTestCase {
         assertThat(hoverHandled).isTrue();
         verify(taskbarActivityContext).setAutohideSuspendFlag(FLAG_AUTOHIDE_SUSPEND_HOVERING_ICONS,
                 true);
-        verify(taskbarActivityContext, never()).setTaskbarWindowFullscreen(anyBoolean());
     }
 
     @Test
