@@ -29,6 +29,35 @@ filegroup {
     ],
 }
 
+// Source code used for screenshot tests
+filegroup {
+    name: "launcher-image-tests-src",
+    srcs: [
+      "src/com/android/launcher3/celllayout/TestWorkspaceBuilder.java",
+      "src/com/android/launcher3/celllayout/CellLayoutBoard.java",
+      "src/com/android/launcher3/celllayout/FavoriteItemsTransaction.java",
+      "src/com/android/launcher3/ui/AbstractLauncherUiTest.java",
+      "src/com/android/launcher3/ui/PortraitLandscapeRunner.java",
+      "src/com/android/launcher3/ui/TestViewHelpers.java",
+      "src/com/android/launcher3/util/LauncherLayoutBuilder.java",
+      "src/com/android/launcher3/util/TestConstants.java",
+      "src/com/android/launcher3/util/TestUtil.java",
+      "src/com/android/launcher3/util/Wait.java",
+      "src/com/android/launcher3/util/WidgetUtils.java",
+      "src/com/android/launcher3/util/rule/FailureWatcher.java",
+      "src/com/android/launcher3/util/rule/ViewCaptureRule.kt",
+      "src/com/android/launcher3/util/viewcapture_analysis/*.java",
+      "src/com/android/launcher3/util/rule/SamplerRule.java",
+      "src/com/android/launcher3/util/rule/ScreenRecordRule.java",
+      "src/com/android/launcher3/util/rule/ShellCommandRule.java",
+      "src/com/android/launcher3/util/rule/TestIsolationRule.java",
+      "src/com/android/launcher3/util/rule/TestStabilityRule.java",
+      "src/com/android/launcher3/util/ModelTestExtensions.kt",
+      "src/com/android/launcher3/testcomponent/*.java",
+      "src/com/android/launcher3/testcomponent/*.kt",
+    ],
+}
+
 // Source code used for non-quickstep tests
 filegroup {
     name: "launcher-non-quickstep-tests-src",
