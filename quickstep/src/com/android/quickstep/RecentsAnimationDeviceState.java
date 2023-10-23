@@ -19,6 +19,7 @@ import static android.app.WindowConfiguration.ACTIVITY_TYPE_UNDEFINED;
 import static android.app.WindowConfiguration.WINDOWING_MODE_PINNED;
 import static android.view.Display.DEFAULT_DISPLAY;
 
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE;
 import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
@@ -60,6 +61,8 @@ import android.view.ViewConfiguration;
 import androidx.annotation.BinderThread;
 import androidx.annotation.NonNull;
 
+import com.android.launcher3.LauncherPrefs;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.DisplayInfoChangeListener;
 import com.android.launcher3.util.DisplayController.Info;
@@ -86,8 +89,8 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     static final String SUPPORT_ONE_HANDED_MODE = "ro.support_one_handed_mode";
 
     // TODO: Move to quickstep contract
-    private static final float QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON = 9;
-    private static final float QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL = 2;
+    private static final float QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON = 3f;
+    private static final float QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL = 1.414f;
 
     private final Context mContext;
     private final DisplayController mDisplayController;
@@ -546,15 +549,31 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
     /**
      * Returns the touch slop for {@link InputConsumer}s to compare against before pilfering
-     * pointers. Note that this is squared because it expects to be compared against
-     * {@link com.android.launcher3.Utilities#squaredHypot} (to avoid square root on each event).
+     * pointers.
      */
-    public float getSquaredTouchSlop() {
+    public float getTouchSlop() {
         float slopMultiplier = isFullyGesturalNavMode()
                 ? QUICKSTEP_TOUCH_SLOP_RATIO_GESTURAL
                 : QUICKSTEP_TOUCH_SLOP_RATIO_TWO_BUTTON;
         float touchSlop = ViewConfiguration.get(mContext).getScaledTouchSlop();
-        return slopMultiplier * touchSlop * touchSlop;
+
+        if (FeatureFlags.CUSTOM_LPNH_THRESHOLDS.get()) {
+            float customSlopMultiplier =
+                    LauncherPrefs.get(mContext).get(LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE) / 100f;
+            return customSlopMultiplier * slopMultiplier * touchSlop;
+        } else {
+            return slopMultiplier * touchSlop;
+        }
+    }
+
+    /**
+     * Returns the squared touch slop for {@link InputConsumer}s to compare against before pilfering
+     * pointers. Note that this is squared because it expects to be compared against
+     * {@link com.android.launcher3.Utilities#squaredHypot} (to avoid square root on each event).
+     */
+    public float getSquaredTouchSlop() {
+        float touchSlop = getTouchSlop();
+        return touchSlop * touchSlop;
     }
 
     public String getSystemUiStateString() {
