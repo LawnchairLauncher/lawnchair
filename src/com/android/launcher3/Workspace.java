@@ -349,7 +349,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             setPageSpacing(Math.max(maxInsets, maxPadding));
         }
 
-        updateCellLayoutPadding();
+        updateCellLayoutMeasures();
         updateWorkspaceWidgetsSizes();
         setPageIndicatorInset();
     }
@@ -373,10 +373,12 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         mPageIndicator.setLayoutParams(lp);
     }
 
-    private void updateCellLayoutPadding() {
+    private void updateCellLayoutMeasures() {
         Rect padding = mLauncher.getDeviceProfile().cellLayoutPaddingPx;
-        mWorkspaceScreens.forEach(
-                s -> s.setPadding(padding.left, padding.top, padding.right, padding.bottom));
+        mWorkspaceScreens.forEach(cellLayout -> {
+            cellLayout.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+            cellLayout.setSpaceBetweenCellLayoutsPx(getPageSpacing() / 4);
+        });
     }
 
     private void updateWorkspaceWidgetsSizes() {
@@ -690,7 +692,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                 mLauncher.getStateManager().getState(), newScreen, insertIndex);
 
         updatePageScrollValues();
-        updateCellLayoutPadding();
+        updateCellLayoutMeasures();
         return newScreen;
     }
 

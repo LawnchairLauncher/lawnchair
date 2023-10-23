@@ -34,6 +34,7 @@ import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.LauncherState.WORKSPACE_PAGE_INDICATOR;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
+import static com.android.launcher3.config.FeatureFlags.FOLDABLE_SINGLE_PAGE;
 import static com.android.launcher3.graphics.Scrim.SCRIM_PROGRESS;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_FADE;
 import static com.android.launcher3.states.StateAnimationConfig.ANIM_HOTSEAT_SCALE;
@@ -172,9 +173,13 @@ public class WorkspaceStateTransitionAnimation {
                 scaleAndTranslation.translationY, translationInterpolator);
         PageTranslationProvider pageTranslationProvider = state.getWorkspacePageTranslationProvider(
                 mLauncher);
-        for (int i = 0; i < childCount; i++) {
-            applyPageTranslation((CellLayout) mWorkspace.getChildAt(i), i, pageTranslationProvider,
-                    propertySetter, config);
+
+        if (!FOLDABLE_SINGLE_PAGE.get()) {
+            for (int i = 0; i < childCount; i++) {
+                applyPageTranslation((CellLayout) mWorkspace.getChildAt(i), i,
+                        pageTranslationProvider,
+                        propertySetter, config);
+            }
         }
 
         Interpolator hotseatTranslationInterpolator = config.getInterpolator(
