@@ -15,9 +15,6 @@
  */
 package com.android.launcher3.uioverrides.flags;
 
-import static android.content.Intent.ACTION_PACKAGE_ADDED;
-import static android.content.Intent.ACTION_PACKAGE_CHANGED;
-import static android.content.Intent.ACTION_PACKAGE_REMOVED;
 import static android.content.pm.PackageManager.GET_RESOLVED_FILTER;
 import static android.content.pm.PackageManager.MATCH_DISABLED_COMPONENTS;
 import static android.view.View.GONE;
@@ -30,7 +27,7 @@ import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_H
 import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_START_SCALE_PERCENT;
 import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE;
 import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_TIMEOUT_MS;
-import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY;
+import static com.android.launcher3.settings.SettingsActivity.EXTRA_FRAGMENT_HIGHLIGHT_KEY;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.PLUGIN_CHANGED;
 import static com.android.launcher3.uioverrides.plugins.PluginManagerWrapper.pluginEnabledKey;
 import static com.android.launcher3.util.OnboardingPrefs.ALL_APPS_VISITED_COUNT;
@@ -40,7 +37,6 @@ import static com.android.launcher3.util.OnboardingPrefs.HOTSEAT_DISCOVERY_TIP_C
 import static com.android.launcher3.util.OnboardingPrefs.HOTSEAT_LONGPRESS_TIP_SEEN;
 import static com.android.launcher3.util.OnboardingPrefs.TASKBAR_EDU_TOOLTIP_STEP;
 
-import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -48,23 +44,17 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
 import android.provider.Settings;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.ArrayMap;
 import android.util.Pair;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceDataStore;
@@ -81,7 +71,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.secondarydisplay.SecondaryDisplayLauncher;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
-import com.android.launcher3.util.SimpleBroadcastReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,30 +81,32 @@ import java.util.stream.Collectors;
  * Dev-build only UI allowing developers to toggle flag settings and plugins.
  * See {@link FeatureFlags}.
  */
-@TargetApi(Build.VERSION_CODES.O)
-public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
+public class DeveloperOptionsUI {
 
-    private static final String ACTION_PLUGIN_SETTINGS = "com.android.systemui.action.PLUGIN_SETTINGS";
+    private static final String ACTION_PLUGIN_SETTINGS =
+            "com.android.systemui.action.PLUGIN_SETTINGS";
     private static final String PLUGIN_PERMISSION = "com.android.systemui.permission.PLUGIN";
 
-    private final SimpleBroadcastReceiver mPluginReceiver =
-            new SimpleBroadcastReceiver(i -> loadPluginPrefs());
-
-    private PreferenceScreen mPreferenceScreen;
+    private final PreferenceFragmentCompat mFragment;
+    private final PreferenceScreen mPreferenceScreen;
 
     private PreferenceCategory mPluginsCategory;
-    private FlagTogglerPrefUi mFlagTogglerPrefUi;
 
-    @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        mPluginReceiver.registerPkgActions(getContext(), null,
-                ACTION_PACKAGE_ADDED, ACTION_PACKAGE_CHANGED, ACTION_PACKAGE_REMOVED);
-        mPluginReceiver.register(getContext(), Intent.ACTION_USER_UNLOCKED);
+    public DeveloperOptionsUI(PreferenceFragmentCompat fragment, PreferenceCategory flags) {
+        mFragment = fragment;
+        mPreferenceScreen = fragment.getPreferenceScreen();
 
-        mPreferenceScreen = getPreferenceManager().createPreferenceScreen(getContext());
-        setPreferenceScreen(mPreferenceScreen);
+        // Add search bar
+        View listView = mFragment.getListView();
+        ViewGroup parent = (ViewGroup) listView.getParent();
+        View topBar = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.developer_options_top_bar, parent, false);
+        parent.addView(topBar, parent.indexOfChild(listView));
+        initSearch(topBar.findViewById(R.id.filter_box));
 
-        initFlags();
+        new FlagTogglerPrefUi(mFragment.requireActivity(), topBar.findViewById(R.id.flag_apply_btn))
+                .applyTo(flags);
+
         loadPluginPrefs();
         maybeAddSandboxCategory();
         addOnboardingPrefsCatergory();
@@ -123,10 +114,6 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
             addAllAppsFromOverviewCatergory();
         }
         addCustomLpnhCategory();
-
-        if (getActivity() != null) {
-            getActivity().setTitle("Developer Options");
-        }
     }
 
     private void filterPreferences(String query, PreferenceGroup pg) {
@@ -149,21 +136,13 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         pg.setVisible(hidden != count);
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        EditText filterBox = view.findViewById(R.id.filter_box);
-        filterBox.setVisibility(VISIBLE);
+    private void initSearch(EditText filterBox) {
         filterBox.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -172,85 +151,33 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
             }
         });
 
-        if (getArguments() != null) {
-            String filter = getArguments().getString(EXTRA_FRAGMENT_ARG_KEY);
+        if (mFragment.getArguments() != null) {
+            String filter = mFragment.getArguments().getString(EXTRA_FRAGMENT_HIGHLIGHT_KEY);
             // Normally EXTRA_FRAGMENT_ARG_KEY is used to highlight the preference with the given
             // key. This is a slight variation where we instead filter by the human-readable titles.
             if (filter != null) {
                 filterBox.setText(filter);
             }
         }
-
-        View listView = getListView();
-        final int bottomPadding = listView.getPaddingBottom();
-        listView.setOnApplyWindowInsetsListener((v, insets) -> {
-            v.setPadding(
-                    v.getPaddingLeft(),
-                    v.getPaddingTop(),
-                    v.getPaddingRight(),
-                    bottomPadding + insets.getSystemWindowInsetBottom());
-            return insets.consumeSystemWindowInsets();
-        });
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        mPluginReceiver.unregisterReceiverSafely(getContext());
     }
 
     private PreferenceCategory newCategory(String title) {
-        return newCategory(title, null);
-    }
-
-    private PreferenceCategory newCategory(String title, @Nullable String summary) {
         PreferenceCategory category = new PreferenceCategory(getContext());
         category.setOrder(Preference.DEFAULT_ORDER);
         category.setTitle(title);
-        if (!TextUtils.isEmpty(summary)) {
-            category.setSummary(summary);
-        }
         mPreferenceScreen.addPreference(category);
         return category;
     }
 
-    private void initFlags() {
-        if (!FeatureFlags.showFlagTogglerUi(getContext())) {
-            return;
-        }
-
-        mFlagTogglerPrefUi = new FlagTogglerPrefUi(this);
-        mFlagTogglerPrefUi.applyTo(newCategory("Feature flags", "Long press to reset"));
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (mFlagTogglerPrefUi != null) {
-            mFlagTogglerPrefUi.onCreateOptionsMenu(menu);
-        }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (mFlagTogglerPrefUi != null) {
-            mFlagTogglerPrefUi.onOptionsItemSelected(item);
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onStop() {
-        if (mFlagTogglerPrefUi != null) {
-            mFlagTogglerPrefUi.onStop();
-        }
-        super.onStop();
+    private Context getContext() {
+        return mFragment.requireContext();
     }
 
     private void loadPluginPrefs() {
         if (mPluginsCategory != null) {
             mPreferenceScreen.removePreference(mPluginsCategory);
         }
-        if (!PluginManagerWrapper.hasPlugins(getActivity())) {
+        if (!PluginManagerWrapper.hasPlugins(getContext())) {
             mPluginsCategory = null;
             return;
         }
@@ -323,68 +250,57 @@ public class DeveloperOptionsFragment extends PreferenceFragmentCompat {
         launchTutorialStepMenuPreference.setKey("launchTutorialStepMenu");
         launchTutorialStepMenuPreference.setTitle("Launch Gesture Tutorial Steps menu");
         launchTutorialStepMenuPreference.setSummary("Select a gesture tutorial step.");
-        launchTutorialStepMenuPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(launchSandboxIntent.putExtra("use_tutorial_menu", true));
-            return true;
-        });
+        launchTutorialStepMenuPreference.setIntent(
+                new Intent(launchSandboxIntent).putExtra("use_tutorial_menu", true));
+
         sandboxCategory.addPreference(launchTutorialStepMenuPreference);
         Preference launchOnboardingTutorialPreference = new Preference(context);
         launchOnboardingTutorialPreference.setKey("launchOnboardingTutorial");
         launchOnboardingTutorialPreference.setTitle("Launch Onboarding Tutorial");
         launchOnboardingTutorialPreference.setSummary("Learn the basic navigation gestures.");
-        launchOnboardingTutorialPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(launchSandboxIntent
-                    .putExtra("use_tutorial_menu", false)
-                    .putExtra("tutorial_steps",
-                            new String[] {
-                                    "HOME_NAVIGATION",
-                                    "BACK_NAVIGATION",
-                                    "OVERVIEW_NAVIGATION"}));
-            return true;
-        });
+        launchTutorialStepMenuPreference.setIntent(new Intent(launchSandboxIntent)
+                .putExtra("use_tutorial_menu", false)
+                .putExtra("tutorial_steps",
+                        new String[] {
+                                "HOME_NAVIGATION",
+                                "BACK_NAVIGATION",
+                                "OVERVIEW_NAVIGATION"}));
+
         sandboxCategory.addPreference(launchOnboardingTutorialPreference);
         Preference launchBackTutorialPreference = new Preference(context);
         launchBackTutorialPreference.setKey("launchBackTutorial");
         launchBackTutorialPreference.setTitle("Launch Back Tutorial");
         launchBackTutorialPreference.setSummary("Learn how to use the Back gesture");
-        launchBackTutorialPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(launchSandboxIntent
+        launchBackTutorialPreference.setIntent(new Intent(launchSandboxIntent)
                     .putExtra("use_tutorial_menu", false)
                     .putExtra("tutorial_steps", new String[] {"BACK_NAVIGATION"}));
-            return true;
-        });
+
         sandboxCategory.addPreference(launchBackTutorialPreference);
         Preference launchHomeTutorialPreference = new Preference(context);
         launchHomeTutorialPreference.setKey("launchHomeTutorial");
         launchHomeTutorialPreference.setTitle("Launch Home Tutorial");
         launchHomeTutorialPreference.setSummary("Learn how to use the Home gesture");
-        launchHomeTutorialPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(launchSandboxIntent
+        launchHomeTutorialPreference.setIntent(new Intent(launchSandboxIntent)
                     .putExtra("use_tutorial_menu", false)
                     .putExtra("tutorial_steps", new String[] {"HOME_NAVIGATION"}));
-            return true;
-        });
+
         sandboxCategory.addPreference(launchHomeTutorialPreference);
         Preference launchOverviewTutorialPreference = new Preference(context);
         launchOverviewTutorialPreference.setKey("launchOverviewTutorial");
         launchOverviewTutorialPreference.setTitle("Launch Overview Tutorial");
         launchOverviewTutorialPreference.setSummary("Learn how to use the Overview gesture");
-        launchOverviewTutorialPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(launchSandboxIntent
+        launchOverviewTutorialPreference.setIntent(new Intent(launchSandboxIntent)
                     .putExtra("use_tutorial_menu", false)
                     .putExtra("tutorial_steps", new String[] {"OVERVIEW_NAVIGATION"}));
-            return true;
-        });
+
         sandboxCategory.addPreference(launchOverviewTutorialPreference);
         Preference launchSecondaryDisplayPreference = new Preference(context);
         launchSecondaryDisplayPreference.setKey("launchSecondaryDisplay");
         launchSecondaryDisplayPreference.setTitle("Launch Secondary Display");
         launchSecondaryDisplayPreference.setSummary("Launch secondary display activity");
-        launchSecondaryDisplayPreference.setOnPreferenceClickListener(preference -> {
-            startActivity(new Intent(context, SecondaryDisplayLauncher.class));
-            return true;
-        });
-        sandboxCategory.addPreference(launchSecondaryDisplayPreference);
+        launchSecondaryDisplayPreference.setIntent(
+                new Intent(context, SecondaryDisplayLauncher.class));
+
     }
 
     private void addOnboardingPrefsCatergory() {
