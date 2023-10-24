@@ -1,6 +1,7 @@
 package app.lawnchair.smartspace.model
 
 import android.content.Context
+import android.os.Build
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import app.lawnchair.util.isPackageInstalledAndEnabled
@@ -15,6 +16,7 @@ sealed class SmartspaceMode(
         fun fromString(value: String): SmartspaceMode = when (value) {
             "google" -> GoogleSmartspace
             "google_search" -> GoogleSearchSmartspace
+            "smartspacer" -> Smartspacer
             else -> LawnchairSmartspace
         }
 
@@ -25,6 +27,7 @@ sealed class SmartspaceMode(
             LawnchairSmartspace,
             GoogleSmartspace,
             GoogleSearchSmartspace,
+            Smartspacer,
         )
     }
 
@@ -58,4 +61,17 @@ object GoogleSmartspace : SmartspaceMode(
 
     override fun isAvailable(context: Context): Boolean =
         context.packageManager.isPackageInstalledAndEnabled("com.google.android.googlequicksearchbox")
+}
+
+object Smartspacer : SmartspaceMode(
+    nameResourceId = R.string.smartspace_mode_smartspacer,
+    layoutResourceId = R.layout.smartspace_smartspacer,
+) {
+    override fun toString(): String = "smartspacer"
+
+    override fun isAvailable(context: Context): Boolean {
+        //Smartspacer requires Android 10+
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+            context.packageManager.isPackageInstalledAndEnabled("com.kieronquinn.app.smartspacer")
+    }
 }
