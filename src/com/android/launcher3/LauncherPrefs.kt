@@ -20,11 +20,12 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.util.Log
-import android.view.ViewConfiguration
 import androidx.annotation.VisibleForTesting
 import com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN
 import com.android.launcher3.LauncherFiles.DEVICE_PREFERENCES_KEY
 import com.android.launcher3.LauncherFiles.SHARED_PREFERENCES_KEY
+import com.android.launcher3.config.FeatureFlags.LPNH_SLOP_PERCENTAGE
+import com.android.launcher3.config.FeatureFlags.LPNH_TIMEOUT_MS
 import com.android.launcher3.model.DeviceGridState
 import com.android.launcher3.pm.InstallSessionHelper
 import com.android.launcher3.provider.RestoreDbTask
@@ -310,16 +311,16 @@ class LauncherPrefs(private val encryptedContext: Context) {
             )
         @JvmField
         val LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE =
-                nonRestorableItem(
-                        "pref_long_press_nav_handle_slop_multiplier",
-                        100,
+            nonRestorableItem(
+                "pref_long_press_nav_handle_slop_percentage",
+                        LPNH_SLOP_PERCENTAGE.get(),
                         EncryptionType.MOVE_TO_DEVICE_PROTECTED
-                )
+            )
         @JvmField
         val LONG_PRESS_NAV_HANDLE_TIMEOUT_MS =
                 nonRestorableItem(
                         "pref_long_press_nav_handle_timeout_ms",
-                        ViewConfiguration.getLongPressTimeout(),
+                        LPNH_TIMEOUT_MS.get(),
                         EncryptionType.MOVE_TO_DEVICE_PROTECTED
                 )
         @JvmField
