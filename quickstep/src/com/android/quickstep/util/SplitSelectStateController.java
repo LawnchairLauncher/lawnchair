@@ -152,8 +152,7 @@ public class SplitSelectStateController {
     private final BackPressHandler mSplitBackHandler = new BackPressHandler() {
         @Override
         public boolean canHandleBack() {
-            return FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get() &&
-                    isSplitSelectActive();
+            return FeatureFlags.enableSplitContextually() && isSplitSelectActive();
         }
 
         @Override
@@ -711,7 +710,7 @@ public class SplitSelectStateController {
 
     /**
      * To be called whenever we exit split selection state. If
-     * {@link FeatureFlags#ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE} is set, this should be the
+     * {@link FeatureFlags#enableSplitContextually()} is set, this should be the
      * central way split is getting reset, which should then go through the callbacks to reset
      * other state.
      */

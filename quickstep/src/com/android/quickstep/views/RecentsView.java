@@ -1087,7 +1087,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 mIPipAnimationListener);
         mOrientationState.initListeners();
         mTaskOverlayFactory.initListeners();
-        if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+        if (FeatureFlags.enableSplitContextually()) {
             mSplitSelectStateController.registerSplitListener(mSplitSelectionListener);
         }
     }
@@ -1108,7 +1108,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         mIPipAnimationListener.setActivityAndRecentsView(null, null);
         mOrientationState.destroyListeners();
         mTaskOverlayFactory.removeListeners();
-        if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+        if (FeatureFlags.enableSplitContextually()) {
             mSplitSelectStateController.unregisterSplitListener(mSplitSelectionListener);
         }
     }
@@ -2418,7 +2418,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             remoteTargetHandle.getTransformParams().setTargetSet(null);
             remoteTargetHandle.getTaskViewSimulator().setDrawsBelowRecents(false);
         });
-        if (!FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+        if (!FeatureFlags.enableSplitContextually()) {
             resetFromSplitSelectionState();
         }
 
@@ -3307,7 +3307,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                         InteractionJankMonitorWrapper.CUJ_SPLIT_SCREEN_ENTER);
             } else {
                 // If transition to split select was interrupted, clean up to prevent glitches
-                if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+                if (FeatureFlags.enableSplitContextually()) {
                     mSplitSelectStateController.resetState();
                 } else {
                     resetFromSplitSelectionState();
@@ -4760,7 +4760,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         pendingAnimation.addEndListener(aBoolean -> {
             mSplitSelectStateController.launchSplitTasks(
                     aBoolean1 -> {
-                        if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+                        if (FeatureFlags.enableSplitContextually()) {
                             mSplitSelectStateController.resetState();
                         } else {
                             resetFromSplitSelectionState();
@@ -4789,7 +4789,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     @SuppressLint("WrongCall")
     protected void resetFromSplitSelectionState() {
         if (mSplitSelectSource != null || mSplitHiddenTaskViewIndex != -1 ||
-                FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+                FeatureFlags.enableSplitContextually()) {
             safeRemoveDragLayerView(mSplitSelectStateController.getFirstFloatingTaskView());
             safeRemoveDragLayerView(mSecondFloatingTaskView);
             safeRemoveDragLayerView(mSplitSelectStateController.getSplitInstructionsView());
@@ -4809,7 +4809,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         setTaskViewsPrimarySplitTranslation(0);
         setTaskViewsSecondarySplitTranslation(0);
 
-        if (!FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+        if (!FeatureFlags.enableSplitContextually()) {
             // When flag is on, this method gets called from resetState() call below, let's avoid
             // infinite recursion today
             mSplitSelectStateController.resetState();
