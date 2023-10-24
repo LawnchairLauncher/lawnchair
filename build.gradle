@@ -380,6 +380,9 @@ dependencies {
     implementation 'com.github.samanzamani:PersianDate:1.7.1'
 
     implementation 'com.airbnb.android:lottie:6.1.0'
+
+    //Smartspacer
+    implementation 'com.kieronquinn.smartspacer:sdk-client:1.0.3'
 }
 
 ksp {

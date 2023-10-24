@@ -66,6 +66,7 @@ import com.android.launcher3.util.TouchController
 import com.android.launcher3.widget.RoundedCornerEnforcement
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import com.android.systemui.shared.system.QuickStepContract
+import com.kieronquinn.app.smartspacer.sdk.client.SmartspacerClient
 import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.onEach
 import dev.kdrag0n.monet.theme.ColorScheme
@@ -320,6 +321,8 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     override fun onDestroy() {
         super.onDestroy()
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        //Only actually closes if required, safe to call if not enabled
+        SmartspacerClient.close()
     }
 
     @Suppress("OVERRIDE_DEPRECATION")
