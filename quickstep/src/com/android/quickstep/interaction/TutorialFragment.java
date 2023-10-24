@@ -84,6 +84,7 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
     private DeviceProfile mDeviceProfile;
     private boolean mIsLargeScreen;
     private boolean mIsFoldable;
+    private boolean mOnAttachedToWindowPendingCreate;
 
     public static TutorialFragment newInstance(
             TutorialType tutorialType, boolean gestureComplete, boolean fromTutorialMenu) {
@@ -174,6 +175,11 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
                 .getDeviceProfile(getContext());
         mIsLargeScreen = mDeviceProfile.isTablet;
         mIsFoldable = mDeviceProfile.isTwoPanels;
+
+        if (mOnAttachedToWindowPendingCreate) {
+            mOnAttachedToWindowPendingCreate = false;
+            onAttachedToWindow();
+        }
     }
 
     public boolean isLargeScreen() {
@@ -373,6 +379,10 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
 
     @Override
     void onAttachedToWindow() {
+        if (mEdgeBackGestureHandler == null) {
+            mOnAttachedToWindowPendingCreate = true;
+            return;
+        }
         StatsLogManager statsLogManager = getStatsLogManager();
         if (statsLogManager != null) {
             logTutorialStepShown(statsLogManager);
@@ -382,6 +392,7 @@ abstract class TutorialFragment extends GestureSandboxFragment implements OnTouc
 
     @Override
     void onDetachedFromWindow() {
+        mOnAttachedToWindowPendingCreate = false;
         mEdgeBackGestureHandler.setViewGroupParent(null);
     }
 

@@ -57,6 +57,7 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.Px;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.view.ViewCompat;
 
@@ -175,6 +176,8 @@ public class CellLayout extends ViewGroup {
 
     private final TimeInterpolator mEaseOutInterpolator;
     protected final ShortcutAndWidgetContainer mShortcutsAndWidgets;
+    @Px
+    protected int mSpaceBetweenCellLayoutsPx = 0;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({WORKSPACE, HOTSEAT, FOLDER})
@@ -636,10 +639,17 @@ public class CellLayout extends ViewGroup {
                 mVisualizeGridPaint.setColor(Color.argb((int) (alpha),
                         Color.red(mGridColor), Color.green(mGridColor), Color.blue(mGridColor)));
 
+                canvas.save();
+                canvas.translate(getMarginForGivenCellParams(params), 0);
                 canvas.drawRoundRect(mVisualizeGridRect, mGridVisualizationRoundingRadius,
                         mGridVisualizationRoundingRadius, mVisualizeGridPaint);
+                canvas.restore();
             }
         }
+    }
+
+    protected float getMarginForGivenCellParams(CellLayoutLayoutParams params) {
+        return 0;
     }
 
     @Override
@@ -2843,5 +2853,9 @@ public class CellLayout extends ViewGroup {
 
     public boolean isRegionVacant(int x, int y, int spanX, int spanY) {
         return mOccupied.isRegionVacant(x, y, spanX, spanY);
+    }
+
+    public void setSpaceBetweenCellLayoutsPx(@Px int spaceBetweenCellLayoutsPx) {
+        mSpaceBetweenCellLayoutsPx = spaceBetweenCellLayoutsPx;
     }
 }

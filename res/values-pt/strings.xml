@@ -53,7 +53,7 @@
     <string name="widget_category_conversations" msgid="8894438636213590446">"Conversas"</string>
     <string name="widget_category_note_taking" msgid="3469689394504266039">"Anotações"</string>
     <string name="widget_education_header" msgid="4874760613775913787">"Informações úteis ao seu alcance"</string>
-    <string name="widget_education_content" msgid="1731667670753497052">"Para ver informações sem precisar abrir os apps, adicione widgets à sua tela inicial"</string>
+    <string name="widget_education_content" msgid="1731667670753497052">"Para acessar informações sem precisar abrir os apps, adicione widgets à sua tela inicial"</string>
     <string name="reconfigurable_widget_education_tip" msgid="6336962690888067057">"Toque para mudar as configurações do widget"</string>
     <string name="widget_education_close_button" msgid="8676165703104836580">"Ok"</string>
     <string name="widget_reconfigure_button_content_description" msgid="8811472721881205250">"Mudar as configurações do widget"</string>
@@ -100,6 +100,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"Pasta renomeada para <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"Pasta: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> itens"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"Pasta: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ou mais itens"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"Par de apps: <xliff:g id="APP1">%1$s</xliff:g> e <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"Plano de fundo e estilo"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"Editar tela inicial"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Configurações da tela inicial"</string>
@@ -174,4 +175,6 @@
     <string name="search_pref_screen_title" msgid="3258959643336315962">"Pesquisar no smartphone"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Pesquisar no tablet"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Falha: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <!-- no translation found for private_space_label (2359721649407947001) -->
+    <skip />
 </resources>

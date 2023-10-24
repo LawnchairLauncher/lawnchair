@@ -26,9 +26,11 @@ import static android.window.SplashScreen.SPLASH_SCREEN_STYLE_UNDEFINED;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_OVERLAY_PROXY;
+import static com.android.launcher3.Flags.enableCursorHoverStates;
+import static com.android.launcher3.Utilities.calculateTextHeight;
 import static com.android.launcher3.Utilities.isRunningInTestHarness;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_PINNING;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NO_RECREATION;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_PINNING;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_FULLSCREEN;
@@ -847,6 +849,13 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         boolean shouldTreatAsTransient = DisplayController.isTransientTaskbar(this)
                 || (ENABLE_TASKBAR_PINNING.get() && !isThreeButtonNav());
 
+        int extraHeightForTaskbarTooltips = enableCursorHoverStates()
+                ? resources.getDimensionPixelSize(R.dimen.arrow_toast_arrow_height)
+                + (resources.getDimensionPixelSize(R.dimen.taskbar_tooltip_vertical_padding) * 2)
+                + calculateTextHeight(
+                        resources.getDimensionPixelSize(R.dimen.arrow_toast_text_size))
+                : 0;
+
         // Return transient taskbar window height when pinning feature is enabled, so taskbar view
         // does not get cut off during pinning animation.
         if (shouldTreatAsTransient) {
@@ -855,11 +864,14 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
             return transientTaskbarDp.taskbarHeight
                     + (2 * transientTaskbarDp.taskbarBottomMargin)
-                    + resources.getDimensionPixelSize(R.dimen.transient_taskbar_shadow_blur);
+                    + Math.max(extraHeightForTaskbarTooltips, resources.getDimensionPixelSize(
+                            R.dimen.transient_taskbar_shadow_blur));
         }
 
+
         return mDeviceProfile.taskbarHeight
-                + Math.max(getLeftCornerRadius(), getRightCornerRadius());
+                + Math.max(getLeftCornerRadius(), getRightCornerRadius())
+                + extraHeightForTaskbarTooltips;
     }
 
     public int getSetupWindowHeight() {
@@ -1236,7 +1248,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
         TaskbarUIController uiController = mControllers.uiController;
         if (uiController instanceof LauncherTaskbarUIController) {
-            ((LauncherTaskbarUIController) uiController).addLauncherResumeAnimation(
+            ((LauncherTaskbarUIController) uiController).addLauncherVisibilityChangedAnimation(
                     fullAnimation, duration);
         }
         mControllers.taskbarStashController.addUnstashToHotseatAnimation(fullAnimation, duration);

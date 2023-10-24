@@ -139,15 +139,6 @@ public class TaskbarHoverToolTipController implements View.OnHoverListener {
             mActivity.setAutohideSuspendFlag(FLAG_AUTOHIDE_SUSPEND_HOVERING_ICONS, false);
             return true;
         } else if (!isAnyOtherFloatingViewOpen && event.getAction() == ACTION_HOVER_ENTER) {
-            if (!mActivity.isTaskbarWindowFullscreen()) {
-                // First time we want to animate a tooltip open, we set the drag layer to
-                // fullscreen so the tooltip will fit within the window. This causes a layout
-                // pass which will trigger a hover exit and hover enter event while still
-                // hovering the view, so we do not animate open on the first hover enter if we
-                // are not already in fullscreen.
-                mActivity.setTaskbarWindowFullscreen(true);
-                return false;
-            }
             // If hovering above a taskbar icon starts, animate the tooltip open. Do not
             // reveal if any floating views such as folders or edu pop-ups are open.
             startRevealHoverToolTip();

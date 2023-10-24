@@ -238,7 +238,7 @@ public final class FeatureFlags {
 
     // Aconfig migration complete for ENABLE_TWOLINE_ALLAPPS.
     public static final BooleanFlag ENABLE_TWOLINE_ALLAPPS = getDebugFlag(270390937,
-            "ENABLE_TWOLINE_ALLAPPS", DISABLED, "Enables two line label inside all apps.");
+            "ENABLE_TWOLINE_ALLAPPS", ENABLED, "Enables two line label inside all apps.");
     public static boolean enableTwolineAllapps() {
         return ENABLE_TWOLINE_ALLAPPS.get() || Flags.enableTwolineAllapps();
     }
@@ -307,6 +307,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_DYNAMIC_TASKBAR_THRESHOLDS = getDebugFlag(294252473,
             "ENABLE_DYNAMIC_TASKBAR_THRESHOLDS", ENABLED,
             "Enables taskbar thresholds that scale based on screen size.");
+
+    public static final BooleanFlag ENABLE_HOME_TRANSITION_LISTENER = getDebugFlag(306053414,
+            "ENABLE_HOME_TRANSITION_LISTENER", DISABLED,
+            "Enables launcher to listen to all transitions that include home activity.");
 
     // TODO(Block 21): Clean up flags
     public static final BooleanFlag ENABLE_APP_ICON_FOR_INLINE_SHORTCUTS = getDebugFlag(270395087,

@@ -30,8 +30,7 @@
     <string name="recent_task_option_split_screen" msgid="6690461455618725183">"ਸਪਲਿਟ ਸਕ੍ਰੀਨ"</string>
     <string name="split_app_info_accessibility" msgid="5475288491241414932">"%1$s ਲਈ ਐਪ ਜਾਣਕਾਰੀ"</string>
     <string name="save_app_pair" msgid="5647523853662686243">"ਐਪ ਜੋੜਾਬੱਧ ਰੱਖਿਅਤ ਕਰੋ"</string>
-    <!-- no translation found for app_pair_default_title (4045241727446873529) -->
-    <skip />
+    <string name="app_pair_default_title" msgid="4045241727446873529">"<xliff:g id="APP1">%1$s</xliff:g> | <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="long_press_widget_to_add" msgid="3587712543577675817">"ਕਿਸੇ ਵਿਜੇਟ ਨੂੰ ਲਿਜਾਉਣ ਲਈ ਸਪਰਸ਼ ਕਰਕੇ ਰੱਖੋ।"</string>
     <string name="long_accessible_way_to_add" msgid="2733588281439571974">"ਵਿਜੇਟ ਲਿਜਾਉਣ ਲਈ ਜਾਂ ਵਿਉਂਂਤੀਆਂ ਕਾਰਵਾਈਆਂ ਵਰਤਣ ਲਈ ਦੋ ਵਾਰ ਟੈਪ ਕਰਕੇ ਦਬਾ ਕੇ ਰੱਖੋ।"</string>
     <string name="widget_dims_format" msgid="2370757736025621599">"%1$d × %2$d"</string>
@@ -101,6 +100,7 @@
     <string name="folder_renamed" msgid="1794088362165669656">"ਫੋਲਡਰ ਨੂੰ <xliff:g id="NAME">%1$s</xliff:g> ਮੁੜ ਨਾਮ ਦਿੱਤਾ ਗਿਆ"</string>
     <string name="folder_name_format_exact" msgid="8626242716117004803">"ਫੋਲਡਰ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ਆਈਟਮਾਂ"</string>
     <string name="folder_name_format_overflow" msgid="4270108890534995199">"ਫੋਲਡਰ: <xliff:g id="NAME">%1$s</xliff:g>, <xliff:g id="SIZE">%2$d</xliff:g> ਜਾਂ ਹੋਰ ਆਈਟਮਾਂ"</string>
+    <string name="app_pair_name_format" msgid="8134106404716224054">"ਐਪ ਜੋੜਾਬੱਧ: <xliff:g id="APP1">%1$s</xliff:g> ਅਤੇ <xliff:g id="APP2">%2$s</xliff:g>"</string>
     <string name="styles_wallpaper_button_text" msgid="8216961355289236794">"ਵਾਲਪੇਪਰ ਅਤੇ ਸਟਾਈਲ"</string>
     <string name="edit_home_screen" msgid="8947858375782098427">"ਹੋਮ ਸਕ੍ਰੀਨ ਦਾ ਸੰਪਾਦਨ ਕਰੋ"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"ਹੋਮ ਸੈਟਿੰਗਾਂ"</string>
@@ -175,4 +175,6 @@
     <string name="search_pref_screen_title" msgid="3258959643336315962">"ਆਪਣਾ ਫ਼ੋਨ ਖੋਜੋ"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"ਆਪਣਾ ਟੈਬਲੈੱਟ ਖੋਜੋ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ਇਹ ਕਾਰਵਾਈ ਅਸਫਲ ਹੋਈ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
+    <!-- no translation found for private_space_label (2359721649407947001) -->
+    <skip />
 </resources>
