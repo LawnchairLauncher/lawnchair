@@ -195,7 +195,7 @@ public class NavBarToHomeTouchController implements TouchController,
                     () -> recentsView.finishRecentsAnimation(true /* toRecents */, null));
             if (mStartState.overviewUi) {
                 new OverviewToHomeAnim(mLauncher, () -> onSwipeInteractionCompleted(mEndState),
-                        FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()
+                        FeatureFlags.enableSplitContextually()
                                 ? mCancelSplitRunnable
                                 : null)
                         .animateWithVelocity(velocity);

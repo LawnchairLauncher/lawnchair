@@ -99,7 +99,7 @@ public class SplitInstructionsView extends FrameLayout {
     private void init() {
         mTextView = findViewById(R.id.split_instructions_text);
 
-        if (!FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+        if (!FeatureFlags.enableSplitContextually()) {
             mTextView.setCompoundDrawables(null, null, null, null);
             return;
         }
@@ -138,7 +138,7 @@ public class SplitInstructionsView extends FrameLayout {
     @Override
     public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
         super.onInitializeAccessibilityNodeInfo(info);
-        if (!FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+        if (!FeatureFlags.enableSplitContextually()) {
             return;
         }
 
@@ -150,7 +150,7 @@ public class SplitInstructionsView extends FrameLayout {
 
     @Override
     public boolean performAccessibilityAction(int action, Bundle arguments) {
-        if (!FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+        if (!FeatureFlags.enableSplitContextually()) {
             return super.performAccessibilityAction(action, arguments);
         }
 

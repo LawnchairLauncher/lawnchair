@@ -383,6 +383,10 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE = getDebugFlag(
             270393453, "ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE", DISABLED,
             "Enable initiating split screen from workspace to workspace.");
+    public static boolean enableSplitContextually() {
+        return ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get() ||
+                com.android.wm.shell.Flags.enableSplitContextual();
+    }
 
     public static final BooleanFlag ENABLE_TRACKPAD_GESTURE = getDebugFlag(271010401,
             "ENABLE_TRACKPAD_GESTURE", ENABLED, "Enables trackpad gesture.");

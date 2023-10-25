@@ -138,8 +138,9 @@ public class ItemLongClickListener {
         // Return early if an item is already being dragged (e.g. when long-pressing two shortcuts)
         if (launcher.getDragController().isDragging()) return false;
         // Return early if user is in the middle of selecting split-screen apps
-        if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get() &&
-                launcher.isSplitSelectionEnabled()) return false;
+        if (FeatureFlags.enableSplitContextually() && launcher.isSplitSelectionEnabled()) {
+            return false;
+        }
 
         return true;
     }

@@ -1578,7 +1578,7 @@ public class Launcher extends StatefulActivity<LauncherState>
                 }
             }
 
-            if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+            if (FeatureFlags.enableSplitContextually()) {
                 handleSplitAnimationGoingToHome();
             }
             mOverlayManager.hideOverlay(isStarted() && !isForceInvisible());
