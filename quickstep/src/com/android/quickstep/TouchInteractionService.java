@@ -963,7 +963,8 @@ public class TouchInteractionService extends Service {
                         .append(SUBSTRING_PREFIX)
                         .append("Long press nav handle enabled, ")
                         .append("using NavHandleLongPressInputConsumer");
-                base = new NavHandleLongPressInputConsumer(this, base, mInputMonitorCompat);
+                base = new NavHandleLongPressInputConsumer(this, base, mInputMonitorCompat,
+                        mDeviceState);
             }
 
             if (mDeviceState.isBubblesExpanded()) {

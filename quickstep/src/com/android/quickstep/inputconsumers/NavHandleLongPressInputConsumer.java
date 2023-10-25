@@ -15,7 +15,6 @@
  */
 package com.android.quickstep.inputconsumers;
 
-import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE;
 import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_TIMEOUT_MS;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
@@ -28,6 +27,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.DisplayController;
 import com.android.quickstep.InputConsumer;
+import com.android.quickstep.RecentsAnimationDeviceState;
 import com.android.systemui.shared.system.InputMonitorCompat;
 
 /**
@@ -47,23 +47,18 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
     private MotionEvent mCurrentDownEvent;
 
     public NavHandleLongPressInputConsumer(Context context, InputConsumer delegate,
-            InputMonitorCompat inputMonitor) {
+            InputMonitorCompat inputMonitor, RecentsAnimationDeviceState deviceState) {
         super(delegate, inputMonitor);
         mViewConfiguration = ViewConfiguration.get(context);
         mNavHandleWidth = context.getResources().getDimensionPixelSize(
                 R.dimen.navigation_home_handle_width);
         mScreenWidth = DisplayController.INSTANCE.get(context).getInfo().currentSize.x;
-        float touchSlop;
         if (FeatureFlags.CUSTOM_LPNH_THRESHOLDS.get()) {
-            float customSlopMultiplier =
-                    LauncherPrefs.get(context).get(LONG_PRESS_NAV_HANDLE_SLOP_PERCENTAGE) / 100f;
-            touchSlop = mViewConfiguration.getScaledEdgeSlop() * customSlopMultiplier;
             mLongPressTimeout = LauncherPrefs.get(context).get(LONG_PRESS_NAV_HANDLE_TIMEOUT_MS);
         } else {
-            touchSlop = mViewConfiguration.getScaledTouchSlop();
             mLongPressTimeout = ViewConfiguration.getLongPressTimeout();
         }
-        mTouchSlopSquared = touchSlop * touchSlop;
+        mTouchSlopSquared = deviceState.getSquaredTouchSlop();
         mNavHandleLongPressHandler = NavHandleLongPressHandler.newInstance(context);
     }
 
@@ -87,17 +82,14 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
                 }
             }
             case MotionEvent.ACTION_MOVE -> {
+                if (!MAIN_EXECUTOR.getHandler().hasCallbacks(mTriggerLongPress)) {
+                    break;
+                }
+
                 float touchSlopSquared = mTouchSlopSquared;
                 float dx = ev.getX() - mCurrentDownEvent.getX();
                 float dy = ev.getY() - mCurrentDownEvent.getY();
                 double distanceSquared = (dx * dx) + (dy * dy);
-                // If the gesture is ambiguous then require more movement before classifying this
-                // as a NON long press gesture.
-                if (ev.getClassification() == MotionEvent.CLASSIFICATION_AMBIGUOUS_GESTURE) {
-                    float ambiguousGestureMultiplier =
-                            mViewConfiguration.getScaledAmbiguousGestureMultiplier();
-                    touchSlopSquared *= ambiguousGestureMultiplier * ambiguousGestureMultiplier;
-                }
                 if (distanceSquared > touchSlopSquared) {
                     cancelLongPress();
                 }
