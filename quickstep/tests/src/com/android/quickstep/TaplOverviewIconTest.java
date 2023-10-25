@@ -82,7 +82,7 @@ public class TaplOverviewIconTest extends AbstractLauncherUiTest {
         taskMenu.touchOutsideTaskMenuToDismiss();
 
         OverviewTaskMenu splitMenu =
-                mLauncher.getOverview().getCurrentTask().tapSplitTaskMenu();
+                mLauncher.goHome().switchToOverview().getCurrentTask().tapSplitTaskMenu();
         assertTrue("App info item not appearing in expanded split task's menu.",
                 splitMenu.hasMenuItem("App info"));
         splitMenu.touchOutsideTaskMenuToDismiss();
