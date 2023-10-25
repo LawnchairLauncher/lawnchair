@@ -27,7 +27,6 @@ import com.android.launcher3.util.TransformingTouchDelegate;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TaskIconCache;
 import com.android.quickstep.TaskThumbnailCache;
-import com.android.quickstep.TaskUtils;
 import com.android.quickstep.util.CancellableTask;
 import com.android.quickstep.util.RecentsOrientedState;
 import com.android.quickstep.util.SplitSelectStateController;
@@ -170,7 +169,7 @@ public class GroupedTaskView extends TaskView {
                         (task) -> {
                             setIcon(mIconView2, task.icon);
                             if (enableOverviewIconMenu()) {
-                                setText(mIconView2, TaskUtils.getTitle(getContext(), task));
+                                setText(mIconView2, task.title);
                             }
                             mDigitalWellBeingToast2.initialize(mSecondaryTask);
                             mDigitalWellBeingToast2.setSplitConfiguration(mSplitBoundsConfig);
