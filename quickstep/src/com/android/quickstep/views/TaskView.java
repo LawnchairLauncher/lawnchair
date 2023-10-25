@@ -1677,6 +1677,7 @@ public class TaskView extends FrameLayout implements Reusable {
         return super.performAccessibilityAction(action, arguments);
     }
 
+    @Nullable
     public RecentsView getRecentsView() {
         return (RecentsView) getParent();
     }

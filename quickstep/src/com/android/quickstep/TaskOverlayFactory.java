@@ -190,11 +190,11 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
          */
         public void endLiveTileMode(@NonNull Runnable callback) {
             RecentsView recentsView = mThumbnailView.getTaskView().getRecentsView();
-            if (recentsView != null) {
-                recentsView.switchToScreenshot(
-                        () -> recentsView.finishRecentsAnimation(true /* toRecents */,
-                                false /* shouldPip */, callback));
-            }
+            // Task has already been dismissed
+            if (recentsView == null) return;
+            recentsView.switchToScreenshot(
+                    () -> recentsView.finishRecentsAnimation(true /* toRecents */,
+                            false /* shouldPip */, callback));
         }
 
         /**
@@ -212,6 +212,8 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
 
         private void enterSplitSelect() {
             RecentsView overviewPanel = mThumbnailView.getTaskView().getRecentsView();
+            // Task has already been dismissed
+            if (overviewPanel == null) return;
             overviewPanel.initiateSplitSelect(mThumbnailView.getTaskView());
         }
 
