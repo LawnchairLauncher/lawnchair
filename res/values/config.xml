@@ -242,6 +242,8 @@
         <item>@dimen/iconSize72dp</item>
     </integer-array>
 
+    <dimen name="minimum_icon_label_size">8sp</dimen>
+
     <!--  Used for custom widgets  -->
     <array name="custom_widget_providers"/>
 </resources>

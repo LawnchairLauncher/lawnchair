@@ -63,6 +63,7 @@ import com.android.launcher3.responsive.FolderSpecs;
 import com.android.launcher3.responsive.HotseatSpecs;
 import com.android.launcher3.responsive.WorkspaceSpecs;
 import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.CellContentDimensions;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.IconSizeSteps;
@@ -924,14 +925,11 @@ public class DeviceProfile {
                 - iconTextHeight;
 
         if (mIsResponsiveGrid) {
-            // Hide text only if doesn't fit inside the cell for responsive grid
-            if (workspaceCellPaddingY < 0) {
-                iconTextSizePx = 0;
-                iconDrawablePaddingPx = 0;
-                int iconSizeWithOverlap = getIconSizeWithOverlap(iconSizePx);
-                cellYPaddingPx = Math.max(0, getCellSize().y - iconSizeWithOverlap) / 2;
-                autoResizeAllAppsCells();
-            }
+            iconTextSizePx = 0;
+            iconDrawablePaddingPx = 0;
+            int iconSizeWithOverlap = getIconSizeWithOverlap(iconSizePx);
+            cellYPaddingPx = Math.max(0, getCellSize().y - iconSizeWithOverlap) / 2;
+            autoResizeAllAppsCells();
 
             return;
         }
@@ -1047,22 +1045,23 @@ public class DeviceProfile {
                 iconSizePx = mIconSizeSteps.getIconSmallerThan(cellWidthPx);
             }
 
-            // TODO(b/296400197): isVerticalBar shouldn't show labels anymore
             iconDrawablePaddingPx = getNormalizedIconDrawablePadding();
-            int iconTextHeight = Utilities.calculateTextHeight(iconTextSizePx);
-            int cellContentHeight = iconSizePx + iconDrawablePaddingPx + iconTextHeight;
 
-            while (iconSizePx > mIconSizeSteps.minimumIconSize()
-                    && cellContentHeight > cellHeightPx) {
-                iconDrawablePaddingPx -= cellContentHeight - cellHeightPx;
-                if (iconDrawablePaddingPx < 0) {
-                    // get a smaller icon size
-                    iconSizePx = mIconSizeSteps.getNextLowerIconSize(iconSizePx);
-                    iconDrawablePaddingPx = getNormalizedIconDrawablePadding();
+            CellContentDimensions cellContentDimensions = new CellContentDimensions(iconSizePx,
+                    iconDrawablePaddingPx,
+                    iconTextSizePx);
+            if (isVerticalLayout) {
+                if (cellHeightPx < iconSizePx) {
+                    cellContentDimensions.setIconSizePx(
+                            mIconSizeSteps.getIconSmallerThan(cellHeightPx));
                 }
-                // calculate new cellContentHeight
-                cellContentHeight = iconSizePx + iconDrawablePaddingPx + iconTextHeight;
+            } else {
+                cellContentDimensions.resizeToFitCellHeight(cellHeightPx, mIconSizeSteps);
             }
+            iconSizePx = cellContentDimensions.getIconSizePx();
+            iconDrawablePaddingPx = cellContentDimensions.getIconDrawablePaddingPx();
+            iconTextSizePx = cellContentDimensions.getIconTextSizePx();
+            int cellContentHeight = cellContentDimensions.getCellContentHeight();
 
             cellYPaddingPx = Math.max(0, cellHeightPx - cellContentHeight) / 2;
         } else if (mIsScalableGrid) {
