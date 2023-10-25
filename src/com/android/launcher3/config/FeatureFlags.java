@@ -23,13 +23,10 @@ import static com.android.launcher3.config.FeatureFlags.FlagState.TEAMFOOD;
 import static com.android.launcher3.uioverrides.flags.FlagsFactory.getDebugFlag;
 import static com.android.launcher3.uioverrides.flags.FlagsFactory.getReleaseFlag;
 
-import android.content.Context;
-
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.Flags;
-import com.android.launcher3.Utilities;
 
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
@@ -47,10 +44,6 @@ public final class FeatureFlags {
     public static ToIntFunction<IntFlag> sIntReader = f -> f.mCurrentValue;
 
     private FeatureFlags() { }
-
-    public static boolean showFlagTogglerUi(Context context) {
-        return BuildConfig.IS_DEBUG_DEVICE && Utilities.isDevelopersOptionsEnabled(context);
-    }
 
     /**
      * True when the build has come from Android Studio and is being used for local debugging.

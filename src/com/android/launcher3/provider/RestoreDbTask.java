@@ -529,13 +529,6 @@ public class RestoreDbTask {
         }
     }
 
-    public static void setRestoredAppWidgetIds(Context context, @NonNull int[] oldIds,
-            @NonNull int[] newIds) {
-        LauncherPrefs.get(context).putSync(
-                OLD_APP_WIDGET_IDS.to(IntArray.wrap(oldIds).toConcatString()),
-                APP_WIDGET_IDS.to(IntArray.wrap(newIds).toConcatString()));
-    }
-
     protected static void maybeOverrideShortcuts(Context context, ModelDbController controller,
             SQLiteDatabase db, long currentUser) {
         Map<String, LauncherActivityInfo> activityOverrides = ApiWrapper.getActivityOverrides(

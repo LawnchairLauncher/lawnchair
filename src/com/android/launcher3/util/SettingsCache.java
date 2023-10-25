@@ -25,8 +25,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.provider.Settings;
 
-import androidx.annotation.VisibleForTesting;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +59,7 @@ public class SettingsCache extends ContentObserver implements SafeCloseable {
             Settings.System.getUriFor(ACCELEROMETER_ROTATION);
 
     private static final String SYSTEM_URI_PREFIX = Settings.System.CONTENT_URI.toString();
+    private static final String GLOBAL_URI_PREFIX = Settings.Global.CONTENT_URI.toString();
 
     /**
      * Caches the last seen value for registered keys.
@@ -139,6 +138,8 @@ public class SettingsCache extends ContentObserver implements SafeCloseable {
         boolean newVal;
         if (keyUri.toString().startsWith(SYSTEM_URI_PREFIX)) {
             newVal = Settings.System.getInt(mResolver, key, defaultValue) == 1;
+        } else if (keyUri.toString().startsWith(GLOBAL_URI_PREFIX)) {
+            newVal = Settings.Global.getInt(mResolver, key, defaultValue) == 1;
         } else { // SETTING_SECURE
             newVal = Settings.Secure.getInt(mResolver, key, defaultValue) == 1;
         }
@@ -154,23 +155,9 @@ public class SettingsCache extends ContentObserver implements SafeCloseable {
      */
     public void unregister(Uri uri, OnChangeListener listener) {
         List<OnChangeListener> listenersToRemoveFrom = mListenerMap.get(uri);
-        if (listenersToRemoveFrom == null) {
-            return;
+        if (listenersToRemoveFrom != null) {
+            listenersToRemoveFrom.remove(listener);
         }
-
-        listenersToRemoveFrom.remove(listener);
-        if (listenersToRemoveFrom.isEmpty()) {
-            mListenerMap.remove(uri);
-        }
-    }
-
-    /**
-     * Don't use this. Ever.
-     * @param keyCache Cache to replace {@link #mKeyCache}
-     */
-    @VisibleForTesting
-    void setKeyCache(Map<Uri, Boolean> keyCache) {
-        mKeyCache = keyCache;
     }
 
     public interface OnChangeListener {

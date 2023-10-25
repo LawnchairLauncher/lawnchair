@@ -60,6 +60,7 @@ import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.model.ModelDbController;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LauncherModelHelper;
 
 import org.junit.After;
@@ -233,7 +234,7 @@ public class RestoreDbTaskTest {
         mPrefs.remove(RESTORE_DEVICE);
 
         // When
-        RestoreDbTask.setRestoredAppWidgetIds(mContext, expectedOldIds, expectedNewIds);
+        setRestoredAppWidgetIds(mContext, expectedOldIds, expectedNewIds);
         mTask.restoreAppWidgetIdsIfExists(mContext, mMockController);
 
         // Then
@@ -255,7 +256,7 @@ public class RestoreDbTaskTest {
         RestoreDbTask.setPending(mContext);
 
         // When
-        RestoreDbTask.setRestoredAppWidgetIds(mContext, expectedOldIds, expectedNewIds);
+        setRestoredAppWidgetIds(mContext, expectedOldIds, expectedNewIds);
         mTask.restoreAppWidgetIdsIfExists(mContext, mMockController);
 
         // Then
@@ -283,7 +284,7 @@ public class RestoreDbTaskTest {
         RestoreDbTask.setPending(mContext);
 
         // When
-        RestoreDbTask.setRestoredAppWidgetIds(mContext, expectedOldIds, expectedNewIds);
+        setRestoredAppWidgetIds(mContext, expectedOldIds, expectedNewIds);
         mTask.restoreAppWidgetIdsIfExists(mContext, mMockController);
 
         // Then
@@ -401,5 +402,11 @@ public class RestoreDbTaskTest {
             int index = users.indexOfValue(user);
             return index >= 0 ? users.keyAt(index) : -1;
         }
+    }
+
+    private void setRestoredAppWidgetIds(Context context, int[] oldIds, int[] newIds) {
+        LauncherPrefs.get(context).putSync(
+                OLD_APP_WIDGET_IDS.to(IntArray.wrap(oldIds).toConcatString()),
+                APP_WIDGET_IDS.to(IntArray.wrap(newIds).toConcatString()));
     }
 }

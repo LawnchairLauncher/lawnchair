@@ -1,0 +1,8 @@
+package: "com.android.launcher3"
+
+flag {
+    name: "enable_private_space"
+    namespace: "launcher_search"
+    description: "Enables all Launcher features associated with private space."
+    bug: "306187906"
+}
