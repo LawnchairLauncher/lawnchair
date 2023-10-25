@@ -300,6 +300,7 @@ public class DeviceProfile {
     public final int stashedTaskbarHeight;
     public final int taskbarBottomMargin;
     public final int taskbarIconSize;
+    private final int mTransientTaskbarClaimedSpace;
     // If true, used to layout taskbar in 3 button navigation mode.
     public final boolean startAlignTaskbar;
     public final boolean isTransientTaskbar;
@@ -371,18 +372,23 @@ public class DeviceProfile {
         }
 
         this.isTransientTaskbar = isTransientTaskbar;
+        int transientTaskbarIconSize = pxFromDp(inv.transientTaskbarIconSize[mTypeIndex], mMetrics);
+        int transientTaskbarBottomMargin =
+                res.getDimensionPixelSize(R.dimen.transient_taskbar_bottom_margin);
+        int transientTaskbarHeight =
+                Math.round((transientTaskbarIconSize * ICON_VISIBLE_AREA_FACTOR)
+                    + (2 * res.getDimensionPixelSize(R.dimen.transient_taskbar_padding)));
+        mTransientTaskbarClaimedSpace = transientTaskbarHeight + 2 * transientTaskbarBottomMargin;
+
         if (!isTaskbarPresent) {
             taskbarIconSize = taskbarHeight = stashedTaskbarHeight = taskbarBottomMargin = 0;
             startAlignTaskbar = false;
         } else if (isTransientTaskbar) {
-            float invTransientIconSizeDp = inv.transientTaskbarIconSize[mTypeIndex];
-            taskbarIconSize = pxFromDp(invTransientIconSizeDp, mMetrics);
-            taskbarHeight = Math.round((taskbarIconSize * ICON_VISIBLE_AREA_FACTOR)
-                    + (2 * res.getDimensionPixelSize(R.dimen.transient_taskbar_padding)));
+            taskbarIconSize = transientTaskbarIconSize;
+            taskbarHeight = transientTaskbarHeight;
             stashedTaskbarHeight =
                     res.getDimensionPixelSize(R.dimen.transient_taskbar_stashed_height);
-            taskbarBottomMargin =
-                    res.getDimensionPixelSize(R.dimen.transient_taskbar_bottom_margin);
+            taskbarBottomMargin = transientTaskbarBottomMargin;
             startAlignTaskbar = false;
         } else {
             taskbarIconSize = pxFromDp(ResourcesCompat.getFloat(res, R.dimen.taskbar_icon_size),
@@ -1759,14 +1765,9 @@ public class DeviceProfile {
         return getHotseatBarBottomPadding() + launcherIconBottomSpace - taskbarIconBottomSpace;
     }
 
-    /**
-     * Returns the number of pixels required below OverviewActions excluding insets.
-     */
+    /** Returns the number of pixels required below OverviewActions. */
     public int getOverviewActionsClaimedSpaceBelow() {
-        if (isTaskbarPresent) {
-            return taskbarHeight + taskbarBottomMargin * 2;
-        }
-        return mInsets.bottom;
+        return isTaskbarPresent ? mTransientTaskbarClaimedSpace : mInsets.bottom;
     }
 
     /** Gets the space that the overview actions will take, including bottom margin. */

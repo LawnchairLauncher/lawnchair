@@ -2064,7 +2064,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                 dp.widthPx - mInsets.right - mTempRect.right,
                 dp.heightPx - mInsets.bottom - mTempRect.bottom);
 
-        mSizeStrategy.calculateGridSize(mActivity.getDeviceProfile(),
+        mSizeStrategy.calculateGridSize(mActivity.getDeviceProfile(), mActivity,
                 mLastComputedGridSize);
         mSizeStrategy.calculateGridTaskSize(mActivity, mActivity.getDeviceProfile(),
                 mLastComputedGridTaskSize, mOrientationHandler);

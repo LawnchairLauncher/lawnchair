@@ -27,4 +27,10 @@
     <dimen name="gesture_tutorial_menu_done_button_top_spacing">40dp</dimen>
     <dimen name="gesture_tutorial_menu_back_shape_bottom_margin">49dp</dimen>
 
+    <!-- Grid Only Overview -->
+    <!-- The top margin above the top row of tasks in grid only overview -->
+    <dimen name="overview_top_margin_grid_only">24dp</dimen>
+    <!-- The bottom margin above the bottom row of tasks in grid only overview -->
+    <dimen name="overview_bottom_margin_grid_only">40dp</dimen>
+
 </resources>
