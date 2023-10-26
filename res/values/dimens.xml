@@ -412,6 +412,9 @@
     <dimen name="overview_grid_side_margin">0dp</dimen>
     <dimen name="overview_grid_row_spacing">0dp</dimen>
     <dimen name="overview_page_spacing">0dp</dimen>
+    <dimen name="overview_top_margin_grid_only">0dp</dimen>
+    <dimen name="overview_bottom_margin_grid_only">0dp</dimen>
+
     <dimen name="split_placeholder_size">72dp</dimen>
     <dimen name="split_placeholder_inset">16dp</dimen>
     <dimen name="split_placeholder_icon_size">44dp</dimen>
@@ -423,7 +426,7 @@
     <dimen name="split_instructions_drawable_padding">10dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_landscape">24dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_portrait">60dp</dimen>
-    
+
     <!-- Workspace grid visualization parameters -->
     <dimen name="grid_visualization_rounding_radius">28dp</dimen>
     <dimen name="grid_visualization_horizontal_cell_spacing">6dp</dimen>

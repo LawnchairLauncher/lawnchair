@@ -18,6 +18,7 @@ package com.android.launcher3.model;
 
 import static com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN;
 import static com.android.launcher3.LauncherPrefs.SHOULD_SHOW_SMARTSPACE;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR;
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.config.FeatureFlags.SMARTSPACE_AS_A_WIDGET;
@@ -480,7 +481,10 @@ public class LoaderTask implements Runnable {
                 // for now. Database will be updated once user manually modifies folder.
                 for (int rank = 0; rank < size; ++rank) {
                     WorkspaceItemInfo info = folder.contents.get(rank);
-                    info.rank = rank;
+                    // rank is used differently in app pairs, so don't reset
+                    if (folder.itemType != ITEM_TYPE_APP_PAIR) {
+                        info.rank = rank;
+                    }
 
                     if (info.usingLowResIcon()
                             && info.itemType == Favorites.ITEM_TYPE_APPLICATION

@@ -63,6 +63,7 @@ import com.android.launcher3.responsive.FolderSpecs;
 import com.android.launcher3.responsive.HotseatSpecs;
 import com.android.launcher3.responsive.WorkspaceSpecs;
 import com.android.launcher3.uioverrides.ApiWrapper;
+import com.android.launcher3.util.CellContentDimensions;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.DisplayController.Info;
 import com.android.launcher3.util.IconSizeSteps;
@@ -299,6 +300,7 @@ public class DeviceProfile {
     public final int stashedTaskbarHeight;
     public final int taskbarBottomMargin;
     public final int taskbarIconSize;
+    private final int mTransientTaskbarClaimedSpace;
     // If true, used to layout taskbar in 3 button navigation mode.
     public final boolean startAlignTaskbar;
     public final boolean isTransientTaskbar;
@@ -370,18 +372,23 @@ public class DeviceProfile {
         }
 
         this.isTransientTaskbar = isTransientTaskbar;
+        int transientTaskbarIconSize = pxFromDp(inv.transientTaskbarIconSize[mTypeIndex], mMetrics);
+        int transientTaskbarBottomMargin =
+                res.getDimensionPixelSize(R.dimen.transient_taskbar_bottom_margin);
+        int transientTaskbarHeight =
+                Math.round((transientTaskbarIconSize * ICON_VISIBLE_AREA_FACTOR)
+                    + (2 * res.getDimensionPixelSize(R.dimen.transient_taskbar_padding)));
+        mTransientTaskbarClaimedSpace = transientTaskbarHeight + 2 * transientTaskbarBottomMargin;
+
         if (!isTaskbarPresent) {
             taskbarIconSize = taskbarHeight = stashedTaskbarHeight = taskbarBottomMargin = 0;
             startAlignTaskbar = false;
         } else if (isTransientTaskbar) {
-            float invTransientIconSizeDp = inv.transientTaskbarIconSize[mTypeIndex];
-            taskbarIconSize = pxFromDp(invTransientIconSizeDp, mMetrics);
-            taskbarHeight = Math.round((taskbarIconSize * ICON_VISIBLE_AREA_FACTOR)
-                    + (2 * res.getDimensionPixelSize(R.dimen.transient_taskbar_padding)));
+            taskbarIconSize = transientTaskbarIconSize;
+            taskbarHeight = transientTaskbarHeight;
             stashedTaskbarHeight =
                     res.getDimensionPixelSize(R.dimen.transient_taskbar_stashed_height);
-            taskbarBottomMargin =
-                    res.getDimensionPixelSize(R.dimen.transient_taskbar_bottom_margin);
+            taskbarBottomMargin = transientTaskbarBottomMargin;
             startAlignTaskbar = false;
         } else {
             taskbarIconSize = pxFromDp(ResourcesCompat.getFloat(res, R.dimen.taskbar_icon_size),
@@ -924,14 +931,11 @@ public class DeviceProfile {
                 - iconTextHeight;
 
         if (mIsResponsiveGrid) {
-            // Hide text only if doesn't fit inside the cell for responsive grid
-            if (workspaceCellPaddingY < 0) {
-                iconTextSizePx = 0;
-                iconDrawablePaddingPx = 0;
-                int iconSizeWithOverlap = getIconSizeWithOverlap(iconSizePx);
-                cellYPaddingPx = Math.max(0, getCellSize().y - iconSizeWithOverlap) / 2;
-                autoResizeAllAppsCells();
-            }
+            iconTextSizePx = 0;
+            iconDrawablePaddingPx = 0;
+            int iconSizeWithOverlap = getIconSizeWithOverlap(iconSizePx);
+            cellYPaddingPx = Math.max(0, getCellSize().y - iconSizeWithOverlap) / 2;
+            autoResizeAllAppsCells();
 
             return;
         }
@@ -1047,22 +1051,23 @@ public class DeviceProfile {
                 iconSizePx = mIconSizeSteps.getIconSmallerThan(cellWidthPx);
             }
 
-            // TODO(b/296400197): isVerticalBar shouldn't show labels anymore
             iconDrawablePaddingPx = getNormalizedIconDrawablePadding();
-            int iconTextHeight = Utilities.calculateTextHeight(iconTextSizePx);
-            int cellContentHeight = iconSizePx + iconDrawablePaddingPx + iconTextHeight;
 
-            while (iconSizePx > mIconSizeSteps.minimumIconSize()
-                    && cellContentHeight > cellHeightPx) {
-                iconDrawablePaddingPx -= cellContentHeight - cellHeightPx;
-                if (iconDrawablePaddingPx < 0) {
-                    // get a smaller icon size
-                    iconSizePx = mIconSizeSteps.getNextLowerIconSize(iconSizePx);
-                    iconDrawablePaddingPx = getNormalizedIconDrawablePadding();
+            CellContentDimensions cellContentDimensions = new CellContentDimensions(iconSizePx,
+                    iconDrawablePaddingPx,
+                    iconTextSizePx);
+            if (isVerticalLayout) {
+                if (cellHeightPx < iconSizePx) {
+                    cellContentDimensions.setIconSizePx(
+                            mIconSizeSteps.getIconSmallerThan(cellHeightPx));
                 }
-                // calculate new cellContentHeight
-                cellContentHeight = iconSizePx + iconDrawablePaddingPx + iconTextHeight;
+            } else {
+                cellContentDimensions.resizeToFitCellHeight(cellHeightPx, mIconSizeSteps);
             }
+            iconSizePx = cellContentDimensions.getIconSizePx();
+            iconDrawablePaddingPx = cellContentDimensions.getIconDrawablePaddingPx();
+            iconTextSizePx = cellContentDimensions.getIconTextSizePx();
+            int cellContentHeight = cellContentDimensions.getCellContentHeight();
 
             cellYPaddingPx = Math.max(0, cellHeightPx - cellContentHeight) / 2;
         } else if (mIsScalableGrid) {
@@ -1760,14 +1765,9 @@ public class DeviceProfile {
         return getHotseatBarBottomPadding() + launcherIconBottomSpace - taskbarIconBottomSpace;
     }
 
-    /**
-     * Returns the number of pixels required below OverviewActions excluding insets.
-     */
+    /** Returns the number of pixels required below OverviewActions. */
     public int getOverviewActionsClaimedSpaceBelow() {
-        if (isTaskbarPresent) {
-            return taskbarHeight + taskbarBottomMargin * 2;
-        }
-        return mInsets.bottom;
+        return isTaskbarPresent ? mTransientTaskbarClaimedSpace : mInsets.bottom;
     }
 
     /** Gets the space that the overview actions will take, including bottom margin. */

@@ -29,8 +29,8 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_TASKBAR_OVERLAY_PR
 import static com.android.launcher3.Flags.enableCursorHoverStates;
 import static com.android.launcher3.Utilities.calculateTextHeight;
 import static com.android.launcher3.Utilities.isRunningInTestHarness;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NO_RECREATION;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_PINNING;
+import static com.android.launcher3.config.FeatureFlags.enableTaskbarNoRecreate;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_FULLSCREEN;
@@ -339,7 +339,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
             mIsDestroyed = false;
         }
 
-        if (!ENABLE_TASKBAR_NO_RECREATION.get() && !mAddedWindow) {
+        if (!enableTaskbarNoRecreate() && !mAddedWindow) {
             mWindowManager.addView(mDragLayer, mWindowLayoutParams);
             mAddedWindow = true;
         } else {
@@ -695,7 +695,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mIsDestroyed = true;
         setUIController(TaskbarUIController.DEFAULT);
         mControllers.onDestroy();
-        if (!ENABLE_TASKBAR_NO_RECREATION.get() && !FLAG_HIDE_NAVBAR_WINDOW) {
+        if (!enableTaskbarNoRecreate() && !FLAG_HIDE_NAVBAR_WINDOW) {
             mWindowManager.removeViewImmediate(mDragLayer);
             mAddedWindow = false;
         }
@@ -1290,7 +1290,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
 
     void notifyUpdateLayoutParams() {
         if (mDragLayer.isAttachedToWindow()) {
-            if (ENABLE_TASKBAR_NO_RECREATION.get()) {
+            if (enableTaskbarNoRecreate()) {
                 mWindowManager.updateViewLayout(mDragLayer.getRootView(), mWindowLayoutParams);
             } else {
                 mWindowManager.updateViewLayout(mDragLayer, mWindowLayoutParams);

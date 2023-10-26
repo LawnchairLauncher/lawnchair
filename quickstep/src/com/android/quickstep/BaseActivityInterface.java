@@ -267,7 +267,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         Resources res = context.getResources();
         float maxScale = res.getFloat(R.dimen.overview_max_scale);
         Rect gridRect = new Rect();
-        calculateGridSize(dp, gridRect);
+        calculateGridSize(dp, context, gridRect);
         calculateTaskSizeInternal(context, dp, gridRect, maxScale, Gravity.CENTER, outRect);
     }
 
@@ -321,10 +321,16 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     /**
      * Calculates the overview grid size for the provided device configuration.
      */
-    public final void calculateGridSize(DeviceProfile dp, Rect outRect) {
+    public final void calculateGridSize(DeviceProfile dp, Context context, Rect outRect) {
         Rect insets = dp.getInsets();
         int topMargin = dp.overviewTaskThumbnailTopMarginPx;
         int bottomMargin = dp.getOverviewActionsClaimedSpace();
+        if (dp.isTaskbarPresent && Flags.enableGridOnlyOverview()) {
+            topMargin += context.getResources().getDimensionPixelSize(
+                    R.dimen.overview_top_margin_grid_only);
+            bottomMargin += context.getResources().getDimensionPixelSize(
+                    R.dimen.overview_bottom_margin_grid_only);
+        }
         int sideMargin = dp.overviewGridSideMargin;
 
         outRect.set(0, 0, dp.widthPx, dp.heightPx);
@@ -340,7 +346,7 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
         Resources res = context.getResources();
         Rect potentialTaskRect = new Rect();
         if (Flags.enableGridOnlyOverview()) {
-            calculateGridSize(dp, potentialTaskRect);
+            calculateGridSize(dp, context, potentialTaskRect);
         } else {
             calculateFocusTaskSize(context, dp, potentialTaskRect);
         }
