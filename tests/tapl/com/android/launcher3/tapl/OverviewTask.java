@@ -36,6 +36,8 @@ import java.util.stream.Collectors;
  */
 public final class OverviewTask {
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
+    private static final String TASK_SNAPSHOT_1 = "snapshot";
+    private static final String TASK_SNAPSHOT_2 = "bottomright_snapshot";
 
     static final Pattern TASK_START_EVENT = Pattern.compile("startActivityFromRecentsAsync");
     static final Pattern SPLIT_SELECT_EVENT = Pattern.compile("enterSplitSelect");
@@ -55,12 +57,62 @@ public final class OverviewTask {
         mOverview.verifyActiveContainer();
     }
 
+    /**
+     * Returns the height of the visible task, or the combined height of two tasks in split with a
+     * divider between.
+     */
     int getVisibleHeight() {
+        if (isTaskSplit()) {
+            return getCombinedSplitTaskHeight();
+        }
+
         return mTask.getVisibleBounds().height();
     }
 
+    /**
+     * Calculates the visible height for split tasks, containing 2 snapshot tiles and a divider.
+     */
+    private int getCombinedSplitTaskHeight() {
+        UiObject2 taskSnapshot1 =
+                mLauncher.findObjectInContainer(mTask.getParent(), TASK_SNAPSHOT_1);
+        UiObject2 taskSnapshot2 =
+                mLauncher.findObjectInContainer(mTask.getParent(), TASK_SNAPSHOT_2);
+
+        int top = Math.min(
+                taskSnapshot1.getVisibleBounds().top, taskSnapshot2.getVisibleBounds().top);
+        int bottom = Math.max(
+                taskSnapshot1.getVisibleBounds().bottom, taskSnapshot2.getVisibleBounds().bottom);
+
+        return bottom - top;
+    }
+
+    /**
+     * Returns the width of the visible task, or the combined width of two tasks in split with a
+     * divider between.
+     */
     int getVisibleWidth() {
+        if (isTaskSplit()) {
+            return getCombinedSplitTaskWidth();
+        }
+
         return mTask.getVisibleBounds().width();
+    }
+
+    /**
+     * Calculates the visible width for split tasks, containing 2 snapshot tiles and a divider.
+     */
+    private int getCombinedSplitTaskWidth() {
+        UiObject2 taskSnapshot1 =
+                mLauncher.findObjectInContainer(mTask.getParent(), TASK_SNAPSHOT_1);
+        UiObject2 taskSnapshot2 =
+                mLauncher.findObjectInContainer(mTask.getParent(), TASK_SNAPSHOT_2);
+
+        int left = Math.min(
+                taskSnapshot1.getVisibleBounds().left, taskSnapshot2.getVisibleBounds().left);
+        int right = Math.max(
+                taskSnapshot1.getVisibleBounds().right, taskSnapshot2.getVisibleBounds().right);
+
+        return right - left;
     }
 
     int getTaskCenterX() {
