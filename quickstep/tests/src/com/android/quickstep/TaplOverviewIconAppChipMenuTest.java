@@ -18,6 +18,7 @@ package com.android.quickstep;
 import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
 
+import org.junit.After;
 import org.junit.Before;
 
 /**
@@ -32,6 +33,13 @@ public class TaplOverviewIconAppChipMenuTest extends TaplOverviewIconTest {
     public void setUp() throws Exception {
         mSetFlagsRule.enableFlags(Flags.FLAG_ENABLE_OVERVIEW_ICON_MENU); // Call before super.setUp
         super.setUp();
+        executeOnLauncher(launcher -> InvariantDeviceProfile.INSTANCE.get(launcher).onConfigChanged(
+                launcher));
+    }
+
+    @After
+    public void tearDown() {
+        mSetFlagsRule.disableFlags(Flags.FLAG_ENABLE_OVERVIEW_ICON_MENU);
         executeOnLauncher(launcher -> InvariantDeviceProfile.INSTANCE.get(launcher).onConfigChanged(
                 launcher));
     }
