@@ -14,6 +14,15 @@ open class LauncherRestoreEventLogger : ResourceBasedOverride {
     companion object {
         const val TAG = "LauncherRestoreEventLogger"
 
+        // Restore Errors
+        const val RESTORE_ERROR_PROFILE_DELETED = "user_profile_deleted"
+        const val RESTORE_ERROR_MISSING_INFO = "missing_information_when_loading"
+        const val RESTORE_ERROR_BIND_FAILURE = "binding_to_view_failed"
+        const val RESTORE_ERROR_INVALID_LOCATION = "invalid_size_or_location"
+        const val RESTORE_ERROR_SHORTCUT_NOT_FOUND = "shortcut_not_found"
+        const val RESTORE_ERROR_APP_NOT_INSTALLED = "app_not_installed"
+        const val RESTORE_ERROR_WIDGETS_DISABLED = "widgets_disabled"
+
         fun newInstance(context: Context?): LauncherRestoreEventLogger {
             return ResourceBasedOverride.Overrides.getObject(
                 LauncherRestoreEventLogger::class.java,
@@ -50,6 +59,16 @@ open class LauncherRestoreEventLogger : ResourceBasedOverride {
      * @param favoritesId The id of the item type from [Favorites] that was restored.
      */
     open fun logSingleFavoritesItemRestored(favoritesId: Int) {
+        // no-op
+    }
+
+    /**
+     * Helper to log successfully restoring multiple items from the Favorites table.
+     *
+     * @param favoritesId The id of the item type from [Favorites] that was restored.
+     * @param count number of items that restored.
+     */
+    open fun logFavoritesItemsRestored(favoritesId: Int, count: Int) {
         // no-op
     }
 

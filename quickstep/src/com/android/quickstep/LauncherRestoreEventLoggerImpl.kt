@@ -29,8 +29,8 @@ class LauncherRestoreEventLoggerImpl(val context: Context) : LauncherRestoreEven
         @BackupRestoreDataType private const val DATA_TYPE_APP_PAIR = "app_pair"
     }
 
-    private val backupManager: BackupManager = BackupManager(context)
-    private val restoreEventLogger: BackupRestoreEventLogger = backupManager.delayedRestoreLogger
+    private val restoreEventLogger: BackupRestoreEventLogger =
+        BackupManager(context).delayedRestoreLogger
 
     /**
      * For logging when multiple items of a given data type failed to restore.
@@ -69,6 +69,18 @@ class LauncherRestoreEventLoggerImpl(val context: Context) : LauncherRestoreEven
     override fun logSingleFavoritesItemRestored(favoritesId: Int) {
         if (Flags.enableLauncherBrMetrics()) {
             restoreEventLogger.logItemsRestored(favoritesIdToDataType(favoritesId), 1)
+        }
+    }
+
+    /**
+     * Helper to log successfully restoring multiple items from the Favorites table.
+     *
+     * @param favoritesId The id of the item type from [Favorites] that was restored.
+     * @param count number of items that restored.
+     */
+    override fun logFavoritesItemsRestored(favoritesId: Int, count: Int) {
+        if (Flags.enableLauncherBrMetrics()) {
+            restoreEventLogger.logItemsRestored(favoritesIdToDataType(favoritesId), count)
         }
     }
 
@@ -114,7 +126,7 @@ class LauncherRestoreEventLoggerImpl(val context: Context) : LauncherRestoreEven
      */
     override fun reportLauncherRestoreResults() {
         if (Flags.enableLauncherBrMetrics()) {
-            backupManager.reportDelayedRestoreResult(restoreEventLogger)
+            BackupManager(context).reportDelayedRestoreResult(restoreEventLogger)
         }
     }
 

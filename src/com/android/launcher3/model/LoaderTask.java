@@ -17,9 +17,16 @@
 package com.android.launcher3.model;
 
 import static com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN;
+import static com.android.launcher3.LauncherPrefs.IS_FIRST_LOAD_AFTER_RESTORE;
 import static com.android.launcher3.LauncherPrefs.SHOULD_SHOW_SMARTSPACE;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APP_PAIR;
 import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
+import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_APP_NOT_INSTALLED;
+import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_INVALID_LOCATION;
+import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_MISSING_INFO;
+import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_PROFILE_DELETED;
+import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_SHORTCUT_NOT_FOUND;
+import static com.android.launcher3.backuprestore.LauncherRestoreEventLogger.RESTORE_ERROR_WIDGETS_DISABLED;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.config.FeatureFlags.SMARTSPACE_AS_A_WIDGET;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
@@ -69,6 +76,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.backuprestore.LauncherRestoreEventLogger;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderGridOrganizer;
@@ -134,6 +142,7 @@ public class LoaderTask implements Runnable {
     private final AllAppsList mBgAllAppsList;
     protected final BgDataModel mBgDataModel;
     private final ModelDelegate mModelDelegate;
+    private boolean mIsRestoreFromBackup;
 
     private FirstScreenBroadcast mFirstScreenBroadcast;
 
@@ -148,7 +157,6 @@ public class LoaderTask implements Runnable {
     private final IconCache mIconCache;
 
     private final UserManagerState mUserManagerState;
-
     protected final Map<ComponentKey, AppWidgetProviderInfo> mWidgetProvidersMap = new ArrayMap<>();
     private Map<ShortcutKey, ShortcutInfo> mShortcutKeyToPinnedShortcuts;
 
@@ -172,7 +180,6 @@ public class LoaderTask implements Runnable {
         mBgDataModel = bgModel;
         mModelDelegate = modelDelegate;
         mLauncherBinder = launcherBinder;
-
         mLauncherApps = mApp.getContext().getSystemService(LauncherApps.class);
         mUserManager = mApp.getContext().getSystemService(UserManager.class);
         mUserCache = UserCache.getInstance(mApp.getContext());
@@ -221,9 +228,14 @@ public class LoaderTask implements Runnable {
 
         TraceHelper.INSTANCE.beginSection(TAG);
         LoaderMemoryLogger memoryLogger = new LoaderMemoryLogger();
+        mIsRestoreFromBackup =
+                (Boolean) LauncherPrefs.get(mApp.getContext()).get(IS_FIRST_LOAD_AFTER_RESTORE);
+        LauncherRestoreEventLogger restoreEventLogger = LauncherRestoreEventLogger
+                .Companion.newInstance(mApp.getContext());
         try (LauncherModel.LoaderTransaction transaction = mApp.getModel().beginLoader(this)) {
+
             List<ShortcutInfo> allShortcuts = new ArrayList<>();
-            loadWorkspace(allShortcuts, "", memoryLogger);
+            loadWorkspace(allShortcuts, "", memoryLogger, restoreEventLogger);
 
             // Sanitize data re-syncs widgets/shortcuts based on the workspace loaded from db.
             // sanitizeData should not be invoked if the workspace is loaded from a db different
@@ -314,8 +326,8 @@ public class LoaderTask implements Runnable {
             mLauncherBinder.bindWidgets();
             logASplit("bindWidgets");
             verifyNotStopped();
-
             LauncherPrefs prefs = LauncherPrefs.get(mApp.getContext());
+
             if (SMARTSPACE_AS_A_WIDGET.get() && prefs.get(SHOULD_SHOW_SMARTSPACE)) {
                 mLauncherBinder.bindSmartspaceWidget();
                 // Turn off pref.
@@ -349,6 +361,11 @@ public class LoaderTask implements Runnable {
             mModelDelegate.modelLoadComplete();
             transaction.commit();
             memoryLogger.clearLogs();
+            if (mIsRestoreFromBackup) {
+                restoreEventLogger.reportLauncherRestoreResults();
+                mIsRestoreFromBackup = false;
+                LauncherPrefs.get(mApp.getContext()).putSync(IS_FIRST_LOAD_AFTER_RESTORE.to(false));
+            }
         } catch (CancellationException e) {
             // Loader stopped, ignore
             logASplit("Cancelled");
@@ -367,10 +384,12 @@ public class LoaderTask implements Runnable {
     protected void loadWorkspace(
             List<ShortcutInfo> allDeepShortcuts,
             String selection,
-            LoaderMemoryLogger memoryLogger) {
+            LoaderMemoryLogger memoryLogger,
+            @Nullable LauncherRestoreEventLogger restoreEventLogger
+    ) {
         Trace.beginSection("LoadWorkspace");
         try {
-            loadWorkspaceImpl(allDeepShortcuts, selection, memoryLogger);
+            loadWorkspaceImpl(allDeepShortcuts, selection, memoryLogger, restoreEventLogger);
         } finally {
             Trace.endSection();
         }
@@ -391,7 +410,8 @@ public class LoaderTask implements Runnable {
     private void loadWorkspaceImpl(
             List<ShortcutInfo> allDeepShortcuts,
             String selection,
-            @Nullable LoaderMemoryLogger memoryLogger) {
+            @Nullable LoaderMemoryLogger memoryLogger,
+            @Nullable LauncherRestoreEventLogger restoreEventLogger) {
         final Context context = mApp.getContext();
         final PackageManagerHelper pmHelper = new PackageManagerHelper(context);
         final boolean isSafeMode = pmHelper.isSafeMode();
@@ -458,8 +478,8 @@ public class LoaderTask implements Runnable {
                 List<IconRequestInfo<WorkspaceItemInfo>> iconRequestInfos = new ArrayList<>();
 
                 while (!mStopped && c.moveToNext()) {
-                    processWorkspaceItem(c, memoryLogger, installingPkgs, isSdCardReady,
-                            tempPackageKey, widgetHelper, pmHelper,
+                    processWorkspaceItem(c, memoryLogger, restoreEventLogger, installingPkgs,
+                            isSdCardReady, tempPackageKey, widgetHelper, pmHelper,
                             iconRequestInfos, unlockedUsers, isSafeMode, allDeepShortcuts);
                 }
                 tryLoadWorkspaceIconsInBulk(iconRequestInfos);
@@ -518,6 +538,7 @@ public class LoaderTask implements Runnable {
 
     private void processWorkspaceItem(LoaderCursor c,
             LoaderMemoryLogger memoryLogger,
+            @Nullable LauncherRestoreEventLogger restoreEventLogger,
             HashMap<PackageUserKey, SessionInfo> installingPkgs,
             boolean isSdCardReady,
             PackageUserKey tempPackageKey,
@@ -531,7 +552,11 @@ public class LoaderTask implements Runnable {
         try {
             if (c.user == null) {
                 // User has been deleted, remove the item.
-                c.markDeleted("User has been deleted");
+                c.markDeleted("User of this item has been deleted");
+                if (mIsRestoreFromBackup && restoreEventLogger != null) {
+                    restoreEventLogger.logSingleFavoritesItemRestoreFailed(
+                            c.itemType, RESTORE_ERROR_PROFILE_DELETED);
+                }
                 return;
             }
 
@@ -542,6 +567,10 @@ public class LoaderTask implements Runnable {
                     Intent intent = c.parseIntent();
                     if (intent == null) {
                         c.markDeleted("Invalid or null intent");
+                        if (mIsRestoreFromBackup && restoreEventLogger != null) {
+                            restoreEventLogger.logSingleFavoritesItemRestoreFailed(
+                                    c.itemType, RESTORE_ERROR_MISSING_INFO);
+                        }
                         return;
                     }
 
@@ -552,6 +581,10 @@ public class LoaderTask implements Runnable {
 
                     if (TextUtils.isEmpty(targetPkg)) {
                         c.markDeleted("Shortcuts can't have null package");
+                        if (mIsRestoreFromBackup && restoreEventLogger != null) {
+                            restoreEventLogger.logSingleFavoritesItemRestoreFailed(
+                                    c.itemType, RESTORE_ERROR_MISSING_INFO);
+                        }
                         return;
                     }
 
@@ -569,6 +602,9 @@ public class LoaderTask implements Runnable {
                         if (mLauncherApps.isActivityEnabled(cn, c.user)) {
                             // no special handling necessary for this item
                             c.markRestored();
+                            if (mIsRestoreFromBackup && restoreEventLogger != null) {
+                                restoreEventLogger.logSingleFavoritesItemRestored(c.itemType);
+                            }
                         } else {
                             // Gracefully try to find a fallback activity.
                             intent = pmHelper.getAppLaunchIntent(targetPkg, c.user);
@@ -579,7 +615,11 @@ public class LoaderTask implements Runnable {
                                         intent.toUri(0)).commit();
                                 cn = intent.getComponent();
                             } else {
-                                c.markDeleted("Unable to find a launch target");
+                                c.markDeleted("Intent null, unable to find a launch target");
+                                if (mIsRestoreFromBackup && restoreEventLogger != null) {
+                                    restoreEventLogger.logSingleFavoritesItemRestoreFailed(
+                                            c.itemType, RESTORE_ERROR_MISSING_INFO);
+                                }
                                 return;
                             }
                         }
@@ -606,6 +646,10 @@ public class LoaderTask implements Runnable {
                             } else {
                                 c.markDeleted("removing app that is not restored and not "
                                         + "installing. package: " + targetPkg);
+                                if (mIsRestoreFromBackup && restoreEventLogger != null) {
+                                    restoreEventLogger.logSingleFavoritesItemRestoreFailed(
+                                            c.itemType, RESTORE_ERROR_APP_NOT_INSTALLED);
+                                }
                                 return;
                             }
                         } else if (pmHelper.isAppOnSdcard(targetPkg, c.user)) {
@@ -623,6 +667,10 @@ public class LoaderTask implements Runnable {
                         } else {
                             // Do not wait for external media load anymore.
                             c.markDeleted("Invalid package removed: " + targetPkg);
+                            if (mIsRestoreFromBackup && restoreEventLogger != null) {
+                                restoreEventLogger.logSingleFavoritesItemRestoreFailed(
+                                        c.itemType, RESTORE_ERROR_APP_NOT_INSTALLED);
+                            }
                             return;
                         }
                     }
@@ -652,8 +700,12 @@ public class LoaderTask implements Runnable {
                             ShortcutInfo pinnedShortcut = mShortcutKeyToPinnedShortcuts.get(key);
                             if (pinnedShortcut == null) {
                                 // The shortcut is no longer valid.
-                                c.markDeleted("Pinned shortcut not found for package: "
-                                        + key.getPackageName());
+                                c.markDeleted("Pinned shortcut not found from request."
+                                        + " package=" + key.getPackageName() + ", user=" + c.user);
+                                if (mIsRestoreFromBackup && restoreEventLogger != null) {
+                                    restoreEventLogger.logSingleFavoritesItemRestoreFailed(
+                                            c.itemType, RESTORE_ERROR_SHORTCUT_NOT_FOUND);
+                                }
                                 return;
                             }
                             info = new WorkspaceItemInfo(pinnedShortcut, mApp.getContext());
@@ -671,6 +723,9 @@ public class LoaderTask implements Runnable {
                             // Create a shortcut info in disabled mode for now.
                             info = c.loadSimpleWorkspaceItem();
                             info.runtimeStatusFlags |= FLAG_DISABLED_LOCKED_USER;
+                        }
+                        if (mIsRestoreFromBackup && restoreEventLogger != null) {
+                            restoreEventLogger.logSingleFavoritesItemRestored(c.itemType);
                         }
                     } else { // item type == ITEM_TYPE_SHORTCUT
                         info = c.loadSimpleWorkspaceItem();
@@ -751,13 +806,19 @@ public class LoaderTask implements Runnable {
 
                     // no special handling required for restored folders
                     c.markRestored();
-
+                    if (mIsRestoreFromBackup && restoreEventLogger != null) {
+                        restoreEventLogger.logSingleFavoritesItemRestored(c.itemType);
+                    }
                     c.checkAndAddItem(folderInfo, mBgDataModel, memoryLogger);
                     break;
 
                 case Favorites.ITEM_TYPE_APPWIDGET:
                     if (WidgetsModel.GO_DISABLE_WIDGETS) {
                         c.markDeleted("Only legacy shortcuts can have null package");
+                        if (mIsRestoreFromBackup && restoreEventLogger != null) {
+                            restoreEventLogger.logSingleFavoritesItemRestoreFailed(
+                                    c.itemType, RESTORE_ERROR_WIDGETS_DISABLED);
+                        }
                         return;
                     }
                     // Follow through
@@ -774,6 +835,10 @@ public class LoaderTask implements Runnable {
                         component  = QsbContainerView.getSearchComponentName(mApp.getContext());
                         if (component == null) {
                             c.markDeleted("Discarding SearchWidget without packagename ");
+                            if (mIsRestoreFromBackup && restoreEventLogger != null) {
+                                restoreEventLogger.logSingleFavoritesItemRestoreFailed(
+                                        c.itemType, RESTORE_ERROR_MISSING_INFO);
+                            }
                             return;
                         }
                     } else {
@@ -799,6 +864,10 @@ public class LoaderTask implements Runnable {
                     final boolean isProviderReady = isValidProvider(provider);
                     if (!isSafeMode && !customWidget && wasProviderReady && !isProviderReady) {
                         c.markDeleted("Deleting widget that isn't installed anymore: " + provider);
+                        if (mIsRestoreFromBackup && restoreEventLogger != null) {
+                            restoreEventLogger.logSingleFavoritesItemRestoreFailed(
+                                    c.itemType, RESTORE_ERROR_APP_NOT_INSTALLED);
+                        }
                     } else {
                         LauncherAppWidgetInfo appWidgetInfo;
                         if (isProviderReady) {
@@ -841,6 +910,10 @@ public class LoaderTask implements Runnable {
                                         |= LauncherAppWidgetInfo.FLAG_RESTORE_STARTED;
                             } else if (!isSafeMode) {
                                 c.markDeleted("Unrestored widget removed: " + component);
+                                if (mIsRestoreFromBackup && restoreEventLogger != null) {
+                                    restoreEventLogger.logSingleFavoritesItemRestoreFailed(
+                                            c.itemType, RESTORE_ERROR_APP_NOT_INSTALLED);
+                                }
                                 return;
                             }
 
@@ -862,6 +935,10 @@ public class LoaderTask implements Runnable {
                         if (appWidgetInfo.spanX <= 0 || appWidgetInfo.spanY <= 0) {
                             c.markDeleted("Widget has invalid size: "
                                     + appWidgetInfo.spanX + "x" + appWidgetInfo.spanY);
+                            if (mIsRestoreFromBackup && restoreEventLogger != null) {
+                                restoreEventLogger.logSingleFavoritesItemRestoreFailed(
+                                        c.itemType, RESTORE_ERROR_INVALID_LOCATION);
+                            }
                             return;
                         }
                         LauncherAppWidgetProviderInfo widgetProviderInfo =
@@ -875,12 +952,15 @@ public class LoaderTask implements Runnable {
                                     + "x" + appWidgetInfo.spanY + " minSpan="
                                     + widgetProviderInfo.minSpanX + "x"
                                     + widgetProviderInfo.minSpanY);
-                            logWidgetInfo(mApp.getInvariantDeviceProfile(),
-                                    widgetProviderInfo);
+                            logWidgetInfo(mApp.getInvariantDeviceProfile(), widgetProviderInfo);
                         }
                         if (!c.isOnWorkspaceOrHotseat()) {
                             c.markDeleted("Widget found where container != CONTAINER_DESKTOP"
                                     + "nor CONTAINER_HOTSEAT - ignoring!");
+                            if (mIsRestoreFromBackup && restoreEventLogger != null) {
+                                restoreEventLogger.logSingleFavoritesItemRestoreFailed(
+                                        c.itemType, RESTORE_ERROR_INVALID_LOCATION);
+                            }
                             return;
                         }
 

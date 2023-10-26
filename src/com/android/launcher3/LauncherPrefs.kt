@@ -34,6 +34,7 @@ import com.android.launcher3.config.FeatureFlags.LPNH_TIMEOUT_MS
 import com.android.launcher3.model.DeviceGridState
 import com.android.launcher3.pm.InstallSessionHelper
 import com.android.launcher3.provider.RestoreDbTask
+import com.android.launcher3.provider.RestoreDbTask.FIRST_LOAD_AFTER_RESTORE_KEY
 import com.android.launcher3.states.RotationHelper
 import com.android.launcher3.util.DisplayController
 import com.android.launcher3.util.MainThreadInitializedObject
@@ -415,6 +416,13 @@ class LauncherPrefs(private val encryptedContext: Context) {
             backedUpItem(
                 RestoreDbTask.RESTORED_DEVICE_TYPE,
                 InvariantDeviceProfile.TYPE_PHONE,
+                EncryptionType.MOVE_TO_DEVICE_PROTECTED
+            )
+        @JvmField
+        val IS_FIRST_LOAD_AFTER_RESTORE =
+            backedUpItem(
+                FIRST_LOAD_AFTER_RESTORE_KEY,
+                false,
                 EncryptionType.MOVE_TO_DEVICE_PROTECTED
             )
         @JvmField val APP_WIDGET_IDS = backedUpItem(RestoreDbTask.APPWIDGET_IDS, "")
