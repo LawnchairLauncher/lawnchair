@@ -22,7 +22,7 @@ import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.app.animation.Interpolators.FINAL_FRAME;
 import static com.android.app.animation.Interpolators.INSTANT;
 import static com.android.app.animation.Interpolators.LINEAR;
-import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING_KEY;
+import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_PINNING;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_HIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_LONGPRESS_SHOW;
@@ -337,7 +337,8 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
                 && mPrefs.getBoolean(SHARED_PREFS_STASHED_KEY, DEFAULT_STASHED_PREF);
         boolean isInSetup = !mActivity.isUserSetupComplete() || setupUIVisible;
         updateStateForFlag(FLAG_STASHED_IN_APP_MANUAL, isManuallyStashedInApp);
-        updateStateForFlag(FLAG_STASHED_IN_APP_AUTO, isTransientTaskbar);
+        updateStateForFlag(FLAG_STASHED_IN_APP_AUTO,
+                isTransientTaskbar && !mTaskbarSharedState.taskbarWasPinned);
         updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, isInSetup);
         updateStateForFlag(FLAG_IN_SETUP, isInSetup);
         updateStateForFlag(FLAG_STASHED_SMALL_SCREEN, isPhoneMode()
@@ -346,6 +347,9 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         // us that we're paused until a bit later. This avoids flickering upon recreating taskbar.
         updateStateForFlag(FLAG_IN_APP, true);
         applyState(/* duration = */ 0);
+        if (mTaskbarSharedState.taskbarWasPinned) {
+            tryStartTaskbarTimeout();
+        }
         notifyStashChange(/* visible */ false, /* stashed */ isStashedInApp());
     }
 
@@ -361,7 +365,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      * Returns whether the user can manually stash the taskbar based on the current device state.
      */
     protected boolean supportsManualStashing() {
-        if (ENABLE_TASKBAR_PINNING.get() && mPrefs.getBoolean(TASKBAR_PINNING_KEY, false)) {
+        if (ENABLE_TASKBAR_PINNING.get() && LauncherPrefs.get(mActivity).get(TASKBAR_PINNING)) {
             return false;
         }
         return supportsVisualStashing()

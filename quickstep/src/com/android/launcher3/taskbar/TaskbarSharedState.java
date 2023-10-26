@@ -71,4 +71,11 @@ public class TaskbarSharedState {
             new InsetsFrameProvider(mInsetsOwner, INDEX_RIGHT, systemGestures())
                     .setSource(SOURCE_DISPLAY)
     };
+
+    // Allows us to shift translation logic when doing taskbar pinning animation.
+    public Boolean startTaskbarVariantIsTransient = true;
+
+    // To track if taskbar was pinned using taskbar pinning feature at the time of recreate,
+    // so we can unstash transient taskbar when we un-pinning taskbar.
+    public Boolean taskbarWasPinned = false;
 }

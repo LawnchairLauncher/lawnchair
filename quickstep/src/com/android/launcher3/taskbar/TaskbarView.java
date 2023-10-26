@@ -20,7 +20,6 @@ import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_
 
 import static com.android.launcher3.Flags.enableCursorHoverStates;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_PINNING;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
 import android.content.Context;
@@ -98,8 +97,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
     private final float mTransientTaskbarMinWidth;
 
-    private final float mTaskbarAllAppsButtonTranslationXOffset;
-
     private boolean mShouldTryStartAlign;
 
     public TaskbarView(@NonNull Context context) {
@@ -125,13 +122,16 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                 && !TaskbarManager.isPhoneMode(mActivityContext.getDeviceProfile());
         mIsRtl = Utilities.isRtl(resources);
         mTransientTaskbarMinWidth = resources.getDimension(R.dimen.transient_taskbar_min_width);
-        mTaskbarAllAppsButtonTranslationXOffset =
-                resources.getDimension(getAllAppsButtonTranslationXOffset(isTransientTaskbar));
+
 
         onDeviceProfileChanged(mActivityContext.getDeviceProfile());
 
         int actualMargin = resources.getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
         int actualIconSize = mActivityContext.getDeviceProfile().taskbarIconSize;
+        if (FeatureFlags.ENABLE_TASKBAR_PINNING.get()) {
+            DeviceProfile deviceProfile = mActivityContext.getTransientTaskbarDeviceProfile();
+            actualIconSize = deviceProfile.taskbarIconSize;
+        }
         int visualIconSize = (int) (actualIconSize * ICON_VISIBLE_AREA_FACTOR);
 
         mIconTouchSize = Math.max(actualIconSize,
@@ -139,8 +139,11 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
         // We layout the icons to be of mIconTouchSize in width and height
         mItemMarginLeftRight = actualMargin - (mIconTouchSize - visualIconSize) / 2;
-        mItemPadding = (mIconTouchSize - actualIconSize) / 2;
 
+        // We always layout taskbar as a transient taskbar when we have taskbar pinning feature on,
+        // then we scale and translate the icons to match persistent taskbar designs, so we use
+        // taskbar icon size from current device profile to calculate correct item padding.
+        mItemPadding = (mIconTouchSize - mActivityContext.getDeviceProfile().taskbarIconSize) / 2;
         mFolderLeaveBehindColor = Themes.getAttrColor(mActivityContext,
                 android.R.attr.textColorTertiary);
 
@@ -173,7 +176,8 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
     @DrawableRes
     private int getAllAppsButton(boolean isTransientTaskbar) {
-        boolean shouldSelectTransientIcon = (isTransientTaskbar || ENABLE_TASKBAR_PINNING.get())
+        boolean shouldSelectTransientIcon =
+                (isTransientTaskbar || FeatureFlags.ENABLE_TASKBAR_PINNING.get())
                 && !mActivityContext.isThreeButtonNav();
         if (ENABLE_ALL_APPS_SEARCH_IN_TASKBAR.get()) {
             return shouldSelectTransientIcon
@@ -187,7 +191,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     }
 
     @DimenRes
-    private int getAllAppsButtonTranslationXOffset(boolean isTransientTaskbar) {
+    public int getAllAppsButtonTranslationXOffset(boolean isTransientTaskbar) {
         if (isTransientTaskbar) {
             return R.dimen.transient_taskbar_all_apps_button_translation_x_offset;
         } else {
@@ -370,8 +374,6 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         }
 
         if (mAllAppsButton != null) {
-            mAllAppsButton.setTranslationXForTaskbarAllAppsIcon(getChildCount() > 0
-                    ? mTaskbarAllAppsButtonTranslationXOffset : 0f);
             addView(mAllAppsButton, mIsRtl ? getChildCount() : 0);
 
             // if only all apps button present, don't include divider view.
