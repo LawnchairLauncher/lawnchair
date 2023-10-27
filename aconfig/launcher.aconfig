@@ -32,7 +32,7 @@ flag {
     name: "enable_responsive_workspace"
     namespace: "launcher"
     description: "Enables new workspace grid calculations method."
-    bug: "241386436"
+    bug: "302189128"
 }
 
 flag {

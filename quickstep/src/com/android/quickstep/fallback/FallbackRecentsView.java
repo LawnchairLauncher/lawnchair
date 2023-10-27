@@ -254,7 +254,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
             setOverviewSelectEnabled(false);
         }
         if (finalState != OVERVIEW_SPLIT_SELECT) {
-            if (FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()) {
+            if (FeatureFlags.enableSplitContextually()) {
                 mSplitSelectStateController.resetState();
             } else {
                 resetFromSplitSelectionState();

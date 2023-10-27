@@ -17,7 +17,6 @@
 package com.android.quickstep.util;
 
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_FULLSCREEN_WITH_KEYBOARD_SHORTCUTS;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
 import android.animation.Animator;
@@ -40,6 +39,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.data.PackageItemInfo;
@@ -192,7 +192,7 @@ public class SplitToWorkspaceController {
 
     private boolean shouldIgnoreSecondSplitLaunch() {
         return (!ENABLE_SPLIT_FROM_FULLSCREEN_WITH_KEYBOARD_SHORTCUTS.get()
-                && !ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.get()
+                && !FeatureFlags.enableSplitContextually()
                 && !DesktopTaskView.DESKTOP_MODE_SUPPORTED)
                 || !mController.isSplitSelectActive();
     }

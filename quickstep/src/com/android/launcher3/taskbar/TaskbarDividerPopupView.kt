@@ -75,12 +75,6 @@ constructor(
     /** Callback invoked when the pinning popup view is closing. */
     var onCloseCallback: (preferenceChanged: Boolean) -> Unit = {}
 
-    /**
-     * Callback invoked when the user preference changes in popup view. Preference change will be
-     * based upon current value stored in [LauncherPrefs] for `TASKBAR_PINNING`
-     */
-    var changePreference: () -> Unit = {}
-
     init {
         // This synchronizes the arrow and menu to open at the same time
         mOpenChildFadeStartDelay = mOpenFadeStartDelay
@@ -185,8 +179,6 @@ constructor(
 
     private fun onClickAlwaysShowTaskbarSwitchOption() {
         didPreferenceChange = true
-        changePreference()
-        changePreference = {}
         // Allow switch animation to finish and then close the popup.
         postDelayed(DIVIDER_POPUP_CLOSING_DELAY) {
             if (isOpen) {
