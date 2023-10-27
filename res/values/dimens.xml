@@ -402,9 +402,12 @@
     <dimen name="task_thumbnail_icon_drawable_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_drawable_size_grid">0dp</dimen>
     <dimen name="task_thumbnail_icon_menu_max_width">0dp</dimen>
+    <dimen name="task_thumbnail_icon_menu_start_margin">0dp</dimen>
+    <dimen name="task_thumbnail_icon_menu_background_max_width">0dp</dimen>
+    <dimen name="task_thumbnail_icon_menu_corner_radius">0dp</dimen>
     <dimen name="task_thumbnail_icon_menu_drawable_size">0dp</dimen>
     <dimen name="task_thumbnail_icon_menu_drawable_touch_size">0dp</dimen>
-    <dimen name="task_menu_vertical_padding">0dp</dimen>
+    <dimen name="task_menu_edge_padding">0dp</dimen>
     <dimen name="overview_task_margin">0dp</dimen>
     <dimen name="overview_actions_height">0dp</dimen>
     <dimen name="overview_actions_button_spacing">0dp</dimen>

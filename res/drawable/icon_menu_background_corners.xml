@@ -16,13 +16,7 @@
 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:androidprv="http://schemas.android.com/apk/prv/res/android"
-    android:autoMirrored="true">
-    <gradient
-        android:type="linear"
-        android:angle="0"
-        android:startColor="#00000000"
-        android:centerX="0.25"
-        android:centerColor="?androidprv:attr/materialColorSurfaceBright"
-        android:endColor="?androidprv:attr/materialColorSurfaceBright" />
-    <corners android:radius="@dimen/dialogCornerRadius" />
+    android:shape="rectangle">
+    <solid android:color="?androidprv:attr/materialColorSurfaceBright" />
+    <corners android:radius="@dimen/task_thumbnail_icon_menu_corner_radius" />
 </shape>
