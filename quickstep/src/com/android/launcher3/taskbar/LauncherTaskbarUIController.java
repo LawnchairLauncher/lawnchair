@@ -16,7 +16,6 @@
 package com.android.launcher3.taskbar;
 
 import static com.android.launcher3.QuickstepTransitionManager.TRANSIENT_TASKBAR_TRANSITION_DURATION;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_HOME_TRANSITION_LISTENER;
 import static com.android.launcher3.statemanager.BaseState.FLAG_NON_INTERACTIVE;
 import static com.android.launcher3.taskbar.TaskbarEduTooltipControllerKt.TOOLTIP_STEP_FEATURES;
 import static com.android.launcher3.taskbar.TaskbarLauncherStateController.FLAG_VISIBLE;
@@ -39,6 +38,7 @@ import com.android.launcher3.QuickstepTransitionManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatedFloat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
 import com.android.launcher3.model.data.ItemInfo;
@@ -101,7 +101,7 @@ public class LauncherTaskbarUIController extends TaskbarUIController {
 
         mLauncher.setTaskbarUIController(this);
 
-        if (!ENABLE_HOME_TRANSITION_LISTENER.get()) {
+        if (!FeatureFlags.enableHomeTransitionListener()) {
             onLauncherVisibilityChanged(mLauncher.hasBeenResumed(), true /* fromInit */);
         }
 

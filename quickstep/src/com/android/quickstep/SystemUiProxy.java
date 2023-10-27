@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_HOME_TRANSITION_LISTENER;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
@@ -63,6 +62,7 @@ import androidx.annotation.WorkerThread;
 import com.android.internal.logging.InstanceId;
 import com.android.internal.util.ScreenshotRequest;
 import com.android.internal.view.AppearanceRegion;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.quickstep.util.ActiveGestureLog;
@@ -1048,7 +1048,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     public void setHomeTransitionListener(IHomeTransitionListener listener) {
-        if (!ENABLE_HOME_TRANSITION_LISTENER.get()) {
+        if (!FeatureFlags.enableHomeTransitionListener()) {
             return;
         }
 
