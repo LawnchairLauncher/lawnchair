@@ -34,6 +34,7 @@ import static com.android.launcher3.LauncherState.OVERVIEW_MODAL_TASK;
 import static com.android.launcher3.LauncherState.OVERVIEW_SPLIT_SELECT;
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_HOME_TRANSITION_LISTENER;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_APP_LAUNCH_TAP;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.popup.QuickstepSystemShortcut.getSplitSelectShortcutByPosition;
@@ -264,7 +265,7 @@ public class QuickstepLauncher extends Launcher {
         mAppTransitionManager.registerRemoteAnimations();
         mAppTransitionManager.registerRemoteTransitions();
 
-        if (ENABLE_HOME_TRANSITION_LISTENER.get()) {
+        if (FeatureFlags.enableHomeTransitionListener()) {
             mHomeTransitionController = new HomeTransitionController(this);
             mHomeTransitionController.registerHomeTransitionListener();
         }
@@ -376,7 +377,7 @@ public class QuickstepLauncher extends Launcher {
         }
 
         if ((changeBits & ACTIVITY_STATE_RESUMED) != 0) {
-            if (!ENABLE_HOME_TRANSITION_LISTENER.get() && mTaskbarUIController != null) {
+            if (!FeatureFlags.enableHomeTransitionListener() && mTaskbarUIController != null) {
                 mTaskbarUIController.onLauncherVisibilityChanged(hasBeenResumed());
             }
         }
