@@ -1061,9 +1061,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         boolean allowBlurringLauncher = mLauncher.getStateManager().getState() != OVERVIEW
                 && BlurUtils.supportsBlursOnWindows();
 
-        ObjectAnimator backgroundRadiusAnim =
-                ObjectAnimator.ofFloat(mLauncher.getDepthController().stateDepth,
-                                MULTI_PROPERTY_VALUE, BACKGROUND_APP.getDepth(mLauncher))
+        LaunchDepthController depthController = new LaunchDepthController(mLauncher);
+        ObjectAnimator backgroundRadiusAnim = ObjectAnimator.ofFloat(depthController.stateDepth,
+                        MULTI_PROPERTY_VALUE, BACKGROUND_APP.getDepth(mLauncher))
                 .setDuration(APP_LAUNCH_DURATION);
 
         if (allowBlurringLauncher) {
@@ -1088,6 +1088,9 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
             backgroundRadiusAnim.addListener(AnimatorListeners.forEndCallback(() ->
                     new SurfaceControl.Transaction().remove(dimLayer).apply()));
         }
+
+        backgroundRadiusAnim.addListener(
+                AnimatorListeners.forEndCallback(depthController::dispose));
 
         return backgroundRadiusAnim;
     }
