@@ -48,3 +48,10 @@ flag {
     description: "Enables taskbar with no recreation from lifecycle changes of TaskbarActivityContext."
     bug: "299193589"
 }
+
+flag {
+    name: "enable_home_transition_listener"
+    namespace: "launcher"
+    description: "Enables launcher to listen to all transitions that include home activity"
+    bug: "306053414"
+}

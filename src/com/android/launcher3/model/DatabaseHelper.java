@@ -269,7 +269,6 @@ public class DatabaseHelper extends NoLocaleSQLiteHelper implements
                                     Favorites.CONTAINER, Favorites.CONTAINER_DESKTOP,
                                     Favorites.CELLY, 0), null);
                 }
-                return;
             }
             case 31: {
                 LauncherDbUtils.migrateLegacyShortcuts(mContext, db);

@@ -129,6 +129,7 @@ import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * The {@link ActivityContext} with which we inflate Taskbar-related Views. This allows UI elements
@@ -299,38 +300,31 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * the icon size
      */
     private void applyDeviceProfile(DeviceProfile originDeviceProfile) {
-        mDeviceProfile = originDeviceProfile.toBuilder(this)
-                .withDimensionsOverride(deviceProfile -> {
-                    // Taskbar should match the number of icons of hotseat
-                    deviceProfile.numShownHotseatIcons = originDeviceProfile.numShownHotseatIcons;
-                    // Same QSB width to have a smooth animation
-                    deviceProfile.hotseatQsbWidth = originDeviceProfile.hotseatQsbWidth;
+        Consumer<DeviceProfile> overrideProvider = deviceProfile -> {
+            // Taskbar should match the number of icons of hotseat
+            deviceProfile.numShownHotseatIcons = originDeviceProfile.numShownHotseatIcons;
+            // Same QSB width to have a smooth animation
+            deviceProfile.hotseatQsbWidth = originDeviceProfile.hotseatQsbWidth;
 
-                    // Update icon size
-                    deviceProfile.iconSizePx = deviceProfile.taskbarIconSize;
-                    deviceProfile.updateIconSize(1f, getResources());
-                }).build();
+            // Update icon size
+            deviceProfile.iconSizePx = deviceProfile.taskbarIconSize;
+            deviceProfile.updateIconSize(1f, getResources());
+        };
+        mDeviceProfile = originDeviceProfile.toBuilder(this)
+                .withDimensionsOverride(overrideProvider).build();
 
         if (DisplayController.isTransientTaskbar(this)) {
             mTransientTaskbarDeviceProfile = mDeviceProfile;
             mPersistentTaskbarDeviceProfile = mDeviceProfile
                     .toBuilder(this)
-                    .withDimensionsOverride(deviceProfile -> {
-                        // Update icon size
-                        deviceProfile.iconSizePx = deviceProfile.taskbarIconSize;
-                        deviceProfile.updateIconSize(1f, getResources());
-                    })
+                    .withDimensionsOverride(overrideProvider)
                     .setIsTransientTaskbar(false)
                     .build();
         } else {
             mPersistentTaskbarDeviceProfile = mDeviceProfile;
             mTransientTaskbarDeviceProfile = mDeviceProfile
                     .toBuilder(this)
-                    .withDimensionsOverride(deviceProfile -> {
-                        // Update icon size
-                        deviceProfile.iconSizePx = deviceProfile.taskbarIconSize;
-                        deviceProfile.updateIconSize(1f, getResources());
-                    })
+                    .withDimensionsOverride(overrideProvider)
                     .setIsTransientTaskbar(true)
                     .build();
         }
