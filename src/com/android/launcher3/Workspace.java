@@ -666,7 +666,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
                     .inflate(smartspaceMode.getLayoutResourceId(), firstPage, false);
         }
 
-        int cellHSpan = mLauncher.getDeviceProfile().inv.numSearchContainerColumns;
+        int cellHSpan = mLauncher.getDeviceProfile().inv.numColumns;
         CellLayoutLayoutParams lp = new CellLayoutLayoutParams(0, 0, cellHSpan, 1);
         lp.canReorder = false;
         if (!firstPage.addViewToCellLayout(

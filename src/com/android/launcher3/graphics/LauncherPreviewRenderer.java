@@ -593,13 +593,10 @@ public class LauncherPreviewRenderer extends ContextWrapper
         // Add first page QSB
         if (FeatureFlags.topQsbOnFirstScreenEnabled (mContext)) {
             CellLayout firstScreen = mWorkspaceScreens.get(FIRST_SCREEN_ID);
-//            View qsb = mHomeElementInflater.inflate(R.layout.qsb_preview, firstScreen, false);
-//            CellLayoutLayoutParams lp = new CellLayoutLayoutParams(
-//                    0, 0, firstScreen.getCountX(), 1);
             View qsb = mHomeElementInflater.inflate(mWorkspaceSearchContainer, firstScreen,
                     false);
             CellLayoutLayoutParams lp =
-                    new CellLayoutLayoutParams(0, 0, 1, 1);
+                    new CellLayoutLayoutParams(0, 0, mDp.inv.numColumns, 1);
             lp.canReorder = false;
             firstScreen.addViewToCellLayout(qsb, 0, R.id.search_container_workspace, lp, true);
         }
