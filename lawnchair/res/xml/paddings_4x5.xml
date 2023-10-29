@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<device-paddings xmlns:launcher="http://schemas.android.com/apk/res-auto">
+    <device-padding launcher:maxEmptySpace="22.0dip">
+        <workspaceTopPadding launcher:a="0.0" launcher:b="0.0" />
+        <workspaceBottomPadding launcher:a="1.0" launcher:b="0.0" />
+        <hotseatBottomPadding launcher:a="0.0" launcher:b="0.0" />
+    </device-padding>
+    <device-padding launcher:maxEmptySpace="44.0dip">
+        <workspaceTopPadding launcher:a="0.0" launcher:b="8.0dip" />
+        <workspaceBottomPadding launcher:a="1.0" launcher:b="0.0" launcher:c="8.0dip" />
+        <hotseatBottomPadding launcher:a="0.0" launcher:b="0.0" />
+    </device-padding>
+    <device-padding launcher:maxEmptySpace="64.0dip">
+        <workspaceTopPadding launcher:a="0.0" launcher:b="16.0dip" />
+        <workspaceBottomPadding launcher:a="1.0" launcher:b="0.0" launcher:c="16.0dip" />
+        <hotseatBottomPadding launcher:a="0.0" launcher:b="0.0" />
+    </device-padding>
+    <device-padding launcher:maxEmptySpace="114.0dip">
+        <workspaceTopPadding launcher:a="0.0" launcher:b="36.0dip" />
+        <workspaceBottomPadding launcher:a="1.0" launcher:b="0.0" launcher:c="36.0dip" />
+        <hotseatBottomPadding launcher:a="0.0" launcher:b="0.0" />
+    </device-padding>
+    <device-padding launcher:maxEmptySpace="138.0dip">
+        <workspaceTopPadding launcher:a="0.0" launcher:b="48.0dip" />
+        <workspaceBottomPadding launcher:a="1.0" launcher:b="0.0" launcher:c="48.0dip" />
+        <hotseatBottomPadding launcher:a="0.0" launcher:b="0.0" />
+    </device-padding>
+    <device-padding launcher:maxEmptySpace="154.0dip">
+        <workspaceTopPadding launcher:a="0.0" launcher:b="60.0dip" />
+        <workspaceBottomPadding launcher:a="1.0" launcher:b="0.0" launcher:c="60.0dip" />
+        <hotseatBottomPadding launcher:a="0.0" launcher:b="0.0" />
+    </device-padding>
+    <device-padding launcher:maxEmptySpace="9999.0dip">
+        <workspaceTopPadding launcher:a="0.0" launcher:b="72.0dip" />
+        <workspaceBottomPadding launcher:a="1.0" launcher:b="0.0" launcher:c="72.0dip" />
+        <hotseatBottomPadding launcher:a="0.0" launcher:b="0.0" />
+    </device-padding>
+</device-paddings>
