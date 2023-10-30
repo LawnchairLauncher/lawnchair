@@ -121,13 +121,13 @@ public class AllAppsState extends LauncherState {
     @Override
     public int getFloatingSearchBarRestingMarginStart(Launcher launcher) {
         DeviceProfile dp = launcher.getDeviceProfile();
-        return dp.allAppsLeftRightMargin + dp.getAllAppsIconStartMargin();
+        return dp.allAppsLeftRightMargin + dp.getAllAppsIconStartMargin(launcher);
     }
 
     @Override
     public int getFloatingSearchBarRestingMarginEnd(Launcher launcher) {
         DeviceProfile dp = launcher.getDeviceProfile();
-        return dp.allAppsLeftRightMargin + dp.getAllAppsIconStartMargin();
+        return dp.allAppsLeftRightMargin + dp.getAllAppsIconStartMargin(launcher);
     }
 
     @Override

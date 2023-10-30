@@ -235,14 +235,13 @@ public class DeviceProfile {
     // All apps
     public Point allAppsBorderSpacePx;
     public int allAppsShiftRange;
-    public int allAppsTopPadding;
+    public Rect allAppsPadding = new Rect();
     public int allAppsOpenDuration;
     public int allAppsCloseDuration;
     public int allAppsCellHeightPx;
     public int allAppsCellWidthPx;
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
-    public int allAppsLeftRightPadding;
     public int allAppsLeftRightMargin;
     public final int numShownAllAppsColumns;
     public float allAppsIconTextSizePx;
@@ -678,10 +677,10 @@ public class DeviceProfile {
                     res.getDimensionPixelOffset(R.dimen.bottom_sheet_handle_area_height);
             int contentHeight = heightPx - collapseHandleHeight - hotseatQsbHeight;
             int targetContentHeight = (int) (allAppsCellHeightPx * ALL_APPS_TABLET_MAX_ROWS);
-            allAppsTopPadding = Math.max(mInsets.top, contentHeight - targetContentHeight);
-            allAppsShiftRange = heightPx - allAppsTopPadding;
+            allAppsPadding.top = Math.max(mInsets.top, contentHeight - targetContentHeight);
+            allAppsShiftRange = heightPx - allAppsPadding.top;
         } else {
-            allAppsTopPadding = 0;
+            allAppsPadding.top = 0;
             allAppsShiftRange =
                     res.getDimensionPixelSize(R.dimen.all_apps_starting_vertical_translate);
         }
@@ -718,7 +717,7 @@ public class DeviceProfile {
      * reasonable over estimation is fine.
      */
     public int getMaxAllAppsRowCount() {
-        return (int) (Math.ceil((availableHeightPx - allAppsTopPadding)
+        return (int) (Math.ceil((availableHeightPx - allAppsPadding.top)
                 / (float) allAppsCellHeightPx));
     }
 
@@ -1259,7 +1258,8 @@ public class DeviceProfile {
         allAppsCellHeightPx = mAllAppsResponsiveHeightSpec.getCellSizePx()
                 + mAllAppsResponsiveHeightSpec.getGutterPx();
         allAppsCellWidthPx = mAllAppsResponsiveWidthSpec.getCellSizePx();
-        allAppsLeftRightPadding = mAllAppsResponsiveWidthSpec.getStartPaddingPx();
+        allAppsPadding.left = mAllAppsResponsiveWidthSpec.getStartPaddingPx();
+        allAppsPadding.right = mAllAppsResponsiveWidthSpec.getEndPaddingPx();
     }
 
     /**
@@ -1278,10 +1278,10 @@ public class DeviceProfile {
         if (isTablet) {
             int usedWidth = (allAppsCellWidthPx * numShownAllAppsColumns)
                     + (allAppsBorderSpacePx.x * (numShownAllAppsColumns - 1))
-                    + allAppsLeftRightPadding * 2;
+                    + allAppsPadding.left + allAppsPadding.right;
             allAppsLeftRightMargin = Math.max(1, (availableWidthPx - usedWidth) / 2);
         } else {
-            allAppsLeftRightPadding =
+            allAppsPadding.left = allAppsPadding.right =
                     Math.max(0, desiredWorkspaceHorizontalMarginPx + cellLayoutHorizontalPadding
                             - (allAppsBorderSpacePx.x / 2));
         }
@@ -1292,7 +1292,7 @@ public class DeviceProfile {
                 inv.allAppsStyle != INVALID_RESOURCE_HANDLE ? inv.allAppsStyle
                         : R.style.AllAppsStyleDefault, R.styleable.AllAppsStyle);
 
-        allAppsLeftRightPadding = allAppsStyle.getDimensionPixelSize(
+        allAppsPadding.left = allAppsPadding.right = allAppsStyle.getDimensionPixelSize(
                 R.styleable.AllAppsStyle_horizontalPadding, 0);
         allAppsStyle.recycle();
     }
@@ -1699,13 +1699,14 @@ public class DeviceProfile {
     }
 
     /** The margin between the edge of all apps and the edge of the first icon. */
-    public int getAllAppsIconStartMargin() {
+    public int getAllAppsIconStartMargin(Context context) {
         int allAppsSpacing;
         if (isVerticalBarLayout()) {
             // On phones, the landscape layout uses a different setup.
             allAppsSpacing = workspacePadding.left + workspacePadding.right;
         } else {
-            allAppsSpacing = allAppsLeftRightPadding * 2 + allAppsLeftRightMargin * 2;
+            allAppsSpacing =
+                    allAppsPadding.left + allAppsPadding.right + allAppsLeftRightMargin * 2;
         }
 
         int cellWidth = DeviceProfile.calculateCellWidth(
@@ -1714,7 +1715,9 @@ public class DeviceProfile {
                 numShownAllAppsColumns);
         int iconVisibleSize = Math.round(ICON_VISIBLE_AREA_FACTOR * allAppsIconSizePx);
         int iconAlignmentMargin = (cellWidth - iconVisibleSize) / 2;
-        return allAppsLeftRightPadding + iconAlignmentMargin;
+
+        return (Utilities.isRtl(context.getResources()) ? allAppsPadding.right
+                : allAppsPadding.left) + iconAlignmentMargin;
     }
 
     private int getAdditionalQsbSpace() {
@@ -1963,7 +1966,6 @@ public class DeviceProfile {
         writer.println(prefix + "\tbottomSheetDepth: " + bottomSheetDepth);
 
         writer.println(prefix + pxToDpStr("allAppsShiftRange", allAppsShiftRange));
-        writer.println(prefix + pxToDpStr("allAppsTopPadding", allAppsTopPadding));
         writer.println(prefix + "\tallAppsOpenDuration: " + allAppsOpenDuration);
         writer.println(prefix + "\tallAppsCloseDuration: " + allAppsCloseDuration);
         writer.println(prefix + pxToDpStr("allAppsIconSizePx", allAppsIconSizePx));
@@ -1975,7 +1977,9 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("allAppsBorderSpacePxX", allAppsBorderSpacePx.x));
         writer.println(prefix + pxToDpStr("allAppsBorderSpacePxY", allAppsBorderSpacePx.y));
         writer.println(prefix + "\tnumShownAllAppsColumns: " + numShownAllAppsColumns);
-        writer.println(prefix + pxToDpStr("allAppsLeftRightPadding", allAppsLeftRightPadding));
+        writer.println(prefix + pxToDpStr("allAppsPadding.top", allAppsPadding.top));
+        writer.println(prefix + pxToDpStr("allAppsPadding.left", allAppsPadding.left));
+        writer.println(prefix + pxToDpStr("allAppsPadding.right", allAppsPadding.right));
         writer.println(prefix + pxToDpStr("allAppsLeftRightMargin", allAppsLeftRightMargin));
 
         writer.println(prefix + pxToDpStr("hotseatBarSizePx", hotseatBarSizePx));
