@@ -2,6 +2,7 @@ package com.android.launcher3
 
 import android.content.ComponentName
 import android.view.View
+import com.android.launcher3.BaseDraggingActivity.EVENT_RESUMED
 import com.android.launcher3.DropTarget.DragObject
 import com.android.launcher3.SecondaryDropTarget.DeferredOnComplete
 import com.android.launcher3.dragndrop.DragLayer
@@ -32,7 +33,7 @@ class DropTargetHandler(launcher: Launcher) {
                 if (d.dragSource is SecondaryDropTarget.DeferredOnComplete) {
                     target?.let {
                         deferred.mPackageName = it.packageName
-                        mLauncher.addOnResumeCallback { deferred.onLauncherResume() }
+                        mLauncher.addEventCallback(EVENT_RESUMED) { deferred.onLauncherResume() }
                     }
                         ?: deferred.sendFailure()
                 }

@@ -1184,11 +1184,6 @@ public class QuickstepLauncher extends Launcher {
     }
 
     @Override
-    public void tryClearAccessibilityFocus(View view) {
-        view.clearAccessibilityFocus();
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
