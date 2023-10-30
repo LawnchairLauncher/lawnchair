@@ -17,6 +17,7 @@ package com.android.quickstep.util;
 
 import static android.app.WindowConfiguration.WINDOWING_MODE_FULLSCREEN;
 
+import static com.android.launcher3.Flags.enableGridOnlyOverview;
 import static com.android.launcher3.states.RotationHelper.deltaRotation;
 import static com.android.launcher3.touch.PagedOrientationHandler.MATRIX_POST_TRANSLATE;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
@@ -108,6 +109,7 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
     private boolean mIsDesktopTask;
     private int mTaskRectTranslationX;
     private int mTaskRectTranslationY;
+    private int mPivotOffsetX;
 
     public TaskViewSimulator(Context context, BaseActivityInterface sizeStrategy) {
         mContext = context;
@@ -179,9 +181,10 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
             // Ensure the task rect is inside the full task rect
             mTaskRect.offset(fullTaskSize.left, fullTaskSize.top);
         } else {
-            fullTaskSize = mTaskRect;
+            fullTaskSize = new Rect(mTaskRect);
+            mTaskRect.offset(mTaskRectTranslationX, mTaskRectTranslationY);
         }
-        fullTaskSize.offset(mTaskRectTranslationX, mTaskRectTranslationY);
+        fullTaskSize.offset(mTaskRectTranslationX + mPivotOffsetX, mTaskRectTranslationY);
         return mOrientationState.getFullScreenScaleAndPivot(fullTaskSize, mDp, mPivot);
     }
 
@@ -265,6 +268,11 @@ public class TaskViewSimulator implements TransformParams.BuilderProxy {
      */
     public void addAppToOverviewAnim(PendingAnimation pa, TimeInterpolator interpolator) {
         pa.addFloat(fullScreenProgress, AnimatedFloat.VALUE, 1, 0, interpolator);
+        if (enableGridOnlyOverview() && mDp.isTablet) {
+            int translationXToMiddle = mDp.widthPx / 2 - mTaskRect.centerX();
+            taskPrimaryTranslation.value = translationXToMiddle;
+            mPivotOffsetX = translationXToMiddle;
+        }
         pa.addFloat(recentsViewScale, AnimatedFloat.VALUE, getFullScreenScale(), 1, interpolator);
     }
 

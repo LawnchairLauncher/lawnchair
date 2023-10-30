@@ -384,6 +384,7 @@ public class TaskView extends FrameLayout implements Reusable {
     // switch.
     private float mNonGridTranslationX;
     private float mNonGridTranslationY;
+    private float mNonGridPivotTranslationX;
     // Used when in SplitScreenSelectState
     private float mSplitSelectTranslationY;
     private float mSplitSelectTranslationX;
@@ -1284,8 +1285,8 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     protected void resetPersistentViewTransforms() {
-        mNonGridTranslationX = mNonGridTranslationY =
-                mGridTranslationX = mGridTranslationY = mBoxTranslationY = 0f;
+        mNonGridTranslationX = mNonGridTranslationY = mGridTranslationX =
+                mGridTranslationY = mBoxTranslationY = mNonGridPivotTranslationX = 0f;
         resetViewTransforms();
     }
 
@@ -1487,6 +1488,14 @@ public class TaskView extends FrameLayout implements Reusable {
         applyTranslationX();
     }
 
+    /**
+     * Set translation X for non-grid pivot
+     */
+    public void setNonGridPivotTranslationX(float nonGridPivotTranslationX) {
+        mNonGridPivotTranslationX = nonGridPivotTranslationX;
+        applyTranslationX();
+    }
+
     public float getScrollAdjustment(boolean gridEnabled) {
         float scrollAdjustment = 0;
         if (gridEnabled) {
@@ -1529,7 +1538,8 @@ public class TaskView extends FrameLayout implements Reusable {
      * change according to a temporary state (e.g. task offset).
      */
     public float getPersistentTranslationX() {
-        return getNonGridTrans(mNonGridTranslationX) + getGridTrans(mGridTranslationX);
+        return getNonGridTrans(mNonGridTranslationX) + getGridTrans(mGridTranslationX)
+                + getNonGridTrans(mNonGridPivotTranslationX);
     }
 
     /**
