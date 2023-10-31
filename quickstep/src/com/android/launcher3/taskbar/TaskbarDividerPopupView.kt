@@ -94,11 +94,18 @@ constructor(
         super.onFinishInflate()
         val taskbarSwitchOption = requireViewById<LinearLayout>(R.id.taskbar_switch_option)
         val alwaysShowTaskbarSwitch = requireViewById<Switch>(R.id.taskbar_pinning_switch)
+        val taskbarVisibilityIcon = requireViewById<View>(R.id.taskbar_pinning_visibility_icon)
         alwaysShowTaskbarSwitch.isChecked = alwaysShowTaskbarOn
         taskbarSwitchOption.setOnClickListener {
             alwaysShowTaskbarSwitch.isClickable = true
             alwaysShowTaskbarSwitch.isChecked = !alwaysShowTaskbarOn
             onClickAlwaysShowTaskbarSwitchOption()
+        }
+
+        if (!alwaysShowTaskbarSwitch.isEnabled) {
+            taskbarVisibilityIcon.background.setTint(
+                resources.getColor(android.R.color.system_neutral2_500, context.theme)
+            )
         }
     }
 
