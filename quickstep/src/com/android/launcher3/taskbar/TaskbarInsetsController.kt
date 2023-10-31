@@ -41,7 +41,7 @@ import com.android.internal.policy.GestureNavigationSettingsObserver
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.anim.AlphaUpdateListener
-import com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NO_RECREATION
+import com.android.launcher3.config.FeatureFlags.enableTaskbarNoRecreate
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
 import com.android.launcher3.util.DisplayController
 import java.io.PrintWriter
@@ -99,7 +99,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             }
 
         windowLayoutParams.providedInsets =
-            if (ENABLE_TASKBAR_NO_RECREATION.get()) {
+            if (enableTaskbarNoRecreate()) {
                 getProvidedInsets(controllers.sharedState!!.insetsFrameProviders!!,
                         insetsRoundedCornerFlag)
             } else {
@@ -225,7 +225,6 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
             provider.insetsSize = Insets.of(0, 0, rightIndexInset, 0)
         }
 
-
         // When in gesture nav, report the stashed height to the IME, to allow hiding the
         // IME navigation bar.
         val imeInsetsSize = if (ENABLE_HIDE_IME_CAPTION_BAR && context.isGestureNav) {
@@ -236,6 +235,12 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         val imeInsetsSizeOverride =
                 arrayOf(
                         InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
+                        InsetsFrameProvider.InsetsSizeOverride(TYPE_VOICE_INTERACTION,
+                                // No-op override to keep the size and types in sync with the
+                                // override below (insetsSizeOverrides must have the same length and
+                                // types after the window is added according to
+                                // WindowManagerService#relayoutWindow)
+                                provider.insetsSize)
                 )
         // Use 0 tappableElement insets for the VoiceInteractionWindow when gesture nav is enabled.
         val visInsetsSizeForTappableElement =
@@ -244,8 +249,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
         val insetsSizeOverrideForTappableElement =
                 arrayOf(
                         InsetsFrameProvider.InsetsSizeOverride(TYPE_INPUT_METHOD, imeInsetsSize),
-                        InsetsFrameProvider.InsetsSizeOverride(
-                                TYPE_VOICE_INTERACTION,
+                        InsetsFrameProvider.InsetsSizeOverride(TYPE_VOICE_INTERACTION,
                                 visInsetsSizeForTappableElement
                         ),
                 )
