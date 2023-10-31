@@ -29,18 +29,14 @@ private val All_COLUMNS =
         "options",
         "appWidgetSource"
     )
-private const val INSERTION_STATEMENT_FILE = "databases/workspace_items.sql"
 
-class FactitiousDbController(context: Context) : ModelDbController(context) {
+class FactitiousDbController(context: Context, insertFile: String) : ModelDbController(context) {
 
-    private val inMemoryDb: SQLiteDatabase by lazy {
+    val inMemoryDb: SQLiteDatabase by lazy {
         SQLiteDatabase.createInMemory(SQLiteDatabase.OpenParams.Builder().build()).also { db ->
             BufferedReader(
                     InputStreamReader(
-                        InstrumentationRegistry.getInstrumentation()
-                            .context
-                            .assets
-                            .open(INSERTION_STATEMENT_FILE)
+                        InstrumentationRegistry.getInstrumentation().context.assets.open(insertFile)
                     )
                 )
                 .lines()
