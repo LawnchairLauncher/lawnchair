@@ -17,6 +17,7 @@
 package com.android.quickstep;
 
 import static com.android.quickstep.util.SplitScreenUtils.convertShellSplitBoundsToLauncher;
+import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 import static com.android.wm.shell.util.SplitBounds.KEY_EXTRA_SPLIT_BOUNDS;
 
 import android.content.Context;
@@ -30,7 +31,6 @@ import com.android.launcher3.util.SplitConfigurationOptions;
 import com.android.quickstep.util.AnimatorControllerWithResistance;
 import com.android.quickstep.util.TaskViewSimulator;
 import com.android.quickstep.util.TransformParams;
-import com.android.quickstep.views.DesktopTaskView;
 import com.android.wm.shell.util.SplitBounds;
 
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class RemoteTargetGluer {
      * running tasks
      */
     public RemoteTargetGluer(Context context, BaseActivityInterface sizingStrategy) {
-        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+        if (isDesktopModeSupported()) {
             // TODO(279931899): binder call, only for prototyping. Creating the gluer should be
             //  postponed so we can create it when we have the remote animation targets ready.
             int desktopTasks = SystemUiProxy.INSTANCE.get(context).getVisibleDesktopTaskCount(
