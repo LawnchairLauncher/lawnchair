@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.ui;
 
+import static android.platform.test.flag.junit.SetFlagsRule.DefaultInitValueType.DEVICE_DEFAULT;
+
 import static androidx.test.InstrumentationRegistry.getInstrumentation;
 
 import static com.android.launcher3.testing.shared.TestProtocol.ICON_MISSING;
@@ -204,13 +206,7 @@ public abstract class AbstractLauncherUiTest {
     public ScreenRecordRule mScreenRecordRule = new ScreenRecordRule();
 
     @Rule
-    public SetFlagsRule mSetFlagsRule = getFlagsRule();
-
-    private SetFlagsRule getFlagsRule() {
-        SetFlagsRule flagsRule = new SetFlagsRule();
-        flagsRule.initAllFlagsToReleaseConfigDefault();
-        return flagsRule;
-    }
+    public SetFlagsRule mSetFlagsRule = new SetFlagsRule(DEVICE_DEFAULT);
 
     protected void clearPackageData(String pkg) throws IOException, InterruptedException {
         final CountDownLatch count = new CountDownLatch(2);
