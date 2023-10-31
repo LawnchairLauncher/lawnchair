@@ -366,8 +366,10 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         }
         int focusedTaskHeight = mLauncher.getFocusedTaskHeightForTablet();
         for (UiObject2 task : taskViews) {
-            if (task.getVisibleBounds().height() == focusedTaskHeight) {
-                return new OverviewTask(mLauncher, task, this);
+            OverviewTask overviewTask = new OverviewTask(mLauncher, task, this);
+
+            if (overviewTask.getVisibleHeight() == focusedTaskHeight) {
+                return overviewTask;
             }
         }
         return null;
