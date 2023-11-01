@@ -17,6 +17,7 @@ package com.android.launcher3.statehandlers;
 
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
+import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 
 import android.os.Debug;
 import android.os.SystemProperties;
@@ -103,13 +104,6 @@ public class DesktopVisibilityController {
      */
     public void unregisterSystemUiListener() {
         SystemUiProxy.INSTANCE.get(mLauncher).setDesktopTaskListener(null);
-    }
-
-    /**
-     * Whether desktop mode is supported.
-     */
-    private boolean isDesktopModeSupported() {
-        return SystemProperties.getBoolean("persist.wm.debug.desktop_mode_2", false);
     }
 
     /**

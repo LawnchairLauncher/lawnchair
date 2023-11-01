@@ -175,6 +175,5 @@
     <string name="search_pref_screen_title" msgid="3258959643336315962">"ស្វែងរកក្នុងទូរសព្ទរបស់អ្នក"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"ស្វែងរកក្នុង​ថេប្លេតរបស់អ្នក"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"បានបរាជ័យ៖ <xliff:g id="WHAT">%1$s</xliff:g>"</string>
-    <!-- no translation found for private_space_label (2359721649407947001) -->
-    <skip />
+    <string name="private_space_label" msgid="2359721649407947001">"បន្ទប់​ឯកជន"</string>
 </resources>

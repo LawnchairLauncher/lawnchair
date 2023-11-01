@@ -20,10 +20,11 @@ import static android.view.Surface.ROTATION_0;
 import static android.view.Surface.ROTATION_270;
 import static android.view.Surface.ROTATION_90;
 import static android.widget.Toast.LENGTH_SHORT;
-
 import static com.android.app.animation.Interpolators.ACCELERATE_DECELERATE;
 import static com.android.app.animation.Interpolators.DECELERATE;
 import static com.android.app.animation.Interpolators.OVERSHOOT_1_2;
+import static com.android.launcher3.BaseActivity.EVENT_DESTROYED;
+import static com.android.launcher3.BaseActivity.EVENT_STARTED;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_STATE_HANDLER;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
 import static com.android.launcher3.LauncherPrefs.ALL_APPS_OVERVIEW_THRESHOLD;
@@ -54,6 +55,7 @@ import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.INVALID_VELOCITY_ON_SWIPE_UP;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.LAUNCHER_DESTROYED;
 import static com.android.quickstep.util.ActiveGestureErrorDetector.GestureEvent.ON_SETTLED_ON_END_TARGET;
+import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_RECENTS;
 
@@ -62,7 +64,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.TaskInfo;
 import android.app.WindowConfiguration;
@@ -110,7 +111,6 @@ import com.android.launcher3.statemanager.StatefulActivity;
 import com.android.launcher3.taskbar.TaskbarThresholdUtils;
 import com.android.launcher3.taskbar.TaskbarUIController;
 import com.android.launcher3.uioverrides.QuickstepLauncher;
-import com.android.launcher3.util.ActivityLifecycleCallbacksAdapter;
 import com.android.launcher3.util.DisplayController;
 import com.android.launcher3.util.SafeCloseable;
 import com.android.launcher3.util.TraceHelper;
@@ -133,7 +133,6 @@ import com.android.quickstep.util.SurfaceTransaction;
 import com.android.quickstep.util.SurfaceTransactionApplier;
 import com.android.quickstep.util.SwipePipToHomeAnimator;
 import com.android.quickstep.util.TaskViewSimulator;
-import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 import com.android.quickstep.views.TaskView.TaskIdAttributeContainer;
@@ -185,19 +184,13 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     protected MultiStateCallback mStateCallback;
     protected boolean mCanceled;
     private boolean mRecentsViewScrollLinked = false;
-    private final ActivityLifecycleCallbacksAdapter mLifecycleCallbacks =
-            new ActivityLifecycleCallbacksAdapter() {
-                @Override
-                public void onActivityDestroyed(Activity activity) {
-                    if (mActivity != activity) {
-                        return;
-                    }
-                    ActiveGestureLog.INSTANCE.addLog("Launcher destroyed", LAUNCHER_DESTROYED);
-                    mRecentsView = null;
-                    mActivity = null;
-                    mStateCallback.clearState(STATE_LAUNCHER_PRESENT);
-                }
-            };
+
+    private final Runnable mLauncherOnDestroyCallback = () -> {
+        ActiveGestureLog.INSTANCE.addLog("Launcher destroyed", LAUNCHER_DESTROYED);
+        mRecentsView = null;
+        mActivity = null;
+        mStateCallback.clearState(STATE_LAUNCHER_PRESENT);
+    };
 
     private static int FLAG_COUNT = 0;
     private static int getNextStateFlag(String name) {
@@ -318,6 +311,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private final int mSplashMainWindowShiftLength;
 
     private final Runnable mOnDeferredActivityLaunch = this::onDeferredActivityLaunch;
+    private final Runnable mLauncherOnStartCallback = this::onLauncherStart;
 
     @Nullable private SwipePipToHomeAnimator mSwipePipToHomeAnimator;
     protected boolean mIsSwipingPipToHome;
@@ -491,6 +485,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mGestureState.setState(STATE_RECENTS_SCROLLING_FINISHED);
                 return true;
             }
+            resetLauncherListeners();
 
             // The launcher may have been recreated as a result of device rotation.
             int oldState = mStateCallback.getState() & ~LAUNCHER_UI_STATES;
@@ -514,7 +509,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         if (alreadyOnHome) {
             onLauncherStart();
         } else {
-            activity.runOnceOnStart(this::onLauncherStart);
+            activity.addEventCallback(EVENT_STARTED, mLauncherOnStartCallback);
         }
 
         // Set up a entire animation lifecycle callback to notify the current recents view when
@@ -539,9 +534,8 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
 
         setupRecentsViewUi();
         mRecentsView.runOnPageScrollsInitialized(this::linkRecentsViewScroll);
-        activity.runOnBindToTouchInteractionService(this::onLauncherBindToService);
-
-        mActivity.registerActivityLifecycleCallbacks(mLifecycleCallbacks);
+        mActivity.runOnBindToTouchInteractionService(this::onLauncherBindToService);
+        mActivity.addEventCallback(EVENT_DESTROYED, mLauncherOnDestroyCallback);
         return true;
     }
 
@@ -940,7 +934,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     public void onRecentsAnimationStart(RecentsAnimationController controller,
             RecentsAnimationTargets targets) {
         super.onRecentsAnimationStart(controller, targets);
-        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED && targets.hasDesktopTasks()) {
+        if (isDesktopModeSupported() && targets.hasDesktopTasks()) {
             mRemoteTargetHandles = mTargetGluer.assignTargetsForDesktop(targets);
         } else {
             int untrimmedAppCount = mRemoteTargetHandles.length;
@@ -1166,7 +1160,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                 mStateCallback.setState(STATE_SCALED_CONTROLLER_HOME | STATE_CAPTURE_SCREENSHOT);
                 // Notify the SysUI to use fade-in animation when entering PiP
                 SystemUiProxy.INSTANCE.get(mContext).setPipAnimationTypeToAlpha();
-                if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+                if (isDesktopModeSupported()) {
                     // Notify the SysUI to stash desktop apps if they are visible
                     DesktopVisibilityController desktopVisibilityController =
                             mActivityInterface.getDesktopVisibilityController();
@@ -1251,7 +1245,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
             return LAST_TASK;
         }
 
-        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED && endTarget == NEW_TASK) {
+        if (isDesktopModeSupported() && endTarget == NEW_TASK) {
             // TODO(b/268075592): add support for quickswitch to/from desktop
             return LAST_TASK;
         }
@@ -1868,7 +1862,6 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         if (mActivity != null) {
             // In the off chance that the gesture ends before Launcher is started, we should clear
             // the callback here so that it doesn't update with the wrong state
-            mActivity.clearRunOnceOnStartCallback();
             resetLauncherListeners();
         }
         if (mGestureState.isRecentsAnimationRunning() && mGestureState.getEndTarget() != null
@@ -1934,7 +1927,7 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
     private void reset() {
         mStateCallback.setStateOnUiThread(STATE_HANDLER_INVALIDATED);
         if (mActivity != null) {
-            mActivity.unregisterActivityLifecycleCallbacks(mLifecycleCallbacks);
+            mActivity.removeEventCallback(EVENT_DESTROYED, mLauncherOnDestroyCallback);
         }
     }
 
@@ -2005,6 +1998,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
      * continued quick switch gesture, which cancels the previous handler but doesn't invalidate it.
      */
     private void resetLauncherListeners() {
+        mActivity.removeEventCallback(EVENT_STARTED, mLauncherOnStartCallback);
+        mActivity.removeEventCallback(EVENT_DESTROYED, mLauncherOnDestroyCallback);
+
         mActivity.getRootView().setOnApplyWindowInsetsListener(null);
 
         if (mRecentsView != null) {

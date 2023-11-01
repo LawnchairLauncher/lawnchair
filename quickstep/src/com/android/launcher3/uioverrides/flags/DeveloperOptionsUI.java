@@ -392,8 +392,8 @@ public class DeveloperOptionsUI {
         int value = LauncherPrefs.get(getContext()).get(launcherPref);
         seekBarPref.setValue(value);
         // For some reason the initial value is not triggering the summary update, so call manually.
-        seekBarPref.getOnPreferenceChangeListener().onPreferenceChange(seekBarPref, value);
-
+        seekBarPref.setSummary(String.valueOf(scale == 1 ? value
+                : value / (float) scale));
         return seekBarPref;
     }
 

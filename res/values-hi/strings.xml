@@ -175,6 +175,5 @@
     <string name="search_pref_screen_title" msgid="3258959643336315962">"अपने फ़ोन में खोजें"</string>
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"अपने टैबलेट में खोजें"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"पूरा नहीं हुआ: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
-    <!-- no translation found for private_space_label (2359721649407947001) -->
-    <skip />
+    <string name="private_space_label" msgid="2359721649407947001">"प्राइवेट स्पेस"</string>
 </resources>

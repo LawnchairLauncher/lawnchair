@@ -237,6 +237,7 @@ import com.android.systemui.plugins.LauncherOverlayPlugin;
 import com.android.systemui.plugins.PluginListener;
 import com.android.systemui.plugins.shared.LauncherOverlayManager;
 import com.android.systemui.plugins.shared.LauncherOverlayManager.LauncherOverlay;
+import com.android.wm.shell.Flags;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -330,6 +331,7 @@ public class Launcher extends StatefulActivity<LauncherState>
     private static final FloatProperty<Hotseat> HOTSEAT_WIDGET_SCALE =
             HOTSEAT_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_WIDGET_TRANSITION);
 
+    private static final boolean ENABLE_DESKTOP_WINDOWING = Flags.enableDesktopWindowing();
     private static final boolean DESKTOP_MODE_SUPPORTED =
             "1".equals(Utilities.getSystemProperty("persist.wm.debug.desktop_mode_2", "0"));
 
@@ -688,7 +690,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     private void switchOverlay(Supplier<LauncherOverlayManager> overlaySupplier) {
         if (mOverlayManager != null) {
-            mOverlayManager.onActivityDestroyed(this);
+            mOverlayManager.onActivityDestroyed();
         }
         mOverlayManager = overlaySupplier.get();
         if (getRootView().isAttachedToWindow()) {
@@ -1029,7 +1031,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (mDeferOverlayCallbacks) {
             checkIfOverlayStillDeferred();
         } else {
-            mOverlayManager.onActivityStopped(this);
+            mOverlayManager.onActivityStopped();
         }
         hideKeyboard();
         logStopAndResume(false /* isResume */);
@@ -1043,7 +1045,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         TraceHelper.INSTANCE.beginSection(ON_START_EVT);
         super.onStart();
         if (!mDeferOverlayCallbacks) {
-            mOverlayManager.onActivityStarted(this);
+            mOverlayManager.onActivityStarted();
         }
 
         mAppWidgetHolder.setActivityStarted(true);
@@ -1112,15 +1114,15 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         // Move the client to the correct state. Calling the same method twice is no-op.
         if (isStarted()) {
-            mOverlayManager.onActivityStarted(this);
+            mOverlayManager.onActivityStarted();
         }
         if (hasBeenResumed()) {
-            mOverlayManager.onActivityResumed(this);
+            mOverlayManager.onActivityResumed();
         } else {
-            mOverlayManager.onActivityPaused(this);
+            mOverlayManager.onActivityPaused();
         }
         if (!isStarted()) {
-            mOverlayManager.onActivityStopped(this);
+            mOverlayManager.onActivityStopped();
         }
     }
 
@@ -1220,7 +1222,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (mDeferOverlayCallbacks) {
             scheduleDeferredCheck();
         } else {
-            mOverlayManager.onActivityResumed(this);
+            mOverlayManager.onActivityResumed();
         }
 
         DragView.removeAllViews(this);
@@ -1238,7 +1240,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         mDropTargetBar.animateToVisibility(false);
 
         if (!mDeferOverlayCallbacks) {
-            mOverlayManager.onActivityPaused(this);
+            mOverlayManager.onActivityPaused();
         }
         mAppWidgetHolder.setActivityResumed(false);
     }
@@ -1683,7 +1685,6 @@ public class Launcher extends StatefulActivity<LauncherState>
         }
 
         super.onSaveInstanceState(outState);
-        mOverlayManager.onActivitySaveInstanceState(this, outState);
     }
 
     @Override
@@ -1709,7 +1710,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         clearPendingBinds();
         LauncherAppState.getIDP(this).removeOnChangeListener(this);
 
-        mOverlayManager.onActivityDestroyed(this);
+        mOverlayManager.onActivityDestroyed();
     }
 
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
@@ -1742,7 +1743,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         try {
             super.startIntentSenderForResult(intent, requestCode,
                     fillInIntent, flagsMask, flagsValues, extraFlags, options);
-        } catch (IntentSender.SendIntentException e) {
+        } catch (Exception e) {
             throw new ActivityNotFoundException();
         }
     }
@@ -2004,7 +2005,7 @@ public class Launcher extends StatefulActivity<LauncherState>
             // Workaround an issue where the WM launch animation is clobbered when finishing the
             // recents animation into launcher. Defer launching the activity until Launcher is
             // next resumed.
-            addOnResumeCallback(() -> {
+            addEventCallback(EVENT_RESUMED, () -> {
                 RunnableList actualResult = startActivitySafely(v, intent, item);
                 if (actualResult != null) {
                     actualResult.add(result::executeAllAndDestroy);
@@ -3044,7 +3045,8 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     private void updateDisallowBack() {
-        if (DESKTOP_MODE_SUPPORTED) {
+        // TODO(b/304778354): remove sysprop once desktop aconfig flag supports dynamic overriding
+        if (ENABLE_DESKTOP_WINDOWING || DESKTOP_MODE_SUPPORTED) {
             // Do not disable back in launcher when prototype behavior is enabled
             return;
         }

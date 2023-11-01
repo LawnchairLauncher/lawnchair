@@ -63,7 +63,8 @@ import org.mockito.MockitoAnnotations;
  */
 public class BubbleTextViewTest {
 
-    @Rule public final SetFlagsRule mSetFlagsRule = new SetFlagsRule();
+    @Rule public final SetFlagsRule mSetFlagsRule =
+            new SetFlagsRule(SetFlagsRule.DefaultInitValueType.DEVICE_DEFAULT);
     private static final StringMatcherUtility.StringMatcher
             MATCHER = StringMatcherUtility.StringMatcher.getInstance();
     private static final UserHandle WORK_HANDLE = new UserHandle(13);
@@ -99,7 +100,6 @@ public class BubbleTextViewTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        mSetFlagsRule.initAllFlagsToReleaseConfigDefault();
         Utilities.enableRunningInTestHarnessForTests();
         mContext = new ActivityContextWrapper(getApplicationContext());
         mBubbleTextView = new BubbleTextView(mContext);

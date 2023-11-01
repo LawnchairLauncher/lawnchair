@@ -19,7 +19,6 @@ import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.os.Trace.TRACE_TAG_APP;
 import static android.view.WindowManager.LayoutParams.PRIVATE_FLAG_OPTIMIZE_MEASURE;
 import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
-
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.LauncherSettings.Animation.DEFAULT_NO_ICON;
 import static com.android.launcher3.LauncherSettings.Animation.VIEW_BACKGROUND;
@@ -52,6 +51,7 @@ import static com.android.launcher3.util.DisplayController.CHANGE_ACTIVE_SCREEN;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.quickstep.util.SplitAnimationTimings.TABLET_HOME_TO_SPLIT;
+import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 import static com.android.systemui.shared.system.ActivityManagerWrapper.CLOSE_SYSTEM_WINDOWS_REASON_HOME_KEY;
 import static com.android.wm.shell.common.split.SplitScreenConstants.SNAP_TO_50_50;
 
@@ -165,7 +165,6 @@ import com.android.quickstep.util.SplitSelectStateController;
 import com.android.quickstep.util.SplitToWorkspaceController;
 import com.android.quickstep.util.SplitWithKeyboardShortcutController;
 import com.android.quickstep.util.TISBindHelper;
-import com.android.quickstep.views.DesktopTaskView;
 import com.android.quickstep.views.FloatingTaskView;
 import com.android.quickstep.views.OverviewActionsView;
 import com.android.quickstep.views.RecentsView;
@@ -247,7 +246,7 @@ public class QuickstepLauncher extends Launcher {
                         getDepthController(), getStatsLogManager(),
                         systemUiProxy, RecentsModel.INSTANCE.get(this),
                         () -> onStateBack());
-        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+        if (isDesktopModeSupported()) {
             mDesktopRecentsTransitionController = new DesktopRecentsTransitionController(
                     getStateManager(), systemUiProxy, getIApplicationThread(),
                     getDepthController());
@@ -273,7 +272,7 @@ public class QuickstepLauncher extends Launcher {
         mTISBindHelper = new TISBindHelper(this, this::onTISConnected);
         mDepthController = new DepthController(this);
         mDesktopVisibilityController = new DesktopVisibilityController(this);
-        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+        if (isDesktopModeSupported()) {
             mDesktopVisibilityController.registerSystemUiListener();
             mSplitSelectStateController.initSplitFromDesktopController(this);
         }
@@ -890,7 +889,7 @@ public class QuickstepLauncher extends Launcher {
 
     @Override
     public void setResumed() {
-        if (DesktopTaskView.DESKTOP_MODE_SUPPORTED) {
+        if (isDesktopModeSupported()) {
             DesktopVisibilityController controller = mDesktopVisibilityController;
             if (controller != null && controller.areFreeformTasksVisible()
                     && !controller.isRecentsGestureInProgress()) {
@@ -1181,11 +1180,6 @@ public class QuickstepLauncher extends Launcher {
                 mActionsView.updateVerticalMargin(info.navigationMode);
             }
         }
-    }
-
-    @Override
-    public void tryClearAccessibilityFocus(View view) {
-        view.clearAccessibilityFocus();
     }
 
     @Override
