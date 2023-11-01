@@ -208,7 +208,12 @@ public class DeviceLockedInputConsumer implements InputConsumer,
             animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    if (ENABLE_SHELL_TRANSITIONS) {
+                    if (dismissTask) {
+                        // Just start the home intent so the user is prompted to unlock the device.
+                        // This will come back and cancel the interaction.
+                        startHomeIntentSafely(mContext, mGestureState.getHomeIntent(), null, TAG);
+                        mHomeLaunched = true;
+                    } else if (ENABLE_SHELL_TRANSITIONS) {
                         if (mTaskAnimationManager.getCurrentCallbacks() != null) {
                             if (mRecentsAnimationController != null) {
                                 finishRecentsAnimationForShell(dismissTask);
@@ -218,11 +223,6 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                                 mDismissTask = dismissTask;
                             }
                         }
-                    } else if (dismissTask) {
-                        // For now, just start the home intent so user is prompted to
-                        // unlock the device.
-                        startHomeIntentSafely(mContext, mGestureState.getHomeIntent(), null, TAG);
-                        mHomeLaunched = true;
                     }
                     mStateCallback.setState(STATE_HANDLER_INVALIDATED);
                 }
