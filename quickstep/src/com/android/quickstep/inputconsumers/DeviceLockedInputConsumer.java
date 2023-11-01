@@ -68,6 +68,7 @@ import java.util.HashMap;
  */
 public class DeviceLockedInputConsumer implements InputConsumer,
         RecentsAnimationCallbacks.RecentsAnimationListener, BuilderProxy {
+    private final String TAG = "DeviceLockedInputConsumer";
 
     private static final String[] STATE_NAMES = DEBUG_STATES ? new String[2] : null;
     private static int getFlagForIndex(int index, String name) {
@@ -220,7 +221,7 @@ public class DeviceLockedInputConsumer implements InputConsumer,
                     } else if (dismissTask) {
                         // For now, just start the home intent so user is prompted to
                         // unlock the device.
-                        startHomeIntentSafely(mContext, mGestureState.getHomeIntent(), null);
+                        startHomeIntentSafely(mContext, mGestureState.getHomeIntent(), null, TAG);
                         mHomeLaunched = true;
                     }
                     mStateCallback.setState(STATE_HANDLER_INVALIDATED);
