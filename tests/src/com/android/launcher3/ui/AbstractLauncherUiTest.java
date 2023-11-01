@@ -91,7 +91,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * Base class for all instrumentation tests providing various utility methods. RUN 4
+ * Base class for all instrumentation tests providing various utility methods.
  */
 public abstract class AbstractLauncherUiTest {
 
