@@ -201,6 +201,13 @@ public class PreviewSurfaceRenderer {
         }
     }
 
+    /**
+     * Refreshes icon to update based on resource changes.
+     */
+    public void refreshIcons() {
+        mRenderer.refreshIcons();
+    }
+
     /***
      * Generates a new context overriding the theme color and the display size without affecting the
      * main application context
