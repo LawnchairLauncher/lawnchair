@@ -23,9 +23,9 @@ import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_SLOP_PER
 import static com.android.launcher3.util.DisplayController.CHANGE_ALL;
 import static com.android.launcher3.util.DisplayController.CHANGE_NAVIGATION_MODE;
 import static com.android.launcher3.util.DisplayController.CHANGE_ROTATION;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.NavigationMode.NO_BUTTON;
 import static com.android.launcher3.util.NavigationMode.THREE_BUTTONS;
-import static com.android.launcher3.util.NavigationMode.TWO_BUTTONS;
 import static com.android.launcher3.util.SettingsCache.ONE_HANDED_ENABLED;
 import static com.android.launcher3.util.SettingsCache.ONE_HANDED_SWIPE_BOTTOM_TO_NOTIFICATION_ENABLED;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_A11Y_BUTTON_CLICKABLE;
@@ -55,8 +55,11 @@ import android.net.Uri;
 import android.os.RemoteException;
 import android.os.SystemProperties;
 import android.provider.Settings;
+import android.util.Log;
+import android.view.ISystemGestureExclusionListener;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
+import android.view.WindowManagerGlobal;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.NonNull;
@@ -74,7 +77,6 @@ import com.android.quickstep.util.NavBarPosition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.shared.system.QuickStepContract.SystemUiStateFlags;
-import com.android.systemui.shared.system.SystemGestureExclusionListenerCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
 import com.android.systemui.shared.system.TaskStackChangeListeners;
 
@@ -86,6 +88,8 @@ import java.util.ArrayList;
  */
 public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
+    private static final String TAG = "RecentsAnimationDeviceState";
+
     static final String SUPPORT_ONE_HANDED_MODE = "ro.support_one_handed_mode";
 
     // TODO: Move to quickstep contract
@@ -95,6 +99,23 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     private final Context mContext;
     private final DisplayController mDisplayController;
     private final int mDisplayId;
+
+    private final ISystemGestureExclusionListener mGestureExclusionListener =
+            new ISystemGestureExclusionListener.Stub() {
+                @BinderThread
+                @Override
+                public void onSystemGestureExclusionChanged(int displayId,
+                        Region systemGestureExclusionRegion, Region unrestrictedOrNull) {
+                    if (displayId != mDisplayId) {
+                        return;
+                    }
+                    // Assignments are atomic, it should be safe on binder thread. Also we don't
+                    // think systemGestureExclusionRegion can be null but just in case, don't let
+                    // mExclusionRegion be null.
+                    mExclusionRegion = systemGestureExclusionRegion != null
+                            ? systemGestureExclusionRegion : new Region();
+                }
+            };
     private final RotationTouchHelper mRotationTouchHelper;
     private final TaskStackChangeListener mPipListener;
     // Cache for better performance since it doesn't change at runtime.
@@ -118,7 +139,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
     private int mGestureBlockingTaskId = -1;
     private @NonNull Region mExclusionRegion = new Region();
-    private SystemGestureExclusionListenerCompat mExclusionListener;
+    private boolean mExclusionListenerRegistered;
 
     public RecentsAnimationDeviceState(Context context) {
         this(context, false);
@@ -142,19 +163,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
         }
 
         // Register for exclusion updates
-        mExclusionListener = new SystemGestureExclusionListenerCompat(mDisplayId) {
-            @Override
-            @BinderThread
-            public void onExclusionChanged(Region region) {
-                if (region == null) {
-                    // Don't think this is possible but just in case, don't let it be null.
-                    region = new Region();
-                }
-                // Assignments are atomic, it should be safe on binder thread
-                mExclusionRegion = region;
-            }
-        };
-        runOnDestroy(mExclusionListener::unregister);
+        runOnDestroy(() -> unregisterExclusionListener());
 
         // Register for display changes changes
         mDisplayController.addChangeListener(this);
@@ -247,11 +256,52 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
             mNavBarPosition = new NavBarPosition(mMode, info);
 
             if (mMode == NO_BUTTON) {
-                mExclusionListener.register();
+                registerExclusionListener();
             } else {
-                mExclusionListener.unregister();
+                unregisterExclusionListener();
             }
         }
+    }
+
+    /**
+     * Registers {@link mGestureExclusionListener} for getting exclusion rect changes. Note that we
+     * make binder call on {@link UI_HELPER_EXECUTOR} to avoid jank.
+     */
+    public void registerExclusionListener() {
+        UI_HELPER_EXECUTOR.execute(() -> {
+            if (mExclusionListenerRegistered) {
+                return;
+            }
+            try {
+                WindowManagerGlobal.getWindowManagerService()
+                        .registerSystemGestureExclusionListener(
+                                mGestureExclusionListener, mDisplayId);
+                mExclusionListenerRegistered = true;
+            } catch (RemoteException e) {
+                Log.e(TAG, "Failed to register window manager callbacks", e);
+            }
+        });
+    }
+
+    /**
+     * Unregisters {@link mGestureExclusionListener} if previously registered. We make binder call
+     * on same {@link UI_HELPER_EXECUTOR} as in {@link #registerExclusionListener()} so that
+     * read/write {@link mExclusionListenerRegistered} field is thread safe.
+     */
+    public void unregisterExclusionListener() {
+        UI_HELPER_EXECUTOR.execute(() -> {
+            if (!mExclusionListenerRegistered) {
+                return;
+            }
+            try {
+                WindowManagerGlobal.getWindowManagerService()
+                        .unregisterSystemGestureExclusionListener(
+                                mGestureExclusionListener, mDisplayId);
+                mExclusionListenerRegistered = false;
+            } catch (RemoteException e) {
+                Log.e(TAG, "Failed to unregister window manager callbacks", e);
+            }
+        });
     }
 
     public void onOneHandedModeChanged(int newGesturalHeight) {
@@ -277,13 +327,6 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
      */
     public boolean isGesturalNavMode() {
         return mMode.hasGestures;
-    }
-
-    /**
-     * @return whether the current nav mode is 2-button-based.
-     */
-    public boolean isTwoButtonNavMode() {
-        return mMode == TWO_BUTTONS;
     }
 
     /**
@@ -388,13 +431,6 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
      */
     public boolean isBubblesExpanded() {
         return (mSystemUiStateFlags & SYSUI_STATE_BUBBLES_EXPANDED) != 0;
-    }
-
-    /**
-     * @return whether notification panel is expanded
-     */
-    public boolean isNotificationPanelExpanded() {
-        return (mSystemUiStateFlags & SYSUI_STATE_NOTIFICATION_PANEL_EXPANDED) != 0;
     }
 
     /**
