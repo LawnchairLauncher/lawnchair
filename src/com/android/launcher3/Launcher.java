@@ -2120,7 +2120,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public void bindScreens(IntArray orderedScreenIds) {
-        mWorkspace.mPageIndicator.setAreScreensBinding(true);
+        mWorkspace.mPageIndicator.setAreScreensBinding(true, mDeviceProfile.isTwoPanels);
         int firstScreenPosition = 0;
         if ((FeatureFlags.QSB_ON_FIRST_SCREEN
                 && mIsFirstPagePinnedItemEnabled
@@ -2649,7 +2649,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         TraceHelper.INSTANCE.endSection();
         mWorkspace.removeExtraEmptyScreen(/* stripEmptyScreens= */ true);
-        mWorkspace.mPageIndicator.setAreScreensBinding(false);
+        mWorkspace.mPageIndicator.setAreScreensBinding(false, mDeviceProfile.isTwoPanels);
     }
 
     private boolean canAnimatePageChange() {
