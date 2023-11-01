@@ -398,7 +398,7 @@
     <!-- about/About.kt -->
     <string name="news">News</string>
     <string name="support">Support</string>
-    <string name="twitter" translatable="false">Twitter</string>
+    <string name="x_twitter" translatable="false">X</string>
     <string name="github" translatable="false">GitHub</string>
     <string name="discord" translatable="false">Discord</string>
 

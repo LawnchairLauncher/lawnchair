@@ -38,6 +38,9 @@
         launcher:screen="2"
         launcher:x="2"
         launcher:y="0" >
+        <favorite
+            launcher:className="com.android.contacts.activities.TwelveKeyDialer"
+            launcher:packageName="com.android.contacts" />
         <favorite launcher:uri="#Intent;action=android.intent.action.DIAL;end" />
         <favorite launcher:uri="tel:123" />
         <favorite launcher:uri="#Intent;action=android.intent.action.CALL_BUTTON;end" />

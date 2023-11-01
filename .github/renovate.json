@@ -24,8 +24,8 @@
         },
         {
             "groupName": "dev.rikka.tools.refine",
-            "matchPackagePatterns": [
-                "dev.rikka.tools.refine.*"
+            "matchPackagePrefixes": [
+                "dev.rikka.tools.refine"
             ]
         },
         {

@@ -54,7 +54,7 @@
     <string name="always_reload_icons_description">Evita di utilizzare icone dalla cache dai pacchetti d\'icone</string>
     <string name="transparent_background_icons">Icone a tema trasparente</string>
     <string name="transparent_background_icons_description">Usa sfondo trasparente nelle icone a tema</string>
-    <string name="smartspace_mode_selection">At a Glance Provider selection</string>
+    <string name="smartspace_mode_selection">Selezione del Provider per At a Glance</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotazione schermata home</string>
     <string name="home_screen_rotaton_description">Quando il dispositivo viene ruotato.</string>
@@ -105,7 +105,7 @@
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">Pacchetto icone</string>
-    <string name="themed_icon_pack">Themed Icon Source</string>
+    <string name="themed_icon_pack">Sorgente delle icone a tema</string>
     <string name="system_icons">Icone di sistema</string>
     <string name="themed_icon_title">Icone a tema</string>
     <string name="themed_icons_off_label">Disattivate</string>
@@ -234,7 +234,7 @@
     <string name="smartspace_preferences">Preferenze</string>
     <string name="smartspace_widget_toggle_label">Mostra nella schermata home</string>
     <string name="smartspace_widget_toggle_description">Il widget At a Glance può essere aggiunto manualmente posizionando il widget \"Lawnchair\".</string>
-    <string name="smartspace_mode_label">At a Glance Provider</string>
+    <string name="smartspace_mode_label">Provider di At a Glance</string>
     <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Ricerca Google</string>

@@ -51,7 +51,7 @@ You can help translate Lawnchair 12.1 [on Crowdin](https://lawnchair.crowdin.com
 ## Quick links
 
 - [News](https://t.me/lawnchairci)
-- [Lawnchair on Twitter](https://twitter.com/lawnchairapp)
+- [Lawnchair on X](https://x.com/lawnchairapp)
 - [Website](https://lawnchair.app)
 - [_XDA_ thread](https://forum.xda-developers.com/t/lawnchair-customizable-pixel-launcher.3627137/)
 

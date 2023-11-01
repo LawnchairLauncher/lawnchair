@@ -68,6 +68,7 @@
 -dontwarn android.service.wallpaper.IWallpaperEngine*
 -dontwarn android.util.**
 -dontwarn android.widget.RemoteViews*
+-dontwarn androidx.compose.runtime.PrimitiveSnapshotStateKt
 -dontwarn androidx.dynamicanimation.animation.AnimationHandler$FrameCallbackScheduler*
 -dontwarn com.android.internal.**
 -dontwarn com.google.android.collect.Sets*

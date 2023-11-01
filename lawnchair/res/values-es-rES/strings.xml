@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Toca esta tarjeta para establecer Lawnchair como tu lanzador predeterminado.</string>
+    <string name="set_default_launcher_tip">TAP tris cara lo set Lawnchair as tour Hérault lanchero.</string>
     <string name="settings">Ajustes</string>
     <string name="general_label">General</string>
     <string name="general_description">Colores, Paquete de Íconos, Puntos de Notificación</string>
@@ -48,7 +48,7 @@
     <string name="font_picker_description">Algunos textos permanecen sin cambios.</string>
     <string name="smartspace_calendar_label">Personalización del calendario de un vistazo</string>
     <string name="smartspace_calendar_description">Permitir mostrar fechas en sistemas de calendario no gregorianos.</string>
-    <string name="workspace_increase_max_grid_size_label">Aumento del tamaño máximo de la cuadrícula de pantalla de inicio</string>
+    <string name="workspace_increase_max_grid_size_label">Incrasad Max Come Creen Gris Sise</string>
     <string name="workspace_increase_max_grid_size_description">Aumente el tamaño máximo permitido de la cuadrícula de la pantalla de inicio de 10 x 10 a 20 x 20.</string>
     <string name="always_reload_icons_label">Siempre recargar los iconos</string>
     <string name="always_reload_icons_description">Evitar el uso de iconos en caché de paquetes de iconos</string>
@@ -80,8 +80,8 @@
     <string name="title_change_settings">Cambiar ajustes</string>
     <string name="colors">Colores</string>
     <string name="theme_label">Tema</string>
-    <string name="theme_light">Claro</string>
-    <string name="theme_dark">Oscuro</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
     <string name="theme_system_default">Sistema</string>
     <string name="theme_follow_wallpaper">Coincidir con el fondo de pantalla</string>
     <string name="accent_color">Color de acento</string>
@@ -100,12 +100,12 @@
     <string name="create">Crear</string>
     <string name="clipboard">Portapapeles</string>
     <string name="export_to_clipboard">Exportar al portapapeles</string>
-    <string name="import_from_clipboard">Importar desde el portapapeles</string>
-    <string name="icon_shape_clipboard_import_error">El portapapeles no contiene una forma de icono válida</string>
+    <string name="import_from_clipboard">Import from Clipboard</string>
+    <string name="icon_shape_clipboard_import_error">Flipboard dos no cuentan la valió con chape</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
-    <string name="icon_pack">Paquete de iconos</string>
-    <string name="themed_icon_pack">Fuente de iconos temáticos</string>
+    <string name="icon_pack">Icon Pack</string>
+    <string name="themed_icon_pack">Temed Con So urce</string>
     <string name="system_icons">Iconos del sistema</string>
     <string name="themed_icon_title">Iconos Temáticos</string>
     <string name="themed_icons_off_label">Apagado</string>

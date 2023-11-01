@@ -82,7 +82,7 @@ private val product = listOf(
         name = "Antonio J. Roa Valverde",
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/914983",
-        socialUrl = "https://twitter.com/6020peaks",
+        socialUrl = "https://x.com/6020peaks",
     ),
     TeamMember(
         name = "David Sn",
@@ -106,31 +106,31 @@ private val product = listOf(
         name = "Kshitij Gupta",
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/18647641",
-        socialUrl = "https://twitter.com/Agent_Fabulous",
+        socialUrl = "https://x.com/Agent_Fabulous",
     ),
     TeamMember(
         name = "Manuel Lorenzo",
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/183264",
-        socialUrl = "https://twitter.com/noloman",
+        socialUrl = "https://x.com/noloman",
     ),
     TeamMember(
         name = "paphonb",
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/8080853",
-        socialUrl = "https://twitter.com/paphonb",
+        socialUrl = "https://x.com/paphonb",
     ),
     TeamMember(
         name = "raphtlw",
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/47694127",
-        socialUrl = "https://twitter.com/raphtlw",
+        socialUrl = "https://x.com/raphtlw",
     ),
     TeamMember(
         name = "Rhyse Simpson",
         role = Role.QuickSwitchMaintenance,
         photoUrl = "https://avatars.githubusercontent.com/u/7065700",
-        socialUrl = "https://twitter.com/skittles9823",
+        socialUrl = "https://x.com/skittles9823",
     ),
     TeamMember(
         name = "Yasan",
@@ -157,7 +157,7 @@ private val supportAndPr = listOf(
         name = "Rik Koedoot",
         role = Role.SupportAndPr,
         photoUrl = "https://avatars.githubusercontent.com/u/29402532",
-        socialUrl = "https://twitter.com/rikkoedoot",
+        socialUrl = "https://x.com/rikkoedoot",
     ),
     TeamMember(
         name = "SuperDragonXD",
@@ -188,9 +188,9 @@ private val links = listOf(
         url = "https://t.me/bugreport_group",
     ),
     Link(
-        iconResId = R.drawable.ic_twitter,
-        labelResId = R.string.twitter,
-        url = "https://twitter.com/lawnchairapp",
+        iconResId = R.drawable.ic_x_twitter,
+        labelResId = R.string.x_twitter,
+        url = "https://x.com/lawnchairapp",
     ),
     Link(
         iconResId = R.drawable.ic_github,

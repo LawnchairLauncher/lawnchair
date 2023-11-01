@@ -23,6 +23,9 @@
         launcher:screen="0"
         launcher:x="0"
         launcher:y="0" >
+        <favorite
+            launcher:className="com.android.contacts.activities.TwelveKeyDialer"
+            launcher:packageName="com.android.contacts" />
         <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_EMAIL;end" />
         <favorite launcher:uri="mailto:" />
     </resolve>

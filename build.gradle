@@ -3,16 +3,16 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id 'com.android.application' version '8.1.2'
-    id 'com.android.library' version '8.1.2' apply false
+    id 'com.android.application' version "8.1.2"
+    id 'com.android.library' version "8.1.2" apply false
     id 'org.jetbrains.kotlin.android' version "1.9.10"
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.10"
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.10"
     id "com.google.devtools.ksp" version "1.9.10-1.0.13"
     id 'com.google.protobuf' version "0.9.4"
-    id 'app.cash.licensee' version "1.7.0"
-    id 'dev.rikka.tools.refine' version "4.3.0"
-    id 'org.gradle.android.cache-fix' version '2.8.0'
+    id 'app.cash.licensee' version "1.8.0"
+    id 'dev.rikka.tools.refine' version "4.4.0"
+    id 'org.gradle.android.cache-fix' version '3.0'
 }
 
 allprojects {
@@ -64,8 +64,8 @@ ext {
     FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
     accompanist_version = '0.32.0'
     libsu_version = '5.2.1'
-    protocVersion = '3.24.3'
-    room_version = '2.5.2'
+    protocVersion = '3.24.4'
+    room_version = '2.6.0'
     optoVersion = "1.0.18"
 }
 
@@ -103,9 +103,10 @@ android {
     }
 
     applicationVariants.configureEach { variant ->
-        def copyArtifactList = tasks.register("copy${variant.name.capitalize()}ArtifactList", Copy) {
-            dependsOn tasks.named("licensee${variant.name.capitalize()}")
-            from reporting.file("licensee/${variant.name}/artifacts.json")
+        def capitalizedName = variant.name.capitalize()
+        def copyArtifactList = tasks.register("copy${capitalizedName}ArtifactList", Copy) {
+            dependsOn tasks.named("licenseeAndroid${capitalizedName}")
+            from reporting.file("licensee/android${capitalizedName}/artifacts.json")
             into layout.buildDirectory.dir("generated/dependencyAssets/")
         }
         tasks.named("merge${variant.name.capitalize()}Assets").configure {
@@ -326,13 +327,13 @@ dependencies {
     withoutQuickstepImplementation fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'plugin_core.jar')
 
     implementation "androidx.dynamicanimation:dynamicanimation:1.0.0"
-    implementation "androidx.recyclerview:recyclerview:1.3.1"
+    implementation "androidx.recyclerview:recyclerview:1.3.2"
     implementation "androidx.preference:preference-ktx:1.2.1"
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
     implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0'
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
-    implementation 'dev.rikka.tools.refine:runtime:4.3.0'
+    implementation 'dev.rikka.tools.refine:runtime:4.4.0'
 
     implementation platform("androidx.compose:compose-bom:2023.09.00")
     implementation "androidx.compose.ui:ui"
@@ -345,7 +346,7 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata"
     implementation 'androidx.compose.material3:material3'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
-    implementation "androidx.activity:activity-compose:1.7.2"
+    implementation "androidx.activity:activity-compose:1.8.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
     implementation "androidx.navigation:navigation-compose:2.7.2"
     implementation "androidx.palette:palette-ktx:1.0.0"
@@ -357,7 +358,7 @@ dependencies {
     implementation "com.google.android.material:material:1.9.0"
     implementation "io.github.fornewid:material-motion-compose-core:1.0.6"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
-    implementation 'io.coil-kt:coil-compose:2.4.0'
+    implementation 'io.coil-kt:coil-compose:2.5.0'
     implementation 'me.xdrop:fuzzywuzzy:1.4.0'
     implementation "com.patrykmichalik.opto:domain:$optoVersion"
     implementation "com.patrykmichalik.opto:core:$optoVersion"
@@ -383,6 +384,7 @@ dependencies {
 
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
+    arg("room.generateKotlin", "true")
     arg("room.incremental", "true")
 }
 
@@ -406,9 +408,8 @@ protobuf {
 licensee {
     allow("Apache-2.0")
     allow("BSD-3-Clause")
-    allowUrl("https://api.github.com/licenses/apache-2.0")
-    allowUrl("https://api.github.com/licenses/bsd-3-clause")
+    allow("GPL-2.0-or-later")
     allowUrl("https://github.com/patrykmichalik/opto/blob/master/LICENSE")
     allowUrl("https://github.com/RikkaApps/HiddenApiRefinePlugin/blob/main/LICENSE")
-    allowUrl("https://www.gnu.org/licenses/old-licenses/gpl-2.0.html")
+    allowUrl("https://opensource.org/licenses/mit-license.php")
 }
