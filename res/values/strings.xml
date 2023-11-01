@@ -454,8 +454,17 @@
     <!-- Failed action error message: e.g. Failed: Pause -->
     <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>
 
+    <!-- Strings for Private Space -->
     <!-- Private space label -->
     <string name="private_space_label">Private space</string>
+    <!-- Title for Private Space Container shown at the bottom of all apps drawer -->
+    <string name="ps_container_title">Private</string>
+    <!-- Description for Private Space Settings button -->
+    <string name="ps_container_settings">Private Space Settings</string>
+    <!-- Description for Private Space Lock/Unlock button -->
+    <string name="ps_container_lock_unlock_button">Lock/Unlock Private Space</string>
+    <!-- Description for Private Space Transition button -->
+    <string name="ps_container_transition">Private Space Transitioning</string>
 
     <!-- Strings for bubble bar -->
     <!-- content description for the overflow bubble [CHAR_LIMIT=none] -->

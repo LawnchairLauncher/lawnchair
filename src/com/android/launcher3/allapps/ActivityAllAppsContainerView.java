@@ -563,7 +563,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             mainRecyclerView = (AllAppsRecyclerView) mViewPager.getChildAt(0);
             workRecyclerView = (AllAppsRecyclerView) mViewPager.getChildAt(1);
             mAH.get(AdapterHolder.MAIN).setup(mainRecyclerView, mPersonalMatcher);
-            mAH.get(AdapterHolder.WORK).setup(workRecyclerView, mWorkManager.getMatcher());
+            mAH.get(AdapterHolder.WORK).setup(workRecyclerView, mWorkManager.getItemInfoMatcher());
             workRecyclerView.setId(R.id.apps_list_view_work);
             if (enableExpandingPauseWorkButton()
                     || FeatureFlags.ENABLE_EXPANDING_PAUSE_WORK_BUTTON.get()) {
