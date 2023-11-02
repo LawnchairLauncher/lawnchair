@@ -18,7 +18,6 @@ package com.android.launcher3.tapl;
 
 import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
 
-import static com.android.launcher3.tapl.BaseOverview.TASK_RES_ID;
 import static com.android.launcher3.tapl.OverviewTask.TASK_START_EVENT;
 import static com.android.launcher3.testing.shared.TestProtocol.OVERVIEW_STATE_ORDINAL;
 
@@ -119,10 +118,10 @@ public abstract class Background extends LauncherInstrumentation.VisibleContaine
                         // non-tablet overview, snapshots can be on either side of the swiped
                         // task, but we still check that they become visible after swiping and
                         // pausing.
-                        mLauncher.waitForOverviewObject(TASK_RES_ID);
+                        mLauncher.waitForOverviewObject("snapshot");
                         if (mLauncher.isTablet()) {
                             List<UiObject2> tasks = mLauncher.getDevice().findObjects(
-                                    mLauncher.getOverviewObjectSelector(TASK_RES_ID));
+                                    mLauncher.getOverviewObjectSelector("snapshot"));
                             final int centerX = mLauncher.getDevice().getDisplayWidth() / 2;
                             mLauncher.assertTrue(
                                     "All tasks not to the left of the swiped task",

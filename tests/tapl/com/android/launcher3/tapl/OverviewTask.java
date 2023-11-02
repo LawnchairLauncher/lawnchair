@@ -66,16 +66,17 @@ public final class OverviewTask {
             return getCombinedSplitTaskHeight();
         }
 
-        UiObject2 taskSnapshot1 = findObjectInTask(TASK_SNAPSHOT_1);
-        return taskSnapshot1.getVisibleBounds().height();
+        return mTask.getVisibleBounds().height();
     }
 
     /**
      * Calculates the visible height for split tasks, containing 2 snapshot tiles and a divider.
      */
     private int getCombinedSplitTaskHeight() {
-        UiObject2 taskSnapshot1 = findObjectInTask(TASK_SNAPSHOT_1);
-        UiObject2 taskSnapshot2 = findObjectInTask(TASK_SNAPSHOT_2);
+        UiObject2 taskSnapshot1 =
+                mLauncher.findObjectInContainer(mTask.getParent(), TASK_SNAPSHOT_1);
+        UiObject2 taskSnapshot2 =
+                mLauncher.findObjectInContainer(mTask.getParent(), TASK_SNAPSHOT_2);
 
         int top = Math.min(
                 taskSnapshot1.getVisibleBounds().top, taskSnapshot2.getVisibleBounds().top);
@@ -101,8 +102,10 @@ public final class OverviewTask {
      * Calculates the visible width for split tasks, containing 2 snapshot tiles and a divider.
      */
     private int getCombinedSplitTaskWidth() {
-        UiObject2 taskSnapshot1 = findObjectInTask(TASK_SNAPSHOT_1);
-        UiObject2 taskSnapshot2 = findObjectInTask(TASK_SNAPSHOT_2);
+        UiObject2 taskSnapshot1 =
+                mLauncher.findObjectInContainer(mTask.getParent(), TASK_SNAPSHOT_1);
+        UiObject2 taskSnapshot2 =
+                mLauncher.findObjectInContainer(mTask.getParent(), TASK_SNAPSHOT_2);
 
         int left = Math.min(
                 taskSnapshot1.getVisibleBounds().left, taskSnapshot2.getVisibleBounds().left);
@@ -141,8 +144,7 @@ public final class OverviewTask {
 
             boolean taskWasFocused = mLauncher.isTablet() && getVisibleHeight() == mLauncher
                     .getFocusedTaskHeightForTablet();
-            List<Integer> originalTasksCenterX =
-                    getCurrentTasksCenterXList().stream().sorted().toList();
+            List<Integer> originalTasksCenterX = getCurrentTasksCenterXList();
             boolean isClearAllVisibleBeforeDismiss = mOverview.isClearAllVisible();
 
             dismissBySwipingUp();
@@ -153,8 +155,7 @@ public final class OverviewTask {
                             mOverview.getFocusedTaskForTablet());
                 }
                 if (!isClearAllVisibleBeforeDismiss) {
-                    List<Integer> currentTasksCenterX =
-                            getCurrentTasksCenterXList().stream().sorted().toList();
+                    List<Integer> currentTasksCenterX = getCurrentTasksCenterXList();
                     if (originalTasksCenterX.size() == currentTasksCenterX.size()) {
                         // Check for the same number of visible tasks before and after to
                         // avoid asserting on cases of shifting all tasks to close the distance
@@ -172,7 +173,7 @@ public final class OverviewTask {
         // Dismiss the task via flinging it up.
         final Rect taskBounds = mLauncher.getVisibleBounds(mTask);
         final int centerX = taskBounds.centerX();
-        final int centerY = taskBounds.bottom - 1;
+        final int centerY = taskBounds.centerY();
         mLauncher.executeAndWaitForLauncherEvent(
                 () -> mLauncher.linearGesture(centerX, centerY, centerX, 0, 10, false,
                         LauncherInstrumentation.GestureScope.DONT_EXPECT_PILFER),
@@ -199,7 +200,7 @@ public final class OverviewTask {
                     () -> mLauncher.clickLauncherObject(mTask),
                     event -> event.getEventType() == TYPE_WINDOW_STATE_CHANGED,
                     () -> "Launching task didn't open a new window: "
-                            + mTask.getContentDescription(),
+                            + mTask.getParent().getContentDescription(),
                     "clicking an overview task");
             if (mOverview.getContainerType()
                     == LauncherInstrumentation.ContainerType.SPLIT_SCREEN_SELECT) {
@@ -226,7 +227,7 @@ public final class OverviewTask {
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "want to tap the task menu")) {
             mLauncher.clickLauncherObject(
-                    mLauncher.waitForObjectInContainer(mTask, "icon"));
+                    mLauncher.waitForObjectInContainer(mTask.getParent(), "icon"));
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "tapped the task menu")) {
@@ -242,7 +243,7 @@ public final class OverviewTask {
              LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
                      "want to tap the split task's menu")) {
             mLauncher.clickLauncherObject(
-                    mLauncher.waitForObjectInContainer(mTask, "bottomRight_icon"));
+                    mLauncher.waitForObjectInContainer(mTask.getParent(), "bottomRight_icon"));
 
             try (LauncherInstrumentation.Closable c1 = mLauncher.addContextLayer(
                     "tapped the split task's menu")) {
@@ -252,10 +253,6 @@ public final class OverviewTask {
     }
 
     boolean isTaskSplit() {
-        return findObjectInTask(TASK_SNAPSHOT_2) != null;
-    }
-
-    private UiObject2 findObjectInTask(String resName) {
-        return mTask.findObject(mLauncher.getOverviewObjectSelector(resName));
+        return mLauncher.findObjectInContainer(mTask.getParent(), "bottomright_snapshot") != null;
     }
 }
