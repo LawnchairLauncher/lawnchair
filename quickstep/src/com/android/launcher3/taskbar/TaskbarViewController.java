@@ -581,6 +581,11 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      *                       1 => fully aligned
      */
     public void setLauncherIconAlignment(float alignmentRatio, DeviceProfile launcherDp) {
+        if (isPhoneMode(launcherDp)) {
+            mIconAlignControllerLazy = null;
+            return;
+        }
+
         boolean isHotseatIconOnTopWhenAligned =
                 mControllers.uiController.isHotseatIconOnTopWhenAligned();
         boolean isStashed = mControllers.taskbarStashController.isStashed();
@@ -609,11 +614,6 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      */
     private AnimatorPlaybackController createIconAlignmentController(DeviceProfile launcherDp) {
         PendingAnimation setter = new PendingAnimation(100);
-        if (TaskbarManager.isPhoneMode(launcherDp)) {
-            // No animation for icons in small-screen
-            return setter.createPlaybackController();
-        }
-
         mOnControllerPreCreateCallback.run();
         DeviceProfile taskbarDp = mActivity.getDeviceProfile();
         Rect hotseatPadding = launcherDp.getHotseatLayoutPadding(mActivity);
