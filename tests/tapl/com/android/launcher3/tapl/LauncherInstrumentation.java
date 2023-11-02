@@ -1608,8 +1608,11 @@ public final class LauncherInstrumentation {
         scroll(
                 container,
                 Direction.LEFT,
-                new Rect(leftGestureMargin, 0,
-                        containerRect.width() - distance - rightGestureMarginInContainer, 0),
+                new Rect(leftGestureMargin,
+                        0,
+                        Math.max(containerRect.width() - distance - leftGestureMargin,
+                                rightGestureMarginInContainer),
+                        0),
                 10,
                 true);
     }
@@ -1782,7 +1785,7 @@ public final class LauncherInstrumentation {
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }
 
-    boolean isGridOnlyOverviewEnabled() {
+    public boolean isGridOnlyOverviewEnabled() {
         return getTestInfo(TestProtocol.REQUEST_FLAG_ENABLE_GRID_ONLY_OVERVIEW).getBoolean(
                 TestProtocol.TEST_INFO_RESPONSE_FIELD);
     }

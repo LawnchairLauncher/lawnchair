@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
  */
 public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     private static final int FLINGS_FOR_DISMISS_LIMIT = 40;
+    protected static final String TASK_RES_ID = "task";
 
     BaseOverview(LauncherInstrumentation launcher) {
         super(launcher);
@@ -201,7 +202,8 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
             OverviewTask task = getCurrentTask();
             mLauncher.assertNotNull("current task is null", task);
             mLauncher.scrollLeftByDistance(verifyActiveContainer(),
-                    task.getVisibleWidth() + mLauncher.getOverviewPageSpacing());
+                    mLauncher.getRealDisplaySize().x - task.getUiObject().getVisibleBounds().left
+                            + mLauncher.getOverviewPageSpacing());
 
             try (LauncherInstrumentation.Closable c2 =
                          mLauncher.addContextLayer("scrolled task off screen")) {
@@ -231,14 +233,24 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         final List<UiObject2> taskViews = getTasks();
         mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
 
-        // taskViews contains up to 3 task views: the 'main' (having the widest visible part) one
-        // in the center, and parts of its right and left siblings. Find the main task view by
-        // its width.
-        final UiObject2 widestTask = Collections.max(taskViews,
-                (t1, t2) -> Integer.compare(mLauncher.getVisibleBounds(t1).width(),
-                        mLauncher.getVisibleBounds(t2).width()));
+        // The widest, and most top-right task should be the current task
+        final UiObject2 currentTask = Collections.max(taskViews, (t1, t2) -> {
+            Rect t1Bounds = mLauncher.getVisibleBounds(t1);
+            Rect t2Bounds = mLauncher.getVisibleBounds(t2);
 
-        return new OverviewTask(mLauncher, widestTask, this);
+            int result = Integer.compare(t1Bounds.width(), t2Bounds.width());
+            if (result != 0) {
+                return result;
+            }
+
+            result = Integer.compare(t1Bounds.left, t2Bounds.left);
+            if (result != 0) {
+                return result;
+            }
+
+            return Integer.compare(t2Bounds.top, t1Bounds.top);
+        });
+        return new OverviewTask(mLauncher, currentTask, this);
     }
 
     /** Returns an overview task matching TestActivity {@param activityNumber}. */
@@ -251,7 +263,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         UiObject2 task = null;
         for (UiObject2 taskView : taskViews) {
             // TODO(b/239452415): Use equals instead of descEndsWith
-            if (taskView.getParent().hasObject(By.descEndsWith(activityName))) {
+            if (taskView.hasObject(By.descEndsWith(activityName))) {
                 task = taskView;
                 break;
             }
@@ -282,7 +294,7 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
                 "want to get overview tasks")) {
             verifyActiveContainer();
             return mLauncher.getDevice().findObjects(
-                    mLauncher.getOverviewObjectSelector("snapshot"));
+                    mLauncher.getOverviewObjectSelector(TASK_RES_ID));
         }
     }
 
