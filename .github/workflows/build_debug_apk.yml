@@ -54,8 +54,6 @@ jobs:
           fi
       - name: Build debug APK
         run: ./gradlew assembleLawnWithQuickstepDebug
-        env:
-          GRADLE_OPTS: -Dorg.gradle.debug=true
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
