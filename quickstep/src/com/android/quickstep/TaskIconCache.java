@@ -15,6 +15,7 @@
  */
 package com.android.quickstep;
 
+import static com.android.launcher3.Flags.enableOverviewIconMenu;
 import static com.android.launcher3.util.DisplayController.CHANGE_DENSITY;
 
 import android.annotation.Nullable;
@@ -120,6 +121,7 @@ public class TaskIconCache implements DisplayInfoChangeListener {
             public void handleResult(TaskCacheEntry result) {
                 task.icon = result.icon;
                 task.titleDescription = result.contentDescription;
+                task.title = result.title;
                 callback.accept(task);
                 dispatchIconUpdate(task.key.id);
             }
@@ -190,6 +192,10 @@ public class TaskIconCache implements DisplayInfoChangeListener {
         if (activityInfo != null) {
             entry.contentDescription = getBadgedContentDescription(
                     activityInfo, task.key.userId, task.taskDescription);
+            if (enableOverviewIconMenu()) {
+                entry.title = Utilities.trim(
+                        activityInfo.applicationInfo.loadLabel(mContext.getPackageManager()));
+            }
         }
 
         mIconCache.put(task.key, entry);
@@ -280,6 +286,7 @@ public class TaskIconCache implements DisplayInfoChangeListener {
     private static class TaskCacheEntry {
         public Drawable icon;
         public String contentDescription = "";
+        public String title = "";
     }
 
     void registerTaskVisualsChangeListener(TaskVisualsChangeListener newListener) {
