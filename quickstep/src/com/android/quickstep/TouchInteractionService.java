@@ -1374,6 +1374,7 @@ public class TouchInteractionService extends Service {
         mTaskbarManager.dumpLogs("", pw);
         pw.println("AssistStateManager:");
         AssistStateManager.INSTANCE.get(this).dump("  ", pw);
+        SystemUiProxy.INSTANCE.get(this).dump(pw);
     }
 
     private AbsSwipeUpHandler createLauncherSwipeHandler(
