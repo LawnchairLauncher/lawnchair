@@ -1299,6 +1299,7 @@ public class TouchInteractionService extends Service {
         Log.i(TAG, "preloadOverview: forSUWAllSet=" + forSUWAllSet
                 + ", isHomeAndOverviewSame=" + mOverviewComponentObserver.isHomeAndOverviewSame());
 
+        ActiveGestureLog.INSTANCE.addLog("preloadRecentsAnimation");
         mTaskAnimationManager.preloadRecentsAnimation(overviewIntent);
     }
 
