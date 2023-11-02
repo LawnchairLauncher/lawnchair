@@ -559,4 +559,8 @@
     <string name="x_and_y">%s &amp; %s</string>
 
     <string name="system_settings">System Settings</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_lock">Lock</string>
+    <string name="recents_lock_unlock">Lock/Unlock</string>
+    <string name="recents_lock_unlock_description">Prevent selected app from clearing when using "Clear All"</string>
 </resources>
