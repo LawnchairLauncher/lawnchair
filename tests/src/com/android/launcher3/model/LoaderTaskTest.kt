@@ -26,6 +26,8 @@ import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
 
+private const val INSERTION_STATEMENT_FILE = "databases/workspace_items.sql"
+
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class LoaderTaskTest {
@@ -55,7 +57,8 @@ class LoaderTaskTest {
         `when`(app.model).thenReturn(launcherModel)
         `when`(launcherModel.beginLoader(any(LoaderTask::class.java))).thenReturn(transaction)
         `when`(app.iconCache).thenReturn(iconCache)
-        `when`(launcherModel.modelDbController).thenReturn(FactitiousDbController(context))
+        `when`(launcherModel.modelDbController)
+            .thenReturn(FactitiousDbController(context, INSERTION_STATEMENT_FILE))
         `when`(app.invariantDeviceProfile).thenReturn(idp)
         `when`(launcherBinder.newIdleLock(any(LoaderTask::class.java))).thenReturn(idleLock)
         `when`(idleLock.awaitLocked(1000)).thenReturn(false)
