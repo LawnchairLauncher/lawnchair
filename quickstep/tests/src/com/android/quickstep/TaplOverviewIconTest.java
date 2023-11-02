@@ -92,7 +92,7 @@ public class TaplOverviewIconTest extends AbstractLauncherUiTest {
         startTestActivity(2);
         startTestActivity(3);
 
-        if (mLauncher.isTablet() && !mLauncher.isGridOnlyOverviewEnabled()) {
+        if (mLauncher.isTablet()) {
             mLauncher.goHome().switchToOverview().getOverviewActions()
                     .clickSplit()
                     .getTestActivityTask(2)
