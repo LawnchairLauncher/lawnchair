@@ -45,6 +45,11 @@ fun ExperimentalFeaturesPreferences() {
                 adapter = prefs2.smartspaceModeSelection.getAdapter(),
                 label = stringResource(id = R.string.smartspace_mode_selection),
             )
+            SwitchPreference(
+                adapter = prefs.recentsActionLocked.getAdapter(),
+                label = stringResource(id = R.string.recents_lock_unlock),
+                description = stringResource(id = R.string.recents_lock_unlock_description),
+            )
         }
     }
 }

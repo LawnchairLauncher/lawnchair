@@ -47,6 +47,8 @@ import com.android.quickstep.util.VibrationConstants;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
+import app.lawnchair.util.RecentHelper;
+
 /**
  * Touch controller for handling task view card swipes
  */
@@ -346,7 +348,7 @@ public abstract class TaskViewTouchController<T extends BaseDraggingActivity>
             fling = false;
         }
         PagedOrientationHandler orientationHandler = mRecentsView.getPagedOrientationHandler();
-        boolean goingUp = orientationHandler.isGoingUp(velocity, mIsRtl);
+        boolean goingUp = orientationHandler.isGoingUp(velocity, mIsRtl) && !RecentHelper.getInstance().isAppLocked(mTaskBeingDragged.getTask().key.getPackageName(), mActivity.getBaseContext());
         float progress = mCurrentAnimation.getProgressFraction();
         float interpolatedProgress = mCurrentAnimation.getInterpolatedProgress();
         if (fling) {

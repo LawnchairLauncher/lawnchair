@@ -3,6 +3,8 @@ package app.lawnchair.overview
 import android.content.Context
 import android.graphics.Matrix
 import androidx.annotation.Keep
+import app.lawnchair.util.RecentHelper
+import app.lawnchair.util.TaskUtilLockState
 import com.android.quickstep.TaskOverlayFactory
 import com.android.quickstep.views.OverviewActionsView
 import com.android.quickstep.views.TaskThumbnailView
@@ -59,11 +61,21 @@ class TaskOverlayFactoryImpl(@Suppress("UNUSED_PARAMETER") context: Context) : T
                     showBlockedByPolicyMessage()
                 }
             }
+            override fun onLocked(context: Context, task: Task) {
+                val isLocked = !RecentHelper.getInstance().isAppLocked(task.key.packageName, context)
+                TaskUtilLockState.getInstance().setTaskLockState(
+                    context,
+                    task.key.component,
+                    isLocked,
+                    task.key
+                )
+            }
         }
     }
 
     sealed interface OverlayUICallbacks : TaskOverlayFactory.OverlayUICallbacks {
         fun onShare()
         fun onLens()
+        fun onLocked(context: Context, task: Task)
     }
 }
