@@ -15,6 +15,9 @@
  */
 package com.android.quickstep.interaction;
 
+import static android.view.WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
+import static android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS;
+
 import static com.android.app.animation.Interpolators.FAST_OUT_SLOW_IN;
 import static com.android.app.animation.Interpolators.LINEAR;
 import static com.android.launcher3.Utilities.mapBoundToRange;
@@ -47,6 +50,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.View.AccessibilityDelegate;
+import android.view.Window;
+import android.view.WindowInsetsController;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
 import android.widget.ImageView;
@@ -121,6 +126,17 @@ public class AllSetActivity extends Activity {
         Resources resources = getResources();
         int mode = resources.getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         boolean isDarkTheme = mode == Configuration.UI_MODE_NIGHT_YES;
+
+        int systemBarsMask = APPEARANCE_LIGHT_STATUS_BARS | APPEARANCE_LIGHT_NAVIGATION_BARS;
+        int systemBarsAppearance = isDarkTheme ? 0 : systemBarsMask;
+        Window window = getWindow();
+        WindowInsetsController insetsController = window == null
+                ? null
+                : window.getInsetsController();
+        if (insetsController != null) {
+            insetsController.setSystemBarsAppearance(systemBarsAppearance, systemBarsMask);
+        }
+
         Intent intent = getIntent();
         int accentColor = intent.getIntExtra(
                 isDarkTheme ? EXTRA_ACCENT_COLOR_DARK_MODE : EXTRA_ACCENT_COLOR_LIGHT_MODE,
@@ -299,7 +315,9 @@ public class AllSetActivity extends Activity {
         if (mBackgroundAnimatorListener != null) {
             mAnimatedBackground.removeAnimatorListener(mBackgroundAnimatorListener);
         }
-        dispatchLauncherAnimStartEnd();
+        if (!isChangingConfigurations()) {
+            dispatchLauncherAnimStartEnd();
+        }
     }
 
     private AnimatedFloat createSwipeUpProxy(GestureState state) {
