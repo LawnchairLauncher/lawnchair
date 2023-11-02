@@ -64,7 +64,7 @@ ext {
     FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
     accompanist_version = '0.32.0'
     libsu_version = '5.2.1'
-    protocVersion = '3.24.4'
+    protocVersion = '3.25.0'
     room_version = '2.6.0'
     optoVersion = "1.0.18"
 }
@@ -348,7 +348,7 @@ dependencies {
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.activity:activity-compose:1.8.0"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
-    implementation "androidx.navigation:navigation-compose:2.7.2"
+    implementation "androidx.navigation:navigation-compose:2.7.5"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
     implementation "com.google.accompanist:accompanist-drawablepainter:$accompanist_version"
