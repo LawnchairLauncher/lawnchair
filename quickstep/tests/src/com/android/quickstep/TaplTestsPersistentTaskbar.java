@@ -20,10 +20,9 @@ import static com.android.quickstep.TaskbarModeSwitchRule.Mode.PERSISTENT;
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
-import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,10 +32,17 @@ public class TaplTestsPersistentTaskbar extends AbstractTaplTestsTaskbar {
 
     @Test
     @TaskbarModeSwitch(mode = PERSISTENT)
-    @PortraitLandscape
-    @NavigationModeSwitch
-    public void testTaskbarFillsWidth() {
-        // Width check is performed inside TAPL whenever getTaskbar() is called.
-        getTaskbar();
+    public void testHideShowTaskbar() {
+        getTaskbar().hide();
+        mLauncher.getLaunchedAppState().showTaskbar();
+    }
+
+    @Test
+    @TaskbarModeSwitch(mode = PERSISTENT)
+    @Ignore // b/301575789
+    public void testHideTaskbarPersistsOnRecreate() {
+        getTaskbar().hide();
+        mLauncher.recreateTaskbar();
+        mLauncher.getLaunchedAppState().assertTaskbarHidden();
     }
 }
