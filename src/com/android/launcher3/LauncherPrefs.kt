@@ -334,21 +334,21 @@ class LauncherPrefs(private val encryptedContext: Context) {
         val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT =
                 nonRestorableItem(
                         "pref_long_press_nav_handle_haptic_hint_end_scale_percent",
-                        50,
+                        100,
                         EncryptionType.MOVE_TO_DEVICE_PROTECTED
                 )
         @JvmField
         val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT =
                 nonRestorableItem(
                         "pref_long_press_nav_handle_haptic_hint_scale_exponent",
-                        2,
+                        1,
                         EncryptionType.MOVE_TO_DEVICE_PROTECTED
                 )
         @JvmField
         val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS =
                 nonRestorableItem(
                         "pref_long_press_nav_handle_haptic_hint_iterations",
-                        40,
+                        50,
                         EncryptionType.MOVE_TO_DEVICE_PROTECTED
                 )
         @JvmField
