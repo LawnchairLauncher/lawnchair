@@ -16,7 +16,6 @@
 
 package com.android.quickstep;
 
-import static com.android.quickstep.TaskbarModeSwitchRule.Mode.PERSISTENT;
 import static com.android.quickstep.TaskbarModeSwitchRule.Mode.TRANSIENT;
 
 import static org.junit.Assert.assertEquals;
@@ -298,7 +297,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @ScreenRecord // b/242163205
     @PlatinumTest(focusArea = "launcher")
-    @TaskbarModeSwitch(mode = PERSISTENT)
+    @TaskbarModeSwitch
     public void testQuickSwitchToPreviousAppForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
         startTestActivity(2);
@@ -307,18 +306,28 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         // Set ignoreTaskbarVisibility to true to verify the task bar visibility explicitly.
         mLauncher.setIgnoreTaskbarVisibility(true);
 
-        // Expect task bar invisible when the launched app was the IME activity.
-        LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
-        launchedAppState.assertTaskbarHidden();
+        try {
+            // Expect task bar invisible when the launched app was the IME activity.
+            LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
+            launchedAppState.assertTaskbarHidden();
 
-        // Quick-switch to the test app with swiping to right.
-        quickSwitchToPreviousAppAndAssert(true /* toRight */);
+            // Quick-switch to the test app with swiping to right.
+            quickSwitchToPreviousAppAndAssert(true /* toRight */);
 
-        assertTestActivityIsRunning(2,
-                "The first app we should have quick switched to is not running");
-        // Expect task bar visible when the launched app was the test activity.
-        launchedAppState = getAndAssertLaunchedApp();
-        launchedAppState.assertTaskbarVisible();
+            assertTestActivityIsRunning(2,
+                    "The first app we should have quick switched to is not running");
+            launchedAppState = getAndAssertLaunchedApp();
+            boolean isTransientTaskbar = mLauncher.isTransientTaskbar();
+            if (isTransientTaskbar) {
+                launchedAppState.assertTaskbarHidden();
+            } else {
+                // Expect taskbar visible when the launched app was the test activity.
+                launchedAppState.assertTaskbarVisible();
+            }
+        } finally {
+            // Reset ignoreTaskbarVisibility to ensure other tests still verify it.
+            mLauncher.setIgnoreTaskbarVisibility(false);
+        }
     }
 
     @Test
@@ -354,7 +363,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
-    @TaskbarModeSwitch(mode = PERSISTENT)
+    @TaskbarModeSwitch()
     @PlatinumTest(focusArea = "launcher")
     @ScreenRecord
     public void testOverviewForTablet() throws Exception {
@@ -449,6 +458,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @PortraitLandscape
+    @TaskbarModeSwitch
     public void testTaskbarDeadzonesForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
 
@@ -461,15 +471,29 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
                 launcher -> assertTrue("Should have at least 3 tasks",
                         getTaskCount(launcher) >= 3));
 
-        // On persistent taskbar, it should not dismiss when tapping the taskbar
-        overview.touchTaskbarBottomCorner(/* tapRight= */ false);
-        assertTrue("Launcher internal state should be Overview",
-                isInState(() -> LauncherState.OVERVIEW));
+        if (mLauncher.isTransientTaskbar()) {
+            // On transient taskbar, it should dismiss when tapping outside taskbar bounds.
+            overview.touchTaskbarBottomCorner(/* tapRight= */ false);
+            assertTrue("Launcher internal state should be Normal",
+                    isInState(() -> LauncherState.NORMAL));
 
-        // On persistent taskbar, it should not dismiss when tapping the taskbar
-        overview.touchTaskbarBottomCorner(/* tapRight= */ true);
-        assertTrue("Launcher internal state should be Overview",
-                isInState(() -> LauncherState.OVERVIEW));
+            overview = mLauncher.getWorkspace().switchToOverview();
+
+            // On transient taskbar, it should dismiss when tapping outside taskbar bounds.
+            overview.touchTaskbarBottomCorner(/* tapRight= */ true);
+            assertTrue("Launcher internal state should be Normal",
+                    isInState(() -> LauncherState.NORMAL));
+        } else {
+            // On persistent taskbar, it should not dismiss when tapping the taskbar
+            overview.touchTaskbarBottomCorner(/* tapRight= */ false);
+            assertTrue("Launcher internal state should be Overview",
+                    isInState(() -> LauncherState.OVERVIEW));
+
+            // On persistent taskbar, it should not dismiss when tapping the taskbar
+            overview.touchTaskbarBottomCorner(/* tapRight= */ true);
+            assertTrue("Launcher internal state should be Overview",
+                    isInState(() -> LauncherState.OVERVIEW));
+        }
     }
 
     @Test

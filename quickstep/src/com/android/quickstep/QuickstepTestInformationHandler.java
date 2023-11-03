@@ -106,10 +106,10 @@ public class QuickstepTestInformationHandler extends TestInformationHandler {
                 });
                 return response;
 
-            case TestProtocol.REQUEST_STASHED_TASKBAR_HEIGHT: {
+            case TestProtocol.REQUEST_TASKBAR_FROM_NAV_THRESHOLD: {
                 final Resources resources = mContext.getResources();
                 response.putInt(TestProtocol.TEST_INFO_RESPONSE_FIELD,
-                        resources.getDimensionPixelSize(R.dimen.taskbar_stashed_size));
+                        resources.getDimensionPixelSize(R.dimen.taskbar_from_nav_threshold));
                 return response;
             }
 
