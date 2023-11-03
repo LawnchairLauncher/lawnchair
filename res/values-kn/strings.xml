@@ -131,7 +131,7 @@
     <string name="widgets_list_closed" msgid="6141506579418771922">"ವಿಜೆಟ್ ಪಟ್ಟಿಯನ್ನು ಮುಚ್ಚಲಾಗಿದೆ"</string>
     <string name="action_add_to_workspace" msgid="215894119683164916">"ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗೆ ಸೇರಿಸಿ"</string>
     <string name="action_move_here" msgid="2170188780612570250">"ಐಟಂ ಇಲ್ಲಿಗೆ ಸರಿಸಿ"</string>
-    <string name="item_added_to_workspace" msgid="4211073925752213539">"ಮುಖಪುಟ ಪರದೆಗೆ ಐಟಂ ಸೇರಿಸಲಾಗಿದೆ"</string>
+    <string name="item_added_to_workspace" msgid="4211073925752213539">"ಹೋಮ್ ಸ್ಕ್ರೀನ್‌ಗೆ ಐಟಂ ಸೇರಿಸಲಾಗಿದೆ"</string>
     <string name="item_removed" msgid="851119963877842327">"ಐಟಂ ತೆಗೆದುಹಾಕಲಾಗಿದೆ"</string>
     <string name="undo" msgid="4151576204245173321">"ರದ್ದುಮಾಡಿ"</string>
     <string name="action_move" msgid="4339390619886385032">"ಐಟಂ ಸರಿಸಿ"</string>
