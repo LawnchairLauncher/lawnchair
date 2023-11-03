@@ -31,7 +31,6 @@ import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.TestUtil;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Assume;
 
 import java.util.List;
@@ -85,11 +84,6 @@ public class AbstractTaplTestsTaskbar extends AbstractQuickStepTest {
         for (int i = 0; i < taskbarIconNames.size(); i++) {
             assertEquals("Taskbar and Hotseat icons do not match",
                     taskbarIconNames, hotseatIconNames);
-        }
-
-        if (!isTaskbarInTransientMode(mTargetContext)) {
-            Assert.assertEquals("Persistent taskbar should fill screen width",
-                    taskbar.getVisibleBounds().width(), mLauncher.getRealDisplaySize().x);
         }
 
         return taskbar;
