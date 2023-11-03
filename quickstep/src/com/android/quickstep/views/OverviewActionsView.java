@@ -232,13 +232,10 @@ public class OverviewActionsView<T extends OverlayUICallbacks> extends FrameLayo
         } else {
             mSplitButtonHiddenFlags &= ~flag;
         }
-        if (mSplitButton == null)
-            return;
+        if (mSplitButton == null) return;
         boolean shouldBeVisible = mSplitButtonHiddenFlags == 0;
-//        mSplitButton.setVisibility(shouldBeVisible ? VISIBLE : GONE);
-//        findViewById(R.id.action_split_space).setVisibility(shouldBeVisible ? VISIBLE : GONE);
-        boolean isEnabled = (mDisabledFlags & ~DISABLED_ROTATED) == 0;
-        LayoutUtils.setViewEnabled(this, shouldBeVisible && isEnabled);
+        mSplitButton.setVisibility(shouldBeVisible ? VISIBLE : GONE);
+        mSplitSpace.setVisibility(shouldBeVisible ? VISIBLE : GONE);
     }
 
     /**
