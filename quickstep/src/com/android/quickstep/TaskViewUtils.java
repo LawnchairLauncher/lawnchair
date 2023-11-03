@@ -693,15 +693,17 @@ public final class TaskViewUtils {
             launcherAnim.setInterpolator(Interpolators.TOUCH_RESPONSE);
             launcherAnim.setDuration(RECENTS_LAUNCH_DURATION);
 
-            windowAnimEndListener = new AnimatorListenerAdapter() {
+            windowAnimEndListener = new AnimationSuccessListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
                     recentsView.onTaskLaunchedInLiveTileMode();
                 }
 
                 // Make sure recents gets fixed up by resetting task alphas and scales, etc.
+                // This should only be run onAnimationSuccess, otherwise finishRecentsAnimation will
+                // interfere with a rapid swipe up to home in the live tile + running task case.
                 @Override
-                public void onAnimationEnd(Animator animation) {
+                public void onAnimationSuccess(Animator animation) {
                     recentsView.finishRecentsAnimation(false /* toRecents */, () -> {
                         recentsView.post(() -> {
                             stateManager.moveToRestState();
