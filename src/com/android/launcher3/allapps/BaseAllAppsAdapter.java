@@ -27,7 +27,6 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.Flags;
 import com.android.launcher3.R;
 import com.android.launcher3.allapps.search.SearchAdapterProvider;
 import com.android.launcher3.config.FeatureFlags;
@@ -213,6 +212,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 BubbleTextView icon = (BubbleTextView) holder.itemView;
                 icon.reset();
                 icon.applyFromApplicationInfo(adapterItem.itemInfo);
+                icon.setOnFocusChangeListener(mIconFocusListener);
                 break;
             }
             case VIEW_TYPE_EMPTY_SEARCH: {
