@@ -301,7 +301,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         }
     }
 
-    private void animateDotScale(float... dotScales) {
+    public void animateDotScale(float... dotScales) {
         cancelDotScaleAnim();
         mDotScaleAnim = ObjectAnimator.ofFloat(this, DOT_SCALE_PROPERTY, dotScales);
         mDotScaleAnim.addListener(new AnimatorListenerAdapter() {
@@ -656,7 +656,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver,
         return mForceHideDot;
     }
 
-    private boolean hasDot() {
+    public boolean hasDot() {
         return mDotInfo != null;
     }
 
