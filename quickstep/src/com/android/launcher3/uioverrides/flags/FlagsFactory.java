@@ -171,11 +171,18 @@ public class FlagsFactory {
             return;
         }
         pw.println("DeviceFlags:");
+        pw.println("  BooleanFlags:");
         synchronized (sDebugFlags) {
             for (DebugFlag flag : sDebugFlags) {
                 if (flag instanceof DeviceFlag) {
-                    pw.println("  " + flag);
+                    pw.println("    " + flag);
                 }
+            }
+        }
+        pw.println("  IntFlags:");
+        synchronized (sIntFlags) {
+            for (IntFlag flag : sIntFlags) {
+                pw.println("    " + flag);
             }
         }
         pw.println("DebugFlags:");
@@ -184,12 +191,6 @@ public class FlagsFactory {
                 if (!(flag instanceof DeviceFlag)) {
                     pw.println("  " + flag);
                 }
-            }
-        }
-        pw.println("IntFlags:");
-        synchronized (sIntFlags) {
-            for (IntFlag flag : sIntFlags) {
-                pw.println("  " + flag);
             }
         }
     }
