@@ -17,6 +17,8 @@ package com.android.quickstep;
 
 import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 
+import static com.android.launcher3.testing.shared.TestProtocol.SPLIT_LEAK;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SplitConfigurationOptions.StagePosition;
@@ -97,6 +99,7 @@ import com.android.wm.shell.transition.IHomeTransitionListener;
 import com.android.wm.shell.transition.IShellTransitions;
 import com.android.wm.shell.util.GroupedRecentTaskInfo;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -270,6 +273,7 @@ public class SystemUiProxy implements ISystemUiProxy {
      */
     @MainThread
     public void clearProxy() {
+        testLogD(SPLIT_LEAK, "systemUiProxy clearingProxy");
         setProxy(null, null, null, null, null, null, null, null, null, null, null, null, null);
     }
 
@@ -1249,19 +1253,21 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     public ArrayList<GroupedRecentTaskInfo> getRecentTasks(int numTasks, int userId) {
-        if (mRecentTasks != null) {
-            try {
-                final GroupedRecentTaskInfo[] rawTasks = mRecentTasks.getRecentTasks(numTasks,
-                        RECENT_IGNORE_UNAVAILABLE, userId);
-                if (rawTasks == null) {
-                    return new ArrayList<>();
-                }
-                return new ArrayList<>(Arrays.asList(rawTasks));
-            } catch (RemoteException e) {
-                Log.w(TAG, "Failed call getRecentTasks", e);
-            }
+        if (mRecentTasks == null) {
+            Log.w(TAG, "getRecentTasks() failed due to null mRecentTasks");
+            return new ArrayList<>();
         }
-        return new ArrayList<>();
+        try {
+            final GroupedRecentTaskInfo[] rawTasks = mRecentTasks.getRecentTasks(numTasks,
+                    RECENT_IGNORE_UNAVAILABLE, userId);
+            if (rawTasks == null) {
+                return new ArrayList<>();
+            }
+            return new ArrayList<>(Arrays.asList(rawTasks));
+        } catch (RemoteException e) {
+            Log.w(TAG, "Failed call getRecentTasks", e);
+            return new ArrayList<>();
+        }
     }
 
     /**
@@ -1405,7 +1411,7 @@ public class SystemUiProxy implements ISystemUiProxy {
     public boolean startRecentsActivity(Intent intent, ActivityOptions options,
             RecentsAnimationListener listener) {
         if (mRecentTasks == null) {
-            ActiveGestureLog.INSTANCE.trackEvent(RECENT_TASKS_MISSING);
+            ActiveGestureLog.INSTANCE.addLog("Null mRecentTasks", RECENT_TASKS_MISSING);
             return false;
         }
         final IRecentsAnimationRunner runner = new IRecentsAnimationRunner.Stub() {
@@ -1462,5 +1468,36 @@ public class SystemUiProxy implements ISystemUiProxy {
             Log.e(TAG, "Error querying drag state", e);
             return false;
         }
+    }
+
+    public void dump(PrintWriter pw) {
+        pw.println(TAG + ":");
+
+        pw.println("\tmSystemUiProxy=" + mSystemUiProxy);
+        pw.println("\tmPip=" + mPip);
+        pw.println("\tmPipAnimationListener=" + mPipAnimationListener);
+        pw.println("\tmBubbles=" + mBubbles);
+        pw.println("\tmBubblesListener=" + mBubblesListener);
+        pw.println("\tmSplitScreen=" + mSplitScreen);
+        pw.println("\tmSplitScreenListener=" + mSplitScreenListener);
+        pw.println("\tmSplitSelectListener=" + mSplitSelectListener);
+        pw.println("\tmOneHanded=" + mOneHanded);
+        pw.println("\tmShellTransitions=" + mShellTransitions);
+        pw.println("\tmHomeTransitionListener=" + mHomeTransitionListener);
+        pw.println("\tmStartingWindow=" + mStartingWindow);
+        pw.println("\tmStartingWindowListener=" + mStartingWindowListener);
+        pw.println("\tmSysuiUnlockAnimationController=" + mSysuiUnlockAnimationController);
+        pw.println("\tmLauncherActivityClass=" + mLauncherActivityClass);
+        pw.println("\tmLauncherUnlockAnimationController=" + mLauncherUnlockAnimationController);
+        pw.println("\tmRecentTasks=" + mRecentTasks);
+        pw.println("\tmRecentTasksListener=" + mRecentTasksListener);
+        pw.println("\tmBackAnimation=" + mBackAnimation);
+        pw.println("\tmBackToLauncherCallback=" + mBackToLauncherCallback);
+        pw.println("\tmBackToLauncherRunner=" + mBackToLauncherRunner);
+        pw.println("\tmDesktopMode=" + mDesktopMode);
+        pw.println("\tmDesktopTaskListener=" + mDesktopTaskListener);
+        pw.println("\tmUnfoldAnimation=" + mUnfoldAnimation);
+        pw.println("\tmUnfoldAnimationListener=" + mUnfoldAnimationListener);
+        pw.println("\tmDragAndDrop=" + mDragAndDrop);
     }
 }

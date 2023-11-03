@@ -1299,6 +1299,7 @@ public class TouchInteractionService extends Service {
         Log.i(TAG, "preloadOverview: forSUWAllSet=" + forSUWAllSet
                 + ", isHomeAndOverviewSame=" + mOverviewComponentObserver.isHomeAndOverviewSame());
 
+        ActiveGestureLog.INSTANCE.addLog("preloadRecentsAnimation");
         mTaskAnimationManager.preloadRecentsAnimation(overviewIntent);
     }
 
@@ -1373,6 +1374,7 @@ public class TouchInteractionService extends Service {
         mTaskbarManager.dumpLogs("", pw);
         pw.println("AssistStateManager:");
         AssistStateManager.INSTANCE.get(this).dump("  ", pw);
+        SystemUiProxy.INSTANCE.get(this).dump(pw);
     }
 
     private AbsSwipeUpHandler createLauncherSwipeHandler(

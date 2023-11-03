@@ -39,6 +39,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.R;
 import com.android.launcher3.util.SimpleBroadcastReceiver;
+import com.android.quickstep.util.ActiveGestureLog;
 import com.android.systemui.shared.system.PackageManagerWrapper;
 
 import java.io.PrintWriter;
@@ -276,20 +277,24 @@ public final class OverviewComponentObserver {
     /**
      * Starts the intent for the current home activity.
      */
-    public static void startHomeIntentSafely(@NonNull Context context, @Nullable Bundle options) {
+    public static void startHomeIntentSafely(@NonNull Context context, @Nullable Bundle options,
+            @NonNull String reason) {
         RecentsAnimationDeviceState deviceState = new RecentsAnimationDeviceState(context);
         OverviewComponentObserver observer = new OverviewComponentObserver(context, deviceState);
         Intent intent = observer.getHomeIntent();
         observer.onDestroy();
         deviceState.destroy();
-        startHomeIntentSafely(context, intent, options);
+        startHomeIntentSafely(context, intent, options, reason);
     }
 
     /**
      * Starts the intent for the current home activity.
      */
     public static void startHomeIntentSafely(
-            @NonNull Context context, @NonNull Intent homeIntent, @Nullable Bundle options) {
+            @NonNull Context context, @NonNull Intent homeIntent, @Nullable Bundle options,
+            @NonNull String reason) {
+        ActiveGestureLog.INSTANCE.addLog(new ActiveGestureLog.CompoundString(
+                "OverviewComponentObserver.startHomeIntent: ").append(reason));
         try {
             context.startActivity(homeIntent, options);
         } catch (NullPointerException | ActivityNotFoundException | SecurityException e) {

@@ -1096,7 +1096,7 @@ public class TaskView extends FrameLayout implements Reusable {
                         (task) -> {
                             setIcon(mIconView, task.icon);
                             if (enableOverviewIconMenu()) {
-                                setText(mIconView, TaskUtils.getTitle(getContext(), task));
+                                setText(mIconView, task.title);
                             }
                             mDigitalWellBeingToast.initialize(task);
                         });
