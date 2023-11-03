@@ -23,6 +23,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 
 import static com.android.launcher3.BaseActivity.EVENT_DESTROYED;
 import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
 import static com.android.launcher3.config.FeatureFlags.enableTaskbarNoRecreate;
 import static com.android.launcher3.util.DisplayController.TASKBAR_NOT_DESTROYED_TAG;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
@@ -97,9 +98,6 @@ public class TaskbarManager {
             | ActivityInfo.CONFIG_SCREEN_SIZE
             | ActivityInfo.CONFIG_SCREEN_LAYOUT
             | ActivityInfo.CONFIG_SMALLEST_SCREEN_SIZE;
-
-    public static final boolean ENABLE_TASKBAR_NAVBAR_UNIFICATION =
-            Flags.enableTaskbarNavbarUnification();
 
     private static final Uri USER_SETUP_COMPLETE_URI = Settings.Secure.getUriFor(
             Settings.Secure.USER_SETUP_COMPLETE);
@@ -494,7 +492,7 @@ public class TaskbarManager {
      *                      and we are using a single window for taskbar and navbar.
      */
     public static boolean isPhoneMode(DeviceProfile deviceProfile) {
-        return TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION && deviceProfile.isPhone;
+        return ENABLE_TASKBAR_NAVBAR_UNIFICATION && deviceProfile.isPhone;
     }
 
     /**

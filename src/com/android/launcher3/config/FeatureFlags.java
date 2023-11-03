@@ -23,6 +23,7 @@ import static com.android.launcher3.config.FeatureFlags.FlagState.TEAMFOOD;
 import static com.android.launcher3.uioverrides.flags.FlagsFactory.getDebugFlag;
 import static com.android.launcher3.uioverrides.flags.FlagsFactory.getIntFlag;
 import static com.android.launcher3.uioverrides.flags.FlagsFactory.getReleaseFlag;
+import static com.android.wm.shell.Flags.enableTaskbarNavbarUnification;
 
 import android.view.ViewConfiguration;
 
@@ -217,12 +218,19 @@ public final class FeatureFlags {
     public static final BooleanFlag ENABLE_TRANSIENT_TASKBAR = getDebugFlag(270395798,
             "ENABLE_TRANSIENT_TASKBAR", ENABLED, "Enables transient taskbar.");
 
+    public static final boolean ENABLE_TASKBAR_NAVBAR_UNIFICATION =
+            enableTaskbarNavbarUnification();
+
     // Aconfig migration complete for ENABLE_TASKBAR_NO_RECREATION.
     public static final BooleanFlag ENABLE_TASKBAR_NO_RECREATION = getDebugFlag(299193589,
             "ENABLE_TASKBAR_NO_RECREATION", DISABLED,
             "Enables taskbar with no recreation from lifecycle changes of TaskbarActivityContext.");
     public static boolean enableTaskbarNoRecreate() {
-        return ENABLE_TASKBAR_NO_RECREATION.get() || Flags.enableTaskbarNoRecreate();
+        return ENABLE_TASKBAR_NO_RECREATION.get() || Flags.enableTaskbarNoRecreate()
+                // Task bar pinning and task bar nav bar unification are both dependent on
+                // ENABLE_TASKBAR_NO_RECREATION. We want to turn ENABLE_TASKBAR_NO_RECREATION on
+                // when either of the dependent features is turned on.
+                || ENABLE_TASKBAR_PINNING.get() || ENABLE_TASKBAR_NAVBAR_UNIFICATION;
     }
 
     // TODO(Block 16): Clean up flags
