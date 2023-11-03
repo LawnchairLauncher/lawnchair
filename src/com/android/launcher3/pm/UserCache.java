@@ -28,6 +28,7 @@ import android.os.UserManager;
 
 import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.util.MainThreadInitializedObject;
@@ -152,6 +153,11 @@ public class UserCache implements SafeCloseable {
                 .findFirst()
                 .map(Map.Entry::getKey)
                 .orElse(Process.myUserHandle());
+    }
+
+    @VisibleForTesting
+    public void putToCache(UserHandle userHandle, UserIconInfo info) {
+        mUserToSerialMap.put(userHandle, info);
     }
 
     /**
