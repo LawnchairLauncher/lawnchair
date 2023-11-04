@@ -402,6 +402,17 @@ public class SystemUiProxy implements ISystemUiProxy {
     }
 
     @Override
+    public void animateNavBarLongPress(boolean isTouchDown, long durationMs) {
+        if (mSystemUiProxy != null) {
+            try {
+                mSystemUiProxy.animateNavBarLongPress(isTouchDown, durationMs);
+            } catch (RemoteException e) {
+                Log.w(TAG, "Failed call animateNavBarLongPress", e);
+            }
+        }
+    }
+
+    @Override
     public void notifyAccessibilityButtonClicked(int displayId) {
         if (mSystemUiProxy != null) {
             try {

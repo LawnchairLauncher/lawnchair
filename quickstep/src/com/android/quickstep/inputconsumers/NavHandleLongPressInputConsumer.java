@@ -38,7 +38,6 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
     private final NavHandleLongPressHandler mNavHandleLongPressHandler;
     private final float mNavHandleWidth;
     private final float mScreenWidth;
-    private final ViewConfiguration mViewConfiguration;
 
     private final Runnable mTriggerLongPress = this::triggerLongPress;
     private final float mTouchSlopSquared;
@@ -49,7 +48,6 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
     public NavHandleLongPressInputConsumer(Context context, InputConsumer delegate,
             InputMonitorCompat inputMonitor, RecentsAnimationDeviceState deviceState) {
         super(delegate, inputMonitor);
-        mViewConfiguration = ViewConfiguration.get(context);
         mNavHandleWidth = context.getResources().getDimensionPixelSize(
                 R.dimen.navigation_home_handle_width);
         mScreenWidth = DisplayController.INSTANCE.get(context).getInfo().currentSize.x;

@@ -119,6 +119,10 @@ public final class FeatureFlags {
             getReleaseFlag(301680992, "CUSTOM_LPNH_THRESHOLDS", DISABLED,
                     "Add dev options to customize the LPNH trigger slop and milliseconds");
 
+    public static final BooleanFlag ANIMATE_LPNH =
+            getReleaseFlag(308693847, "ANIMATE_LPNH", TEAMFOOD,
+                    "Animates navbar when long pressing");
+
     public static final IntFlag LPNH_SLOP_PERCENTAGE =
             getIntFlag(301680992, "LPNH_SLOP_PERCENTAGE", 100,
                     "Controls touch slop percentage for lpnh");
