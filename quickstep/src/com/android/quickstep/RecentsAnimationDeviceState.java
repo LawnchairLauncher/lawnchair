@@ -146,7 +146,6 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
             mRotationTouchHelper.init();
             runOnDestroy(mRotationTouchHelper::destroy);
         }
-//        runOnUserUnlocked(mRotationTouchHelper::onUserUnlocked);
 
         // Register for user unlocked if necessary
         mIsUserUnlocked = context.getSystemService(UserManager.class)
@@ -169,7 +168,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
                 mExclusionRegion = region;
             }
         };
-//        runOnDestroy(mExclusionListener::unregister);
+        runOnDestroy(mExclusionListener::unregister);
 
         // Register for display changes changes
         mDisplayController.addChangeListener(this);
@@ -178,12 +177,12 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
         SettingsCache settingsCache = SettingsCache.INSTANCE.get(mContext);
         if (mIsOneHandedModeSupported) {
-//            Uri oneHandedUri = Settings.Secure.getUriFor(ONE_HANDED_ENABLED);
-//            SettingsCache.OnChangeListener onChangeListener =
-//                    enabled -> mIsOneHandedModeEnabled = enabled;
-//            settingsCache.register(oneHandedUri, onChangeListener);
-//            mIsOneHandedModeEnabled = settingsCache.getValue(oneHandedUri);
-//            runOnDestroy(() -> settingsCache.unregister(oneHandedUri, onChangeListener));
+            Uri oneHandedUri = Settings.Secure.getUriFor(ONE_HANDED_ENABLED);
+            SettingsCache.OnChangeListener onChangeListener =
+                    enabled -> mIsOneHandedModeEnabled = enabled;
+            settingsCache.register(oneHandedUri, onChangeListener);
+            mIsOneHandedModeEnabled = LawnchairApp.isRecentsEnabled () && settingsCache.getValue(oneHandedUri);
+            runOnDestroy(() -> settingsCache.unregister(oneHandedUri, onChangeListener));
         } else {
             mIsOneHandedModeEnabled = false;
         }
