@@ -36,7 +36,6 @@ import android.view.SurfaceControl;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.window.BackEvent;
-import android.window.BackMotionEvent;
 import android.window.BackProgressAnimator;
 import android.window.IOnBackInvokedCallback;
 
@@ -91,7 +90,7 @@ public class LauncherBackAnimationController {
     private float mBackProgress = 0;
     private boolean mBackInProgress = false;
     private IOnBackInvokedCallback mBackCallback;
-    private BackProgressAnimator mProgressAnimator = new BackProgressAnimator();
+    private BackProgressAnimator mProgressAnimator;
 
     public LauncherBackAnimationController(
             QuickstepLauncher launcher,
@@ -110,6 +109,11 @@ public class LauncherBackAnimationController {
                 R.dimen.swipe_back_window_max_delta_y);
         mCancelInterpolator =
                 AnimationUtils.loadInterpolator(mLauncher, R.interpolator.back_cancel);
+        try {
+            mProgressAnimator = new BackProgressAnimator();
+        } catch (Throwable throwable) {
+
+        }
     }
 
     /**
@@ -122,6 +126,9 @@ public class LauncherBackAnimationController {
             public void onBackCancelled() {
                 handler.post(() -> {
                     resetPositionAnimated();
+                    if (mProgressAnimator == null) {
+                        return;
+                    }
                     mProgressAnimator.reset();
                 });
             }
@@ -130,21 +137,30 @@ public class LauncherBackAnimationController {
             public void onBackInvoked() {
                 handler.post(() -> {
                     startTransition();
+                    if (mProgressAnimator == null) {
+                        return;
+                    }
                     mProgressAnimator.reset();
                 });
             }
 
             @Override
-            public void onBackProgressed(BackMotionEvent backEvent) {
+            public void onBackProgressed(BackEvent backEvent) {
                 handler.post(() -> {
+                    if (mProgressAnimator == null) {
+                        return;
+                    }
                     mProgressAnimator.onBackProgressed(backEvent);
                 });
             }
 
             @Override
-            public void onBackStarted(BackMotionEvent backEvent) {
+            public void onBackStarted(BackEvent backEvent) {
                 handler.post(() -> {
                     startBack(backEvent);
+                    if (mProgressAnimator == null) {
+                        return;
+                    }
                     mProgressAnimator.onBackStarted(backEvent, event -> {
                         mBackProgress = event.getProgress();
                         // TODO: Update once the interpolation curve spec is finalized.
@@ -182,11 +198,13 @@ public class LauncherBackAnimationController {
         if (mBackCallback != null) {
             SystemUiProxy.INSTANCE.get(mLauncher).clearBackToLauncherCallback(mBackCallback);
         }
-        mProgressAnimator.reset();
+        if (mProgressAnimator != null) {
+            mProgressAnimator.reset();
+        }
         mBackCallback = null;
     }
 
-    private void startBack(BackMotionEvent backEvent) {
+    private void startBack(BackEvent backEvent) {
         mBackInProgress = true;
         RemoteAnimationTarget appTarget = backEvent.getDepartingAnimationTarget();
 
