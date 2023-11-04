@@ -49,6 +49,7 @@ import static com.android.launcher3.states.StateAnimationConfig.SKIP_SCRIM;
 import android.animation.ValueAnimator;
 import android.util.FloatProperty;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.LauncherState.PageAlphaProvider;
@@ -164,6 +165,8 @@ public class WorkspaceStateTransitionAnimation {
                 state.hasFlag(FLAG_HOTSEAT_INACCESSIBLE)
                         ? View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                         : View.IMPORTANT_FOR_ACCESSIBILITY_AUTO);
+        hotseat.setDescendantFocusability(state.hasFlag(FLAG_HOTSEAT_INACCESSIBLE)
+                ? ViewGroup.FOCUS_BLOCK_DESCENDANTS : ViewGroup.FOCUS_BEFORE_DESCENDANTS);
 
         Interpolator translationInterpolator =
                 config.getInterpolator(ANIM_WORKSPACE_TRANSLATE, ZOOM_OUT);

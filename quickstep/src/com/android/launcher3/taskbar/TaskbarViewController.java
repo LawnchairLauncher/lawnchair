@@ -52,6 +52,7 @@ import androidx.core.graphics.ColorUtils;
 import androidx.core.view.OneShotPreDrawListener;
 
 import com.android.app.animation.Interpolators;
+import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
@@ -335,6 +336,17 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         for (int iconIndex = 0; iconIndex < iconViews.length; iconIndex++) {
             iconViews[iconIndex].setScaleX(finalScale);
             iconViews[iconIndex].setScaleY(finalScale);
+        }
+    }
+
+    /**
+     * Animate away taskbar icon notification dots during the taskbar pinning animation.
+     */
+    public void animateAwayNotificationDotsDuringTaskbarPinningAnimation() {
+        for (View iconView : mTaskbarView.getIconViews()) {
+            if (iconView instanceof BubbleTextView && ((BubbleTextView) iconView).hasDot()) {
+                ((BubbleTextView) iconView).animateDotScale(0);
+            }
         }
     }
 

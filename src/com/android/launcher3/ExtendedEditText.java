@@ -101,8 +101,14 @@ public class ExtendedEditText extends EditText {
     }
 
     public void hideKeyboard() {
+        hideKeyboard(/* clearFocus= */ true);
+    }
+
+    public void hideKeyboard(boolean clearFocus) {
         ActivityContext.lookupContext(getContext()).hideKeyboard();
-        clearFocus();
+        if (clearFocus) {
+            clearFocus();
+        }
     }
 
     protected void onKeyboardShown() {
