@@ -363,6 +363,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         updateCellLayoutPadding();
         updateWorkspaceWidgetsSizes();
         setPageIndicatorInset();
+        updateWorkspaceScreensPadding();
     }
 
     private void updateWorkspaceScreensPadding() {
@@ -650,7 +651,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         // Add the first page
         CellLayout firstPage = insertNewWorkspaceScreen(Workspace.FIRST_SCREEN_ID, getChildCount());
         // Always add a QSB on the first screen.
-        if (mQsb == null) {
+        if (mFirstPagePinnedItem == null) {
             SmartspaceMode smartspaceMode = PreferenceExtensionsKt
                     .firstBlocking(mPreferenceManager2.getSmartspaceMode());
             if (!smartspaceMode.isAvailable(this.mLauncher)) {
@@ -662,7 +663,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             // In transposed layout, we add the QSB in the Grid. As workspace does not touch
             // the
             // edges, we do not need a full width QSB.
-            mQsb = LayoutInflater.from(getContext())
+            mFirstPagePinnedItem = LayoutInflater.from(getContext())
                     .inflate(smartspaceMode.getLayoutResourceId(), firstPage, false);
         }
 
@@ -670,14 +671,11 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         CellLayoutLayoutParams lp = new CellLayoutLayoutParams(0, 0, cellHSpan, 1);
         lp.canReorder = false;
         if (!firstPage.addViewToCellLayout(
-                mQsb, 0, R.id.search_container_workspace, lp, true)) {
+                mFirstPagePinnedItem, 0, R.id.search_container_workspace, lp, true)) {
             Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
-            mFirstPagePinnedItem = null;
         }
     }
 
-    private View mQsb;
-    private boolean mIsEventOverQsb;
 
     public void removeAllWorkspaceScreens() {
         // Disable all layout transitions before removing all pages to ensure that we
@@ -686,10 +684,10 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         disableLayoutTransitions();
 
         // Recycle the QSB widget
-        if (mQsb != null) {
-            ViewGroup viewGroup = (ViewGroup) mQsb.getParent();
+        if (mFirstPagePinnedItem != null) {
+            ViewGroup viewGroup = (ViewGroup) mFirstPagePinnedItem.getParent();
             if (viewGroup != null) {
-                viewGroup.removeView(mQsb);
+                viewGroup.removeView(mFirstPagePinnedItem);
             }
         }
 
@@ -1213,8 +1211,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         } else {
             mIsEventOverFirstPagePinnedItem = false;
         }
-        if (!mIsEventOverQsb) {
-            mIsEventOverQsb = isEventOverQsb(mXDown, mYDown);
+        if (!mIsEventOverFirstPagePinnedItem) {
+            mIsEventOverFirstPagePinnedItem = isEventOverQsb(mXDown, mYDown);
         }
     }
 
