@@ -25,6 +25,7 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVA
 import static com.android.launcher3.model.LoaderTask.SMARTSPACE_ON_HOME_SCREEN;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.NOTIFICATION_BADGING_URI;
+import static com.android.launcher3.util.SettingsCache.PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -166,6 +167,8 @@ public class LauncherAppState implements SafeCloseable {
         onNotificationSettingsChanged(settingsCache.getValue(NOTIFICATION_BADGING_URI));
         mOnTerminateCallback.add(() ->
                 settingsCache.unregister(NOTIFICATION_BADGING_URI, notificationLister));
+        // Register an observer to notify Launcher about Private Space settings toggle.
+        registerPrivateSpaceHideWhenLockListener(settingsCache);
     }
 
     public LauncherAppState(Context context, @Nullable String iconCacheFileName) {
@@ -186,6 +189,18 @@ public class LauncherAppState implements SafeCloseable {
             NotificationListener.requestRebind(new ComponentName(
                     mContext, NotificationListener.class));
         }
+    }
+
+    private void registerPrivateSpaceHideWhenLockListener(SettingsCache settingsCache) {
+        SettingsCache.OnChangeListener psHideWhenLockChangedListener =
+                this::onPrivateSpaceHideWhenLockChanged;
+        settingsCache.register(PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI, psHideWhenLockChangedListener);
+        mOnTerminateCallback.add(() -> settingsCache.unregister(PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI,
+                psHideWhenLockChangedListener));
+    }
+
+    private void onPrivateSpaceHideWhenLockChanged(boolean isPrivateSpaceHideOnLockEnabled) {
+        mModel.forceReload();
     }
 
     private void refreshAndReloadLauncher() {
