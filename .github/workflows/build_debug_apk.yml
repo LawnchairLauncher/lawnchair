@@ -43,7 +43,7 @@ jobs:
         with:
           gradle-home-cache-cleanup: true
       - name: Write sign info
-        if: github.repository == 'LawnchairLauncher/lawnchair'
+        if: github.repository_owner == 'LawnchairLauncher'
         run: |
           if [ ! -z "${{ secrets.KEYSTORE }}" ]; then
             echo storePassword='${{ secrets.KEYSTORE_PASSWORD }}' >> keystore.properties
@@ -62,7 +62,7 @@ jobs:
 
   send-notifications:
     runs-on: ubuntu-latest
-    if: github.repository == 'LawnchairLauncher/lawnchair'
+    if: github.repository_owner == 'LawnchairLauncher'
     needs: build-debug-apk
     steps:
       - name: Check out repository
