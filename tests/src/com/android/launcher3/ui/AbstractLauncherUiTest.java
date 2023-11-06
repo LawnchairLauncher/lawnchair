@@ -312,10 +312,13 @@ public abstract class AbstractLauncherUiTest {
     // b/309008042
     private static boolean sFirstTimeWaitingForWizard = true;
 
+    // b/309008042
     static {
         waitForSetupWizardDismissal();
     }
 
+    // b/309008042
+    // TODO(309471958) Productize killing/dismissal of setup wizard.
     /** Waits for setup wizard to go away. */
     public static void waitForSetupWizardDismissal() {
         if (sFirstTimeWaitingForWizard && TestStabilityRule.isPresubmit()) {
