@@ -336,7 +336,6 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @PortraitLandscape
     @NavigationModeSwitch
-    @PlatinumTest(focusArea = "launcher")
     public void testPressBack() throws Exception {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().adoptShellPermissionIdentity(
                 READ_DEVICE_CONFIG_PERMISSION);
