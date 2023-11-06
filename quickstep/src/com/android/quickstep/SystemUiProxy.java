@@ -17,7 +17,6 @@ package com.android.quickstep;
 
 import static android.app.ActivityManager.RECENT_IGNORE_UNAVAILABLE;
 
-import static com.android.launcher3.testing.shared.TestProtocol.SPLIT_LEAK;
 import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
@@ -273,7 +272,6 @@ public class SystemUiProxy implements ISystemUiProxy {
      */
     @MainThread
     public void clearProxy() {
-        testLogD(SPLIT_LEAK, "systemUiProxy clearingProxy");
         setProxy(null, null, null, null, null, null, null, null, null, null, null, null, null);
     }
 
