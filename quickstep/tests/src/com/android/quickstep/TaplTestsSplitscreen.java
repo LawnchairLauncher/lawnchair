@@ -108,7 +108,6 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
     }
 
     @Test
-    @Ignore("Enable once App Pairs flagged on. These cause memory leaks b/297135374")
     public void testSaveAppPairMenuItemExistsOnSplitPair() throws Exception {
         assumeTrue("App pairs feature is currently not enabled, no test needed",
                 Flags.enableAppPairs());
@@ -124,7 +123,6 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
     }
 
     @Test
-    @Ignore("Enable once App Pairs flagged on. These cause memory leaks b/297135374")
     public void testSaveAppPairMenuItemDoesNotExistOnSingleTask() throws Exception {
         assumeTrue("App pairs feature is currently not enabled, no test needed",
                 Flags.enableAppPairs());
