@@ -257,8 +257,6 @@ public class DatabaseWidgetPreviewLoader {
             throw new RuntimeException("Max size is too small for preview");
         }
         return BitmapRenderer.createHardwareBitmap(size, size, c -> {
-            drawBoxWithShadow(c, size, size);
-
             LauncherIcons li = LauncherIcons.obtain(mContext);
             Drawable icon = li.createBadgedIconBitmap(
                     mutateOnMainThread(info.getFullResIcon(
