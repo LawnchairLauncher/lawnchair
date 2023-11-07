@@ -321,7 +321,9 @@ public abstract class AbstractLauncherUiTest {
     // TODO(309471958) Productize killing/dismissal of setup wizard.
     /** Waits for setup wizard to go away. */
     public static void waitForSetupWizardDismissal() {
-        if (sFirstTimeWaitingForWizard && TestStabilityRule.isPresubmit()) {
+        if (!TestStabilityRule.isPresubmit()) return;
+
+        if (sFirstTimeWaitingForWizard) {
             try {
                 UiDevice.getInstance(getInstrumentation()).executeShellCommand(
                         "am force-stop com.google.android.setupwizard");
@@ -334,9 +336,7 @@ public abstract class AbstractLauncherUiTest {
                 Until.gone(By.pkg("com.google.android.setupwizard").depth(0)),
                 sFirstTimeWaitingForWizard ? 120000 : 0);
         sFirstTimeWaitingForWizard = false;
-        // b/309496273
-//        Assert.assertTrue("Setup wizard is still visible",
-//                wizardDismissed);
+        Assert.assertTrue("Setup wizard is still visible", wizardDismissed);
     }
 
     public static void verifyKeyguardInvisible() {
