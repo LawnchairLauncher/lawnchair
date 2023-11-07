@@ -197,7 +197,11 @@ public final class TaskViewUtils {
                 remoteTargetHandles = gluer.assignTargets(targets);
             }
         }
+        final int recentsActivityRotation =
+                recentsView.getPagedViewOrientedState().getRecentsActivityRotation();
         for (RemoteTargetHandle remoteTargetGluer : remoteTargetHandles) {
+            remoteTargetGluer.getTaskViewSimulator().getOrientationState().setRecentsRotation(
+                    recentsActivityRotation);
             remoteTargetGluer.getTransformParams().setSyncTransactionApplier(applier);
         }
 
