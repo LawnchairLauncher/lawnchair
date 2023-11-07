@@ -854,7 +854,11 @@ public class TouchInteractionService extends Service {
         if (mTaskAnimationManager.isRecentsAnimationRunning()) {
             gestureState = new GestureState(mOverviewComponentObserver,
                     ActiveGestureLog.INSTANCE.getLogId());
-            taskInfo = previousGestureState.getRunningTask();
+            TopTaskTracker.CachedTaskInfo previousTaskInfo = previousGestureState.getRunningTask();
+            // previousTaskInfo can be null iff previousGestureState == GestureState.DEFAULT_STATE
+            taskInfo = previousTaskInfo != null
+                    ? previousTaskInfo
+                    : TopTaskTracker.INSTANCE.get(this).getCachedTopTask(false);
             gestureState.updateRunningTask(taskInfo);
             gestureState.updateLastStartedTaskIds(previousGestureState.getLastStartedTaskIds());
             gestureState.updatePreviouslyAppearedTaskIds(
@@ -869,7 +873,7 @@ public class TouchInteractionService extends Service {
 
         // Log initial state for the gesture.
         ActiveGestureLog.INSTANCE.addLog(new CompoundString("Current running task package name=")
-                .append(taskInfo == null ? "no running task" : taskInfo.getPackageName()));
+                .append(taskInfo.getPackageName()));
         ActiveGestureLog.INSTANCE.addLog(new CompoundString("Current SystemUi state flags=")
                 .append(mDeviceState.getSystemUiStateString()));
         return gestureState;
@@ -1078,21 +1082,22 @@ public class TouchInteractionService extends Service {
 
         reasonString.append(SUBSTRING_PREFIX).append("keyguard is not showing occluded");
 
+        TopTaskTracker.CachedTaskInfo runningTask = gestureState.getRunningTask();
         // Use overview input consumer for sharesheets on top of home.
         boolean forceOverviewInputConsumer = gestureState.getActivityInterface().isStarted()
-                && gestureState.getRunningTask() != null
-                && gestureState.getRunningTask().isRootChooseActivity();
+                && runningTask != null
+                && runningTask.isRootChooseActivity();
 
         // In the case where we are in an excluded, translucent overlay, ignore it and treat the
         // running activity as the task behind the overlay.
-        TopTaskTracker.CachedTaskInfo otherVisibleTask = gestureState.getRunningTask() == null
+        TopTaskTracker.CachedTaskInfo otherVisibleTask = runningTask == null
                 ? null
-                : gestureState.getRunningTask().otherVisibleTaskThisIsExcludedOver();
+                : runningTask.otherVisibleTaskThisIsExcludedOver();
         if (otherVisibleTask != null) {
             ActiveGestureLog.INSTANCE.addLog(new CompoundString("Changing active task to ")
                     .append(otherVisibleTask.getPackageName())
                     .append(" because the previous task running on top of this one (")
-                    .append(gestureState.getRunningTask().getPackageName())
+                    .append(runningTask.getPackageName())
                     .append(") was excluded from recents"));
             gestureState.updateRunningTask(otherVisibleTask);
         }
@@ -1112,7 +1117,7 @@ public class TouchInteractionService extends Service {
                     forceOverviewInputConsumer,
                     reasonString.append(SUBSTRING_PREFIX)
                             .append("is in live tile mode, trying to use overview input consumer"));
-        } else if (gestureState.getRunningTask() == null) {
+        } else if (runningTask == null) {
             return getDefaultInputConsumer(reasonString.append(SUBSTRING_PREFIX)
                     .append("running task == null"));
         } else if (previousGestureAnimatedToLauncher
@@ -1130,7 +1135,7 @@ public class TouchInteractionService extends Service {
                                             ? "launcher resumed through a shell transition"
                                             : "forceOverviewInputConsumer == true"))
                             .append(", trying to use overview input consumer"));
-        } else if (mDeviceState.isGestureBlockedTask(gestureState.getRunningTask())) {
+        } else if (mDeviceState.isGestureBlockedTask(runningTask)) {
             return getDefaultInputConsumer(reasonString.append(SUBSTRING_PREFIX)
                     .append("is gesture-blocked task, trying to use default input consumer"));
         } else {
