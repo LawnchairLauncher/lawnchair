@@ -248,7 +248,7 @@ public final class FeatureFlags {
             "Inject fallback app corpus result when AiAi fails to return it.");
 
     public static final BooleanFlag ENABLE_LONG_PRESS_NAV_HANDLE =
-            getReleaseFlag(282993230, "ENABLE_LONG_PRESS_NAV_HANDLE", TEAMFOOD,
+            getReleaseFlag(282993230, "ENABLE_LONG_PRESS_NAV_HANDLE_MPR", TEAMFOOD,
                     "Enables long pressing on the bottom bar nav handle to trigger events.");
 
     // TODO(Block 17): Clean up flags
