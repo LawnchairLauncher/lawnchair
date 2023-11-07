@@ -67,6 +67,18 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
 
     @Override
     public void onMotionEvent(MotionEvent ev) {
+        if (mDelegate.allowInterceptByParent()) {
+            handleMotionEvent(ev);
+        } else if (MAIN_EXECUTOR.getHandler().hasCallbacks(mTriggerLongPress)) {
+            cancelLongPress();
+        }
+
+        if (mState != STATE_ACTIVE) {
+            mDelegate.onMotionEvent(ev);
+        }
+    }
+
+    private void handleMotionEvent(MotionEvent ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN -> {
                 if (mCurrentDownEvent != null) {
@@ -100,10 +112,6 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
                 && ev.getClassification() == MotionEvent.CLASSIFICATION_DEEP_PRESS) {
             MAIN_EXECUTOR.getHandler().removeCallbacks(mTriggerLongPress);
             MAIN_EXECUTOR.getHandler().post(mTriggerLongPress);
-        }
-
-        if (mState != STATE_ACTIVE) {
-            mDelegate.onMotionEvent(ev);
         }
     }
 

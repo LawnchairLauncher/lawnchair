@@ -275,7 +275,7 @@ public final class FeatureFlags {
                     "Enables long pressing on the bottom bar nav handle to trigger events.");
 
     public static final BooleanFlag ENABLE_SEARCH_HAPTIC_HINT =
-            getReleaseFlag(303023676, "ENABLE_SEARCH_HAPTIC_HINT", TEAMFOOD,
+            getReleaseFlag(303023676, "ENABLE_SEARCH_HAPTIC_HINT", ENABLED,
                     "Enables haptic hint when long pressing on the bottom bar nav handle.");
 
     // TODO(Block 17): Clean up flags

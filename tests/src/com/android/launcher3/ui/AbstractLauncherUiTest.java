@@ -187,7 +187,7 @@ public abstract class AbstractLauncherUiTest {
             Utilities.enableRunningInTestHarnessForTests();
             mLauncher.setSystemHealthSupplier(startTime -> TestCommandReceiver.callCommand(
                             TestCommandReceiver.GET_SYSTEM_HEALTH_MESSAGE, startTime.toString())
-                            .getString("result"));
+                    .getString("result"));
             mLauncher.setOnSettledStateAction(
                     containerType -> executeOnLauncher(
                             launcher ->
@@ -248,6 +248,7 @@ public abstract class AbstractLauncherUiTest {
     public void setUp() throws Exception {
         mLauncher.onTestStart();
 
+        waitForSetupWizardDismissal();
         if (TestStabilityRule.isPresubmit()) {
             aggressivelyUnlockSysUi();
         } else {
@@ -306,6 +307,36 @@ public abstract class AbstractLauncherUiTest {
                 TestHelpers.wait(
                         Until.gone(By.res(SYSTEMUI_PACKAGE, "keyguard_status_view")), 60000));
         Log.d(TAG, "Keyguard is not visible");
+    }
+
+    // b/309008042
+    private static boolean sFirstTimeWaitingForWizard = true;
+
+    // b/309008042
+    static {
+        waitForSetupWizardDismissal();
+    }
+
+    // b/309008042
+    // TODO(309471958) Productize killing/dismissal of setup wizard.
+    /** Waits for setup wizard to go away. */
+    public static void waitForSetupWizardDismissal() {
+        if (sFirstTimeWaitingForWizard && TestStabilityRule.isPresubmit()) {
+            try {
+                UiDevice.getInstance(getInstrumentation()).executeShellCommand(
+                        "am force-stop com.google.android.setupwizard");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        final boolean wizardDismissed = TestHelpers.wait(
+                Until.gone(By.pkg("com.google.android.setupwizard").depth(0)),
+                sFirstTimeWaitingForWizard ? 120000 : 0);
+        sFirstTimeWaitingForWizard = false;
+        // b/309496273
+//        Assert.assertTrue("Setup wizard is still visible",
+//                wizardDismissed);
     }
 
     public static void verifyKeyguardInvisible() {
@@ -422,6 +453,7 @@ public abstract class AbstractLauncherUiTest {
     // flakiness.
     protected void waitForLauncherCondition(
             String message, Function<Launcher, Boolean> condition, long timeout) {
+        waitForSetupWizardDismissal();
         verifyKeyguardInvisible();
         if (!TestHelpers.isInLauncherProcess()) return;
         Wait.atMost(message, () -> getFromLauncher(condition), timeout, mLauncher);
