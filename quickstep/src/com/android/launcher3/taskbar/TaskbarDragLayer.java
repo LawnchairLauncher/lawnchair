@@ -126,7 +126,7 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
     }
 
     protected void onDestroy() {
-        onDestroy(!TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW);
+        onDestroy(!TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION);
     }
 
     @Override

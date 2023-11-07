@@ -35,7 +35,7 @@ import static com.android.launcher3.config.FeatureFlags.enableTaskbarNoRecreate;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_FOLDER_OPEN;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_DRAGGING;
 import static com.android.launcher3.taskbar.TaskbarAutohideSuspendController.FLAG_AUTOHIDE_SUSPEND_FULLSCREEN;
-import static com.android.launcher3.taskbar.TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW;
+import static com.android.launcher3.taskbar.TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
 import static com.android.launcher3.testing.shared.ResourceUtils.getBoolByName;
 import static com.android.launcher3.util.VibratorWrapper.EFFECT_CLICK;
 import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_NOTIFICATION_PANEL_VISIBLE;
@@ -354,7 +354,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 sharedState.systemBarAttrsBehavior);
         onNavButtonsDarkIntensityChanged(sharedState.navButtonsDarkIntensity);
 
-        if (FLAG_HIDE_NAVBAR_WINDOW) {
+        if (ENABLE_TASKBAR_NAVBAR_UNIFICATION) {
             // W/ the flag not set this entire class gets re-created, which resets the value of
             // mIsDestroyed. We re-use the class for small-screen, so we explicitly have to mark
             // this class as non-destroyed
@@ -454,7 +454,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      */
     private WindowManager.LayoutParams createAllWindowParams() {
         final int windowType =
-                FLAG_HIDE_NAVBAR_WINDOW ? TYPE_NAVIGATION_BAR : TYPE_NAVIGATION_BAR_PANEL;
+                ENABLE_TASKBAR_NAVBAR_UNIFICATION ? TYPE_NAVIGATION_BAR : TYPE_NAVIGATION_BAR_PANEL;
         WindowManager.LayoutParams windowLayoutParams =
                 createDefaultWindowLayoutParams(windowType, TaskbarActivityContext.WINDOW_TITLE);
         boolean isPhoneNavMode = TaskbarManager.isPhoneButtonNavMode(this);
@@ -719,7 +719,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         mIsDestroyed = true;
         setUIController(TaskbarUIController.DEFAULT);
         mControllers.onDestroy();
-        if (!enableTaskbarNoRecreate() && !FLAG_HIDE_NAVBAR_WINDOW) {
+        if (!enableTaskbarNoRecreate() && !ENABLE_TASKBAR_NAVBAR_UNIFICATION) {
             mWindowManager.removeViewImmediate(mDragLayer);
             mAddedWindow = false;
         }
@@ -860,7 +860,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     public int getDefaultTaskbarWindowHeight() {
         Resources resources = getResources();
 
-        if (FLAG_HIDE_NAVBAR_WINDOW && mDeviceProfile.isPhone) {
+        if (ENABLE_TASKBAR_NAVBAR_UNIFICATION && mDeviceProfile.isPhone) {
             return isThreeButtonNav() ?
                     resources.getDimensionPixelSize(R.dimen.taskbar_size) :
                     resources.getDimensionPixelSize(R.dimen.taskbar_stashed_size);
