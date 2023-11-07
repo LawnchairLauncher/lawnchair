@@ -55,9 +55,17 @@ public class UserCache implements SafeCloseable {
             ? Intent.ACTION_PROFILE_ACCESSIBLE : Intent.ACTION_MANAGED_PROFILE_UNLOCKED;
     public static final String ACTION_PROFILE_LOCKED = ATLEAST_U
             ? Intent.ACTION_PROFILE_INACCESSIBLE : Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE;
+    public static final String ACTION_PROFILE_AVAILABLE = "android.intent.action.PROFILE_AVAILABLE";
+    public static final String ACTION_PROFILE_UNAVAILABLE =
+            "android.intent.action.PROFILE_UNAVAILABLE";
 
     public static final MainThreadInitializedObject<UserCache> INSTANCE =
             new MainThreadInitializedObject<>(UserCache::new);
+
+    /** Returns an instance of UserCache bound to the context provided. */
+    public static UserCache getInstance(Context context) {
+        return INSTANCE.get(context);
+    }
 
     private final List<BiConsumer<UserHandle, String>> mUserEventListeners = new ArrayList<>();
     private final SimpleBroadcastReceiver mUserChangeReceiver =
@@ -87,7 +95,9 @@ public class UserCache implements SafeCloseable {
                 ACTION_PROFILE_ADDED,
                 ACTION_PROFILE_REMOVED,
                 ACTION_PROFILE_UNLOCKED,
-                ACTION_PROFILE_LOCKED);
+                ACTION_PROFILE_LOCKED,
+                ACTION_PROFILE_AVAILABLE,
+                ACTION_PROFILE_UNAVAILABLE);
         updateCache();
     }
 

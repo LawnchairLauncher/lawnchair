@@ -23,8 +23,10 @@ import static com.android.launcher3.LauncherSettings.Favorites.TABLE_NAME;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SMARTSPACE_REMOVAL;
 import static com.android.launcher3.config.FeatureFlags.SMARTSPACE_AS_A_WIDGET;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
+import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
+import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_WORK_PROFILE_QUIET_MODE_ENABLED;
 import static com.android.launcher3.model.ModelUtils.filterCurrentWorkspaceItems;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.model.data.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
@@ -57,8 +59,10 @@ import android.util.LongSparseArray;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Flags;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
@@ -143,7 +147,7 @@ public class LoaderTask implements Runnable {
     private final InstallSessionHelper mSessionHelper;
     private final IconCache mIconCache;
 
-    private final UserManagerState mUserManagerState = new UserManagerState();
+    private final UserManagerState mUserManagerState;
 
     protected final Map<ComponentKey, AppWidgetProviderInfo> mWidgetProvidersMap = new ArrayMap<>();
     private Map<ShortcutKey, ShortcutInfo> mShortcutKeyToPinnedShortcuts;
@@ -156,6 +160,13 @@ public class LoaderTask implements Runnable {
 
     public LoaderTask(@NonNull LauncherAppState app, AllAppsList bgAllAppsList, BgDataModel bgModel,
             ModelDelegate modelDelegate, @NonNull LauncherBinder launcherBinder) {
+        this(app, bgAllAppsList, bgModel, modelDelegate, launcherBinder, new UserManagerState());
+    }
+
+    @VisibleForTesting
+    LoaderTask(@NonNull LauncherAppState app, AllAppsList bgAllAppsList, BgDataModel bgModel,
+            ModelDelegate modelDelegate, @NonNull LauncherBinder launcherBinder,
+            UserManagerState userManagerState) {
         mApp = app;
         mBgAllAppsList = bgAllAppsList;
         mBgDataModel = bgModel;
@@ -164,9 +175,10 @@ public class LoaderTask implements Runnable {
 
         mLauncherApps = mApp.getContext().getSystemService(LauncherApps.class);
         mUserManager = mApp.getContext().getSystemService(UserManager.class);
-        mUserCache = UserCache.INSTANCE.get(mApp.getContext());
+        mUserCache = UserCache.getInstance(mApp.getContext());
         mSessionHelper = InstallSessionHelper.INSTANCE.get(mApp.getContext());
         mIconCache = mApp.getIconCache();
+        mUserManagerState = userManagerState;
     }
 
     protected synchronized void waitForIdle() {
@@ -973,6 +985,8 @@ public class LoaderTask implements Runnable {
         mBgAllAppsList.clear();
 
         List<IconRequestInfo<AppInfo>> iconRequestInfos = new ArrayList<>();
+        boolean isWorkProfileQuiet = false;
+        boolean isPrivateProfileQuiet = false;
         for (UserHandle user : profiles) {
             // Query for the set of apps
             final List<LauncherActivityInfo> apps = mLauncherApps.getActivityList(null, user);
@@ -982,6 +996,14 @@ public class LoaderTask implements Runnable {
                 return allActivityList;
             }
             boolean quietMode = mUserManagerState.isUserQuiet(user);
+
+            if (Flags.enablePrivateSpace()) {
+                if (mUserCache.getUserInfo(user).isWork()) {
+                    isWorkProfileQuiet = quietMode;
+                } else if (mUserCache.getUserInfo(user).isPrivate()) {
+                    isPrivateProfileQuiet = quietMode;
+                }
+            }
             // Create the ApplicationInfos
             for (int i = 0; i < apps.size(); i++) {
                 LauncherActivityInfo app = apps.get(i);
@@ -1023,8 +1045,13 @@ public class LoaderTask implements Runnable {
             Trace.endSection();
         }
 
-        mBgAllAppsList.setFlags(FLAG_QUIET_MODE_ENABLED,
-                mUserManagerState.isAnyProfileQuietModeEnabled());
+        if (Flags.enablePrivateSpace()) {
+            mBgAllAppsList.setFlags(FLAG_WORK_PROFILE_QUIET_MODE_ENABLED, isWorkProfileQuiet);
+            mBgAllAppsList.setFlags(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED, isPrivateProfileQuiet);
+        } else {
+            mBgAllAppsList.setFlags(FLAG_QUIET_MODE_ENABLED,
+                    mUserManagerState.isAnyProfileQuietModeEnabled());
+        }
         mBgAllAppsList.setFlags(FLAG_HAS_SHORTCUT_PERMISSION,
                 hasShortcutsPermission(mApp.getContext()));
         mBgAllAppsList.setFlags(FLAG_QUIET_MODE_CHANGE_PERMISSION,
