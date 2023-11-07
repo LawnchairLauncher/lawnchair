@@ -192,4 +192,14 @@ public abstract class FastScrollRecyclerView extends RecyclerView  {
         }
         scrollToPosition(0);
     }
+
+    /**
+     * Scrolls this recycler view to the bottom.
+     */
+    public void scrollToBottom() {
+        if (mScrollbar != null) {
+            mScrollbar.reattachThumbToScroll();
+        }
+        smoothScrollToPosition(getAdapter().getItemCount() - 1);
+    }
 }
