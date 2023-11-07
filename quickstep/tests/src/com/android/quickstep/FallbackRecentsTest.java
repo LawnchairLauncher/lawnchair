@@ -163,7 +163,7 @@ public class FallbackRecentsTest {
     public void setUp() {
         mLauncher.onTestStart();
         AbstractLauncherUiTest.waitForSetupWizardDismissal();
-        AbstractLauncherUiTest.verifyKeyguardInvisible();
+        AbstractLauncherUiTest.onTestStart();
     }
 
     @After
