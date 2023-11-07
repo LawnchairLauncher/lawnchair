@@ -32,6 +32,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 
+import com.android.launcher3.LauncherConstants.ActivityCodes;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.CellPosMapper.CellPos;
@@ -270,7 +271,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
                         .startConfigActivity(
                                 mLauncher,
                                 mWidgetView.getAppWidgetId(),
-                                Launcher.REQUEST_RECONFIGURE_APPWIDGET);
+                                ActivityCodes.REQUEST_RECONFIGURE_APPWIDGET);
             });
             if (!hasSeenReconfigurableWidgetEducationTip()) {
                 post(() -> {
