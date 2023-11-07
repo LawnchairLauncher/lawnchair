@@ -20,7 +20,6 @@ import static android.app.ActivityTaskManager.INVALID_TASK_ID;
 import static android.view.Surface.ROTATION_0;
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
-
 import static com.android.app.animation.Interpolators.ACCELERATE;
 import static com.android.app.animation.Interpolators.ACCELERATE_0_75;
 import static com.android.app.animation.Interpolators.ACCELERATE_DECELERATE;
@@ -34,6 +33,7 @@ import static com.android.app.animation.Interpolators.clampToProgress;
 import static com.android.launcher3.AbstractFloatingView.TYPE_TASK_MENU;
 import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
 import static com.android.launcher3.BaseActivity.STATE_HANDLER_INVISIBILITY_FLAGS;
+import static com.android.launcher3.Flags.enableGridOnlyOverview;
 import static com.android.launcher3.LauncherAnimUtils.SUCCESS_TRANSITION_PROGRESS;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_ALPHA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
@@ -42,7 +42,6 @@ import static com.android.launcher3.Utilities.EDGE_NAV_BAR;
 import static com.android.launcher3.Utilities.mapToRange;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.Utilities.squaredTouchSlop;
-import static com.android.launcher3.Flags.enableGridOnlyOverview;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_OVERVIEW_ACTIONS_SPLIT;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_CLEAR_ALL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASK_DISMISS_SWIPE_UP;
@@ -57,8 +56,6 @@ import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 import static com.android.quickstep.util.LogUtils.splitFailureMessage;
 import static com.android.quickstep.views.ClearAllButton.DISMISS_ALPHA;
 import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
-import static com.android.quickstep.views.OverviewActionsView.FLAG_IS_NOT_TABLET;
-import static com.android.quickstep.views.OverviewActionsView.FLAG_SINGLE_TASK;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_ACTIONS_IN_MENU;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_DESKTOP;
 import static com.android.quickstep.views.OverviewActionsView.HIDDEN_NON_ZERO_ROTATION;
@@ -3927,18 +3924,23 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     /**
-     * Hides all overview actions if current page is for split apps, shows otherwise
-     * If actions are showing, we only show split option if
+     * Hides all overview actions if user is halfway through split selection, shows otherwise.
+     * We only show split option if:
+     * * Focused view is a single app
      * * Device is large screen
-     * * There are at least 2 tasks to invoke split
      */
     private void updateCurrentTaskActionsVisibility() {
-        boolean isCurrentSplit = getCurrentPageTaskView() instanceof GroupedTaskView;
-        mActionsView.updateHiddenFlags(HIDDEN_SPLIT_SCREEN, isCurrentSplit);
+        boolean isGroupedTask = getCurrentPageTaskView() != null
+                && getCurrentPageTaskView().containsMultipleTasks();
+        // Update flags to see if entire actions bar should be hidden.
+        mActionsView.updateHiddenFlags(HIDDEN_SPLIT_SCREEN, isGroupedTask);
         mActionsView.updateHiddenFlags(HIDDEN_SPLIT_SELECT_ACTIVE, isSplitSelectionActive());
-        mActionsView.updateSplitButtonHiddenFlags(FLAG_IS_NOT_TABLET,
-                !mActivity.getDeviceProfile().isTablet);
-        mActionsView.updateSplitButtonDisabledFlags(FLAG_SINGLE_TASK, /*enable=*/ false);
+        // Update flags to see if actions bar should show buttons for a single task or a pair of
+        // tasks.
+        mActionsView.updateForGroupedTask(isGroupedTask);
+        // Update flags to see if split button should be hidden.
+        mActionsView.updateForTablet(mActivity.getDeviceProfile().isTablet);
+
         if (isDesktopModeSupported()) {
             boolean isCurrentDesktop = getCurrentPageTaskView() instanceof DesktopTaskView;
             mActionsView.updateHiddenFlags(HIDDEN_DESKTOP, isCurrentDesktop);
