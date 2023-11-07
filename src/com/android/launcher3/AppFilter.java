@@ -18,23 +18,15 @@ import app.lawnchair.preferences2.PreferenceManager2;
 public class AppFilter {
 
     private final Set<ComponentName> mFilteredComponents;
-    private final PreferenceManager2 pref;
 
     public AppFilter(Context context) {
         mFilteredComponents = Arrays.stream(
                 context.getResources().getStringArray(R.array.filtered_components))
                 .map(ComponentName::unflattenFromString)
                 .collect(Collectors.toSet());
-        pref = PreferenceManager2.getInstance (context);
     }
 
     public boolean shouldShowApp(ComponentName app) {
-        return !mFilteredComponents.contains(app) &&
-                !PreferenceExtensionsKt.firstBlocking(pref.getHiddenApps())
-                        .contains(new ComponentKey(app, Process.myUserHandle()).toString ());
-    }
-
-    public boolean shouldShowAppHidden(ComponentName app) {
         return !mFilteredComponents.contains(app);
     }
 }

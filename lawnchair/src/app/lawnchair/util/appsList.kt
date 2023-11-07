@@ -46,7 +46,7 @@ fun appsState(
 
             appsState.value = UserCache.INSTANCE.get(context).userProfiles.asSequence()
                 .flatMap { launcherApps.getActivityList(null, it) }
-                .filter { filter.shouldShowAppHidden(it.componentName) }
+                .filter { filter.shouldShowApp(it.componentName) }
                 .map { App(context, it) }
                 .sortedWith(comparator)
                 .toList()

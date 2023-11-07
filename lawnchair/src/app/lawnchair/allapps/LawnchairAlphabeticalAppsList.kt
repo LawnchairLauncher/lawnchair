@@ -21,17 +21,7 @@ class LawnchairAlphabeticalAppsList<T>(context: T,
 
     private var hiddenApps: Set<String> = setOf()
 
-    private var itemFilter: Predicate<ItemInfo>? = null;
-
     init {
-        super.updateItemFilter { info ->
-            require(info is AppInfo) { "`info` must be an instance of `AppInfo`." }
-            when {
-                itemFilter?.test(info) == false -> false
-                hiddenApps.contains(info.toComponentKey().toString()) -> false
-                else -> true
-            }
-        }
         val prefs = PreferenceManager2.getInstance(context)
         prefs.hiddenApps.onEach(launchIn = context.launcher.lifecycleScope) {
             hiddenApps = it
@@ -40,7 +30,11 @@ class LawnchairAlphabeticalAppsList<T>(context: T,
     }
 
     override fun updateItemFilter(itemFilter: Predicate<ItemInfo>?) {
-        this.mItemFilter = itemFilter
+        this.mItemFilter = Predicate { info ->
+            require(info is AppInfo) { "`info` must be an instance of `AppInfo`." }
+            val componentKey = info.toComponentKey().toString()
+            itemFilter?.test(info) != false && !hiddenApps.contains(componentKey)
+        }
         onAppsUpdated()
     }
 }
