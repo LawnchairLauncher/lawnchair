@@ -76,7 +76,7 @@ class ResponsiveSpecsProvider(
     ): CalculatedResponsiveSpec {
         val specsGroup = getSpecsByAspectRatio(aspectRatio)
         val spec = specsGroup.getSpec(dimensionType, availableSpace)
-        return CalculatedResponsiveSpec(availableSpace, numCells, spec)
+        return CalculatedResponsiveSpec(aspectRatio, availableSpace, numCells, spec)
     }
 
     /**
@@ -114,7 +114,13 @@ class ResponsiveSpecsProvider(
 
         val specsGroup = getSpecsByAspectRatio(aspectRatio)
         val spec = specsGroup.getSpec(dimensionType, availableSpace)
-        return CalculatedResponsiveSpec(availableSpace, numCells, spec, calculatedWorkspaceSpec)
+        return CalculatedResponsiveSpec(
+            aspectRatio,
+            availableSpace,
+            numCells,
+            spec,
+            calculatedWorkspaceSpec
+        )
     }
 
     companion object {

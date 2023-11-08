@@ -17,14 +17,14 @@
     <specs launcher:maxAspectRatio="10">
         <hotseatSpec
             launcher:maxAvailableSize="743dp"
-            launcher:specType="width">
+            launcher:dimensionType="width">
             <hotseatQsbSpace launcher:fixedSize="0dp" />
             <edgePadding launcher:fixedSize="48dp" />
         </hotseatSpec>
 
         <hotseatSpec
             launcher:maxAvailableSize="9999dp"
-            launcher:specType="width">
+            launcher:dimensionType="width">
             <hotseatQsbSpace launcher:fixedSize="0dp" />
             <edgePadding launcher:fixedSize="64dp" />
         </hotseatSpec>

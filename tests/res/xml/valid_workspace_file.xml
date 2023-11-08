@@ -18,7 +18,7 @@
     <specs launcher:maxAspectRatio="1.05">
         <!-- 584 grid height -->
         <workspaceSpec
-            launcher:specType="height"
+            launcher:dimensionType="height"
             launcher:maxAvailableSize="584dp">
             <startPadding launcher:fixedSize="0dp" />
             <endPadding launcher:fixedSize="32dp" />
@@ -28,7 +28,7 @@
 
         <!-- 584 grid height + 28 remainder space -->
         <workspaceSpec
-            launcher:specType="height"
+            launcher:dimensionType="height"
             launcher:maxAvailableSize="612dp">
             <startPadding launcher:fixedSize="0dp" />
             <endPadding launcher:ofRemainderSpace="1" />
@@ -37,7 +37,7 @@
         </workspaceSpec>
 
         <workspaceSpec
-            launcher:specType="height"
+            launcher:dimensionType="height"
             launcher:maxAvailableSize="9999dp">
             <startPadding launcher:fixedSize="8dp" />
             <endPadding launcher:ofRemainderSpace="1" />
@@ -49,7 +49,7 @@
 
         <!-- Width spec is always the same -->
         <workspaceSpec
-            launcher:specType="width"
+            launcher:dimensionType="width"
             launcher:maxAvailableSize="9999dp">
             <startPadding launcher:fixedSize="22dp" />
             <endPadding launcher:fixedSize="22dp" />
@@ -62,7 +62,7 @@
     <specs launcher:maxAspectRatio="99999">
         <!-- Height spec -->
         <workspaceSpec
-            launcher:specType="height"
+            launcher:dimensionType="height"
             launcher:maxAvailableSize="371dp">
             <startPadding launcher:fixedSize="0dp" />
             <endPadding launcher:fixedSize="24dp" />
@@ -70,7 +70,7 @@
             <cellSize launcher:ofRemainderSpace="0.25" />
         </workspaceSpec>
         <workspaceSpec
-            launcher:specType="height"
+            launcher:dimensionType="height"
             launcher:maxAvailableSize="9999dp">
             <startPadding launcher:fixedSize="0dp" />
             <endPadding launcher:fixedSize="34dp" />
@@ -80,7 +80,7 @@
 
         <!-- Width spec -->
         <workspaceSpec
-            launcher:specType="width"
+            launcher:dimensionType="width"
             launcher:maxAvailableSize="602dp">
             <startPadding launcher:fixedSize="0dp" />
             <endPadding launcher:fixedSize="36dp" />
@@ -88,7 +88,7 @@
             <cellSize launcher:ofRemainderSpace="0.25" />
         </workspaceSpec>
         <workspaceSpec
-            launcher:specType="width"
+            launcher:dimensionType="width"
             launcher:maxAvailableSize="716dp">
             <startPadding launcher:fixedSize="16dp" />
             <endPadding launcher:fixedSize="64dp" />
@@ -96,7 +96,7 @@
             <cellSize launcher:ofRemainderSpace="0.25" />
         </workspaceSpec>
         <workspaceSpec
-            launcher:specType="width"
+            launcher:dimensionType="width"
             launcher:maxAvailableSize="9999dp">
             <startPadding launcher:fixedSize="36dp" />
             <endPadding launcher:fixedSize="80dp" />

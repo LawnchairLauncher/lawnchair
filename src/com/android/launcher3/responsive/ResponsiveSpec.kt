@@ -72,7 +72,7 @@ data class ResponsiveSpec(
         dimensionType =
             DimensionType.entries[
                     attrs.getInt(
-                        R.styleable.ResponsiveSpec_specType,
+                        R.styleable.ResponsiveSpec_dimensionType,
                         DimensionType.HEIGHT.ordinal
                     )],
         specType = responsiveSpecType,
@@ -137,6 +137,9 @@ data class ResponsiveSpec(
  * they are calculated from the available space, cells and workspace specs.
  */
 class CalculatedResponsiveSpec {
+    var aspectRatio: Float = Float.NaN
+        private set
+
     var availableSpace: Int = 0
         private set
 
@@ -159,11 +162,13 @@ class CalculatedResponsiveSpec {
         private set
 
     constructor(
+        aspectRatio: Float,
         availableSpace: Int,
         cells: Int,
         spec: ResponsiveSpec,
         calculatedWorkspaceSpec: CalculatedResponsiveSpec
     ) {
+        this.aspectRatio = aspectRatio
         this.availableSpace = availableSpace
         this.cells = cells
         this.spec = spec
@@ -183,7 +188,8 @@ class CalculatedResponsiveSpec {
         updateRemainderSpaces(availableSpace, cells, spec)
     }
 
-    constructor(availableSpace: Int, cells: Int, spec: ResponsiveSpec) {
+    constructor(aspectRatio: Float, availableSpace: Int, cells: Int, spec: ResponsiveSpec) {
+        this.aspectRatio = aspectRatio
         this.availableSpace = availableSpace
         this.cells = cells
         this.spec = spec
@@ -239,6 +245,7 @@ class CalculatedResponsiveSpec {
         return "Calculated${spec.specType}Spec(" +
             "availableSpace=$availableSpace, cells=$cells, startPaddingPx=$startPaddingPx, " +
             "endPaddingPx=$endPaddingPx, gutterPx=$gutterPx, cellSizePx=$cellSizePx, " +
+            "aspectRatio=${aspectRatio}, " +
             "${spec.specType}Spec.maxAvailableSize=${spec.maxAvailableSize}" +
             ")"
     }
