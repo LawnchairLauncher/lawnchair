@@ -1351,8 +1351,6 @@ public class DeviceProfile {
 
         if (mIsResponsiveGrid) {
             folderCellWidthPx = mResponsiveFolderWidthSpec.getCellSizePx();
-
-            // Height
             folderCellHeightPx = mResponsiveFolderHeightSpec.getCellSizePx();
             folderContentPaddingTop = mResponsiveFolderHeightSpec.getStartPaddingPx();
             folderFooterHeightPx = mResponsiveFolderHeightSpec.getEndPaddingPx();
@@ -1369,24 +1367,15 @@ public class DeviceProfile {
 
             // Recalculating padding and cell height
             folderChildDrawablePaddingPx = getNormalizedFolderChildDrawablePaddingPx(textHeight);
-            int folderCellContentHeight = folderChildIconSizePx + folderChildDrawablePaddingPx
-                    + textHeight;
 
-            // Reduce the icon in height when it's taller than the expected cell height
-            while (folderChildIconSizePx > mIconSizeSteps.minimumIconSize()
-                    && folderCellContentHeight > folderCellHeightPx) {
-                folderChildDrawablePaddingPx -= folderCellContentHeight - folderCellHeightPx;
-                if (folderChildDrawablePaddingPx < 0) {
-                    // get a smaller icon size
-                    folderChildIconSizePx = mIconSizeSteps.getNextLowerIconSize(
-                            folderChildIconSizePx);
-                    folderChildDrawablePaddingPx =
-                            getNormalizedFolderChildDrawablePaddingPx(textHeight);
-                }
-                // calculate new cellContentHeight
-                folderCellContentHeight = folderChildIconSizePx + folderChildDrawablePaddingPx
-                        + textHeight;
-            }
+            CellContentDimensions cellContentDimensions = new CellContentDimensions(
+                    folderChildIconSizePx,
+                    folderChildDrawablePaddingPx,
+                    folderChildTextSizePx);
+            cellContentDimensions.resizeToFitCellHeight(folderCellHeightPx, mIconSizeSteps);
+            folderChildIconSizePx = cellContentDimensions.getIconSizePx();
+            folderChildDrawablePaddingPx = cellContentDimensions.getIconDrawablePaddingPx();
+            folderChildTextSizePx = cellContentDimensions.getIconTextSizePx();
         } else if (mIsScalableGrid) {
             if (inv.folderStyle == INVALID_RESOURCE_HANDLE) {
                 folderCellWidthPx = roundPxValueFromFloat(getCellSize().x * scale);
