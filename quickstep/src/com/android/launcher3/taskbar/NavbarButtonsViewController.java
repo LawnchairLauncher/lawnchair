@@ -734,7 +734,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         // TODO(b/244231596) we're getting the incorrect kidsMode value in small-screen
         boolean isInKidsMode = mContext.isNavBarKidsModeActive();
 
-        if (TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW) {
+        if (TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION) {
             NavButtonLayoutter navButtonLayoutter =
                     NavButtonLayoutFactory.Companion.getUiLayoutter(
                             dp, mNavButtonsView, mImeSwitcherButton,
