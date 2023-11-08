@@ -611,10 +611,10 @@ public class DeviceProfile {
                             isTwoPanels ? inv.allAppsSpecsTwoPanelId : inv.allAppsSpecsId),
                     ResponsiveSpecType.AllApps);
             mAllAppsResponsiveWidthSpec = allAppsSpecs.getCalculatedSpec(responsiveAspectRatio,
-                    DimensionType.WIDTH, numColumns, mResponsiveWidthSpec.getAvailableSpace(),
+                    DimensionType.WIDTH, numColumns, availableWidthPx,
                     mResponsiveWidthSpec);
             mAllAppsResponsiveHeightSpec = allAppsSpecs.getCalculatedSpec(responsiveAspectRatio,
-                    DimensionType.HEIGHT, inv.numRows, mResponsiveHeightSpec.getAvailableSpace(),
+                    DimensionType.HEIGHT, inv.numRows,  heightPx - mInsets.top,
                     mResponsiveHeightSpec);
 
             ResponsiveSpecsProvider folderSpecs = ResponsiveSpecsProvider.create(
@@ -1271,8 +1271,12 @@ public class DeviceProfile {
         allAppsCellHeightPx = mAllAppsResponsiveHeightSpec.getCellSizePx()
                 + mAllAppsResponsiveHeightSpec.getGutterPx();
         allAppsCellWidthPx = mAllAppsResponsiveWidthSpec.getCellSizePx();
-        allAppsPadding.left = mAllAppsResponsiveWidthSpec.getStartPaddingPx();
-        allAppsPadding.right = mAllAppsResponsiveWidthSpec.getEndPaddingPx();
+
+        // This workaround is needed to align AllApps icons with Workspace icons
+        // since AllApps doesn't have borders between cells
+        int halfBorder = allAppsBorderSpacePx.x / 2;
+        allAppsPadding.left = mAllAppsResponsiveWidthSpec.getStartPaddingPx() - halfBorder;
+        allAppsPadding.right = mAllAppsResponsiveWidthSpec.getEndPaddingPx() - halfBorder;
     }
 
     /**
@@ -1293,7 +1297,7 @@ public class DeviceProfile {
                     + (allAppsBorderSpacePx.x * (numShownAllAppsColumns - 1))
                     + allAppsPadding.left + allAppsPadding.right;
             allAppsLeftRightMargin = Math.max(1, (availableWidthPx - usedWidth) / 2);
-        } else {
+        } else if (!mIsResponsiveGrid) {
             allAppsPadding.left = allAppsPadding.right =
                     Math.max(0, desiredWorkspaceHorizontalMarginPx + cellLayoutHorizontalPadding
                             - (allAppsBorderSpacePx.x / 2));
