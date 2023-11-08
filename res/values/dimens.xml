@@ -284,7 +284,8 @@
     <dimen name="pre_drag_view_scale">6dp</dimen>
     <!-- an icon with shortcuts must be dragged this far before the container is removed. -->
     <dimen name="deep_shortcuts_start_drag_threshold">16dp</dimen>
-    <dimen name="deep_shortcut_icon_size">32dp</dimen>
+    <!-- Possibly related to b/235886078, icon needs to be scaled up to match expected visual size of 32 dp -->
+    <dimen name="deep_shortcut_icon_size">35dp</dimen>
     <dimen name="popup_margin">2dp</dimen>
     <dimen name="popup_single_item_radius">100dp</dimen>
     <dimen name="popup_smaller_radius">4dp</dimen>

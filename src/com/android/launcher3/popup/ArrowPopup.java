@@ -127,6 +127,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
 
     protected final float mElevation;
 
+    // Tag for Views that have children that will need to be iterated to add styling.
     private final String mIterateChildrenTag;
 
     protected final int[] mColorIds;
@@ -244,7 +245,7 @@ public abstract class ArrowPopup<T extends Context & ActivityContext>
         for (int i = 0; i < count; i++) {
             View view = viewGroup.getChildAt(i);
             if (view.getVisibility() == VISIBLE) {
-                if (lastView != null) {
+                if (lastView != null && (isShortcutContainer(lastView))) {
                     MarginLayoutParams mlp = (MarginLayoutParams) lastView.getLayoutParams();
                     mlp.bottomMargin = mChildContainerMargin;
                 }
