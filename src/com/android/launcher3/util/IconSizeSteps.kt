@@ -39,8 +39,8 @@ class IconSizeSteps(res: Resources) {
         return steps[max(0, getIndexForIconSize(iconSizePx) - 1)]
     }
 
-    fun getIconSmallerThan(cellWidth: Int): Int {
-        return steps.lastOrNull { it <= cellWidth } ?: steps[0]
+    fun getIconSmallerThan(cellSize: Int): Int {
+        return steps.lastOrNull { it <= cellSize } ?: steps[0]
     }
 
     private fun getIndexForIconSize(iconSizePx: Int): Int {
