@@ -409,7 +409,8 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         } else {
             lp.leftMargin = lp.rightMargin = 0;
             lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-            lp.bottomMargin = (padding.bottom) + grid.hotseatBarBottomSpacePx;
+            boolean isDisabledHotseat = getHotseat() != null && getHotseat().getQsb().getSourceLayoutResId() == R.layout.empty_view;
+            lp.bottomMargin = (padding.bottom) + grid.hotseatBarBottomSpacePx - (isDisabledHotseat ? grid.workspaceCellPaddingXPx * 3 : 0);
         }
         mPageIndicator.setLayoutParams(lp);
     }
