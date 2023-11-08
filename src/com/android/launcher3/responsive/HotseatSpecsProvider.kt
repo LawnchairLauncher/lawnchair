@@ -19,67 +19,65 @@ package com.android.launcher3.responsive
 import android.content.res.TypedArray
 import android.util.Log
 import com.android.launcher3.R
+import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecType
+import com.android.launcher3.responsive.ResponsiveSpec.DimensionType
 import com.android.launcher3.util.ResourceHelper
 
-class HotseatSpecs(widthSpecs: List<HotseatSpec>, heightSpecs: List<HotseatSpec>) {
+class HotseatSpecsProvider(private val groupOfSpecs: List<ResponsiveSpecGroup<HotseatSpec>>) {
+    fun getSpecsByAspectRatio(aspectRatio: Float): ResponsiveSpecGroup<HotseatSpec> {
+        check(aspectRatio > 0f) { "Invalid aspect ratio! The value should be bigger than 0." }
 
-    val widthSpecs: List<HotseatSpec>
-    val heightSpecs: List<HotseatSpec>
+        val specsGroup = groupOfSpecs.firstOrNull { aspectRatio <= it.aspectRatio }
+        check(specsGroup != null) { "No available spec with aspectRatio within $aspectRatio." }
 
-    init {
-        this.widthSpecs = widthSpecs.sortedBy { it.maxAvailableSize }
-        this.heightSpecs = heightSpecs.sortedBy { it.maxAvailableSize }
+        return specsGroup
     }
 
-    fun getCalculatedHeightSpec(availableHeight: Int): CalculatedHotseatSpec {
-        val spec = heightSpecs.firstOrNull { availableHeight <= it.maxAvailableSize }
-        check(spec != null) { "No available height spec found within $availableHeight." }
-        return CalculatedHotseatSpec(availableHeight, spec)
-    }
-
-    fun getCalculatedWidthSpec(availableWidth: Int): CalculatedHotseatSpec {
-        val spec = widthSpecs.firstOrNull { availableWidth <= it.maxAvailableSize }
-        check(spec != null) { "No available width spec found within $availableWidth." }
-        return CalculatedHotseatSpec(availableWidth, spec)
+    fun getCalculatedSpec(
+        aspectRatio: Float,
+        dimensionType: DimensionType,
+        availableSpace: Int
+    ): CalculatedHotseatSpec {
+        val specsGroup = getSpecsByAspectRatio(aspectRatio)
+        val spec = specsGroup.getSpec(dimensionType, availableSpace)
+        return CalculatedHotseatSpec(availableSpace, spec)
     }
 
     companion object {
-        private const val XML_HOTSEAT_SPEC = "hotseatSpec"
-
         @JvmStatic
-        fun create(resourceHelper: ResourceHelper): HotseatSpecs {
+        fun create(resourceHelper: ResourceHelper): HotseatSpecsProvider {
             val parser = ResponsiveSpecsParser(resourceHelper)
-            val specs = parser.parseXML(XML_HOTSEAT_SPEC, ::HotseatSpec)
-            val (widthSpecs, heightSpecs) =
-                specs.partition { it.specType == ResponsiveSpec.SpecType.WIDTH }
-            return HotseatSpecs(widthSpecs, heightSpecs)
+            val specs = parser.parseXML(ResponsiveSpecType.Hotseat, ::HotseatSpec)
+            return HotseatSpecsProvider(specs)
         }
     }
 }
 
 data class HotseatSpec(
-    val maxAvailableSize: Int,
-    val specType: ResponsiveSpec.SpecType,
+    override val maxAvailableSize: Int,
+    override val dimensionType: DimensionType,
+    override val specType: ResponsiveSpecType,
     val hotseatQsbSpace: SizeSpec,
     val edgePadding: SizeSpec
-) {
-
+) : IResponsiveSpec {
     init {
         check(isValid()) { "Invalid HotseatSpec found." }
     }
 
     constructor(
+        responsiveSpecType: ResponsiveSpecType,
         attrs: TypedArray,
         specs: Map<String, SizeSpec>
     ) : this(
         maxAvailableSize =
             attrs.getDimensionPixelSize(R.styleable.ResponsiveSpec_maxAvailableSize, 0),
-        specType =
-            ResponsiveSpec.SpecType.values()[
+        dimensionType =
+            DimensionType.entries[
                     attrs.getInt(
                         R.styleable.ResponsiveSpec_specType,
-                        ResponsiveSpec.SpecType.HEIGHT.ordinal
+                        DimensionType.HEIGHT.ordinal
                     )],
+        specType = responsiveSpecType,
         hotseatQsbSpace = specs.getOrError(SizeSpec.XmlTags.HOTSEAT_QSB_SPACE),
         edgePadding = specs.getOrError(SizeSpec.XmlTags.EDGE_PADDING)
     )
