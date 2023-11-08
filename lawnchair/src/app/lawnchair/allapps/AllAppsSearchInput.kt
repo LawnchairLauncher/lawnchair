@@ -10,6 +10,7 @@ import android.text.Spanned.SPAN_POINT_MARK
 import android.text.method.TextKeyListener
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewTreeObserver
@@ -37,6 +38,7 @@ import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Themes
 import com.patrykmichalik.opto.core.firstBlocking
 import java.util.*
+import kotlin.math.log
 import kotlin.math.max
 
 class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs),
@@ -118,7 +120,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
         }
     }
 
-    fun setFocusedResultTitle(title: CharSequence?) {
+    override fun setFocusedResultTitle(title: CharSequence?, sub: CharSequence?) {
         focusedResultTitle = title?.toString().orEmpty()
         updateHint()
     }
@@ -224,7 +226,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
     }
 
     private fun notifyResultChanged() {
-//        appsView.onSearchResultsChanged()
+        appsView.mSearchRecyclerView.onSearchResultsChanged()
     }
 
     override fun setInsets(insets: Rect) {

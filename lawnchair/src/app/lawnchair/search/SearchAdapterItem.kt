@@ -12,7 +12,6 @@ data class SearchAdapterItem(
     companion object {
 
         fun createAdapterItem(
-            pos: Int,
             target: SearchTargetCompat,
             background: SearchItemBackground?
         ): SearchAdapterItem? {

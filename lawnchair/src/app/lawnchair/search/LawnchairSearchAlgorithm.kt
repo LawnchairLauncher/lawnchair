@@ -57,7 +57,7 @@ sealed class LawnchairSearchAlgorithm(
                     isLast -> bottomBackground
                     else -> centerBackground
                 }
-                SearchAdapterItem.createAdapterItem(index, target, background)
+                SearchAdapterItem.createAdapterItem(target, background)
             }
     }
 
