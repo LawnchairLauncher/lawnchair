@@ -456,4 +456,8 @@
 
     <!-- Private space label -->
     <string name="private_space_label">Private space</string>
+
+    <!-- Strings for bubble bar -->
+    <!-- content description for the overflow bubble [CHAR_LIMIT=none] -->
+    <string name="bubble_bar_overflow_description">Overflow</string>
 </resources>
