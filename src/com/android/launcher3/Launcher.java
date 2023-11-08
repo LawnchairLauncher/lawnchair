@@ -33,6 +33,28 @@ import static com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FAC
 import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_WIDGET_TRANSITION;
 import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
 import static com.android.launcher3.LauncherAnimUtils.WORKSPACE_SCALE_PROPERTY_FACTORY;
+import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_BIND_APPWIDGET;
+import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_BIND_PENDING_APPWIDGET;
+import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_CREATE_APPWIDGET;
+import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_CREATE_SHORTCUT;
+import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_PICK_APPWIDGET;
+import static com.android.launcher3.LauncherConstants.ActivityCodes.REQUEST_RECONFIGURE_APPWIDGET;
+import static com.android.launcher3.LauncherConstants.SavedInstanceKeys.RUNTIME_STATE;
+import static com.android.launcher3.LauncherConstants.SavedInstanceKeys.RUNTIME_STATE_CURRENT_SCREEN_IDS;
+import static com.android.launcher3.LauncherConstants.SavedInstanceKeys.RUNTIME_STATE_PENDING_ACTIVITY_RESULT;
+import static com.android.launcher3.LauncherConstants.SavedInstanceKeys.RUNTIME_STATE_PENDING_REQUEST_ARGS;
+import static com.android.launcher3.LauncherConstants.SavedInstanceKeys.RUNTIME_STATE_PENDING_REQUEST_CODE;
+import static com.android.launcher3.LauncherConstants.SavedInstanceKeys.RUNTIME_STATE_WIDGET_PANEL;
+import static com.android.launcher3.LauncherConstants.TraceEvents.COLD_STARTUP_TRACE_COOKIE;
+import static com.android.launcher3.LauncherConstants.TraceEvents.COLD_STARTUP_TRACE_METHOD_NAME;
+import static com.android.launcher3.LauncherConstants.TraceEvents.DISPLAY_ALL_APPS_TRACE_COOKIE;
+import static com.android.launcher3.LauncherConstants.TraceEvents.DISPLAY_ALL_APPS_TRACE_METHOD_NAME;
+import static com.android.launcher3.LauncherConstants.TraceEvents.DISPLAY_WORKSPACE_TRACE_METHOD_NAME;
+import static com.android.launcher3.LauncherConstants.TraceEvents.DISPLAY_WORKSPACE_TRACE_COOKIE;
+import static com.android.launcher3.LauncherConstants.TraceEvents.ON_CREATE_EVT;
+import static com.android.launcher3.LauncherConstants.TraceEvents.ON_NEW_INTENT_EVT;
+import static com.android.launcher3.LauncherConstants.TraceEvents.ON_RESUME_EVT;
+import static com.android.launcher3.LauncherConstants.TraceEvents.ON_START_EVT;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
 import static com.android.launcher3.LauncherState.ALL_APPS;
@@ -267,15 +289,6 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     static final boolean DEBUG_STRICT_MODE = false;
 
-    private static final int REQUEST_CREATE_SHORTCUT = 1;
-    private static final int REQUEST_CREATE_APPWIDGET = 5;
-
-    private static final int REQUEST_PICK_APPWIDGET = 9;
-
-    private static final int REQUEST_BIND_APPWIDGET = 11;
-    public static final int REQUEST_BIND_PENDING_APPWIDGET = 12;
-    public static final int REQUEST_RECONFIGURE_APPWIDGET = 13;
-
     private static final float BOUNCE_ANIMATION_TENSION = 1.3f;
 
     /**
@@ -284,29 +297,8 @@ public class Launcher extends StatefulActivity<LauncherState>
      */
     protected static final int REQUEST_LAST = 100;
 
-    // Type: int
-    protected static final String RUNTIME_STATE = "launcher.state";
-    // Type: PendingRequestArgs
-    private static final String RUNTIME_STATE_PENDING_REQUEST_ARGS = "launcher.request_args";
-    // Type: int
-    private static final String RUNTIME_STATE_PENDING_REQUEST_CODE = "launcher.request_code";
-    // Type: ActivityResultInfo
-    private static final String RUNTIME_STATE_PENDING_ACTIVITY_RESULT = "launcher.activity_result";
-    // Type: SparseArray<Parcelable>
-    private static final String RUNTIME_STATE_WIDGET_PANEL = "launcher.widget_panel";
-    // Type int[]
-    private static final String RUNTIME_STATE_CURRENT_SCREEN_IDS = "launcher.current_screen_ids";
-
-    // Type PendingSplitSelectInfo<Parcelable>
-    protected static final String PENDING_SPLIT_SELECT_INFO = "launcher.pending_split_select_info";
-
     public static final String INTENT_ACTION_ALL_APPS_TOGGLE =
             "launcher.intent_action_all_apps_toggle";
-
-    public static final String ON_CREATE_EVT = "Launcher.onCreate";
-    public static final String ON_START_EVT = "Launcher.onStart";
-    public static final String ON_RESUME_EVT = "Launcher.onResume";
-    public static final String ON_NEW_INTENT_EVT = "Launcher.onNewIntent";
 
     private static boolean sIsNewProcess = true;
 
@@ -318,13 +310,6 @@ public class Launcher extends StatefulActivity<LauncherState>
     @VisibleForTesting public static final int NEW_APPS_PAGE_MOVE_DELAY = 500;
     private static final int NEW_APPS_ANIMATION_INACTIVE_TIMEOUT_SECONDS = 5;
     @Thunk @VisibleForTesting public static final int NEW_APPS_ANIMATION_DELAY = 500;
-
-    private static final String DISPLAY_WORKSPACE_TRACE_METHOD_NAME = "DisplayWorkspaceFirstFrame";
-    public static final String DISPLAY_ALL_APPS_TRACE_METHOD_NAME = "DisplayAllApps";
-    public static final int DISPLAY_WORKSPACE_TRACE_COOKIE = 0;
-    public static final int DISPLAY_ALL_APPS_TRACE_COOKIE = 1;
-    private static final String COLD_STARTUP_TRACE_METHOD_NAME = "LauncherColdStartup";
-    public static final int COLD_STARTUP_TRACE_COOKIE = 2;
 
     private static final FloatProperty<Workspace<?>> WORKSPACE_WIDGET_SCALE =
             WORKSPACE_SCALE_PROPERTY_FACTORY.get(SCALE_INDEX_WIDGET_TRANSITION);
@@ -2803,10 +2788,8 @@ public class Launcher extends StatefulActivity<LauncherState>
             Map<PackageUserKey, Integer> packageUserKeytoUidMap) {
         mModelCallbacks.bindAllApplications(apps, flags, packageUserKeytoUidMap);
         if (Utilities.ATLEAST_S) {
-            Trace.endAsyncSection(
-                    Launcher.DISPLAY_ALL_APPS_TRACE_METHOD_NAME,
-                    Launcher.DISPLAY_ALL_APPS_TRACE_COOKIE
-            );
+            Trace.endAsyncSection(DISPLAY_ALL_APPS_TRACE_METHOD_NAME,
+                    DISPLAY_ALL_APPS_TRACE_COOKIE);
         }
     }
 

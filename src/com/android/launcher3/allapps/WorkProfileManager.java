@@ -25,10 +25,10 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_HAS_SHORTCUT_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_CHANGE_PERMISSION;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_QUIET_MODE_ENABLED;
+import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_WORK_PROFILE_QUIET_MODE_ENABLED;
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.os.Build;
-import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.Log;
@@ -40,12 +40,14 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.launcher3.Flags;
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
+import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.workprofile.PersonalWorkSlidingTabStrip;
 
 import java.lang.annotation.Retention;
@@ -84,16 +86,19 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
 
     private WorkModeSwitch mWorkModeSwitch;
 
+    private final UserCache mUserCache;
+
     @WorkProfileState
     private int mCurrentState;
 
     public WorkProfileManager(
             UserManager userManager, ActivityAllAppsContainerView allApps,
-            StatsLogManager statsLogManager) {
+            StatsLogManager statsLogManager, UserCache userCache) {
         mUserManager = userManager;
         mAllApps = allApps;
-        mMatcher = mAllApps.mPersonalMatcher.negate();
         mStatsLogManager = statsLogManager;
+        mUserCache = userCache;
+        mMatcher = info -> info != null && mUserCache.getUserInfo(info.user).isWork();
     }
 
     /**
@@ -103,11 +108,11 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
     public void setWorkProfileEnabled(boolean enabled) {
         updateCurrentState(STATE_TRANSITION);
         UI_HELPER_EXECUTOR.post(() -> {
-            for (UserHandle userProfile : mUserManager.getUserProfiles()) {
-                if (Process.myUserHandle().equals(userProfile)) {
-                    continue;
+            for (UserHandle userProfile : mUserCache.getUserProfiles()) {
+                if (mUserCache.getUserInfo(userProfile).isWork()) {
+                    mUserManager.requestQuietModeEnabled(!enabled, userProfile);
+                    break;
                 }
-                mUserManager.requestQuietModeEnabled(!enabled, userProfile);
             }
         });
     }
@@ -131,7 +136,13 @@ public class WorkProfileManager implements PersonalWorkSlidingTabStrip.OnActiveP
      * Requests work profile state from {@link AllAppsStore} and updates work profile related views
      */
     public void reset() {
-        boolean isEnabled = !mAllApps.getAppsStore().hasModelFlag(FLAG_QUIET_MODE_ENABLED);
+        int quietModeFlag;
+        if (Flags.enablePrivateSpace()) {
+            quietModeFlag = FLAG_WORK_PROFILE_QUIET_MODE_ENABLED;
+        } else {
+            quietModeFlag = FLAG_QUIET_MODE_ENABLED;
+        }
+        boolean isEnabled = !mAllApps.getAppsStore().hasModelFlag(quietModeFlag);
         updateCurrentState(isEnabled ? STATE_ENABLED : STATE_DISABLED);
         if (mWorkModeSwitch != null) {
             // reset the position of the button and clear IME insets.

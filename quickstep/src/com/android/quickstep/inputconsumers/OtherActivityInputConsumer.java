@@ -413,6 +413,14 @@ public class OtherActivityInputConsumer extends ContextWrapper implements InputC
     }
 
     /**
+     * Returns whether this input consumer has started touch tracking (if touch tracking is not
+     * deferred).
+     */
+    public boolean hasStartedTouchTracking() {
+        return mInteractionHandler != null;
+    }
+
+    /**
      * Called when the gesture has ended. Does not correlate to the completion of the interaction as
      * the animation can still be running.
      */
