@@ -105,6 +105,8 @@ public class DeviceProfile {
     public final boolean isMultiWindowMode;
     public final boolean isGestureMode;
 
+    public final boolean isLeftRightSplit;
+
     public final int windowX;
     public final int windowY;
     public final int widthPx;
@@ -691,6 +693,20 @@ public class DeviceProfile {
         overviewGridSideMargin = res.getDimensionPixelSize(R.dimen.overview_grid_side_margin);
 
         splitPlaceholderInset = res.getDimensionPixelSize(R.dimen.split_placeholder_inset);
+        // We need to use the full window bounds for split determination because on near-square
+        // devices, the available bounds (bounds minus insets) may actually be in landscape while
+        // actually portrait
+        int leftRightSplitPortraitResId = Resources.getSystem().getIdentifier(
+                "config_leftRightSplitInPortrait", "bool", "android");
+        boolean allowLeftRightSplitInPortrait =
+                com.android.wm.shell.Flags.enableLeftRightSplitInPortrait()
+                    && leftRightSplitPortraitResId > 0
+                    && res.getBoolean(leftRightSplitPortraitResId);
+        if (allowLeftRightSplitInPortrait && isTablet) {
+            isLeftRightSplit = !isLandscape;
+        } else {
+            isLeftRightSplit = isLandscape;
+        }
 
         // Calculate all of the remaining variables.
         extraSpace = updateAvailableDimensions(res);
@@ -1986,6 +2002,7 @@ public class DeviceProfile {
         writer.println(prefix + "\tisLandscape:" + isLandscape);
         writer.println(prefix + "\tisMultiWindowMode:" + isMultiWindowMode);
         writer.println(prefix + "\tisTwoPanels:" + isTwoPanels);
+        writer.println(prefix + "\tisLeftRightSplit:" + isLeftRightSplit);
 
         writer.println(prefix + pxToDpStr("windowX", windowX));
         writer.println(prefix + pxToDpStr("windowY", windowY));

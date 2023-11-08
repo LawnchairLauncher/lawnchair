@@ -3417,8 +3417,8 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         boolean closeGapBetweenClearAll = false;
         boolean isClearAllHidden = isClearAllHidden();
         boolean snapToLastTask = false;
-        boolean isLandscapeSplit =
-                mActivity.getDeviceProfile().isLandscape && isSplitSelectionActive();
+        boolean isLeftRightSplit =
+                mActivity.getDeviceProfile().isLeftRightSplit && isSplitSelectionActive();
         TaskView lastGridTaskView = showAsGrid ? getLastGridTaskView() : null;
         int currentPageScroll = getScrollForPage(mCurrentPage);
         int lastGridTaskScroll = getScrollForPage(indexOfChild(lastGridTaskView));
@@ -3478,7 +3478,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
                     snapToLastTask = true;
                 }
             }
-            if (isLandscapeSplit && !isStagingFocusedTask) {
+            if (isLeftRightSplit && !isStagingFocusedTask) {
                 // LastTask's scroll is the minimum scroll in split select, if current scroll is
                 // beyond that, we'll need to snap to last task instead.
                 TaskView lastTask = getLastGridTaskView();
@@ -3493,7 +3493,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
             }
             if (snapToLastTask) {
                 longGridRowWidthDiff += getSnapToLastTaskScrollDiff();
-            } else if (isLandscapeSplit && currentPageSnapsToEndOfGrid) {
+            } else if (isLeftRightSplit && currentPageSnapsToEndOfGrid) {
                 // Use last task as reference point for scroll diff and snapping calculation as it's
                 // the only invariant point in landscape split screen.
                 snapToLastTask = true;
@@ -4878,7 +4878,7 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         int direction = orientationHandler.getSplitTranslationDirectionFactor(
                 splitPosition, deviceProfile);
 
-        if (deviceProfile.isTablet && deviceProfile.isLandscape) {
+        if (deviceProfile.isTablet && deviceProfile.isLeftRightSplit) {
             // Only shift TaskViews if there is not enough space on the side of
             // mLastComputedTaskSize to minimize motion.
             int sideSpace = mIsRtl

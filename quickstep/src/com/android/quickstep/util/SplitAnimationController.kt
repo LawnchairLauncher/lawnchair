@@ -134,7 +134,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         val iconView: View = taskIdAttributeContainer.iconView.asView()
         builder.add(ObjectAnimator.ofFloat(thumbnail, TaskThumbnailView.SPLASH_ALPHA, 1f))
         thumbnail.setShowSplashForSplitSelection(true)
-        if (deviceProfile.isLandscape) {
+        if (deviceProfile.isLeftRightSplit) {
             // Center view first so scaling happens uniformly, alternatively we can move pivotX to 0
             val centerThumbnailTranslationX: Float = (taskViewWidth - thumbnail.width) / 2f
             val centerIconTranslationX: Float = (taskViewWidth - iconView.width) / 2f

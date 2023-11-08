@@ -134,7 +134,7 @@ public class AppPairIcon extends FrameLayout implements DraggableView {
         mCenterChannelSize = CENTER_CHANNEL_SCALE * defaultIconSize;
         mBigRadius = BIG_RADIUS_SCALE * defaultIconSize;
         mSmallRadius = SMALL_RADIUS_SCALE * defaultIconSize;
-        mIsLandscape = grid.isLandscape;
+        mIsLandscape = grid.isLeftRightSplit;
 
         // Calculate drawable area position
         float leftBound = (canvas.getWidth() / 2f) - (defaultIconSize / 2f);

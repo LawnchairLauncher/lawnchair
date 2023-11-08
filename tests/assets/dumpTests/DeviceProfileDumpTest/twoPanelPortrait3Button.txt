@@ -7,6 +7,7 @@ DeviceProfile:
 	isLandscape:false
 	isMultiWindowMode:false
 	isTwoPanels:true
+	isLeftRightSplit:false
 	windowX: 0.0px (0.0dp)
 	windowY: 0.0px (0.0dp)
 	widthPx: 1840.0px (700.9524dp)
