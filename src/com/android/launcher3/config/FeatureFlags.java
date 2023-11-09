@@ -287,10 +287,15 @@ public final class FeatureFlags {
                     "Enables haptic hint when long pressing on the bottom bar nav handle.");
 
     // TODO(Block 17): Clean up flags
-    public static final BooleanFlag ENABLE_TASKBAR_PINNING = getDebugFlag(270396583,
+    // Aconfig migration complete for ENABLE_TASKBAR_PINNING.
+    private static final BooleanFlag ENABLE_TASKBAR_PINNING = getDebugFlag(270396583,
             "ENABLE_TASKBAR_PINNING", TEAMFOOD,
             "Enables taskbar pinning to allow user to switch between transient and persistent "
                     + "taskbar flavors");
+
+    public static boolean enableTaskbarPinning() {
+        return ENABLE_TASKBAR_PINNING.get() || Flags.enableTaskbarPinning();
+    }
 
     public static final BooleanFlag MOVE_STARTUP_DATA_TO_DEVICE_PROTECTED_STORAGE = getDebugFlag(
             251502424, "ENABLE_BOOT_AWARE_STARTUP_DATA", DISABLED,
