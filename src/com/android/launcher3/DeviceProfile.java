@@ -591,7 +591,8 @@ public class DeviceProfile {
         if (mIsResponsiveGrid) {
             int availableResponsiveWidth =
                     availableWidthPx - (isVerticalBarLayout() ? hotseatBarSizePx : 0);
-            int numColumns = getPanelCount() * inv.numColumns;
+            int numWorkspaceColumns = getPanelCount() * inv.numColumns;
+            int numAllAppsColumns = getPanelCount() * inv.numAllAppsColumns;
             // don't use availableHeightPx because it subtracts mInsets.bottom
             int availableResponsiveHeight = heightPx - mInsets.top
                     - (isVerticalBarLayout() ? 0 : hotseatBarSizePx);
@@ -602,7 +603,7 @@ public class DeviceProfile {
                             isTwoPanels ? inv.workspaceSpecsTwoPanelId : inv.workspaceSpecsId),
                     ResponsiveSpecType.Workspace);
             mResponsiveWidthSpec = workspaceSpecs.getCalculatedSpec(responsiveAspectRatio,
-                    DimensionType.WIDTH, numColumns, availableResponsiveWidth);
+                    DimensionType.WIDTH, numWorkspaceColumns, availableResponsiveWidth);
             mResponsiveHeightSpec = workspaceSpecs.getCalculatedSpec(responsiveAspectRatio,
                     DimensionType.HEIGHT, inv.numRows, availableResponsiveHeight);
 
@@ -611,7 +612,7 @@ public class DeviceProfile {
                             isTwoPanels ? inv.allAppsSpecsTwoPanelId : inv.allAppsSpecsId),
                     ResponsiveSpecType.AllApps);
             mAllAppsResponsiveWidthSpec = allAppsSpecs.getCalculatedSpec(responsiveAspectRatio,
-                    DimensionType.WIDTH, numColumns, availableWidthPx,
+                    DimensionType.WIDTH, numAllAppsColumns, availableWidthPx,
                     mResponsiveWidthSpec);
             mAllAppsResponsiveHeightSpec = allAppsSpecs.getCalculatedSpec(responsiveAspectRatio,
                     DimensionType.HEIGHT, inv.numRows,  heightPx - mInsets.top,
@@ -1017,12 +1018,16 @@ public class DeviceProfile {
                 + cellLayoutPaddingPx.left + cellLayoutPaddingPx.right;
     }
 
-    private int getNormalizedIconDrawablePadding() {
+    private int getNormalizedIconDrawablePadding(int iconSizePx, int iconDrawablePadding) {
         // TODO(b/235886078): workaround needed because of this bug
         // Icons are 10% larger on XML than their visual size,
         // so remove that extra space to get labels closer to the correct padding
         int iconVisibleSizePx = (int) Math.round(ICON_VISIBLE_AREA_FACTOR * iconSizePx);
-        return Math.max(0, mIconDrawablePaddingOriginalPx - ((iconSizePx - iconVisibleSizePx) / 2));
+        return Math.max(0, iconDrawablePadding - ((iconSizePx - iconVisibleSizePx) / 2));
+    }
+
+    private int getNormalizedIconDrawablePadding() {
+        return getNormalizedIconDrawablePadding(iconSizePx, mIconDrawablePaddingOriginalPx);
     }
 
     private int getNormalizedFolderChildDrawablePaddingPx(int textHeight) {
@@ -1160,7 +1165,7 @@ public class DeviceProfile {
 
         // All apps
         if (mIsResponsiveGrid) {
-            updateAllAppsWithResponsiveMeasures();
+            updateAllAppsWithResponsiveMeasures(res);
         } else {
             updateAllAppsIconSize(scale, res);
         }
@@ -1259,11 +1264,7 @@ public class DeviceProfile {
         }
     }
 
-    private void updateAllAppsWithResponsiveMeasures() {
-        allAppsIconSizePx = iconSizePx;
-        allAppsIconTextSizePx = iconTextSizePx;
-        allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
-
+    private void updateAllAppsWithResponsiveMeasures(Resources res) {
         allAppsBorderSpacePx = new Point(
                 mAllAppsResponsiveWidthSpec.getGutterPx(),
                 mAllAppsResponsiveHeightSpec.getGutterPx()
@@ -1277,6 +1278,47 @@ public class DeviceProfile {
         int halfBorder = allAppsBorderSpacePx.x / 2;
         allAppsPadding.left = mAllAppsResponsiveWidthSpec.getStartPaddingPx() - halfBorder;
         allAppsPadding.right = mAllAppsResponsiveWidthSpec.getEndPaddingPx() - halfBorder;
+
+        // TODO(b/287975993): Remove this after icon size is extracted to responsive grid
+        // Copy icon size from the workspace when spec is matchWorkspace or
+        // use the default all apps icon size
+        if (mAllAppsResponsiveHeightSpec.isCellSizeMatchWorkspace()
+                || mAllAppsResponsiveWidthSpec.isCellSizeMatchWorkspace()) {
+            allAppsIconSizePx = iconSizePx;
+            allAppsIconTextSizePx = iconTextSizePx;
+            allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
+        } else {
+            allAppsIconSizePx = pxFromDp(inv.allAppsIconSize[mTypeIndex], mMetrics);
+            allAppsIconTextSizePx = pxFromSp(inv.allAppsIconTextSize[mTypeIndex], mMetrics);
+            allAppsIconDrawablePaddingPx = res.getDimensionPixelSize(
+                    R.dimen.all_apps_icon_drawable_padding);
+            allAppsIconDrawablePaddingPx = getNormalizedIconDrawablePadding(allAppsIconSizePx,
+                    allAppsIconDrawablePaddingPx);
+        }
+
+        // Reduce the size of the app icon if it doesn't fit
+        if (allAppsCellWidthPx < allAppsIconSizePx) {
+            // get a smaller icon size
+            allAppsIconSizePx = mIconSizeSteps.getIconSmallerThan(allAppsCellWidthPx);
+        }
+
+        CellContentDimensions cellContentDimensions = new CellContentDimensions(
+                allAppsIconSizePx, allAppsIconDrawablePaddingPx, (int) allAppsIconTextSizePx);
+
+        if (allAppsCellHeightPx < cellContentDimensions.getCellContentHeight()) {
+            if (isVerticalBarLayout()) {
+                if (allAppsCellHeightPx < iconSizePx) {
+                    cellContentDimensions.setIconSizePx(
+                            mIconSizeSteps.getIconSmallerThan(allAppsCellHeightPx));
+                }
+            } else {
+                cellContentDimensions.resizeToFitCellHeight(allAppsCellHeightPx,
+                        mIconSizeSteps);
+            }
+            allAppsIconSizePx = cellContentDimensions.getIconSizePx();
+            allAppsIconDrawablePaddingPx = cellContentDimensions.getIconDrawablePaddingPx();
+            allAppsIconTextSizePx = cellContentDimensions.getIconTextSizePx();
+        }
     }
 
     /**
