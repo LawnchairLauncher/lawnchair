@@ -23,6 +23,7 @@ import static android.view.WindowManager.LayoutParams.TYPE_NAVIGATION_BAR_PANEL;
 import static com.android.launcher3.LauncherAnimUtils.ROTATION_DRAWABLE_PERCENT;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.Utilities.getDescendantCoordRelativeToAncestor;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
 import static com.android.launcher3.taskbar.LauncherTaskbarUIController.SYSUI_SURFACE_PROGRESS_INDEX;
 import static com.android.launcher3.taskbar.TaskbarManager.isPhoneButtonNavMode;
 import static com.android.launcher3.taskbar.TaskbarNavButtonController.BUTTON_A11Y;
@@ -734,7 +735,7 @@ public class NavbarButtonsViewController implements TaskbarControllers.LoggableT
         // TODO(b/244231596) we're getting the incorrect kidsMode value in small-screen
         boolean isInKidsMode = mContext.isNavBarKidsModeActive();
 
-        if (TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION) {
+        if (ENABLE_TASKBAR_NAVBAR_UNIFICATION) {
             NavButtonLayoutter navButtonLayoutter =
                     NavButtonLayoutFactory.Companion.getUiLayoutter(
                             dp, mNavButtonsView, mImeSwitcherButton,

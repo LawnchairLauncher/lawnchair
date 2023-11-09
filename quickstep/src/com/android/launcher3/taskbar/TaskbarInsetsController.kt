@@ -41,6 +41,7 @@ import com.android.internal.policy.GestureNavigationSettingsObserver
 import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.anim.AlphaUpdateListener
+import com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION
 import com.android.launcher3.config.FeatureFlags.enableTaskbarNoRecreate
 import com.android.launcher3.taskbar.TaskbarControllers.LoggableTaskbarController
 import com.android.launcher3.util.DisplayController
@@ -253,7 +254,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                                 visInsetsSizeForTappableElement
                         ),
                 )
-        if ((context.isGestureNav || TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION)
+        if ((context.isGestureNav || ENABLE_TASKBAR_NAVBAR_UNIFICATION)
                 && provider.type == tappableElement()) {
             provider.insetsSizeOverrides = insetsSizeOverrideForTappableElement
         } else if (provider.type != systemGestures()) {
