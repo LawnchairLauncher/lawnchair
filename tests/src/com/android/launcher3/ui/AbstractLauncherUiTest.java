@@ -45,6 +45,7 @@ import android.platform.test.flag.junit.SetFlagsRule;
 import android.system.OsConstants;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.test.InstrumentationRegistry;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
@@ -108,7 +109,7 @@ public abstract class AbstractLauncherUiTest {
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     protected LooperExecutor mMainThreadExecutor = MAIN_EXECUTOR;
-    protected final UiDevice mDevice = UiDevice.getInstance(getInstrumentation());
+    protected final UiDevice mDevice = getUiDevice();
     protected final LauncherInstrumentation mLauncher = new LauncherInstrumentation();
     protected Context mTargetContext;
     protected String mTargetPackage;
@@ -160,7 +161,7 @@ public abstract class AbstractLauncherUiTest {
                 if (TestHelpers.isInLauncherProcess()) {
                     Debug.dumpHprofData(fileName);
                 } else {
-                    final UiDevice device = UiDevice.getInstance(getInstrumentation());
+                    final UiDevice device = getUiDevice();
                     device.executeShellCommand(
                             "am dumpheap " + device.getLauncherPackageName() + " " + fileName);
                 }
@@ -249,11 +250,6 @@ public abstract class AbstractLauncherUiTest {
         mLauncher.onTestStart();
 
         waitForSetupWizardDismissal();
-        if (TestStabilityRule.isPresubmit()) {
-            aggressivelyUnlockSysUi();
-        } else {
-            verifyKeyguardInvisible();
-        }
 
         final String launcherPackageName = mDevice.getLauncherPackageName();
         try {
@@ -285,23 +281,38 @@ public abstract class AbstractLauncherUiTest {
             }
         }
 
-        verifyKeyguardInvisible();
+        onTestStart();
     }
 
-    private boolean hasSystemUiObject(String resId) {
-        return mDevice.hasObject(By.res(SYSTEMUI_PACKAGE, resId));
+    /** Method that should be called when a test starts. */
+    public static void onTestStart() {
+        if (TestStabilityRule.isPresubmit()) {
+            aggressivelyUnlockSysUi();
+        } else {
+            verifyKeyguardInvisible();
+        }
     }
 
-    // Seeing if this will decrease: b/303755862
-    void aggressivelyUnlockSysUi() {
+    private static boolean hasSystemUiObject(String resId) {
+        return getUiDevice().hasObject(
+                By.res(SYSTEMUI_PACKAGE, resId));
+    }
+
+    @NonNull
+    private static UiDevice getUiDevice() {
+        return UiDevice.getInstance(getInstrumentation());
+    }
+
+    private static void aggressivelyUnlockSysUi() {
+        final UiDevice device = getUiDevice();
         for (int i = 0; i < 10 && hasSystemUiObject("keyguard_status_view"); ++i) {
             Log.d(TAG, "Before attempting to unlock the phone");
             try {
-                mDevice.executeShellCommand("input keyevent 82");
+                device.executeShellCommand("input keyevent 82");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            mDevice.waitForIdle();
+            device.waitForIdle();
         }
         Assert.assertTrue("Keyguard still visible",
                 TestHelpers.wait(
@@ -321,9 +332,11 @@ public abstract class AbstractLauncherUiTest {
     // TODO(309471958) Productize killing/dismissal of setup wizard.
     /** Waits for setup wizard to go away. */
     public static void waitForSetupWizardDismissal() {
-        if (sFirstTimeWaitingForWizard && TestStabilityRule.isPresubmit()) {
+        if (!TestStabilityRule.isPresubmit()) return;
+
+        if (sFirstTimeWaitingForWizard) {
             try {
-                UiDevice.getInstance(getInstrumentation()).executeShellCommand(
+                getUiDevice().executeShellCommand(
                         "am force-stop com.google.android.setupwizard");
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -334,12 +347,10 @@ public abstract class AbstractLauncherUiTest {
                 Until.gone(By.pkg("com.google.android.setupwizard").depth(0)),
                 sFirstTimeWaitingForWizard ? 120000 : 0);
         sFirstTimeWaitingForWizard = false;
-        // b/309496273
-//        Assert.assertTrue("Setup wizard is still visible",
-//                wizardDismissed);
+        Assert.assertTrue("Setup wizard is still visible", wizardDismissed);
     }
 
-    public static void verifyKeyguardInvisible() {
+    private static void verifyKeyguardInvisible() {
         final boolean keyguardAlreadyVisible = sSeenKeyguard;
 
         sSeenKeyguard = sSeenKeyguard

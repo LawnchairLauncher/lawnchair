@@ -253,7 +253,7 @@ class TaskbarInsetsController(val context: TaskbarActivityContext) : LoggableTas
                                 visInsetsSizeForTappableElement
                         ),
                 )
-        if ((context.isGestureNav || TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
+        if ((context.isGestureNav || TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION)
                 && provider.type == tappableElement()) {
             provider.insetsSizeOverrides = insetsSizeOverrideForTappableElement
         } else if (provider.type != systemGestures()) {

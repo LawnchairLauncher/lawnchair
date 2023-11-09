@@ -1222,7 +1222,7 @@ public class SystemUiProxy implements ISystemUiProxy {
         }
         try {
             mBackAnimation.setBackToLauncherCallback(callback, runner);
-        } catch (RemoteException e) {
+        } catch (RemoteException | SecurityException e) {
             Log.e(TAG, "Failed call setBackToLauncherCallback", e);
         }
     }

@@ -214,7 +214,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
         mActivity.addOnDeviceProfileChangeListener(mDeviceProfileChangeListener);
 
-        if (TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW) {
+        if (TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION) {
             // This gets modified in NavbarButtonsViewController, but the initial value it reads
             // may be incorrect since it's state gets destroyed on taskbar recreate, so reset here
             mTaskbarIconAlpha.get(ALPHA_INDEX_SMALL_SCREEN)

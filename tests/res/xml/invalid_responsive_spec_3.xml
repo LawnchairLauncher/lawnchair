@@ -13,46 +13,46 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
+<!-- invalid file - aspect ratio = 0 (it must be bigger than zero) -->
 <workspaceSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
-    <specs launcher:maxAspectRatio="1.05">
+    <specs launcher:maxAspectRatio="10">
         <workspaceSpec
-            launcher:specType="height"
-            launcher:maxAvailableSize="9999dp">
+            launcher:maxAvailableSize="9999dp"
+            launcher:specType="height">
+            <cellSize launcher:fixedSize="104dp" />
+            <endPadding launcher:ofRemainderSpace="1" />
+            <gutter launcher:fixedSize="16dp" />
             <startPadding launcher:fixedSize="8dp" />
-            <endPadding launcher:ofRemainderSpace="1" />
-            <gutter launcher:fixedSize="16dp" />
-            <cellSize launcher:fixedSize="104dp" />
         </workspaceSpec>
 
-        <!-- 584 grid height -->
         <workspaceSpec
-            launcher:specType="height"
-            launcher:maxAvailableSize="584dp">
-            <startPadding launcher:fixedSize="0dp" />
-            <endPadding launcher:fixedSize="32dp" />
-            <gutter launcher:fixedSize="16dp" />
-            <cellSize launcher:ofAvailableSpace="0.15808" />
-        </workspaceSpec>
-
-        <!-- 584 grid height + 28 remainder space -->
-        <workspaceSpec
-            launcher:specType="height"
-            launcher:maxAvailableSize="612dp">
-            <startPadding launcher:fixedSize="0dp" />
-            <endPadding launcher:ofRemainderSpace="1" />
-            <gutter launcher:fixedSize="16dp" />
-            <cellSize launcher:fixedSize="104dp" />
-        </workspaceSpec>
-
-        <!-- Width spec is always the same -->
-        <workspaceSpec
-            launcher:specType="width"
-            launcher:maxAvailableSize="9999dp">
-            <startPadding launcher:fixedSize="22dp" />
+            launcher:maxAvailableSize="9999dp"
+            launcher:specType="width">
+            <cellSize launcher:ofRemainderSpace="0.25" />
             <endPadding launcher:fixedSize="22dp" />
             <gutter launcher:fixedSize="16dp" />
-            <cellSize launcher:ofRemainderSpace="0.25" />
+            <startPadding launcher:fixedSize="22dp" />
         </workspaceSpec>
     </specs>
+
+    <specs launcher:maxAspectRatio="0">
+        <workspaceSpec
+            launcher:maxAvailableSize="9999dp"
+            launcher:specType="height">
+            <cellSize launcher:fixedSize="104dp" />
+            <endPadding launcher:ofRemainderSpace="1" />
+            <gutter launcher:fixedSize="16dp" />
+            <startPadding launcher:fixedSize="8dp" />
+        </workspaceSpec>
+
+        <workspaceSpec
+            launcher:maxAvailableSize="9999dp"
+            launcher:specType="width">
+            <cellSize launcher:ofRemainderSpace="0.25" />
+            <endPadding launcher:fixedSize="22dp" />
+            <gutter launcher:fixedSize="16dp" />
+            <startPadding launcher:fixedSize="22dp" />
+        </workspaceSpec>
+    </specs>
+
 </workspaceSpecs>

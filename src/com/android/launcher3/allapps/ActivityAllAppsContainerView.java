@@ -1101,7 +1101,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         mlp.rightMargin = insets.right;
         setLayoutParams(mlp);
 
-        if (grid.isVerticalBarLayout()) {
+        if (grid.isVerticalBarLayout() && !FeatureFlags.enableResponsiveWorkspace()) {
             setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
             int topPadding = grid.allAppsPadding.top;
@@ -1111,7 +1111,6 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             }
             setPadding(grid.allAppsLeftRightMargin, topPadding, grid.allAppsLeftRightMargin, 0);
         }
-
         InsettableFrameLayout.dispatchInsets(this, insets);
     }
 

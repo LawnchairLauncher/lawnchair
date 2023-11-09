@@ -21,6 +21,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import androidx.test.platform.app.InstrumentationRegistry
 import com.android.launcher3.AbstractDeviceProfileTest
+import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecType
+import com.android.launcher3.responsive.ResponsiveSpec.DimensionType
 import com.android.launcher3.tests.R
 import com.android.launcher3.util.TestResourceHelper
 import com.google.common.truth.Truth.assertThat
@@ -30,10 +32,10 @@ import org.junit.runner.RunWith
 
 @SmallTest
 @RunWith(AndroidJUnit4::class)
-class CalculatedFolderSpecsTest : AbstractDeviceProfileTest() {
+class CalculatedFolderSpecTest : AbstractDeviceProfileTest() {
     override val runningContext: Context = InstrumentationRegistry.getInstrumentation().context
-
     private val deviceSpec = deviceSpecs["phone"]!!
+    private val aspectRatio = deviceSpec.naturalSize.first.toFloat() / deviceSpec.naturalSize.second
 
     @Before
     fun setup() {
@@ -45,22 +47,37 @@ class CalculatedFolderSpecsTest : AbstractDeviceProfileTest() {
         val columns = 6
 
         // Loading workspace specs
-        val resourceHelperWorkspace = TestResourceHelper(context!!, R.xml.valid_workspace_file)
-        val workspaceSpecs = WorkspaceSpecs.create(resourceHelperWorkspace)
+        val resourceHelperWorkspace = TestResourceHelper(context, R.xml.valid_workspace_file)
+        val workspaceSpecs =
+            ResponsiveSpecsProvider.create(resourceHelperWorkspace, ResponsiveSpecType.Workspace)
 
         // Loading folders specs
-        val resourceHelperFolder = TestResourceHelper(context!!, R.xml.valid_folders_specs)
-        val folderSpecs = FolderSpecs.create(resourceHelperFolder)
+        val resourceHelperFolder = TestResourceHelper(context, R.xml.valid_folders_specs)
+        val folderSpecs =
+            ResponsiveSpecsProvider.create(resourceHelperFolder, ResponsiveSpecType.Folder)
+        val specs = folderSpecs.getSpecsByAspectRatio(aspectRatio)
 
-        assertThat(folderSpecs.widthSpecs.size).isEqualTo(2)
-        assertThat(folderSpecs.widthSpecs[0].cellSize.matchWorkspace).isEqualTo(true)
-        assertThat(folderSpecs.widthSpecs[1].cellSize.matchWorkspace).isEqualTo(false)
+        assertThat(specs.widthSpecs.size).isEqualTo(2)
+        assertThat(specs.widthSpecs[0].cellSize.matchWorkspace).isEqualTo(true)
+        assertThat(specs.widthSpecs[1].cellSize.matchWorkspace).isEqualTo(false)
 
         // Validate width spec <= 800
         var availableWidth = deviceSpec.naturalSize.first
-        var calculatedWorkspace = workspaceSpecs.getCalculatedWidthSpec(columns, availableWidth)
+        var calculatedWorkspace =
+            workspaceSpecs.getCalculatedSpec(
+                aspectRatio,
+                DimensionType.WIDTH,
+                columns,
+                availableWidth
+            )
         var calculatedWidthFolderSpec =
-            folderSpecs.getCalculatedWidthSpec(columns, availableWidth, calculatedWorkspace)
+            folderSpecs.getCalculatedSpec(
+                aspectRatio,
+                DimensionType.WIDTH,
+                columns,
+                availableWidth,
+                calculatedWorkspace
+            )
         with(calculatedWidthFolderSpec) {
             assertThat(availableSpace).isEqualTo(availableWidth)
             assertThat(cells).isEqualTo(columns)
@@ -72,9 +89,21 @@ class CalculatedFolderSpecsTest : AbstractDeviceProfileTest() {
 
         // Validate width spec > 800
         availableWidth = 2000.dpToPx()
-        calculatedWorkspace = workspaceSpecs.getCalculatedWidthSpec(columns, availableWidth)
+        calculatedWorkspace =
+            workspaceSpecs.getCalculatedSpec(
+                aspectRatio,
+                DimensionType.WIDTH,
+                columns,
+                availableWidth
+            )
         calculatedWidthFolderSpec =
-            folderSpecs.getCalculatedWidthSpec(columns, availableWidth, calculatedWorkspace)
+            folderSpecs.getCalculatedSpec(
+                aspectRatio,
+                DimensionType.WIDTH,
+                columns,
+                availableWidth,
+                calculatedWorkspace
+            )
         with(calculatedWidthFolderSpec) {
             assertThat(availableSpace).isEqualTo(availableWidth)
             assertThat(cells).isEqualTo(columns)
@@ -94,20 +123,35 @@ class CalculatedFolderSpecsTest : AbstractDeviceProfileTest() {
         val rows = 5
 
         // Loading workspace specs
-        val resourceHelperWorkspace = TestResourceHelper(context!!, R.xml.valid_workspace_file)
-        val workspaceSpecs = WorkspaceSpecs.create(resourceHelperWorkspace)
+        val resourceHelperWorkspace = TestResourceHelper(context, R.xml.valid_workspace_file)
+        val workspaceSpecs =
+            ResponsiveSpecsProvider.create(resourceHelperWorkspace, ResponsiveSpecType.Workspace)
 
         // Loading folders specs
-        val resourceHelperFolder = TestResourceHelper(context!!, R.xml.valid_folders_specs)
-        val folderSpecs = FolderSpecs.create(resourceHelperFolder)
+        val resourceHelperFolder = TestResourceHelper(context, R.xml.valid_folders_specs)
+        val folderSpecs =
+            ResponsiveSpecsProvider.create(resourceHelperFolder, ResponsiveSpecType.Folder)
+        val specs = folderSpecs.getSpecsByAspectRatio(aspectRatio)
 
-        assertThat(folderSpecs.heightSpecs.size).isEqualTo(1)
-        assertThat(folderSpecs.heightSpecs[0].cellSize.matchWorkspace).isEqualTo(true)
+        assertThat(specs.heightSpecs.size).isEqualTo(1)
+        assertThat(specs.heightSpecs[0].cellSize.matchWorkspace).isEqualTo(true)
 
         // Validate height spec
-        val calculatedWorkspace = workspaceSpecs.getCalculatedHeightSpec(rows, availableHeight)
+        val calculatedWorkspace =
+            workspaceSpecs.getCalculatedSpec(
+                aspectRatio,
+                DimensionType.HEIGHT,
+                rows,
+                availableHeight
+            )
         val calculatedFolderSpec =
-            folderSpecs.getCalculatedHeightSpec(rows, availableHeight, calculatedWorkspace)
+            folderSpecs.getCalculatedSpec(
+                aspectRatio,
+                DimensionType.HEIGHT,
+                rows,
+                availableHeight,
+                calculatedWorkspace
+            )
         with(calculatedFolderSpec) {
             assertThat(availableSpace).isEqualTo(availableHeight)
             assertThat(cells).isEqualTo(rows)

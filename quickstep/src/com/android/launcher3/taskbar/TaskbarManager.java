@@ -41,7 +41,6 @@ import android.content.res.Configuration;
 import android.hardware.display.DisplayManager;
 import android.net.Uri;
 import android.os.Handler;
-import android.os.SystemProperties;
 import android.os.Trace;
 import android.provider.Settings;
 import android.util.Log;
@@ -71,6 +70,7 @@ import com.android.quickstep.util.AssistUtils;
 import com.android.systemui.shared.system.QuickStepContract;
 import com.android.systemui.unfold.UnfoldTransitionProgressProvider;
 import com.android.systemui.unfold.util.ScopedUnfoldTransitionProgressProvider;
+import com.android.wm.shell.Flags;
 
 import java.io.PrintWriter;
 import java.util.StringJoiner;
@@ -98,8 +98,8 @@ public class TaskbarManager {
             | ActivityInfo.CONFIG_SCREEN_LAYOUT
             | ActivityInfo.CONFIG_SMALLEST_SCREEN_SIZE;
 
-    public static final boolean FLAG_HIDE_NAVBAR_WINDOW =
-            SystemProperties.getBoolean("persist.wm.debug.hide_navbar_window", false);
+    public static final boolean ENABLE_TASKBAR_NAVBAR_UNIFICATION =
+            Flags.enableTaskbarNavbarUnification();
 
     private static final Uri USER_SETUP_COMPLETE_URI = Settings.Secure.getUriFor(
             Settings.Secure.USER_SETUP_COMPLETE);
@@ -198,7 +198,8 @@ public class TaskbarManager {
         Display display =
                 service.getSystemService(DisplayManager.class).getDisplay(DEFAULT_DISPLAY);
         mContext = service.createWindowContext(display,
-                FLAG_HIDE_NAVBAR_WINDOW ? TYPE_NAVIGATION_BAR : TYPE_NAVIGATION_BAR_PANEL, null);
+                ENABLE_TASKBAR_NAVBAR_UNIFICATION ? TYPE_NAVIGATION_BAR : TYPE_NAVIGATION_BAR_PANEL,
+                null);
         if (enableTaskbarNoRecreate()) {
             mWindowManager = mContext.getSystemService(WindowManager.class);
             mTaskbarRootLayout = new FrameLayout(mContext) {
@@ -250,7 +251,7 @@ public class TaskbarManager {
                         destroyExistingTaskbar();
                     } else {
                         if (dp != null && isTaskbarPresent(dp)) {
-                            if (FLAG_HIDE_NAVBAR_WINDOW) {
+                            if (ENABLE_TASKBAR_NAVBAR_UNIFICATION) {
                                 // Re-initialize for screen size change? Should this be done
                                 // by looking at screen-size change flag in configDiff in the
                                 // block above?
@@ -295,7 +296,7 @@ public class TaskbarManager {
         debugWhyTaskbarNotDestroyed("destroyExistingTaskbar: " + mTaskbarActivityContext);
         if (mTaskbarActivityContext != null) {
             mTaskbarActivityContext.onDestroy();
-            if (!FLAG_HIDE_NAVBAR_WINDOW || enableTaskbarNoRecreate()) {
+            if (!ENABLE_TASKBAR_NAVBAR_UNIFICATION || enableTaskbarNoRecreate()) {
                 mTaskbarActivityContext = null;
             }
         }
@@ -427,7 +428,7 @@ public class TaskbarManager {
             boolean isTaskbarEnabled = dp != null && isTaskbarPresent(dp);
             debugWhyTaskbarNotDestroyed("recreateTaskbar: isTaskbarEnabled=" + isTaskbarEnabled
                 + " [dp != null (i.e. mUserUnlocked)]=" + (dp != null)
-                + " FLAG_HIDE_NAVBAR_WINDOW=" + FLAG_HIDE_NAVBAR_WINDOW
+                + " FLAG_HIDE_NAVBAR_WINDOW=" + ENABLE_TASKBAR_NAVBAR_UNIFICATION
                 + " dp.isTaskbarPresent=" + (dp == null ? "null" : dp.isTaskbarPresent));
             if (!isTaskbarEnabled) {
                 SystemUiProxy.INSTANCE.get(mContext)
@@ -493,7 +494,7 @@ public class TaskbarManager {
      *                      and we are using a single window for taskbar and navbar.
      */
     public static boolean isPhoneMode(DeviceProfile deviceProfile) {
-        return TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW && deviceProfile.isPhone;
+        return TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION && deviceProfile.isPhone;
     }
 
     /**
@@ -505,7 +506,7 @@ public class TaskbarManager {
     }
 
     private boolean isTaskbarPresent(DeviceProfile deviceProfile) {
-        return FLAG_HIDE_NAVBAR_WINDOW || deviceProfile.isTaskbarPresent;
+        return ENABLE_TASKBAR_NAVBAR_UNIFICATION || deviceProfile.isTaskbarPresent;
     }
 
     public void onRotationProposal(int rotation, boolean isValid) {

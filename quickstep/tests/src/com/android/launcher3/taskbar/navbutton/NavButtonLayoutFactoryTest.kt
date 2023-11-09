@@ -59,7 +59,7 @@ class NavButtonLayoutFactoryTest {
 
     @Test
     fun getKidsLayoutter() {
-        assumeTrue(TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
+        assumeTrue(TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION)
         mockDeviceProfile.isTaskbarPresent = true
         val layoutter: NavButtonLayoutFactory.NavButtonLayoutter =
             getLayoutter(
@@ -74,7 +74,7 @@ class NavButtonLayoutFactoryTest {
 
     @Test
     fun getSetupLayoutter() {
-        assumeTrue(TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
+        assumeTrue(TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION)
         mockDeviceProfile.isTaskbarPresent = true
         val layoutter: NavButtonLayoutFactory.NavButtonLayoutter =
             getLayoutter(
@@ -89,7 +89,7 @@ class NavButtonLayoutFactoryTest {
 
     @Test
     fun getTaskbarNavLayoutter() {
-        assumeTrue(TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
+        assumeTrue(TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION)
         mockDeviceProfile.isTaskbarPresent = true
         val layoutter: NavButtonLayoutFactory.NavButtonLayoutter =
             getLayoutter(
@@ -104,7 +104,7 @@ class NavButtonLayoutFactoryTest {
 
     @Test(expected = IllegalStateException::class)
     fun noValidLayoutForLargeScreenTaskbarNotPresent() {
-        assumeTrue(TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
+        assumeTrue(TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION)
         mockDeviceProfile.isTaskbarPresent = false
         getLayoutter(
             isKidsMode = false,
@@ -117,7 +117,7 @@ class NavButtonLayoutFactoryTest {
 
     @Test
     fun getTaskbarPortraitLayoutter() {
-        assumeTrue(TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
+        assumeTrue(TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION)
         mockDeviceProfile.isTaskbarPresent = false
         val layoutter: NavButtonLayoutFactory.NavButtonLayoutter =
             getLayoutter(
@@ -132,7 +132,7 @@ class NavButtonLayoutFactoryTest {
 
     @Test
     fun getTaskbarLandscapeLayoutter() {
-        assumeTrue(TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
+        assumeTrue(TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION)
         mockDeviceProfile.isTaskbarPresent = false
         setDeviceProfileLandscape()
         val layoutter: NavButtonLayoutFactory.NavButtonLayoutter =
@@ -148,7 +148,7 @@ class NavButtonLayoutFactoryTest {
 
     @Test
     fun getTaskbarSeascapeLayoutter() {
-        assumeTrue(TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
+        assumeTrue(TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION)
         mockDeviceProfile.isTaskbarPresent = false
         setDeviceProfileLandscape()
         val layoutter: NavButtonLayoutFactory.NavButtonLayoutter =
@@ -164,7 +164,7 @@ class NavButtonLayoutFactoryTest {
 
     @Test(expected = IllegalStateException::class)
     fun noValidLayoutForPhoneGestureNav() {
-        assumeTrue(TaskbarManager.FLAG_HIDE_NAVBAR_WINDOW)
+        assumeTrue(TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION)
         mockDeviceProfile.isTaskbarPresent = false
         getLayoutter(
             isKidsMode = false,

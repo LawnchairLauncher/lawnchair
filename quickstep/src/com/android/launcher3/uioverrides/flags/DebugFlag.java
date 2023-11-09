@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.uioverrides.flags;
 
+import static com.android.launcher3.uioverrides.flags.FlagsFactory.TEAMFOOD_FLAG;
+
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.config.FeatureFlags.BooleanFlag;
@@ -33,6 +35,21 @@ class DebugFlag extends BooleanFlag {
         this.key = key;
         this.defaultValue = defaultValue;
         this.description = description;
+    }
+
+    /**
+     * Returns {@code true} if this flag's value has been modified from its default.
+     * <p>
+     * This helps to identify which flags have been toggled in log dumps and bug reports to
+     * further help triaging and debugging.
+     */
+    boolean currentValueModified() {
+        switch (defaultValue) {
+            case ENABLED: return !get();
+            case TEAMFOOD: return TEAMFOOD_FLAG.get() != get();
+            case DISABLED: return get();
+            default: return true;
+        }
     }
 
     @Override

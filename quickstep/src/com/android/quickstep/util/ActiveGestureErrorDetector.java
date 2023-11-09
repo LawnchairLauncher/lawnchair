@@ -147,24 +147,15 @@ public class ActiveGestureErrorDetector {
                     break;
                 case TASK_APPEARED:
                     errorDetected |= printErrorIfTrue(
-                            !encounteredEvents.contains(GestureEvent.SET_END_TARGET_NEW_TASK),
-                            prefix,
-                            /* errorMessage= */ "onTasksAppeared called "
-                                    + "before/without setting end target to new task",
-                            writer);
-                    errorDetected |= printErrorIfTrue(
                             !encounteredEvents.contains(GestureEvent.EXPECTING_TASK_APPEARED),
                             prefix,
                             /* errorMessage= */ "onTasksAppeared was not expected to be called",
                             writer);
-                    break;
-                case EXPECTING_TASK_APPEARED:
-                    errorDetected |= printErrorIfTrue(
-                            !encounteredEvents.contains(GestureEvent.SET_END_TARGET_NEW_TASK),
-                            prefix,
-                            /* errorMessage= */ "expecting onTasksAppeared to be called "
-                                    + "before/without setting end target to new task",
-                            writer);
+                    if (encounteredEvents.contains(GestureEvent.EXPECTING_TASK_APPEARED)) {
+                        // Remove both events so that we can properly detect following errors.
+                        encounteredEvents.remove(GestureEvent.EXPECTING_TASK_APPEARED);
+                        encounteredEvents.remove(GestureEvent.TASK_APPEARED);
+                    }
                     break;
                 case LAUNCHER_DESTROYED:
                     errorDetected |= printErrorIfTrue(
@@ -282,6 +273,7 @@ public class ActiveGestureErrorDetector {
                 case START_RECENTS_ANIMATION:
                     lastStartRecentAnimationEventEntryTime = eventEntry.getTime();
                     break;
+                case EXPECTING_TASK_APPEARED:
                 case MOTION_DOWN:
                 case SET_END_TARGET:
                 case SET_END_TARGET_HOME:

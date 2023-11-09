@@ -268,6 +268,10 @@
         <attr name="maxAvailableSize" format="dimension" />
     </declare-styleable>
 
+    <declare-styleable name="ResponsiveSpecGroup">
+        <attr name="maxAspectRatio" format="float" />
+    </declare-styleable>
+
     <declare-styleable name="WorkspaceSpec">
         <attr name="specType" />
         <attr name="maxAvailableSize" />
