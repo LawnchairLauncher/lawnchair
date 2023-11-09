@@ -162,7 +162,6 @@ public class FallbackRecentsTest {
     @Before
     public void setUp() {
         mLauncher.onTestStart();
-        AbstractLauncherUiTest.waitForSetupWizardDismissal();
         AbstractLauncherUiTest.onTestStart();
     }
 
