@@ -25,6 +25,7 @@ import static com.android.launcher3.Utilities.mapRange;
 import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.anim.AnimatedFloat.VALUE;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
+import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_PINNING;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP;
 import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_PERSISTENT;
@@ -214,7 +215,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
         mActivity.addOnDeviceProfileChangeListener(mDeviceProfileChangeListener);
 
-        if (TaskbarManager.ENABLE_TASKBAR_NAVBAR_UNIFICATION) {
+        if (ENABLE_TASKBAR_NAVBAR_UNIFICATION) {
             // This gets modified in NavbarButtonsViewController, but the initial value it reads
             // may be incorrect since it's state gets destroyed on taskbar recreate, so reset here
             mTaskbarIconAlpha.get(ALPHA_INDEX_SMALL_SCREEN)

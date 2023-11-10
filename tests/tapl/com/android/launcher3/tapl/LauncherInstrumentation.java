@@ -564,6 +564,9 @@ public final class LauncherInstrumentation {
         if (hasSystemLauncherObject(OVERVIEW_RES_ID)) return "Overview";
         if (hasLauncherObject(WORKSPACE_RES_ID)) return "Workspace";
         if (hasLauncherObject(APPS_RES_ID)) return "AllApps";
+        if (mDevice.hasObject(By.pkg(getLauncherPackageName()).depth(0))) {
+            return "<Launcher in invalid state>";
+        }
         return "LaunchedApp (" + getVisiblePackages() + ")";
     }
 
@@ -2063,6 +2066,7 @@ public final class LauncherInstrumentation {
     }
 
     // TODO(b/270393900): Remove with ENABLE_ALL_APPS_SEARCH_IN_TASKBAR flag cleanup.
+
     /** Refreshes the known overview target in TIS. */
     public void refreshOverviewTarget() {
         getTestInfo(TestProtocol.REQUEST_REFRESH_OVERVIEW_TARGET);

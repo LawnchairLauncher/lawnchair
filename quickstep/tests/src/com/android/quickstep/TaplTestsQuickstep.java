@@ -16,6 +16,8 @@
 
 package com.android.quickstep;
 
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 import static com.android.quickstep.TaskbarModeSwitchRule.Mode.PERSISTENT;
 import static com.android.quickstep.TaskbarModeSwitchRule.Mode.TRANSIENT;
 
@@ -46,6 +48,7 @@ import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.Wait;
 import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
+import com.android.launcher3.util.rule.TestStabilityRule;
 import com.android.quickstep.NavigationModeSwitchRule.NavigationModeSwitch;
 import com.android.quickstep.TaskbarModeSwitchRule.TaskbarModeSwitch;
 import com.android.quickstep.views.RecentsView;
@@ -355,7 +358,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @PortraitLandscape
     @TaskbarModeSwitch(mode = PERSISTENT)
     @PlatinumTest(focusArea = "launcher")
-    @ScreenRecord
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/309820115
     public void testOverviewForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
 

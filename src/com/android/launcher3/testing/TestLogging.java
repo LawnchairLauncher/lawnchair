@@ -76,7 +76,7 @@ public final class TestLogging {
             // be more useful.
             // That's why we pass false as the value for the 'reportToTapl' parameter.
             recordEventSlow(sequence, message + ": " + event, false);
-            registerEventNotFromTest(event);
+            if (action != MotionEvent.ACTION_CANCEL) registerEventNotFromTest(event);
         }
     }
 

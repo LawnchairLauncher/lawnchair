@@ -159,8 +159,8 @@ public class SwipePipToHomeAnimator extends RectFSpringAnim {
             // to other classes like PipTaskOrganizer / RecentsAnimationController to complete
             // the cleanup.
             mPipContentOverlay = new PipContentOverlay.PipAppIconOverlay(view.getContext(),
-                    mAppBounds, new IconProvider(context).getIcon(mActivityInfo),
-                    appIconSizePx);
+                    mAppBounds, mDestinationBounds,
+                    new IconProvider(context).getIcon(mActivityInfo), appIconSizePx);
             final SurfaceControl.Transaction tx = new SurfaceControl.Transaction();
             mPipContentOverlay.attach(tx, mLeash);
         } else {

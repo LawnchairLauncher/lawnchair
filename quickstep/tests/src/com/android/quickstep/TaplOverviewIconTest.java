@@ -16,6 +16,8 @@
 package com.android.quickstep;
 
 import static com.android.launcher3.ui.TaplTestsLauncher3.initialize;
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -25,6 +27,7 @@ import android.platform.test.annotations.PlatinumTest;
 
 import com.android.launcher3.tapl.OverviewTaskMenu;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -72,6 +75,7 @@ public class TaplOverviewIconTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/288939273
     public void testSplitTaskTapBothIconMenus() {
         createAndLaunchASplitPair();
 
