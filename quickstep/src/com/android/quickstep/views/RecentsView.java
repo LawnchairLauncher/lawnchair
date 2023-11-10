@@ -1410,6 +1410,17 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
     }
 
     /**
+     * Enable or disable showing border on hover and focus change on task views
+     */
+    public void setTaskBorderEnabled(boolean enabled) {
+        int taskCount = getTaskViewCount();
+        for (int i = 0; i < taskCount; i++) {
+            TaskView taskView = requireTaskViewAt(i);
+            taskView.setBorderEnabled(enabled);
+        }
+    }
+
+    /**
      * Whether the Clear All button is hidden or fully visible. Used to determine if center
      * displayed page is a task or the Clear All button.
      *
