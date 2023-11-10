@@ -176,4 +176,6 @@
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"మీ టాబ్లెట్‌లో సెర్చ్ చేయండి"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"విఫలమైంది: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"ప్రైవేట్ స్పేస్"</string>
+    <!-- no translation found for bubble_bar_overflow_description (7410995531938041192) -->
+    <skip />
 </resources>
