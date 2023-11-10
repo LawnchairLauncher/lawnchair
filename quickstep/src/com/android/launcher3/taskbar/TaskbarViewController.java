@@ -367,6 +367,10 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
         float allAppIconTranslateRange = mapRange(scale, transientTaskbarAllAppsOffset,
                 persistentTaskbarAllAppsOffset);
 
+        if (mIsRtl) {
+            allAppIconTranslateRange *= -1;
+        }
+
         float halfIconCount = iconViews.length / 2.0f;
         for (int iconIndex = 0; iconIndex < iconViews.length; iconIndex++) {
             View iconView = iconViews[iconIndex];
