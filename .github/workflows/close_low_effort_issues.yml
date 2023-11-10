@@ -22,11 +22,11 @@ jobs:
               echo "$i"
               if [ $ISSUE_TITLE == "$i" ]; then
                 echo "low effort"
-                echo ::set-output name=isLowEffort::true
+                echo "isLowEffort=true" >> $GITHUB_OUTPUT
                 break
               else
                 echo "NOT low effort"
-                echo ::set-output name=isLowEffort::false
+                echo "isLowEffort=false" >> $GITHUB_OUTPUT
               fi
             done
   
