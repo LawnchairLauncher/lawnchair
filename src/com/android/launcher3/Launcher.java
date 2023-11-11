@@ -1590,6 +1590,9 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (getStateManager().isInStableState(ALL_APPS)) {
             getStateManager().goToState(NORMAL, alreadyOnHome);
         } else {
+            if (mWorkspace.isOverlayShown()) {
+                mOverlayManager.hideOverlay(/* animate */true);
+            }
             AbstractFloatingView.closeAllOpenViews(this);
             getStateManager().goToState(ALL_APPS, true /* animated */,
                     new AnimationSuccessListener() {

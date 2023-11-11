@@ -100,8 +100,7 @@ public class TaplUninstallRemove extends AbstractLauncherUiTest {
      */
     @Test
     @PortraitLandscape
-    // TODO(b/293944634): Remove Screenrecord after flaky debug, and add
-    // @PlatinumTest(focusArea = "launcher") back
+    @PlatinumTest(focusArea = "launcher")
     @ScreenRecordRule.ScreenRecord
     public void testUninstallFromWorkspace() throws Exception {
         installDummyAppAndWaitForUIUpdate();

@@ -115,7 +115,7 @@
     <string name="taskbar_button_a11y" msgid="5241161324875094465">"Erabilerraztasuna"</string>
     <string name="taskbar_button_back" msgid="8558862226461164514">"Atzera"</string>
     <string name="taskbar_button_ime_switcher" msgid="1730244360907588541">"IMEaren etengailua"</string>
-    <string name="taskbar_button_recents" msgid="7273376136216613134">"Azkenak"</string>
+    <string name="taskbar_button_recents" msgid="7273376136216613134">"Azkenaldikoak"</string>
     <string name="taskbar_button_notifications" msgid="7471740351507357318">"Jakinarazpenak"</string>
     <string name="taskbar_button_quick_settings" msgid="227662894293189391">"Ezarpen bizkorrak"</string>
     <string name="taskbar_a11y_title" msgid="6432169809852243110">"Zereginen barra"</string>

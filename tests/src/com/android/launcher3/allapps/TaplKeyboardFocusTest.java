@@ -21,6 +21,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.view.KeyEvent;
+import android.view.View;
+import android.view.WindowInsets;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
@@ -72,6 +74,41 @@ public class TaplKeyboardFocusTest extends AbstractLauncherUiTest {
             mLauncher.pressAndHoldKeyCode(KeyEvent.KEYCODE_DPAD_DOWN, 0);
             executeOnLauncher(launcher -> assertNotNull("No focused child.",
                     launcher.getAppsView().getActiveRecyclerView().getApps().getFocusedChild()));
+        } finally {
+            allApps.unfreeze();
+        }
+    }
+
+    @Test
+    public void testAllAppsExitSearchAndFocusSearchResults() {
+        final HomeAllApps allApps = mLauncher.goHome().switchToAllApps();
+        assertTrue("Launcher internal state is not All Apps",
+                isInState(() -> LauncherState.ALL_APPS));
+        allApps.freeze();
+        try {
+            executeOnLauncher(launcher -> launcher.getAppsView().getSearchView().requestFocus());
+            waitForLauncherCondition("Search view does not have focus.",
+                    launcher -> launcher.getAppsView().getSearchView().hasFocus());
+
+            mLauncher.pressAndHoldKeyCode(KeyEvent.KEYCODE_C, 0);
+            waitForLauncherCondition("Search view not active.",
+                    launcher -> launcher.getAppsView().getActiveRecyclerView()
+                            instanceof SearchRecyclerView);
+            mLauncher.unpressKeyCode(KeyEvent.KEYCODE_C, 0);
+
+            executeOnLauncher(launcher -> launcher.getAppsView().getSearchUiManager().getEditText()
+                    .hideKeyboard(/* clearFocus= */ false));
+            waitForLauncherCondition("Keyboard still visible.", launcher -> {
+                View root = launcher.getDragLayer();
+                WindowInsets insets = root.getRootWindowInsets();
+                return insets != null && !insets.isVisible(WindowInsets.Type.ime());
+            });
+
+            mLauncher.pressAndHoldKeyCode(KeyEvent.KEYCODE_DPAD_DOWN, 0);
+            mLauncher.unpressKeyCode(KeyEvent.KEYCODE_DPAD_DOWN, 0);
+            waitForLauncherCondition("No focused child", launcher ->
+                    launcher.getAppsView().getActiveRecyclerView().getApps().getFocusedChild()
+                            != null);
         } finally {
             allApps.unfreeze();
         }
