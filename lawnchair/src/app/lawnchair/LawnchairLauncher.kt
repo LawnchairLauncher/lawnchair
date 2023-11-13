@@ -321,7 +321,7 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
     override fun onDestroy() {
         super.onDestroy()
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-        //Only actually closes if required, safe to call if not enabled
+        // Only actually closes if required, safe to call if not enabled
         SmartspacerClient.close()
     }
 

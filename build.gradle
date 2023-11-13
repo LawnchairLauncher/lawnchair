@@ -381,7 +381,7 @@ dependencies {
 
     implementation 'com.airbnb.android:lottie:6.1.0'
 
-    //Smartspacer
+    // Smartspacer
     implementation 'com.kieronquinn.smartspacer:sdk-client:1.0.3'
 }
 

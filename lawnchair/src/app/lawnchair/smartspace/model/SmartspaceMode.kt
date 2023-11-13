@@ -70,7 +70,7 @@ object Smartspacer : SmartspaceMode(
     override fun toString(): String = "smartspacer"
 
     override fun isAvailable(context: Context): Boolean {
-        //Smartspacer requires Android 10+
+        // Smartspacer requires Android 10+
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
             context.packageManager.isPackageInstalledAndEnabled("com.kieronquinn.app.smartspacer")
     }
