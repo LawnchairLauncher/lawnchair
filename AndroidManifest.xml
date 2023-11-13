@@ -19,9 +19,10 @@
 ** Modifications copyright 2021, Lawnchair
 */
 -->
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <uses-sdk android:targetSdkVersion="30" android:minSdkVersion="26"/>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-sdk android:targetSdkVersion="30" android:minSdkVersion="26"
+        tools:overrideLibrary="com.kieronquinn.app.smartspacer.sdk.client"/>
     <!--
     Manifest entries specific to Launcher3. This is merged with AndroidManifest-common.xml.
     Refer comments around specific entries on how to extend individual components.

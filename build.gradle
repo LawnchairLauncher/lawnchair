@@ -79,7 +79,7 @@ final def ciRunNumber = System.getenv("GITHUB_RUN_NUMBER") ?: ""
 final def isReleaseBuild = ciBuild && ciRef.contains("alpha")
 final def devReleaseName = ciBuild ? "Dev (#${ciRunNumber})" : "Dev (${buildCommit})"
 final def version = "13"
-final def releaseName = "Alpha 1"
+final def releaseName = "Alpha 4"
 final def versionDisplayName = "${version} ${isReleaseBuild ? releaseName : devReleaseName}"
 final def majorVersion = versionDisplayName.split("\\.")[0]
 
@@ -380,6 +380,9 @@ dependencies {
     implementation 'com.github.samanzamani:PersianDate:1.7.1'
 
     implementation 'com.airbnb.android:lottie:6.1.0'
+
+    // Smartspacer
+    implementation 'com.kieronquinn.smartspacer:sdk-client:1.0.3'
 }
 
 ksp {
