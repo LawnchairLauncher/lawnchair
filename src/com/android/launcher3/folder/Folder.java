@@ -536,7 +536,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
                     mFolderName.selectAll();
                 }
             }
-            mFolderName.showKeyboard(true /* shouldFocus */);
+            mFolderName.showKeyboard();
             mFolderName.displayCompletions(
                     Stream.of(mInfo.suggestedFolderNames.getLabels())
                             .filter(Objects::nonNull)
