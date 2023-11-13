@@ -25,7 +25,7 @@
 
     <uses-sdk android:targetSdkVersion="33" android:minSdkVersion="26"
         tools:overrideLibrary="com.kieronquinn.app.smartspacer.sdk.client"/>
-
+    
     <!--
     Manifest entries specific to Launcher3. This is merged with AndroidManifest-common.xml.
     Refer comments around specific entries on how to extend individual components.
