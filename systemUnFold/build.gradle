@@ -32,7 +32,7 @@ dependencies {
     kapt 'com.google.dagger:dagger-android-processor:2.48'
     kapt 'com.google.dagger:dagger-compiler:2.48'
     implementation "com.google.dagger:hilt-android:2.48"
-    kapt "com.google.dagger:hilt-android-compiler:2.48"
+    kapt "com.google.dagger:hilt-android-compiler:2.48.1"
 
     implementation "androidx.concurrent:concurrent-futures:1.1.0"
     implementation "androidx.lifecycle:lifecycle-common:2.6.1"
