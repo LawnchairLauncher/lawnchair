@@ -102,6 +102,12 @@ private val product = listOf(
         socialUrl = "https://github.com/msfjarvis",
     ),
     TeamMember(
+        name = "John Andrew Camu",
+        role = Role.Development,
+        photoUrl = "https://avatars.githubusercontent.com/u/36076410",
+        socialUrl = "https://github.com/MrSluffy",
+    ),
+    TeamMember(
         name = "Kshitij Gupta",
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/18647641",
