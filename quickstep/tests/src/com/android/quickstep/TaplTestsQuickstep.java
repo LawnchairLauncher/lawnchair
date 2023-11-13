@@ -100,6 +100,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
+    @PlatinumTest(focusArea = "launcher")
     public void testWorkspaceSwitchToAllApps() {
         assertNotNull("switchToAllApps() returned null",
                 mLauncher.getWorkspace().switchToAllApps());
@@ -176,6 +177,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
+    @PlatinumTest(focusArea = "launcher")
     public void testOverviewActions() throws Exception {
         assumeFalse("Skipping Overview Actions tests for grid only overview",
                 mLauncher.isTablet() && mLauncher.isGridOnlyOverviewEnabled());
@@ -212,6 +214,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @NavigationModeSwitch
     @PortraitLandscape
     @ScreenRecord // b/238461765
+    @PlatinumTest(focusArea = "launcher")
     public void testSwitchToOverview() throws Exception {
         startTestAppsWithCheck();
         assertNotNull("Workspace.switchToOverview() returned null",
@@ -237,6 +240,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
+    @PlatinumTest(focusArea = "launcher")
     public void testBackground() throws Exception {
         startAppFast(CALCULATOR_APP_PACKAGE);
         final LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
@@ -263,6 +267,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
+    @PlatinumTest(focusArea = "launcher")
     public void testQuickSwitchFromApp() throws Exception {
         startTestActivity(2);
         startTestActivity(3);
@@ -292,6 +297,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
     @Test
     @ScreenRecord // b/242163205
+    @PlatinumTest(focusArea = "launcher")
     @TaskbarModeSwitch(mode = PERSISTENT)
     public void testQuickSwitchToPreviousAppForTablet() throws Exception {
         assumeTrue(mLauncher.isTablet());
@@ -318,6 +324,7 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
     @Test
     @NavigationModeSwitch
     @PortraitLandscape
+    @PlatinumTest(focusArea = "launcher")
     public void testQuickSwitchFromHome() throws Exception {
         startTestActivity(2);
         mLauncher.goHome().quickSwitchToPreviousApp();
