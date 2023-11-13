@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.kieronquinn.app.smartspacer.sdk.client.views.BcSmartspaceView xmlns:android="http://schemas.android.com/apk/res/android"
+<app.lawnchair.smartspace.SmartspacerView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/bc_smartspace_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -24,4 +24,4 @@
         android:paddingBottom="@dimen/page_indicator_padding_top_bottom"
         android:visibility="visible" />
 
-</com.kieronquinn.app.smartspacer.sdk.client.views.BcSmartspaceView>
+</app.lawnchair.smartspace.SmartspacerView>
