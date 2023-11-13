@@ -129,7 +129,8 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
                 gutter = SizeSpec(fixedSize = 10f),
                 cellSize = SizeSpec(fixedSize = 10f)
             )
-        val calculatedWorkspaceSpec = CalculatedResponsiveSpec(availableSpace, cells, workspaceSpec)
+        val calculatedWorkspaceSpec =
+            CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
 
         val resourceHelper = TestResourceHelper(context, R.xml.invalid_folders_specs_5)
         val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
@@ -157,7 +158,8 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
                 gutter = SizeSpec(fixedSize = 10f),
                 cellSize = SizeSpec(fixedSize = 10f)
             )
-        val calculatedWorkspaceSpec = CalculatedResponsiveSpec(availableSpace, cells, workspaceSpec)
+        val calculatedWorkspaceSpec =
+            CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
 
         val resourceHelper = TestResourceHelper(context, R.xml.invalid_folders_specs_5)
         val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
@@ -185,7 +187,8 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
                 gutter = SizeSpec(fixedSize = 10f),
                 cellSize = SizeSpec(fixedSize = 10f)
             )
-        val calculatedWorkspaceSpec = CalculatedResponsiveSpec(availableSpace, cells, workspaceSpec)
+        val calculatedWorkspaceSpec =
+            CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
 
         val resourceHelper = TestResourceHelper(context, R.xml.valid_folders_specs)
         val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
@@ -221,7 +224,8 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
                 gutter = SizeSpec(fixedSize = 10f),
                 cellSize = SizeSpec(fixedSize = 10f)
             )
-        val calculatedWorkspaceSpec = CalculatedResponsiveSpec(availableSpace, cells, workspaceSpec)
+        val calculatedWorkspaceSpec =
+            CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
 
         val resourceHelper = TestResourceHelper(context, R.xml.valid_folders_specs)
         val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
@@ -249,7 +253,8 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
                 gutter = SizeSpec(fixedSize = 10f),
                 cellSize = SizeSpec(fixedSize = 10f)
             )
-        val calculatedWorkspaceSpec = CalculatedResponsiveSpec(availableSpace, cells, workspaceSpec)
+        val calculatedWorkspaceSpec =
+            CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
 
         val resourceHelper = TestResourceHelper(context, R.xml.valid_folders_specs)
         val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
@@ -285,7 +290,8 @@ class FolderSpecTest : AbstractDeviceProfileTest() {
                 gutter = SizeSpec(fixedSize = 10f),
                 cellSize = SizeSpec(fixedSize = 10f)
             )
-        val calculatedWorkspaceSpec = CalculatedResponsiveSpec(availableSpace, cells, workspaceSpec)
+        val calculatedWorkspaceSpec =
+            CalculatedResponsiveSpec(aspectRatio, availableSpace, cells, workspaceSpec)
 
         val resourceHelper = TestResourceHelper(context, R.xml.valid_folders_specs)
         val folderSpecs = ResponsiveSpecsProvider.create(resourceHelper, ResponsiveSpecType.Folder)
