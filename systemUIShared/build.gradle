@@ -31,7 +31,7 @@ dependencies {
     compileOnly projects.systemUnFold
 
     implementation 'javax.inject:javax.inject:1'
-    implementation 'com.google.dagger:dagger-android-support:2.48' // if you use the support libraries
+    implementation 'com.google.dagger:dagger-android-support:2.48.1' // if you use the support libraries
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.48'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.48'
     implementation "androidx.concurrent:concurrent-futures:1.1.0"
