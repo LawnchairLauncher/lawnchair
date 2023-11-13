@@ -592,7 +592,6 @@ public class DeviceProfile {
             int availableResponsiveWidth =
                     availableWidthPx - (isVerticalBarLayout() ? hotseatBarSizePx : 0);
             int numWorkspaceColumns = getPanelCount() * inv.numColumns;
-            int numAllAppsColumns = getPanelCount() * inv.numAllAppsColumns;
             // don't use availableHeightPx because it subtracts mInsets.bottom
             int availableResponsiveHeight = heightPx - mInsets.top
                     - (isVerticalBarLayout() ? 0 : hotseatBarSizePx);
@@ -612,7 +611,7 @@ public class DeviceProfile {
                             isTwoPanels ? inv.allAppsSpecsTwoPanelId : inv.allAppsSpecsId),
                     ResponsiveSpecType.AllApps);
             mResponsiveAllAppsWidthSpec = allAppsSpecs.getCalculatedSpec(responsiveAspectRatio,
-                    DimensionType.WIDTH, numAllAppsColumns, availableWidthPx,
+                    DimensionType.WIDTH, numShownAllAppsColumns, availableWidthPx,
                     mResponsiveWorkspaceWidthSpec);
             mResponsiveAllAppsHeightSpec = allAppsSpecs.getCalculatedSpec(responsiveAspectRatio,
                     DimensionType.HEIGHT, inv.numRows,  heightPx - mInsets.top,
