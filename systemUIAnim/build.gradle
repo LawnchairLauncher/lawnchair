@@ -23,7 +23,7 @@ dependencies {
     compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell.jar')
     compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'core.jar')
     compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'seeder.jar')
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.4.32'
+    compileOnly 'org.jetbrains.kotlin:kotlin-stdlib:1.4.32'
     implementation "androidx.core:core-animation:1.0.0-alpha01"
 
 }
