@@ -138,10 +138,10 @@ private val product = listOf(
         socialUrl = "https://x.com/skittles9823",
     ),
     TeamMember(
-        name = "Yasan",
+        name = "Yasan Glass",
         role = Role.Development,
         photoUrl = "https://avatars.githubusercontent.com/u/41836211",
-        socialUrl = "https:/yasan.dev",
+        socialUrl = "https:/yasan.glass",
     ),
 )
 
