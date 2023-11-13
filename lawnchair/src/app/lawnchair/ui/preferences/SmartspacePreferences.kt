@@ -5,15 +5,23 @@ import android.view.ContextThemeWrapper
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -26,6 +34,7 @@ import app.lawnchair.smartspace.model.LawnchairSmartspace
 import app.lawnchair.smartspace.model.SmartspaceCalendar
 import app.lawnchair.smartspace.model.SmartspaceMode
 import app.lawnchair.smartspace.model.SmartspaceTimeFormat
+import app.lawnchair.smartspace.model.Smartspacer
 import app.lawnchair.smartspace.provider.SmartspaceProvider
 import app.lawnchair.ui.preferences.components.DividerColumn
 import app.lawnchair.ui.preferences.components.ExpandAndShrink
@@ -36,6 +45,7 @@ import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.ui.theme.isSelectedThemeDark
 import com.android.launcher3.R
+import com.kieronquinn.app.smartspacer.sdk.SmartspacerConstants
 
 fun NavGraphBuilder.smartspaceGraph(route: String) {
     preferenceGraph(route, { SmartspacePreferences(fromWidget = false) })
@@ -52,7 +62,8 @@ fun SmartspacePreferences(fromWidget: Boolean) {
     val smartspaceAdapter = preferenceManager2.enableSmartspace.getAdapter()
     val smartspaceModeAdapter = preferenceManager2.smartspaceMode.getAdapter()
     val smartspaceModeSelectionAdapter = preferenceManager2.smartspaceModeSelection.getAdapter()
-    val modeIsLawnchair = smartspaceModeAdapter.state.value == LawnchairSmartspace
+    val selectedMode = smartspaceModeAdapter.state.value
+    val modeIsLawnchair = selectedMode == LawnchairSmartspace
 
     PreferenceLayout(label = stringResource(id = R.string.smartspace_widget)) {
         if (!fromWidget) {
@@ -64,6 +75,12 @@ fun SmartspacePreferences(fromWidget: Boolean) {
                 ExpandAndShrink(visible = smartspaceAdapter.state.value && smartspaceModeSelectionAdapter.state.value) {
                     SmartspaceProviderPreference(
                         adapter = smartspaceModeAdapter,
+                        endWidget = when (selectedMode) {
+                            Smartspacer -> {
+                                { SmartspacerSettings() }
+                            }
+                            else -> null
+                        }
                     )
                 }
             }
@@ -101,6 +118,7 @@ fun SmartspacePreferences(fromWidget: Boolean) {
 @Composable
 fun SmartspaceProviderPreference(
     adapter: PreferenceAdapter<SmartspaceMode>,
+    endWidget: (@Composable () -> Unit)? = null,
 ) {
 
     val context = LocalContext.current
@@ -119,6 +137,7 @@ fun SmartspaceProviderPreference(
         adapter = adapter,
         entries = entries,
         label = stringResource(id = R.string.smartspace_mode_label),
+        endWidget = endWidget
     )
 }
 
@@ -233,3 +252,27 @@ fun SmartspaceCalendarPreference() {
     )
 }
 
+@Composable
+fun SmartspacerSettings() {
+    val context = LocalContext.current
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .clickable {
+                val intent = context.packageManager.getLaunchIntentForPackage(
+                    SmartspacerConstants.SMARTSPACER_PACKAGE_NAME
+                )
+                context.startActivity(intent)
+            }
+            .fillMaxHeight()
+            .padding(horizontal = 16.dp)
+            .size(32.dp)
+    ) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_setting),
+            contentDescription = null,
+            modifier = Modifier.size(24.dp),
+            tint = MaterialTheme.colorScheme.primary
+        )
+    }
+}
