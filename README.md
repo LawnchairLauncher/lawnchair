@@ -1,9 +1,7 @@
 # Lawnchair 13
 
-<!-- private repos can't have a badge
 [![Build debug APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/build_debug_apk.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/build_debug_apk.yml)
 [![Build release APK](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/build_release_apk.yml/badge.svg)](https://github.com/LawnchairLauncher/lawnchair/actions/workflows/build_release_apk.yml)
--->
 [![Crowdin](https://badges.crowdin.net/e/188ba69d884418987f0b7f1dd55e3a4e/localized.svg)](https://lawnchair.crowdin.com/lawnchair)
 [![Telegram](https://img.shields.io/endpoint?url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Flccommunity)](https://t.me/lccommunity)
 [![Discord](https://img.shields.io/discord/803299970169700402?label=server&logo=discord)](https://discord.gg/3x8qNWxgGZ)
