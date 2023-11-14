@@ -38,7 +38,7 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
     private lateinit var lockedAction: Button
     val launcher: Launcher? = if (context.isDefaultLauncher()) Launcher.getLauncher(context) else null
 
-    private val lockedTaskState = object : StateManager.StateListener<LauncherState> {
+    private val lockedTaskStateListener = object : StateManager.StateListener<LauncherState> {
         override fun onStateTransitionStart(toState: LauncherState) {}
 
         override fun onStateTransitionComplete(finalState: LauncherState) {
@@ -143,7 +143,7 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
     override fun removeOnAttachStateChangeListener(listener: OnAttachStateChangeListener?) {
         super.removeOnAttachStateChangeListener(listener)
         if(context.isDefaultLauncher() && launcher != null){
-            launcher.stateManager?.removeStateListener(lockedTaskState)
+            launcher.stateManager?.removeStateListener(lockedTaskStateListener)
         }
 
     }
@@ -151,7 +151,7 @@ class LawnchairOverviewActionsView @JvmOverloads constructor(
     override fun addOnAttachStateChangeListener(listener: OnAttachStateChangeListener?) {
         super.addOnAttachStateChangeListener(listener)
         if(context.isDefaultLauncher() && launcher != null){
-            launcher.stateManager?.addStateListener(lockedTaskState)
+            launcher.stateManager?.addStateListener(lockedTaskStateListener)
         }
     }
 }
