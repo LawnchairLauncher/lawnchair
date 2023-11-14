@@ -50,6 +50,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.dynamicanimation.animation.FloatPropertyCompat;
 import androidx.dynamicanimation.animation.SpringAnimation;
@@ -614,7 +615,7 @@ public abstract class DragView<T extends Context & ActivityContext> extends Fram
     /**
      * Removes any stray DragView from the DragLayer.
      */
-    public static void removeAllViews(ActivityContext activity) {
+    public static void removeAllViews(@NonNull ActivityContext activity) {
         BaseDragLayer dragLayer = activity.getDragLayer();
         // Iterate in reverse order. DragView is added later to the dragLayer,
         // and will be one of the last views.
