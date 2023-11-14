@@ -27,12 +27,12 @@ import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -700,14 +700,11 @@ public class InvariantDeviceProfile {
     }
 
     public DeviceProfile getDeviceProfile(Context context) {
-        Resources res = context.getResources();
-        Configuration config = context.getResources().getConfiguration();
+        WindowManagerProxy windowManagerProxy = WindowManagerProxy.INSTANCE.get(context);
+        Rect bounds = windowManagerProxy.getCurrentBounds(context);
+        int rotation = windowManagerProxy.getRotation(context);
 
-        float screenWidth = config.screenWidthDp * res.getDisplayMetrics().density;
-        float screenHeight = config.screenHeightDp * res.getDisplayMetrics().density;
-        int rotation = WindowManagerProxy.INSTANCE.get(context).getRotation(context);
-
-        return getBestMatch(screenWidth, screenHeight, rotation);
+        return getBestMatch(bounds.width(), bounds.height(), rotation);
     }
 
     /**
