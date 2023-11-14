@@ -37,10 +37,10 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
                 val pos = Rect()
                 launcher.dragLayer.getDescendantRectRelativeToSelf(anchorView, pos)
                 val options = listOfNotNull(
-                    getDismissOption(target, dismissAction),
                     getAboutOption(launchIntent, aboutIntent),
+                    getCustomizeOption(launchIntent, settingsIntent),
                     getFeedbackOption(launchIntent, feedbackIntent),
-                    getCustomizeOption(launchIntent, settingsIntent)
+                    getDismissOption(target, dismissAction)
                 ).ifEmpty { listOf(getCustomizeOptionFallback()) }
                 val popup = OptionsPopupView
                     .show(launcher, RectF(pos), options, true)
