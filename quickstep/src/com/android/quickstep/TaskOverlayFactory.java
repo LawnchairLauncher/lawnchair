@@ -132,6 +132,7 @@ public class TaskOverlayFactory implements ResourceBasedOverride {
      */
     private static final TaskShortcutFactory[] MENU_OPTIONS = new TaskShortcutFactory[] {
             TaskShortcutFactory.APP_INFO,
+            app.lawnchair.overview.TaskShortcutFactory.KILL_APP,
             TaskShortcutFactory.SPLIT_SELECT,
             TaskShortcutFactory.PIN,
             TaskShortcutFactory.INSTALL,
