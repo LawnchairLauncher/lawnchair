@@ -74,7 +74,7 @@ data class HotseatSpec(
         dimensionType =
             DimensionType.entries[
                     attrs.getInt(
-                        R.styleable.ResponsiveSpec_specType,
+                        R.styleable.ResponsiveSpec_dimensionType,
                         DimensionType.HEIGHT.ordinal
                     )],
         specType = responsiveSpecType,

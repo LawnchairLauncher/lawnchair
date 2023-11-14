@@ -18,7 +18,7 @@
     <specs launcher:maxAspectRatio="10">
         <workspaceSpec
             launcher:maxAvailableSize="9999dp"
-            launcher:specType="height">
+            launcher:dimensionType="height">
             <cellSize launcher:fixedSize="104dp" />
             <endPadding launcher:ofRemainderSpace="1" />
             <gutter launcher:fixedSize="16dp" />
@@ -27,7 +27,7 @@
 
         <workspaceSpec
             launcher:maxAvailableSize="9999dp"
-            launcher:specType="width">
+            launcher:dimensionType="width">
             <cellSize launcher:ofRemainderSpace="0.25" />
             <endPadding launcher:fixedSize="22dp" />
             <gutter launcher:fixedSize="16dp" />
@@ -38,7 +38,7 @@
     <specs launcher:maxAspectRatio="0">
         <workspaceSpec
             launcher:maxAvailableSize="9999dp"
-            launcher:specType="height">
+            launcher:dimensionType="height">
             <cellSize launcher:fixedSize="104dp" />
             <endPadding launcher:ofRemainderSpace="1" />
             <gutter launcher:fixedSize="16dp" />
@@ -47,7 +47,7 @@
 
         <workspaceSpec
             launcher:maxAvailableSize="9999dp"
-            launcher:specType="width">
+            launcher:dimensionType="width">
             <cellSize launcher:ofRemainderSpace="0.25" />
             <endPadding launcher:fixedSize="22dp" />
             <gutter launcher:fixedSize="16dp" />

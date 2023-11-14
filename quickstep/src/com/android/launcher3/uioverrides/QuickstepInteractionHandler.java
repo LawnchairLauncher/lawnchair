@@ -27,8 +27,10 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 import android.window.SplashScreen;
 
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.model.data.ItemInfo;
@@ -56,8 +58,9 @@ class QuickstepInteractionHandler implements RemoteViews.InteractionHandler {
             return RemoteViews.startPendingIntent(hostView, pendingIntent,
                     remoteResponse.getLaunchOptions(view));
         }
-        if (mLauncher.getSplitToWorkspaceController().handleSecondWidgetSelectionForSplit(view,
-                pendingIntent)) {
+        if (mLauncher.isSplitSelectionEnabled()) {
+            Toast.makeText(hostView.getContext(), R.string.split_widgets_not_supported,
+                    Toast.LENGTH_SHORT).show();
             return true;
         }
         Pair<Intent, ActivityOptions> options = remoteResponse.getLaunchOptions(view);

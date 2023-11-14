@@ -17,7 +17,7 @@
 <workspaceSpecs xmlns:launcher="http://schemas.android.com/apk/res-auto">
     <specs launcher:maxAspectRatio="10">
         <workspaceSpec
-            launcher:specType="height"
+            launcher:dimensionType="height"
             launcher:maxAvailableSize="648dp">
             <startPadding
                 launcher:ofAvailableSpace="0.0125" />
@@ -31,7 +31,7 @@
         </workspaceSpec>
 
         <workspaceSpec
-            launcher:specType="height"
+            launcher:dimensionType="height"
             launcher:maxAvailableSize="9999dp">
             <startPadding
                 launcher:ofAvailableSpace="0.0306" />
@@ -45,7 +45,7 @@
 
         <!-- Width spec is always the same -->
         <workspaceSpec
-            launcher:specType="width"
+            launcher:dimensionType="width"
             launcher:maxAvailableSize="9999dp">
             <startPadding
                 launcher:ofRemainderSpace="0.21436227" />
