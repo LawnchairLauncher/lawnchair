@@ -60,6 +60,21 @@ jobs:
           name: Debug APK
           path: build/outputs/apk/lawnWithQuickstep/debug/*.apk
 
+  check-style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: 17
+      - uses: gradle/gradle-build-action@v2
+        with:
+          gradle-home-cache-cleanup: true
+      - run: ./gradlew spotlessCheck
+
   send-notifications:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'LawnchairLauncher'
