@@ -57,6 +57,7 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
 import androidx.annotation.Px;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.view.ViewCompat;
@@ -1657,15 +1658,16 @@ public class CellLayout extends ViewGroup {
         }
     }
 
-    // For a given cell and span, fetch the set of views intersecting the region.
-    public void getViewsIntersectingRegion(int cellX, int cellY, int spanX, int spanY,
-            View dragView, Rect boundingRect, ArrayList<View> intersectingViews) {
-        if (boundingRect != null) {
-            boundingRect.set(cellX, cellY, cellX + spanX, cellY + spanY);
-        }
-        intersectingViews.clear();
-        Rect r0 = new Rect(cellX, cellY, cellX + spanX, cellY + spanY);
+    /**
+     * For a given region, return the rectangle of the overlapping cell and span with the given
+     * region including the region itself. If there is no overlap the rectangle will be
+     * invalid i.e. -1, 0, -1, 0.
+     */
+    @Nullable
+    public Rect getIntersectingRectanglesInRegion(final Rect region, final View dragView) {
+        Rect boundingRect = new Rect(region);
         Rect r1 = new Rect();
+        boolean isOverlapping = false;
         final int count = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < count; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
@@ -1674,21 +1676,21 @@ public class CellLayout extends ViewGroup {
                     lp = (CellLayoutLayoutParams) child.getLayoutParams();
             r1.set(lp.getCellX(), lp.getCellY(), lp.getCellX() + lp.cellHSpan,
                     lp.getCellY() + lp.cellVSpan);
-            if (Rect.intersects(r0, r1)) {
-                mIntersectingViews.add(child);
-                if (boundingRect != null) {
-                    boundingRect.union(r1);
-                }
+            if (Rect.intersects(region, r1)) {
+                isOverlapping = true;
+                boundingRect.union(r1);
             }
         }
+        return isOverlapping ? boundingRect : null;
     }
 
     public boolean isNearestDropLocationOccupied(int pixelX, int pixelY, int spanX, int spanY,
             View dragView, int[] result) {
         result = findNearestAreaIgnoreOccupied(pixelX, pixelY, spanX, spanY, result);
-        getViewsIntersectingRegion(result[0], result[1], spanX, spanY, dragView, null,
-                mIntersectingViews);
-        return !mIntersectingViews.isEmpty();
+        return getIntersectingRectanglesInRegion(
+                new Rect(result[0], result[1], result[0] + spanX, result[1] + spanY),
+                dragView
+        ) != null;
     }
 
     void revertTempState() {
@@ -2241,9 +2243,10 @@ public class CellLayout extends ViewGroup {
         cellToRect(targetDestination[0], targetDestination[1], spanX, spanY, dragRect);
         dragRect.offset(dragViewCenterX - dragRect.centerX(), dragViewCenterY - dragRect.centerY());
 
-        Rect dropRegionRect = new Rect();
-        getViewsIntersectingRegion(targetDestination[0], targetDestination[1], spanX, spanY,
-                dragView, dropRegionRect, mIntersectingViews);
+        Rect region = new Rect(targetDestination[0], targetDestination[1],
+                targetDestination[0] + spanX, targetDestination[1] + spanY);
+        Rect dropRegionRect = getIntersectingRectanglesInRegion(region, dragView);
+        if (dropRegionRect == null) dropRegionRect = new Rect(region);
 
         int dropRegionSpanX = dropRegionRect.width();
         int dropRegionSpanY = dropRegionRect.height();
