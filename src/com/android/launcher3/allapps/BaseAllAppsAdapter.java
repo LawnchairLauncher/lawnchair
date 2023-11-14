@@ -52,12 +52,15 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
 
     public static final int VIEW_TYPE_WORK_EDU_CARD = 1 << 4;
     public static final int VIEW_TYPE_WORK_DISABLED_CARD = 1 << 5;
-
-    public static final int NEXT_ID = 6;
+    public static final int VIEW_TYPE_PRIVATE_SPACE_HEADER = 1 << 6;
+    public static final int NEXT_ID = 7;
 
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
+
+    public static final int VIEW_TYPE_MASK_PRIVATE_SPACE_HEADER =
+            VIEW_TYPE_PRIVATE_SPACE_HEADER;
 
     protected final SearchAdapterProvider<?> mAdapterProvider;
 
@@ -196,6 +199,9 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
             case VIEW_TYPE_WORK_DISABLED_CARD:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.work_apps_paused, parent, false));
+            case VIEW_TYPE_PRIVATE_SPACE_HEADER:
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.private_space_header, parent, false));
             default:
                 if (mAdapterProvider.isViewSupported(viewType)) {
                     return mAdapterProvider.onCreateViewHolder(mLayoutInflater, parent, viewType);
@@ -223,6 +229,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 }
                 break;
             }
+            case VIEW_TYPE_PRIVATE_SPACE_HEADER:
             case VIEW_TYPE_ALL_APPS_DIVIDER:
             case VIEW_TYPE_WORK_DISABLED_CARD:
                 // nothing to do
