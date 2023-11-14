@@ -47,13 +47,13 @@ import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Themes
 import com.android.systemui.shared.system.QuickStepContract
 import com.patrykmichalik.opto.core.firstBlocking
-import kotlinx.serialization.json.Json
-import org.json.JSONArray
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import kotlin.math.max
 import kotlin.math.roundToInt
 import kotlin.system.exitProcess
+import kotlinx.serialization.json.Json
+import org.json.JSONArray
 
 fun <T, A> ensureOnMainThread(creator: (A) -> T): (A) -> T = { it ->
     if (Looper.myLooper() == Looper.getMainLooper()) {
@@ -152,7 +152,9 @@ val ViewGroup.recursiveChildren: Sequence<View>
     get() = children.flatMap {
         if (it is ViewGroup) {
             it.recursiveChildren + sequenceOf(it)
-        } else sequenceOf(it)
+        } else {
+            sequenceOf(it)
+        }
     }
 
 @SuppressLint("DiscouragedApi")

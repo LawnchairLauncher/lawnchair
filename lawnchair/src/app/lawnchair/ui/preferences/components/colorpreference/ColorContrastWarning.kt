@@ -45,13 +45,14 @@ fun ColorContrastWarning(
     @ColorInt backgroundColor: Int,
     text: String,
 ) {
-
     val enoughContrast = if (foregroundColor != 0 && backgroundColor != 0) {
         ColorUtils.calculateContrast(
             foregroundColor,
             backgroundColor,
         ) >= CONTRAST_THRESHOLD
-    } else true
+    } else {
+        true
+    }
 
     if (!enoughContrast) {
         WarningPreference(
@@ -59,5 +60,4 @@ fun ColorContrastWarning(
             text = text,
         )
     }
-
 }

@@ -13,14 +13,14 @@ import app.lawnchair.preferences.PreferenceChangeListener
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.util.requireSystemService
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.allapps.AllAppsGridAdapter
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.function.Consumer
 
-class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(context),
+class LawnchairDeviceSearchAlgorithm(context: Context) :
+    LawnchairSearchAlgorithm(context),
     PreferenceChangeListener {
     private val prefs: PreferenceManager
     private var searchSession: SearchSession? = null
@@ -74,7 +74,8 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
                 "allowlist_enabled" to false,
                 "launcher.maxInlineIcons" to 3,
             )
-            var resultTypes = 1 /* apps */ or 2 /* shortcuts */
+            // apps or shortcuts
+            var resultTypes = 1 or 2
             if (prefs.searchResultShortcuts.get()) {
                 resultTypes = resultTypes or 1546
             }
@@ -98,7 +99,7 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
 
     private inner class PendingQuery(
         private val query: String,
-        private val callback: SearchCallback<BaseAllAppsAdapter.AdapterItem>
+        private val callback: SearchCallback<BaseAllAppsAdapter.AdapterItem>,
     ) : Consumer<List<SearchTarget>> {
         private var canceled = false
 
@@ -109,7 +110,7 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
                 LawnchairSearchAdapterProvider.setFirstItemQuickLaunch(adapterItems)
                 callback.onSearchResult(
                     query,
-                    ArrayList<BaseAllAppsAdapter.AdapterItem>(adapterItems)
+                    ArrayList<BaseAllAppsAdapter.AdapterItem>(adapterItems),
                 )
             }
         }
@@ -137,7 +138,8 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
                         if (!checkDone.get()) {
                             finishCompatibilityCheck(prefs, searchSession, false)
                         }
-                    }, 300
+                    },
+                    300,
                 )
             }
         }
@@ -145,7 +147,7 @@ class LawnchairDeviceSearchAlgorithm(context: Context) : LawnchairSearchAlgorith
         private fun finishCompatibilityCheck(
             prefs: PreferenceManager,
             session: SearchSession,
-            isCompatible: Boolean
+            isCompatible: Boolean,
         ) {
             Executors.MAIN_EXECUTOR.execute { prefs.deviceSearch.set(isCompatible) }
             try {

@@ -23,7 +23,8 @@ abstract class AppDatabase : RoomDatabase() {
         val INSTANCE = MainThreadInitializedObject { context ->
             Room.databaseBuilder(
                 context,
-                AppDatabase::class.java, "preferences"
+                AppDatabase::class.java,
+                "preferences",
             ).build()
         }
     }

@@ -29,5 +29,4 @@ sealed class SmartspaceCalendar(@StringRes val nameResourceId: Int, val formatCu
     object Persian : SmartspaceCalendar(nameResourceId = R.string.smartspace_calendar_persian) {
         override fun toString() = "persian"
     }
-
 }

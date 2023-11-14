@@ -9,5 +9,5 @@ import com.android.launcher3.util.ComponentKey
 @Entity
 data class IconOverride(
     @PrimaryKey val target: ComponentKey,
-    @Embedded val iconPickerItem: IconPickerItem
+    @Embedded val iconPickerItem: IconPickerItem,
 )

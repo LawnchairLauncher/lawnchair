@@ -5,9 +5,9 @@ import androidx.lifecycle.LifecycleOwner
 
 class PrefLifecycleObserver<T>(
     private val prefEntry: PrefEntry<T>,
-    private val onChange: Runnable
+    private val onChange: Runnable,
 ) : DefaultLifecycleObserver, PreferenceChangeListener {
-    
+
     fun connectListener() {
         prefEntry.addListener(this)
     }

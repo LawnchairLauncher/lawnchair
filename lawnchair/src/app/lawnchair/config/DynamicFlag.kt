@@ -8,7 +8,7 @@ import com.android.launcher3.config.FeatureFlags.BooleanFlag
 class DynamicFlag(
     key: String,
     private val getValue: (Context?) -> Boolean,
-    defaultValue: Boolean
+    defaultValue: Boolean,
 ) : BooleanFlag(defaultValue) {
 
     override fun get(): Boolean {

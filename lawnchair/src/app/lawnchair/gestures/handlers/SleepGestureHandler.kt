@@ -53,7 +53,7 @@ class SleepGestureHandler(context: Context) : GestureHandler(context) {
     private val methods = listOf(
         SleepMethodRoot(context),
         SleepMethodPieAccessibility(context),
-        SleepMethodDeviceAdmin(context)
+        SleepMethodDeviceAdmin(context),
     )
 
     sealed class SleepMethod(protected val context: Context) {
@@ -86,7 +86,7 @@ class SleepMethodPieAccessibility(context: Context) : SleepGestureHandler.SleepM
                     title = R.string.dt2s_a11y_hint_title,
                     description = R.string.dt2s_a11y_hint,
                     settingsIntent = intent,
-                    handleClose = { close(true) }
+                    handleClose = { close(true) },
                 )
             }
             return
@@ -104,18 +104,18 @@ class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod
             val intent = Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN)
                 .putExtra(
                     DevicePolicyManager.EXTRA_DEVICE_ADMIN,
-                    ComponentName(context, SleepDeviceAdmin::class.java)
+                    ComponentName(context, SleepDeviceAdmin::class.java),
                 )
                 .putExtra(
                     DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-                    launcher.getString(R.string.dt2s_admin_hint)
+                    launcher.getString(R.string.dt2s_admin_hint),
                 )
             ComposeBottomSheet.show(launcher) {
                 ServiceWarningDialog(
                     title = R.string.dt2s_admin_hint_title,
                     description = R.string.dt2s_admin_hint,
                     settingsIntent = intent,
-                    handleClose = { close(true) }
+                    handleClose = { close(true) },
                 )
             }
             return
@@ -136,7 +136,7 @@ fun ServiceWarningDialog(
     title: Int,
     description: Int,
     settingsIntent: Intent,
-    handleClose: () -> Unit
+    handleClose: () -> Unit,
 ) {
     val context = LocalContext.current
     AlertBottomSheetContent(
@@ -144,7 +144,7 @@ fun ServiceWarningDialog(
         text = { Text(text = stringResource(id = description)) },
         buttons = {
             OutlinedButton(
-                onClick = handleClose
+                onClick = handleClose,
             ) {
                 Text(text = stringResource(id = android.R.string.cancel))
             }
@@ -153,10 +153,10 @@ fun ServiceWarningDialog(
                 onClick = {
                     context.startActivity(settingsIntent)
                     handleClose()
-                }
+                },
             ) {
                 Text(text = stringResource(id = R.string.dt2s_warning_open_settings))
             }
-        }
+        },
     )
 }

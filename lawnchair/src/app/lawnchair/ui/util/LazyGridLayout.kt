@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.Dp
 class LazyGridLayout(
     val minWidth: Dp,
     private val gapWidth: Dp,
-    private val density: Density
+    private val density: Density,
 ) {
     private val _numColumns = mutableIntStateOf(0)
     val numColumns: State<Int> = _numColumns

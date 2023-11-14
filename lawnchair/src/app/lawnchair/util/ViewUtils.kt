@@ -2,14 +2,14 @@ package app.lawnchair.util
 
 import android.view.View
 
-fun OnAttachStateChangeListener(callback: (isAttached: Boolean) -> Unit) = object : View.OnAttachStateChangeListener {
+fun onAttachStateChangeListener(callback: (isAttached: Boolean) -> Unit) = object : View.OnAttachStateChangeListener {
     override fun onViewAttachedToWindow(v: View) = callback(true)
     override fun onViewDetachedFromWindow(v: View) = callback(false)
 }
 
 fun View.observeAttachedState(callback: (isAttached: Boolean) -> Unit): () -> Unit {
     var wasAttached = false
-    val listener = OnAttachStateChangeListener { isAttached ->
+    val listener = onAttachStateChangeListener { isAttached ->
         if (wasAttached != isAttached) {
             wasAttached = isAttached
             callback(isAttached)

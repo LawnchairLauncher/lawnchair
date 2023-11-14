@@ -7,7 +7,6 @@ import androidx.annotation.StringRes
 import app.lawnchair.util.isPackageInstalledAndEnabled
 import com.android.launcher3.R
 
-
 sealed class SmartspaceMode(
     @StringRes val nameResourceId: Int,
     @LayoutRes val layoutResourceId: Int,
@@ -33,7 +32,6 @@ sealed class SmartspaceMode(
 
     abstract fun isAvailable(context: Context): Boolean
 }
-
 
 object LawnchairSmartspace : SmartspaceMode(
     nameResourceId = R.string.smartspace_mode_lawnchair,

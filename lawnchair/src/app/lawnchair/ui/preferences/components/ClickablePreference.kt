@@ -41,23 +41,22 @@ fun ClickablePreference(
         title = { Text(text = label) },
         modifier = Modifier
             .clickable {
-               if (confirmationText != null) {
-                   bottomSheetHandler.show {
-                       PreferenceClickConfirmation(
-                           title = label,
-                           text = confirmationText,
-                           onDismissRequest = { bottomSheetHandler.hide() },
-                           onConfirm = onClick
-                       )
-                   }
-               } else {
-                   onClick()
-               }
+                if (confirmationText != null) {
+                    bottomSheetHandler.show {
+                        PreferenceClickConfirmation(
+                            title = label,
+                            text = confirmationText,
+                            onDismissRequest = { bottomSheetHandler.hide() },
+                            onConfirm = onClick,
+                        )
+                    }
+                } else {
+                    onClick()
+                }
             },
         description = { subtitle?.let { Text(text = it) } },
     )
 }
-
 
 @Composable
 fun PreferenceClickConfirmation(
@@ -71,7 +70,7 @@ fun PreferenceClickConfirmation(
         text = { Text(text = text) },
         buttons = {
             OutlinedButton(
-                onClick = onDismissRequest
+                onClick = onDismissRequest,
             ) {
                 Text(text = stringResource(id = android.R.string.cancel))
             }
@@ -80,10 +79,10 @@ fun PreferenceClickConfirmation(
                 onClick = {
                     onDismissRequest()
                     onConfirm()
-                }
+                },
             ) {
                 Text(text = stringResource(id = android.R.string.ok))
             }
-        }
+        },
     )
 }

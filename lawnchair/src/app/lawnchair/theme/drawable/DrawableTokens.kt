@@ -1,7 +1,11 @@
 package app.lawnchair.theme.drawable
 
 import android.content.res.ColorStateList
-import android.graphics.drawable.*
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.RippleDrawable
+import android.graphics.drawable.StateListDrawable
 import androidx.appcompat.content.res.AppCompatResources
 import app.lawnchair.theme.color.ColorTokens
 import com.android.launcher3.R
@@ -108,10 +112,14 @@ object DrawableTokens {
         val list = StateListDrawable()
 
         val disabled = AppCompatResources.getDrawable(
-            context, R.drawable.work_apps_toggle_background_shape)
+            context,
+            R.drawable.work_apps_toggle_background_shape,
+        )
 
         val enabled = AppCompatResources.getDrawable(
-            context, R.drawable.work_apps_toggle_background_shape) as GradientDrawable
+            context,
+            R.drawable.work_apps_toggle_background_shape,
+        ) as GradientDrawable
         enabled.setColor(ColorTokens.AllAppsTabBackgroundSelected.resolveColor(context, scheme, uiColorMode))
 
         list.addState(intArrayOf(-android.R.attr.state_enabled), disabled)

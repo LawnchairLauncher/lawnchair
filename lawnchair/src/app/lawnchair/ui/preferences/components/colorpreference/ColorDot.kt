@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun <T> ColorDot(
     entry: ColorPreferenceEntry<T>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
 
@@ -35,15 +35,17 @@ fun <T> ColorDot(
     if (colorLight != 0) {
         ColorDot(
             color = Color(color),
-            modifier = modifier
+            modifier = modifier,
         )
-    } else DefaultColorDot(modifier = modifier)
+    } else {
+        DefaultColorDot(modifier = modifier)
+    }
 }
 
 @Composable
 private fun ColorDot(
     color: Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier

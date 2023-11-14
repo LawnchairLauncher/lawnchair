@@ -85,7 +85,7 @@ data class SearchActionCompat(
         from.getPendingIntent(),
         from.getIntent(),
         from.getUserHandle(),
-        from.getExtras()
+        from.getExtras(),
     )
 
     override fun equals(other: Any?): Boolean = when {
@@ -171,7 +171,7 @@ data class SearchActionCompat(
             pendingIntent,
             intent,
             userHandle,
-            extras
+            extras,
         )
     }
 

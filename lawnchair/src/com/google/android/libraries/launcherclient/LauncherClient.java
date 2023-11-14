@@ -20,9 +20,11 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
+
+import java.lang.ref.WeakReference;
+
 import app.lawnchair.FeedBridge;
 import app.lawnchair.FeedBridge.BridgeInfo;
-import java.lang.ref.WeakReference;
 
 public class LauncherClient {
     private static int apiVersion = -1;

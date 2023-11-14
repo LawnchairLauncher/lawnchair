@@ -62,7 +62,7 @@ class ThemedSmartSpaceHostView(context: Context) : SmartSpaceHostView(context) {
                 shadowInfo.ambientShadowBlur,
                 shadowInfo.keyShadowOffsetX,
                 shadowInfo.keyShadowOffsetY,
-                shadowInfo.ambientShadowColor
+                shadowInfo.ambientShadowColor,
             )
         }
         tv.setTextColor(workspaceTextColor)

@@ -59,7 +59,7 @@ fun SmartspacePreferences(fromWidget: Boolean) {
             PreferenceGroup(description = stringResource(id = R.string.smartspace_widget_toggle_description).takeIf { modeIsLawnchair }) {
                 SwitchPreference(
                     adapter = smartspaceAdapter,
-                    label = stringResource(id = R.string.smartspace_widget_toggle_label)
+                    label = stringResource(id = R.string.smartspace_widget_toggle_label),
                 )
                 ExpandAndShrink(visible = smartspaceAdapter.state.value && smartspaceModeSelectionAdapter.state.value) {
                     SmartspaceProviderPreference(
@@ -102,7 +102,6 @@ fun SmartspacePreferences(fromWidget: Boolean) {
 fun SmartspaceProviderPreference(
     adapter: PreferenceAdapter<SmartspaceMode>,
 ) {
-
     val context = LocalContext.current
 
     val entries = remember {
@@ -199,7 +198,6 @@ fun SmartspaceDateAndTimePreferences() {
 
 @Composable
 fun SmartspaceTimeFormatPreference() {
-
     val entries = remember {
         SmartspaceTimeFormat.values().map { format ->
             ListPreferenceEntry(format) { stringResource(id = format.nameResourceId) }
@@ -217,7 +215,6 @@ fun SmartspaceTimeFormatPreference() {
 
 @Composable
 fun SmartspaceCalendarPreference() {
-
     val entries = remember {
         SmartspaceCalendar.values().map { calendar ->
             ListPreferenceEntry(calendar) { stringResource(id = calendar.nameResourceId) }
@@ -232,4 +229,3 @@ fun SmartspaceCalendarPreference() {
         label = stringResource(id = R.string.smartspace_calendar),
     )
 }
-

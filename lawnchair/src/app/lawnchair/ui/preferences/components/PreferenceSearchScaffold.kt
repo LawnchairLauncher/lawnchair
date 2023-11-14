@@ -1,12 +1,36 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -21,7 +45,7 @@ import com.google.accompanist.insets.ui.Scaffold
 fun PreferenceSearchScaffold(
     searchInput: @Composable () -> Unit,
     actions: @Composable RowScope.() -> Unit = {},
-    content: @Composable (PaddingValues) -> Unit
+    content: @Composable (PaddingValues) -> Unit,
 ) {
     val innerPadding = remember { MutablePaddingValues() }
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
@@ -39,7 +63,7 @@ fun PreferenceSearchScaffold(
                     .padding(horizontal = 16.dp, vertical = searchBarVerticalMargin)
                     .height(searchBarHeight),
                 shape = MaterialTheme.shapes.small,
-                elevation = 2.dp
+                elevation = 2.dp,
             ) {
                 Box(
                     modifier = Modifier
@@ -50,13 +74,13 @@ fun PreferenceSearchScaffold(
                 ) {
                     ClickableIcon(
                         imageVector = backIcon(),
-                        onClick = { backDispatcher?.onBackPressed() }
+                        onClick = { backDispatcher?.onBackPressed() },
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(start = 36.dp)
+                            .padding(start = 36.dp),
                     ) {
                         Box(modifier = Modifier.weight(1f)) {
                             searchInput()
@@ -66,7 +90,7 @@ fun PreferenceSearchScaffold(
                                 Modifier.fillMaxHeight(),
                                 horizontalArrangement = Arrangement.End,
                                 verticalAlignment = Alignment.CenterVertically,
-                                content = actions
+                                content = actions,
                             )
                         }
                     }
@@ -82,7 +106,7 @@ fun PreferenceSearchScaffold(
         innerPadding.right = it.calculateRightPadding(layoutDirection)
         innerPadding.bottom = it.calculateBottomPadding()
         CompositionLocalProvider(
-            LocalScaffoldPadding provides innerPadding
+            LocalScaffoldPadding provides innerPadding,
         ) {
             Box(modifier = Modifier.padding(top = contentShift)) {
                 content(it)

@@ -88,12 +88,12 @@ class ColorScheme(@ColorInt seed: Int, val darkTheme: Boolean) {
 
     override fun toString(): String {
         return "ColorScheme {\n" +
-                "  neutral1: ${humanReadable(neutral1)}\n" +
-                "  neutral2: ${humanReadable(neutral2)}\n" +
-                "  accent1: ${humanReadable(accent1)}\n" +
-                "  accent2: ${humanReadable(accent2)}\n" +
-                "  accent3: ${humanReadable(accent3)}\n" +
-                "}"
+            "  neutral1: ${humanReadable(neutral1)}\n" +
+            "  neutral2: ${humanReadable(neutral2)}\n" +
+            "  accent1: ${humanReadable(accent1)}\n" +
+            "  accent2: ${humanReadable(accent2)}\n" +
+            "  accent3: ${humanReadable(accent3)}\n" +
+            "}"
     }
 
     companion object {

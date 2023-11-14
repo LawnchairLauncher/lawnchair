@@ -9,7 +9,7 @@ class PropsContainer<P>(var props: P)
 
 class SideEffect<S, P>(
     val consume: @Composable (@Composable (S) -> Unit) -> Unit,
-    val provide: @Composable (P) -> Unit
+    val provide: @Composable (P) -> Unit,
 )
 
 inline fun <S, P> createSideEffect(crossinline reducePropsToState: (List<P>) -> S): SideEffect<S, P> {
@@ -45,6 +45,6 @@ inline fun <S, P> createSideEffect(crossinline reducePropsToState: (List<P>) -> 
                 emitChange()
                 onDispose { }
             }
-        }
+        },
     )
 }

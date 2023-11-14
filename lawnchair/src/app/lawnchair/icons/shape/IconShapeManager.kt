@@ -72,7 +72,7 @@ class IconShapeManager(private val context: Context) {
             IconShape.Squircle,
             IconShape.Sammy,
             IconShape.Teardrop,
-            IconShape.Cylinder
+            IconShape.Cylinder,
         )
             .minByOrNull {
                 shapePath.reset()

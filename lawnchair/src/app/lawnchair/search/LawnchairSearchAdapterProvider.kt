@@ -19,7 +19,7 @@ import com.android.launcher3.util.PackageManagerHelper
 
 class LawnchairSearchAdapterProvider(
     launcher: LawnchairLauncher,
-    private val appsView: ActivityAllAppsContainerView<*>
+    private val appsView: ActivityAllAppsContainerView<*>,
 ) : DefaultSearchAdapterProvider(launcher) {
 
     private val decorator = SearchItemDecorator(appsView)
@@ -50,14 +50,14 @@ class LawnchairSearchAdapterProvider(
     override fun onCreateViewHolder(
         layoutInflater: LayoutInflater,
         parent: ViewGroup?,
-        viewType: Int
+        viewType: Int,
     ): BaseAllAppsAdapter.ViewHolder {
         val view = layoutInflater.inflate(layoutIdMap[viewType], parent, false)
         if (viewType == SEARCH_RESULT_MARKET) {
             val marketSearchIntent = PackageManagerHelper
                 .getMarketSearchIntent(
                     view.context,
-                    appsView.searchUiManager.editText?.text.toString()
+                    appsView.searchUiManager.editText?.text.toString(),
                 )
             val marketView = layoutInflater.inflate(R.layout.search_result_market, parent, false)
             marketView.setOnClickListener {
@@ -67,7 +67,6 @@ class LawnchairSearchAdapterProvider(
         }
         return BaseAllAppsAdapter.ViewHolder(view)
     }
-
 
     override fun getItemsPerRow(viewType: Int, appsPerRow: Int) =
         if (viewType != SEARCH_RESULT_ICON) 1 else super.getItemsPerRow(viewType, appsPerRow)

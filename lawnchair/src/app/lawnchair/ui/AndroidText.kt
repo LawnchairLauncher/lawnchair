@@ -21,7 +21,7 @@ fun <T : TextView> AndroidText(
     textView: T,
     modifier: Modifier = Modifier,
     update: (T) -> Unit = NoOpUpdate,
-    style: TextStyle = LocalTextStyle.current
+    style: TextStyle = LocalTextStyle.current,
 ) {
     val mergedStyle = LocalTextStyle.current.merge(style)
     val textColor = toIntColor(LocalContentColor.current)
@@ -33,7 +33,7 @@ fun <T : TextView> AndroidText(
             it.setTextColor(textColor)
             it.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
             update(it)
-        }
+        },
     )
 }
 
@@ -41,7 +41,7 @@ fun <T : TextView> AndroidText(
 fun AndroidText(
     modifier: Modifier = Modifier,
     update: (CustomFontTextView) -> Unit = NoOpUpdate,
-    style: TextStyle = LocalTextStyle.current
+    style: TextStyle = LocalTextStyle.current,
 ) {
     val context = LocalContext.current
     val textView = remember { CustomFontTextView(context) }
@@ -49,7 +49,7 @@ fun AndroidText(
         textView = textView,
         modifier = modifier,
         update = update,
-        style = style
+        style = style,
     )
 }
 

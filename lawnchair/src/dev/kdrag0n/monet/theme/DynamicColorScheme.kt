@@ -10,7 +10,7 @@ import dev.kdrag0n.colorkt.gamut.LchGamut.clipToLinearSrgb
 import dev.kdrag0n.colorkt.rgb.Srgb
 import dev.kdrag0n.colorkt.tristimulus.CieXyz
 import dev.kdrag0n.colorkt.tristimulus.CieXyzAbs.Companion.toAbs
-import java.util.*
+import java.util.Objects
 
 class DynamicColorScheme(
     targets: ColorScheme,
@@ -30,17 +30,20 @@ class DynamicColorScheme(
 
     // Main accent color. Generally, this is close to the seed color.
     override val accent1 = transformSwatch(targets.accent1, seedAccent, targets.accent1)
+
     // Secondary accent color. Darker shades of accent1.
     override val accent2 = transformSwatch(targets.accent2, seedAccent, targets.accent1)
+
     // Tertiary accent color. Seed color shifted to the next secondary color via hue offset.
     override val accent3 = transformSwatch(
         swatch = targets.accent3,
         seed = seedAccent.copy(hue = seedAccent.hue + ACCENT3_HUE_SHIFT_DEGREES),
-        referenceSwatch = targets.accent1
+        referenceSwatch = targets.accent1,
     )
 
     // Main background color. Tinted with the seed color.
     override val neutral1 = transformSwatch(targets.neutral1, seedNeutral, targets.neutral1)
+
     // Secondary background color. Slightly tinted with the seed color.
     override val neutral2 = transformSwatch(targets.neutral2, seedNeutral, targets.neutral1)
 
@@ -92,11 +95,11 @@ class DynamicColorScheme(
     }
 
     override fun equals(other: Any?): Boolean {
-        return other is DynamicColorScheme
-                && other.seedColor == seedColor
-                && other.chromaFactor == chromaFactor
-                && other.cond == cond
-                && other.accurateShades == accurateShades
+        return other is DynamicColorScheme &&
+            other.seedColor == seedColor &&
+            other.chromaFactor == chromaFactor &&
+            other.cond == cond &&
+            other.accurateShades == accurateShades
     }
 
     override fun hashCode() = Objects.hash(seedColor, chromaFactor, cond, accurateShades)

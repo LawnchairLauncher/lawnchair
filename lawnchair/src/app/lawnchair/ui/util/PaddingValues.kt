@@ -2,9 +2,7 @@ package app.lawnchair.ui.util
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -15,15 +13,16 @@ fun rememberExtendPadding(
     start: Dp = 0.dp,
     top: Dp = 0.dp,
     end: Dp = 0.dp,
-    bottom: Dp = 0.dp
+    bottom: Dp = 0.dp,
 ): PaddingValues = remember(start, top, end, bottom) {
     CombinePaddingValues(
-        padding, PaddingValues(
+        padding,
+        PaddingValues(
             start = start,
             top = top,
             end = end,
-            bottom = bottom
-        )
+            bottom = bottom,
+        ),
     )
 }
 

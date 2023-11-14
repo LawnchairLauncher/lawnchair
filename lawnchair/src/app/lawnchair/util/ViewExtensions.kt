@@ -32,7 +32,7 @@ inline val View.viewAttachedScope: CoroutineScope
                     Log.e(
                         "ViewExtensions",
                         "view attached after being detached ${this@viewAttachedScope}",
-                        Throwable()
+                        Throwable(),
                     )
                 }
             }

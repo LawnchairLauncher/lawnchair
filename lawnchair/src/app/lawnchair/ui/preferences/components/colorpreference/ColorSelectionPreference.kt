@@ -4,10 +4,20 @@ import android.content.Context
 import android.graphics.Color
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -15,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
+import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.theme.color.ColorOption
@@ -26,9 +37,6 @@ import app.lawnchair.ui.preferences.components.colorpreference.pickers.PresetsLi
 import app.lawnchair.ui.preferences.components.colorpreference.pickers.SwatchGrid
 import app.lawnchair.ui.preferences.preferenceGraph
 import com.android.launcher3.R
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.navigation.compose.composable
 import com.patrykmichalik.opto.domain.Preference
 import kotlinx.coroutines.launch
 
@@ -95,7 +103,7 @@ fun ColorSelection(
             }
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.End
+                horizontalAlignment = Alignment.End,
             ) {
                 Button(
                     enabled = !selectedColorApplied.value,

@@ -39,7 +39,7 @@ class SearchBarStateHandler(private val launcher: LawnchairLauncher) :
     override fun setStateWithAnimation(
         toState: LauncherState,
         config: StateAnimationConfig,
-        animation: PendingAnimation
+        animation: PendingAnimation,
     ) {
         if (shouldAnimateKeyboard(toState)) {
             if (Utilities.ATLEAST_R) {
@@ -51,33 +51,41 @@ class SearchBarStateHandler(private val launcher: LawnchairLauncher) :
                     -1,
                     Interpolators.LINEAR,
                     cancellationSignal,
-                    handler
+                    handler,
                 )
                 animation.setFloat(
                     handler.progress,
                     AnimatedFloat.VALUE,
                     1f,
-                    Interpolators.DEACCEL_1_7
+                    Interpolators.DEACCEL_1_7,
                 )
-                animation.addListener(forEndCallback(Runnable {
-                    handler.onAnimationEnd()
-                    cancellationSignal.cancel()
-                }))
+                animation.addListener(
+                    forEndCallback(
+                        Runnable {
+                            handler.onAnimationEnd()
+                            cancellationSignal.cancel()
+                        },
+                    ),
+                )
             } else {
-                animation.addListener(forSuccessCallback {
-                    launcher.appsView.searchUiManager.editText?.hideKeyboard()
-                })
+                animation.addListener(
+                    forSuccessCallback {
+                        launcher.appsView.searchUiManager.editText?.hideKeyboard()
+                    },
+                )
             }
         }
         if (launcher.isInState(LauncherState.NORMAL) && toState == LauncherState.ALL_APPS) {
             if (autoShowKeyboard) {
                 val progress = AnimatedFloat()
                 animation.setFloat(progress, AnimatedFloat.VALUE, 1f, Interpolators.LINEAR)
-                animation.addListener(forSuccessCallback {
-                    if (progress.value > 0.5f) {
-                        showKeyboard()
-                    }
-                })
+                animation.addListener(
+                    forSuccessCallback {
+                        if (progress.value > 0.5f) {
+                            showKeyboard()
+                        }
+                    },
+                )
             }
         }
     }

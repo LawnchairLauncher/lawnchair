@@ -49,16 +49,16 @@ fun loadNotice(ossLibrary: OssLibrary): State<OssLibraryWithNotice?> {
                 addStyle(
                     style = SpanStyle(
                         color = accentColor,
-                        textDecoration = TextDecoration.Underline
+                        textDecoration = TextDecoration.Underline,
                     ),
                     start = start,
-                    end = end
+                    end = end,
                 )
                 addStringAnnotation(
                     tag = "URL",
                     annotation = urlSpan.url,
                     start = start,
-                    end = end
+                    end = end,
                 )
             }
         }

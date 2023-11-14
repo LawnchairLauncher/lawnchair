@@ -14,28 +14,38 @@ import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.search.SearchAlgorithm
 
 sealed class LawnchairSearchAlgorithm(
-    protected val context: Context
+    protected val context: Context,
 ) : SearchAlgorithm<BaseAllAppsAdapter.AdapterItem> {
 
     private val iconBackground = SearchItemBackground(
-        context, showBackground = false,
-        roundTop = true, roundBottom = true
+        context,
+        showBackground = false,
+        roundTop = true,
+        roundBottom = true,
     )
     private val normalBackground = SearchItemBackground(
-        context, showBackground = true,
-        roundTop = true, roundBottom = true
+        context,
+        showBackground = true,
+        roundTop = true,
+        roundBottom = true,
     )
     private val topBackground = SearchItemBackground(
-        context, showBackground = true,
-        roundTop = true, roundBottom = false
+        context,
+        showBackground = true,
+        roundTop = true,
+        roundBottom = false,
     )
     private val centerBackground = SearchItemBackground(
-        context, showBackground = true,
-        roundTop = false, roundBottom = false
+        context,
+        showBackground = true,
+        roundTop = false,
+        roundBottom = false,
     )
     private val bottomBackground = SearchItemBackground(
-        context, showBackground = true,
-        roundTop = false, roundBottom = true
+        context,
+        showBackground = true,
+        roundTop = false,
+        roundBottom = true,
     )
 
     protected fun transformSearchResults(results: List<SearchTargetCompat>): List<SearchAdapterItem> {

@@ -15,7 +15,7 @@ import kotlinx.serialization.Serializable
 
 class OpenAppGestureHandler(
     context: Context,
-    private val target: OpenAppTarget
+    private val target: OpenAppTarget,
 ) : GestureHandler(context) {
 
     override suspend fun onTrigger(launcher: LawnchairLauncher) {
@@ -23,7 +23,11 @@ class OpenAppGestureHandler(
             is OpenAppTarget.App -> {
                 val key = target.key
                 launcher.getSystemService<LauncherApps>()?.startMainActivity(
-                    key.componentName, key.user, null, null)
+                    key.componentName,
+                    key.user,
+                    null,
+                    null,
+                )
             }
             is OpenAppTarget.Shortcut -> Unit
         }
@@ -35,7 +39,7 @@ sealed class OpenAppTarget {
     @Serializable
     @SerialName("app")
     data class App(
-        @Serializable(ComponentKeySerializer::class) val key: ComponentKey
+        @Serializable(ComponentKeySerializer::class) val key: ComponentKey,
     ) : OpenAppTarget()
 
     @Serializable
@@ -44,6 +48,6 @@ sealed class OpenAppTarget {
         @Serializable(IntentSerializer::class) val intent: Intent,
         @Serializable(UserHandlerSerializer::class) val user: UserHandle,
         val packageName: String,
-        val id: String
+        val id: String,
     ) : OpenAppTarget()
 }

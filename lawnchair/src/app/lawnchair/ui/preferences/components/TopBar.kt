@@ -16,17 +16,24 @@
 
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
-import androidx.compose.foundation.layout.*
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowForward
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TopAppBarScrollBehavior
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
@@ -53,7 +60,7 @@ fun TopBar(
         return lerp(
             containerColor,
             scrolledContainerColor,
-            FastOutLinearInEasing.transform(colorTransitionFraction)
+            FastOutLinearInEasing.transform(colorTransitionFraction),
         )
     }
 
@@ -61,11 +68,11 @@ fun TopBar(
 
     val foregroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
         containerColor = Color.Transparent,
-        scrolledContainerColor = Color.Transparent
+        scrolledContainerColor = Color.Transparent,
     )
 
-    Surface (
-        color = backgroundColor
+    Surface(
+        color = backgroundColor,
     ) {
         LargeTopAppBar(
             modifier = Modifier
@@ -82,16 +89,16 @@ fun TopBar(
             actions = actions,
             navigationIcon = {
                 if (backArrowVisible) {
-                        ClickableIcon(
-                            imageVector = backIcon(),
-                            onClick = { backDispatcher?.onBackPressed() },
-                        )
+                    ClickableIcon(
+                        imageVector = backIcon(),
+                        onClick = { backDispatcher?.onBackPressed() },
+                    )
                 }
             },
             scrollBehavior = scrollBehavior,
-            colors = foregroundColors
+            colors = foregroundColors,
         )
-   }
+    }
 }
 
 @Composable

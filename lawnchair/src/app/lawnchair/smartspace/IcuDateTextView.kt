@@ -16,18 +16,19 @@ import app.lawnchair.util.repeatOnAttached
 import app.lawnchair.util.subscribeBlocking
 import com.android.launcher3.R
 import com.patrykmichalik.opto.core.firstBlocking
+import java.util.Locale
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import saman.zamani.persiandate.PersianDate
 import saman.zamani.persiandate.PersianDateFormat
-import java.util.*
 
 typealias FormatterFunction = (Long) -> String
 
 class IcuDateTextView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
+    context: Context,
+    attrs: AttributeSet? = null,
 ) : DoubleShadowTextView(context, attrs) {
 
     private val prefs = PreferenceManager2.getInstance(context)
@@ -40,8 +41,11 @@ class IcuDateTextView @JvmOverloads constructor(
         repeatOnAttached {
             val calendarSelectionEnabled = prefs.enableSmartspaceCalendarSelection.firstBlocking()
             val calendarFlow =
-                if (calendarSelectionEnabled) prefs.smartspaceCalendar.get()
-                else flowOf(prefs.smartspaceCalendar.defaultValue)
+                if (calendarSelectionEnabled) {
+                    prefs.smartspaceCalendar.get()
+                } else {
+                    flowOf(prefs.smartspaceCalendar.defaultValue)
+                }
             val optionsFlow = DateTimeOptions.fromPrefs(prefs)
             combine(calendarFlow, optionsFlow) { calendar, options -> calendar to options }
                 .subscribeBlocking(this) {
@@ -106,7 +110,7 @@ class IcuDateTextView @JvmOverloads constructor(
                     dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwentyFourHourFormat -> R.string.smartspace_icu_date_pattern_persian_time
                     is24HourFormat(context) -> R.string.smartspace_icu_date_pattern_persian_time
                     else -> R.string.smartspace_icu_date_pattern_persian_time_12h
-                }
+                },
             )
             if (dateTimeOptions.showDate) format = context.getString(R.string.smartspace_icu_date_pattern_persian_date) + format
         } else {
@@ -125,7 +129,7 @@ class IcuDateTextView @JvmOverloads constructor(
                     dateTimeOptions.timeFormat is SmartspaceTimeFormat.TwentyFourHourFormat -> R.string.smartspace_icu_date_pattern_gregorian_time
                     is24HourFormat(context) -> R.string.smartspace_icu_date_pattern_gregorian_time
                     else -> R.string.smartspace_icu_date_pattern_gregorian_time_12h
-                }
+                },
             )
             if (dateTimeOptions.showDate) format += context.getString(R.string.smartspace_icu_date_pattern_gregorian_date)
         } else {

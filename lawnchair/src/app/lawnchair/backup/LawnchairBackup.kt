@@ -20,22 +20,22 @@ import com.android.launcher3.LauncherFiles
 import com.android.launcher3.R
 import com.android.launcher3.model.DeviceGridState
 import com.google.protobuf.Timestamp
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 import kotlin.math.max
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class LawnchairBackup(
     private val context: Context,
-    private val uri: Uri
+    private val uri: Uri,
 ) {
     lateinit var info: BackupInfo
     var screenshot: Bitmap? = null
@@ -44,11 +44,13 @@ class LawnchairBackup(
     suspend fun readInfoAndPreview() {
         var tmpScreenshot: Bitmap? = null
         var tmpWallpaper: Bitmap? = null
-        readZip(mapOf(
-            INFO_FILE_NAME to { info = BackupInfo.newBuilder().mergeFrom(it).build() },
-            SCREENSHOT_FILE_NAME to { tmpScreenshot = BitmapFactory.decodeStream(it) },
-            WALLPAPER_FILE_NAME to { tmpWallpaper = BitmapFactory.decodeStream(it) },
-        ))
+        readZip(
+            mapOf(
+                INFO_FILE_NAME to { info = BackupInfo.newBuilder().mergeFrom(it).build() },
+                SCREENSHOT_FILE_NAME to { tmpScreenshot = BitmapFactory.decodeStream(it) },
+                WALLPAPER_FILE_NAME to { tmpWallpaper = BitmapFactory.decodeStream(it) },
+            ),
+        )
         val size = max(info.previewWidth, info.previewHeight).coerceAtMost(4000)
         screenshot = tmpScreenshot?.scaleDownTo(size)
         wallpaper = tmpWallpaper?.scaleDownToDisplaySize(context)
@@ -58,13 +60,15 @@ class LawnchairBackup(
         val handlers = mutableMapOf<String, suspend (InputStream) -> Unit>()
         val contents = selectedContents and info.contents
         if (contents.hasFlag(INCLUDE_LAYOUT_AND_SETTINGS)) {
-            handlers.putAll(getFiles(context, forRestore = true).mapValues { entry ->
-                {
-                    val file = entry.value
-                    file.parentFile?.mkdirs()
-                    it.copyTo(file.outputStream())
-                }
-            })
+            handlers.putAll(
+                getFiles(context, forRestore = true).mapValues { entry ->
+                    {
+                        val file = entry.value
+                        file.parentFile?.mkdirs()
+                        it.copyTo(file.outputStream())
+                    }
+                },
+            )
         }
         if (contents.hasFlag(INCLUDE_WALLPAPER)) {
             handlers[WALLPAPER_FILE_NAME] = {

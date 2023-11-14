@@ -2,9 +2,9 @@ package app.lawnchair.util
 
 import android.os.FileObserver
 import com.android.launcher3.Utilities
+import java.io.File
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
-import java.io.File
 
 fun File.subscribeFiles() = callbackFlow<List<File>> {
     fun sendFiles() {

@@ -9,7 +9,7 @@ import dev.kdrag0n.monet.theme.ColorScheme
 sealed interface ColorStateListToken : ResourceToken<ColorStateList>
 
 data class NewColorStateList(
-    private val factory: (context: Context, scheme: ColorScheme, uiColorMode: UiColorMode) -> ColorStateList
+    private val factory: (context: Context, scheme: ColorScheme, uiColorMode: UiColorMode) -> ColorStateList,
 ) : ColorStateListToken {
 
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): ColorStateList {
@@ -19,7 +19,7 @@ data class NewColorStateList(
 
 class DayNightColorStateList(
     private val lightToken: ColorStateListToken,
-    private val darkToken: ColorStateListToken
+    private val darkToken: ColorStateListToken,
 ) : ColorStateListToken {
 
     override fun resolve(context: Context, scheme: ColorScheme, uiColorMode: UiColorMode): ColorStateList {

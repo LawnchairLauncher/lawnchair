@@ -21,7 +21,7 @@ fun FontPreference(
             val font = fontPref.getAdapter().state.value
             Text(
                 text = font.fullDisplayName,
-                fontFamily = font.composeFontFamily
+                fontFamily = font.composeFontFamily,
             )
         },
         modifier = Modifier

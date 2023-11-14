@@ -8,5 +8,5 @@ import com.patrykmichalik.opto.domain.Preference
 data class ColorPreferenceModel(
     val prefObject: Preference<ColorOption, String, Preferences.Key<String>>,
     @StringRes val labelRes: Int,
-    val dynamicEntries: List<ColorPreferenceEntry<ColorOption>>
+    val dynamicEntries: List<ColorPreferenceEntry<ColorOption>>,
 )

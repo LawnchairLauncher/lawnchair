@@ -3,7 +3,6 @@ package app.lawnchair.ui.preferences
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -53,7 +52,9 @@ fun SearchProviderPreferences() {
                         onDownloadClick = { qsbSearchProvider.launchOnAppMarket(context = context) },
                         description = if (showDownloadButton) {
                             stringResource(id = R.string.qsb_search_provider_app_required)
-                        } else null,
+                        } else {
+                            null
+                        },
                     )
                     ExpandAndShrink(visible = selected && hasAppAndWebsite) {
                         Options(
@@ -94,7 +95,7 @@ private fun ListItem(
                     selected = selected,
                     onClick = null,
                     enabled = enabled,
-                    modifier = Modifier.padding(start = 16.dp)
+                    modifier = Modifier.padding(start = 16.dp),
                 )
             },
             endWidget = {

@@ -10,7 +10,8 @@ import androidx.viewpager.widget.ViewPager
 typealias EventProxy = (ev: MotionEvent) -> Boolean
 
 class InterceptingViewPager @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
+    context: Context,
+    attrs: AttributeSet? = null,
 ) : ViewPager(context, attrs) {
 
     private var hasPerformedLongPress = false

@@ -40,7 +40,7 @@ fun HomeScreenGridPreferences() {
     val scrollState = rememberScrollState()
     PreferenceLayout(
         label = stringResource(id = R.string.home_screen_grid),
-        scrollState = if (isPortrait) null else scrollState
+        scrollState = if (isPortrait) null else scrollState,
     ) {
         val prefs = preferenceManager()
         val columnsAdapter = prefs.workspaceColumns.getAdapter()
@@ -58,7 +58,7 @@ fun HomeScreenGridPreferences() {
                     .padding(top = 8.dp)
                     .weight(1f)
                     .align(Alignment.CenterHorizontally)
-                    .clip(MaterialTheme.shapes.large)
+                    .clip(MaterialTheme.shapes.large),
             ) {
                 copy(numColumns = columns.intValue, numRows = rows.intValue)
             }
@@ -96,14 +96,14 @@ fun HomeScreenGridPreferences() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp),
         ) {
             Button(
                 onClick = { applyOverrides() },
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .fillMaxWidth(),
-                enabled = columns.intValue != originalColumns || rows.intValue != originalRows
+                enabled = columns.intValue != originalColumns || rows.intValue != originalRows,
             ) {
                 Text(text = stringResource(id = R.string.apply_grid))
             }

@@ -10,7 +10,6 @@ import android.text.Spanned.SPAN_POINT_MARK
 import android.text.method.TextKeyListener
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.ViewTreeObserver
@@ -21,7 +20,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import app.lawnchair.LawnchairLauncher
 import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
@@ -31,20 +29,25 @@ import com.android.launcher3.Insettable
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.allapps.*
+import com.android.launcher3.allapps.ActivityAllAppsContainerView
+import com.android.launcher3.allapps.AllAppsStore
+import com.android.launcher3.allapps.AlphabeticalAppsList
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem
+import com.android.launcher3.allapps.SearchUiManager
 import com.android.launcher3.allapps.search.AllAppsSearchBarController
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.util.Themes
 import com.patrykmichalik.opto.core.firstBlocking
-import java.util.*
-import kotlin.math.log
+import java.util.Locale
 import kotlin.math.max
 
-class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs),
-    Insettable, SearchUiManager,
+class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
+    FrameLayout(context, attrs),
+    Insettable,
+    SearchUiManager,
     SearchCallback<AdapterItem>,
-    AllAppsStore.OnUpdateListener, ViewTreeObserver.OnGlobalLayoutListener {
+    AllAppsStore.OnUpdateListener,
+    ViewTreeObserver.OnGlobalLayoutListener {
 
     private lateinit var hint: TextView
     private lateinit var input: FallbackSearchInputView
@@ -110,7 +113,7 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
                     enableDebugMenu.set(!enableDebugMenu.get())
                     launcher.stateManager.goToState(LauncherState.NORMAL)
                 }
-            }
+            },
         )
 
         val hide = PreferenceManager2.getInstance(context).hideAppDrawerSearchBar.firstBlocking()
@@ -129,10 +132,10 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
         val inputString = input.text.toString()
         val inputLowerCase = inputString.lowercase(Locale.getDefault())
         val focusedLowerCase = focusedResultTitle.lowercase(Locale.getDefault())
-        if (canShowHint
-            && inputLowerCase.isNotEmpty() && focusedLowerCase.isNotEmpty()
-            && focusedLowerCase.matches(Regex("^[\\x00-\\x7F]*$"))
-            && focusedLowerCase.startsWith(inputLowerCase)
+        if (canShowHint &&
+            inputLowerCase.isNotEmpty() && focusedLowerCase.isNotEmpty() &&
+            focusedLowerCase.matches(Regex("^[\\x00-\\x7F]*$")) &&
+            focusedLowerCase.startsWith(inputLowerCase)
         ) {
             val hintColor = Themes.getAttrColor(context, android.R.attr.textColorTertiary)
             val hintText = SpannableStringBuilder(inputString)
@@ -169,7 +172,9 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
         this.appsView = appsView
         searchBarController.initialize(
             LawnchairSearchAlgorithm.create(context),
-            input, launcher, this
+            input,
+            launcher,
+            this,
         )
         input.initialize(appsView)
     }
@@ -202,9 +207,9 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) : FrameLayout(c
         }
     }
 
-     fun onAppendSearchResult(
+    fun onAppendSearchResult(
         query: String,
-        items: ArrayList<AdapterItem>?
+        items: ArrayList<AdapterItem>?,
     ) {
         if (items != null) {
             apps.setSearchResults(items)

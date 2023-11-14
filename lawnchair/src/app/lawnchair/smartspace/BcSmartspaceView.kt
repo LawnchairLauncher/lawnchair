@@ -16,12 +16,14 @@ import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.smartspace.provider.SmartspaceProvider
 import app.lawnchair.util.repeatOnAttached
 import com.android.launcher3.R
+import kotlin.math.roundToInt
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlin.math.roundToInt
 
 class BcSmartspaceView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, var previewMode: Boolean = false
+    context: Context,
+    attrs: AttributeSet? = null,
+    var previewMode: Boolean = false,
 ) : FrameLayout(context, attrs) {
 
     private val provider = SmartspaceProvider.INSTANCE.get(context)
@@ -43,13 +45,12 @@ class BcSmartspaceView @JvmOverloads constructor(
             override fun onPageScrolled(
                 position: Int,
                 positionOffset: Float,
-                positionOffsetPixels: Int
+                positionOffsetPixels: Int,
             ) {
                 indicator.setPageOffset(position, positionOffset)
             }
 
             override fun onPageSelected(position: Int) {
-
             }
 
             override fun onPageScrollStateChanged(state: Int) {
@@ -87,7 +88,7 @@ class BcSmartspaceView @JvmOverloads constructor(
         val width = (MeasureSpec.getSize(widthMeasureSpec).toFloat() / scale).roundToInt()
         super.onMeasure(
             makeMeasureSpec(width, EXACTLY),
-            makeMeasureSpec(smartspaceHeight, EXACTLY)
+            makeMeasureSpec(smartspaceHeight, EXACTLY),
         )
         scaleX = scale
         scaleY = scale
@@ -137,8 +138,8 @@ class BcSmartspaceView @JvmOverloads constructor(
                 oldCard,
                 View.TRANSLATION_Y,
                 0f,
-                (-height).toFloat() - shift
-            )
+                (-height).toFloat() - shift,
+            ),
         )
         animator.play(ObjectAnimator.ofFloat(oldCard, View.ALPHA, 1f, 0f))
         animator.play(
@@ -146,8 +147,8 @@ class BcSmartspaceView @JvmOverloads constructor(
                 viewPager,
                 View.TRANSLATION_Y,
                 height.toFloat() + shift,
-                0f
-            )
+                0f,
+            ),
         )
         animator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationStart(animation: Animator) {

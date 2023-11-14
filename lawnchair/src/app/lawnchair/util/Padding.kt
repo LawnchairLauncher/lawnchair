@@ -1,6 +1,13 @@
 package app.lawnchair.util
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.displayCutout
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -23,7 +30,7 @@ fun max(a: PaddingValues, b: PaddingValues) = remember(a, b) {
         override fun calculateLeftPadding(layoutDirection: LayoutDirection): Dp {
             return max(
                 a.calculateLeftPadding(layoutDirection),
-                b.calculateLeftPadding(layoutDirection)
+                b.calculateLeftPadding(layoutDirection),
             )
         }
 
@@ -34,7 +41,7 @@ fun max(a: PaddingValues, b: PaddingValues) = remember(a, b) {
         override fun calculateRightPadding(layoutDirection: LayoutDirection): Dp {
             return max(
                 a.calculateRightPadding(layoutDirection),
-                b.calculateRightPadding(layoutDirection)
+                b.calculateRightPadding(layoutDirection),
             )
         }
 
