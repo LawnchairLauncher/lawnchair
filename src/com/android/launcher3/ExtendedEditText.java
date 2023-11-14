@@ -90,14 +90,23 @@ public class ExtendedEditText extends EditText {
     /**
      * Synchronously shows the soft input method.
      *
-     * @param shouldFocus whether this EditText should also request focus.
-     * @return true if the keyboard is shown correctly and focus is given to this view (if
-     *     applicable).
+     * @return true if the keyboard is shown correctly and focus is given to this view.
      */
-    public boolean showKeyboard(boolean shouldFocus) {
+    public boolean showKeyboard() {
         onKeyboardShown();
-        boolean focusResult = !shouldFocus || requestFocus();
-        return focusResult && showSoftInputInternal();
+        return requestFocus() && showSoftInputInternal();
+    }
+
+    /**
+     * Requests the framework to show the keyboard in order to ensure that an already registered
+     * controlled keyboard animation is triggered correctly.
+     * Must NEVER be called in any other case than to trigger a pre-registered controlled animation.
+     */
+    public void requestShowKeyboardForControlledAnimation() {
+        // We don't log the keyboard state, as that must happen only after the controlled animation
+        // has completed.
+        // We also must not request focus, as this triggers unwanted side effects.
+        showSoftInputInternal();
     }
 
     public void hideKeyboard() {
