@@ -98,6 +98,8 @@
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"ਸਪਲਿਟ ਸਕ੍ਰੀਨ ਦੀ ਚੋਣ ਤੋਂ ਬਾਹਰ ਜਾਓ"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"ਸਪਲਿਟ ਸਕ੍ਰੀਨ ਵਰਤਣ ਲਈ ਕਿਸੇ ਹੋਰ ਐਪ ਨੂੰ ਚੁਣੋ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ਐਪ ਜਾਂ ਤੁਹਾਡੀ ਸੰਸਥਾ ਵੱਲੋਂ ਇਸ ਕਾਰਵਾਈ ਦੀ ਇਜਾਜ਼ਤ ਨਹੀਂ ਹੈ"</string>
+    <!-- no translation found for split_widgets_not_supported (1355743038053053866) -->
+    <skip />
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"ਕੀ ਨੈਵੀਗੇਸ਼ਨ ਟਿਊਟੋਰੀਅਲ ਨੂੰ ਛੱਡਣਾ ਹੈ?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"ਤੁਸੀਂ ਇਸਨੂੰ ਬਾਅਦ ਵਿੱਚ <xliff:g id="NAME">%1$s</xliff:g> ਐਪ ਵਿੱਚ ਲੱਭ ਸਕਦੇ ਹੋ"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ਰੱਦ ਕਰੋ"</string>
