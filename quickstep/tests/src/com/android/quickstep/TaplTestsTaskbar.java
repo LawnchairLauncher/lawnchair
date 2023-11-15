@@ -22,7 +22,6 @@ import static com.android.quickstep.TaplTestsTaskbar.TaskbarMode.TRANSIENT;
 import androidx.test.filters.LargeTest;
 
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
-import com.android.launcher3.util.rule.ScreenRecordRule.ScreenRecord;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -90,7 +89,6 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
     }
 
     @Test
-    @ScreenRecord // b/231615831
     @PortraitLandscape
     public void testLaunchAppInSplitscreen() {
         getTaskbar().getAppIcon(TEST_APP_NAME).dragToSplitscreen(
@@ -104,7 +102,6 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
     }
 
     @Test
-    @ScreenRecord // b/231615831
     @PortraitLandscape
     public void testLaunchShortcutInSplitscreen() {
         getTaskbar().getAppIcon(TEST_APP_NAME)
@@ -133,7 +130,6 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
     }
 
     @Test
-    @ScreenRecord // b/231615831
     @PortraitLandscape
     public void testLaunchAppInSplitscreen_fromTaskbarAllApps() {
         getTaskbar().openAllApps()
@@ -142,7 +138,6 @@ public class TaplTestsTaskbar extends AbstractTaplTestsTaskbar {
     }
 
     @Test
-    @ScreenRecord // b/231615831
     @PortraitLandscape
     public void testLaunchShortcutInSplitscreen_fromTaskbarAllApps() {
         getTaskbar().openAllApps()
