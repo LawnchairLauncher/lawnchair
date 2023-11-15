@@ -24,6 +24,10 @@ import androidx.annotation.VisibleForTesting
 import com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN
 import com.android.launcher3.LauncherFiles.DEVICE_PREFERENCES_KEY
 import com.android.launcher3.LauncherFiles.SHARED_PREFERENCES_KEY
+import com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_END_SCALE_PERCENT
+import com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_ITERATIONS
+import com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_SCALE_EXPONENT
+import com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_START_SCALE_PERCENT
 import com.android.launcher3.config.FeatureFlags.LPNH_SLOP_PERCENTAGE
 import com.android.launcher3.config.FeatureFlags.LPNH_TIMEOUT_MS
 import com.android.launcher3.model.DeviceGridState
@@ -327,28 +331,28 @@ class LauncherPrefs(private val encryptedContext: Context) {
         val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_START_SCALE_PERCENT =
                 nonRestorableItem(
                         "pref_long_press_nav_handle_haptic_hint_start_scale_percent",
-                        0,
+                        LPNH_HAPTIC_HINT_START_SCALE_PERCENT.get(),
                         EncryptionType.MOVE_TO_DEVICE_PROTECTED
                 )
         @JvmField
         val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT =
                 nonRestorableItem(
                         "pref_long_press_nav_handle_haptic_hint_end_scale_percent",
-                        100,
+                        LPNH_HAPTIC_HINT_END_SCALE_PERCENT.get(),
                         EncryptionType.MOVE_TO_DEVICE_PROTECTED
                 )
         @JvmField
         val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT =
                 nonRestorableItem(
                         "pref_long_press_nav_handle_haptic_hint_scale_exponent",
-                        1,
+                        LPNH_HAPTIC_HINT_SCALE_EXPONENT.get(),
                         EncryptionType.MOVE_TO_DEVICE_PROTECTED
                 )
         @JvmField
         val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS =
                 nonRestorableItem(
                         "pref_long_press_nav_handle_haptic_hint_iterations",
-                        50,
+                        LPNH_HAPTIC_HINT_ITERATIONS.get(),
                         EncryptionType.MOVE_TO_DEVICE_PROTECTED
                 )
         @JvmField
