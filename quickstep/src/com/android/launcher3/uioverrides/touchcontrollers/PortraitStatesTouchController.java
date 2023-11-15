@@ -96,7 +96,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             return FeatureFlags.ENABLE_ALL_APPS_FROM_OVERVIEW.get()
                     ? mLauncher.getStateManager().getLastState()
                     : NORMAL;
-        } else if (fromState == NORMAL && isDragTowardPositive) {
+        } else if (fromState == NORMAL && shouldOpenAllApps(isDragTowardPositive)) {
             return ALL_APPS;
         }
         return fromState;

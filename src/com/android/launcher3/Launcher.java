@@ -100,6 +100,7 @@ import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.ItemInfoMatcher.forFolderMatch;
+import static com.android.launcher3.util.SettingsCache.TOUCHPAD_NATURAL_SCROLLING;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -232,6 +233,7 @@ import com.android.launcher3.util.PendingRequestArgs;
 import com.android.launcher3.util.RunnableList;
 import com.android.launcher3.util.ScreenOnTracker;
 import com.android.launcher3.util.ScreenOnTracker.ScreenOnListener;
+import com.android.launcher3.util.SettingsCache;
 import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
@@ -415,6 +417,11 @@ public class Launcher extends StatefulActivity<LauncherState>
     private final List<BackPressHandler> mBackPressedHandlers = new ArrayList<>();
     private boolean mIsColdStartupAfterReboot;
 
+    private boolean mIsNaturalScrollingEnabled;
+
+    private final SettingsCache.OnChangeListener mNaturalScrollingChangedListener =
+            enabled -> mIsNaturalScrollingEnabled = enabled;
+
     public static Launcher getLauncher(Context context) {
         return fromContext(context);
     }
@@ -562,6 +569,10 @@ public class Launcher extends StatefulActivity<LauncherState>
             getRootView().getViewTreeObserver().addOnPreDrawListener(mOnInitialBindListener);
         }
         getRootView().dispatchInsets();
+
+        final SettingsCache settingsCache = SettingsCache.INSTANCE.get(this);
+        settingsCache.register(TOUCHPAD_NATURAL_SCROLLING, mNaturalScrollingChangedListener);
+        mIsNaturalScrollingEnabled = settingsCache.getValue(TOUCHPAD_NATURAL_SCROLLING);
 
         // Listen for screen turning off
         ScreenOnTracker.INSTANCE.get(this).addListener(mScreenOnListener);
@@ -1680,6 +1691,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         super.onDestroy();
         ACTIVITY_TRACKER.onActivityDestroyed(this);
 
+        SettingsCache.INSTANCE.get(this).unregister(TOUCHPAD_NATURAL_SCROLLING,
+                mNaturalScrollingChangedListener);
         ScreenOnTracker.INSTANCE.get(this).removeListener(mScreenOnListener);
         mWorkspace.removeFolderListeners();
         PluginManagerWrapper.INSTANCE.get(this).removePluginListener(this);
@@ -3179,6 +3192,10 @@ public class Launcher extends StatefulActivity<LauncherState>
         // We prevent dragging when we are loading the workspace as it is possible to pick up a view
         // that is subsequently removed from the workspace in startBinding().
         return !isWorkspaceLoading();
+    }
+
+    public boolean isNaturalScrollingEnabled() {
+        return mIsNaturalScrollingEnabled;
     }
 
     public void setWaitingForResult(PendingRequestArgs args) {
