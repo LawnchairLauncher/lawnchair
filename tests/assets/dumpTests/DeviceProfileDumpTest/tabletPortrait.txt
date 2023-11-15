@@ -55,7 +55,7 @@ DeviceProfile:
 	bottomSheetCloseDuration: 500
 	bottomSheetWorkspaceScale: 0.97
 	bottomSheetDepth: 0.0
-	allAppsShiftRange: 2019.0px (1009.5dp)
+	allAppsShiftRange: 2560.0px (1280.0dp)
 	allAppsOpenDuration: 500
 	allAppsCloseDuration: 500
 	allAppsIconSizePx: 120.0px (60.0dp)
@@ -66,7 +66,7 @@ DeviceProfile:
 	allAppsBorderSpacePxX: 16.0px (8.0dp)
 	allAppsBorderSpacePxY: 32.0px (16.0dp)
 	numShownAllAppsColumns: 6
-	allAppsPadding.top: 541.0px (270.5dp)
+	allAppsPadding.top: 104.0px (52.0dp)
 	allAppsPadding.left: 32.0px (16.0dp)
 	allAppsPadding.right: 32.0px (16.0dp)
 	allAppsLeftRightMargin: 152.0px (76.0dp)
