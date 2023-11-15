@@ -176,6 +176,14 @@
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"Таблетнаасаа хайх"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"Амжилтгүй болсон: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"Хувийн орон зай"</string>
+    <!-- no translation found for ps_container_title (4391796149519594205) -->
+    <skip />
+    <!-- no translation found for ps_container_settings (6059734123353320479) -->
+    <skip />
+    <!-- no translation found for ps_container_lock_unlock_button (7605602332253423755) -->
+    <skip />
+    <!-- no translation found for ps_container_transition (8667331812048014412) -->
+    <skip />
     <!-- no translation found for bubble_bar_overflow_description (7410995531938041192) -->
     <skip />
 </resources>
