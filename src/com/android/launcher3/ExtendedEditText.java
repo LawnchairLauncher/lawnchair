@@ -162,6 +162,15 @@ public class ExtendedEditText extends EditText {
         }
     }
 
+    @Override
+    public void setText(CharSequence text, BufferType type) {
+        super.setText(text, type);
+        // With hardware keyboard, there is a possibility that the user types before edit
+        // text is visible during the transition.
+        // So move the cursor to the end of the text.
+        setSelection(getText().length());
+    }
+
     /**
      * This method should be preferred to {@link #setOnFocusChangeListener(OnFocusChangeListener)},
      * as it allows for multiple listeners from different sources.
