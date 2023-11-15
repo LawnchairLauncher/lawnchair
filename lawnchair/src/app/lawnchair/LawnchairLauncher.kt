@@ -19,6 +19,8 @@ package app.lawnchair
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
+import android.os.Build
+import android.os.Build.VERSION
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -272,6 +274,12 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
 
     override fun handleHomeTap() {
         gestureController.onHomePressed()
+    }
+
+    override fun registerBackDispatcher(){
+        if(VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            super.registerBackDispatcher()
+        }
     }
 
 //    fun shouldBackButtonBeHidden(toState: LauncherState): Boolean {

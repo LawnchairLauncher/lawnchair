@@ -24,6 +24,7 @@ import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VAL
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.os.Build;
 import android.view.CrossWindowBlurListeners;
 import android.view.View;
 import android.view.ViewRootImpl;
@@ -32,6 +33,7 @@ import android.view.ViewTreeObserver;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
@@ -74,8 +76,11 @@ public class DepthController extends BaseDepthController implements StateHandler
             mOnAttachListener = new View.OnAttachStateChangeListener() {
                 @Override
                 public void onViewAttachedToWindow(View view) {
-                    CrossWindowBlurListeners.getInstance().addListener(mLauncher.getMainExecutor(),
-                            mCrossWindowBlurListener);
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                        CrossWindowBlurListeners.getInstance().addListener(mLauncher.getMainExecutor(),
+                                mCrossWindowBlurListener);
+                    }
+
                     mLauncher.getScrimView().addOpaquenessListener(mOpaquenessListener);
 
                     // To handle the case where window token is invalid during last setDepth call.
@@ -84,7 +89,9 @@ public class DepthController extends BaseDepthController implements StateHandler
 
                 @Override
                 public void onViewDetachedFromWindow(View view) {
-                    CrossWindowBlurListeners.getInstance().removeListener(mCrossWindowBlurListener);
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                        CrossWindowBlurListeners.getInstance().removeListener(mCrossWindowBlurListener);
+                    }
                     mLauncher.getScrimView().removeOpaquenessListener(mOpaquenessListener);
                 }
             };
@@ -134,8 +141,10 @@ public class DepthController extends BaseDepthController implements StateHandler
 
     @Override
     public void applyDepthAndBlur() {
-        ensureDependencies();
-        super.applyDepthAndBlur();
+        if(Utilities.ATLEAST_R){
+            ensureDependencies();
+            super.applyDepthAndBlur();
+        }
     }
 
     @Override

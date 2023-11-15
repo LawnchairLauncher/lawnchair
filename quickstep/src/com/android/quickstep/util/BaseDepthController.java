@@ -16,6 +16,7 @@
 package com.android.quickstep.util;
 
 import android.app.WallpaperManager;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.FloatProperty;
 import android.view.AttachedSurfaceControl;
@@ -163,7 +164,7 @@ public class BaseDepthController {
      * Sets the specified app target surface to apply the blur to.
      */
     protected void setSurface(SurfaceControl surface) {
-        if (mSurface != surface) {
+        if (mSurface != surface && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             mSurface = surface;
             applyDepthAndBlur();
         }

@@ -71,6 +71,7 @@ import android.hardware.SensorManager;
 import android.hardware.devicestate.DeviceStateManager;
 import android.hardware.display.DisplayManager;
 import android.media.permission.SafeCloseable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.IBinder;
@@ -513,14 +514,14 @@ public class QuickstepLauncher extends Launcher {
     public AtomicAnimationFactory createAtomicAnimationFactory() {
         return new QuickstepAtomicAnimationFactory(this);
     }
-    @Override
-    protected LauncherWidgetHolder createAppWidgetHolder() {
-        final QuickstepHolderFactory factory =
-                (QuickstepHolderFactory) LauncherWidgetHolder.HolderFactory.newFactory(this);
-        return factory.newInstance(this,
-                appWidgetId -> getWorkspace().removeWidget(appWidgetId),
-                new QuickstepInteractionHandler(this));
-    }
+//    @Override
+//    protected LauncherWidgetHolder createAppWidgetHolder() {
+//        final QuickstepHolderFactory factory =
+//                (QuickstepHolderFactory) LauncherWidgetHolder.HolderFactory.newFactory(this);
+//        return factory.newInstance(this,
+//                appWidgetId -> getWorkspace().removeWidget(appWidgetId),
+//                new QuickstepInteractionHandler(this));
+//    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -949,21 +950,26 @@ public class QuickstepLauncher extends Launcher {
                 mAppTransitionManager.hasControlRemoteAppTransitionPermission()
                         ? mAppTransitionManager.getActivityLaunchOptions(v)
                         : super.getActivityLaunchOptions(v, item);
-        if (mLastTouchUpTime > 0) {
+        boolean isSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;
+        if (mLastTouchUpTime > 0 && isSupported) {
             activityOptions.options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_LAUNCHER,
                     mLastTouchUpTime);
         }
         if (item != null && (item.animationType == DEFAULT_NO_ICON
-                || item.animationType == VIEW_BACKGROUND)) {
+                || item.animationType == VIEW_BACKGROUND) && isSupported) {
             activityOptions.options.setSplashScreenStyle(
                     SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR);
         } else {
-            activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
+            if (isSupported) {
+                activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
+            }
         }
         activityOptions.options.setLaunchDisplayId(
                 (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
                         : Display.DEFAULT_DISPLAY);
-        addLaunchCookie(item, activityOptions.options);
+        if(isSupported){
+            addLaunchCookie(item, activityOptions.options);
+        }
         return activityOptions;
     }
     @Override

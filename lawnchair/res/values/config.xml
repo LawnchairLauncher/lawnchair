@@ -39,6 +39,7 @@
     <string name="task_overlay_factory_class" translatable="false">app.lawnchair.overview.TaskOverlayFactoryImpl</string>
     <string name="wallpaper_picker_package" translatable="false">com.android.wallpaper</string>
     <string name="wallpaper_picker_package_alt" translatable="false">com.google.android.apps.wallpaper</string>
+    <string name="widget_holder_factory_class" translatable="false"></string><!-- TODO Let's empty for now so it can use default-->
 
     <bool name="config_header_protection_supported">true</bool>
 

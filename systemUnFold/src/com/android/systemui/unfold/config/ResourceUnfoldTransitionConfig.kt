@@ -21,21 +21,33 @@ import javax.inject.Singleton
 @Singleton
 class ResourceUnfoldTransitionConfig @Inject constructor() : UnfoldTransitionConfig {
 
+    private fun getBooleanResource(resourceName: String): Boolean {
+        val id = Resources.getSystem().getIdentifier(resourceName, "bool", "android")
+        return if (id != 0) {
+            Resources.getSystem().getBoolean(id)
+        } else {
+            false
+        }
+    }
+
+    private fun getIntResource(resourceName: String): Int {
+        val id = Resources.getSystem().getIdentifier(resourceName, "integer", "android")
+        return if (id != 0) {
+            Resources.getSystem().getInteger(id)
+        } else {
+            0
+        }
+    }
+
     override val isEnabled: Boolean by lazy {
-        val id = Resources.getSystem()
-            .getIdentifier("config_unfoldTransitionEnabled", "bool", "android")
-        Resources.getSystem().getBoolean(id)
+        getBooleanResource("config_unfoldTransitionEnabled")
     }
 
     override val isHingeAngleEnabled: Boolean by lazy {
-        val id = Resources.getSystem()
-            .getIdentifier("config_unfoldTransitionHingeAngle", "bool", "android")
-        Resources.getSystem().getBoolean(id)
+        getBooleanResource("config_unfoldTransitionHingeAngle")
     }
 
     override val halfFoldedTimeoutMillis: Int by lazy {
-        val id = Resources.getSystem()
-            .getIdentifier("config_unfoldTransitionHalfFoldedTimeout", "integer", "android")
-        Resources.getSystem().getInteger(id)
+        getIntResource("config_unfoldTransitionHalfFoldedTimeout")
     }
 }

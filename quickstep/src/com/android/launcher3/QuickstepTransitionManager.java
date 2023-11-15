@@ -80,6 +80,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.IBinder;
@@ -2068,13 +2069,17 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private static class MyDepthController extends DepthController {
         MyDepthController(Launcher l) {
             super(l);
-            setCrossWindowBlursEnabled(
-                    CrossWindowBlurListeners.getInstance().isCrossWindowBlurEnabled());
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                setCrossWindowBlursEnabled(
+                        CrossWindowBlurListeners.getInstance().isCrossWindowBlurEnabled());
+            }
         }
 
         @Override
         public void setSurface(SurfaceControl surface) {
-            super.setSurface(surface);
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                super.setSurface(surface);
+            }
         }
     }
 }
