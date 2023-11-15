@@ -16,7 +16,7 @@
 
 package com.android.quickstep.util;
 
-import static com.android.launcher3.config.FeatureFlags.ENABLE_SPLIT_FROM_FULLSCREEN_WITH_KEYBOARD_SHORTCUTS;
+import static com.android.launcher3.config.FeatureFlags.enableSplitFromFullscreenWithKeyboardShortcuts;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 import static com.android.quickstep.views.DesktopTaskView.isDesktopModeSupported;
 
@@ -191,7 +191,7 @@ public class SplitToWorkspaceController {
     }
 
     private boolean shouldIgnoreSecondSplitLaunch() {
-        return (!ENABLE_SPLIT_FROM_FULLSCREEN_WITH_KEYBOARD_SHORTCUTS.get()
+        return (!enableSplitFromFullscreenWithKeyboardShortcuts()
                 && !FeatureFlags.enableSplitContextually()
                 && !isDesktopModeSupported())
                 || !mController.isSplitSelectActive();

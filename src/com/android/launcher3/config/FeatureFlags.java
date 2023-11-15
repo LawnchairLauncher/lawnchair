@@ -287,10 +287,15 @@ public final class FeatureFlags {
                     "Enables haptic hint when long pressing on the bottom bar nav handle.");
 
     // TODO(Block 17): Clean up flags
-    public static final BooleanFlag ENABLE_TASKBAR_PINNING = getDebugFlag(270396583,
+    // Aconfig migration complete for ENABLE_TASKBAR_PINNING.
+    private static final BooleanFlag ENABLE_TASKBAR_PINNING = getDebugFlag(270396583,
             "ENABLE_TASKBAR_PINNING", TEAMFOOD,
             "Enables taskbar pinning to allow user to switch between transient and persistent "
                     + "taskbar flavors");
+
+    public static boolean enableTaskbarPinning() {
+        return ENABLE_TASKBAR_PINNING.get() || Flags.enableTaskbarPinning();
+    }
 
     public static final BooleanFlag MOVE_STARTUP_DATA_TO_DEVICE_PROTECTED_STORAGE = getDebugFlag(
             251502424, "ENABLE_BOOT_AWARE_STARTUP_DATA", DISABLED,
@@ -403,11 +408,16 @@ public final class FeatureFlags {
             "USE_LOCAL_ICON_OVERRIDES", ENABLED,
             "Use inbuilt monochrome icons if app doesn't provide one");
 
-    // TODO(Block 28): Clean up flags
+    // Aconfig migration complete for ENABLE_SPLIT_FROM_FULLSCREEN_WITH_KEYBOARD_SHORTCUTS.
     public static final BooleanFlag ENABLE_SPLIT_FROM_FULLSCREEN_WITH_KEYBOARD_SHORTCUTS =
             getDebugFlag(270394122, "ENABLE_SPLIT_FROM_FULLSCREEN_SHORTCUT", DISABLED,
                     "Enable splitting from fullscreen app with keyboard shortcuts");
+    public static boolean enableSplitFromFullscreenWithKeyboardShortcuts() {
+        return ENABLE_SPLIT_FROM_FULLSCREEN_WITH_KEYBOARD_SHORTCUTS.get()
+                || Flags.enableSplitFromFullscreenWithKeyboardShortcuts();
+    }
 
+    // Aconfig migration complete for ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE.
     public static final BooleanFlag ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE = getDebugFlag(
             270393453, "ENABLE_SPLIT_FROM_WORKSPACE_TO_WORKSPACE", DISABLED,
             "Enable initiating split screen from workspace to workspace.");

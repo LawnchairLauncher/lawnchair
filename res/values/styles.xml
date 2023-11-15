@@ -435,4 +435,10 @@
         <item name="arrowTipBackground">@color/arrow_tip_view_bg</item>
         <item name="arrowTipTextColor">@color/arrow_tip_view_content</item>
     </style>
+
+    <style name="PrivateSpaceHeaderTextStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/material_color_on_surface</item>
+        <item name="android:fontFamily">google-sans-text-medium</item>
+    </style>
 </resources>

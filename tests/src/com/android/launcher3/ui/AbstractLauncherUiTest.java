@@ -105,12 +105,20 @@ public abstract class AbstractLauncherUiTest {
     private static boolean sDumpWasGenerated = false;
     private static boolean sActivityLeakReported = false;
     private static boolean sSeenKeyguard = false;
+    private static boolean sFirstTimeWaitingForWizard = true;
 
     private static final String SYSTEMUI_PACKAGE = "com.android.systemui";
 
     protected LooperExecutor mMainThreadExecutor = MAIN_EXECUTOR;
     protected final UiDevice mDevice = getUiDevice();
-    protected final LauncherInstrumentation mLauncher = new LauncherInstrumentation();
+    protected final LauncherInstrumentation mLauncher = createLauncherInstrumentation();
+
+    @NonNull
+    private static LauncherInstrumentation createLauncherInstrumentation() {
+        waitForSetupWizardDismissal(); // precondition for creating LauncherInstrumentation
+        return new LauncherInstrumentation();
+    }
+
     protected Context mTargetContext;
     protected String mTargetPackage;
     private int mLauncherPid;
@@ -252,8 +260,6 @@ public abstract class AbstractLauncherUiTest {
     public void setUp() throws Exception {
         mLauncher.onTestStart();
 
-        waitForSetupWizardDismissal();
-
         final String launcherPackageName = mDevice.getLauncherPackageName();
         try {
             final Context context = InstrumentationRegistry.getContext();
@@ -289,6 +295,8 @@ public abstract class AbstractLauncherUiTest {
 
     /** Method that should be called when a test starts. */
     public static void onTestStart() {
+        waitForSetupWizardDismissal();
+
         if (TestStabilityRule.isPresubmit()) {
             aggressivelyUnlockSysUi();
         } else {
@@ -323,18 +331,8 @@ public abstract class AbstractLauncherUiTest {
         Log.d(TAG, "Keyguard is not visible");
     }
 
-    // b/309008042
-    private static boolean sFirstTimeWaitingForWizard = true;
-
-    // b/309008042
-    static {
-        waitForSetupWizardDismissal();
-    }
-
-    // b/309008042
-    // TODO(309471958) Productize killing/dismissal of setup wizard.
     /** Waits for setup wizard to go away. */
-    public static void waitForSetupWizardDismissal() {
+    private static void waitForSetupWizardDismissal() {
         if (!TestStabilityRule.isPresubmit()) return;
 
         if (sFirstTimeWaitingForWizard) {
@@ -467,7 +465,6 @@ public abstract class AbstractLauncherUiTest {
     // flakiness.
     protected void waitForLauncherCondition(
             String message, Function<Launcher, Boolean> condition, long timeout) {
-        waitForSetupWizardDismissal();
         verifyKeyguardInvisible();
         if (!TestHelpers.isInLauncherProcess()) return;
         Wait.atMost(message, () -> getFromLauncher(condition), timeout, mLauncher);

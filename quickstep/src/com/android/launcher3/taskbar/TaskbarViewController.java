@@ -26,7 +26,7 @@ import static com.android.launcher3.Utilities.squaredHypot;
 import static com.android.launcher3.anim.AnimatedFloat.VALUE;
 import static com.android.launcher3.anim.AnimatorListeners.forEndCallback;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_NAVBAR_UNIFICATION;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_PINNING;
+import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP;
 import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_PERSISTENT;
 import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_TRANSIENT;
@@ -221,7 +221,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             mTaskbarIconAlpha.get(ALPHA_INDEX_SMALL_SCREEN)
                     .animateToValue(isPhoneButtonNavMode(mActivity) ? 0 : 1).start();
         }
-        if (ENABLE_TASKBAR_PINNING.get()) {
+        if (enableTaskbarPinning()) {
             mTaskbarView.addOnLayoutChangeListener(mTaskbarViewLayoutChangeListener);
         }
     }
@@ -234,7 +234,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     }
 
     public void onDestroy() {
-        if (ENABLE_TASKBAR_PINNING.get()) {
+        if (enableTaskbarPinning()) {
             mTaskbarView.removeOnLayoutChangeListener(mTaskbarViewLayoutChangeListener);
         }
         LauncherAppState.getInstance(mActivity).getModel().removeCallbacks(mModelCallbacks);
@@ -366,6 +366,10 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
 
         float allAppIconTranslateRange = mapRange(scale, transientTaskbarAllAppsOffset,
                 persistentTaskbarAllAppsOffset);
+
+        if (mIsRtl) {
+            allAppIconTranslateRange *= -1;
+        }
 
         float halfIconCount = iconViews.length / 2.0f;
         for (int iconIndex = 0; iconIndex < iconViews.length; iconIndex++) {
@@ -672,7 +676,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
                 // to avoid icons disappearing rather than fading out visually.
                 setter.setViewAlpha(child, 0, Interpolators.clampToProgress(LINEAR, 0.8f, 1f));
             } else if ((isAllAppsButton && !FeatureFlags.ENABLE_ALL_APPS_BUTTON_IN_HOTSEAT.get())
-                    || (isTaskbarDividerView && ENABLE_TASKBAR_PINNING.get())) {
+                    || (isTaskbarDividerView && enableTaskbarPinning())) {
                 if (!isToHome
                         && mIsHotseatIconOnTopWhenAligned
                         && mIsStashed) {

@@ -20,6 +20,7 @@ import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_
 
 import static com.android.launcher3.Flags.enableCursorHoverStates;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_ALL_APPS_SEARCH_IN_TASKBAR;
+import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
 import android.content.Context;
@@ -45,7 +46,6 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.icons.ThemedIconDrawable;
 import com.android.launcher3.model.data.FolderInfo;
@@ -128,7 +128,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
 
         int actualMargin = resources.getDimensionPixelSize(R.dimen.taskbar_icon_spacing);
         int actualIconSize = mActivityContext.getDeviceProfile().taskbarIconSize;
-        if (FeatureFlags.ENABLE_TASKBAR_PINNING.get()) {
+        if (enableTaskbarPinning()) {
             DeviceProfile deviceProfile = mActivityContext.getTransientTaskbarDeviceProfile();
             actualIconSize = deviceProfile.taskbarIconSize;
         }
@@ -155,12 +155,11 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
                     .inflate(R.layout.taskbar_all_apps_button, this, false);
             mAllAppsButton.setIconDrawable(resources.getDrawable(
                     getAllAppsButton(isTransientTaskbar)));
-            mAllAppsButton.setScaleX(mIsRtl ? -1 : 1);
             mAllAppsButton.setPadding(mItemPadding, mItemPadding, mItemPadding, mItemPadding);
             mAllAppsButton.setForegroundTint(
                     mActivityContext.getColor(R.color.all_apps_button_color));
 
-            if (FeatureFlags.ENABLE_TASKBAR_PINNING.get()) {
+            if (enableTaskbarPinning()) {
                 mTaskbarDivider = (IconButtonView) LayoutInflater.from(context).inflate(
                         R.layout.taskbar_divider,
                         this, false);
@@ -177,7 +176,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
     @DrawableRes
     private int getAllAppsButton(boolean isTransientTaskbar) {
         boolean shouldSelectTransientIcon =
-                (isTransientTaskbar || FeatureFlags.ENABLE_TASKBAR_PINNING.get())
+                (isTransientTaskbar || enableTaskbarPinning())
                 && !mActivityContext.isThreeButtonNav();
         if (ENABLE_ALL_APPS_SEARCH_IN_TASKBAR.get()) {
             return shouldSelectTransientIcon
@@ -546,7 +545,7 @@ public class TaskbarView extends FrameLayout implements FolderIcon.FolderIconPar
         int iconLayoutBoundsWidth =
                 countExcludingQsb * (mItemMarginLeftRight * 2 + mIconTouchSize);
 
-        if (FeatureFlags.ENABLE_TASKBAR_PINNING.get() && countExcludingQsb > 1) {
+        if (enableTaskbarPinning() && countExcludingQsb > 1) {
             // We are removing 4 * mItemMarginLeftRight as there should be no space between
             // All Apps icon, divider icon, and first app icon in taskbar
             iconLayoutBoundsWidth -= mItemMarginLeftRight * 4;

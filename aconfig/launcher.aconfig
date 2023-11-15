@@ -55,3 +55,17 @@ flag {
     description: "Enables launcher to listen to all transitions that include home activity"
     bug: "306053414"
 }
+
+flag {
+    name: "enable_taskbar_pinning"
+    namespace: "launcher"
+    description: "Enables taskbar pinning to allow user to switch between transient and persistent taskbar flavors."
+    bug: "270396583"
+}
+
+flag {
+    name: "enable_split_from_fullscreen_with_keyboard_shortcuts"
+    namespace: "launcher"
+    description: "Enables initiating split from a fullscreen app using keyboard shortcuts"
+    bug: "270394122"
+}

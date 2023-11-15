@@ -22,8 +22,8 @@ import static android.view.WindowManager.LayoutParams.TYPE_APPLICATION;
 import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING;
 import static com.android.launcher3.LauncherPrefs.TASKBAR_PINNING_KEY;
 import static com.android.launcher3.Utilities.dpiFromPx;
-import static com.android.launcher3.config.FeatureFlags.ENABLE_TASKBAR_PINNING;
 import static com.android.launcher3.config.FeatureFlags.ENABLE_TRANSIENT_TASKBAR;
+import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.FlagDebugUtils.appendFlag;
 import static com.android.launcher3.util.window.WindowManagerProxy.MIN_TABLET_WIDTH;
@@ -116,7 +116,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
         mContext = context;
         mDM = context.getSystemService(DisplayManager.class);
 
-        if (ENABLE_TASKBAR_PINNING.get()) {
+        if (enableTaskbarPinning()) {
             attachTaskbarPinningSharedPreferenceChangeListener(mContext);
         }
 
@@ -179,7 +179,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
     @Override
     public void close() {
         mDestroyed = true;
-        if (ENABLE_TASKBAR_PINNING.get()) {
+        if (enableTaskbarPinning()) {
             LauncherPrefs.get(mContext).removeListener(
                     mTaskbarPinningPreferenceChangeListener, TASKBAR_PINNING);
         }
@@ -414,7 +414,7 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
             //  sTransientTaskbarStatusForTests and update test to directly
             //  toggle shred preference to switch transient taskbar on/of
             if (!Utilities.isRunningInTestHarness()
-                    && ENABLE_TASKBAR_PINNING.get()
+                    && enableTaskbarPinning()
                     && mIsTaskbarPinned) {
                 return false;
             }

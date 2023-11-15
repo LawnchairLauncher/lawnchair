@@ -456,4 +456,17 @@
     <!-- Default Ime height. Used only for logging purposes.
     Assume this is default keyboard height in EN locale in case the keyboard height is not known when queried.-->
     <dimen name="default_ime_height">300dp</dimen>
+
+    <!-- Private Space parameters -->
+    <dimen name="ps_container_corner_radius">24dp</dimen>
+    <dimen name="ps_header_height">64dp</dimen>
+    <dimen name="ps_header_relative_layout_height">48dp</dimen>
+    <dimen name="ps_header_image_height">36dp</dimen>
+    <dimen name="ps_header_text_height">24dp</dimen>
+    <dimen name="ps_header_layout_margin">16dp</dimen>
+    <dimen name="ps_header_settings_icon_margin_end">8dp</dimen>
+    <dimen name="ps_header_text_size">16sp</dimen>
+    <dimen name="ps_button_height">36dp</dimen>
+    <dimen name="ps_button_width">36dp</dimen>
+    <dimen name="ps_lock_button_width">89dp</dimen>
 </resources>

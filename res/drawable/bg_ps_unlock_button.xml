@@ -1,0 +1,29 @@
+<!--
+  ~ Copyright (C) 2023 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/ps_button_height"
+    android:height="@dimen/ps_button_height"
+    android:viewportWidth="36"
+    android:viewportHeight="36">
+    <path
+        android:pathData="M18,0L18,0A18,18 0,0 1,36 18L36,18A18,18 0,0 1,18 36L18,36A18,18 0,0 1,0 18L0,18A18,18 0,0 1,18 0z"
+        android:fillColor="?attr/materialColorPrimaryFixedDim"/>
+    <path
+        android:pathData="M22.167,14.667H23C23.917,14.667 24.667,15.417 24.667,16.333V24.667C24.667,25.583 23.917,26.333 23,26.333H13C12.083,26.333 11.333,25.583 11.333,24.667V16.333C11.333,15.417 12.083,14.667 13,14.667H13.833V13C13.833,10.7 15.7,8.833 18,8.833C20.3,8.833 22.167,10.7 22.167,13V14.667ZM18,10.5C16.617,10.5 15.5,11.617 15.5,13V14.667H20.5V13C20.5,11.617 19.383,10.5 18,10.5ZM13,24.667V16.333H23V24.667H13ZM19.667,20.5C19.667,21.417 18.917,22.167 18,22.167C17.083,22.167 16.333,21.417 16.333,20.5C16.333,19.583 17.083,18.833 18,18.833C18.917,18.833 19.667,19.583 19.667,20.5Z"
+        android:fillColor="?attr/materialColorOnPrimaryFixed"
+        android:fillType="evenOdd"/>
+</vector>
