@@ -215,15 +215,31 @@ public final class LauncherInstrumentation {
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
      */
     public LauncherInstrumentation() {
-        this(InstrumentationRegistry.getInstrumentation());
+        this(InstrumentationRegistry.getInstrumentation(), false);
     }
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
-     * Deprecated: use the constructor without parameters instead.
+     */
+    public LauncherInstrumentation(boolean isLauncherTest) {
+        this(InstrumentationRegistry.getInstrumentation(), isLauncherTest);
+    }
+
+    /**
+     * Constructs the root of TAPL hierarchy. You get all other objects from it.
+     * @deprecated use the constructor without Instrumentation parameter instead.
      */
     @Deprecated
     public LauncherInstrumentation(Instrumentation instrumentation) {
+        this(instrumentation, false);
+    }
+
+    /**
+     * Constructs the root of TAPL hierarchy. You get all other objects from it.
+     * @deprecated use the constructor without Instrumentation parameter instead.
+     */
+    @Deprecated
+    public LauncherInstrumentation(Instrumentation instrumentation, boolean isLauncherTest) {
         mInstrumentation = instrumentation;
         mDevice = UiDevice.getInstance(instrumentation);
 
@@ -272,12 +288,17 @@ public final class LauncherInstrumentation {
                             .replaceAll("\\s", "");
                     mDevice.executeShellCommand(
                             "pm enable --user " + userId + " " + cn.flattenToString());
+
                     // Wait for Launcher restart after enabling test provider.
-                    for (int i = 0; i < 100; ++i) {
+                    final int iterations = isLauncherTest ? 300 : 100;
+
+                    for (int i = 0; i < iterations; ++i) {
                         final String currentPid = mDevice.executeShellCommand(launcherPidCommand)
                                 .replaceAll("\\s", "");
                         if (!currentPid.isEmpty() && !currentPid.equals(initialPid)) break;
-                        if (i == 99) fail("Launcher didn't restart after enabling test provider");
+                        if (i == iterations - 1) {
+                            fail("Launcher didn't restart after enabling test provider");
+                        }
                         SystemClock.sleep(100);
                     }
                 } catch (IOException e) {
