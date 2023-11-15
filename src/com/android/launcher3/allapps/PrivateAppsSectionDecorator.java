@@ -42,20 +42,19 @@ public class PrivateAppsSectionDecorator extends RecyclerView.ItemDecoration {
     private final RectF mTmpRect = new RectF();
     private final Context mContext;
     private final AlphabeticalAppsList<?> mAppsList;
-    private final PrivateProfileManager mPrivateProfileManager;
     private final UserCache mUserCache;
     private final Paint mPaint;
+    private final int mCornerRadius;
 
-    public PrivateAppsSectionDecorator(ActivityAllAppsContainerView<?> appsContainerView,
-            AlphabeticalAppsList<?> appsList,
-            PrivateProfileManager privateProfileManager) {
+    public PrivateAppsSectionDecorator(Context context, AlphabeticalAppsList<?> appsList) {
+        mContext = context;
         mAppsList = appsList;
-        mPrivateProfileManager = privateProfileManager;
-        mContext = appsContainerView.mActivityContext;
-        mUserCache = UserCache.getInstance(appsContainerView.mActivityContext);
+        mUserCache = UserCache.getInstance(context);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mPaint.setColor(ContextCompat.getColor(mContext,
+        mPaint.setColor(ContextCompat.getColor(context,
                 R.color.material_color_surface_container_high));
+        mCornerRadius = context.getResources().getDimensionPixelSize(
+                R.dimen.ps_container_corner_radius);
     }
 
     /** Decorates Private Space Header and Icon Rows to give the shape of a container. */
@@ -70,9 +69,7 @@ public class PrivateAppsSectionDecorator extends RecyclerView.ItemDecoration {
             int position = parent.getChildAdapterPosition(view);
             BaseAllAppsAdapter.AdapterItem adapterItem = mAppsList.getAdapterItems().get(position);
             // Rectangle that covers the bottom half of the PS Header View when Space is unlocked.
-            if (adapterItem.viewType == VIEW_TYPE_PRIVATE_SPACE_HEADER
-                    && mPrivateProfileManager
-                    .getCurrentState() == PrivateProfileManager.STATE_ENABLED) {
+            if (adapterItem.viewType == VIEW_TYPE_PRIVATE_SPACE_HEADER) {
                 // We flatten the bottom corners of the rectangle, so that it merges with
                 // the private space app row decorator.
                 mTmpRect.set(
@@ -103,9 +100,8 @@ public class PrivateAppsSectionDecorator extends RecyclerView.ItemDecoration {
                 iconView.getBottom());
         // Decorates last app row with rounded bottom corners.
         if (adapterPosition + numCol >= mAppsList.getAdapterItems().size()) {
-            int corner = mContext.getResources().getDimensionPixelSize(
-                    R.dimen.ps_container_corner_radius);
-            float[] mCornersBot = new float[]{0, 0, 0, 0, corner, corner, corner, corner};
+            float[] mCornersBot = new float[]{0, 0, 0, 0, mCornerRadius, mCornerRadius,
+                    mCornerRadius, mCornerRadius};
             mTmpPath.addRoundRect(mTmpRect, mCornersBot, Path.Direction.CW);
         } else {
             // Decorate other rows as a plain rectangle

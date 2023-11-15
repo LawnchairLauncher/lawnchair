@@ -21,6 +21,7 @@ import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static com.android.launcher3.allapps.UserProfileManager.STATE_DISABLED;
 import static com.android.launcher3.allapps.UserProfileManager.STATE_ENABLED;
 import static com.android.launcher3.allapps.UserProfileManager.STATE_TRANSITION;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -75,11 +76,12 @@ public class PrivateSpaceHeaderViewControllerTest {
     }
 
     @Test
-    public void privateProfileDisabled_psHeaderContainsLockedView() {
+    public void privateProfileDisabled_psHeaderContainsLockedView() throws Exception {
         Bitmap unlockButton = getBitmap(mContext.getDrawable(R.drawable.bg_ps_unlock_button));
         when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_DISABLED);
 
         mPsHeaderViewController.addPrivateSpaceHeaderViewElements(mPsHeaderLayout);
+        awaitTasksCompleted();
 
         int totalContainerHeaderView = 0;
         int totalLockUnlockButtonView = 0;
@@ -102,13 +104,14 @@ public class PrivateSpaceHeaderViewControllerTest {
     }
 
     @Test
-    public void privateProfileEnabled_psHeaderContainsUnlockedView() {
+    public void privateProfileEnabled_psHeaderContainsUnlockedView() throws Exception {
         Bitmap lockImage = getBitmap(mContext.getDrawable(R.drawable.bg_ps_lock_button));
         Bitmap settingsImage = getBitmap(mContext.getDrawable(R.drawable.bg_ps_settings_button));
         when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
         when(mPrivateProfileManager.isPrivateSpaceSettingsButtonVisible()).thenReturn(true);
 
         mPsHeaderViewController.addPrivateSpaceHeaderViewElements(mPsHeaderLayout);
+        awaitTasksCompleted();
 
         int totalContainerHeaderView = 0;
         int totalLockUnlockButtonView = 0;
@@ -138,12 +141,14 @@ public class PrivateSpaceHeaderViewControllerTest {
     }
 
     @Test
-    public void privateProfileEnabledAndNoSettingsIntent_psHeaderContainsUnlockedView() {
+    public void privateProfileEnabledAndNoSettingsIntent_psHeaderContainsUnlockedView()
+            throws Exception {
         Bitmap lockImage = getBitmap(mContext.getDrawable(R.drawable.bg_ps_lock_button));
         when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
         when(mPrivateProfileManager.isPrivateSpaceSettingsButtonVisible()).thenReturn(false);
 
         mPsHeaderViewController.addPrivateSpaceHeaderViewElements(mPsHeaderLayout);
+        awaitTasksCompleted();
 
         int totalContainerHeaderView = 0;
         int totalLockUnlockButtonView = 0;
@@ -168,11 +173,12 @@ public class PrivateSpaceHeaderViewControllerTest {
     }
 
     @Test
-    public void privateProfileTransitioning_psHeaderContainsTransitionView() {
+    public void privateProfileTransitioning_psHeaderContainsTransitionView() throws Exception {
         Bitmap transitionImage = getBitmap(mContext.getDrawable(R.drawable.bg_ps_transition_image));
         when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_TRANSITION);
 
         mPsHeaderViewController.addPrivateSpaceHeaderViewElements(mPsHeaderLayout);
+        awaitTasksCompleted();
 
         int totalContainerHeaderView = 0;
         int totalLockUnlockButtonView = 0;
@@ -215,5 +221,9 @@ public class PrivateSpaceHeaderViewControllerTest {
             drawable.draw(canvas);
         }
         return result;
+    }
+
+    private static void awaitTasksCompleted() throws Exception {
+        UI_HELPER_EXECUTOR.submit(() -> null).get();
     }
 }

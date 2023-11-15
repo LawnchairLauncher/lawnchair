@@ -19,6 +19,7 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.MAIN;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_HEADER;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED;
+import static com.android.launcher3.util.SettingsCache.PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -29,6 +30,7 @@ import android.os.UserManager;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.pm.UserCache;
 import com.android.launcher3.util.Preconditions;
+import com.android.launcher3.util.SettingsCache;
 
 import java.util.ArrayList;
 import java.util.function.Predicate;
@@ -44,11 +46,12 @@ public class PrivateProfileManager extends UserProfileManager {
     private static final String PS_SETTINGS_FRAGMENT_VALUE = "AndroidPrivateSpace_personal";
     private final ActivityAllAppsContainerView<?> mAllApps;
     private final Predicate<UserHandle> mPrivateProfileMatcher;
+    private PrivateAppsSectionDecorator mPrivateAppsSectionDecorator;
 
     public PrivateProfileManager(UserManager userManager,
-            UserCache userCache,
-            ActivityAllAppsContainerView allApps,
-            StatsLogManager statsLogManager) {
+            ActivityAllAppsContainerView<?> allApps,
+            StatsLogManager statsLogManager,
+            UserCache userCache) {
         super(userManager, statsLogManager, userCache);
         mAllApps = allApps;
         mPrivateProfileMatcher = (user) -> userCache.getUserInfo(user).isPrivate();
@@ -75,9 +78,8 @@ public class PrivateProfileManager extends UserProfileManager {
 
     /** Whether private profile should be hidden on Launcher. */
     public boolean isPrivateSpaceHidden() {
-        // TODO (b/289223923): Update this when we are able to read PsSettingsFlag
-        //  from SettingsProvider.
-        return false;
+        return getCurrentState() == STATE_DISABLED && SettingsCache.INSTANCE
+                    .get(mAllApps.mActivityContext).getValue(PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI, 0);
     }
 
     /** Resets the current state of Private Profile, w.r.t. to Launcher. */
@@ -86,6 +88,7 @@ public class PrivateProfileManager extends UserProfileManager {
                 .hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED);
         int updatedState = isEnabled ? STATE_ENABLED : STATE_DISABLED;
         setCurrentState(updatedState);
+        resetPrivateSpaceDecorator(updatedState);
     }
 
     /** Opens the Private Space Settings Entry Point. */
@@ -102,9 +105,27 @@ public class PrivateProfileManager extends UserProfileManager {
         Preconditions.assertNonUiThread();
         Intent psSettingsIntent = new Intent(SAFETY_CENTER_INTENT);
         psSettingsIntent.putExtra(PS_SETTINGS_FRAGMENT_KEY, PS_SETTINGS_FRAGMENT_VALUE);
-        ResolveInfo resolveInfo = mAllApps.getContext().getPackageManager()
+        ResolveInfo resolveInfo = mAllApps.mActivityContext.getPackageManager()
                 .resolveActivity(psSettingsIntent, PackageManager.MATCH_SYSTEM_ONLY);
         return resolveInfo != null;
+    }
+
+    void resetPrivateSpaceDecorator(int updatedState) {
+        if (updatedState == STATE_ENABLED) {
+            // Add Private Space Decorator to the Recycler view.
+            if (mPrivateAppsSectionDecorator == null) {
+                mPrivateAppsSectionDecorator = new PrivateAppsSectionDecorator(
+                        mAllApps.mActivityContext,
+                        mAllApps.mAH.get(MAIN).mAppsList);
+            }
+            mAllApps.mAH.get(MAIN).mRecyclerView.addItemDecoration(mPrivateAppsSectionDecorator);
+        } else {
+            // Remove Private Space Decorator from the Recycler view.
+            if (mPrivateAppsSectionDecorator != null) {
+                mAllApps.mAH.get(MAIN).mRecyclerView
+                        .removeItemDecoration(mPrivateAppsSectionDecorator);
+            }
+        }
     }
 
     /** Posts quiet mode enable/disable call for private profile. */
