@@ -695,7 +695,9 @@ public class TouchInteractionService extends Service {
 
     private void onInputEvent(InputEvent ev) {
         if (!(ev instanceof MotionEvent)) {
-            Log.e(TAG, "Unknown event " + ev);
+            ActiveGestureLog.INSTANCE.addLog(new CompoundString("TIS.onInputEvent: ")
+                    .append("Cannot process input event, received unknown event ")
+                    .append(ev.toString()));
             return;
         }
         MotionEvent event = (MotionEvent) ev;
@@ -703,8 +705,14 @@ public class TouchInteractionService extends Service {
         TestLogging.recordMotionEvent(
                 TestProtocol.SEQUENCE_TIS, "TouchInteractionService.onInputEvent", event);
 
-        if (!LockedUserState.get(this).isUserUnlocked() || (mDeviceState.isButtonNavMode()
+        boolean isUserUnlocked = LockedUserState.get(this).isUserUnlocked();
+        if (!isUserUnlocked || (mDeviceState.isButtonNavMode()
                 && !isTrackpadMotionEvent(event))) {
+            ActiveGestureLog.INSTANCE.addLog(new CompoundString("TIS.onInputEvent: ")
+                    .append("Cannot process input event, ")
+                    .append(!isUserUnlocked
+                            ? "user is locked"
+                            : "using 3-button nav and event is not a trackpad event"));
             return;
         }
 
@@ -715,12 +723,19 @@ public class TouchInteractionService extends Service {
         // an ACTION_HOVER_ENTER will fire as well.
         boolean isHoverActionWithoutConsumer =
                 event.isHoverEvent() && (mUncheckedConsumer.getType() & TYPE_CURSOR_HOVER) == 0;
+        CompoundString reasonString = action == ACTION_DOWN
+                ? new CompoundString("onMotionEvent: ") : CompoundString.NO_OP;
         if (action == ACTION_DOWN || isHoverActionWithoutConsumer) {
             mRotationTouchHelper.setOrientationTransformIfNeeded(event);
 
-            if ((!mDeviceState.isOneHandedModeActive()
-                    && mRotationTouchHelper.isInSwipeUpTouchRegion(event))
+            boolean isOneHandedModeActive = mDeviceState.isOneHandedModeActive();
+            boolean isInSwipeUpTouchRegion = mRotationTouchHelper.isInSwipeUpTouchRegion(event);
+            if ((!isOneHandedModeActive && isInSwipeUpTouchRegion)
                     || isHoverActionWithoutConsumer) {
+                reasonString.append(!isOneHandedModeActive && isInSwipeUpTouchRegion
+                                ? "one handed mode is not active and event is in swipe up region"
+                                : "isHoverActionWithoutConsumer == true")
+                        .append(", creating new input consumer");
                 // Clone the previous gesture state since onConsumerAboutToBeSwitched might trigger
                 // onConsumerInactive and wipe the previous gesture state
                 GestureState prevGestureState = new GestureState(mGestureState);
@@ -731,9 +746,13 @@ public class TouchInteractionService extends Service {
                 mGestureState = newGestureState;
                 mConsumer = newConsumer(prevGestureState, mGestureState, event);
                 mUncheckedConsumer = mConsumer;
-            } else if (LockedUserState.get(this).isUserUnlocked()
-                    && (mDeviceState.isFullyGesturalNavMode() || isTrackpadMultiFingerSwipe(event))
+            } else if ((mDeviceState.isFullyGesturalNavMode() || isTrackpadMultiFingerSwipe(event))
                     && mDeviceState.canTriggerAssistantAction(event)) {
+                reasonString.append(mDeviceState.isFullyGesturalNavMode()
+                                ? "using fully gestural nav"
+                                : "event is a trackpad multi-finger swipe")
+                        .append(" and event can trigger assistant action")
+                        .append(", consuming gesture for assistant action");
                 mGestureState = createGestureState(mGestureState,
                         getTrackpadGestureType(event));
                 // Do not change mConsumer as if there is an ongoing QuickSwitch gesture, we
@@ -741,6 +760,8 @@ public class TouchInteractionService extends Service {
                 // happen if the next gesture is also quick switch.
                 mUncheckedConsumer = tryCreateAssistantInputConsumer(mGestureState, event);
             } else if (mDeviceState.canTriggerOneHandedAction(event)) {
+                reasonString.append("event can trigger one-handed action")
+                                .append(", consuming gesture for one-handed action");
                 // Consume gesture event for triggering one handed feature.
                 mUncheckedConsumer = new OneHandedModeInputConsumer(this, mDeviceState,
                         InputConsumer.NO_OP, mInputMonitorCompat);
@@ -758,6 +779,7 @@ public class TouchInteractionService extends Service {
         if (mUncheckedConsumer != InputConsumer.NO_OP) {
             switch (action) {
                 case ACTION_DOWN:
+                    ActiveGestureLog.INSTANCE.addLog(reasonString);
                     // fall through
                 case ACTION_UP:
                     ActiveGestureLog.INSTANCE.addLog(
