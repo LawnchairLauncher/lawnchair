@@ -33,6 +33,12 @@
             "matchPackagePatterns": [
                 "androidx.lifecycle:*"
             ]
+        },
+        {
+            "groupName": "Dagger",
+            "matchPackagePrefixes": [
+                "com.google.dagger"
+            ]
         }
     ]
 }

@@ -40,7 +40,6 @@ class LawnchairSearchAdapterProvider(
 
     override fun onBindView(holder: BaseAllAppsAdapter.ViewHolder, position: Int) {
         val adapterItem = appsView.mSearchRecyclerView.mApps.adapterItems[position] as SearchAdapterItem
-        if ((adapterItem.viewType and SEARCH_RESULT_DIVIDER) != 0) return
         val itemView = holder.itemView as SearchResultView
         itemView.bind(adapterItem.searchTarget, emptyList())
         if (itemView.isQuickLaunch) {
