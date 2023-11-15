@@ -950,24 +950,23 @@ public class QuickstepLauncher extends Launcher {
                 mAppTransitionManager.hasControlRemoteAppTransitionPermission()
                         ? mAppTransitionManager.getActivityLaunchOptions(v)
                         : super.getActivityLaunchOptions(v, item);
-        boolean isSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;
-        if (mLastTouchUpTime > 0 && isSupported) {
+        if (mLastTouchUpTime > 0 && app.lawnchair.LawnchairApp.isAtleastT()) {
             activityOptions.options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_LAUNCHER,
                     mLastTouchUpTime);
         }
         if (item != null && (item.animationType == DEFAULT_NO_ICON
-                || item.animationType == VIEW_BACKGROUND) && isSupported) {
+                || item.animationType == VIEW_BACKGROUND) && app.lawnchair.LawnchairApp.isAtleastT()) {
             activityOptions.options.setSplashScreenStyle(
                     SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR);
         } else {
-            if (isSupported) {
+            if (app.lawnchair.LawnchairApp.isAtleastT()) {
                 activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
             }
         }
         activityOptions.options.setLaunchDisplayId(
                 (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
                         : Display.DEFAULT_DISPLAY);
-        if(isSupported){
+        if(app.lawnchair.LawnchairApp.isAtleastT()){
             addLaunchCookie(item, activityOptions.options);
         }
         return activityOptions;

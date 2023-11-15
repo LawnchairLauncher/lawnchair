@@ -46,6 +46,7 @@ import com.android.launcher3.BuildConfig
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.quickstep.RecentsActivity
 import com.android.systemui.shared.system.QuickStepContract
 import java.io.File
@@ -54,6 +55,7 @@ class LawnchairApp : Application() {
     private val compatible = Build.VERSION.SDK_INT in BuildConfig.QUICKSTEP_MIN_SDK..BuildConfig.QUICKSTEP_MAX_SDK
     private val isRecentsComponent: Boolean by lazy { checkRecentsComponent() }
     private val recentsEnabled: Boolean get() = compatible && isRecentsComponent
+    private val isAtleastT = Utilities.ATLEAST_T
     internal var accessibilityService: LawnchairAccessibilityService? = null
     val isVibrateOnIconAnimation: Boolean by lazy { getSystemUiBoolean("config_vibrateOnIconAnimation", false) }
 
@@ -199,6 +201,8 @@ class LawnchairApp : Application() {
 
         @JvmStatic
         val isRecentsEnabled: Boolean get() = instance.recentsEnabled
+        @JvmStatic
+        val isAtleastT: Boolean get() = instance.isAtleastT
 
         fun Launcher.showQuickstepWarningIfNecessary() {
             val launcher = this

@@ -24,7 +24,6 @@ import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VAL
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.os.Build;
 import android.view.CrossWindowBlurListeners;
 import android.view.View;
 import android.view.ViewRootImpl;
@@ -33,7 +32,6 @@ import android.view.ViewTreeObserver;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.statemanager.StateManager.StateHandler;
 import com.android.launcher3.states.StateAnimationConfig;
@@ -76,7 +74,7 @@ public class DepthController extends BaseDepthController implements StateHandler
             mOnAttachListener = new View.OnAttachStateChangeListener() {
                 @Override
                 public void onViewAttachedToWindow(View view) {
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    if(app.lawnchair.LawnchairApp.isAtleastT()){
                         CrossWindowBlurListeners.getInstance().addListener(mLauncher.getMainExecutor(),
                                 mCrossWindowBlurListener);
                     }
@@ -89,7 +87,7 @@ public class DepthController extends BaseDepthController implements StateHandler
 
                 @Override
                 public void onViewDetachedFromWindow(View view) {
-                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+                    if(app.lawnchair.LawnchairApp.isAtleastT()){
                         CrossWindowBlurListeners.getInstance().removeListener(mCrossWindowBlurListener);
                     }
                     mLauncher.getScrimView().removeOpaquenessListener(mOpaquenessListener);
@@ -141,7 +139,7 @@ public class DepthController extends BaseDepthController implements StateHandler
 
     @Override
     public void applyDepthAndBlur() {
-        if(Utilities.ATLEAST_R){
+        if(app.lawnchair.LawnchairApp.isAtleastT()){
             ensureDependencies();
             super.applyDepthAndBlur();
         }

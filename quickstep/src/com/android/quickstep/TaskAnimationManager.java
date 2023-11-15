@@ -28,7 +28,6 @@ import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.SystemProperties;
 import android.util.Log;
 import android.view.RemoteAnimationTarget;
@@ -245,8 +244,7 @@ public class TaskAnimationManager implements RecentsAnimationCallbacks.RecentsAn
             if (!homeIsOnTop) {
                 options.setTransientLaunch();
             }
-            boolean isSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU;
-            if(isSupported){
+            if(app.lawnchair.LawnchairApp.isAtleastT()){
                 options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_RECENTS_ANIMATION, eventTime);
             }
             UI_HELPER_EXECUTOR.execute(() -> mCtx.startActivity(intent, options.toBundle()));

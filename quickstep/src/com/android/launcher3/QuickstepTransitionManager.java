@@ -80,7 +80,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.CancellationSignal;
 import android.os.Handler;
 import android.os.IBinder;
@@ -262,9 +261,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         mDragLayer = mLauncher.getDragLayer();
         mHandler = new Handler(Looper.getMainLooper());
         mDeviceProfile = mLauncher.getDeviceProfile();
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-            mBackAnimationController = new LauncherBackAnimationController(mLauncher, this);
-        }
+        mBackAnimationController = LawnchairApp.isAtleastT() ? new LauncherBackAnimationController(mLauncher, this) : null;
         Resources res = mLauncher.getResources();
         mClosingWindowTransY = res.getDimensionPixelSize(R.dimen.closing_window_trans_y);
         mMaxShadowRadius = res.getDimensionPixelSize(R.dimen.max_shadow_radius);
@@ -2070,7 +2067,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private static class MyDepthController extends DepthController {
         MyDepthController(Launcher l) {
             super(l);
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            if(LawnchairApp.isAtleastT()){
                 setCrossWindowBlursEnabled(
                         CrossWindowBlurListeners.getInstance().isCrossWindowBlurEnabled());
             }
@@ -2078,7 +2075,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
 
         @Override
         public void setSurface(SurfaceControl surface) {
-            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            if(LawnchairApp.isAtleastT()){
                 super.setSurface(surface);
             }
         }
