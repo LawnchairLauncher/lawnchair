@@ -462,8 +462,6 @@ public final class RecentsActivity extends StatefulActivity<RecentsState> {
     @Override
     public void dispatchDeviceProfileChanged() {
         super.dispatchDeviceProfileChanged();
-        Trace.instantForTrack(TRACE_TAG_APP, "RecentsActivity#DeviceProfileChanged",
-                getDeviceProfile().toSmallString());
     }
 
     private AnimatorListenerAdapter resetStateListener() {
