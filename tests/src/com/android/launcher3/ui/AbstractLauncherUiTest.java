@@ -114,9 +114,9 @@ public abstract class AbstractLauncherUiTest {
     protected final LauncherInstrumentation mLauncher = createLauncherInstrumentation();
 
     @NonNull
-    private static LauncherInstrumentation createLauncherInstrumentation() {
+    public static LauncherInstrumentation createLauncherInstrumentation() {
         waitForSetupWizardDismissal(); // precondition for creating LauncherInstrumentation
-        return new LauncherInstrumentation();
+        return new LauncherInstrumentation(true);
     }
 
     protected Context mTargetContext;
