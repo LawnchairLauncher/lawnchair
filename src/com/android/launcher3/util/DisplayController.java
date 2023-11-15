@@ -431,6 +431,11 @@ public class DisplayController implements ComponentCallbacks, SafeCloseable {
             return smallestSizeDp(bounds) >= MIN_TABLET_WIDTH;
         }
 
+        /** Getter for {@link #navigationMode} to allow mocking. */
+        public NavigationMode getNavigationMode() {
+            return navigationMode;
+        }
+
         /**
          * Returns smallest size in dp for given bounds.
          */
