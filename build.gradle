@@ -172,8 +172,8 @@ android {
         debug {
             applicationIdSuffix ".debug"
             resValue("string", "derived_app_name", "Lawnchair (Debug)")
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             proguardFiles "proguard-android-optimize.txt", "proguard.pro"
         }
 
@@ -389,7 +389,9 @@ dependencies {
     implementation 'com.airbnb.android:lottie:6.1.0'
 
     // Smartspacer
-    implementation 'com.kieronquinn.smartspacer:sdk-client:1.0.4'
+    implementation('com.kieronquinn.smartspacer:sdk-client:1.0.4') {
+        exclude group: "com.github.skydoves", module: "balloon"
+    }
 }
 
 ksp {
