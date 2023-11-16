@@ -1421,6 +1421,8 @@ public class DeviceProfile {
             folderChildIconSizePx = cellContentDimensions.getIconSizePx();
             folderChildDrawablePaddingPx = cellContentDimensions.getIconDrawablePaddingPx();
             folderChildTextSizePx = cellContentDimensions.getIconTextSizePx();
+            folderLabelTextSizePx = Math.max(pxFromSp(MIN_FOLDER_TEXT_SIZE_SP, mMetrics, scale),
+                    (int) (folderChildTextSizePx * folderLabelTextScale));
         } else if (mIsScalableGrid) {
             if (inv.folderStyle == INVALID_RESOURCE_HANDLE) {
                 folderCellWidthPx = roundPxValueFromFloat(getCellSize().x * scale);
