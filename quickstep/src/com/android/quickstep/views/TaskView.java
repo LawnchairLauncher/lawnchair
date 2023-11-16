@@ -119,6 +119,8 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.QuickStepContract;
 
+import kotlin.Unit;
+
 import java.lang.annotation.Retention;
 import java.util.Arrays;
 import java.util.Collections;
@@ -126,8 +128,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-
-import kotlin.Unit;
 
 /**
  * A task in the Recents view.
@@ -304,32 +304,6 @@ public class TaskView extends FrameLayout implements Reusable {
                 }
             };
 
-    private static final FloatProperty<TaskView> NON_GRID_TRANSLATION_X =
-            new FloatProperty<TaskView>("nonGridTranslationX") {
-                @Override
-                public void setValue(TaskView taskView, float v) {
-                    taskView.setNonGridTranslationX(v);
-                }
-
-                @Override
-                public Float get(TaskView taskView) {
-                    return taskView.mNonGridTranslationX;
-                }
-            };
-
-    private static final FloatProperty<TaskView> NON_GRID_TRANSLATION_Y =
-            new FloatProperty<TaskView>("nonGridTranslationY") {
-                @Override
-                public void setValue(TaskView taskView, float v) {
-                    taskView.setNonGridTranslationY(v);
-                }
-
-                @Override
-                public Float get(TaskView taskView) {
-                    return taskView.mNonGridTranslationY;
-                }
-            };
-
     public static final FloatProperty<TaskView> GRID_END_TRANSLATION_X =
             new FloatProperty<TaskView>("gridEndTranslationX") {
                 @Override
@@ -386,7 +360,6 @@ public class TaskView extends FrameLayout implements Reusable {
     // Applied as a complement to gridTranslation, for adjusting the carousel overview and quick
     // switch.
     private float mNonGridTranslationX;
-    private float mNonGridTranslationY;
     private float mNonGridPivotTranslationX;
     // Used when in SplitScreenSelectState
     private float mSplitSelectTranslationY;
@@ -1323,7 +1296,7 @@ public class TaskView extends FrameLayout implements Reusable {
     }
 
     protected void resetPersistentViewTransforms() {
-        mNonGridTranslationX = mNonGridTranslationY = mGridTranslationX =
+        mNonGridTranslationX = mGridTranslationX =
                 mGridTranslationY = mBoxTranslationY = mNonGridPivotTranslationX = 0f;
         resetViewTransforms();
     }
@@ -1494,14 +1467,16 @@ public class TaskView extends FrameLayout implements Reusable {
         applyTranslationY();
     }
 
-    private void setNonGridTranslationX(float nonGridTranslationX) {
-        mNonGridTranslationX = nonGridTranslationX;
-        applyTranslationX();
+    public float getNonGridTranslationX() {
+        return mNonGridTranslationX;
     }
 
-    private void setNonGridTranslationY(float nonGridTranslationY) {
-        mNonGridTranslationY = nonGridTranslationY;
-        applyTranslationY();
+    /**
+     * Updates X coordinate of non-grid translation.
+     */
+    public void setNonGridTranslationX(float nonGridTranslationX) {
+        mNonGridTranslationX = nonGridTranslationX;
+        applyTranslationX();
     }
 
     public void setGridTranslationX(float gridTranslationX) {
@@ -1540,7 +1515,7 @@ public class TaskView extends FrameLayout implements Reusable {
         if (gridEnabled) {
             scrollAdjustment += mGridTranslationX;
         } else {
-            scrollAdjustment += getPrimaryNonGridTranslationProperty().get(this);
+            scrollAdjustment += getNonGridTranslationX();
         }
         return scrollAdjustment;
     }
@@ -1586,9 +1561,7 @@ public class TaskView extends FrameLayout implements Reusable {
      * change according to a temporary state (e.g. task offset).
      */
     public float getPersistentTranslationY() {
-        return mBoxTranslationY
-                + getNonGridTrans(mNonGridTranslationY)
-                + getGridTrans(mGridTranslationY);
+        return mBoxTranslationY + getGridTrans(mGridTranslationY);
     }
 
     public FloatProperty<TaskView> getPrimarySplitTranslationProperty() {
@@ -1624,16 +1597,6 @@ public class TaskView extends FrameLayout implements Reusable {
     public FloatProperty<TaskView> getTaskResistanceTranslationProperty() {
         return getPagedOrientationHandler().getSecondaryValue(
                 TASK_RESISTANCE_TRANSLATION_X, TASK_RESISTANCE_TRANSLATION_Y);
-    }
-
-    public FloatProperty<TaskView> getPrimaryNonGridTranslationProperty() {
-        return getPagedOrientationHandler().getPrimaryValue(
-                NON_GRID_TRANSLATION_X, NON_GRID_TRANSLATION_Y);
-    }
-
-    public FloatProperty<TaskView> getSecondaryNonGridTranslationProperty() {
-        return getPagedOrientationHandler().getSecondaryValue(
-                NON_GRID_TRANSLATION_X, NON_GRID_TRANSLATION_Y);
     }
 
     @Override
