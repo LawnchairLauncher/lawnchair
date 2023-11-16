@@ -98,6 +98,8 @@
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"ಸ್ಪ್ಲಿಟ್ ಸ್ಕ್ರೀನ್ ಆಯ್ಕೆಯಿಂದ ನಿರ್ಗಮಿಸಿ"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"\"ಪರದೆ ಬೇರ್ಪಡಿಸಿ\" ಬಳಸಲು ಬೇರೆ ಆ್ಯಪ್ ಅನ್ನು ಆಯ್ಕೆಮಾಡಿ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ಆ್ಯಪ್ ಅಥವಾ ನಿಮ್ಮ ಸಂಸ್ಥೆಯು ಈ ಕ್ರಿಯೆಯನ್ನು ಅನುಮತಿಸುವುದಿಲ್ಲ"</string>
+    <!-- no translation found for split_widgets_not_supported (1355743038053053866) -->
+    <skip />
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"ನ್ಯಾವಿಗೇಶನ್ ಟ್ಯುಟೋರಿಯಲ್ ಸ್ಕಿಪ್ ಮಾಡಬೇಕೇ?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"<xliff:g id="NAME">%1$s</xliff:g> ಆ್ಯಪ್‌ನಲ್ಲಿ ಇದನ್ನು ನಂತರ ಕಾಣಬಹುದು"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"ರದ್ದುಮಾಡಿ"</string>

@@ -98,6 +98,8 @@
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"화면 분할 선택 종료"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"화면 분할을 사용하려면 다른 앱을 선택하세요."</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"이 작업은 앱 또는 조직에서 허용되지 않습니다."</string>
+    <!-- no translation found for split_widgets_not_supported (1355743038053053866) -->
+    <skip />
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"이동 방법 튜토리얼을 건너뛰시겠습니까?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"이 튜토리얼은 <xliff:g id="NAME">%1$s</xliff:g> 앱에서 다시 볼 수 있습니다."</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"취소"</string>
