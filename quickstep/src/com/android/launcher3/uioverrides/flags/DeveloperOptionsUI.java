@@ -21,6 +21,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import static com.android.launcher3.LauncherPrefs.ALL_APPS_OVERVIEW_THRESHOLD;
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY;
 import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT;
 import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS;
 import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT;
@@ -359,6 +360,8 @@ public class DeveloperOptionsUI {
                     1, 5, 1, LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT));
             category.addPreference(createSeekBarPreference("Haptic hint iterations (12 ms each)",
                     0, 100, 1, LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS));
+            category.addPreference(createSeekBarPreference("Haptic hint delay (ms)",
+                    0, 400, 1, LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY));
         }
     }
 
