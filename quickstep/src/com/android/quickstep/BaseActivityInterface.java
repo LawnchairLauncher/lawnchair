@@ -380,13 +380,6 @@ public abstract class BaseActivityInterface<STATE_TYPE extends BaseState<STATE_T
     }
 
     /**
-     * Calculates the task size for the desktop task
-     */
-    public final void calculateDesktopTaskSize(Context context, DeviceProfile dp, Rect outRect) {
-        calculateFocusTaskSize(context, dp, outRect);
-    }
-
-    /**
      * Calculates the modal taskView size for the provided device configuration
      */
     public final void calculateModalTaskSize(Context context, DeviceProfile dp, Rect outRect,
