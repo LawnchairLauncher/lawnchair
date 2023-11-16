@@ -16,6 +16,8 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.ui.TaplTestsLauncher3.initialize;
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -30,6 +32,7 @@ import androidx.test.filters.SmallTest;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
+import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -80,6 +83,7 @@ public class TaplKeyboardFocusTest extends AbstractLauncherUiTest {
     }
 
     @Test
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/311410127
     public void testAllAppsExitSearchAndFocusSearchResults() {
         final HomeAllApps allApps = mLauncher.goHome().switchToAllApps();
         assertTrue("Launcher internal state is not All Apps",
