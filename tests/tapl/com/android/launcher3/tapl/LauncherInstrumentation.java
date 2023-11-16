@@ -28,6 +28,8 @@ import static com.android.launcher3.tapl.Folder.FOLDER_CONTENT_RES_ID;
 import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_NUM_ALL_APPS_COLUMNS;
+import static com.android.launcher3.testing.shared.TestProtocol.WORKSPACE_LONG_PRESS;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 
 import android.app.ActivityManager;
 import android.app.Instrumentation;
@@ -1705,6 +1707,7 @@ public final class LauncherInstrumentation {
         final Point start = new Point(startX, startY);
         final Point end = new Point(endX, endY);
         sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start, gestureScope);
+        testLogD(WORKSPACE_LONG_PRESS, "Sent ACTION_DOWN");
         if (mTrackpadGestureType != TrackpadGestureType.NONE) {
             sendPointer(downTime, downTime, getPointerAction(MotionEvent.ACTION_POINTER_DOWN, 1),
                     start, gestureScope);
@@ -1909,6 +1912,10 @@ public final class LauncherInstrumentation {
         long steps = duration / GESTURE_STEP_MS;
 
         long currentTime = startTime;
+        testLogD(WORKSPACE_LONG_PRESS, "movingPointer" +
+                " downTime: " + downTime + " startTime: " + startTime +
+                " duration: " + duration + " isDecel? " + isDecelerating +
+                " gestureScope: " + gestureScope);
 
         if (isDecelerating) {
             // formula: V = V0 - D*T, assuming V = 0 when T = duration
