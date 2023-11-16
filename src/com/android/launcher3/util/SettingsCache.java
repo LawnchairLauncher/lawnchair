@@ -57,6 +57,9 @@ public class SettingsCache extends ContentObserver implements SafeCloseable {
             "swipe_bottom_to_notification_enabled";
     public static final Uri ROTATION_SETTING_URI =
             Settings.System.getUriFor(ACCELEROMETER_ROTATION);
+    /** Hidden field {@link Settings.System#TOUCHPAD_NATURAL_SCROLLING}. */
+    public static final Uri TOUCHPAD_NATURAL_SCROLLING = Settings.System.getUriFor(
+            "touchpad_natural_scrolling");
 
     private static final String SYSTEM_URI_PREFIX = Settings.System.CONTENT_URI.toString();
     private static final String GLOBAL_URI_PREFIX = Settings.Global.CONTENT_URI.toString();

@@ -273,6 +273,7 @@ abstract class AbstractDeviceProfileTest {
         val realBounds = windowsBounds[rotation]
         whenever(windowManagerProxy.getDisplayInfo(any())).thenReturn(displayInfo)
         whenever(windowManagerProxy.getRealBounds(any(), any())).thenReturn(realBounds)
+        whenever(windowManagerProxy.getCurrentBounds(any())).thenReturn(realBounds.bounds)
         whenever(windowManagerProxy.getRotation(any())).thenReturn(rotation)
         whenever(windowManagerProxy.getNavigationMode(any()))
             .thenReturn(

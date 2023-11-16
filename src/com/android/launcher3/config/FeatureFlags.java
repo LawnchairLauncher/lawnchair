@@ -286,6 +286,22 @@ public final class FeatureFlags {
             getReleaseFlag(303023676, "ENABLE_SEARCH_HAPTIC_HINT", ENABLED,
                     "Enables haptic hint when long pressing on the bottom bar nav handle.");
 
+    public static final IntFlag LPNH_HAPTIC_HINT_START_SCALE_PERCENT =
+            getIntFlag(309972570, "FLAG_LPNH_HAPTIC_HINT_START_SCALE_PERCENT", 0,
+            "Haptic hint start scale.");
+
+    public static final IntFlag LPNH_HAPTIC_HINT_END_SCALE_PERCENT =
+            getIntFlag(309972570, "FLAG_LPNH_HAPTIC_HINT_END_SCALE_PERCENT", 100,
+            "Haptic hint end scale.");
+
+    public static final IntFlag LPNH_HAPTIC_HINT_SCALE_EXPONENT =
+            getIntFlag(309972570, "FLAG_LPNH_HAPTIC_HINT_SCALE_EXPONENT", 1,
+            "Haptic hint scale exponent.");
+
+    public static final IntFlag LPNH_HAPTIC_HINT_ITERATIONS =
+            getIntFlag(309972570, "FLAG_LPNH_HAPTIC_HINT_ITERATIONS", 50,
+            "Haptic hint number of iterations.");
+
     // TODO(Block 17): Clean up flags
     // Aconfig migration complete for ENABLE_TASKBAR_PINNING.
     private static final BooleanFlag ENABLE_TASKBAR_PINNING = getDebugFlag(270396583,

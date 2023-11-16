@@ -273,11 +273,11 @@ public final class LauncherInstrumentation {
                     mDevice.executeShellCommand(
                             "pm enable --user " + userId + " " + cn.flattenToString());
                     // Wait for Launcher restart after enabling test provider.
-                    for (int i = 0; i < 300; ++i) {
+                    for (int i = 0; i < 100; ++i) {
                         final String currentPid = mDevice.executeShellCommand(launcherPidCommand)
                                 .replaceAll("\\s", "");
                         if (!currentPid.isEmpty() && !currentPid.equals(initialPid)) break;
-                        if (i == 299) fail("Launcher didn't restart after enabling test provider");
+                        if (i == 99) fail("Launcher didn't restart after enabling test provider");
                         SystemClock.sleep(100);
                     }
                 } catch (IOException e) {
