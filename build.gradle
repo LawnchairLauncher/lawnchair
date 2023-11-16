@@ -71,7 +71,7 @@ ext {
     FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
     accompanist_version = '0.32.0'
     libsu_version = '5.2.1'
-    protocVersion = '3.25.0'
+    protocVersion = '3.25.1'
     room_version = '2.6.0'
     optoVersion = "1.0.18"
 }
