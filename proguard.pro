@@ -150,6 +150,7 @@
 -keep class com.android.launcher3.Utilities { *; }
 -keep class app.lawnchair.LawnchairLauncher { *; }
 -keep class com.google.protobuf.Timestamp { *; }
+-keep class androidx.core.app.CoreComponentFactory { *; }
 -keepattributes InnerClasses
 
 -keep class app.lawnchair.compatlib.** {
