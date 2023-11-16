@@ -1042,6 +1042,11 @@ public class QuickstepLauncher extends Launcher {
         }
     }
     @Override
+    public void tryClearAccessibilityFocus(View view) {
+        view.clearAccessibilityFocus();
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // If Launcher shuts downs during split select, we save some extra data in the recovery
