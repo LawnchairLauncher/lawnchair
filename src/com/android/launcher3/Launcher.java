@@ -27,7 +27,6 @@ import static com.android.launcher3.AbstractFloatingView.TYPE_FOLDER;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ICON_SURFACE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_REBIND_SAFE;
 import static com.android.launcher3.AbstractFloatingView.getTopOpenViewWithType;
-import static com.android.launcher3.BuildConfig.APPLICATION_ID;
 import static com.android.launcher3.BuildConfig.QSB_ON_FIRST_SCREEN;
 import static com.android.launcher3.LauncherAnimUtils.HOTSEAT_SCALE_PROPERTY_FACTORY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_INDEX_WIDGET_TRANSITION;
@@ -49,8 +48,8 @@ import static com.android.launcher3.LauncherConstants.TraceEvents.COLD_STARTUP_T
 import static com.android.launcher3.LauncherConstants.TraceEvents.COLD_STARTUP_TRACE_METHOD_NAME;
 import static com.android.launcher3.LauncherConstants.TraceEvents.DISPLAY_ALL_APPS_TRACE_COOKIE;
 import static com.android.launcher3.LauncherConstants.TraceEvents.DISPLAY_ALL_APPS_TRACE_METHOD_NAME;
-import static com.android.launcher3.LauncherConstants.TraceEvents.DISPLAY_WORKSPACE_TRACE_METHOD_NAME;
 import static com.android.launcher3.LauncherConstants.TraceEvents.DISPLAY_WORKSPACE_TRACE_COOKIE;
+import static com.android.launcher3.LauncherConstants.TraceEvents.DISPLAY_WORKSPACE_TRACE_METHOD_NAME;
 import static com.android.launcher3.LauncherConstants.TraceEvents.ON_CREATE_EVT;
 import static com.android.launcher3.LauncherConstants.TraceEvents.ON_NEW_INTENT_EVT;
 import static com.android.launcher3.LauncherConstants.TraceEvents.ON_RESUME_EVT;
@@ -2845,32 +2844,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
     @Override
     public void bindSmartspaceWidget() {
-        CellLayout cl = mWorkspace.getScreenWithId(FIRST_SCREEN_ID);
-        int spanX = InvariantDeviceProfile.INSTANCE.get(this).numSearchContainerColumns;
-        if (cl != null) {
-            for (int col = 0; col < spanX; col++) {
-                if (cl.isOccupied(col, 0)) {
-                    return;
-                }
-            }
-        } else {
-            return;
-        }
-
-        WidgetsListBaseEntry widgetsListBaseEntry = getPopupDataProvider()
-                .getAllWidgets().stream().filter(
-                        item -> item.mPkgItem.packageName.equals(
-                                APPLICATION_ID))
-                .findFirst()
-                .orElse(null);
-        if (widgetsListBaseEntry != null) {
-            LauncherAppWidgetProviderInfo launcherAppWidgetProviderInfo =
-                    widgetsListBaseEntry.mWidgets.get(0).widgetInfo;
-            PendingAddWidgetInfo info = new PendingAddWidgetInfo(launcherAppWidgetProviderInfo,
-                    CONTAINER_DESKTOP);
-            addPendingItem(info, info.container, FIRST_SCREEN_ID, new int[]{0, 0}, info.spanX,
-                    info.spanY);
-        }
+        mModelCallbacks.bindSmartspaceWidget();
     }
 
     @Override

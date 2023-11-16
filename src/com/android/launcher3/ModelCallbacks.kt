@@ -12,6 +12,7 @@ import com.android.launcher3.util.IntArray as LIntArray
 import com.android.launcher3.util.IntSet as LIntSet
 import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.util.Preconditions
+import com.android.launcher3.widget.PendingAddWidgetInfo
 import com.android.launcher3.widget.model.WidgetsListBaseEntry
 import java.util.function.Predicate
 
@@ -134,5 +135,35 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
             result.add(pairId)
         }
         return result
+    }
+
+    override fun bindSmartspaceWidget() {
+        val cl: CellLayout? =
+            launcher.workspace.getScreenWithId(WorkspaceLayoutManager.FIRST_SCREEN_ID)
+        val spanX = InvariantDeviceProfile.INSTANCE.get(launcher).numSearchContainerColumns
+
+        if (cl?.isRegionVacant(0, 0, spanX, 1) != true) {
+            return
+        }
+
+        val widgetsListBaseEntry: WidgetsListBaseEntry =
+            launcher.popupDataProvider.allWidgets.firstOrNull { item: WidgetsListBaseEntry ->
+                item.mPkgItem.packageName == BuildConfig.APPLICATION_ID
+            }
+                ?: return
+
+        val info =
+            PendingAddWidgetInfo(
+                widgetsListBaseEntry.mWidgets[0].widgetInfo,
+                LauncherSettings.Favorites.CONTAINER_DESKTOP
+            )
+        launcher.addPendingItem(
+            info,
+            info.container,
+            WorkspaceLayoutManager.FIRST_SCREEN_ID,
+            intArrayOf(0, 0),
+            info.spanX,
+            info.spanY
+        )
     }
 }
