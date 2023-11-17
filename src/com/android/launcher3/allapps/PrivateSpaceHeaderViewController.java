@@ -93,4 +93,8 @@ public class PrivateSpaceHeaderViewController {
             transitionImage.setVisibility(View.GONE);
         }
     }
+
+    PrivateProfileManager getPrivateProfileManager() {
+        return mPrivateProfileManager;
+    }
 }
