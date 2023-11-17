@@ -33,8 +33,8 @@ filegroup {
 filegroup {
     name: "launcher-image-tests-src",
     srcs: [
-      "src/com/android/launcher3/celllayout/TestWorkspaceBuilder.java",
-      "src/com/android/launcher3/celllayout/CellLayoutBoard.java",
+      "src/com/android/launcher3/celllayout/board/*.java",
+      "src/com/android/launcher3/celllayout/board/*.kt",
       "src/com/android/launcher3/celllayout/FavoriteItemsTransaction.java",
       "src/com/android/launcher3/ui/AbstractLauncherUiTest.java",
       "src/com/android/launcher3/ui/PortraitLandscapeRunner.java",
