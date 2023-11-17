@@ -495,6 +495,30 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
         }
     }
 
+    /**
+     * Exits search and returns to A-Z apps list. Scroll to the bottom.
+     */
+    public void resetAndScrollToBottom() {
+        if (mTouchHandler != null) {
+            mTouchHandler.endFastScrolling();
+        }
+
+        // Reset the base recycler view after transitioning home.
+        updateHeaderScroll(0);
+
+        // Animate to A-Z with 0 time to reset the animation with proper state management.
+        animateToSearchState(false, 0);
+
+        MAIN_EXECUTOR.getHandler().post(() -> {
+            // Reset the search bar after transitioning home.
+            mSearchUiManager.resetSearch();
+            // Switch to the main tab
+            switchToTab(ActivityAllAppsContainerView.AdapterHolder.MAIN);
+            // Scroll to bottom
+            getActiveRecyclerView().scrollToBottom();
+        });
+    }
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         mSearchUiManager.preDispatchKeyEvent(event);
