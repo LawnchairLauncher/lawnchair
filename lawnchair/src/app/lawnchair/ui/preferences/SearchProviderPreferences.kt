@@ -2,12 +2,17 @@ package app.lawnchair.ui.preferences
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -18,6 +23,7 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.qsb.providers.QsbSearchProviderType
+import app.lawnchair.ui.AlertBottomSheetContent
 import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.DividerColumn
 import app.lawnchair.ui.preferences.components.ExpandAndShrink
@@ -25,6 +31,7 @@ import app.lawnchair.ui.preferences.components.PreferenceDivider
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.PreferenceTemplate
+import app.lawnchair.ui.util.LocalBottomSheetHandler
 import com.android.launcher3.R
 
 fun NavGraphBuilder.searchProviderGraph(route: String) {
@@ -34,8 +41,10 @@ fun NavGraphBuilder.searchProviderGraph(route: String) {
 @Composable
 fun SearchProviderPreferences() {
     val context = LocalContext.current
+    val bottomSheetHandler = LocalBottomSheetHandler.current
     val adapter = preferenceManager2().hotseatQsbProvider.getAdapter()
     val forceWebsiteAdapter = preferenceManager2().hotseatQsbForceWebsite.getAdapter()
+
     PreferenceLayout(label = stringResource(R.string.search_provider)) {
         PreferenceGroup {
             QsbSearchProvider.values().forEach { qsbSearchProvider ->
@@ -44,13 +53,21 @@ fun SearchProviderPreferences() {
                 val hasAppAndWebsite = qsbSearchProvider.type == QsbSearchProviderType.APP_AND_WEBSITE
                 val showDownloadButton = qsbSearchProvider.type == QsbSearchProviderType.APP && !appInstalled
                 Column {
+                    val title = stringResource(id = qsbSearchProvider.name)
                     ListItem(
-                        title = stringResource(id = qsbSearchProvider.name),
+                        title = title,
                         showDownloadButton = showDownloadButton,
                         enabled = qsbSearchProvider.type != QsbSearchProviderType.APP || appInstalled,
                         selected = selected,
                         onClick = { adapter.onChange(newValue = qsbSearchProvider) },
                         onDownloadClick = { qsbSearchProvider.launchOnAppMarket(context = context) },
+                        onSponsorDisclaimerClick = {
+                            bottomSheetHandler.show {
+                                SponsorDisclaimer(title) {
+                                    bottomSheetHandler.hide()
+                                }
+                            }
+                        }.takeIf { qsbSearchProvider.sponsored },
                         description = if (showDownloadButton) {
                             stringResource(id = R.string.qsb_search_provider_app_required)
                         } else null,
@@ -80,6 +97,7 @@ private fun ListItem(
     selected: Boolean,
     onClick: () -> Unit,
     onDownloadClick: () -> Unit,
+    onSponsorDisclaimerClick: (() -> Unit)?,
 ) {
     Column {
         PreferenceTemplate(
@@ -98,13 +116,23 @@ private fun ListItem(
                 )
             },
             endWidget = {
-                if (showDownloadButton) {
-                    ClickableIcon(
-                        painter = painterResource(id = R.drawable.ic_download),
-                        onClick = onDownloadClick,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(end = 4.dp),
-                    )
+                Row {
+                    if (onSponsorDisclaimerClick != null) {
+                        ClickableIcon(
+                            painter = painterResource(id = R.drawable.ic_about),
+                            onClick = onSponsorDisclaimerClick,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(end = 4.dp),
+                        )
+                    }
+                    if (showDownloadButton) {
+                        ClickableIcon(
+                            painter = painterResource(id = R.drawable.ic_download),
+                            onClick = onDownloadClick,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(end = 4.dp),
+                        )
+                    }
                 }
             },
         )
@@ -162,5 +190,31 @@ private fun Options(
                 )
             },
         )
+    }
+}
+
+@Composable
+private fun SponsorDisclaimer(
+    sponsor: String,
+    onAcknowledge: () -> Unit,
+) {
+    AlertBottomSheetContent(
+        buttons = {
+            OutlinedButton(onClick = onAcknowledge) {
+                Text(text = stringResource(id = android.R.string.ok))
+            }
+        }
+    ) {
+        CompositionLocalProvider(
+            LocalContentColor provides MaterialTheme.colorScheme.onBackground,
+            LocalTextStyle provides MaterialTheme.typography.bodyLarge,
+        ) {
+            Text(
+                text = stringResource(id = R.string.search_provider_sponsored_description, sponsor),
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 16.dp),
+            )
+        }
     }
 }

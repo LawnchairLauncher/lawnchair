@@ -28,6 +28,7 @@ sealed class QsbSearchProvider(
     val supportVoiceIntent: Boolean = false,
     val website: String,
     val type: QsbSearchProviderType = QsbSearchProviderType.APP_AND_WEBSITE,
+    val sponsored: Boolean = false,
 ) {
 
     suspend fun launch(launcher: Launcher) {
