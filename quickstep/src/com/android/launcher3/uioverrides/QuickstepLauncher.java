@@ -514,14 +514,14 @@ public class QuickstepLauncher extends Launcher {
     public AtomicAnimationFactory createAtomicAnimationFactory() {
         return new QuickstepAtomicAnimationFactory(this);
     }
-//    @Override
-//    protected LauncherWidgetHolder createAppWidgetHolder() {
-//        final QuickstepHolderFactory factory =
-//                (QuickstepHolderFactory) LauncherWidgetHolder.HolderFactory.newFactory(this);
-//        return factory.newInstance(this,
-//                appWidgetId -> getWorkspace().removeWidget(appWidgetId),
-//                new QuickstepInteractionHandler(this));
-//    }
+    @Override
+    protected LauncherWidgetHolder createAppWidgetHolder() {
+        final QuickstepHolderFactory factory =
+                (QuickstepHolderFactory) LauncherWidgetHolder.HolderFactory.newFactory(this);
+        return factory.newInstance(this,
+                appWidgetId -> getWorkspace().removeWidget(appWidgetId),
+                new QuickstepInteractionHandler(this));
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

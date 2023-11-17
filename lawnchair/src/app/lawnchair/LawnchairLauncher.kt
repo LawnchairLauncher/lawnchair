@@ -42,6 +42,7 @@ import androidx.savedstate.SavedStateRegistryController
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import app.lawnchair.LawnchairApp.Companion.showQuickstepWarningIfNecessary
+import app.lawnchair.factory.LawnchairWidgetHolder
 import app.lawnchair.gestures.GestureController
 import app.lawnchair.gestures.VerticalSwipeTouchController
 import app.lawnchair.gestures.config.GestureHandlerConfig
@@ -55,7 +56,6 @@ import app.lawnchair.theme.ThemeProvider
 import app.lawnchair.ui.popup.LawnchairShortcut
 import app.lawnchair.util.getThemedIconPacksInstalled
 import com.android.launcher3.*
-import com.android.launcher3.R
 import com.android.launcher3.allapps.ActivityAllAppsContainerView
 import com.android.launcher3.allapps.search.SearchAdapterProvider
 import com.android.launcher3.popup.SystemShortcut
@@ -65,6 +65,7 @@ import com.android.launcher3.uioverrides.states.OverviewState
 import com.android.launcher3.util.SystemUiController.UI_STATE_BASE_WINDOW
 import com.android.launcher3.util.Themes
 import com.android.launcher3.util.TouchController
+import com.android.launcher3.widget.LauncherWidgetHolder
 import com.android.launcher3.widget.RoundedCornerEnforcement
 import com.android.systemui.plugins.shared.LauncherOverlayManager
 import com.android.systemui.shared.system.QuickStepContract
@@ -76,6 +77,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.function.IntConsumer
 import java.util.stream.Stream
 
 class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
@@ -282,12 +284,16 @@ class LawnchairLauncher : QuickstepLauncher(), LifecycleOwner,
         }
     }
 
-//    fun shouldBackButtonBeHidden(toState: LauncherState): Boolean {
-//        if (toState == LauncherState.NORMAL && hasBackGesture) {
-//            return false
-//        }
-//        return super.shouldBackButtonBeHidden(toState)
-//    }
+    override fun createAppWidgetHolder(): LauncherWidgetHolder {
+        val factory = LauncherWidgetHolder.HolderFactory.newFactory(this) as LawnchairWidgetHolder.LawnchairHolderFactory
+        return factory.newInstance(
+            this
+        ) { appWidgetId: Int ->
+            workspace.removeWidget(
+                appWidgetId
+            )
+        }
+    }
 
     override fun onStart() {
         super.onStart()
