@@ -16,23 +16,20 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="48dp"
     android:height="48dp"
-    android:viewportWidth="48"
-    android:viewportHeight="48">
+    android:autoMirrored="true"
+    android:viewportHeight="48"
+    android:viewportWidth="48">
   <path
       android:fillColor="#FF000000"
-      android:pathData="M37.4,15.5c0,3.1 -2.5,5.5 -5.5,5.5c-3.1,0 -5.5,-2.5 -5.5,-5.5s2.5,-5.5 5.5,-5.5C34.9,10 37.4,12.5 37.4,15.5z"/>
+      android:pathData="M16.833,16.333m-5.333,0a5.333,5.333 0,1 1,10.667 0a5.333,5.333 0,1 1,-10.667 0" />
   <path
       android:fillColor="#FF000000"
-      android:pathData="M21.1,15.5c0,3.1 -2.5,5.5 -5.5,5.5S10,18.6 10,15.5s2.5,-5.5 5.5,-5.5S21.1,12.5 21.1,15.5z"/>
+      android:pathData="M16.833,30.997m-5.333,0a5.333,5.333 0,1 1,10.667 0a5.333,5.333 0,1 1,-10.667 0" />
   <path
       android:fillColor="#FF000000"
-      android:pathData="M15.5,31.9m-5.5,0a5.5,5.5 0,1 1,11 0a5.5,5.5 0,1 1,-11 0"/>
+      android:pathData="M31.499,16.333m-5.333,0a5.333,5.333 0,1 1,10.667 0a5.333,5.333 0,1 1,-10.667 0" />
   <path
       android:fillColor="#FF000000"
-      android:pathData="M31.9,28c2.1,0 3.9,1.7 3.9,3.9s-1.7,3.9 -3.9,3.9c-2.1,0 -3.9,-1.7 -3.9,-3.9S29.8,28 31.9,28M31.9,26.3c-3.1,0 -5.6,2.5 -5.6,5.6c0,3.1 2.5,5.6 5.6,5.6c3.1,0 5.6,-2.5 5.6,-5.6C37.5,28.8 35,26.3 31.9,26.3L31.9,26.3z"/>
-  <path
-      android:pathData="M34.9,35L41.2,41.3"
-      android:strokeWidth="1.7"
-      android:fillColor="#00000000"
-      android:strokeColor="#000000"/>
+      android:fillType="evenOdd"
+      android:pathData="M34.168,31.005C34.168,29.538 32.968,28.338 31.501,28.338C30.035,28.338 28.835,29.538 28.835,31.005C28.835,32.472 30.035,33.672 31.501,33.672C32.968,33.672 34.168,32.472 34.168,31.005ZM26.168,31.005C26.168,28.059 28.555,25.672 31.501,25.672C34.448,25.672 36.835,28.059 36.835,31.005C36.835,31.992 36.567,32.917 36.1,33.709L40.169,37.791L38.289,39.671L34.208,35.602C33.415,36.07 32.489,36.339 31.501,36.339C28.555,36.339 26.168,33.952 26.168,31.005Z" />
 </vector>
