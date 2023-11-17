@@ -16,13 +16,14 @@
 package com.android.quickstep.views;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
-import static com.android.launcher3.Flags.enableOverviewIconMenu;
+import static com.android.app.animation.Interpolators.LINEAR;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.drawable.AnimatedVectorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -37,9 +38,8 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.touch.LandscapePagedViewHandler;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.touch.PagedOrientationHandler;
-import com.android.launcher3.touch.SeascapePagedViewHandler;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.util.RecentsOrientedState;
 
@@ -52,20 +52,35 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
     private static final int MENU_BACKGROUND_HIDE_DURATION = 333;
 
     private IconView mIconView;
-    private TextView mIconTextView;
+    // Two textview so we can ellipsize the collapsed view and crossfade on expand to the full name.
+    private TextView mIconTextCollapsedView;
+    private TextView mIconTextExpandedView;
     private ImageView mIconArrowView;
     private ImageView mIconViewBackground;
+    // Use separate views for the rounded corners so we can scale the background view without
+    // warping the corners.
+    private ImageView mIconViewBackgroundCornersStart;
+    private ImageView mIconViewBackgroundCornersEnd;
 
-    private int mMaxIconBackgroundWidth;
-    private int mMinIconBackgroundWidth;
-    private int mMaxIconBackgroundHeight;
-    private int mMinIconBackgroundHeight;
-    private int mIconTextMinWidth;
-    private int mIconTextMaxWidth;
-    private int mInnerMargin;
-    private int mIconArrowSize;
-    private int mIconMenuMarginStart;
-    private int mArrowMaxTranslationX;
+    private final int mMinimumMenuSize;
+    private final int mMaxMenuWidth;
+    private final int mIconMenuMarginTop;
+    private final int mIconMenuMarginStart;
+    private final int mIconViewMarginStart;
+    private final int mIconViewDrawableSize;
+    private final int mIconViewDrawableMaxSize;
+    private final int mIconTextMinWidth;
+    private final int mIconTextMaxWidth;
+    private final int mTextMaxTranslationX;
+    private final int mInnerMargin;
+    private final float mArrowMaxTranslationX;
+    private final int mMinIconBackgroundWidth;
+    private final int mMaxIconBackgroundHeight;
+    private final int mMinIconBackgroundHeight;
+    private final int mMaxIconBackgroundCornerRadius;
+    private final float mMinIconBackgroundCornerRadius;
+
+    private int mMaxWidth = Integer.MAX_VALUE;
 
     public IconAppChipView(Context context) {
         this(context, null);
@@ -82,40 +97,66 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
     public IconAppChipView(Context context, @Nullable AttributeSet attrs, int defStyleAttr,
             int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        Resources res = getResources();
 
-        mMaxIconBackgroundWidth = getResources().getDimensionPixelSize(
-                R.dimen.task_thumbnail_icon_menu_max_width);
-        mMinIconBackgroundWidth = getResources().getDimensionPixelSize(
-                R.dimen.task_thumbnail_icon_menu_min_width);
-        mMaxIconBackgroundHeight = getResources().getDimensionPixelSize(
+        // Menu dimensions
+        mMaxMenuWidth = res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_menu_max_width);
+        mIconMenuMarginTop = res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_menu_top_margin);
+        mIconMenuMarginStart = res.getDimensionPixelSize(
+                R.dimen.task_thumbnail_icon_menu_start_margin);
+
+        // Background dimensions
+        mMinIconBackgroundWidth = res.getDimensionPixelSize(
+                R.dimen.task_thumbnail_icon_menu_background_min_width);
+        mMaxIconBackgroundHeight = res.getDimensionPixelSize(
                 R.dimen.task_thumbnail_icon_menu_max_height);
-        mMinIconBackgroundHeight = getResources().getDimensionPixelSize(
+        mMinIconBackgroundHeight = res.getDimensionPixelSize(
                 R.dimen.task_thumbnail_icon_menu_min_height);
-        mIconTextMaxWidth = getResources().getDimensionPixelSize(
+        mMaxIconBackgroundCornerRadius = res.getDimensionPixelSize(
+                R.dimen.task_thumbnail_icon_menu_corner_radius);
+
+        // TextView dimensions
+        mInnerMargin = (int) res.getDimension(R.dimen.task_thumbnail_icon_menu_arrow_margin);
+        mIconTextMinWidth = res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_menu_text_width);
+        mIconTextMaxWidth = res.getDimensionPixelSize(
                 R.dimen.task_thumbnail_icon_menu_text_max_width);
-        mInnerMargin = (int) getResources().getDimension(
-                R.dimen.task_thumbnail_icon_menu_arrow_margin);
-        mIconTextMinWidth = getResources().getDimensionPixelSize(
-                R.dimen.task_thumbnail_icon_menu_text_width) + (2 * mInnerMargin);
-        int taskIconHeight = getResources().getDimensionPixelSize(
-                R.dimen.task_thumbnail_icon_menu_drawable_touch_size);
-        int arrowWidth = getResources().getDimensionPixelSize(
+
+        // IconView dimensions
+        mIconViewMarginStart = res.getDimensionPixelSize(
+                R.dimen.task_thumbnail_icon_view_start_margin);
+        mIconViewDrawableSize = res.getDimensionPixelSize(
+                R.dimen.task_thumbnail_icon_menu_drawable_size);
+        mIconViewDrawableMaxSize = res.getDimensionPixelSize(
+                R.dimen.task_thumbnail_icon_menu_drawable_max_size);
+        mTextMaxTranslationX =
+                (mIconViewDrawableMaxSize - mIconViewDrawableSize - mIconViewMarginStart)
+                        + (mInnerMargin / 2);
+
+        // ArrowView dimensions
+        int iconArrowViewWidth = res.getDimensionPixelSize(
                 R.dimen.task_thumbnail_icon_menu_arrow_size);
-        mIconArrowSize = getResources().getDimensionPixelSize(
-                R.dimen.task_thumbnail_icon_menu_arrow_drawable_size);
-        mIconMenuMarginStart = getResources().getDimensionPixelSize(
-                R.dimen.task_thumbnail_icon_menu_margin);
-        mArrowMaxTranslationX =
-                mMaxIconBackgroundWidth - taskIconHeight - mIconTextMaxWidth + arrowWidth;
+        mMinIconBackgroundCornerRadius = mMinIconBackgroundHeight / 2f;
+        float maxCornerSize = Math.min(mMaxIconBackgroundHeight / 2f,
+                mMaxIconBackgroundCornerRadius);
+        mArrowMaxTranslationX = (mMaxMenuWidth - maxCornerSize) - (Math.min(mMaxWidth,
+                mMinIconBackgroundWidth + (2 * mMinIconBackgroundCornerRadius)
+                        - mMinIconBackgroundCornerRadius)) - mInnerMargin;
+
+        // Menu dimensions
+        mMinimumMenuSize =
+                mIconViewMarginStart + mIconViewDrawableSize + mInnerMargin + iconArrowViewWidth;
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mIconView = findViewById(R.id.icon_view);
-        mIconTextView = findViewById(R.id.icon_text);
+        mIconTextCollapsedView = findViewById(R.id.icon_text_collapsed);
+        mIconTextExpandedView = findViewById(R.id.icon_text_expanded);
         mIconArrowView = findViewById(R.id.icon_arrow);
         mIconViewBackground = findViewById(R.id.icon_view_background);
+        mIconViewBackgroundCornersStart = findViewById(R.id.icon_view_background_corners_start);
+        mIconViewBackgroundCornersEnd = findViewById(R.id.icon_view_background_corners_end);
     }
 
     protected IconView getIconView() {
@@ -124,8 +165,11 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
 
     @Override
     public void setText(CharSequence text) {
-        if (mIconTextView != null) {
-            mIconTextView.setText(text);
+        if (mIconTextCollapsedView != null) {
+            mIconTextCollapsedView.setText(text);
+        }
+        if (mIconTextExpandedView != null) {
+            mIconTextExpandedView.setText(text);
         }
     }
 
@@ -148,83 +192,101 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
         }
     }
 
+    /**
+     * Sets the maximum width of this Icon Menu.
+     */
+    public void setMaxWidth(int maxWidth) {
+        // Only the app icon and caret are visible at its minimum width.
+        mMaxWidth = Math.max(maxWidth, mMinimumMenuSize);
+    }
+
     @Override
     public void setIconOrientation(RecentsOrientedState orientationState, boolean isGridTask) {
-
         PagedOrientationHandler orientationHandler = orientationState.getOrientationHandler();
-        boolean isRtl = getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+        boolean isRtl = isLayoutRtl();
         DeviceProfile deviceProfile =
                 ActivityContext.lookupContext(getContext()).getDeviceProfile();
 
-        int thumbnailTopMargin = deviceProfile.overviewTaskThumbnailTopMarginPx;
-        int taskIconSize = deviceProfile.overviewTaskIconSizePx;
-        int taskMargin = deviceProfile.overviewTaskMarginPx;
-
+        // Layout Params for the Menu View
+        int thumbnailTopMargin =
+                deviceProfile.overviewTaskThumbnailTopMarginPx + mIconMenuMarginTop;
         LayoutParams iconMenuParams = (LayoutParams) getLayoutParams();
-        orientationHandler.setTaskIconMenuParams(iconMenuParams, mIconMenuMarginStart,
+        orientationHandler.setIconAppChipMenuParams(this, iconMenuParams, mIconMenuMarginStart,
                 thumbnailTopMargin);
-        iconMenuParams.width = mMinIconBackgroundWidth;
-        iconMenuParams.height = taskIconSize;
-        if (orientationHandler instanceof SeascapePagedViewHandler) {
-            // Use half menu height to place the pivot within the X/Y center of icon in the menu.
-            setPivotX(getHeight() / 2f);
-            setPivotY(getHeight() / 2f - mIconMenuMarginStart);
-        } else if (orientationHandler instanceof LandscapePagedViewHandler) {
-            setPivotX(getWidth());
-            setPivotY(0);
-        }
-        // Pivot not updated for PortraitPagedViewHandler case, as it has 0 rotation.
+        iconMenuParams.width = Math.min(mMaxWidth,
+                mMinIconBackgroundWidth + (int) (2 * mMinIconBackgroundCornerRadius));
+        iconMenuParams.height = mMinIconBackgroundHeight;
+        setLayoutParams(iconMenuParams);
 
-        setTranslationY(0);
-        setRotation(orientationHandler.getDegreesRotated());
-
+        // Layout Params for the Icon View
         LayoutParams iconParams = (LayoutParams) mIconView.getLayoutParams();
-        orientationHandler.setTaskIconParams(iconParams, taskMargin, taskIconSize,
-                thumbnailTopMargin, isRtl);
-        iconParams.width = iconParams.height = taskIconSize;
-        iconParams.gravity = Gravity.START | Gravity.CENTER_VERTICAL;
+        orientationHandler.setTaskIconParams(iconParams, mIconViewMarginStart,
+                mIconViewDrawableSize, thumbnailTopMargin, isRtl);
+        iconParams.width = iconParams.height = mIconViewDrawableSize;
         mIconView.setLayoutParams(iconParams);
+        mIconView.setDrawableSize(mIconViewDrawableSize, mIconViewDrawableSize);
 
-        int iconDrawableSize = enableOverviewIconMenu()
-                ? deviceProfile.overviewTaskIconAppChipMenuDrawableSizePx
-                : isGridTask ? deviceProfile.overviewTaskIconDrawableSizeGridPx
-                        : deviceProfile.overviewTaskIconDrawableSizePx;
-        mIconView.setDrawableSize(iconDrawableSize, iconDrawableSize);
-
-        LayoutParams iconTextParams = (LayoutParams) mIconTextView.getLayoutParams();
-        orientationHandler.setTaskIconParams(iconTextParams, 0, taskIconSize,
+        // Layout Params for the collapsed Icon Text View
+        LayoutParams iconTextCollapsedParams =
+                (LayoutParams) mIconTextCollapsedView.getLayoutParams();
+        orientationHandler.setTaskIconParams(iconTextCollapsedParams, 0, mIconViewDrawableSize,
                 thumbnailTopMargin, isRtl);
-        iconTextParams.width = mIconTextMaxWidth;
-        iconTextParams.height = taskIconSize;
-        iconTextParams.setMarginStart(taskIconSize);
-        iconTextParams.topMargin = (getHeight() - mIconTextView.getHeight()) / 2;
-        iconTextParams.gravity = Gravity.CENTER_VERTICAL | Gravity.START;
-        mIconTextView.setLayoutParams(iconTextParams);
-        mIconTextView.setRevealClip(true, 0, taskIconSize / 2f, mIconTextMinWidth);
+        iconTextCollapsedParams.setMarginStart(
+                mIconViewDrawableSize + mIconViewMarginStart + mInnerMargin);
+        iconTextCollapsedParams.topMargin = (mMinIconBackgroundHeight - mIconViewDrawableSize) / 2;
+        iconTextCollapsedParams.gravity = Gravity.TOP | Gravity.START;
+        iconTextCollapsedParams.width = Math.min(
+                Math.max(mMaxWidth - mMinimumMenuSize - (2 * mInnerMargin), 0), mIconTextMinWidth);
+        mIconTextCollapsedView.setLayoutParams(iconTextCollapsedParams);
+        mIconTextCollapsedView.setAlpha(1f);
 
+        // Layout Params for the expanded Icon Text View
+        LayoutParams iconTextExpandedParams =
+                (LayoutParams) mIconTextExpandedView.getLayoutParams();
+        orientationHandler.setTaskIconParams(iconTextExpandedParams, 0, mIconViewDrawableSize,
+                thumbnailTopMargin, isRtl);
+        iconTextExpandedParams.setMarginStart(
+                mIconViewDrawableSize + mIconViewMarginStart + mInnerMargin);
+        iconTextExpandedParams.topMargin = (mMinIconBackgroundHeight - mIconViewDrawableSize) / 2;
+        iconTextExpandedParams.gravity = Gravity.TOP | Gravity.START;
+        mIconTextExpandedView.setLayoutParams(iconTextExpandedParams);
+        mIconTextExpandedView.setAlpha(0f);
+        mIconTextExpandedView.setRevealClip(true, 0, mIconViewDrawableSize / 2f, mIconTextMinWidth);
+
+        // Layout Params for the Icon Arrow View
         LayoutParams iconArrowParams = (LayoutParams) mIconArrowView.getLayoutParams();
         iconArrowParams.gravity = Gravity.CENTER_VERTICAL | Gravity.END;
-        iconArrowParams.setMarginStart(taskIconSize + mIconTextMinWidth);
         iconArrowParams.setMarginEnd(mInnerMargin);
         mIconArrowView.setLayoutParams(iconArrowParams);
-        mIconArrowView.getDrawable().setBounds(0, 0, mIconArrowSize, mIconArrowSize);
 
+        // Layout Params for the Icon View Background and its corners
+        int cornerlessBackgroundWidth = (int) Math.min(
+                mMaxWidth - (2 * mMinIconBackgroundCornerRadius), mMinIconBackgroundWidth);
+        LayoutParams backgroundCornerEndParams =
+                (LayoutParams) mIconViewBackgroundCornersEnd.getLayoutParams();
+        backgroundCornerEndParams.setMarginStart(cornerlessBackgroundWidth);
+        mIconViewBackgroundCornersEnd.setLayoutParams(backgroundCornerEndParams);
         LayoutParams backgroundParams = (LayoutParams) mIconViewBackground.getLayoutParams();
-        backgroundParams.width = mMinIconBackgroundWidth;
-        backgroundParams.height = taskIconSize;
-        mIconViewBackground.setPivotX(
-                isRtl ? mMinIconBackgroundWidth - (taskIconSize / 2f - mInnerMargin)
-                        : taskIconSize / 2f - mInnerMargin);
-        mIconViewBackground.setPivotY(taskIconSize / 2f);
+        backgroundParams.width = cornerlessBackgroundWidth;
+        backgroundParams.height = mMinIconBackgroundHeight;
+        backgroundParams.setMarginStart((int) mMinIconBackgroundCornerRadius);
+        mIconViewBackground.setLayoutParams(backgroundParams);
+        mIconViewBackground.setPivotX(isRtl ? cornerlessBackgroundWidth : 0);
+        mIconViewBackground.setPivotY(mMinIconBackgroundCornerRadius);
 
-        requestLayout();
+        // This method is called twice sometimes (like when rotating split tasks). It is called
+        // once before onMeasure and onLayout, and again after onMeasure but before onLayout with
+        // a new width. This happens because we update widths on rotation and on measure of
+        // grouped task views. Calling requestLayout() does not guarantee a call to onMeasure if
+        // it has just measured, so we explicitly call it here.
+        measure(MeasureSpec.makeMeasureSpec(getLayoutParams().width, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(getLayoutParams().height, MeasureSpec.EXACTLY));
     }
 
     @Override
     public void setIconColorTint(int color, float amount) {
-        if (mIconView != null) {
-            mIconView.setIconColorTint(color, amount);
-        }
+        // RecentsView's COLOR_TINT animates between 0 and 0.5f, we want to hide the app chip menu.
+        setAlpha(Utilities.mapToRange(amount, 0f, 0.5f, 1f, 0f, LINEAR));
     }
 
     @Override
@@ -239,42 +301,114 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
 
     protected void revealAnim(boolean isRevealing) {
         if (isRevealing) {
+            boolean isRtl = isLayoutRtl();
+            bringToFront();
             ((AnimatedVectorDrawable) mIconArrowView.getDrawable()).start();
             AnimatorSet anim = new AnimatorSet();
+            float backgroundScaleY = mMaxIconBackgroundHeight / (float) mMinIconBackgroundHeight;
+            float maxCornerSize = Math.min(mMaxIconBackgroundHeight / 2f,
+                    mMaxIconBackgroundCornerRadius);
+            float backgroundScaleX = (mMaxMenuWidth - (2 * maxCornerSize)) / Math.min(
+                    mMaxWidth - (2 * mMinIconBackgroundCornerRadius), mMinIconBackgroundWidth);
+            float arrowTranslationX = mArrowMaxTranslationX + (mMinIconBackgroundWidth - Math.min(
+                    mMaxWidth - (2 * mMinIconBackgroundCornerRadius), mMinIconBackgroundWidth));
+            // Clip expanded text with reveal animation so it doesn't go beyond the edge of the menu
+            Animator expandedTextRevealAnim = ViewAnimationUtils.createCircularReveal(
+                    mIconTextExpandedView, 0, mIconTextExpandedView.getHeight() / 2, 0,
+                    mIconTextMaxWidth + maxCornerSize);
+            expandedTextRevealAnim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    // createCircularReveal removes clip on finish, restore it here to clip text.
+                    mIconTextExpandedView.setRevealClip(true, 0,
+                            mIconTextExpandedView.getHeight() / 2f,
+                            mIconTextMaxWidth + maxCornerSize);
+                }
+            });
             anim.playTogether(
-                    ViewAnimationUtils.createCircularReveal(mIconTextView, 0,
-                            mIconTextView.getHeight() / 2, mIconTextMinWidth, mIconTextMaxWidth),
-                    ObjectAnimator.ofFloat(mIconViewBackground, SCALE_X,
-                            mMaxIconBackgroundWidth / (float) mMinIconBackgroundWidth),
-                    ObjectAnimator.ofFloat(mIconViewBackground, SCALE_Y,
-                            mMaxIconBackgroundHeight / (float) mMinIconBackgroundHeight),
+                    expandedTextRevealAnim,
+                    ObjectAnimator.ofFloat(mIconViewBackgroundCornersStart, SCALE_Y,
+                            backgroundScaleY),
+                    ObjectAnimator.ofFloat(mIconViewBackgroundCornersStart, SCALE_X,
+                            backgroundScaleY),
+                    ObjectAnimator.ofFloat(mIconViewBackgroundCornersEnd, SCALE_Y,
+                            backgroundScaleY),
+                    ObjectAnimator.ofFloat(mIconViewBackgroundCornersEnd, SCALE_X,
+                            backgroundScaleY),
+                    ObjectAnimator.ofFloat(mIconViewBackgroundCornersEnd, TRANSLATION_X,
+                            isRtl ? -arrowTranslationX : arrowTranslationX),
+                    ObjectAnimator.ofFloat(mIconViewBackground, SCALE_X, backgroundScaleX),
+                    ObjectAnimator.ofFloat(mIconViewBackground, SCALE_Y, backgroundScaleY),
+                    ObjectAnimator.ofFloat(mIconView, SCALE_X,
+                            mIconViewDrawableMaxSize / (float) mIconViewDrawableSize),
+                    ObjectAnimator.ofFloat(mIconView, SCALE_Y,
+                            mIconViewDrawableMaxSize / (float) mIconViewDrawableSize),
+                    ObjectAnimator.ofFloat(mIconTextCollapsedView, TRANSLATION_X,
+                            isLayoutRtl() ? -mTextMaxTranslationX : mTextMaxTranslationX),
+                    ObjectAnimator.ofFloat(mIconTextExpandedView, TRANSLATION_X,
+                            isLayoutRtl() ? -mTextMaxTranslationX : mTextMaxTranslationX),
+                    ObjectAnimator.ofFloat(mIconTextCollapsedView, ALPHA, 0),
+                    ObjectAnimator.ofFloat(mIconTextExpandedView, ALPHA, 1),
                     ObjectAnimator.ofFloat(mIconArrowView, TRANSLATION_X,
-                            isLayoutRtl() ? -mArrowMaxTranslationX : mArrowMaxTranslationX));
+                            isRtl ? -arrowTranslationX : arrowTranslationX));
             anim.setDuration(MENU_BACKGROUND_REVEAL_DURATION);
             anim.setInterpolator(EMPHASIZED);
             anim.start();
         } else {
             ((AnimatedVectorDrawable) mIconArrowView.getDrawable()).reverse();
-            AnimatorSet anim = new AnimatorSet();
-            Animator textRevealAnim = ViewAnimationUtils.createCircularReveal(mIconTextView, 0,
-                    mIconTextView.getHeight() / 2, mIconTextMaxWidth, mIconTextMinWidth);
-            textRevealAnim.addListener(new AnimatorListenerAdapter() {
+            float maxCornerSize = Math.min(mMaxIconBackgroundHeight / 2f,
+                    mMaxIconBackgroundCornerRadius);
+            // Clip expanded text with reveal animation so it doesn't go beyond the edge of the menu
+            Animator expandedTextClipAnim = ViewAnimationUtils.createCircularReveal(
+                    mIconTextExpandedView, 0, mIconTextExpandedView.getHeight() / 2,
+                    mIconTextMaxWidth + maxCornerSize, 0);
+            expandedTextClipAnim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     // createCircularReveal removes clip on finish, restore it here to clip text.
-                    mIconTextView.setRevealClip(true, 0, mIconTextView.getHeight() / 2f,
-                            mIconTextMinWidth);
+                    mIconTextExpandedView.setRevealClip(true, 0,
+                            mIconTextExpandedView.getHeight() / 2f, 0);
                 }
             });
+            AnimatorSet anim = new AnimatorSet();
             anim.playTogether(
-                    textRevealAnim,
+                    expandedTextClipAnim,
+                    ObjectAnimator.ofFloat(mIconViewBackgroundCornersStart, SCALE_X, 1),
+                    ObjectAnimator.ofFloat(mIconViewBackgroundCornersStart, SCALE_Y, 1),
+                    ObjectAnimator.ofFloat(mIconViewBackgroundCornersEnd, SCALE_X, 1),
+                    ObjectAnimator.ofFloat(mIconViewBackgroundCornersEnd, SCALE_Y, 1),
+                    ObjectAnimator.ofFloat(mIconViewBackgroundCornersEnd, TRANSLATION_X, 0),
                     ObjectAnimator.ofFloat(mIconViewBackground, SCALE_X, 1),
                     ObjectAnimator.ofFloat(mIconViewBackground, SCALE_Y, 1),
+                    ObjectAnimator.ofFloat(mIconView, SCALE_X, 1),
+                    ObjectAnimator.ofFloat(mIconView, SCALE_Y, 1),
+                    ObjectAnimator.ofFloat(mIconTextCollapsedView, TRANSLATION_X, 0),
+                    ObjectAnimator.ofFloat(mIconTextExpandedView, TRANSLATION_X, 0),
+                    ObjectAnimator.ofFloat(mIconTextCollapsedView, ALPHA, 1),
+                    ObjectAnimator.ofFloat(mIconTextExpandedView, ALPHA, 0),
                     ObjectAnimator.ofFloat(mIconArrowView, TRANSLATION_X, 0));
             anim.setDuration(MENU_BACKGROUND_HIDE_DURATION);
             anim.setInterpolator(EMPHASIZED);
             anim.start();
         }
+    }
+
+    protected void reset() {
+        mIconViewBackgroundCornersStart.setScaleX(1);
+        mIconViewBackgroundCornersStart.setScaleY(1);
+        mIconViewBackgroundCornersEnd.setScaleX(1);
+        mIconViewBackgroundCornersEnd.setScaleY(1);
+        mIconViewBackgroundCornersEnd.setTranslationX(0);
+        mIconViewBackground.setScaleX(1);
+        mIconViewBackground.setScaleY(1);
+        mIconView.setScaleX(1);
+        mIconView.setScaleY(1);
+        mIconTextCollapsedView.setTranslationX(0);
+        mIconTextExpandedView.setTranslationX(0);
+        mIconTextCollapsedView.setAlpha(1);
+        mIconTextExpandedView.setAlpha(0);
+        mIconArrowView.setTranslationX(0);
+        ((AnimatedVectorDrawable) mIconArrowView.getDrawable()).reset();
     }
 
     @Override

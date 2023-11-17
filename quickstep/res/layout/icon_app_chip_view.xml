@@ -26,10 +26,22 @@
     android:elevation="@dimen/task_thumbnail_icon_menu_elevation" >
 
     <ImageView
+        android:id="@+id/icon_view_background_corners_start"
+        android:layout_width="@dimen/task_thumbnail_icon_menu_corner_width"
+        android:layout_height="@dimen/task_thumbnail_icon_menu_min_height"
+        android:src="@drawable/icon_menu_background_corners"
+        android:importantForAccessibility="no" />
+    <ImageView
         android:id="@+id/icon_view_background"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/icon_menu_background"
+        android:layout_width="@dimen/task_thumbnail_icon_menu_background_min_width"
+        android:layout_height="@dimen/task_thumbnail_icon_menu_min_height"
+        android:src="@drawable/icon_menu_background"
+        android:importantForAccessibility="no" />
+    <ImageView
+        android:id="@+id/icon_view_background_corners_end"
+        android:layout_width="@dimen/task_thumbnail_icon_menu_corner_width"
+        android:layout_height="@dimen/task_thumbnail_icon_menu_min_height"
+        android:src="@drawable/icon_menu_background_corners"
         android:importantForAccessibility="no" />
 
     <com.android.quickstep.views.IconView
@@ -40,20 +52,33 @@
         android:importantForAccessibility="no" />
 
     <TextView
-        android:id="@+id/icon_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
+        android:id="@+id/icon_text_collapsed"
+        android:layout_width="@dimen/task_thumbnail_icon_menu_text_width"
+        android:layout_height="@dimen/task_thumbnail_icon_menu_drawable_size"
+        android:gravity="start|center_vertical"
         android:maxLines="1"
+        android:ellipsize="end"
         android:textAlignment="viewStart"
         android:textColor="?androidprv:attr/materialColorOnSurface"
-        android:textSize="16sp"
+        android:textSize="@dimen/task_thumbnail_icon_menu_text_size"
+        android:importantForAccessibility="no" />
+
+    <TextView
+        android:id="@+id/icon_text_expanded"
+        android:layout_width="@dimen/task_thumbnail_icon_menu_text_max_width"
+        android:layout_height="@dimen/task_thumbnail_icon_menu_drawable_size"
+        android:gravity="start|center_vertical"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textAlignment="viewStart"
+        android:textColor="?androidprv:attr/materialColorOnSurface"
+        android:textSize="@dimen/task_thumbnail_icon_menu_text_size"
         android:importantForAccessibility="no" />
 
     <ImageView
         android:id="@+id/icon_arrow"
         android:layout_width="@dimen/task_thumbnail_icon_menu_arrow_size"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/task_thumbnail_icon_menu_arrow_size"
         android:background="@drawable/icon_menu_arrow_background"
         android:src="@drawable/ic_chevron_down"
         android:importantForAccessibility="no" />

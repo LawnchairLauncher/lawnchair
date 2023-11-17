@@ -22,12 +22,13 @@ import static android.view.Gravity.END;
 import static android.view.Gravity.LEFT;
 import static android.view.Gravity.START;
 import static android.view.Gravity.TOP;
+import static android.view.View.LAYOUT_DIRECTION_RTL;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
+import static com.android.launcher3.Flags.enableOverviewIconMenu;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
-import static com.android.launcher3.Flags.enableOverviewIconMenu;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.HORIZONTAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
@@ -41,6 +42,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.ShapeDrawable;
 import android.util.FloatProperty;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.VelocityTracker;
@@ -270,7 +272,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     public float getTaskMenuX(float x, View thumbnailView,
             DeviceProfile deviceProfile, float taskInsetMargin, View taskViewIcon) {
         if (enableOverviewIconMenu()) {
-            return x - (taskInsetMargin / 2f);
+            return x + (taskInsetMargin / 2f);
         }
         return thumbnailView.getMeasuredWidth() + x - taskInsetMargin;
     }
@@ -279,7 +281,10 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     public float getTaskMenuY(float y, View thumbnailView, int stagePosition,
             View taskMenuView, float taskInsetMargin, View taskViewIcon) {
         if (enableOverviewIconMenu()) {
-            return y - taskMenuView.getMeasuredHeight() - taskInsetMargin;
+            return y - (thumbnailView.getLayoutDirection() == LAYOUT_DIRECTION_RTL
+                    ? taskMenuView.getMeasuredHeight() * 2 - (taskInsetMargin / 2f)
+                    : taskMenuView.getMeasuredHeight());
+
         }
         BaseDragLayer.LayoutParams lp = (BaseDragLayer.LayoutParams) taskMenuView.getLayoutParams();
         int taskMenuWidth = lp.width;
@@ -294,6 +299,10 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     @Override
     public int getTaskMenuWidth(View thumbnailView, DeviceProfile deviceProfile,
             @StagePosition int stagePosition) {
+        if (enableOverviewIconMenu()) {
+            return thumbnailView.getResources().getDimensionPixelSize(
+                    R.dimen.task_thumbnail_icon_menu_max_width);
+        }
         if (stagePosition == SplitConfigurationOptions.STAGE_POSITION_UNDEFINED) {
             return thumbnailView.getMeasuredWidth();
         } else {
@@ -323,7 +332,7 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     public Pair<Float, Float> getDwbLayoutTranslations(int taskViewWidth,
             int taskViewHeight, SplitBounds splitBounds, DeviceProfile deviceProfile,
             View[] thumbnailViews, int desiredTaskId, View banner) {
-        boolean isRtl = banner.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
+        boolean isRtl = banner.getLayoutDirection() == LAYOUT_DIRECTION_RTL;
         float translationX = 0;
         float translationY = 0;
         FrameLayout.LayoutParams bannerParams = (FrameLayout.LayoutParams) banner.getLayoutParams();
@@ -504,8 +513,19 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
 
     @Override
     public void measureGroupedTaskViewThumbnailBounds(View primarySnapshot, View secondarySnapshot,
-            int parentWidth, int parentHeight, SplitBounds splitBoundsConfig,
-            DeviceProfile dp, boolean isRtl) {
+            int parentWidth, int parentHeight, SplitBounds splitBoundsConfig, DeviceProfile dp,
+            boolean isRtl) {
+        FrameLayout.LayoutParams primaryParams =
+                (FrameLayout.LayoutParams) primarySnapshot.getLayoutParams();
+        FrameLayout.LayoutParams secondaryParams =
+                (FrameLayout.LayoutParams) secondarySnapshot.getLayoutParams();
+
+        // Swap the margins that are set in TaskView#setRecentsOrientedState()
+        secondaryParams.topMargin = dp.overviewTaskThumbnailTopMarginPx;
+        primaryParams.topMargin = 0;
+
+        // Measure and layout the thumbnails bottom up, since the primary is on the visual left
+        // (portrait bottom) and secondary is on the right (portrait top)
         int spaceAboveSnapshot = dp.overviewTaskThumbnailTopMarginPx;
         int totalThumbnailHeight = parentHeight - spaceAboveSnapshot;
         int dividerBar = Math.round(totalThumbnailHeight * (splitBoundsConfig.appsStackedVertically
@@ -519,11 +539,12 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         float taskPercent = splitBoundsConfig.appsStackedVertically ?
                 splitBoundsConfig.topTaskPercent : splitBoundsConfig.leftTaskPercent;
         primarySnapshotWidth = parentWidth;
-        primarySnapshotHeight = (int) (totalThumbnailHeight * taskPercent);
+        primarySnapshotHeight = (int) (totalThumbnailHeight * (taskPercent));
 
         secondarySnapshotWidth = parentWidth;
         secondarySnapshotHeight = totalThumbnailHeight - primarySnapshotHeight - dividerBar;
-        secondarySnapshot.setTranslationY(primarySnapshotHeight + spaceAboveSnapshot + dividerBar);
+        secondarySnapshot.setTranslationY(0);
+        primarySnapshot.setTranslationY(secondarySnapshotHeight + spaceAboveSnapshot + dividerBar);
         primarySnapshot.measure(
                 View.MeasureSpec.makeMeasureSpec(primarySnapshotWidth, View.MeasureSpec.EXACTLY),
                 View.MeasureSpec.makeMeasureSpec(primarySnapshotHeight, View.MeasureSpec.EXACTLY));
@@ -536,6 +557,11 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     @Override
     public void setTaskIconParams(FrameLayout.LayoutParams iconParams, int taskIconMargin,
             int taskIconHeight, int thumbnailTopMargin, boolean isRtl) {
+        if (enableOverviewIconMenu()) {
+            iconParams.gravity = Gravity.START | Gravity.CENTER_VERTICAL;
+            iconParams.topMargin = 0;
+            return;
+        }
         iconParams.gravity = (isRtl ? START : END) | CENTER_VERTICAL;
         iconParams.rightMargin = -taskIconHeight - taskIconMargin / 2;
         iconParams.leftMargin = 0;
@@ -544,13 +570,21 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void setTaskIconMenuParams(FrameLayout.LayoutParams iconMenuParams, int iconMenuMargin,
-            int thumbnailTopMargin) {
-        iconMenuParams.gravity = END | TOP;
-        iconMenuParams.setMarginStart(0);
-        iconMenuParams.topMargin = iconMenuParams.width + iconMenuMargin;
-        iconMenuParams.bottomMargin = 0;
+    public void setIconAppChipMenuParams(View iconAppChipMenuView,
+            FrameLayout.LayoutParams iconMenuParams, int iconMenuMargin, int thumbnailTopMargin) {
+        boolean isRtl = iconAppChipMenuView.getLayoutDirection() == LAYOUT_DIRECTION_RTL;
+        iconMenuParams.gravity = (isRtl ? START : END) | (isRtl ? BOTTOM : TOP);
+        iconMenuParams.setMarginStart(isRtl ? iconMenuMargin : 0);
+        iconMenuParams.topMargin = iconMenuMargin;
+        iconMenuParams.bottomMargin = isRtl ? iconMenuMargin : 0;
         iconMenuParams.setMarginEnd(iconMenuMargin);
+
+        iconAppChipMenuView.setPivotX(isRtl ? iconMenuParams.width - (iconMenuParams.height / 2f)
+                : iconMenuParams.width / 2f);
+        iconAppChipMenuView.setPivotY(
+                isRtl ? (iconMenuParams.height / 2f) : iconMenuParams.width / 2f);
+        iconAppChipMenuView.setTranslationY(0);
+        iconAppChipMenuView.setRotation(getDegreesRotated());
     }
 
     @Override
@@ -578,16 +612,23 @@ public class LandscapePagedViewHandler implements PagedOrientationHandler {
         int bottomToMidpointOffset = (int) (overviewThumbnailAreaThickness * midpointFromBottomPct);
         int insetOffset = (int) (overviewThumbnailAreaThickness * insetPct);
 
-        primaryIconParams.gravity = enableOverviewIconMenu() ? TOP | (isRtl ? START : END)
-                : BOTTOM | (isRtl ? START : END);
-        secondaryIconParams.gravity = enableOverviewIconMenu() ? TOP | (isRtl ? START : END)
-                : BOTTOM | (isRtl ? START : END);
+        if (enableOverviewIconMenu()) {
+            primaryIconParams.gravity = isRtl ? BOTTOM | START : TOP | END;
+            secondaryIconParams.gravity = isRtl ? BOTTOM | START : TOP | END;
+        } else {
+            primaryIconParams.gravity = BOTTOM | (isRtl ? START : END);
+            secondaryIconParams.gravity = BOTTOM | (isRtl ? START : END);
+        }
         primaryIconView.setTranslationX(0);
         secondaryIconView.setTranslationX(0);
         if (enableOverviewIconMenu()) {
-            int dividerThickness = Math.min(splitConfig.visualDividerBounds.width(),
-                    splitConfig.visualDividerBounds.height());
-            secondaryIconView.setTranslationY(primarySnapshotHeight + dividerThickness);
+            if (primaryIconView.getLayoutDirection() == LAYOUT_DIRECTION_RTL) {
+                secondaryIconView.setTranslationY(-primarySnapshotHeight);
+                primaryIconView.setTranslationY(0);
+            } else {
+                int secondarySnapshotHeight = groupedTaskViewHeight - primarySnapshotHeight;
+                primaryIconView.setTranslationY(secondarySnapshotHeight);
+            }
         } else if (splitConfig.initiatedFromSeascape) {
             // if the split was initiated from seascape,
             // the task on the right (secondary) is slightly larger

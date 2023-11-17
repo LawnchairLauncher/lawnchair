@@ -25,9 +25,9 @@ import static android.view.View.LAYOUT_DIRECTION_RTL;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
+import static com.android.launcher3.Flags.enableOverviewIconMenu;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_X;
 import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
-import static com.android.launcher3.Flags.enableOverviewIconMenu;
 import static com.android.launcher3.touch.SingleAxisSwipeDetector.VERTICAL;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_BOTTOM_OR_RIGHT;
 import static com.android.launcher3.util.SplitConfigurationOptions.STAGE_POSITION_TOP_OR_LEFT;
@@ -41,6 +41,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.ShapeDrawable;
 import android.util.FloatProperty;
 import android.util.Pair;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.Surface;
 import android.view.VelocityTracker;
@@ -268,8 +269,10 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     public float getTaskMenuX(float x, View thumbnailView,
             DeviceProfile deviceProfile, float taskInsetMargin, View taskViewIcon) {
         if (enableOverviewIconMenu()) {
-            return x + (thumbnailView.getLayoutDirection() == LAYOUT_DIRECTION_RTL
-                    ? -(taskViewIcon.getWidth() / 2f) : 0);
+            if (thumbnailView.getLayoutDirection() == LAYOUT_DIRECTION_RTL) {
+                return x + taskInsetMargin - taskViewIcon.getHeight() - (taskInsetMargin / 2f);
+            }
+            return x + taskInsetMargin;
         } else if (deviceProfile.isLandscape) {
             return x + taskInsetMargin
                     + (thumbnailView.getMeasuredWidth() - thumbnailView.getMeasuredHeight()) / 2f;
@@ -291,14 +294,14 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     public int getTaskMenuWidth(View thumbnailView, DeviceProfile deviceProfile,
             @StagePosition int stagePosition) {
         if (enableOverviewIconMenu()) {
-            int padding = thumbnailView.getResources().getDimensionPixelSize(
-                    R.dimen.task_menu_vertical_padding);
             return thumbnailView.getResources().getDimensionPixelSize(
-                    R.dimen.task_thumbnail_icon_menu_max_width) + (2 * padding);
+                    R.dimen.task_thumbnail_icon_menu_max_width);
         }
-        return deviceProfile.isLandscape && !deviceProfile.isTablet
+        int padding = thumbnailView.getResources()
+                .getDimensionPixelSize(R.dimen.task_menu_edge_padding);
+        return (deviceProfile.isLandscape && !deviceProfile.isTablet
                 ? thumbnailView.getMeasuredHeight()
-                : thumbnailView.getMeasuredWidth();
+                : thumbnailView.getMeasuredWidth()) - (2 * padding);
     }
 
     @Override
@@ -696,6 +699,12 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     @Override
     public void setTaskIconParams(FrameLayout.LayoutParams iconParams, int taskIconMargin,
             int taskIconHeight, int thumbnailTopMargin, boolean isRtl) {
+        if (enableOverviewIconMenu()) {
+            iconParams.setMarginStart(taskIconMargin);
+            iconParams.gravity = Gravity.START | Gravity.CENTER_VERTICAL;
+            iconParams.topMargin = 0;
+            return;
+        }
         iconParams.gravity = TOP | CENTER_HORIZONTAL;
         // Reset margins, since they may have been set on rotation
         iconParams.leftMargin = iconParams.rightMargin = 0;
@@ -703,13 +712,18 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
     }
 
     @Override
-    public void setTaskIconMenuParams(FrameLayout.LayoutParams iconMenuParams, int iconMenuMargin,
-            int thumbnailTopMargin) {
+    public void setIconAppChipMenuParams(View iconAppChipMenuView,
+            FrameLayout.LayoutParams iconMenuParams, int iconMenuMargin, int thumbnailTopMargin) {
         iconMenuParams.gravity = TOP | START;
         iconMenuParams.setMarginStart(iconMenuMargin);
-        iconMenuParams.topMargin = iconMenuMargin;
+        iconMenuParams.topMargin = thumbnailTopMargin;
         iconMenuParams.bottomMargin = 0;
         iconMenuParams.setMarginEnd(0);
+
+        iconAppChipMenuView.setPivotX(0);
+        iconAppChipMenuView.setPivotY(0);
+        iconAppChipMenuView.setTranslationY(0);
+        iconAppChipMenuView.setRotation(getDegreesRotated());
     }
 
     @Override
@@ -729,20 +743,13 @@ public class PortraitPagedViewHandler implements PagedOrientationHandler {
             secondaryIconParams.topMargin = primaryIconParams.topMargin;
             secondaryIconParams.setMarginStart(primaryIconParams.getMarginStart());
             if (deviceProfile.isLandscape) {
-                int fullscreenInsetThickness = deviceProfile.isSeascape()
-                        ? deviceProfile.getInsets().right
-                        : deviceProfile.getInsets().left;
-                int fullscreenMidpointFromBottom = ((deviceProfile.widthPx
-                        - fullscreenInsetThickness) / 2);
-                float midpointFromEndPct = (float) fullscreenMidpointFromBottom
-                        / deviceProfile.widthPx;
-                int bottomToMidpointOffset = (int) (groupedTaskViewWidth * midpointFromEndPct);
                 if (isRtl) {
-                    primaryIconView.setTranslationX(-bottomToMidpointOffset);
+                    primaryIconView.setTranslationX(-primarySnapshotWidth);
                 } else {
-                    secondaryIconView.setTranslationX(bottomToMidpointOffset);
+                    secondaryIconView.setTranslationX(primarySnapshotWidth);
                 }
             } else {
+                primaryIconView.setTranslationX(0);
                 secondaryIconView.setTranslationX(0);
                 int dividerThickness = Math.min(splitConfig.visualDividerBounds.width(),
                         splitConfig.visualDividerBounds.height());

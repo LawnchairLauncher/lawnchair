@@ -31,8 +31,8 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:layout_marginBottom="2dp"
-        android:paddingTop="@dimen/task_menu_vertical_padding"
-        android:paddingBottom="@dimen/task_menu_vertical_padding"
+        android:paddingTop="@dimen/task_menu_edge_padding"
+        android:paddingBottom="@dimen/task_menu_edge_padding"
         android:textSize="16sp"/>
 
     <LinearLayout
