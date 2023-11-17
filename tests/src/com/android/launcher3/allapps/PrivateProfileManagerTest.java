@@ -22,6 +22,9 @@ import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PRO
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
@@ -82,8 +85,8 @@ public class PrivateProfileManagerTest {
         when(mUserCache.getUserInfo(PRIVATE_HANDLE)).thenReturn(PRIVATE_ICON_INFO);
         when(mActivityAllAppsContainerView.getContext()).thenReturn(mContext);
         when(mActivityAllAppsContainerView.getAppsStore()).thenReturn(mAllAppsStore);
-        mPrivateProfileManager = new PrivateProfileManager(mUserManager, mUserCache,
-                mActivityAllAppsContainerView, mStatsLogManager);
+        mPrivateProfileManager = new PrivateProfileManager(mUserManager,
+                mActivityAllAppsContainerView, mStatsLogManager, mUserCache);
     }
 
     @Test
@@ -108,16 +111,18 @@ public class PrivateProfileManagerTest {
 
     @Test
     public void quietModeFlagPresent_privateSpaceIsResetToDisabled() {
+        PrivateProfileManager privateProfileManager = spy(mPrivateProfileManager);
+        doNothing().when(privateProfileManager).resetPrivateSpaceDecorator(anyInt());
         when(mAllAppsStore.hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED))
                 .thenReturn(false, true);
 
         // In first call the state should be disabled.
-        mPrivateProfileManager.reset();
-        assertEquals(STATE_ENABLED, mPrivateProfileManager.getCurrentState());
+        privateProfileManager.reset();
+        assertEquals(STATE_ENABLED, privateProfileManager.getCurrentState());
 
         // In the next call the state should be disabled.
-        mPrivateProfileManager.reset();
-        assertEquals(STATE_DISABLED, mPrivateProfileManager.getCurrentState());
+        privateProfileManager.reset();
+        assertEquals(STATE_DISABLED, privateProfileManager.getCurrentState());
     }
 
     @Test

@@ -176,6 +176,13 @@
     <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"നിങ്ങളുടെ ടാബ്‌ലെറ്റിലുള്ളവ തിരയുക"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"പരാജയപ്പെട്ടു: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"സ്വകാര്യ സ്പേസ്"</string>
-    <!-- no translation found for bubble_bar_overflow_description (7410995531938041192) -->
+    <!-- no translation found for ps_container_title (4391796149519594205) -->
     <skip />
+    <!-- no translation found for ps_container_settings (6059734123353320479) -->
+    <skip />
+    <!-- no translation found for ps_container_lock_unlock_button (7605602332253423755) -->
+    <skip />
+    <!-- no translation found for ps_container_transition (8667331812048014412) -->
+    <skip />
+    <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ഓവർഫ്ലോ"</string>
 </resources>

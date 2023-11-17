@@ -19,7 +19,7 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="recent_task_option_pin" msgid="7929860679018978258">"Mahkamlash"</string>
+    <string name="recent_task_option_pin" msgid="7929860679018978258">"Qadash"</string>
     <string name="recent_task_option_freeform" msgid="48863056265284071">"Erkin shakl"</string>
     <string name="recents_empty_message" msgid="7040467240571714191">"Yaqinda ishlatilgan ilovalar yo‘q"</string>
     <string name="accessibility_app_usage_settings" msgid="6312864233673544149">"Ilovadan foydalanish sozlamalari"</string>
@@ -98,6 +98,8 @@
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Ekranni ikkiga ajratish tanlovidan chiqish"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Ekranni ikkiga ajratish uchun boshqa ilovani tanlang"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Bu amal ilova yoki tashkilotingiz tomonidan taqiqlangan"</string>
+    <!-- no translation found for split_widgets_not_supported (1355743038053053866) -->
+    <skip />
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Navigatsiya darsi yopilsinmi?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Bu darslar <xliff:g id="NAME">%1$s</xliff:g> ilovasida chiqadi"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Bekor qilish"</string>

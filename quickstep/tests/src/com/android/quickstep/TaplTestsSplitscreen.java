@@ -29,6 +29,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.android.launcher3.tapl.Overview;
+import com.android.launcher3.tapl.Taskbar;
+import com.android.launcher3.tapl.TaskbarAppIcon;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.rule.TestStabilityRule;
@@ -135,6 +138,31 @@ public class TaplTestsSplitscreen extends AbstractQuickStepTest {
                         .getCurrentTask()
                         .tapMenu()
                         .hasMenuItem("Save app pair"));
+    }
+
+    @Test
+    public void testSplitSingleTaskFromTaskbar() {
+        // Currently only tablets have Taskbar in Overview, so test is only active on tablets
+        assumeTrue(mLauncher.isTablet());
+
+        if (!mLauncher.getRecentTasks().isEmpty()) {
+            // Clear all recent tasks
+            mLauncher.goHome().switchToOverview().dismissAllTasks();
+        }
+
+        startAppFast(getAppPackageName());
+
+        Overview overview = mLauncher.goHome().switchToOverview();
+        if (mLauncher.isGridOnlyOverviewEnabled()) {
+            overview.getCurrentTask().tapMenu().tapSplitMenuItem();
+        } else {
+            overview.getOverviewActions().clickSplit();
+        }
+
+        Taskbar taskbar = overview.getTaskbar();
+        String firstAppName = taskbar.getIconNames().get(0);
+        TaskbarAppIcon firstApp = taskbar.getAppIcon(firstAppName);
+        firstApp.launchIntoSplitScreen();
     }
 
     private void createAndLaunchASplitPair() {

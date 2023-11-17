@@ -28,6 +28,8 @@ import static com.android.launcher3.tapl.Folder.FOLDER_CONTENT_RES_ID;
 import static com.android.launcher3.tapl.TestHelpers.getOverviewPackageName;
 import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORDINAL;
 import static com.android.launcher3.testing.shared.TestProtocol.REQUEST_NUM_ALL_APPS_COLUMNS;
+import static com.android.launcher3.testing.shared.TestProtocol.WORKSPACE_LONG_PRESS;
+import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 
 import android.app.ActivityManager;
 import android.app.Instrumentation;
@@ -215,15 +217,31 @@ public final class LauncherInstrumentation {
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
      */
     public LauncherInstrumentation() {
-        this(InstrumentationRegistry.getInstrumentation());
+        this(InstrumentationRegistry.getInstrumentation(), false);
     }
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
-     * Deprecated: use the constructor without parameters instead.
+     */
+    public LauncherInstrumentation(boolean isLauncherTest) {
+        this(InstrumentationRegistry.getInstrumentation(), isLauncherTest);
+    }
+
+    /**
+     * Constructs the root of TAPL hierarchy. You get all other objects from it.
+     * @deprecated use the constructor without Instrumentation parameter instead.
      */
     @Deprecated
     public LauncherInstrumentation(Instrumentation instrumentation) {
+        this(instrumentation, false);
+    }
+
+    /**
+     * Constructs the root of TAPL hierarchy. You get all other objects from it.
+     * @deprecated use the constructor without Instrumentation parameter instead.
+     */
+    @Deprecated
+    public LauncherInstrumentation(Instrumentation instrumentation, boolean isLauncherTest) {
         mInstrumentation = instrumentation;
         mDevice = UiDevice.getInstance(instrumentation);
 
@@ -272,12 +290,17 @@ public final class LauncherInstrumentation {
                             .replaceAll("\\s", "");
                     mDevice.executeShellCommand(
                             "pm enable --user " + userId + " " + cn.flattenToString());
+
                     // Wait for Launcher restart after enabling test provider.
-                    for (int i = 0; i < 100; ++i) {
+                    final int iterations = isLauncherTest ? 300 : 100;
+
+                    for (int i = 0; i < iterations; ++i) {
                         final String currentPid = mDevice.executeShellCommand(launcherPidCommand)
                                 .replaceAll("\\s", "");
                         if (!currentPid.isEmpty() && !currentPid.equals(initialPid)) break;
-                        if (i == 99) fail("Launcher didn't restart after enabling test provider");
+                        if (i == iterations - 1) {
+                            fail("Launcher didn't restart after enabling test provider");
+                        }
                         SystemClock.sleep(100);
                     }
                 } catch (IOException e) {
@@ -1684,6 +1707,7 @@ public final class LauncherInstrumentation {
         final Point start = new Point(startX, startY);
         final Point end = new Point(endX, endY);
         sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, start, gestureScope);
+        testLogD(WORKSPACE_LONG_PRESS, "Sent ACTION_DOWN");
         if (mTrackpadGestureType != TrackpadGestureType.NONE) {
             sendPointer(downTime, downTime, getPointerAction(MotionEvent.ACTION_POINTER_DOWN, 1),
                     start, gestureScope);
@@ -1888,6 +1912,10 @@ public final class LauncherInstrumentation {
         long steps = duration / GESTURE_STEP_MS;
 
         long currentTime = startTime;
+        testLogD(WORKSPACE_LONG_PRESS, "movingPointer" +
+                " downTime: " + downTime + " startTime: " + startTime +
+                " duration: " + duration + " isDecel? " + isDecelerating +
+                " gestureScope: " + gestureScope);
 
         if (isDecelerating) {
             // formula: V = V0 - D*T, assuming V = 0 when T = duration

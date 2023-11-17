@@ -22,6 +22,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -139,9 +140,16 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
     protected final OnClickListener mOnIconClickListener;
     protected final OnLongClickListener mOnIconLongClickListener;
     protected OnFocusChangeListener mIconFocusListener;
+    private final PrivateSpaceHeaderViewController mPrivateSpaceHeaderViewController;
 
     public BaseAllAppsAdapter(T activityContext, LayoutInflater inflater,
             AlphabeticalAppsList<T> apps, SearchAdapterProvider<?> adapterProvider) {
+        this(activityContext, inflater, apps, adapterProvider, null);
+    }
+
+    public BaseAllAppsAdapter(T activityContext, LayoutInflater inflater,
+            AlphabeticalAppsList<T> apps, SearchAdapterProvider<?> adapterProvider,
+            PrivateSpaceHeaderViewController privateSpaceHeaderViewController) {
         mActivityContext = activityContext;
         mApps = apps;
         mLayoutInflater = inflater;
@@ -150,6 +158,7 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         mOnIconLongClickListener = mActivityContext.getAllAppsItemLongClickListener();
 
         mAdapterProvider = adapterProvider;
+        mPrivateSpaceHeaderViewController = privateSpaceHeaderViewController;
     }
 
     /** Checks if the passed viewType represents all apps divider. */
@@ -160,6 +169,11 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
     /** Checks if the passed viewType represents all apps icon. */
     public static boolean isIconViewType(int viewType) {
         return isViewType(viewType, VIEW_TYPE_MASK_ICON);
+    }
+
+    /** Checks if the passed viewType represents private space header. */
+    public static boolean isPrivateSpaceHeaderView(int viewType) {
+        return isViewType(viewType, VIEW_TYPE_MASK_PRIVATE_SPACE_HEADER);
     }
 
     public void setIconFocusListener(OnFocusChangeListener focusListener) {
@@ -230,6 +244,12 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
                 break;
             }
             case VIEW_TYPE_PRIVATE_SPACE_HEADER:
+                RelativeLayout psHeaderLayout = holder.itemView.findViewById(
+                        R.id.ps_header_layout);
+                assert mPrivateSpaceHeaderViewController != null;
+                assert psHeaderLayout != null;
+                mPrivateSpaceHeaderViewController.addPrivateSpaceHeaderViewElements(psHeaderLayout);
+                break;
             case VIEW_TYPE_ALL_APPS_DIVIDER:
             case VIEW_TYPE_WORK_DISABLED_CARD:
                 // nothing to do

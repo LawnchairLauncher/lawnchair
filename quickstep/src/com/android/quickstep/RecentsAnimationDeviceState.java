@@ -57,12 +57,14 @@ import android.os.SystemProperties;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.ISystemGestureExclusionListener;
+import android.view.IWindowManager;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.WindowManagerGlobal;
 
 import androidx.annotation.BinderThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.config.FeatureFlags;
@@ -98,20 +100,22 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
 
     private final Context mContext;
     private final DisplayController mDisplayController;
-    private final int mDisplayId;
 
-    private final ISystemGestureExclusionListener mGestureExclusionListener =
+    private final IWindowManager mIWindowManager;
+
+    @VisibleForTesting
+    final ISystemGestureExclusionListener mGestureExclusionListener =
             new ISystemGestureExclusionListener.Stub() {
                 @BinderThread
                 @Override
                 public void onSystemGestureExclusionChanged(int displayId,
                         Region systemGestureExclusionRegion, Region unrestrictedOrNull) {
-                    if (displayId != mDisplayId) {
+                    if (displayId != DEFAULT_DISPLAY) {
                         return;
                     }
                     // Assignments are atomic, it should be safe on binder thread. Also we don't
-                    // think systemGestureExclusionRegion can be null but just in case, don't let
-                    // mExclusionRegion be null.
+                    // think systemGestureExclusionRegion can be null but just in case, don't
+                    // let mExclusionRegion be null.
                     mExclusionRegion = systemGestureExclusionRegion != null
                             ? systemGestureExclusionRegion : new Region();
                 }
@@ -142,17 +146,28 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     private boolean mExclusionListenerRegistered;
 
     public RecentsAnimationDeviceState(Context context) {
-        this(context, false);
+        this(context, false, WindowManagerGlobal.getWindowManagerService());
+    }
+
+    public RecentsAnimationDeviceState(Context context, boolean isInstanceForTouches) {
+        this(context, isInstanceForTouches, WindowManagerGlobal.getWindowManagerService());
+    }
+
+    @VisibleForTesting
+    RecentsAnimationDeviceState(Context context, IWindowManager windowManager) {
+        this(context, false, windowManager);
     }
 
     /**
      * @param isInstanceForTouches {@code true} if this is the persistent instance being used for
      *                                   gesture touch handling
      */
-    public RecentsAnimationDeviceState(Context context, boolean isInstanceForTouches) {
+    RecentsAnimationDeviceState(
+            Context context, boolean isInstanceForTouches,
+            IWindowManager windowManager) {
         mContext = context;
         mDisplayController = DisplayController.INSTANCE.get(context);
-        mDisplayId = DEFAULT_DISPLAY;
+        mIWindowManager = windowManager;
         mIsOneHandedModeSupported = SystemProperties.getBoolean(SUPPORT_ONE_HANDED_MODE, false);
         mRotationTouchHelper = RotationTouchHelper.INSTANCE.get(context);
         if (isInstanceForTouches) {
@@ -251,7 +266,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
     @Override
     public void onDisplayInfoChanged(Context context, Info info, int flags) {
         if ((flags & (CHANGE_ROTATION | CHANGE_NAVIGATION_MODE)) != 0) {
-            mMode = info.navigationMode;
+            mMode = info.getNavigationMode();
             ActiveGestureLog.INSTANCE.setIsFullyGesturalNavMode(isFullyGesturalNavMode());
             mNavBarPosition = new NavBarPosition(mMode, info);
 
@@ -273,9 +288,8 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
                 return;
             }
             try {
-                WindowManagerGlobal.getWindowManagerService()
-                        .registerSystemGestureExclusionListener(
-                                mGestureExclusionListener, mDisplayId);
+                mIWindowManager.registerSystemGestureExclusionListener(
+                        mGestureExclusionListener, DEFAULT_DISPLAY);
                 mExclusionListenerRegistered = true;
             } catch (RemoteException e) {
                 Log.e(TAG, "Failed to register window manager callbacks", e);
@@ -294,9 +308,8 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
                 return;
             }
             try {
-                WindowManagerGlobal.getWindowManagerService()
-                        .unregisterSystemGestureExclusionListener(
-                                mGestureExclusionListener, mDisplayId);
+                mIWindowManager.unregisterSystemGestureExclusionListener(
+                        mGestureExclusionListener, DEFAULT_DISPLAY);
                 mExclusionListenerRegistered = false;
             } catch (RemoteException e) {
                 Log.e(TAG, "Failed to unregister window manager callbacks", e);
@@ -340,7 +353,7 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
      * @return the display id for the display that Launcher is running on.
      */
     public int getDisplayId() {
-        return mDisplayId;
+        return DEFAULT_DISPLAY;
     }
 
     /**

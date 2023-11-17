@@ -16,9 +16,12 @@
 
 package com.android.launcher3.tapl;
 
+import static com.android.launcher3.tapl.LauncherInstrumentation.TASKBAR_RES_ID;
+
 import android.graphics.Rect;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.BySelector;
 import androidx.test.uiautomator.Direction;
@@ -320,6 +323,22 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
     public boolean isClearAllVisible() {
         return verifyActiveContainer().hasObject(
                 mLauncher.getOverviewObjectSelector("clear_all"));
+    }
+
+    /**
+     * Returns the taskbar if it's a tablet, or {@code null} otherwise.
+     */
+    @Nullable
+    public Taskbar getTaskbar() {
+        if (!mLauncher.isTablet()) {
+            return null;
+        }
+        try (LauncherInstrumentation.Closable c = mLauncher.addContextLayer(
+                "want to get the taskbar")) {
+            mLauncher.waitForSystemLauncherObject(TASKBAR_RES_ID);
+
+            return new Taskbar(mLauncher);
+        }
     }
 
     protected boolean isActionsViewVisible() {
