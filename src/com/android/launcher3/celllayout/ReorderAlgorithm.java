@@ -15,9 +15,12 @@
  */
 package com.android.launcher3.celllayout;
 
+import android.graphics.Rect;
 import android.view.View;
 
 import com.android.launcher3.CellLayout;
+
+import java.util.Map.Entry;
 
 /**
  * Contains the logic of a reorder.
@@ -109,14 +112,16 @@ public class ReorderAlgorithm {
      */
     public CellLayout.ItemConfiguration dropInPlaceSolution(int pixelX, int pixelY, int spanX,
             int spanY, View dragView) {
-        int[] result = new int[2];
-        if (mCellLayout.isNearestDropLocationOccupied(pixelX, pixelY, spanX, spanY, dragView,
-                result)) {
-            result[0] = result[1] = -1;
-        }
+        int[] result = mCellLayout.findNearestAreaIgnoreOccupied(pixelX, pixelY, spanX, spanY,
+                new int[2]);
         CellLayout.ItemConfiguration solution = new CellLayout.ItemConfiguration();
         mCellLayout.copyCurrentStateToSolution(solution, false);
-        solution.isSolution = result[0] != -1;
+
+        solution.isSolution = !isConfigurationRegionOccupied(
+                new Rect(result[0], result[1], result[0] + spanX, result[1] + spanY),
+                solution,
+                dragView
+        );
         if (!solution.isSolution) {
             return solution;
         }
@@ -125,6 +130,17 @@ public class ReorderAlgorithm {
         solution.spanX = spanX;
         solution.spanY = spanY;
         return solution;
+    }
+
+    private boolean isConfigurationRegionOccupied(Rect region,
+            CellLayout.ItemConfiguration configuration, View ignoreView) {
+        return configuration.map.entrySet()
+                .stream()
+                .filter(entry -> entry.getKey() != ignoreView)
+                .map(Entry::getValue)
+                .anyMatch(cellAndSpan -> region.intersect(cellAndSpan.cellX, cellAndSpan.cellY,
+                        cellAndSpan.cellX + cellAndSpan.spanX,
+                        cellAndSpan.cellY + cellAndSpan.spanY));
     }
 
     /**
