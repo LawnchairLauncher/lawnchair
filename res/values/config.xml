@@ -228,6 +228,10 @@
     <dimen name="iconSize60dp">66dp</dimen>
     <dimen name="iconSize66dp">72dp</dimen>
     <dimen name="iconSize72dp">79dp</dimen>
+    <dimen name="iconSize82dp">90dp</dimen>
+    <dimen name="iconSize110dp">121dp</dimen>
+    <dimen name="iconSize144dp">158dp</dimen>
+
 
     <!--  Icon size steps in dp  -->
     <integer-array name="icon_size_steps">
@@ -240,6 +244,9 @@
         <item>@dimen/iconSize60dp</item>
         <item>@dimen/iconSize66dp</item>
         <item>@dimen/iconSize72dp</item>
+        <item>@dimen/iconSize82dp</item>
+        <item>@dimen/iconSize110dp</item>
+        <item>@dimen/iconSize144dp</item>
     </integer-array>
 
     <dimen name="minimum_icon_label_size">8sp</dimen>
