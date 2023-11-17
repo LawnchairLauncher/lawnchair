@@ -1055,10 +1055,10 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
      *  * in small screen AND
      *  * 3 button nav AND
      *  * landscape (or seascape)
-     * We do not stash if taskbar is transient
+     * We do not stash if taskbar is transient or hardware keyboard is active.
      */
     private boolean shouldStashForIme() {
-        if (DisplayController.isTransientTaskbar(mActivity)) {
+        if (DisplayController.isTransientTaskbar(mActivity) || mActivity.isHardwareKeyboard()) {
             return false;
         }
         return (mIsImeShowing || mIsImeSwitcherShowing) &&
