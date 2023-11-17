@@ -528,6 +528,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         mAppWidgetManager = new WidgetManagerHelper(this);
         mAppWidgetHolder = createAppWidgetHolder();
         mAppWidgetHolder.startListening();
+        mAppWidgetHolder.addProviderChangeListener(() -> refreshAndBindWidgetsForPackageUser(null));
 
         mPopupDataProvider = new PopupDataProvider(this::updateNotificationDots);
 
