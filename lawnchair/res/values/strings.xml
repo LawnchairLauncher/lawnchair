@@ -300,6 +300,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">App Search</string>
+    <string name="search_provider_startpage" translatable="false">Startpage</string>
     <string name="search_provider_google" translatable="false">Google</string>
     <string name="search_provider_google_go" translatable="false">Google Go</string>
     <string name="search_provider_duckduckgo" translatable="false">DuckDuckGo</string>

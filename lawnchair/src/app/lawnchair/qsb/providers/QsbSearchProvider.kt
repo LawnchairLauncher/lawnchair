@@ -128,6 +128,7 @@ sealed class QsbSearchProvider(
             Presearch,
             Bing,
             Brave,
+            Startpage,
         )
 
         /**
