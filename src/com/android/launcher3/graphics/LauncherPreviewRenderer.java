@@ -242,13 +242,19 @@ public class LauncherPreviewRenderer extends ContextWrapper
             mDpOrig = mDp;
         }
 
-        WindowInsets currentWindowInsets = context.getSystemService(WindowManager.class)
-                .getCurrentWindowMetrics().getWindowInsets();
-        mInsets = new Rect(
-                currentWindowInsets.getSystemWindowInsetLeft(),
-                currentWindowInsets.getSystemWindowInsetTop(),
-                currentWindowInsets.getSystemWindowInsetRight(),
-                mDp.isTaskbarPresent ? 0 : currentWindowInsets.getSystemWindowInsetBottom());
+        if (Utilities.ATLEAST_R) {
+            WindowInsets currentWindowInsets = context.getSystemService(WindowManager.class)
+                    .getCurrentWindowMetrics().getWindowInsets();
+            mInsets = new Rect(
+                    currentWindowInsets.getSystemWindowInsetLeft(),
+                    currentWindowInsets.getSystemWindowInsetTop(),
+                    currentWindowInsets.getSystemWindowInsetRight(),
+                    currentWindowInsets.getSystemWindowInsetBottom());
+        } else {
+            mInsets = new Rect();
+            mInsets.left = mInsets.right = (mDp.widthPx - mDp.availableWidthPx) / 2;
+            mInsets.top = mInsets.bottom = (mDp.heightPx - mDp.availableHeightPx) / 2;
+        }
         mDp.updateInsets(mInsets);
 
         BaseIconFactory iconFactory =
