@@ -281,7 +281,7 @@
     <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Google Search</string>
-    <string name="smartspace_mode_smartspacer">Smartspacer</string>
+    <string name="smartspace_mode_smartspacer" translatable="false">Smartspacer</string>
 
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
