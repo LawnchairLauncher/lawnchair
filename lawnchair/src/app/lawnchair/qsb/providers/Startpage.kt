@@ -11,4 +11,5 @@ data object Startpage : QsbSearchProvider(
     packageName = "",
     website = "https://startpage.com/?segment=startpage.lawnchair",
     type = QsbSearchProviderType.WEBSITE,
+    sponsored = true,
 )
