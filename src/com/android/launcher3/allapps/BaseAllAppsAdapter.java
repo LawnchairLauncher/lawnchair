@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.BubbleTextView;
@@ -92,7 +93,8 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
         public int rowAppIndex;
         // The associated ItemInfoWithIcon for the item
         public AppInfo itemInfo = null;
-
+        // Private App Decorator
+        public SectionDecorationInfo decorationInfo = null;
         public AdapterItem(int viewType) {
             this.viewType = viewType;
         }
@@ -125,9 +127,17 @@ public abstract class BaseAllAppsAdapter<T extends Context & ActivityContext> ex
             return itemInfo == null && other.itemInfo == null;
         }
 
-        /** Sets the alpha of the decorator for this item. Returns true if successful. */
-        public boolean setDecorationFillAlpha(int alpha) {
-            return false;
+        @Nullable
+        public SectionDecorationInfo getDecorationInfo() {
+            return decorationInfo;
+        }
+
+        /** Sets the alpha of the decorator for this item. */
+        protected void setDecorationFillAlpha(int alpha) {
+            if (decorationInfo == null || decorationInfo.getDecorationHandler() == null) {
+                return;
+            }
+            decorationInfo.getDecorationHandler().setFillAlpha(alpha);
         }
     }
 
