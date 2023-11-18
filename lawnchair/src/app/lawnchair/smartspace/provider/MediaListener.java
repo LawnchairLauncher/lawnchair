@@ -14,13 +14,13 @@ import android.view.KeyEvent;
 
 import androidx.core.util.Consumer;
 
+import app.lawnchair.NotificationManager;
+import app.lawnchair.util.FlowCollector;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import app.lawnchair.NotificationManager;
-import app.lawnchair.util.FlowCollector;
 
 /**
  * Paused mode is not supported on Marshmallow because the MediaSession is missing
