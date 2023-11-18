@@ -16,7 +16,7 @@ android {
             aidl.srcDirs = ['src']
         }
     }
-    addFrameworkJar('android.jar')
+    addFrameworkJar('framework-13.jar')
 }
 
 dependencies {
