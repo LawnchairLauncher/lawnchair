@@ -173,8 +173,7 @@ android {
         debug {
             applicationIdSuffix ".debug"
             resValue("string", "derived_app_name", "Lawnchair (Debug)")
-            minifyEnabled false
-            shrinkResources false
+            signingConfig releaseSigning
             proguardFiles "proguard-android-optimize.txt", "proguard.pro"
         }
 
