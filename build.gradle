@@ -312,13 +312,6 @@ android {
     addFrameworkJar('framework-13.jar')
 }
 
-spotless {
-    kotlin {
-        ktlint("1.0.1")
-        target("lawnchair/src/**/*.kt")
-    }
-}
-
 dependencies {
     implementation projects.iconloaderlib
     implementation projects.searchuilib
@@ -421,6 +414,13 @@ protobuf {
                 }
             }
         }
+    }
+}
+
+spotless {
+    kotlin {
+        ktlint("1.0.1")
+        target("lawnchair/src/**/*.kt")
     }
 }
 
