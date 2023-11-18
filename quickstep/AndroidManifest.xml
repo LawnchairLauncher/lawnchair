@@ -43,6 +43,10 @@
 
     <uses-permission android:name="android.permission.SYSTEM_APPLICATION_OVERLAY" />
 
+    <!-- Permission required to start a WidgetPickerActivity. -->
+    <permission android:name="${packageName}.permission.START_WIDGET_PICKER_ACTIVITY"
+        android:protectionLevel="signature|privileged" />
+
     <application android:backupAgent="com.android.launcher3.LauncherBackupAgent"
          android:fullBackupOnly="true"
          android:fullBackupContent="@xml/backupscheme"
@@ -130,6 +134,20 @@
             <intent-filter>
                 <action android:name="com.android.quickstep.action.GESTURE_ONBOARDING_ALL_SET"/>
                 <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+
+        <activity android:name="com.android.launcher3.WidgetPickerActivity"
+            android:theme="@style/WidgetPickerActivityTheme"
+            android:excludeFromRecents="true"
+            android:autoRemoveFromRecents="true"
+            android:showOnLockScreen="true"
+            android:launchMode="singleTop"
+            android:exported="true"
+            android:permission="android.permission.START_WIDGET_PICKER_ACTIVITY">
+            <intent-filter>
+                <action android:name="android.intent.action.PICK" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 

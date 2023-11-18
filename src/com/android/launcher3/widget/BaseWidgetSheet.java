@@ -67,6 +67,8 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     protected int mNavBarScrimHeight;
     private final Paint mNavBarScrimPaint;
 
+    private boolean mDisableNavBarScrim = false;
+
     public BaseWidgetSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mContentHorizontalMargin = getResources().getDimensionPixelSize(
@@ -146,8 +148,15 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
         }
     }
 
+    /** Enables or disables the sheet's nav bar scrim. */
+    public void disableNavBarScrim(boolean disable) {
+        mDisableNavBarScrim = disable;
+    }
+
     private int getNavBarScrimHeight(WindowInsets insets) {
-        if (Utilities.ATLEAST_Q) {
+        if (mDisableNavBarScrim) {
+            return 0;
+        } else if (Utilities.ATLEAST_Q) {
             return insets.getTappableElementInsets().bottom;
         } else {
             return insets.getStableInsetBottom();
