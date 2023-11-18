@@ -304,7 +304,7 @@ class LawnchairLauncher :
     }
 
     override fun registerBackDispatcher() {
-        if (VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (LawnchairApp.isAtleastT) {
             super.registerBackDispatcher()
         }
     }
