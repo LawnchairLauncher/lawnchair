@@ -10,14 +10,17 @@ import app.lawnchair.util.dropWhileBusy
 import com.android.launcher3.R
 import com.android.launcher3.util.MainThreadInitializedObject
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.shareIn
 
 class SmartspaceProvider private constructor(context: Context) {
 
     val dataSources = listOf(
         SmartspaceWidgetReader(context),
         BatteryStatusProvider(context),
-        NowPlayingProvider(context)
+        NowPlayingProvider(context),
     )
 
     private val state = dataSources
@@ -26,7 +29,7 @@ class SmartspaceProvider private constructor(context: Context) {
         .shareIn(
             MainScope(),
             SharingStarted.WhileSubscribed(),
-            replay = 1
+            replay = 1,
         )
     val targets = state
         .map {
@@ -44,10 +47,10 @@ class SmartspaceProvider private constructor(context: Context) {
         headerAction = SmartspaceAction(
             id = "smartspaceSetupAction",
             title = context.getString(R.string.smartspace_requires_setup),
-            intent = PreferenceActivity.createIntent(context, "/${Routes.SMARTSPACE}/")
+            intent = PreferenceActivity.createIntent(context, "/${Routes.SMARTSPACE}/"),
         ),
         score = 999f,
-        featureType = SmartspaceTarget.FeatureType.FEATURE_TIPS
+        featureType = SmartspaceTarget.FeatureType.FEATURE_TIPS,
     )
 
     suspend fun startSetup(activity: Activity) {

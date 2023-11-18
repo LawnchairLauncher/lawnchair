@@ -38,7 +38,7 @@ private val iconPackIntents = listOf(
     Intent("com.novalauncher.THEME"),
     Intent("org.adw.launcher.icons.ACTION_PICK_ICON"),
     Intent("com.dlto.atom.launcher.THEME"),
-    Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME")
+    Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME"),
 )
 
 class PreferenceViewModel(private val app: Application) : AndroidViewModel(app), PreferenceInteractor {
@@ -53,16 +53,16 @@ class PreferenceViewModel(private val app: Application) : AndroidViewModel(app),
                 IconPackInfo(
                     info.loadLabel(pm).toString(),
                     info.activityInfo.packageName,
-                    CustomAdaptiveIconDrawable.wrapNonNull(info.loadIcon(pm))
+                    CustomAdaptiveIconDrawable.wrapNonNull(info.loadIcon(pm)),
                 )
             }
         val lawnchairIcon = CustomAdaptiveIconDrawable.wrapNonNull(
-            ContextCompat.getDrawable(app, R.drawable.ic_launcher_home)!!
+            ContextCompat.getDrawable(app, R.drawable.ic_launcher_home)!!,
         )
         val defaultIconPack = IconPackInfo(
             name = app.getString(R.string.system_icons),
             packageName = "",
-            icon = lawnchairIcon
+            icon = lawnchairIcon,
         )
         val withSystemIcons = listOf(defaultIconPack) + iconPacks.sortedBy { it.name }
         emit(withSystemIcons)
@@ -79,18 +79,18 @@ class PreferenceViewModel(private val app: Application) : AndroidViewModel(app),
                 IconPackInfo(
                     info.loadLabel(pm).toString(),
                     info.activityInfo.packageName,
-                    CustomAdaptiveIconDrawable.wrapNonNull(info.loadIcon(pm))
+                    CustomAdaptiveIconDrawable.wrapNonNull(info.loadIcon(pm)),
                 )
             }
         val lawnchairIcon = CustomAdaptiveIconDrawable.wrapNonNull(
-            ContextCompat.getDrawable(app, R.drawable.ic_launcher_home)!!
+            ContextCompat.getDrawable(app, R.drawable.ic_launcher_home)!!,
         )
         var defaultIconPack = listOf(
             IconPackInfo(
                 name = app.getString(R.string.system_icons),
                 packageName = "",
-                icon = lawnchairIcon
-            )
+                icon = lawnchairIcon,
+            ),
         )
         if (app.packageManager.getPackageVersionCode(LAWNICONS_PACKAGE_NAME) in 1..3) {
             val info = app.packageManager.getApplicationInfo(LAWNICONS_PACKAGE_NAME, 0)
@@ -98,8 +98,8 @@ class PreferenceViewModel(private val app: Application) : AndroidViewModel(app),
                 IconPackInfo(
                     name = pm.getApplicationLabel(info).toString(),
                     packageName = info.packageName,
-                    icon = CustomAdaptiveIconDrawable.wrapNonNull(pm.getApplicationIcon(info))
-                )
+                    icon = CustomAdaptiveIconDrawable.wrapNonNull(pm.getApplicationIcon(info)),
+                ),
             )
         }
         val withSystemIcons = defaultIconPack + themedIconPacks.sortedBy { it.name }

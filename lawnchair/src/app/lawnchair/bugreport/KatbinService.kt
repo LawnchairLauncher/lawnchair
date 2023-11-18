@@ -25,15 +25,15 @@ interface KatbinService {
 
 @Serializable
 data class KatbinUploadBody(
-    val paste: KatbinPaste
+    val paste: KatbinPaste,
 )
 
 @Serializable
 data class KatbinPaste(
-    val content: String
+    val content: String,
 )
 
 @Serializable
 data class KatbinUploadResult(
-    val id: String
+    val id: String,
 )

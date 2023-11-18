@@ -19,7 +19,12 @@ package app.lawnchair.preferences2
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
-import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import app.lawnchair.font.FontCache
 import app.lawnchair.gestures.config.GestureHandlerConfig
@@ -27,6 +32,7 @@ import app.lawnchair.hotseat.HotseatMode
 import app.lawnchair.icons.CustomAdaptiveIconDrawable
 import app.lawnchair.icons.shape.IconShape
 import app.lawnchair.icons.shape.IconShapeManager
+import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
 import app.lawnchair.qsb.providers.QsbSearchProvider
 import app.lawnchair.smartspace.model.SmartspaceCalendar
 import app.lawnchair.smartspace.model.SmartspaceMode
@@ -37,6 +43,7 @@ import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
+import com.android.launcher3.graphics.IconShape as L3IconShape
 import com.android.launcher3.util.DynamicResource
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.opto.core.PreferenceManager
@@ -48,8 +55,6 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.serialization.encodeToString
-import app.lawnchair.preferences.PreferenceManager as LawnchairPreferenceManager
-import com.android.launcher3.graphics.IconShape as L3IconShape
 
 class PreferenceManager2 private constructor(private val context: Context) : PreferenceManager {
 
@@ -143,7 +148,7 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = QsbSearchProvider.resolveDefault(context),
         parse = { QsbSearchProvider.fromId(it) },
         save = { it.id },
-        onSet = { reloadHelper.recreate() }
+        onSet = { reloadHelper.recreate() },
     )
 
     val hotseatQsbForceWebsite = preference(
@@ -193,9 +198,9 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     )
 
     val lockHomeScreenButtonOnPopUp = preference(
-            key = booleanPreferencesKey(name = "lock_home_screen_on_popup"),
-            defaultValue = context.resources.getBoolean(R.bool.config_default_lock_home_screen_on_popup),
-            onSet = { reloadHelper.reloadGrid() },
+        key = booleanPreferencesKey(name = "lock_home_screen_on_popup"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_lock_home_screen_on_popup),
+        onSet = { reloadHelper.reloadGrid() },
     )
 
     val showSystemSettingsEntryOnPopUp = preference(
@@ -207,19 +212,19 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val hideAppDrawerSearchBar = preference(
         key = booleanPreferencesKey(name = "hide_app_drawer_search_bar"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_hide_app_drawer_search_bar),
-        onSet = { reloadHelper.recreate() }
+        onSet = { reloadHelper.recreate() },
     )
 
     val showHiddenAppsInSearch = preference(
         key = booleanPreferencesKey(name = "show_hidden_apps_in_search"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_hidden_apps_in_search),
-        onSet = { reloadHelper.recreate() }
+        onSet = { reloadHelper.recreate() },
     )
 
     val enableSmartHide = preference(
         key = booleanPreferencesKey(name = "enable_smart_hide"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_smart_hide),
-        onSet = { reloadHelper.recreate() }
+        onSet = { reloadHelper.recreate() },
     )
 
     val enableFontSelection = preference(
@@ -350,7 +355,7 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
             reloadHelper.reloadGrid()
             reloadHelper.reloadTaskbar()
             reloadHelper.recreate()
-        }
+        },
     )
 
     val smartspaceMode = preference(
@@ -368,17 +373,17 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
 
     val smartspaceAagWidget = preference(
         key = booleanPreferencesKey("enable_smartspace_aag_widget"),
-        defaultValue = true
+        defaultValue = true,
     )
 
     val smartspaceBatteryStatus = preference(
         key = booleanPreferencesKey("enable_smartspace_battery_status"),
-        defaultValue = true
+        defaultValue = true,
     )
 
     val smartspaceNowPlaying = preference(
         key = booleanPreferencesKey("enable_smartspace_now_playing"),
-        defaultValue = true
+        defaultValue = true,
     )
 
     val smartspaceShowDate = preference(
@@ -408,32 +413,32 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     val wallpaperDepthEffect = preference(
         key = booleanPreferencesKey(name = "enable_wallpaper_depth_effect"),
         defaultValue = true,
-        onSet = { reloadHelper.recreate() }
+        onSet = { reloadHelper.recreate() },
     )
 
     val doubleTapGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("double_tap_gesture_handler"),
-        defaultValue = GestureHandlerConfig.Sleep
+        defaultValue = GestureHandlerConfig.Sleep,
     )
 
     val swipeUpGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("swipe_up_gesture_handler"),
-        defaultValue = GestureHandlerConfig.OpenAppDrawer
+        defaultValue = GestureHandlerConfig.OpenAppDrawer,
     )
 
     val swipeDownGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("swipe_down_gesture_handler"),
-        defaultValue = GestureHandlerConfig.OpenNotifications
+        defaultValue = GestureHandlerConfig.OpenNotifications,
     )
 
     val homePressGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("home_press_gesture_handler"),
-        defaultValue = GestureHandlerConfig.NoOp
+        defaultValue = GestureHandlerConfig.NoOp,
     )
 
     val backPressGestureHandler = serializablePreference<GestureHandlerConfig>(
         key = stringPreferencesKey("back_press_gesture_handler"),
-        defaultValue = GestureHandlerConfig.NoOp
+        defaultValue = GestureHandlerConfig.NoOp,
     )
 
     private inline fun <reified T> serializablePreference(

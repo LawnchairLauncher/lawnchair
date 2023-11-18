@@ -10,14 +10,14 @@ import com.android.launcher3.LauncherState
 import com.android.launcher3.Utilities
 import com.android.launcher3.touch.BothAxesSwipeDetector
 import com.android.launcher3.util.TouchController
+import kotlin.math.absoluteValue
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlin.math.absoluteValue
 
 class VerticalSwipeTouchController(
     private val launcher: LawnchairLauncher,
-    private val gestureController: GestureController
+    private val gestureController: GestureController,
 ) : TouchController, BothAxesSwipeDetector.Listener {
 
     private val prefs = PreferenceManager2.getInstance(launcher)

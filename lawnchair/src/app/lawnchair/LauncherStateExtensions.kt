@@ -6,8 +6,8 @@ import com.android.launcher3.anim.AnimatorListeners.forEndCallback
 import com.android.launcher3.anim.Interpolators
 import com.android.launcher3.states.StateAnimationConfig
 import com.android.launcher3.touch.AllAppsSwipeController
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
+import kotlinx.coroutines.suspendCancellableCoroutine
 
 suspend fun Launcher.animateToAllApps() {
     suspendCancellableCoroutine { cont ->

@@ -29,7 +29,15 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
 import app.lawnchair.theme.color.ColorMode
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.ClickablePreference
+import app.lawnchair.ui.preferences.components.ExpandAndShrink
+import app.lawnchair.ui.preferences.components.GestureHandlerPreference
+import app.lawnchair.ui.preferences.components.ListPreference
+import app.lawnchair.ui.preferences.components.NavigationActionPreference
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.SliderPreference
+import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.util.collectAsStateBlocking
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -158,7 +166,7 @@ fun HomeScreenPreferences() {
                 ClickablePreference(
                     label = stringResource(id = R.string.reset_custom_icons),
                     confirmationText = stringResource(id = R.string.reset_custom_icons_confirmation),
-                    onClick = { scope.launch { overrideRepo.deleteAll() } }
+                    onClick = { scope.launch { overrideRepo.deleteAll() } },
                 )
             }
         }

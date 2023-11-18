@@ -7,7 +7,7 @@ import kotlinx.coroutines.launch
 
 class FlowCollector<T>(
     private val flow: Flow<T>,
-    private val callback: Listener<T>
+    private val callback: Listener<T>,
 ) {
 
     private val scope = MainScope()

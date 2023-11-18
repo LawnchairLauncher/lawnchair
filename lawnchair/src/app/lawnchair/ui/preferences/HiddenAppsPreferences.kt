@@ -30,7 +30,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences2.preferenceManager2
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.AppItem
+import app.lawnchair.ui.preferences.components.AppItemPlaceholder
+import app.lawnchair.ui.preferences.components.PreferenceLazyColumn
+import app.lawnchair.ui.preferences.components.PreferenceScaffold
+import app.lawnchair.ui.preferences.components.preferenceGroupItems
 import app.lawnchair.util.App
 import app.lawnchair.util.appComparator
 import app.lawnchair.util.appsState
@@ -46,8 +50,11 @@ fun HiddenAppsPreferences() {
     val adapter = preferenceManager2().hiddenApps.getAdapter()
     val hiddenApps by adapter.state
     val pageTitle =
-        if (hiddenApps.isEmpty()) stringResource(id = R.string.hidden_apps_label)
-        else stringResource(id = R.string.hidden_apps_label_with_count, hiddenApps.size)
+        if (hiddenApps.isEmpty()) {
+            stringResource(id = R.string.hidden_apps_label)
+        } else {
+            stringResource(id = R.string.hidden_apps_label_with_count, hiddenApps.size)
+        }
     val apps by appsState(comparator = hiddenAppsComparator(hiddenApps))
     val state = rememberLazyListState()
     PreferenceScaffold(

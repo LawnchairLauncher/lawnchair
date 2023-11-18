@@ -31,7 +31,7 @@ class AssistantIconView(context: Context, attrs: AttributeSet?) : ImageButton(co
         setThemedIconResource(
             resId = iconRes,
             themed = isGoogle && themed || !isGoogle,
-            method = themingMethod
+            method = themingMethod,
         )
     }
 }

@@ -1,13 +1,18 @@
 pluginManagement {
     repositories {
-        google()
+        google {
+            content {
+                includeGroupByRegex(".*google.*")
+                includeGroupByRegex(".*android.*")
+            }
+        }
         gradlePluginPortal()
     }
 }
 
 // https://docs.gradle.com/enterprise/gradle-plugin/
 plugins {
-    id "com.gradle.enterprise" version "3.14.1"
+    id "com.gradle.enterprise" version "3.15.1"
 }
 
 gradleEnterprise {
@@ -21,7 +26,12 @@ gradleEnterprise {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        google()
+        google {
+            content {
+                includeGroupByRegex(".*google.*")
+                includeGroupByRegex(".*android.*")
+            }
+        }
         mavenCentral()
         maven { url 'https://jitpack.io' }
     }

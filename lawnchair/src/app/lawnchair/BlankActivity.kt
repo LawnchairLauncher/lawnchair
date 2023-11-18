@@ -12,7 +12,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ModalBottomSheetDefaults
-import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.core.os.bundleOf
@@ -41,7 +45,7 @@ class BlankActivity : AppCompatActivity() {
             LawnchairTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = ModalBottomSheetDefaults.scrimColor
+                    color = ModalBottomSheetDefaults.scrimColor,
                 ) {
                     AlertDialog(
                         onDismissRequest = { if (!targetStarted) finish() },
@@ -60,7 +64,7 @@ class BlankActivity : AppCompatActivity() {
                         },
                         text = {
                             Text(text = intent.getStringExtra("dialogMessage")!!)
-                        }
+                        },
                     )
                 }
             }
@@ -110,16 +114,22 @@ class BlankActivity : AppCompatActivity() {
     companion object {
 
         suspend fun startBlankActivityDialog(
-            activity: Activity, targetIntent: Intent,
-            dialogTitle: String, dialogMessage: String,
-            positiveButton: String
+            activity: Activity,
+            targetIntent: Intent,
+            dialogTitle: String,
+            dialogMessage: String,
+            positiveButton: String,
         ) {
-            start(activity, targetIntent, bundleOf(
-                "intent" to targetIntent,
-                "dialogTitle" to dialogTitle,
-                "dialogMessage" to dialogMessage,
-                "positiveButton" to positiveButton,
-            ))
+            start(
+                activity,
+                targetIntent,
+                bundleOf(
+                    "intent" to targetIntent,
+                    "dialogTitle" to dialogTitle,
+                    "dialogMessage" to dialogMessage,
+                    "positiveButton" to positiveButton,
+                ),
+            )
         }
 
         suspend fun startBlankActivityForResult(activity: Activity, targetIntent: Intent): ActivityResult {

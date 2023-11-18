@@ -7,8 +7,14 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.android.launcher3.R
-import kotlinx.coroutines.*
-import java.util.*
+import java.util.LinkedList
+import java.util.Queue
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 
 class UploaderService : Service() {
 
@@ -42,9 +48,11 @@ class UploaderService : Service() {
                 Log.d("UploaderService", "failed to upload bug report", e)
                 report = report.copy(uploadError = true)
             } finally {
-                sendBroadcast(Intent(this, BugReportReceiver::class.java)
-                    .setAction(BugReportReceiver.UPLOAD_COMPLETE_ACTION)
-                    .putExtra("report", report))
+                sendBroadcast(
+                    Intent(this, BugReportReceiver::class.java)
+                        .setAction(BugReportReceiver.UPLOAD_COMPLETE_ACTION)
+                        .putExtra("report", report),
+                )
             }
         }
     }
@@ -54,12 +62,15 @@ class UploaderService : Service() {
 
         Log.d("DUS", "onCreate")
 
-        startForeground(101, NotificationCompat.Builder(this, BugReportReceiver.statusChannelId)
-            .setSmallIcon(R.drawable.ic_bug_notification)
-            .setContentTitle(getString(R.string.dogbin_uploading))
-            .setColor(ContextCompat.getColor(this, R.color.bugNotificationColor))
-            .setPriority(NotificationCompat.PRIORITY_MIN)
-            .build())
+        startForeground(
+            101,
+            NotificationCompat.Builder(this, BugReportReceiver.STATUS_CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_bug_notification)
+                .setContentTitle(getString(R.string.dogbin_uploading))
+                .setColor(ContextCompat.getColor(this, R.color.bugNotificationColor))
+                .setPriority(NotificationCompat.PRIORITY_MIN)
+                .build(),
+        )
     }
 
     override fun onDestroy() {

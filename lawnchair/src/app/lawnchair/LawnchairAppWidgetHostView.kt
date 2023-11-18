@@ -14,7 +14,7 @@ import com.android.launcher3.widget.LauncherAppWidgetHostView
 
 class LawnchairAppWidgetHostView @JvmOverloads constructor(
     context: Context,
-    private var previewMode: Boolean = false
+    private var previewMode: Boolean = false,
 ) : LauncherAppWidgetHostView(context) {
 
     private var customView: ViewGroup? = null
@@ -61,7 +61,7 @@ class LawnchairAppWidgetHostView @JvmOverloads constructor(
     companion object {
 
         private val customLayouts = mapOf(
-            SmartspaceAppWidgetProvider.componentName to R.layout.smartspace_widget
+            SmartspaceAppWidgetProvider.componentName to R.layout.smartspace_widget,
         )
 
         @JvmStatic

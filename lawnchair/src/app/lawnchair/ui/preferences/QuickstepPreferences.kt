@@ -1,6 +1,5 @@
 package app.lawnchair.ui.preferences
 
-import androidx.compose.animation.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -17,8 +16,6 @@ import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.util.isOnePlusStock
-import com.android.launcher3.InvariantDeviceProfile
-import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
@@ -68,7 +65,7 @@ fun QuickstepPreferences() {
         PreferenceGroup(
             heading = stringResource(id = R.string.window_corner_radius_label),
             description = stringResource(id = (R.string.window_corner_radius_description)),
-            showDescription = overrideWindowCornerRadius
+            showDescription = overrideWindowCornerRadius,
         ) {
             SwitchPreference(
                 adapter = prefs.overrideWindowCornerRadius.getAdapter(),
@@ -79,18 +76,18 @@ fun QuickstepPreferences() {
                     label = stringResource(id = R.string.window_corner_radius_label),
                     adapter = prefs.windowCornerRadius.getAdapter(),
                     step = 0,
-                    valueRange = 70..150
+                    valueRange = 70..150,
                 )
             }
         }
 
         if (Utilities.ATLEAST_S_V2) {
             PreferenceGroup(
-                heading = stringResource(id = R.string.taskbar_label)
+                heading = stringResource(id = R.string.taskbar_label),
             ) {
                 SwitchPreference(
                     adapter = prefs2.enableTaskbarOnPhone.getAdapter(),
-                    label = stringResource(id = R.string.enable_taskbar_experimental)
+                    label = stringResource(id = R.string.enable_taskbar_experimental),
                 )
             }
         }

@@ -49,9 +49,9 @@ class CardPagerAdapter(context: Context) : PagerAdapter() {
         if (viewHolder.target === target) {
             return POSITION_UNCHANGED
         }
-        if (target == null
-            || getFeatureType(target) !== getFeatureType(viewHolder.target)
-            || target.id != viewHolder.target.id
+        if (target == null ||
+            getFeatureType(target) !== getFeatureType(viewHolder.target) ||
+            target.id != viewHolder.target.id
         ) {
             return POSITION_NONE
         }
@@ -82,7 +82,7 @@ class CardPagerAdapter(context: Context) : PagerAdapter() {
 
     private fun createBaseCard(
         container: ViewGroup,
-        featureType: SmartspaceTarget.FeatureType
+        featureType: SmartspaceTarget.FeatureType,
     ): BcSmartspaceCard {
         val layout = when (featureType) {
             SmartspaceTarget.FeatureType.FEATURE_WEATHER -> R.layout.smartspace_card_date
@@ -97,6 +97,6 @@ class CardPagerAdapter(context: Context) : PagerAdapter() {
     class ViewHolder internal constructor(
         val position: Int,
         val card: BcSmartspaceCard,
-        var target: SmartspaceTarget
+        var target: SmartspaceTarget,
     )
 }

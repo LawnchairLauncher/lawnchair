@@ -44,7 +44,6 @@ class SystemIconPack(context: Context) : IconPack(context, "") {
     }
 
     override fun loadInternal() {
-
     }
 
     override fun getAllIcons(): Flow<List<IconPickerCategory>> = flow {
@@ -54,7 +53,7 @@ class SystemIconPack(context: Context) : IconPack(context, "") {
                     packPackageName = packPackageName,
                     drawableName = key.toString(),
                     label = info.label.toString(),
-                    IconType.Normal
+                    IconType.Normal,
                 )
             }
         emit(categorize(items))

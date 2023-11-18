@@ -21,7 +21,11 @@ import android.content.pm.LauncherActivityInfo
 import android.content.pm.LauncherApps
 import android.graphics.Bitmap
 import android.os.Handler
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import com.android.launcher3.AppFilter
 import com.android.launcher3.LauncherAppState
@@ -30,13 +34,13 @@ import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.pm.UserCache
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors.MODEL_EXECUTOR
-import java.util.*
 import java.util.Comparator.comparing
+import java.util.Locale
 
 @Composable
 fun appsState(
     filter: AppFilter = AppFilter(LocalContext.current),
-    comparator: Comparator<App> = appComparator
+    comparator: Comparator<App> = appComparator,
 ): State<List<App>> {
     val context = LocalContext.current
     val appsState = remember { mutableStateOf(emptyList<App>()) }

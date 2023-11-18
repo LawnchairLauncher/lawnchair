@@ -19,7 +19,11 @@ package app.lawnchair.ui.preferences.components
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -62,7 +66,7 @@ fun AppItem(
                 modifier = Modifier.size(30.dp),
             )
         },
-        title = { Text(text = label) }
+        title = { Text(text = label) },
     )
 }
 
@@ -79,9 +83,9 @@ fun AppItemPlaceholder(
                     .placeholder(
                         visible = true,
                         highlight = PlaceholderHighlight.fade(),
-                    )
+                    ),
             )
-        }
+        },
     ) {
         Spacer(
             modifier = Modifier
@@ -90,7 +94,7 @@ fun AppItemPlaceholder(
                 .placeholder(
                     visible = true,
                     highlight = PlaceholderHighlight.fade(),
-                )
+                ),
         )
     }
 }
@@ -112,6 +116,6 @@ private fun AppItemLayout(
             }
             icon()
         },
-        verticalPadding = 12.dp
+        verticalPadding = 12.dp,
     )
 }

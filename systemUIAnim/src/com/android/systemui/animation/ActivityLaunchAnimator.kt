@@ -300,13 +300,12 @@ class ActivityLaunchAnimator(
         fun startPendingIntent(animationAdapter: RemoteAnimationAdapter?): Int
     }
 
+    @JvmDefaultWithCompatibility
     interface Callback {
         /** Whether we are currently on the keyguard or not. */
-        @JvmDefault
         fun isOnKeyguard(): Boolean = false
 
         /** Hide the keyguard and animate using [runner]. */
-        @JvmDefault
         fun hideKeyguardWithAnimation(runner: IRemoteAnimationRunner) {
             throw UnsupportedOperationException()
         }
@@ -315,18 +314,19 @@ class ActivityLaunchAnimator(
         fun getBackgroundColor(task: TaskInfo): Int
     }
 
+    @JvmDefaultWithCompatibility
     interface Listener {
         /** Called when an activity launch animation started. */
-        @JvmDefault fun onLaunchAnimationStart() {}
+        fun onLaunchAnimationStart() {}
 
         /**
          * Called when an activity launch animation is finished. This will be called if and only if
          * [onLaunchAnimationStart] was called earlier.
          */
-        @JvmDefault fun onLaunchAnimationEnd() {}
+        fun onLaunchAnimationEnd() {}
 
         /** Called when an activity launch animation made progress. */
-        @JvmDefault fun onLaunchAnimationProgress(linearProgress: Float) {}
+        fun onLaunchAnimationProgress(linearProgress: Float) {}
     }
 
     /**

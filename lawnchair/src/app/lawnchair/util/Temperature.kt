@@ -18,14 +18,16 @@ class Temperature(val value: Int, val unit: Unit) {
         Delisle(-100f, 50f, "°D"),
         Newton(0f, 33f, "°N"),
         Reaumur(0f, 80f, "°Ré"),
-        Romer(7.5f, 60f, "°Rø");
+        Romer(7.5f, 60f, "°Rø"),
+        ;
 
         val range = boilingPoint - freezingPoint
     }
 
     companion object {
 
-        fun unitFromString(unit: String): Unit {
+        // TODO: Use Unit directly after https://github.com/pinterest/ktlint/issues/2353 is fixed.
+        fun unitFromString(unit: String): Temperature.Unit {
             return when (unit) {
                 "metric" -> Unit.Celsius
                 "imperial" -> Unit.Fahrenheit

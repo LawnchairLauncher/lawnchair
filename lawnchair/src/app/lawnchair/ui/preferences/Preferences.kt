@@ -117,7 +117,7 @@ fun Preferences(interactor: PreferenceInteractor = viewModel<PreferenceViewModel
 
 @Composable
 private fun Providers(
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     ProvideLifecycleState {
         ProvideBottomSheetHandler {

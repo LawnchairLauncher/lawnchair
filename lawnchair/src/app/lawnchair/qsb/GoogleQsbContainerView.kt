@@ -5,7 +5,9 @@ import android.util.AttributeSet
 import com.android.launcher3.qsb.QsbContainerView
 
 class GoogleQsbContainerView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
 ) : QsbContainerView(context, attrs, defStyleAttr) {
 
     class QsbFragment : QsbContainerView.QsbFragment() {

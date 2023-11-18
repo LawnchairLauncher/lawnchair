@@ -1,6 +1,12 @@
 package app.lawnchair.ui
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material3.MaterialTheme
@@ -17,14 +23,14 @@ fun AlertBottomSheetContent(
     modifier: Modifier = Modifier,
     title: (@Composable () -> Unit)? = null,
     text: @Composable (() -> Unit)? = null,
-    content: @Composable (() -> Unit)? = null
+    content: @Composable (() -> Unit)? = null,
 ) {
     val contentPadding = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp)
 
     Column(
         modifier = modifier
             .navigationBarsOrDisplayCutoutPadding()
-            .fillMaxWidth()
+            .fillMaxWidth(),
     ) {
         if (title != null) {
             Box(modifier = contentPadding) {
@@ -49,7 +55,7 @@ fun AlertBottomSheetContent(
             horizontalArrangement = Arrangement.End,
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth()
+                .fillMaxWidth(),
         ) {
             buttons()
         }

@@ -13,14 +13,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Build
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.rounded.TipsAndUpdates
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
-import androidx.compose.material3.Surface
 import androidx.compose.material3.MaterialTheme as Material3Theme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -52,7 +52,7 @@ fun PreferencesDashboard() {
         label = stringResource(id = R.string.settings),
         verticalArrangement = Arrangement.Top,
         backArrowVisible = false,
-        actions = { PreferencesOverflowMenu() }
+        actions = { PreferencesOverflowMenu() },
     ) {
         if (BuildConfig.DEBUG) PreferencesDebugWarning()
 
@@ -65,14 +65,14 @@ fun PreferencesDashboard() {
             label = stringResource(R.string.general_label),
             description = stringResource(R.string.general_description),
             iconResource = R.drawable.ic_general,
-            route = Routes.GENERAL
+            route = Routes.GENERAL,
         )
 
         PreferenceCategory(
             label = stringResource(R.string.home_screen_label),
             description = stringResource(R.string.home_screen_description),
             iconResource = R.drawable.ic_home_screen,
-            route = Routes.HOME_SCREEN
+            route = Routes.HOME_SCREEN,
         )
 
         PreferenceCategory(
@@ -86,21 +86,21 @@ fun PreferencesDashboard() {
             label = stringResource(R.string.dock_label),
             description = stringResource(R.string.dock_description),
             iconResource = R.drawable.ic_dock,
-            route = Routes.DOCK
+            route = Routes.DOCK,
         )
 
         PreferenceCategory(
             label = stringResource(R.string.app_drawer_label),
             description = stringResource(R.string.app_drawer_description),
             iconResource = R.drawable.ic_app_drawer,
-            route = Routes.APP_DRAWER
+            route = Routes.APP_DRAWER,
         )
 
         PreferenceCategory(
             label = stringResource(R.string.folders_label),
             description = stringResource(R.string.folders_description),
             iconResource = R.drawable.ic_folder,
-            route = Routes.FOLDERS
+            route = Routes.FOLDERS,
         )
 
         PreferenceCategory(
@@ -115,15 +115,15 @@ fun PreferencesDashboard() {
                 label = stringResource(id = R.string.quickstep_label),
                 description = stringResource(id = R.string.quickstep_description),
                 iconResource = R.drawable.ic_quickstep,
-                route = Routes.QUICKSTEP
+                route = Routes.QUICKSTEP,
             )
         }
-        
+
         PreferenceCategory(
             label = stringResource(R.string.about_label),
             description = "${context.getString(R.string.derived_app_name)} ${BuildConfig.MAJOR_VERSION}",
             iconResource = R.drawable.ic_about,
-            route = Routes.ABOUT
+            route = Routes.ABOUT,
         )
     }
 }
@@ -182,11 +182,11 @@ fun PreferencesDebugWarning() {
     Surface(
         modifier = Modifier.padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.large,
-        color = Material3Theme.colorScheme.errorContainer
+        color = Material3Theme.colorScheme.errorContainer,
     ) {
         WarningPreference(
             // Don't move to strings.xml, no need to translate this warning
-            text = "Warning: You are currently using a development build. These builds WILL contain bugs, broken features, and unexpected crashes. Use at your own risk!"
+            text = "Warning: You are currently using a development build. These builds WILL contain bugs, broken features, and unexpected crashes. Use at your own risk!",
         )
     }
 }
@@ -197,7 +197,7 @@ fun PreferencesSetDefaultLauncherWarning() {
     Surface(
         modifier = Modifier.padding(horizontal = 16.dp),
         shape = MaterialTheme.shapes.large,
-        color = Material3Theme.colorScheme.surfaceVariant
+        color = Material3Theme.colorScheme.surfaceVariant,
     ) {
         PreferenceTemplate(
             modifier = Modifier.clickable {
@@ -223,7 +223,6 @@ fun PreferencesSetDefaultLauncherWarning() {
         )
     }
 }
-
 
 fun openAppInfo(context: Context) {
     val launcherApps = context.getSystemService<LauncherApps>()

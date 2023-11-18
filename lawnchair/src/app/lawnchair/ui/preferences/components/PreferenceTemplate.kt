@@ -16,10 +16,18 @@
 
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme as Material3Theme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -28,7 +36,6 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.util.addIf
-import androidx.compose.material3.MaterialTheme as Material3Theme
 
 @Composable
 fun PreferenceTemplate(
@@ -53,7 +60,7 @@ fun PreferenceTemplate(
                 .fillMaxWidth()
                 .addIf(applyPaddings) {
                     padding(horizontal = horizontalPadding, vertical = verticalPadding)
-                }
+                },
         ) {
             startWidget?.let {
                 startWidget()
@@ -67,18 +74,18 @@ fun PreferenceTemplate(
                     .addIf(!enabled) {
                         alpha(contentAlphaDisabled)
                     },
-                verticalAlignment = verticalAlignment
+                verticalAlignment = verticalAlignment,
             ) {
                 Column(Modifier.weight(1f)) {
                     CompositionLocalProvider(
                         LocalContentColor provides Material3Theme.colorScheme.onBackground,
-                        LocalTextStyle provides Material3Theme.typography.bodyLarge
+                        LocalTextStyle provides Material3Theme.typography.bodyLarge,
                     ) {
                         title()
                     }
                     CompositionLocalProvider(
                         LocalContentColor provides Material3Theme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium),
-                        LocalTextStyle provides Material3Theme.typography.bodyMedium
+                        LocalTextStyle provides Material3Theme.typography.bodyMedium,
                     ) {
                         description()
                     }

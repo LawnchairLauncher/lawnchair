@@ -129,21 +129,21 @@ data class SearchTargetCompat(
     }
 
     private constructor(from: SearchTarget) :
-            this(
-        from.getResultType(),
-        from.getLayoutType(),
-        from.getId(),
-        from.getParentId(),
-        from.getScore(),
-        from.isHidden(),
-        from.getPackageName(),
-        from.getUserHandle(),
-        SearchActionCompat.wrap(from.getSearchAction()),
-        from.getShortcutInfo(),
-        from.getSliceUri(),
-        from.getAppWidgetProviderInfo(),
-        from.getExtras()
-    )
+        this(
+            from.getResultType(),
+            from.getLayoutType(),
+            from.getId(),
+            from.getParentId(),
+            from.getScore(),
+            from.isHidden(),
+            from.getPackageName(),
+            from.getUserHandle(),
+            SearchActionCompat.wrap(from.getSearchAction()),
+            from.getShortcutInfo(),
+            from.getSliceUri(),
+            from.getAppWidgetProviderInfo(),
+            from.getExtras(),
+        )
 
     /**
      * A builder for search target object.
@@ -153,7 +153,7 @@ data class SearchTargetCompat(
     class Builder(
         @SearchResultType private val resultType: Int,
         @SearchLayoutType private val layoutType: String,
-        private val id: String
+        private val id: String,
     ) {
         private var parentId: String? = null
         private var score: Float = 1f
@@ -255,7 +255,7 @@ data class SearchTargetCompat(
             shortcutInfo,
             sliceUri,
             appWidgetProviderInfo,
-            extras
+            extras,
         )
     }
 

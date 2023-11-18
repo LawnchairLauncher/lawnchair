@@ -20,7 +20,13 @@ package app.lawnchair.preferences2
 
 import android.content.Context
 import androidx.datastore.migrations.SharedPreferencesView
-import androidx.datastore.preferences.core.*
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.floatPreferencesKey
+import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.android.launcher3.LauncherFiles
 
 class SharedPreferencesMigration(private val context: Context) {
@@ -72,7 +78,9 @@ class SharedPreferencesMigration(private val context: Context) {
                     is Int -> mutablePreferences[intPreferencesKey(newKey)] = value
                     is Long -> mutablePreferences[longPreferencesKey(newKey)] = value
                     is String -> mutablePreferences[stringPreferencesKey(newKey)] = value
-                    is Set<*> -> { mutablePreferences[stringSetPreferencesKey(newKey)] = value as Set<String> }
+                    is Set<*> -> {
+                        mutablePreferences[stringSetPreferencesKey(newKey)] = value as Set<String>
+                    }
                 }
             }
 

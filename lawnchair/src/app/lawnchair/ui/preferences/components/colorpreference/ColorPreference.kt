@@ -17,10 +17,9 @@
 package app.lawnchair.ui.preferences.components.colorpreference
 
 import androidx.compose.foundation.clickable
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.datastore.preferences.core.Preferences
@@ -28,7 +27,7 @@ import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.theme.color.ColorOption
 import app.lawnchair.ui.preferences.LocalNavController
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import com.patrykmichalik.opto.domain.Preference
 
 /**

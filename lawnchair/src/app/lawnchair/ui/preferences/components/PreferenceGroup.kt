@@ -16,17 +16,24 @@
 
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme as Material3Theme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.material3.MaterialTheme as Material3Theme
 
 @Composable
 fun PreferenceGroup(
@@ -38,21 +45,21 @@ fun PreferenceGroup(
     dividerStartIndent: Dp = 0.dp,
     dividerEndIndent: Dp = 0.dp,
     dividersToSkip: Int = 0,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     Column(modifier = modifier) {
         PreferenceGroupHeading(heading)
         Surface(
             modifier = Modifier.padding(horizontal = 16.dp),
             shape = MaterialTheme.shapes.large,
-            tonalElevation = 1.dp
+            tonalElevation = 1.dp,
         ) {
             if (showDividers) {
                 DividerColumn(
                     startIndent = dividerStartIndent,
                     endIndent = dividerEndIndent,
                     content = content,
-                    dividersToSkip = dividersToSkip
+                    dividersToSkip = dividersToSkip,
                 )
             } else {
                 Column {
@@ -93,7 +100,7 @@ fun PreferenceGroupDescription(description: String? = null, showDescription: Boo
                 Text(
                     text = it,
                     style = Material3Theme.typography.bodyMedium,
-                    color = LocalContentColor.current.copy(alpha = ContentAlpha.medium)
+                    color = LocalContentColor.current.copy(alpha = ContentAlpha.medium),
                 )
             }
         }

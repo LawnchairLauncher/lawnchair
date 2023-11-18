@@ -17,6 +17,8 @@
 package app.lawnchair.ui.preferences.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.RadioButton
@@ -37,6 +39,7 @@ fun <T> ListPreference(
     label: String,
     enabled: Boolean = true,
     description: String? = null,
+    endWidget: (@Composable () -> Unit)? = null,
 ) {
     ListPreference(
         entries = entries,
@@ -45,6 +48,7 @@ fun <T> ListPreference(
         label = label,
         enabled = enabled,
         description = description,
+        endWidget = endWidget,
     )
 }
 
@@ -56,6 +60,7 @@ fun <T> ListPreference(
     label: String,
     enabled: Boolean = true,
     description: String? = null,
+    endWidget: (@Composable () -> Unit)? = null,
 ) {
     val bottomSheetHandler = bottomSheetHandler
     val currentDescription = description ?: entries
@@ -63,9 +68,15 @@ fun <T> ListPreference(
         ?.label?.invoke()
 
     PreferenceTemplate(
+        contentModifier = Modifier
+            .fillMaxHeight()
+            .padding(vertical = 16.dp)
+            .padding(start = 16.dp),
         title = { Text(text = label) },
         description = { currentDescription?.let { Text(text = it) } },
         enabled = enabled,
+        endWidget = endWidget,
+        applyPaddings = false,
         modifier = Modifier.clickable(enabled) {
             bottomSheetHandler.show {
                 AlertBottomSheetContent(
@@ -74,7 +85,7 @@ fun <T> ListPreference(
                         OutlinedButton(onClick = { bottomSheetHandler.hide() }) {
                             Text(text = stringResource(id = android.R.string.cancel))
                         }
-                    }
+                    },
                 ) {
                     LazyColumn {
                         itemsIndexed(entries) { index, item ->
@@ -100,7 +111,7 @@ fun <T> ListPreference(
                     }
                 }
             }
-        }
+        },
     )
 }
 

@@ -13,12 +13,11 @@ object Presearch : QsbSearchProvider(
     packageName = "com.presearch",
     className = "org.chromium.chrome.browser.TextSearchActivity",
     supportVoiceIntent = true,
-    website = "https://presearch.com/"
+    website = "https://presearch.com/",
 ) {
 
     override fun handleCreateVoiceIntent(): Intent =
         Intent(action)
             .addFlags(INTENT_FLAGS)
             .setClassName(packageName, "org.chromium.chrome.browser.VoiceSearchActivity")
-
 }

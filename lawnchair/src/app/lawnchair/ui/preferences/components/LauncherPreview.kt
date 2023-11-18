@@ -3,7 +3,11 @@ package app.lawnchair.ui.preferences.components
 import android.view.View
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -25,7 +29,7 @@ import com.android.launcher3.LauncherAppState
 fun DummyLauncherBox(
     modifier: Modifier = Modifier,
     darkText: Boolean = wallpaperSupportsDarkText(),
-    content: @Composable BoxScope.() -> Unit
+    content: @Composable BoxScope.() -> Unit,
 ) {
     val context = LocalContext.current
     val idp = remember { InvariantDeviceProfile.INSTANCE.get(context) }
@@ -37,7 +41,7 @@ fun DummyLauncherBox(
             Spacer(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp))
+                    .background(MaterialTheme.colorScheme.surfaceColorAtElevation(1.dp)),
             )
         }
         content()
@@ -56,7 +60,7 @@ fun DummyLauncherLayout(
             factory = { context ->
                 view ?: View(context)
             },
-            modifier = modifier
+            modifier = modifier,
         )
     }
 }

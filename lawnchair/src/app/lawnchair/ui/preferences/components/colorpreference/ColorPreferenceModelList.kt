@@ -15,28 +15,28 @@ class ColorPreferenceModelList(context: Context) {
                 prefObject = prefs.accentColor,
                 labelRes = R.string.accent_color,
                 dynamicEntries = dynamicColors,
-            )
+            ),
         )
         registerModel(
             ColorPreferenceModel(
                 prefObject = prefs.notificationDotColor,
                 labelRes = R.string.notification_dots_color,
                 dynamicEntries = dynamicColorsWithDefault,
-            )
+            ),
         )
         registerModel(
             ColorPreferenceModel(
                 prefObject = prefs.notificationDotTextColor,
                 labelRes = R.string.notification_dots_text_color,
                 dynamicEntries = dynamicColorsWithDefault,
-            )
+            ),
         )
         registerModel(
             ColorPreferenceModel(
                 prefObject = prefs.folderColor,
                 labelRes = R.string.folder_preview_bg_color_label,
                 dynamicEntries = dynamicColorsWithDefault,
-            )
+            ),
         )
     }
 

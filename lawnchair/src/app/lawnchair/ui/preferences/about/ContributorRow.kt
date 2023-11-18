@@ -32,11 +32,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import app.lawnchair.theme.surfaceColorAtElevation
-import app.lawnchair.ui.preferences.components.PreferenceTemplate
-import coil.compose.SubcomposeAsyncImage
 import app.lawnchair.ui.placeholder.PlaceholderHighlight
 import app.lawnchair.ui.placeholder.material.fade
 import app.lawnchair.ui.placeholder.material.placeholder
+import app.lawnchair.ui.preferences.components.PreferenceTemplate
+import coil.compose.SubcomposeAsyncImage
 
 @Composable
 fun ContributorRow(name: String, description: String, photoUrl: String, url: String) {
@@ -68,9 +68,9 @@ fun ContributorRow(name: String, description: String, photoUrl: String, url: Str
                             .placeholder(
                                 visible = true,
                                 highlight = PlaceholderHighlight.fade(),
-                            )
+                            ),
                     )
-                }
+                },
             )
         },
     )

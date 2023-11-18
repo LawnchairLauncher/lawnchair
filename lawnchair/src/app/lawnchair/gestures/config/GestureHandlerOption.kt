@@ -10,7 +10,7 @@ import com.android.launcher3.R
 
 sealed class GestureHandlerOption(
     val labelRes: Int,
-    val configClass: Class<*>
+    val configClass: Class<*>,
 ) {
 
     fun getLabel(context: Context) = context.getString(labelRes)
@@ -19,7 +19,8 @@ sealed class GestureHandlerOption(
 
     open class Simple(labelRes: Int, val obj: GestureHandlerConfig) : GestureHandlerOption(labelRes, obj::class.java) {
         constructor(obj: GestureHandlerConfig.Simple) : this(
-            obj.labelRes, obj
+            obj.labelRes,
+            obj,
         )
 
         override suspend fun buildConfig(activity: Activity) = obj
@@ -34,7 +35,7 @@ sealed class GestureHandlerOption(
 
     object OpenApp : GestureHandlerOption(
         R.string.gesture_handler_open_app_option,
-        GestureHandlerConfig.OpenApp::class.java
+        GestureHandlerConfig.OpenApp::class.java,
     ) {
         override suspend fun buildConfig(activity: Activity): GestureHandlerConfig? {
             val intent = PreferenceActivity.createIntent(activity, "/${Routes.PICK_APP_FOR_GESTURE}/")

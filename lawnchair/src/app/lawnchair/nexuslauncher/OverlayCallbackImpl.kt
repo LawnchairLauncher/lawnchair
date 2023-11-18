@@ -25,8 +25,11 @@ import com.patrykmichalik.opto.core.firstBlocking
  *
  * Implements [LauncherClientCallbacks] and sends all the corresponding callbacks to [Launcher].
  */
-class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) : LauncherOverlay,
-    LauncherClientCallbacks, LauncherOverlayManager, ISerializableScrollCallback {
+class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) :
+    LauncherOverlay,
+    LauncherClientCallbacks,
+    LauncherOverlayManager,
+    ISerializableScrollCallback {
     private val mClient: LauncherClient
     private var mFlagsChanged = false
     private var mLauncherOverlayCallbacks: LauncherOverlayCallbacks? = null
@@ -36,7 +39,7 @@ class OverlayCallbackImpl(private val mLauncher: LawnchairLauncher) : LauncherOv
     init {
         val enableFeed = PreferenceManager2.getInstance(mLauncher).enableFeed.firstBlocking()
         mClient = LauncherClient(
-            mLauncher, this, StaticInteger((if (enableFeed) 1 else 0) or 2 or 4 or 8)
+            mLauncher, this, StaticInteger((if (enableFeed) 1 else 0) or 2 or 4 or 8),
         )
     }
 

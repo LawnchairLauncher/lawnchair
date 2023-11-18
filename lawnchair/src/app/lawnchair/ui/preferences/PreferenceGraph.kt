@@ -9,7 +9,7 @@ import androidx.navigation.compose.composable
 inline fun NavGraphBuilder.preferenceGraph(
     route: String,
     crossinline root: @Composable () -> Unit,
-    crossinline block: NavGraphBuilder.(subRoute: (String) -> String) -> Unit = { }
+    crossinline block: NavGraphBuilder.(subRoute: (String) -> String) -> Unit = { },
 ) {
     val subRoute: (String) -> String = { name -> "$route$name/" }
     composable(route = route) {

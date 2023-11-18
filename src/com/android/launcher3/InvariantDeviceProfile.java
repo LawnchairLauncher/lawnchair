@@ -399,9 +399,9 @@ public class InvariantDeviceProfile {
 
                 horizontalMargin = displayOption.horizontalMargin;
 
-                numShownHotseatIcons = dbGridInfo.getNumHotseatColumns();
+                numShownHotseatIcons = numSearchContainerColumns;
                 numDatabaseHotseatIcons = deviceType == TYPE_MULTI_DISPLAY
-                        ? closestProfile.numDatabaseHotseatIcons : closestProfile.numHotseatIcons;
+                        ? closestProfile.numDatabaseHotseatIcons : numShownHotseatIcons;
                 hotseatColumnSpan = closestProfile.hotseatColumnSpan;
                 hotseatBarBottomSpace = displayOption.hotseatBarBottomSpace;
                 hotseatQsbSpace = displayOption.hotseatQsbSpace;
