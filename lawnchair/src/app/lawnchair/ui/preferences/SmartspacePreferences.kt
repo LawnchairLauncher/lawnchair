@@ -70,7 +70,7 @@ fun SmartspacePreferences(fromWidget: Boolean) {
             PreferenceGroup(description = stringResource(id = R.string.smartspace_widget_toggle_description).takeIf { modeIsLawnchair }) {
                 SwitchPreference(
                     adapter = smartspaceAdapter,
-                    label = stringResource(id = R.string.smartspace_widget_toggle_label)
+                    label = stringResource(id = R.string.smartspace_widget_toggle_label),
                 )
                 ExpandAndShrink(visible = smartspaceAdapter.state.value && smartspaceModeSelectionAdapter.state.value) {
                     SmartspaceProviderPreference(
@@ -80,7 +80,7 @@ fun SmartspacePreferences(fromWidget: Boolean) {
                                 { SmartspacerSettings() }
                             }
                             else -> null
-                        }
+                        },
                     )
                 }
             }
@@ -120,7 +120,6 @@ fun SmartspaceProviderPreference(
     adapter: PreferenceAdapter<SmartspaceMode>,
     endWidget: (@Composable () -> Unit)? = null,
 ) {
-
     val context = LocalContext.current
 
     val entries = remember {
@@ -137,7 +136,7 @@ fun SmartspaceProviderPreference(
         adapter = adapter,
         entries = entries,
         label = stringResource(id = R.string.smartspace_mode_label),
-        endWidget = endWidget
+        endWidget = endWidget,
     )
 }
 
@@ -218,7 +217,6 @@ fun SmartspaceDateAndTimePreferences() {
 
 @Composable
 fun SmartspaceTimeFormatPreference() {
-
     val entries = remember {
         SmartspaceTimeFormat.values().map { format ->
             ListPreferenceEntry(format) { stringResource(id = format.nameResourceId) }
@@ -236,7 +234,6 @@ fun SmartspaceTimeFormatPreference() {
 
 @Composable
 fun SmartspaceCalendarPreference() {
-
     val entries = remember {
         SmartspaceCalendar.values().map { calendar ->
             ListPreferenceEntry(calendar) { stringResource(id = calendar.nameResourceId) }
@@ -260,19 +257,19 @@ fun SmartspacerSettings() {
         modifier = Modifier
             .clickable {
                 val intent = context.packageManager.getLaunchIntentForPackage(
-                    SmartspacerConstants.SMARTSPACER_PACKAGE_NAME
+                    SmartspacerConstants.SMARTSPACER_PACKAGE_NAME,
                 )
                 context.startActivity(intent)
             }
             .fillMaxHeight()
             .padding(horizontal = 16.dp)
-            .size(32.dp)
+            .size(32.dp),
     ) {
         Icon(
             painter = painterResource(id = R.drawable.ic_setting),
             contentDescription = null,
             modifier = Modifier.size(24.dp),
-            tint = MaterialTheme.colorScheme.primary
+            tint = MaterialTheme.colorScheme.primary,
         )
     }
 }

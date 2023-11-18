@@ -48,7 +48,7 @@ fun <T> ListPreference(
         label = label,
         enabled = enabled,
         description = description,
-        endWidget = endWidget
+        endWidget = endWidget,
     )
 }
 
