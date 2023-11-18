@@ -38,7 +38,7 @@
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/task_menu_option_start_margin"
+        android:layout_marginStart="@dimen/task_menu_option_text_start_margin"
         android:textSize="14sp"
         android:textColor="?androidprv:attr/materialColorOnSurface"
         android:focusable="false" />

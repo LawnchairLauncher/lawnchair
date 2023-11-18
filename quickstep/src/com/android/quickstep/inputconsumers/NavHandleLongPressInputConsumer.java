@@ -42,6 +42,7 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
     private final Runnable mTriggerLongPress = this::triggerLongPress;
     private final float mTouchSlopSquared;
     private final int mLongPressTimeout;
+    private final boolean mDeepPressEnabled;
 
     private MotionEvent mCurrentDownEvent;
 
@@ -51,6 +52,7 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
         mNavHandleWidth = context.getResources().getDimensionPixelSize(
                 R.dimen.navigation_home_handle_width);
         mScreenWidth = DisplayController.INSTANCE.get(context).getInfo().currentSize.x;
+        mDeepPressEnabled = FeatureFlags.ENABLE_LPNH_DEEP_PRESS.get();
         if (FeatureFlags.CUSTOM_LPNH_THRESHOLDS.get()) {
             mLongPressTimeout = LauncherPrefs.get(context).get(LONG_PRESS_NAV_HANDLE_TIMEOUT_MS);
         } else {
@@ -108,7 +110,7 @@ public class NavHandleLongPressInputConsumer extends DelegateInputConsumer {
         }
 
         // If the gesture is deep press then trigger long press asap
-        if (MAIN_EXECUTOR.getHandler().hasCallbacks(mTriggerLongPress)
+        if (mDeepPressEnabled && MAIN_EXECUTOR.getHandler().hasCallbacks(mTriggerLongPress)
                 && ev.getClassification() == MotionEvent.CLASSIFICATION_DEEP_PRESS) {
             MAIN_EXECUTOR.getHandler().removeCallbacks(mTriggerLongPress);
             MAIN_EXECUTOR.getHandler().post(mTriggerLongPress);

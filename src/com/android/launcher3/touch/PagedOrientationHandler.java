@@ -173,8 +173,8 @@ public interface PagedOrientationHandler {
     // Overview TaskMenuView methods
     void setTaskIconParams(FrameLayout.LayoutParams iconParams,
             int taskIconMargin, int taskIconHeight, int thumbnailTopMargin, boolean isRtl);
-    void setTaskIconMenuParams(FrameLayout.LayoutParams iconMenuParams, int iconMenuMargin,
-            int thumbnailTopMargin);
+    void setIconAppChipMenuParams(View iconAppChipMenuView, FrameLayout.LayoutParams iconMenuParams,
+            int iconMenuMargin, int thumbnailTopMargin);
     void setSplitIconParams(View primaryIconView, View secondaryIconView,
             int taskIconHeight, int primarySnapshotWidth, int primarySnapshotHeight,
             int groupedTaskViewHeight, int groupedTaskViewWidth, boolean isRtl,

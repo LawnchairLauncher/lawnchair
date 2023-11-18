@@ -447,10 +447,6 @@
     <!-- A hint shown in launcher settings develop options filter box -->
     <string name="developer_options_filter_hint">Filter</string>
 
-    <!-- Title for preference screen show in Home Settings related to smart search preferences. [CHAR LIMIT=50]-->
-    <string name="search_pref_screen_title">Search your phone</string>
-    <!-- Title for preference screen show in Home Settings related to smart search preferences. [CHAR LIMIT=50]-->
-    <string name="search_pref_screen_title_tablet">Search your tablet</string>
     <!-- Failed action error message: e.g. Failed: Pause -->
     <string name="remote_action_failed">Failed: <xliff:g id="what" example="Pause">%1$s</xliff:g></string>
 

@@ -372,7 +372,20 @@ public class GroupedTaskView extends TaskView {
                                     mActivity.getDeviceProfile().overviewTaskThumbnailTopMarginPx,
                             MeasureSpec.EXACTLY));
         }
-        updateIconPlacement();
+        if (!enableOverviewIconMenu()) {
+            updateIconPlacement();
+            return;
+        }
+
+        if (getRecentsView() == null) {
+            return;
+        }
+
+        int iconMargins = getResources().getDimensionPixelSize(
+                R.dimen.task_thumbnail_icon_menu_start_margin) * 2;
+        ((IconAppChipView) mIconView).setMaxWidth(mSnapshotView.getMeasuredWidth() - iconMargins);
+        ((IconAppChipView) mIconView2).setMaxWidth(mSnapshotView2.getMeasuredWidth() - iconMargins);
+        setOrientationState(getRecentsView().getPagedViewOrientedState());
     }
 
     @Override
