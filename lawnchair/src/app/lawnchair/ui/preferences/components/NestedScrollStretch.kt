@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -46,7 +45,7 @@ fun NestedScrollStretch(content: @Composable () -> Unit) {
                         drawContent()
                     }
                 }
-            }
+            },
     ) {
         content()
     }
@@ -56,7 +55,7 @@ private inline fun StretchEdgeEffect.draw(
     tmpOut: FloatArray,
     @StretchEdgeEffect.EdgeEffectPosition position: Int,
     scope: DrawScope,
-    crossinline block: () -> Unit
+    crossinline block: () -> Unit,
 ) {
     if (isFinished) {
         block()
@@ -105,7 +104,7 @@ private class NestedScrollStretchConnection(context: Context, invalidate: Runnab
     override fun onPostScroll(
         consumed: Offset,
         available: Offset,
-        source: NestedScrollSource
+        source: NestedScrollSource,
     ): Offset {
         val availableY = available.y
         when {

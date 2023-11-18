@@ -12,7 +12,7 @@ object AppSearch : QsbSearchProvider(
     themingMethod = ThemingMethod.TINT,
     packageName = "",
     website = "",
-    type = QsbSearchProviderType.LOCAL
+    type = QsbSearchProviderType.LOCAL,
 ) {
     override suspend fun launch(launcher: Launcher, forceWebsite: Boolean) {
         launcher.animateToAllApps()

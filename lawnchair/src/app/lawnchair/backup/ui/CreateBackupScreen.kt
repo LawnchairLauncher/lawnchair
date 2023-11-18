@@ -19,7 +19,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,7 +40,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import app.lawnchair.backup.LawnchairBackup
 import app.lawnchair.ui.preferences.LocalNavController
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.DummyLauncherBox
+import app.lawnchair.ui.preferences.components.FlagSwitchPreference
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceLayout
+import app.lawnchair.ui.preferences.components.WallpaperPreview
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.util.BackHandler
 import app.lawnchair.util.hasFlag
@@ -99,14 +110,14 @@ fun CreateBackupScreen(viewModel: CreateBackupViewModel) {
 
     PreferenceLayout(
         label = stringResource(id = R.string.create_backup),
-        scrollState = if (isPortrait) null else scrollState
+        scrollState = if (isPortrait) null else scrollState,
     ) {
         DisposableEffect(contents, hasLiveWallpaper, hasStoragePermission) {
             val canBackupWallpaper = hasLiveWallpaper || !hasStoragePermission
             if (contents.hasFlag(LawnchairBackup.INCLUDE_WALLPAPER) && canBackupWallpaper) {
                 viewModel.setBackupContents(contents.removeFlag(LawnchairBackup.INCLUDE_WALLPAPER))
             }
-            onDispose {  }
+            onDispose { }
         }
 
         if (isPortrait) {
@@ -115,7 +126,7 @@ fun CreateBackupScreen(viewModel: CreateBackupViewModel) {
                     .padding(top = 8.dp)
                     .weight(1f)
                     .align(Alignment.CenterHorizontally)
-                    .clip(MaterialTheme.shapes.large)
+                    .clip(MaterialTheme.shapes.large),
             ) {
                 if (contents.hasFlag(LawnchairBackup.INCLUDE_WALLPAPER)) {
                     WallpaperPreview(modifier = Modifier.fillMaxSize())
@@ -125,7 +136,7 @@ fun CreateBackupScreen(viewModel: CreateBackupViewModel) {
                         bitmap = screenshot.asImageBitmap(),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.FillHeight
+                        contentScale = ContentScale.FillHeight,
                     )
                 }
             }
@@ -136,7 +147,7 @@ fun CreateBackupScreen(viewModel: CreateBackupViewModel) {
                 flags = contents,
                 setFlags = viewModel::setBackupContents,
                 mask = LawnchairBackup.INCLUDE_LAYOUT_AND_SETTINGS,
-                label = stringResource(id = R.string.backup_content_layout_and_settings)
+                label = stringResource(id = R.string.backup_content_layout_and_settings),
             )
             FlagSwitchPreference(
                 flags = contents,
@@ -156,14 +167,14 @@ fun CreateBackupScreen(viewModel: CreateBackupViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp),
         ) {
             Button(
                 onClick = { launchPicker() },
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .fillMaxWidth(),
-                enabled = contents != 0 && screenshotDone && !creatingBackup
+                enabled = contents != 0 && screenshotDone && !creatingBackup,
             ) {
                 Text(text = stringResource(id = R.string.create_backup_action))
             }

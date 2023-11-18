@@ -15,18 +15,18 @@ class TaskOverlayFactoryImpl(@Suppress("UNUSED_PARAMETER") context: Context) : T
     override fun createOverlay(thumbnailView: TaskThumbnailView) = TaskOverlay(thumbnailView)
 
     class TaskOverlay(
-        taskThumbnailView: TaskThumbnailView
+        taskThumbnailView: TaskThumbnailView,
     ) : TaskOverlayFactory.TaskOverlay<LawnchairOverviewActionsView>(taskThumbnailView) {
 
         override fun initOverlay(
             task: Task?,
             thumbnail: ThumbnailData?,
             matrix: Matrix,
-            rotated: Boolean
+            rotated: Boolean,
         ) {
             actionsView.updateDisabledFlags(
                 OverviewActionsView.DISABLED_NO_THUMBNAIL,
-                thumbnail == null
+                thumbnail == null,
             )
 
             if (thumbnail != null) {
@@ -38,11 +38,12 @@ class TaskOverlayFactoryImpl(@Suppress("UNUSED_PARAMETER") context: Context) : T
 
         private inner class OverlayUICallbacksImpl(
             isAllowedByPolicy: Boolean,
-            task: Task?
+            task: Task?,
         ) : TaskOverlayFactory.TaskOverlay<LawnchairOverviewActionsView>.OverlayUICallbacksImpl(
             isAllowedByPolicy,
-            task
-        ), OverlayUICallbacks {
+            task,
+        ),
+            OverlayUICallbacks {
 
             override fun onShare() {
                 if (mIsAllowedByPolicy) {

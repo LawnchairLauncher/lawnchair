@@ -1,13 +1,25 @@
 package app.lawnchair.ui.preferences.components.colorpreference
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -15,7 +27,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.util.toRange
 import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import app.lawnchair.ui.preferences.components.getSteps
 import app.lawnchair.ui.preferences.components.snapSliderValue
@@ -30,7 +41,6 @@ fun RgbColorSlider(
     value: Int,
     onValueChange: (Float) -> Unit,
 ) {
-
     val step = 0f
     val rgbRange = 0f..255f
 
@@ -88,7 +98,6 @@ fun RgbColorSlider(
         },
         applyPaddings = false,
     )
-
 }
 
 @Composable
@@ -97,7 +106,6 @@ fun HsbColorSlider(
     value: Float,
     onValueChange: (Float) -> Unit,
 ) {
-
     val step = 0f
 
     val range = when (type) {
@@ -133,10 +141,14 @@ fun HsbColorSlider(
                 ) {
                     val valueText = snapSliderValue(range.start, value, step)
                     Text(
-                        text = if (showAsPercentage) stringResource(
-                            id = R.string.n_percent,
-                            (valueText * 100).roundToInt(),
-                        ) else "${valueText.roundToInt()}°",
+                        text = if (showAsPercentage) {
+                            stringResource(
+                                id = R.string.n_percent,
+                                (valueText * 100).roundToInt(),
+                            )
+                        } else {
+                            "${valueText.roundToInt()}°"
+                        },
                     )
                 }
             }
@@ -185,5 +197,7 @@ fun HsbColorSlider(
 }
 
 enum class HsbSliderType {
-    HUE, SATURATION, BRIGHTNESS
+    HUE,
+    SATURATION,
+    BRIGHTNESS,
 }

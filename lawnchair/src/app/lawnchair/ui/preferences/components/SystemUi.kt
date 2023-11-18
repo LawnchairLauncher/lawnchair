@@ -33,7 +33,7 @@ fun SystemUi() {
         systemUiController.setSystemBarsColor(
             color = Color.Transparent,
             darkIcons = useDarkIcons,
-            isNavigationBarContrastEnforced = false
+            isNavigationBarContrastEnforced = false,
         )
     }
 }

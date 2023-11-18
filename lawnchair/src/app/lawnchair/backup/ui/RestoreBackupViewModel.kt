@@ -7,7 +7,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import app.lawnchair.backup.LawnchairBackup
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 sealed interface RestoreBackupUiState {
@@ -28,7 +32,7 @@ sealed interface RestoreBackupUiState {
 
 private data class RestoreBackupViewModelState(
     val backup: LawnchairBackup? = null,
-    val hasError: Boolean = false
+    val hasError: Boolean = false,
 ) {
     fun toUiState(): RestoreBackupUiState = when {
         hasError -> RestoreBackupUiState.Error
@@ -39,7 +43,7 @@ private data class RestoreBackupViewModelState(
 
 class RestoreBackupViewModel(
     application: Application,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
 ) : AndroidViewModel(application) {
     private var initialized = false
     private lateinit var backupUri: Uri
@@ -50,7 +54,7 @@ class RestoreBackupViewModel(
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
-            viewModelState.value.toUiState()
+            viewModelState.value.toUiState(),
         )
 
     val backupContents = savedStateHandle.getStateFlow("contents", 0)

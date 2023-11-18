@@ -16,7 +16,8 @@ enum class ColorMode(
     ),
     DARK(
         labelResourceId = R.string.color_dark,
-    );
+    ),
+    ;
 
     companion object {
         fun values() = listOf(
@@ -30,6 +31,5 @@ enum class ColorMode(
         fun entries() = values().map {
             ListPreferenceEntry(value = it) { stringResource(id = it.labelResourceId) }
         }
-
     }
 }

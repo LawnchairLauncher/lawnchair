@@ -94,8 +94,7 @@ fun iconShapeEntries(context: Context): List<ListPreferenceEntry<IconShape>> {
 }
 
 @Composable
-fun IconShapePreference(
-) {
+fun IconShapePreference() {
     val context = LocalContext.current
     val preferenceManager2 = preferenceManager2()
     val entries = remember { iconShapeEntries(context) }
@@ -163,7 +162,7 @@ private fun CustomIconShapePreference(
             },
             endWidget = {
                 IconShapePreview(iconShape = it)
-            }
+            },
         )
     }
 }
@@ -178,8 +177,11 @@ private fun ModifyCustomIconShapePreference(
 
     val created = customIconShape != null
 
-    val text = if (created) stringResource(id = R.string.custom_icon_shape_edit)
-    else stringResource(id = R.string.custom_icon_shape_create)
+    val text = if (created) {
+        stringResource(id = R.string.custom_icon_shape_edit)
+    } else {
+        stringResource(id = R.string.custom_icon_shape_create)
+    }
 
     val icon = if (created) Icons.Rounded.Edit else Icons.Rounded.Add
 
@@ -211,7 +213,6 @@ private fun ModifyCustomIconShapePreference(
             )
         }
     }
-
 }
 
 /**
@@ -224,7 +225,6 @@ fun IconShapePreview(
     strokeColor: Color = MaterialTheme.colorScheme.primary,
     fillColor: Color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f),
 ) {
-
     val path = iconShape.getMaskPath().asComposePath()
 
     var translated = remember { false }

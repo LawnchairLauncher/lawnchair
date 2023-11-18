@@ -12,6 +12,7 @@ plugins {
     id 'app.cash.licensee' version "1.8.0"
     id 'dev.rikka.tools.refine' version "4.4.0"
     id 'org.gradle.android.cache-fix' version '3.0'
+    id 'com.diffplug.spotless' version '6.22.0'
 }
 
 allprojects {
@@ -310,6 +311,13 @@ android {
     }
 
     addFrameworkJar('android.jar')
+}
+
+spotless {
+    kotlin {
+        ktlint("1.0.1")
+        target("lawnchair/src/**/*.kt")
+    }
 }
 
 dependencies {

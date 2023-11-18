@@ -6,14 +6,20 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.Size
 import androidx.compose.foundation.Image
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.graphics.drawable.toBitmap
 import app.lawnchair.util.scaleDownToDisplaySize
 import com.google.accompanist.drawablepainter.rememberDrawablePainter
-import com.google.accompanist.permissions.*
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -24,7 +30,7 @@ fun WallpaperPreview(modifier: Modifier = Modifier) {
         painter = painter,
         contentDescription = "",
         modifier = modifier,
-        contentScale = ContentScale.FillHeight
+        contentScale = ContentScale.FillHeight,
     )
 }
 

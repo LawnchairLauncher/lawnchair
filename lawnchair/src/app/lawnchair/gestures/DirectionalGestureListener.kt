@@ -19,8 +19,6 @@ open class DirectionalGestureListener(ctx: Context?) : OnTouchListener {
 
     @Suppress("PrivatePropertyName")
     private inner class GestureListener : SimpleOnGestureListener() {
-        private val SWIPE_THRESHOLD = 100
-        private val SWIPE_VELOCITY_THRESHOLD = 100
 
         override fun onDown(e: MotionEvent): Boolean {
             return true
@@ -59,5 +57,10 @@ open class DirectionalGestureListener(ctx: Context?) : OnTouchListener {
 
     init {
         mGestureDetector = GestureDetector(ctx, GestureListener())
+    }
+
+    companion object {
+        private const val SWIPE_THRESHOLD = 100
+        private const val SWIPE_VELOCITY_THRESHOLD = 100
     }
 }

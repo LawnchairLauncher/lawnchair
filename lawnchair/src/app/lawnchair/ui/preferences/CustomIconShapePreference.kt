@@ -23,9 +23,9 @@ import androidx.compose.material.icons.rounded.ContentPaste
 import androidx.compose.material3.Button
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Slider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.derivedStateOf
@@ -66,7 +66,6 @@ fun NavGraphBuilder.customIconShapePreferenceGraph(route: String) {
 
 @Composable
 private fun CustomIconShapePreference() {
-
     val preferenceManager2 = preferenceManager2()
 
     val customIconShapeAdapter = preferenceManager2.customIconShape.getAdapter()
@@ -85,7 +84,7 @@ private fun CustomIconShapePreference() {
         bottomBar = {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.End
+                horizontalAlignment = Alignment.End,
             ) {
                 Button(
                     enabled = !selectedIconShapeApplied.value,
@@ -97,15 +96,17 @@ private fun CustomIconShapePreference() {
                         .padding(all = 16.dp),
                 ) {
                     Text(
-                        text = if (appliedIconShape != null) stringResource(id = R.string.apply_grid)
-                        else stringResource(id = R.string.create),
+                        text = if (appliedIconShape != null) {
+                            stringResource(id = R.string.apply_grid)
+                        } else {
+                            stringResource(id = R.string.create)
+                        },
                     )
                 }
                 BottomSpacer()
             }
         },
     ) {
-
         IconShapePreview(
             modifier = Modifier.padding(top = 12.dp),
             iconShape = selectedIconShape.value,
@@ -115,7 +116,7 @@ private fun CustomIconShapePreference() {
             selectedIconShape = selectedIconShape.value,
             onSelectedIconShapeChange = { newIconShape ->
                 selectedIconShape.value = newIconShape
-            }
+            },
         )
 
         IconShapeClipboardPreferenceGroup(
@@ -125,7 +126,6 @@ private fun CustomIconShapePreference() {
             },
         )
     }
-
 }
 
 @Composable
@@ -238,7 +238,7 @@ private fun ClipboardButton(
             Icon(
                 imageVector = imageVector,
                 contentDescription = null,
-                tint = tint.copy(alpha = alpha)
+                tint = tint.copy(alpha = alpha),
             )
         },
         enabled = enabled,
@@ -304,7 +304,7 @@ private fun CornerSlider(
                 ) {
                     val valueText = stringResource(
                         id = R.string.n_percent,
-                        (snapSliderValue(valueRange.start, value, step) * 100).roundToInt()
+                        (snapSliderValue(valueRange.start, value, step) * 100).roundToInt(),
                     )
                     Text(text = valueText)
                 }
@@ -343,7 +343,7 @@ private fun CornerSlider(
                                     OutlinedButton(onClick = { bottomSheetHandler.hide() }) {
                                         Text(text = stringResource(id = android.R.string.cancel))
                                     }
-                                }
+                                },
                             ) {
                                 LazyColumn {
                                     itemsIndexed(options) { index, option ->
@@ -364,7 +364,7 @@ private fun CornerSlider(
                                             startWidget = {
                                                 RadioButton(
                                                     selected = selected,
-                                                    onClick = null
+                                                    onClick = null,
                                                 )
                                             },
                                         )

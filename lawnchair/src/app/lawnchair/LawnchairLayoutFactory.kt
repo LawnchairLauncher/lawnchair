@@ -24,7 +24,7 @@ class LawnchairLayoutFactory(context: Context) : LayoutInflater.Factory2 {
         parent: View?,
         name: String,
         context: Context,
-        attrs: AttributeSet
+        attrs: AttributeSet,
     ): View? {
         val view = constructorMap[name]?.let { it(context, attrs) }
         if (view is TextView) {

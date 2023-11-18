@@ -3,19 +3,17 @@ package app.lawnchair.icons
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.drawable.AdaptiveIconDrawable
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.InsetDrawable
 import android.os.Build
 import android.os.Process
 import android.os.UserHandle
-import com.android.launcher3.icons.ClockDrawableWrapper
-import com.android.launcher3.util.MainThreadInitializedObject
-import android.graphics.drawable.InsetDrawable
-import android.graphics.drawable.AdaptiveIconDrawable
-import com.android.launcher3.icons.ThemedIconDrawable
-import android.graphics.drawable.ColorDrawable
-import app.lawnchair.icons.*
 import app.lawnchair.util.getThemedIconPacksInstalled
-
+import com.android.launcher3.icons.ClockDrawableWrapper
+import com.android.launcher3.icons.ThemedIconDrawable
+import com.android.launcher3.util.MainThreadInitializedObject
 
 class IconPackProvider(private val context: Context) {
 
@@ -58,17 +56,25 @@ class IconPackProvider(private val context: Context) {
         if (clockMetadata != null) {
             val clockDrawable: ClockDrawableWrapper =
                 ClockDrawableWrapper.forMeta(Build.VERSION.SDK_INT, clockMetadata) {
-                    if (isThemedIconsEnabled) wrapThemedData(
-                        packageManager,
-                        iconEntry,
+                    if (isThemedIconsEnabled) {
+                        wrapThemedData(
+                            packageManager,
+                            iconEntry,
+                            drawable,
+                        )
+                    } else {
                         drawable
-                    ) else drawable
+                    }
                 }
             if (clockDrawable != null) {
-                return if (isThemedIconsEnabled && context.shouldTransparentBGIcons()) clockDrawable.foreground else CustomAdaptiveIconDrawable(
-                    clockDrawable.background,
+                return if (isThemedIconsEnabled && context.shouldTransparentBGIcons()) {
                     clockDrawable.foreground
-                )
+                } else {
+                    CustomAdaptiveIconDrawable(
+                        clockDrawable.background,
+                        clockDrawable.foreground,
+                    )
+                }
             }
         }
         if (isThemedIconsEnabled) {
@@ -80,7 +86,7 @@ class IconPackProvider(private val context: Context) {
     private fun wrapThemedData(
         packageManager: PackageManager,
         iconEntry: IconEntry,
-        drawable: Drawable
+        drawable: Drawable,
     ): Drawable? {
         val themedColors: IntArray = ThemedIconDrawable.getThemedColors(context)
         val res = packageManager.getResourcesForApplication(iconEntry.packPackageName)

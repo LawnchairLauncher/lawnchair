@@ -36,8 +36,8 @@ fun SearchTextField(
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
         focusedBorderColor = Color.Transparent,
         unfocusedBorderColor = Color.Transparent,
-        disabledBorderColor = Color.Transparent
-    )
+        disabledBorderColor = Color.Transparent,
+    ),
 ) {
     OutlinedTextField(
         value = value,
@@ -51,7 +51,7 @@ fun SearchTextField(
             if (value.isNotEmpty()) {
                 ClickableIcon(
                     imageVector = Icons.Rounded.Clear,
-                    onClick = { onValueChange("") }
+                    onClick = { onValueChange("") },
                 )
             }
         },
@@ -63,6 +63,6 @@ fun SearchTextField(
         maxLines = maxLines,
         interactionSource = interactionSource,
         shape = shape,
-        colors = colors
+        colors = colors,
     )
 }

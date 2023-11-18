@@ -13,8 +13,8 @@ fun createSearchTarget(appInfo: AppInfo, asRow: Boolean = false): SearchTargetCo
     val user = appInfo.user
     return SearchTargetCompat.Builder(
         SearchTargetCompat.RESULT_TYPE_APPLICATION,
-        if (asRow) LayoutType.ICON_HORIZONTAL_TEXT else LayoutType.ICON_SINGLE_VERTICAL_TEXT ,
-        ComponentKey(componentName, user).toString()
+        if (asRow) LayoutType.ICON_HORIZONTAL_TEXT else LayoutType.ICON_SINGLE_VERTICAL_TEXT,
+        ComponentKey(componentName, user).toString(),
     )
         .setPackageName(componentName.packageName)
         .setUserHandle(user)
@@ -26,7 +26,7 @@ fun createSearchTarget(shortcutInfo: ShortcutInfo): SearchTargetCompat {
     return SearchTargetCompat.Builder(
         SearchTargetCompat.RESULT_TYPE_SHORTCUT,
         LayoutType.SMALL_ICON_HORIZONTAL_TEXT,
-        "${shortcutInfo.`package`}|${shortcutInfo.userHandle}|${shortcutInfo.id}"
+        "${shortcutInfo.`package`}|${shortcutInfo.userHandle}|${shortcutInfo.id}",
     )
         .setShortcutInfo(shortcutInfo)
         .setUserHandle(shortcutInfo.userHandle)
@@ -38,7 +38,7 @@ fun createSearchTarget(id: String, action: SearchActionCompat, extras: Bundle = 
     return SearchTargetCompat.Builder(
         SearchTargetCompat.RESULT_TYPE_SHORTCUT,
         LayoutType.ICON_HORIZONTAL_TEXT,
-        id
+        id,
     )
         .setPackageName("")
         .setUserHandle(Process.myUserHandle())
@@ -51,7 +51,7 @@ fun createDividerTarget(): SearchTargetCompat {
     return SearchTargetCompat.Builder(
         SearchTargetCompat.RESULT_TYPE_SHORTCUT,
         LayoutType.DIVIDER,
-        "divider"
+        "divider",
     )
         .setPackageName("")
         .setUserHandle(Process.myUserHandle())

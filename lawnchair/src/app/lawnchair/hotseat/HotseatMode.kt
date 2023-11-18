@@ -6,7 +6,6 @@ import androidx.annotation.StringRes
 import app.lawnchair.util.isPackageInstalledAndEnabled
 import com.android.launcher3.R
 
-
 sealed class HotseatMode(
     @StringRes val nameResourceId: Int,
     @LayoutRes val layoutResourceId: Int,
@@ -30,7 +29,6 @@ sealed class HotseatMode(
 
     abstract fun isAvailable(context: Context): Boolean
 }
-
 
 object LawnchairHotseat : HotseatMode(
     nameResourceId = R.string.hotseat_mode_lawnchair,

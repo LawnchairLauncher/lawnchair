@@ -5,7 +5,11 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_IMMUTABLE
 import android.app.PendingIntent.FLAG_UPDATE_CURRENT
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.graphics.drawable.Icon
 import android.net.Uri
 import android.widget.Toast
@@ -33,13 +37,15 @@ class BugReportReceiver : BroadcastReceiver() {
 
     private fun startUpload(context: Context, report: BugReport) {
         notify(context, report, true)
-        context.startService(Intent(context, UploaderService::class.java)
-            .putExtra("report", report))
+        context.startService(
+            Intent(context, UploaderService::class.java)
+                .putExtra("report", report),
+        )
     }
 
     companion object {
-        const val notificationChannelId = "${BuildConfig.APPLICATION_ID}.BugReport"
-        const val statusChannelId = "${BuildConfig.APPLICATION_ID}.status"
+        const val NOTIFICATION_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.BugReport"
+        const val STATUS_CHANNEL_ID = "${BuildConfig.APPLICATION_ID}.status"
 
         private const val GROUP_KEY = "${BuildConfig.APPLICATION_ID}.crashes"
         private const val GROUP_ID = 0
@@ -51,7 +57,7 @@ class BugReportReceiver : BroadcastReceiver() {
         fun notify(context: Context, report: BugReport, uploading: Boolean = false) {
             val manager: NotificationManager = context.requireSystemService()
             val notificationId = report.id
-            val builder = Notification.Builder(context, notificationChannelId)
+            val builder = Notification.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(report.getTitle(context))
                 .setContentText(report.description)
                 .setSmallIcon(R.drawable.ic_bug_notification)
@@ -67,14 +73,16 @@ class BugReportReceiver : BroadcastReceiver() {
             } else {
                 context.getString(R.string.bugreport_group_summary, count)
             }
-            val groupBuilder = Notification.Builder(context, notificationChannelId)
+            val groupBuilder = Notification.Builder(context, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(context.getString(R.string.bugreport_channel_name))
                 .setContentText(summary)
                 .setSmallIcon(R.drawable.ic_bug_notification)
                 .setColor(ContextCompat.getColor(context, R.color.bugNotificationColor))
-                .setStyle(Notification.InboxStyle()
-                    .setBigContentTitle(summary)
-                    .setSummaryText(context.getString(R.string.bugreport_channel_name)))
+                .setStyle(
+                    Notification.InboxStyle()
+                        .setBigContentTitle(summary)
+                        .setSummaryText(context.getString(R.string.bugreport_channel_name)),
+                )
                 .setGroupSummary(true)
                 .setGroup(GROUP_KEY)
 
@@ -82,22 +90,37 @@ class BugReportReceiver : BroadcastReceiver() {
             if (report.link != null) {
                 val openIntent = Intent(Intent.ACTION_VIEW, Uri.parse(report.link))
                 val pendingOpenIntent = PendingIntent.getActivity(
-                    context, notificationId, openIntent, FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE)
+                    context,
+                    notificationId,
+                    openIntent,
+                    FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE,
+                )
                 builder.setContentIntent(pendingOpenIntent)
             } else if (fileUri != null) {
                 val openIntent = Intent(Intent.ACTION_VIEW)
                     .setDataAndType(fileUri, "text/plain")
                     .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
                 val pendingOpenIntent = PendingIntent.getActivity(
-                    context, notificationId, openIntent, FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE)
+                    context,
+                    notificationId,
+                    openIntent,
+                    FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE,
+                )
                 builder.setContentIntent(pendingOpenIntent)
             }
 
             val pendingShareIntent = PendingIntent.getActivity(
-                context, notificationId, report.createShareIntent(context), FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE)
+                context,
+                notificationId,
+                report.createShareIntent(context),
+                FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE,
+            )
             val icon = Icon.createWithResource(context, R.drawable.ic_share)
             val shareActionBuilder = Notification.Action.Builder(
-                icon, context.getString(R.string.action_share), pendingShareIntent)
+                icon,
+                context.getString(R.string.action_share),
+                pendingShareIntent,
+            )
             builder.addAction(shareActionBuilder.build())
 
             if (report.link != null || fileUri == null) {
@@ -105,27 +128,41 @@ class BugReportReceiver : BroadcastReceiver() {
                     .setPackage(BuildConfig.APPLICATION_ID)
                     .putExtra("report", report)
                 val pendingCopyIntent = PendingIntent.getBroadcast(
-                    context, notificationId, copyIntent, FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE)
+                    context,
+                    notificationId,
+                    copyIntent,
+                    FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE,
+                )
                 val copyText = if (report.link != null) R.string.action_copy_link else R.string.action_copy
                 val copyIcon = Icon.createWithResource(context, R.drawable.ic_copy)
                 val copyActionBuilder = Notification.Action.Builder(
-                    copyIcon, context.getString(copyText), pendingCopyIntent)
+                    copyIcon,
+                    context.getString(copyText),
+                    pendingCopyIntent,
+                )
                 builder.addAction(copyActionBuilder.build())
             }
 
             if (uploading) {
                 builder.setOngoing(true)
                 builder.setProgress(0, 0, true)
-            } else if (report.link == null && UploaderUtils.isAvailable) {
+            } else if (report.link == null && UploaderUtils.IS_ALIVE_AVAILABLE) {
                 val uploadIntent = Intent(UPLOAD_ACTION)
                     .setPackage(BuildConfig.APPLICATION_ID)
                     .putExtra("report", report)
                 val pendingUploadIntent = PendingIntent.getBroadcast(
-                    context, notificationId, uploadIntent, FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE)
+                    context,
+                    notificationId,
+                    uploadIntent,
+                    FLAG_UPDATE_CURRENT or FLAG_IMMUTABLE,
+                )
                 val uploadText = if (report.uploadError) R.string.action_upload_error else R.string.action_upload_crash_report
                 val uploadIcon = Icon.createWithResource(context, R.drawable.ic_upload)
                 val uploadActionBuilder = Notification.Action.Builder(
-                    uploadIcon, context.getString(uploadText), pendingUploadIntent)
+                    uploadIcon,
+                    context.getString(uploadText),
+                    pendingUploadIntent,
+                )
                 builder.addAction(uploadActionBuilder.build())
             }
 

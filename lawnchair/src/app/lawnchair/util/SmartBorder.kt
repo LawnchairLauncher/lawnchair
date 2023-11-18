@@ -22,8 +22,20 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.*
-import androidx.compose.ui.graphics.*
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.RoundRect
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.boundingRect
+import androidx.compose.ui.geometry.isSimple
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Outline
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.withTransform
@@ -43,7 +55,11 @@ fun Modifier.smartBorder(width: Dp, color: Color, shape: Shape = RectangleShape)
     smartBorder(width, SolidColor(color), shape)
 
 fun Modifier.smartBorder(
-    width: Dp, brush: Brush, shape: Shape, cutTop: Boolean = false, cutBottom: Boolean = false
+    width: Dp,
+    brush: Brush,
+    shape: Shape,
+    cutTop: Boolean = false,
+    cutBottom: Boolean = false,
 ): Modifier = composed(
     inspectorInfo = debugInspectorInfo {
         name = "border"
@@ -55,7 +71,7 @@ fun Modifier.smartBorder(
             properties["brush"] = brush
         }
         properties["shape"] = shape
-    }
+    },
 ) {
     Modifier.drawWithCache {
         val originalOutline = shape.createOutline(size, layoutDirection, this)
@@ -78,7 +94,7 @@ fun Modifier.smartBorder(
                 inset = borderSize - strokeWidth / 2
                 val insetSize = Size(
                     size.width - inset * 2,
-                    size.height - inset * 2
+                    size.height - inset * 2,
                 )
                 insetOutline = shape.createOutline(insetSize, layoutDirection, this)
                 insetOutline = cutOutline(insetOutline, borderSize * 2, cutTop, cutBottom)
@@ -105,21 +121,21 @@ fun Modifier.smartBorder(
                                     rect.left, rect.top, rect.right, rect.bottom,
                                     CornerRadius(
                                         rect.topLeftCornerRadius.x - cornerCompensation,
-                                        rect.topLeftCornerRadius.y - cornerCompensation
+                                        rect.topLeftCornerRadius.y - cornerCompensation,
                                     ),
                                     CornerRadius(
                                         rect.topRightCornerRadius.x - cornerCompensation,
-                                        rect.topRightCornerRadius.y - cornerCompensation
+                                        rect.topRightCornerRadius.y - cornerCompensation,
                                     ),
                                     CornerRadius(
                                         rect.bottomLeftCornerRadius.x - cornerCompensation,
-                                        rect.bottomLeftCornerRadius.y - cornerCompensation
+                                        rect.bottomLeftCornerRadius.y - cornerCompensation,
                                     ),
                                     CornerRadius(
                                         rect.bottomRightCornerRadius.x - cornerCompensation,
-                                        rect.bottomRightCornerRadius.y - cornerCompensation
+                                        rect.bottomRightCornerRadius.y - cornerCompensation,
                                     ),
-                                )
+                                ),
                             )
                             translate(Offset(inset, inset))
                         }
@@ -138,7 +154,7 @@ fun Modifier.smartBorder(
             if (stroke != null) {
                 if (insetOutline != null && pathClip != null) {
                     val isSimpleRoundRect = insetOutline is Outline.Rounded &&
-                            insetOutline.roundRect.isSimple
+                        insetOutline.roundRect.isSimple
                     withTransform({
                         clipPath(pathClip)
                         if (isSimpleRoundRect) {
@@ -153,9 +169,9 @@ fun Modifier.smartBorder(
                                 size = Size(rRect.width, rRect.height),
                                 cornerRadius = CornerRadius(
                                     rRect.topLeftCornerRadius.x - cornerCompensation,
-                                    rRect.topLeftCornerRadius.y - cornerCompensation
+                                    rRect.topLeftCornerRadius.y - cornerCompensation,
                                 ),
-                                style = stroke
+                                style = stroke,
                             )
                         } else if (insetPath != null) {
                             drawPath(insetPath, brush, style = stroke)
@@ -169,7 +185,7 @@ fun Modifier.smartBorder(
                                 topLeft = Offset(rRect.left, rRect.top),
                                 size = Size(rRect.width, rRect.height),
                                 cornerRadius = rRect.topLeftCornerRadius,
-                                style = HairlineBorderStroke
+                                style = HairlineBorderStroke,
                             )
                         } else {
                             drawPath(drawPathClip!!, brush = brush, style = HairlineBorderStroke)
@@ -183,9 +199,9 @@ fun Modifier.smartBorder(
                         topLeft = Offset(halfStrokeWidth, halfStrokeWidth),
                         size = Size(
                             size.width - strokeWidth,
-                            size.height - strokeWidth
+                            size.height - strokeWidth,
                         ),
-                        style = stroke
+                        style = stroke,
                     )
                 }
             }
@@ -199,8 +215,8 @@ fun cutOutline(outline: Outline, height: Float, cutTop: Boolean, cutBottom: Bool
         is Outline.Rectangle -> Outline.Rounded(
             RoundRect(
                 cutRect(outline.rect, height, cutTop, cutBottom),
-                CornerRadius.Zero
-            )
+                CornerRadius.Zero,
+            ),
         )
         is Outline.Rounded -> Outline.Rounded(
             RoundRect(
@@ -209,7 +225,7 @@ fun cutOutline(outline: Outline, height: Float, cutTop: Boolean, cutBottom: Bool
                 outline.roundRect.topRightCornerRadius,
                 outline.roundRect.bottomLeftCornerRadius,
                 outline.roundRect.bottomRightCornerRadius,
-            )
+            ),
         )
         else -> outline
     }

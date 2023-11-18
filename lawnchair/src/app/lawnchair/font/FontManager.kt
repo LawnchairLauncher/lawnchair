@@ -44,7 +44,7 @@ class FontManager private constructor(private val context: Context) {
             var ap = -1
             context.obtainStyledAttributes(
                 attrs,
-                R.styleable.CustomFont
+                R.styleable.CustomFont,
             ).use { a ->
                 fontType = a.getResourceId(R.styleable.CustomFont_customFontType, -1)
                 fontWeight = a.getInt(R.styleable.CustomFont_customFontWeight, -1)

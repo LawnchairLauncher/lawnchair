@@ -9,6 +9,7 @@ import android.content.res.XmlResourceParser
 import android.graphics.drawable.Drawable
 import android.util.Xml
 import com.android.launcher3.R
+import java.io.IOException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,7 +17,6 @@ import kotlinx.coroutines.flow.flowOn
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
-import java.io.IOException
 
 class CustomIconPack(context: Context, packPackageName: String) :
     IconPack(context, packPackageName) {
@@ -51,7 +51,7 @@ class CustomIconPack(context: Context, packPackageName: String) :
             ExtendedBitmapDrawable.wrap(
                 packResources,
                 packResources.getDrawableForDensity(id, iconDpi, null),
-                true
+                true,
             )
         } catch (_: Resources.NotFoundException) {
             null
@@ -104,7 +104,8 @@ class CustomIconPack(context: Context, packPackageName: String) :
                                     parseXml.getAttributeIntValue(null, "secondLayerIndex", -1),
                                     parseXml.getAttributeIntValue(null, "defaultHour", 0),
                                     parseXml.getAttributeIntValue(null, "defaultMinute", 0),
-                                    parseXml.getAttributeIntValue(null, "defaultSecond", 0))
+                                    parseXml.getAttributeIntValue(null, "defaultSecond", 0),
+                                )
                             }
                         }
                     }

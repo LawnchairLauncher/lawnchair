@@ -3,7 +3,13 @@ package app.lawnchair.gestures.config
 import android.content.Context
 import app.lawnchair.gestures.handlers.GestureHandler
 import app.lawnchair.gestures.handlers.NoOpGestureHandler
-import app.lawnchair.gestures.handlers.*
+import app.lawnchair.gestures.handlers.OpenAppDrawerGestureHandler
+import app.lawnchair.gestures.handlers.OpenAppGestureHandler
+import app.lawnchair.gestures.handlers.OpenAppSearchGestureHandler
+import app.lawnchair.gestures.handlers.OpenAppTarget
+import app.lawnchair.gestures.handlers.OpenNotificationsHandler
+import app.lawnchair.gestures.handlers.OpenSearchGestureHandler
+import app.lawnchair.gestures.handlers.SleepGestureHandler
 import com.android.launcher3.R
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -20,7 +26,7 @@ sealed class GestureHandlerConfig {
         val labelRes: Int,
         @Transient private val creator: (Context) -> GestureHandler = {
             throw IllegalArgumentException("default creator not supported")
-        }
+        },
     ) : GestureHandlerConfig() {
         override fun getLabel(context: Context) = context.getString(labelRes)
         override fun createHandler(context: Context) = creator(context)

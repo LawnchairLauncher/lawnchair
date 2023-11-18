@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
@@ -70,7 +69,9 @@ fun SearchProviderPreferences() {
                         }.takeIf { qsbSearchProvider.sponsored },
                         description = if (showDownloadButton) {
                             stringResource(id = R.string.qsb_search_provider_app_required)
-                        } else null,
+                        } else {
+                            null
+                        },
                     )
                     ExpandAndShrink(visible = selected && hasAppAndWebsite) {
                         Options(
@@ -112,7 +113,7 @@ private fun ListItem(
                     selected = selected,
                     onClick = null,
                     enabled = enabled,
-                    modifier = Modifier.padding(start = 16.dp)
+                    modifier = Modifier.padding(start = 16.dp),
                 )
             },
             endWidget = {
@@ -203,7 +204,7 @@ private fun SponsorDisclaimer(
             OutlinedButton(onClick = onAcknowledge) {
                 Text(text = stringResource(id = android.R.string.ok))
             }
-        }
+        },
     ) {
         CompositionLocalProvider(
             LocalContentColor provides MaterialTheme.colorScheme.onBackground,

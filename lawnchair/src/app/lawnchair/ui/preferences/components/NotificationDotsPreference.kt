@@ -27,8 +27,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.ContentAlpha
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -62,16 +69,20 @@ fun NotificationDotsPreference(enabled: Boolean, serviceEnabled: Boolean) {
     PreferenceTemplate(
         title = { Text(text = stringResource(id = R.string.notification_dots)) },
         description = { Text(text = stringResource(id = summary)) },
-        endWidget = if (showWarning) { {
-            Icon(
-                modifier = Modifier
-                    .padding(8.dp)
-                    .size(24.dp),
-                painter = painterResource(id = R.drawable.ic_warning),
-                contentDescription = "",
-                tint = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium)
-            )
-        } } else null,
+        endWidget = if (showWarning) {
+            {
+                Icon(
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(24.dp),
+                    painter = painterResource(id = R.drawable.ic_warning),
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.onBackground.copy(alpha = ContentAlpha.medium),
+                )
+            }
+        } else {
+            null
+        },
         modifier = Modifier
             .clickable {
                 if (showWarning) {
@@ -86,7 +97,7 @@ fun NotificationDotsPreference(enabled: Boolean, serviceEnabled: Boolean) {
                         .putExtra(EXTRA_SHOW_FRAGMENT_ARGS, extras)
                     context.startActivity(intent)
                 }
-            }
+            },
     )
 }
 
@@ -102,7 +113,7 @@ fun NotificationAccessConfirmation(onDismissRequest: () -> Unit) {
         },
         buttons = {
             OutlinedButton(
-                onClick = onDismissRequest
+                onClick = onDismissRequest,
             ) {
                 Text(text = stringResource(id = android.R.string.cancel))
             }
@@ -115,7 +126,7 @@ fun NotificationAccessConfirmation(onDismissRequest: () -> Unit) {
                     val showFragmentArgs = Bundle()
                     showFragmentArgs.putString(
                         EXTRA_FRAGMENT_ARG_KEY,
-                        cn.flattenToString()
+                        cn.flattenToString(),
                     )
 
                     val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
@@ -123,11 +134,11 @@ fun NotificationAccessConfirmation(onDismissRequest: () -> Unit) {
                         .putExtra(EXTRA_FRAGMENT_ARG_KEY, cn.flattenToString())
                         .putExtra(EXTRA_SHOW_FRAGMENT_ARGS, showFragmentArgs)
                     context.startActivity(intent)
-                }
+                },
             ) {
                 Text(text = stringResource(id = R.string.title_change_settings))
             }
-        }
+        },
     )
 }
 
@@ -145,12 +156,14 @@ fun notificationDotsEnabled(context: Context) = callbackFlow {
 fun isNotificationServiceEnabled(context: Context): Boolean {
     val enabledListeners = Settings.Secure.getString(
         context.contentResolver,
-        "enabled_notification_listeners"
+        "enabled_notification_listeners",
     )
     val myListener = ComponentName(context, NotificationListener::class.java)
     return enabledListeners != null &&
-            (enabledListeners.contains(myListener.flattenToString()) ||
-                    enabledListeners.contains(myListener.flattenToShortString()))
+        (
+            enabledListeners.contains(myListener.flattenToString()) ||
+                enabledListeners.contains(myListener.flattenToShortString())
+            )
 }
 
 @Composable

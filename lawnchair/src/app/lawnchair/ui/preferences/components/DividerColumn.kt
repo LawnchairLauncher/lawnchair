@@ -1,6 +1,10 @@
 package app.lawnchair.ui.preferences.components
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -31,7 +35,7 @@ fun DividerColumn(
     Layout(
         modifier = modifier
             .drawDividers(state, color, thicknessPx, startIndentPx, endIndentPx),
-        content = content
+        content = content,
     ) { measurables, constraints ->
         // Don't constrain child views further, measure them with given constraints
         // List of measured children
@@ -73,14 +77,14 @@ private fun Modifier.drawDividers(
     color: Color,
     thickness: Float,
     startIndentPx: Float,
-    endIndentPx: Float
+    endIndentPx: Float,
 ): Modifier {
     return drawBehind {
         state.dividerPositions.forEach { yPos ->
             drawRect(
                 color = color,
                 topLeft = Offset(startIndentPx, yPos.toFloat()),
-                size = Size(size.width - startIndentPx - endIndentPx, thickness)
+                size = Size(size.width - startIndentPx - endIndentPx, thickness),
             )
         }
     }

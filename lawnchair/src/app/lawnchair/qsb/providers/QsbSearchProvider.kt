@@ -55,8 +55,11 @@ sealed class QsbSearchProvider(
     fun createSearchIntent() = Intent(action)
         .addFlags(INTENT_FLAGS)
         .apply {
-            if (className != null) setClassName(packageName, className)
-            else setPackage(packageName)
+            if (className != null) {
+                setClassName(packageName, className)
+            } else {
+                setPackage(packageName)
+            }
         }
 
     fun createVoiceIntent(): Intent = if (supportVoiceIntent) {
@@ -90,22 +93,22 @@ sealed class QsbSearchProvider(
             context.startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("market://details?id=$packageName")
-                )
+                    Uri.parse("market://details?id=$packageName"),
+                ),
             )
         } catch (_: ActivityNotFoundException) {
             try {
                 context.startActivity(
                     Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
-                    )
+                        Uri.parse("https://play.google.com/store/apps/details?id=$packageName"),
+                    ),
                 )
             } catch (_: Exception) {
                 Toast.makeText(
                     context,
                     context.getString(R.string.error_no_market_or_browser_installed),
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
             }
         }
@@ -162,9 +165,7 @@ sealed class QsbSearchProvider(
                 .filterNot { it == AppSearch }
                 .firstOrNull { LawnQsbLayout.resolveIntent(context, it.createSearchIntent()) }
                 ?: AppSearch
-
         }
-
     }
 }
 
@@ -172,5 +173,5 @@ enum class QsbSearchProviderType(val downloadable: Boolean) {
     APP_AND_WEBSITE(downloadable = true),
     WEBSITE(downloadable = false),
     APP(downloadable = true),
-    LOCAL(downloadable = false)
+    LOCAL(downloadable = false),
 }

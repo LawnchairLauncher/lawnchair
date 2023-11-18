@@ -8,16 +8,25 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.animation.Interpolator
 import android.widget.LinearLayout
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.only
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.LocalContentColor as M3LocalContentColor
+import androidx.compose.material3.MaterialTheme as Material3Theme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.ComposeView
@@ -34,11 +43,9 @@ import com.android.launcher3.util.SystemUiController
 import com.android.launcher3.views.AbstractSlideInView
 import com.android.launcher3.views.ActivityContext
 import com.android.launcher3.views.BaseDragLayer
-import androidx.compose.material3.LocalContentColor as M3LocalContentColor
-import androidx.compose.material3.MaterialTheme as Material3Theme
 
-class ComposeBottomSheet<T>(context: Context)
-: AbstractSlideInView<T>(context, null, 0) where T : Context, T : ActivityContext {
+class ComposeBottomSheet<T>(context: Context) :
+    AbstractSlideInView<T>(context, null, 0) where T : Context, T : ActivityContext {
 
     private val container = ComposeView(context)
     private var imeShift = 0f
@@ -67,7 +74,7 @@ class ComposeBottomSheet<T>(context: Context)
 
     fun setContent(
         contentPaddings: PaddingValues = PaddingValues(all = 0.dp),
-        content: @Composable ComposeBottomSheet<T>.() -> Unit
+        content: @Composable ComposeBottomSheet<T>.() -> Unit,
     ) {
         container.setContent {
             Providers {
@@ -90,7 +97,7 @@ class ComposeBottomSheet<T>(context: Context)
         }
         mIsOpen = true
         mOpenCloseAnimator.setValues(
-            PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED)
+            PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED),
         )
         mOpenCloseAnimator.interpolator = Interpolators.FAST_OUT_SLOW_IN
         mOpenCloseAnimator.start()
@@ -100,7 +107,7 @@ class ComposeBottomSheet<T>(context: Context)
         if (mActivityContext is Launcher) {
             mActivityContext.hideKeyboard()
         }
-        handleClose(animate, defaultCloseDuration)
+        handleClose(animate, DEFAULT_CLOSE_DURATION)
     }
 
     override fun onCloseComplete() {
@@ -136,7 +143,7 @@ class ComposeBottomSheet<T>(context: Context)
     override fun addHintCloseAnim(
         distanceToMove: Float,
         interpolator: Interpolator,
-        target: PendingAnimation
+        target: PendingAnimation,
     ) {
         super.addHintCloseAnim(distanceToMove, interpolator, target)
         hintCloseDistance = distanceToMove
@@ -147,7 +154,7 @@ class ComposeBottomSheet<T>(context: Context)
         if (mActivityContext is Launcher) {
             mActivityContext.systemUiController.updateUiState(
                 SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET,
-                flags
+                flags,
             )
         }
     }
@@ -160,13 +167,21 @@ class ComposeBottomSheet<T>(context: Context)
             var flags = 0
             if (setStatusBar) {
                 flags = flags or (
-                        if (useDarkIcons) SystemUiController.FLAG_LIGHT_STATUS
-                        else SystemUiController.FLAG_DARK_STATUS)
+                    if (useDarkIcons) {
+                        SystemUiController.FLAG_LIGHT_STATUS
+                    } else {
+                        SystemUiController.FLAG_DARK_STATUS
+                    }
+                    )
             }
             if (setNavBar) {
                 flags = flags or (
-                        if (useDarkIcons) SystemUiController.FLAG_LIGHT_NAV
-                        else SystemUiController.FLAG_DARK_NAV)
+                    if (useDarkIcons) {
+                        SystemUiController.FLAG_LIGHT_NAV
+                    } else {
+                        SystemUiController.FLAG_DARK_NAV
+                    }
+                    )
             }
             setSystemUiFlags(flags)
         }
@@ -178,7 +193,7 @@ class ComposeBottomSheet<T>(context: Context)
             ProvideLifecycleState {
                 CompositionLocalProvider(
                     LocalContentColor provides MaterialTheme.colors.onSurface,
-                    M3LocalContentColor provides Material3Theme.colorScheme.onSurface
+                    M3LocalContentColor provides Material3Theme.colorScheme.onSurface,
                 ) {
                     content()
                 }
@@ -189,7 +204,7 @@ class ComposeBottomSheet<T>(context: Context)
     @Composable
     private fun ContentWrapper(
         contentPaddings: PaddingValues = PaddingValues(all = 0.dp),
-        content: @Composable ComposeBottomSheet<T>.() -> Unit
+        content: @Composable ComposeBottomSheet<T>.() -> Unit,
     ) {
         val imePaddings = WindowInsets.ime
             .only(WindowInsetsSides.Horizontal + WindowInsetsSides.Bottom)
@@ -203,15 +218,15 @@ class ComposeBottomSheet<T>(context: Context)
             modifier = Modifier
                 .fillMaxWidth(),
             shape = backgroundShape,
-            color = Material3Theme.colorScheme.background
+            color = Material3Theme.colorScheme.background,
         ) {
             Box(
                 modifier = Modifier
                     .padding(contentPaddings)
                     .graphicsLayer(
                         alpha = 1f - (hintCloseProgress * 0.5f),
-                        translationY = hintCloseProgress * -hintCloseDistance
-                    )
+                        translationY = hintCloseProgress * -hintCloseDistance,
+                    ),
             ) {
                 content(this@ComposeBottomSheet)
             }
@@ -219,7 +234,7 @@ class ComposeBottomSheet<T>(context: Context)
     }
 
     companion object {
-        private const val defaultCloseDuration = 200L
+        private const val DEFAULT_CLOSE_DURATION = 200L
         private val backgroundShape = RoundedCornerShape(24.dp, 24.dp, 0.dp, 0.dp)
 
         private val HINT_CLOSE_PROGRESS = object : FloatProperty<ComposeBottomSheet<*>>("hintCloseProgress") {
@@ -234,7 +249,7 @@ class ComposeBottomSheet<T>(context: Context)
         fun <T> show(
             context: T,
             contentPaddings: PaddingValues = PaddingValues(all = 0.dp),
-            content: @Composable ComposeBottomSheet<T>.() -> Unit
+            content: @Composable ComposeBottomSheet<T>.() -> Unit,
         ) where T : Context, T : ActivityContext {
             val view = ComposeBottomSheet<T>(context)
             view.setContent(contentPaddings, content)

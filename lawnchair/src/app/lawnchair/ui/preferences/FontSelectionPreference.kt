@@ -6,7 +6,15 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.DropdownMenu
@@ -16,8 +24,22 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.Delete
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -35,7 +57,13 @@ import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.ui.AndroidText
 import app.lawnchair.ui.OverflowMenu
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.PreferenceDivider
+import app.lawnchair.ui.preferences.components.PreferenceGroupItem
+import app.lawnchair.ui.preferences.components.PreferenceLazyColumn
+import app.lawnchair.ui.preferences.components.PreferenceSearchScaffold
+import app.lawnchair.ui.preferences.components.PreferenceTemplate
+import app.lawnchair.ui.preferences.components.SearchTextField
+import app.lawnchair.ui.preferences.components.preferenceGroupItems
 import com.android.launcher3.R
 
 fun NavGraphBuilder.fontSelectionGraph(route: String) {
@@ -43,20 +71,21 @@ fun NavGraphBuilder.fontSelectionGraph(route: String) {
         composable(
             route = subRoute("{prefKey}"),
             arguments = listOf(
-                navArgument("prefKey") { type = NavType.StringType }
-            )
+                navArgument("prefKey") { type = NavType.StringType },
+            ),
         ) { backStackEntry ->
             val args = backStackEntry.arguments!!
             val prefKey = args.getString("prefKey")!!
             val pref = preferenceManager().prefsMap[prefKey]
-                    as? BasePreferenceManager.FontPref ?: return@composable
+                as? BasePreferenceManager.FontPref ?: return@composable
             FontSelection(pref)
         }
     }
 }
 
 private enum class ContentType {
-    ADD_BUTTON, FONT
+    ADD_BUTTON,
+    FONT,
 }
 
 @Composable
@@ -88,7 +117,9 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
             if (hasFilter) {
                 val lowerCaseQuery = searchQuery.lowercase()
                 allItems.filter { it.displayName.lowercase().contains(lowerCaseQuery) }
-            } else items
+            } else {
+                items
+            }
         }
     }
 
@@ -115,7 +146,7 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.medium),
                     )
                 },
-                singleLine = true
+                singleLine = true,
             )
         },
         actions = {
@@ -134,7 +165,7 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
                 item(contentType = { ContentType.ADD_BUTTON }) {
                     PreferenceGroupItem(
                         modifier = Modifier.padding(top = 8.dp),
-                        cutBottom = customFonts.isNotEmpty()
+                        cutBottom = customFonts.isNotEmpty(),
                     ) {
                         PreferenceTemplate(
                             modifier = Modifier.clickable {
@@ -147,18 +178,18 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
                             description = { Text(stringResource(id = R.string.pref_fonts_add_fonts_summary)) },
                             startWidget = {
                                 Icon(imageVector = Icons.Rounded.Add, contentDescription = null)
-                            }
+                            },
                         )
                     }
                 }
                 itemsIndexed(
                     items = customFonts,
                     key = { _, family -> family.toString() },
-                    contentType = { _, _ -> ContentType.FONT }
+                    contentType = { _, _ -> ContentType.FONT },
                 ) { index, family ->
                     PreferenceGroupItem(
                         cutTop = true,
-                        cutBottom = index != customFonts.lastIndex
+                        cutBottom = index != customFonts.lastIndex,
                     ) {
                         PreferenceDivider(startIndent = 40.dp)
                         FontSelectionItem(
@@ -170,7 +201,7 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
                                     fontPref.set(fontPref.defaultValue)
                                 }
                                 (family.default as? FontCache.TTFFont)?.delete()
-                            }
+                            },
                         )
                     }
                 }
@@ -180,11 +211,11 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
                 isFirstChild = false,
                 key = { _, family -> family.toString() },
                 contentType = { ContentType.FONT },
-                dividerStartIndent = 40.dp
+                dividerStartIndent = 40.dp,
             ) { _, family ->
                 FontSelectionItem(
                     adapter = adapter,
-                    family = family
+                    family = family,
                 )
             }
         }
@@ -195,7 +226,7 @@ fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
 private fun FontSelectionItem(
     adapter: PreferenceAdapter<FontCache.Font>,
     family: FontCache.Family,
-    onDelete: (() -> Unit)? = null
+    onDelete: (() -> Unit)? = null,
 ) {
     val selected = family.variants.any { it.value == adapter.state.value }
     PreferenceTemplate(
@@ -208,7 +239,7 @@ private fun FontSelectionItem(
                     modifier = Modifier
                         .align(Alignment.CenterStart)
                         .fillMaxWidth(),
-                    fontFamily = family.default.composeFontFamily
+                    fontFamily = family.default.composeFontFamily,
                 )
             }
         },
@@ -217,7 +248,7 @@ private fun FontSelectionItem(
                 selected = selected,
                 onClick = null,
                 modifier = Modifier
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 16.dp),
             )
         },
         endWidget = when {
@@ -228,7 +259,7 @@ private fun FontSelectionItem(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .wrapContentWidth()
-                            .padding(end = 16.dp)
+                            .padding(end = 16.dp),
                     ) {
                         VariantDropdown(adapter = adapter, family = family)
                     }
@@ -238,12 +269,12 @@ private fun FontSelectionItem(
                 {
                     IconButton(
                         onClick = onDelete,
-                        modifier = Modifier.padding(end = 8.dp)
+                        modifier = Modifier.padding(end = 8.dp),
                     ) {
                         Icon(
                             imageVector = Icons.Rounded.Delete,
                             contentDescription = stringResource(id = R.string.delete),
-                            tint = LocalContentColor.current.copy(alpha = ContentAlpha.medium)
+                            tint = LocalContentColor.current.copy(alpha = ContentAlpha.medium),
                         )
                     }
                 }
@@ -251,7 +282,7 @@ private fun FontSelectionItem(
             else -> null
         },
         applyPaddings = false,
-        verticalPadding = 0.dp
+        verticalPadding = 0.dp,
     )
 }
 
@@ -259,13 +290,13 @@ private val VariantButtonContentPadding = PaddingValues(
     start = 8.dp,
     top = 8.dp,
     end = 0.dp,
-    bottom = 8.dp
+    bottom = 8.dp,
 )
 
 @Composable
 private fun VariantDropdown(
     adapter: PreferenceAdapter<FontCache.Font>,
-    family: FontCache.Family
+    family: FontCache.Family,
 ) {
     val selectedFont = adapter.state.value
     var showVariants by remember { mutableStateOf(false) }
@@ -280,14 +311,14 @@ private fun VariantDropdown(
     TextButton(
         onClick = { showVariants = true },
         colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onBackground),
-        contentPadding = VariantButtonContentPadding
+        contentPadding = VariantButtonContentPadding,
     ) {
         AndroidText(
             modifier = Modifier.wrapContentWidth(),
             update = {
                 it.text = selectedFont.displayName
                 it.setFont(selectedFont)
-            }
+            },
         )
         Icon(
             imageVector = Icons.Rounded.ArrowDropDown,
@@ -296,7 +327,7 @@ private fun VariantDropdown(
     }
     DropdownMenu(
         expanded = showVariants,
-        onDismissRequest = { showVariants = false }
+        onDismissRequest = { showVariants = false },
     ) {
         family.sortedVariants.forEach { font ->
             DropdownMenuItem(onClick = {
@@ -305,7 +336,7 @@ private fun VariantDropdown(
             }) {
                 Text(
                     text = font.displayName,
-                    fontFamily = font.composeFontFamily
+                    fontFamily = font.composeFontFamily,
                 )
             }
         }
