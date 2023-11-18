@@ -85,7 +85,6 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent
 import static com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION;
 import static com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_VIEW_INFLATION;
 import static com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC;
-import static com.android.launcher3.logging.StatsLogManager.LauncherLatencyEvent.LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC;
 import static com.android.launcher3.logging.StatsLogManager.StatsLatencyLogger.LatencyType.COLD;
 import static com.android.launcher3.logging.StatsLogManager.StatsLatencyLogger.LatencyType.COLD_DEVICE_REBOOTING;
 import static com.android.launcher3.logging.StatsLogManager.StatsLatencyLogger.LatencyType.WARM;
@@ -187,6 +186,7 @@ import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.logger.LauncherAtom;
 import com.android.launcher3.logger.LauncherAtom.ContainerInfo;
 import com.android.launcher3.logger.LauncherAtom.WorkspaceContainer;
+import com.android.launcher3.logging.ColdRebootStartupLatencyLogger;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.logging.InstanceId;
 import com.android.launcher3.logging.InstanceIdSequence;
@@ -597,13 +597,24 @@ public class Launcher extends StatefulActivity<LauncherState>
     }
 
     /**
-     * Create {@link StartupLatencyLogger} that only collects launcher startup latency metrics
-     * without sending them anywhere. Child class can override this method to create logger
+     * We only log startup latency in {@link COLD_DEVICE_REBOOTING} type. For other latency types,
+     * create a no op implementation.
+     */
+    private StartupLatencyLogger createStartupLatencyLogger(
+            StatsLogManager.StatsLatencyLogger.LatencyType latencyType) {
+        if (latencyType == COLD_DEVICE_REBOOTING) {
+            return createColdRebootStartupLatencyLogger();
+        }
+        return StartupLatencyLogger.Companion.getNO_OP();
+    }
+
+    /**
+     * Create {@link ColdRebootStartupLatencyLogger} that only collects launcher startup latency
+     * metrics without sending them anywhere. Child class can override this method to create logger
      * that overrides {@link StartupLatencyLogger#log()} to report those metrics.
      */
-    protected StartupLatencyLogger createStartupLatencyLogger(
-            StatsLogManager.StatsLatencyLogger.LatencyType latencyType) {
-        return new StartupLatencyLogger(latencyType);
+    protected ColdRebootStartupLatencyLogger createColdRebootStartupLatencyLogger() {
+        return new ColdRebootStartupLatencyLogger();
     }
 
     /**
@@ -2591,11 +2602,12 @@ public class Launcher extends StatefulActivity<LauncherState>
             Trace.endAsyncSection(DISPLAY_WORKSPACE_TRACE_METHOD_NAME,
                     DISPLAY_WORKSPACE_TRACE_COOKIE);
         }
-        mStartupLatencyLogger
-                .logCardinality(workspaceItemCount)
-                .logEnd(isBindSync
-                        ? LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC
-                        : LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC);
+        if (!isBindSync) {
+            mStartupLatencyLogger
+                    .logCardinality(workspaceItemCount)
+                    .logEnd(LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC);
+        }
+
         MAIN_EXECUTOR.getHandler().postAtFrontOfQueue(() -> {
             mStartupLatencyLogger
                     .logEnd(LAUNCHER_LATENCY_STARTUP_TOTAL_DURATION)
