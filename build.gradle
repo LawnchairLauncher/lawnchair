@@ -72,7 +72,7 @@ ext {
     FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
     accompanist_version = '0.32.0'
     libsu_version = '5.2.1'
-    protocVersion = '3.25.0'
+    protocVersion = '3.25.1'
     room_version = '2.6.0'
     optoVersion = "1.0.18"
 }
@@ -173,8 +173,8 @@ android {
         debug {
             applicationIdSuffix ".debug"
             resValue("string", "derived_app_name", "Lawnchair (Debug)")
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled false
+            shrinkResources false
             proguardFiles "proguard-android-optimize.txt", "proguard.pro"
         }
 
@@ -346,7 +346,7 @@ dependencies {
     implementation "androidx.preference:preference-ktx:1.2.1"
 
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
-    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.1'
     implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
     implementation 'dev.rikka.tools.refine:runtime:4.4.0'
 
@@ -361,7 +361,7 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata"
     implementation 'androidx.compose.material3:material3'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
-    implementation "androidx.activity:activity-compose:1.8.0"
+    implementation "androidx.activity:activity-compose:1.8.1"
     implementation "androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2"
     implementation "androidx.navigation:navigation-compose:2.7.5"
     implementation "androidx.palette:palette-ktx:1.0.0"
@@ -397,7 +397,9 @@ dependencies {
     implementation 'com.airbnb.android:lottie:6.1.0'
 
     // Smartspacer
-    implementation 'com.kieronquinn.smartspacer:sdk-client:1.0.3'
+    implementation('com.kieronquinn.smartspacer:sdk-client:1.0.5') {
+        exclude group: "com.github.skydoves", module: "balloon"
+    }
 }
 
 ksp {
