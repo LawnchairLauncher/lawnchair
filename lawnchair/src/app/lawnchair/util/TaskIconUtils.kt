@@ -8,6 +8,7 @@ object TaskIconUtils {
     private val customIconBlacklist = setOf(
         "com.facebook.katana",
         "com.twitter.android",
+        "eu.faircode.email",
     )
 
     @JvmStatic
