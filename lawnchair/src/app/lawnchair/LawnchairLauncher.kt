@@ -88,8 +88,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.util.function.IntConsumer
-import java.util.stream.Stream
 
 class LawnchairLauncher :
     QuickstepLauncher(),
@@ -305,8 +303,8 @@ class LawnchairLauncher :
         gestureController.onHomePressed()
     }
 
-    override fun registerBackDispatcher(){
-        if(VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+    override fun registerBackDispatcher() {
+        if (VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             super.registerBackDispatcher()
         }
     }
@@ -314,10 +312,10 @@ class LawnchairLauncher :
     override fun createAppWidgetHolder(): LauncherWidgetHolder {
         val factory = LauncherWidgetHolder.HolderFactory.newFactory(this) as LawnchairWidgetHolder.LawnchairHolderFactory
         return factory.newInstance(
-            this
+            this,
         ) { appWidgetId: Int ->
             workspace.removeWidget(
-                appWidgetId
+                appWidgetId,
             )
         }
     }

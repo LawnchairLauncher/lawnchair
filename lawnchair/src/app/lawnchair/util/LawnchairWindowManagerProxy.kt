@@ -1,17 +1,16 @@
 package app.lawnchair.util
 
 import android.content.Context
-import androidx.annotation.Keep
-import com.android.launcher3.util.window.WindowManagerProxy
 import android.util.ArrayMap
+import android.view.Display.DEFAULT_DISPLAY
 import android.view.Surface
 import android.view.WindowManager
+import androidx.annotation.Keep
 import app.lawnchair.LawnchairApp
 import com.android.internal.policy.SystemBarUtils
 import com.android.launcher3.util.WindowBounds
 import com.android.launcher3.util.window.CachedDisplayInfo
-import android.view.Display.DEFAULT_DISPLAY
-
+import com.android.launcher3.util.window.WindowManagerProxy
 
 @Keep
 class LawnchairWindowManagerProxy(context: Context) : WindowManagerProxy(true) {

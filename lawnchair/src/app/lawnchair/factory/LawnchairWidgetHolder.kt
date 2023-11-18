@@ -8,14 +8,16 @@ import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.widget.LauncherWidgetHolder
 import java.util.function.IntConsumer
 
-class LawnchairWidgetHolder(context : Context, intConsumer: IntConsumer?) : LauncherWidgetHolder(context, intConsumer) {
+class LawnchairWidgetHolder(context: Context, intConsumer: IntConsumer?) : LauncherWidgetHolder(context, intConsumer) {
 
     @Keep
-    class LawnchairHolderFactory @Suppress("unused") constructor(context: Context?) :
+    class LawnchairHolderFactory
+    @Suppress("unused")
+    constructor(context: Context?) :
         HolderFactory() {
         override fun newInstance(
             context: Context,
-            appWidgetRemovedCallback: IntConsumer?
+            appWidgetRemovedCallback: IntConsumer?,
         ): LauncherWidgetHolder {
             return newInstance(context, appWidgetRemovedCallback, null)
         }
@@ -29,22 +31,24 @@ class LawnchairWidgetHolder(context : Context, intConsumer: IntConsumer?) : Laun
         fun newInstance(
             context: Context,
             appWidgetRemovedCallback: IntConsumer?,
-            interactionHandler: RemoteViews.InteractionHandler?
+            interactionHandler: RemoteViews.InteractionHandler?,
         ): LauncherWidgetHolder {
             return if (!FeatureFlags.ENABLE_WIDGET_HOST_IN_BACKGROUND.get()) {
                 object : LauncherWidgetHolder(context, appWidgetRemovedCallback) {
                     override fun createHost(
                         context: Context,
-                        appWidgetRemovedCallback: IntConsumer?
+                        appWidgetRemovedCallback: IntConsumer?,
                     ): AppWidgetHost {
                         val host = super.createHost(context, appWidgetRemovedCallback)
-                        if(interactionHandler != null){
+                        if (interactionHandler != null) {
                             host.setInteractionHandler(interactionHandler)
                         }
                         return host
                     }
                 }
-            } else LawnchairWidgetHolder(context, appWidgetRemovedCallback)
+            } else {
+                LawnchairWidgetHolder(context, appWidgetRemovedCallback)
+            }
         }
     }
 }

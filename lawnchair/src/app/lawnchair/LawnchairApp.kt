@@ -202,6 +202,7 @@ class LawnchairApp : Application() {
 
         @JvmStatic
         val isRecentsEnabled: Boolean get() = instance.recentsEnabled
+
         @JvmStatic
         val isAtleastT: Boolean get() = instance.isAtleastT
 
