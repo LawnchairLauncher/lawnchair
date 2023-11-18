@@ -6,7 +6,8 @@ import androidx.appcompat.widget.AppCompatTextView
 import app.lawnchair.font.FontManager
 
 open class CustomTextView @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
+    context: Context,
+    attrs: AttributeSet? = null,
 ) : AppCompatTextView(context, attrs) {
 
     init {

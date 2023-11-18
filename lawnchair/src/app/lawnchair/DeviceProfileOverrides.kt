@@ -7,8 +7,8 @@ import app.lawnchair.preferences2.firstBlocking
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.InvariantDeviceProfile.INDEX_DEFAULT
 import com.android.launcher3.InvariantDeviceProfile.INDEX_LANDSCAPE
-import com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_PORTRAIT
 import com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_LANDSCAPE
+import com.android.launcher3.InvariantDeviceProfile.INDEX_TWO_PANEL_PORTRAIT
 import com.android.launcher3.util.MainThreadInitializedObject
 import com.patrykmichalik.opto.core.firstBlocking
 
@@ -21,7 +21,7 @@ class DeviceProfileOverrides(context: Context) {
             val gridInfo = DBGridInfo(
                 numHotseatColumns = option.numHotseatIcons,
                 numRows = option.numRows,
-                numColumns = option.numColumns
+                numColumns = option.numColumns,
             )
             gridInfo to option.name
         }
@@ -62,7 +62,7 @@ class DeviceProfileOverrides(context: Context) {
         val numRows: Int,
         val numColumns: Int,
     ) {
-        val dbFile get() = "launcher_${numRows}_${numColumns}_${numHotseatColumns}.db"
+        val dbFile get() = "launcher_${numRows}_${numColumns}_$numHotseatColumns.db"
 
         constructor(prefs: PreferenceManager) : this(
             numHotseatColumns = prefs.hotseatColumns.get(),
@@ -93,7 +93,7 @@ class DeviceProfileOverrides(context: Context) {
             iconSizeFactor = prefs2.homeIconSizeFactor.firstBlocking(),
             allAppsIconSizeFactor = prefs2.drawerIconSizeFactor.firstBlocking(),
 
-            enableTaskbarOnPhone = prefs2.enableTaskbarOnPhone.firstBlocking()
+            enableTaskbarOnPhone = prefs2.enableTaskbarOnPhone.firstBlocking(),
         )
 
         fun applyUi(idp: InvariantDeviceProfile) {

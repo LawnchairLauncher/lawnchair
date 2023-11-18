@@ -4,7 +4,7 @@ import android.content.Context
 import android.icu.text.MeasureFormat
 import android.icu.util.Measure
 import android.icu.util.MeasureUnit
-import java.util.*
+import java.util.Locale
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.DurationUnit
 
@@ -14,7 +14,6 @@ private val Context.locale: Locale?
     get() = resources.configuration.locales[0]
 
 fun formatShortElapsedTime(context: Context, millis: Long): String? {
-
     val duration = millis.milliseconds
     val locale = context.locale
     val measureFormat = MeasureFormat.getInstance(locale, MeasureFormat.FormatWidth.SHORT)

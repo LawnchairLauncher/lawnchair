@@ -3,7 +3,15 @@ package app.lawnchair.ui.preferences.components.colorpreference.pickers
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -24,7 +32,7 @@ import com.android.launcher3.R
 object SwatchGridDefaults {
     val GutterSize = 12.dp
     val SwatchMaxWidth = 56.dp
-    const val ColumnCount = 6
+    const val COLUMN_COUNT = 6
 }
 
 @Composable
@@ -33,9 +41,9 @@ fun <T> SwatchGrid(
     contentModifier: Modifier = Modifier,
     entries: List<ColorPreferenceEntry<T>>,
     onSwatchClick: (T) -> Unit,
-    isSwatchSelected: (T) -> Boolean
+    isSwatchSelected: (T) -> Boolean,
 ) {
-    val columnCount = SwatchGridDefaults.ColumnCount
+    val columnCount = SwatchGridDefaults.COLUMN_COUNT
     val rowCount = (entries.size - 1) / columnCount + 1
     val gutter = SwatchGridDefaults.GutterSize
 
@@ -81,7 +89,7 @@ fun <T> ColorSwatch(
     entry: ColorPreferenceEntry<T>,
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
-    selected: Boolean
+    selected: Boolean,
 ) {
     val color = if (MaterialTheme.colors.isLight) {
         entry.lightColor(LocalContext.current)
@@ -96,14 +104,14 @@ fun <T> ColorSwatch(
             .aspectRatio(ratio = 1F)
             .clip(CircleShape)
             .background(Color(color))
-            .clickable(onClick = onClick)
+            .clickable(onClick = onClick),
     ) {
         Crossfade(targetState = selected, label = "") {
             if (it) {
                 Icon(
                     imageVector = Icons.Rounded.Done,
                     contentDescription = null,
-                    tint = MaterialTheme.colors.onPrimary
+                    tint = MaterialTheme.colors.onPrimary,
                 )
             }
         }

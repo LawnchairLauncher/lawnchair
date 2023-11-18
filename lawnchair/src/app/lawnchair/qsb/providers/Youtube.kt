@@ -12,5 +12,5 @@ object Youtube : QsbSearchProvider(
     packageName = "com.google.android.youtube",
     action = Intent.ACTION_SEARCH,
     supportVoiceIntent = false,
-    website = "https://youtube.com/"
+    website = "https://youtube.com/",
 )

@@ -16,7 +16,9 @@ import com.android.launcher3.Utilities
 import kotlinx.coroutines.flow.map
 
 class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
-    context, R.string.smartspace_battery_status, { smartspaceBatteryStatus }
+    context,
+    R.string.smartspace_battery_status,
+    { smartspaceBatteryStatus },
 ) {
     private val batteryManager = context.getSystemService<BatteryManager>()
 
@@ -25,9 +27,11 @@ class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
             val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
             val charging = status == BatteryManager.BATTERY_STATUS_CHARGING
             val full = status == BatteryManager.BATTERY_STATUS_FULL
-            val level = (100f
-                    * intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
-                    / intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100)).toInt()
+            val level = (
+                100f *
+                    intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0) /
+                    intent.getIntExtra(BatteryManager.EXTRA_SCALE, 100)
+                ).toInt()
             listOfNotNull(getSmartspaceTarget(charging, full, level))
         }
 
@@ -47,7 +51,10 @@ class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
         val subtitle = if (charging && chargingTimeRemaining > 0) {
             val chargingTime = formatShortElapsedTimeRoundingUpToMinutes(context, chargingTimeRemaining)
             context.getString(
-                R.string.battery_charging_percentage_charging_time, level, chargingTime)
+                R.string.battery_charging_percentage_charging_time,
+                level,
+                chargingTime,
+            )
         } else {
             context.getString(R.string.n_percent, level)
         }
@@ -58,10 +65,10 @@ class BatteryStatusProvider(context: Context) : SmartspaceDataSource(
                 id = "batteryStatusAction",
                 icon = Icon.createWithResource(context, iconResId),
                 title = title,
-                subtitle = subtitle
+                subtitle = subtitle,
             ),
             score = score,
-            featureType = SmartspaceTarget.FeatureType.FEATURE_CALENDAR
+            featureType = SmartspaceTarget.FeatureType.FEATURE_CALENDAR,
         )
     }
 

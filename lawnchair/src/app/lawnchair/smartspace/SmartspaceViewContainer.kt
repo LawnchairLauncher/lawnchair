@@ -17,7 +17,9 @@ import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.views.OptionsPopupView
 
 class SmartspaceViewContainer @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null, private val previewMode: Boolean = false
+    context: Context,
+    attrs: AttributeSet? = null,
+    private val previewMode: Boolean = false,
 ) : FrameLayout(context, attrs) {
 
     private val longPressHelper = CheckLongPressHelper(this) { performLongClick() }
@@ -42,10 +44,12 @@ class SmartspaceViewContainer @JvmOverloads constructor(
         launcher.dragLayer.getDescendantRectRelativeToSelf(smartspaceView, pos)
         OptionsPopupView.show(launcher, RectF(pos), listOf(getCustomizeOption()), true)
     }
-    
+
     private fun getCustomizeOption() = OptionsPopupView.OptionItem(
-        context, R.string.customize_button_text, R.drawable.ic_setting,
-        StatsLogManager.LauncherEvent.IGNORE
+        context,
+        R.string.customize_button_text,
+        R.drawable.ic_setting,
+        StatsLogManager.LauncherEvent.IGNORE,
     ) {
         context.startActivity(PreferenceActivity.createIntent(context, "/${Routes.SMARTSPACE}/"))
         true

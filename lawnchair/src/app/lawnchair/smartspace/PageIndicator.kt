@@ -10,7 +10,8 @@ import com.android.launcher3.R
 import com.android.launcher3.util.Themes
 
 class PageIndicator @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
+    context: Context,
+    attrs: AttributeSet? = null,
 ) : LinearLayout(context, attrs) {
 
     private val primaryColor = Themes.getAttrColor(context, R.attr.workspaceTextColor)
@@ -46,7 +47,7 @@ class PageIndicator @JvmOverloads constructor(
         contentDescription = context.getString(
             R.string.accessibility_smartspace_page,
             if (positionOffset.toDouble() < 0.5) position + 1 else position + 2,
-            numPages
+            numPages,
         )
         if (zeroOffset) {
             currentPageIndex = position
@@ -66,8 +67,11 @@ class PageIndicator @JvmOverloads constructor(
         for (i in 0 until numPages) {
             val reuse = i < getChildCount()
             val imageView = if (reuse) getChildAt(i) as ImageView else ImageView(context)
-            val layoutParams = if (reuse) imageView.layoutParams as LayoutParams else
+            val layoutParams = if (reuse) {
+                imageView.layoutParams as LayoutParams
+            } else {
                 LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            }
             if (i == 0) {
                 layoutParams.marginStart = 0
             } else {
@@ -91,7 +95,7 @@ class PageIndicator @JvmOverloads constructor(
         contentDescription = context.getString(
             R.string.accessibility_smartspace_page,
             1,
-            Integer.valueOf(numPages)
+            Integer.valueOf(numPages),
         )
     }
 }

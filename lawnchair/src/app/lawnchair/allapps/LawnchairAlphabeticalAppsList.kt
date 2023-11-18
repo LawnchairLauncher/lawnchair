@@ -13,11 +13,12 @@ import com.android.launcher3.views.ActivityContext
 import com.patrykmichalik.opto.core.onEach
 import java.util.function.Predicate
 
-class LawnchairAlphabeticalAppsList<T>(context: T,
-                                       appsStore: AllAppsStore?,
-                                       workProfileManager: WorkProfileManager?
-): AlphabeticalAppsList<T>(context, appsStore, workProfileManager)
-        where T : Context, T : ActivityContext {
+class LawnchairAlphabeticalAppsList<T>(
+    context: T,
+    appsStore: AllAppsStore?,
+    workProfileManager: WorkProfileManager?,
+) : AlphabeticalAppsList<T>(context, appsStore, workProfileManager)
+    where T : Context, T : ActivityContext {
 
     private var hiddenApps: Set<String> = setOf()
 

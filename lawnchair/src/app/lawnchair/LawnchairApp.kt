@@ -119,6 +119,7 @@ class LawnchairApp : Application() {
     private fun getSystemUiBoolean(resName: String, fallback: Boolean): Boolean {
         val systemUiPackage = "com.android.systemui"
         val res = packageManager.getResourcesForApplication(systemUiPackage)
+
         @SuppressLint("DiscouragedApi")
         val resId = res.getIdentifier(resName, "bool", systemUiPackage)
         if (resId == 0) {
@@ -171,8 +172,8 @@ class LawnchairApp : Application() {
             return false
         }
 
-        val isRecentsComponent = recentsComponent.packageName == packageName
-                && recentsComponent.className == RecentsActivity::class.java.name
+        val isRecentsComponent = recentsComponent.packageName == packageName &&
+            recentsComponent.className == RecentsActivity::class.java.name
         if (!isRecentsComponent) {
             Log.d(TAG, "config_recentsComponentName ($recentsComponent) is not Lawnchair, disabling recents")
             return false
@@ -214,7 +215,7 @@ class LawnchairApp : Application() {
                         val description = stringResource(
                             id = R.string.quickstep_incompatible_description,
                             stringResource(id = R.string.derived_app_name),
-                            Build.VERSION.RELEASE
+                            Build.VERSION.RELEASE,
                         )
                         Text(text = description)
                     },
@@ -223,17 +224,17 @@ class LawnchairApp : Application() {
                             onClick = {
                                 openAppInfo(launcher)
                                 close(true)
-                            }
+                            },
                         ) {
                             Text(text = stringResource(id = R.string.app_info_drop_target_label))
                         }
                         Spacer(modifier = Modifier.requiredWidth(8.dp))
                         Button(
-                            onClick = { close(true) }
+                            onClick = { close(true) },
                         ) {
                             Text(text = stringResource(id = android.R.string.ok))
                         }
-                    }
+                    },
                 )
             }
         }

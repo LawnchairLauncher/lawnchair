@@ -15,10 +15,12 @@ import app.lawnchair.smartspace.model.SmartspaceAction
 import app.lawnchair.smartspace.model.SmartspaceTarget
 import app.lawnchair.smartspace.model.hasIntent
 import com.android.launcher3.R
-import java.util.*
+import java.util.Locale
+import java.util.UUID
 
 class BcSmartspaceCard @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
+    context: Context,
+    attrs: AttributeSet? = null,
 ) : LinearLayout(context, attrs) {
 
     private var baseActionIconSubtitleView: DoubleShadowTextView? = null
@@ -99,7 +101,7 @@ class BcSmartspaceCard @JvmOverloads constructor(
             val calendarAction = SmartspaceAction(
                 id = headerAction?.id ?: baseAction?.id ?: UUID.randomUUID().toString(),
                 title = "unusedTitle",
-                intent = BcSmartSpaceUtil.getOpenCalendarIntent()
+                intent = BcSmartSpaceUtil.getOpenCalendarIntent(),
             )
             BcSmartSpaceUtil.setOnClickListener(it, calendarAction, null, "BcSmartspaceCard")
         }
@@ -132,11 +134,13 @@ class BcSmartspaceCard @JvmOverloads constructor(
         titleView.textAlignment = if (isRTL) TEXT_ALIGNMENT_TEXT_END else TEXT_ALIGNMENT_TEXT_START
         titleView.text = title
         titleView.setCompoundDrawablesRelative(
-            if (hasIcon) iconDrawable else null, null,
-            null, null
+            if (hasIcon) iconDrawable else null,
+            null,
+            null,
+            null,
         )
-        titleView.ellipsize = if (target.featureType == SmartspaceTarget.FeatureType.FEATURE_CALENDAR
-            && Locale.ENGLISH.language == context.resources.configuration.locale.language
+        titleView.ellipsize = if (target.featureType == SmartspaceTarget.FeatureType.FEATURE_CALENDAR &&
+            Locale.ENGLISH.language == context.resources.configuration.locale.language
         ) {
             TextUtils.TruncateAt.MIDDLE
         } else {
@@ -151,8 +155,10 @@ class BcSmartspaceCard @JvmOverloads constructor(
         val subtitleView = subtitleTextView ?: return
         subtitleView.text = subtitle
         subtitleTextView!!.setCompoundDrawablesRelative(
-            if (subtitle.isNullOrEmpty()) null else iconDrawable, null,
-            null, null
+            if (subtitle.isNullOrEmpty()) null else iconDrawable,
+            null,
+            null,
+            null,
         )
         subtitleTextView!!.maxLines = if (target.featureType == SmartspaceTarget.FeatureType.FEATURE_TIPS && !usePageIndicatorUi) 2 else 1
         setFormattedContentDescription(subtitleTextView!!, subtitle, charSequence2)
@@ -161,14 +167,14 @@ class BcSmartspaceCard @JvmOverloads constructor(
     private fun setFormattedContentDescription(
         textView: TextView,
         title: CharSequence?,
-        contentDescription: CharSequence?
+        contentDescription: CharSequence?,
     ) {
         textView.contentDescription = when {
             title.isNullOrEmpty() -> contentDescription
             !contentDescription.isNullOrEmpty() -> context.getString(
                 R.string.generic_smartspace_concatenated_desc,
                 contentDescription,
-                title
+                title,
             )
             else -> title
         }

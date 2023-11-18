@@ -48,7 +48,7 @@ fun <T> ListPreference(
         label = label,
         enabled = enabled,
         description = description,
-        endWidget = endWidget
+        endWidget = endWidget,
     )
 }
 
@@ -85,7 +85,7 @@ fun <T> ListPreference(
                         OutlinedButton(onClick = { bottomSheetHandler.hide() }) {
                             Text(text = stringResource(id = android.R.string.cancel))
                         }
-                    }
+                    },
                 ) {
                     LazyColumn {
                         itemsIndexed(entries) { index, item ->
@@ -111,7 +111,7 @@ fun <T> ListPreference(
                     }
                 }
             }
-        }
+        },
     )
 }
 

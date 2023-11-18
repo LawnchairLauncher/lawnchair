@@ -38,7 +38,7 @@ fun PreferenceLayout(
     actions: @Composable RowScope.() -> Unit = {},
     bottomBar: @Composable () -> Unit = { BottomSpacer() },
     backArrowVisible: Boolean = true,
-    content: @Composable ColumnScope.() -> Unit
+    content: @Composable ColumnScope.() -> Unit,
 ) {
     PreferenceScaffold(
         backArrowVisible = backArrowVisible,
@@ -50,7 +50,7 @@ fun PreferenceLayout(
             verticalArrangement = verticalArrangement,
             horizontalAlignment = horizontalAlignment,
             scrollState = scrollState,
-            content = content
+            content = content,
         )
     }
 }
@@ -63,7 +63,7 @@ fun PreferenceLayoutLazyColumn(
     label: String,
     actions: @Composable RowScope.() -> Unit = {},
     backArrowVisible: Boolean = true,
-    content: LazyListScope.() -> Unit
+    content: LazyListScope.() -> Unit,
 ) {
     PreferenceScaffold(
         backArrowVisible = backArrowVisible,
@@ -74,7 +74,7 @@ fun PreferenceLayoutLazyColumn(
             modifier = modifier,
             enabled = enabled,
             state = state,
-            content = content
+            content = content,
         )
     }
 }

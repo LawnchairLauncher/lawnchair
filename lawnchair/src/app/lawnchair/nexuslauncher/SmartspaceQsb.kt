@@ -18,7 +18,8 @@ class SmartspaceQsb @JvmOverloads constructor(context: Context, attrs: Attribute
     class SmartSpaceFragment : QsbFragment() {
         override fun createHost(): QsbWidgetHost {
             return QsbWidgetHost(
-                context, SMART_SPACE_WIDGET_HOST_ID
+                context,
+                SMART_SPACE_WIDGET_HOST_ID,
             ) { c: Context -> ThemedSmartSpaceHostView(c) }
         }
 

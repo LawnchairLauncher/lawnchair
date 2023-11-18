@@ -11,5 +11,5 @@ object Brave : QsbSearchProvider(
     themingMethod = ThemingMethod.TINT,
     packageName = "com.brave.browser",
     className = "org.chromium.chrome.browser.searchwidget.SearchWidgetProviderActivity",
-    website = "https://search.brave.com/"
+    website = "https://search.brave.com/",
 )

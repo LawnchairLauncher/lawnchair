@@ -3,7 +3,11 @@ package app.lawnchair.ui.preferences
 import android.app.Activity
 import android.content.Intent
 import android.content.pm.LauncherApps
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.graphics.drawable.toBitmap
@@ -29,8 +33,8 @@ fun NavGraphBuilder.selectIconGraph(route: String) {
             route = subRoute("{packageName}/{nameAndUser}"),
             arguments = listOf(
                 navArgument("packageName") { type = NavType.StringType },
-                navArgument("nameAndUser") { type = NavType.StringType }
-            )
+                navArgument("nameAndUser") { type = NavType.StringType },
+            ),
         ) { backStackEntry ->
             val args = backStackEntry.arguments!!
             val packageName = args.getString("packageName")
@@ -81,14 +85,14 @@ fun SelectIconPreference(componentKey: ComponentKey) {
                                 it.finish()
                             }
                         }
-                    }
+                    },
                 )
             }
         }
         preferenceGroupItems(
             heading = { stringResource(id = R.string.pick_icon_from_label) },
             items = iconPacks,
-            isFirstChild = !hasOverride
+            isFirstChild = !hasOverride,
         ) { _, iconPack ->
             AppItem(
                 label = iconPack.name,
@@ -99,7 +103,7 @@ fun SelectIconPreference(componentKey: ComponentKey) {
                     } else {
                         navController.navigate("/${Routes.ICON_PICKER}/${iconPack.packageName}/")
                     }
-                }
+                },
             )
         }
     }

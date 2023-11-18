@@ -13,7 +13,10 @@ import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import com.android.launcher3.InvariantDeviceProfile
 import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherSettings.Favorites.*
+import com.android.launcher3.LauncherSettings.Favorites.CONTAINER
+import com.android.launcher3.LauncherSettings.Favorites.CONTAINER_HOTSEAT
+import com.android.launcher3.LauncherSettings.Favorites.PREVIEW_CONTENT_URI
+import com.android.launcher3.LauncherSettings.Favorites.SCREEN
 import com.android.launcher3.R
 import com.android.launcher3.graphics.LauncherPreviewRenderer
 import com.android.launcher3.model.BgDataModel
@@ -34,7 +37,7 @@ class LauncherPreviewView(
     private val idp: InvariantDeviceProfile,
     private val dummySmartspace: Boolean = false,
     private val dummyInsets: Boolean = false,
-    private val appContext: Context = context.applicationContext
+    private val appContext: Context = context.applicationContext,
 ) : FrameLayout(context) {
 
     private val onReadyCallbacks = RunnableList()
@@ -89,12 +92,14 @@ class LauncherPreviewView(
                 LauncherAppState.getInstance(previewContext),
                 null,
                 BgDataModel(),
-                ModelDelegate(), null
+                ModelDelegate(),
+                null,
             ) {
                 override fun run() {
                     loadWorkspace(
-                        emptyList(), PREVIEW_CONTENT_URI,
-                        "$SCREEN = 0 or $CONTAINER = $CONTAINER_HOTSEAT"
+                        emptyList(),
+                        PREVIEW_CONTENT_URI,
+                        "$SCREEN = 0 or $CONTAINER = $CONTAINER_HOTSEAT",
                     )
                     MAIN_EXECUTOR.execute {
                         renderView(previewContext, mBgDataModel, mWidgetProvidersMap)
@@ -129,7 +134,7 @@ class LauncherPreviewView(
     private fun renderView(
         inflationContext: Context,
         dataModel: BgDataModel,
-        widgetProviderInfoMap: Map<ComponentKey, AppWidgetProviderInfo>?
+        widgetProviderInfoMap: Map<ComponentKey, AppWidgetProviderInfo>?,
     ) {
         if (destroyed) {
             return
@@ -160,7 +165,7 @@ class LauncherPreviewView(
         // This aspect scales the view to fit in the surface and centers it
         val scale: Float = min(
             measuredWidth / view.measuredWidth.toFloat(),
-            measuredHeight / view.measuredHeight.toFloat()
+            measuredHeight / view.measuredHeight.toFloat(),
         )
         view.scaleX = scale
         view.scaleY = scale

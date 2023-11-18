@@ -102,7 +102,6 @@ fun DockPreferences() {
 private fun HotseatModePreference(
     adapter: PreferenceAdapter<HotseatMode>,
 ) {
-
     val context = LocalContext.current
 
     val entries = remember {

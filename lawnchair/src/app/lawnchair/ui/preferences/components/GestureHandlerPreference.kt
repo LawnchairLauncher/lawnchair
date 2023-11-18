@@ -33,7 +33,7 @@ val options = listOf(
 @Composable
 fun GestureHandlerPreference(
     adapter: PreferenceAdapter<GestureHandlerConfig>,
-    label: String
+    label: String,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -59,7 +59,7 @@ fun GestureHandlerPreference(
                         OutlinedButton(onClick = { bottomSheetHandler.hide() }) {
                             Text(text = stringResource(id = android.R.string.cancel))
                         }
-                    }
+                    },
                 ) {
                     LazyColumn {
                         itemsIndexed(options) { index, option ->
@@ -76,7 +76,7 @@ fun GestureHandlerPreference(
                                 startWidget = {
                                     RadioButton(
                                         selected = selected,
-                                        onClick = null
+                                        onClick = null,
                                     )
                                 },
                             )
@@ -84,6 +84,6 @@ fun GestureHandlerPreference(
                     }
                 }
             }
-        }
+        },
     )
 }

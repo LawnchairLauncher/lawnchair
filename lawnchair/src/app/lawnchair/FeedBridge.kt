@@ -39,7 +39,7 @@ class FeedBridge(private val context: Context) {
     private val bridgePackages by lazy {
         listOf(
             PixelBridgeInfo("com.google.android.apps.nexuslauncher", R.integer.bridge_signature_hash),
-            BridgeInfo("app.lawnchair.lawnfeed", R.integer.lawnfeed_signature_hash)
+            BridgeInfo("app.lawnchair.lawnfeed", R.integer.lawnfeed_signature_hash),
         )
     }
 
@@ -81,7 +81,7 @@ class FeedBridge(private val context: Context) {
 
         fun isAvailable(): Boolean {
             val info = context.packageManager.resolveService(
-                Intent(overlayAction)
+                Intent(OVERLAY_ACTION)
                     .setPackage(packageName)
                     .setData(
                         Uri.parse(
@@ -90,13 +90,14 @@ class FeedBridge(private val context: Context) {
                                 .append(packageName)
                                 .append(":")
                                 .append(Process.myUid())
-                                .toString()
+                                .toString(),
                         )
                             .buildUpon()
                             .appendQueryParameter("v", 7.toString())
                             .appendQueryParameter("cv", 9.toString())
-                            .build()
-                    ), 0
+                            .build(),
+                    ),
+                0,
             )
             return info != null && isSigned()
         }
@@ -143,21 +144,21 @@ class FeedBridge(private val context: Context) {
 
     companion object : SingletonHolder<FeedBridge, Context>(
         ensureOnMainThread(
-            useApplicationContext(::FeedBridge)
-        )
+            useApplicationContext(::FeedBridge),
+        ),
     ) {
         private const val TAG = "FeedBridge"
-        private const val overlayAction = "com.android.launcher3.WINDOW_OVERLAY"
+        private const val OVERLAY_ACTION = "com.android.launcher3.WINDOW_OVERLAY"
 
         private val whitelist = mapOf<String, Long>(
             "ua.itaysonlab.homefeeder" to 0x887456ed, // HomeFeeder, t.me/homefeeder
-            "launcher.libre.dev" to 0x2e9dbab5 // Librechair, t.me/librechair
+            "launcher.libre.dev" to 0x2e9dbab5, // Librechair, t.me/librechair
         )
 
         fun getAvailableProviders(context: Context) = context.packageManager
             .queryIntentServices(
-                Intent(overlayAction).setData(Uri.parse("app://${context.packageName}")),
-                PackageManager.GET_META_DATA
+                Intent(OVERLAY_ACTION).setData(Uri.parse("app://${context.packageName}")),
+                PackageManager.GET_META_DATA,
             )
             .asSequence()
             .map { it.serviceInfo.applicationInfo }

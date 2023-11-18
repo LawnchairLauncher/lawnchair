@@ -8,15 +8,34 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.requiredWidth
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ContentCopy
 import androidx.compose.material.icons.rounded.ContentPaste
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,11 +58,15 @@ import app.lawnchair.ui.preferences.components.Chip
 import app.lawnchair.ui.preferences.components.ClickableIcon
 import app.lawnchair.ui.preferences.components.DividerColumn
 import app.lawnchair.ui.preferences.components.PreferenceGroup
-import app.lawnchair.ui.preferences.components.colorpreference.*
+import app.lawnchair.ui.preferences.components.colorpreference.HsbColorSlider
+import app.lawnchair.ui.preferences.components.colorpreference.HsbSliderType
+import app.lawnchair.ui.preferences.components.colorpreference.RgbColorSlider
+import app.lawnchair.ui.preferences.components.colorpreference.colorStringToIntColor
+import app.lawnchair.ui.preferences.components.colorpreference.hsvValuesToIntColor
+import app.lawnchair.ui.preferences.components.colorpreference.intColorToColorString
+import app.lawnchair.ui.preferences.components.colorpreference.intColorToHsvColorArray
 import app.lawnchair.util.requireSystemService
 import com.android.launcher3.R
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
 /**
@@ -68,7 +91,7 @@ fun CustomColorPicker(
         mutableStateOf(
             TextFieldValue(
                 text = intColorToColorString(color = selectedColor),
-            )
+            ),
         )
     }
 
@@ -77,13 +100,11 @@ fun CustomColorPicker(
             heading = stringResource(id = R.string.hex),
             modifier = Modifier.padding(top = 8.dp),
         ) {
-
             Row(
                 modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
             ) {
-
                 Box(
                     modifier = Modifier
                         .requiredSize(48.dp)
@@ -104,13 +125,12 @@ fun CustomColorPicker(
                         }
                     },
                 )
-
             }
         }
 
         val pagerState = rememberPagerState(
             initialPage = 0,
-            pageCount = { 2 }
+            pageCount = { 2 },
         )
         val scope = rememberCoroutineScope()
         val scrollToPage =
@@ -120,9 +140,7 @@ fun CustomColorPicker(
             heading = stringResource(id = R.string.color_sliders),
             modifier = Modifier.padding(top = 8.dp),
         ) {
-
             Column {
-
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(space = 8.dp),
                     modifier = Modifier
@@ -163,7 +181,7 @@ fun CustomColorPicker(
                                 onSliderValuesChange = { newColor ->
                                     focusManager.clearFocus()
                                     onSelect(newColor)
-                                }
+                                },
                             )
                         }
                         1 -> {
@@ -194,7 +212,6 @@ private fun HexColorPicker(
     textFieldValue: TextFieldValue,
     onTextFieldValueChange: (TextFieldValue) -> Unit,
 ) {
-
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val clipboardManager: ClipboardManager = context.requireSystemService()
@@ -206,7 +223,6 @@ private fun HexColorPicker(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
-
         OutlinedTextField(
             modifier = Modifier.weight(1f),
             textStyle = LocalTextStyle.current.copy(
@@ -250,7 +266,7 @@ private fun HexColorPicker(
                 Toast.makeText(
                     context,
                     context.getString(R.string.copied_toast),
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
             },
         )
@@ -264,9 +280,7 @@ private fun HexColorPicker(
                 }
             },
         )
-
     }
-
 }
 
 @Composable
@@ -287,7 +301,6 @@ private fun HsvColorPicker(
         newBrightness: Float? = null,
     ) {
         coroutineScope.launch {
-
             if (newHue != null) hue = newHue
             if (newSaturation != null) saturation = newSaturation
             if (newBrightness != null) brightness = newBrightness
@@ -303,7 +316,6 @@ private fun HsvColorPicker(
     }
 
     DividerColumn {
-
         HsbColorSlider(
             type = HsbSliderType.HUE,
             value = hue,
@@ -321,10 +333,11 @@ private fun HsvColorPicker(
         )
 
         LaunchedEffect(key1 = selectedColor) {
-
             if (selectedColor ==
                 hsvValuesToIntColor(hue, saturation, brightness)
-            ) return@LaunchedEffect
+            ) {
+                return@LaunchedEffect
+            }
 
             intColorToHsvColorArray(selectedColor).also {
                 hue = it[0]
@@ -344,7 +357,6 @@ private fun RgbColorPicker(
     onSelectedColorChange: () -> Unit,
     onSliderValuesChange: (Int) -> Unit,
 ) {
-
     var red by remember { mutableIntStateOf(selectedColor.red) }
     var green by remember { mutableIntStateOf(selectedColor.green) }
     var blue by remember { mutableIntStateOf(selectedColor.blue) }
@@ -356,7 +368,6 @@ private fun RgbColorPicker(
         newBlue: Int? = null,
     ) {
         coroutineScope.launch {
-
             if (newRed != null) red = newRed
             if (newGreen != null) green = newGreen
             if (newBlue != null) blue = newBlue
@@ -373,7 +384,6 @@ private fun RgbColorPicker(
     }
 
     DividerColumn {
-
         RgbColorSlider(
             label = stringResource(id = R.string.rgb_red),
             value = red,

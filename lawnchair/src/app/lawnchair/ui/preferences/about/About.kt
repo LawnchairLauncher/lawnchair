@@ -23,7 +23,14 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredHeight
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material3.LocalContentColor
@@ -172,7 +179,6 @@ private val supportAndPr = listOf(
     ),
 )
 
-
 private val links = listOf(
     Link(
         iconResId = R.drawable.ic_new_releases,
@@ -222,7 +228,7 @@ fun About() {
     ) {
         Column(
             modifier = Modifier.padding(top = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
                 painter = painterResource(id = R.drawable.ic_launcher_home_comp),
@@ -245,8 +251,8 @@ fun About() {
                     onLongClick = {
                         val commitUrl = "https://github.com/LawnchairLauncher/lawnchair/commit/${BuildConfig.COMMIT_HASH}"
                         context.startActivity(Intent(Intent.ACTION_VIEW, commitUrl.toUri()))
-                    }
-                )
+                    },
+                ),
             )
             Spacer(modifier = Modifier.requiredHeight(16.dp))
             Row(

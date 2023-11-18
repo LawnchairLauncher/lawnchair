@@ -6,7 +6,8 @@ import android.widget.Button
 import app.lawnchair.font.FontManager
 
 class CustomButton @JvmOverloads constructor(
-    context: Context, attrs: AttributeSet? = null
+    context: Context,
+    attrs: AttributeSet? = null,
 ) : Button(context, attrs) {
 
     init {

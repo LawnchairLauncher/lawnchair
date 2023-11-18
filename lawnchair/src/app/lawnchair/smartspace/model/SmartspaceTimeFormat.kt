@@ -36,5 +36,4 @@ sealed class SmartspaceTimeFormat(@StringRes val nameResourceId: Int) {
     ) {
         override fun toString() = "24_hour_format"
     }
-
 }

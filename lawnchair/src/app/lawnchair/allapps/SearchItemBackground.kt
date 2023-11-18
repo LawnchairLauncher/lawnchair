@@ -13,7 +13,7 @@ class SearchItemBackground(
     context: Context,
     showBackground: Boolean,
     roundTop: Boolean,
-    roundBottom: Boolean
+    roundBottom: Boolean,
 ) {
     private val resources = context.resources
 
@@ -35,7 +35,7 @@ class SearchItemBackground(
 
         cornerRadii = floatArrayOf(
             topRadius, topRadius, topRadius, topRadius,
-            bottomRadius, bottomRadius, bottomRadius, bottomRadius
+            bottomRadius, bottomRadius, bottomRadius, bottomRadius,
         )
     }
 

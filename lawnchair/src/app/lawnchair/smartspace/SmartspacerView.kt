@@ -12,11 +12,11 @@ import app.lawnchair.ui.preferences.Routes
 import com.android.launcher3.R
 import com.android.launcher3.logging.StatsLogManager
 import com.android.launcher3.views.OptionsPopupView
+import com.kieronquinn.app.smartspacer.sdk.client.R as SmartspacerR
 import com.kieronquinn.app.smartspacer.sdk.client.views.BcSmartspaceView
 import com.kieronquinn.app.smartspacer.sdk.client.views.popup.Popup
 import com.kieronquinn.app.smartspacer.sdk.client.views.popup.PopupFactory
 import com.kieronquinn.app.smartspacer.sdk.model.SmartspaceTarget
-import com.kieronquinn.app.smartspacer.sdk.client.R as SmartspacerR
 
 class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView(context, attrs) {
     init {
@@ -31,7 +31,7 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
                 dismissAction: ((SmartspaceTarget) -> Unit)?,
                 aboutIntent: Intent?,
                 feedbackIntent: Intent?,
-                settingsIntent: Intent?
+                settingsIntent: Intent?,
             ): Popup {
                 val launcher = context.launcher
                 val pos = Rect()
@@ -40,7 +40,7 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
                     getAboutOption(launchIntent, aboutIntent),
                     getCustomizeOption(launchIntent, settingsIntent),
                     getFeedbackOption(launchIntent, feedbackIntent),
-                    getDismissOption(target, dismissAction)
+                    getDismissOption(target, dismissAction),
                 ).ifEmpty { listOf(getCustomizeOptionFallback()) }
                 val popup = OptionsPopupView
                     .show(launcher, RectF(pos), options, true)
@@ -55,14 +55,14 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
 
     private fun getDismissOption(
         target: SmartspaceTarget,
-        dismissAction: ((SmartspaceTarget) -> Unit)?
+        dismissAction: ((SmartspaceTarget) -> Unit)?,
     ): OptionsPopupView.OptionItem? {
-        if(dismissAction == null) return null
+        if (dismissAction == null) return null
         return OptionsPopupView.OptionItem(
             context,
             SmartspacerR.string.smartspace_long_press_popup_dismiss,
             SmartspacerR.drawable.ic_smartspace_long_press_dismiss,
-            StatsLogManager.LauncherEvent.IGNORE
+            StatsLogManager.LauncherEvent.IGNORE,
         ) {
             dismissAction.invoke(target)
             true
@@ -71,14 +71,14 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
 
     private fun getAboutOption(
         launchIntent: (Intent?) -> Unit,
-        aboutIntent: Intent?
+        aboutIntent: Intent?,
     ): OptionsPopupView.OptionItem? {
-        if(aboutIntent == null) return null
+        if (aboutIntent == null) return null
         return OptionsPopupView.OptionItem(
             context,
             SmartspacerR.string.smartspace_long_press_popup_about,
             SmartspacerR.drawable.ic_smartspace_long_press_about,
-            StatsLogManager.LauncherEvent.IGNORE
+            StatsLogManager.LauncherEvent.IGNORE,
         ) {
             launchIntent(aboutIntent)
             true
@@ -87,14 +87,14 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
 
     private fun getFeedbackOption(
         launchIntent: (Intent?) -> Unit,
-        feedbackIntent: Intent?
+        feedbackIntent: Intent?,
     ): OptionsPopupView.OptionItem? {
-        if(feedbackIntent == null) return null
+        if (feedbackIntent == null) return null
         return OptionsPopupView.OptionItem(
             context,
             SmartspacerR.string.smartspace_long_press_popup_feedback,
             SmartspacerR.drawable.ic_smartspace_long_press_feedback,
-            StatsLogManager.LauncherEvent.IGNORE
+            StatsLogManager.LauncherEvent.IGNORE,
         ) {
             launchIntent(feedbackIntent)
             true
@@ -103,14 +103,14 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
 
     private fun getCustomizeOption(
         launchIntent: (Intent?) -> Unit,
-        settingsIntent: Intent?
+        settingsIntent: Intent?,
     ): OptionsPopupView.OptionItem? {
-        if(settingsIntent == null) return null
+        if (settingsIntent == null) return null
         return OptionsPopupView.OptionItem(
             context,
             R.string.customize_button_text,
             R.drawable.ic_setting,
-            StatsLogManager.LauncherEvent.IGNORE
+            StatsLogManager.LauncherEvent.IGNORE,
         ) {
             launchIntent(settingsIntent)
             true
@@ -118,11 +118,12 @@ class SmartspacerView(context: Context, attrs: AttributeSet?) : BcSmartspaceView
     }
 
     private fun getCustomizeOptionFallback() = OptionsPopupView.OptionItem(
-        context, R.string.customize_button_text, R.drawable.ic_setting,
-        StatsLogManager.LauncherEvent.IGNORE
+        context,
+        R.string.customize_button_text,
+        R.drawable.ic_setting,
+        StatsLogManager.LauncherEvent.IGNORE,
     ) {
         context.startActivity(PreferenceActivity.createIntent(context, "/${Routes.SMARTSPACE}/"))
         true
     }
-
 }

@@ -8,5 +8,5 @@ object Wikipedia : QsbSearchProvider(
     icon = R.drawable.ic_wikipedia,
     packageName = "org.wikipedia",
     className = "org.wikipedia.search.SearchActivity",
-    website = "https://wikipedia.com/"
+    website = "https://wikipedia.com/",
 )

@@ -11,7 +11,6 @@ import android.view.View
 import app.lawnchair.smartspace.model.SmartspaceAction
 import com.android.launcher3.R
 
-
 object BcSmartSpaceUtil {
     fun getIconDrawable(icon: Icon?, context: Context): Drawable? {
         if (icon == null) return null
@@ -50,8 +49,8 @@ object BcSmartSpaceUtil {
         return Intent(Intent.ACTION_VIEW).setData(
             ContentUris.appendId(
                 CalendarContract.CONTENT_URI.buildUpon().appendPath("time"),
-                System.currentTimeMillis()
-            ).build()
+                System.currentTimeMillis(),
+            ).build(),
         ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
     }
 }

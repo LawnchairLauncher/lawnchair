@@ -16,7 +16,7 @@ import com.android.quickstep.views.OverviewActionsView
 class LawnchairOverviewActionsView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
+    defStyleAttr: Int = 0,
 ) : OverviewActionsView<TaskOverlayFactoryImpl.OverlayUICallbacks>(context, attrs, defStyleAttr) {
 
     private val prefs = PreferenceManager.getInstance(context)

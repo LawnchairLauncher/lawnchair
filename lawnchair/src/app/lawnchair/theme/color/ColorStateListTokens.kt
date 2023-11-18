@@ -8,11 +8,11 @@ object ColorStateListTokens {
     val AllAppsTabTextLight = NewColorStateList { context, scheme, uiColorMode ->
         val states = arrayOf(
             intArrayOf(android.R.attr.state_selected),
-            intArrayOf()
+            intArrayOf(),
         )
         val colors = intArrayOf(
             ColorTokens.TextColorPrimary.resolveColor(context, scheme, uiColorMode),
-            ColorTokens.TextColorSecondary.resolveColor(context, scheme, uiColorMode)
+            ColorTokens.TextColorSecondary.resolveColor(context, scheme, uiColorMode),
         )
         ColorStateList(states, colors)
     }
@@ -20,11 +20,11 @@ object ColorStateListTokens {
     val AllAppsTabTextDark = NewColorStateList { context, scheme, uiColorMode ->
         val states = arrayOf(
             intArrayOf(android.R.attr.state_selected),
-            intArrayOf()
+            intArrayOf(),
         )
         val colors = intArrayOf(
             ColorTokens.TextColorPrimaryInverse.resolveColor(context, scheme, uiColorMode),
-            ColorTokens.TextColorSecondary.resolveColor(context, scheme, uiColorMode)
+            ColorTokens.TextColorSecondary.resolveColor(context, scheme, uiColorMode),
         )
         ColorStateList(states, colors)
     }

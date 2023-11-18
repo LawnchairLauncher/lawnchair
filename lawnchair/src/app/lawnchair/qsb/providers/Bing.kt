@@ -12,12 +12,11 @@ object Bing : QsbSearchProvider(
     packageName = "com.microsoft.bing",
     className = "com.microsoft.clients.bing.autosuggest.AutoSuggestActivity",
     supportVoiceIntent = true,
-    website = "https://bing.com/"
+    website = "https://bing.com/",
 ) {
 
     override fun handleCreateVoiceIntent(): Intent =
         Intent(action)
             .addFlags(INTENT_FLAGS)
             .setClassName(packageName, "com.microsoft.clients.bing.voice.VoiceActivity")
-
 }

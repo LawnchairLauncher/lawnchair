@@ -24,13 +24,13 @@ fun Chip(
     label: String,
     onClick: () -> Unit,
     currentOffset: Float,
-    page: Int
+    page: Int,
 ) {
     val selectedProgress = 1f - abs(currentOffset - page).coerceIn(0f, 1f)
     Chip(
         label = label,
         selectedProgress = selectedProgress,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
@@ -38,13 +38,13 @@ fun Chip(
 fun Chip(
     label: String,
     selected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val selectedProgress by animateFloatAsState(targetValue = if (selected) 1f else 0f, label = "")
     Chip(
         label = label,
         selectedProgress = selectedProgress,
-        onClick = onClick
+        onClick = onClick,
     )
 }
 
@@ -52,13 +52,13 @@ fun Chip(
 fun Chip(
     label: String,
     selectedProgress: Float,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     val shape = RoundedCornerShape(8.dp)
     val textColor = lerp(
         MaterialTheme.colorScheme.onBackground,
         MaterialTheme.colorScheme.primary,
-        selectedProgress
+        selectedProgress,
     )
     val outlineColor = MaterialTheme.colorScheme.outline
     val borderColor = outlineColor.copy(alpha = outlineColor.alpha * (1f - selectedProgress))
@@ -71,12 +71,12 @@ fun Chip(
             .background(color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = selectedProgress))
             .border(width = 1.dp, color = borderColor, shape = shape)
             .clickable(onClick = onClick)
-            .padding(horizontal = 14.dp)
+            .padding(horizontal = 14.dp),
     ) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyMedium,
-            color = textColor
+            color = textColor,
         )
     }
 }

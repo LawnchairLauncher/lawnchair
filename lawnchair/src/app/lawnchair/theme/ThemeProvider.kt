@@ -69,7 +69,7 @@ class ThemeProvider(private val context: Context) {
             },
             packageFilter,
             null,
-            Handler(Looper.getMainLooper())
+            Handler(Looper.getMainLooper()),
         )
     }
 

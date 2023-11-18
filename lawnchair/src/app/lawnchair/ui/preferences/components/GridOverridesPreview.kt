@@ -14,13 +14,13 @@ import com.android.launcher3.InvariantDeviceProfile
 @Composable
 fun GridOverridesPreview(
     modifier: Modifier = Modifier,
-    updateGridOptions: DeviceProfileOverrides.DBGridInfo.() -> DeviceProfileOverrides.DBGridInfo
+    updateGridOptions: DeviceProfileOverrides.DBGridInfo.() -> DeviceProfileOverrides.DBGridInfo,
 ) {
     DummyLauncherBox(modifier = modifier) {
         WallpaperPreview(modifier = Modifier.fillMaxSize())
         DummyLauncherLayout(
             idp = createPreviewIdp(updateGridOptions),
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         )
     }
 }

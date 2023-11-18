@@ -19,7 +19,7 @@ class SearchItemDecorator(private val appsView: ActivityAllAppsContainerView<*>)
         outRect: Rect,
         view: View,
         parent: RecyclerView,
-        state: RecyclerView.State
+        state: RecyclerView.State,
     ) {
         outRect.inset(0, searchDecorationPadding)
     }

@@ -10,13 +10,24 @@ import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,22 +45,25 @@ import androidx.navigation.navArgument
 import app.lawnchair.backup.LawnchairBackup
 import app.lawnchair.ui.preferences.LocalNavController
 import app.lawnchair.ui.preferences.Routes
-import app.lawnchair.ui.preferences.components.*
+import app.lawnchair.ui.preferences.components.DummyLauncherBox
+import app.lawnchair.ui.preferences.components.FlagSwitchPreference
+import app.lawnchair.ui.preferences.components.PreferenceGroup
+import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.preferenceGraph
 import app.lawnchair.util.BackHandler
 import app.lawnchair.util.hasFlag
 import app.lawnchair.util.restartLauncher
 import com.android.launcher3.R
-import kotlinx.coroutines.launch
 import java.util.Base64
+import kotlinx.coroutines.launch
 
 fun NavGraphBuilder.restoreBackupGraph(route: String) {
     preferenceGraph(route, {}) { subRoute ->
         composable(
             route = subRoute("{base64Uri}"),
             arguments = listOf(
-                navArgument("base64Uri") { type = NavType.StringType }
-            )
+                navArgument("base64Uri") { type = NavType.StringType },
+            ),
         ) { backStackEntry ->
             val args = backStackEntry.arguments!!
             val backupUri = remember {
@@ -60,7 +74,7 @@ fun NavGraphBuilder.restoreBackupGraph(route: String) {
             val viewModel: RestoreBackupViewModel = viewModel()
             DisposableEffect(key1 = null) {
                 viewModel.init(backupUri)
-                onDispose {  }
+                onDispose { }
             }
             RestoreBackupScreen(viewModel)
         }
@@ -75,7 +89,7 @@ fun RestoreBackupScreen(viewModel: RestoreBackupViewModel) {
 
     PreferenceLayout(
         label = stringResource(id = R.string.restore_backup),
-        scrollState = if (isPortrait) null else scrollState
+        scrollState = if (isPortrait) null else scrollState,
     ) {
         when (uiState) {
             is RestoreBackupUiState.Success -> RestoreBackupOptions(isPortrait, uiState.backup, viewModel = viewModel)
@@ -90,7 +104,7 @@ fun RestoreBackupScreen(viewModel: RestoreBackupViewModel) {
                 DisposableEffect(null) {
                     Toast.makeText(context, R.string.invalid_backup_file, Toast.LENGTH_SHORT).show()
                     backDispatcher?.onBackPressed()
-                    onDispose {  }
+                    onDispose { }
                 }
             }
         }
@@ -101,7 +115,7 @@ fun RestoreBackupScreen(viewModel: RestoreBackupViewModel) {
 fun ColumnScope.RestoreBackupOptions(
     isPortrait: Boolean,
     backup: LawnchairBackup,
-    viewModel: RestoreBackupViewModel
+    viewModel: RestoreBackupViewModel,
 ) {
     val backupContents = backup.info.contents
     val contents by viewModel.backupContents.collectAsState()
@@ -144,7 +158,7 @@ fun ColumnScope.RestoreBackupOptions(
                     bitmap = wallpaper.asImageBitmap(),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.FillHeight
+                    contentScale = ContentScale.FillHeight,
                 )
             }
             val screenshot = backup.screenshot
@@ -153,7 +167,7 @@ fun ColumnScope.RestoreBackupOptions(
                     bitmap = screenshot.asImageBitmap(),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.FillHeight
+                    contentScale = ContentScale.FillHeight,
                 )
             }
         }
@@ -179,14 +193,14 @@ fun ColumnScope.RestoreBackupOptions(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 8.dp)
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 16.dp),
     ) {
         Button(
             onClick = { restoreBackup() },
             modifier = Modifier
                 .align(Alignment.CenterEnd)
                 .fillMaxWidth(),
-            enabled = contents != 0 && !restoringBackup
+            enabled = contents != 0 && !restoringBackup,
         ) {
             Text(text = stringResource(id = R.string.restore_backup_action))
         }
@@ -202,7 +216,7 @@ fun restoreBackupOpener(): () -> Unit {
         val uri = it.data?.data ?: return@rememberLauncherForActivityResult
 
         val base64Uri = Base64.getEncoder().encodeToString(uri.toString().toByteArray())
-        navController.navigate("/${Routes.RESTORE_BACKUP}/${base64Uri}/")
+        navController.navigate("/${Routes.RESTORE_BACKUP}/$base64Uri/")
     }
 
     return {

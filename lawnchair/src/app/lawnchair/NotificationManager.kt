@@ -70,7 +70,8 @@ fun StatusBarNotification.getAppName(context: Context): CharSequence {
 fun Context.getAppName(name: String): CharSequence {
     try {
         return packageManager.getApplicationLabel(
-            packageManager.getApplicationInfo(name, PackageManager.GET_META_DATA))
+            packageManager.getApplicationInfo(name, PackageManager.GET_META_DATA),
+        )
     } catch (_: PackageManager.NameNotFoundException) {
     }
     return name
