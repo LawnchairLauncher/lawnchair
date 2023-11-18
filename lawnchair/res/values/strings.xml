@@ -281,7 +281,7 @@
     <string name="smartspace_mode_lawnchair">Lawnchair</string>
     <string name="smartspace_mode_google">Google</string>
     <string name="smartspace_mode_google_search">Google Search</string>
-    <string name="smartspace_mode_smartspacer">Smartspacer</string>
+    <string name="smartspace_mode_smartspacer" translatable="false">Smartspacer</string>
 
     <!-- DockPreferences -->
     <!-- <string name="dock_label" /> -->
@@ -300,6 +300,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">App Search</string>
+    <string name="search_provider_startpage" translatable="false">Startpage</string>
     <string name="search_provider_google" translatable="false">Google</string>
     <string name="search_provider_google_go" translatable="false">Google Go</string>
     <string name="search_provider_duckduckgo" translatable="false">DuckDuckGo</string>
@@ -311,6 +312,7 @@
     <string name="search_provider_github" translatable="false">GitHub</string>
     <string name="search_provider_youtube" translatable="false">YouTube</string>
     <string name="search_provider_pixel_search" translatable="false">Pixel Search</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
     <string name="app_label">App</string>
     <string name="website_label">Website</string>
     <string name="qsb_search_provider_app_required">App required.</string>
