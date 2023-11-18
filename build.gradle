@@ -39,6 +39,29 @@ allprojects {
         }
     }
 
+    plugins.withId('com.google.protobuf') {
+        def protocVersion = '3.25.1'
+        protobuf {
+            // Configure the protoc executable
+            protoc {
+                artifact = "com.google.protobuf:protoc:${protocVersion}"
+            }
+            generateProtoTasks {
+                all().configureEach { task ->
+                    task.builtins {
+                        remove java
+                        java {
+                            option "lite"
+                        }
+                    }
+                }
+            }
+        }
+        dependencies {
+            implementation "com.google.protobuf:protobuf-javalite:$protocVersion"
+        }
+    }
+
     plugins.withType(JavaBasePlugin).configureEach {
         java {
             toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -74,7 +97,6 @@ ext {
     FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
     accompanist_version = '0.32.0'
     libsu_version = '5.2.1'
-    protocVersion = '3.25.1'
     room_version = '2.6.0'
     optoVersion = "1.0.18"
 }
@@ -383,8 +405,6 @@ dependencies {
     implementation "com.github.topjohnwu.libsu:core:$libsu_version"
     implementation "com.github.topjohnwu.libsu:service:$libsu_version"
 
-    implementation "com.google.protobuf:protobuf-javalite:$protocVersion"
-
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.7.1'
 
@@ -400,23 +420,6 @@ ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
     arg("room.generateKotlin", "true")
     arg("room.incremental", "true")
-}
-
-protobuf {
-    // Configure the protoc executable
-    protoc {
-        artifact = "com.google.protobuf:protoc:${protocVersion}"
-    }
-    generateProtoTasks {
-        all().configureEach { task ->
-            task.builtins {
-                remove java
-                java {
-                    option "lite"
-                }
-            }
-        }
-    }
 }
 
 spotless {
