@@ -19,8 +19,6 @@ package app.lawnchair
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
-import android.os.Build
-import android.os.Build.VERSION
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
