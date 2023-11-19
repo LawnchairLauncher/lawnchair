@@ -253,6 +253,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Wyszukiwanie aplikacji</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair ma umowę o podziale przychodów.\n\nWyszukiwanie za pomocą %1$s pomaga wspierać Lawnchair.</string>
     <string name="app_label">Aplikacja</string>
     <string name="website_label">Witryna</string>
     <string name="qsb_search_provider_app_required">Wymagana aplikacja.</string>

@@ -101,7 +101,7 @@
     <string name="clipboard">剪貼簿</string>
     <string name="export_to_clipboard">匯出至剪貼簿</string>
     <string name="import_from_clipboard">從剪貼簿匯入</string>
-    <string name="icon_shape_clipboard_import_error">未從剪貼簿偵測到可用圖示形狀</string>
+    <string name="icon_shape_clipboard_import_error">剪貼簿中沒有可用的圖示形狀</string>
     <!-- IconPackPreferences -->
     <!-- <string name="icon_style" /> -->
     <string name="icon_pack">圖示套件</string>
@@ -124,7 +124,7 @@
     <string name="icon_shape_octagon">八角形</string>
     <string name="icon_shape_sammy">One UI</string>
     <string name="icon_shape_rounded_square">圓角矩形</string>
-    <string name="icon_shape_sharp_square">尖銳方形</string>
+    <string name="icon_shape_sharp_square">尖角方形</string>
     <string name="icon_shape_square">方形</string>
     <string name="icon_shape_squircle">方圓形</string>
     <string name="icon_shape_teardrop">水滴形</string>
@@ -253,6 +253,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">應用程式搜尋</string>
+    <string name="search_provider_sponsored_description">%1$s 是 Lawnchair 的收益合作夥伴。\n\n使用 %1$s 搜尋以協助 Lawnchair 的未來發展。</string>
     <string name="app_label">應用程式</string>
     <string name="website_label">網站</string>
     <string name="qsb_search_provider_app_required">需要應用程式。</string>

@@ -253,6 +253,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">App-Suche</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair hat eine Umsatzbeteiligungsvereinbarung.\n\nSuche mit %1$s unterstützt Lawnchair.</string>
     <string name="app_label">App</string>
     <string name="website_label">Webseite</string>
     <string name="qsb_search_provider_app_required">App erforderlich.</string>

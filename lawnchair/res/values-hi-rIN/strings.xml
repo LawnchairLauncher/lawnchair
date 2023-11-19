@@ -120,14 +120,14 @@
     <string name="icon_shape_cylinder">सिलेंडर</string>
     <string name="icon_shape_diamond">विषमकोण</string>
     <string name="icon_shape_egg">अंडाकार</string>
-    <string name="icon_shape_cupertino">एप्पल आई-ओ-एस</string>
+    <string name="icon_shape_cupertino">आईओएस</string>
     <string name="icon_shape_octagon">अष्टकोण</string>
     <string name="icon_shape_sammy">वन यूआई</string>
     <string name="icon_shape_rounded_square">गोलाकार वर्ग</string>
     <string name="icon_shape_sharp_square">नुकीला चौकोर</string>
     <string name="icon_shape_square">चौकोर</string>
-    <string name="icon_shape_squircle">वर्गाकार गोल</string>
-    <string name="icon_shape_teardrop">आँसू आकार</string>
+    <string name="icon_shape_squircle">स्क्विर्कल</string>
+    <string name="icon_shape_teardrop">अश्रु</string>
     <!-- FontSelectionPreferences -->
     <string name="pref_fonts_add_fonts">फ़ॉन्ट्स जोड़ें</string>
     <string name="pref_fonts_add_fonts_summary">OTF और TTF समर्थित हैं।</string>
@@ -253,6 +253,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">ऐप खोजें</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
     <string name="app_label">ऐप</string>
     <string name="website_label">वेबसाइट</string>
     <string name="qsb_search_provider_app_required">एप की जरूरत।</string>

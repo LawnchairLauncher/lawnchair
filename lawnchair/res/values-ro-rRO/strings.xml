@@ -253,6 +253,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Căutare aplicații</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
     <string name="app_label">Aplicație</string>
     <string name="website_label">Site web</string>
     <string name="qsb_search_provider_app_required">O aplicație este necesară.</string>

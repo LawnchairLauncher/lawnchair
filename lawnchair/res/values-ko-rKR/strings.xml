@@ -253,6 +253,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">앱 검색</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
     <string name="app_label">앱</string>
     <string name="website_label">웹사이트</string>
     <string name="qsb_search_provider_app_required">앱이 필요합니다.</string>
