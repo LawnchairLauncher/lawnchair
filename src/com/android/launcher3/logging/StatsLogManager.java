@@ -696,9 +696,6 @@ public class StatsLogManager implements ResourceBasedOverride {
                 "The duration to inflate launcher root view in launcher activity's onCreate().")
         LAUNCHER_LATENCY_STARTUP_VIEW_INFLATION(1364),
 
-        @UiEvent(doc = "The duration of synchronous loading workspace")
-        LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_SYNC(1366),
-
         @UiEvent(doc = "The duration of asynchronous loading workspace")
         LAUNCHER_LATENCY_STARTUP_WORKSPACE_LOADER_ASYNC(1367),
         ;
