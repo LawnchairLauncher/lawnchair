@@ -360,13 +360,11 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     }
 
     private void setDeviceManagementResources() {
-        if (mActivityContext.getStringCache() != null) {
-            Button personalTab = findViewById(R.id.tab_personal);
-            personalTab.setText(mActivityContext.getStringCache().widgetsPersonalTab);
+        Button personalTab = findViewById(R.id.tab_personal);
+        personalTab.setText(R.string.all_apps_personal_tab);
 
-            Button workTab = findViewById(R.id.tab_work);
-            workTab.setText(mActivityContext.getStringCache().widgetsWorkTab);
-        }
+        Button workTab = findViewById(R.id.tab_work);
+        workTab.setText(R.string.all_apps_work_tab);
     }
 
     @Override

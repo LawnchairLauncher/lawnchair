@@ -1034,13 +1034,11 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
     }
 
     private void setDeviceManagementResources() {
-        if (mActivityContext.getStringCache() != null) {
-            Button personalTab = findViewById(R.id.tab_personal);
-            personalTab.setText(mActivityContext.getStringCache().allAppsPersonalTab);
+        Button personalTab = findViewById(R.id.tab_personal);
+        personalTab.setText(R.string.all_apps_personal_tab);
 
-            Button workTab = findViewById(R.id.tab_work);
-            workTab.setText(mActivityContext.getStringCache().allAppsWorkTab);
-        }
+        Button workTab = findViewById(R.id.tab_work);
+        workTab.setText(R.string.all_apps_work_tab);
     }
 
     protected boolean shouldShowTabs() {
