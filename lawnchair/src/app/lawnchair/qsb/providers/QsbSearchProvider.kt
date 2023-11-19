@@ -152,7 +152,7 @@ sealed class QsbSearchProvider(
                 LawnQsbLayout.resolveIntent(context, defaultProvider.createSearchIntent())
 
             // Return the default value from config.xml if the value is valid
-            if (isDefaultProviderIntentResolved) {
+            if (isDefaultProviderIntentResolved  || defaultProvider.type == QsbSearchProviderType.WEBSITE) {
                 if (defaultProvider != AppSearch ||
                     (defaultProvider == AppSearch && defaultProviderId == AppSearch.id)
                 ) {
