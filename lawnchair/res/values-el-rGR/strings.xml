@@ -253,6 +253,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Αναζήτηση Εφαρμογής</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
     <string name="app_label">Εφαρμογή</string>
     <string name="website_label">Ιστοσελίδα</string>
     <string name="qsb_search_provider_app_required">Απαιτείται εφαρμογή.</string>

@@ -253,6 +253,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Pesquisa de aplicativos</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
     <string name="app_label">Aplicativo</string>
     <string name="website_label">Site da Internet</string>
     <string name="qsb_search_provider_app_required">Aplicativo necessário.</string>

@@ -253,6 +253,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">应用搜索</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
     <string name="app_label">应用</string>
     <string name="website_label">网站</string>
     <string name="qsb_search_provider_app_required">需要应用。</string>

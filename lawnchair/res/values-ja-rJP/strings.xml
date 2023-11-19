@@ -253,6 +253,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">アプリ検索</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair はレベニューシェアを契約しています。\n\n %1$s で検索すると、Lawnchair をサポートすることができます。</string>
     <string name="app_label">アプリ</string>
     <string name="website_label">ウェブサイト</string>
     <string name="qsb_search_provider_app_required">アプリをインストールする必要があります</string>

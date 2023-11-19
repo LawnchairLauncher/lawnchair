@@ -16,7 +16,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- PreferenceDashboard -->
-    <string name="set_default_launcher_tip">Fes-li clic a la \"card\" per definir Lawnchair com el teu llançador.</string>
+    <string name="set_default_launcher_tip">Toca aquesta targeta per configurar Lawnchair com a llançador predeterminat.</string>
     <string name="settings">Configuració</string>
     <string name="general_label">General</string>
     <string name="general_description">Colors, Paquet d\'icones, Punts de notificació</string>
@@ -45,15 +45,15 @@
     <!-- ExperimentalFeaturesPreferences -->
     <!-- <string name="experimental_features_label" />-->
     <string name="font_picker_label">Personalització de tipus de lletra</string>
-    <string name="font_picker_description">El text encara no té cap canvi.</string>
+    <string name="font_picker_description">Alguns textos romanen sense canvis.</string>
     <string name="smartspace_calendar_label">Personalització del calendari d\'una ullada</string>
     <string name="smartspace_calendar_description">Permet mostrar la data en sistemes de calendari no Gregorià.</string>
-    <string name="workspace_increase_max_grid_size_label">S\'ha incrementat la màxima mida de la graella de la pantalla principal</string>
-    <string name="workspace_increase_max_grid_size_description">Incrementa la màxima mida permesa en la graella de la pantalla principal de 10 x 10 a 20 x 20.</string>
+    <string name="workspace_increase_max_grid_size_label">S\'ha augmentat la mida màxima de la quadrícula de la pantalla d\'inici</string>
+    <string name="workspace_increase_max_grid_size_description">Augmenta la mida màxima permesa de la quadrícula de la pantalla d\'inici de 10 x 10 a 20 x 20.</string>
     <string name="always_reload_icons_label">Recarrega sempre les icones</string>
-    <string name="always_reload_icons_description">Evita utilitzar icones en memòria cau de paquets d\'icones</string>
-    <string name="transparent_background_icons">Icones amb fons transparent</string>
-    <string name="transparent_background_icons_description">Utilitzar fons transparent en les icones tematitzades</string>
+    <string name="always_reload_icons_description">Evita utilitzar icones a la memòria cau dels paquets d\'icones</string>
+    <string name="transparent_background_icons">Icones temàtiques transparents</string>
+    <string name="transparent_background_icons_description">Utilitza un fons transparent a les icones temàtiques</string>
     <string name="smartspace_mode_selection">Selecció del proveïdor D\'una ullada</string>
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Rotació de la Pantalla d\'inici</string>
@@ -253,6 +253,7 @@
     <!-- SearchProviderPreferences -->
     <!-- search_provider -->
     <string name="search_provider_app_search">Buscar aplicacions</string>
+    <string name="search_provider_sponsored_description">%1$s &amp; Lawnchair have a revenue share agreement.\n\nSearching with %1$s helps support Lawnchair.</string>
     <string name="app_label">Aplicació</string>
     <string name="website_label">Lloc web</string>
     <string name="qsb_search_provider_app_required">Aplicació necessària.</string>
