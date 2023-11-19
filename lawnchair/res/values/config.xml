@@ -118,4 +118,6 @@
     <item name="config_default_drawer_cell_height_factor" type="dimen" format="float">1.0</item>
     <item name="config_default_search_max_result_count" type="dimen" format="integer">5</item>
 
+    <!-- The max scale for the wallpaper when it's zoomed in -->
+    <item name="config_wallpaperMaxScale" format="float" type="dimen">1.10</item>
 </resources>
