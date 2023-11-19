@@ -104,6 +104,7 @@ class LawnchairBugReporter(private val context: Context) {
             .appendLine("build.id: ${Build.ID}")
             .appendLine("build.manufacturer: ${Build.MANUFACTURER}")
             .appendLine("build.model: ${Build.MODEL}")
+            .appendLine("build.security.level: ${Build.VERSION.SECURITY_PATCH}")
             .appendLine("build.product: ${Build.PRODUCT}")
             .appendLine("build.type: ${Build.TYPE}")
             .appendLine("version.codename: ${Build.VERSION.CODENAME}")
