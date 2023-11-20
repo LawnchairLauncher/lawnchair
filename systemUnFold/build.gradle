@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'com.google.devtools.ksp'
+    id 'org.jetbrains.kotlin.kapt'
 }
 
 android {
@@ -27,7 +27,7 @@ dependencies {
 
     def daggerVersion = "2.48.1"
     implementation "com.google.dagger:hilt-android:$daggerVersion"
-    ksp "com.google.dagger:hilt-compiler:$daggerVersion"
+    kapt "com.google.dagger:hilt-android-compiler:$daggerVersion"
 
     implementation "androidx.concurrent:concurrent-futures:1.1.0"
     implementation "androidx.lifecycle:lifecycle-common:2.6.2"
