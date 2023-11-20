@@ -39,6 +39,8 @@
     <string name="task_overlay_factory_class" translatable="false">app.lawnchair.overview.TaskOverlayFactoryImpl</string>
     <string name="wallpaper_picker_package" translatable="false">com.android.wallpaper</string>
     <string name="wallpaper_picker_package_alt" translatable="false">com.google.android.apps.wallpaper</string>
+    <string name="widget_holder_factory_class" translatable="false">app.lawnchair.factory.LawnchairWidgetHolder$LawnchairHolderFactory</string>
+    <string name="window_manager_proxy_class" translatable="false">app.lawnchair.util.LawnchairWindowManagerProxy</string>
 
     <bool name="config_header_protection_supported">true</bool>
 
@@ -116,4 +118,6 @@
     <item name="config_default_drawer_cell_height_factor" type="dimen" format="float">1.0</item>
     <item name="config_default_search_max_result_count" type="dimen" format="integer">5</item>
 
+    <!-- The max scale for the wallpaper when it's zoomed in -->
+    <item name="config_wallpaperMaxScale" format="float" type="dimen">1.10</item>
 </resources>

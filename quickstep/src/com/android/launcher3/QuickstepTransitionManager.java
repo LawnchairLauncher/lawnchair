@@ -261,8 +261,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
         mDragLayer = mLauncher.getDragLayer();
         mHandler = new Handler(Looper.getMainLooper());
         mDeviceProfile = mLauncher.getDeviceProfile();
-        mBackAnimationController = new LauncherBackAnimationController(mLauncher, this);
-
+        mBackAnimationController = LawnchairApp.isAtleastT() ? new LauncherBackAnimationController(mLauncher, this) : null;
         Resources res = mLauncher.getResources();
         mClosingWindowTransY = res.getDimensionPixelSize(R.dimen.closing_window_trans_y);
         mMaxShadowRadius = res.getDimensionPixelSize(R.dimen.max_shadow_radius);
@@ -2068,13 +2067,17 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     private static class MyDepthController extends DepthController {
         MyDepthController(Launcher l) {
             super(l);
-            setCrossWindowBlursEnabled(
-                    CrossWindowBlurListeners.getInstance().isCrossWindowBlurEnabled());
+            if(LawnchairApp.isAtleastT()){
+                setCrossWindowBlursEnabled(
+                        CrossWindowBlurListeners.getInstance().isCrossWindowBlurEnabled());
+            }
         }
 
         @Override
         public void setSurface(SurfaceControl surface) {
-            super.setSurface(surface);
+            if(LawnchairApp.isAtleastT()){
+                super.setSurface(surface);
+            }
         }
     }
 }

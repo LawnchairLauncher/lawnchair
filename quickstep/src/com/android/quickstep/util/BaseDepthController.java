@@ -163,7 +163,7 @@ public class BaseDepthController {
      * Sets the specified app target surface to apply the blur to.
      */
     protected void setSurface(SurfaceControl surface) {
-        if (mSurface != surface) {
+        if (mSurface != surface && app.lawnchair.LawnchairApp.isAtleastT()) {
             mSurface = surface;
             applyDepthAndBlur();
         }

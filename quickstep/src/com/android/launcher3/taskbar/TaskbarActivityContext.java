@@ -291,8 +291,6 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     @Override
     public void dispatchDeviceProfileChanged() {
         super.dispatchDeviceProfileChanged();
-        Trace.instantForTrack(TRACE_TAG_APP, "TaskbarActivityContext#DeviceProfileChanged",
-                getDeviceProfile().toSmallString());
     }
 
     /**

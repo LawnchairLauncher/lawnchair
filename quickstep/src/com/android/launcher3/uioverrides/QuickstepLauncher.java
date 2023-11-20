@@ -71,6 +71,7 @@ import android.hardware.SensorManager;
 import android.hardware.devicestate.DeviceStateManager;
 import android.hardware.display.DisplayManager;
 import android.media.permission.SafeCloseable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.IBinder;
@@ -949,21 +950,25 @@ public class QuickstepLauncher extends Launcher {
                 mAppTransitionManager.hasControlRemoteAppTransitionPermission()
                         ? mAppTransitionManager.getActivityLaunchOptions(v)
                         : super.getActivityLaunchOptions(v, item);
-        if (mLastTouchUpTime > 0) {
+        if (mLastTouchUpTime > 0 && app.lawnchair.LawnchairApp.isAtleastT()) {
             activityOptions.options.setSourceInfo(ActivityOptions.SourceInfo.TYPE_LAUNCHER,
                     mLastTouchUpTime);
         }
         if (item != null && (item.animationType == DEFAULT_NO_ICON
-                || item.animationType == VIEW_BACKGROUND)) {
+                || item.animationType == VIEW_BACKGROUND) && app.lawnchair.LawnchairApp.isAtleastT()) {
             activityOptions.options.setSplashScreenStyle(
                     SplashScreen.SPLASH_SCREEN_STYLE_SOLID_COLOR);
         } else {
-            activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
+            if (app.lawnchair.LawnchairApp.isAtleastT()) {
+                activityOptions.options.setSplashScreenStyle(SplashScreen.SPLASH_SCREEN_STYLE_ICON);
+            }
         }
         activityOptions.options.setLaunchDisplayId(
                 (v != null && v.getDisplay() != null) ? v.getDisplay().getDisplayId()
                         : Display.DEFAULT_DISPLAY);
-        addLaunchCookie(item, activityOptions.options);
+        if(app.lawnchair.LawnchairApp.isAtleastT()){
+            addLaunchCookie(item, activityOptions.options);
+        }
         return activityOptions;
     }
     @Override
@@ -1098,8 +1103,6 @@ public class QuickstepLauncher extends Launcher {
     @Override
     public void dispatchDeviceProfileChanged() {
         super.dispatchDeviceProfileChanged();
-        Trace.instantForTrack(TRACE_TAG_APP, "QuickstepLauncher#DeviceProfileChanged",
-                getDeviceProfile().toSmallString());
         SystemUiProxy.INSTANCE.get(this).setLauncherAppIconSize(mDeviceProfile.iconSizePx);
         if (mTaskbarManager != null) {
             mTaskbarManager.debugWhyTaskbarNotDestroyed("QuickstepLauncher#onDeviceProfileChanged");

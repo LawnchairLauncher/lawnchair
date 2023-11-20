@@ -74,8 +74,11 @@ public class DepthController extends BaseDepthController implements StateHandler
             mOnAttachListener = new View.OnAttachStateChangeListener() {
                 @Override
                 public void onViewAttachedToWindow(View view) {
-                    CrossWindowBlurListeners.getInstance().addListener(mLauncher.getMainExecutor(),
-                            mCrossWindowBlurListener);
+                    if(app.lawnchair.LawnchairApp.isAtleastT()){
+                        CrossWindowBlurListeners.getInstance().addListener(mLauncher.getMainExecutor(),
+                                mCrossWindowBlurListener);
+                    }
+
                     mLauncher.getScrimView().addOpaquenessListener(mOpaquenessListener);
 
                     // To handle the case where window token is invalid during last setDepth call.
@@ -84,7 +87,9 @@ public class DepthController extends BaseDepthController implements StateHandler
 
                 @Override
                 public void onViewDetachedFromWindow(View view) {
-                    CrossWindowBlurListeners.getInstance().removeListener(mCrossWindowBlurListener);
+                    if(app.lawnchair.LawnchairApp.isAtleastT()){
+                        CrossWindowBlurListeners.getInstance().removeListener(mCrossWindowBlurListener);
+                    }
                     mLauncher.getScrimView().removeOpaquenessListener(mOpaquenessListener);
                 }
             };
@@ -134,8 +139,10 @@ public class DepthController extends BaseDepthController implements StateHandler
 
     @Override
     public void applyDepthAndBlur() {
-        ensureDependencies();
-        super.applyDepthAndBlur();
+        if(app.lawnchair.LawnchairApp.isAtleastT()){
+            ensureDependencies();
+            super.applyDepthAndBlur();
+        }
     }
 
     @Override
