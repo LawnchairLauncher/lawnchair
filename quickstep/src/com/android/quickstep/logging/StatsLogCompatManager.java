@@ -104,6 +104,8 @@ public class StatsLogCompatManager extends StatsLogManager {
     private static final int SEARCH_ATTRIBUTES_DIRECT_MATCH = 1 << 1;
     private static final int SEARCH_ATTRIBUTES_ENTRY_STATE_ALL_APPS = 1 << 2;
     private static final int SEARCH_ATTRIBUTES_ENTRY_STATE_QSB = 1 << 3;
+    private static final int SEARCH_ATTRIBUTES_ENTRY_STATE_OVERVIEW = 1 << 4;
+    private static final int SEARCH_ATTRIBUTES_ENTRY_STATE_TASKBAR = 1 << 5;
 
     public static final CopyOnWriteArrayList<StatsLogConsumer> LOGS_CONSUMER =
             new CopyOnWriteArrayList<>();
@@ -856,6 +858,10 @@ public class StatsLogCompatManager extends StatsLogManager {
             response = response | SEARCH_ATTRIBUTES_ENTRY_STATE_ALL_APPS;
         } else if (searchAttributes.getEntryState() == SearchAttributes.EntryState.QSB) {
             response = response | SEARCH_ATTRIBUTES_ENTRY_STATE_QSB;
+        } else if (searchAttributes.getEntryState() == SearchAttributes.EntryState.OVERVIEW) {
+            response = response | SEARCH_ATTRIBUTES_ENTRY_STATE_OVERVIEW;
+        } else if (searchAttributes.getEntryState() == SearchAttributes.EntryState.TASKBAR) {
+            response = response | SEARCH_ATTRIBUTES_ENTRY_STATE_TASKBAR;
         }
 
         return response;
