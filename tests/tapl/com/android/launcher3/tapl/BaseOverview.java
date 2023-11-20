@@ -236,14 +236,13 @@ public class BaseOverview extends LauncherInstrumentation.VisibleContainer {
         final List<UiObject2> taskViews = getTasks();
         mLauncher.assertNotEquals("Unable to find a task", 0, taskViews.size());
 
-        final List<OverviewTask> overviewTasks = taskViews.stream().map(
-                task -> new OverviewTask(mLauncher, task, this)).toList();
         // The widest, and most top-right task should be the current task
-        return Collections.max(overviewTasks,
-                Comparator.comparingInt(OverviewTask::getVisibleWidth)
-                        .thenComparingInt(OverviewTask::getTaskCenterX)
-                        .thenComparing(
-                                Comparator.comparing(OverviewTask::getTaskCenterY).reversed()));
+        UiObject2 currentTask = Collections.max(taskViews,
+                Comparator.comparingInt((UiObject2 t) -> t.getParent().getVisibleBounds().width())
+                        .thenComparingInt((UiObject2 t) -> t.getParent().getVisibleCenter().x)
+                        .thenComparing(Comparator.comparing(
+                                (UiObject2 t) -> t.getParent().getVisibleCenter().y).reversed()));
+        return new OverviewTask(mLauncher, currentTask, this);
     }
 
     /** Returns an overview task matching TestActivity {@param activityNumber}. */
