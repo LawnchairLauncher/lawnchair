@@ -19,14 +19,10 @@ android {
     addFrameworkJar('framework-13.jar')
 }
 
+compileOnlyCommonJars()
+
 dependencies {
     compileOnly projects.hiddenApi
-    compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell.jar')
-    compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'seeder.jar')
-    compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'core.jar')
-    compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'core-all.jar')
-    compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-core.jar')
-    compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd.jar')
     compileOnly projects.systemUnFold
 
     implementation "com.google.dagger:hilt-android:$daggerVersion"
