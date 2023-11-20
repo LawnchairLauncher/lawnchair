@@ -72,7 +72,7 @@ fun loadNotice(ossLibrary: OssLibrary): State<OssLibraryWithNotice?> {
 data class OssLibrary(
     val groupId: String,
     val artifactId: String,
-    val name: String,
+    val name: String? = null,
     val spdxLicenses: List<License>? = null,
     val unknownLicenses: List<License>? = null,
 ) {
