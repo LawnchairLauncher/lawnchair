@@ -25,6 +25,7 @@ import android.view.KeyboardShortcutGroup;
 import android.view.KeyboardShortcutInfo;
 import android.view.Menu;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -108,12 +109,24 @@ public class KeyboardShortcutsDelegate {
      * @see android.view.KeyEvent
      */
     public Boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_ESCAPE) {
-            // Close any open floating views.
-            mLauncher.closeOpenViews();
-            return true;
+        // Ignore escape if pressed in conjunction with any modifier keys.
+        if (keyCode == KeyEvent.KEYCODE_ESCAPE && event.hasNoModifiers()) {
+            AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(mLauncher);
+            if (topView != null) {
+                // Close each floating view one at a time for each key press.
+                topView.close(/* animate= */ true);
+                return true;
+            } else if (mLauncher.getAppsView().isInAllApps()) {
+                // Close all apps if there are no open floating views.
+                closeAllApps();
+                return true;
+            }
         }
         return null;
+    }
+
+    private void closeAllApps() {
+        mLauncher.getStateManager().goToState(NORMAL, true);
     }
 
     /**
