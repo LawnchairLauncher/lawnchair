@@ -24,6 +24,7 @@ import androidx.annotation.VisibleForTesting
 import com.android.launcher3.BuildConfig.WIDGET_ON_FIRST_SCREEN
 import com.android.launcher3.LauncherFiles.DEVICE_PREFERENCES_KEY
 import com.android.launcher3.LauncherFiles.SHARED_PREFERENCES_KEY
+import com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_DELAY
 import com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_END_SCALE_PERCENT
 import com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_ITERATIONS
 import com.android.launcher3.config.FeatureFlags.LPNH_HAPTIC_HINT_SCALE_EXPONENT
@@ -353,6 +354,13 @@ class LauncherPrefs(private val encryptedContext: Context) {
                 nonRestorableItem(
                         "pref_long_press_nav_handle_haptic_hint_iterations",
                         LPNH_HAPTIC_HINT_ITERATIONS.get(),
+                        EncryptionType.MOVE_TO_DEVICE_PROTECTED
+                )
+        @JvmField
+        val LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY =
+                nonRestorableItem(
+                        "pref_long_press_nav_handle_haptic_hint_delay",
+                        LPNH_HAPTIC_HINT_DELAY.get(),
                         EncryptionType.MOVE_TO_DEVICE_PROTECTED
                 )
         @JvmField

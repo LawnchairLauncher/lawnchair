@@ -18,6 +18,7 @@ package com.android.launcher3.util;
 import static android.os.VibrationEffect.createPredefined;
 import static android.provider.Settings.System.HAPTIC_FEEDBACK_ENABLED;
 
+import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY;
 import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT;
 import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS;
 import static com.android.launcher3.LauncherPrefs.LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT;
@@ -247,21 +248,30 @@ public class VibratorWrapper {
         if (FeatureFlags.ENABLE_SEARCH_HAPTIC_HINT.get() && Utilities.ATLEAST_S
                 && mVibrator.areAllPrimitivesSupported(
                 VibrationEffect.Composition.PRIMITIVE_LOW_TICK)) {
-            float startScale = LauncherPrefs.get(mContext).get(
+            LauncherPrefs launcherPrefs = LauncherPrefs.get(mContext);
+            float startScale = launcherPrefs.get(
                     LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_START_SCALE_PERCENT) / 100f;
-            float endScale = LauncherPrefs.get(mContext).get(
+            float endScale = launcherPrefs.get(
                     LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_END_SCALE_PERCENT) / 100f;
-            int scaleExponent = LauncherPrefs.get(mContext).get(
+            int scaleExponent = launcherPrefs.get(
                     LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_SCALE_EXPONENT);
-            int iterations = LauncherPrefs.get(mContext).get(
+            int iterations = launcherPrefs.get(
                     LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_ITERATIONS);
+            int delayMs = launcherPrefs.get(
+                    LONG_PRESS_NAV_HANDLE_HAPTIC_HINT_DELAY);
 
             VibrationEffect.Composition composition = VibrationEffect.startComposition();
             for (int i = 0; i < iterations; i++) {
                 float t = i / (iterations - 1f);
                 float scale = (float) Math.pow((1 - t) * startScale + t * endScale,
                         scaleExponent);
-                composition.addPrimitive(VibrationEffect.Composition.PRIMITIVE_LOW_TICK, scale);
+                if (i == 0) {
+                    // Adds a delay before the ramp starts
+                    composition.addPrimitive(VibrationEffect.Composition.PRIMITIVE_LOW_TICK, scale,
+                            delayMs);
+                } else {
+                    composition.addPrimitive(VibrationEffect.Composition.PRIMITIVE_LOW_TICK, scale);
+                }
             }
 
             vibrate(composition.compose());
