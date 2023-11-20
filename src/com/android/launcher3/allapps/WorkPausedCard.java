@@ -41,8 +41,6 @@ import app.lawnchair.theme.color.ColorTokens;
 public class WorkPausedCard extends LinearLayout implements View.OnClickListener {
 
     private final ActivityContext mActivityContext;
-    private Button mBtn;
-
     public WorkPausedCard(Context context) {
         this(context, null, 0);
     }
@@ -59,27 +57,24 @@ public class WorkPausedCard extends LinearLayout implements View.OnClickListener
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mBtn = findViewById(R.id.enable_work_apps);
-        mBtn.setOnClickListener(this);
-
-        mBtn.setAllCaps(false);
-        FontManager.INSTANCE.get(getContext()).setCustomFont(mBtn, R.id.font_button);
-
-        StringCache cache = mActivityContext.getStringCache();
-        if (cache != null) {
-            setWorkProfilePausedResources(cache);
-        }
+        setWorkProfilePausedResources();
     }
 
-    private void setWorkProfilePausedResources(StringCache cache) {
+    private void setWorkProfilePausedResources() {
         TextView title = findViewById(R.id.work_apps_paused_title);
-        title.setText(cache.workProfilePausedTitle);
+        title.setText(R.string.work_apps_paused_title);
+        title.setTextColor(ColorTokens.TextColorPrimary.resolveColor(getContext()));
+        FontManager.INSTANCE.get(getContext()).setCustomFont(title, R.id.font_heading);
 
         TextView body = findViewById(R.id.work_apps_paused_content);
-        body.setText(cache.workProfilePausedDescription);
+        body.setText(R.string.work_apps_paused_body);
+        body.setTextColor(ColorTokens.TextColorPrimary.resolveColor(getContext()));
+        FontManager.INSTANCE.get(getContext()).setCustomFont(title, R.id.font_body_medium);
 
-        TextView button = findViewById(R.id.enable_work_apps);
-        button.setText(cache.workProfileEnableButton);
+        Button button = findViewById(R.id.enable_work_apps);
+        button.setText(R.string.work_apps_enable_btn_text);
+        FontManager.INSTANCE.get(getContext()).setCustomFont(title, R.id.font_button);
+        button.setOnClickListener(this);
     }
 
     @Override

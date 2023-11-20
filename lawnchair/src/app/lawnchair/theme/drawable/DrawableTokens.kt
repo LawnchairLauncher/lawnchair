@@ -88,18 +88,17 @@ object DrawableTokens {
         val list = StateListDrawable()
         list.setEnterFadeDuration(100)
 
-        val cornerRadius = context.resources
-            .getDimensionPixelSize(R.dimen.all_apps_header_pill_corner_radius).toFloat()
+        val unselected = AppCompatResources.getDrawable(
+            context,
+            R.drawable.all_apps_tabs_background,
+        )
+        unselected?.setTint(ColorTokens.Surface.resolveColor(context, scheme, uiColorMode))
 
-        val unselected = GradientDrawable()
-        unselected.shape = GradientDrawable.RECTANGLE
-        unselected.cornerRadius = cornerRadius
-        unselected.setColor(ColorTokens.Surface.resolveColor(context, scheme, uiColorMode))
-
-        val selected = GradientDrawable()
-        selected.shape = GradientDrawable.RECTANGLE
-        selected.cornerRadius = cornerRadius
-        selected.setColor(ColorTokens.AllAppsTabBackgroundSelected.resolveColor(context, scheme, uiColorMode))
+        val selected = AppCompatResources.getDrawable(
+            context,
+            R.drawable.all_apps_tabs_background,
+        )
+        selected?.setTint(ColorTokens.AllAppsTabBackgroundSelected.resolveColor(context, scheme, uiColorMode))
 
         list.addState(intArrayOf(-android.R.attr.state_selected), unselected)
         list.addState(intArrayOf(android.R.attr.state_selected), selected)

@@ -82,9 +82,6 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
 
     public WorkModeSwitch(@NonNull Context context, @NonNull AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        if(mTextView != null){
-            FontManager.INSTANCE.get(context).overrideFont(mTextView, attrs);
-        }
         mScrollThreshold = Utilities.dpToPx(SCROLL_THRESHOLD_DP);
         mActivityContext = ActivityContext.lookupContext(getContext());
         mStatsLogManager = mActivityContext.getStatsLogManager();
@@ -95,6 +92,7 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         super.onFinishInflate();
         mIcon = findViewById(R.id.work_icon);
         mTextView = findViewById(R.id.pause_text);
+        FontManager.INSTANCE.get(getContext()).setCustomFont(mTextView, R.id.font_body_medium);
 
         setSelected(true);
         if (Utilities.ATLEAST_R) {
@@ -109,10 +107,7 @@ public class WorkModeSwitch extends LinearLayout implements Insettable,
         DeviceProfile grid = BaseDraggingActivity.fromContext(getContext()).getDeviceProfile();
         setInsets(grid.getInsets());
         setInsets(mActivityContext.getDeviceProfile().getInsets());
-        StringCache cache = mActivityContext.getStringCache();
-        if (cache != null) {
-            mTextView.setText(cache.workProfilePauseButton);
-        }
+        mTextView.setText(R.string.work_apps_pause_btn_text);
 
         mIcon.setColorFilter(mTextView.getCurrentTextColor());
         getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);

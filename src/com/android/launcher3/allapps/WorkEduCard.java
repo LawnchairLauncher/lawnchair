@@ -83,18 +83,10 @@ public class WorkEduCard extends FrameLayout implements
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-
-        Button button = ViewCompat.requireViewById(this, R.id.action_btn);
-        button.setOnClickListener(this);
-        button.setAllCaps(false);
-        FontManager.INSTANCE.get(getContext()).setCustomFont(button, R.id.font_button);
-
-        StringCache cache = mActivityContext.getStringCache();
-        if (cache != null) {
-            TextView title = findViewById(R.id.work_apps_paused_title);
-            title.setText(cache.workProfileEdu);
-            title.setTextColor(ColorTokens.TextColorPrimary.resolveColor(getContext()));
-        }
+        findViewById(R.id.action_btn).setOnClickListener(this);
+        TextView title = findViewById(R.id.work_apps_paused_title);
+        title.setText(R.string.work_profile_edu_work_apps);
+        title.setTextColor(ColorTokens.TextColorPrimary.resolveColor(getContext()));
     }
 
     @Override
