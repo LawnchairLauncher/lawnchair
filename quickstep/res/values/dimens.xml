@@ -88,7 +88,7 @@
     <dimen name="task_thumbnail_icon_menu_drawable_max_size">32dp</dimen>
     <!--  The size of the icon menu's icon touch target  -->
     <dimen name="task_thumbnail_icon_menu_drawable_touch_size">44dp</dimen>
-    <dimen name="task_thumbnail_icon_menu_elevation">14dp</dimen>
+    <dimen name="task_thumbnail_icon_menu_elevation">4dp</dimen>
 
     <dimen name="task_icon_cache_default_icon_size">72dp</dimen>
     <item name="overview_modal_max_scale" format="float" type="dimen">1.1</item>

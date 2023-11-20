@@ -23,6 +23,7 @@
     android:focusable="false"
     android:importantForAccessibility="no"
     android:autoMirrored="true"
+    android:background="@drawable/icon_menu_elevation_background"
     android:elevation="@dimen/task_thumbnail_icon_menu_elevation" >
 
     <ImageView
