@@ -62,7 +62,7 @@ object OnboardingPrefs {
         }
     }
 
-    @JvmField val TASKBAR_EDU_TOOLTIP_STEP = CountedItem("launcher.taskbar_edu_tooltip_step", 2)
+    @JvmField val TASKBAR_EDU_TOOLTIP_STEP = CountedItem("launcher.taskbar_edu_tooltip_step", 3)
 
     @JvmField val HOME_BOUNCE_COUNT = CountedItem("launcher.home_bounce_count", 3)
 
