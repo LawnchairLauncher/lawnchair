@@ -30,7 +30,7 @@ dependencies {
     compileOnly projects.systemUnFold
 
     implementation "com.google.dagger:hilt-android:$daggerVersion"
-    annotationProcessor "com.google.dagger:hilt-android-compiler:$daggerVersion"
+    annotationProcessor "com.google.dagger:hilt-compiler:$daggerVersion"
 
     implementation "androidx.concurrent:concurrent-futures:1.1.0"
 }
