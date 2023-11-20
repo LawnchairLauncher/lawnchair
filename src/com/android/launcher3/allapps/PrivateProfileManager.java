@@ -19,6 +19,7 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.allapps.ActivityAllAppsContainerView.AdapterHolder.MAIN;
 import static com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_PRIVATE_SPACE_HEADER;
 import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED;
+import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 import static com.android.launcher3.util.SettingsCache.PRIVATE_SPACE_HIDE_WHEN_LOCKED_URI;
 
 import android.content.Intent;
@@ -26,6 +27,8 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.UserHandle;
 import android.os.UserManager;
+
+import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.pm.UserCache;
@@ -47,6 +50,7 @@ public class PrivateProfileManager extends UserProfileManager {
     private final ActivityAllAppsContainerView<?> mAllApps;
     private final Predicate<UserHandle> mPrivateProfileMatcher;
     private PrivateAppsSectionDecorator mPrivateAppsSectionDecorator;
+    private boolean mPrivateSpaceSettingsAvailable;
 
     public PrivateProfileManager(UserManager userManager,
             ActivityAllAppsContainerView<?> allApps,
@@ -55,6 +59,7 @@ public class PrivateProfileManager extends UserProfileManager {
         super(userManager, statsLogManager, userCache);
         mAllApps = allApps;
         mPrivateProfileMatcher = (user) -> userCache.getUserInfo(user).isPrivate();
+        UI_HELPER_EXECUTOR.post(this::setPrivateSpaceSettingsAvailable);
     }
 
     /** Adds Private Space Header to the layout. */
@@ -87,6 +92,9 @@ public class PrivateProfileManager extends UserProfileManager {
         boolean isEnabled = !mAllApps.getAppsStore()
                 .hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED);
         int updatedState = isEnabled ? STATE_ENABLED : STATE_DISABLED;
+        if (getCurrentState() == updatedState) {
+            return;
+        }
         setCurrentState(updatedState);
         resetPrivateSpaceDecorator(updatedState);
     }
@@ -99,17 +107,24 @@ public class PrivateProfileManager extends UserProfileManager {
         mAllApps.getContext().startActivity(psSettingsIntent);
     }
 
-    /**
-     * Whether Private Space Settings Entry Point should be made visible. */
-    public boolean isPrivateSpaceSettingsButtonVisible() {
+    /** Whether Private Space Settings Entry Point is available on the device. */
+    public boolean isPrivateSpaceSettingsAvailable() {
+        return mPrivateSpaceSettingsAvailable;
+    }
+
+    private void setPrivateSpaceSettingsAvailable() {
+        if (mPrivateSpaceSettingsAvailable) {
+            return;
+        }
         Preconditions.assertNonUiThread();
         Intent psSettingsIntent = new Intent(SAFETY_CENTER_INTENT);
         psSettingsIntent.putExtra(PS_SETTINGS_FRAGMENT_KEY, PS_SETTINGS_FRAGMENT_VALUE);
-        ResolveInfo resolveInfo = mAllApps.mActivityContext.getPackageManager()
+        ResolveInfo resolveInfo = mAllApps.getContext().getPackageManager()
                 .resolveActivity(psSettingsIntent, PackageManager.MATCH_SYSTEM_ONLY);
-        return resolveInfo != null;
+        mPrivateSpaceSettingsAvailable = resolveInfo != null;
     }
 
+    @VisibleForTesting
     void resetPrivateSpaceDecorator(int updatedState) {
         if (updatedState == STATE_ENABLED) {
             // Add Private Space Decorator to the Recycler view.

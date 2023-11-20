@@ -108,7 +108,7 @@ public class PrivateSpaceHeaderViewControllerTest {
         Bitmap lockImage = getBitmap(mContext.getDrawable(R.drawable.bg_ps_lock_button));
         Bitmap settingsImage = getBitmap(mContext.getDrawable(R.drawable.bg_ps_settings_button));
         when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
-        when(mPrivateProfileManager.isPrivateSpaceSettingsButtonVisible()).thenReturn(true);
+        when(mPrivateProfileManager.isPrivateSpaceSettingsAvailable()).thenReturn(true);
 
         mPsHeaderViewController.addPrivateSpaceHeaderViewElements(mPsHeaderLayout);
         awaitTasksCompleted();
@@ -145,7 +145,7 @@ public class PrivateSpaceHeaderViewControllerTest {
             throws Exception {
         Bitmap lockImage = getBitmap(mContext.getDrawable(R.drawable.bg_ps_lock_button));
         when(mPrivateProfileManager.getCurrentState()).thenReturn(STATE_ENABLED);
-        when(mPrivateProfileManager.isPrivateSpaceSettingsButtonVisible()).thenReturn(false);
+        when(mPrivateProfileManager.isPrivateSpaceSettingsAvailable()).thenReturn(false);
 
         mPsHeaderViewController.addPrivateSpaceHeaderViewElements(mPsHeaderLayout);
         awaitTasksCompleted();
