@@ -21,7 +21,6 @@ addFrameworkJar('framework-13.jar')
 compileOnlyCommonJars()
 
 dependencies {
-    def daggerVersion = "2.48.1"
     implementation "com.google.dagger:hilt-android:$daggerVersion"
     kapt "com.google.dagger:hilt-android-compiler:$daggerVersion"
 
