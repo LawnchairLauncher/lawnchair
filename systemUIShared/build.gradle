@@ -16,9 +16,9 @@ android {
             res.srcDirs = ['res']
         }
     }
-    addFrameworkJar('framework-13.jar')
 }
 
+addFrameworkJar('framework-13.jar')
 compileOnlyCommonJars()
 
 dependencies {

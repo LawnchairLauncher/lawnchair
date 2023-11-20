@@ -341,9 +341,9 @@ android {
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
     }
-
-    addFrameworkJar('framework-13.jar')
 }
+
+addFrameworkJar('framework-13.jar')
 
 dependencies {
     implementation projects.iconloaderlib

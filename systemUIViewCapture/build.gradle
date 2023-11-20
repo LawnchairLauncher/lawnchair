@@ -17,8 +17,7 @@ android {
             manifest.srcFile "tests/AndroidManifest.xml"
         }
     }
-
-    addFrameworkJar('framework-13.jar')
 }
 
+addFrameworkJar('framework-13.jar')
 compileOnlyCommonJars()
