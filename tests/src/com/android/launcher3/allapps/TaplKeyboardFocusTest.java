@@ -23,8 +23,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.view.KeyEvent;
-import android.view.View;
-import android.view.WindowInsets;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
@@ -33,6 +31,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.util.rule.TestStabilityRule;
+import com.android.launcher3.views.ActivityContext;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -102,11 +101,8 @@ public class TaplKeyboardFocusTest extends AbstractLauncherUiTest {
 
             executeOnLauncher(launcher -> launcher.getAppsView().getSearchUiManager().getEditText()
                     .hideKeyboard(/* clearFocus= */ false));
-            waitForLauncherCondition("Keyboard still visible.", launcher -> {
-                View root = launcher.getDragLayer();
-                WindowInsets insets = root.getRootWindowInsets();
-                return insets != null && !insets.isVisible(WindowInsets.Type.ime());
-            });
+            waitForLauncherCondition("Keyboard still visible.",
+                    ActivityContext::isSoftwareKeyboardHidden);
 
             mLauncher.pressAndHoldKeyCode(KeyEvent.KEYCODE_DPAD_DOWN, 0);
             mLauncher.unpressKeyCode(KeyEvent.KEYCODE_DPAD_DOWN, 0);
