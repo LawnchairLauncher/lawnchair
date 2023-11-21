@@ -439,8 +439,8 @@ public class DeviceProfile {
         }
 
         folderLabelTextScale = res.getFloat(R.dimen.folder_label_text_scale);
-        numFolderRows = inv.numFolderRows;
-        numFolderColumns = inv.numFolderColumns;
+        numFolderRows = inv.numFolderRows[mTypeIndex];
+        numFolderColumns = inv.numFolderColumns[mTypeIndex];
 
         if (mIsScalableGrid && inv.folderStyle != INVALID_RESOURCE_HANDLE) {
             TypedArray folderStyle = context.obtainStyledAttributes(inv.folderStyle,
