@@ -306,6 +306,10 @@ public final class FeatureFlags {
             getReleaseFlag(310952290, "ENABLE_LPNH_DEEP_PRESS", ENABLED,
                     "Long press of nav handle is instantly triggered if deep press is detected.");
 
+    public static final IntFlag LPNH_HAPTIC_HINT_DELAY =
+            getIntFlag(309972570, "LPNH_HAPTIC_HINT_ITERATIONS", 0,
+                    "Delay before haptic hint starts.");
+
     // TODO(Block 17): Clean up flags
     // Aconfig migration complete for ENABLE_TASKBAR_PINNING.
     private static final BooleanFlag ENABLE_TASKBAR_PINNING = getDebugFlag(270396583,

@@ -83,12 +83,17 @@ public class ActiveGestureLog {
     }
 
     public void addLog(CompoundString compoundString) {
+        if (compoundString == CompoundString.NO_OP) return;
         addLog(TYPE_COMPOUND_STRING, "", 0, compoundString, null);
     }
 
     public void addLog(
             CompoundString compoundString,
             @Nullable ActiveGestureErrorDetector.GestureEvent gestureEvent) {
+        if (compoundString == CompoundString.NO_OP) {
+            trackEvent(gestureEvent);
+            return;
+        }
         addLog(TYPE_COMPOUND_STRING, "", 0, compoundString, gestureEvent);
     }
 
