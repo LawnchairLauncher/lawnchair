@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 The Android Open Source Project
+ * Copyright (C) 2023 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.celllayout;
+package com.android.launcher3.celllayout.board;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
@@ -31,6 +31,12 @@ import android.util.Log;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherSettings;
+import com.android.launcher3.celllayout.FavoriteItemsTransaction;
+import com.android.launcher3.celllayout.board.CellLayoutBoard;
+import com.android.launcher3.celllayout.board.CellType;
+import com.android.launcher3.celllayout.board.FolderPoint;
+import com.android.launcher3.celllayout.board.IconPoint;
+import com.android.launcher3.celllayout.board.WidgetRect;
 import com.android.launcher3.model.data.AppInfo;
 import com.android.launcher3.model.data.FolderInfo;
 import com.android.launcher3.model.data.ItemInfo;
@@ -61,7 +67,7 @@ public class TestWorkspaceBuilder {
     /**
      * Fills the given rect in WidgetRect with 1x1 widgets. This is useful to equalize cases.
      */
-    private FavoriteItemsTransaction fillWithWidgets(CellLayoutBoard.WidgetRect widgetRect,
+    private FavoriteItemsTransaction fillWithWidgets(WidgetRect widgetRect,
             FavoriteItemsTransaction transaction, int screenId) {
         int initX = widgetRect.getCellX();
         int initY = widgetRect.getCellY();
@@ -70,7 +76,7 @@ public class TestWorkspaceBuilder {
                 try {
                     // this widgets are filling, we don't care if we can't place them
                     transaction.addItem(createWidgetInCell(
-                            new CellLayoutBoard.WidgetRect(CellLayoutBoard.CellType.IGNORE,
+                            new WidgetRect(CellType.IGNORE,
                                     new Rect(x, y, x, y)), screenId));
                 } catch (Exception e) {
                     Log.d(TAG, "Unable to place filling widget at " + x + "," + y);
@@ -97,7 +103,7 @@ public class TestWorkspaceBuilder {
         );
     }
 
-    private void addCorrespondingWidgetRect(CellLayoutBoard.WidgetRect widgetRect,
+    private void addCorrespondingWidgetRect(WidgetRect widgetRect,
             FavoriteItemsTransaction transaction, int screenId) {
         if (widgetRect.mType == 'x') {
             fillWithWidgets(widgetRect, transaction, screenId);
@@ -133,7 +139,7 @@ public class TestWorkspaceBuilder {
     }
 
     private Supplier<ItemInfo> createWidgetInCell(
-            CellLayoutBoard.WidgetRect widgetRect, int screenId) {
+            WidgetRect widgetRect, int screenId) {
         // Create the widget lazily since the appWidgetId can get lost during setup
         return () -> {
             LauncherAppWidgetProviderInfo info = findWidgetProvider(false);
@@ -147,7 +153,7 @@ public class TestWorkspaceBuilder {
         };
     }
 
-    public FolderInfo createFolderInCell(CellLayoutBoard.FolderPoint folderPoint, int screenId) {
+    public FolderInfo createFolderInCell(FolderPoint folderPoint, int screenId) {
         FolderInfo folderInfo = new FolderInfo();
         folderInfo.screenId = screenId;
         folderInfo.container = LauncherSettings.Favorites.CONTAINER_DESKTOP;
@@ -171,7 +177,7 @@ public class TestWorkspaceBuilder {
         return item;
     }
 
-    private ItemInfo createIconInCell(CellLayoutBoard.IconPoint iconPoint, int screenId) {
+    private ItemInfo createIconInCell(IconPoint iconPoint, int screenId) {
         WorkspaceItemInfo item = new WorkspaceItemInfo(getApp());
         item.screenId = screenId;
         item.cellX = iconPoint.getCoord().x;

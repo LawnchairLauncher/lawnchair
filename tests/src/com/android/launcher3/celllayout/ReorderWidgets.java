@@ -32,6 +32,9 @@ import androidx.test.filters.SmallTest;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.MultipageCellLayout;
+import com.android.launcher3.celllayout.board.CellLayoutBoard;
+import com.android.launcher3.celllayout.board.TestWorkspaceBuilder;
+import com.android.launcher3.celllayout.board.WidgetRect;
 import com.android.launcher3.tapl.Widget;
 import com.android.launcher3.tapl.WidgetResizeFrame;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
@@ -118,12 +121,12 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
         return getFromLauncher(CellLayoutTestUtils::workspaceToBoards);
     }
 
-    private CellLayoutBoard.WidgetRect getWidgetClosestTo(Point point) {
+    private WidgetRect getWidgetClosestTo(Point point) {
         ArrayList<CellLayoutBoard> workspaceBoards = workspaceToBoards();
         int maxDistance = 9999;
-        CellLayoutBoard.WidgetRect bestRect = null;
+        WidgetRect bestRect = null;
         for (int i = 0; i < workspaceBoards.get(0).getWidgets().size(); i++) {
-            CellLayoutBoard.WidgetRect widget = workspaceBoards.get(0).getWidgets().get(i);
+            WidgetRect widget = workspaceBoards.get(0).getWidgets().get(i);
             if (widget.getCellX() == 0 && widget.getCellY() == 0) {
                 continue;
             }
@@ -146,7 +149,7 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
      * underlying code does different things in that case
      */
     private void triggerWidgetResize(ReorderTestCase testCase) {
-        CellLayoutBoard.WidgetRect widgetRect = getWidgetClosestTo(testCase.moveMainTo);
+        WidgetRect widgetRect = getWidgetClosestTo(testCase.moveMainTo);
         if (widgetRect == null) {
             // Some test doesn't have a widget in the final position, in those cases we will ignore
             // them
@@ -160,7 +163,7 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
     }
 
     private void runTestCase(ReorderTestCase testCase) {
-        CellLayoutBoard.WidgetRect mainWidgetCellPos = CellLayoutBoard.getMainFromList(
+        WidgetRect mainWidgetCellPos = CellLayoutBoard.getMainFromList(
                 testCase.mStart);
 
         FavoriteItemsTransaction transaction =
