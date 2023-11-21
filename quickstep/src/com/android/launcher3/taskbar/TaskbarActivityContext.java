@@ -74,6 +74,7 @@ import androidx.annotation.VisibleForTesting;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherPrefs;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -181,6 +182,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
     private DeviceProfile mTransientTaskbarDeviceProfile;
 
     private DeviceProfile mPersistentTaskbarDeviceProfile;
+
+    private final LauncherPrefs mLauncherPrefs;
 
     public TaskbarActivityContext(Context windowContext,
             @Nullable Context navigationBarPanelContext, DeviceProfile launcherDp,
@@ -293,6 +296,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 new KeyboardQuickSwitchController(),
                 new TaskbarPinningController(this),
                 bubbleControllersOptional);
+
+        mLauncherPrefs = LauncherPrefs.get(this);
     }
 
     /** Updates {@link DeviceProfile} instances for any Taskbar windows. */
@@ -408,6 +413,11 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
         super.dispatchDeviceProfileChanged();
         Trace.instantForTrack(TRACE_TAG_APP, "TaskbarActivityContext#DeviceProfileChanged",
                 getDeviceProfile().toSmallString());
+    }
+
+    @NonNull
+    public LauncherPrefs getLauncherPrefs() {
+        return mLauncherPrefs;
     }
 
     /**

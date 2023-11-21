@@ -307,7 +307,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         boolean isTransientTaskbar = DisplayController.isTransientTaskbar(mActivity);
         boolean isInSetup = !mActivity.isUserSetupComplete() || setupUIVisible;
         updateStateForFlag(FLAG_STASHED_IN_APP_AUTO,
-                isTransientTaskbar && !mTaskbarSharedState.taskbarWasPinned);
+                isTransientTaskbar && !mTaskbarSharedState.getTaskbarWasPinned());
         updateStateForFlag(FLAG_STASHED_IN_APP_SETUP, isInSetup);
         updateStateForFlag(FLAG_IN_SETUP, isInSetup);
         updateStateForFlag(FLAG_STASHED_SMALL_SCREEN, isPhoneMode()
@@ -316,7 +316,7 @@ public class TaskbarStashController implements TaskbarControllers.LoggableTaskba
         // us that we're paused until a bit later. This avoids flickering upon recreating taskbar.
         updateStateForFlag(FLAG_IN_APP, true);
         applyState(/* duration = */ 0);
-        if (mTaskbarSharedState.taskbarWasPinned) {
+        if (mTaskbarSharedState.getTaskbarWasPinned()) {
             tryStartTaskbarTimeout();
         }
         notifyStashChange(/* visible */ false, /* stashed */ isStashedInApp());
