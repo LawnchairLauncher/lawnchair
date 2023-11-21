@@ -16,12 +16,11 @@ android {
             res.srcDirs = ['res']
         }
     }
-    addFrameworkJar('android.jar')
 }
 
+addFrameworkJar('framework-13.jar')
+compileOnlyCommonJars()
+
 dependencies {
-    compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell.jar')
-    compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'core.jar')
-    compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'seeder.jar')
     implementation "androidx.core:core-animation:1.0.0-rc01"
 }

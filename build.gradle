@@ -5,6 +5,8 @@ plugins {
     id 'com.android.application' version "8.1.4"
     id 'com.android.library' version "8.1.4" apply false
     id 'org.jetbrains.kotlin.android' version "1.9.20"
+    // TODO: Remove this after Dagger/Hilt finished fully migration to KSP.
+    id 'org.jetbrains.kotlin.kapt' version "1.9.20" apply false
     id 'org.jetbrains.kotlin.plugin.parcelize' version "1.9.20"
     id 'org.jetbrains.kotlin.plugin.serialization' version "1.9.20"
     id "com.google.devtools.ksp" version "1.9.20-1.0.14"
@@ -19,7 +21,7 @@ allprojects {
     plugins.withType(AndroidBasePlugin).configureEach {
         apply plugin: 'org.gradle.android.cache-fix'
 
-        project.android {
+        android {
             compileSdk 34
             defaultConfig {
                 minSdk 26
@@ -31,9 +33,32 @@ allprojects {
                 checkReleaseBuilds false
             }
         }
-        project.dependencies {
+        dependencies {
             implementation 'androidx.core:core-ktx:1.12.0'
             implementation 'androidx.appcompat:appcompat:1.6.1'
+        }
+    }
+
+    plugins.withId('com.google.protobuf') {
+        def protocVersion = '3.25.1'
+        protobuf {
+            // Configure the protoc executable
+            protoc {
+                artifact = "com.google.protobuf:protoc:${protocVersion}"
+            }
+            generateProtoTasks {
+                all().configureEach { task ->
+                    task.builtins {
+                        remove java
+                        java {
+                            option "lite"
+                        }
+                    }
+                }
+            }
+        }
+        dependencies {
+            implementation "com.google.protobuf:protobuf-javalite:$protocVersion"
         }
     }
 
@@ -44,11 +69,9 @@ allprojects {
     }
 
     tasks.withType(KotlinCompile).configureEach {
-        compilerOptions {
-            freeCompilerArgs.add(
-                "-Xjvm-default=all",
-            )
-        }
+        compilerOptions.freeCompilerArgs.add(
+            "-Xjvm-default=all",
+        )
     }
 
     ext.addFrameworkJar = { String name ->
@@ -65,14 +88,24 @@ allprojects {
             }
         }
     }
+
+    ext.compileOnlyCommonJars = {
+        dependencies {
+            compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell.jar')
+            compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'core.jar')
+            compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'seeder.jar')
+            compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-core.jar')
+            compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd.jar')
+        }
+    }
 }
 
 // todo remove ext block after migrating to version catalog
 ext {
     FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
     accompanist_version = '0.32.0'
+    daggerVersion = '2.48.1'
     libsu_version = '5.2.1'
-    protocVersion = '3.25.1'
     room_version = '2.6.0'
     optoVersion = "1.0.18"
 }
@@ -173,8 +206,7 @@ android {
         debug {
             applicationIdSuffix ".debug"
             resValue("string", "derived_app_name", "Lawnchair (Debug)")
-            minifyEnabled false
-            shrinkResources false
+            signingConfig releaseSigning
             proguardFiles "proguard-android-optimize.txt", "proguard.pro"
         }
 
@@ -309,16 +341,9 @@ android {
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
     }
-
-    addFrameworkJar('android.jar')
 }
 
-spotless {
-    kotlin {
-        ktlint("1.0.1")
-        target("lawnchair/src/**/*.kt")
-    }
-}
+addFrameworkJar('framework-13.jar')
 
 dependencies {
     implementation projects.iconloaderlib
@@ -371,7 +396,7 @@ dependencies {
     implementation "com.google.accompanist:accompanist-permissions:$accompanist_version"
     implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
     implementation "com.google.android.material:material:1.10.0"
-    implementation "io.github.fornewid:material-motion-compose-core:1.0.6"
+    implementation "io.github.fornewid:material-motion-compose-core:1.0.7"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
     implementation 'io.coil-kt:coil-compose:2.5.0'
     implementation 'me.xdrop:fuzzywuzzy:1.4.0'
@@ -388,8 +413,6 @@ dependencies {
 
     implementation "com.github.topjohnwu.libsu:core:$libsu_version"
     implementation "com.github.topjohnwu.libsu:service:$libsu_version"
-
-    implementation "com.google.protobuf:protobuf-javalite:$protocVersion"
 
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.7.1'
@@ -408,20 +431,10 @@ ksp {
     arg("room.incremental", "true")
 }
 
-protobuf {
-    // Configure the protoc executable
-    protoc {
-        artifact = "com.google.protobuf:protoc:${protocVersion}"
-    }
-    generateProtoTasks {
-        all().configureEach { task ->
-            task.builtins {
-                remove java
-                java {
-                    option "lite"
-                }
-            }
-        }
+spotless {
+    kotlin {
+        ktlint("1.0.1")
+        target("lawnchair/src/**/*.kt")
     }
 }
 

@@ -4,8 +4,9 @@ plugins {
 
 android {
     namespace "app.lawnchair.compatlib.twelve"
-    addFrameworkJar('framework-12.jar')
 }
+
+addFrameworkJar('framework-12.jar')
 
 dependencies {
     implementation projects.compatLib
