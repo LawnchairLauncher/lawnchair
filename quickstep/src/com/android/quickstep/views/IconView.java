@@ -144,6 +144,11 @@ public class IconView extends View implements TaskViewIcon {
     }
 
     @Override
+    public void setContentAlpha(float alpha) {
+        setAlpha(alpha);
+    }
+
+    @Override
     public void setAlpha(float alpha) {
         super.setAlpha(alpha);
         if (alpha > 0) {
