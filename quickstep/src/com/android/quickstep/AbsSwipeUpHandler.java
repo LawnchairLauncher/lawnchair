@@ -855,7 +855,9 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
         if (windowInsets.isVisible(WindowInsets.Type.ime())) {
             return result;
         }
-        buildAnimationController();
+        if (mGestureState.getEndTarget() == null) {
+            buildAnimationController();
+        }
         // Reapply the current shift to ensure it takes new insets into account, e.g. when long
         // pressing to stash taskbar without moving the finger.
         onCurrentShiftUpdated();
