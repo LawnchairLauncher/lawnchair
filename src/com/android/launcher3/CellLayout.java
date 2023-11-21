@@ -67,7 +67,10 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.CellPosMapper.CellPos;
+import com.android.launcher3.celllayout.DelegatedCellDrawing;
+import com.android.launcher3.celllayout.ItemConfiguration;
 import com.android.launcher3.celllayout.ReorderAlgorithm;
+import com.android.launcher3.celllayout.ViewCluster;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DraggableView;
 import com.android.launcher3.folder.PreviewBackground;
@@ -86,7 +89,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Stack;
@@ -1434,9 +1436,8 @@ public class CellLayout extends ViewGroup {
             View child = mShortcutsAndWidgets.getChildAt(i);
             if (child == dragView) continue;
             CellAndSpan c = solution.map.get(child);
-            boolean skip = mode == ReorderPreviewAnimation.MODE_HINT && solution.intersectingViews
-                    != null && !solution.intersectingViews.contains(child);
-
+            boolean skip = mode == ReorderPreviewAnimation.MODE_HINT
+                    && !solution.intersectingViews.contains(child);
 
             CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
             if (c != null && !skip && (child instanceof Reorderable)) {
@@ -1832,7 +1833,7 @@ public class CellLayout extends ViewGroup {
     private boolean pushViewsToTempLocation(ArrayList<View> views, Rect rectOccupiedByPotentialDrop,
             int[] direction, View dragView, ItemConfiguration currentState) {
 
-        ViewCluster cluster = new ViewCluster(views, currentState);
+        ViewCluster cluster = new ViewCluster(this, views, currentState);
         Rect clusterRect = cluster.getBoundingRect();
         int whichEdge;
         int pushDistance;
@@ -1922,191 +1923,6 @@ public class CellLayout extends ViewGroup {
         }
 
         return foundSolution;
-    }
-
-    /**
-     * This helper class defines a cluster of views. It helps with defining complex edges
-     * of the cluster and determining how those edges interact with other views. The edges
-     * essentially define a fine-grained boundary around the cluster of views -- like a more
-     * precise version of a bounding box.
-     */
-    private class ViewCluster {
-        final static int LEFT = 1 << 0;
-        final static int TOP = 1 << 1;
-        final static int RIGHT = 1 << 2;
-        final static int BOTTOM = 1 << 3;
-
-        final ArrayList<View> views;
-        final ItemConfiguration config;
-        final Rect boundingRect = new Rect();
-
-        final int[] leftEdge = new int[mCountY];
-        final int[] rightEdge = new int[mCountY];
-        final int[] topEdge = new int[mCountX];
-        final int[] bottomEdge = new int[mCountX];
-        int dirtyEdges;
-        boolean boundingRectDirty;
-
-        @SuppressWarnings("unchecked")
-        public ViewCluster(ArrayList<View> views, ItemConfiguration config) {
-            this.views = (ArrayList<View>) views.clone();
-            this.config = config;
-            resetEdges();
-        }
-
-        void resetEdges() {
-            for (int i = 0; i < mCountX; i++) {
-                topEdge[i] = -1;
-                bottomEdge[i] = -1;
-            }
-            for (int i = 0; i < mCountY; i++) {
-                leftEdge[i] = -1;
-                rightEdge[i] = -1;
-            }
-            dirtyEdges = LEFT | TOP | RIGHT | BOTTOM;
-            boundingRectDirty = true;
-        }
-
-        void computeEdge(int which) {
-            int count = views.size();
-            for (int i = 0; i < count; i++) {
-                CellAndSpan cs = config.map.get(views.get(i));
-                switch (which) {
-                    case LEFT:
-                        int left = cs.cellX;
-                        for (int j = cs.cellY; j < cs.cellY + cs.spanY; j++) {
-                            if (left < leftEdge[j] || leftEdge[j] < 0) {
-                                leftEdge[j] = left;
-                            }
-                        }
-                        break;
-                    case RIGHT:
-                        int right = cs.cellX + cs.spanX;
-                        for (int j = cs.cellY; j < cs.cellY + cs.spanY; j++) {
-                            if (right > rightEdge[j]) {
-                                rightEdge[j] = right;
-                            }
-                        }
-                        break;
-                    case TOP:
-                        int top = cs.cellY;
-                        for (int j = cs.cellX; j < cs.cellX + cs.spanX; j++) {
-                            if (top < topEdge[j] || topEdge[j] < 0) {
-                                topEdge[j] = top;
-                            }
-                        }
-                        break;
-                    case BOTTOM:
-                        int bottom = cs.cellY + cs.spanY;
-                        for (int j = cs.cellX; j < cs.cellX + cs.spanX; j++) {
-                            if (bottom > bottomEdge[j]) {
-                                bottomEdge[j] = bottom;
-                            }
-                        }
-                        break;
-                }
-            }
-        }
-
-        boolean isViewTouchingEdge(View v, int whichEdge) {
-            CellAndSpan cs = config.map.get(v);
-
-            if ((dirtyEdges & whichEdge) == whichEdge) {
-                computeEdge(whichEdge);
-                dirtyEdges &= ~whichEdge;
-            }
-
-            switch (whichEdge) {
-                case LEFT:
-                    for (int i = cs.cellY; i < cs.cellY + cs.spanY; i++) {
-                        if (leftEdge[i] == cs.cellX + cs.spanX) {
-                            return true;
-                        }
-                    }
-                    break;
-                case RIGHT:
-                    for (int i = cs.cellY; i < cs.cellY + cs.spanY; i++) {
-                        if (rightEdge[i] == cs.cellX) {
-                            return true;
-                        }
-                    }
-                    break;
-                case TOP:
-                    for (int i = cs.cellX; i < cs.cellX + cs.spanX; i++) {
-                        if (topEdge[i] == cs.cellY + cs.spanY) {
-                            return true;
-                        }
-                    }
-                    break;
-                case BOTTOM:
-                    for (int i = cs.cellX; i < cs.cellX + cs.spanX; i++) {
-                        if (bottomEdge[i] == cs.cellY) {
-                            return true;
-                        }
-                    }
-                    break;
-            }
-            return false;
-        }
-
-        void shift(int whichEdge, int delta) {
-            for (View v: views) {
-                CellAndSpan c = config.map.get(v);
-                switch (whichEdge) {
-                    case LEFT:
-                        c.cellX -= delta;
-                        break;
-                    case RIGHT:
-                        c.cellX += delta;
-                        break;
-                    case TOP:
-                        c.cellY -= delta;
-                        break;
-                    case BOTTOM:
-                    default:
-                        c.cellY += delta;
-                        break;
-                }
-            }
-            resetEdges();
-        }
-
-        public void addView(View v) {
-            views.add(v);
-            resetEdges();
-        }
-
-        public Rect getBoundingRect() {
-            if (boundingRectDirty) {
-                config.getBoundingRectForViews(views, boundingRect);
-            }
-            return boundingRect;
-        }
-
-        final PositionComparator comparator = new PositionComparator();
-        class PositionComparator implements Comparator<View> {
-            int whichEdge = 0;
-            public int compare(View left, View right) {
-                CellAndSpan l = config.map.get(left);
-                CellAndSpan r = config.map.get(right);
-                switch (whichEdge) {
-                    case LEFT:
-                        return (r.cellX + r.spanX) - (l.cellX + l.spanX);
-                    case RIGHT:
-                        return l.cellX - r.cellX;
-                    case TOP:
-                        return (r.cellY + r.spanY) - (l.cellY + l.spanY);
-                    case BOTTOM:
-                    default:
-                        return l.cellY - r.cellY;
-                }
-            }
-        }
-
-        public void sortConfigurationForEdgePush(int edge) {
-            comparator.whichEdge = edge;
-            Collections.sort(config.sortedViews, comparator);
-        }
     }
 
     // This method tries to find a reordering solution which satisfies the push mechanic by trying
@@ -2532,54 +2348,6 @@ public class CellLayout extends ViewGroup {
     }
 
     /**
-     * Represents the solution to a reorder of items in the Workspace.
-     */
-    public static class ItemConfiguration extends CellAndSpan {
-        public final ArrayMap<View, CellAndSpan> map = new ArrayMap<>();
-        private final ArrayMap<View, CellAndSpan> savedMap = new ArrayMap<>();
-        public final ArrayList<View> sortedViews = new ArrayList<>();
-        public ArrayList<View> intersectingViews;
-        public boolean isSolution = false;
-
-        public void save() {
-            // Copy current state into savedMap
-            for (View v: map.keySet()) {
-                savedMap.get(v).copyFrom(map.get(v));
-            }
-        }
-
-        public void restore() {
-            // Restore current state from savedMap
-            for (View v: savedMap.keySet()) {
-                map.get(v).copyFrom(savedMap.get(v));
-            }
-        }
-
-        public void add(View v, CellAndSpan cs) {
-            map.put(v, cs);
-            savedMap.put(v, new CellAndSpan());
-            sortedViews.add(v);
-        }
-
-        public int area() {
-            return spanX * spanY;
-        }
-
-        public void getBoundingRectForViews(ArrayList<View> views, Rect outRect) {
-            boolean first = true;
-            for (View v: views) {
-                CellAndSpan c = map.get(v);
-                if (first) {
-                    outRect.set(c.cellX, c.cellY, c.cellX + c.spanX, c.cellY + c.spanY);
-                    first = false;
-                } else {
-                    outRect.union(c.cellX, c.cellY, c.cellX + c.spanX, c.cellY + c.spanY);
-                }
-            }
-        }
-    }
-
-    /**
      * Find a starting cell position that will fit the given bounds nearest the requested
      * cell location. Uses Euclidean distance to score multiple vacant areas.
      *
@@ -2756,52 +2524,6 @@ public class CellLayout extends ViewGroup {
     @Override
     protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
         return new CellLayoutLayoutParams(p);
-    }
-
-    // This class stores info for two purposes:
-    // 1. When dragging items (mDragInfo in Workspace), we store the View, its cellX & cellY,
-    //    its spanX, spanY, and the screen it is on
-    // 2. When long clicking on an empty cell in a CellLayout, we save information about the
-    //    cellX and cellY coordinates and which page was clicked. We then set this as a tag on
-    //    the CellLayout that was long clicked
-    public static final class CellInfo extends CellAndSpan {
-        public final View cell;
-        final int screenId;
-        final int container;
-
-        public CellInfo(View v, ItemInfo info, CellPos cellPos) {
-            cellX = cellPos.cellX;
-            cellY = cellPos.cellY;
-            spanX = info.spanX;
-            spanY = info.spanY;
-            cell = v;
-            screenId = cellPos.screenId;
-            container = info.container;
-        }
-
-        @Override
-        public String toString() {
-            return "Cell[view=" + (cell == null ? "null" : cell.getClass())
-                    + ", x=" + cellX + ", y=" + cellY + "]";
-        }
-    }
-
-    /**
-     * A Delegated cell Drawing for drawing on CellLayout
-     */
-    public abstract static class DelegatedCellDrawing {
-        public int mDelegateCellX;
-        public int mDelegateCellY;
-
-        /**
-         * Draw under CellLayout
-         */
-        public abstract void drawUnderItem(Canvas canvas);
-
-        /**
-         * Draw over CellLayout
-         */
-        public abstract void drawOverItem(Canvas canvas);
     }
 
     /**

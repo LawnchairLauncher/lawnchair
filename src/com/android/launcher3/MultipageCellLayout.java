@@ -23,6 +23,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
+import com.android.launcher3.celllayout.ItemConfiguration;
 import com.android.launcher3.celllayout.MulticellReorderAlgorithm;
 import com.android.launcher3.util.CellAndSpan;
 import com.android.launcher3.util.GridOccupancy;

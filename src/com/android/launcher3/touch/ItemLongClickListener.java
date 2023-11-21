@@ -27,9 +27,9 @@ import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCH
 import android.view.View;
 import android.view.View.OnLongClickListener;
 
-import com.android.launcher3.CellLayout;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.celllayout.CellInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -86,7 +86,7 @@ public class ItemLongClickListener {
             }
         }
 
-        CellLayout.CellInfo longClickCellInfo = new CellLayout.CellInfo(v, info,
+        CellInfo longClickCellInfo = new CellInfo(v, info,
                 launcher.getCellPosMapper().mapModelToPresenter(info));
         launcher.getWorkspace().startDrag(longClickCellInfo, dragOptions);
     }

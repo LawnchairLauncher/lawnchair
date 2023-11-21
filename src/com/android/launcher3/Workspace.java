@@ -74,6 +74,7 @@ import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.PendingAnimation;
 import com.android.launcher3.apppairs.AppPairIcon;
+import com.android.launcher3.celllayout.CellInfo;
 import com.android.launcher3.celllayout.CellLayoutLayoutParams;
 import com.android.launcher3.celllayout.CellPosMapper;
 import com.android.launcher3.celllayout.CellPosMapper.CellPos;
@@ -189,7 +190,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
     /**
      * CellInfo for the cell that is currently being dragged
      */
-    protected CellLayout.CellInfo mDragInfo;
+    protected CellInfo mDragInfo;
 
     /**
      * Target drop area calculated during last acceptDrop call.
@@ -1620,7 +1621,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
         page.setAccessibilityDelegate(null);
     }
 
-    public void startDrag(CellLayout.CellInfo cellInfo, DragOptions options) {
+    public void startDrag(CellInfo cellInfo, DragOptions options) {
         View child = cellInfo.cell;
 
         mDragInfo = cellInfo;
@@ -1784,7 +1785,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
             int spanX;
             int spanY;
             if (mDragInfo != null) {
-                final CellLayout.CellInfo dragCellInfo = mDragInfo;
+                final CellInfo dragCellInfo = mDragInfo;
                 spanX = dragCellInfo.spanX;
                 spanY = dragCellInfo.spanY;
             } else {
@@ -3078,7 +3079,7 @@ public class Workspace<T extends View & PageIndicator> extends PagedView<T>
      * so that Launcher can sync this object with the correct info when the activity is created/
      * destroyed
      */
-    public CellLayout.CellInfo getDragInfo() {
+    public CellInfo getDragInfo() {
         return mDragInfo;
     }
 

@@ -105,7 +105,7 @@ public class ReorderAlgorithmUnitTest {
         };
     }
 
-    public CellLayout.ItemConfiguration solve(CellLayoutBoard board, int x, int y, int spanX,
+    public ItemConfiguration solve(CellLayoutBoard board, int x, int y, int spanX,
             int spanY, int minSpanX, int minSpanY) {
         CellLayout cl = createCellLayout(board.getWidth(), board.getHeight());
 
@@ -123,17 +123,17 @@ public class ReorderAlgorithmUnitTest {
 
         int[] testCaseXYinPixels = new int[2];
         cl.regionToCenterPoint(x, y, spanX, spanY, testCaseXYinPixels);
-        CellLayout.ItemConfiguration solution = cl.createReorderAlgorithm().calculateReorder(
+        ItemConfiguration solution = cl.createReorderAlgorithm().calculateReorder(
                 testCaseXYinPixels[0], testCaseXYinPixels[1], minSpanX, minSpanY, spanX, spanY,
                 null);
         if (solution == null) {
-            solution = new CellLayout.ItemConfiguration();
+            solution = new ItemConfiguration();
             solution.isSolution = false;
         }
         return solution;
     }
 
-    public CellLayoutBoard boardFromSolution(CellLayout.ItemConfiguration solution, int width,
+    public CellLayoutBoard boardFromSolution(ItemConfiguration solution, int width,
             int height) {
         // Update the views with solution value
         solution.map.forEach((key, val) -> key.setLayoutParams(
@@ -146,7 +146,7 @@ public class ReorderAlgorithmUnitTest {
     }
 
     public void evaluateTestCase(ReorderAlgorithmUnitTestCase testCase) {
-        CellLayout.ItemConfiguration solution = solve(testCase.startBoard, testCase.x,
+        ItemConfiguration solution = solve(testCase.startBoard, testCase.x,
                 testCase.y, testCase.spanX, testCase.spanY, testCase.minSpanX,
                 testCase.minSpanY);
         assertEquals("should be a valid solution", solution.isSolution,
@@ -197,7 +197,7 @@ public class ReorderAlgorithmUnitTest {
         CellLayoutBoard board = generateBoard(new CellLayoutBoard(width, height),
                 new Rect(0, 0, width, height), targetWidth * targetHeight);
 
-        CellLayout.ItemConfiguration solution = solve(board, x, y, targetWidth, targetHeight,
+        ItemConfiguration solution = solve(board, x, y, targetWidth, targetHeight,
                 minTargetWidth, minTargetHeight);
 
         CellLayoutBoard finishBoard = solution.isSolution ? boardFromSolution(solution,
