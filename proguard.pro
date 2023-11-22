@@ -129,6 +129,10 @@
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
+-dontwarn com.skydoves.balloon.ArrowPositionRules
+-dontwarn com.skydoves.balloon.Balloon$Builder
+-dontwarn com.skydoves.balloon.Balloon
+-dontwarn com.skydoves.balloon.BalloonAnimation
 
 # Preserve Protobuf generated code
 -keep class com.android.launcher3.tracing.nano.LauncherTraceFileProto$* { *; }
