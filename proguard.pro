@@ -6,6 +6,7 @@
 -verbose
 -keepattributes InnerClasses, *Annotation*, Signature, SourceFile, LineNumberTable
 
+-keep class com.android.** { *; }
 
 -keepclasseswithmembernames class * {
     native <methods>;
@@ -67,35 +68,12 @@
 -dontwarn org.ccil.cowan.tagsoup.**
 -dontwarn com.skydoves.balloon.**
 
-# Preserve Protobuf generated code
--keep class com.android.launcher3.tracing.nano.LauncherTraceFileProto$* { *; }
--keep class com.android.launcher3.logger.nano.LauncherAtom$* { *; }
--keep class com.android.launcher3.tracing.nano.LauncherTraceEntryProto$* { *; }
--keep class com.android.launcher3.tracing.nano.TouchInteractionServiceProto$* { *; }
--keep class com.android.launcher3.userevent.nano.LauncherLogProto$* { *; }
--keep class com.android.launcher3.tracing.nano.LauncherTraceProto$* { *; }
--keep class com.android.launcher3.userevent.nano.LauncherLogExtensions$* { *; }
--keep class com.android.launcher3.tracing.LauncherTraceFileProto$* { *; }
--keep class com.android.launcher3.logger.LauncherAtom$* { *; }
--keep class com.android.launcher3.tracing.LauncherTraceEntryProto$* { *; }
--keep class com.android.launcher3.tracing.TouchInteractionServiceProto$* { *; }
--keep class com.android.launcher3.userevent.LauncherLogProto$* { *; }
--keep class com.android.launcher3.tracing.LauncherTraceProto$* { *; }
--keep class com.android.launcher3.userevent.LauncherLogExtensions$* { *; }
 -keep class app.lawnchair.LawnchairProto$* { *; }
 -keep class app.lawnchair.LawnchairApp { *; }
--keep class com.android.launcher3.Utilities { *; }
 -keep class app.lawnchair.LawnchairLauncher { *; }
+-keep class app.lawnchair.compatlib.** { *; }
+
 -keep class com.google.protobuf.Timestamp { *; }
--keep class androidx.core.app.CoreComponentFactory { *; }
 
--keep class app.lawnchair.compatlib.** {
-  *;
-}
-
--keep class com.android.** {
-  *;
-}
-
-# Keep Smartspacer's client SDK
+# TODO: Remove this after the change in https://github.com/KieronQuinn/Smartspacer/pull/58 has been released.
 -keep class com.kieronquinn.app.smartspacer.sdk.**  { *; }
