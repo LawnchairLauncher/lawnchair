@@ -25,9 +25,11 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_ALLAPPS_CLOSE_TAP_OUTSIDE;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_WORKSPACE_LONGPRESS;
+import static com.android.launcher3.testing.shared.TestProtocol.WORKSPACE_LONG_PRESS;
 
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
@@ -39,6 +41,7 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -109,6 +112,10 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
                 mTouchDownPoint.set(ev.getX(), ev.getY());
                 // Mouse right button's ACTION_DOWN should immediately show menu
                 if (TouchUtil.isMouseRightClickDownOrMove(ev)) {
+                    if (Utilities.isRunningInTestHarness()) {
+                        Log.d(WORKSPACE_LONG_PRESS, "longPress from mouseHandling timeout: +"
+                                + ViewConfiguration.getLongPressTimeout());
+                    }
                     maybeShowMenu();
                     return true;
                 }
@@ -192,6 +199,10 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     @Override
     public void onLongPress(MotionEvent event) {
+        if (Utilities.isRunningInTestHarness()) {
+            Log.d(WORKSPACE_LONG_PRESS, "longPress from gestureHandler timeout: " +
+                    ViewConfiguration.getLongPressTimeout());
+        }
         maybeShowMenu();
     }
 
