@@ -172,17 +172,11 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ୱାର୍କ ଆପ୍ସ ବିରତ କରନ୍ତୁ"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"ପୁଣି ଚାଲୁ କରନ୍ତୁ"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ଫିଲ୍ଟର୍"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"ଆପଣଙ୍କ ଫୋନରେ ସନ୍ଧାନ କରନ୍ତୁ"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"ଆପଣଙ୍କ ଟାବଲେଟରେ ସନ୍ଧାନ କରନ୍ତୁ"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"ବିଫଳ ହୋଇଛି: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"ପ୍ରାଇଭେଟ ସ୍ପେସ"</string>
-    <!-- no translation found for ps_container_title (4391796149519594205) -->
-    <skip />
-    <!-- no translation found for ps_container_settings (6059734123353320479) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_unlock_button (7605602332253423755) -->
-    <skip />
-    <!-- no translation found for ps_container_transition (8667331812048014412) -->
-    <skip />
+    <string name="ps_container_title" msgid="4391796149519594205">"ପ୍ରାଇଭେଟ"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"ପ୍ରାଇଭେଟ ସ୍ପେସ ସେଟିଂସ"</string>
+    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ପ୍ରାଇଭେଟ ସ୍ପେସକୁ ଲକ/ଅନଲକ କରନ୍ତୁ"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"ପ୍ରାଇଭେଟ ସ୍ପେସ ଟ୍ରାଞ୍ଜିସନିଂ"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ଓଭରଫ୍ଲୋ"</string>
 </resources>
