@@ -1,54 +1,23 @@
--keep,allowshrinking,allowoptimization class com.android.launcher3.** {
-  *;
+-allowaccessmodification
+-dontoptimize
+-dontpreverify
+-dontusemixedcaseclassnames
+-dontskipnonpubliclibraryclasses
+-verbose
+-keepattributes InnerClasses, *Annotation*, Signature, SourceFile, LineNumberTable
+
+
+-keepclasseswithmembernames class * {
+    native <methods>;
 }
 
--keep class com.android.launcher3.graphics.ShadowDrawable {
-  public <init>(...);
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
 }
 
-# The support library contains references to newer platform versions.
-# Don't warn about those in case this app is linking against an older
-# platform version.  We know about them, and they are safe.
--dontwarn android.support.**
--keep class ** extends android.app.Fragment {
-    public <init>(...);
-}
-
-## Prevent obfuscating various overridable objects
--keep class ** implements com.android.launcher3.util.ResourceBasedOverride {
-    public <init>(...);
-}
-
--keep interface com.android.launcher3.userevent.nano.LauncherLogProto.** {
-  *;
-}
--keep interface com.android.launcher3.model.nano.LauncherDumpProto.** {
-  *;
-}
-
-# Discovery bounce animation
--keep class com.android.launcher3.allapps.DiscoveryBounce$VerticalProgressWrapper {
-  public void setProgress(float);
-  public float getProgress();
-}
-
-# BUG(70852369): Suppress additional warnings after changing from Proguard to R8
--dontwarn android.app.**
--dontwarn android.graphics.**
--dontwarn android.os.**
--dontwarn android.view.**
--dontwarn android.window.**
-
-# Ignore warnings for hidden utility classes referenced from the shared lib
--dontwarn com.android.internal.util.**
-
-################ Do not optimize recents lib #############
--keep class com.android.systemui.** {
-  *;
-}
-
--keep class com.android.quickstep.** {
-  *;
+-keepclassmembers class * implements android.os.Parcelable {
+  public static final ** CREATOR;
 }
 
 # Don't touch the restrictionbypass code
@@ -155,7 +124,6 @@
 -keep class app.lawnchair.LawnchairLauncher { *; }
 -keep class com.google.protobuf.Timestamp { *; }
 -keep class androidx.core.app.CoreComponentFactory { *; }
--keepattributes InnerClasses
 
 -keep class app.lawnchair.compatlib.** {
   *;
