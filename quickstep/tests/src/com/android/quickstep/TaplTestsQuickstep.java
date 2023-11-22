@@ -28,6 +28,7 @@ import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.platform.test.annotations.PlatinumTest;
 
 import androidx.test.filters.LargeTest;
@@ -305,7 +306,11 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
 
         // Expect task bar invisible when the launched app was the IME activity.
         LaunchedAppState launchedAppState = getAndAssertLaunchedApp();
-        launchedAppState.assertTaskbarHidden();
+        if (isHardwareKeyboard()) {
+            launchedAppState.assertTaskbarVisible();
+        } else {
+            launchedAppState.assertTaskbarHidden();
+        }
 
         // Quick-switch to the test app with swiping to right.
         quickSwitchToPreviousAppAndAssert(true /* toRight */);
@@ -315,6 +320,11 @@ public class TaplTestsQuickstep extends AbstractQuickStepTest {
         // Expect task bar visible when the launched app was the test activity.
         launchedAppState = getAndAssertLaunchedApp();
         launchedAppState.assertTaskbarVisible();
+    }
+
+    private boolean isHardwareKeyboard() {
+        return Configuration.KEYBOARD_QWERTY
+                == mTargetContext.getResources().getConfiguration().keyboard;
     }
 
     @Test

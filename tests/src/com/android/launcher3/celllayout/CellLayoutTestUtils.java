@@ -21,6 +21,7 @@ import android.view.View;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.celllayout.board.CellLayoutBoard;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
 import java.util.ArrayList;

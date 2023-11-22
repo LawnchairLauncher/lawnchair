@@ -31,6 +31,9 @@ import androidx.test.filters.SmallTest;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.celllayout.board.CellLayoutBoard;
+import com.android.launcher3.celllayout.board.IconPoint;
+import com.android.launcher3.celllayout.board.WidgetRect;
 import com.android.launcher3.util.ActivityContextWrapper;
 import com.android.launcher3.views.DoubleShadowBubbleTextView;
 
@@ -112,12 +115,12 @@ public class ReorderAlgorithmUnitTest {
         // The views have to be sorted or the result can vary
         board.getIcons()
                 .stream()
-                .map(CellLayoutBoard.IconPoint::getCoord)
+                .map(IconPoint::getCoord)
                 .sorted(Comparator.comparing(p -> ((Point) p).x).thenComparing(p -> ((Point) p).y))
                 .forEach(p -> addViewInCellLayout(cl, p.x, p.y, 1, 1, false));
         board.getWidgets().stream()
-                .sorted(Comparator.comparing(CellLayoutBoard.WidgetRect::getCellX)
-                        .thenComparing(CellLayoutBoard.WidgetRect::getCellY))
+                .sorted(Comparator.comparing(WidgetRect::getCellX)
+                        .thenComparing(WidgetRect::getCellY))
                 .forEach(widget -> addViewInCellLayout(cl, widget.getCellX(), widget.getCellY(),
                         widget.getSpanX(), widget.getSpanY(), true));
 

@@ -156,6 +156,7 @@ public final class TestProtocol {
     public static final String REQUEST_MOCK_SENSOR_ROTATION = "mock-sensor-rotation";
 
     public static final String PERMANENT_DIAG_TAG = "TaplTarget";
+    public static final String TWO_NEXUS_LAUNCHER_ACTIVITY_WHILE_UNLOCKING = "b/273347463";
     public static final String TWO_TASKBAR_LONG_CLICKS = "b/262282528";
     public static final String ICON_MISSING = "b/282963545";
     public static final String WORKSPACE_LONG_PRESS = "b/311099513";

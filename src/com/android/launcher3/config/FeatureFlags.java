@@ -287,19 +287,19 @@ public final class FeatureFlags {
                     "Enables haptic hint when long pressing on the bottom bar nav handle.");
 
     public static final IntFlag LPNH_HAPTIC_HINT_START_SCALE_PERCENT =
-            getIntFlag(309972570, "FLAG_LPNH_HAPTIC_HINT_START_SCALE_PERCENT", 0,
+            getIntFlag(309972570, "LPNH_HAPTIC_HINT_START_SCALE_PERCENT", 0,
             "Haptic hint start scale.");
 
     public static final IntFlag LPNH_HAPTIC_HINT_END_SCALE_PERCENT =
-            getIntFlag(309972570, "FLAG_LPNH_HAPTIC_HINT_END_SCALE_PERCENT", 100,
+            getIntFlag(309972570, "LPNH_HAPTIC_HINT_END_SCALE_PERCENT", 100,
             "Haptic hint end scale.");
 
     public static final IntFlag LPNH_HAPTIC_HINT_SCALE_EXPONENT =
-            getIntFlag(309972570, "FLAG_LPNH_HAPTIC_HINT_SCALE_EXPONENT", 1,
+            getIntFlag(309972570, "LPNH_HAPTIC_HINT_SCALE_EXPONENT", 1,
             "Haptic hint scale exponent.");
 
     public static final IntFlag LPNH_HAPTIC_HINT_ITERATIONS =
-            getIntFlag(309972570, "FLAG_LPNH_HAPTIC_HINT_ITERATIONS", 50,
+            getIntFlag(309972570, "LPNH_HAPTIC_HINT_ITERATIONS", 50,
             "Haptic hint number of iterations.");
 
     public static final BooleanFlag ENABLE_LPNH_DEEP_PRESS =

@@ -229,6 +229,7 @@ public final class LauncherInstrumentation {
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
+     *
      * @deprecated use the constructor without Instrumentation parameter instead.
      */
     @Deprecated
@@ -238,6 +239,7 @@ public final class LauncherInstrumentation {
 
     /**
      * Constructs the root of TAPL hierarchy. You get all other objects from it.
+     *
      * @deprecated use the constructor without Instrumentation parameter instead.
      */
     @Deprecated
@@ -280,32 +282,30 @@ public final class LauncherInstrumentation {
         if (pm.getComponentEnabledSetting(cn) != COMPONENT_ENABLED_STATE_ENABLED) {
             if (TestHelpers.isInLauncherProcess()) {
                 pm.setComponentEnabledSetting(cn, COMPONENT_ENABLED_STATE_ENABLED, DONT_KILL_APP);
-                // b/195031154
-                SystemClock.sleep(5000);
             } else {
                 try {
                     final int userId = getContext().getUserId();
-                    final String launcherPidCommand = "pidof " + pi.packageName;
-                    final String initialPid = mDevice.executeShellCommand(launcherPidCommand)
-                            .replaceAll("\\s", "");
                     mDevice.executeShellCommand(
                             "pm enable --user " + userId + " " + cn.flattenToString());
-
-                    // Wait for Launcher restart after enabling test provider.
-                    final int iterations = isLauncherTest ? 300 : 100;
-
-                    for (int i = 0; i < iterations; ++i) {
-                        final String currentPid = mDevice.executeShellCommand(launcherPidCommand)
-                                .replaceAll("\\s", "");
-                        if (!currentPid.isEmpty() && !currentPid.equals(initialPid)) break;
-                        if (i == iterations - 1) {
-                            fail("Launcher didn't restart after enabling test provider");
-                        }
-                        SystemClock.sleep(100);
-                    }
                 } catch (IOException e) {
                     fail(e.toString());
                 }
+            }
+
+            final int iterations = isLauncherTest ? 300 : 100;
+
+            // Wait for Launcher content provider to become enabled.
+            for (int i = 0; i < iterations; ++i) {
+                final ContentProviderClient testProvider = getContext().getContentResolver()
+                        .acquireContentProviderClient(mTestProviderUri);
+                if (testProvider != null) {
+                    testProvider.close();
+                    break;
+                }
+                if (i == iterations - 1) {
+                    fail("Launcher content provider is still not enabled");
+                }
+                SystemClock.sleep(100);
             }
         }
     }

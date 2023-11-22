@@ -22,6 +22,7 @@ import static com.android.launcher3.model.BgDataModel.Callbacks.FLAG_PRIVATE_PRO
 import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.spy;
@@ -29,6 +30,8 @@ import static org.mockito.Mockito.when;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
@@ -75,6 +78,8 @@ public class PrivateProfileManagerTest {
     private Context mContext;
     @Mock
     private AllAppsStore mAllAppsStore;
+    @Mock
+    private PackageManager mPackageManager;
 
     @Before
     public void setUp() {
@@ -85,6 +90,8 @@ public class PrivateProfileManagerTest {
         when(mUserCache.getUserInfo(PRIVATE_HANDLE)).thenReturn(PRIVATE_ICON_INFO);
         when(mActivityAllAppsContainerView.getContext()).thenReturn(mContext);
         when(mActivityAllAppsContainerView.getAppsStore()).thenReturn(mAllAppsStore);
+        when(mContext.getPackageManager()).thenReturn(mPackageManager);
+        when(mPackageManager.resolveActivity(any(), any())).thenReturn(new ResolveInfo());
         mPrivateProfileManager = new PrivateProfileManager(mUserManager,
                 mActivityAllAppsContainerView, mStatsLogManager, mUserCache);
     }

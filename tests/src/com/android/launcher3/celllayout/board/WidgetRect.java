@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022 The Android Open Source Project
+ * Copyright (C) 2023 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,36 +13,47 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.android.launcher3.celllayout;
+
+package com.android.launcher3.celllayout.board;
 
 import android.graphics.Rect;
 
-public class TestBoardWidget {
+public class WidgetRect {
     public char mType;
     public Rect mBounds;
 
-    TestBoardWidget(char type, Rect bounds) {
+    public WidgetRect(char type, Rect bounds) {
         this.mType = type;
         this.mBounds = bounds;
     }
 
-    int getSpanX() {
+    public int getSpanX() {
         return mBounds.right - mBounds.left + 1;
     }
 
-    int getSpanY() {
+    public int getSpanY() {
         return mBounds.top - mBounds.bottom + 1;
     }
 
-    int getCellX() {
+    public int getCellX() {
         return mBounds.left;
     }
 
-    int getCellY() {
+    public int getCellY() {
         return mBounds.bottom;
     }
 
     boolean shouldIgnore() {
-        return this.mType == 'x';
+        return this.mType == CellType.IGNORE;
+    }
+
+    boolean contains(int x, int y) {
+        return mBounds.contains(x, y);
+    }
+
+    @Override
+    public String toString() {
+        return "WidgetRect type = " + mType + " x = " + getCellX() + " | y " + getCellY()
+                + " xs = " + getSpanX() + " ys = " + getSpanY();
     }
 }

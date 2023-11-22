@@ -19,7 +19,6 @@ package com.android.launcher3.allapps;
 import static com.android.launcher3.allapps.PrivateProfileManager.STATE_DISABLED;
 import static com.android.launcher3.allapps.PrivateProfileManager.STATE_ENABLED;
 import static com.android.launcher3.allapps.PrivateProfileManager.STATE_TRANSITION;
-import static com.android.launcher3.util.Executors.UI_HELPER_EXECUTOR;
 
 import android.view.View;
 import android.widget.ImageButton;
@@ -50,7 +49,7 @@ public class PrivateSpaceHeaderViewController {
         //Add image and action for private space settings button
         ImageButton settingsButton = parent.findViewById(R.id.ps_settings_button);
         assert settingsButton != null;
-        UI_HELPER_EXECUTOR.post(() -> addPrivateSpaceSettingsButton(settingsButton));
+        addPrivateSpaceSettingsButton(settingsButton);
 
         //Add image for private space transitioning view
         ImageView transitionView = parent.findViewById(R.id.ps_transition_image);
@@ -78,7 +77,7 @@ public class PrivateSpaceHeaderViewController {
 
     private void addPrivateSpaceSettingsButton(ImageButton settingsButton) {
         if (mPrivateProfileManager.getCurrentState() == STATE_ENABLED
-                && mPrivateProfileManager.isPrivateSpaceSettingsButtonVisible()) {
+                && mPrivateProfileManager.isPrivateSpaceSettingsAvailable()) {
             settingsButton.setVisibility(View.VISIBLE);
             settingsButton.setOnClickListener(view ->
                     mPrivateProfileManager.openPrivateSpaceSettings());
