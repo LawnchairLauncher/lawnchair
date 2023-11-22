@@ -35,7 +35,6 @@ import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.tapl.Workspace;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
-import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.LauncherLayoutBuilder;
 import com.android.launcher3.util.TestUtil;
 
@@ -74,7 +73,7 @@ public class TwoPanelWorkspaceTest extends AbstractLauncherUiTest {
                 .atWorkspace(3, -1, 0).putApp(
                         "com.android.vending", "com.android.vending.AssetBrowserActivity");
         mLauncherLayout = TestUtil.setLauncherDefaultLayout(mTargetContext, builder);
-        TaplTestsLauncher3.initialize(this);
+        AbstractLauncherUiTest.initialize(this);
         assumeTrue(mLauncher.isTwoPanels());
 
         // Pre verifying the screens

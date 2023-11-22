@@ -38,7 +38,6 @@ import com.android.launcher3.celllayout.board.WidgetRect;
 import com.android.launcher3.tapl.Widget;
 import com.android.launcher3.tapl.WidgetResizeFrame;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
-import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.ModelTestExtensions;
 import com.android.launcher3.util.rule.ShellCommandRule;
 
@@ -73,7 +72,7 @@ public class ReorderWidgets extends AbstractLauncherUiTest {
     @Before
     public void setup() throws Throwable {
         mWorkspaceBuilder = new TestWorkspaceBuilder(mTargetContext);
-        TaplTestsLauncher3.initialize(this);
+        AbstractLauncherUiTest.initialize(this);
     }
 
     @After
