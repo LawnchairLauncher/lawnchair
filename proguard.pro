@@ -40,6 +40,8 @@
 -dontwarn android.widget.RemoteViews*
 -dontwarn androidx.compose.runtime.PrimitiveSnapshotStateKt
 -dontwarn androidx.dynamicanimation.animation.AnimationHandler$FrameCallbackScheduler*
+-dontwarn androidx.window.extensions.**
+-dontwarn androidx.window.sidecar.**
 -dontwarn com.android.internal.**
 -dontwarn com.google.android.collect.Sets*
 -dontwarn com.google.protobuf.nano.**
