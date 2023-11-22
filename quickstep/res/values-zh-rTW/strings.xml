@@ -98,8 +98,7 @@
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"退出分割畫面選擇器"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"必須選擇另一個應用程式才能使用分割畫面"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"這個應用程式或貴機構不允許執行這個動作"</string>
-    <!-- no translation found for split_widgets_not_supported (1355743038053053866) -->
-    <skip />
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"目前不支援小工具，請選取其他應用程式"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"要略過手勢操作教學課程嗎？"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"你之後可以在「<xliff:g id="NAME">%1$s</xliff:g>」應用程式找到這些說明"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"取消"</string>
