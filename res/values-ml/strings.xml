@@ -172,17 +172,11 @@
     <string name="work_apps_pause_btn_text" msgid="4669288269140620646">"ഔദ്യോഗിക ആപ്പുകൾ താൽക്കാലികമായി നിർത്തുക"</string>
     <string name="work_apps_enable_btn_text" msgid="1736198302467317371">"താൽക്കാലികമായി നിർത്തിയത് മാറ്റുക"</string>
     <string name="developer_options_filter_hint" msgid="5896817443635989056">"ഫിൽട്ടർ ചെയ്യുക"</string>
-    <string name="search_pref_screen_title" msgid="3258959643336315962">"നിങ്ങളുടെ ഫോണിലുള്ളവ തിരയുക"</string>
-    <string name="search_pref_screen_title_tablet" msgid="5220319680451343959">"നിങ്ങളുടെ ടാബ്‌ലെറ്റിലുള്ളവ തിരയുക"</string>
     <string name="remote_action_failed" msgid="1383965239183576790">"പരാജയപ്പെട്ടു: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
     <string name="private_space_label" msgid="2359721649407947001">"സ്വകാര്യ സ്പേസ്"</string>
-    <!-- no translation found for ps_container_title (4391796149519594205) -->
-    <skip />
-    <!-- no translation found for ps_container_settings (6059734123353320479) -->
-    <skip />
-    <!-- no translation found for ps_container_lock_unlock_button (7605602332253423755) -->
-    <skip />
-    <!-- no translation found for ps_container_transition (8667331812048014412) -->
-    <skip />
+    <string name="ps_container_title" msgid="4391796149519594205">"സ്വകാര്യം"</string>
+    <string name="ps_container_settings" msgid="6059734123353320479">"സ്വകാര്യ സ്‌പേസ് ക്രമീകരണം"</string>
+    <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"സ്വകാര്യ സ്‌പേസ് ലോക്ക് ചെയ്യുക/അൺലോക്ക് ചെയ്യുക"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"പ്രൈവറ്റ് സ്‌പേസ് ട്രാൻസിഷനിംഗ്"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ഓവർഫ്ലോ"</string>
 </resources>
