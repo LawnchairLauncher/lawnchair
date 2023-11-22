@@ -98,8 +98,7 @@
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"స్ప్లిట్ స్క్రీన్ ఎంపిక నుండి ఎగ్జిట్ అవ్వండి"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"స్ప్లిట్ స్క్రీన్ ఉపయోగానికి మరొక యాప్ ఎంచుకోండి"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ఈ చర్యను యాప్ గానీ, మీ సంస్థ గానీ అనుమతించవు"</string>
-    <!-- no translation found for split_widgets_not_supported (1355743038053053866) -->
-    <skip />
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"విడ్జెట్‌లకు ప్రస్తుతం సపోర్ట్ లేదు, దయచేసి మరొక యాప్‌ను ఎంచుకోండి"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"నావిగేషన్ ట్యుటోరియల్‌ను స్కిప్ చేయాలా?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"<xliff:g id="NAME">%1$s</xliff:g> యాప్‌లో మీరు తర్వాత కనుగొనవచ్చు"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"రద్దు చేయండి"</string>

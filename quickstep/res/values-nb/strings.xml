@@ -98,8 +98,7 @@
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Avslutt valg av delt skjerm"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Velg en annen app for å bruke delt skjerm"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Appen eller organisasjonen din tillater ikke denne handlingen"</string>
-    <!-- no translation found for split_widgets_not_supported (1355743038053053866) -->
-    <skip />
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Moduler støttes ikke for øyeblikket – velg en annen app"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Vil du hoppe over navigeringsveiledningen?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Du kan finne dette i <xliff:g id="NAME">%1$s</xliff:g>-appen senere"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Avbryt"</string>

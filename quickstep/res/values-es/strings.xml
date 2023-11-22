@@ -98,8 +98,7 @@
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Salir de la selección de pantalla dividida"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Elige otra app para usar la pantalla dividida"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"No puedes hacerlo porque la aplicación o tu organización no lo permiten"</string>
-    <!-- no translation found for split_widgets_not_supported (1355743038053053866) -->
-    <skip />
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Actualmente no se admiten widgets; selecciona otra aplicación"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"¿Saltar tutorial de navegación?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Puedes consultarlo en otro momento en la aplicación <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Cancelar"</string>
