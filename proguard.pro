@@ -6,7 +6,7 @@
 -verbose
 -keepattributes InnerClasses, *Annotation*, Signature, SourceFile, LineNumberTable
 
--keep class com.android.** { *; }
+-keep class com.android.**
 
 -keepclasseswithmembernames class * {
     native <methods>;
@@ -22,7 +22,7 @@
 }
 
 # Don't touch the restrictionbypass code
--keep class org.chickenhook.restrictionbypass.** { *; }
+-keep class org.chickenhook.restrictionbypass.**
 
 # Silence warnings from Compose tooling
 -dontwarn sun.misc.Unsafe
@@ -66,9 +66,9 @@
 -keep class app.lawnchair.LawnchairProto$* { *; }
 -keep class app.lawnchair.LawnchairApp { *; }
 -keep class app.lawnchair.LawnchairLauncher { *; }
--keep class app.lawnchair.compatlib.** { *; }
+-keep class app.lawnchair.compatlib.**
 
 -keep class com.google.protobuf.Timestamp { *; }
 
 # TODO: Remove this after the change in https://github.com/KieronQuinn/Smartspacer/pull/58 has been released.
--keep class com.kieronquinn.app.smartspacer.sdk.**  { *; }
+-keep class com.kieronquinn.app.smartspacer.sdk.**
