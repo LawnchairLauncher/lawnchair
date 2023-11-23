@@ -17,7 +17,6 @@ package com.android.launcher3.taskbar;
 
 import static com.android.app.animation.Interpolators.EMPHASIZED;
 import static com.android.launcher3.taskbar.TaskbarKeyguardController.MASK_ANY_SYSUI_LOCKED;
-import static com.android.launcher3.taskbar.TaskbarManager.isPhoneMode;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_APP;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_OVERVIEW;
 import static com.android.launcher3.taskbar.TaskbarStashController.FLAG_IN_STASHED_LAUNCHER_STATE;
@@ -734,7 +733,7 @@ public class TaskbarLauncherStateController {
         }
         mIconAlphaForHome.setValue(alpha);
         boolean hotseatVisible = alpha == 0
-                || isPhoneMode(mLauncher.getDeviceProfile())
+                || mControllers.taskbarActivityContext.isPhoneMode()
                 || (!mControllers.uiController.isHotseatIconOnTopWhenAligned()
                 && mIconAlignment.value > 0);
         /*

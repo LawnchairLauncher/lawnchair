@@ -276,11 +276,10 @@ public class TaskbarDragLayerController implements TaskbarControllers.LoggableTa
          */
         public int getTaskbarBackgroundHeight() {
             DeviceProfile deviceProfile = mActivity.getDeviceProfile();
-            if (TaskbarManager.isPhoneMode(deviceProfile)) {
+            if (mActivity.isPhoneMode()) {
                 Resources resources = mActivity.getResources();
-                Point taskbarDimensions =
-                        DimensionUtils.getTaskbarPhoneDimensions(deviceProfile, resources,
-                                TaskbarManager.isPhoneMode(deviceProfile));
+                Point taskbarDimensions = DimensionUtils.getTaskbarPhoneDimensions(deviceProfile,
+                        resources, true /* isPhoneMode */);
                 return taskbarDimensions.y == -1 ?
                         deviceProfile.getDisplayInfo().currentSize.y :
                         taskbarDimensions.y;

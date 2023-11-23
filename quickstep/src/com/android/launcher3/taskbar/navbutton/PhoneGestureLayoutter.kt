@@ -20,7 +20,7 @@ import android.content.res.Resources
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import com.android.launcher3.DeviceProfile
+import com.android.launcher3.taskbar.TaskbarActivityContext
 import com.android.systemui.shared.rotation.RotationButton
 
 /** Layoutter for showing gesture navigation on phone screen. No buttons here, no-op container */
@@ -43,7 +43,7 @@ class PhoneGestureLayoutter(
                 a11yButton
         ) {
 
-    override fun layoutButtons(dp: DeviceProfile, isA11yButtonPersistent: Boolean) {
+    override fun layoutButtons(context: TaskbarActivityContext, isA11yButtonPersistent: Boolean) {
         endContextualContainer.removeAllViews()
         startContextualContainer.removeAllViews()
     }

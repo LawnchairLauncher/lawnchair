@@ -23,7 +23,6 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import com.android.app.animation.Interpolators
-import com.android.launcher3.DeviceProfile
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.Utilities.mapRange
@@ -95,10 +94,10 @@ class TaskbarBackgroundRenderer(private val context: TaskbarActivityContext) {
         setCornerRoundness(DEFAULT_ROUNDNESS)
     }
 
-    fun updateStashedHandleWidth(dp: DeviceProfile, res: Resources) {
+    fun updateStashedHandleWidth(context: TaskbarActivityContext, res: Resources) {
         stashedHandleWidth =
             res.getDimensionPixelSize(
-                if (TaskbarManager.isPhoneMode(dp)) R.dimen.taskbar_stashed_small_screen
+                if (context.isPhoneMode) R.dimen.taskbar_stashed_small_screen
                 else R.dimen.taskbar_stashed_handle_width
             )
     }

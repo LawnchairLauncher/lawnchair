@@ -106,7 +106,7 @@ public class TaskbarDragLayer extends BaseDragLayer<TaskbarActivityContext> {
 
     public void init(TaskbarDragLayerController.TaskbarDragLayerCallbacks callbacks) {
         mControllerCallbacks = callbacks;
-        mBackgroundRenderer.updateStashedHandleWidth(mActivity.getDeviceProfile(), getResources());
+        mBackgroundRenderer.updateStashedHandleWidth(mActivity, getResources());
         recreateControllers();
     }
 

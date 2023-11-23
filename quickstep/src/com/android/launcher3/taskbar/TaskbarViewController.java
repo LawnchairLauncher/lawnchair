@@ -29,8 +29,6 @@ import static com.android.launcher3.config.FeatureFlags.enableTaskbarPinning;
 import static com.android.launcher3.logging.StatsLogManager.LauncherEvent.LAUNCHER_TASKBAR_ALLAPPS_BUTTON_TAP;
 import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_PERSISTENT;
 import static com.android.launcher3.taskbar.TaskbarPinningController.PINNING_TRANSIENT;
-import static com.android.launcher3.taskbar.TaskbarManager.isPhoneButtonNavMode;
-import static com.android.launcher3.taskbar.TaskbarManager.isPhoneMode;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_TASKBAR_ALIGNMENT_ANIM;
 import static com.android.launcher3.util.MultiTranslateDelegate.INDEX_TASKBAR_PINNING_ANIM;
@@ -191,7 +189,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
     public void init(TaskbarControllers controllers) {
         mControllers = controllers;
         mTaskbarView.init(new TaskbarViewCallbacks());
-        mTaskbarView.getLayoutParams().height = isPhoneMode(mActivity.getDeviceProfile())
+        mTaskbarView.getLayoutParams().height = mActivity.isPhoneMode()
                 ? mActivity.getResources().getDimensionPixelSize(R.dimen.taskbar_phone_size)
                 : mActivity.getDeviceProfile().taskbarHeight;
 
@@ -219,7 +217,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
             // This gets modified in NavbarButtonsViewController, but the initial value it reads
             // may be incorrect since it's state gets destroyed on taskbar recreate, so reset here
             mTaskbarIconAlpha.get(ALPHA_INDEX_SMALL_SCREEN)
-                    .animateToValue(isPhoneButtonNavMode(mActivity) ? 0 : 1).start();
+                    .animateToValue(mActivity.isPhoneButtonNavMode() ? 0 : 1).start();
         }
         if (enableTaskbarPinning()) {
             mTaskbarView.addOnLayoutChangeListener(mTaskbarViewLayoutChangeListener);
@@ -598,7 +596,7 @@ public class TaskbarViewController implements TaskbarControllers.LoggableTaskbar
      *                       1 => fully aligned
      */
     public void setLauncherIconAlignment(float alignmentRatio, DeviceProfile launcherDp) {
-        if (isPhoneMode(launcherDp)) {
+        if (mActivity.isPhoneMode()) {
             mIconAlignControllerLazy = null;
             return;
         }
