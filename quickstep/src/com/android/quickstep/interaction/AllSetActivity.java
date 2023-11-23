@@ -184,7 +184,7 @@ public class AllSetActivity extends Activity {
         mAnimatedBackground.setAnimation(resources.openRawResource(R.raw.all_set_page_bg),
                 null);
 
-        LottieAnimationColorUtils.updateColors(
+        LottieAnimationColorUtils.updateToColorResources(
                 mAnimatedBackground,
                 Map.of(LOTTIE_PRIMARY_COLOR_TOKEN, R.color.all_set_bg_primary,
                         LOTTIE_TERTIARY_COLOR_TOKEN, R.color.all_set_bg_tertiary),

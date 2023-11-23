@@ -251,5 +251,5 @@ private fun LottieAnimationView.supportLightTheme() {
         return
     }
 
-    LottieAnimationColorUtils.updateColors(this, DARK_TO_LIGHT_COLORS, context.theme)
+    LottieAnimationColorUtils.updateToColorResources(this, DARK_TO_LIGHT_COLORS, context.theme)
 }
