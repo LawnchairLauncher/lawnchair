@@ -49,6 +49,7 @@ import com.android.launcher3.config.FeatureFlags.BooleanFlag;
 import com.android.launcher3.config.FeatureFlags.IntFlag;
 import com.android.launcher3.tapl.LauncherInstrumentation;
 import com.android.launcher3.tapl.Workspace;
+import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.Assert;
 
@@ -133,13 +134,20 @@ public class TestUtil {
      */
     public static Point[] getCornersAndCenterPositions(LauncherInstrumentation launcher) {
         final Point dimensions = launcher.getWorkspace().getIconGridDimensions();
-        return new Point[]{
-                new Point(0, 1),
-                new Point(0, dimensions.y - 2),
-                new Point(dimensions.x - 1, 1),
-                new Point(dimensions.x - 1, dimensions.y - 2),
-                new Point(dimensions.x / 2, dimensions.y / 2)
-        };
+        if (TestStabilityRule.isPresubmit()) {
+            // Return only center in presubmit to fit under the presubmit SLO.
+            return new Point[]{
+                    new Point(dimensions.x / 2, dimensions.y / 2)
+            };
+        } else {
+            return new Point[]{
+                    new Point(0, 1),
+                    new Point(0, dimensions.y - 2),
+                    new Point(dimensions.x - 1, 1),
+                    new Point(dimensions.x - 1, dimensions.y - 2),
+                    new Point(dimensions.x / 2, dimensions.y / 2)
+            };
+        }
     }
 
     /**

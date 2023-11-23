@@ -22,6 +22,8 @@ import static com.android.launcher3.util.TestConstants.AppNames.GMAIL_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.MAPS_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.STORE_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.TEST_APP_NAME;
+import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
+import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 
 import static com.google.common.truth.Truth.assertThat;
 
@@ -36,12 +38,13 @@ import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.PortraitLandscapeRunner.PortraitLandscape;
 import com.android.launcher3.util.TestUtil;
 import com.android.launcher3.util.Wait;
-import com.android.launcher3.util.rule.ScreenRecordRule;
+import com.android.launcher3.util.rule.TestStabilityRule;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -96,12 +99,11 @@ public class TaplUninstallRemove extends AbstractLauncherUiTest {
 
     /**
      * Makes sure you can uninstall an app from the Workspace.
-     * @throws Exception
      */
     @Test
     @PortraitLandscape
     @PlatinumTest(focusArea = "launcher")
-    @ScreenRecordRule.ScreenRecord
+    @TestStabilityRule.Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/311099513
     public void testUninstallFromWorkspace() throws Exception {
         installDummyAppAndWaitForUIUpdate();
         try {
@@ -114,7 +116,6 @@ public class TaplUninstallRemove extends AbstractLauncherUiTest {
 
     /**
      * Makes sure you can uninstall an app from AllApps.
-     * @throws Exception
      */
     @Test
     @PortraitLandscape
@@ -143,15 +144,23 @@ public class TaplUninstallRemove extends AbstractLauncherUiTest {
             sb.append(p).append(", ");
         }
         Log.d(ICON_MISSING, "allGridPositions: " + sb);
-        createShortcutIfNotExist(STORE_APP_NAME, gridPositions[0]);
-        createShortcutIfNotExist(MAPS_APP_NAME, gridPositions[1]);
-        installDummyAppAndWaitForUIUpdate();
         try {
-            createShortcutIfNotExist(DUMMY_APP_NAME, gridPositions[2]);
+            installDummyAppAndWaitForUIUpdate();
+
+            final String[] appNameCandidates = {DUMMY_APP_NAME, MAPS_APP_NAME, STORE_APP_NAME};
+
+            // List of test apps trimmed down to the length of grid positions.
+            final String[] appNames = Arrays.copyOfRange(
+                    appNameCandidates,
+                    0, Math.min(gridPositions.length, appNameCandidates.length));
+
+            for (int i = 0; i < appNames.length; ++i) {
+                createShortcutIfNotExist(appNames[i], gridPositions[i]);
+            }
+
             Map<String, Point> initialPositions =
                     mLauncher.getWorkspace().getWorkspaceIconsPositions();
-            assertThat(initialPositions.keySet())
-                    .containsAtLeast(DUMMY_APP_NAME, MAPS_APP_NAME, STORE_APP_NAME);
+            assertThat(initialPositions.keySet()).containsAtLeastElementsIn(appNames);
 
             mLauncher.getWorkspace().getWorkspaceAppIcon(DUMMY_APP_NAME).uninstall();
             mLauncher.getWorkspace().verifyWorkspaceAppIconIsGone(

@@ -98,8 +98,7 @@
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"Išeiti iš išskaidyto ekrano pasirinkimo"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"Išskaidyto ekrano režimą naudokite kita programa"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"Jūsų organizacijoje arba naudojant šią programą neleidžiama atlikti šio veiksmo"</string>
-    <!-- no translation found for split_widgets_not_supported (1355743038053053866) -->
-    <skip />
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"Valdikliai šiuo metu nepalaikomi, pasirinkite kitą programą"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"Praleisti naršymo mokymo programą?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"Tai galėsite rasti vėliau programoje „<xliff:g id="NAME">%1$s</xliff:g>“"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"Atšaukti"</string>

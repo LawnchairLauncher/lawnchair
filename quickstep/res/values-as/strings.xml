@@ -98,8 +98,7 @@
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"বিভাজিত স্ক্ৰীনৰ বাছনিৰ পৰা বাহিৰ হওক"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"বিভাজিত স্ক্ৰীন ব্যৱহাৰ কৰিবলৈ অন্য এটা এপ্ বাছক"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"এপ্‌টোৱে অথবা আপোনাৰ প্ৰতিষ্ঠানে এই কাৰ্যটোৰ অনুমতি নিদিয়ে"</string>
-    <!-- no translation found for split_widgets_not_supported (1355743038053053866) -->
-    <skip />
+    <string name="split_widgets_not_supported" msgid="1355743038053053866">"বৰ্তমান ৱিজেট সমৰ্থিত নহয়, অনুগ্ৰহ কৰি আন এটা এপ্‌ বাছনি কৰক"</string>
     <string name="skip_tutorial_dialog_title" msgid="2725643161260038458">"নেভিগেশ্বনৰ টিউট’ৰিয়েল এৰিব বিচাৰে নেকি?"</string>
     <string name="skip_tutorial_dialog_subtitle" msgid="544063326241955662">"আপুনি এয়া পাছত <xliff:g id="NAME">%1$s</xliff:g> এপ্‌টোত বিচাৰিব পাৰিব"</string>
     <string name="gesture_tutorial_action_button_label_cancel" msgid="3809842569351264108">"বাতিল কৰক"</string>
