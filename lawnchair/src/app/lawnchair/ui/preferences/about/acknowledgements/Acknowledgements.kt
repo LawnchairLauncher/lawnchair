@@ -66,11 +66,8 @@ fun NavGraphBuilder.licensesGraph(route: String) {
 fun Acknowledgements() {
     val ossLibraries by LocalPreferenceInteractor.current.ossLibraries.collectAsState()
     LoadingScreen(ossLibraries) { libraries ->
-        val filteredLibraries = libraries.map {
-            it.copy(name = it.name ?: "Unknown")
-        }
         PreferenceLayoutLazyColumn(label = stringResource(id = R.string.acknowledgements)) {
-            preferenceGroupItems(filteredLibraries, isFirstChild = true) { index, library ->
+            preferenceGroupItems(libraries, isFirstChild = true) { index, library ->
                 OssLibraryItem(
                     ossLibrary = library,
                     index = index,
@@ -87,13 +84,11 @@ fun OssLibraryItem(ossLibrary: OssLibrary, index: Int) {
 
     PreferenceTemplate(
         title = {
-            ossLibrary.name?.let {
-                Text(
-                    text = it,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
+            Text(
+                text = ossLibrary.name,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
         },
         modifier = Modifier
             .clickable { navController.navigate(route = destination) },
