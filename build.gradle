@@ -205,7 +205,6 @@ android {
             applicationIdSuffix ".debug"
             resValue("string", "derived_app_name", "Lawnchair (Debug)")
             signingConfig releaseSigning
-            proguardFiles "proguard-android-optimize.txt", "proguard.pro"
         }
 
         release {
@@ -213,7 +212,7 @@ android {
             signingConfig releaseSigning
             minifyEnabled true
             shrinkResources true
-            proguardFiles "proguard-android-optimize.txt", "proguard.pro"
+            proguardFiles "proguard.flags", "proguard.pro"
         }
     }
 
