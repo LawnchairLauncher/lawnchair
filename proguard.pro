@@ -24,7 +24,7 @@
 
 
 # Common rules.
--keep class com.android.**
+-keep class com.android.** { *; }
 -keepclasseswithmembernames class * {
     native <methods>;
 }
@@ -40,9 +40,9 @@
 -keep class app.lawnchair.LawnchairProto$* { *; }
 -keep class app.lawnchair.LawnchairApp { *; }
 -keep class app.lawnchair.LawnchairLauncher { *; }
--keep class app.lawnchair.compatlib.**
+-keep class app.lawnchair.compatlib.** { *; }
 -keep class com.google.protobuf.Timestamp { *; }
 # TODO: Remove this after the change in https://github.com/ChickenHook/RestrictionBypass/pull/9 has been released.
--keep class org.chickenhook.restrictionbypass.**
+-keep class org.chickenhook.restrictionbypass.** { *; }
 # TODO: Remove this after the change in https://github.com/KieronQuinn/Smartspacer/pull/58 has been released.
--keep class com.kieronquinn.app.smartspacer.sdk.**
+-keep class com.kieronquinn.app.smartspacer.sdk.** { *; }
