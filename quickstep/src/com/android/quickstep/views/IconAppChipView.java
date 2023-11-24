@@ -40,6 +40,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.touch.PagedOrientationHandler;
+import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.views.ActivityContext;
 import com.android.quickstep.util.RecentsOrientedState;
 
@@ -50,6 +51,12 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
 
     private static final int MENU_BACKGROUND_REVEAL_DURATION = 417;
     private static final int MENU_BACKGROUND_HIDE_DURATION = 333;
+
+    private static final int NUM_ALPHA_CHANNELS = 2;
+    private static final int INDEX_CONTENT_ALPHA = 0;
+    private static final int INDEX_COLOR_FILTER_ALPHA = 1;
+
+    private final MultiValueAlpha mMultiValueAlpha;
 
     private IconView mIconView;
     // Two textview so we can ellipsize the collapsed view and crossfade on expand to the full name.
@@ -98,6 +105,8 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
             int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         Resources res = getResources();
+        mMultiValueAlpha = new MultiValueAlpha(this, NUM_ALPHA_CHANNELS);
+        mMultiValueAlpha.setUpdateVisibility(/* updateVisibility= */ true);
 
         // Menu dimensions
         mMaxMenuWidth = res.getDimensionPixelSize(R.dimen.task_thumbnail_icon_menu_max_width);
@@ -286,7 +295,13 @@ public class IconAppChipView extends FrameLayout implements TaskViewIcon {
     @Override
     public void setIconColorTint(int color, float amount) {
         // RecentsView's COLOR_TINT animates between 0 and 0.5f, we want to hide the app chip menu.
-        setAlpha(Utilities.mapToRange(amount, 0f, 0.5f, 1f, 0f, LINEAR));
+        float colorTintAlpha = Utilities.mapToRange(amount, 0f, 0.5f, 1f, 0f, LINEAR);
+        mMultiValueAlpha.get(INDEX_COLOR_FILTER_ALPHA).setValue(colorTintAlpha);
+    }
+
+    @Override
+    public void setContentAlpha(float alpha) {
+        mMultiValueAlpha.get(INDEX_CONTENT_ALPHA).setValue(alpha);
     }
 
     @Override

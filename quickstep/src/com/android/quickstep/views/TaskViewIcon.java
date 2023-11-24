@@ -40,7 +40,7 @@ public interface TaskViewIcon {
     /**
      * Sets the opacity of the view.
      */
-    void setAlpha(float alpha);
+    void setContentAlpha(float alpha);
 
     /**
      * Returns this icon view's drawable.

@@ -436,7 +436,7 @@ public class GroupedTaskView extends TaskView {
         super.setIconsAndBannersTransitionProgress(progress, invert);
         // Value set by super call
         float scale = mIconView.getAlpha();
-        mIconView2.setAlpha(scale);
+        mIconView2.setContentAlpha(scale);
         mDigitalWellBeingToast2.updateBannerOffset(1f - scale);
     }
 

@@ -630,7 +630,7 @@ public class TaskView extends FrameLayout implements Reusable {
             return;
         }
         mModalness = modalness;
-        mIconView.setAlpha(1 - modalness);
+        mIconView.setContentAlpha(1 - modalness);
         mDigitalWellBeingToast.updateBannerOffset(modalness);
     }
 
@@ -1253,7 +1253,7 @@ public class TaskView extends FrameLayout implements Reusable {
         float upperClamp = invert ? 1 : iconScalePercentage;
         float scale = Interpolators.clampToProgress(FAST_OUT_SLOW_IN, lowerClamp, upperClamp)
                 .getInterpolation(progress);
-        mIconView.setAlpha(scale);
+        mIconView.setContentAlpha(scale);
         mDigitalWellBeingToast.updateBannerOffset(1f - scale);
     }
 
