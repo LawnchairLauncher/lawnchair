@@ -44,5 +44,3 @@
 -keep class com.google.protobuf.Timestamp { *; }
 # TODO: Remove this after the change in https://github.com/ChickenHook/RestrictionBypass/pull/9 has been released.
 -keep class org.chickenhook.restrictionbypass.** { *; }
-# TODO: Remove this after the change in https://github.com/KieronQuinn/Smartspacer/pull/58 has been released.
--keep class com.kieronquinn.app.smartspacer.sdk.** { *; }
