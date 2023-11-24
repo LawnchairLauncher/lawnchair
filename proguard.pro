@@ -1,3 +1,6 @@
+# The rules from AOSP are addressed into proguard.flags, we can just maintain Lawnchair related rules here.
+
+
 -allowaccessmodification
 -dontoptimize
 -dontpreverify
