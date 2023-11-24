@@ -12,7 +12,8 @@ android {
     sourceSets {
         main {
             java.srcDirs = ['src']
-            aidl.srcDirs = ['src']
+            // TODO: Re-enable this after Hilt KSP compiler issue has been fixed.
+            //aidl.srcDirs = ['src']
         }
     }
 }
