@@ -37,8 +37,8 @@ DeviceProfile:
 	iconSizePx: 147.0px (56.0dp)
 	iconTextSizePx: 0.0px (0.0dp)
 	iconDrawablePaddingPx: 0.0px (0.0dp)
-	inv.numFolderRows: 4
-	inv.numFolderColumns: 4
+	numFolderRows: 4
+	numFolderColumns: 4
 	folderCellWidthPx: 163.0px (62.095238dp)
 	folderCellHeightPx: 192.0px (73.14286dp)
 	folderChildIconSizePx: 123.0px (46.857143dp)

@@ -802,7 +802,7 @@ public class Launcher extends StatefulActivity<LauncherState>
         if (info.container >= 0) {
             View folderIcon = getWorkspace().getHomescreenIconByItemId(info.container);
             if (folderIcon instanceof FolderIcon && folderIcon.getTag() instanceof FolderInfo) {
-                if (new FolderGridOrganizer(getDeviceProfile().inv)
+                if (new FolderGridOrganizer(getDeviceProfile())
                         .setFolderInfo((FolderInfo) folderIcon.getTag())
                         .isItemInPreview(info.rank)) {
                     folderIcon.invalidate();
@@ -2657,7 +2657,7 @@ public class Launcher extends StatefulActivity<LauncherState>
 
         // Cache one page worth of icons
         getViewCache().setCacheSize(R.layout.folder_application,
-                mDeviceProfile.inv.numFolderColumns * mDeviceProfile.inv.numFolderRows);
+                mDeviceProfile.numFolderColumns * mDeviceProfile.numFolderRows);
         getViewCache().setCacheSize(R.layout.folder_page, 2);
 
         TraceHelper.INSTANCE.endSection();
