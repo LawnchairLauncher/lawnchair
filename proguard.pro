@@ -1,4 +1,4 @@
-# The rules from AOSP are addressed into proguard.flags, we can just maintain Lawnchair related rules here.
+# The rules from AOSP are located in proguard.flags file, we can just maintain Lawnchair related rules here.
 
 
 -allowaccessmodification
