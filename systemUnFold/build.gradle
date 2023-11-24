@@ -12,8 +12,7 @@ android {
     sourceSets {
         main {
             java.srcDirs = ['src']
-            // TODO: Re-enable this after https://github.com/google/dagger/issues/4158 is finished.
-            //aidl.srcDirs = ['src']
+            aidl.srcDirs = ['src']
         }
     }
 }
