@@ -72,40 +72,35 @@ allprojects {
         )
     }
 
-    ext.addFrameworkJar = { String name ->
-        def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
-        if (!frameworkJar.exists()) {
-            throw new IllegalArgumentException("Framework jar path ${frameworkJar.path} doesn't exist")
-        }
-        gradle.projectsEvaluated {
-            tasks.withType(JavaCompile).configureEach {
-                classpath = files(frameworkJar, classpath)
+    ext {
+        FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
+        daggerVersion = '2.48.1'
+
+        addFrameworkJar = { String name ->
+            def frameworkJar = new File(FRAMEWORK_PREBUILTS_DIR, name)
+            if (!frameworkJar.exists()) {
+                throw new IllegalArgumentException("Framework jar path ${frameworkJar.path} doesn't exist")
             }
-            tasks.withType(KotlinCompile).configureEach {
-                libraries.from(files(frameworkJar))
+            gradle.projectsEvaluated {
+                tasks.withType(JavaCompile).configureEach {
+                    classpath = files(frameworkJar, classpath)
+                }
+                tasks.withType(KotlinCompile).configureEach {
+                    libraries.from(files(frameworkJar))
+                }
+            }
+        }
+
+        compileOnlyCommonJars = {
+            dependencies {
+                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell.jar')
+                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'core.jar')
+                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'seeder.jar')
+                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-core.jar')
+                compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd.jar')
             }
         }
     }
-
-    ext.compileOnlyCommonJars = {
-        dependencies {
-            compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'WindowManager-Shell.jar')
-            compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'core.jar')
-            compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'seeder.jar')
-            compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-core.jar')
-            compileOnly fileTree(dir: FRAMEWORK_PREBUILTS_DIR, include: 'SystemUI-statsd.jar')
-        }
-    }
-}
-
-// todo remove ext block after migrating to version catalog
-ext {
-    FRAMEWORK_PREBUILTS_DIR = "$rootDir/prebuilts/libs"
-    accompanist_version = '0.32.0'
-    daggerVersion = '2.48.1'
-    libsu_version = '5.2.1'
-    room_version = '2.6.0'
-    optoVersion = "1.0.18"
 }
 
 final def buildCommit = providers.exec {
@@ -388,15 +383,17 @@ dependencies {
     implementation "androidx.navigation:navigation-compose:2.7.5"
     implementation "androidx.palette:palette-ktx:1.0.0"
     implementation "androidx.slice:slice-core:1.1.0-alpha02"
-    implementation "com.google.accompanist:accompanist-drawablepainter:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-insets-ui:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-permissions:$accompanist_version"
-    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanist_version"
+    def accompanistVersion = '0.32.0'
+    implementation "com.google.accompanist:accompanist-drawablepainter:$accompanistVersion"
+    implementation "com.google.accompanist:accompanist-insets-ui:$accompanistVersion"
+    implementation "com.google.accompanist:accompanist-permissions:$accompanistVersion"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:$accompanistVersion"
     implementation "com.google.android.material:material:1.10.0"
     implementation "io.github.fornewid:material-motion-compose-core:1.0.7"
     implementation 'dev.kdrag0n:colorkt:1.0.5'
     implementation 'io.coil-kt:coil-compose:2.5.0'
     implementation 'me.xdrop:fuzzywuzzy:1.4.0'
+    def optoVersion = "1.0.18"
     implementation "com.patrykmichalik.opto:domain:$optoVersion"
     implementation "com.patrykmichalik.opto:core:$optoVersion"
     implementation "com.patrykmichalik.opto:compose:$optoVersion"
@@ -404,12 +401,14 @@ dependencies {
     implementation "com.squareup.retrofit2:retrofit:2.9.0"
     implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:1.0.0"
 
-    implementation "androidx.room:room-runtime:$room_version"
-    implementation "androidx.room:room-ktx:$room_version"
-    ksp "androidx.room:room-compiler:$room_version"
+    def roomVersion = '2.6.0'
+    implementation "androidx.room:room-runtime:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
+    ksp "androidx.room:room-compiler:$roomVersion"
 
-    implementation "com.github.topjohnwu.libsu:core:$libsu_version"
-    implementation "com.github.topjohnwu.libsu:service:$libsu_version"
+    def libsuVersion = '5.2.1'
+    implementation "com.github.topjohnwu.libsu:core:$libsuVersion"
+    implementation "com.github.topjohnwu.libsu:service:$libsuVersion"
 
     // Persian Date
     implementation 'com.github.samanzamani:PersianDate:1.7.1'
@@ -417,7 +416,7 @@ dependencies {
     implementation 'com.airbnb.android:lottie:6.2.0'
 
     // Smartspacer
-    implementation('com.kieronquinn.smartspacer:sdk-client:1.0.5') {
+    implementation('com.kieronquinn.smartspacer:sdk-client:1.0.6') {
         exclude group: "com.github.skydoves", module: "balloon"
     }
 }
