@@ -59,9 +59,9 @@ public class ReorderAlgorithm {
      * @param solution  variable to store the solution
      * @return the same solution variable
      */
-    public CellLayout.ItemConfiguration findReorderSolution(int pixelX, int pixelY, int minSpanX,
+    public ItemConfiguration findReorderSolution(int pixelX, int pixelY, int minSpanX,
             int minSpanY, int spanX, int spanY, int[] direction, View dragView, boolean decX,
-            CellLayout.ItemConfiguration solution) {
+            ItemConfiguration solution) {
         // Copy the current state into the solution. This solution will be manipulated as necessary.
         mCellLayout.copyCurrentStateToSolution(solution, false);
         // Copy the current occupied array into the temporary occupied array. This array will be
@@ -110,11 +110,11 @@ public class ReorderAlgorithm {
      * @param dragView view being dragged in reorder
      * @return the configuration that represents the found reorder
      */
-    public CellLayout.ItemConfiguration dropInPlaceSolution(int pixelX, int pixelY, int spanX,
+    public ItemConfiguration dropInPlaceSolution(int pixelX, int pixelY, int spanX,
             int spanY, View dragView) {
         int[] result = mCellLayout.findNearestAreaIgnoreOccupied(pixelX, pixelY, spanX, spanY,
                 new int[2]);
-        CellLayout.ItemConfiguration solution = new CellLayout.ItemConfiguration();
+        ItemConfiguration solution = new ItemConfiguration();
         mCellLayout.copyCurrentStateToSolution(solution, false);
 
         solution.isSolution = !isConfigurationRegionOccupied(
@@ -133,7 +133,7 @@ public class ReorderAlgorithm {
     }
 
     private boolean isConfigurationRegionOccupied(Rect region,
-            CellLayout.ItemConfiguration configuration, View ignoreView) {
+            ItemConfiguration configuration, View ignoreView) {
         return configuration.map.entrySet()
                 .stream()
                 .filter(entry -> entry.getKey() != ignoreView)
@@ -153,9 +153,9 @@ public class ReorderAlgorithm {
      * @param spanY  vertical cell span
      * @return the configuration that represents the found reorder
      */
-    public CellLayout.ItemConfiguration closestEmptySpaceReorder(int pixelX, int pixelY,
+    public ItemConfiguration closestEmptySpaceReorder(int pixelX, int pixelY,
             int minSpanX, int minSpanY, int spanX, int spanY) {
-        CellLayout.ItemConfiguration solution = new CellLayout.ItemConfiguration();
+        ItemConfiguration solution = new ItemConfiguration();
         int[] result = new int[2];
         int[] resultSpan = new int[2];
         mCellLayout.findNearestVacantArea(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY, result,
@@ -188,22 +188,22 @@ public class ReorderAlgorithm {
      * @return returns a solution for the given parameters, the solution contains all the icons and
      * the locations they should be in the given solution.
      */
-    public CellLayout.ItemConfiguration calculateReorder(int pixelX, int pixelY, int minSpanX,
+    public ItemConfiguration calculateReorder(int pixelX, int pixelY, int minSpanX,
             int minSpanY, int spanX, int spanY, View dragView) {
         mCellLayout.getDirectionVectorForDrop(pixelX, pixelY, spanX, spanY, dragView,
                 mCellLayout.mDirectionVector);
 
-        CellLayout.ItemConfiguration dropInPlaceSolution = dropInPlaceSolution(pixelX, pixelY,
+        ItemConfiguration dropInPlaceSolution = dropInPlaceSolution(pixelX, pixelY,
                 spanX, spanY,
                 dragView);
 
         // Find a solution involving pushing / displacing any items in the way
-        CellLayout.ItemConfiguration swapSolution = findReorderSolution(pixelX, pixelY, minSpanX,
+        ItemConfiguration swapSolution = findReorderSolution(pixelX, pixelY, minSpanX,
                 minSpanY, spanX, spanY, mCellLayout.mDirectionVector, dragView, true,
-                new CellLayout.ItemConfiguration());
+                new ItemConfiguration());
 
         // We attempt the approach which doesn't shuffle views at all
-        CellLayout.ItemConfiguration closestSpaceSolution = closestEmptySpaceReorder(
+        ItemConfiguration closestSpaceSolution = closestEmptySpaceReorder(
                 pixelX, pixelY, minSpanX, minSpanY, spanX, spanY);
 
         // If the reorder solution requires resizing (shrinking) the item being dropped, we instead
