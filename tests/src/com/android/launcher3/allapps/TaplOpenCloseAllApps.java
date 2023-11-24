@@ -217,4 +217,10 @@ public class TaplOpenCloseAllApps extends AbstractLauncherUiTest {
         mLauncher.getWorkspace();
         waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
     }
+
+    @Test
+    public void testDismissAllAppsWithEscKey() {
+        mLauncher.goHome().switchToAllApps().dismissByEscKey();
+        waitForState("Launcher internal state didn't switch to Home", () -> LauncherState.NORMAL);
+    }
 }
