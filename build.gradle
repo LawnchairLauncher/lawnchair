@@ -416,7 +416,7 @@ dependencies {
     implementation 'com.airbnb.android:lottie:6.2.0'
 
     // Smartspacer
-    implementation('com.kieronquinn.smartspacer:sdk-client:1.0.5') {
+    implementation('com.kieronquinn.smartspacer:sdk-client:1.0.6') {
         exclude group: "com.github.skydoves", module: "balloon"
     }
 }
