@@ -24,44 +24,52 @@
   public static final ** CREATOR;
 }
 
-# Silence warnings from Compose tooling
--dontwarn sun.misc.Unsafe
-
-# Silence warnings about classes that are available at runtime
-# These rules are generated automatically by the Android Gradle plugin.
--dontwarn android.animation.AnimationHandler*
--dontwarn android.content.om.**
--dontwarn android.content.pm.**
--dontwarn android.content.res.**
--dontwarn android.hardware.devicestate.DeviceStateManager*
--dontwarn android.provider.**
--dontwarn android.service.wallpaper.IWallpaperEngine*
--dontwarn android.util.**
--dontwarn android.widget.RemoteViews*
--dontwarn androidx.compose.runtime.PrimitiveSnapshotStateKt
--dontwarn androidx.dynamicanimation.animation.AnimationHandler$FrameCallbackScheduler*
--dontwarn androidx.window.extensions.**
--dontwarn androidx.window.sidecar.**
--dontwarn com.android.internal.**
--dontwarn com.google.android.collect.Sets*
--dontwarn com.google.protobuf.nano.**
--dontwarn dagger.**
--dontwarn javax.inject.**
--dontwarn android.net.**
--dontwarn android.os.**
--dontwarn android.bluetooth.**
+# Please add these rules to your existing keep rules in order to suppress warnings.
+# This is generated automatically by the Android Gradle plugin.
 -dontwarn android.appwidget.AppWidgetHost$AppWidgetHostListener
--dontwarn android.compat.Compatibility
--dontwarn android.compat.annotation.UnsupportedAppUsage
--dontwarn com.android.i18n.phonenumbers.**
--dontwarn com.android.wm.shell.**
--dontwarn dalvik.system.**
--dontwarn java.nio.NioUtils
--dontwarn libcore.**
+-dontwarn android.util.StatsEvent$Builder
+-dontwarn android.util.StatsEvent
+-dontwarn androidx.window.extensions.WindowExtensions
+-dontwarn androidx.window.extensions.WindowExtensionsProvider
+-dontwarn androidx.window.extensions.layout.DisplayFeature
+-dontwarn androidx.window.extensions.layout.FoldingFeature
+-dontwarn androidx.window.extensions.layout.WindowLayoutComponent
+-dontwarn androidx.window.extensions.layout.WindowLayoutInfo
+-dontwarn androidx.window.sidecar.SidecarDeviceState
+-dontwarn androidx.window.sidecar.SidecarDisplayFeature
+-dontwarn androidx.window.sidecar.SidecarInterface$SidecarCallback
+-dontwarn androidx.window.sidecar.SidecarInterface
+-dontwarn androidx.window.sidecar.SidecarProvider
+-dontwarn androidx.window.sidecar.SidecarWindowLayoutInfo
+-dontwarn com.android.org.conscrypt.TrustManagerImpl
+-dontwarn com.android.wm.shell.animation.FloatProperties
+-dontwarn com.android.wm.shell.animation.PhysicsAnimator$FlingConfig
+-dontwarn com.android.wm.shell.animation.PhysicsAnimator$SpringConfig
+-dontwarn com.android.wm.shell.animation.PhysicsAnimator$UpdateListener
+-dontwarn com.android.wm.shell.animation.PhysicsAnimator
+-dontwarn com.android.wm.shell.bubbles.BubbleDataRepository
+-dontwarn com.android.wm.shell.bubbles.BubbleOverflow
+-dontwarn com.android.wm.shell.bubbles.DismissView
+-dontwarn com.android.wm.shell.bubbles.ManageEducationView
+-dontwarn com.android.wm.shell.bubbles.RelativeTouchListener
+-dontwarn com.android.wm.shell.bubbles.StackEducationView
+-dontwarn com.android.wm.shell.common.FloatingContentCoordinator$FloatingContent
+-dontwarn com.android.wm.shell.common.FloatingContentCoordinator
+-dontwarn com.android.wm.shell.common.magnetictarget.MagnetizedObject$MagnetListener
+-dontwarn com.android.wm.shell.common.magnetictarget.MagnetizedObject$MagneticTarget
+-dontwarn com.android.wm.shell.common.magnetictarget.MagnetizedObject
+-dontwarn com.android.wm.shell.desktopmode.DesktopModeTaskRepository$ActiveTasksListener
+-dontwarn com.android.wm.shell.desktopmode.DesktopModeTaskRepository
+-dontwarn com.android.wm.shell.desktopmode.DesktopTasksController
+-dontwarn com.android.wm.shell.pip.tv.TvPipKeepClearAlgorithm$Placement
+-dontwarn com.android.wm.shell.pip.tv.TvPipKeepClearAlgorithm
+-dontwarn com.skydoves.balloon.ArrowPositionRules
+-dontwarn com.skydoves.balloon.Balloon$Builder
+-dontwarn com.skydoves.balloon.Balloon
+-dontwarn com.skydoves.balloon.BalloonAnimation
+-dontwarn dalvik.system.CloseGuard
 -dontwarn lineageos.providers.LineageSettings$System
--dontwarn org.apache.harmony.dalvik.ddmc.**
--dontwarn org.ccil.cowan.tagsoup.**
--dontwarn com.skydoves.balloon.**
+
 
 -keep class app.lawnchair.LawnchairProto$* { *; }
 -keep class app.lawnchair.LawnchairApp { *; }
