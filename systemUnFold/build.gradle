@@ -1,7 +1,7 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
-    id 'org.jetbrains.kotlin.kapt'
+    id 'com.google.devtools.ksp'
 }
 
 android {
@@ -20,9 +20,21 @@ android {
 addFrameworkJar('framework-13.jar')
 compileOnlyCommonJars()
 
+// Workaround for https://github.com/google/dagger/issues/4158
+androidComponents {
+    onVariants(selector().all(), { variant ->
+        afterEvaluate {
+            def capName = variant.name.capitalize()
+            tasks.getByName("ksp${capName}Kotlin") {
+                setSource(tasks.getByName("compile${capName}Aidl").outputs)
+            }
+        }
+    })
+}
+
 dependencies {
     implementation "com.google.dagger:hilt-android:$daggerVersion"
-    kapt "com.google.dagger:hilt-compiler:$daggerVersion"
+    ksp "com.google.dagger:hilt-compiler:$daggerVersion"
 
     implementation "androidx.concurrent:concurrent-futures:1.1.0"
     implementation "androidx.lifecycle:lifecycle-common:2.6.2"
