@@ -18,10 +18,7 @@ sealed class GestureHandlerOption(
     abstract suspend fun buildConfig(activity: Activity): GestureHandlerConfig?
 
     sealed class Simple(labelRes: Int, val obj: GestureHandlerConfig) : GestureHandlerOption(labelRes, obj::class.java) {
-        constructor(obj: GestureHandlerConfig.Simple) : this(
-            obj.labelRes,
-            obj,
-        )
+        constructor(obj: GestureHandlerConfig.Simple) : this(obj.labelRes, obj)
 
         override suspend fun buildConfig(activity: Activity) = obj
     }

@@ -82,7 +82,6 @@ class FontManager private constructor(private val context: Context) {
     }
 
     class FontSpec(val loader: () -> FontCache.Font, val fallback: Typeface) {
-        constructor(font: FontCache.Font, fallback: Typeface) : this({ font }, fallback)
         constructor(pref: BasePreferenceManager.FontPref, fallback: Typeface) : this(pref::get, fallback)
 
         val font get() = loader()
