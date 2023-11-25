@@ -20,7 +20,6 @@ import android.content.Context
 import app.lawnchair.LawnchairLauncher
 
 sealed class GestureHandler(val context: Context) {
-
     abstract suspend fun onTrigger(launcher: LawnchairLauncher)
 }
 

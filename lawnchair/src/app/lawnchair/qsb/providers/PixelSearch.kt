@@ -4,7 +4,7 @@ import android.content.Intent
 import app.lawnchair.qsb.ThemingMethod
 import com.android.launcher3.R
 
-object PixelSearch : QsbSearchProvider(
+data object PixelSearch : QsbSearchProvider(
     id = "pixel_search",
     name = R.string.search_provider_pixel_search,
     // Use same style as Google Search

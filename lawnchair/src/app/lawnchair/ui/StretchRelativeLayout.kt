@@ -9,7 +9,7 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.views.SpringRelativeLayout
 
 @Suppress("LeakingThis")
-open class StretchRelativeLayout @JvmOverloads constructor(
+sealed class StretchRelativeLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0,

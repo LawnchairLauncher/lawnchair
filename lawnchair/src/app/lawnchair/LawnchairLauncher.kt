@@ -195,7 +195,6 @@ class LawnchairLauncher :
         }
     }
     override val onBackPressedDispatcher = OnBackPressedDispatcher {
-        @Suppress("DEPRECATION")
         super.onBackPressed()
     }
     override val lifecycle: LifecycleRegistry = LifecycleRegistry(this)

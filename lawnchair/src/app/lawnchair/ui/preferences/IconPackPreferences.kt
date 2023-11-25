@@ -94,7 +94,7 @@ enum class ThemedIconsState(
         fun getForSettings(
             themedIcons: Boolean,
             drawerThemedIcons: Boolean,
-        ) = values().find {
+        ) = entries.find {
             it.themedIcons == themedIcons && it.drawerThemedIcons == drawerThemedIcons
         } ?: Off
     }
@@ -185,7 +185,7 @@ fun IconPackPreferences() {
                 ListPreference(
                     enabled = themedIconsAvailable,
                     label = stringResource(id = R.string.themed_icon_title),
-                    entries = ThemedIconsState.values().map {
+                    entries = ThemedIconsState.entries.map {
                         ListPreferenceEntry(
                             value = it,
                             label = { stringResource(id = it.labelResourceId) },

@@ -9,7 +9,7 @@ import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.R
 
 sealed class GestureHandlerOption(
-    val labelRes: Int,
+    private val labelRes: Int,
     val configClass: Class<*>,
 ) {
 
@@ -17,23 +17,20 @@ sealed class GestureHandlerOption(
 
     abstract suspend fun buildConfig(activity: Activity): GestureHandlerConfig?
 
-    open class Simple(labelRes: Int, val obj: GestureHandlerConfig) : GestureHandlerOption(labelRes, obj::class.java) {
-        constructor(obj: GestureHandlerConfig.Simple) : this(
-            obj.labelRes,
-            obj,
-        )
+    sealed class Simple(labelRes: Int, val obj: GestureHandlerConfig) : GestureHandlerOption(labelRes, obj::class.java) {
+        constructor(obj: GestureHandlerConfig.Simple) : this(obj.labelRes, obj)
 
         override suspend fun buildConfig(activity: Activity) = obj
     }
 
-    object NoOp : Simple(GestureHandlerConfig.NoOp)
-    object Sleep : Simple(GestureHandlerConfig.Sleep)
-    object OpenNotifications : Simple(GestureHandlerConfig.OpenNotifications)
-    object OpenAppDrawer : Simple(GestureHandlerConfig.OpenAppDrawer)
-    object OpenAppSearch : Simple(GestureHandlerConfig.OpenAppSearch)
-    object OpenSearch : Simple(GestureHandlerConfig.OpenSearch)
+    data object NoOp : Simple(GestureHandlerConfig.NoOp)
+    data object Sleep : Simple(GestureHandlerConfig.Sleep)
+    data object OpenNotifications : Simple(GestureHandlerConfig.OpenNotifications)
+    data object OpenAppDrawer : Simple(GestureHandlerConfig.OpenAppDrawer)
+    data object OpenAppSearch : Simple(GestureHandlerConfig.OpenAppSearch)
+    data object OpenSearch : Simple(GestureHandlerConfig.OpenSearch)
 
-    object OpenApp : GestureHandlerOption(
+    data object OpenApp : GestureHandlerOption(
         R.string.gesture_handler_open_app_option,
         GestureHandlerConfig.OpenApp::class.java,
     ) {

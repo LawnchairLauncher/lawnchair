@@ -77,15 +77,15 @@ data class SearchActionCompat(
     }
 
     private constructor(from: SearchAction) : this(
-        from.getId(),
-        from.getTitle(),
-        from.getIcon(),
-        from.getSubtitle(),
-        from.getContentDescription(),
-        from.getPendingIntent(),
-        from.getIntent(),
-        from.getUserHandle(),
-        from.getExtras(),
+        from.id,
+        from.title,
+        from.icon,
+        from.subtitle,
+        from.contentDescription,
+        from.pendingIntent,
+        from.intent,
+        from.userHandle,
+        from.extras,
     )
 
     override fun equals(other: Any?): Boolean = when {

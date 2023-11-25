@@ -34,27 +34,27 @@ sealed class GestureHandlerConfig {
 
     @Serializable
     @SerialName("noOp")
-    object NoOp : Simple(R.string.gesture_handler_no_op, ::NoOpGestureHandler)
+    data object NoOp : Simple(R.string.gesture_handler_no_op, ::NoOpGestureHandler)
 
     @Serializable
     @SerialName("sleep")
-    object Sleep : Simple(R.string.gesture_handler_sleep, ::SleepGestureHandler)
+    data object Sleep : Simple(R.string.gesture_handler_sleep, ::SleepGestureHandler)
 
     @Serializable
     @SerialName("openNotifications")
-    object OpenNotifications : Simple(R.string.gesture_handler_open_notifications, ::OpenNotificationsHandler)
+    data object OpenNotifications : Simple(R.string.gesture_handler_open_notifications, ::OpenNotificationsHandler)
 
     @Serializable
     @SerialName("openAppDrawer")
-    object OpenAppDrawer : Simple(R.string.gesture_handler_open_app_drawer, ::OpenAppDrawerGestureHandler)
+    data object OpenAppDrawer : Simple(R.string.gesture_handler_open_app_drawer, ::OpenAppDrawerGestureHandler)
 
     @Serializable
     @SerialName("openAppSearch")
-    object OpenAppSearch : Simple(R.string.gesture_handler_open_app_search, ::OpenAppSearchGestureHandler)
+    data object OpenAppSearch : Simple(R.string.gesture_handler_open_app_search, ::OpenAppSearchGestureHandler)
 
     @Serializable
     @SerialName("openSearch")
-    object OpenSearch : Simple(R.string.gesture_handler_open_search, ::OpenSearchGestureHandler)
+    data object OpenSearch : Simple(R.string.gesture_handler_open_search, ::OpenSearchGestureHandler)
 
     @Serializable
     @SerialName("openApp")

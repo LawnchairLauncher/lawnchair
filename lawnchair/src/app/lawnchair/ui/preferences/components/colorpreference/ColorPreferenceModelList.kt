@@ -40,9 +40,7 @@ class ColorPreferenceModelList(context: Context) {
         )
     }
 
-    operator fun get(key: String): ColorPreferenceModel {
-        return models[key] ?: throw IllegalArgumentException("Unknown key: $key")
-    }
+    operator fun get(key: String): ColorPreferenceModel = models.getValue(key)
 
     private fun registerModel(model: ColorPreferenceModel) {
         models[model.prefObject.key.name] = model

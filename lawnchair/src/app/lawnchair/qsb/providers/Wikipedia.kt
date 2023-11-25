@@ -2,7 +2,7 @@ package app.lawnchair.qsb.providers
 
 import com.android.launcher3.R
 
-object Wikipedia : QsbSearchProvider(
+data object Wikipedia : QsbSearchProvider(
     id = "wikipedia",
     name = R.string.search_provider_wikipedia,
     icon = R.drawable.ic_wikipedia,

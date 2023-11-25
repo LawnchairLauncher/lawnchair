@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 
-object Google : QsbSearchProvider(
+data object Google : QsbSearchProvider(
     id = "google",
     name = R.string.search_provider_google,
     icon = R.drawable.ic_super_g_color,

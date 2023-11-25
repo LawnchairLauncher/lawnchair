@@ -4,7 +4,7 @@ import android.content.Intent
 import app.lawnchair.qsb.ThemingMethod
 import com.android.launcher3.R
 
-object GoogleGo : QsbSearchProvider(
+data object GoogleGo : QsbSearchProvider(
     id = "google_go",
     name = R.string.search_provider_google_go,
     icon = R.drawable.ic_super_g_color,

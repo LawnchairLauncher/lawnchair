@@ -4,7 +4,7 @@ import android.content.Intent
 import app.lawnchair.qsb.ThemingMethod
 import com.android.launcher3.R
 
-object Presearch : QsbSearchProvider(
+data object Presearch : QsbSearchProvider(
     id = "presearch",
     name = R.string.search_provider_presearch,
     icon = R.drawable.ic_presearch,

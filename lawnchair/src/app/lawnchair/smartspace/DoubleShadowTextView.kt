@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import app.lawnchair.views.CustomTextView
 import com.android.launcher3.views.DoubleShadowBubbleTextView.ShadowInfo
 
-open class DoubleShadowTextView @JvmOverloads constructor(
+sealed class DoubleShadowTextView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
 ) : CustomTextView(context, attrs) {
