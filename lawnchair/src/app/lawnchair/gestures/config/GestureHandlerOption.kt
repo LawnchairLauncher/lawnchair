@@ -26,14 +26,14 @@ sealed class GestureHandlerOption(
         override suspend fun buildConfig(activity: Activity) = obj
     }
 
-    object NoOp : Simple(GestureHandlerConfig.NoOp)
-    object Sleep : Simple(GestureHandlerConfig.Sleep)
-    object OpenNotifications : Simple(GestureHandlerConfig.OpenNotifications)
-    object OpenAppDrawer : Simple(GestureHandlerConfig.OpenAppDrawer)
-    object OpenAppSearch : Simple(GestureHandlerConfig.OpenAppSearch)
-    object OpenSearch : Simple(GestureHandlerConfig.OpenSearch)
+    data object NoOp : Simple(GestureHandlerConfig.NoOp)
+    data object Sleep : Simple(GestureHandlerConfig.Sleep)
+    data object OpenNotifications : Simple(GestureHandlerConfig.OpenNotifications)
+    data object OpenAppDrawer : Simple(GestureHandlerConfig.OpenAppDrawer)
+    data object OpenAppSearch : Simple(GestureHandlerConfig.OpenAppSearch)
+    data object OpenSearch : Simple(GestureHandlerConfig.OpenSearch)
 
-    object OpenApp : GestureHandlerOption(
+    data object OpenApp : GestureHandlerOption(
         R.string.gesture_handler_open_app_option,
         GestureHandlerConfig.OpenApp::class.java,
     ) {

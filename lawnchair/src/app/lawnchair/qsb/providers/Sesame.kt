@@ -3,7 +3,7 @@ package app.lawnchair.qsb.providers
 import app.lawnchair.qsb.ThemingMethod
 import com.android.launcher3.R
 
-object Sesame : QsbSearchProvider(
+data object Sesame : QsbSearchProvider(
     id = "sesame",
     name = R.string.search_provider_sesame,
     icon = R.drawable.ic_sesame,
