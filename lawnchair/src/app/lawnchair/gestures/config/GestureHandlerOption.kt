@@ -9,7 +9,7 @@ import app.lawnchair.util.kotlinxJson
 import com.android.launcher3.R
 
 sealed class GestureHandlerOption(
-    val labelRes: Int,
+    private val labelRes: Int,
     val configClass: Class<*>,
 ) {
 

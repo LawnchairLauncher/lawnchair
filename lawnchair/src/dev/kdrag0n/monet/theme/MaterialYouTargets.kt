@@ -17,7 +17,7 @@ import dev.kdrag0n.colorkt.ucs.lab.CieLab
 class MaterialYouTargets(
     private val chromaFactor: Double = 1.0,
     useLinearLightness: Boolean,
-    val cond: Zcam.ViewingConditions,
+    private val cond: Zcam.ViewingConditions,
 ) : ColorScheme() {
     companion object {
         // Linear ZCAM lightness
