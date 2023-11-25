@@ -26,14 +26,14 @@ class FontManager private constructor(private val context: Context) {
         val sansSerifMedium = Typeface.create("sans-serif-medium", Typeface.NORMAL)
 
         val prefs = PreferenceManager.getInstance(context)
-        val map = mutableMapOf<Int, FontSpec>()
-        map[R.id.font_base_icon] = FontSpec(prefs.fontWorkspace, sansSerif)
-        map[R.id.font_button] = FontSpec(prefs.fontHeadingMedium, sansSerifMedium)
-        map[R.id.font_heading] = FontSpec(prefs.fontHeading, sansSerif)
-        map[R.id.font_heading_medium] = FontSpec(prefs.fontHeadingMedium, sansSerif)
-        map[R.id.font_body] = FontSpec(prefs.fontBody, sansSerif)
-        map[R.id.font_body_medium] = FontSpec(prefs.fontBodyMedium, sansSerif)
-        return map
+        return mapOf(
+            R.id.font_base_icon to FontSpec(prefs.fontWorkspace, sansSerif),
+            R.id.font_button to FontSpec(prefs.fontHeadingMedium, sansSerifMedium),
+            R.id.font_heading to FontSpec(prefs.fontHeading, sansSerif),
+            R.id.font_heading_medium to FontSpec(prefs.fontHeadingMedium, sansSerif),
+            R.id.font_body to FontSpec(prefs.fontBody, sansSerif),
+            R.id.font_body_medium to FontSpec(prefs.fontBodyMedium, sansSerif),
+        )
     }
 
     fun overrideFont(textView: TextView, attrs: AttributeSet?) {
