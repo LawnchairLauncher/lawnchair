@@ -341,6 +341,12 @@ public class StatsLogManager implements ResourceBasedOverride {
         @UiEvent(doc = "User tapped on image content in Overview Select mode.")
         LAUNCHER_SELECT_MODE_IMAGE(627),
 
+        @UiEvent(doc = "User tapped on barcode content in Overview Select mode.")
+        LAUNCHER_SELECT_MODE_BARCODE(1531),
+
+        @UiEvent(doc = "Highlight gleams for barcode content in Overview Select mode.")
+        LAUNCHER_SELECT_MODE_SHOW_BARCODE_REGIONS(1532),
+
         @UiEvent(doc = "Activity to add external item was started")
         LAUNCHER_ADD_EXTERNAL_ITEM_START(641),
 
@@ -497,6 +503,21 @@ public class StatsLogManager implements ResourceBasedOverride {
 
         @UiEvent(doc = "User taps the More button to share an image")
         LAUNCHER_OVERVIEW_SHARING_TAP_MORE_TO_SHARE_IMAGE(778),
+
+        @UiEvent(doc = "Show Barode indicator for overview sharing")
+        LAUNCHER_OVERVIEW_SHARING_SHOW_BARCODE_INDICATOR(1533),
+
+        @UiEvent(doc = "User taps barcode indicator in overview")
+        LAUNCHER_OVERVIEW_SHARING_BARCODE_INDICATOR_TAP(1534),
+
+        @UiEvent(doc = "Configure barcode region for long_press action for overview sharing")
+        LAUNCHER_OVERVIEW_SHARING_CONFIGURE_BARCODE_REGION_LONG_PRESS(1535),
+
+        @UiEvent(doc = "User long presses a barcode region in overview")
+        LAUNCHER_OVERVIEW_SHARING_BARCODE_REGION_LONG_PRESS(1536),
+
+        @UiEvent(doc = "User drags a barcode region in overview")
+        LAUNCHER_OVERVIEW_SHARING_BARCODE_REGION_DRAG(1537),
 
         @UiEvent(doc = "User started resizing a widget on their home screen.")
         LAUNCHER_WIDGET_RESIZE_STARTED(820),

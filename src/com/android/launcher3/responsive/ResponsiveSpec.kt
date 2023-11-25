@@ -127,7 +127,8 @@ data class ResponsiveSpec(
             AllApps("allAppsSpec"),
             Folder("folderSpec"),
             Workspace("workspaceSpec"),
-            Hotseat("hotseatSpec")
+            Hotseat("hotseatSpec"),
+            Cell("cellSpec")
         }
     }
 }
@@ -204,9 +205,6 @@ class CalculatedResponsiveSpec {
     }
 
     fun isResponsiveSpecType(type: ResponsiveSpecType) = spec.specType == type
-
-    // TODO(b/287975993): Remove this after icon size is extracted to responsive grid
-    fun isCellSizeMatchWorkspace(): Boolean = spec.cellSize.matchWorkspace
 
     private fun updateRemainderSpaces(availableSpace: Int, cells: Int, spec: ResponsiveSpec) {
         val gutters = cells - 1

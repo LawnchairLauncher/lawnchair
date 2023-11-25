@@ -23,7 +23,13 @@ import com.android.launcher3.responsive.ResponsiveSpec.Companion.ResponsiveSpecT
 import com.android.launcher3.responsive.ResponsiveSpec.DimensionType
 import com.android.launcher3.util.ResourceHelper
 
-class HotseatSpecsProvider(private val groupOfSpecs: List<ResponsiveSpecGroup<HotseatSpec>>) {
+class HotseatSpecsProvider(groupOfSpecs: List<ResponsiveSpecGroup<HotseatSpec>>) {
+
+    private val groupOfSpecs: List<ResponsiveSpecGroup<HotseatSpec>>
+    init {
+        this.groupOfSpecs = groupOfSpecs.sortedBy { it.aspectRatio }
+    }
+
     fun getSpecsByAspectRatio(aspectRatio: Float): ResponsiveSpecGroup<HotseatSpec> {
         check(aspectRatio > 0f) { "Invalid aspect ratio! The value should be bigger than 0." }
 
