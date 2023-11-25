@@ -10,6 +10,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.View.OnLongClickListener
 import android.view.ViewGroup
+import app.lawnchair.util.unsafeLazy
 import com.android.launcher3.CheckLongPressHelper
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
@@ -20,7 +21,7 @@ import com.android.launcher3.views.OptionsPopupView
 import com.android.launcher3.views.OptionsPopupView.OptionItem
 
 open class SmartSpaceHostView(context: Context) : QsbWidgetHostView(context), OnLongClickListener, TouchCompleteListener {
-    private val mLauncher: Launcher by lazy { Launcher.getLauncher(context) }
+    private val mLauncher: Launcher by unsafeLazy { Launcher.getLauncher(context) }
 
     @Suppress("LeakingThis")
     private val mLongPressHelper: CheckLongPressHelper = CheckLongPressHelper(this, this)
