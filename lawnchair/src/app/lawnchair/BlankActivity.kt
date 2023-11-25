@@ -23,12 +23,13 @@ import androidx.core.os.bundleOf
 import androidx.core.view.WindowCompat
 import app.lawnchair.ui.preferences.components.SystemUi
 import app.lawnchair.ui.theme.LawnchairTheme
+import app.lawnchair.util.unsafeLazy
 import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 class BlankActivity : AppCompatActivity() {
 
-    private val resultReceiver by lazy { intent.getParcelableExtra<ResultReceiver>("callback")!! }
+    private val resultReceiver by unsafeLazy { intent.getParcelableExtra<ResultReceiver>("callback")!! }
     private var resultSent = false
     private var firstResume = true
     private var targetStarted = false

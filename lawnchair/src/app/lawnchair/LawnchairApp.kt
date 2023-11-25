@@ -41,6 +41,7 @@ import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.ui.AlertBottomSheetContent
 import app.lawnchair.ui.preferences.openAppInfo
 import app.lawnchair.util.restartLauncher
+import app.lawnchair.util.unsafeLazy
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.InvariantDeviceProfile
@@ -53,11 +54,11 @@ import java.io.File
 
 class LawnchairApp : Application() {
     private val compatible = Build.VERSION.SDK_INT in BuildConfig.QUICKSTEP_MIN_SDK..BuildConfig.QUICKSTEP_MAX_SDK
-    private val isRecentsComponent: Boolean by lazy { checkRecentsComponent() }
+    private val isRecentsComponent: Boolean by unsafeLazy { checkRecentsComponent() }
     private val recentsEnabled: Boolean get() = compatible && isRecentsComponent
     private val isAtleastT = Utilities.ATLEAST_T
     internal var accessibilityService: LawnchairAccessibilityService? = null
-    val isVibrateOnIconAnimation: Boolean by lazy { getSystemUiBoolean("config_vibrateOnIconAnimation", false) }
+    val isVibrateOnIconAnimation: Boolean by unsafeLazy { getSystemUiBoolean("config_vibrateOnIconAnimation", false) }
 
     override fun onCreate() {
         super.onCreate()
