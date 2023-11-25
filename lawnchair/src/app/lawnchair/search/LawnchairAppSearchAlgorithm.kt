@@ -65,7 +65,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     override fun doSearch(query: String, callback: SearchCallback<AdapterItem>) {
         appState.model.enqueueModelUpdateTask(object : BaseModelUpdateTask() {
             override fun execute(app: LauncherAppState, dataModel: BgDataModel, apps: AllAppsList) {
-                val result = getResult(apps!!.data, query)
+                val result = getResult(apps.data, query)
                 resultHandler.post { callback.onSearchResult(query, result) }
             }
         })
