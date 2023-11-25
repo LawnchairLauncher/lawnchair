@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.onEach
 class BcSmartspaceView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    private var previewMode: Boolean = false,
+    var previewMode: Boolean = false,
 ) : FrameLayout(context, attrs) {
 
     private val provider = SmartspaceProvider.INSTANCE.get(context)
