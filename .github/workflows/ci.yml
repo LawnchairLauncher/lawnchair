@@ -27,7 +27,7 @@ on:
   workflow_call:
 
 jobs:
-  build-release-apk:
+  build-debug-apk:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
@@ -51,15 +51,13 @@ jobs:
             echo storeFile='${{ github.workspace }}/key.jks' >> keystore.properties
             echo ${{ secrets.KEYSTORE }} | base64 --decode > ${{ github.workspace }}/key.jks
           fi
-      - name: Build release APK
-        run: ./gradlew assembleLawnWithQuickstepRelease
+      - name: Build debug APK
+        run: ./gradlew assembleLawnWithQuickstepDebug
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: Release APK
-          path: |
-            build/outputs/apk/lawnWithQuickstep/release/*.apk
-            build/outputs/mapping/lawnWithQuickstepRelease/mapping.txt
+          name: Debug APK
+          path: build/outputs/apk/lawnWithQuickstep/debug/*.apk
 
   check-style:
     runs-on: ubuntu-latest
@@ -79,7 +77,7 @@ jobs:
   send-notifications:
     runs-on: ubuntu-latest
     if: github.repository_owner == 'LawnchairLauncher'
-    needs: build-release-apk
+    needs: build-debug-apk
     steps:
       - uses: actions/checkout@v4
         with:
@@ -95,8 +93,8 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v3
         with:
-          name: Release APK
-          path: artifacts/release-apk
+          name: Debug APK
+          path: artifacts/debug-apk
       - name: Send notifications
         run: python ci.py
         env:
@@ -104,14 +102,14 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_CI_BOT_TOKEN }}
           TELEGRAM_CI_CHANNEL_ID: ${{ secrets.TELEGRAM_CI_CHANNEL_ID }}
           TELEGRAM_TEAM_GROUP_ID: ${{ secrets.NOTIFY_CHANNEL_ID }}
-          ARTIFACT_DIRECTORY: artifacts/release-apk
+          ARTIFACT_DIRECTORY: artifacts/debug-apk
           GITHUB_REF: ${{ github.ref }}
           ACTION: internal_notifications
 
   crowdin-auto-merge:
     runs-on: ubuntu-latest
     if: github.event.pull_request.user.login == 'lawnchair-bot' && github.event.pull_request.title == 'New Crowdin translations by Github Action'
-    needs: build-release-apk
+    needs: build-debug-apk
     steps:
       - env:
           GH_TOKEN: ${{ secrets.LAWNCHAIR_BOT_TOKEN }}
