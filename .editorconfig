@@ -15,5 +15,8 @@ ktlint_code_style = intellij_idea
 ktlint_standard_discouraged-comment-location = disabled
 ktlint_function_naming_ignore_when_annotated_with = Composable
 
+[*.md]
+trim_trailing_whitespace = false
+
 [*.{yml,yaml}]
 indent_size = 2
