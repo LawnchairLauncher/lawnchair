@@ -31,8 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           submodules: true
       - uses: actions/setup-java@v3
@@ -82,14 +81,13 @@ jobs:
     if: github.repository_owner == 'LawnchairLauncher'
     needs: build-release-apk
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           submodules: true
           fetch-depth: 0
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
+          cache: 'pip'
           python-version: '3.x'
       - name: Install Python packages
         run: |
