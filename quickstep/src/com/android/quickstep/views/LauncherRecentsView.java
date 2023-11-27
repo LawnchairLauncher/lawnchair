@@ -145,6 +145,12 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
         if (toState == OVERVIEW_MODAL_TASK) {
             setOverviewSelectEnabled(true);
         }
+
+        // Set border after select mode changes to avoid showing border during state transition
+        if (!toState.overviewUi || toState == OVERVIEW_MODAL_TASK) {
+            setTaskBorderEnabled(false);
+        }
+
         setFreezeViewVisibility(true);
         if (mActivity.getDesktopVisibilityController() != null) {
             mActivity.getDesktopVisibilityController().onLauncherStateChanged(toState);
@@ -163,6 +169,10 @@ public class LauncherRecentsView extends RecentsView<QuickstepLauncher, Launcher
         setFreezeViewVisibility(false);
         if (finalState != OVERVIEW_MODAL_TASK) {
             setOverviewSelectEnabled(false);
+        }
+
+        if (finalState.overviewUi && finalState != OVERVIEW_MODAL_TASK) {
+            setTaskBorderEnabled(true);
         }
 
         if (isOverlayEnabled) {

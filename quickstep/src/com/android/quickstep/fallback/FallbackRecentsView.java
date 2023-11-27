@@ -238,6 +238,12 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         if (toState == MODAL_TASK) {
             setOverviewSelectEnabled(true);
         }
+
+        // Set border after select mode changes to avoid showing border during state transition
+        if (!toState.overviewUi() || toState == MODAL_TASK) {
+            setTaskBorderEnabled(false);
+        }
+
         setFreezeViewVisibility(true);
     }
 
@@ -253,6 +259,11 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity, RecentsSta
         if (finalState != MODAL_TASK) {
             setOverviewSelectEnabled(false);
         }
+
+        if (finalState.overviewUi() && finalState != MODAL_TASK) {
+            setTaskBorderEnabled(true);
+        }
+
         if (finalState != OVERVIEW_SPLIT_SELECT) {
             if (FeatureFlags.enableSplitContextually()) {
                 mSplitSelectStateController.resetState();
