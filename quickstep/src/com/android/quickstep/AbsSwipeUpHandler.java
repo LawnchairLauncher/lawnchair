@@ -1223,12 +1223,12 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>,
                         : null;
         ActiveGestureLog.INSTANCE.addLog(
                 new ActiveGestureLog.CompoundString("calculateEndTarget: velocities=(x=")
-                        .append(Float.toString(dpiFromPx(velocityPxPerMs.x)))
+                        .append(dpiFromPx(velocityPxPerMs.x))
                         .append("dp/ms, y=")
-                        .append(Float.toString(dpiFromPx(velocityPxPerMs.y)))
+                        .append(dpiFromPx(velocityPxPerMs.y))
                         .append("dp/ms), angle=")
-                        .append(Double.toString(Math.toDegrees(Math.atan2(
-                                -velocityPxPerMs.y, velocityPxPerMs.x)))), gestureEvent);
+                        .append(Math.toDegrees(Math.atan2(
+                                -velocityPxPerMs.y, velocityPxPerMs.x))), gestureEvent);
 
         if (mGestureState.isHandlingAtomicEvent()) {
             // Button mode, this is only used to go to recents.
