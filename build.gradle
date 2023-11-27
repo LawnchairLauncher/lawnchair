@@ -429,7 +429,7 @@ ksp {
 
 spotless {
     kotlin {
-        ktlint("1.0.1")
+        ktlint()
         target("lawnchair/src/**/*.kt")
     }
 }
