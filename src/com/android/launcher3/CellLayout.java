@@ -89,8 +89,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Stack;
 
 public class CellLayout extends ViewGroup {
@@ -1811,7 +1809,7 @@ public class CellLayout extends ViewGroup {
         return bestXY;
     }
 
-    private boolean addViewToTempLocation(View v, Rect rectOccupiedByPotentialDrop,
+    public boolean addViewToTempLocation(View v, Rect rectOccupiedByPotentialDrop,
             int[] direction, ItemConfiguration currentState) {
         CellAndSpan c = currentState.map.get(v);
         boolean success = false;
@@ -1830,7 +1828,7 @@ public class CellLayout extends ViewGroup {
         return success;
     }
 
-    private boolean pushViewsToTempLocation(ArrayList<View> views, Rect rectOccupiedByPotentialDrop,
+    public boolean pushViewsToTempLocation(ArrayList<View> views, Rect rectOccupiedByPotentialDrop,
             int[] direction, View dragView, ItemConfiguration currentState) {
 
         ViewCluster cluster = new ViewCluster(this, views, currentState);
@@ -1928,7 +1926,7 @@ public class CellLayout extends ViewGroup {
     // This method tries to find a reordering solution which satisfies the push mechanic by trying
     // to push items in each of the cardinal directions, in an order based on the direction vector
     // passed.
-    private boolean attemptPushInDirection(ArrayList<View> intersectingViews, Rect occupied,
+    public boolean attemptPushInDirection(ArrayList<View> intersectingViews, Rect occupied,
             int[] direction, View ignoreView, ItemConfiguration solution) {
         if ((Math.abs(direction[0]) + Math.abs(direction[1])) > 1) {
             // If the direction vector has two non-zero components, we try pushing
@@ -2089,7 +2087,7 @@ public class CellLayout extends ViewGroup {
         }
     }
 
-    private boolean addViewsToTempLocation(ArrayList<View> views, Rect rectOccupiedByPotentialDrop,
+    public boolean addViewsToTempLocation(ArrayList<View> views, Rect rectOccupiedByPotentialDrop,
             int[] direction, View dragView, ItemConfiguration currentState) {
         if (views.size() == 0) return true;
 
@@ -2140,71 +2138,6 @@ public class CellLayout extends ViewGroup {
         return success;
     }
 
-    public boolean rearrangementExists(int cellX, int cellY, int spanX, int spanY, int[] direction,
-            View ignoreView, ItemConfiguration solution) {
-        // Return early if get invalid cell positions
-        if (cellX < 0 || cellY < 0) return false;
-
-        mIntersectingViews.clear();
-        mOccupiedRect.set(cellX, cellY, cellX + spanX, cellY + spanY);
-
-        // Mark the desired location of the view currently being dragged.
-        if (ignoreView != null) {
-            CellAndSpan c = solution.map.get(ignoreView);
-            if (c != null) {
-                c.cellX = cellX;
-                c.cellY = cellY;
-            }
-        }
-        Rect r0 = new Rect(cellX, cellY, cellX + spanX, cellY + spanY);
-        Rect r1 = new Rect();
-        // The views need to be sorted so that the results are deterministic on the views positions
-        // and not by the views hash which is "random".
-        // The views are sorted twice, once for the X position and a second time for the Y position
-        // to ensure same order everytime.
-        Comparator comparator = Comparator.comparing(view ->
-                        ((CellLayoutLayoutParams) ((View) view).getLayoutParams()).getCellX())
-                .thenComparing(view ->
-                        ((CellLayoutLayoutParams) ((View) view).getLayoutParams()).getCellY());
-        List<View> views = solution.map.keySet().stream().sorted(comparator).toList();
-        for (View child : views) {
-            if (child == ignoreView) continue;
-            CellAndSpan c = solution.map.get(child);
-            CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
-            r1.set(c.cellX, c.cellY, c.cellX + c.spanX, c.cellY + c.spanY);
-            if (Rect.intersects(r0, r1)) {
-                if (!lp.canReorder) {
-                    return false;
-                }
-                mIntersectingViews.add(child);
-            }
-        }
-
-        solution.intersectingViews = new ArrayList<>(mIntersectingViews);
-
-        // First we try to find a solution which respects the push mechanic. That is,
-        // we try to find a solution such that no displaced item travels through another item
-        // without also displacing that item.
-        if (attemptPushInDirection(mIntersectingViews, mOccupiedRect, direction, ignoreView,
-                solution)) {
-            return true;
-        }
-
-        // Next we try moving the views as a block, but without requiring the push mechanic.
-        if (addViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction, ignoreView,
-                solution)) {
-            return true;
-        }
-
-        // Ok, they couldn't move as a block, let's move them individually
-        for (View v : mIntersectingViews) {
-            if (!addViewToTempLocation(v, mOccupiedRect, direction, solution)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     public ReorderAlgorithm createReorderAlgorithm() {
         return new ReorderAlgorithm(this);
     }
@@ -2216,18 +2149,13 @@ public class CellLayout extends ViewGroup {
                 spanX, spanY, direction, dragView, decX, solution);
     }
 
-    public void copyCurrentStateToSolution(ItemConfiguration solution, boolean temp) {
+    public void copyCurrentStateToSolution(ItemConfiguration solution) {
         int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
             CellLayoutLayoutParams lp = (CellLayoutLayoutParams) child.getLayoutParams();
-            CellAndSpan c;
-            if (temp) {
-                c = new CellAndSpan(lp.getTmpCellX(), lp.getTmpCellY(), lp.cellHSpan, lp.cellVSpan);
-            } else {
-                c = new CellAndSpan(lp.getCellX(), lp.getCellY(), lp.cellHSpan, lp.cellVSpan);
-            }
-            solution.add(child, c);
+            solution.add(child,
+                    new CellAndSpan(lp.getCellX(), lp.getCellY(), lp.cellHSpan, lp.cellVSpan));
         }
     }
 
