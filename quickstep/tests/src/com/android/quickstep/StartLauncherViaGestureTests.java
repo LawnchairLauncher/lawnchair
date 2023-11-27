@@ -49,6 +49,8 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
 
     @Test
     @NavigationModeSwitch
+    // Stress tests are long. We permanently demote them from presubmit to match the presubmit SLO.
+    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
     public void testStressPressHome() {
         for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
             // Destroy Launcher activity.
@@ -61,7 +63,8 @@ public class StartLauncherViaGestureTests extends AbstractQuickStepTest {
 
     @Test
     @NavigationModeSwitch
-    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT) // b/187761685
+    // Stress tests are long. We permanently demote them from presubmit to match the presubmit SLO.
+    @Stability(flavors = LOCAL | PLATFORM_POSTSUBMIT)
     public void testStressSwipeToOverview() {
         for (int i = 0; i < STRESS_REPEAT_COUNT; ++i) {
             // Destroy Launcher activity.
