@@ -26,6 +26,7 @@ import com.android.launcher3.util.ResourceHelper
 class HotseatSpecsProvider(groupOfSpecs: List<ResponsiveSpecGroup<HotseatSpec>>) {
 
     private val groupOfSpecs: List<ResponsiveSpecGroup<HotseatSpec>>
+
     init {
         this.groupOfSpecs = groupOfSpecs.sortedBy { it.aspectRatio }
     }
@@ -90,13 +91,18 @@ data class HotseatSpec(
 
     fun isValid(): Boolean {
         if (maxAvailableSize <= 0) {
-            Log.e(LOG_TAG, "${this::class.simpleName}#isValid - maxAvailableSize <= 0")
+            logError("The property maxAvailableSize must be higher than 0.")
             return false
         }
 
         // All specs need to be individually valid
         if (!allSpecsAreValid()) {
-            Log.e(LOG_TAG, "${this::class.simpleName}#isValid - !allSpecsAreValid()")
+            logError("One or more specs are invalid!")
+            return false
+        }
+
+        if (!isValidFixedSize()) {
+            logError("The total Fixed Size used must be lower or equal to $maxAvailableSize.")
             return false
         }
 
@@ -108,6 +114,13 @@ data class HotseatSpec(
             hotseatQsbSpace.onlyFixedSize() &&
             edgePadding.isValid() &&
             edgePadding.onlyFixedSize()
+    }
+
+    private fun isValidFixedSize() =
+        hotseatQsbSpace.fixedSize + edgePadding.fixedSize <= maxAvailableSize
+
+    private fun logError(message: String) {
+        Log.e(LOG_TAG, "${this::class.simpleName}#isValid - $message - $this")
     }
 
     companion object {

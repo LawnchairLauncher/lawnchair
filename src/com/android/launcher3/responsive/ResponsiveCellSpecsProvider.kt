@@ -107,23 +107,37 @@ data class CellSpec(
 
     fun isValid(): Boolean {
         if (maxAvailableSize <= 0) {
-            Log.e(LOG_TAG, "${this::class.simpleName}#isValid - maxAvailableSize <= 0")
+            logError("The property maxAvailableSize must be higher than 0.")
             return false
         }
 
         // All specs need to be individually valid
         if (!allSpecsAreValid()) {
-            Log.e(LOG_TAG, "${this::class.simpleName}#isValid - !allSpecsAreValid()")
+            logError("Specs must be either Fixed Size or Match Workspace!")
+            return false
+        }
+
+        if (!isValidFixedSize()) {
+            logError("The total Fixed Size used must be lower or equal to $maxAvailableSize.")
             return false
         }
 
         return true
     }
 
+    private fun isValidFixedSize(): Boolean {
+        val totalSize = iconSize.fixedSize + iconTextSize.fixedSize + iconDrawablePadding.fixedSize
+        return totalSize <= maxAvailableSize
+    }
+
     private fun allSpecsAreValid(): Boolean {
         return (iconSize.fixedSize > 0f || iconSize.matchWorkspace) &&
             (iconTextSize.fixedSize >= 0f || iconTextSize.matchWorkspace) &&
             (iconDrawablePadding.fixedSize >= 0f || iconDrawablePadding.matchWorkspace)
+    }
+
+    private fun logError(message: String) {
+        Log.e(LOG_TAG, "${this::class.simpleName}#isValid - $message - $this")
     }
 
     companion object {

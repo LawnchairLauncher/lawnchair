@@ -110,4 +110,11 @@ class HotseatSpecsProviderTest : AbstractDeviceProfileTest() {
             TestResourceHelper(context, TestR.xml.invalid_hotseat_file_case_1)
         )
     }
+
+    @Test(expected = IllegalStateException::class)
+    fun parseInvalidFile_invalidFixedSize_throwsError() {
+        HotseatSpecsProvider.create(
+            TestResourceHelper(context, TestR.xml.invalid_hotseat_file_case_2)
+        )
+    }
 }
