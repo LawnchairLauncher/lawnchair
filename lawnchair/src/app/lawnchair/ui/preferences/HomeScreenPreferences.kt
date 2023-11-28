@@ -41,6 +41,7 @@ import app.lawnchair.ui.preferences.components.SwitchPreference
 import app.lawnchair.util.collectAsStateBlocking
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.launch
 
 object HomeScreenRoutes {
@@ -187,7 +188,7 @@ fun HomeScreenPreferences() {
 fun HomeScreenTextColorPreference() {
     ListPreference(
         adapter = preferenceManager2().workspaceTextColor.getAdapter(),
-        entries = ColorMode.entries(),
+        entries = ColorMode.entries().toPersistentList(),
         label = stringResource(id = R.string.home_screen_text_color),
     )
 }

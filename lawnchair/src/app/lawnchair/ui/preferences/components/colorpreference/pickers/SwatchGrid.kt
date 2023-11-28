@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.ui.preferences.components.PreferenceGroup
 import app.lawnchair.ui.preferences.components.colorpreference.ColorPreferenceEntry
 import com.android.launcher3.R
+import kotlinx.collections.immutable.ImmutableList
 
 object SwatchGridDefaults {
     val GutterSize = 12.dp
@@ -37,7 +38,7 @@ object SwatchGridDefaults {
 
 @Composable
 fun <T> SwatchGrid(
-    entries: List<ColorPreferenceEntry<T>>,
+    entries: ImmutableList<ColorPreferenceEntry<T>>,
     onSwatchClick: (T) -> Unit,
     isSwatchSelected: (T) -> Boolean,
     modifier: Modifier = Modifier,

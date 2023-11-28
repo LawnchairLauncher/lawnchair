@@ -31,11 +31,12 @@ import androidx.compose.ui.unit.dp
 import app.lawnchair.preferences.PreferenceAdapter
 import app.lawnchair.ui.AlertBottomSheetContent
 import app.lawnchair.ui.util.bottomSheetHandler
+import kotlinx.collections.immutable.ImmutableList
 
 @Composable
 fun <T> ListPreference(
     adapter: PreferenceAdapter<T>,
-    entries: List<ListPreferenceEntry<T>>,
+    entries: ImmutableList<ListPreferenceEntry<T>>,
     label: String,
     enabled: Boolean = true,
     description: String? = null,
@@ -54,7 +55,7 @@ fun <T> ListPreference(
 
 @Composable
 fun <T> ListPreference(
-    entries: List<ListPreferenceEntry<T>>,
+    entries: ImmutableList<ListPreferenceEntry<T>>,
     value: T,
     onValueChange: (T) -> Unit,
     label: String,
