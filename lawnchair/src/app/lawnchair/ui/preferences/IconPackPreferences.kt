@@ -300,7 +300,7 @@ private fun getIconPackItemWidth(
 fun IconPackItem(
     item: IconPackInfo,
     selected: Boolean,
-    modifier: Modifier,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     Surface(
