@@ -73,9 +73,9 @@
     <!--  The margin at the start of the task icon menu  -->
     <dimen name="task_thumbnail_icon_menu_start_margin">12dp</dimen>
     <!--  The margin at the top of the task icon menu  -->
-    <dimen name="task_thumbnail_icon_menu_top_margin">6dp</dimen>
-    <!--  The margin at the top of the task icon menu when expanded  -->
-    <dimen name="task_thumbnail_icon_menu_top_margin_expanded">4dp</dimen>
+    <dimen name="task_thumbnail_icon_menu_top_margin">12dp</dimen>
+    <!--  The gap at the top of the task icon menu when expanded  -->
+    <dimen name="task_thumbnail_icon_menu_expanded_gap">6dp</dimen>
     <!--  The margin at the start of the task icon view in the icon menu  -->
     <dimen name="task_thumbnail_icon_view_start_margin">6dp</dimen>
     <!--  The space around the task icon arrow within the icon menu  -->
