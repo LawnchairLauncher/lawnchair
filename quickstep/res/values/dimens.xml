@@ -55,7 +55,7 @@
     <!--  The max width of the icon menu text  -->
     <dimen name="task_thumbnail_icon_menu_text_max_width">118dp</dimen>
     <!--  The size of the icon menu text  -->
-    <dimen name="task_thumbnail_icon_menu_text_size">16sp</dimen>
+    <dimen name="task_thumbnail_icon_menu_text_size">14sp</dimen>
     <!--  The max width of the thumbnail icon menu background  -->
     <dimen name="task_thumbnail_icon_menu_background_max_width">164dp</dimen>
     <!--  The height of the thumbnail icon menu  -->

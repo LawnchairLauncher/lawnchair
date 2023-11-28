@@ -34,7 +34,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.android.launcher3.Flags;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
@@ -136,14 +135,6 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                         iconCache.updateIconsForPkg(packages[i], mUser);
                         activitiesLists.put(
                                 packages[i], appsList.updatePackage(context, packages[i], mUser));
-
-                        // The update may have changed which shortcuts/widgets are available.
-                        // Refresh the widgets for the package if we have an activity running.
-                        Launcher launcher = Launcher.ACTIVITY_TRACKER.getCreatedActivity();
-                        if (launcher != null) {
-                            launcher.refreshAndBindWidgetsForPackageUser(
-                                    new PackageUserKey(packages[i], mUser));
-                        }
                     }
                 }
                 // Since package was just updated, the target must be available now.
