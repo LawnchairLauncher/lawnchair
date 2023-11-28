@@ -70,8 +70,8 @@ fun ColorSelection(
     label: String,
     preference: Preference<ColorOption, String, *>,
     modifier: Modifier = Modifier,
-    dynamicEntries: ImmutableList<ColorPreferenceEntry<ColorOption>> = dynamicColors.toPersistentList(),
-    staticEntries: ImmutableList<ColorPreferenceEntry<ColorOption>> = staticColors.toPersistentList(),
+    dynamicEntries: ImmutableList<ColorPreferenceEntry<ColorOption>> = dynamicColors,
+    staticEntries: ImmutableList<ColorPreferenceEntry<ColorOption>> = staticColors,
 ) {
     val adapter = preference.getAdapter()
     val appliedColor = adapter.state.value

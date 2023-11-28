@@ -212,7 +212,7 @@ fun ColumnScope.RestoreBackupOptions(
 }
 
 @Composable
-fun restoreBackupOpener(modifier: Modifier = Modifier): () -> Unit {
+fun restoreBackupOpener(): () -> Unit {
     val navController = LocalNavController.current
 
     val request = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {

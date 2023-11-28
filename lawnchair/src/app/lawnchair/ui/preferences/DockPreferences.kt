@@ -113,11 +113,11 @@ private fun HotseatModePreference(
                 enabled = mode.isAvailable(context = context),
             )
         }
-    }.toPersistentList()
+    }
 
     ListPreference(
         adapter = adapter,
-        entries = entries,
+        entries = entries.toPersistentList(),
         label = stringResource(id = R.string.hotseat_mode_label),
     )
 }
