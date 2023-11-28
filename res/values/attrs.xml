@@ -164,7 +164,19 @@
 
         <!-- numFolderRows & numFolderColumns defaults to numRows & numColumns, if not specified -->
         <attr name="numFolderRows" format="integer" />
+        <!-- defaults to numFolderRows, if not specified -->
+        <attr name="numFolderRowsLandscape" format="integer" />
+        <!-- defaults to numFolderRows, if not specified -->
+        <attr name="numFolderRowsTwoPanelLandscape" format="integer" />
+        <!-- defaults to numFolderRows, if not specified -->
+        <attr name="numFolderRowsTwoPanelPortrait" format="integer" />
         <attr name="numFolderColumns" format="integer" />
+        <!-- defaults to numFolderColumns, if not specified -->
+        <attr name="numFolderColumnsLandscape" format="integer" />
+        <!-- defaults to numFolderColumns, if not specified -->
+        <attr name="numFolderColumnsTwoPanelLandscape" format="integer" />
+        <!-- defaults to numFolderColumns, if not specified -->
+        <attr name="numFolderColumnsTwoPanelPortrait" format="integer" />
         <!-- Support attributes in FolderStyle -->
         <attr name="folderStyle" format="reference" />
 
