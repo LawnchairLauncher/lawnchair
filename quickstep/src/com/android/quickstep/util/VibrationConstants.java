@@ -16,7 +16,7 @@
 package com.android.quickstep.util;
 
 import android.os.VibrationEffect;
-import com.android.launcher3.Utilities
+import com.android.launcher3.Utilities;
 
 public class VibrationConstants {
     public static final VibrationEffect EFFECT_TEXTURE_TICK = Utilities.ATLEAST_Q ?
