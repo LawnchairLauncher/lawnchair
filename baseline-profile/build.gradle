@@ -13,10 +13,6 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    buildFeatures {
-        buildConfig true
-    }
-
     targetProjectPath = ":"
 
     flavorDimensions += ["app", "recents"]
