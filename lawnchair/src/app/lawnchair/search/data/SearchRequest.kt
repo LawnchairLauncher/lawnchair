@@ -5,12 +5,12 @@ import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.util.Log
 import app.lawnchair.search.data.suggestion.StartPageService
+import app.lawnchair.util.kotlinxJson
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.ResponseBody
 import org.json.JSONArray
@@ -18,11 +18,9 @@ import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.Retrofit
 
-val json = Json { ignoreUnknownKeys = true }
-
 val retrofit: Retrofit = Retrofit.Builder()
     .baseUrl("https://www.startpage.com/")
-    .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+    .addConverterFactory(kotlinxJson.asConverterFactory("application/json".toMediaType()))
     .build()
 
 val startPageService: StartPageService = retrofit.create(StartPageService::class.java)
