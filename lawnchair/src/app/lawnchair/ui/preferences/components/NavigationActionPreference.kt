@@ -25,8 +25,8 @@ import app.lawnchair.ui.preferences.LocalNavController
 @Composable
 fun NavigationActionPreference(
     label: String,
-    subtitle: String? = null,
     destination: String,
+    subtitle: String? = null,
     endWidget: (@Composable () -> Unit)? = null,
 ) {
     val navController = LocalNavController.current

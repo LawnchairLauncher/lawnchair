@@ -39,9 +39,9 @@ import app.lawnchair.ui.util.addIf
 
 @Composable
 fun PreferenceTemplate(
+    title: @Composable () -> Unit,
     modifier: Modifier = Modifier,
     contentModifier: Modifier = Modifier,
-    title: @Composable () -> Unit,
     description: @Composable () -> Unit = {},
     startWidget: (@Composable () -> Unit)? = null,
     endWidget: (@Composable () -> Unit)? = null,

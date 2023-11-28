@@ -34,9 +34,9 @@ import app.lawnchair.ui.preferences.subRoute
 @Composable
 fun PreferenceCategory(
     label: String,
-    description: String? = null,
     @DrawableRes iconResource: Int,
     route: String,
+    description: String? = null,
 ) {
     val navController = LocalNavController.current
     val resolvedRoute = subRoute(name = route)

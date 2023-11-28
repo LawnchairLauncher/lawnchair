@@ -140,8 +140,8 @@ fun IconShapePreference() {
 
 @Composable
 private fun CustomIconShapePreference(
-    modifier: Modifier = Modifier,
     iconShapeAdapter: PreferenceAdapter<IconShape>,
+    modifier: Modifier = Modifier,
 ) {
     val preferenceManager2 = preferenceManager2()
 
@@ -169,8 +169,8 @@ private fun CustomIconShapePreference(
 
 @Composable
 private fun ModifyCustomIconShapePreference(
-    modifier: Modifier = Modifier,
     customIconShape: IconShape?,
+    modifier: Modifier = Modifier,
 ) {
     val navController = LocalNavController.current
     val route = subRoute(IconShapeRoutes.CUSTOM_ICON_SHAPE_CREATOR)
@@ -220,8 +220,8 @@ private fun ModifyCustomIconShapePreference(
  */
 @Composable
 fun IconShapePreview(
-    modifier: Modifier = Modifier,
     iconShape: IconShape,
+    modifier: Modifier = Modifier,
     strokeColor: Color = MaterialTheme.colorScheme.primary,
     fillColor: Color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.1f),
 ) {
