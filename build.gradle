@@ -432,6 +432,8 @@ spotless {
         target("lawnchair/src/**/*.kt")
         ktlint().customRuleSets([
             "io.nlopez.compose.rules:ktlint:0.3.3",
+        ]).editorConfigOverride([
+            "ktlint_compose_modifier-missing-check": "disabled",
         ])
     }
 }
