@@ -34,6 +34,7 @@ val options = listOf(
 fun GestureHandlerPreference(
     adapter: PreferenceAdapter<GestureHandlerConfig>,
     label: String,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()

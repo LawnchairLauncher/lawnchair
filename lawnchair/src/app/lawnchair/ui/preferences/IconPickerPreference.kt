@@ -84,7 +84,10 @@ fun NavGraphBuilder.iconPickerGraph(route: String) {
 }
 
 @Composable
-fun IconPickerPreference(packageName: String) {
+fun IconPickerPreference(
+    packageName: String,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val iconPack = remember {
         IconPackProvider.INSTANCE.get(context).getIconPackOrSystem(packageName)
@@ -247,6 +250,7 @@ fun IconPickerGrid(
 fun IconPreview(
     iconPack: IconPack,
     iconItem: IconPickerItem,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     val drawable by produceState<Drawable?>(initialValue = null, iconPack, iconItem) {

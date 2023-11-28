@@ -26,7 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun LoadingScreen(isLoading: Boolean, content: @Composable () -> Unit) {
+fun LoadingScreen(
+    isLoading: Boolean,
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
     Crossfade(targetState = isLoading, label = "") {
         if (it) {
             Column(
@@ -43,7 +47,11 @@ fun LoadingScreen(isLoading: Boolean, content: @Composable () -> Unit) {
 }
 
 @Composable
-fun <T> LoadingScreen(obj: T?, content: @Composable (T) -> Unit) {
+fun <T> LoadingScreen(
+    obj: T?,
+    modifier: Modifier = Modifier,
+    content: @Composable (T) -> Unit,
+) {
     LoadingScreen(isLoading = obj == null) {
         content(obj!!)
     }

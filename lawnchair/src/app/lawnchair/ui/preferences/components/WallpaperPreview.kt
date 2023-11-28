@@ -37,7 +37,9 @@ fun WallpaperPreview(modifier: Modifier = Modifier) {
 @OptIn(ExperimentalPermissionsApi::class)
 @SuppressLint("MissingPermission")
 @Composable
-fun wallpaperDrawable(): Drawable? {
+fun wallpaperDrawable(
+    modifier: Modifier = Modifier,
+): Drawable? {
     val context = LocalContext.current
     val wallpaperManager = remember { WallpaperManager.getInstance(context) }
     val wallpaperInfo = wallpaperManager.wallpaperInfo

@@ -82,7 +82,10 @@ fun NavGraphBuilder.restoreBackupGraph(route: String) {
 }
 
 @Composable
-fun RestoreBackupScreen(viewModel: RestoreBackupViewModel = viewModel()) {
+fun RestoreBackupScreen(
+    modifier: Modifier = Modifier,
+    viewModel: RestoreBackupViewModel = viewModel(),
+) {
     val isPortrait = LocalConfiguration.current.orientation == Configuration.ORIENTATION_PORTRAIT
     val scrollState = rememberScrollState()
     val uiState = viewModel.uiState.collectAsState().value
@@ -115,6 +118,7 @@ fun RestoreBackupScreen(viewModel: RestoreBackupViewModel = viewModel()) {
 fun ColumnScope.RestoreBackupOptions(
     isPortrait: Boolean,
     backup: LawnchairBackup,
+    modifier: Modifier = Modifier,
     viewModel: RestoreBackupViewModel = viewModel(),
 ) {
     val backupContents = backup.info.contents
@@ -208,7 +212,7 @@ fun ColumnScope.RestoreBackupOptions(
 }
 
 @Composable
-fun restoreBackupOpener(): () -> Unit {
+fun restoreBackupOpener(modifier: Modifier = Modifier): () -> Unit {
     val navController = LocalNavController.current
 
     val request = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {

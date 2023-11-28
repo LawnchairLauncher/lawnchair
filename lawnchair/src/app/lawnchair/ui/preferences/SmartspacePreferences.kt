@@ -57,7 +57,10 @@ fun NavGraphBuilder.smartspaceWidgetGraph(route: String) {
 }
 
 @Composable
-fun SmartspacePreferences(fromWidget: Boolean) {
+fun SmartspacePreferences(
+    fromWidget: Boolean,
+    modifier: Modifier = Modifier,
+) {
     val preferenceManager2 = preferenceManager2()
     val smartspaceProvider = SmartspaceProvider.INSTANCE.get(LocalContext.current)
     val smartspaceAdapter = preferenceManager2.enableSmartspace.getAdapter()
@@ -119,6 +122,7 @@ fun SmartspacePreferences(fromWidget: Boolean) {
 @Composable
 fun SmartspaceProviderPreference(
     adapter: PreferenceAdapter<SmartspaceMode>,
+    modifier: Modifier = Modifier,
     endWidget: (@Composable () -> Unit)? = null,
 ) {
     val context = LocalContext.current
@@ -142,7 +146,9 @@ fun SmartspaceProviderPreference(
 }
 
 @Composable
-fun SmartspacePreview() {
+fun SmartspacePreview(
+    modifier: Modifier = Modifier,
+) {
     val themeRes = if (isSelectedThemeDark()) R.style.AppTheme_Dark else R.style.AppTheme_DarkText
     val context = LocalContext.current
     val themedContext = remember(themeRes) { ContextThemeWrapper(context, themeRes) }
@@ -171,7 +177,9 @@ fun SmartspacePreview() {
 }
 
 @Composable
-fun SmartspaceDateAndTimePreferences() {
+fun SmartspaceDateAndTimePreferences(
+    modifier: Modifier = Modifier,
+) {
     PreferenceGroup(
         heading = stringResource(id = R.string.smartspace_date_and_time),
         modifier = Modifier.padding(top = 8.dp),
@@ -217,7 +225,9 @@ fun SmartspaceDateAndTimePreferences() {
 }
 
 @Composable
-fun SmartspaceTimeFormatPreference() {
+fun SmartspaceTimeFormatPreference(
+    modifier: Modifier = Modifier,
+) {
     val entries = remember {
         SmartspaceTimeFormat.values().map { format ->
             ListPreferenceEntry(format) { stringResource(id = format.nameResourceId) }
@@ -234,7 +244,9 @@ fun SmartspaceTimeFormatPreference() {
 }
 
 @Composable
-fun SmartspaceCalendarPreference() {
+fun SmartspaceCalendarPreference(
+    modifier: Modifier = Modifier,
+) {
     val entries = remember {
         SmartspaceCalendar.values().map { calendar ->
             ListPreferenceEntry(calendar) { stringResource(id = calendar.nameResourceId) }
@@ -251,7 +263,9 @@ fun SmartspaceCalendarPreference() {
 }
 
 @Composable
-fun SmartspacerSettings() {
+fun SmartspacerSettings(
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     Box(
         contentAlignment = Alignment.Center,

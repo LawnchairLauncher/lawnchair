@@ -38,7 +38,9 @@ fun NavGraphBuilder.searchProviderGraph(route: String) {
 }
 
 @Composable
-fun SearchProviderPreferences() {
+fun SearchProviderPreferences(
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val bottomSheetHandler = LocalBottomSheetHandler.current
     val adapter = preferenceManager2().hotseatQsbProvider.getAdapter()
@@ -98,6 +100,7 @@ private fun ListItem(
     selected: Boolean,
     onClick: () -> Unit,
     onDownloadClick: () -> Unit,
+    modifier: Modifier = Modifier,
     onSponsorDisclaimerClick: (() -> Unit)?,
 ) {
     Column {
@@ -147,6 +150,7 @@ private fun Options(
     showAppDownloadButton: Boolean,
     onAppClick: () -> Unit,
     onAppDownloadClick: () -> Unit,
+    modifier: Modifier = Modifier,
     onWebsiteClick: () -> Unit,
 ) {
     PreferenceDivider(startIndent = 40.dp)
@@ -197,6 +201,7 @@ private fun Options(
 @Composable
 private fun SponsorDisclaimer(
     sponsor: String,
+    modifier: Modifier = Modifier,
     onAcknowledge: () -> Unit,
 ) {
     AlertBottomSheetContent(

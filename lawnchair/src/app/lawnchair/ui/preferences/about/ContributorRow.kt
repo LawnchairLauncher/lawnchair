@@ -39,7 +39,13 @@ import app.lawnchair.ui.preferences.components.PreferenceTemplate
 import coil.compose.SubcomposeAsyncImage
 
 @Composable
-fun ContributorRow(name: String, description: String, photoUrl: String, url: String) {
+fun ContributorRow(
+    name: String,
+    description: String,
+    photoUrl: String,
+    url: String,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
 
     PreferenceTemplate(

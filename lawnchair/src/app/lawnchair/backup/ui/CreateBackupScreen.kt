@@ -61,7 +61,10 @@ fun NavGraphBuilder.createBackupGraph(route: String) {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun CreateBackupScreen(viewModel: CreateBackupViewModel) {
+fun CreateBackupScreen(
+    viewModel: CreateBackupViewModel,
+    modifier: Modifier = Modifier,
+) {
     val contents by viewModel.backupContents.collectAsState()
     val screenshot by viewModel.screenshot.collectAsState()
     val screenshotDone by viewModel.screenshotDone.collectAsState()

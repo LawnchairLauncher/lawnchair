@@ -67,12 +67,15 @@ fun PreferenceGroup(
                 }
             }
         }
-        PreferenceGroupDescription(description, showDescription)
+        PreferenceGroupDescription(description = description, showDescription = showDescription)
     }
 }
 
 @Composable
-fun PreferenceGroupHeading(heading: String?) {
+fun PreferenceGroupHeading(
+    heading: String?,
+    modifier: Modifier = Modifier,
+) {
     if (heading != null) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -93,7 +96,11 @@ fun PreferenceGroupHeading(heading: String?) {
 }
 
 @Composable
-fun PreferenceGroupDescription(description: String? = null, showDescription: Boolean = true) {
+fun PreferenceGroupDescription(
+    modifier: Modifier = Modifier,
+    description: String? = null,
+    showDescription: Boolean = true,
+) {
     description?.let {
         ExpandAndShrink(visible = showDescription) {
             Row(modifier = Modifier.padding(start = 32.dp, end = 32.dp, top = 16.dp)) {

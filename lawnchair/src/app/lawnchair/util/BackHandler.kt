@@ -6,10 +6,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.Lifecycle
 
 @Composable
-fun BackHandler(onBack: () -> Unit) {
+fun BackHandler(
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit,
+) {
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
     val currentOnBack by rememberUpdatedState(onBack)
     val resumed = lifecycleState().isAtLeast(Lifecycle.State.RESUMED)

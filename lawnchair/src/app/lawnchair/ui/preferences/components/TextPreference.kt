@@ -24,6 +24,7 @@ import app.lawnchair.ui.util.bottomSheetHandler
 fun TextPreference(
     adapter: PreferenceAdapter<String>,
     label: String,
+    modifier: Modifier = Modifier,
     description: (String) -> String? = { it },
     enabled: Boolean = true,
 ) {
@@ -42,6 +43,7 @@ fun TextPreference(
     value: String,
     onChange: (String) -> Unit,
     label: String,
+    modifier: Modifier = Modifier,
     description: (String) -> String? = { it },
     enabled: Boolean = true,
 ) {
@@ -70,6 +72,7 @@ fun TextPreferenceDialog(
     initialValue: String,
     onDismissRequest: () -> Unit,
     onConfirm: (String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     var value by remember { mutableStateOf(initialValue) }
     AlertBottomSheetContent(

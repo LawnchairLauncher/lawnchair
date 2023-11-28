@@ -94,7 +94,9 @@ fun iconShapeEntries(context: Context): List<ListPreferenceEntry<IconShape>> {
 }
 
 @Composable
-fun IconShapePreference() {
+fun IconShapePreference(
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val preferenceManager2 = preferenceManager2()
     val entries = remember { iconShapeEntries(context) }

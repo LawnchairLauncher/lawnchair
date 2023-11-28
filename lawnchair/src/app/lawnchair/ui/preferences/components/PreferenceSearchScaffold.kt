@@ -44,6 +44,7 @@ import com.google.accompanist.insets.ui.Scaffold
 @Composable
 fun PreferenceSearchScaffold(
     searchInput: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
     actions: @Composable RowScope.() -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {

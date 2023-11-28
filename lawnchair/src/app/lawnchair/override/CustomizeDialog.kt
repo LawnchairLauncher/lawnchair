@@ -52,6 +52,7 @@ fun CustomizeDialog(
     onTitleChange: (String) -> Unit,
     defaultTitle: String,
     launchSelectIcon: (() -> Unit)?,
+    modifier: Modifier = Modifier,
     content: (@Composable () -> Unit)? = null,
 ) {
     Column(
@@ -108,6 +109,7 @@ fun CustomizeAppDialog(
     icon: Drawable,
     defaultTitle: String,
     componentKey: ComponentKey,
+    modifier: Modifier = Modifier,
     onClose: () -> Unit,
 ) {
     val prefs = preferenceManager()

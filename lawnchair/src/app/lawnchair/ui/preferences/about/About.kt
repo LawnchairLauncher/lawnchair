@@ -219,7 +219,9 @@ fun NavGraphBuilder.aboutGraph(route: String) {
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun About() {
+fun About(
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
 
     PreferenceLayout(

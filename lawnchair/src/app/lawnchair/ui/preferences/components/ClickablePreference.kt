@@ -32,6 +32,7 @@ import app.lawnchair.ui.util.bottomSheetHandler
 @Composable
 fun ClickablePreference(
     label: String,
+    modifier: Modifier = Modifier,
     subtitle: String? = null,
     confirmationText: String? = null,
     onClick: () -> Unit,
@@ -63,6 +64,7 @@ fun PreferenceClickConfirmation(
     title: String,
     text: String,
     onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
     onConfirm: () -> Unit,
 ) {
     AlertBottomSheetContent(

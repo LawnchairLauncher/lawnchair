@@ -69,6 +69,7 @@ fun NavGraphBuilder.colorSelectionGraph(route: String) {
 fun ColorSelection(
     label: String,
     preference: Preference<ColorOption, String, *>,
+    modifier: Modifier = Modifier,
     dynamicEntries: ImmutableList<ColorPreferenceEntry<ColorOption>> = dynamicColors.toPersistentList(),
     staticEntries: ImmutableList<ColorPreferenceEntry<ColorOption>> = staticColors.toPersistentList(),
 ) {

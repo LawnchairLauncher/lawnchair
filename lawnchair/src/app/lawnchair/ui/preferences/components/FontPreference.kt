@@ -12,6 +12,7 @@ import app.lawnchair.ui.preferences.LocalNavController
 fun FontPreference(
     fontPref: BasePreferenceManager.FontPref,
     label: String,
+    modifier: Modifier = Modifier,
 ) {
     val navController = LocalNavController.current
 

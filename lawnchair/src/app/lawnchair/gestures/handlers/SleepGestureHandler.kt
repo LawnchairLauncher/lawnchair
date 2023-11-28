@@ -137,6 +137,7 @@ fun ServiceWarningDialog(
     description: Int,
     settingsIntent: Intent,
     handleClose: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     AlertBottomSheetContent(

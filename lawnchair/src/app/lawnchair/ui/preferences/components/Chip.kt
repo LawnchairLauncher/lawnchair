@@ -25,6 +25,7 @@ fun Chip(
     onClick: () -> Unit,
     currentOffset: Float,
     page: Int,
+    modifier: Modifier = Modifier,
 ) {
     val selectedProgress = 1f - abs(currentOffset - page).coerceIn(0f, 1f)
     Chip(
@@ -52,6 +53,7 @@ fun Chip(
 fun Chip(
     label: String,
     selectedProgress: Float,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
     val shape = RoundedCornerShape(8.dp)

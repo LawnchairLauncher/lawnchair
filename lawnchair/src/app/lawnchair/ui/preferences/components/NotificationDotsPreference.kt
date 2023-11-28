@@ -56,7 +56,11 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 
 @Composable
-fun NotificationDotsPreference(enabled: Boolean, serviceEnabled: Boolean) {
+fun NotificationDotsPreference(
+    enabled: Boolean,
+    serviceEnabled: Boolean,
+    modifier: Modifier = Modifier,
+) {
     val bottomSheetHandler = bottomSheetHandler
     val context = LocalContext.current
     val showWarning = enabled && !serviceEnabled
@@ -102,7 +106,10 @@ fun NotificationDotsPreference(enabled: Boolean, serviceEnabled: Boolean) {
 }
 
 @Composable
-fun NotificationAccessConfirmation(onDismissRequest: () -> Unit) {
+fun NotificationAccessConfirmation(
+    modifier: Modifier = Modifier,
+    onDismissRequest: () -> Unit,
+) {
     val context = LocalContext.current
 
     AlertBottomSheetContent(

@@ -27,6 +27,7 @@ import kotlinx.coroutines.awaitCancellation
 
 @Composable
 fun PreferenceColumn(
+    modifier: Modifier = Modifier,
     verticalArrangement: Arrangement.Vertical = Arrangement.Top,
     horizontalAlignment: Alignment.Horizontal = Alignment.Start,
     scrollState: ScrollState? = rememberScrollState(),

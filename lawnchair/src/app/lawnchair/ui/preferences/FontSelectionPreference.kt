@@ -89,7 +89,10 @@ private enum class ContentType {
 }
 
 @Composable
-fun FontSelection(fontPref: BasePreferenceManager.FontPref) {
+fun FontSelection(
+    fontPref: BasePreferenceManager.FontPref,
+    modifier: Modifier = Modifier,
+) {
     val context = LocalContext.current
     val customFonts by remember { FontCache.INSTANCE.get(context).customFonts }.collectAsState(initial = emptyList())
     val items by produceState(initialValue = emptyList<FontCache.Family>()) {

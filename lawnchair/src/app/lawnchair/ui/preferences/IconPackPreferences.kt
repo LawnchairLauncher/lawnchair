@@ -80,6 +80,7 @@ data class IconPackInfo(
 
 enum class ThemedIconsState(
     @StringRes val labelResourceId: Int,
+    modifier: Modifier = Modifier,
     val themedIcons: Boolean = true,
     val drawerThemedIcons: Boolean = false,
 ) {
@@ -106,7 +107,9 @@ fun NavGraphBuilder.iconPackGraph(route: String) {
 }
 
 @Composable
-fun IconPackPreferences() {
+fun IconPackPreferences(
+    modifier: Modifier = Modifier,
+) {
     val prefs = preferenceManager()
     val iconPackAdapter = prefs.iconPackPackage.getAdapter()
     val themedIconPackAdapter = prefs.themedIconPackPackage.getAdapter()
@@ -222,6 +225,7 @@ fun IconPackGrid(
     adapter: PreferenceAdapter<String>,
     drawerThemedIcons: Boolean,
     isThemedIconPack: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     val iconPacks by LocalPreferenceInteractor.current.iconPacks.collectAsState()
     val themedIconPacks by LocalPreferenceInteractor.current.themedIconPacks.collectAsState()
@@ -229,7 +233,6 @@ fun IconPackGrid(
     val padding = 12.dp
     var iconPacksLocal = iconPacks
     val themedIconPacksName = themedIconPacks.map { it.name }
-    val modifier = Modifier.padding(bottom = 6.dp, top = 6.dp)
 
     if (isThemedIconPack) {
         iconPacksLocal = if (drawerThemedIcons) {
@@ -260,7 +263,7 @@ fun IconPackGrid(
                 state = lazyListState,
                 horizontalArrangement = Arrangement.spacedBy(space = padding),
                 contentPadding = PaddingValues(horizontal = padding),
-                modifier = modifier.fillMaxWidth(),
+                modifier = Modifier.padding(bottom = 6.dp, top = 6.dp).fillMaxWidth(),
             ) {
                 itemsIndexed(iconPacksLocal, { _, item -> item.packageName }) { index, item ->
                     IconPackItem(
