@@ -487,10 +487,14 @@ public class LauncherBackAnimationController {
                 tryFinishBackAnimation();
             }
         });
+        if (mScrimLayer == null) {
+            // Scrim hasn't been attached yet. Let's attach it.
+            addScrimLayer();
+        }
         mScrimAlphaAnimator = new ValueAnimator().ofFloat(1, 0);
         mScrimAlphaAnimator.addUpdateListener(animation -> {
             float value = (Float) animation.getAnimatedValue();
-            if (mScrimLayer.isValid()) {
+            if (mScrimLayer != null && mScrimLayer.isValid()) {
                 mTransaction.setAlpha(mScrimLayer, value * mScrimAlpha);
                 mTransaction.apply();
             }
