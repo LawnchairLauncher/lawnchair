@@ -38,8 +38,8 @@ public class MulticellReorderAlgorithm extends ReorderAlgorithm {
         mSeam = new View(cellLayout.getContext());
     }
 
-    private ItemConfiguration removeSeamFromSolution(
-            ItemConfiguration solution) {
+    public ItemConfiguration removeSeamFromSolution(ItemConfiguration solution) {
+        solution.map.remove(mSeam);
         solution.map.forEach((view, cell) -> cell.cellX =
                 cell.cellX > mCellLayout.getCountX() / 2 ? cell.cellX - 1 : cell.cellX);
         solution.cellX =
@@ -48,9 +48,8 @@ public class MulticellReorderAlgorithm extends ReorderAlgorithm {
     }
 
     @Override
-    public ItemConfiguration closestEmptySpaceReorder(int pixelX, int pixelY,
-            int minSpanX, int minSpanY,
-            int spanX, int spanY) {
+    public ItemConfiguration closestEmptySpaceReorder(int pixelX, int pixelY, int minSpanX,
+            int minSpanY, int spanX, int spanY) {
         return removeSeamFromSolution(simulateSeam(
                 () -> super.closestEmptySpaceReorder(pixelX, pixelY, minSpanX, minSpanY, spanX,
                         spanY)));

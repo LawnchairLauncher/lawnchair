@@ -62,6 +62,14 @@ public class ReorderAlgorithm {
     public ItemConfiguration findReorderSolution(int pixelX, int pixelY, int minSpanX,
             int minSpanY, int spanX, int spanY, int[] direction, View dragView, boolean decX,
             ItemConfiguration solution) {
+        return findReorderSolutionRecursive(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY,
+                direction, dragView, decX, solution);
+    }
+
+
+    private ItemConfiguration findReorderSolutionRecursive(int pixelX, int pixelY,
+            int minSpanX, int minSpanY, int spanX, int spanY, int[] direction, View dragView,
+            boolean decX, ItemConfiguration solution) {
         // Copy the current state into the solution. This solution will be manipulated as necessary.
         mCellLayout.copyCurrentStateToSolution(solution, false);
         // Copy the current occupied array into the temporary occupied array. This array will be
@@ -83,11 +91,11 @@ public class ReorderAlgorithm {
             // We try shrinking the widget down to size in an alternating pattern, shrink 1 in
             // x, then 1 in y etc.
             if (spanX > minSpanX && (minSpanY == spanY || decX)) {
-                return findReorderSolution(pixelX, pixelY, minSpanX, minSpanY, spanX - 1, spanY,
-                        direction, dragView, false, solution);
+                return findReorderSolutionRecursive(pixelX, pixelY, minSpanX, minSpanY, spanX - 1,
+                        spanY, direction, dragView, false, solution);
             } else if (spanY > minSpanY) {
-                return findReorderSolution(pixelX, pixelY, minSpanX, minSpanY, spanX, spanY - 1,
-                        direction, dragView, true, solution);
+                return findReorderSolutionRecursive(pixelX, pixelY, minSpanX, minSpanY, spanX,
+                        spanY - 1, direction, dragView, true, solution);
             }
             solution.isSolution = false;
         } else {
@@ -193,8 +201,7 @@ public class ReorderAlgorithm {
         mCellLayout.getDirectionVectorForDrop(pixelX, pixelY, spanX, spanY, dragView,
                 mCellLayout.mDirectionVector);
 
-        ItemConfiguration dropInPlaceSolution = dropInPlaceSolution(pixelX, pixelY,
-                spanX, spanY,
+        ItemConfiguration dropInPlaceSolution = dropInPlaceSolution(pixelX, pixelY, spanX, spanY,
                 dragView);
 
         // Find a solution involving pushing / displacing any items in the way
@@ -203,8 +210,8 @@ public class ReorderAlgorithm {
                 new ItemConfiguration());
 
         // We attempt the approach which doesn't shuffle views at all
-        ItemConfiguration closestSpaceSolution = closestEmptySpaceReorder(
-                pixelX, pixelY, minSpanX, minSpanY, spanX, spanY);
+        ItemConfiguration closestSpaceSolution = closestEmptySpaceReorder(pixelX, pixelY, minSpanX,
+                minSpanY, spanX, spanY);
 
         // If the reorder solution requires resizing (shrinking) the item being dropped, we instead
         // favor a solution in which the item is not resized, but
