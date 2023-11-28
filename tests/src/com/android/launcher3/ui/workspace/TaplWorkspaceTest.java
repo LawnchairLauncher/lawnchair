@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.ui.workspace;
 
-import static com.android.launcher3.ui.TaplTestsLauncher3.initialize;
+import static com.android.launcher3.ui.AbstractLauncherUiTest.initialize;
 import static com.android.launcher3.util.TestConstants.AppNames.CHROME_APP_NAME;
 
 import static org.junit.Assert.assertEquals;

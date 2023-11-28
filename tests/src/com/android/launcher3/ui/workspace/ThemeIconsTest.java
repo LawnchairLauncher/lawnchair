@@ -36,7 +36,6 @@ import com.android.launcher3.tapl.HomeAllApps;
 import com.android.launcher3.tapl.HomeAppIcon;
 import com.android.launcher3.tapl.HomeAppIconMenuItem;
 import com.android.launcher3.ui.AbstractLauncherUiTest;
-import com.android.launcher3.ui.TaplTestsLauncher3;
 import com.android.launcher3.util.Executors;
 
 import org.junit.Test;
@@ -58,7 +57,7 @@ public class ThemeIconsTest extends AbstractLauncherUiTest {
     @Test
     public void testIconWithoutTheme() throws Exception {
         setThemeEnabled(false);
-        TaplTestsLauncher3.initialize(this);
+        AbstractLauncherUiTest.initialize(this);
 
         HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
         allApps.freeze();
@@ -76,7 +75,7 @@ public class ThemeIconsTest extends AbstractLauncherUiTest {
     @Test
     public void testShortcutIconWithoutTheme() throws Exception {
         setThemeEnabled(false);
-        TaplTestsLauncher3.initialize(this);
+        AbstractLauncherUiTest.initialize(this);
 
         HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
         allApps.freeze();
@@ -95,7 +94,7 @@ public class ThemeIconsTest extends AbstractLauncherUiTest {
     @Test
     public void testIconWithTheme() throws Exception {
         setThemeEnabled(true);
-        TaplTestsLauncher3.initialize(this);
+        AbstractLauncherUiTest.initialize(this);
 
         HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
         allApps.freeze();
@@ -113,7 +112,7 @@ public class ThemeIconsTest extends AbstractLauncherUiTest {
     @Test
     public void testShortcutIconWithTheme() throws Exception {
         setThemeEnabled(true);
-        TaplTestsLauncher3.initialize(this);
+        AbstractLauncherUiTest.initialize(this);
 
         HomeAllApps allApps = mLauncher.getWorkspace().switchToAllApps();
         allApps.freeze();

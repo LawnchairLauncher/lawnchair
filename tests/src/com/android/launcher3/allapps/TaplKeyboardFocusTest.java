@@ -15,7 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
-import static com.android.launcher3.ui.TaplTestsLauncher3.initialize;
+import static com.android.launcher3.ui.AbstractLauncherUiTest.initialize;
 import static com.android.launcher3.util.rule.TestStabilityRule.LOCAL;
 import static com.android.launcher3.util.rule.TestStabilityRule.PLATFORM_POSTSUBMIT;
 

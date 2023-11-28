@@ -16,7 +16,7 @@
 package com.android.launcher3.dragging;
 
 import static com.android.launcher3.testing.shared.TestProtocol.ICON_MISSING;
-import static com.android.launcher3.ui.TaplTestsLauncher3.initialize;
+import static com.android.launcher3.ui.AbstractLauncherUiTest.initialize;
 import static com.android.launcher3.util.TestConstants.AppNames.DUMMY_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.GMAIL_APP_NAME;
 import static com.android.launcher3.util.TestConstants.AppNames.MAPS_APP_NAME;
