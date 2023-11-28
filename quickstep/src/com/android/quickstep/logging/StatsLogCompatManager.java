@@ -32,6 +32,7 @@ import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGE
 import static com.android.systemui.shared.system.SysUiStatsLog.LAUNCHER_UICHANGED__DST_STATE__OVERVIEW;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.StatsEvent;
 import android.view.View;
@@ -227,6 +228,7 @@ public class StatsLogCompatManager extends StatsLogManager {
         private Optional<Integer> mCardinality = Optional.empty();
         private int mInputType = SysUiStatsLog.LAUNCHER_UICHANGED__INPUT_TYPE__UNKNOWN;
         private Optional<Integer> mFeatures = Optional.empty();
+        private Optional<String> mPackageName = Optional.empty();
 
         StatsCompatLogger(Context context, ActivityContext activityContext) {
             mContext = context;
@@ -332,6 +334,12 @@ public class StatsLogCompatManager extends StatsLogManager {
         }
 
         @Override
+        public StatsLogger withPackageName(@Nullable String packageName) {
+            mPackageName = Optional.ofNullable(packageName);
+            return this;
+        }
+
+        @Override
         public void log(EventEnum event) {
             if (!Utilities.ATLEAST_R) {
                 return;
@@ -431,6 +439,7 @@ public class StatsLogCompatManager extends StatsLogManager {
             int srcState = mSrcState;
             int dstState = mDstState;
             int inputType = mInputType;
+            String packageName = mPackageName.orElseGet(() -> getPackageName(atomInfo));
             if (IS_VERBOSE) {
                 String name = (event instanceof Enum) ? ((Enum) event).name() :
                         event.getId() + "";
@@ -447,6 +456,9 @@ public class StatsLogCompatManager extends StatsLogManager {
                 }
                 if (atomInfo.hasContainerInfo()) {
                     logStringBuilder.append("\n").append(atomInfo);
+                }
+                if (!TextUtils.isEmpty(packageName)) {
+                    logStringBuilder.append(String.format("\nPackage name: %s", packageName));
                 }
                 Log.d(TAG, logStringBuilder.toString());
             }
@@ -472,7 +484,7 @@ public class StatsLogCompatManager extends StatsLogManager {
                     atomInfo.getItemCase().getNumber() /* target_id */,
                     instanceId.getId() /* instance_id TODO */,
                     0 /* uid TODO */,
-                    getPackageName(atomInfo) /* package_name */,
+                    packageName /* package_name */,
                     getComponentName(atomInfo) /* component_name */,
                     getGridX(atomInfo, false) /* grid_x */,
                     getGridY(atomInfo, false) /* grid_y */,
