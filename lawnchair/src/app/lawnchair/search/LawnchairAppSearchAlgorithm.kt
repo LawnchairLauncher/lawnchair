@@ -2,17 +2,17 @@ package app.lawnchair.search
 
 import android.content.Context
 import android.content.pm.ShortcutInfo
-import android.graphics.drawable.Icon
 import android.os.Handler
-import android.os.Process
-import androidx.core.os.bundleOf
-import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.launcher
+import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
+import app.lawnchair.search.data.ContactInfo
+import app.lawnchair.search.data.FileInfo
+import app.lawnchair.search.data.SearchResult
+import app.lawnchair.util.isDefaultLauncher
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
 import com.android.launcher3.allapps.BaseAllAppsAdapter.AdapterItem
-import com.android.launcher3.allapps.BaseAllAppsAdapter.VIEW_TYPE_EMPTY_SEARCH
 import com.android.launcher3.model.AllAppsList
 import com.android.launcher3.model.BaseModelUpdateTask
 import com.android.launcher3.model.BgDataModel
@@ -21,13 +21,12 @@ import com.android.launcher3.popup.PopupPopulator
 import com.android.launcher3.search.SearchCallback
 import com.android.launcher3.search.StringMatcherUtility
 import com.android.launcher3.shortcuts.ShortcutRequest
-import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.Executors
-import com.android.launcher3.util.PackageManagerHelper
 import com.patrykmichalik.opto.core.onEach
 import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import me.xdrop.fuzzywuzzy.FuzzySearch
 import me.xdrop.fuzzywuzzy.algorithms.WeightedRatio
 
@@ -40,9 +39,12 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
     private lateinit var hiddenApps: Set<String>
     private var showHiddenAppsInSearch = false
     private var enableSmartHide = false
-    private val marketSearchComponent = resolveMarketSearchActivity()
     private val coroutineScope = CoroutineScope(context = Dispatchers.IO)
     private val pref2 = PreferenceManager2.getInstance(context)
+    private val generateSearchTarget = GenerateSearchTarget(context)
+    private var enableWideSearch = false
+
+    private val prefs: PreferenceManager = PreferenceManager.getInstance(context)
 
     init {
         pref2.enableFuzzySearch.onEach(launchIn = coroutineScope) {
@@ -60,13 +62,18 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         pref2.enableSmartHide.onEach(launchIn = coroutineScope) {
             enableSmartHide = it
         }
+        pref2.performWideSearch.onEach(launchIn = coroutineScope) {
+            enableWideSearch = it
+        }
     }
 
     override fun doSearch(query: String, callback: SearchCallback<AdapterItem>) {
         appState.model.enqueueModelUpdateTask(object : BaseModelUpdateTask() {
             override fun execute(app: LauncherAppState, dataModel: BgDataModel, apps: AllAppsList) {
-                val result = getResult(apps.data, query)
-                resultHandler.post { callback.onSearchResult(query, result) }
+                coroutineScope.launch(Dispatchers.Main) {
+                    val results = getResult(apps.data, query)
+                    callback.onSearchResult(query, results)
+                }
             }
         })
     }
@@ -77,33 +84,66 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         }
     }
 
-    private fun getResult(
+    private suspend fun getResult(
         apps: MutableList<AppInfo>,
         query: String,
-    ): java.util.ArrayList<AdapterItem> {
+    ): ArrayList<AdapterItem> {
         val appResults = if (enableFuzzySearch) {
             fuzzySearch(apps, query)
         } else {
             normalSearch(apps, query)
         }
-        val results = mutableListOf<SearchTargetCompat>()
-        if (appResults.size == 1) {
-            val app = appResults.first()
-            val shortcuts = getShortcuts(app)
-            results.add(createSearchTarget(app, true))
-            shortcuts.mapTo(results, ::createSearchTarget)
-        } else {
-            appResults.mapTo(results, ::createSearchTarget)
+
+        val wideSearchResults = if (enableWideSearch) performDeviceWideSearch(query, prefs) else emptyList()
+
+        val searchTargets = mutableListOf<SearchTargetCompat>()
+
+        if (appResults.isNotEmpty()) {
+            appResults.mapTo(searchTargets, ::createSearchTarget)
         }
-        if (results.isEmpty()) {
-            if (marketSearchComponent == null) {
-                return arrayListOf(AdapterItem(VIEW_TYPE_EMPTY_SEARCH))
+
+        if (appResults.size == 1 && context.isDefaultLauncher()) {
+            val singleAppResult = appResults.first()
+            val shortcuts = getShortcuts(singleAppResult)
+            if (shortcuts.isNotEmpty()) {
+                searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
+                searchTargets.add(createSearchTarget(singleAppResult, true))
+                searchTargets.addAll(shortcuts.map(::createSearchTarget))
             }
-            results.add(getEmptySearchItem(query))
         }
-        val adapterItems = transformSearchResults(results)
+
+        val contacts = filterByType(wideSearchResults, CONTACT)
+        if (contacts.isNotEmpty()) {
+            val contactsHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_contacts_from_device))
+            searchTargets.add(contactsHeader)
+            searchTargets.addAll(contacts.map { generateSearchTarget.getContactSearchItem(it.resultData as ContactInfo) })
+        }
+
+        val suggestions = filterByType(wideSearchResults, SUGGESTION)
+        if (suggestions.isNotEmpty()) {
+            val suggestionsHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_suggestions))
+            searchTargets.add(suggestionsHeader)
+            searchTargets.addAll(suggestions.map { generateSearchTarget.getSuggestionTarget(it.resultData as String) })
+        }
+
+        val files = filterByType(wideSearchResults, FILES)
+        if (files.isNotEmpty()) {
+            val filesHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_files))
+            searchTargets.add(filesHeader)
+            searchTargets.addAll(files.map { generateSearchTarget.getFileInfoSearchItem(it.resultData as FileInfo) })
+        }
+
+        searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
+        searchTargets.add(generateSearchTarget.getStartPageSearchItem(query))
+        generateSearchTarget.getMarketSearchItem(query)?.let { searchTargets.add(it) }
+
+        val adapterItems = transformSearchResults(searchTargets)
         LawnchairSearchAdapterProvider.setFirstItemQuickLaunch(adapterItems)
         return ArrayList(adapterItems)
+    }
+
+    private fun filterByType(results: List<SearchResult>, type: String): List<SearchResult> {
+        return results.filter { it.resultType == type }
     }
 
     private fun getShortcuts(app: AppInfo): List<ShortcutInfo> {
@@ -140,34 +180,6 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
 
         return matches.take(maxResultsCount)
             .map { it.referent }
-    }
-
-    private fun resolveMarketSearchActivity(): ComponentKey? {
-        val intent = PackageManagerHelper.getMarketSearchIntent(context, "")
-        val resolveInfo = context.packageManager.resolveActivity(intent, 0) ?: return null
-        val packageName = resolveInfo.activityInfo.packageName
-        val launchIntent = context.packageManager.getLaunchIntentForPackage(packageName) ?: return null
-        return ComponentKey(launchIntent.component, Process.myUserHandle())
-    }
-
-    private fun getEmptySearchItem(query: String): SearchTargetCompat {
-        val id = "marketSearch:$query"
-        val action = SearchActionCompat.Builder(
-            id,
-            context.getString(R.string.all_apps_search_market_message),
-        )
-            .setIcon(Icon.createWithResource(context, R.drawable.ic_launcher_home))
-            .setIntent(PackageManagerHelper.getMarketSearchIntent(context, query))
-            .build()
-        val extras = bundleOf(
-            if (marketSearchComponent != null) {
-                SearchResultView.EXTRA_ICON_COMPONENT_KEY to marketSearchComponent.toString()
-            } else {
-                SearchResultView.EXTRA_HIDE_ICON to true
-            },
-            SearchResultView.EXTRA_HIDE_SUBTITLE to true,
-        )
-        return createSearchTarget(id, action, extras)
     }
 
     private fun Sequence<AppInfo>.filterHiddenApps(query: String): Sequence<AppInfo> {

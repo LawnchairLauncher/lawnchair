@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import app.lawnchair.launcher
+import app.lawnchair.search.SUGGESTION
 import app.lawnchair.search.SearchTargetCompat
 import app.lawnchair.util.runOnMainThread
 import com.android.launcher3.BubbleTextView
@@ -184,7 +185,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
         notifyApplied(si)
         val cache = LauncherAppState.getInstance(launcher).iconCache
         MODEL_EXECUTOR.handler.postAtFrontOfQueue {
-            cache.getShortcutInfoBadge(shortcutInfo)
+            cache.getShortcutIcon(si, shortcutInfo)
             runOnMainThread { applyFromWorkspaceItem(si) }
         }
     }
@@ -210,9 +211,9 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
 
             info.bitmap = when {
                 info.hasFlags(FLAG_PRIMARY_ICON_FROM_TITLE) ->
-                    li.createIconBitmap("${info.title?.get(0)}", packageIcon.color)
+                    li.createIconBitmap("${info.title}", packageIcon.color)
                 icon == null -> packageIcon
-                else -> li.createBadgedIconBitmap(icon.loadDrawable(context), info.user, false)
+                else -> li.createBadgedIconBitmap(icon.loadDrawable(context), info.user, target.packageName != SUGGESTION)
             }
             if (info.hasFlags(FLAG_BADGE_WITH_COMPONENT_NAME) && target.extras.containsKey("class")) {
                 try {
@@ -235,7 +236,7 @@ class SearchResultIcon(context: Context, attrs: AttributeSet?) :
         val las = LauncherAppState.getInstance(context)
         val info = PackageItemInfo(packageName, user)
         info.user = user
-        las.iconCache.getTitleAndIconForApp(info, false)
+        las.iconCache.getTitleAndIcon(info, false)
         return info.bitmap
     }
 

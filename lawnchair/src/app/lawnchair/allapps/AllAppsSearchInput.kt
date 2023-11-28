@@ -113,6 +113,13 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
                     enableDebugMenu.set(!enableDebugMenu.get())
                     launcher.stateManager.goToState(LauncherState.NORMAL)
                 }
+                // Make sure to empty
+                // if user used backspace instead of clear action btn
+                if (input.text.isEmpty() || input.text.isBlank()) {
+                    input.reset()
+                    resetSearch()
+                    clearSearchResult()
+                }
             },
         )
 
@@ -204,16 +211,6 @@ class AllAppsSearchInput(context: Context, attrs: AttributeSet?) :
             apps.setSearchResults(items)
             notifyResultChanged()
             appsView.setSearchResults(items)
-        }
-    }
-
-    fun onAppendSearchResult(
-        query: String,
-        items: ArrayList<AdapterItem>?,
-    ) {
-        if (items != null) {
-            apps.setSearchResults(items)
-            notifyResultChanged()
         }
     }
 

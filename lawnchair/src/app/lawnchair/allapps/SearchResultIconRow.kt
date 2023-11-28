@@ -8,6 +8,8 @@ import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import app.lawnchair.allapps.SearchResultView.Companion.FLAG_HIDE_SUBTITLE
+import app.lawnchair.font.FontManager
+import app.lawnchair.search.SUGGESTION
 import app.lawnchair.search.SearchTargetCompat
 import com.android.app.search.LayoutType
 import com.android.launcher3.R
@@ -41,6 +43,8 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
         title = ViewCompat.requireViewById(this, R.id.title)
         subtitle = ViewCompat.requireViewById(this, R.id.subtitle)
         subtitle.isVisible = false
+        FontManager.INSTANCE.get(context).setCustomFont(title, R.id.font_heading)
+        FontManager.INSTANCE.get(context).setCustomFont(subtitle, R.id.font_body)
         delimiter = findViewById(R.id.delimiter)
         setOnClickListener(icon)
 
@@ -77,6 +81,10 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
             title.text = it.title
             tag = it
         }
+        val isSuggestion = target.layoutType == LayoutType.HORIZONTAL_MEDIUM_TEXT &&
+            target.resultType == SearchTargetCompat.RESULT_TYPE_SUGGESTIONS &&
+            target.packageName == SUGGESTION
+
         bindShortcuts(shortcuts)
         var showDelimiter = true
         if (isSmall) {
@@ -94,6 +102,17 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
             }
         }
         setSubtitleText(target.searchAction?.subtitle, showDelimiter)
+        if (shouldHandleClick(target) && !isSmall) {
+            setOnClickListener {
+                target.searchAction?.intent?.let { it1 -> handleSearchTargetClick(context, it1) }
+            }
+        }
+        if (isSuggestion) {
+            layoutParams.height = resources.getDimensionPixelSize(R.dimen.search_result_small_row_height)
+            setOnClickListener {
+                target.searchAction?.intent?.let { it1 -> handleSearchTargetClick(context, it1) }
+            }
+        }
     }
 
     private fun setSubtitleText(subtitleText: CharSequence?, showDelimiter: Boolean) {

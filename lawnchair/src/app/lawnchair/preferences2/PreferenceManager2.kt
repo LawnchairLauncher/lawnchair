@@ -248,6 +248,11 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         defaultValue = context.resources.getBoolean(R.bool.config_default_auto_show_keyboard_in_drawer),
     )
 
+    val performWideSearch = preference(
+        key = booleanPreferencesKey(name = "performWideSearch"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_perform_wide_search),
+    )
+
     val workspaceTextColor = preference(
         key = stringPreferencesKey(name = "workspace_text_color"),
         defaultValue = ColorMode.AUTO,

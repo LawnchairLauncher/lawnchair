@@ -6,12 +6,26 @@ import app.lawnchair.allapps.SearchItemBackground
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION
 import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
+import app.lawnchair.search.data.SearchResult
+import app.lawnchair.search.data.findByFileName
+import app.lawnchair.search.data.findContactByName
+import app.lawnchair.search.data.getStartPageSuggestions
+import app.lawnchair.util.checkAndRequestFilesPermission
+import app.lawnchair.util.contactPermissionGranted
 import com.android.app.search.LayoutType.EMPTY_DIVIDER
+import com.android.app.search.LayoutType.HORIZONTAL_MEDIUM_TEXT
+import com.android.app.search.LayoutType.ICON_HORIZONTAL_TEXT
 import com.android.app.search.LayoutType.ICON_SINGLE_VERTICAL_TEXT
+import com.android.app.search.LayoutType.PEOPLE_TILE
+import com.android.app.search.LayoutType.SMALL_ICON_HORIZONTAL_TEXT
+import com.android.app.search.LayoutType.TEXT_HEADER
+import com.android.app.search.LayoutType.THUMBNAIL
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.Utilities
 import com.android.launcher3.allapps.BaseAllAppsAdapter
 import com.android.launcher3.search.SearchAlgorithm
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 sealed class LawnchairSearchAlgorithm(
     protected val context: Context,
@@ -55,20 +69,60 @@ sealed class LawnchairSearchAlgorithm(
             .filter { LawnchairSearchAdapterProvider.viewTypeMap[it.layoutType] != null }
             .removeDuplicateDividers()
             .toList()
-        return filtered
-            .mapIndexedNotNull { index, target ->
-                val isFirst = index == 0 || filtered[index - 1].isDivider
-                val isLast = index == filtered.lastIndex || filtered[index + 1].isDivider
-                val background = when {
-                    target.layoutType == ICON_SINGLE_VERTICAL_TEXT -> iconBackground
-                    target.layoutType == EMPTY_DIVIDER -> iconBackground
-                    isFirst && isLast -> normalBackground
-                    isFirst -> topBackground
-                    isLast -> bottomBackground
-                    else -> centerBackground
-                }
-                SearchAdapterItem.createAdapterItem(target, background)
-            }
+
+        val smallIconIndices = findIndices(filtered, SMALL_ICON_HORIZONTAL_TEXT)
+        val iconRowIndices = findIndices(filtered, ICON_HORIZONTAL_TEXT)
+        val peopleTileIndices = findIndices(filtered, PEOPLE_TILE)
+        val suggestionIndices = findIndices(filtered, HORIZONTAL_MEDIUM_TEXT)
+        val fileIndices = findIndices(filtered, THUMBNAIL)
+
+        return filtered.mapIndexedNotNull { index, target ->
+            val isFirst = index == 0 || filtered[index - 1].isDivider
+            val isLast = index == filtered.lastIndex || filtered[index + 1].isDivider
+            val background = getBackground(
+                target.layoutType, index, isFirst, isLast,
+                smallIconIndices, iconRowIndices, peopleTileIndices, suggestionIndices, fileIndices,
+            )
+            SearchAdapterItem.createAdapterItem(target, background)
+        }
+    }
+    private fun findIndices(filtered: List<SearchTargetCompat>, layoutType: String): List<Int> {
+        return filtered.indices.filter {
+            filtered[it].layoutType == layoutType
+        }
+    }
+
+    private fun getBackground(
+        layoutType: String,
+        index: Int,
+        isFirst: Boolean,
+        isLast: Boolean,
+        smallIconIndices: List<Int>,
+        iconRowIndices: List<Int>,
+        peopleTileIndices: List<Int>,
+        suggestionIndices: List<Int>,
+        fileIndices: List<Int>,
+    ): SearchItemBackground {
+        return when {
+            layoutType == TEXT_HEADER || layoutType == ICON_SINGLE_VERTICAL_TEXT || layoutType == EMPTY_DIVIDER -> iconBackground
+            layoutType == SMALL_ICON_HORIZONTAL_TEXT -> getGroupedBackground(index, smallIconIndices)
+            layoutType == ICON_HORIZONTAL_TEXT -> getGroupedBackground(index, iconRowIndices)
+            layoutType == PEOPLE_TILE -> getGroupedBackground(index, peopleTileIndices)
+            layoutType == HORIZONTAL_MEDIUM_TEXT -> getGroupedBackground(index, suggestionIndices)
+            layoutType == THUMBNAIL -> getGroupedBackground(index, fileIndices)
+            isFirst && isLast -> normalBackground
+            isFirst -> topBackground
+            isLast -> bottomBackground
+            else -> centerBackground
+        }
+    }
+    private fun getGroupedBackground(index: Int, indices: List<Int>): SearchItemBackground {
+        return when {
+            indices.size == 1 -> normalBackground
+            index == indices.first() -> topBackground
+            index == indices.last() -> bottomBackground
+            else -> centerBackground
+        }
     }
 
     companion object {
@@ -91,6 +145,27 @@ sealed class LawnchairSearchAlgorithm(
             isDeviceSearchEnabled(context) -> LawnchairDeviceSearchAlgorithm(context)
             else -> LawnchairAppSearchAlgorithm(context)
         }
+    }
+
+    protected suspend fun performDeviceWideSearch(query: String, prefs: PreferenceManager): MutableList<SearchResult> = withContext(Dispatchers.IO) {
+        val results = ArrayList<SearchResult>()
+
+        if (prefs.searchResultPeople.get() && contactPermissionGranted(context, prefs)) {
+            val contactResults = findContactByName(context, query, 10)
+            results.addAll(contactResults.map { SearchResult(CONTACT, it) })
+        }
+
+        if (prefs.searchResultFiles.get() && checkAndRequestFilesPermission(context, prefs)) {
+            val fileResults = findByFileName(context, query, 2)
+            results.addAll(fileResults.map { SearchResult(FILES, it) })
+        }
+
+        if (prefs.searchResultStartPageSuggestion.get()) {
+            val suggestionsResults = getStartPageSuggestions(query, 3)
+            results.addAll(suggestionsResults.map { SearchResult(SUGGESTION, it) })
+        }
+
+        results
     }
 }
 

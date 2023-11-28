@@ -32,6 +32,8 @@ import app.lawnchair.ui.preferences.components.PreferenceLayout
 import app.lawnchair.ui.preferences.components.SliderPreference
 import app.lawnchair.ui.preferences.components.SuggestionsPreference
 import app.lawnchair.ui.preferences.components.SwitchPreference
+import app.lawnchair.util.checkAndRequestFilesPermission
+import app.lawnchair.util.contactPermissionGranted
 import com.android.launcher3.R
 
 object AppDrawerRoutes {
@@ -48,7 +50,9 @@ fun NavGraphBuilder.appDrawerGraph(route: String) {
 fun AppDrawerPreferences() {
     val prefs = preferenceManager()
     val prefs2 = preferenceManager2()
-    val resources = LocalContext.current.resources
+    val context = LocalContext.current
+    val resources = context.resources
+
     PreferenceLayout(label = stringResource(id = R.string.app_drawer_label)) {
         PreferenceGroup(heading = stringResource(id = R.string.general_label)) {
             SliderPreference(
@@ -112,6 +116,34 @@ fun AppDrawerPreferences() {
                         step = 1,
                         valueRange = 5..15,
                     )
+                }
+            }
+        }
+        ExpandAndShrink(visible = prefs.performWideSearchExperimental.get() && showDrawerSearchBar.state.value) {
+            PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
+                SwitchPreference(
+                    adapter = prefs2.performWideSearch.getAdapter(),
+                    label = stringResource(id = R.string.perform_wide_search_title),
+                )
+                ExpandAndShrink(visible = prefs2.performWideSearch.getAdapter().state.value) {
+                    DividerColumn {
+                        SwitchPreference(
+                            adapter = prefs.searchResultFiles.getAdapter(),
+                            label = stringResource(id = R.string.perform_wide_search_file),
+                            description = stringResource(id = R.string.warn_files_permission_content),
+                            onClick = { checkAndRequestFilesPermission(context, prefs) },
+                        )
+                        SwitchPreference(
+                            adapter = prefs.searchResultPeople.getAdapter(),
+                            label = stringResource(id = R.string.search_pref_result_people_title),
+                            description = stringResource(id = R.string.warn_contact_permission_content),
+                            onClick = { contactPermissionGranted(context, prefs) },
+                        )
+                        SwitchPreference(
+                            adapter = prefs.searchResultStartPageSuggestion.getAdapter(),
+                            label = stringResource(id = R.string.perform_wide_search_suggestion),
+                        )
+                    }
                 }
             }
         }

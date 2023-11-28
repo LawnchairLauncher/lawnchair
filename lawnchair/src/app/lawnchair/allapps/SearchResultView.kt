@@ -1,7 +1,15 @@
 package app.lawnchair.allapps
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import app.lawnchair.search.CONTACT
+import app.lawnchair.search.FILES
+import app.lawnchair.search.MARKET_STORE
+import app.lawnchair.search.START_PAGE
+import app.lawnchair.search.SUGGESTION
 import app.lawnchair.search.SearchTargetCompat
+import com.android.app.search.LayoutType
 
 sealed interface SearchResultView {
 
@@ -28,6 +36,16 @@ sealed interface SearchResultView {
 
     fun hasFlag(flags: Int, flag: Int): Boolean {
         return (flags and flag) != 0
+    }
+
+    fun shouldHandleClick(targetCompat: SearchTargetCompat): Boolean {
+        val packageName = targetCompat.packageName
+        return (packageName in listOf(START_PAGE, MARKET_STORE, SUGGESTION, CONTACT, FILES)) &&
+            targetCompat.layoutType != LayoutType.SMALL_ICON_HORIZONTAL_TEXT &&
+            targetCompat.resultType != SearchTargetCompat.RESULT_TYPE_SHORTCUT
+    }
+    fun handleSearchTargetClick(context: Context, searchTargetIntent: Intent) {
+        context.startActivity(searchTargetIntent)
     }
 
     companion object {
