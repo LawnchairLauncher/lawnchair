@@ -441,7 +441,7 @@ ksp {
 spotless {
     kotlin {
         ktlint()
-        target("lawnchair/src/**/*.kt")
+        target("lawnchair/src/**/*.kt", "baseline-profile/src/**/*.kt")
     }
 }
 
