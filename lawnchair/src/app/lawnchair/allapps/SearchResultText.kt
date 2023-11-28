@@ -31,9 +31,7 @@ class SearchResultText(context: Context, attrs: AttributeSet?) :
 
     override val titleText: CharSequence? get() = title.text
 
-    override fun launch(): Boolean {
-        return false
-    }
+    override fun launch(): Boolean = false
     override fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>) {
         title.text = target.searchAction?.title
         val layoutParams = LayoutParams(

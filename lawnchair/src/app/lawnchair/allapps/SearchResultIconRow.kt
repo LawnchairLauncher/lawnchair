@@ -104,13 +104,13 @@ class SearchResultIconRow(context: Context, attrs: AttributeSet?) :
         setSubtitleText(target.searchAction?.subtitle, showDelimiter)
         if (shouldHandleClick(target) && !isSmall) {
             setOnClickListener {
-                target.searchAction?.intent?.let { it1 -> handleSearchTargetClick(context, it1) }
+                target.searchAction?.intent?.let { intent -> handleSearchTargetClick(context, intent) }
             }
         }
         if (isSuggestion) {
             layoutParams.height = resources.getDimensionPixelSize(R.dimen.search_result_small_row_height)
             setOnClickListener {
-                target.searchAction?.intent?.let { it1 -> handleSearchTargetClick(context, it1) }
+                target.searchAction?.intent?.let { intent -> handleSearchTargetClick(context, intent) }
             }
         }
     }

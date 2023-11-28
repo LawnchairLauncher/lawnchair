@@ -14,6 +14,7 @@ data class SearchAdapterItem(
     val background: SearchItemBackground?,
     val viewType: Int,
 ) : BaseAllAppsAdapter.AdapterItem(viewType) {
+
     fun setRippleEffect(child: View) {
         val shape = RoundRectShape(background?.cornerRadii, null, null)
         val shapeDrawable = ShapeDrawable(shape)

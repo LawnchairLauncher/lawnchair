@@ -4,42 +4,56 @@ import android.content.Context
 import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.util.Log
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
+import app.lawnchair.search.data.suggestion.StartPageService
+import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.ResponseBody
 import org.json.JSONArray
 import org.json.JSONObject
+import retrofit2.Response
+import retrofit2.Retrofit
+
+val json = Json { ignoreUnknownKeys = true }
+
+val retrofit: Retrofit = Retrofit.Builder()
+    .baseUrl("https://www.startpage.com/")
+    .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+    .build()
+
+val startPageService: StartPageService = retrofit.create(StartPageService::class.java)
 
 suspend fun getStartPageSuggestions(query: String, max: Int): List<String> {
     if (query.isEmpty() || query.isBlank() || max <= 0) return emptyList()
-    return withContext(Dispatchers.IO) {
-        try {
-            val url = URL("https://www.startpage.com/suggestions?q=$query&segment=startpage.lawnchair&partner=lawnchair&format=opensearch")
-            val connection = (url.openConnection() as HttpURLConnection).apply { requestMethod = "GET" }
 
-            if (connection.responseCode == HttpURLConnection.HTTP_OK) {
-                val response = BufferedReader(
-                    InputStreamReader(
-                        connection.inputStream,
-                    ),
-                ).useLines {
-                    it.joinToString("")
-                }
-                return@withContext JSONArray(response).optJSONArray(1)?.let { array ->
+    try {
+        return withContext(Dispatchers.IO) {
+            val response: Response<ResponseBody> = startPageService.getStartPageSuggestions(
+                query = query,
+                segment = "startpage.lawnchair",
+                partner = "lawnchair",
+                format = "opensearch",
+            )
+
+            if (response.isSuccessful) {
+                val responseBody = response.body()?.string()
+
+                return@withContext JSONArray(responseBody).optJSONArray(1)?.let { array ->
                     (0 until array.length()).take(max).map { array.getString(it) }
                 } ?: emptyList()
             } else {
-                Log.d("Failed to retrieve suggestions ", ": ${connection.responseCode}")
+                Log.d("Failed to retrieve suggestions", ": ${response.code()}")
             }
-        } catch (e: Exception) {
-            // ignore
+
+            return@withContext emptyList()
         }
-        return@withContext emptyList()
+    } catch (e: Exception) {
+        Log.d("Failed to retrieve suggestions", ": $e")
+        return emptyList()
     }
 }
 

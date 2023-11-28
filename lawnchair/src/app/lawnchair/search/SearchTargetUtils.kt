@@ -15,7 +15,7 @@ import java.security.MessageDigest
 private fun generateHashKey(input: String): String =
     MessageDigest.getInstance("SHA-256")
         .digest(input.toByteArray())
-        .joinToString("") { "%02x".format(it) }
+        .joinToString { "%02x".format(it) }
 
 fun createSearchTarget(appInfo: AppInfo, asRow: Boolean = false): SearchTargetCompat {
     val componentName = appInfo.componentName

@@ -76,9 +76,7 @@ class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
 
     override val titleText: CharSequence? get() = title.text
 
-    override fun launch(): Boolean {
-        return false
-    }
+    override fun launch(): Boolean = false
 
     override fun bind(
         target: SearchTargetCompat,
@@ -119,7 +117,7 @@ class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
 
         if (shouldHandleClick(target)) {
             setOnClickListener {
-                target.searchAction?.intent?.let { it1 -> handleSearchTargetClick(context, it1) }
+                target.searchAction?.intent?.let { intent -> handleSearchTargetClick(context, intent) }
             }
         }
     }
