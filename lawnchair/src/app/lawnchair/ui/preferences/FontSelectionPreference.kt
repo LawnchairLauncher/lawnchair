@@ -254,15 +254,7 @@ private fun FontSelectionItem(
         endWidget = when {
             selected && family.variants.size > 1 -> {
                 {
-                    Row(
-                        horizontalArrangement = Arrangement.End,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .padding(end = 16.dp),
-                    ) {
-                        VariantDropdown(adapter = adapter, family = family)
-                    }
+                    VariantDropdown(adapter = adapter, family = family)
                 }
             }
             onDelete != null -> {
@@ -298,46 +290,54 @@ private fun VariantDropdown(
     adapter: PreferenceAdapter<FontCache.Font>,
     family: FontCache.Family,
 ) {
-    val selectedFont = adapter.state.value
-    var showVariants by remember { mutableStateOf(false) }
-
-    val context = LocalContext.current
-    DisposableEffect(family) {
-        val fontCache = FontCache.INSTANCE.get(context)
-        family.variants.forEach { fontCache.preloadFont(it.value) }
-        onDispose { }
-    }
-
-    TextButton(
-        onClick = { showVariants = true },
-        colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onBackground),
-        contentPadding = VariantButtonContentPadding,
+    Row(
+        horizontalArrangement = Arrangement.End,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .wrapContentWidth()
+            .padding(end = 16.dp),
     ) {
-        AndroidText(
-            modifier = Modifier.wrapContentWidth(),
-            update = {
-                it.text = selectedFont.displayName
-                it.setFont(selectedFont)
-            },
-        )
-        Icon(
-            imageVector = Icons.Rounded.ArrowDropDown,
-            contentDescription = null,
-        )
-    }
-    DropdownMenu(
-        expanded = showVariants,
-        onDismissRequest = { showVariants = false },
-    ) {
-        family.sortedVariants.forEach { font ->
-            DropdownMenuItem(onClick = {
-                adapter.onChange(font)
-                showVariants = false
-            }) {
-                Text(
-                    text = font.displayName,
-                    fontFamily = font.composeFontFamily,
-                )
+        val selectedFont = adapter.state.value
+        var showVariants by remember { mutableStateOf(false) }
+
+        val context = LocalContext.current
+        DisposableEffect(family) {
+            val fontCache = FontCache.INSTANCE.get(context)
+            family.variants.forEach { fontCache.preloadFont(it.value) }
+            onDispose { }
+        }
+
+        TextButton(
+            onClick = { showVariants = true },
+            colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.onBackground),
+            contentPadding = VariantButtonContentPadding,
+        ) {
+            AndroidText(
+                modifier = Modifier.wrapContentWidth(),
+                update = {
+                    it.text = selectedFont.displayName
+                    it.setFont(selectedFont)
+                },
+            )
+            Icon(
+                imageVector = Icons.Rounded.ArrowDropDown,
+                contentDescription = null,
+            )
+        }
+        DropdownMenu(
+            expanded = showVariants,
+            onDismissRequest = { showVariants = false },
+        ) {
+            family.sortedVariants.forEach { font ->
+                DropdownMenuItem(onClick = {
+                    adapter.onChange(font)
+                    showVariants = false
+                }) {
+                    Text(
+                        text = font.displayName,
+                        fontFamily = font.composeFontFamily,
+                    )
+                }
             }
         }
     }
