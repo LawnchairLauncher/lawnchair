@@ -257,10 +257,6 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
                 Interpolators.clampToProgress(Interpolators.LINEAR,
                         timings.instructionsContainerFadeInStartOffset,
                         timings.instructionsContainerFadeInEndOffset))
-        anim.setViewAlpha(splitInstructionsView!!.textView, 1f,
-                Interpolators.clampToProgress(Interpolators.LINEAR,
-                        timings.instructionsTextFadeInStartOffset,
-                        timings.instructionsTextFadeInEndOffset))
         anim.addFloat(splitInstructionsView, SplitInstructionsView.UNFOLD, 0.1f, 1f,
                 Interpolators.clampToProgress(Interpolators.EMPHASIZED_DECELERATE,
                         timings.instructionsUnfoldStartOffset,
