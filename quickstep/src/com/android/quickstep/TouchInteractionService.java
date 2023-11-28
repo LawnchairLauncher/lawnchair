@@ -982,12 +982,11 @@ public class TouchInteractionService extends Service {
                     base = new TaskbarUnstashInputConsumer(this, base, mInputMonitorCompat, tac,
                             mOverviewCommandHelper);
                 }
-            } else if (canStartSystemGesture && FeatureFlags.ENABLE_LONG_PRESS_NAV_HANDLE.get()
-                    && !previousGestureState.isRecentsAnimationRunning()) {
+            } else if (canStartSystemGesture && !previousGestureState.isRecentsAnimationRunning()) {
                 reasonString.append(NEWLINE_PREFIX)
                         .append(reasonPrefix)
                         .append(SUBSTRING_PREFIX)
-                        .append("Long press nav handle enabled, ")
+                        .append("Not running recents animation, ")
                         .append("using NavHandleLongPressInputConsumer");
                 base = new NavHandleLongPressInputConsumer(this, base, mInputMonitorCompat,
                         mDeviceState);
