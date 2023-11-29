@@ -515,7 +515,7 @@ public class ActivityAllAppsContainerView<T extends Context & ActivityContext>
             // Switch to the main tab
             switchToTab(ActivityAllAppsContainerView.AdapterHolder.MAIN);
             // Scroll to bottom
-            getActiveRecyclerView().scrollToBottom();
+            getActiveRecyclerView().scrollToBottomWithMotion();
         });
     }
 

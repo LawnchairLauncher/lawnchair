@@ -108,4 +108,11 @@ class ResponsiveCellSpecsProviderTest : AbstractDeviceProfileTest() {
             TestResourceHelper(context, TestR.xml.invalid_cell_specs_2)
         )
     }
+
+    @Test(expected = IllegalStateException::class)
+    fun parseInvalidFile_invalidFixedSize_throwsError() {
+        ResponsiveCellSpecsProvider.create(
+            TestResourceHelper(context, TestR.xml.invalid_cell_specs_3)
+        )
+    }
 }

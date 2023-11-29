@@ -439,8 +439,8 @@ public class DeviceProfile {
         }
 
         folderLabelTextScale = res.getFloat(R.dimen.folder_label_text_scale);
-        numFolderRows = inv.numFolderRows;
-        numFolderColumns = inv.numFolderColumns;
+        numFolderRows = inv.numFolderRows[mTypeIndex];
+        numFolderColumns = inv.numFolderColumns[mTypeIndex];
 
         if (mIsScalableGrid && inv.folderStyle != INVALID_RESOURCE_HANDLE) {
             TypedArray folderStyle = context.obtainStyledAttributes(inv.folderStyle,
@@ -1002,6 +1002,9 @@ public class DeviceProfile {
         iconCenterVertically = mIsScalableGrid || mIsResponsiveGrid;
 
         if (mIsResponsiveGrid) {
+            iconSizePx = mResponsiveWorkspaceCellSpec.getIconSize();
+            iconTextSizePx = mResponsiveWorkspaceCellSpec.getIconTextSize();
+            mIconDrawablePaddingOriginalPx = mResponsiveWorkspaceCellSpec.getIconDrawablePadding();
             updateIconSize(1f, res);
             updateWorkspacePadding();
             return 0;
@@ -1096,10 +1099,6 @@ public class DeviceProfile {
         cellLayoutBorderSpacePx = getCellLayoutBorderSpace(inv, scale);
 
         if (mIsResponsiveGrid) {
-            iconSizePx = mResponsiveWorkspaceCellSpec.getIconSize();
-            iconTextSizePx = mResponsiveWorkspaceCellSpec.getIconTextSize();
-            mIconDrawablePaddingOriginalPx = mResponsiveWorkspaceCellSpec.getIconDrawablePadding();
-
             cellWidthPx = mResponsiveWorkspaceWidthSpec.getCellSizePx();
             cellHeightPx = mResponsiveWorkspaceHeightSpec.getCellSizePx();
 

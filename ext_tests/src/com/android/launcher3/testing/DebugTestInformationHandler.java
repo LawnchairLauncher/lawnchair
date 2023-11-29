@@ -16,8 +16,6 @@
 
 package com.android.launcher3.testing;
 
-import static com.android.launcher3.testing.shared.TestProtocol.WORKSPACE_LONG_PRESS;
-import static com.android.launcher3.testing.shared.TestProtocol.testLogD;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.Executors.MODEL_EXECUTOR;
 
@@ -137,12 +135,10 @@ public class DebugTestInformationHandler extends TestInformationHandler {
             }
 
             case TestProtocol.REQUEST_ENABLE_DEBUG_TRACING:
-                testLogD(WORKSPACE_LONG_PRESS, "enablingDebugTracing");
                 TestProtocol.sDebugTracing = true;
                 return response;
 
             case TestProtocol.REQUEST_DISABLE_DEBUG_TRACING:
-                testLogD(WORKSPACE_LONG_PRESS, "disablingDebugTracing");
                 TestProtocol.sDebugTracing = false;
                 return response;
 

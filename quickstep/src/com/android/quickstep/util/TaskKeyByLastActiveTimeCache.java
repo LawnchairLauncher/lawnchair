@@ -44,7 +44,7 @@ public class TaskKeyByLastActiveTimeCache<V> implements TaskKeyCache<V> {
     private final PriorityQueue<Task.TaskKey> mQueue;
 
     public TaskKeyByLastActiveTimeCache(int maxSize) {
-        mMap = new HashMap(maxSize);
+        mMap = new HashMap(0);
         mQueue = new PriorityQueue<>(Comparator.comparingLong(t -> t.lastActiveTime));
         mMaxSize = new AtomicInteger(maxSize);
     }
@@ -106,7 +106,8 @@ public class TaskKeyByLastActiveTimeCache<V> implements TaskKeyCache<V> {
     }
 
     /**
-     * Adds an entry to the cache, optionally evicting the last accessed entry
+     * Adds an entry to the cache, optionally evicting the last accessed entry excluding the newly
+     * added entry
      */
     @Override
     public final synchronized void put(Task.TaskKey key, V value) {
@@ -117,9 +118,9 @@ public class TaskKeyByLastActiveTimeCache<V> implements TaskKeyCache<V> {
                 mQueue.remove(entry.mKey);
             }
 
+            removeExcessIfNeeded(mMaxSize.get() - 1);
             mMap.put(key.id, new Entry<>(key, value));
             mQueue.add(key);
-            removeExcessIfNeeded();
         } else {
             Log.e(TAG, "Unexpected null key or value: " + key + ", " + value);
         }
@@ -143,11 +144,11 @@ public class TaskKeyByLastActiveTimeCache<V> implements TaskKeyCache<V> {
     @Override
     public synchronized void updateCacheSizeAndRemoveExcess(int cacheSize) {
         mMaxSize.compareAndSet(mMaxSize.get(), cacheSize);
-        removeExcessIfNeeded();
+        removeExcessIfNeeded(mMaxSize.get());
     }
 
-    private synchronized void removeExcessIfNeeded() {
-        while (mQueue.size() > mMaxSize.get() && !mQueue.isEmpty()) {
+    private synchronized void removeExcessIfNeeded(int maxSize) {
+        while (mQueue.size() > maxSize && !mQueue.isEmpty()) {
             Task.TaskKey key = mQueue.poll();
             mMap.remove(key.id);
         }

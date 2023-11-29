@@ -860,6 +860,13 @@ public class StatsLogManager implements ResourceBasedOverride {
         }
 
         /**
+         * Set the package name of the log message.
+         */
+        default StatsLogger withPackageName(@Nullable String packageName) {
+            return this;
+        }
+
+        /**
          * Builds the final message and logs it as {@link EventEnum}.
          */
         default void log(EventEnum event) {

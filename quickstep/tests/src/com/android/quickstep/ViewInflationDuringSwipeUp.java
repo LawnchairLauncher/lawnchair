@@ -56,7 +56,7 @@ import com.android.launcher3.tapl.LaunchedAppState;
 import com.android.launcher3.testcomponent.ListViewService;
 import com.android.launcher3.testcomponent.ListViewService.SimpleViewsFactory;
 import com.android.launcher3.testcomponent.TestCommandReceiver;
-import com.android.launcher3.ui.TaplTestsLauncher3;
+import com.android.launcher3.ui.AbstractLauncherUiTest;
 import com.android.launcher3.ui.TestViewHelpers;
 import com.android.launcher3.util.Executors;
 import com.android.launcher3.widget.LauncherAppWidgetProviderInfo;
@@ -102,7 +102,7 @@ public class ViewInflationDuringSwipeUp extends AbstractQuickStepTest {
         // is started only after starting another app.
         startAppFast(resolveSystemApp(Intent.CATEGORY_APP_CALCULATOR));
 
-        TaplTestsLauncher3.initialize(this);
+        AbstractLauncherUiTest.initialize(this);
 
         mModel = LauncherAppState.getInstance(mTargetContext).getModel();
         Executors.MODEL_EXECUTOR.submit(mModel.getModelDbController()::createEmptyDB).get();

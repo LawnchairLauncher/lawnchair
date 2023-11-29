@@ -61,9 +61,7 @@ public class CellLayoutTestUtils {
     }
 
     public static CellLayoutBoard viewsToBoard(List<View> views, int width, int height) {
-        CellLayoutBoard board = new CellLayoutBoard();
-        board.mWidth = width;
-        board.mHeight = height;
+        CellLayoutBoard board = new CellLayoutBoard(width, height);
 
         for (View callView : views) {
             CellLayoutLayoutParams params = (CellLayoutLayoutParams) callView.getLayoutParams();
