@@ -119,8 +119,9 @@ fun AppDrawerPreferences() {
                 }
             }
         }
-        ExpandAndShrink(visible = prefs.performWideSearchExperimental.get() && showDrawerSearchBar.state.value) {
-            PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
+        val isDeviceSearch = prefs.performWideSearchExperimental.get() && showDrawerSearchBar.state.value
+        ExpandAndShrink(visible = isDeviceSearch) {
+            PreferenceGroup(heading = stringResource(id = R.string.pref_advance_search_category)) {
                 SwitchPreference(
                     adapter = prefs2.performWideSearch.getAdapter(),
                     label = stringResource(id = R.string.perform_wide_search_title),
@@ -139,11 +140,17 @@ fun AppDrawerPreferences() {
                             description = stringResource(id = R.string.warn_contact_permission_content),
                             onClick = { contactPermissionGranted(context, prefs) },
                         )
-                        SwitchPreference(
-                            adapter = prefs.searchResultStartPageSuggestion.getAdapter(),
-                            label = stringResource(id = R.string.perform_wide_search_suggestion),
-                        )
                     }
+                }
+            }
+        }
+        ExpandAndShrink(visible = showDrawerSearchBar.state.value) {
+            PreferenceGroup {
+                DividerColumn {
+                    SwitchPreference(
+                        adapter = prefs.searchResultStartPageSuggestion.getAdapter(),
+                        label = stringResource(id = R.string.pref_suggestion_title),
+                    )
                 }
             }
         }

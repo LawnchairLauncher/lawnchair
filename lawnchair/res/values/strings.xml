@@ -338,10 +338,10 @@
       <string name="row_height_label">Row Height</string>
 
     <string name="perform_wide_search_title">Device Search</string>
-    <string name="perform_wide_search_suggestion">Suggestions</string>
     <string name="perform_wide_search_file">Files</string>
-
-    <string name="perform_wide_search_description">Show your contacts, files and suggestion in all app search result, Once enabled option is available in App Drawer</string>
+    <string name="pref_suggestion_title">Suggestions</string>
+    <string name="pref_advance_search_category">Advance Search</string>
+    <string name="perform_wide_search_description">Show your contacts and files all app search result, Once enabled option is available in App Drawer</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -485,7 +485,7 @@
     <string name="label_voice_search">Voice Search</string>
 
     <string name="all_apps_search_market_message">Search for More Apps</string>
-    <string name="all_apps_search_startpage_message">Search on Startpage</string>
+    <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
 
     <string name="all_apps_search_result_suggestions">Suggestions</string>
