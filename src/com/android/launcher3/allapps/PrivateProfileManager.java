@@ -92,9 +92,6 @@ public class PrivateProfileManager extends UserProfileManager {
         boolean isEnabled = !mAllApps.getAppsStore()
                 .hasModelFlag(FLAG_PRIVATE_PROFILE_QUIET_MODE_ENABLED);
         int updatedState = isEnabled ? STATE_ENABLED : STATE_DISABLED;
-        if (getCurrentState() == updatedState) {
-            return;
-        }
         setCurrentState(updatedState);
         resetPrivateSpaceDecorator(updatedState);
     }
@@ -126,19 +123,27 @@ public class PrivateProfileManager extends UserProfileManager {
 
     @VisibleForTesting
     void resetPrivateSpaceDecorator(int updatedState) {
+        ActivityAllAppsContainerView<?>.AdapterHolder mainAdapterHolder = mAllApps.mAH.get(MAIN);
         if (updatedState == STATE_ENABLED) {
-            // Add Private Space Decorator to the Recycler view.
+            // Create a new decorator instance if not already available.
             if (mPrivateAppsSectionDecorator == null) {
                 mPrivateAppsSectionDecorator = new PrivateAppsSectionDecorator(
                         mAllApps.mActivityContext,
-                        mAllApps.mAH.get(MAIN).mAppsList);
+                        mainAdapterHolder.mAppsList);
             }
-            mAllApps.mAH.get(MAIN).mRecyclerView.addItemDecoration(mPrivateAppsSectionDecorator);
+            for (int i = 0; i < mainAdapterHolder.mRecyclerView.getItemDecorationCount(); i++) {
+                if (mainAdapterHolder.mRecyclerView.getItemDecorationAt(i)
+                        .equals(mPrivateAppsSectionDecorator)) {
+                    // No need to add another decorator if one is already present in recycler view.
+                    return;
+                }
+            }
+            // Add Private Space Decorator to the Recycler view.
+            mainAdapterHolder.mRecyclerView.addItemDecoration(mPrivateAppsSectionDecorator);
         } else {
             // Remove Private Space Decorator from the Recycler view.
             if (mPrivateAppsSectionDecorator != null) {
-                mAllApps.mAH.get(MAIN).mRecyclerView
-                        .removeItemDecoration(mPrivateAppsSectionDecorator);
+                mainAdapterHolder.mRecyclerView.removeItemDecoration(mPrivateAppsSectionDecorator);
             }
         }
     }
