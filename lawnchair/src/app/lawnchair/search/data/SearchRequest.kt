@@ -5,6 +5,7 @@ import android.provider.ContactsContract
 import android.provider.MediaStore
 import android.util.Log
 import app.lawnchair.search.data.suggestion.StartPageService
+import app.lawnchair.util.getMimeType
 import app.lawnchair.util.kotlinxJson
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlin.coroutines.resume
@@ -184,7 +185,7 @@ suspend fun findByFileName(context: Context, query: String, max: Int): List<File
 
                         val fileId = it.getLong(fileIdIndex)
                         val displayName = it.getString(displayNameIndex)
-                        val mimeType = it.getString(mimeTypeIndex)
+                        val mimeType = getMimeType(displayName) ?: it.getString(mimeTypeIndex)
                         val mediaType = it.getInt(mediaTypeIndex)
                         val filePath = it.getString(filePathIndex)
                         val key = fileId.toString()

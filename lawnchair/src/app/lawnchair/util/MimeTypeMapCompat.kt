@@ -1,4 +1,4 @@
-package com.snebula.android.file.util
+package app.lawnchair.util
 
 import android.webkit.MimeTypeMap
 
@@ -663,3 +663,16 @@ internal fun String.mimeType2Extension(): String? {
 }
 
 internal inline val String?.mimeCompat: String get() = this ?: "*/*"
+
+internal fun getMimeType(fileExtension: String): String? {
+    val mimeTypeMap = when {
+        documentFileTypes.containsKey(fileExtension) -> documentFileTypes
+        audioFileTypes.containsKey(fileExtension) -> audioFileTypes
+        videoFileTypes.containsKey(fileExtension) -> videoFileTypes
+        imageFileTypes.containsKey(fileExtension) -> imageFileTypes
+        archiveFileTypes.containsKey(fileExtension) -> archiveFileTypes
+        androidPkgTypes.containsKey(fileExtension) -> androidPkgTypes
+        else -> otherFileTypes
+    }
+    return mimeTypeMap[fileExtension]
+}
