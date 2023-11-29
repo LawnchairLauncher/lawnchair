@@ -33,10 +33,7 @@ class GenerateSearchTarget(private val context: Context) {
         val url = getStartPageUrl(suggestion)
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
         val id = suggestion + url
-        val action = SearchActionCompat.Builder(
-            id,
-            suggestion,
-        )
+        val action = SearchActionCompat.Builder(id, suggestion)
             .setIcon(
                 Icon.createWithResource(context, R.drawable.ic_allapps_search)
                     .setTint(ColorTokens.TextColorPrimary.resolveColor(context)),
@@ -54,10 +51,7 @@ class GenerateSearchTarget(private val context: Context) {
 
     internal fun getHeaderTarget(header: String): SearchTargetCompat {
         val id = "header_$header"
-        val action = SearchActionCompat.Builder(
-            id,
-            header,
-        )
+        val action = SearchActionCompat.Builder(id, header)
             .setIcon(
                 Icon.createWithResource(context, R.drawable.ic_allapps_search)
                     .setTint(ColorTokens.TextColorPrimary.resolveColor(context)),
@@ -76,10 +70,7 @@ class GenerateSearchTarget(private val context: Context) {
     internal fun getMarketSearchItem(query: String): SearchTargetCompat? {
         if (marketSearchComponent == null) return null
         val id = "marketSearch:$query"
-        val action = SearchActionCompat.Builder(
-            id,
-            context.getString(R.string.all_apps_search_market_message),
-        )
+        val action = SearchActionCompat.Builder(id, context.getString(R.string.all_apps_search_market_message),)
             .setIcon(Icon.createWithResource(context, R.drawable.ic_launcher_home))
             .setIntent(PackageManagerHelper.getMarketSearchIntent(context, query))
             .build()
@@ -94,10 +85,7 @@ class GenerateSearchTarget(private val context: Context) {
         val url = getStartPageUrl(query)
         val id = "browser:$query"
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        val action = SearchActionCompat.Builder(
-            id,
-            context.getString(R.string.all_apps_search_startpage_message),
-        )
+        val action = SearchActionCompat.Builder(id, context.getString(R.string.all_apps_search_startpage_message),)
             .setIcon(Icon.createWithResource(context, R.drawable.ic_startpage))
             .setIntent(browserIntent)
             .build()
@@ -118,10 +106,7 @@ class GenerateSearchTarget(private val context: Context) {
             Intent.ACTION_VIEW,
             contactUri,
         )
-        val action = SearchActionCompat.Builder(
-            id,
-            info.name,
-        )
+        val action = SearchActionCompat.Builder(id, info.name,)
             .setIcon(displayContactPhoto(context, info.name, Uri.parse(info.uri)))
             .setContentDescription(info.contactId)
             .setSubtitle(info.number)
@@ -152,10 +137,7 @@ class GenerateSearchTarget(private val context: Context) {
             fileIntent.setPackage(fileManagerPackageName)
         }
 
-        val action = SearchActionCompat.Builder(
-            id,
-            info.name,
-        )
+        val action = SearchActionCompat.Builder(id, info.name,)
             .setIcon(getPreviewIcon(info))
             .setIntent(fileIntent)
             .build()
@@ -221,34 +203,15 @@ class GenerateSearchTarget(private val context: Context) {
         return "com.google.android.apps.nbu.files"
     }
 
-    private fun getPreviewIcon(info: FileInfo): Icon {
-        return when {
-            info.isMediaFile() -> {
-                // For image/Video files, generate a preview icon from the file path
-                var bitmap = BitmapFactory.decodeFile(info.path)
-                if (bitmap != null) {
-                    return Icon.createWithBitmap(bitmap)
-                }
-                // TODO kinda wreck the performance
-                //  since it will load the video
-                if (Utilities.ATLEAST_R) {
-                    val retriever = MediaMetadataRetriever()
-                    retriever.setDataSource(info.path)
-                    bitmap = retriever.frameAtTime
-                    retriever.release()
-                    if (bitmap != null) {
-                        return Icon.createWithBitmap(bitmap)
-                    }
-                }
-                Icon.createWithResource(context, info.getIcon())
-            }
-            info.isFileUnknown() -> {
-                val textBitmap = createTextBitmap(context, "U")
-                Icon.createWithBitmap(textBitmap)
-            }
-            else -> {
-                Icon.createWithResource(context, info.getIcon())
-            }
-        }
+    private fun getPreviewIcon(info: FileInfo): Icon = when {
+        info.isMediaFile() -> BitmapFactory.decodeFile(info.path)?.let { Icon.createWithBitmap(it) }
+            ?: (if (Utilities.ATLEAST_R) MediaMetadataRetriever().run {
+                setDataSource(info.path)
+                val videoBitmap = frameAtTime
+                release()
+                videoBitmap?.let { Icon.createWithBitmap(it) }
+            } else null) ?: Icon.createWithResource(context, info.getIcon())
+        info.isFileUnknown() -> Icon.createWithBitmap(createTextBitmap(context, "U"))
+        else -> Icon.createWithResource(context, info.getIcon())
     }
 }

@@ -86,6 +86,7 @@ sealed class LawnchairSearchAlgorithm(
             SearchAdapterItem.createAdapterItem(target, background)
         }
     }
+
     private fun findIndices(filtered: List<SearchTargetCompat>, layoutType: String): List<Int> {
         return filtered.indices.filter {
             filtered[it].layoutType == layoutType
@@ -102,27 +103,24 @@ sealed class LawnchairSearchAlgorithm(
         peopleTileIndices: List<Int>,
         suggestionIndices: List<Int>,
         fileIndices: List<Int>,
-    ): SearchItemBackground {
-        return when {
-            layoutType == TEXT_HEADER || layoutType == ICON_SINGLE_VERTICAL_TEXT || layoutType == EMPTY_DIVIDER -> iconBackground
-            layoutType == SMALL_ICON_HORIZONTAL_TEXT -> getGroupedBackground(index, smallIconIndices)
-            layoutType == ICON_HORIZONTAL_TEXT -> getGroupedBackground(index, iconRowIndices)
-            layoutType == PEOPLE_TILE -> getGroupedBackground(index, peopleTileIndices)
-            layoutType == HORIZONTAL_MEDIUM_TEXT -> getGroupedBackground(index, suggestionIndices)
-            layoutType == THUMBNAIL -> getGroupedBackground(index, fileIndices)
-            isFirst && isLast -> normalBackground
-            isFirst -> topBackground
-            isLast -> bottomBackground
-            else -> centerBackground
-        }
+    ): SearchItemBackground = when {
+        layoutType == TEXT_HEADER || layoutType == ICON_SINGLE_VERTICAL_TEXT || layoutType == EMPTY_DIVIDER -> iconBackground
+        layoutType == SMALL_ICON_HORIZONTAL_TEXT -> getGroupedBackground(index, smallIconIndices)
+        layoutType == ICON_HORIZONTAL_TEXT -> getGroupedBackground(index, iconRowIndices)
+        layoutType == PEOPLE_TILE -> getGroupedBackground(index, peopleTileIndices)
+        layoutType == HORIZONTAL_MEDIUM_TEXT -> getGroupedBackground(index, suggestionIndices)
+        layoutType == THUMBNAIL -> getGroupedBackground(index, fileIndices)
+        isFirst && isLast -> normalBackground
+        isFirst -> topBackground
+        isLast -> bottomBackground
+        else -> centerBackground
     }
-    private fun getGroupedBackground(index: Int, indices: List<Int>): SearchItemBackground {
-        return when {
-            indices.size == 1 -> normalBackground
-            index == indices.first() -> topBackground
-            index == indices.last() -> bottomBackground
-            else -> centerBackground
-        }
+
+    private fun getGroupedBackground(index: Int, indices: List<Int>): SearchItemBackground = when {
+        indices.size == 1 -> normalBackground
+        index == indices.first() -> topBackground
+        index == indices.last() -> bottomBackground
+        else -> centerBackground
     }
 
     companion object {

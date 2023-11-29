@@ -44,6 +44,7 @@ sealed interface SearchResultView {
             targetCompat.layoutType != LayoutType.SMALL_ICON_HORIZONTAL_TEXT &&
             targetCompat.resultType != SearchTargetCompat.RESULT_TYPE_SHORTCUT
     }
+
     fun handleSearchTargetClick(context: Context, searchTargetIntent: Intent) {
         context.startActivity(searchTargetIntent)
     }

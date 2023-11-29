@@ -28,20 +28,17 @@ class SearchResultText(context: Context, attrs: AttributeSet?) :
     }
 
     override val isQuickLaunch: Boolean get() = false
-
     override val titleText: CharSequence? get() = title.text
-
     override fun launch(): Boolean = false
+
     override fun bind(target: SearchTargetCompat, shortcuts: List<SearchTargetCompat>) {
         title.text = target.searchAction?.title
-        val layoutParams = LayoutParams(
-            LayoutParams.MATCH_PARENT,
-            when (title.text) {
-                SPACE -> resources.getDimensionPixelSize(R.dimen.space_layout_height)
-                SPACE_MINI -> resources.getDimensionPixelSize(R.dimen.space_layout_mini_height)
-                else -> resources.getDimensionPixelSize(R.dimen.search_result_text_height)
-            },
-        )
+        val res =  when (title.text) {
+            SPACE -> resources.getDimensionPixelSize(R.dimen.space_layout_height)
+            SPACE_MINI -> resources.getDimensionPixelSize(R.dimen.space_layout_mini_height)
+            else -> resources.getDimensionPixelSize(R.dimen.search_result_text_height)
+        }
+        val layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, res,)
         this.layoutParams = layoutParams
     }
 }

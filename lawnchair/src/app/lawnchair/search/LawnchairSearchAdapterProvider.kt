@@ -54,14 +54,11 @@ class LawnchairSearchAdapterProvider(
         layoutInflater: LayoutInflater,
         parent: ViewGroup?,
         viewType: Int,
-    ): BaseAllAppsAdapter.ViewHolder =
-        BaseAllAppsAdapter.ViewHolder(
-            layoutInflater.inflate(
-                layoutIdMap[viewType],
-                parent,
-                false,
-            ),
-        )
+    ): BaseAllAppsAdapter.ViewHolder {
+        val view = layoutInflater.inflate(layoutIdMap[viewType], parent, false)
+        return BaseAllAppsAdapter.ViewHolder(view)
+    }
+
     override fun getItemsPerRow(viewType: Int, appsPerRow: Int) =
         if (viewType != SEARCH_RESULT_ICON) 1 else super.getItemsPerRow(viewType, appsPerRow)
 

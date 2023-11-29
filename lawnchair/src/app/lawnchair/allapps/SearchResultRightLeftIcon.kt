@@ -60,14 +60,10 @@ class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
             avatar.visibility = GONE
             preview.visibility = VISIBLE
         }
-
+        val heightRes = if (isSmall) resources.getDimensionPixelSize(R.dimen.search_result_small_row_height) else resources.getDimensionPixelSize(R.dimen.search_result_files_row_height)
         val layoutParams = LayoutParams(
             LayoutParams.MATCH_PARENT,
-            if (isSmall) {
-                resources.getDimensionPixelSize(R.dimen.search_result_small_row_height)
-            } else {
-                resources.getDimensionPixelSize(R.dimen.search_result_files_row_height)
-            },
+            heightRes,
         )
         this.layoutParams = layoutParams
     }
@@ -126,17 +122,16 @@ class SearchResultRightLeftIcon(context: Context, attrs: AttributeSet?) :
         val packageManager = context.packageManager
         val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
 
-        if (launchIntent != null) {
-            if (packageName == defSmsAppInfo?.packageName) {
-                val smsIntent = Intent(Intent.ACTION_VIEW)
-                smsIntent.data = Uri.parse("smsto:$phoneNumber")
-                smsIntent.putExtra("address", phoneNumber)
-                handleSearchTargetClick(context, smsIntent)
-            } else if (packageName == defPhoneAppInfo?.packageName && phoneNumber != null) {
-                val phoneIntent = Intent(Intent.ACTION_DIAL)
-                phoneIntent.data = Uri.parse("tel:$phoneNumber")
-                handleSearchTargetClick(context, phoneIntent)
-            }
+        launchIntent ?: return
+        if (packageName == defSmsAppInfo?.packageName) {
+            val smsIntent = Intent(Intent.ACTION_VIEW)
+            smsIntent.data = Uri.parse("smsto:$phoneNumber")
+            smsIntent.putExtra("address", phoneNumber)
+            handleSearchTargetClick(context, smsIntent)
+        } else if (packageName == defPhoneAppInfo?.packageName && phoneNumber != null) {
+            val phoneIntent = Intent(Intent.ACTION_DIAL)
+            phoneIntent.data = Uri.parse("tel:$phoneNumber")
+            handleSearchTargetClick(context, phoneIntent)
         }
     }
 }
