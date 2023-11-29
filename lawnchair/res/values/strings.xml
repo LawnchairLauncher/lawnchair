@@ -60,8 +60,8 @@
     <string name="transparent_background_icons">Transparent Themed Icons</string>
     <string name="transparent_background_icons_description">Use transparent background on themed icons</string>
     <string name="smartspace_mode_selection">At a Glance Provider selection</string>
-    <string name="pref_separate_recents_activity_title">Separate Recents Activity</string>
-    <string name="pref_separate_recents_activity_description">Uses a separate recents activity instead of using the integrated recents+Launcher UI (GesturNavContract API)</string>
+    <string name="pref_separate_recents_activity_title">Enable GestureNavContract</string>
+    <string name="pref_separate_recents_activity_description">Improves app animations by interfacing with the system launcher. Not all OEMs support it.</string>
 
     <!-- GeneralPreferences -->
     <string name="home_screen_rotation_label">Home Screen Rotation</string>
