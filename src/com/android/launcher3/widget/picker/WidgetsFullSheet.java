@@ -24,7 +24,6 @@ import static com.android.launcher3.testing.shared.TestProtocol.NORMAL_STATE_ORD
 
 import android.animation.Animator;
 import android.content.Context;
-import android.content.pm.LauncherApps;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
@@ -106,9 +105,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private final UserHandle mCurrentUser = Process.myUserHandle();
     private final Predicate<WidgetsListBaseEntry> mPrimaryWidgetsFilter =
             entry -> mCurrentUser.equals(entry.mPkgItem.user);
-    private final Predicate<WidgetsListBaseEntry> mWorkWidgetsFilter =
-            entry -> !mCurrentUser.equals(entry.mPkgItem.user)
-                    && !mUserManagerState.isUserQuiet(entry.mPkgItem.user);
+    private final Predicate<WidgetsListBaseEntry> mWorkWidgetsFilter;
     protected final boolean mHasWorkProfile;
     protected boolean mHasRecommendedWidgets;
     protected final SparseArray<AdapterHolder> mAdapters = new SparseArray();
@@ -182,20 +179,23 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     public WidgetsFullSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mDeviceProfile = mActivityContext.getDeviceProfile();
-        mHasWorkProfile = context.getSystemService(LauncherApps.class).getProfiles().size() > 1;
         mOrientation = context.getResources().getConfiguration().orientation;
+        mUserCache = UserCache.INSTANCE.get(context);
+        mHasWorkProfile = mUserCache.getUserProfiles()
+                .stream()
+                .anyMatch(user -> mUserCache.getUserInfo(user).isWork());
+        mWorkWidgetsFilter = entry -> mHasWorkProfile
+                && mUserCache.getUserInfo(entry.mPkgItem.user).isWork();
         mAdapters.put(AdapterHolder.PRIMARY, new AdapterHolder(AdapterHolder.PRIMARY));
         mAdapters.put(AdapterHolder.WORK, new AdapterHolder(AdapterHolder.WORK));
         mAdapters.put(AdapterHolder.SEARCH, new AdapterHolder(AdapterHolder.SEARCH));
 
         Resources resources = getResources();
+        mUserManagerState.init(UserCache.INSTANCE.get(context),
+                context.getSystemService(UserManager.class));
         mTabsHeight = mHasWorkProfile
                 ? resources.getDimensionPixelSize(R.dimen.all_apps_header_pill_height)
                 : 0;
-
-        mUserCache = UserCache.INSTANCE.get(context);
-        mUserManagerState.init(UserCache.INSTANCE.get(context),
-                context.getSystemService(UserManager.class));
     }
 
     public WidgetsFullSheet(Context context, AttributeSet attrs) {
