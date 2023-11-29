@@ -47,8 +47,14 @@ public abstract class Launchable {
         return mObject;
     }
 
+    protected boolean launcherStopsAfterLaunch() {
+        return true;
+    }
+
     /**
      * Clicks the object to launch its app.
+     * We are assuming non-translucent app launches because only such launches generate
+     * LAUNCHER_ACTIVITY_STOPPED_MESSAGE.
      */
     public LaunchedAppState launch(String expectedPackageName) {
         try (LauncherInstrumentation.Closable e = mLauncher.eventsCheck()) {
@@ -58,7 +64,15 @@ public abstract class Launchable {
                         + mObject.getVisibleCenter() + " in "
                         + mLauncher.getVisibleBounds(mObject));
 
-                mLauncher.clickLauncherObject(mObject);
+                if (launcherStopsAfterLaunch()) {
+                    mLauncher.executeAndWaitForLauncherEvent(
+                            () -> mLauncher.clickLauncherObject(mObject),
+                            event -> TestProtocol.LAUNCHER_ACTIVITY_STOPPED_MESSAGE
+                                    .equals(event.getClassName().toString()),
+                            () -> "Launcher activity didn't stop", "clicking the launchable");
+                } else {
+                    mLauncher.clickLauncherObject(mObject);
+                }
 
                 try (LauncherInstrumentation.Closable c2 = mLauncher.addContextLayer("clicked")) {
                     expectActivityStartEvents();

@@ -49,4 +49,9 @@ public final class TaskbarAppIcon extends AppIcon implements SplitscreenDragSour
     public Launchable getLaunchable() {
         return this;
     }
+
+    @Override
+    protected boolean launcherStopsAfterLaunch() {
+        return false;
+    }
 }

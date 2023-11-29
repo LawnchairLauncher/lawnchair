@@ -98,6 +98,7 @@ import static com.android.launcher3.popup.SystemShortcut.INSTALL;
 import static com.android.launcher3.popup.SystemShortcut.WIDGETS;
 import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 import static com.android.launcher3.states.RotationHelper.REQUEST_NONE;
+import static com.android.launcher3.testing.shared.TestProtocol.LAUNCHER_ACTIVITY_STOPPED_MESSAGE;
 import static com.android.launcher3.util.Executors.MAIN_EXECUTOR;
 import static com.android.launcher3.util.ItemInfoMatcher.forFolderMatch;
 import static com.android.launcher3.util.SettingsCache.TOUCHPAD_NATURAL_SCROLLING;
@@ -1034,6 +1035,8 @@ public class Launcher extends StatefulActivity<LauncherState>
         mAppWidgetHolder.setActivityStarted(false);
         NotificationListener.removeNotificationsChangedListener(getPopupDataProvider());
         FloatingIconView.resetIconLoadResult();
+        AccessibilityManagerCompat.sendTestProtocolEventToTest(
+                this, LAUNCHER_ACTIVITY_STOPPED_MESSAGE);
     }
 
     @Override
