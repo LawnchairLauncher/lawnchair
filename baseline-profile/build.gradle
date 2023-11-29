@@ -17,11 +17,8 @@ android {
 
     flavorDimensions += ["app", "recents"]
     productFlavors {
-        aosp { dimension = "app" }
-        l3go { dimension = "app" }
         lawn { dimension = "app" }
         withQuickstep { dimension = "recents" }
-        withoutQuickstep { dimension = "recents" }
     }
 
     testOptions.managedDevices.devices {
