@@ -1,6 +1,7 @@
 package com.android.launcher3;
 
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
+import static com.android.launcher3.config.FeatureFlags.separateRecentActivity;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -143,7 +144,7 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     @TargetApi(Build.VERSION_CODES.Q)
     public void setDisallowBackGesture(boolean disallowBackGesture) {
-        if (!Utilities.ATLEAST_Q || SEPARATE_RECENTS_ACTIVITY.get()) {
+        if (!Utilities.ATLEAST_Q || SEPARATE_RECENTS_ACTIVITY.get() || separateRecentActivity(mActivity)) {
             return;
         }
         mDisallowBackGesture = disallowBackGesture;

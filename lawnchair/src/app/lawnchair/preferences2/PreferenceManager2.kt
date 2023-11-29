@@ -320,6 +320,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = { reloadHelper.restart() },
     )
 
+    val enableSeparateRecentsActivity = preference(
+        key = booleanPreferencesKey(name = "separate_recents_activity"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_separate_recent_activity),
+        onSet = { reloadHelper.restart() },
+    )
+
     val enableFeed = preference(
         key = booleanPreferencesKey(name = "enable_feed"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_feed),

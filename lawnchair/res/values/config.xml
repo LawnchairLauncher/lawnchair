@@ -104,6 +104,7 @@
     <bool name="config_default_show_icon_labels_in_drawer">true</bool>
     <bool name="config_default_enable_fuzzy_search">false</bool>
     <bool name="config_default_enable_smartspace">true</bool>
+    <bool name="config_default_separate_recent_activity">false</bool>
     <bool name="config_default_enable_feed">true</bool>
     <bool name="config_default_enable_icon_selection">false</bool>
     <bool name="config_default_show_component_names">false</bool>

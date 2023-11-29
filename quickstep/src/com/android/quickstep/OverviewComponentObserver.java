@@ -21,6 +21,7 @@ import static android.content.Intent.ACTION_PACKAGE_CHANGED;
 import static android.content.Intent.ACTION_PACKAGE_REMOVED;
 
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
+import static com.android.launcher3.config.FeatureFlags.separateRecentActivity;
 import static com.android.systemui.shared.system.PackageManagerWrapper.ACTION_PREFERRED_ACTIVITY_CHANGED;
 
 import android.content.ActivityNotFoundException;
@@ -147,7 +148,7 @@ public final class OverviewComponentObserver {
             mActivityInterface.onAssistantVisibilityChanged(0.f);
         }
 
-        if (SEPARATE_RECENTS_ACTIVITY.get()) {
+        if (SEPARATE_RECENTS_ACTIVITY.get() || separateRecentActivity(mContext)) {
             mIsDefaultHome = false;
             if (defaultHome == null) {
                 defaultHome = mMyHomeIntent.getComponent();

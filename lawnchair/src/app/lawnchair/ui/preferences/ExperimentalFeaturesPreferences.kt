@@ -45,6 +45,11 @@ fun ExperimentalFeaturesPreferences() {
                 adapter = prefs2.smartspaceModeSelection.getAdapter(),
                 label = stringResource(id = R.string.smartspace_mode_selection),
             )
+            SwitchPreference(
+                adapter = prefs2.enableSeparateRecentsActivity.getAdapter(),
+                label = stringResource(id = R.string.pref_separate_recents_activity_title),
+                description = stringResource(id = R.string.pref_separate_recents_activity_description)
+            )
         }
     }
 }

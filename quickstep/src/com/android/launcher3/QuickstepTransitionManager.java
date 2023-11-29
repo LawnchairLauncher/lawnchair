@@ -51,6 +51,7 @@ import static com.android.launcher3.config.FeatureFlags.ENABLE_BACK_SWIPE_HOME_A
 import static com.android.launcher3.config.FeatureFlags.ENABLE_SCRIM_FOR_APP_LAUNCH;
 import static com.android.launcher3.config.FeatureFlags.KEYGUARD_ANIMATION;
 import static com.android.launcher3.config.FeatureFlags.SEPARATE_RECENTS_ACTIVITY;
+import static com.android.launcher3.config.FeatureFlags.separateRecentActivity;
 import static com.android.launcher3.model.data.ItemInfo.NO_MATCHING_ID;
 import static com.android.launcher3.util.DisplayController.isTransientTaskbar;
 import static com.android.launcher3.util.MultiPropertyFactory.MULTI_PROPERTY_VALUE;
@@ -1098,7 +1099,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * Registers remote animations used when closing apps to home screen.
      */
     public void registerRemoteAnimations() {
-        if (SEPARATE_RECENTS_ACTIVITY.get()) {
+        if (SEPARATE_RECENTS_ACTIVITY.get() || separateRecentActivity(mLauncher)) {
             return;
         }
         if (hasControlRemoteAppTransitionPermission()) {
@@ -1138,7 +1139,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
      * Registers remote animations used when closing apps to home screen.
      */
     public void registerRemoteTransitions() {
-        if (SEPARATE_RECENTS_ACTIVITY.get()) {
+        if (SEPARATE_RECENTS_ACTIVITY.get() || separateRecentActivity(mLauncher)) {
             return;
         }
         if (!Utilities.ATLEAST_S)
@@ -1177,7 +1178,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     }
 
     protected void unregisterRemoteAnimations() {
-        if (SEPARATE_RECENTS_ACTIVITY.get()) {
+        if (SEPARATE_RECENTS_ACTIVITY.get() || separateRecentActivity(mLauncher)) {
             return;
         }
         if (hasControlRemoteAppTransitionPermission()) {
@@ -1192,7 +1193,7 @@ public class QuickstepTransitionManager implements OnDeviceProfileChangeListener
     }
 
     private void unregisterRemoteTransitions() {
-        if (SEPARATE_RECENTS_ACTIVITY.get()) {
+        if (SEPARATE_RECENTS_ACTIVITY.get() || separateRecentActivity(mLauncher)) {
             return;
         }
         if (hasControlRemoteAppTransitionPermission()) {
