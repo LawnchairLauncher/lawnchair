@@ -120,7 +120,7 @@ public class MultipageCellLayout extends CellLayout {
     }
 
     @Override
-    public void copyCurrentStateToSolution(ItemConfiguration solution, boolean temp) {
+    public void copyCurrentStateToSolution(ItemConfiguration solution) {
         int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
