@@ -86,11 +86,11 @@ import com.kieronquinn.app.smartspacer.sdk.client.SmartspacerClient
 import com.patrykmichalik.opto.core.firstBlocking
 import com.patrykmichalik.opto.core.onEach
 import dev.kdrag0n.monet.theme.ColorScheme
+import java.util.stream.Stream
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import java.util.stream.Stream
 
 class LawnchairLauncher :
     QuickstepLauncher(),
@@ -318,7 +318,7 @@ class LawnchairLauncher :
                 AbstractFloatingView.closeOpenViews(
                     this,
                     false,
-                    AbstractFloatingView.TYPE_ICON_SURFACE
+                    AbstractFloatingView.TYPE_ICON_SURFACE,
                 )
                 FloatingSurfaceView.show(this, gnc)
             }
