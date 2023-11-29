@@ -119,8 +119,9 @@ fun AppDrawerPreferences() {
                 }
             }
         }
+
         val isDeviceSearch = prefs.performWideSearchExperimental.get() && showDrawerSearchBar.state.value
-        ExpandAndShrink(visible = isDeviceSearch) {
+        if (isDeviceSearch) {
             PreferenceGroup(heading = stringResource(id = R.string.pref_advance_search_category)) {
                 SwitchPreference(
                     adapter = prefs2.performWideSearch.getAdapter(),
@@ -144,6 +145,7 @@ fun AppDrawerPreferences() {
                 }
             }
         }
+
         ExpandAndShrink(visible = showDrawerSearchBar.state.value) {
             PreferenceGroup {
                 DividerColumn {

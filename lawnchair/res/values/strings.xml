@@ -339,9 +339,9 @@
 
     <string name="perform_wide_search_title">Device Search</string>
     <string name="perform_wide_search_file">Files</string>
-    <string name="pref_suggestion_title">Suggestions</string>
-    <string name="pref_advance_search_category">Advance Search</string>
-    <string name="perform_wide_search_description">Show your contacts and files all app search result, Once enabled option is available in App Drawer</string>
+    <string name="pref_suggestion_title">Web suggestions (via <xliff:g id="startpage">Startpage</xliff:g>)</string>
+    <string name="pref_advance_search_category">Advanced Search</string>
+    <string name="perform_wide_search_description">Search your contacts and files in app drawer search. Enable in App Drawer settings.</string>
     <!--
     <string name="icons" />
       <string name="icon_size" />
@@ -488,12 +488,12 @@
     <string name="all_apps_search_startpage_message">Search on <xliff:g id="startpage">Startpage</xliff:g></string>
     <string name="error_no_market_or_browser_installed">No app store or browser installed.</string>
 
-    <string name="all_apps_search_result_suggestions">Suggestions</string>
+    <string name="all_apps_search_result_suggestions">From the web</string>
     <string name="all_apps_search_result_contacts_from_device">From your contacts</string>
     <string name="all_apps_search_result_files">From your files</string>
 
-    <string name="warn_contact_permission_content">To enable People search, allow lawnchair to read contact permission</string>
-    <string name="warn_files_permission_content">To enable Files search, allow lawnchair to read storage permission</string>
+    <string name="warn_contact_permission_content">Requires contact permission</string>
+    <string name="warn_files_permission_content">Requires storage permission</string>
 
     <string name="quickstep_incompatible">Incompatible System Integration</string>
     <string name="quickstep_incompatible_description">Your device is configured to have system gestures (known as Quickstep) provided by %1$s, but this version of %1$s is not compatible with your Android version. To continue using your device, please uninstall %1$s updates or disable %1$s as a system-gesture provider.</string>
