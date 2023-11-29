@@ -198,7 +198,7 @@ public final class FeatureFlags {
             "Enables generating the reorder using a set of parameters");
 
     public static final BooleanFlag ENABLE_NO_LONG_PRESS_DRAG = getDebugFlag(299748096,
-            "ENABLE_NO_LONG_PRESS_DRAG", DISABLED,
+            "ENABLE_NO_LONG_PRESS_DRAG", ENABLED,
             "Don't trigger the drag if we are still under long press");
 
     // TODO(Block 12): Clean up flags
