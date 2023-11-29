@@ -70,7 +70,7 @@ class GenerateSearchTarget(private val context: Context) {
     internal fun getMarketSearchItem(query: String): SearchTargetCompat? {
         if (marketSearchComponent == null) return null
         val id = "marketSearch:$query"
-        val action = SearchActionCompat.Builder(id, context.getString(R.string.all_apps_search_market_message),)
+        val action = SearchActionCompat.Builder(id, context.getString(R.string.all_apps_search_market_message))
             .setIcon(Icon.createWithResource(context, R.drawable.ic_launcher_home))
             .setIntent(PackageManagerHelper.getMarketSearchIntent(context, query))
             .build()
@@ -85,7 +85,7 @@ class GenerateSearchTarget(private val context: Context) {
         val url = getStartPageUrl(query)
         val id = "browser:$query"
         val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        val action = SearchActionCompat.Builder(id, context.getString(R.string.all_apps_search_startpage_message),)
+        val action = SearchActionCompat.Builder(id, context.getString(R.string.all_apps_search_startpage_message))
             .setIcon(Icon.createWithResource(context, R.drawable.ic_startpage))
             .setIntent(browserIntent)
             .build()
@@ -106,7 +106,7 @@ class GenerateSearchTarget(private val context: Context) {
             Intent.ACTION_VIEW,
             contactUri,
         )
-        val action = SearchActionCompat.Builder(id, info.name,)
+        val action = SearchActionCompat.Builder(id, info.name)
             .setIcon(displayContactPhoto(context, info.name, Uri.parse(info.uri)))
             .setContentDescription(info.contactId)
             .setSubtitle(info.number)
@@ -137,7 +137,7 @@ class GenerateSearchTarget(private val context: Context) {
             fileIntent.setPackage(fileManagerPackageName)
         }
 
-        val action = SearchActionCompat.Builder(id, info.name,)
+        val action = SearchActionCompat.Builder(id, info.name)
             .setIcon(getPreviewIcon(info))
             .setIntent(fileIntent)
             .build()
@@ -205,12 +205,18 @@ class GenerateSearchTarget(private val context: Context) {
 
     private fun getPreviewIcon(info: FileInfo): Icon = when {
         info.isMediaFile() -> BitmapFactory.decodeFile(info.path)?.let { Icon.createWithBitmap(it) }
-            ?: (if (Utilities.ATLEAST_R) MediaMetadataRetriever().run {
-                setDataSource(info.path)
-                val videoBitmap = frameAtTime
-                release()
-                videoBitmap?.let { Icon.createWithBitmap(it) }
-            } else null) ?: Icon.createWithResource(context, info.getIcon())
+            ?: (
+                if (Utilities.ATLEAST_R) {
+                    MediaMetadataRetriever().run {
+                        setDataSource(info.path)
+                        val videoBitmap = frameAtTime
+                        release()
+                        videoBitmap?.let { Icon.createWithBitmap(it) }
+                    }
+                } else {
+                    null
+                }
+                ) ?: Icon.createWithResource(context, info.getIcon())
         info.isFileUnknown() -> Icon.createWithBitmap(createTextBitmap(context, "U"))
         else -> Icon.createWithResource(context, info.getIcon())
     }

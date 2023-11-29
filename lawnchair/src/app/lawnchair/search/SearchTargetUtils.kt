@@ -7,8 +7,8 @@ import androidx.core.os.bundleOf
 import com.android.app.search.LayoutType
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.util.ComponentKey
-import okio.ByteString
 import java.security.MessageDigest
+import okio.ByteString
 
 // We're generate hash key as alt in id, so we can avoid
 // the wrong action when click,
