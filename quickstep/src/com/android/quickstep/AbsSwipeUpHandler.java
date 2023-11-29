@@ -1576,12 +1576,16 @@ public abstract class AbsSwipeUpHandler<T extends StatefulActivity<S>, Q extends
 
     private int calculateWindowRotation(RemoteAnimationTarget runningTaskTarget,
                                         RecentsOrientedState orientationState) {
-        if (runningTaskTarget.rotationChange != 0
+        try {
+            if (runningTaskTarget.rotationChange != 0
                 && TaskAnimationManager.ENABLE_SHELL_TRANSITIONS) {
-            return Math.abs(runningTaskTarget.rotationChange) == ROTATION_90
+                return Math.abs(runningTaskTarget.rotationChange) == ROTATION_90
                     ? ROTATION_270
                     : ROTATION_90;
-        } else {
+            } else {
+                return orientationState.getDisplayRotation();
+            }
+        } catch (NoSuchFieldError ignored) {
             return orientationState.getDisplayRotation();
         }
     }
