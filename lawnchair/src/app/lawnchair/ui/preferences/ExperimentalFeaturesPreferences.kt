@@ -3,7 +3,6 @@ package app.lawnchair.ui.preferences
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraphBuilder
-import app.lawnchair.LawnchairApp
 import app.lawnchair.preferences.getAdapter
 import app.lawnchair.preferences.preferenceManager
 import app.lawnchair.preferences2.preferenceManager2
@@ -46,13 +45,6 @@ fun ExperimentalFeaturesPreferences() {
                 adapter = prefs2.smartspaceModeSelection.getAdapter(),
                 label = stringResource(id = R.string.smartspace_mode_selection),
             )
-            if (!LawnchairApp.isRecentsEnabled) {
-                SwitchPreference(
-                    adapter = prefs2.enableSeparateRecentsActivity.getAdapter(),
-                    label = stringResource(id = R.string.pref_separate_recents_activity_title),
-                    description = stringResource(id = R.string.pref_separate_recents_activity_description),
-                )
-            }
         }
     }
 }

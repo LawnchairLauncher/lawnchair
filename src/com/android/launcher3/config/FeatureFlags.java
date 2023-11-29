@@ -78,11 +78,6 @@ public final class FeatureFlags {
                 return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableSmartspace());
         }
 
-        public static boolean separateRecentActivity(Context context) {
-                PreferenceManager2 preferenceManager2 = PreferenceManager2.getInstance(context);
-                return PreferenceExtensionsKt.firstBlocking(preferenceManager2.getEnableSeparateRecentsActivity());
-        }
-
         /**
          * Feature flag to handle define config changes dynamically instead of killing
          * the process.

@@ -69,7 +69,6 @@ import com.android.launcher3.LauncherState
 import com.android.launcher3.R
 import com.android.launcher3.allapps.ActivityAllAppsContainerView
 import com.android.launcher3.allapps.search.SearchAdapterProvider
-import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.popup.SystemShortcut
 import com.android.launcher3.statemanager.StateManager
 import com.android.launcher3.uioverrides.QuickstepLauncher
@@ -312,7 +311,7 @@ class LawnchairLauncher :
     }
 
     override fun handleGestureContract(intent: Intent?) {
-        if (FeatureFlags.separateRecentActivity(this)) {
+        if (!LawnchairApp.isRecentsEnabled) {
             val gnc = GestureNavContract.fromIntent(intent)
             if (gnc != null) {
                 AbstractFloatingView.closeOpenViews(
