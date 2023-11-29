@@ -76,3 +76,10 @@ flag {
     description: "Enables logging of Launcher restore metrics to the Backup & Restore team"
     bug: "307527314"
 }
+
+flag {
+    name: "enable_unfolded_two_pane_picker"
+    namespace: "launcher"
+    description: "Enables two pane widget picker for unfolded foldables"
+    bug: "313922374"
+}
