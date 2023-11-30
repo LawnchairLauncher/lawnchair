@@ -124,6 +124,10 @@ public final class FeatureFlags {
             getReleaseFlag(308693847, "ANIMATE_LPNH", TEAMFOOD,
                     "Animates navbar when long pressing");
 
+    public static final BooleanFlag SHRINK_NAV_HANDLE_ON_PRESS =
+            getReleaseFlag(314158312, "SHRINK_NAV_HANDLE_ON_PRESS", DISABLED,
+                    "Shrinks navbar when long pressing if ANIMATE_LPNH is enabled");
+
     public static final IntFlag LPNH_SLOP_PERCENTAGE =
             getIntFlag(301680992, "LPNH_SLOP_PERCENTAGE", 100,
                     "Controls touch slop percentage for lpnh");
