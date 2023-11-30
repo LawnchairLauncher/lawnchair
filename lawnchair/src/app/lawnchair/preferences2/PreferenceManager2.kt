@@ -228,7 +228,7 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
     )
 
     val showSuggestedAppsInDrawer = preference(
-        key = booleanPreferencesKey(name = "show_suggestions_apps_at_drawer_top"),
+        key = booleanPreferencesKey(name = "show_suggested_apps_at_drawer_top"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_show_suggested_apps_at_drawer_top),
         onSet = { reloadHelper.recreate() },
     )
