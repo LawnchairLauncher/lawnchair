@@ -77,6 +77,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimatorPlaybackController;
+import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.folder.Folder;
@@ -998,7 +999,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                         Toast.LENGTH_SHORT).show();
             } else {
                 // Else launch the selected app pair
-                launchFromTaskbarPreservingSplitIfVisible(recents, fi.contents);
+                launchFromTaskbarPreservingSplitIfVisible(recents, view, fi.contents);
                 mControllers.uiController.onTaskbarIconLaunched(fi);
                 mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
             }
@@ -1034,7 +1035,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                                     .startShortcut(packageName, id, null, null, info.user);
                         } else {
                             launchFromTaskbarPreservingSplitIfVisible(
-                                    recents, Collections.singletonList(info));
+                                    recents, view, Collections.singletonList(info));
                         }
 
                     } catch (NullPointerException
@@ -1072,7 +1073,8 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                 // If we are selecting a second app for split, launch the split tasks
                 taskbarUIController.triggerSecondAppForSplit(info, info.intent, view);
             } else {
-                launchFromTaskbarPreservingSplitIfVisible(recents, Collections.singletonList(info));
+                launchFromTaskbarPreservingSplitIfVisible(
+                        recents, view, Collections.singletonList(info));
             }
             mControllers.uiController.onTaskbarIconLaunched(info);
             mControllers.taskbarStashController.updateAndAnimateTransientTaskbar(true);
@@ -1094,7 +1096,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
      * (potentially breaking a split pair).
      */
     private void launchFromTaskbarPreservingSplitIfVisible(@Nullable RecentsView recents,
-            List<? extends ItemInfo> itemInfos) {
+            @Nullable View launchingIconView, List<? extends ItemInfo> itemInfos) {
         if (recents == null) {
             return;
         }
@@ -1122,8 +1124,7 @@ public class TaskbarActivityContext extends BaseTaskbarContext {
                     if (findExactPairMatch) {
                         // We did not find the app pair we were looking for, so launch one.
                         recents.getSplitSelectController().getAppPairsController().launchAppPair(
-                                (WorkspaceItemInfo) itemInfos.get(0),
-                                (WorkspaceItemInfo) itemInfos.get(1));
+                                (AppPairIcon) launchingIconView);
                     } else {
                         startItemInfoActivity(itemInfos.get(0));
                     }

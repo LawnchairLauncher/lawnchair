@@ -145,8 +145,8 @@ public class ItemClickHandler {
      */
     private static void onClickAppPairIcon(View v) {
         Launcher launcher = Launcher.getLauncher(v.getContext());
-        FolderInfo folderInfo = ((AppPairIcon) v).getInfo();
-        launcher.launchAppPair(folderInfo.contents.get(0), folderInfo.contents.get(1));
+        AppPairIcon appPairIcon = (AppPairIcon) v;
+        launcher.launchAppPair(appPairIcon);
     }
 
     /**

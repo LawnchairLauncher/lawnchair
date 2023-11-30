@@ -39,4 +39,13 @@ public class AnimUtils {
                 ? SplitAnimationTimings.TABLET_SPLIT_TO_CONFIRM
                 : SplitAnimationTimings.PHONE_SPLIT_TO_CONFIRM;
     }
+
+    /**
+     * Fetches device-specific timings for the app pair launch animation.
+     */
+    public static SplitAnimationTimings getDeviceAppPairLaunchTimings(boolean isTablet) {
+        return isTablet
+                ? SplitAnimationTimings.TABLET_APP_PAIR_LAUNCH
+                : SplitAnimationTimings.PHONE_APP_PAIR_LAUNCH;
+    }
 }

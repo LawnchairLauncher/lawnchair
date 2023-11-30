@@ -106,6 +106,7 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PendingAnimation;
+import com.android.launcher3.apppairs.AppPairIcon;
 import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.desktop.DesktopRecentsTransitionController;
@@ -116,7 +117,6 @@ import com.android.launcher3.logging.StatsLogManager.StatsLogger;
 import com.android.launcher3.model.BgDataModel.FixedContainerItems;
 import com.android.launcher3.model.WellbeingModel;
 import com.android.launcher3.model.data.ItemInfo;
-import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.proxy.ProxyActivityStarter;
 import com.android.launcher3.statehandlers.DepthController;
@@ -1284,8 +1284,8 @@ public class QuickstepLauncher extends Launcher {
     /**
      * Launches two apps as an app pair.
      */
-    public void launchAppPair(WorkspaceItemInfo app1, WorkspaceItemInfo app2) {
-        mSplitSelectStateController.getAppPairsController().launchAppPair(app1, app2);
+    public void launchAppPair(AppPairIcon appPairIcon) {
+        mSplitSelectStateController.getAppPairsController().launchAppPair(appPairIcon);
     }
 
     public boolean canStartHomeSafely() {
