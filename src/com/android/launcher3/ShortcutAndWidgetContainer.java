@@ -38,6 +38,9 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.data.ItemInfo;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.NavigableAppWidgetHostView;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.FolderIconParent {
     static final String TAG = "ShortcutAndWidgetContainer";
@@ -62,11 +65,23 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements FolderIcon.
     private final ActivityContext mActivity;
     private boolean mInvertIfRtl = false;
 
+    private final PreferenceManager2 mPreferenceManager2;
+
     public ShortcutAndWidgetContainer(Context context, @ContainerType int containerType) {
         super(context);
         mActivity = ActivityContext.lookupContext(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
         mContainerType = containerType;
+        mPreferenceManager2 = PreferenceManager2.getInstance(context);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        boolean mAllowWidgetOverlap = PreferenceExtensionsKt.firstBlocking(mPreferenceManager2.getAllowWidgetOverlap());
+        setClipChildren(!mAllowWidgetOverlap);
+        setClipToPadding(!mAllowWidgetOverlap);
+        setClipToOutline(!mAllowWidgetOverlap);
     }
 
     public void setCellDimensions(int cellWidth, int cellHeight, int countX, int countY,
