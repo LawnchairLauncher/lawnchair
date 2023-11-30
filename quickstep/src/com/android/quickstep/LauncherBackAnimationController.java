@@ -141,7 +141,8 @@ public class LauncherBackAnimationController {
      * @param handler Handler to the thread to run the animations on.
      */
     public void registerBackCallbacks(Handler handler) {
-        mBackCallback = new OnBackInvokedCallbackStub(handler, mProgressAnimator, this);
+        mBackCallback = new OnBackInvokedCallbackStub(handler, mProgressAnimator,
+                mProgressInterpolator, this);
         SystemUiProxy.INSTANCE.get(mLauncher).setBackToLauncherCallback(mBackCallback,
                 new RemoteAnimationRunnerStub(this));
     }
@@ -149,6 +150,7 @@ public class LauncherBackAnimationController {
     private static class OnBackInvokedCallbackStub extends IOnBackInvokedCallback.Stub {
         private Handler mHandler;
         private BackProgressAnimator mProgressAnimator;
+        private final Interpolator mProgressInterpolator;
         // LauncherBackAnimationController has strong reference to Launcher activity, the binder
         // callback should not hold strong reference to it to avoid memory leak.
         private WeakReference<LauncherBackAnimationController> mControllerRef;
@@ -156,9 +158,11 @@ public class LauncherBackAnimationController {
         private OnBackInvokedCallbackStub(
                 Handler handler,
                 BackProgressAnimator progressAnimator,
+                Interpolator progressInterpolator,
                 LauncherBackAnimationController controller) {
             mHandler = handler;
             mProgressAnimator = progressAnimator;
+            mProgressInterpolator = progressInterpolator;
             mControllerRef = new WeakReference<>(controller);
         }
 
@@ -206,10 +210,8 @@ public class LauncherBackAnimationController {
                     controller.startBack(backEvent);
                     mProgressAnimator.onBackStarted(backEvent, event -> {
                         float backProgress = event.getProgress();
-                        // TODO: Update once the interpolation curve spec is finalized.
                         controller.mBackProgress =
-                                1 - (1 - backProgress) * (1 - backProgress) * (1
-                                        - backProgress);
+                                mProgressInterpolator.getInterpolation(backProgress);
                         controller.updateBackProgress(controller.mBackProgress, event);
                     });
                 }
