@@ -177,6 +177,6 @@
     <string name="ps_container_title" msgid="4391796149519594205">"ಖಾಸಗಿ"</string>
     <string name="ps_container_settings" msgid="6059734123353320479">"ಖಾಸಗಿ ಸ್ಪೇಸ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"</string>
     <string name="ps_container_lock_unlock_button" msgid="7605602332253423755">"ಖಾಸಗಿ ಸ್ಪೇಸ್ ಅನ್ನು ಲಾಕ್/ಅನ್‌ಲಾಕ್ ಮಾಡಿ"</string>
-    <string name="ps_container_transition" msgid="8667331812048014412">"ಖಾಸಗಿ ಸ್ಪೇಸ್ ಪರಿವರ್ತಿಸಲಾಗುತ್ತಿದೆ"</string>
+    <string name="ps_container_transition" msgid="8667331812048014412">"ಖಾಸಗಿ ಸ್ಪೇಸ್ ಪರಿವರ್ತನೆಯಾಗುತ್ತಿದೆ"</string>
     <string name="bubble_bar_overflow_description" msgid="7410995531938041192">"ಓವರ್‌ಫ್ಲೋ"</string>
 </resources>
