@@ -171,6 +171,7 @@ android_library {
     name: "Launcher3CommonDepsLib",
     srcs: ["src_build_config/**/*.java"],
     static_libs: [
+        "SystemUI-statsd",
         "Launcher3ResLib",
         "launcher-testing-shared",
         "animationlib",

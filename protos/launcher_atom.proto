@@ -38,7 +38,7 @@ message ItemInfo {
   optional int32 rank = 5;
 
   // Stores whether the Item belows to non primary user
-  optional bool is_work = 6;
+  optional bool is_work = 6 [deprecated = true];
 
   // Item can be child node to parent container or parent containers (nested)
   optional ContainerInfo container_info = 7;
@@ -48,6 +48,9 @@ message ItemInfo {
 
   // Stores whether the navigation bar is in kids mode.
   optional bool is_kids_mode = 13;
+
+  // Stores type of the user the Item belong to
+  optional int32 user_type = 14;
 }
 
 message LauncherAttributes{
