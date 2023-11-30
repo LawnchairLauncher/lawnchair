@@ -481,7 +481,8 @@ public class LoaderTask implements Runnable {
             mItemsDeleted = c.commitDeleted();
 
             // Sort the folder items, update ranks, and make sure all preview items are high res.
-            FolderGridOrganizer verifier = FolderGridOrganizer.getPreviewIconVerifier();
+            FolderGridOrganizer verifier =
+                    new FolderGridOrganizer(mApp.getInvariantDeviceProfile());
             for (FolderInfo folder : mBgDataModel.folders) {
                 Collections.sort(folder.contents, Folder.ITEM_POS_COMPARATOR);
                 verifier.setFolderInfo(folder);

@@ -96,7 +96,7 @@ public class FolderAnimationManager {
 
         mContext = folder.getContext();
         mDeviceProfile = folder.mActivityContext.getDeviceProfile();
-        mPreviewVerifier = new FolderGridOrganizer(mDeviceProfile);
+        mPreviewVerifier = new FolderGridOrganizer(mDeviceProfile.inv);
 
         mIsOpening = isOpening;
 

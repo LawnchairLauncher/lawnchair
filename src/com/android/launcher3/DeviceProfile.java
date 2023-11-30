@@ -182,8 +182,6 @@ public class DeviceProfile {
     public int cellYPaddingPx = -1;
 
     // Folder
-    public final int numFolderRows;
-    public final int numFolderColumns;
     public final float folderLabelTextScale;
     public int folderLabelTextSizePx;
     public int folderFooterHeightPx;
@@ -441,8 +439,6 @@ public class DeviceProfile {
         }
 
         folderLabelTextScale = res.getFloat(R.dimen.folder_label_text_scale);
-        numFolderRows = inv.numFolderRows[mTypeIndex];
-        numFolderColumns = inv.numFolderColumns[mTypeIndex];
 
         if (mIsScalableGrid && inv.folderStyle != INVALID_RESOURCE_HANDLE) {
             TypedArray folderStyle = context.obtainStyledAttributes(inv.folderStyle,
@@ -649,11 +645,11 @@ public class DeviceProfile {
                             isTwoPanels ? inv.folderSpecsTwoPanelId : inv.folderSpecsId),
                     ResponsiveSpecType.Folder);
             mResponsiveFolderWidthSpec = folderSpecs.getCalculatedSpec(responsiveAspectRatio,
-                    DimensionType.WIDTH, numFolderColumns,
+                    DimensionType.WIDTH, inv.numFolderColumns,
                     mResponsiveWorkspaceWidthSpec.getAvailableSpace(),
                     mResponsiveWorkspaceWidthSpec);
             mResponsiveFolderHeightSpec = folderSpecs.getCalculatedSpec(responsiveAspectRatio,
-                    DimensionType.HEIGHT, numFolderRows,
+                    DimensionType.HEIGHT, inv.numFolderRows,
                     mResponsiveWorkspaceHeightSpec.getAvailableSpace(),
                     mResponsiveWorkspaceHeightSpec);
 
@@ -1410,16 +1406,16 @@ public class DeviceProfile {
         Point totalWorkspacePadding = getTotalWorkspacePadding();
 
         // Check if the folder fit within the available height.
-        float contentUsedHeight = folderCellHeightPx * numFolderRows
-                + ((numFolderRows - 1) * folderCellLayoutBorderSpacePx.y)
+        float contentUsedHeight = folderCellHeightPx * inv.numFolderRows
+                + ((inv.numFolderRows - 1) * folderCellLayoutBorderSpacePx.y)
                 + folderFooterHeightPx
                 + folderContentPaddingTop;
         int contentMaxHeight = availableHeightPx - totalWorkspacePadding.y;
         float scaleY = contentMaxHeight / contentUsedHeight;
 
         // Check if the folder fit within the available width.
-        float contentUsedWidth = folderCellWidthPx * numFolderColumns
-                + ((numFolderColumns - 1) * folderCellLayoutBorderSpacePx.x)
+        float contentUsedWidth = folderCellWidthPx * inv.numFolderColumns
+                + ((inv.numFolderColumns - 1) * folderCellLayoutBorderSpacePx.x)
                 + folderContentPaddingLeftRight * 2;
         int contentMaxWidth = availableWidthPx - totalWorkspacePadding.x;
         float scaleX = contentMaxWidth / contentUsedWidth;
@@ -2049,8 +2045,8 @@ public class DeviceProfile {
         writer.println(prefix + pxToDpStr("iconTextSizePx", iconTextSizePx));
         writer.println(prefix + pxToDpStr("iconDrawablePaddingPx", iconDrawablePaddingPx));
 
-        writer.println(prefix + "\tnumFolderRows: " + numFolderRows);
-        writer.println(prefix + "\tnumFolderColumns: " + numFolderColumns);
+        writer.println(prefix + "\tinv.numFolderRows: " + inv.numFolderRows);
+        writer.println(prefix + "\tinv.numFolderColumns: " + inv.numFolderColumns);
         writer.println(prefix + pxToDpStr("folderCellWidthPx", folderCellWidthPx));
         writer.println(prefix + pxToDpStr("folderCellHeightPx", folderCellHeightPx));
         writer.println(prefix + pxToDpStr("folderChildIconSizePx", folderChildIconSizePx));
