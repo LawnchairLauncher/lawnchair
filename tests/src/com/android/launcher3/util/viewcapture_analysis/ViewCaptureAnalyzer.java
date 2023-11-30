@@ -36,7 +36,7 @@ public class ViewCaptureAnalyzer {
     // All detectors. They will be invoked in the order listed here.
     private static final AnomalyDetector[] ANOMALY_DETECTORS = {
             new AlphaJumpDetector(),
-            new FlashDetector(),
+//            new FlashDetector(), // b/309014345
             new PositionJumpDetector()
     };
 
