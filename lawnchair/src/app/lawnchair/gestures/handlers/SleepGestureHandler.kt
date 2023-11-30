@@ -37,13 +37,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.lawnchairApp
-import app.lawnchair.root.RootCommandExecutor
-import app.lawnchair.root.RootHelperManager
 import app.lawnchair.ui.AlertBottomSheetContent
 import app.lawnchair.util.requireSystemService
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.topjohnwu.superuser.Shell
 
 class SleepGestureHandler(context: Context) : GestureHandler(context) {
 
@@ -65,16 +64,10 @@ class SleepGestureHandler(context: Context) : GestureHandler(context) {
 
 class SleepMethodRoot(context: Context) : SleepGestureHandler.SleepMethod(context) {
 
-    override suspend fun isSupported() = true
+    override suspend fun isSupported() = Shell.getShell().isRoot
 
     override suspend fun sleep(launcher: LawnchairLauncher) {
-        if (!RootCommandExecutor.canRunRootCommands()) {
-            RootCommandExecutor.execute("su")
-        }
-
-        RootCommandExecutor.execute("input keyevent 26").runCatching {
-            RootHelperManager.INSTANCE.get(launcher).getService().goToSleep()
-        }
+        Shell.su("input keyevent 26").exec()
     }
 }
 
