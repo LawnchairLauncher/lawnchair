@@ -43,6 +43,7 @@ import android.view.SurfaceControl;
 import android.view.View;
 import android.view.ViewRootImpl;
 import android.view.animation.AnimationUtils;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.window.BackEvent;
 import android.window.BackMotionEvent;
@@ -99,6 +100,7 @@ public class LauncherBackAnimationController {
     private final float mWindowScaleEndCornerRadius;
     private final float mWindowScaleStartCornerRadius;
     private final Interpolator mCancelInterpolator;
+    private final Interpolator mProgressInterpolator = new DecelerateInterpolator();
     private final PointF mInitialTouchPos = new PointF();
 
     private RemoteAnimationTarget mBackTarget;
@@ -345,9 +347,16 @@ public class LauncherBackAnimationController {
         float screenHeight = mStartRect.height();
         float width = Utilities.mapRange(progress, 1, MIN_WINDOW_SCALE) * screenWidth;
         float height = screenHeight / screenWidth * width;
-        float deltaYRatio = (event.getTouchY() - mInitialTouchPos.y) / screenHeight;
+
         // Base the window movement in the Y axis on the touch movement in the Y axis.
-        float deltaY = (float) Math.sin(deltaYRatio * Math.PI * 0.5f) * mWindowMaxDeltaY * progress;
+        float rawYDelta = event.getTouchY() - mInitialTouchPos.y;
+        float yDirection = rawYDelta < 0 ? -1 : 1;
+        // limit yDelta interpretation to 1/2 of screen height in either direction
+        float deltaYRatio = Math.min(screenHeight / 2f, Math.abs(rawYDelta)) / (screenHeight / 2f);
+        float interpolatedYRatio = mProgressInterpolator.getInterpolation(deltaYRatio);
+        // limit y-shift so surface never passes 8dp screen margin
+        float deltaY = yDirection * interpolatedYRatio * Math.max(0f, (screenHeight - height)
+                / 2f - mWindowScaleMarginX);
         // Move the window along the Y axis.
         float top = (screenHeight - height) * 0.5f + deltaY;
         // Move the window along the X axis.
