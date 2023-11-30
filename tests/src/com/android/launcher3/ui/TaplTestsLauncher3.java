@@ -17,7 +17,6 @@
 package com.android.launcher3.ui;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import androidx.test.filters.LargeTest;
 import androidx.test.runner.AndroidJUnit4;
@@ -34,17 +33,6 @@ public class TaplTestsLauncher3 extends AbstractLauncherUiTest {
     public void setUp() throws Exception {
         super.setUp();
         initialize(this);
-    }
-
-    // Please don't add negative test cases for methods that fail only after a long wait.
-    public static void expectFail(String message, Runnable action) {
-        boolean failed = false;
-        try {
-            action.run();
-        } catch (AssertionError e) {
-            failed = true;
-        }
-        assertTrue(message, failed);
     }
 
     @Test
