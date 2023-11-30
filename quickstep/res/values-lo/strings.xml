@@ -95,6 +95,8 @@
     <string name="action_screenshot" msgid="8171125848358142917">"ຮູບໜ້າຈໍ"</string>
     <string name="action_split" msgid="2098009717623550676">"ແບ່ງ"</string>
     <string name="toast_split_select_app" msgid="8464310533320556058">"ແຕະແອັບອື່ນເພື່ອໃຊ້ໜ້າຈໍແຍກ"</string>
+    <!-- no translation found for toast_split_select_app_cancel (1532690483356445639) -->
+    <skip />
     <string name="toast_split_select_cont_desc" msgid="2119685056059607602">"ອອກຈາກາກນເລືອກການແບ່ງໜ້າຈໍ"</string>
     <string name="toast_split_app_unsupported" msgid="2360229567007828914">"ເລືອກແອັບອື່ນເພື່ອໃຊ້ການແບ່ງໜ້າຈໍ"</string>
     <string name="blocked_by_policy" msgid="2071401072261365546">"ແອັບ ຫຼື ອົງການຂອງທ່ານບໍ່ອະນຸຍາດໃຫ້ໃຊ້ຄຳສັ່ງນີ້"</string>
