@@ -95,7 +95,7 @@ public class WidgetsFullSheet extends BaseWidgetSheet
     private static final long FADE_IN_DURATION = 150;
     private static final long EDUCATION_TIP_DELAY_MS = 200;
     private static final long EDUCATION_DIALOG_DELAY_MS = 500;
-    private static final float VERTICAL_START_POSITION = 0.3f;
+
     // The widget recommendation table can easily take over the entire screen on devices with small
     // resolution or landscape on phone. This ratio defines the max percentage of content area that
     // the table can display.
@@ -622,7 +622,6 @@ public class WidgetsFullSheet extends BaseWidgetSheet
         if (animate) {
             if (getPopupContainer().getInsets().bottom > 0) {
                 mContent.setAlpha(0);
-                setTranslationShift(VERTICAL_START_POSITION);
             }
             setUpOpenAnimation(mActivityContext.getDeviceProfile().bottomSheetOpenDuration);
             Animator animator = mOpenCloseAnimation.getAnimationPlayer();
