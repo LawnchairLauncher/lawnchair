@@ -17,14 +17,12 @@
 package com.android.quickstep.views;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
-import android.view.MotionEvent;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -41,9 +39,11 @@ import com.android.launcher3.statemanager.StatefulActivity;
  *
  * Appears and disappears concurrently with a FloatingTaskView.
  */
-public class SplitInstructionsView extends FrameLayout {
+public class SplitInstructionsView extends LinearLayout {
     private final StatefulActivity mLauncher;
-    private AppCompatTextView mTextView;
+    private AppCompatTextView mInstructionTextView;
+    /** Only used if {@link com.android.wm.shell.FeatureFlags#enableSplitContextual()} is true. */
+    private AppCompatTextView mCancelTextView;
 
     public static final FloatProperty<SplitInstructionsView> UNFOLD =
             new FloatProperty<SplitInstructionsView>("SplitInstructionsUnfold") {
@@ -97,42 +97,19 @@ public class SplitInstructionsView extends FrameLayout {
     }
 
     private void init() {
-        mTextView = findViewById(R.id.split_instructions_text);
+        mInstructionTextView = findViewById(R.id.split_instructions_text);
+        mCancelTextView = findViewById(R.id.split_instructions_text_cancel);
 
-        if (!FeatureFlags.enableSplitContextually()) {
-            mTextView.setCompoundDrawables(null, null, null, null);
-            return;
+        if (FeatureFlags.enableSplitContextually()) {
+            mCancelTextView.setVisibility(VISIBLE);
+            mCancelTextView.setOnClickListener((v) -> exitSplitSelection());
         }
-
-        mTextView.setOnTouchListener((v, event) -> {
-            if (isTouchInsideRightCompoundDrawable(event)) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    exitSplitSelection();
-                }
-                return true;
-            }
-            return false;
-        });
     }
 
     private void exitSplitSelection() {
         ((RecentsView) mLauncher.getOverviewPanel()).getSplitSelectController()
                 .getSplitAnimationController().playPlaceholderDismissAnim(mLauncher);
         mLauncher.getStateManager().goToState(LauncherState.NORMAL);
-    }
-
-    private boolean isTouchInsideRightCompoundDrawable(MotionEvent event) {
-        // Get the right compound drawable of the TextView.
-        Drawable rightDrawable = mTextView.getCompoundDrawablesRelative()[2];
-
-        // Check if the touch event intersects with the drawable's bounds.
-        if (rightDrawable != null) {
-            // We can get away w/o caring about the Y bounds since it's such a small view, if it's
-            // above/below the drawable just assume they meant to touch it. ¯\_(ツ)_/¯
-            return  event.getX() >= (mTextView.getWidth() - rightDrawable.getBounds().width());
-        } else {
-            return false;
-        }
     }
 
     @Override
@@ -172,6 +149,6 @@ public class SplitInstructionsView extends FrameLayout {
     }
 
     public AppCompatTextView getTextView() {
-        return mTextView;
+        return mInstructionTextView;
     }
 }

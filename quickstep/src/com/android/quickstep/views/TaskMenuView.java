@@ -311,14 +311,14 @@ public class TaskMenuView extends AbstractFloatingView {
                         - mActivity.getDeviceProfile().getOverviewActionsClaimedSpaceBelow();
                 float midpoint = (taskBottom + taskbarTop) / 2f;
                 additionalTranslationY = -Math.max(menuBottom - midpoint, 0);
-            } else {
-                // Animate the menu to leave a small margin at the top of the task.
-                additionalTranslationY = getResources().getDimensionPixelSize(
-                        R.dimen.task_thumbnail_icon_menu_top_margin_expanded);
             }
+            // Translate the menu to account for the expansion of the app chip menu as well.
+            float expandOffsetTranslationY = getResources().getDimensionPixelSize(
+                    R.dimen.task_thumbnail_icon_menu_expanded_gap);
             ObjectAnimator translationYAnim = ObjectAnimator.ofFloat(this, TRANSLATION_Y,
                     closing ? mMenuTranslationYBeforeOpen
-                            : mMenuTranslationYBeforeOpen + additionalTranslationY);
+                            : mMenuTranslationYBeforeOpen + additionalTranslationY
+                                    + expandOffsetTranslationY);
             translationYAnim.setInterpolator(EMPHASIZED);
 
             ObjectAnimator menuTranslationYAnim = ObjectAnimator.ofFloat(

@@ -252,6 +252,7 @@ class SplitAnimationController(val splitSelectStateController: SplitSelectStateC
         splitSelectStateController.splitInstructionsView = splitInstructionsView
         val timings = AnimUtils.getDeviceOverviewToSplitTimings(launcher.deviceProfile.isTablet)
         val anim = PendingAnimation(100 /*duration */)
+        splitInstructionsView.alpha = 0f
         anim.setViewAlpha(splitInstructionsView, 1f,
                 Interpolators.clampToProgress(Interpolators.LINEAR,
                         timings.instructionsContainerFadeInStartOffset,

@@ -290,7 +290,6 @@
     <dimen name="popup_single_item_radius">100dp</dimen>
     <dimen name="popup_smaller_radius">4dp</dimen>
     <dimen name="deep_shortcut_drawable_padding">16dp</dimen>
-    <dimen name="deep_shortcut_drag_handle_size">16dp</dimen>
     <dimen name="popup_padding_start">10dp</dimen>
     <dimen name="popup_padding_end">14dp</dimen>
     <dimen name="popup_vertical_padding">4dp</dimen>
@@ -430,6 +429,7 @@
     <dimen name="split_instructions_drawable_padding">10dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_landscape">24dp</dimen>
     <dimen name="split_instructions_bottom_margin_phone_portrait">60dp</dimen>
+    <dimen name="split_instructions_start_margin_cancel">8dp</dimen>
 
     <!-- Workspace grid visualization parameters -->
     <dimen name="grid_visualization_rounding_radius">28dp</dimen>

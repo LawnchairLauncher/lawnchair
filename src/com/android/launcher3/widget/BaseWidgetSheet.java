@@ -28,7 +28,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.WindowInsets;
 import android.view.animation.Interpolator;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.Px;
@@ -61,9 +60,6 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
     public static final int DEFAULT_MAX_HORIZONTAL_SPANS = 4;
 
     protected final Rect mInsets = new Rect();
-
-    /* Touch handling related member variables. */
-    private Toast mWidgetInstructionToast;
 
     @Px protected int mContentHorizontalMargin;
     @Px protected int mWidgetCellHorizontalPadding;
@@ -113,16 +109,10 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
 
     @Override
     public final void onClick(View v) {
-        Object tag = null;
         if (v instanceof WidgetCell) {
-            tag = v.getTag();
-        } else if (v.getParent() instanceof WidgetCell) {
-            tag = ((WidgetCell) v.getParent()).getTag();
-        }
-        if (tag instanceof PendingAddShortcutInfo) {
-            mWidgetInstructionToast = showShortcutToast(getContext(), mWidgetInstructionToast);
-        } else {
-            mWidgetInstructionToast = showWidgetToast(getContext(), mWidgetInstructionToast);
+            mActivityContext.getItemOnClickListener().onClick(v);
+        } else if (v.getParent() instanceof WidgetCell wc) {
+            mActivityContext.getItemOnClickListener().onClick(wc);
         }
     }
 
@@ -131,7 +121,7 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
         TestLogging.recordEvent(TestProtocol.SEQUENCE_MAIN, "Widgets.onLongClick");
         v.cancelLongPress();
 
-        boolean result = false;
+        boolean result;
         if (v instanceof WidgetCell) {
             result = mActivityContext.getAllAppsItemLongClickListener().onLongClick(v);
         } else if (v.getParent() instanceof WidgetCell wc) {
@@ -236,40 +226,6 @@ public abstract class BaseWidgetSheet extends AbstractSlideInView<BaseActivity>
 
     protected SystemUiController getSystemUiController() {
         return mActivityContext.getSystemUiController();
-    }
-
-    /**
-     * Show Widget tap toast prompting user to drag instead
-     */
-    public static Toast showWidgetToast(Context context, Toast toast) {
-        // Let the user know that they have to long press to add a widget
-        if (toast != null) {
-            toast.cancel();
-        }
-
-        CharSequence msg = Utilities.wrapForTts(
-                context.getText(R.string.long_press_widget_to_add),
-                context.getString(R.string.long_accessible_way_to_add));
-        toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
-        toast.show();
-        return toast;
-    }
-
-    /**
-     * Show shortcut tap toast prompting user to drag instead.
-     */
-    private static Toast showShortcutToast(Context context, Toast toast) {
-        // Let the user know that they have to long press to add a widget
-        if (toast != null) {
-            toast.cancel();
-        }
-
-        CharSequence msg = Utilities.wrapForTts(
-                context.getText(R.string.long_press_shortcut_to_add),
-                context.getString(R.string.long_accessible_way_to_add_shortcut));
-        toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
-        toast.show();
-        return toast;
     }
 
     /** Shows education tip on top center of {@code view} if view is laid out. */

@@ -69,3 +69,10 @@ flag {
     description: "Enables initiating split from a fullscreen app using keyboard shortcuts"
     bug: "270394122"
 }
+
+flag {
+    name: "enable_launcher_br_metrics"
+    namespace: "launcher"
+    description: "Enables logging of Launcher restore metrics to the Backup & Restore team"
+    bug: "307527314"
+}
