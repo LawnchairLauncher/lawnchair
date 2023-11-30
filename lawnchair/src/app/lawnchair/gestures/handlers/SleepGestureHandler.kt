@@ -37,9 +37,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.lawnchair.LawnchairLauncher
 import app.lawnchair.lawnchairApp
+import app.lawnchair.root.RootCommandExecutor
 import app.lawnchair.root.RootHelperManager
 import app.lawnchair.ui.AlertBottomSheetContent
-import app.lawnchair.root.RootCommandExecutor
 import app.lawnchair.util.requireSystemService
 import app.lawnchair.views.ComposeBottomSheet
 import com.android.launcher3.R
