@@ -169,9 +169,6 @@ public class GridCustomizationsProvider extends ContentProvider {
                 LauncherPrefs.get(getContext())
                         .put(THEMED_ICONS, values.getAsBoolean(BOOLEAN_VALUE));
                 getContext().getContentResolver().notifyChange(uri, null);
-                mActivePreviews.values().forEach(observer ->
-                        observer.renderer.refreshIcons()
-                );
                 return 1;
             }
             default:
