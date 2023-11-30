@@ -279,12 +279,16 @@ public final class FeatureFlags {
             "Inject fallback app corpus result when AiAi fails to return it.");
 
     public static final BooleanFlag ENABLE_LONG_PRESS_NAV_HANDLE =
-            getReleaseFlag(282993230, "ENABLE_LONG_PRESS_NAV_HANDLE", TEAMFOOD,
+            getReleaseFlag(299682306, "ENABLE_LONG_PRESS_NAV_HANDLE", TEAMFOOD,
                     "Enables long pressing on the bottom bar nav handle to trigger events.");
 
     public static final BooleanFlag ENABLE_SEARCH_HAPTIC_HINT =
-            getReleaseFlag(303023676, "ENABLE_SEARCH_HAPTIC_HINT", ENABLED,
-                    "Enables haptic hint when long pressing on the bottom bar nav handle.");
+            getReleaseFlag(314005131, "ENABLE_SEARCH_HAPTIC_HINT", ENABLED,
+                    "Enables haptic hint while long pressing on the bottom bar nav handle.");
+
+    public static final BooleanFlag ENABLE_SEARCH_HAPTIC_COMMIT =
+            getReleaseFlag(314005577, "ENABLE_SEARCH_HAPTIC_COMMIT", DISABLED,
+                    "Enables haptic hint at end of long pressing on the bottom bar nav handle.");
 
     public static final IntFlag LPNH_HAPTIC_HINT_START_SCALE_PERCENT =
             getIntFlag(309972570, "LPNH_HAPTIC_HINT_START_SCALE_PERCENT", 0,
