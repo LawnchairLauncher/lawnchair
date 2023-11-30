@@ -1820,7 +1820,7 @@ public final class LauncherInstrumentation {
     public void sendPointer(long downTime, long currentTime, int action, Point point,
             GestureScope gestureScope) {
         sendPointer(downTime, currentTime, action, point, gestureScope,
-                InputDevice.SOURCE_TOUCHSCREEN);
+                InputDevice.SOURCE_TOUCHSCREEN, false);
     }
 
     private void injectEvent(InputEvent event) {
@@ -1830,6 +1830,11 @@ public final class LauncherInstrumentation {
 
     public void sendPointer(long downTime, long currentTime, int action, Point point,
             GestureScope gestureScope, int source) {
+        sendPointer(downTime, currentTime, action, point, gestureScope, source, false);
+    }
+
+    public void sendPointer(long downTime, long currentTime, int action, Point point,
+            GestureScope gestureScope, int source, boolean isRightClick) {
         final boolean hasTIS = hasTIS();
         int pointerCount = mPointerCount;
 
@@ -1864,6 +1869,9 @@ public final class LauncherInstrumentation {
         if (action == MotionEvent.ACTION_BUTTON_PRESS
                 || action == MotionEvent.ACTION_BUTTON_RELEASE) {
             event.setActionButton(MotionEvent.BUTTON_PRIMARY);
+        }
+        if (isRightClick) {
+            event.setButtonState(event.getButtonState() & MotionEvent.BUTTON_SECONDARY);
         }
         injectEvent(event);
     }
@@ -1972,6 +1980,22 @@ public final class LauncherInstrumentation {
         final UiObject2 result = waitForLauncherObject(resName);
         sendPointer(downTime, SystemClock.uptimeMillis(), MotionEvent.ACTION_UP, targetCenter,
                 GestureScope.DONT_EXPECT_PILFER);
+        return result;
+    }
+
+    @NonNull
+    UiObject2 rightClickAndGet(
+            @NonNull final UiObject2 target, @NonNull String resName, Pattern rightClickEvent) {
+        final Point targetCenter = target.getVisibleCenter();
+        final long downTime = SystemClock.uptimeMillis();
+        sendPointer(downTime, downTime, MotionEvent.ACTION_DOWN, targetCenter,
+                GestureScope.DONT_EXPECT_PILFER, InputDevice.SOURCE_MOUSE,
+                /* isRightClick= */ true);
+        expectEvent(TestProtocol.SEQUENCE_MAIN, rightClickEvent);
+        final UiObject2 result = waitForLauncherObject(resName);
+        sendPointer(downTime, SystemClock.uptimeMillis(), ACTION_UP, targetCenter,
+                GestureScope.DONT_EXPECT_PILFER, InputDevice.SOURCE_MOUSE,
+                /* isRightClick= */ true);
         return result;
     }
 
