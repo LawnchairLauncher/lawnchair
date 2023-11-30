@@ -199,7 +199,7 @@ public class ReorderAlgorithmUnitTest {
             solution.isSolution = false;
         }
         if (!solution.isSolution) {
-            cl.copyCurrentStateToSolution(solution, false);
+            cl.copyCurrentStateToSolution(solution);
             if (cl instanceof MultipageCellLayout) {
                 solution =
                         ((MultipageCellLayout) cl).createReorderAlgorithm().removeSeamFromSolution(
