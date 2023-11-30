@@ -43,10 +43,13 @@ import com.android.launcher3.model.data.ItemInfoWithIcon;
 import com.android.launcher3.model.data.WorkspaceItemInfo;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.views.ActivityContext;
+import com.patrykmichalik.opto.core.PreferenceExtensionsKt;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import app.lawnchair.preferences2.PreferenceManager2;
 
 @TargetApi(Build.VERSION_CODES.P)
 public class PredictionRowView<T extends Context & ActivityContext>
@@ -65,6 +68,8 @@ public class PredictionRowView<T extends Context & ActivityContext>
 
     private boolean mPredictionsEnabled = false;
     private OnLongClickListener mOnIconLongClickListener = ItemLongClickListener.INSTANCE_ALL_APPS;
+
+    private final PreferenceManager2 prefs2 = PreferenceManager2.getInstance(getContext());
 
     public PredictionRowView(@NonNull Context context) {
         this(context, null);
@@ -97,9 +102,10 @@ public class PredictionRowView<T extends Context & ActivityContext>
     }
 
     private void updateVisibility() {
-        setVisibility(mPredictionsEnabled ? VISIBLE : GONE);
+        boolean enabled = mPredictionsEnabled && PreferenceExtensionsKt.firstBlocking(prefs2.getShowRecentAppsInDrawer());
+        setVisibility(enabled ? VISIBLE : GONE);
         if (mActivityContext.getAppsView() != null) {
-            if (mPredictionsEnabled) {
+            if (enabled) {
                 mActivityContext.getAppsView().getAppsStore().registerIconContainer(this);
             } else {
                 mActivityContext.getAppsView().getAppsStore().unregisterIconContainer(this);

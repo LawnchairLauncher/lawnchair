@@ -96,6 +96,7 @@
     <bool name="config_default_hide_app_drawer_search_bar">false</bool>
     <bool name="config_default_show_hidden_apps_in_search">false</bool>
     <bool name="config_default_enable_smart_hide">false</bool>
+    <bool name="config_default_show_recent_apps_in_drawer">false</bool>
     <bool name="config_default_enable_font_selection">true</bool>
     <bool name="config_default_enable_smartspace_calendar_selection">true</bool>
     <bool name="config_default_dts2">true</bool>

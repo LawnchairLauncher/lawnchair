@@ -227,6 +227,12 @@ class PreferenceManager2 private constructor(private val context: Context) : Pre
         onSet = { reloadHelper.recreate() },
     )
 
+    val showRecentAppsInDrawer = preference(
+        key = booleanPreferencesKey(name = "show_recent_apps_in_drawer"),
+        defaultValue = context.resources.getBoolean(R.bool.config_default_show_recent_apps_in_drawer),
+        onSet = { reloadHelper.recreate() },
+    )
+
     val enableFontSelection = preference(
         key = booleanPreferencesKey(name = "enable_font_selection"),
         defaultValue = context.resources.getBoolean(R.bool.config_default_enable_font_selection),
