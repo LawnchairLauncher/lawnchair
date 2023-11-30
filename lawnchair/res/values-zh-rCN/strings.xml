@@ -265,8 +265,6 @@
     <string name="hidden_apps_label">隐藏的应用</string>
     <string name="show_enable_smart_hide">在输入全名时显示</string>
     <string name="hide_hidden_apps_search">在搜索结果中隐藏</string>
-    <string name="recent_apps_label">最近应用</string>
-    <string name="show_recent_apps_in_drawer">在抽屉中显示最近应用</string>
     <string name="pref_category_search">搜索</string>
     <string name="show_app_search_bar">显示搜索栏</string>
     <string name="pref_search_auto_show_keyboard">自动显示键盘</string>
@@ -363,6 +361,7 @@
     <string name="label">标签</string>
     <string name="hide_from_drawer">从应用抽屉隐藏</string>
     <string name="suggestion_pref_screen_title">建议</string>
+    <string name="show_suggested_apps_at_drawer_top">在抽屉顶部展示建议的应用</string>
     <!-- Bug reporting -->
     <string name="lawnchair_bug_report">Lawnchair 错误报告</string>
     <string name="crash_report_notif_title">%1$s 已崩溃</string>

@@ -102,7 +102,7 @@ public class PredictionRowView<T extends Context & ActivityContext>
     }
 
     private void updateVisibility() {
-        boolean enabled = mPredictionsEnabled && PreferenceExtensionsKt.firstBlocking(prefs2.getShowRecentAppsInDrawer());
+        boolean enabled = mPredictionsEnabled && PreferenceExtensionsKt.firstBlocking(prefs2.getShowSuggestedAppsInDrawer());
         setVisibility(enabled ? VISIBLE : GONE);
         if (mActivityContext.getAppsView() != null) {
             if (enabled) {

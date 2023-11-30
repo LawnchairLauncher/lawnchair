@@ -326,9 +326,6 @@
     <string name="show_enable_smart_hide">Show when Full Name is Typed</string>
     <string name="hide_hidden_apps_search">Hide in Search Results</string>
 
-    <string name="recent_apps_label">Recent Apps</string>
-    <string name="show_recent_apps_in_drawer">Show recent apps in drawer</string>
-
     <string name="pref_category_search">Search</string>
       <string name="show_app_search_bar">Show Search Bar</string>
       <string name="pref_search_auto_show_keyboard">Automatically Show Keyboard</string>
@@ -453,6 +450,8 @@
       <string name="hide_from_drawer">Hide from App Drawer</string>
 
     <string name="suggestion_pref_screen_title">Suggestions</string>
+    <string name="show_suggested_apps_at_drawer_top">Show suggested apps at drawer top</string>
+
     <string name="n_percent" translatable="false">%1$d%%</string>
 
     <!-- Bug reporting -->

@@ -87,14 +87,6 @@ fun AppDrawerPreferences() {
             }
         }
 
-        PreferenceGroup(heading = stringResource(id = R.string.recent_apps_label)) {
-            val showRecentAppsInDrawer = prefs2.showRecentAppsInDrawer.getAdapter()
-            SwitchPreference(
-                label = stringResource(id = R.string.show_recent_apps_in_drawer),
-                adapter = showRecentAppsInDrawer,
-            )
-        }
-
         val deviceSearchEnabled = false
         PreferenceGroup(heading = stringResource(id = R.string.pref_category_search)) {
             SwitchPreference(
