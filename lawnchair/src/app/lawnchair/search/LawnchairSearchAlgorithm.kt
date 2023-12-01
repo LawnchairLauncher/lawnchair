@@ -8,8 +8,8 @@ import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION
 import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
 import app.lawnchair.search.data.SearchResult
 import app.lawnchair.search.data.findContactsByName
-import app.lawnchair.search.data.queryFilesInMediaStore
 import app.lawnchair.search.data.getStartPageSuggestions
+import app.lawnchair.search.data.queryFilesInMediaStore
 import app.lawnchair.util.checkAndRequestFilesPermission
 import app.lawnchair.util.contactPermissionGranted
 import com.android.app.search.LayoutType.EMPTY_DIVIDER

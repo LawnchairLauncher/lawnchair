@@ -9,13 +9,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Process
 import android.provider.ContactsContract
-import android.provider.MediaStore
 import androidx.core.os.bundleOf
 import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.search.data.ContactInfo
 import app.lawnchair.search.data.FileInfo
 import app.lawnchair.theme.color.ColorTokens
 import app.lawnchair.util.createTextBitmap
+import app.lawnchair.util.mimeCompat
+import app.lawnchair.util.path2Uri
 import com.android.app.search.LayoutType
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
@@ -121,26 +122,18 @@ class GenerateSearchTarget(private val context: Context) {
     }
 
     internal fun getFileInfoSearchItem(info: FileInfo): SearchTargetCompat {
-        val id = "file:${info.fileId}${info.name}"
-        val fileUri = Uri.withAppendedPath(
-            MediaStore.Files.getContentUri("external"),
-            info.fileId.toString(),
-        )
+        val fileIntent = Intent(Intent.ACTION_VIEW)
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            .setDataAndType(info.path.path2Uri(), info.mimeType.mimeCompat)
 
-        val fileIntent = Intent(Intent.ACTION_VIEW, fileUri)
-
-        val fileManagerPackageName = getFileManagerForMimeType(info.mime)
-        if (fileManagerPackageName != null) {
-            fileIntent.setPackage(fileManagerPackageName)
-        }
-
-        val action = SearchActionCompat.Builder(id, info.name)
+        val action = SearchActionCompat.Builder(info.path, info.name)
             .setIcon(getPreviewIcon(info))
             .setIntent(fileIntent)
             .build()
 
         return createSearchTarget(
-            id,
+            info.path,
             action,
             LayoutType.THUMBNAIL,
             SearchTargetCompat.RESULT_TYPE_FILE_TILE,
@@ -181,23 +174,6 @@ class GenerateSearchTarget(private val context: Context) {
         val launchIntent =
             context.packageManager.getLaunchIntentForPackage(packageName) ?: return null
         return ComponentKey(launchIntent.component, Process.myUserHandle())
-    }
-
-    private fun getFileManagerForMimeType(mimeType: String): String? {
-        val packageManager = context.packageManager
-        val intent = Intent(Intent.ACTION_VIEW)
-            .setType(mimeType)
-
-        val resolveInfoList = packageManager.queryIntentActivities(intent, 0)
-
-        if (resolveInfoList.isNotEmpty()) {
-            val fileManagerPackageName = resolveInfoList[0].activityInfo.packageName
-            if ((pkgHelper.isAppInstalled(fileManagerPackageName, Process.myUserHandle()))) {
-                return fileManagerPackageName
-            }
-        }
-
-        return "com.google.android.apps.nbu.files"
     }
 
     private fun getPreviewIcon(info: FileInfo): Icon = when {

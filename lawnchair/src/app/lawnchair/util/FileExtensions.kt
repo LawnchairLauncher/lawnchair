@@ -1,5 +1,9 @@
 package app.lawnchair.util
 
+import android.net.Uri
+import androidx.core.content.FileProvider
+import app.lawnchair.LawnchairApp
+import java.io.File
 import okio.FileMetadata
 import okio.FileSystem
 import okio.Path
@@ -48,3 +52,14 @@ internal val Path.extension: String?
 internal val Path.nameWithoutExtension: String get() = name.substringBeforeLast(".")
 
 internal val Path.mimeType: String? get() = extension?.extension2MimeType()
+
+val fileProviderAuthority: String = "${LawnchairApp.instance.packageName}.fileprovider"
+
+fun String.path2Uri(): Uri? = File(this).file2Uri()
+
+fun File.file2Uri(): Uri? = try {
+    FileProvider.getUriForFile(LawnchairApp.instance, fileProviderAuthority, this)
+} catch (e: Exception) {
+    e.printStackTrace()
+    null
+}
