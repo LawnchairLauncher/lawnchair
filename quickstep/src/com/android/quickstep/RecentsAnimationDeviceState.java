@@ -154,20 +154,22 @@ public class RecentsAnimationDeviceState implements DisplayInfoChangeListener {
         }
         runOnDestroy(() -> mUserUnlockedReceiver.unregisterReceiverSafely(mContext));
 
-        // Register for exclusion updates
-        mExclusionListener = new SystemGestureExclusionListenerCompat(mDisplayId) {
-            @Override
-            @BinderThread
-            public void onExclusionChanged(Region region) {
-                if (region == null) {
-                    // Don't think this is possible but just in case, don't let it be null.
-                    region = new Region();
+        if (Utilities.ATLEAST_Q) {
+            // Register for exclusion updates
+            mExclusionListener = new SystemGestureExclusionListenerCompat(mDisplayId) {
+                @Override
+                @BinderThread
+                public void onExclusionChanged(Region region) {
+                    if (region == null) {
+                        // Don't think this is possible but just in case, don't let it be null.
+                        region = new Region();
+                    }
+                    // Assignments are atomic, it should be safe on binder thread
+                    mExclusionRegion = region;
                 }
-                // Assignments are atomic, it should be safe on binder thread
-                mExclusionRegion = region;
-            }
-        };
-        runOnDestroy(mExclusionListener::unregister);
+            };
+            runOnDestroy(mExclusionListener::unregister);
+        }
 
         // Register for display changes changes
         mDisplayController.addChangeListener(this);
