@@ -1,7 +1,11 @@
 package com.android.launcher3
 
 import androidx.annotation.UiThread
+import com.android.launcher3.WorkspaceLayoutManager.FIRST_SCREEN_ID
+import com.android.launcher3.config.FeatureFlags
+import com.android.launcher3.config.FeatureFlags.shouldShowFirstPageWidget
 import com.android.launcher3.model.BgDataModel
+import com.android.launcher3.model.StringCache
 import com.android.launcher3.model.data.AppInfo
 import com.android.launcher3.model.data.ItemInfo
 import com.android.launcher3.model.data.LauncherAppWidgetInfo
@@ -9,7 +13,9 @@ import com.android.launcher3.model.data.WorkspaceItemInfo
 import com.android.launcher3.popup.PopupContainerWithArrow
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.IntArray as LIntArray
+import com.android.launcher3.util.IntArray
 import com.android.launcher3.util.IntSet as LIntSet
+import com.android.launcher3.util.IntSet
 import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.util.Preconditions
 import com.android.launcher3.widget.PendingAddWidgetInfo
@@ -20,6 +26,11 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
 
     var synchronouslyBoundPages = LIntSet()
     var pagesToBindSynchronously = LIntSet()
+
+    var isFirstPagePinnedItemEnabled =
+        (BuildConfig.QSB_ON_FIRST_SCREEN && !FeatureFlags.ENABLE_SMARTSPACE_REMOVAL.get())
+
+    var stringCache: StringCache? = null
 
     override fun preAddApps() {
         // If there's an undo snackbar, force it to complete to ensure empty screens are removed
@@ -166,4 +177,116 @@ class ModelCallbacks(private var launcher: Launcher) : BgDataModel.Callbacks {
             info.spanY
         )
     }
+
+    override fun bindScreens(orderedScreenIds: IntArray) {
+        launcher.workspace.pageIndicator.setAreScreensBinding(
+            true,
+            launcher.deviceProfile.isTwoPanels
+        )
+        val firstScreenPosition = 0
+        if (
+            (FeatureFlags.QSB_ON_FIRST_SCREEN &&
+                isFirstPagePinnedItemEnabled &&
+                !shouldShowFirstPageWidget()) &&
+                orderedScreenIds.indexOf(FIRST_SCREEN_ID) != firstScreenPosition
+        ) {
+            orderedScreenIds.removeValue(FIRST_SCREEN_ID)
+            orderedScreenIds.add(firstScreenPosition, FIRST_SCREEN_ID)
+        } else if (
+            (!FeatureFlags.QSB_ON_FIRST_SCREEN && !isFirstPagePinnedItemEnabled ||
+                shouldShowFirstPageWidget()) && orderedScreenIds.isEmpty
+        ) {
+            // If there are no screens, we need to have an empty screen
+            launcher.workspace.addExtraEmptyScreens()
+        }
+        bindAddScreens(orderedScreenIds)
+
+        // After we have added all the screens, if the wallpaper was locked to the default state,
+        // then notify to indicate that it can be released and a proper wallpaper offset can be
+        // computed before the next layout
+        launcher.workspace.unlockWallpaperFromDefaultPageOnNextLayout()
+    }
+
+    override fun bindAppsAdded(
+        newScreens: IntArray?,
+        addNotAnimated: java.util.ArrayList<ItemInfo?>?,
+        addAnimated: java.util.ArrayList<ItemInfo?>?
+    ) {
+        // Add the new screens
+        if (newScreens != null) {
+            // newScreens can contain an empty right panel that is already bound, but not known
+            // by BgDataModel.
+            newScreens.removeAllValues(launcher.workspace.mScreenOrder)
+            bindAddScreens(newScreens)
+        }
+
+        // We add the items without animation on non-visible pages, and with
+        // animations on the new page (which we will try and snap to).
+        if (!addNotAnimated.isNullOrEmpty()) {
+            launcher.bindItems(addNotAnimated, false)
+        }
+        if (!addAnimated.isNullOrEmpty()) {
+            launcher.bindItems(addAnimated, true)
+        }
+
+        // Remove the extra empty screen
+        launcher.workspace.removeExtraEmptyScreen(false)
+    }
+
+    private fun bindAddScreens(orderedScreenIdsArg: IntArray) {
+        var orderedScreenIds = orderedScreenIdsArg
+        if (launcher.deviceProfile.isTwoPanels) {
+            if (FeatureFlags.FOLDABLE_SINGLE_PAGE.get()) {
+                orderedScreenIds = filterTwoPanelScreenIds(orderedScreenIds)
+            } else {
+                // Some empty pages might have been removed while the phone was in a single panel
+                // mode, so we want to add those empty pages back.
+                val screenIds = IntSet.wrap(orderedScreenIds)
+                orderedScreenIds.forEach { screenId: Int ->
+                    screenIds.add(launcher.workspace.getScreenPair(screenId))
+                }
+                orderedScreenIds = screenIds.array
+            }
+        }
+        orderedScreenIds
+            .filterNot { screenId ->
+                FeatureFlags.QSB_ON_FIRST_SCREEN &&
+                    isFirstPagePinnedItemEnabled &&
+                    !FeatureFlags.shouldShowFirstPageWidget() &&
+                    screenId == WorkspaceLayoutManager.FIRST_SCREEN_ID
+            }
+            .forEach { screenId ->
+                launcher.workspace.insertNewWorkspaceScreenBeforeEmptyScreen(screenId)
+            }
+    }
+
+    /**
+     * Remove odd number because they are already included when isTwoPanels and add the pair screen
+     * if not present.
+     */
+    private fun filterTwoPanelScreenIds(orderedScreenIds: IntArray): IntArray {
+        val screenIds = IntSet.wrap(orderedScreenIds)
+        orderedScreenIds
+            .filter { screenId -> screenId % 2 == 1 }
+            .forEach { screenId ->
+                screenIds.remove(screenId)
+                // In case the pair is not added, add it
+                if (!launcher.workspace.containsScreenId(screenId - 1)) {
+                    screenIds.add(screenId - 1)
+                }
+            }
+        return screenIds.array
+    }
+
+    override fun setIsFirstPagePinnedItemEnabled(isFirstPagePinnedItemEnabled: Boolean) {
+        this.isFirstPagePinnedItemEnabled = isFirstPagePinnedItemEnabled
+        launcher.workspace.bindAndInitFirstWorkspaceScreen()
+    }
+
+    override fun bindStringCache(cache: StringCache) {
+        stringCache = cache
+        launcher.appsView.updateWorkUI()
+    }
+
+    fun getIsFirstPagePinnedItemEnabled(): Boolean = isFirstPagePinnedItemEnabled
 }
