@@ -1,35 +1,13 @@
 package app.lawnchair.search.data
 
-import app.lawnchair.search.data.MimeTypes.MIME_APP
-import app.lawnchair.search.data.MimeTypes.MIME_AUDIO
-import app.lawnchair.search.data.MimeTypes.MIME_CSV
-import app.lawnchair.search.data.MimeTypes.MIME_EXCEL
-import app.lawnchair.search.data.MimeTypes.MIME_IMAGES
-import app.lawnchair.search.data.MimeTypes.MIME_PDF
-import app.lawnchair.search.data.MimeTypes.MIME_PPT1
-import app.lawnchair.search.data.MimeTypes.MIME_PPT2
-import app.lawnchair.search.data.MimeTypes.MIME_SRT
-import app.lawnchair.search.data.MimeTypes.MIME_TEXT
-import app.lawnchair.search.data.MimeTypes.MIME_VIDEO
-import app.lawnchair.search.data.MimeTypes.MIME_WORD
-import app.lawnchair.search.data.MimeTypes.MIME_ZIP
+import android.annotation.DrawableRes
+import app.lawnchair.util.androidPkgTypes
+import app.lawnchair.util.archiveFileTypes
+import app.lawnchair.util.audioFileTypes
+import app.lawnchair.util.documentFileTypes
+import app.lawnchair.util.imageFileTypes
+import app.lawnchair.util.videoFileTypes
 import com.android.launcher3.R
-
-object MimeTypes {
-    const val MIME_APP = "application/vnd.android.package-archive"
-    const val MIME_AUDIO = "audio/"
-    const val MIME_CSV = "text/comma-separated-values"
-    const val MIME_EXCEL = "application/vnd.ms-excel"
-    const val MIME_IMAGES = "image/"
-    const val MIME_PDF = "application/pdf"
-    const val MIME_PPT1 = "application/vnd.ms-powerpoint"
-    const val MIME_PPT2 = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-    const val MIME_SRT = "application/x-subrip"
-    const val MIME_TEXT = "text/"
-    const val MIME_VIDEO = "video/"
-    const val MIME_WORD = "application/msword"
-    const val MIME_ZIP = "application/zip"
-}
 
 data class ContactInfo(
     val contactId: String,
@@ -56,45 +34,43 @@ val EXCLUDED_MIME_TYPES = arrayOf(
     "vnd.android.cursor.item/website",
 )
 
-data class FileInfo(
-    val fileId: Long,
-    val name: String,
-    val path: String,
-    val mime: String,
-    val type: Int,
-    val selected: Boolean = false,
-) {
-    fun getIcon(): Int {
-        return when {
-            mime.contains(MIME_IMAGES) -> R.drawable.ic_file_image
-            mime.contains(MIME_VIDEO) -> R.drawable.ic_file_video
-            mime.contains(MIME_EXCEL) || mime.contains(MIME_CSV) -> R.drawable.ic_file_excel
-            mime.contains(MIME_TEXT) -> R.drawable.ic_file_text
-            mime.contains(MIME_AUDIO) -> R.drawable.ic_file_music
-            mime.contains(MIME_APP) -> R.drawable.ic_file_app
-            mime.contains(MIME_PDF) -> R.drawable.ic_file_pdf
-            mime.contains(MIME_ZIP) -> R.drawable.ic_file_zip
-            mime.contains(MIME_WORD) -> R.drawable.ic_file_word
-            mime.contains(MIME_PPT1) || mime.contains(MIME_PPT2) -> R.drawable.ic_file_powerpoint
-            mime.contains(MIME_SRT) -> R.drawable.ic_file_subtitle
-            else -> R.drawable.ic_file_unknown
-        }
-    }
+sealed interface IFileInfo {
+    val path: String
+    val name: String
+    val size: Long
+    val dateModified: Long
+}
 
-    fun isMediaFile(): Boolean {
-        return mime.run {
-            contains(MIME_IMAGES) || contains(MIME_VIDEO)
+data class FolderInfo(
+    override val path: String,
+    override val name: String,
+    override val size: Long,
+    override val dateModified: Long,
+) : IFileInfo
+
+data class FileInfo(
+    override val path: String,
+    override val name: String,
+    override val size: Long,
+    override val dateModified: Long,
+    val mimeType: String?,
+) : IFileInfo {
+    @get:DrawableRes
+    val iconRes = when (val mime = mimeType.orEmpty()) {
+        in imageFileTypes.values -> R.drawable.ic_file_image
+        in videoFileTypes.values -> R.drawable.ic_file_video
+        in audioFileTypes.values -> R.drawable.ic_file_music
+        in androidPkgTypes.values -> R.drawable.ic_file_app
+        in archiveFileTypes.values -> R.drawable.ic_file_zip
+        in documentFileTypes.values -> when {
+            mime.contains("excel") || mime.contains("csv") -> R.drawable.ic_file_excel
+            mime.contains("word") -> R.drawable.ic_file_word
+            mime.contains("powerpoint") -> R.drawable.ic_file_powerpoint
+            mime.contains("pdf") -> R.drawable.ic_file_pdf
+            mime.contains("srt") -> R.drawable.ic_file_subtitle
+            else -> R.drawable.ic_file_text
         }
-    }
-    fun isFileUnknown(): Boolean {
-        return mime.run {
-            !(
-                contains(MIME_IMAGES) || contains(MIME_VIDEO) || contains(MIME_EXCEL) || contains(MIME_CSV) ||
-                    contains(MIME_TEXT) || contains(MIME_AUDIO) || contains(MIME_APP) || contains(MIME_PDF) ||
-                    contains(MIME_ZIP) || contains(MIME_WORD) || contains(MIME_PPT1) || contains(MIME_PPT2) ||
-                    !contains(MIME_SRT)
-                )
-        }
+        else -> R.drawable.ic_file_unknown
     }
 }
 
