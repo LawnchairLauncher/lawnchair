@@ -123,13 +123,12 @@ fun getWindowCornerRadius(context: Context): Float {
 }
 
 fun supportsRoundedCornersOnWindows(context: Context): Boolean {
-    if (getPrefsIfUnlocked(context)?.overrideWindowCornerRadius?.get() == true) {
-        return true
-    }
-    return if (Utilities.ATLEAST_Q) {
-        QuickStepContract.supportsRoundedCornersOnWindows(context.resources)
-    } else {
-        false
+    val prefs = getPrefsIfUnlocked(context)
+
+    return when {
+        prefs?.overrideWindowCornerRadius?.get() == true -> true
+        Utilities.ATLEAST_Q -> QuickStepContract.supportsRoundedCornersOnWindows(context.resources)
+        else -> false
     }
 }
 
