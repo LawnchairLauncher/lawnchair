@@ -3298,9 +3298,6 @@ public abstract class RecentsView<ACTIVITY_TYPE extends StatefulActivity<STATE_T
         anim.setViewAlpha(splitInstructionsView, 1, clampToProgress(LINEAR,
                 timings.getInstructionsContainerFadeInStartOffset(),
                 timings.getInstructionsContainerFadeInEndOffset()));
-        anim.setViewAlpha(splitInstructionsView.getTextView(), 1, clampToProgress(LINEAR,
-                timings.getInstructionsTextFadeInStartOffset(),
-                timings.getInstructionsTextFadeInEndOffset()));
         anim.addFloat(splitInstructionsView, splitInstructionsView.UNFOLD, 0.1f, 1,
                 clampToProgress(EMPHASIZED_DECELERATE,
                         timings.getInstructionsUnfoldStartOffset(),

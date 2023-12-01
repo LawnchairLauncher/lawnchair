@@ -23,9 +23,9 @@ import android.util.FloatProperty;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatTextView;
 
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
@@ -41,12 +41,9 @@ import com.android.launcher3.statemanager.StatefulActivity;
  */
 public class SplitInstructionsView extends LinearLayout {
     private final StatefulActivity mLauncher;
-    private AppCompatTextView mInstructionTextView;
-    /** Only used if {@link com.android.wm.shell.FeatureFlags#enableSplitContextual()} is true. */
-    private AppCompatTextView mCancelTextView;
 
     public static final FloatProperty<SplitInstructionsView> UNFOLD =
-            new FloatProperty<SplitInstructionsView>("SplitInstructionsUnfold") {
+            new FloatProperty<>("SplitInstructionsUnfold") {
                 @Override
                 public void setValue(SplitInstructionsView splitInstructionsView, float v) {
                     splitInstructionsView.setScaleY(v);
@@ -97,12 +94,11 @@ public class SplitInstructionsView extends LinearLayout {
     }
 
     private void init() {
-        mInstructionTextView = findViewById(R.id.split_instructions_text);
-        mCancelTextView = findViewById(R.id.split_instructions_text_cancel);
+        TextView cancelTextView = findViewById(R.id.split_instructions_text_cancel);
 
         if (FeatureFlags.enableSplitContextually()) {
-            mCancelTextView.setVisibility(VISIBLE);
-            mCancelTextView.setOnClickListener((v) -> exitSplitSelection());
+            cancelTextView.setVisibility(VISIBLE);
+            cancelTextView.setOnClickListener((v) -> exitSplitSelection());
         }
     }
 
@@ -146,9 +142,5 @@ public class SplitInstructionsView extends LinearLayout {
                         getMeasuredHeight(),
                         getMeasuredWidth()
                 );
-    }
-
-    public AppCompatTextView getTextView() {
-        return mInstructionTextView;
     }
 }
