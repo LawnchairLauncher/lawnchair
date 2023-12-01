@@ -21,7 +21,8 @@
     android:layout_height="match_parent"
     android:clipChildren="true"
     android:clipToOutline="true"
-    android:defaultFocusHighlightEnabled="false">
+    android:defaultFocusHighlightEnabled="false"
+    android:focusable="true">
 
     <View
         android:id="@+id/background"
