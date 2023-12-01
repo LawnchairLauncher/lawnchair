@@ -187,8 +187,8 @@ public class ReorderAlgorithm {
         mCellLayout.mTmpOccupied.markCells(c, false);
         mCellLayout.mTmpOccupied.markCells(rectOccupiedByPotentialDrop, true);
 
-        int[] tmpLocation = mCellLayout.findNearestArea(c.cellX, c.cellY, c.spanX, c.spanY,
-                direction, mCellLayout.mTmpOccupied.cells, null, new int[2]);
+        int[] tmpLocation = findNearestArea(c.cellX, c.cellY, c.spanX, c.spanY, direction,
+                mCellLayout.mTmpOccupied.cells, null, new int[2]);
 
         if (tmpLocation[0] >= 0 && tmpLocation[1] >= 0) {
             c.cellX = tmpLocation[0];
@@ -419,7 +419,7 @@ public class ReorderAlgorithm {
 
         mCellLayout.mTmpOccupied.markCells(rectOccupiedByPotentialDrop, true);
 
-        int[] tmpLocation = mCellLayout.findNearestArea(boundingRect.left, boundingRect.top,
+        int[] tmpLocation = findNearestArea(boundingRect.left, boundingRect.top,
                 boundingRect.width(), boundingRect.height(), direction,
                 mCellLayout.mTmpOccupied.cells, blockOccupied.cells, new int[2]);
 
@@ -533,7 +533,7 @@ public class ReorderAlgorithm {
      */
     public ItemConfiguration calculateReorder(int pixelX, int pixelY, int minSpanX,
             int minSpanY, int spanX, int spanY, View dragView) {
-        mCellLayout.getDirectionVectorForDrop(pixelX, pixelY, spanX, spanY, dragView,
+        getDirectionVectorForDrop(pixelX, pixelY, spanX, spanY, dragView,
                 mCellLayout.mDirectionVector);
 
         ItemConfiguration dropInPlaceSolution = dropInPlaceSolution(pixelX, pixelY, spanX, spanY,
@@ -558,5 +558,142 @@ public class ReorderAlgorithm {
             return dropInPlaceSolution;
         }
         return null;
+    }
+
+    /*
+     * Returns a pair (x, y), where x,y are in {-1, 0, 1} corresponding to vector between
+     * the provided point and the provided cell
+     */
+    private void computeDirectionVector(float deltaX, float deltaY, int[] result) {
+        double angle = Math.atan(deltaY / deltaX);
+
+        result[0] = 0;
+        result[1] = 0;
+        if (Math.abs(Math.cos(angle)) > 0.5f) {
+            result[0] = (int) Math.signum(deltaX);
+        }
+        if (Math.abs(Math.sin(angle)) > 0.5f) {
+            result[1] = (int) Math.signum(deltaY);
+        }
+    }
+
+    /**
+     * This seems like it should be obvious and straight-forward, but when the direction vector
+     * needs to match with the notion of the dragView pushing other views, we have to employ
+     * a slightly more subtle notion of the direction vector. The question is what two points is
+     * the vector between? The center of the dragView and its desired destination? Not quite, as
+     * this doesn't necessarily coincide with the interaction of the dragView and items occupying
+     * those cells. Instead we use some heuristics to often lock the vector to up, down, left
+     * or right, which helps make pushing feel right.
+     */
+    private void getDirectionVectorForDrop(int dragViewCenterX, int dragViewCenterY, int spanX,
+            int spanY, View dragView, int[] resultDirection) {
+
+        //TODO(adamcohen) b/151776141 use the items visual center for the direction vector
+        int[] targetDestination = new int[2];
+
+        mCellLayout.findNearestAreaIgnoreOccupied(dragViewCenterX, dragViewCenterY, spanX, spanY,
+                targetDestination);
+        Rect dragRect = new Rect();
+        mCellLayout.cellToRect(targetDestination[0], targetDestination[1], spanX, spanY, dragRect);
+        dragRect.offset(dragViewCenterX - dragRect.centerX(), dragViewCenterY - dragRect.centerY());
+
+        Rect region = new Rect(targetDestination[0], targetDestination[1],
+                targetDestination[0] + spanX, targetDestination[1] + spanY);
+        Rect dropRegionRect = mCellLayout.getIntersectingRectanglesInRegion(region, dragView);
+        if (dropRegionRect == null) dropRegionRect = new Rect(region);
+
+        int dropRegionSpanX = dropRegionRect.width();
+        int dropRegionSpanY = dropRegionRect.height();
+
+        mCellLayout.cellToRect(dropRegionRect.left, dropRegionRect.top, dropRegionRect.width(),
+                dropRegionRect.height(), dropRegionRect);
+
+        int deltaX = (dropRegionRect.centerX() - dragViewCenterX) / spanX;
+        int deltaY = (dropRegionRect.centerY() - dragViewCenterY) / spanY;
+
+        if (dropRegionSpanX == mCellLayout.getCountX() || spanX == mCellLayout.getCountX()) {
+            deltaX = 0;
+        }
+        if (dropRegionSpanY == mCellLayout.getCountY() || spanY == mCellLayout.getCountY()) {
+            deltaY = 0;
+        }
+
+        if (deltaX == 0 && deltaY == 0) {
+            // No idea what to do, give a random direction.
+            resultDirection[0] = 1;
+            resultDirection[1] = 0;
+        } else {
+            computeDirectionVector(deltaX, deltaY, resultDirection);
+        }
+    }
+
+    /**
+     * Find a vacant area that will fit the given bounds nearest the requested
+     * cell location, and will also weigh in a suggested direction vector of the
+     * desired location. This method computers distance based on unit grid distances,
+     * not pixel distances.
+     *
+     * @param cellX         The X cell nearest to which you want to search for a vacant area.
+     * @param cellY         The Y cell nearest which you want to search for a vacant area.
+     * @param spanX         Horizontal span of the object.
+     * @param spanY         Vertical span of the object.
+     * @param direction     The favored direction in which the views should move from x, y
+     * @param occupied      The array which represents which cells in the CellLayout are occupied
+     * @param blockOccupied The array which represents which cells in the specified block (cellX,
+     *                      cellY, spanX, spanY) are occupied. This is used when try to move a group
+     *                      of views.
+     * @param result        Array in which to place the result, or null (in which case a new array
+     *                      will
+     *                      be allocated)
+     * @return The X, Y cell of a vacant area that can contain this object,
+     * nearest the requested location.
+     */
+    public int[] findNearestArea(int cellX, int cellY, int spanX, int spanY, int[] direction,
+            boolean[][] occupied, boolean[][] blockOccupied, int[] result) {
+        // Keep track of best-scoring drop area
+        final int[] bestXY = result != null ? result : new int[2];
+        float bestDistance = Float.MAX_VALUE;
+        int bestDirectionScore = Integer.MIN_VALUE;
+
+        final int countX = mCellLayout.getCountX();
+        final int countY = mCellLayout.getCountY();
+
+        for (int y = 0; y < countY - (spanY - 1); y++) {
+            inner:
+            for (int x = 0; x < countX - (spanX - 1); x++) {
+                // First, let's see if this thing fits anywhere
+                for (int i = 0; i < spanX; i++) {
+                    for (int j = 0; j < spanY; j++) {
+                        if (occupied[x + i][y + j] && (blockOccupied == null
+                                || blockOccupied[i][j])) {
+                            continue inner;
+                        }
+                    }
+                }
+
+                float distance = (float) Math.hypot(x - cellX, y - cellY);
+                int[] curDirection = new int[2];
+                computeDirectionVector(x - cellX, y - cellY, curDirection);
+                // The direction score is just the dot product of the two candidate direction
+                // and that passed in.
+                int curDirectionScore =
+                        direction[0] * curDirection[0] + direction[1] * curDirection[1];
+                if (Float.compare(distance, bestDistance) < 0 || (Float.compare(distance,
+                        bestDistance) == 0 && curDirectionScore > bestDirectionScore)) {
+                    bestDistance = distance;
+                    bestDirectionScore = curDirectionScore;
+                    bestXY[0] = x;
+                    bestXY[1] = y;
+                }
+            }
+        }
+
+        // Return -1, -1 if no suitable location found
+        if (bestDistance == Float.MAX_VALUE) {
+            bestXY[0] = -1;
+            bestXY[1] = -1;
+        }
+        return bestXY;
     }
 }
