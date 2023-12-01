@@ -43,6 +43,7 @@ import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.theme.color.ColorTokens
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.util.Executors.MAIN_EXECUTOR
 import com.android.launcher3.util.Themes
 import com.android.systemui.shared.system.QuickStepContract
@@ -117,7 +118,11 @@ fun getWindowCornerRadius(context: Context): Float {
     if (prefs != null && prefs.overrideWindowCornerRadius.get()) {
         return prefs.windowCornerRadius.get().toFloat()
     }
-    return QuickStepContract.getWindowCornerRadius(context)
+    return if (Utilities.ATLEAST_Q) {
+        QuickStepContract.getWindowCornerRadius(context)
+    } else {
+        false
+    }
 }
 
 fun supportsRoundedCornersOnWindows(context: Context): Boolean {
