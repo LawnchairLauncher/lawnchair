@@ -146,7 +146,7 @@ suspend fun findContactsByName(context: Context, query: String, max: Int): List<
     }
 }
 
-suspend fun getSearchFileList(
+suspend fun queryFilesInMediaStore(
     context: Context,
     uri: Uri = MediaStore.Files.getContentUri("external"),
     path: String = "",

@@ -8,7 +8,7 @@ import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION
 import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
 import app.lawnchair.search.data.SearchResult
 import app.lawnchair.search.data.findContactsByName
-import app.lawnchair.search.data.getSearchFileList
+import app.lawnchair.search.data.queryFilesInMediaStore
 import app.lawnchair.search.data.getStartPageSuggestions
 import app.lawnchair.util.checkAndRequestFilesPermission
 import app.lawnchair.util.contactPermissionGranted
@@ -154,7 +154,7 @@ sealed class LawnchairSearchAlgorithm(
         }
 
         if (prefs.searchResultFiles.get() && checkAndRequestFilesPermission(context, prefs)) {
-            val fileResults = getSearchFileList(context, keyword = query, maxResult = 2).toList()
+            val fileResults = queryFilesInMediaStore(context, keyword = query, maxResult = 2).toList()
             results.addAll(fileResults.map { SearchResult(FILES, it) })
         }
 
