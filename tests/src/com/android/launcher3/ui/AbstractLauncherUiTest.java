@@ -590,6 +590,12 @@ public abstract class AbstractLauncherUiTest {
         getInstrumentation().getTargetContext().startActivity(intent);
         assertTrue("App didn't start: " + selector,
                 TestHelpers.wait(Until.hasObject(selector), DEFAULT_UI_TIMEOUT));
+
+        // Wait for the Launcher to stop.
+        final LauncherInstrumentation launcherInstrumentation = new LauncherInstrumentation();
+        Wait.atMost("Launcher activity didn't stop",
+                () -> !launcherInstrumentation.isLauncherActivityStarted(),
+                DEFAULT_ACTIVITY_TIMEOUT, launcherInstrumentation);
     }
 
     public static ActivityInfo resolveSystemAppInfo(String category) {

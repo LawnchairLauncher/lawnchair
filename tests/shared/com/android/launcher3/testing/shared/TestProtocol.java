@@ -86,6 +86,8 @@ public final class TestProtocol {
     public static final String REQUEST_ICON_HEIGHT =
             "icon-height";
     public static final String REQUEST_IS_LAUNCHER_INITIALIZED = "is-launcher-initialized";
+    public static final String REQUEST_IS_LAUNCHER_LAUNCHER_ACTIVITY_STARTED =
+            "is-launcher-activity-started";
     public static final String REQUEST_FREEZE_APP_LIST = "freeze-app-list";
     public static final String REQUEST_UNFREEZE_APP_LIST = "unfreeze-app-list";
     public static final String REQUEST_ENABLE_MANUAL_TASKBAR_STASHING = "enable-taskbar-stashing";

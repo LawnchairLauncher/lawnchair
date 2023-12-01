@@ -104,6 +104,15 @@ public class TestInformationHandler implements ResourceBasedOverride {
                 return getUIProperty(Bundle::putBoolean, t -> isLauncherInitialized(), () -> true);
             }
 
+            case TestProtocol.REQUEST_IS_LAUNCHER_LAUNCHER_ACTIVITY_STARTED: {
+                final Bundle bundle = getLauncherUIProperty(Bundle::putBoolean, l -> l.isStarted());
+                if (bundle != null) return bundle;
+
+                // If Launcher activity wasn't created, it's not started.
+                response.putBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD, false);
+                return response;
+            }
+
             case TestProtocol.REQUEST_FREEZE_APP_LIST:
                 return getLauncherUIProperty(Bundle::putBoolean, l -> {
                     l.getAppsView().getAppsStore().enableDeferUpdates(DEFER_UPDATES_TEST);
