@@ -946,6 +946,12 @@ public final class LauncherInstrumentation {
         fail("Launcher didn't initialize");
     }
 
+    public boolean isLauncherActivityStarted() {
+        return getTestInfo(
+                TestProtocol.REQUEST_IS_LAUNCHER_LAUNCHER_ACTIVITY_STARTED).
+                getBoolean(TestProtocol.TEST_INFO_RESPONSE_FIELD);
+    }
+
     Parcelable executeAndWaitForLauncherEvent(Runnable command,
             UiAutomation.AccessibilityEventFilter eventFilter, Supplier<String> message,
             String actionName) {
