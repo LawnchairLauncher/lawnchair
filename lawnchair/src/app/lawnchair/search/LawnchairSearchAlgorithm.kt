@@ -8,7 +8,7 @@ import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_APPLICATION
 import app.lawnchair.search.SearchTargetCompat.Companion.RESULT_TYPE_SHORTCUT
 import app.lawnchair.search.data.SearchResult
 import app.lawnchair.search.data.findByFileName
-import app.lawnchair.search.data.findContactByName
+import app.lawnchair.search.data.findContactsByName
 import app.lawnchair.search.data.getStartPageSuggestions
 import app.lawnchair.util.checkAndRequestFilesPermission
 import app.lawnchair.util.contactPermissionGranted
@@ -149,7 +149,7 @@ sealed class LawnchairSearchAlgorithm(
         val results = ArrayList<SearchResult>()
 
         if (prefs.searchResultPeople.get() && contactPermissionGranted(context, prefs)) {
-            val contactResults = findContactByName(context, query, 10)
+            val contactResults = findContactsByName(context, query, 10)
             results.addAll(contactResults.map { SearchResult(CONTACT, it) })
         }
 
