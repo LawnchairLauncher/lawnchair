@@ -20,6 +20,7 @@ import android.view.View;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.util.CellAndSpan;
+import com.android.launcher3.util.GridOccupancy;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -157,14 +158,14 @@ public class ReorderAlgorithm {
         // First we try to find a solution which respects the push mechanic. That is,
         // we try to find a solution such that no displaced item travels through another item
         // without also displacing that item.
-        if (mCellLayout.attemptPushInDirection(intersectingViews, occupiedRect, direction,
+        if (attemptPushInDirection(intersectingViews, occupiedRect, direction,
                 ignoreView,
                 solution)) {
             return true;
         }
 
         // Next we try moving the views as a block, but without requiring the push mechanic.
-        if (mCellLayout.addViewsToTempLocation(intersectingViews, occupiedRect, direction,
+        if (addViewsToTempLocation(intersectingViews, occupiedRect, direction,
                 ignoreView,
                 solution)) {
             return true;
@@ -172,11 +173,274 @@ public class ReorderAlgorithm {
 
         // Ok, they couldn't move as a block, let's move them individually
         for (View v : intersectingViews) {
-            if (!mCellLayout.addViewToTempLocation(v, occupiedRect, direction, solution)) {
+            if (!addViewToTempLocation(v, occupiedRect, direction, solution)) {
                 return false;
             }
         }
         return true;
+    }
+
+    private boolean addViewToTempLocation(View v, Rect rectOccupiedByPotentialDrop,
+            int[] direction, ItemConfiguration currentState) {
+        CellAndSpan c = currentState.map.get(v);
+        boolean success = false;
+        mCellLayout.mTmpOccupied.markCells(c, false);
+        mCellLayout.mTmpOccupied.markCells(rectOccupiedByPotentialDrop, true);
+
+        int[] tmpLocation = mCellLayout.findNearestArea(c.cellX, c.cellY, c.spanX, c.spanY,
+                direction, mCellLayout.mTmpOccupied.cells, null, new int[2]);
+
+        if (tmpLocation[0] >= 0 && tmpLocation[1] >= 0) {
+            c.cellX = tmpLocation[0];
+            c.cellY = tmpLocation[1];
+            success = true;
+        }
+        mCellLayout.mTmpOccupied.markCells(c, true);
+        return success;
+    }
+
+    private boolean pushViewsToTempLocation(ArrayList<View> views, Rect rectOccupiedByPotentialDrop,
+            int[] direction, View dragView, ItemConfiguration currentState) {
+
+        ViewCluster cluster = new ViewCluster(mCellLayout, views, currentState);
+        Rect clusterRect = cluster.getBoundingRect();
+        int whichEdge;
+        int pushDistance;
+        boolean fail = false;
+
+        // Determine the edge of the cluster that will be leading the push and how far
+        // the cluster must be shifted.
+        if (direction[0] < 0) {
+            whichEdge = ViewCluster.LEFT;
+            pushDistance = clusterRect.right - rectOccupiedByPotentialDrop.left;
+        } else if (direction[0] > 0) {
+            whichEdge = ViewCluster.RIGHT;
+            pushDistance = rectOccupiedByPotentialDrop.right - clusterRect.left;
+        } else if (direction[1] < 0) {
+            whichEdge = ViewCluster.TOP;
+            pushDistance = clusterRect.bottom - rectOccupiedByPotentialDrop.top;
+        } else {
+            whichEdge = ViewCluster.BOTTOM;
+            pushDistance = rectOccupiedByPotentialDrop.bottom - clusterRect.top;
+        }
+
+        // Break early for invalid push distance.
+        if (pushDistance <= 0) {
+            return false;
+        }
+
+        // Mark the occupied state as false for the group of views we want to move.
+        for (View v : views) {
+            CellAndSpan c = currentState.map.get(v);
+            mCellLayout.mTmpOccupied.markCells(c, false);
+        }
+
+        // We save the current configuration -- if we fail to find a solution we will revert
+        // to the initial state. The process of finding a solution modifies the configuration
+        // in place, hence the need for revert in the failure case.
+        currentState.save();
+
+        // The pushing algorithm is simplified by considering the views in the order in which
+        // they would be pushed by the cluster. For example, if the cluster is leading with its
+        // left edge, we consider sort the views by their right edge, from right to left.
+        cluster.sortConfigurationForEdgePush(whichEdge);
+
+        while (pushDistance > 0 && !fail) {
+            for (View v : currentState.sortedViews) {
+                // For each view that isn't in the cluster, we see if the leading edge of the
+                // cluster is contacting the edge of that view. If so, we add that view to the
+                // cluster.
+                if (!cluster.views.contains(v) && v != dragView) {
+                    if (cluster.isViewTouchingEdge(v, whichEdge)) {
+                        CellLayoutLayoutParams lp = (CellLayoutLayoutParams) v.getLayoutParams();
+                        if (!lp.canReorder) {
+                            // The push solution includes the all apps button, this is not viable.
+                            fail = true;
+                            break;
+                        }
+                        cluster.addView(v);
+                        CellAndSpan c = currentState.map.get(v);
+
+                        // Adding view to cluster, mark it as not occupied.
+                        mCellLayout.mTmpOccupied.markCells(c, false);
+                    }
+                }
+            }
+            pushDistance--;
+
+            // The cluster has been completed, now we move the whole thing over in the appropriate
+            // direction.
+            cluster.shift(whichEdge, 1);
+        }
+
+        boolean foundSolution = false;
+        clusterRect = cluster.getBoundingRect();
+
+        // Due to the nature of the algorithm, the only check required to verify a valid solution
+        // is to ensure that completed shifted cluster lies completely within the cell layout.
+        if (!fail && clusterRect.left >= 0 && clusterRect.right <= mCellLayout.getCountX()
+                && clusterRect.top >= 0 && clusterRect.bottom <= mCellLayout.getCountY()) {
+            foundSolution = true;
+        } else {
+            currentState.restore();
+        }
+
+        // In either case, we set the occupied array as marked for the location of the views
+        for (View v : cluster.views) {
+            CellAndSpan c = currentState.map.get(v);
+            mCellLayout.mTmpOccupied.markCells(c, true);
+        }
+
+        return foundSolution;
+    }
+
+    // This method tries to find a reordering solution which satisfies the push mechanic by trying
+    // to push items in each of the cardinal directions, in an order based on the direction vector
+    // passed.
+    private boolean attemptPushInDirection(ArrayList<View> intersectingViews, Rect occupied,
+            int[] direction, View ignoreView, ItemConfiguration solution) {
+        if ((Math.abs(direction[0]) + Math.abs(direction[1])) > 1) {
+            // If the direction vector has two non-zero components, we try pushing
+            // separately in each of the components.
+            int temp = direction[1];
+            direction[1] = 0;
+
+            if (pushViewsToTempLocation(intersectingViews, occupied, direction,
+                    ignoreView, solution)) {
+                return true;
+            }
+            direction[1] = temp;
+            temp = direction[0];
+            direction[0] = 0;
+
+            if (pushViewsToTempLocation(intersectingViews, occupied, direction,
+                    ignoreView, solution)) {
+                return true;
+            }
+            // Revert the direction
+            direction[0] = temp;
+
+            // Now we try pushing in each component of the opposite direction
+            direction[0] *= -1;
+            direction[1] *= -1;
+            temp = direction[1];
+            direction[1] = 0;
+            if (pushViewsToTempLocation(intersectingViews, occupied, direction,
+                    ignoreView, solution)) {
+                return true;
+            }
+
+            direction[1] = temp;
+            temp = direction[0];
+            direction[0] = 0;
+            if (pushViewsToTempLocation(intersectingViews, occupied, direction,
+                    ignoreView, solution)) {
+                return true;
+            }
+            // revert the direction
+            direction[0] = temp;
+            direction[0] *= -1;
+            direction[1] *= -1;
+
+        } else {
+            // If the direction vector has a single non-zero component, we push first in the
+            // direction of the vector
+            if (pushViewsToTempLocation(intersectingViews, occupied, direction,
+                    ignoreView, solution)) {
+                return true;
+            }
+            // Then we try the opposite direction
+            direction[0] *= -1;
+            direction[1] *= -1;
+            if (pushViewsToTempLocation(intersectingViews, occupied, direction,
+                    ignoreView, solution)) {
+                return true;
+            }
+            // Switch the direction back
+            direction[0] *= -1;
+            direction[1] *= -1;
+
+            // If we have failed to find a push solution with the above, then we try
+            // to find a solution by pushing along the perpendicular axis.
+
+            // Swap the components
+            int temp = direction[1];
+            direction[1] = direction[0];
+            direction[0] = temp;
+            if (pushViewsToTempLocation(intersectingViews, occupied, direction,
+                    ignoreView, solution)) {
+                return true;
+            }
+
+            // Then we try the opposite direction
+            direction[0] *= -1;
+            direction[1] *= -1;
+            if (pushViewsToTempLocation(intersectingViews, occupied, direction,
+                    ignoreView, solution)) {
+                return true;
+            }
+            // Switch the direction back
+            direction[0] *= -1;
+            direction[1] *= -1;
+
+            // Swap the components back
+            temp = direction[1];
+            direction[1] = direction[0];
+            direction[0] = temp;
+        }
+        return false;
+    }
+
+    private boolean addViewsToTempLocation(ArrayList<View> views, Rect rectOccupiedByPotentialDrop,
+            int[] direction, View dragView, ItemConfiguration currentState) {
+        if (views.isEmpty()) return true;
+
+        boolean success = false;
+        Rect boundingRect = new Rect();
+        // We construct a rect which represents the entire group of views passed in
+        currentState.getBoundingRectForViews(views, boundingRect);
+
+        // Mark the occupied state as false for the group of views we want to move.
+        for (View v : views) {
+            CellAndSpan c = currentState.map.get(v);
+            mCellLayout.mTmpOccupied.markCells(c, false);
+        }
+
+        GridOccupancy blockOccupied = new GridOccupancy(boundingRect.width(),
+                boundingRect.height());
+        int top = boundingRect.top;
+        int left = boundingRect.left;
+        // We mark more precisely which parts of the bounding rect are truly occupied, allowing
+        // for interlocking.
+        for (View v : views) {
+            CellAndSpan c = currentState.map.get(v);
+            blockOccupied.markCells(c.cellX - left, c.cellY - top, c.spanX, c.spanY, true);
+        }
+
+        mCellLayout.mTmpOccupied.markCells(rectOccupiedByPotentialDrop, true);
+
+        int[] tmpLocation = mCellLayout.findNearestArea(boundingRect.left, boundingRect.top,
+                boundingRect.width(), boundingRect.height(), direction,
+                mCellLayout.mTmpOccupied.cells, blockOccupied.cells, new int[2]);
+
+        // If we successfully found a location by pushing the block of views, we commit it
+        if (tmpLocation[0] >= 0 && tmpLocation[1] >= 0) {
+            int deltaX = tmpLocation[0] - boundingRect.left;
+            int deltaY = tmpLocation[1] - boundingRect.top;
+            for (View v : views) {
+                CellAndSpan c = currentState.map.get(v);
+                c.cellX += deltaX;
+                c.cellY += deltaY;
+            }
+            success = true;
+        }
+
+        // In either case, we set the occupied array as marked for the location of the views
+        for (View v : views) {
+            CellAndSpan c = currentState.map.get(v);
+            mCellLayout.mTmpOccupied.markCells(c, true);
+        }
+        return success;
     }
 
     /**
