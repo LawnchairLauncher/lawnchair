@@ -72,6 +72,23 @@ data class FileInfo(
         }
         else -> R.drawable.ic_file_unknown
     }
+
+    companion object {
+        val FileInfo.isMediaType: Boolean get() {
+            return mimeType in imageFileTypes.values ||
+                mimeType in videoFileTypes.values ||
+                mimeType in audioFileTypes.values
+        }
+
+        val FileInfo.isUnknownType: Boolean get() {
+            return mimeType !in imageFileTypes.values &&
+                mimeType !in videoFileTypes.values &&
+                mimeType !in audioFileTypes.values &&
+                mimeType !in androidPkgTypes.values &&
+                mimeType !in archiveFileTypes.values &&
+                mimeType !in documentFileTypes.values
+        }
+    }
 }
 
 data class SearchResult(

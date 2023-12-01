@@ -13,6 +13,8 @@ import androidx.core.os.bundleOf
 import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.search.data.ContactInfo
 import app.lawnchair.search.data.FileInfo
+import app.lawnchair.search.data.FileInfo.Companion.isMediaType
+import app.lawnchair.search.data.FileInfo.Companion.isUnknownType
 import app.lawnchair.theme.color.ColorTokens
 import app.lawnchair.util.createTextBitmap
 import app.lawnchair.util.mimeCompat
@@ -177,7 +179,7 @@ class GenerateSearchTarget(private val context: Context) {
     }
 
     private fun getPreviewIcon(info: FileInfo): Icon = when {
-        info.isMediaFile() -> BitmapFactory.decodeFile(info.path)?.let { Icon.createWithBitmap(it) }
+        info.isMediaType -> BitmapFactory.decodeFile(info.path)?.let { Icon.createWithBitmap(it) }
             ?: (
                 if (Utilities.ATLEAST_R) {
                     MediaMetadataRetriever().run {
@@ -189,8 +191,8 @@ class GenerateSearchTarget(private val context: Context) {
                 } else {
                     null
                 }
-                ) ?: Icon.createWithResource(context, info.getIcon())
-        info.isFileUnknown() -> Icon.createWithBitmap(createTextBitmap(context, "U"))
-        else -> Icon.createWithResource(context, info.getIcon())
+                ) ?: Icon.createWithResource(context, info.iconRes)
+        info.isUnknownType -> Icon.createWithBitmap(createTextBitmap(context, "U"))
+        else -> Icon.createWithResource(context, info.iconRes)
     }
 }
