@@ -16,13 +16,14 @@ import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.create
 
-val retrofit: Retrofit = Retrofit.Builder()
+private val retrofit = Retrofit.Builder()
     .baseUrl("https://www.startpage.com/")
     .addConverterFactory(kotlinxJson.asConverterFactory("application/json".toMediaType()))
     .build()
 
-val startPageService: StartPageService = retrofit.create(StartPageService::class.java)
+val startPageService: StartPageService = retrofit.create()
 
 suspend fun getStartPageSuggestions(query: String, max: Int): List<String> {
     try {
