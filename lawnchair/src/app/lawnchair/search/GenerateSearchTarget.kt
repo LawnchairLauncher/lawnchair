@@ -14,7 +14,7 @@ import app.lawnchair.allapps.SearchResultView
 import app.lawnchair.search.data.ContactInfo
 import app.lawnchair.search.data.FileInfo
 import app.lawnchair.search.data.FileInfo.Companion.isMediaType
-import app.lawnchair.search.data.FileInfo.Companion.isUnknownType
+import app.lawnchair.search.data.IFileInfo
 import app.lawnchair.theme.color.ColorTokens
 import app.lawnchair.util.createTextBitmap
 import app.lawnchair.util.mimeCompat
@@ -30,7 +30,6 @@ import java.io.InputStream
 class GenerateSearchTarget(private val context: Context) {
 
     private val marketSearchComponent = resolveMarketSearchActivity()
-    private val pkgHelper = PackageManagerHelper(context)
 
     internal fun getSuggestionTarget(suggestion: String): SearchTargetCompat {
         val url = getStartPageUrl(suggestion)
@@ -123,11 +122,12 @@ class GenerateSearchTarget(private val context: Context) {
         )
     }
 
-    internal fun getFileInfoSearchItem(info: FileInfo): SearchTargetCompat {
+    internal fun getFileInfoSearchItem(info: IFileInfo): SearchTargetCompat {
+        val fileInfo = info as? FileInfo
         val fileIntent = Intent(Intent.ACTION_VIEW)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             .addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-            .setDataAndType(info.path.path2Uri(), info.mimeType.mimeCompat)
+            .setDataAndType(info.path.path2Uri(), fileInfo?.mimeType.mimeCompat)
 
         val action = SearchActionCompat.Builder(info.path, info.name)
             .setIcon(getPreviewIcon(info))
@@ -178,21 +178,23 @@ class GenerateSearchTarget(private val context: Context) {
         return ComponentKey(launchIntent.component, Process.myUserHandle())
     }
 
-    private fun getPreviewIcon(info: FileInfo): Icon = when {
-        info.isMediaType -> BitmapFactory.decodeFile(info.path)?.let { Icon.createWithBitmap(it) }
-            ?: (
-                if (Utilities.ATLEAST_R) {
-                    MediaMetadataRetriever().run {
-                        setDataSource(info.path)
-                        val videoBitmap = frameAtTime
-                        release()
-                        videoBitmap?.let { Icon.createWithBitmap(it) }
-                    }
-                } else {
-                    null
-                }
-                ) ?: Icon.createWithResource(context, info.iconRes)
-        info.isUnknownType -> Icon.createWithBitmap(createTextBitmap(context, "U"))
-        else -> Icon.createWithResource(context, info.iconRes)
+    private fun getPreviewIcon(info: IFileInfo): Icon {
+        val fileInfo = info as? FileInfo
+        return when {
+            fileInfo?.isMediaType == true -> {
+                BitmapFactory.decodeFile(fileInfo.path)?.let { Icon.createWithBitmap(it) }
+                    ?: if (Utilities.ATLEAST_R) {
+                        MediaMetadataRetriever().run {
+                            setDataSource(fileInfo.path)
+                            val videoBitmap = frameAtTime
+                            release()
+                            videoBitmap?.let { Icon.createWithBitmap(it) }
+                        }
+                    } else {
+                        null
+                    } ?: Icon.createWithResource(context, fileInfo.iconRes)
+            }
+            else -> Icon.createWithBitmap(createTextBitmap(context, "U"))
+        }
     }
 }

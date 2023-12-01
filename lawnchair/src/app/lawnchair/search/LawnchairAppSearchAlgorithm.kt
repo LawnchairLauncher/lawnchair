@@ -7,7 +7,7 @@ import app.lawnchair.launcher
 import app.lawnchair.preferences.PreferenceManager
 import app.lawnchair.preferences2.PreferenceManager2
 import app.lawnchair.search.data.ContactInfo
-import app.lawnchair.search.data.FileInfo
+import app.lawnchair.search.data.IFileInfo
 import app.lawnchair.search.data.SearchResult
 import app.lawnchair.util.isDefaultLauncher
 import com.android.launcher3.LauncherAppState
@@ -130,7 +130,7 @@ class LawnchairAppSearchAlgorithm(context: Context) : LawnchairSearchAlgorithm(c
         if (files.isNotEmpty()) {
             val filesHeader = generateSearchTarget.getHeaderTarget(context.getString(R.string.all_apps_search_result_files))
             searchTargets.add(filesHeader)
-            searchTargets.addAll(files.map { generateSearchTarget.getFileInfoSearchItem(it.resultData as FileInfo) })
+            searchTargets.addAll(files.map { generateSearchTarget.getFileInfoSearchItem(it.resultData as IFileInfo) })
         }
 
         searchTargets.add(generateSearchTarget.getHeaderTarget(SPACE))
