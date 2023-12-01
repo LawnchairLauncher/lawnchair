@@ -129,7 +129,11 @@ fun supportsRoundedCornersOnWindows(context: Context): Boolean {
     if (getPrefsIfUnlocked(context)?.overrideWindowCornerRadius?.get() == true) {
         return true
     }
-    return QuickStepContract.supportsRoundedCornersOnWindows(context.resources)
+    return if (Utilities.ATLEAST_Q) {
+        QuickStepContract.supportsRoundedCornersOnWindows(context.resources)
+    } else {
+        false
+    }
 }
 
 fun overrideAllAppsTextColor(textView: TextView) {
