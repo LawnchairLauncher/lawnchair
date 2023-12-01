@@ -102,10 +102,7 @@ class GenerateSearchTarget(private val context: Context) {
             info.contactId,
         )
 
-        val contactIntent = Intent(
-            Intent.ACTION_VIEW,
-            contactUri,
-        )
+        val contactIntent = Intent(Intent.ACTION_VIEW, contactUri)
         val action = SearchActionCompat.Builder(id, info.name)
             .setIcon(displayContactPhoto(context, info.name, Uri.parse(info.uri)))
             .setContentDescription(info.contactId)
@@ -189,7 +186,7 @@ class GenerateSearchTarget(private val context: Context) {
     private fun getFileManagerForMimeType(mimeType: String): String? {
         val packageManager = context.packageManager
         val intent = Intent(Intent.ACTION_VIEW)
-        intent.type = mimeType
+            .setType(mimeType)
 
         val resolveInfoList = packageManager.queryIntentActivities(intent, 0)
 
